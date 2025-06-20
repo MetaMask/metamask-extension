@@ -79,8 +79,11 @@ export const useNetworkChangeHandlers = () => {
         // if custom network is enabled, select the new network and disable the custom network
         dispatch(setEnabledNetworks([hexChainId], namespace));
       } else if (enabledNetworkKeys.includes(hexChainId)) {
+        const filteredPopularNetworks = enabledNetworkKeys.filter((key) =>
+          FEATURED_NETWORK_CHAIN_IDS.includes(key),
+        );
         // deselect if selected
-        const filteredEnabledNetworks = enabledNetworkKeys.filter(
+        const filteredEnabledNetworks = filteredPopularNetworks.filter(
           (key) => key !== hexChainId,
         );
         dispatch(
@@ -90,10 +93,13 @@ export const useNetworkChangeHandlers = () => {
           ),
         );
       } else {
+        const filteredPopularNetworks = enabledNetworkKeys.filter((key) =>
+          FEATURED_NETWORK_CHAIN_IDS.includes(key),
+        );
         // multiselect default networks
         dispatch(
           setEnabledNetworks(
-            [...enabledNetworkKeys, hexChainId] as CaipChainId[],
+            [...filteredPopularNetworks, hexChainId] as CaipChainId[],
             namespace,
           ),
         );

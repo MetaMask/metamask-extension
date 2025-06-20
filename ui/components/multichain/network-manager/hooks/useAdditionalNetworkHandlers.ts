@@ -5,7 +5,10 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { parseCaipChainId } from '@metamask/utils';
 import { ORIGIN_METAMASK } from '../../../../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  FEATURED_NETWORK_CHAIN_IDS,
+} from '../../../../../shared/constants/network';
 import {
   hideModal,
   requestUserApproval,
@@ -58,9 +61,12 @@ export const useAdditionalNetworkHandlers = () => {
         }),
       );
       const enabledNetworksArray = Object.keys(enabledNetworksByNamespace);
+      const filteredPopularNetworks = enabledNetworksArray.filter((key) =>
+        FEATURED_NETWORK_CHAIN_IDS.includes(key),
+      );
       await dispatch(
         setEnabledNetworks(
-          [...enabledNetworksArray, network.chainId],
+          [...filteredPopularNetworks, network.chainId],
           namespace,
         ),
       );
