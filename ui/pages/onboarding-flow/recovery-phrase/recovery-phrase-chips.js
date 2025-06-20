@@ -122,7 +122,7 @@ export default function RecoveryPhraseChips({
         borderRadius={BorderRadius.LG}
         display={Display.Grid}
         width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundMuted}
+        backgroundColor={BackgroundColor.backgroundSection}
         className="recovery-phrase__secret"
       >
         <Box
@@ -192,7 +192,7 @@ export default function RecoveryPhraseChips({
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.center}
               borderRadius={BorderRadius.SM}
-              backgroundColor={BackgroundColor.backgroundMuted}
+              backgroundColor={BackgroundColor.backgroundSection}
               width={BlockSize.Full}
               height={BlockSize.Full}
               paddingTop={2}
