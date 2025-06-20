@@ -722,10 +722,6 @@ export default class MetamaskController extends EventEmitter {
       },
       additionalDefaultNetworks,
     });
-    console.log(
-      'selectedNetworkClientId',
-      this.networkController.state.selectedNetworkClientId,
-    );
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointUnavailable',
       async ({ chainId, endpointUrl, error }) => {
