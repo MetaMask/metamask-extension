@@ -615,6 +615,9 @@
   "back": {
     "message": "Back"
   },
+  "backup": {
+    "message": "Back up"
+  },
   "backupAndSync": {
     "message": "Backup and sync"
   },
@@ -671,6 +674,9 @@
   },
   "backupNow": {
     "message": "Back up now"
+  },
+  "backupSecretRecoveryPhrase": {
+    "message": "Back up your Secret Recovery Phrase"
   },
   "balance": {
     "message": "Balance"
@@ -6901,6 +6907,9 @@
   "viewOnOpensea": {
     "message": "View on Opensea"
   },
+  "viewPrivateKey": {
+    "message": "View private key"
+  },
   "viewSolanaAccount": {
     "message": "View Solana account"
   },
@@ -6910,6 +6919,9 @@
   "viewinExplorer": {
     "message": "View $1 in explorer",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "viewSecretRecoveryPhrase": {
+    "message": "View Secret Recovery Phrase"
   },
   "visitSite": {
     "message": "Visit site"
