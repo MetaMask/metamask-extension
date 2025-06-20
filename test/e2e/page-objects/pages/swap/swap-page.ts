@@ -61,6 +61,11 @@ class SwapPage {
     tag: 'p',
   };
 
+  private readonly gasIncludedLabel = {
+    text: 'included',
+    tag: 'h6',
+  };
+
   private readonly rateMessage = {
     text: `Rate includes 0.875% fee`,
     tag: 'p',
@@ -71,6 +76,12 @@ class SwapPage {
   private readonly reviewFromAmount = '[data-testid="from-amount"]';
 
   private readonly submitSwapButton = '[data-testid="bridge-cta-button"]';
+
+  private readonly transactionStatusHeader =
+    '[data-testid="swap-smart-transaction-status-header"]';
+
+  private readonly transactionStatusDescription =
+    '[data-testid="swap-smart-transaction-status-description"]';
 
   private readonly swapAmount =
     '[data-testid="prepare-swap-page-from-token-amount"]';
@@ -158,11 +169,6 @@ class SwapPage {
     console.log('Submit Swap');
     await this.driver.clickElement(this.swapButton);
     await this.driver.delay(1500);
-    // console.log('Processing Swap');
-    // await this.swapProcessingMessageCheck('Processing');
-    console.log('Swap Transaction complete');
-    await this.swapProcessingMessageCheck('Transaction complete');
-    await this.driver.clickElement(this.closeButton);
   }
 
   async dismissManualTokenWarning(): Promise<void> {
@@ -176,6 +182,39 @@ class SwapPage {
 
   async checkNoQuotesAvailable(): Promise<void> {
     await this.driver.waitForSelector(this.noQuotesAvailableMessage);
+  }
+
+  async checkQuoteIsGasIncluded(): Promise<void> {
+    await this.driver.waitForSelector(this.gasIncludedLabel);
+  }
+
+  async waitForTransactionToComplete(): Promise<void> {
+    console.log('Swap Transaction complete');
+    await this.swapProcessingMessageCheck('Transaction complete');
+    await this.driver.clickElement(this.closeButton);
+  }
+
+  async waitForSmartTransactionToComplete(tokenName: string): Promise<void> {
+    console.log('Wait for Smart Transaction to complete');
+
+    await this.driver.waitForSelector({
+      css: this.transactionStatusHeader,
+      text: 'Privately submitting your Swap',
+    });
+
+    await this.driver.waitForSelector(
+      {
+        css: this.transactionStatusHeader,
+        text: 'Swap complete!',
+      },
+      { timeout: 30000 },
+    );
+
+    await this.driver.findElement({
+      css: this.transactionStatusDescription,
+      text: `${tokenName}`,
+    });
+    await this.driver.clickElement(this.closeButton);
   }
 
   async createSolanaSwap(options: SwapSolanaOptions) {
