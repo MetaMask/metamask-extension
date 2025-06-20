@@ -50,5 +50,7 @@ export type ConfirmMetamaskState = {
     approvalFlows: ApprovalControllerState['approvalFlows'];
     signatureSecurityAlertResponses?: Record<string, SecurityAlertResponse>;
     upgradeSplashPageAcknowledgedForAccounts?: string[];
+    enableEnforcedSimulations: boolean;
+    enableEnforcedSimulationsForTransactions: Record<string, boolean>;
   };
 };
