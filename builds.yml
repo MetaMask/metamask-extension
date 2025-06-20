@@ -22,6 +22,7 @@ buildTypes:
       - multichain
       - solana
       - solana-swaps
+      - seedless-onboarding
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -49,6 +50,7 @@ buildTypes:
       - solana
       - solana-swaps
       - multi-srp
+      - seedless-onboarding
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
@@ -80,6 +82,7 @@ buildTypes:
       - multi-srp
       - solana-swaps
       - multichain
+      - seedless-onboarding
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -149,6 +152,7 @@ features:
   ocap-kernel:
     assets:
       - ./{app,offscreen,shared,ui}/**/ocap-kernel/**
+  seedless-onboarding:
 
 # Env variables that are required for all types of builds
 #
@@ -362,3 +366,11 @@ env:
 
   # Enforce simulation balance changes by converting external transactions to delegations.
   - ENABLE_ENFORCED_SIMULATIONS: false
+
+  # OAuth (Soial login)
+  - AUTH_CONNECTION_ID: ''
+  - GROUPED_AUTH_CONNECTION_ID: ''
+  - GOOGLE_CLIENT_ID: ''
+  - APPLE_CLIENT_ID: ''
+  - WEB3AUTH_NETWORK: ''
+  - AUTH_SERVER_URL: ''
