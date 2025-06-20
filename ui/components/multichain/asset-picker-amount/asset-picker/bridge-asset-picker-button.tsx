@@ -1,42 +1,49 @@
 import React from 'react';
-import {
-  SelectButtonProps,
-  SelectButtonSize,
-} from '../../../../components/component-library/select-button/select-button.types';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  BadgeWrapper,
-  IconName,
-  SelectButton,
-  Text,
-} from '../../../../components/component-library';
+
 import {
   AlignItems,
   BackgroundColor,
   BorderColor,
   BorderRadius,
   Display,
+  FontWeight,
   OverflowWrap,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { AssetPicker } from '../../../../components/multichain/asset-picker-amount/asset-picker';
 import { getNftImage } from '../../../../helpers/utils/nfts';
+import { getImageForChainId } from '../../../../selectors/multichain';
+import {
+  SelectButtonProps,
+  SelectButtonSize,
+} from '../../../component-library/select-button/select-button.types';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  BadgeWrapper,
+  Button,
+  ButtonSize,
+  IconName,
+  SelectButton,
+  Text,
+} from '../../../component-library';
+import { type AssetPickerModal } from '../asset-picker-modal';
 
 export const BridgeAssetPickerButton = ({
   asset,
-  networkProps,
-  networkImageSrc,
+  network,
+  action,
+  onClick,
   ...props
-}: {
-  networkImageSrc?: string;
-} & SelectButtonProps<'div'> &
-  Pick<React.ComponentProps<typeof AssetPicker>, 'asset' | 'networkProps'>) => {
+}: { onClick: () => void } & SelectButtonProps<'div'> &
+  Pick<
+    React.ComponentProps<typeof AssetPickerModal>,
+    'asset' | 'network' | 'action'
+  >) => {
   const t = useI18nContext();
 
-  return (
+  return asset ? (
     <SelectButton
       borderRadius={BorderRadius.pill}
       backgroundColor={BackgroundColor.backgroundDefault}
@@ -71,8 +78,12 @@ export const BridgeAssetPickerButton = ({
             badge={
               asset ? (
                 <AvatarNetwork
-                  name={networkProps?.network?.name ?? ''}
-                  src={networkImageSrc}
+                  name={network?.name ?? ''}
+                  src={
+                    network?.chainId
+                      ? getImageForChainId(network?.chainId)
+                      : undefined
+                  }
                   size={AvatarNetworkSize.Xs}
                 />
               ) : undefined
@@ -80,9 +91,7 @@ export const BridgeAssetPickerButton = ({
           >
             {asset ? (
               <AvatarToken
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                src={getNftImage(asset.image) || undefined}
+                src={getNftImage(asset.image)}
                 backgroundColor={BackgroundColor.backgroundHover}
                 name={asset.symbol}
               />
@@ -90,7 +99,20 @@ export const BridgeAssetPickerButton = ({
           </BadgeWrapper>
         ) : undefined
       }
+      onClick={onClick}
       {...props}
     />
+  ) : (
+    <Button
+      data-testid={props['data-testid']}
+      size={ButtonSize.Lg}
+      paddingLeft={6}
+      paddingRight={6}
+      fontWeight={FontWeight.Normal}
+      style={{ whiteSpace: 'nowrap' }}
+      onClick={onClick}
+    >
+      {action === 'bridge' ? t('bridgeTo') : t('swapSwapTo')}
+    </Button>
   );
 };

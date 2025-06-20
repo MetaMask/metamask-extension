@@ -49,14 +49,11 @@ import {
 } from '../../../../selectors/multichain';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { getNftImage } from '../../../../helpers/utils/nfts';
+import { BridgeAssetPickerButton } from './bridge-asset-picker-button';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
 export type AssetPickerProps = {
-  children?: (
-    onClick: () => void,
-    networkImageSrc?: string,
-  ) => React.ReactElement; // Overrides default button
   asset?:
     | ERC20Asset
     | NativeAsset
@@ -72,7 +69,6 @@ export type AssetPickerProps = {
   ) => void;
   onClick?: () => void;
   isDisabled?: boolean;
-  action?: 'send' | 'receive';
   isMultiselectEnabled?: boolean;
   autoFocus?: boolean;
   networkProps?: Pick<
@@ -83,18 +79,19 @@ export type AssetPickerProps = {
     | 'shouldDisableNetwork'
     | 'header'
   >;
+  dataTestId?: string;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModal>,
   | 'visibleTabs'
   | 'header'
   | 'sendingAsset'
+  | 'action'
   | 'customTokenListGenerator'
   | 'isTokenListLoading'
 >;
 
 // A component that lets the user pick from a list of assets.
 export function AssetPicker({
-  children,
   header,
   asset,
   onAssetChange,
@@ -108,6 +105,7 @@ export function AssetPicker({
   isTokenListLoading = false,
   isMultiselectEnabled = false,
   autoFocus = true,
+  dataTestId = 'asset-picker',
 }: AssetPickerProps) {
   const t = useI18nContext();
 
@@ -162,10 +160,6 @@ export function AssetPicker({
 
     return undefined;
   };
-
-  const networkImageSrc = selectedNetwork?.chainId
-    ? getImageForChainId(selectedNetwork.chainId)
-    : undefined;
 
   const handleButtonClick = () => {
     if (networkProps && !networkProps.network) {
@@ -251,12 +245,18 @@ export function AssetPicker({
         autoFocus={autoFocus}
       />
 
-      {/** If a child prop is passed in, use it as the trigger button instead of the default */}
-      {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
-      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
-      {children?.(handleButtonClick, networkImageSrc) || (
+      {/** If the action is swap or bridge, use the BridgeAssetPickerButton as the trigger button instead of the default */}
+      {action === 'bridge' || action === 'swap' ? (
+        <BridgeAssetPickerButton
+          onClick={handleButtonClick}
+          asset={asset}
+          network={networkProps?.network}
+          data-testid={`${dataTestId}-button`}
+          action={action}
+        />
+      ) : (
         <ButtonBase
-          data-testid="asset-picker-button"
+          data-testid={`${dataTestId}-button`}
           className="asset-picker"
           disabled={isDisabled}
           display={Display.Flex}
@@ -283,7 +283,11 @@ export function AssetPicker({
                   <AvatarNetwork
                     size={AvatarNetworkSize.Xs}
                     name={selectedNetwork?.name ?? ''}
-                    src={networkImageSrc}
+                    src={
+                      selectedNetwork?.chainId
+                        ? getImageForChainId(selectedNetwork.chainId)
+                        : undefined
+                    }
                     borderWidth={2}
                     backgroundColor={
                       Object.entries({
