@@ -2,6 +2,7 @@ import EventEmitter from 'events';
 import React, { useContext, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import zxcvbn from 'zxcvbn';
 import {
   Box,
   Button,
@@ -37,6 +38,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { PASSWORD_MIN_LENGTH } from '../../../../helpers/constants/common';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
@@ -62,6 +64,19 @@ const ChangePassword = () => {
   const [newPassword, setNewPassword] = useState('');
   const [showChangePasswordWarning, setShowChangePasswordWarning] =
     useState(false);
+
+  const getPasswordStrengthCategory = (passwordValue: string) => {
+    const isTooShort = passwordValue.length < PASSWORD_MIN_LENGTH;
+    const { score } = zxcvbn(passwordValue);
+
+    if (isTooShort || score < 3) {
+      return 'weak';
+    }
+    if (score === 3) {
+      return 'average';
+    }
+    return 'strong';
+  };
 
   const renderMascot = () => {
     if (isFlask()) {
@@ -107,6 +122,9 @@ const ChangePassword = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           biometrics_enabled: false,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          password_strength: getPasswordStrengthCategory(newPassword),
         },
       });
 
