@@ -12,7 +12,6 @@ import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { isObject, hasProperty } from '@metamask/utils';
-import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 // Import to set up global `Promise.withResolvers` polyfill
 import '../../shared/lib/promise-with-resolvers';
@@ -52,6 +51,7 @@ import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
+import { PortStream } from './lib/extension-port-stream';
 import {
   CorruptionHandler,
   hasVault,
@@ -1119,7 +1119,8 @@ export function setupController(
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
       const portStreamForPhishingPage =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new PortStream(remotePort, { chunkSize: 0 });
       controller.setupPhishingCommunication({
         connectionStream: portStreamForPhishingPage,
       });
@@ -1148,14 +1149,16 @@ export function setupController(
         )
       ) {
         const portStreamForCookieHandlerPage =
-          overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+          overrides?.getPortStream?.(remotePort) ||
+          new PortStream(remotePort, { chunkSize: 0 });
         controller.setUpCookieHandlerCommunication({
           connectionStream: portStreamForCookieHandlerPage,
         });
       }
 
       const portStream =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new PortStream(remotePort, { chunkSize: 0 });
 
       connectEip1193(portStream, remotePort.sender);
 
@@ -1175,7 +1178,8 @@ export function setupController(
 
   connectExternallyConnectable = (remotePort) => {
     const portStream =
-      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+      overrides?.getPortStream?.(remotePort) ||
+      new PortStream(remotePort, { chunkSize: 0 });
 
     // if the sender.id value is present it means the caller is an extension rather
     // than a site. When the caller is an extension we want to fallback to connecting
