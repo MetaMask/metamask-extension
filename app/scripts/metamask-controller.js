@@ -6646,6 +6646,18 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.getNetworkConfigurationByChainId.bind(
           this.networkController,
         ),
+      setTokenNetworkFilter: (chainId) => {
+        const { tokenNetworkFilter } =
+          this.preferencesController.getPreferences();
+        if (chainId && Object.keys(tokenNetworkFilter).length === 1) {
+          this.preferencesController.setPreference('tokenNetworkFilter', {
+            [chainId]: true,
+          });
+        }
+      },
+      setEnabledNetworks: (chainIds) => {
+        this.networkOrderController.setEnabledNetworks(chainIds);
+      },
       getCurrentChainIdForDomain: (domain) => {
         const networkClientId =
           this.selectedNetworkController.getNetworkClientIdForDomain(domain);
@@ -6868,19 +6880,6 @@ export default class MetamaskController extends EventEmitter {
             // for the origin do not exist
             console.log(e);
           }
-        },
-
-        setTokenNetworkFilter: (chainId) => {
-          const { tokenNetworkFilter } =
-            this.preferencesController.getPreferences();
-          if (chainId && Object.keys(tokenNetworkFilter).length === 1) {
-            this.preferencesController.setPreference('tokenNetworkFilter', {
-              [chainId]: true,
-            });
-          }
-        },
-        setEnabledNetworks: (chainIds) => {
-          this.networkOrderController.setEnabledNetworks(chainIds);
         },
 
         updateCaveat: this.permissionController.updateCaveat.bind(
