@@ -51,7 +51,7 @@ async function withFixturesForSmartTransactions(
 }
 
 describe('Smart Transactions', function () {
-  it('Send with USDC token fee', async function () {
+  it('should send transaction using USDC to pay fee', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
@@ -86,7 +86,7 @@ describe('Smart Transactions', function () {
     );
   });
 
-  it('Swap', async function () {
+  it('should Swap using smart transaction', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
@@ -122,7 +122,7 @@ describe('Smart Transactions', function () {
     );
   });
 
-  it('Swap gas included', async function () {
+  it('should Swap with gas included fee', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
@@ -156,7 +156,7 @@ describe('Smart Transactions', function () {
     );
   });
 
-  it('dApp Transaction', async function () {
+  it('should execute a dApp Transaction', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
