@@ -151,7 +151,6 @@ describe('createTrustSignalsMiddleware', () => {
       appStateController.getAddressSecurityAlertResponse.mockReturnValue(
         undefined,
       );
-
       const req = createMockRequest('eth_sendTransaction', [
         createTransactionParams(),
       ]);
@@ -177,7 +176,6 @@ describe('createTrustSignalsMiddleware', () => {
       appStateController.getAddressSecurityAlertResponse.mockReturnValue(
         MOCK_SCAN_RESPONSES.CACHED,
       );
-
       const req = createMockRequest('eth_sendTransaction', [
         createTransactionParams(),
       ]);
@@ -202,7 +200,6 @@ describe('createTrustSignalsMiddleware', () => {
       appStateController.getAddressSecurityAlertResponse.mockReturnValue(
         undefined,
       );
-
       const req = createMockRequest('eth_sendTransaction', [
         createTransactionParams(),
       ]);
@@ -287,7 +284,6 @@ describe('createTrustSignalsMiddleware', () => {
           data: '0x',
           // intentionally missing "to" address
         };
-
         const req = createMockRequest('eth_sendTransaction', [paramsWithoutTo]);
         const res = createMockResponse();
         const next = jest.fn();
@@ -376,7 +372,6 @@ describe('createTrustSignalsMiddleware', () => {
       );
       const { middleware, appStateController, networkController } =
         createMiddleware();
-
       const req = createMockRequest(
         MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         createTypedDataParams(TEST_ADDRESSES.TO),
@@ -515,7 +510,6 @@ describe('createTrustSignalsMiddleware', () => {
       };
       const res = createMockResponse();
       const next = jest.fn();
-
       phishingController.scanUrl.mockResolvedValue({
         result_type: 'benign',
         label: 'Safe site',
