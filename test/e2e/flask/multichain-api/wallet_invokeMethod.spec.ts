@@ -4,6 +4,7 @@ import {
   ACCOUNT_1,
   ACCOUNT_2,
   convertETHToHexGwei,
+  largeDelayMs,
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
@@ -234,6 +235,7 @@ describe('Multichain API', function () {
             );
             await testDapp.check_pageIsLoaded();
             for (const scope of GANACHE_SCOPES) {
+              await driver.delay(largeDelayMs);
               const currentBalance = await testDapp.invokeMethodAndReturnResult(
                 {
                   scope,
