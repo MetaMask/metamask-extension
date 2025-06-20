@@ -63,7 +63,7 @@ const defaultState: NetworkOrderControllerState = {
     [KnownCaipNamespace.Eip155]: {
       [CHAIN_IDS.MAINNET]: true,
       [CHAIN_IDS.LINEA_MAINNET]: true,
-      [CHAIN_IDS.BASE_MAINNET]: true,
+      [CHAIN_IDS.BASE]: true,
     },
     [KnownCaipNamespace.Solana]: {
       [SolScope.Mainnet]: true,
