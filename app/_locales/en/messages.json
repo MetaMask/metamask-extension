@@ -1679,7 +1679,7 @@
     "description": "$1 is the name of the page they'll be redirected to if they click the Continue button. Examples of $1: 'the home page'; 'the buy page'; 'the swaps page'; 'the notifications page'"
   },
   "deepLink_DontRemindMeAgain": {
-    "message": "Don't Remind me again"
+    "message": "Don't remind me again"
   },
   "deepLink_Error404Description": {
     "message": "We can't find the page you are looking for."
@@ -6862,6 +6862,9 @@
   },
   "userOpContractDeployError": {
     "message": "Contract deployment from a smart contract account is not supported"
+  },
+  "value": {
+    "message": "Value"
   },
   "version": {
     "message": "Version"
