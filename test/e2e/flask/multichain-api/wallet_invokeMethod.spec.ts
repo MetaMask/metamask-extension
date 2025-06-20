@@ -4,7 +4,6 @@ import {
   ACCOUNT_1,
   ACCOUNT_2,
   convertETHToHexGwei,
-  largeDelayMs,
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
@@ -12,8 +11,10 @@ import FixtureBuilder from '../../fixture-builder';
 import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import HomePage from '../../page-objects/pages/home/homepage';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import Eip7702AndSendCalls from '../../page-objects/pages/confirmations/redesign/batch-confirmation';
 import { mockEip7702FeatureFlag } from '../../tests/confirmations/helpers';
@@ -217,7 +218,17 @@ describe('Multichain API', function () {
               await confirmation.check_pageIsLoaded();
               await confirmation.clickFooterConfirmButton();
             }
-            await driver.delay(2000);
+
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.ExtensionInFullScreenView,
+            );
+            const homePage = new HomePage(driver);
+            await homePage.check_pageIsLoaded();
+            await homePage.goToActivityList();
+            await new ActivityListPage(
+              driver,
+            ).check_confirmedTxNumberDisplayedInActivity();
+
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
@@ -234,7 +245,6 @@ describe('Multichain API', function () {
                 `"${DEFAULT_INITIAL_BALANCE_HEX}"`,
                 `${scope} scope balance should be different after eth_sendTransaction due to gas`,
               );
-              await driver.delay(largeDelayMs);
             }
           },
         );
