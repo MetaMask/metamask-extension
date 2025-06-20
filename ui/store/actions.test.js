@@ -2209,7 +2209,7 @@ describe('Actions', () => {
       const store = mockStore();
 
       await expect(
-        store.dispatch(actions.removeAndIgnoreNft(undefined, '55')),
+        store.dispatch(actions.removeAndIgnoreNft(undefined, '55', 'mainnet')),
       ).rejects.toThrow('MetaMask - Cannot ignore NFT without address');
     });
 
@@ -2217,7 +2217,9 @@ describe('Actions', () => {
       const store = mockStore();
 
       await expect(
-        store.dispatch(actions.removeAndIgnoreNft('Oxtest', undefined)),
+        store.dispatch(
+          actions.removeAndIgnoreNft('Oxtest', undefined, 'mainnet'),
+        ),
       ).rejects.toThrow('MetaMask - Cannot ignore NFT without tokenID');
     });
 
@@ -2229,7 +2231,7 @@ describe('Actions', () => {
       setBackgroundConnection(background);
 
       await expect(
-        store.dispatch(actions.removeAndIgnoreNft('Oxtest', '6')),
+        store.dispatch(actions.removeAndIgnoreNft('Oxtest', '6', 'mainnet')),
       ).rejects.toThrow(error);
     });
   });
@@ -2346,82 +2348,78 @@ describe('Actions', () => {
     });
   });
 
-  describe('#deleteOnChainTriggersByAccount', () => {
+  describe('#disableAccounts', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls deleteOnChainTriggersByAccount in the background', async () => {
+    it('calls disableAccounts in the background', async () => {
       const store = mockStore();
       const accounts = ['0x123', '0x456'];
 
-      const deleteOnChainTriggersByAccountStub = sinon.stub().resolves();
+      const disableAccountsStub = sinon.stub().resolves();
 
       background.getApi.returns({
-        deleteOnChainTriggersByAccount: deleteOnChainTriggersByAccountStub,
+        disableAccounts: disableAccountsStub,
       });
       setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.deleteOnChainTriggersByAccount(accounts));
-      expect(deleteOnChainTriggersByAccountStub.calledOnceWith(accounts)).toBe(
-        true,
-      );
+      await store.dispatch(actions.disableAccounts(accounts));
+      expect(disableAccountsStub.calledOnceWith(accounts)).toBe(true);
     });
 
-    it('handles errors when deleteOnChainTriggersByAccount fails', async () => {
+    it('handles errors when disableAccounts fails', async () => {
       const store = mockStore();
       const accounts = ['0x123', '0x456'];
       const error = new Error('Failed to delete on-chain triggers');
 
-      const deleteOnChainTriggersByAccountStub = sinon.stub().rejects(error);
+      const disableAccountsStub = sinon.stub().rejects(error);
 
       background.getApi.returns({
-        deleteOnChainTriggersByAccount: deleteOnChainTriggersByAccountStub,
+        disableAccounts: disableAccountsStub,
       });
       setBackgroundConnection(background.getApi());
 
       await expect(
-        store.dispatch(actions.deleteOnChainTriggersByAccount(accounts)),
+        store.dispatch(actions.disableAccounts(accounts)),
       ).rejects.toThrow(error);
     });
   });
 
-  describe('#updateOnChainTriggersByAccount', () => {
+  describe('#enableAccounts', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls updateOnChainTriggersByAccount in the background with correct parameters', async () => {
+    it('calls enableAccounts in the background with correct parameters', async () => {
       const store = mockStore();
       const accountIds = ['0x789', '0xabc'];
 
-      const updateOnChainTriggersByAccountStub = sinon.stub().resolves();
+      const enableAccountsStub = sinon.stub().resolves();
 
       background.getApi.returns({
-        updateOnChainTriggersByAccount: updateOnChainTriggersByAccountStub,
+        enableAccounts: enableAccountsStub,
       });
       setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.updateOnChainTriggersByAccount(accountIds));
-      expect(
-        updateOnChainTriggersByAccountStub.calledOnceWith(accountIds),
-      ).toBe(true);
+      await store.dispatch(actions.enableAccounts(accountIds));
+      expect(enableAccountsStub.calledOnceWith(accountIds)).toBe(true);
     });
 
-    it('handles errors when updateOnChainTriggersByAccount fails', async () => {
+    it('handles errors when enableAccounts fails', async () => {
       const store = mockStore();
       const accountIds = ['0x789', '0xabc'];
       const error = new Error('Failed to update on-chain triggers');
 
-      const updateOnChainTriggersByAccountStub = sinon.stub().rejects(error);
+      const enableAccountsStub = sinon.stub().rejects(error);
 
       background.getApi.returns({
-        updateOnChainTriggersByAccount: updateOnChainTriggersByAccountStub,
+        enableAccounts: enableAccountsStub,
       });
       setBackgroundConnection(background.getApi());
 
       await expect(
-        store.dispatch(actions.updateOnChainTriggersByAccount(accountIds)),
+        store.dispatch(actions.enableAccounts(accountIds)),
       ).rejects.toThrow(error);
     });
   });
@@ -2726,6 +2724,28 @@ describe('Actions', () => {
       expect(syncInternalAccountsWithUserStorageStub.calledOnceWith()).toBe(
         true,
       );
+    });
+  });
+
+  describe('syncContactsWithUserStorage', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls syncContactsWithUserStorage in the background', async () => {
+      const store = mockStore();
+
+      const syncContactsWithUserStorageStub = sinon
+        .stub()
+        .callsFake((cb) => cb());
+
+      background.getApi.returns({
+        syncContactsWithUserStorage: syncContactsWithUserStorageStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.syncContactsWithUserStorage());
+      expect(syncContactsWithUserStorageStub.calledOnceWith()).toBe(true);
     });
   });
 

@@ -7,6 +7,7 @@ import PrivacySettings from '../../../page-objects/pages/settings/privacy-settin
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { setupAutoDetectMocking } from './mocks';
 
 describe('NFT full', function () {
@@ -14,7 +15,13 @@ describe('NFT full', function () {
     const driverOptions = { mock: true };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnLinea().build(),
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnLinea()
+          .withEnabledNetworks({
+            [CHAIN_IDS.LINEA_MAINNET]: true,
+            [CHAIN_IDS.MAINNET]: true,
+          })
+          .build(),
         driverOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: setupAutoDetectMocking,
@@ -39,6 +46,8 @@ describe('NFT full', function () {
         await homepage.check_expectedBalanceIsDisplayed();
         await homepage.goToNftTab();
         const nftListPage = new NFTListPage(driver);
+
+        await nftListPage.filterNftsByNetworks('Popular networks');
         await nftListPage.check_nftNameIsDisplayed(
           'ENS: Ethereum Name Service',
         );

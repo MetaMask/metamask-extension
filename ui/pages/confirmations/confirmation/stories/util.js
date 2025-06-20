@@ -45,6 +45,9 @@ const STORE_MOCK = {
         origin: 'npm:@test/test-snap',
       },
     },
+    enabledNetworkMap: {
+      '0x1': true,
+    },
     selectedNetworkClientId: 'testNetworkClientId',
     subjectMetadata: {
       'npm:@test/test-snap': {

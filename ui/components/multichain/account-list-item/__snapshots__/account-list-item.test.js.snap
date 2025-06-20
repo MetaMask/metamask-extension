@@ -205,73 +205,25 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--align-items-center"
-                  >
-                    <div
-                      class="mm-box mm-box--rounded-full"
-                      style="margin-left: 0px;"
-                    >
-                      <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                      >
-                        <img
-                          alt="Polygon Mainnet logo"
-                          class="mm-avatar-network__network-image"
-                          src="./images/pol-token.svg"
-                        />
-                      </div>
-                    </div>
-                    <div
-                      class="mm-box mm-box--rounded-full"
-                      style="margin-left: -8px;"
-                    >
-                      <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                      >
-                        <img
-                          alt="Binance Smart Chain logo"
-                          class="mm-avatar-network__network-image"
-                          src="./images/bnb.svg"
-                        />
-                      </div>
-                    </div>
-                    <div
-                      class="mm-box mm-box--rounded-full"
-                      style="margin-left: -8px;"
-                    >
-                      <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                      >
-                        G
-                      </div>
-                    </div>
-                    <div
-                      class="mm-box mm-box--rounded-full"
-                      style="margin-left: -8px;"
-                    >
-                      <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                      >
-                        <img
-                          alt="Custom Mainnet RPC logo"
-                          class="mm-avatar-network__network-image"
-                          src="./images/eth_logo.svg"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="mm-box"
-                  >
-                    <p
-                      class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-                    >
-                      +1
-                    </p>
-                  </div>
+                  />
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--flex-direction-row"
+      >
+        <div
+          class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+          data-testid="account-list-item-tag-b7893c59-e376-4cc0-93ad-05ddaab574a6-Native SegWit"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
+          >
+            Native SegWit
+          </p>
         </div>
       </div>
     </div>
