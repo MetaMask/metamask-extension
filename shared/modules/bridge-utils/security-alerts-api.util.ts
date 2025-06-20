@@ -176,6 +176,11 @@ export async function fetchTxAlerts({
   }
 
   const chain = convertChainIdToBlockAidChainName(chainId);
+
+  if (!chain) {
+    return null;
+  }
+
   const url = getUrl(`${chain}/message/scan`);
   const body = {
     method: SolMethod.SignAndSendTransaction,
