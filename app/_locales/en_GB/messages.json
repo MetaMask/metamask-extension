@@ -893,6 +893,9 @@
   "bridgeSelectDestinationAccount": {
     "message": "Select destination account"
   },
+  "bridgeSelectDifferentQuote": {
+    "message": "Please select a different quote."
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
   },
@@ -6727,6 +6730,9 @@
   },
   "twelveHrTitle": {
     "message": "12hr:"
+  },
+  "txAlertTitle": {
+    "message": "This transaction will be reverted"
   },
   "typeYourSRP": {
     "message": "Enter your Secret Recovery Phrase"
