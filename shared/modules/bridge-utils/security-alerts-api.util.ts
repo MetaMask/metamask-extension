@@ -143,9 +143,11 @@ export const CHAIN_ID_TO_SECURITY_API_NAME: Record<
   [CHAIN_IDS.OPTIMISM]: 'optimist',
   [CHAIN_IDS.ZKSYNC_ERA]: 'zksync',
   [CHAIN_IDS.BASE]: 'base',
+  [CHAIN_IDS.SEI]: 'sei',
   [MultichainNetworks.SOLANA]: 'solana',
   [MultichainNetworks.BITCOIN]: 'bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: null, // not supported
+  [MultichainNetworks.BITCOIN_SIGNET]: null, // not supported
   [MultichainNetworks.SOLANA_DEVNET]: null, // not supported
   [MultichainNetworks.SOLANA_TESTNET]: null, // not supported
 };

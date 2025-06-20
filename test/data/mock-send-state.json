@@ -139,6 +139,7 @@
       "showTestNetworks": true,
       "tokenNetworkFilter": {}
     },
+    "enabledNetworkMap": {},
     "seedPhraseBackedUp": null,
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,

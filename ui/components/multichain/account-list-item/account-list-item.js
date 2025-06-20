@@ -71,6 +71,7 @@ import { getAccountLabels } from '../../../helpers/utils/accounts';
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 
 import { AccountNetworkIndicator } from '../account-network-indicator';
+import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../../../shared/constants/multichain/assets';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -93,6 +94,7 @@ const AccountListItem = ({
   shouldScrollToWhenSelected = true,
   showConnectedStatus = true,
   privacyMode = false,
+  showSrpPill = true,
 }) => {
   const t = useI18nContext();
 
@@ -100,21 +102,26 @@ const AccountListItem = ({
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
-
   const snapMetadata = useSelector(getSnapsMetadata);
   const keyrings = useSelector(getMetaMaskKeyrings);
-  const accountLabels = useMemo(
-    () =>
-      getAccountLabels(
-        account.metadata.keyring.type,
-        account,
-        keyrings,
-        account.metadata.keyring.type === KeyringType.snap
-          ? getSnapName(snapMetadata)(account.metadata?.snap?.id)
-          : null,
-      ),
-    [account, keyrings, snapMetadata],
-  );
+
+  const isSrpPill = (label) => {
+    return Boolean(label?.startsWith('SRP'));
+  };
+
+  const accountLabels = useMemo(() => {
+    const labels = getAccountLabels(
+      account.metadata.keyring.type,
+      account,
+      keyrings,
+      account.metadata.keyring.type === KeyringType.snap
+        ? getSnapName(snapMetadata)(account.metadata?.snap?.id)
+        : null,
+    );
+    return showSrpPill
+      ? labels
+      : labels.filter(({ label }) => !isSrpPill(label));
+  }, [account, keyrings, snapMetadata, showSrpPill]);
 
   const useBlockie = useSelector(getUseBlockie);
   const { isEvmNetwork, chainId: multichainChainId } = useMultichainSelector(
@@ -142,7 +149,9 @@ const AccountListItem = ({
   const multichainBalances = useSelector(getMultichainBalances);
   const accountMultichainBalances = multichainBalances?.[account.id];
   const accountMultichainNativeBalance =
-    accountMultichainBalances?.[`${multichainChainId}/slip44:501`]?.amount;
+    accountMultichainBalances?.[
+      `${MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainChainId]}`
+    ]?.amount;
   // cross chain agg balance
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -522,6 +531,10 @@ AccountListItem.propTypes = {
    * Determines if the connected status should be shown
    */
   showConnectedStatus: PropTypes.bool,
+  /**
+   * Determines if SRP pill should be shown
+   */
+  showSrpPill: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';
