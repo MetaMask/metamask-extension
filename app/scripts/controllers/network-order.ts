@@ -1,5 +1,6 @@
 import { BtcScope, SolScope } from '@metamask/keyring-api';
 import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
+import { KnownCaipNamespace } from '@metamask/utils';
 import {
   NetworkControllerStateChangeEvent,
   NetworkState,
@@ -7,7 +8,7 @@ import {
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
-import { TEST_CHAINS } from '../../../shared/constants/network';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 
 // Unique name for the controller
 const controllerName = 'NetworkOrderController';
@@ -58,7 +59,16 @@ export type NetworkOrderControllerMessenger = RestrictedMessenger<
 // Default state for the controller
 const defaultState: NetworkOrderControllerState = {
   orderedNetworkList: [],
-  enabledNetworkMap: {},
+  enabledNetworkMap: {
+    [KnownCaipNamespace.Eip155]: {
+      [CHAIN_IDS.MAINNET]: true,
+      [CHAIN_IDS.LINEA_MAINNET]: true,
+      [CHAIN_IDS.BASE_MAINNET]: true,
+    },
+    [KnownCaipNamespace.Solana]: {
+      [SolScope.Mainnet]: true,
+    },
+  },
 };
 
 // Metadata for the controller state
