@@ -173,6 +173,7 @@ import {
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
 
+import { ErrorReportingService } from '@metamask/error-reporting-service';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -562,8 +563,24 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
+    const errorReportingServiceMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'ErrorReportingService',
+        allowedActions: [],
+        allowedEvents: [],
+      });
+    // Initializing the ErrorReportingService populates the
+    // ErrorReportingServiceMessenger.
+    // eslint-disable-next-line no-new
+    new ErrorReportingService({
+      messenger: errorReportingServiceMessenger,
+      captureException,
+    });
+
     const networkControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkController',
+      allowedEvents: [],
+      allowedActions: ['ErrorReportingService:captureException'],
     });
 
     let initialNetworkControllerState = initState.NetworkController;
