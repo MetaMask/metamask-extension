@@ -82,6 +82,7 @@ export async function fetchCarouselSlidesFromContentful(): Promise<{
       dismissed: false,
       startDate,
       endDate,
+      priorityPlacement,
     };
 
     if (priorityPlacement) {
