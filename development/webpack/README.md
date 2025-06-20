@@ -179,7 +179,7 @@ The cache is slow. Very slow. It takes about 50% of the total time just to creat
 that because the caching step is pushed to a background process.
 
 The way this works is by running the build in a background child process, and then detaching that child process from the
-parent process once the build is complete (and cache reconciliation and persistance begins).
+parent process once the build is complete (and cache reconciliation and persistence begins).
 
 Launching the build in a background process does take time, but its much less time than cache creation, so it works out.
 
