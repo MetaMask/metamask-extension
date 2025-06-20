@@ -1,5 +1,5 @@
-import { matchesSearchPattern } from './utils';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import { matchesSearchPattern } from './utils';
 
 describe('matchesSearchPattern', () => {
   const mockAccount: MergedInternalAccount = {
