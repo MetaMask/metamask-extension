@@ -36,16 +36,18 @@ export function createTrustSignalsMiddleware(
       }
 
       if (isEthSendTransaction(req)) {
-        await handleEthSendTransaction(
+        handleEthSendTransaction(
           req,
           appStateController,
           networkController,
+          phishingController,
         );
       } else if (isEthSignTypedData(req)) {
-        await handleEthSignTypedData(
+        handleEthSignTypedData(
           req,
           appStateController,
           networkController,
+          phishingController,
         );
       } else if (isEthAccounts(req) && isProdEnabled()) {
         handleEthAccounts(req, phishingController);
@@ -58,24 +60,51 @@ export function createTrustSignalsMiddleware(
   };
 }
 
-async function handleEthSendTransaction(
-  req: JsonRpcRequest,
+function handleEthSendTransaction(
+  req: JsonRpcRequest & { mainFrameOrigin?: string },
   appStateController: AppStateController,
   networkController: NetworkController,
+  phishingController: PhishingController,
 ) {
+  if (req.mainFrameOrigin && isProdEnabled()) {
+    phishingController.scanUrl(req.mainFrameOrigin).catch((error) => {
+      console.error(
+        '[createTrustSignalsMiddleware] error scanning url for transaction:',
+        error,
+      );
+    });
+  }
+
   if (!hasValidTransactionParams(req)) {
     return;
   }
 
   const { to } = req.params[0];
-  await scanAddressAndAddToCache(to, appStateController, networkController);
+  scanAddressAndAddToCache(to, appStateController, networkController).catch(
+    (error) => {
+      console.error(
+        '[createTrustSignalsMiddleware] error scanning address for transaction:',
+        error,
+      );
+    },
+  );
 }
 
-async function handleEthSignTypedData(
-  req: JsonRpcRequest,
+function handleEthSignTypedData(
+  req: JsonRpcRequest & { mainFrameOrigin?: string },
   appStateController: AppStateController,
   networkController: NetworkController,
+  phishingController: PhishingController,
 ) {
+  if (req.mainFrameOrigin) {
+    phishingController.scanUrl(req.mainFrameOrigin).catch((error) => {
+      console.error(
+        '[createTrustSignalsMiddleware] error scanning url for signature:',
+        error,
+      );
+    });
+  }
+
   if (!hasValidTypedDataParams(req)) {
     return;
   }
@@ -90,11 +119,16 @@ async function handleEthSignTypedData(
     return;
   }
 
-  await scanAddressAndAddToCache(
+  scanAddressAndAddToCache(
     verifyingContract,
     appStateController,
     networkController,
-  );
+  ).catch((error) => {
+    console.error(
+      '[createTrustSignalsMiddleware] error scanning address for signature:',
+      error,
+    );
+  });
 }
 
 function handleEthAccounts(
