@@ -203,12 +203,12 @@ describe('MultichainAccountsTree', () => {
               {
                 ...mockWallets[walletOneId].groups[walletOneGroupId]
                   .accounts[0],
-                pinned: false, // Account 1 is pinned
+                pinned: false, // Account 1 is Non-pinned
               },
               {
                 ...mockWallets[walletOneId].groups[walletOneGroupId]
                   .accounts[1],
-                pinned: true, // Account 2 is not pinned
+                pinned: true, // Account 2 is Pinned
               },
             ],
           },
@@ -224,7 +224,7 @@ describe('MultichainAccountsTree', () => {
     const accountItems = screen.getAllByText(/Account \d/u);
     console.log(accountItems);
     expect(accountItems[0]).toHaveTextContent('Account 2'); // Pinned account
-    expect(accountItems[1]).toHaveTextContent('Account 1'); // Pinned account
+    expect(accountItems[1]).toHaveTextContent('Account 1'); // Non-pinned account
   });
 
   it('renders pinned accounts correctly across multiple wallets', () => {
@@ -240,7 +240,7 @@ describe('MultichainAccountsTree', () => {
               {
                 ...mockWallets[walletOneId].groups[walletOneGroupId]
                   .accounts[0],
-                pinned: false, // Account 1 is unpinned
+                pinned: false, // Account 1 is non-pinned
               },
               {
                 ...mockWallets[walletOneId].groups[walletOneGroupId]
