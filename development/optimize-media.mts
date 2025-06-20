@@ -1,5 +1,6 @@
 import { writeFile, stat } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
+import { argv, exit } from 'node:process';
 import sharp from 'sharp';
 import imagemin from 'imagemin';
 import imageminGifsicle from 'imagemin-gifsicle';
@@ -68,7 +69,7 @@ async function optimizeImage(filePath: string, fix = true) {
       console.warn(
         `Could not retrieve metadata for ${filePath}. Skipping file.`,
       );
-      return false;
+      return { changed: false, filePath };
     }
 
     if (supportedFileFormats.includes(fileInfo.format)) {
@@ -110,7 +111,7 @@ async function optimizeImage(filePath: string, fix = true) {
             100
           ).toFixed(2)}%`,
         );
-        return true;
+        return { changed: true, filePath };
       }
     } else {
       console.warn(
@@ -120,7 +121,7 @@ async function optimizeImage(filePath: string, fix = true) {
   } catch (error) {
     console.error(`Failed to process ${filePath}: ${(error as Error).message}`);
   }
-  return false;
+  return { changed: false, filePath };
 }
 
 /**
@@ -153,7 +154,24 @@ export async function optimizeImages({
     optimizeImage(join(projectRoot, file), fix),
   );
   const results = await Promise.all(tasks);
-  const optimizedCount = results.filter((isOptimized) => isOptimized).length;
+  let optimizedFiles = results.filter(({ changed }) => changed);
+  const optimizedCount = optimizedFiles.length;
+
+  // keep running optimizeImage recursively until it doesn't optimize the files
+  // any further
+  if (fix && optimizedCount > 0) {
+    while (true) {
+      optimizedFiles = await Promise.all(
+        optimizedFiles.map((file) => optimizeImage(file.filePath, fix)),
+      );
+      const newOptimizedCount = optimizedFiles.filter(
+        ({ changed }) => changed,
+      ).length;
+      if (newOptimizedCount === 0) {
+        break; // no more files were optimized, exit the loop
+      }
+    }
+  }
 
   return { optimizedCount, filesCount: filePaths.length };
 }
@@ -168,7 +186,7 @@ export async function main() {
       description: 'Automatically optimize images',
       default: false,
     })
-    .parseSync();
+    .parseSync(argv.slice(2));
 
   const results = await optimizeImages({ blocklist, fix });
 
@@ -188,12 +206,12 @@ export async function main() {
         'Run `yarn lint:images:fix` to automatically optimize the images.',
       );
       // error out if --fix is not set and some files were able to be optimized
-      process.exit(1);
+      exit(1);
     }
   }
 }
 
 main().catch((error) => {
   console.error(`Error during optimization: ${(error as Error).message}`);
-  process.exit(1);
+  exit(1);
 });
