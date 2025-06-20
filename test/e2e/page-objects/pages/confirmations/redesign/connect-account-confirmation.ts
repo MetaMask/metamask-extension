@@ -1,3 +1,4 @@
+import { shortenAddress } from '../../../../../../ui/helpers/utils/util';
 import { Driver } from '../../../../webdriver/driver';
 
 class ConnectAccountConfirmation {
@@ -83,6 +84,18 @@ class ConnectAccountConfirmation {
     }
     console.log('Confirm button is enabled');
     return true;
+  }
+
+  async check_isAccountDisplayed(account: string): Promise<void> {
+    let accountShort = shortenAddress(account);
+    if (accountShort.startsWith('0X')) {
+      accountShort = accountShort.replace('0X', '0x');
+    }
+
+    await this.driver.waitForSelector({
+      text: accountShort,
+      tag: 'p',
+    });
   }
 }
 
