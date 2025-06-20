@@ -3054,6 +3054,7 @@
         "os.cpus": true,
         "os.platform": true,
         "path.basename": true,
+        "path.isAbsolute": true,
         "path.resolve": true,
         "stream.PassThrough": true,
         "stream.Readable": true
@@ -8832,7 +8833,7 @@
         "react-markdown>unified>bail": true,
         "react-markdown>unified>extend": true,
         "react-markdown>unified>is-buffer": true,
-        "mocha>yargs-unparser>is-plain-obj": true,
+        "react-markdown>unified>is-plain-obj": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
       }
