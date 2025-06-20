@@ -51,7 +51,7 @@ export const SiteCellConnectionListItem = ({
         iconName={iconName}
         size={AvatarIconSize.Md}
         color={IconColor.iconAlternative}
-        backgroundColor={BackgroundColor.backgroundSection}
+        backgroundColor={BackgroundColor.backgroundMuted}
       />
       <Box
         display={Display.Flex}
