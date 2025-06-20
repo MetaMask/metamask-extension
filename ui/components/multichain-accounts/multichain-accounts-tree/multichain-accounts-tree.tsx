@@ -76,7 +76,7 @@ export const MultichainAccountsTree = ({
         // Process all groups in the wallet and collect its account items
         const groupsItems = Object.entries(walletData.groups || {}).flatMap(
           ([groupId, groupData]) => {
-            // Filter accounts by allowed types
+            // Filter accounts based on allowed types and the search pattern
             const filteredAccounts = groupData.accounts.filter((account) => {
               const matchesSearch = searchPattern
                 ? matchesSearchPattern(searchPattern, account)
