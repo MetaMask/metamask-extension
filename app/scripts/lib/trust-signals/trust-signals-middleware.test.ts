@@ -218,7 +218,7 @@ describe('TrustSignalsMiddleware', () => {
       );
       expect(next).toHaveBeenCalled();
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        '[createTrustSignalsMiddleware] error: ',
+        '[createTrustSignalsMiddleware] error scanning address for transaction:',
         error,
       );
     });
