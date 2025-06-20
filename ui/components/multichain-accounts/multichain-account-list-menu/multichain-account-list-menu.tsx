@@ -118,6 +118,12 @@ export const MultichainAccountListMenu = ({
     ],
   );
 
+  const onSearchBarChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setSearchPattern(e.target.value),
+    [],
+  );
+
   return (
     <AccountMenu onClose={onClose} showAccountCreation={showAccountCreation}>
       <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
@@ -126,9 +132,7 @@ export const MultichainAccountListMenu = ({
           width={BlockSize.Full}
           placeholder={t('searchAccounts')}
           value={searchPattern}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSearchPattern(e.target.value)
-          }
+          onChange={onSearchBarChange}
           clearButtonOnClick={() => setSearchPattern('')}
           data-testid="multichain-account-menu-search-box"
         />

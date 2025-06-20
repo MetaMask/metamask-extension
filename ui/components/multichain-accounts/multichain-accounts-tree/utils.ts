@@ -10,6 +10,10 @@ import { MergedInternalAccount } from '../../../selectors/selectors.types';
 export const matchesSearchPattern = (
   pattern: string,
   account: MergedInternalAccount,
-): boolean =>
-  account.metadata.name.toLowerCase().includes(pattern.toLowerCase()) ||
-  account.address.toLowerCase().includes(pattern.toLowerCase());
+): boolean => {
+  const lowercasedPattern = pattern.toLowerCase();
+  return (
+    account.metadata.name.toLowerCase().includes(lowercasedPattern) ||
+    account.address.toLowerCase().includes(lowercasedPattern)
+  );
+};
