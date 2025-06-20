@@ -364,7 +364,6 @@ const transformOpenRPCDocument = (
       );
     })
     .map((m) => (m as MethodObject).name);
-  console.log('methodsWithConfirmations', methodsWithConfirmations);
   return [openrpcDocument, filteredMethods, methodsWithConfirmations];
 };
 
