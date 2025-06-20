@@ -1,21 +1,21 @@
 import React from 'react';
-import { SimulationSettingsModal } from './simulation-settings-modal';
+import { Json } from '@metamask/utils';
+import { act } from 'react-dom/test-utils';
+import {
+  CHAIN_IDS,
+  TransactionContainerType,
+  TransactionParams,
+} from '@metamask/transaction-controller';
 import configureStore from '../../../../../store/store';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { Json } from '@metamask/utils';
 import {
   applyTransactionContainersExisting,
   setEnableEnforcedSimulationsForTransaction,
   updateEditableParams,
 } from '../../../../../store/actions';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
-import { act } from 'react-dom/test-utils';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
-import {
-  CHAIN_IDS,
-  TransactionContainerType,
-  TransactionParams,
-} from '@metamask/transaction-controller';
+import { SimulationSettingsModal } from './simulation-settings-modal';
 
 jest.mock('../../../../../store/actions');
 
@@ -161,7 +161,7 @@ describe('SimulationSettingsModal', () => {
         getByTestId('simulation-settings-modal-update').click();
       });
 
-      expect(applyTransactionContainersExisting).toHaveBeenCalledWith(
+      expect(applyTransactionContainersExistingMock).toHaveBeenCalledWith(
         TRANSACTION_ID_MOCK,
         [TransactionContainerType.EnforcedSimulations],
       );
@@ -189,7 +189,7 @@ describe('SimulationSettingsModal', () => {
         getByTestId('simulation-settings-modal-update').click();
       });
 
-      expect(applyTransactionContainersExisting).toHaveBeenCalledWith(
+      expect(applyTransactionContainersExistingMock).toHaveBeenCalledWith(
         TRANSACTION_ID_MOCK,
         [],
       );
