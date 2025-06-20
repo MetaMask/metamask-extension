@@ -138,7 +138,6 @@ export async function bridgeTransaction(
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer
     .forGet(`https://portfolio.metamask.io/bridge`)
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -212,6 +211,17 @@ async function mockTokensLinea(mockServer: Mockttp) {
     });
 }
 
+async function mockTokensArbitrum(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(`https://token.api.cx.metamask.io/tokens/42161`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_TOKENS_ETHEREUM,
+      };
+    });
+}
+
 async function mockGetTokenArbitrum(mockServer: Mockttp) {
   return await mockServer
     .forGet(/getTokens/u)
@@ -231,7 +241,6 @@ async function mockETHtoETH(mockServer: Mockttp) {
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0x0000000000000000000000000000000000000000',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -247,7 +256,6 @@ async function mockETHtoWETH(mockServer: Mockttp) {
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -263,7 +271,6 @@ async function mockETHtoUSDC(mockServer: Mockttp) {
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -295,7 +302,6 @@ async function mockUSDCtoDAI(mockServer: Mockttp) {
       srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       destTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -336,7 +342,6 @@ async function mockL2toMainnet(mockServer: Mockttp) {
       destChainId: 1,
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -353,7 +358,6 @@ async function mockNativeL2toL2(mockServer: Mockttp) {
       destChainId: 42161,
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -368,9 +372,7 @@ async function mockDAIL2toL2(mockServer: Mockttp) {
       srcChainId: 59144,
       destChainId: 42161,
       srcTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
-      destTokenAddress: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -744,6 +746,7 @@ export const getBridgeL2Fixtures = (
       await mockGetTxStatus(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockTopAssetsArbitrum(mockServer),
+      await mockTokensArbitrum(mockServer),
       await mockTokensEthereum(mockServer),
       await mockTokensLinea(mockServer),
       await mockGetTokenArbitrum(mockServer),
@@ -751,6 +754,8 @@ export const getBridgeL2Fixtures = (
       await mockNativeL2toL2(mockServer),
       await mockDAIL2toL2(mockServer),
       await mockDAIL2toMainnet(mockServer),
+      await mockPriceSpotPrices(mockServer),
+      await mockPriceSpotPricesV3(mockServer),
     ],
     manifestFlags: {
       remoteFeatureFlags: {
