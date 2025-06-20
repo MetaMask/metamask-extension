@@ -61,7 +61,7 @@ const getBatchedApprovalDisplayValue = async (
   }
 
   if (!amountOrTokenId) {
-    return;
+    return undefined;
   }
 
   if (tokenData?.standard === TokenStandard.ERC20) {
