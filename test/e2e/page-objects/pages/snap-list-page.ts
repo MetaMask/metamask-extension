@@ -59,6 +59,8 @@ class SnapListPage {
     tag: 'p',
   };
 
+  private readonly backButton = 'button[aria-label="Back"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
