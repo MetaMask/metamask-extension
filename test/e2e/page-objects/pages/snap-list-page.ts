@@ -131,6 +131,11 @@ class SnapListPage {
       findElementGuard: this.descriptionWebpack,
     });
   }
+
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking back button');
+    await this.driver.clickElement(this.backButton);
+  }
 }
 
 export default SnapListPage;
