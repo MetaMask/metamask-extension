@@ -116,11 +116,15 @@ export function SimulationSettingsModal({ onClose }: { onClose?: () => void }) {
           >
             <Text variant={TextVariant.bodyMd}>Enforced simulations</Text>
             <ToggleButton
+              dataTestId="simulation-settings-modal-enable-enforced"
               value={enabled}
               onToggle={() => setEnabled(!enabled)}
             />
           </Box>
-          <ButtonPrimary onClick={handleUpdateClick}>
+          <ButtonPrimary
+            onClick={handleUpdateClick}
+            data-testid="simulation-settings-modal-update"
+          >
             {t('update')}
           </ButtonPrimary>
         </ModalBody>
