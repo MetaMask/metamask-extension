@@ -424,7 +424,7 @@ import { AccountTreeControllerInit } from './controller-init/accounts/account-tr
 import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
-import { enforceSimulationsForTransaction } from './lib/transaction/containers/enforced-simulations';
+import { applyTransactionContainersExisting } from './lib/transaction/containers/util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -4391,8 +4391,9 @@ export default class MetamaskController extends EventEmitter {
       endTrace,
       isRelaySupported,
       requestSafeReload: this.requestSafeReload.bind(this),
-      enforceSimulationsForTransaction: (transactionId) =>
-        enforceSimulationsForTransaction({
+      applyTransactionContainersExisting: (transactionId, containerTypes) =>
+        applyTransactionContainersExisting({
+          containerTypes,
           messenger: this.controllerMessenger,
           transactionId,
           updateEditableParams: this.txController.updateEditableParams.bind(

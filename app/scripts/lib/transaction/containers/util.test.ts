@@ -122,6 +122,7 @@ describe('Container Utils', () => {
 
       await expect(
         applyTransactionContainersExisting({
+          containerTypes: [TransactionContainerType.EnforcedSimulations],
           transactionId: TRANSACTION_ID_MOCK,
           messenger,
           updateEditableParams,
@@ -139,6 +140,7 @@ describe('Container Utils', () => {
       const updateEditableParams = jest.fn();
 
       await applyTransactionContainersExisting({
+        containerTypes: [TransactionContainerType.EnforcedSimulations],
         transactionId: TRANSACTION_ID_MOCK,
         messenger,
         updateEditableParams,

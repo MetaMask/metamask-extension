@@ -4,7 +4,7 @@ import configureStore from '../../../../../store/store';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Json } from '@metamask/utils';
 import {
-  enforceSimulationsForTransaction,
+  applyTransactionContainersExisting,
   setEnableEnforcedSimulationsForTransaction,
   updateEditableParams,
 } from '../../../../../store/actions';
@@ -50,8 +50,8 @@ describe('SimulationSettingsModal', () => {
     setEnableEnforcedSimulationsForTransaction,
   );
 
-  const enforceSimulationsForTransactionMock = jest.mocked(
-    enforceSimulationsForTransaction,
+  const applyTransactionContainersExistingMock = jest.mocked(
+    applyTransactionContainersExisting,
   );
 
   const updateEditableParamsMock = jest.mocked(updateEditableParams);
@@ -161,8 +161,9 @@ describe('SimulationSettingsModal', () => {
         getByTestId('simulation-settings-modal-update').click();
       });
 
-      expect(enforceSimulationsForTransactionMock).toHaveBeenCalledWith(
+      expect(applyTransactionContainersExisting).toHaveBeenCalledWith(
         TRANSACTION_ID_MOCK,
+        [TransactionContainerType.EnforcedSimulations],
       );
     });
 
@@ -188,14 +189,9 @@ describe('SimulationSettingsModal', () => {
         getByTestId('simulation-settings-modal-update').click();
       });
 
-      expect(updateEditableParamsMock).toHaveBeenCalledWith(
+      expect(applyTransactionContainersExisting).toHaveBeenCalledWith(
         TRANSACTION_ID_MOCK,
-        {
-          containerTypes: [],
-          data: '0x1',
-          gas: '0x2',
-          to: '0x3',
-        },
+        [],
       );
     });
   });

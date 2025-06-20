@@ -28,9 +28,8 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import {
-  enforceSimulationsForTransaction,
+  applyTransactionContainersExisting,
   setEnableEnforcedSimulationsForTransaction,
-  updateEditableParams,
 } from '../../../../../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectEnableEnforcedSimulations } from '../../../selectors';
@@ -61,24 +60,26 @@ export function SimulationSettingsModal({ onClose }: { onClose?: () => void }) {
   const handleUpdateClick = useCallback(async () => {
     await setEnableEnforcedSimulationsForTransaction(transactionId, enabled);
 
-    if (!enabled && isEnforcedSimulationApplied) {
-      const newContainerTypes = containerTypes?.filter(
-        (type) => type !== TransactionContainerType.EnforcedSimulations,
-      );
+    let newContainerTypes = containerTypes || [];
 
-      await dispatch(
-        updateEditableParams(transactionId, {
-          containerTypes: newContainerTypes,
-          data: txParamsOriginal?.data,
-          gas: txParamsOriginal?.gas,
-          to: txParamsOriginal?.to,
-          value: txParamsOriginal?.value,
-        }),
+    if (!enabled && isEnforcedSimulationApplied) {
+      newContainerTypes = newContainerTypes.filter(
+        (type) => type !== TransactionContainerType.EnforcedSimulations,
       );
     }
 
     if (enabled && !isEnforcedSimulationApplied) {
-      await enforceSimulationsForTransaction(transactionId);
+      newContainerTypes = [
+        ...newContainerTypes,
+        TransactionContainerType.EnforcedSimulations,
+      ];
+    }
+
+    if (newContainerTypes.length !== containerTypes?.length) {
+      await applyTransactionContainersExisting(
+        transactionId,
+        newContainerTypes,
+      );
     }
 
     onClose?.();

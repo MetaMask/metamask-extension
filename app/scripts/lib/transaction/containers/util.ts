@@ -82,10 +82,12 @@ export async function applyTransactionContainers({
 }
 
 export async function applyTransactionContainersExisting({
+  containerTypes,
   transactionId,
   messenger,
   updateEditableParams,
 }: {
+  containerTypes: TransactionContainerType[];
   transactionId: string;
   messenger: TransactionControllerInitMessenger;
   updateEditableParams: TransactionController['updateEditableParams'];
@@ -102,18 +104,11 @@ export async function applyTransactionContainersExisting({
     throw new Error(`Transaction with ID ${transactionId} not found.`);
   }
 
-  const { containerTypes = [] } = transactionMeta;
-
-  const newContainerTypes = [
-    ...containerTypes,
-    TransactionContainerType.EnforcedSimulations,
-  ];
-
   const { updateTransaction } = await applyTransactionContainers({
     isApproved: false,
     messenger,
     transactionMeta,
-    types: newContainerTypes,
+    types: containerTypes,
   });
 
   const newTransactionMeta = cloneDeep(transactionMeta);
@@ -121,7 +116,7 @@ export async function applyTransactionContainersExisting({
   updateTransaction(newTransactionMeta);
 
   updateEditableParams(transactionId, {
-    containerTypes: newContainerTypes,
+    containerTypes,
     data: newTransactionMeta.txParams.data,
     gas: newTransactionMeta.txParams.gas,
     to: newTransactionMeta.txParams.to,
