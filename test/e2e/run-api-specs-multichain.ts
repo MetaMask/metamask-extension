@@ -221,8 +221,10 @@ async function main() {
           // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
-          'wallet_getCapabilities', // quarantined until we improve jsonrpc examples for testing
-          'wallet_getCallsStatus', // quarantined until we improve jsonrpc examples for testing
+          // EIP-5792 methods below are quarantined until we improve openrpc document examples for testing, task to unskip tracked here: https://github.com/MetaMask/MetaMask-planning/issues/5224
+          'wallet_getCapabilities',
+          'wallet_getCallsStatus',
+          'wallet_sendCalls',
         ],
         rules: [
           new JsonSchemaFakerRule({
@@ -237,7 +239,7 @@ async function main() {
           new ConfirmationsRejectRule({
             driver,
             only: confirmationMethods,
-            requiresEthAccountsPermission: [],
+            requiresEthAccountsPermission: ['wallet_sendCalls'],
           }),
         ],
       });
