@@ -3,7 +3,7 @@ import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatCurrency } from '../../../../ui/helpers/utils/confirm-tx.util';
 import FixtureBuilder from '../../fixture-builder';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
@@ -13,6 +13,7 @@ import {
   mockHistoricalPrices,
   mockSpotPrices,
 } from './utils/mocks';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Token Details', function () {
   const chainId = CHAIN_IDS.MAINNET;
@@ -37,7 +38,7 @@ describe('Token Details', function () {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
@@ -87,7 +88,7 @@ describe('Token Details', function () {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);

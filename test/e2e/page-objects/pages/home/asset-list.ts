@@ -254,7 +254,7 @@ class AssetListPage {
       // do not fill the form until the button is disabled, because there's a form re-render which can clear the input field causing flakiness
       await this.driver.waitForSelector(this.importTokensNextButton, {
         state: 'disabled',
-        waitAtLeastGuard: 2000,
+        waitAtLeastGuard: 1000,
       });
       await this.driver.fill(this.tokenSymbolInput, symbol);
     }

@@ -1,10 +1,11 @@
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 
-import { withFixtures, unlockWallet } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Mockttp } from '../../mock-e2e';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Import flow', function () {
   async function mockPriceFetch(mockServer: Mockttp) {
@@ -83,7 +84,7 @@ describe('Import flow', function () {
         testSpecificMock: mockPriceFetch,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
@@ -157,7 +158,7 @@ describe('Import flow', function () {
         testSpecificMock: mockPriceFetch,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
@@ -228,7 +229,7 @@ describe('Import flow', function () {
         testSpecificMock: mockPriceFetch,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
