@@ -68,13 +68,6 @@
     "message": "Eu li e concordo com os $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Acesse sua carteira com sua Frase de Recuperação Secreta"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "A MetaMask não consegue recuperar sua senha. Usaremos sua Frase de Recuperação Secreta para validar sua posse, restaurar sua carteira e definir uma nova senha. Primeiro, insira a Frase de Recuperação Secreta que você recebeu ao criar sua carteira. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Acessando sua câmera..."
   },
@@ -1250,9 +1243,6 @@
   "confusingEnsDomain": {
     "message": "Detectamos um caractere ambíguo no nome ENS. Verifique o nome ENS para evitar um possível golpe."
   },
-  "congratulations": {
-    "message": "Parabéns!"
-  },
   "connect": {
     "message": "Conectar"
   },
@@ -2402,9 +2392,6 @@
   "hideAdvancedDetails": {
     "message": "Ocultar detalhes avançados"
   },
-  "hideSeedPhrase": {
-    "message": "Ocultar frase-semente"
-  },
   "hideSentitiveInfo": {
     "message": "Ocultar informações confidenciais"
   },
@@ -2500,10 +2487,6 @@
   },
   "id": {
     "message": "ID"
-  },
-  "ifYouGetLockedOut": {
-    "message": "Se você ficar impedido de entrar no app ou se usar um novo dispositivo, perderá seus fundos. Certifique-se de fazer backup da sua Frase de Recuperação Secreta em $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "ignoreAll": {
     "message": "Ignorar tudo"
@@ -2758,10 +2741,6 @@
   "jsonFile": {
     "message": "Arquivo JSON",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Guarde um lembrete da sua Frase de Recuperação Secreta em algum lugar seguro. Se você a perder, ninguém poderá ajudar a recuperá-la. Pior ainda, você nunca mais poderá acessar sua carteira. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Nome da conta"
@@ -3782,9 +3761,6 @@
   "onboardingMetametricsDescription": {
     "message": "Gostaríamos de coletar dados básicos de uso para melhorar a MetaMask. Saiba que nunca vendemos os dados que você fornece aqui."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Quando coletamos as métricas, elas sempre são..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Informaremos a você se decidirmos usar esses dados para outras finalidades. Você pode analisar nossa $1 para obter mais informações. Lembre-se: você pode acessar as configurações e revogar a permissão a qualquer momento.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3813,29 +3789,11 @@
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opcionais:"
   },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Saiba como protegemos sua privacidade durante a coleta de dados de utilização relacionados ao seu perfil."
-  },
   "onboardingMetametricsTitle": {
     "message": "Ajude-nos a melhorar a MetaMask"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Usaremos esses dados para saber como você interage com nossas comunicações de marketing. Podemos compartilhar novidades relevantes (como recursos de produtos)."
-  },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Acesso total"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Essas extensões podem ver e alterar informações"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "neste site."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Extensões"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Clique no ícone da extensão do navegador"
   },
   "onboardingPinExtensionDescription": {
     "message": "Fixe a MetaMask no seu navegador de modo que seja acessível e fácil de visualizar as confirmações das transações."
@@ -3844,16 +3802,8 @@
     "message": "Você pode abrir a MetaMask clicando na extensão e acessando a sua carteira com apenas um clique."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Clique no ícone da extensão do navegador para acessá-la instantaneamente"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Fixar a MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Clique no ícone da extensão do navegador para acessá-la instantaneamente",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Sua instalação da MetaMask está concluída!"
@@ -4508,12 +4458,6 @@
   "rejected": {
     "message": "Recusada"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Lembre-se, se você perder sua Frase de Recuperação Secreta, perderá acesso à sua carteira. $1 manter esse conjunto de palavras em segurança, para que possa acessar seus fundos a qualquer momento."
-  },
-  "reminderSet": {
-    "message": "Lembrete definido!"
-  },
   "remove": {
     "message": "Remover"
   },
@@ -4668,9 +4612,6 @@
   "revealSensitiveContent": {
     "message": "Revelar conteúdo confidencial"
   },
-  "revealTheSeedPhrase": {
-    "message": "Revelar a frase-semente"
-  },
   "review": {
     "message": "Revisar"
   },
@@ -4767,9 +4708,6 @@
   "securityMessageLinkForNetworks": {
     "message": "golpes de rede e riscos de segurança"
   },
-  "securityPrivacyPath": {
-    "message": "Configurações > Segurança e Privacidade."
-  },
   "securityProviderPoweredBy": {
     "message": "Com tecnologia da $1",
     "description": "The security provider that is providing data"
@@ -4781,29 +4719,11 @@
   "seeDetails": {
     "message": "Ver detalhes"
   },
-  "seedPhraseConfirm": {
-    "message": "Confirmar Frase de Recuperação Secreta"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Confirmar Frase de Recuperação Secreta"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Anote e guarde em vários locais secretos"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Guarde em um cofre de banco"
-  },
   "seedPhraseIntroTitle": {
     "message": "Proteja sua carteira"
   },
   "seedPhraseReq": {
     "message": "As Frases de Recuperação Secretas contêm 12, 15, 18, 21 ou 24 palavras"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Anote essa Frase de Recuperação Secreta de 12 palavras e guarde-a em algum lugar de sua confiança ao qual somente você tenha acesso."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Anote sua Frase de Recuperação Secreta"
   },
   "select": {
     "message": "Selecionar"
@@ -4918,9 +4838,6 @@
   },
   "settings": {
     "message": "Configurações"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "As configurações são otimizadas para facilidade de uso e segurança. Altere-as quando quiser."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Nenhum resultado correspondente encontrado."
@@ -6211,9 +6128,6 @@
   "time": {
     "message": "Hora"
   },
-  "tips": {
-    "message": "Dicas"
-  },
   "tipsForUsingAWallet": {
     "message": "Dicas para usar uma carteira"
   },
@@ -6505,9 +6419,6 @@
   "unlock": {
     "message": "Desbloquear"
   },
-  "unlockMessage": {
-    "message": "A web descentralizada te aguarda"
-  },
   "unpin": {
     "message": "Desafixar"
   },
@@ -6670,10 +6581,6 @@
   },
   "walletConnectionGuide": {
     "message": "nosso guia de conexão com a carteira de hardware"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "Sua carteira está protegida e pronta para ser usada. Você pode encontrar sua Frase de Recuperação Secreta em $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "Desejar adicionar esta rede?"

@@ -1,8 +1,6 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
 import {
   getMockFeatureAnnouncementResponse,
-  getMockBatchCreateTriggersResponse,
-  getMockBatchDeleteTriggersResponse,
   getMockListNotificationsResponse,
   getMockMarkNotificationsAsReadResponse,
   createMockNotificationEthSent,
@@ -21,19 +19,12 @@ import {
   createMockNotificationLidoReadyToBeWithdrawn,
 } from '@metamask/notification-services-controller/notification-services/mocks';
 import {
-  getMockRetrievePushNotificationLinksResponse,
   getMockUpdatePushNotificationLinksResponse,
   getMockCreateFCMRegistrationTokenResponse,
   getMockDeleteFCMRegistrationTokenResponse,
 } from '@metamask/notification-services-controller/push-services/mocks';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import {
-  getMockAuthNonceResponse,
-  getMockAuthLoginResponse,
-  getMockAuthAccessTokenResponse,
-} from '@metamask/profile-sync-controller/auth/mocks';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
-import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
+import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 
 type MockResponse = {
   url: string | RegExp;
@@ -95,36 +86,25 @@ export function getMockFeatureAnnouncementItemId() {
  * E2E mock setup for notification APIs (Notifications, Push Notifications)
  *
  * @param server - server obj used to mock our endpoints
- * @param userStorageMockttpControllerInstance - optional instance of UserStorageMockttpController, useful if you need persisted user storage between tests
+ * @param triggerServer - notification trigger server
  */
 export async function mockNotificationServices(
   server: Mockttp,
-  userStorageMockttpControllerInstance: UserStorageMockttpController = new UserStorageMockttpController(),
+  triggerServer: MockttpNotificationTriggerServer = new MockttpNotificationTriggerServer(),
 ) {
-  // Storage
-  userStorageMockttpControllerInstance.setupPath(
-    USER_STORAGE_FEATURE_NAMES.notifications,
-    server,
-  );
+  // Trigger Server
+  triggerServer.setupServer(server);
 
-  // Auth
-  mockAPICall(server, getMockAuthNonceResponse());
-  mockAPICall(server, getMockAuthLoginResponse());
-  mockAPICall(server, getMockAuthAccessTokenResponse());
-
-  // Notifications
+  // Notification Server
   mockAPICall(server, mockFeatureAnnouncementResponse, (r) =>
     r.withQuery({
       content_type: 'productAnnouncement',
     }),
   );
-  mockAPICall(server, getMockBatchCreateTriggersResponse());
-  mockAPICall(server, getMockBatchDeleteTriggersResponse());
   mockAPICall(server, mockListNotificationsResponse);
   mockAPICall(server, getMockMarkNotificationsAsReadResponse());
 
   // Push Notifications
-  mockAPICall(server, getMockRetrievePushNotificationLinksResponse());
   mockAPICall(server, getMockUpdatePushNotificationLinksResponse());
   mockAPICall(server, getMockCreateFCMRegistrationTokenResponse());
   mockAPICall(server, getMockDeleteFCMRegistrationTokenResponse());

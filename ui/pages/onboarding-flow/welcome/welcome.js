@@ -7,7 +7,6 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
-  ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -15,15 +14,12 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { setFirstTimeFlowType } from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
-import { LOGIN_OPTION, LOGIN_TYPE } from './types';
 
 const WelcomePageState = {
   Banner: 'Banner',
@@ -70,19 +66,13 @@ export default function OnboardingWelcome({
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletCreationStarted,
+      event: MetaMetricsEventName.WalletSetupStarted,
       properties: {
-        account_type: 'metamask',
+        account_type: MetaMetricsEventAccountType.Default,
       },
     });
 
-    history.push(
-      getPlatform() === PLATFORM_FIREFOX
-        ? ONBOARDING_CREATE_PASSWORD_ROUTE
-        : ONBOARDING_METAMETRICS,
-    );
-    // SOCIAL: metametrics has new flow
-    // history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
   }, [dispatch, history, trackEvent]);
 
   const onImportClick = useCallback(async () => {
@@ -90,35 +80,14 @@ export default function OnboardingWelcome({
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletImportStarted,
+      event: MetaMetricsEventName.WalletImportStarted,
       properties: {
-        account_type: 'imported',
+        account_type: MetaMetricsEventAccountType.Imported,
       },
     });
 
-    history.push(
-      getPlatform() === PLATFORM_FIREFOX
-        ? ONBOARDING_IMPORT_WITH_SRP_ROUTE
-        : ONBOARDING_METAMETRICS,
-    );
-    // SOCIAL: metametrics has new flow
-    // history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
+    history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
   }, [dispatch, history, trackEvent]);
-
-  const handleLogin = useCallback(
-    (loginType, loginOption) => {
-      if (loginType === LOGIN_TYPE.SRP) {
-        if (loginOption === LOGIN_OPTION.NEW) {
-          onCreateClick();
-        } else {
-          onImportClick();
-        }
-      } else {
-        setIsLoggingIn(true);
-      }
-    },
-    [onCreateClick, onImportClick],
-  );
 
   return (
     <>
@@ -126,7 +95,7 @@ export default function OnboardingWelcome({
         <WelcomeBanner onAccept={() => setPageState(WelcomePageState.Login)} />
       )}
       {pageState === WelcomePageState.Login && (
-        <WelcomeLogin onLogin={handleLogin} />
+        <WelcomeLogin onCreate={onCreateClick} onImport={onImportClick} />
       )}
       {isLoggingIn && <LoadingScreen />}
     </>

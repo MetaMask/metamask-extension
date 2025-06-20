@@ -186,7 +186,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
   });
   describe('Given I have connected to one of my two accounts', function () {
     // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('Switching between them should NOT reflect in the dapp', async function () {
+    it('Switching between them should NOT reflect in the dapp', async function () {
       await withSolanaAccountSnap(
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
@@ -256,7 +256,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
       );
     });
     // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
       await withSolanaAccountSnap(
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
@@ -281,7 +281,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
   });
   describe('Given I have connected to Mainnet and Devnet', function () {
     // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('Should use the Mainnet scope by default', async function () {
+    it('Should use the Mainnet scope by default', async function () {
       await withSolanaAccountSnap(
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,

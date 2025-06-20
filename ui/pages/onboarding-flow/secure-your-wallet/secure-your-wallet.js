@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -46,6 +46,17 @@ export default function SecureYourWallet() {
     : '';
 
   const trackEvent = useContext(MetaMetricsContext);
+
+  const handleOnShowSrpDetailsModal = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.SrpDefinitionClicked,
+      properties: {
+        location: 'secure_your_wallet',
+      },
+    });
+    setShowSrpDetailsModal(true);
+  }, [trackEvent]);
 
   const handleClickRecommended = () => {
     trackEvent({
@@ -111,25 +122,24 @@ export default function SecureYourWallet() {
           <img
             className="secure-your-wallet__srp-design-image"
             src="./images/srp-lock-design.png"
+            alt={t('srpDesignImageAlt')}
           />
         </Box>
         <Box>
-          <Text variant={TextVariant.bodyMd} marginBottom={6} as="div">
+          <Text color={TextColor.textAlternative} marginBottom={6} as="div">
             {t('secureWalletWalletSaveSrp', [
               [
                 <ButtonLink
                   key="secureWalletWalletSaveSrp"
                   size={ButtonLinkSize.Inherit}
-                  onClick={() => {
-                    setShowSrpDetailsModal(true);
-                  }}
+                  onClick={handleOnShowSrpDetailsModal}
                 >
                   {t('secretRecoveryPhrase')}
                 </ButtonLink>,
               ],
             ])}
           </Text>
-          <Text variant={TextVariant.bodyMd}>
+          <Text color={TextColor.textAlternative}>
             {t('secureWalletWalletRecover')}
           </Text>
         </Box>

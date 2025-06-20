@@ -136,7 +136,7 @@ describe('Onboarding Flow', () => {
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
 
-      const createPasswordText = queryByText('Create password');
+      const createPasswordText = queryByText('MetaMask password');
       expect(createPasswordText).toBeInTheDocument();
 
       const password = 'a-new-password';
@@ -247,7 +247,7 @@ describe('Onboarding Flow', () => {
       ONBOARDING_COMPLETION_ROUTE,
     );
 
-    const creationSuccessful = queryByTestId('creation-successful');
+    const creationSuccessful = queryByTestId('wallet-ready');
     expect(creationSuccessful).toBeInTheDocument();
   });
 

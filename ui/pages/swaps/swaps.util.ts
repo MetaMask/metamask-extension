@@ -17,6 +17,7 @@ import {
   OPTIMISM,
   POLYGON,
   ZKSYNC_ERA,
+  SEI,
   SWAPS_API_V2_BASE_URL,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CLIENT_ID,
@@ -212,6 +213,13 @@ export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
 export async function fetchTopAssetsList(
   chainId: string,
 ): Promise<{ address: Hex }[]> {
+  if (
+    !Object.values(CHAIN_IDS).includes(
+      chainId as (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS],
+    )
+  ) {
+    return [];
+  }
   const topAssetsUrl = getBaseApi('topAssets', chainId);
   const response =
     (await fetchWithCache({
@@ -705,6 +713,8 @@ export const getNetworkNameByChainId = (chainId: string): string => {
       return LINEA;
     case CHAIN_IDS.BASE:
       return BASE;
+    case CHAIN_IDS.SEI:
+      return SEI;
     default:
       return '';
   }
