@@ -392,6 +392,7 @@ import {
   SnapInsightsControllerInit,
   SnapInterfaceControllerInit,
   SnapsRegistryInit,
+  WebSocketServiceInit,
 } from './controller-init/snaps';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
@@ -1663,10 +1664,12 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:getState',
           'BridgeController:getBridgeERC20Allowance',
           'BridgeController:trackUnifiedSwapBridgeEvent',
+          'BridgeController:stopPollingForQuotes',
           'GasFeeController:getState',
           'AccountsController:getAccountByAddress',
           'SnapController:handleRequest',
           'TransactionController:getState',
+          'RemoteFeatureFlagController:getState',
         ],
         allowedEvents: [
           'MultichainTransactionsController:transactionConfirmed',
@@ -1907,6 +1910,7 @@ export default class MetamaskController extends EventEmitter {
       SnapInsightsController: SnapInsightsControllerInit,
       SnapInterfaceController: SnapInterfaceControllerInit,
       CronjobController: CronjobControllerInit,
+      WebSocketService: WebSocketServiceInit,
       PPOMController: PPOMControllerInit,
       TransactionController: TransactionControllerInit,
       NftController: NftControllerInit,
@@ -1982,6 +1986,7 @@ export default class MetamaskController extends EventEmitter {
     this.accountWalletController = controllersByName.AccountTreeController;
 
     this.notificationServicesController.init();
+    this.snapController.init();
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
@@ -6994,6 +6999,26 @@ export default class MetamaskController extends EventEmitter {
         getAllSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:getAll',
+        ),
+        openWebSocket: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'WebSocketService:open',
+          origin,
+        ),
+        closeWebSocket: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'WebSocketService:close',
+          origin,
+        ),
+        getWebSockets: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'WebSocketService:getAll',
+          origin,
+        ),
+        sendWebSocketMessage: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'WebSocketService:sendMessage',
+          origin,
         ),
         getCurrencyRate: (currency) => {
           const rate = this.multichainRatesController.state.rates[currency];
