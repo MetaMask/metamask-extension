@@ -348,11 +348,7 @@ class Driver {
    */
   async waitForSelector(
     rawLocator,
-    {
-      timeout = this.timeout,
-      state = 'visible',
-      waitAtLeastGuard = 0,
-    } = {},
+    { timeout = this.timeout, state = 'visible', waitAtLeastGuard = 0 } = {},
   ) {
     // Playwright has a waitForSelector method that will become a shallow
     // replacement for the implementation below. It takes an option options
