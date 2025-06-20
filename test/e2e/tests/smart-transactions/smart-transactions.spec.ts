@@ -1,9 +1,4 @@
 import { MockttpServer } from 'mockttp';
-import {
-  buildQuote,
-  reviewQuote,
-  checkActivityTransaction,
-} from '../swaps/shared';
 import FixtureBuilder from '../../fixture-builder';
 import { unlockWallet, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
