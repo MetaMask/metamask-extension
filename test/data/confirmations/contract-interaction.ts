@@ -30,6 +30,8 @@ export const genUnapprovedContractInteractionConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,
   authorizationList = undefined,
   containerTypes = undefined,
+  delegationAddress = undefined,
+  origin,
   txData = DEPOSIT_METHOD_DATA,
   chainId = CHAIN_ID,
   nestedTransactions,
@@ -41,6 +43,8 @@ export const genUnapprovedContractInteractionConfirmation = ({
   address?: Hex;
   authorizationList?: AuthorizationList;
   containerTypes?: TransactionContainerType[];
+  delegationAddress?: Hex;
+  origin?: string;
   txData?: Hex;
   chainId?: string;
   nestedTransactions?: BatchTransactionParams[];
@@ -62,6 +66,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
       maxFeePerGas: '0xaa350353',
       maxPriorityFeePerGas: '0x59682f00',
     },
+    delegationAddress,
     gasFeeEstimatesLoaded: true,
     gasFeeTokens,
     history: [
@@ -155,7 +160,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
     ],
     id: '1d7c08c0-fe54-11ee-9243-91b1e533746a',
     nestedTransactions,
-    origin: 'https://metamask.github.io',
+    origin: origin ?? 'https://metamask.github.io',
     securityAlertResponse: {
       features: [],
       reason: '',

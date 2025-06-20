@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useConfirmContext } from '../context/confirm';
+import { useConfirmContext } from '../../context/confirm';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 
 export function useIsEnforcedSimulationsSupported() {
