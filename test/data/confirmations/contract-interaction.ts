@@ -4,7 +4,9 @@ import {
   CHAIN_IDS,
   GasFeeToken,
   SimulationData,
+  TransactionContainerType,
   TransactionMeta,
+  TransactionParams,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -27,25 +29,30 @@ export const CHAIN_ID = CHAIN_IDS.GOERLI;
 export const genUnapprovedContractInteractionConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,
   authorizationList = undefined,
+  containerTypes = undefined,
   txData = DEPOSIT_METHOD_DATA,
   chainId = CHAIN_ID,
   nestedTransactions,
   simulationData,
   gasFeeTokens,
   selectedGasFeeToken,
+  txParamsOriginal,
 }: {
   address?: Hex;
   authorizationList?: AuthorizationList;
+  containerTypes?: TransactionContainerType[];
   txData?: Hex;
   chainId?: string;
   nestedTransactions?: BatchTransactionParams[];
   gasFeeTokens?: GasFeeToken[];
   selectedGasFeeToken?: Hex;
   simulationData?: SimulationData;
+  txParamsOriginal?: TransactionParams;
 } = {}): Confirmation => {
   const confirmation: Confirmation = {
     actionId: String(400855682),
     chainId,
+    containerTypes,
     dappSuggestedGasFees: {
       gas: '0xab77',
     },
@@ -178,6 +185,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
       value: '0x3782dace9d900000',
     },
     gasLimitNoBuffer: '0xab77',
+    txParamsOriginal,
     type: TransactionType.contractInteraction,
     userEditedGasLimit: false,
     userFeeLevel: 'medium',
