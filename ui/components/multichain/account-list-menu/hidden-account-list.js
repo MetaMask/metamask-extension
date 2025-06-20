@@ -51,10 +51,6 @@ export const HiddenAccountList = ({ onClose }) => {
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const [showListItem, setShowListItem] = useState(false);
 
-  if (!hiddenAddresses.length) {
-    return null;
-  }
-
   const filteredHiddenAccounts = accounts.filter((account) =>
     hiddenAddresses.includes(account.address),
   );
@@ -137,7 +133,8 @@ export const HiddenAccountList = ({ onClose }) => {
                   closeMenu={onClose}
                   connectedAvatar={connectedSite?.iconUrl}
                   menuType={AccountListItemMenuTypes.Account}
-                  isHidden
+                  isPinned={Boolean(account.pinned)}
+                  isHidden={Boolean(account.hidden)}
                 />
               </Box>
             );
