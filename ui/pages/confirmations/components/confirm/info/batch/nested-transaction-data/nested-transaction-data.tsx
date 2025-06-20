@@ -63,7 +63,14 @@ function NestedTransaction({
                 <ConfirmInfoRowCurrency value={value} />
               </ConfirmInfoRow>
             )}
-            {data && to && <TransactionData data={data} to={to} noPadding />}
+            {data && to && (
+              <TransactionData
+                data={data}
+                to={to}
+                noPadding
+                nestedTransactionIndex={index}
+              />
+            )}{' '}
           </>
         }
       >
