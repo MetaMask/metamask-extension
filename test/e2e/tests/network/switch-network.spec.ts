@@ -5,14 +5,8 @@ import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
-<<<<<<< HEAD
-  switchToNetworkFromSendFlow,
-  searchAndSwitchToNetworkFromSendFlow,
-  searchAndSwitchToNetworkFromGlobalMenuFlow,
-=======
   searchAndSwitchToNetworkFromGlobalMenuFlow,
   switchToNetworkFromSendFlow,
->>>>>>> a6f81fe47f (switch network spec)
 } from '../../page-objects/flows/network.flow';
 
 describe('Switch network - ', function (this: Suite) {
