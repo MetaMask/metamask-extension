@@ -5,8 +5,14 @@ import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
+<<<<<<< HEAD
   switchToNetworkFromSendFlow,
   searchAndSwitchToNetworkFromSendFlow,
+  searchAndSwitchToNetworkFromGlobalMenuFlow,
+=======
+  searchAndSwitchToNetworkFromGlobalMenuFlow,
+  switchToNetworkFromSendFlow,
+>>>>>>> a6f81fe47f (switch network spec)
 } from '../../page-objects/flows/network.flow';
 
 describe('Switch network - ', function (this: Suite) {
@@ -29,11 +35,15 @@ describe('Switch network - ', function (this: Suite) {
         await homePage.check_localNodeBalanceIsDisplayed();
 
         // Add Arbitrum network and perform the switch network functionality
-        await searchAndSwitchToNetworkFromSendFlow(driver, 'Arbitrum One');
+        await searchAndSwitchToNetworkFromGlobalMenuFlow(
+          driver,
+          'Arbitrum One',
+        );
         await homePage.check_localNodeBalanceIsDisplayed();
 
         // Validate the switch network functionality back to Ethereum Mainnet
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
+        await homePage.check_pageIsLoaded();
         await homePage.check_localNodeBalanceIsDisplayed();
       },
     );
