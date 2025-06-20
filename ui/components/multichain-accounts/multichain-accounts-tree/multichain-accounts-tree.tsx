@@ -76,9 +76,8 @@ export const MultichainAccountsTree = ({
         const groupsItems = Object.entries(walletData.groups || {}).flatMap(
           ([groupId, groupData]) => {
             // Filter accounts by allowed types
-            const filteredAccounts = groupData.accounts.filter(
-              (account) =>
-                allowedAccountTypes.includes(account.type),
+            const filteredAccounts = groupData.accounts.filter((account) =>
+              allowedAccountTypes.includes(account.type),
             );
 
             if (filteredAccounts.length === 0) {
