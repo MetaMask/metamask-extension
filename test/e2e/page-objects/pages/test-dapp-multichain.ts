@@ -3,6 +3,7 @@ import { NormalizedScopeObject } from '@metamask/chain-agnostic-permission';
 import { Json } from '@metamask/utils';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+import { replaceColon } from '../../flask/multichain-api/testHelpers';
 
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
@@ -13,6 +14,11 @@ class TestDappMultichain {
   private readonly connectExternallyConnectableButton = {
     text: 'Connect',
     tag: 'button',
+  };
+
+  private readonly dappTitle = {
+    text: 'MetaMask MultiChain API Test Dapp',
+    tag: 'h1',
   };
 
   private readonly extensionIdInput = '[placeholder="Enter extension ID"]';
@@ -45,6 +51,19 @@ class TestDappMultichain {
 
   customScopeInput(i: number) {
     return `#custom-Scope-input-${i}`;
+  }
+
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.dappTitle);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for Multichain Test Dapp page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Multichain Test Dapp page is loaded');
   }
 
   async clickConnectExternallyConnectableButton() {
@@ -180,12 +199,16 @@ class TestDappMultichain {
   ): Promise<Json> {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
 
-    await this.driver.clickElement(`[data-testid="${scope}-select"]`);
+    await this.driver.clickElement(
+      `[data-testid="${replaceColon(scope)}-select"]`,
+    );
 
-    await this.driver.clickElement(`[data-testid="${scope}-${method}-option"]`);
+    await this.driver.clickElement(
+      `[data-testid="${replaceColon(scope)}-${method}-option"]`,
+    );
 
     const card = await this.driver.findElement(
-      `[data-testid="scope-card-${scope}`,
+      `[data-testid="scope-card-${replaceColon(scope)}`,
     );
     const collapsible = await card.findElement({ css: '.collapsible-section' });
 
@@ -203,16 +226,16 @@ class TestDappMultichain {
     };
 
     await this.driver.pasteIntoField(
-      `[data-testid="${scope}-collapsible-content-textarea"]`,
+      `[data-testid="${replaceColon(scope)}-collapsible-content-textarea"]`,
       JSON.stringify(request),
     );
 
     await this.driver.clickElement(
-      `[data-testid="invoke-method-${scope}-btn"]`,
+      `[data-testid="invoke-method-${replaceColon(scope)}-btn"]`,
     );
 
     const invokeResult = await this.driver.findElement(
-      `[id="invoke-method-${scope}-${method}-result-0"]`,
+      `[id="invoke-method-${replaceColon(scope)}-${method}-result-0"]`,
     );
     return JSON.parse(await invokeResult.getText());
   }

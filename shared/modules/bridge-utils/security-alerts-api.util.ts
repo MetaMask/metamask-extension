@@ -146,6 +146,7 @@ export const CHAIN_ID_TO_SECURITY_API_NAME: Record<
   [MultichainNetworks.SOLANA]: 'solana',
   [MultichainNetworks.BITCOIN]: 'bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: null, // not supported
+  [MultichainNetworks.BITCOIN_SIGNET]: null, // not supported
   [MultichainNetworks.SOLANA_DEVNET]: null, // not supported
   [MultichainNetworks.SOLANA_TESTNET]: null, // not supported
 };

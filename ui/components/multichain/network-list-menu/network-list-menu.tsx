@@ -48,6 +48,7 @@ import {
   setNextNonce,
   addPermittedChain,
   setTokenNetworkFilter,
+  setEnabledNetworks,
   detectNfts,
 } from '../../../store/actions';
 import {
@@ -74,6 +75,7 @@ import {
   getSelectedMultichainNetworkChainId,
   getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
+  getEnabledNetworks,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -153,6 +155,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
+  const enabledNetworks = useSelector(getEnabledNetworks);
   const showTestnets = useSelector(getShowTestNetworks);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const isUnlocked = useSelector(getIsUnlocked);
@@ -362,6 +365,12 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       dispatch(setTokenNetworkFilter(allOpts));
     }
 
+    if (Object.keys(enabledNetworks).length === 1) {
+      dispatch(setEnabledNetworks([hexChainId]));
+    } else {
+      dispatch(setEnabledNetworks(Object.keys(evmNetworks)));
+    }
+
     // If presently on a dapp, communicate a change to
     // the dapp via silent switchEthereumChain that the
     // network has changed due to user action
@@ -456,11 +465,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     (network: MultichainNetworkConfiguration): boolean => {
       return (
         network.isEvm ||
-        completedOnboarding ||
+        (isUnlocked && completedOnboarding) ||
         hasAnyAccountsInNetwork(network.chainId)
       );
     },
-    [hasAnyAccountsInNetwork, completedOnboarding],
+    [isUnlocked, completedOnboarding, hasAnyAccountsInNetwork],
   );
 
   const getItemCallbacks = useCallback(

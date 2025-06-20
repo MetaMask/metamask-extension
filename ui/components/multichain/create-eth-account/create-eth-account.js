@@ -7,6 +7,7 @@ import {
   setAccountLabel,
   getNextAvailableAccountName as getNextAvailableAccountNameFromController,
 } from '../../../store/actions';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { CreateAccount } from '../create-account';
 
 export const CreateEthAccount = ({
@@ -18,11 +19,16 @@ export const CreateEthAccount = ({
   const dispatch = useDispatch();
 
   const onCreateAccount = async (name) => {
-    const newAccount = await dispatch(addNewAccount(selectedKeyringId));
-    if (name) {
-      dispatch(setAccountLabel(newAccount.address, name));
+    trace({ name: TraceName.AddAccount });
+    try {
+      const newAccount = await dispatch(addNewAccount(selectedKeyringId));
+      if (name) {
+        dispatch(setAccountLabel(newAccount.address, name));
+      }
+      onActionComplete(true, newAccount);
+    } finally {
+      endTrace({ name: TraceName.AddAccount });
     }
-    onActionComplete(true, newAccount);
   };
 
   const getNextAvailableAccountName = async () => {

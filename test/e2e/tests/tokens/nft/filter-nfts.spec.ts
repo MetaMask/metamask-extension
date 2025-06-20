@@ -80,6 +80,10 @@ describe('View NFT details', function () {
             ignoredNfts: [],
           })
           .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            '0x1': true,
+            '0x539': true,
+          })
           .build(),
         smartContract,
         title: this.test?.fullTitle(),
