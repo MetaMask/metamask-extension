@@ -1465,29 +1465,11 @@
   "securityAndPrivacy": {
     "message": "Segurança e privacidade"
   },
-  "seedPhraseConfirm": {
-    "message": "Confirmar Frase de Recuperação Secreta"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Confirmar Frase de Recuperação Secreta"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Anote e guarde em vários locais secretos."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Guarde em um cofre de banco."
-  },
   "seedPhraseIntroTitle": {
     "message": "Proteja sua carteira"
   },
   "seedPhraseReq": {
     "message": "As Frases de Recuperação Secretas contêm 12, 15, 18, 21 ou 24 palavras"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Anote essa Frase de Recuperação Secreta de 12 palavras e guarde-a em algum lugar de sua confiança ao qual somente você tenha acesso."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Anote sua Frase de Recuperação Secreta"
   },
   "selectAccounts": {
     "message": "Selecione a(s) conta(s) para usar nesse site"
@@ -1941,9 +1923,6 @@
   "time": {
     "message": "Hora"
   },
-  "tips": {
-    "message": "Dicas"
-  },
   "to": {
     "message": "Para"
   },
@@ -2078,9 +2057,6 @@
   },
   "unlock": {
     "message": "Desbloquear"
-  },
-  "unlockMessage": {
-    "message": "A web descentralizada te aguarda"
   },
   "unrecognizedChain": {
     "message": "Essa rede personalizada não foi reconhecida. Recomendamos que você $1 antes de continuar",

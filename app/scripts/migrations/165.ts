@@ -255,7 +255,7 @@ function transformState(
 
   // New events object created from the legacy events.
   const eventsFromLegacyEvents = Object.fromEntries(
-    Object.entries(cronjobControllerState.events).map(
+    Object.entries(cronjobControllerState.events ?? {}).map(
       ([id, event]): [string, BackgroundEvent] => {
         return [
           id,
