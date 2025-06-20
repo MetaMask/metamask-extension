@@ -88,7 +88,7 @@ class AssetListPage {
     '.import-tokens-modal__confirm-token-list-item-wrapper';
 
   private readonly tokenDecimals = {
-    tag: 'label',
+    css: '.mm-label',
     text: 'Token decimal',
   };
 
@@ -104,7 +104,7 @@ class AssetListPage {
     '[data-testid="asset-list-control-bar-action-button"]';
 
   private readonly tokenSymbolTitle = {
-    tag: 'label',
+    css: '.mm-label',
     text: 'Token symbol',
   };
 
