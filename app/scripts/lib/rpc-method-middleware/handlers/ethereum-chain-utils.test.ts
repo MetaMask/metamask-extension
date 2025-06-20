@@ -23,6 +23,7 @@ describe('Ethereum Chain Utils', () => {
       rejectApprovalRequestsForOrigin: jest.fn(),
       requestUserApproval: jest.fn(),
       hasApprovalRequestsForOrigin: jest.fn(),
+      notifyChainChanged: jest.fn(),
       toNetworkConfiguration: {},
       fromNetworkConfiguration: {},
       ...mks,
@@ -94,6 +95,27 @@ describe('Ethereum Chain Utils', () => {
         expect(end).toHaveBeenCalledWith({
           code: errorCodes.provider.userRejectedRequest,
         });
+      });
+
+      it('calls notifyChainChanged when switch chain is successful', async () => {
+        const { mocks, switchChain } = createMockedSwitchChain();
+        await switchChain('0x1', 'mainnet');
+
+        expect(mocks.notifyChainChanged).toHaveBeenCalledTimes(1);
+      });
+
+      it('does not call notifyChainChanged when switch chain fails early', async () => {
+        const { mocks, end, switchChain } = createMockedSwitchChain();
+        mocks.requestPermittedChainsPermissionIncrementalForOrigin.mockRejectedValueOnce(
+          new Error('permission request failed'),
+        );
+
+        await switchChain('0x1', 'mainnet');
+
+        expect(mocks.notifyChainChanged).not.toHaveBeenCalled();
+        expect(end).toHaveBeenCalledWith(
+          new Error('permission request failed'),
+        );
       });
     });
 
