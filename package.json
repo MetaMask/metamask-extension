@@ -655,7 +655,7 @@
     "selenium-webdriver": "^4.31.0",
     "semver": "^7.5.4",
     "serve-handler": "^6.1.2",
-    "sharp": "^0.33.2",
+    "sharp": "^0.34.2",
     "sinon": "^9.0.0",
     "source-map": "^0.7.4",
     "source-map-explorer": "^2.4.2",
