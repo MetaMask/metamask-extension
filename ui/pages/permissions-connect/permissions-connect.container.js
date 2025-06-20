@@ -3,11 +3,7 @@ import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import {
-  Caip25EndowmentPermissionName,
-  getAllScopesFromPermission,
-  getPermittedAccountsForScopes,
-} from '@metamask/chain-agnostic-permission';
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
@@ -72,7 +68,7 @@ const mapStateToProps = (state, ownProps) => {
       const existingCaveat = getRequestedCaip25CaveatValue(permissions);
 
       // Save existing permissions to be added along with the new ones
-      permissionsRequest.existingPermissions = existingCaveat;
+      permissionsRequest.existingCaveat = existingCaveat;
     }
   }
 

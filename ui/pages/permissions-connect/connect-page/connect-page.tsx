@@ -87,10 +87,8 @@ export type ConnectPageRequest = {
     isEip1193Request?: boolean;
     promptToCreateSolanaAccount?: boolean;
   };
-
-  existingScopes?: CaipChainId[];
-  existingAccounts?: CaipAccountId[];
-  existingPermissions?: Caip25CaveatValue;
+  /** Existing caveat value, granted on a previous connection. */
+  existingCaveat?: Caip25CaveatValue;
 };
 
 export type ConnectPageProps = {
@@ -123,10 +121,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const requestedCaip25CaveatValueWithExistingPermissions =
-    request.existingPermissions
+    request.existingCaveat
       ? mergeCaip25CaveatValues(
           requestedCaip25CaveatValue,
-          request.existingPermissions,
+          request.existingCaveat,
         )
       : requestedCaip25CaveatValue;
 
@@ -342,10 +340,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 
   const selectedAccounts = allAccounts.filter(({ caipAccountId }) => {
     return selectedCaipAccountAddresses.some((selectedCaipAccountId) => {
-      return (
-        selectedCaipAccountId === caipAccountId ||
-        request.existingAccounts?.includes(caipAccountId)
-      );
+      return selectedCaipAccountId === caipAccountId;
     });
   });
 
