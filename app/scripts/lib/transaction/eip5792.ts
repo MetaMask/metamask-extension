@@ -30,12 +30,12 @@ import {
   AccountsControllerGetStateAction,
 } from '@metamask/accounts-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { parse, v4 } from 'uuid';
 
 import { EIP5792ErrorCode } from '../../../../shared/constants/transaction';
 import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { generateSecurityAlertId } from '../ppom/ppom-util';
-import { parse, v4 } from 'uuid';
 
 type Actions =
   | AccountsControllerGetStateAction
