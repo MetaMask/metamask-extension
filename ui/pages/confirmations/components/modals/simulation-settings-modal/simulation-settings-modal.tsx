@@ -1,9 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import {
   AlignItems,
+  BackgroundColor,
+  BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
+  TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import {
@@ -101,26 +104,37 @@ export function SimulationSettingsModal({ onClose }: { onClose?: () => void }) {
     >
       <ModalOverlay data-testid="modal-overlay" />
       <ModalContent size={ModalContentSize.Md}>
-        <ModalHeader onClose={onClose}>Simulation settings</ModalHeader>
+        <ModalHeader onClose={onClose}>Transaction settings</ModalHeader>
         <ModalBody
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           gap={3}
         >
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.center}
-            style={{ marginRight: '-12px' }}
-          >
-            <Text variant={TextVariant.bodyMd}>Enforced simulations</Text>
-            <ToggleButton
-              dataTestId="simulation-settings-modal-enable-enforced"
-              value={enabled}
-              onToggle={() => setEnabled(!enabled)}
-            />
-          </Box>
+          <Section>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              justifyContent={JustifyContent.spaceBetween}
+              alignItems={AlignItems.center}
+              style={{ marginRight: '-12px' }}
+            >
+              <Text variant={TextVariant.bodyMdMedium}>
+                Enforce balance changes
+              </Text>
+              <ToggleButton
+                dataTestId="simulation-settings-modal-enable-enforced"
+                value={enabled}
+                onToggle={() => setEnabled(!enabled)}
+              />
+            </Box>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternativeSoft}
+            >
+              To protect your funds, this transaction will fail if the displayed
+              balance changes and slippage tolerance are not fulfilled.
+            </Text>
+          </Section>
           <ButtonPrimary
             onClick={handleUpdateClick}
             data-testid="simulation-settings-modal-update"
@@ -130,5 +144,20 @@ export function SimulationSettingsModal({ onClose }: { onClose?: () => void }) {
         </ModalBody>
       </ModalContent>
     </Modal>
+  );
+}
+
+function Section({ children }: { children: React.ReactNode | string }) {
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      borderRadius={BorderRadius.MD}
+      padding={2}
+      gap={2}
+    >
+      {children}
+    </Box>
   );
 }
