@@ -1655,7 +1655,7 @@
         "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "bitcoin-address-validation>bech32": true
+        "bitcoin-address-validation": true
       }
     },
     "@metamask/keyring-controller": {
