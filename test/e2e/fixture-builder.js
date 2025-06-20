@@ -53,7 +53,9 @@ function onboardingFixture() {
       },
       NetworkOrderController: {
         enabledNetworkMap: {
-          '0x539': true,
+          eip155: {
+            [CHAIN_IDS.LOCALHOST]: true,
+          },
         },
       },
       NotificationServicesController: {},

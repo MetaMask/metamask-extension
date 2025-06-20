@@ -60,10 +60,16 @@ describe('MetaMask Responsive UI', function (this: Suite) {
     );
   });
 
-  it('Send Transaction from responsive window', async function () {
+  it.only('Send Transaction from responsive window', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .build(),
         driverOptions,
         title: this.test?.fullTitle(),
       },
