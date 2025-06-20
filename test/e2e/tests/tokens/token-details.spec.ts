@@ -7,13 +7,13 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   mockEmptyHistoricalPrices,
   mockEmptyPrices,
   mockHistoricalPrices,
   mockSpotPrices,
 } from './utils/mocks';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Token Details', function () {
   const chainId = CHAIN_IDS.MAINNET;
