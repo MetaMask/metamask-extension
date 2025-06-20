@@ -355,9 +355,7 @@ export function parseApprovalTransactionData(data: Hex):
     }
   | undefined {
   const transactionDescription = parseStandardTokenTransactionData(data);
-  const result = transactionDescription ?? {};
-  const { args, name } = result as any;
-
+  const { args, name } = transactionDescription ?? {};
 
   if (!APPROVAL_METHOD_NAMES.includes(name ?? '') || !name) {
     return undefined;

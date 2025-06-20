@@ -85,6 +85,8 @@ const getBatchedApprovalDisplayValue = async (
       tokenId: amountOrTokenId.toString(),
     };
   }
+
+  return undefined;
 };
 
 export function BatchedApprovalFunction({

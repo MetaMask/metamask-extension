@@ -9,13 +9,13 @@ import {
 import { act, waitFor } from '@testing-library/react';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
-import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
-import { DecodedTransactionDataMethod } from '../../../../../../../../shared/types/transaction-decode';
-import { Confirmation } from '../../../../../types/confirm';
-import { BatchedApprovalFunction } from './batched-approval-function';
 import { buildPermit2ApproveTransactionData } from '../../../../../../../../test/data/confirmations/token-approve';
 import { buildSetApproveForAllTransactionData } from '../../../../../../../../test/data/confirmations/set-approval-for-all';
+import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { DecodedTransactionDataMethod } from '../../../../../../../../shared/types/transaction-decode';
+import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
+import { Confirmation } from '../../../../../types/confirm';
+import { BatchedApprovalFunction } from './batched-approval-function';
 
 const DATA_MOCK = '0x123456';
 const TO_MOCK = '0x1234';
