@@ -150,7 +150,7 @@ export class LedgerOffscreenBridge
           } else {
             // need to process the payload to get the error
             // and then reject with the error
-            const error: SerializedLedgerError = response?.payload?.error;
+            const error = response?.payload?.error;
 
             if (error.statusCode > 0 && error.statusText) {
               // this is TransportStatusError, convert the SerializedLedgerError to a TransportStatusError
