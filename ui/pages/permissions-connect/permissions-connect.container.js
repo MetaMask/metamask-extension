@@ -70,18 +70,9 @@ const mapStateToProps = (state, ownProps) => {
 
     if (permissions) {
       const existingCaveat = getRequestedCaip25CaveatValue(permissions);
-      const existingPermittedScopes = getAllScopesFromPermission(
-        permissions?.[Caip25EndowmentPermissionName],
-      );
-
-      const existingPermittedAccounts = getPermittedAccountsForScopes(
-        existingCaveat,
-        existingPermittedScopes,
-      );
 
       // Save existing permissions to be added along with the new ones
-      permissionsRequest.existingScopes = existingPermittedScopes;
-      permissionsRequest.existingAccounts = existingPermittedAccounts;
+      permissionsRequest.existingPermissions = existingCaveat;
     }
   }
 

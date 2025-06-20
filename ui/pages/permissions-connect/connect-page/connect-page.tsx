@@ -5,6 +5,7 @@ import {
   getAllNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
+  Caip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
@@ -71,6 +72,7 @@ import {
 } from '../../../selectors/selectors.types';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { CreateSolanaAccountModal } from '../../../components/multichain/create-solana-account-modal/create-solana-account-modal';
+import { mergeCaip25CaveatValues } from '../../../../shared/lib/caip25-caveat-merger';
 import {
   PermissionsRequest,
   getRequestedCaip25CaveatValue,
@@ -88,6 +90,7 @@ export type ConnectPageRequest = {
 
   existingScopes?: CaipChainId[];
   existingAccounts?: CaipAccountId[];
+  existingPermissions?: Caip25CaveatValue;
 };
 
 export type ConnectPageProps = {
@@ -119,11 +122,20 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     request.permissions,
   );
 
+  const requestedCaip25CaveatValueWithExistingPermissions =
+    request.existingPermissions
+      ? mergeCaip25CaveatValues(
+          requestedCaip25CaveatValue,
+          request.existingPermissions,
+        )
+      : requestedCaip25CaveatValue;
+
   const requestedCaipAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
-    requestedCaip25CaveatValue,
+    requestedCaip25CaveatValueWithExistingPermissions,
   );
+
   const requestedCaipChainIds = getAllScopesFromCaip25CaveatValue(
-    requestedCaip25CaveatValue,
+    requestedCaip25CaveatValueWithExistingPermissions,
   );
 
   const { promptToCreateSolanaAccount, isEip1193Request } =
@@ -162,7 +174,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     [nonTestNetworkConfigurations, testNetworkConfigurations],
   );
 
-  const supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
+  const _supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
     (caipChainId) => allNetworksList.includes(caipChainId as CaipChainId),
   );
 
@@ -195,6 +207,22 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     );
   }
 
+  const hasWalletEip155 = requestedCaipChainIds.includes('wallet:eip155');
+  const hasOtherEip155Scopes = requestedCaipChainIds.some(
+    (caipChainId) =>
+      caipChainId.startsWith('eip155:') && caipChainId !== 'wallet:eip155',
+  );
+
+  let supportedRequestedCaipChainIds = _supportedRequestedCaipChainIds;
+  if (hasWalletEip155 && !hasOtherEip155Scopes) {
+    supportedRequestedCaipChainIds = [
+      ..._supportedRequestedCaipChainIds,
+      ...defaultSelectedNetworkList.filter(
+        (chainId) => !_supportedRequestedCaipChainIds.includes(chainId),
+      ),
+    ];
+  }
+
   const defaultSelectedChainIds =
     supportedRequestedCaipChainIds.length > 0
       ? supportedRequestedCaipChainIds
@@ -209,8 +237,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   ) as MergedInternalAccountWithCaipAccountId[];
 
   const requestedNamespaces = getAllNamespacesFromCaip25CaveatValue(
-    requestedCaip25CaveatValue,
+    requestedCaip25CaveatValueWithExistingPermissions,
   );
+
   const requestedNamespacesWithoutWallet = requestedNamespaces.filter(
     (namespace) => namespace !== KnownCaipNamespace.Wallet,
   );
@@ -312,7 +341,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 
   const selectedAccounts = allAccounts.filter(({ caipAccountId }) => {
     return selectedCaipAccountAddresses.some((selectedCaipAccountId) => {
-      return selectedCaipAccountId === caipAccountId;
+      return (
+        selectedCaipAccountId === caipAccountId ||
+        request.existingAccounts?.includes(caipAccountId)
+      );
     });
   });
 
@@ -352,26 +384,21 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   }, [permissionsRequestId, rejectPermissionsRequest]);
 
   const onConfirm = useCallback(() => {
-    const { existingScopes = [], existingAccounts = [] } = request;
-
-    delete request.existingScopes;
-    delete request.existingAccounts;
-
     const _request = {
       ...request,
       permissions: {
         ...request.permissions,
         ...generateCaip25Caveat(
-          requestedCaip25CaveatValue,
-          [...existingAccounts, ...selectedCaipAccountAddresses],
-          [...existingScopes, ...selectedChainIds],
+          requestedCaip25CaveatValueWithExistingPermissions,
+          selectedCaipAccountAddresses,
+          selectedChainIds,
         ),
       },
     };
     approveConnection(_request);
   }, [
     request,
-    requestedCaip25CaveatValue,
+    requestedCaip25CaveatValueWithExistingPermissions,
     selectedCaipAccountAddresses,
     selectedChainIds,
     approveConnection,
