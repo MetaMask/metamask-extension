@@ -2,11 +2,14 @@ import {
   AuthConnection,
   Web3AuthNetwork,
 } from '@metamask/seedless-onboarding-controller';
-import { PLATFORM_CHROME } from '../../../../shared/constants/app';
 import { OAuthLoginEnv, WebAuthenticator } from './types';
 import OAuthService from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
 
+const MOCK_AUTH_SERVER_URL = 'https://mocked-auth-server-url';
+const MOCK_WEB3AUTH_NETWORK = 'sapphire_devnet';
+const MOCK_AUTH_CONNECTION_ID = 'byoa-server';
+const MOCK_GROUPED_AUTH_CONNECTION_ID = 'mm-seedless-onboarding';
 const DEFAULT_GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
 const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
 const OAUTH_AUD = 'metamask';
@@ -25,10 +28,10 @@ function getOAuthLoginEnvs(): OAuthLoginEnv {
   return {
     googleClientId: DEFAULT_GOOGLE_CLIENT_ID,
     appleClientId: DEFAULT_APPLE_CLIENT_ID,
-    authServerUrl: process.env.AUTH_SERVER_URL as string,
-    web3AuthNetwork: process.env.WEB3AUTH_NETWORK as Web3AuthNetwork,
-    authConnectionId: process.env.AUTH_CONNECTION_ID as string,
-    groupedAuthConnectionId: process.env.GROUPED_AUTH_CONNECTION_ID as string,
+    authServerUrl: MOCK_AUTH_SERVER_URL,
+    web3AuthNetwork: MOCK_WEB3AUTH_NETWORK as Web3AuthNetwork,
+    authConnectionId: MOCK_AUTH_CONNECTION_ID,
+    groupedAuthConnectionId: MOCK_GROUPED_AUTH_CONNECTION_ID,
   };
 }
 
@@ -41,7 +44,6 @@ const generateCodeVerifierAndChallengeSpy = jest.fn().mockResolvedValue({
   challenge: 'mocked-code-verifier-challenge',
 });
 const generateNonceSpy = jest.fn().mockReturnValue(MOCK_NONCE);
-const getPlatformSpy = jest.fn().mockReturnValue(PLATFORM_CHROME);
 const mockRequestIdentityPermission = jest.fn().mockResolvedValue(true);
 
 const mockWebAuthenticator: WebAuthenticator = {
@@ -49,7 +51,6 @@ const mockWebAuthenticator: WebAuthenticator = {
   launchWebAuthFlow: launchWebAuthFlowSpy,
   generateCodeVerifierAndChallenge: generateCodeVerifierAndChallengeSpy,
   generateNonce: generateNonceSpy,
-  getPlatform: getPlatformSpy,
   requestIdentityPermission: mockRequestIdentityPermission,
 };
 

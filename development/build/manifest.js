@@ -78,16 +78,6 @@ function createManifestTasks({
         );
         modifyNameAndDescForNonProd(result);
 
-        // if (platform === 'firefox') {
-        //   // for firefox, we need to override the permissions and optional_permissions with the platform modifications
-        //   // the difference is the 'identity' permission in `permissions` and `optional_permissions` fields.
-        //   // in firefox, 'identity' permission is not supported with the runtime permission request.
-        //   // hence we have to declare it as installation permission.
-        //   result.permissions = platformModifications.permissions;
-        //   result.optional_permissions =
-        //     platformModifications.optional_permissions;
-        // }
-
         if (shouldIncludeOcapKernel) {
           applyOcapKernelChanges(result);
         }
