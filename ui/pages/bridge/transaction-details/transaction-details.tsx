@@ -160,7 +160,7 @@ const StatusToColorMap: Record<StatusTypes, TextColor> = {
 const CrossChainSwapTxDetails = () => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const rootState = useSelector((state) => state);
   const history = useHistory();
   const location = useLocation();

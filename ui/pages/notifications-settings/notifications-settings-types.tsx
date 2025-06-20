@@ -33,7 +33,7 @@ export function NotificationsSettingsTypes({
   // Context
   const t = useI18nContext();
   const { listNotifications } = useMetamaskNotificationsContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   // Selectors
   const isFeatureAnnouncementsEnabled = useSelector(

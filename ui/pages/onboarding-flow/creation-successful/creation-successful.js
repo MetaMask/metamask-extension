@@ -53,7 +53,7 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 export default function CreationSuccessful() {
   const history = useHistory();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);

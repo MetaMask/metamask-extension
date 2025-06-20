@@ -44,7 +44,7 @@ export default function AwaitingSignatures() {
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = Boolean(activeQuote?.approval);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   useEffect(() => {
     trackEvent({

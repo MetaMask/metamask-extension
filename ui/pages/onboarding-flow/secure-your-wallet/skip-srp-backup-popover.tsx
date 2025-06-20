@@ -36,6 +36,7 @@ import {
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { TraceName } from '../../../../shared/lib/trace';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
@@ -54,7 +55,7 @@ export default function SkipSRPBackup({
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
   const history = useHistory();
 
   const onSkipSrpBackup = useCallback(async () => {
@@ -66,6 +67,8 @@ export default function SkipSRPBackup({
         hd_entropy_index: hdEntropyIndex,
       },
     });
+    bufferedEndTrace({ name: TraceName.OnboardingNewSrpCreateWallet });
+    bufferedEndTrace({ name: TraceName.OnboardingJourneyOverall });
 
     if (
       getBrowserName() === PLATFORM_FIREFOX ||
@@ -75,7 +78,14 @@ export default function SkipSRPBackup({
     } else {
       history.push(ONBOARDING_METAMETRICS);
     }
-  }, [dispatch, firstTimeFlowType, hdEntropyIndex, history, trackEvent]);
+  }, [
+    dispatch,
+    firstTimeFlowType,
+    hdEntropyIndex,
+    history,
+    trackEvent,
+    bufferedEndTrace,
+  ]);
 
   return (
     <Modal

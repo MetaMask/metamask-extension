@@ -12,6 +12,7 @@ import {
 import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
 import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
+import { SentryTraceProvider } from '../contexts/sentry-trace';
 import ErrorPage from './error-page/error-page.component';
 
 import Routes from './routes';
@@ -51,13 +52,15 @@ class Index extends PureComponent {
               <LegacyMetaMetricsProvider>
                 <I18nProvider>
                   <LegacyI18nProvider>
-                    <AssetPollingProvider>
-                      <MetamaskIdentityProvider>
-                        <MetamaskNotificationsProvider>
-                          <Routes />
-                        </MetamaskNotificationsProvider>
-                      </MetamaskIdentityProvider>
-                    </AssetPollingProvider>
+                    <SentryTraceProvider>
+                      <AssetPollingProvider>
+                        <MetamaskIdentityProvider>
+                          <MetamaskNotificationsProvider>
+                            <Routes />
+                          </MetamaskNotificationsProvider>
+                        </MetamaskIdentityProvider>
+                      </AssetPollingProvider>
+                    </SentryTraceProvider>
                   </LegacyI18nProvider>
                 </I18nProvider>
               </LegacyMetaMetricsProvider>

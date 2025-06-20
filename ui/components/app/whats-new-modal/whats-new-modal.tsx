@@ -88,7 +88,7 @@ const renderNotification = ({
 
 export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
     useState(false);
 

@@ -148,7 +148,7 @@ function useIncompleteAssetEvent(
     [address: string]: UseDisplayNameResponse | undefined;
   },
 ) {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [processedAssets, setProcessedAssets] = useState<string[]>([]);
 
   for (const change of balanceChanges) {

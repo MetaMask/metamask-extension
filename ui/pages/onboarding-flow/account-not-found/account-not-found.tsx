@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -34,6 +34,9 @@ import {
   setFirstTimeFlowType,
   resetOAuthLoginState,
 } from '../../../store/actions';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import { useSentryTrace } from '../../../contexts/sentry-trace';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function AccountNotFound() {
   const history = useHistory();
@@ -41,6 +44,8 @@ export default function AccountNotFound() {
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
+  const { onboardingParentContext } = useSentryTrace();
+  const { bufferedTrace, bufferedEndTrace } = useContext(MetaMetricsContext);
 
   const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -49,6 +54,12 @@ export default function AccountNotFound() {
   };
 
   const onCreateWallet = () => {
+    bufferedTrace({
+      name: TraceName.OnboardingNewSocialCreateWallet,
+      op: TraceOperation.OnboardingUserJourney,
+      tags: { source: 'account_status_redirect' },
+      parentContext: onboardingParentContext.current,
+    });
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
     history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
   };
@@ -64,7 +75,27 @@ export default function AccountNotFound() {
       // if the onboarding flow is not social import, redirect to the welcome page
       history.push(ONBOARDING_WELCOME_ROUTE);
     }
-  }, [firstTimeFlowType, history]);
+    if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+      bufferedTrace({
+        name: TraceName.OnboardingExistingSocialAccountNotFound,
+        op: TraceOperation.OnboardingUserJourney,
+        parentContext: onboardingParentContext.current,
+      });
+    }
+    return () => {
+      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+        bufferedEndTrace({
+          name: TraceName.OnboardingExistingSocialAccountNotFound,
+        });
+      }
+    };
+  }, [
+    firstTimeFlowType,
+    history,
+    onboardingParentContext,
+    bufferedTrace,
+    bufferedEndTrace,
+  ]);
 
   return (
     <Box

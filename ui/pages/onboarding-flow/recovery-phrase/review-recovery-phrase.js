@@ -47,7 +47,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const isFromReminderParam = searchParams.get('isFromReminder')
     ? '/?isFromReminder=true'
     : '';
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   return (
     <Box

@@ -21,7 +21,7 @@ import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 export default function CreateNewSwap({ sensitiveTrackingProperties }) {
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const dispatch = useDispatch();
   const history = useHistory();

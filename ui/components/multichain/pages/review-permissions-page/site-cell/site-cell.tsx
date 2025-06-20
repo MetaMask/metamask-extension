@@ -54,7 +54,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   hideAllToasts = () => undefined,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];
 
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);

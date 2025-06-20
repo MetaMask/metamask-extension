@@ -120,7 +120,7 @@ export default function PrivacySettings() {
     useExternalNameSources,
   );
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
   const externalServicesOnboardingToggleState = useSelector(

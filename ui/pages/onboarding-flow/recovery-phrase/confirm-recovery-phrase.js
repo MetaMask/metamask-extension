@@ -34,6 +34,7 @@ import {
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { TraceName } from '../../../../shared/lib/trace';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
@@ -67,7 +68,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
   const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const splitSecretRecoveryPhrase = useMemo(
@@ -122,6 +123,8 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         hd_entropy_index: hdEntropyIndex,
       },
     });
+    bufferedEndTrace({ name: TraceName.OnboardingNewSrpCreateWallet });
+    bufferedEndTrace({ name: TraceName.OnboardingJourneyOverall });
 
     const nextRoute =
       getBrowserName() === PLATFORM_FIREFOX || isFromReminderParam
@@ -129,7 +132,14 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         : ONBOARDING_METAMETRICS;
 
     history.push(`${nextRoute}${isFromReminderParam}`);
-  }, [dispatch, hdEntropyIndex, history, trackEvent, isFromReminderParam]);
+  }, [
+    dispatch,
+    hdEntropyIndex,
+    history,
+    trackEvent,
+    isFromReminderParam,
+    bufferedEndTrace,
+  ]);
 
   return (
     <Box

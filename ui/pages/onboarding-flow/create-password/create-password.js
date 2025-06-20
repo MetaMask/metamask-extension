@@ -48,6 +48,8 @@ import LoadingScreen from '../../../components/ui/loading-screen';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { resetOAuthLoginState } from '../../../store/actions';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import { useSentryTrace } from '../../../contexts/sentry-trace';
 
 export default function CreatePassword({
   createNewAccount,
@@ -63,7 +65,8 @@ export default function CreatePassword({
   const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const socialLoginFlow = useSelector(isSocialLoginFlow);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, bufferedTrace, bufferedEndTrace } =
+    useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
@@ -84,6 +87,8 @@ export default function CreatePassword({
 
   const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
+  const { onboardingParentContext } = useSentryTrace();
+
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
       if (
@@ -102,11 +107,37 @@ export default function CreatePassword({
     newAccountCreationInProgress,
   ]);
 
+  useEffect(() => {
+    bufferedTrace({
+      name: TraceName.OnboardingPasswordSetupAttempt,
+      op: TraceOperation.OnboardingUserJourney,
+      parentContext: onboardingParentContext.current,
+    });
+    return () => {
+      bufferedEndTrace({ name: TraceName.OnboardingPasswordSetupAttempt });
+    };
+  }, [onboardingParentContext, bufferedTrace, bufferedEndTrace]);
+
   const handleBackClick = (event) => {
     event.preventDefault();
     // reset the social login state
     dispatch(resetOAuthLoginState());
     history.goBack();
+  };
+
+  const handlePasswordSetupError = (error) => {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+
+    bufferedTrace({
+      name: TraceName.OnboardingPasswordSetupError,
+      op: TraceOperation.OnboardingUserJourney,
+      parentContext: onboardingParentContext.current,
+      tags: { errorMessage },
+    });
+    bufferedEndTrace({ name: TraceName.OnboardingPasswordSetupError });
+
+    console.error(error);
   };
 
   const handleCreate = async (event) => {
@@ -126,11 +157,20 @@ export default function CreatePassword({
       secretRecoveryPhrase &&
       firstTimeFlowType === FirstTimeFlowType.import
     ) {
-      await importWithRecoveryPhrase(password, secretRecoveryPhrase);
-      if (isFirefox) {
-        history.push(ONBOARDING_COMPLETION_ROUTE);
-      } else {
-        history.push(ONBOARDING_METAMETRICS);
+      try {
+        await importWithRecoveryPhrase(password, secretRecoveryPhrase);
+
+        bufferedEndTrace({ name: TraceName.OnboardingExistingSrpImport });
+        bufferedEndTrace({ name: TraceName.OnboardingJourneyOverall });
+
+        if (isFirefox) {
+          history.push(ONBOARDING_COMPLETION_ROUTE);
+        } else {
+          history.push(ONBOARDING_METAMETRICS);
+        }
+      } catch (error) {
+        handlePasswordSetupError(error);
+        throw error;
       }
     } else {
       // Otherwise we are in create new wallet flow
@@ -143,13 +183,18 @@ export default function CreatePassword({
           if (isFirefox) {
             history.push(ONBOARDING_COMPLETION_ROUTE);
           } else {
+            bufferedEndTrace({
+              name: TraceName.OnboardingNewSocialCreateWallet,
+            });
+            bufferedEndTrace({ name: TraceName.OnboardingJourneyOverall });
             history.push(ONBOARDING_METAMETRICS);
           }
         } else {
           history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
         }
       } catch (error) {
-        console.error(error);
+        handlePasswordSetupError(error);
+        throw error;
       }
     }
   };

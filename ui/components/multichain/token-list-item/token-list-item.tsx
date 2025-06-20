@@ -101,7 +101,7 @@ export const TokenListItemComponent = ({
 }: TokenListItemProps) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const currencyRates = useSelector(getCurrencyRates);
 
   // We do not want to display any percentage with non-EVM since we don't have the data for this yet. So

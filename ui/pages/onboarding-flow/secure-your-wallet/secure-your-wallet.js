@@ -45,7 +45,7 @@ export default function SecureYourWallet() {
     ? '/?isFromReminder=true'
     : '';
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const handleClickRecommended = () => {
     trackEvent({

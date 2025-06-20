@@ -93,7 +93,7 @@ const CoinButtons = ({
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
   const { address: selectedAddress } = account;

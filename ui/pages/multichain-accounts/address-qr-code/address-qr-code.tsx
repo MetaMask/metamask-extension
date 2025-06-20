@@ -37,7 +37,7 @@ import {
 export const AddressQRCode = () => {
   const t = useI18nContext();
   const history = useHistory();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const address = useSelector(
     (state: AppSliceState) => state.appState.accountDetailsAddress,
   );

@@ -45,7 +45,7 @@ function QrCodeView({
   accountName?: string;
   location?: string;
 }) {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
   const t = useI18nContext();
   const { message, data } = Qr;
