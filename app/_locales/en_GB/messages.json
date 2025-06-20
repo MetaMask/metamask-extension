@@ -390,6 +390,9 @@
   "alertMessageAddressMismatchWarning": {
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
+  "alertMessageAddressTrustSignal": {
+    "message": "If you confirm this request, you will probably lose your assets to a scammer."
+  },
   "alertMessageChangeInSimulationResults": {
     "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
   },
@@ -1664,6 +1667,56 @@
   },
   "decryptRequest": {
     "message": "Decrypt request"
+  },
+  "deepLink_Caution": {
+    "message": "Proceed with caution"
+  },
+  "deepLink_Continue": {
+    "message": "Continue"
+  },
+  "deepLink_ContinueDescription": {
+    "message": "You'll open $1 if you continue.",
+    "description": "$1 is the name of the page they'll be redirected to if they click the Continue button. Examples of $1: 'the home page'; 'the buy page'; 'the swaps page'; 'the notifications page'"
+  },
+  "deepLink_DontRemindMeAgain": {
+    "message": "Don't remind me again"
+  },
+  "deepLink_Error404Description": {
+    "message": "We can't find the page you are looking for."
+  },
+  "deepLink_Error404Title": {
+    "message": "This page doesn't exist"
+  },
+  "deepLink_ErrorMissingUrl": {
+    "message": "No url to navigate to was provided."
+  },
+  "deepLink_ErrorOtherDescription": {
+    "message": "This is a bug and should be reported to MetaMask."
+  },
+  "deepLink_ErrorOtherTitle": {
+    "message": "An error occurred while processing the deep link"
+  },
+  "deepLink_GoToTheHomePageButton": {
+    "message": "Go to the home page"
+  },
+  "deepLink_RedirectingToMetaMask": {
+    "message": "Redirecting to MetaMask"
+  },
+  "deepLink_ThirdPartyDescription": {
+    "message": "You were sent here by a third party, not MetaMask. $1",
+    "description": "$1 is the message 'deepLink_ContinueDescription'"
+  },
+  "deepLink_theBuyPage": {
+    "message": "the buy page"
+  },
+  "deepLink_theHomePage": {
+    "message": "the home page"
+  },
+  "deepLink_theNotificationsPage": {
+    "message": "the notifications page"
+  },
+  "deepLink_theSwapsPage": {
+    "message": "the swaps page"
   },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
@@ -3214,6 +3267,14 @@
   "nameAlreadyInUse": {
     "message": "Name is already in use"
   },
+  "nameFooterTrustWarning": {
+    "message": "Only save addresses you trust.",
+    "description": "Footer warning text shown in name modal for malicious and warning addresses."
+  },
+  "nameInstructionsMalicious": {
+    "message": "This has been identified as malicious. We recommend not interacting with this address.",
+    "description": "Instruction text in name component modal when address is malicious."
+  },
   "nameInstructionsNew": {
     "message": "If you know this address, give it a nickname to recognize it in the future.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -3226,6 +3287,10 @@
     "message": "You've added a nickname for this address before. You can edit or view other suggested nicknames.",
     "description": "Instruction text in name component modal when value is saved."
   },
+  "nameInstructionsWarning": {
+    "message": "This has been identified as suspicious. If you trust this author, set a personal display name to identify it going forward.",
+    "description": "Instruction text in name component modal when address has warning signals."
+  },
   "nameLabel": {
     "message": "Nickname",
     "description": "Label above name input field in name component modal."
@@ -3233,6 +3298,10 @@
   "nameModalMaybeProposedName": {
     "message": "Maybe: $1",
     "description": "$1 is the proposed name"
+  },
+  "nameModalTitleMalicious": {
+    "message": "Malicious address",
+    "description": "Title of the modal created by the name component when address is identified as malicious."
   },
   "nameModalTitleNew": {
     "message": "Unknown address",
@@ -3245,6 +3314,14 @@
   "nameModalTitleSaved": {
     "message": "Saved address",
     "description": "Title of the modal created by the name component when value is saved."
+  },
+  "nameModalTitleVerified": {
+    "message": "Verified address",
+    "description": "Title of the modal created by the name component when address is verified."
+  },
+  "nameModalTitleWarning": {
+    "message": "Suspicious address",
+    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Proposed by $1",
@@ -3265,6 +3342,10 @@
   "nameSetPlaceholder": {
     "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
+  },
+  "nameSetPlaceholderSuggested": {
+    "message": "Suggested: $1",
+    "description": "$1 is the proposed name"
   },
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 is asking for your approval to:",
@@ -5110,8 +5191,14 @@
   "simulationDetailsTitle": {
     "message": "Estimated changes"
   },
+  "simulationDetailsTitleEnforced": {
+    "message": "Balance changes"
+  },
   "simulationDetailsTitleTooltip": {
     "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+  },
+  "simulationDetailsTitleTooltipEnforced": {
+    "message": "Balance changes are guaranteed. If this outcome isn't possible, the transaction will be stopped."
   },
   "simulationDetailsTotalFiat": {
     "message": "Total = $1",
@@ -6781,6 +6868,9 @@
   },
   "userOpContractDeployError": {
     "message": "Contract deployment from a smart contract account is not supported"
+  },
+  "value": {
+    "message": "Value"
   },
   "version": {
     "message": "Version"
