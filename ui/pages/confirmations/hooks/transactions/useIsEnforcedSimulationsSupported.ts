@@ -1,6 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useConfirmContext } from '../../context/confirm';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
+import { useConfirmContext } from '../../context/confirm';
 
 export function useIsEnforcedSimulationsSupported() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();

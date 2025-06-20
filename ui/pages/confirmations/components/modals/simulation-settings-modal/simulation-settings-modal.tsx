@@ -1,5 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import {
+  TransactionContainerType,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
+import { useDispatch, useSelector } from 'react-redux';
+import {
   AlignItems,
   BackgroundColor,
   BorderRadius,
@@ -24,14 +29,9 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import ToggleButton from '../../../../../components/ui/toggle-button';
 import { useConfirmContext } from '../../../context/confirm';
 import {
-  TransactionContainerType,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
-import {
   applyTransactionContainersExisting,
   setEnableEnforcedSimulationsForTransaction,
 } from '../../../../../store/actions';
-import { useDispatch, useSelector } from 'react-redux';
 import { selectEnableEnforcedSimulations } from '../../../selectors';
 import { ConfirmMetamaskState } from '../../../types/confirm';
 
