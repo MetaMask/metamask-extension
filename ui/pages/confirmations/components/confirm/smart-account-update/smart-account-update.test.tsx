@@ -7,10 +7,7 @@ import { getMockConfirmStateForTransaction } from '../../../../../../test/data/c
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { upgradeAccountConfirmation } from '../../../../../../test/data/confirmations/batch-transaction';
 import { Confirmation } from '../../../types/confirm';
-import {
-  setSmartAccountOptInForAccounts,
-  setSmartAccountOptIn,
-} from '../../../../../store/actions';
+import { setSmartAccountOptInForAccounts } from '../../../../../store/actions';
 import { SmartAccountUpdate } from './smart-account-update';
 
 jest.mock('../../../../../hooks/useMultiPolling', () => ({
@@ -22,7 +19,6 @@ jest.mock('../../../../../store/actions', () => ({
   setAccountDetailsAddress: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
   setSmartAccountOptInForAccounts: jest.fn(),
-  setSmartAccountOptIn: jest.fn(),
 }));
 
 const mockDispatch = jest.fn();
@@ -74,7 +70,6 @@ describe('SmartAccountUpdate', () => {
 
     expect(container.firstChild).toBeNull();
     expect(setSmartAccountOptInForAccounts).toHaveBeenCalledTimes(1);
-    expect(setSmartAccountOptIn).toHaveBeenCalledTimes(1);
   });
 
   it('show success after acknowledgement if wrapped', () => {
@@ -95,7 +90,6 @@ describe('SmartAccountUpdate', () => {
     );
 
     expect(setSmartAccountOptInForAccounts).toHaveBeenCalledTimes(1);
-    expect(setSmartAccountOptIn).toHaveBeenCalledTimes(1);
     expect(getByText('Successful!')).toBeDefined();
   });
 

@@ -1,7 +1,7 @@
 import React, { ReactElement, useCallback, useState } from 'react';
 import { Hex } from '@metamask/utils';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import {
@@ -30,10 +30,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import {
-  setSmartAccountOptIn,
-  setSmartAccountOptInForAccounts,
-} from '../../../../../store/actions';
+import { setSmartAccountOptInForAccounts } from '../../../../../store/actions';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getInternalAccounts, getUseBlockie } from '../../../../../selectors';
 import IconButton from '../../../../../components/ui/icon-button/icon-button-round';
@@ -85,7 +82,6 @@ export function SmartAccountUpdate({
   const [acknowledged, setAcknowledged] = useState(false);
   const [accountSelectionVisible, setAccountSelectionVisible] = useState(false);
   const t = useI18nContext();
-  const dispatch = useDispatch();
   const useBlockie = useSelector(getUseBlockie);
   const smartAccountOptInForAccounts: Hex[] = useSelector(
     getSmartAccountOptInForAccounts,
@@ -101,7 +97,6 @@ export function SmartAccountUpdate({
 
   const acknowledgeSmartAccountUpgrade = useCallback(() => {
     setSmartAccountOptInForAccounts(selectedAccounts);
-    dispatch(setSmartAccountOptIn(true));
     setAcknowledged(true);
     setAccountSelectionVisible(false);
   }, [setAcknowledged]);
