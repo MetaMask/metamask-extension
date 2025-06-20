@@ -60,7 +60,6 @@ describe('Container Utils', () => {
 
     enforceSimulationsMock.mockResolvedValue({
       updateTransaction: (tx) => {
-        tx.chainId = CHAIN_ID_MOCK;
         tx.txParams.data = NEW_DATA_MOCK;
       },
     });
@@ -82,7 +81,7 @@ describe('Container Utils', () => {
       const transactionToUpdate = cloneDeep(TRANSACTION_META_MOCK);
       updateTransaction(transactionToUpdate);
 
-      expect(transactionToUpdate.chainId).toBe(CHAIN_ID_MOCK);
+      expect(transactionToUpdate.txParams.data).toBe(NEW_DATA_MOCK);
     });
 
     it('updates gas if not approved', async () => {
