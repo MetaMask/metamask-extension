@@ -1,4 +1,9 @@
-import { CaipNamespace, Hex, parseCaipAccountId } from '@metamask/utils';
+import {
+  CaipAccountId,
+  CaipNamespace,
+  Hex,
+  parseCaipAccountId,
+} from '@metamask/utils';
 import {
   Caip25CaveatType,
   Caip25CaveatValue,
@@ -82,11 +87,13 @@ export function getCaip25PermissionsResponse(
  * @param requestedNamespaces - The namespaces requested.
  * @param supportedRequestedAccounts - The supported requested accounts.
  * @param allAccounts - All available accounts.
+ * @param existingPermittedCaipAccountIds - The CAIP account IDs that are already permitted.
  */
 export function getDefaultAccounts(
   requestedNamespaces: CaipNamespace[],
   supportedRequestedAccounts: MergedInternalAccountWithCaipAccountId[],
   allAccounts: MergedInternalAccountWithCaipAccountId[],
+  existingPermittedCaipAccountIds?: CaipAccountId[],
 ): MergedInternalAccountWithCaipAccountId[] {
   const defaultAccounts: MergedInternalAccountWithCaipAccountId[] = [];
   const satisfiedNamespaces = new Set<CaipNamespace>();
@@ -100,6 +107,21 @@ export function getDefaultAccounts(
       satisfiedNamespaces.add(namespace);
     }
   });
+
+  if (
+    existingPermittedCaipAccountIds &&
+    existingPermittedCaipAccountIds.length > 0
+  ) {
+    const addresses = existingPermittedCaipAccountIds.map((caipAccountId) => {
+      const { address } = parseCaipAccountId(caipAccountId);
+      return address.toLowerCase();
+    });
+
+    const accounts = allAccounts.filter((account) => {
+      return addresses.includes(account.address.toLowerCase());
+    });
+    defaultAccounts.push(...accounts);
+  }
 
   const unsatisfiedNamespaces = requestedNamespaces.filter(
     (namespace) => !satisfiedNamespaces.has(namespace),

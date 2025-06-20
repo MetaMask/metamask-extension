@@ -62,5 +62,3 @@ export function mergeCaip25CaveatValues(
 
   return mergedCaveatValue;
 }
-
-/
