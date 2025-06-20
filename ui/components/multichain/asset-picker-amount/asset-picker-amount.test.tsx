@@ -59,7 +59,6 @@ describe('AssetPickerAmount', () => {
       }
       if (selector === getCurrentDraftTransaction) {
         return {
-          swapQuotesError: null,
           sendAsset: { type: AssetType.token },
           receiveAsset: { type: AssetType.token },
         };
@@ -90,34 +89,6 @@ describe('AssetPickerAmount', () => {
     expect(screen.getByText('MaxClearButton')).toBeInTheDocument();
   });
 
-  it('renders AssetPickerAmount does not show max button when srcAsset type is native and destAsset type is ERC20', () => {
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector === getSelectedInternalAccount) {
-        return { address: '0xAddress' };
-      }
-      if (selector === getCurrentDraftTransaction) {
-        return {
-          swapQuotesError: null,
-          sendAsset: { type: AssetType.native },
-          receiveAsset: { type: AssetType.token },
-        };
-      }
-      if (selector === getIsNativeSendPossible) {
-        return true;
-      }
-      if (selector === getSendMaxModeState) {
-        return false;
-      }
-      return undefined;
-    });
-    render(<AssetPickerAmount {...defaultProps} />);
-
-    expect(screen.getByText('AssetPicker')).toBeInTheDocument();
-    expect(screen.getByText('SwappableCurrencyInput')).toBeInTheDocument();
-    expect(screen.getByText('AssetBalance')).toBeInTheDocument();
-    expect(screen.queryByText('MaxClearButton')).toBeNull();
-  });
-
   it('renders AssetPickerAmount does shows max button when srcAsset type is ERC20 and destAsset type is native', () => {
     useSelectorMock.mockImplementation((selector) => {
       if (selector === getSelectedInternalAccount) {
@@ -125,7 +96,6 @@ describe('AssetPickerAmount', () => {
       }
       if (selector === getCurrentDraftTransaction) {
         return {
-          swapQuotesError: null,
           sendAsset: { type: AssetType.token },
           receiveAsset: { type: AssetType.native },
         };
@@ -144,38 +114,6 @@ describe('AssetPickerAmount', () => {
     expect(screen.getByText('SwappableCurrencyInput')).toBeInTheDocument();
     expect(screen.getByText('AssetBalance')).toBeInTheDocument();
     expect(screen.getByText('MaxClearButton')).toBeInTheDocument();
-  });
-
-  it('shows swaps error message when there is an error', () => {
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector === getSelectedInternalAccount) {
-        return { address: '0xAddress' };
-      }
-      if (selector === getCurrentDraftTransaction) {
-        return {
-          swapQuotesError: 'error',
-          sendAsset: { type: AssetType.native },
-          receiveAsset: { type: AssetType.token },
-        };
-      }
-      if (selector === getIsNativeSendPossible) {
-        return true;
-      }
-      if (selector === getSendMaxModeState) {
-        return false;
-      }
-      return undefined;
-    });
-
-    const propsWithError = {
-      ...defaultProps,
-    };
-
-    render(
-      <AssetPickerAmount {...propsWithError} onAmountChange={undefined} />,
-    );
-
-    expect(screen.getByText('error')).toBeInTheDocument();
   });
 
   it('calls onAmountChange with "0x0" when native send is not possible and max is enabled', () => {
@@ -246,7 +184,6 @@ describe('AssetPickerAmount', () => {
       }
       if (selector === getCurrentDraftTransaction) {
         return {
-          swapQuotesError: null,
           sendAsset: { type: AssetType.native },
           receiveAsset: { type: AssetType.token },
         };
@@ -298,7 +235,6 @@ describe('AssetPickerAmount', () => {
       }
       if (selector === getCurrentDraftTransaction) {
         return {
-          swapQuotesError: null,
           sendAsset: { type: AssetType.native },
           receiveAsset: { type: AssetType.token },
         };

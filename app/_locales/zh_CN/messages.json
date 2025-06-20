@@ -3247,18 +3247,6 @@
   "networkName": {
     "message": "网络名称"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "基础"
-  },
   "networkNameBitcoin": {
     "message": "比特币"
   },
@@ -3268,26 +3256,8 @@
   "networkNameEthereum": {
     "message": "以太坊"
   },
-  "networkNameGoerli": {
-    "message": "Goerli"
-  },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP主网"
-  },
-  "networkNamePolygon": {
-    "message": "Polygon"
-  },
   "networkNameSolana": {
     "message": "Solana"
-  },
-  "networkNameTestnet": {
-    "message": "Testnet"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "网络选项"
@@ -4799,9 +4769,6 @@
     "message": "发送 $1",
     "description": "Symbol of the specified token"
   },
-  "sendSwapSubmissionWarning": {
-    "message": "点击此按钮将立即启动您的兑换交易。在继续操作之前，请查看您的交易详情。"
-  },
   "sendTokenAsToken": {
     "message": "将 $1 作为 $2 发送",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
@@ -5774,9 +5741,6 @@
     "message": "$1 到 $2 的交换",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "燃料费用是估算的，并将根据网络流量和交易复杂性而波动。"
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask 不从燃料费中赚钱。这些费用是估计值，可能会根据网络的繁忙程度和交易的复杂程度而变化。了解更多信息 $1。",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -5785,15 +5749,8 @@
     "message": "参见此处",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesLearnMore": {
-    "message": "了解更多关于燃料费的信息"
-  },
   "swapGasFeesSplit": {
     "message": "上一个屏幕上的燃料费用在这两笔交易之间分摊。"
-  },
-  "swapGasFeesSummary": {
-    "message": "燃料费用支付给在 $1 网络上处理交易的加密矿工。MetaMask 不会从燃料费用中获利。",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "此报价通过调整发送或接收的代币金额将燃料费包含在内。您可能会在活动列表上的单独交易中收到 ETH。"
@@ -5811,10 +5768,6 @@
   "swapIncludesMMFee": {
     "message": "包括 $1% 的 MetaMask 费用。",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "报价反映了 $1% MetaMask 费用",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "包含$1%的MetaMask费用 – $2",
