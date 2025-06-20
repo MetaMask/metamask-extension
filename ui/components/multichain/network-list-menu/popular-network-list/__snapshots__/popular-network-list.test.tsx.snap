@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PopularNetworkList renders popular list component 1`] = `
+<div>
+  <div
+    class="mm-box new-network-list__networks-container"
+  >
+    <div
+      class="mm-box mm-box--margin-top-4 mm-box--margin-bottom-1 mm-box--padding-right-4 mm-box--padding-left-4"
+    />
+  </div>
+</div>
+`;

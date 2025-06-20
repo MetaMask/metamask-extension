@@ -1,0 +1,12 @@
+@use "design-system";
+
+.alert-modal {
+  &__alert-details {
+    list-style-type: disc;
+    word-wrap: break-word;
+  }
+
+  &__acknowledge-checkbox {
+    @include design-system.H6;
+  }
+}

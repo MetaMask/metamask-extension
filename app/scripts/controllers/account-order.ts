@@ -1,7 +1,4 @@
-import {
-  BaseController,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
+import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
 
 // Unique name for the controller
 const controllerName = 'AccountOrderController';
@@ -35,7 +32,7 @@ export type AccountOrderControllerMessengerActions =
   | AccountOrderControllerhideAccountsListAction;
 
 // Type for the messenger of AccountOrderController
-export type AccountOrderControllerMessenger = RestrictedControllerMessenger<
+export type AccountOrderControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   AccountOrderControllerMessengerActions,
   never,

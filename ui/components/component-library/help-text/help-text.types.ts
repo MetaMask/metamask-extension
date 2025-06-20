@@ -27,6 +27,10 @@ export interface HelpTextStyleUtilityProps extends TextStyleUtilityProps {
    * Additional classNames to be added to the HelpText component
    */
   className?: string;
+  /**
+   * Data test id
+   */
+  'data-testid'?: string;
 }
 
 export type HelpTextProps<C extends React.ElementType> =

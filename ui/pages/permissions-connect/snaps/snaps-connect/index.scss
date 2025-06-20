@@ -1,13 +1,8 @@
 .snaps-connect {
-  overflow-y: hidden;
-
-  &__header {
-    width: 100%;
-  }
+  border: 1px solid var(--color-border-muted);
+  box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
 
   .page-container__footer {
     border-top: 0;
-    margin-top: auto;
-    box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
   }
 }

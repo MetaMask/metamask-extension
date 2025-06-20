@@ -33,9 +33,6 @@
   "approve": {
     "message": "Goedkeuren"
   },
-  "attemptingConnect": {
-    "message": "Poging om verbinding te maken met blockchain."
-  },
   "attributions": {
     "message": "Bevoegdheden"
   },
@@ -87,10 +84,6 @@
   "failed": {
     "message": "mislukt"
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Bestandsimport werkt niet? Klik hier!",
     "description": "Helps user import their account from a JSON file"
@@ -103,9 +96,6 @@
   },
   "gasLimitTooLow": {
     "message": "De gaslimiet moet minstens 21000 zijn"
-  },
-  "gasPrice": {
-    "message": "Gasprijs (GWEI)"
   },
   "here": {
     "message": "hier",
@@ -120,9 +110,6 @@
   "import": {
     "message": "Importeren",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Account importeren"
   },
   "importAccountMsg": {
     "message": " Geïmporteerde accounts worden niet gekoppeld aan de seedphrase van uw oorspronkelijk gemaakte MetaMask-account. Meer informatie over geïmporteerde accounts"
@@ -143,9 +130,6 @@
   "invalidAddressRecipient": {
     "message": "Het adres van de ontvanger is ongeldig"
   },
-  "invalidBlockExplorerURL": {
-    "message": "Ongeldige Block Explorer URI"
-  },
   "invalidRPC": {
     "message": "Ongeldige RPC-URI"
   },
@@ -158,9 +142,6 @@
   },
   "loading": {
     "message": "Bezig met laden..."
-  },
-  "loadingTokens": {
-    "message": "Tokens laden ..."
   },
   "lock": {
     "message": "Uitloggen"
@@ -195,12 +176,6 @@
   },
   "next": {
     "message": "volgende"
-  },
-  "noAddressForName": {
-    "message": "Er is geen adres ingesteld voor deze naam."
-  },
-  "noTransactions": {
-    "message": "Geen transacties"
   },
   "pastePrivateKey": {
     "message": "Plak hier uw privésleutelstring:",
@@ -256,14 +231,8 @@
   "send": {
     "message": "Sturen"
   },
-  "sendTokens": {
-    "message": "Stuur tokens"
-  },
   "settings": {
     "message": "instellingen"
-  },
-  "sigRequest": {
-    "message": "Ondertekeningsverzoek"
   },
   "sign": {
     "message": "Teken"
@@ -298,9 +267,6 @@
   "unknown": {
     "message": "Onbekend"
   },
-  "unknownNetwork": {
-    "message": "Onbekend privénetwerk"
-  },
   "unlock": {
     "message": "Log in"
   },
@@ -312,8 +278,5 @@
   },
   "visitWebSite": {
     "message": "Bezoek onze website"
-  },
-  "youSign": {
-    "message": "U ondertekent"
   }
 }

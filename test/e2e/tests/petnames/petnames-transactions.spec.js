@@ -3,15 +3,15 @@ const {
   switchToNotificationWindow,
   withFixtures,
   unlockWallet,
-  defaultGanacheOptions,
   openActionMenuAndStartSendFlow,
+  logInWithBalanceValidation,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   expectName,
   focusTestDapp,
-  rejectSignatureOrTransactionRequest,
   saveName,
+  rejectRedesignedSignatureOrTransactionRequest,
 } = require('./petnames-helpers');
 
 async function createDappSendTransaction(driver) {
@@ -22,12 +22,12 @@ async function createDappSendTransaction(driver) {
 async function createWalletSendTransaction(driver, recipientAddress) {
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill(
-    'input[placeholder="Enter public address (0x) or ENS name"]',
+    'input[placeholder="Enter public address (0x) or domain name"]',
     recipientAddress,
   );
 
-  await driver.findClickableElement({ text: 'Next', tag: 'button' });
-  await driver.clickElement({ text: 'Next', tag: 'button' });
+  await driver.findClickableElement({ text: 'Continue', tag: 'button' });
+  await driver.clickElement({ text: 'Continue', tag: 'button' });
 }
 
 const ADDRESS_MOCK = '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb';
@@ -44,11 +44,11 @@ describe('Petnames - Transactions', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
         await openDapp(driver);
         await createDappSendTransaction(driver);
         await switchToNotificationWindow(driver, 3);
@@ -61,7 +61,7 @@ describe('Petnames - Transactions', function () {
           CUSTOM_NAME_MOCK,
           undefined,
         );
-        await rejectSignatureOrTransactionRequest(driver);
+        await rejectRedesignedSignatureOrTransactionRequest(driver);
         await focusTestDapp(driver);
         await createDappSendTransaction(driver);
         await switchToNotificationWindow(driver, 3);
@@ -69,7 +69,7 @@ describe('Petnames - Transactions', function () {
 
         // Test proposed name.
         await saveName(driver, CUSTOM_NAME_MOCK, undefined, PROPOSED_NAME_MOCK);
-        await rejectSignatureOrTransactionRequest(driver);
+        await rejectRedesignedSignatureOrTransactionRequest(driver);
         await focusTestDapp(driver);
         await createDappSendTransaction(driver);
         await switchToNotificationWindow(driver, 3);
@@ -79,10 +79,6 @@ describe('Petnames - Transactions', function () {
   });
 
   it('can save petnames for addresses in wallet send transactions', async function () {
-    // TODO: Update Test when Multichain Send Flow is added.
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -93,11 +89,11 @@ describe('Petnames - Transactions', function () {
           })
           .withNoNames()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver);
+
         await createWalletSendTransaction(driver, ADDRESS_MOCK);
         await expectName(driver, ABBREVIATED_ADDRESS_MOCK, false);
 
@@ -108,13 +104,13 @@ describe('Petnames - Transactions', function () {
           CUSTOM_NAME_MOCK,
           undefined,
         );
-        await rejectSignatureOrTransactionRequest(driver);
+        await rejectRedesignedSignatureOrTransactionRequest(driver);
         await createWalletSendTransaction(driver, ADDRESS_MOCK);
         await expectName(driver, CUSTOM_NAME_MOCK, true);
 
         // Test proposed name.
         await saveName(driver, CUSTOM_NAME_MOCK, undefined, PROPOSED_NAME_MOCK);
-        await rejectSignatureOrTransactionRequest(driver);
+        await rejectRedesignedSignatureOrTransactionRequest(driver);
         await createWalletSendTransaction(driver, ADDRESS_MOCK);
         await expectName(driver, PROPOSED_NAME_MOCK, true);
       },

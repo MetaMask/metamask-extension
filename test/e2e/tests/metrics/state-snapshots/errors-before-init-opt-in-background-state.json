@@ -1,0 +1,158 @@
+{
+  "data": {
+    "AuthenticationController": { "isSignedIn": "boolean" },
+    "NotificationServicesController": {
+      "subscriptionAccountsSeen": "object",
+      "isFeatureAnnouncementsEnabled": "boolean",
+      "isNotificationServicesEnabled": "boolean",
+      "isMetamaskNotificationsFeatureSeen": "boolean",
+      "metamaskNotificationsList": "object",
+      "metamaskNotificationsReadList": "object"
+    },
+    "AccountsController": {
+      "internalAccounts": { "selectedAccount": "string", "accounts": "object" }
+    },
+    "AlertController": {
+      "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
+      "unconnectedAccountAlertShownOrigins": "object",
+      "web3ShimUsageOrigins": "object"
+    },
+    "AnnouncementController": { "announcements": "object" },
+    "NetworkOrderController": {
+      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
+      "enabledNetworkMap": {
+        "0x539": "boolean"
+      }
+    },
+    "AccountOrderController": {
+      "pinnedAccountList": {},
+      "hiddenAccountList": {}
+    },
+    "AppStateController": {
+      "browserEnvironment": {},
+      "nftsDropdownState": {},
+      "connectedStatusPopoverHasBeenShown": true,
+      "termsOfUseLastAgreed": "number",
+      "defaultHomeActiveTabName": null,
+      "fullScreenGasPollTokens": "object",
+      "notificationGasPollTokens": "object",
+      "popupGasPollTokens": "object",
+      "qrHardware": {},
+      "recoveryPhraseReminderHasBeenShown": true,
+      "recoveryPhraseReminderLastShown": "number",
+      "showTestnetMessageInDropdown": true,
+      "trezorModel": null,
+      "isRampCardClosed": false,
+      "newPrivacyPolicyToastClickedOrClosed": "boolean",
+      "newPrivacyPolicyToastShownDate": "number",
+      "snapsInstallPrivacyWarningShown": true
+    },
+    "BridgeController": {},
+    "CurrencyController": {
+      "currentCurrency": "usd",
+      "currencyRates": {
+        "ETH": {
+          "conversionDate": "number",
+          "conversionRate": 1700,
+          "usdConversionRate": 1700
+        },
+        "MON": {
+          "conversionDate": "number",
+          "conversionRate": 0.2,
+          "usdConversionRate": 0.2
+        }
+      }
+    },
+    "GasFeeController": {
+      "estimatedGasFeeTimeBounds": {},
+      "gasEstimateType": "none",
+      "gasFeeEstimates": {}
+    },
+    "KeyringController": { "vault": "string" },
+    "MetaMetricsController": {
+      "eventsBeforeMetricsOptIn": "object",
+      "fragments": "object",
+      "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
+      "participateInMetaMetrics": true,
+      "dataCollectionForMarketing": "boolean",
+      "traits": "object"
+    },
+    "MetaMetricsDataDeletionController": {
+      "metaMetricsDataDeletionId": null,
+      "metaMetricsDataDeletionTimestamp": 0
+    },
+    "NetworkController": {
+      "selectedNetworkClientId": "string",
+      "networkConfigurations": "object",
+      "networksMetadata": {
+        "networkConfigurationId": { "EIPS": {}, "status": "available" }
+      },
+      "providerConfig": "object"
+    },
+    "OnboardingController": {
+      "completedOnboarding": true,
+      "firstTimeFlowType": "import",
+      "onboardingTabs": "object",
+      "seedPhraseBackedUp": true
+    },
+    "PermissionController": { "subjects": "object" },
+    "PreferencesController": {
+      "advancedGasFee": null,
+      "currentLocale": "en",
+      "useExternalServices": "boolean",
+      "dismissSeedBackUpReminder": true,
+      "overrideContentSecurityPolicyHeader": true,
+      "featureFlags": {},
+      "forgottenPassword": false,
+      "identities": "object",
+      "ipfsGateway": "string",
+      "knownMethodData": "object",
+      "ledgerTransportType": "webhid",
+      "lostIdentities": "object",
+      "openSeaEnabled": false,
+      "preferences": {
+        "hideZeroBalanceTokens": false,
+        "showExtensionInFullSizeView": false,
+        "showFiatInTestnets": false,
+        "showTestNetworks": false,
+        "smartTransactionsOptInStatus": true,
+        "showNativeTokenAsMainBalance": true,
+        "petnamesEnabled": "boolean",
+        "showMultiRpcModal": "boolean",
+        "showConfirmationAdvancedDetails": false,
+        "tokenSortConfig": "object",
+        "shouldShowAggregatedBalancePopover": "boolean",
+        "tokenNetworkFilter": {}
+      },
+      "selectedAddress": "string",
+      "theme": "light",
+      "useBlockie": false,
+      "useNftDetection": false,
+      "usePhishDetect": true,
+      "useTokenDetection": false,
+      "useCurrencyRateCheck": true,
+      "useMultiAccountBalanceChecker": true,
+      "isMultiAccountBalancesEnabled": "boolean",
+      "showIncomingTransactions": "object"
+    },
+    "SelectedNetworkController": { "domains": "object" },
+    "SmartTransactionsController": {
+      "smartTransactionsState": {
+        "fees": {},
+        "feesByChainId": "object",
+        "liveness": true,
+        "livenessByChainId": "object",
+        "smartTransactions": "object"
+      }
+    },
+    "SubjectMetadataController": { "subjectMetadata": "object" },
+    "TokensController": {
+      "allDetectedTokens": {},
+      "allIgnoredTokens": {},
+      "allTokens": {}
+    },
+    "TransactionController": { "transactions": "object" },
+    "config": "object",
+    "firstTimeInfo": "object"
+  }
+}

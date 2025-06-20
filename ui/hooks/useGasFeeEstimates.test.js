@@ -8,7 +8,6 @@ import {
   getIsNetworkBusyByChainId,
 } from '../ducks/metamask/metamask';
 import {
-  gasFeeStartPollingByNetworkClientId,
   gasFeeStopPollingByPollingToken,
   getNetworkConfigurationByNetworkClientId,
 } from '../store/actions';
@@ -37,13 +36,16 @@ jest.mock('../ducks/metamask/metamask', () => ({
     .mockReturnValue('getIsNetworkBusyByChainId'),
 }));
 
+jest.mock('../../shared/modules/selectors/networks', () => ({
+  getSelectedNetworkClientId: jest
+    .fn()
+    .mockReturnValue('getSelectedNetworkClientId'),
+}));
+
 jest.mock('../selectors', () => ({
   checkNetworkAndAccountSupports1559: jest
     .fn()
     .mockReturnValue('checkNetworkAndAccountSupports1559'),
-  getSelectedNetworkClientId: jest
-    .fn()
-    .mockReturnValue('getSelectedNetworkClientId'),
 }));
 
 jest.mock('react-redux', () => {
@@ -115,9 +117,9 @@ describe('useGasFeeEstimates', () => {
       renderHook(() => useGasFeeEstimates());
     });
     expect(usePolling).toHaveBeenCalledWith({
-      startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
+      startPolling: expect.any(Function),
       stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
-      networkClientId: 'selectedNetworkClientId',
+      input: { networkClientId: 'selectedNetworkClientId' },
     });
   });
 
@@ -127,9 +129,9 @@ describe('useGasFeeEstimates', () => {
       renderHook(() => useGasFeeEstimates('networkClientId1'));
     });
     expect(usePolling).toHaveBeenCalledWith({
-      startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
+      startPolling: expect.any(Function),
       stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
-      networkClientId: 'networkClientId1',
+      input: { networkClientId: 'networkClientId1' },
     });
   });
 

@@ -60,6 +60,8 @@ export default function QuizContent({
           key={idx}
           size={btn.size}
           onClick={btn.onClick}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           variant={btn.variant as any}
           width={BlockSize.Full}
           data-testid={btn['data-testid']}

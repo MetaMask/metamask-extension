@@ -1,31 +1,27 @@
 @use "design-system";
 
 .unlock-page {
-  color: var(--color-text-default);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  width: 357px;
-  padding: 30px;
-  font-weight: 400;
+  max-width: 446px;
+
+  @include design-system.screen-sm-min {
+    margin: 12px auto auto;
+    padding: 24px;
+    border: 1px solid var(--color-border-muted);
+    min-height: 627px;
+    height: unset;
+  }
 
   &__container {
-    display: flex;
     align-self: stretch;
-    justify-content: center;
     flex: 1 0 auto;
-    background: var(--color-background-default);
   }
 
   &__mascot-container {
-    margin-top: 24px;
     position: relative;
 
     &__beta {
-      /* these colors should be used on both light and dark mode */
-      background: var(--brand-colors-blue-blue500);
-      color: var(--brand-colors-white-white000);
+      background: var(--color-primary-default);
+      color: var(--color-primary-inverse);
       padding: 3px 6px;
       font-size: 16px;
       position: absolute;
@@ -36,37 +32,17 @@
     }
   }
 
-  &__title {
-    @include design-system.H2;
-
-    margin-top: 5px;
-    font-weight: 800;
-    color: var(--color-text-alternative);
-  }
-
-  &__form {
-    width: 100%;
-    margin: 56px 0 8px;
-  }
-
-  &__links {
-    margin-top: 15px;
-    width: 100%;
-    text-align: center;
-    font-size: 0.75rem;
-  }
-
-  &__link {
-    font-size: unset;
-    font-weight: bold;
-  }
-
   &__support {
-    margin-top: 25px;
     font-size: 0.75rem;
+    color: var(--color-text-alternative);
 
     a {
       color: var(--color-primary-default);
     }
   }
+
+  &__help-text {
+    height: 40px;
+  }
 }
+

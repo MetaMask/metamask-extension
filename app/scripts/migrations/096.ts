@@ -4,6 +4,9 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 
 type VersionedData = {
   meta: { version: number };
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: Record<string, any>;
 };
 
@@ -34,6 +37,8 @@ export async function migrate(
 }
 
 type NetworkConfiguration = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   chainId: Record<string, any>;
 };
 
@@ -48,10 +53,21 @@ function transformState(state: Record<string, unknown>) {
     return state;
   }
   const { PreferencesController, NetworkController } = state;
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { featureFlags }: Record<string, any> = PreferencesController;
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { showIncomingTransactions }: any = featureFlags;
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { networkConfigurations }: Record<string, any> = NetworkController;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const addedNetwork: Record<string, any>[] =
     Object.values<NetworkConfiguration>(networkConfigurations).map(
       (network) => network.chainId,
@@ -63,6 +79,9 @@ function transformState(state: Record<string, unknown>) {
     CHAIN_IDS.SEPOLIA,
     CHAIN_IDS.LINEA_GOERLI,
   ];
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const allSavedNetworks: Record<string, any> = [
     ...mainNetworks,
     ...addedNetwork,

@@ -11,7 +11,13 @@ import globby from 'globby';
  *
  * @type {string[]}
  */
-const blocklist = [];
+const blocklist = [
+  // test files are typically generated; optimizing them will cause developer
+  // annoyance
+  'test/**/*',
+  // too big to optimize
+  'docs/assets/sentry-cli-release-process.gif',
+];
 
 /**
  * Supported file formats by the optimizer (sharp)
@@ -58,10 +64,12 @@ async function optimizeImage(filePath) {
       let optimizedBuffer = null;
       if (fileInfo.format === 'gif') {
         // Gifsicle is better at optimizing gifs than sharp
-        [{data: optimizedBuffer}] = await imagemin([filePath], {
-          plugins: [imageminGifsicle({
-            optimizationLevel: 3,
-          })],
+        [{ data: optimizedBuffer }] = await imagemin([filePath], {
+          plugins: [
+            imageminGifsicle({
+              optimizationLevel: 3,
+            }),
+          ],
         });
       } else {
         optimizedBuffer = await sharp(filePath, {
@@ -73,7 +81,7 @@ async function optimizeImage(filePath) {
             animated: true,
             compressionLevel: 9,
             // 6 is max for webp,
-            effort: fileInfo.format === "webp" ? 6 : 10,
+            effort: fileInfo.format === 'webp' ? 6 : 10,
             reuse: false,
             quality: 100,
             lossless: true,

@@ -19,37 +19,56 @@ import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../helpers/constants/routes';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
 } from '../../store/actions';
+import { mockNetworkState } from '../../../test/stub/networks';
 import OnboardingFlow from './onboarding-flow';
 
 jest.mock('../../store/actions', () => ({
   createNewVaultAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   createNewVaultAndRestore: jest.fn(),
+  setOnboardingDate: jest.fn(() => ({ type: 'TEST_DISPATCH' })),
+  hideLoadingIndication: jest.fn(() => ({ type: 'HIDE_LOADING_INDICATION' })),
 }));
 
 describe('Onboarding Flow', () => {
   const mockState = {
     metamask: {
-      identities: {},
       internalAccounts: {
-        accounts: {},
+        accounts: {
+          accountId: {
+            address: '0x0000000000000000000000000000000000000000',
+            metadata: {
+              keyring: 'HD Key Tree',
+            },
+          },
+        },
         selectedAccount: '',
       },
-      providerConfig: {
-        type: NETWORK_TYPES.GOERLI,
-        chainId: '0x0',
-      },
-      incomingTransactionsPreferences: {
-        [CHAIN_IDS.MAINNET]: true,
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          accounts: ['0x0000000000000000000000000000000000000000'],
+        },
+      ],
+      ...mockNetworkState(
+        { chainId: CHAIN_IDS.GOERLI },
+        { chainId: CHAIN_IDS.MAINNET },
+        { chainId: CHAIN_IDS.LINEA_MAINNET },
+      ),
+      preferences: {
+        petnamesEnabled: true,
       },
     },
     localeMessages: {
       currentLocale: 'en',
+    },
+    appState: {
+      externalServicesOnboardingToggleState: true,
     },
   };
 
@@ -62,6 +81,26 @@ describe('Onboarding Flow', () => {
       metamask: {
         completedOnboarding: true,
         seedPhraseBackedUp: true,
+        internalAccounts: {
+          accounts: {
+            accountId: {
+              address: '0x0000000000000000000000000000000000000000',
+              metadata: {
+                keyring: 'HD Key Tree',
+              },
+            },
+          },
+          selectedAccount: 'accountId',
+        },
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: ['0x0000000000000000000000000000000000000000'],
+          },
+        ],
+      },
+      localeMessages: {
+        currentLocale: 'en',
       },
     };
 
@@ -91,17 +130,20 @@ describe('Onboarding Flow', () => {
     });
 
     it('should call createNewVaultAndGetSeedPhrase when creating a new wallet password', async () => {
-      const { queryByTestId } = renderWithProvider(
+      const { queryByTestId, queryByText } = renderWithProvider(
         <OnboardingFlow />,
         store,
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
 
+      const createPasswordText = queryByText('MetaMask password');
+      expect(createPasswordText).toBeInTheDocument();
+
       const password = 'a-new-password';
       const checkTerms = queryByTestId('create-password-terms');
-      const createPassword = queryByTestId('create-password-new');
-      const confirmPassword = queryByTestId('create-password-confirm');
-      const createPasswordWallet = queryByTestId('create-password-wallet');
+      const createPassword = queryByTestId('create-password-new-input');
+      const confirmPassword = queryByTestId('create-password-confirm-input');
+      const createPasswordWallet = queryByTestId('create-password-submit');
 
       fireEvent.click(checkTerms);
       fireEvent.change(createPassword, { target: { value: password } });
@@ -205,7 +247,7 @@ describe('Onboarding Flow', () => {
       ONBOARDING_COMPLETION_ROUTE,
     );
 
-    const creationSuccessful = queryByTestId('creation-successful');
+    const creationSuccessful = queryByTestId('wallet-ready');
     expect(creationSuccessful).toBeInTheDocument();
   });
 
@@ -216,7 +258,7 @@ describe('Onboarding Flow', () => {
       ONBOARDING_WELCOME_ROUTE,
     );
 
-    const onboardingWelcome = queryByTestId('onboarding-welcome');
+    const onboardingWelcome = queryByTestId('onboarding-welcome-banner-title');
     expect(onboardingWelcome).toBeInTheDocument();
   });
 

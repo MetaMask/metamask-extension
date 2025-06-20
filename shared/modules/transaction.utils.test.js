@@ -1,12 +1,28 @@
-import EthQuery from '@metamask/ethjs-query';
 import { TransactionType } from '@metamask/transaction-controller';
+
+import BigNumber from 'bignumber.js';
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
+  buildApproveTransactionData,
+  buildIncreaseAllowanceTransactionData,
+  buildPermit2ApproveTransactionData,
+} from '../../test/data/confirmations/token-approve';
+import { buildSetApproveForAllTransactionData } from '../../test/data/confirmations/set-approval-for-all';
+import {
   determineTransactionType,
+  hasTransactionData,
   isEIP1559Transaction,
   isLegacyTransaction,
+  parseApprovalTransactionData,
   parseStandardTokenTransactionData,
+  parseTypedDataMessage,
 } from './transaction.utils';
+
+const DATA_MOCK = '0x12345678';
+const ADDRESS_MOCK = '0x1234567890123456789012345678901234567890';
+const ADDRESS_2_MOCK = '0x1234567890123456789012345678901234567891';
+const EXPIRATION_MOCK = 1234567890;
+const AMOUNT_MOCK = 123;
 
 describe('Transaction.utils', function () {
   describe('parseStandardTokenTransactionData', () => {
@@ -26,7 +42,29 @@ describe('Transaction.utils', function () {
     it('should not throw errors when called without arguments', () => {
       expect(() => parseStandardTokenTransactionData()).not.toThrow();
     });
+
+    it('decodes Permit2 function', () => {
+      const result = parseStandardTokenTransactionData(
+        buildPermit2ApproveTransactionData(
+          ADDRESS_MOCK,
+          ADDRESS_2_MOCK,
+          AMOUNT_MOCK,
+          EXPIRATION_MOCK,
+        ),
+      );
+
+      expect(result.name).toBe('approve');
+      expect(result.args).toStrictEqual(
+        expect.objectContaining({
+          token: ADDRESS_MOCK,
+          spender: ADDRESS_2_MOCK,
+          expiration: EXPIRATION_MOCK,
+        }),
+      );
+      expect(result.args.amount.toString()).toBe(AMOUNT_MOCK.toString());
+    });
   });
+
   describe('isEIP1559Transaction', function () {
     it('should return true if both maxFeePerGas and maxPriorityFeePerGas are hex strings', () => {
       expect(
@@ -108,8 +146,7 @@ describe('Transaction.utils', function () {
   });
 
   describe('determineTransactionType', function () {
-    const genericProvider = createTestProviderTools().provider;
-    const query = new EthQuery(genericProvider);
+    const { provider: genericProvider } = createTestProviderTools();
 
     it('should return a simple send type when to is truthy and is not a contract address', async function () {
       const _providerResultStub = {
@@ -118,16 +155,16 @@ describe('Transaction.utils', function () {
         // by default, all accounts are external accounts (not contracts)
         eth_getCode: '0x',
       };
-      const _provider = createTestProviderTools({
+      const { provider } = createTestProviderTools({
         scaffold: _providerResultStub,
-      }).provider;
+      });
 
       const result = await determineTransactionType(
         {
           to: '0xabcabcabcabcabcabcabcabcabcabcabcabcabca',
           data: '',
         },
-        new EthQuery(_provider),
+        provider,
       );
       expect(result).toMatchObject({
         type: TransactionType.simpleSend,
@@ -142,16 +179,16 @@ describe('Transaction.utils', function () {
         // by default, all accounts are external accounts (not contracts)
         eth_getCode: '0xab',
       };
-      const _provider = createTestProviderTools({
+      const { provider } = createTestProviderTools({
         scaffold: _providerResultStub,
-      }).provider;
+      });
 
       const result = await determineTransactionType(
         {
           to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data: '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
         },
-        new EthQuery(_provider),
+        provider,
       );
       expect(result).toMatchObject({
         type: TransactionType.tokenMethodTransfer,
@@ -169,9 +206,9 @@ describe('Transaction.utils', function () {
           // by default, all accounts are external accounts (not contracts)
           eth_getCode: '0xab',
         };
-        const _provider = createTestProviderTools({
+        const { provider } = createTestProviderTools({
           scaffold: _providerResultStub,
-        }).provider;
+        });
 
         const resultWithEmptyValue = await determineTransactionType(
           {
@@ -179,7 +216,7 @@ describe('Transaction.utils', function () {
             to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
             data: '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
           },
-          new EthQuery(_provider),
+          provider,
         );
         expect(resultWithEmptyValue).toMatchObject({
           type: TransactionType.tokenMethodTransfer,
@@ -192,7 +229,7 @@ describe('Transaction.utils', function () {
             to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
             data: '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
           },
-          new EthQuery(_provider),
+          provider,
         );
 
         expect(resultWithEmptyValue2).toMatchObject({
@@ -206,7 +243,7 @@ describe('Transaction.utils', function () {
             to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
             data: '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
           },
-          new EthQuery(_provider),
+          provider,
         );
         expect(resultWithValue).toMatchObject({
           type: TransactionType.contractInteraction,
@@ -222,16 +259,16 @@ describe('Transaction.utils', function () {
         // by default, all accounts are external accounts (not contracts)
         eth_getCode: '0x',
       };
-      const _provider = createTestProviderTools({
+      const { provider } = createTestProviderTools({
         scaffold: _providerResultStub,
-      }).provider;
+      });
 
       const result = await determineTransactionType(
         {
           to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data: '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
         },
-        new EthQuery(_provider),
+        provider,
       );
       expect(result).toMatchObject({
         type: TransactionType.simpleSend,
@@ -246,16 +283,16 @@ describe('Transaction.utils', function () {
         // by default, all accounts are external accounts (not contracts)
         eth_getCode: '0xab',
       };
-      const _provider = createTestProviderTools({
+      const { provider } = createTestProviderTools({
         scaffold: _providerResultStub,
-      }).provider;
+      });
 
       const result = await determineTransactionType(
         {
           to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data: '0x095ea7b30000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C9700000000000000000000000000000000000000000000000000000000000000005',
         },
-        new EthQuery(_provider),
+        provider,
       );
       expect(result).toMatchObject({
         type: TransactionType.tokenMethodApprove,
@@ -269,7 +306,7 @@ describe('Transaction.utils', function () {
           to: '',
           data: '0xabd',
         },
-        query,
+        genericProvider,
       );
       expect(result).toMatchObject({
         type: TransactionType.deployContract,
@@ -283,7 +320,7 @@ describe('Transaction.utils', function () {
           to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data: '0xabd',
         },
-        query,
+        genericProvider,
       );
       expect(result).toMatchObject({
         type: TransactionType.simpleSend,
@@ -298,16 +335,16 @@ describe('Transaction.utils', function () {
         // by default, all accounts are external accounts (not contracts)
         eth_getCode: null,
       };
-      const _provider = createTestProviderTools({
+      const { provider } = createTestProviderTools({
         scaffold: _providerResultStub,
-      }).provider;
+      });
 
       const result = await determineTransactionType(
         {
           to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data: '0xabd',
         },
-        new EthQuery(_provider),
+        provider,
       );
       expect(result).toMatchObject({
         type: TransactionType.simpleSend,
@@ -322,16 +359,16 @@ describe('Transaction.utils', function () {
         // by default, all accounts are external accounts (not contracts)
         eth_getCode: '0xa',
       };
-      const _provider = createTestProviderTools({
+      const { provider } = createTestProviderTools({
         scaffold: _providerResultStub,
-      }).provider;
+      });
 
       const result = await determineTransactionType(
         {
           to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data: 'abd',
         },
-        new EthQuery(_provider),
+        provider,
       );
       expect(result).toMatchObject({
         type: TransactionType.contractInteraction,
@@ -346,16 +383,16 @@ describe('Transaction.utils', function () {
         // by default, all accounts are external accounts (not contracts)
         eth_getCode: '0xa',
       };
-      const _provider = createTestProviderTools({
+      const { provider } = createTestProviderTools({
         scaffold: _providerResultStub,
-      }).provider;
+      });
 
       const result = await determineTransactionType(
         {
           to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data: '',
         },
-        new EthQuery(_provider),
+        provider,
       );
       expect(result).toMatchObject({
         type: TransactionType.contractInteraction,
@@ -370,9 +407,9 @@ describe('Transaction.utils', function () {
         // by default, all accounts are external accounts (not contracts)
         eth_getCode: '0xa',
       };
-      const _provider = createTestProviderTools({
+      const { provider } = createTestProviderTools({
         scaffold: _providerResultStub,
-      }).provider;
+      });
 
       const result = await determineTransactionType(
         {
@@ -380,11 +417,140 @@ describe('Transaction.utils', function () {
           value: '0x5af3107a4000',
           data: '0x095ea7b30000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C9700000000000000000000000000000000000000000000000000000000000000005',
         },
-        new EthQuery(_provider),
+        provider,
       );
       expect(result).toMatchObject({
         type: TransactionType.contractInteraction,
         getCodeResponse: '0x0a',
+      });
+    });
+
+    describe('parseTypedDataMessage', () => {
+      it('parses data passed correctly', () => {
+        const result = parseTypedDataMessage('{"test": "dummy"}');
+        expect(result.test).toBe('dummy');
+      });
+
+      it('parses message.value as a string', () => {
+        const result = parseTypedDataMessage(
+          '{"test": "dummy", "message": { "value": 3000123} }',
+        );
+        expect(result.message.value).toBe('3000123');
+      });
+
+      it('parses message.value such that it does not lose precision', () => {
+        const result = parseTypedDataMessage(
+          '{"test": "dummy", "message": { "value": 30001231231212312138768} }',
+        );
+        expect(result.message.value).toBe('30001231231212312138768');
+      });
+
+      it('throw error for invalid typedDataMessage', () => {
+        expect(() => {
+          parseTypedDataMessage('');
+        }).toThrow(new Error('Unexpected end of JSON input'));
+      });
+    });
+  });
+
+  describe('hasTransactionData', () => {
+    it.each([
+      ['has prefix', '0x1234'],
+      ['has no prefix', '1234'],
+    ])('returns true if data %s', (_, data) => {
+      expect(hasTransactionData(data)).toBe(true);
+    });
+
+    it.each([undefined, null, '', '0x', '0X'])(
+      'returns false if data is %s',
+      (data) => {
+        expect(hasTransactionData(data)).toBe(false);
+      },
+    );
+  });
+
+  describe('parseApprovalTransactionData', () => {
+    it('returns undefined if function does not match', () => {
+      expect(parseApprovalTransactionData(DATA_MOCK)).toBeUndefined();
+    });
+
+    it('returns parsed data if approve', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildApproveTransactionData(ADDRESS_MOCK, AMOUNT_MOCK),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: new BigNumber(AMOUNT_MOCK),
+        isApproveAll: false,
+        isRevokeAll: false,
+        name: 'approve',
+        spender: '0x1234567890123456789012345678901234567890',
+        tokenAddress: undefined,
+      });
+    });
+
+    it('returns parsed data if increaseAllowance', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildIncreaseAllowanceTransactionData(ADDRESS_MOCK, AMOUNT_MOCK),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: new BigNumber(AMOUNT_MOCK),
+        isApproveAll: false,
+        isRevokeAll: false,
+        name: 'increaseAllowance',
+        spender: undefined,
+        tokenAddress: undefined,
+      });
+    });
+
+    it('returns parsed data if approved setApproveForAll', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildSetApproveForAllTransactionData(ADDRESS_MOCK, true),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: undefined,
+        isApproveAll: true,
+        isRevokeAll: false,
+        name: 'setApprovalForAll',
+        spender: undefined,
+        tokenAddress: undefined,
+      });
+    });
+
+    it('returns parsed data if revoked setApproveForAll', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildSetApproveForAllTransactionData(ADDRESS_MOCK, false),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: undefined,
+        isApproveAll: false,
+        isRevokeAll: true,
+        name: 'setApprovalForAll',
+        spender: undefined,
+        tokenAddress: undefined,
+      });
+    });
+
+    it('returns parsed data if Permit2 approve', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildPermit2ApproveTransactionData(
+            ADDRESS_MOCK,
+            ADDRESS_2_MOCK,
+            AMOUNT_MOCK,
+            EXPIRATION_MOCK,
+          ),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: new BigNumber(AMOUNT_MOCK),
+        isApproveAll: false,
+        isRevokeAll: false,
+        name: 'approve',
+        spender: undefined,
+        tokenAddress: ADDRESS_MOCK,
       });
     });
   });

@@ -1,29 +1,28 @@
-import {
-  BaseController,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
+import { BtcScope, SolScope } from '@metamask/keyring-api';
+import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
 import {
   NetworkControllerStateChangeEvent,
   NetworkState,
 } from '@metamask/network-controller';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import type { CaipChainId, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
-import { MAINNET_CHAINS } from '../../../shared/constants/network';
+import { TEST_CHAINS } from '../../../shared/constants/network';
 
 // Unique name for the controller
 const controllerName = 'NetworkOrderController';
 
 /**
- * The network ID of a network.
+ * Information about an ordered network.
  */
-
 export type NetworksInfo = {
-  networkId: string;
-  networkRpcUrl: string;
+  networkId: CaipChainId; // The network's chain id
 };
 
 // State shape for NetworkOrderController
 export type NetworkOrderControllerState = {
   orderedNetworkList: NetworksInfo[];
+  enabledNetworkMap: Record<string, boolean>;
 };
 
 // Describes the structure of a state change event
@@ -43,7 +42,7 @@ export type NetworkOrderControllerMessengerActions =
   NetworkOrderControllerupdateNetworksListAction;
 
 // Type for the messenger of NetworkOrderController
-export type NetworkOrderControllerMessenger = RestrictedControllerMessenger<
+export type NetworkOrderControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   NetworkOrderControllerMessengerActions,
   NetworkOrderStateChange | NetworkControllerStateChangeEvent,
@@ -54,11 +53,16 @@ export type NetworkOrderControllerMessenger = RestrictedControllerMessenger<
 // Default state for the controller
 const defaultState: NetworkOrderControllerState = {
   orderedNetworkList: [],
+  enabledNetworkMap: {},
 };
 
 // Metadata for the controller state
 const metadata = {
   orderedNetworkList: {
+    persist: true,
+    anonymous: true,
+  },
+  enabledNetworkMap: {
     persist: true,
     anonymous: true,
   },
@@ -109,51 +113,44 @@ export class NetworkOrderController extends BaseController<
    * Handles the state change of the network controller and updates the networks list.
    *
    * @param networkControllerState - The state of the network controller.
+   * @param networkControllerState.networkConfigurationsByChainId
    */
-  onNetworkControllerStateChange(networkControllerState: NetworkState) {
-    // Extract network configurations from the state
-    const networkConfigurations = Object.values(
-      networkControllerState.networkConfigurations,
-    );
-
-    // Since networkConfigurations doesn't have default or mainnet network configurations we need to combine mainnet chains with network configurations
-    const combinedNetworks = [...MAINNET_CHAINS, ...networkConfigurations];
-
-    // Extract unique chainIds from the combined networks
-    const uniqueChainIds = combinedNetworks.map((item) => ({
-      networkId: item.chainId,
-      networkRpcUrl: item.rpcUrl,
-    }));
-
-    // Arrays to store reordered and new unique chainIds
-    let reorderedNetworks: NetworksInfo[] = [];
-    const newUniqueNetworks: NetworksInfo[] = [];
-
-    // Iterate through uniqueChainIds to reorder existing elements
-    uniqueChainIds.forEach((newItem) => {
-      const existingIndex = this.state.orderedNetworkList.findIndex(
-        (item) =>
-          item.networkId === newItem.networkId &&
-          item.networkRpcUrl === newItem.networkRpcUrl,
-      );
-      // eslint-disable-next-line no-negated-condition
-      if (existingIndex !== -1) {
-        // Reorder existing element
-        reorderedNetworks[existingIndex] = newItem;
-      } else {
-        // Add new unique element
-        newUniqueNetworks.push(newItem);
-      }
-    });
-
-    // Filter out null values and concatenate reordered and new unique networks
-    reorderedNetworks = reorderedNetworks
-      .filter((item) => Boolean(item))
-      .concat(newUniqueNetworks);
-
-    // Update the state with the new networks list
+  onNetworkControllerStateChange({
+    networkConfigurationsByChainId,
+  }: NetworkState) {
     this.update((state) => {
-      state.orderedNetworkList = reorderedNetworks;
+      // Filter out testnets, which are in the state but not orderable
+      const hexChainIds = Object.keys(networkConfigurationsByChainId).filter(
+        (chainId) =>
+          !TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number]),
+      ) as Hex[];
+      const chainIds: CaipChainId[] = hexChainIds.map(toEvmCaipChainId);
+      const nonEvmChainIds: CaipChainId[] = [
+        BtcScope.Mainnet,
+        SolScope.Mainnet,
+      ];
+
+      const newNetworks = chainIds
+        .filter(
+          (chainId) =>
+            !state.orderedNetworkList.some(
+              ({ networkId }) => networkId === chainId,
+            ),
+        )
+        .map((chainId) => ({ networkId: chainId }));
+
+      state.orderedNetworkList = state.orderedNetworkList
+        // Filter out deleted networks
+        .filter(
+          ({ networkId }) =>
+            chainIds.includes(networkId) ||
+            // Since Bitcoin and Solana are not part of the @metamask/network-controller, we have
+            // to add a second check to make sure it is not filtered out.
+            // TODO: Update this logic to @metamask/multichain-network-controller once all networks are migrated.
+            nonEvmChainIds.includes(networkId),
+        )
+        // Append new networks to the end
+        .concat(newNetworks);
     });
   }
 
@@ -163,10 +160,26 @@ export class NetworkOrderController extends BaseController<
    * @param networkList - The list of networks to update in the state.
    */
 
-  updateNetworksList(networkList: []) {
+  updateNetworksList(chainIds: CaipChainId[]) {
     this.update((state) => {
-      state.orderedNetworkList = networkList;
-      return state;
+      state.orderedNetworkList = chainIds.map((chainId) => ({
+        networkId: chainId,
+      }));
+    });
+  }
+
+  /**
+   * Sets the enabled networks in the controller state.
+   * This method updates the enabledNetworkMap to mark specified networks as enabled.
+   * It can handle both a single chain ID or an array of chain IDs.
+   *
+   * @param chainIds - A single CAIP-2 chain ID (e.g. 'eip155:1') or an array of chain IDs
+   * to be enabled. All other networks will be implicitly disabled.
+   */
+  setEnabledNetworks(chainIds: string | string[]) {
+    const ids = Array.isArray(chainIds) ? chainIds : [chainIds];
+    this.update((state) => {
+      state.enabledNetworkMap = Object.fromEntries(ids.map((id) => [id, true]));
     });
   }
 }

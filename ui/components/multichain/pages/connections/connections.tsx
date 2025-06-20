@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
+import { NonEmptyArray } from '@metamask/utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -12,19 +13,18 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  CONNECT_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../../helpers/constants/routes';
+import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
-  getInternalAccounts,
-  getOrderedConnectedAccountsForActiveTab,
-  getOriginOfCurrentTab,
+  getOrderedConnectedAccountsForConnectedDapp,
+  getPermissionSubjects,
   getPermittedAccountsByOrigin,
+  getPermittedEVMAccountsForSelectedTab,
   getSelectedAccount,
+  getSubjectMetadata,
+  getUnconnectedAccounts,
 } from '../../../../selectors';
 import {
   AvatarFavicon,
@@ -42,14 +42,27 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
-import { Tab } from '../../../ui/tabs';
-import Tabs from '../../../ui/tabs/tabs.component';
-import { mergeAccounts } from '../../account-list-menu/account-list-menu';
-import { AccountListItem, AccountListItemMenuTypes } from '../..';
+import {
+  AccountListItem,
+  AccountListItemMenuTypes,
+  Toast,
+  ToastContainer,
+} from '../..';
 import { Content, Footer, Header, Page } from '../page';
 import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal';
-import { requestAccountsPermissionWithId } from '../../../../store/actions';
-import { AccountType, ConnectedSites } from './components/connections.types';
+import {
+  requestAccountsAndChainPermissionsWithId,
+  removePermissionsFor,
+} from '../../../../store/actions';
+import {
+  DisconnectAllModal,
+  DisconnectType,
+} from '../../disconnect-all-modal/disconnect-all-modal';
+import {
+  AccountType,
+  ConnectedSites,
+  SubjectsType,
+} from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
 
 export const Connections = () => {
@@ -58,26 +71,57 @@ export const Connections = () => {
   const history = useHistory();
   const [showConnectAccountsModal, setShowConnectAccountsModal] =
     useState(false);
-  const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+  const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
+  const [showAccountDisconnectedToast, setShowAccountDisconnectedToast] =
+    useState(''); // This is not boolean because we need the account name from the menu when a single account is disconnected
+  const [
+    showConnectedAccountsUpdatedToast,
+    setShowConnectedAccountsUpdatedToast,
+  ] = useState(false);
+  const [
+    showDisconnectedAllAccountsUpdatedToast,
+    setShowDisconnectedAllAccountsUpdatedToast,
+  ] = useState(false);
+
+  const urlParams = useParams<{ origin: string }>();
+  // @ts-expect-error TODO: Fix this type error by handling undefined parameters
+  const activeTabOrigin = decodeURIComponent(urlParams.origin);
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
   );
-  const { openMetaMaskTabs } = useSelector((state: any) => state.appState);
-  const { id } = useSelector((state: any) => state.activeTab);
+  const siteMetadata = useSelector(getSubjectMetadata);
+  const connectedSiteMetadata = siteMetadata[activeTabOrigin];
 
-  const connectedAccounts = useSelector(
-    getOrderedConnectedAccountsForActiveTab,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { openMetaMaskTabs } = useSelector((state: any) => state.appState);
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { id } = useSelector((state: any) => state.activeTab);
+  const unconnectedAccounts = useSelector((state) =>
+    getUnconnectedAccounts(state, activeTabOrigin),
+  );
+  const connectedAccounts = useSelector((state) =>
+    getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
   );
   const selectedAccount = useSelector(getSelectedAccount);
-  const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccounts = mergeAccounts(connectedAccounts, internalAccounts);
+
   const permittedAccountsByOrigin = useSelector(
     getPermittedAccountsByOrigin,
-  ) as { [key: string]: any[] };
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ) as { [key: string]: any[] };
+  const subjects = useSelector(getPermissionSubjects);
   const currentTabHasNoAccounts =
     !permittedAccountsByOrigin[activeTabOrigin]?.length;
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let tabToConnect: { origin: any } = { origin: null };
   if (activeTabOrigin && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
     tabToConnect = {
@@ -86,14 +130,80 @@ export const Connections = () => {
   }
   const requestAccountsPermission = async () => {
     const requestId = await dispatch(
-      requestAccountsPermissionWithId(tabToConnect.origin),
+      requestAccountsAndChainPermissionsWithId(tabToConnect.origin),
     );
     history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
 
+  const permittedAccounts = useSelector((state) =>
+    getPermittedEVMAccountsForSelectedTab(state, activeTabOrigin),
+  );
+
+  const disconnectAllAccounts = () => {
+    const subject = (subjects as SubjectsType)[activeTabOrigin];
+
+    if (subject) {
+      const permissionMethodNames = Object.values(subject.permissions).map(
+        ({ parentCapability }: { parentCapability: string }) =>
+          parentCapability,
+      ) as string[];
+      if (permissionMethodNames.length > 0) {
+        const permissionsRecord: Record<string, string[]> = {
+          [activeTabOrigin]: permissionMethodNames,
+        };
+
+        dispatch(
+          removePermissionsFor(
+            permissionsRecord as Record<string, NonEmptyArray<string>>,
+          ),
+        );
+      }
+
+      setShowDisconnectAllModal(false);
+      setShowDisconnectedAllAccountsUpdatedToast(true);
+    }
+  };
+
+  // In the connectedAccounts, we need the lastSelected value to determine which connectedAccount was last selected.
+  const latestSelected = connectedAccounts.findIndex(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (_account: any, index: any) => {
+      return (
+        index ===
+        connectedAccounts.reduce(
+          (
+            indexOfAccountWIthHighestLastSelected: number,
+            currentAccountToCompare: AccountType,
+
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            i: any,
+          ) => {
+            const currentLastSelected =
+              currentAccountToCompare.metadata.lastSelected ?? 0;
+            const accountAtIndexLastSelected = connectedAccounts[
+              indexOfAccountWIthHighestLastSelected
+            ].metadata.lastSelected
+              ? i
+              : indexOfAccountWIthHighestLastSelected;
+
+            return currentLastSelected > accountAtIndexLastSelected
+              ? i
+              : indexOfAccountWIthHighestLastSelected;
+          },
+          0,
+        )
+      );
+    },
+  );
+
   return (
-    <Page data-testid="connections-page" className="connections-page">
+    <Page
+      data-testid="connections-page"
+      className="main-container connections-page"
+    >
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={
@@ -102,7 +212,9 @@ export const Connections = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onClick={() => (history as any).goBack()}
             size={ButtonIconSize.Sm}
           />
         }
@@ -138,89 +250,159 @@ export const Connections = () => {
         </Box>
       </Header>
       <Content padding={0}>
-        {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
-          <Tabs defaultActiveTabKey="connections">
-            {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              <Tab
-                tabKey={CONNECTED_ACCOUNTS_TAB_KEY}
-                name={t('connectedaccountsTabKey')}
-                padding={4}
-              >
-                {mergedAccounts.map((account: AccountType) => {
-                  const connectedSites: ConnectedSites = {};
-
-                  const connectedSite = connectedSites[account.address]?.find(
-                    ({ origin }) => origin === activeTabOrigin,
-                  );
-                  // Since this list renders only connected accounts, selected account will be the active account
-                  const isSelectedAccount =
-                    selectedAccount.address === account.address;
-                  return (
-                    <AccountListItem
-                      identity={account}
-                      key={account.address}
-                      accountsCount={mergedAccounts.length}
-                      selected={isSelectedAccount}
-                      connectedAvatar={connectedSite?.iconUrl}
-                      connectedAvatarName={connectedSite?.name}
-                      menuType={AccountListItemMenuTypes.Connection}
-                      currentTabOrigin={activeTabOrigin}
-                      isActive={isSelectedAccount ? t('active') : null}
-                    />
-                  );
-                })}
-              </Tab>
-            }
-          </Tabs>
+        {permittedAccounts.length > 0 && connectedAccounts.length > 0 ? (
+          <Box>
+            {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973 */}
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {connectedAccounts.map((account: AccountType, index: any) => {
+              const connectedSites: ConnectedSites = {};
+              const connectedSite = connectedSites[account.address]?.find(
+                ({ origin }) => origin === activeTabOrigin,
+              );
+              const isSelectedAccount =
+                selectedAccount.address === account.address;
+              // Match the index of latestSelected Account with the index of all the accounts and set the active status
+              const mergedAccountsProps = {
+                ...account,
+                isAccountActive: index === latestSelected,
+              };
+              return (
+                <AccountListItem
+                  account={mergedAccountsProps}
+                  key={account.address}
+                  accountsCount={connectedAccounts.length}
+                  selected={isSelectedAccount}
+                  connectedAvatar={connectedSite?.iconUrl}
+                  menuType={AccountListItemMenuTypes.Connection}
+                  currentTabOrigin={activeTabOrigin}
+                  isActive={
+                    mergedAccountsProps.isAccountActive ? t('active') : null
+                  }
+                  onActionClick={setShowAccountDisconnectedToast}
+                />
+              );
+            })}
+          </Box>
         ) : (
           <NoConnectionContent />
         )}
         {showConnectAccountsModal ? (
           <ConnectAccountsModal
             onClose={() => setShowConnectAccountsModal(false)}
+            onAccountsUpdate={() => setShowConnectedAccountsUpdatedToast(true)}
+            activeTabOrigin={activeTabOrigin}
+          />
+        ) : null}
+        {showDisconnectAllModal ? (
+          <DisconnectAllModal
+            type={DisconnectType.Account}
+            hostname={activeTabOrigin}
+            onClose={() => setShowDisconnectAllModal(false)}
+            onClick={() => disconnectAllAccounts()}
           />
         ) : null}
       </Content>
       <Footer>
-        {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
-          <Box
-            display={Display.Flex}
-            gap={2}
-            flexDirection={FlexDirection.Column}
-            width={BlockSize.Full}
-            data-test-id="connections-button"
-          >
-            <Button
-              size={ButtonSize.Lg}
-              block
-              variant={ButtonVariant.Secondary}
-              startIconName={IconName.Add}
-              onClick={() => setShowConnectAccountsModal(true)}
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          width={BlockSize.Full}
+          gap={4}
+        >
+          {showConnectedAccountsUpdatedToast ? (
+            <ToastContainer>
+              <Toast
+                text={t('connectedAccountsToast')}
+                onClose={() => setShowConnectedAccountsUpdatedToast(false)}
+                startAdornment={
+                  <AvatarFavicon
+                    name={connectedSubjectsMetadata?.name}
+                    size={AvatarFaviconSize.Sm}
+                    src={connectedSubjectsMetadata?.iconUrl}
+                  />
+                }
+              />
+            </ToastContainer>
+          ) : null}
+          {showDisconnectedAllAccountsUpdatedToast ? (
+            <ToastContainer>
+              <Toast
+                text={t('disconnectedAllAccountsToast', [
+                  getURLHost(activeTabOrigin),
+                ])}
+                onClose={() =>
+                  setShowDisconnectedAllAccountsUpdatedToast(false)
+                }
+                startAdornment={
+                  <AvatarFavicon
+                    name={connectedSiteMetadata?.name}
+                    size={AvatarFaviconSize.Sm}
+                    src={connectedSiteMetadata?.iconUrl}
+                  />
+                }
+              />
+            </ToastContainer>
+          ) : null}
+          {showAccountDisconnectedToast.length > 0 ? (
+            <ToastContainer>
+              <Toast
+                text={t('disconnectedSingleAccountToast', [
+                  showAccountDisconnectedToast,
+                  getURLHost(activeTabOrigin),
+                ])}
+                onClose={() => setShowAccountDisconnectedToast('')}
+                startAdornment={
+                  <AvatarFavicon
+                    name={connectedSiteMetadata?.name}
+                    size={AvatarFaviconSize.Sm}
+                    src={connectedSiteMetadata?.iconUrl}
+                  />
+                }
+              />
+            </ToastContainer>
+          ) : null}
+          {permittedAccounts.length > 0 && connectedAccounts.length > 0 ? (
+            <Box
+              display={Display.Flex}
+              gap={2}
+              flexDirection={FlexDirection.Column}
+              width={BlockSize.Full}
+              data-test-id="connections-button"
             >
-              {t('connectMoreAccounts')}
-            </Button>
-            <Button
-              size={ButtonSize.Lg}
+              <Button
+                size={ButtonSize.Lg}
+                block
+                variant={ButtonVariant.Secondary}
+                disabled={unconnectedAccounts.length === 0}
+                startIconName={IconName.Add}
+                onClick={() => setShowConnectAccountsModal(true)}
+              >
+                {t('connectMoreAccounts')}
+              </Button>
+              <Button
+                size={ButtonSize.Lg}
+                block
+                variant={ButtonVariant.Secondary}
+                startIconName={IconName.Logout}
+                danger
+                onClick={() => setShowDisconnectAllModal(true)}
+              >
+                {t('disconnectAllAccounts')}
+              </Button>
+            </Box>
+          ) : (
+            <ButtonPrimary
+              size={ButtonPrimarySize.Lg}
               block
-              variant={ButtonVariant.Secondary}
-              startIconName={IconName.Logout}
-              danger
+              data-test-id="no-connections-button"
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={() => requestAccountsPermission()}
             >
-              {t('disconnectAllAccounts')}
-            </Button>
-          </Box>
-        ) : (
-          <ButtonPrimary
-            size={ButtonPrimarySize.Lg}
-            block
-            data-test-id="no-connections-button"
-            onClick={() => dispatch(requestAccountsPermission())}
-          >
-            {t('connectAccounts')}
-          </ButtonPrimary>
-        )}
+              {t('connectAccounts')}
+            </ButtonPrimary>
+          )}
+        </Box>
       </Footer>
     </Page>
   );

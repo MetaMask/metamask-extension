@@ -94,7 +94,7 @@ function createNameControllerMock(state: NameControllerState) {
 function createMessengerMock(): jest.Mocked<PetnamesBridgeMessenger> {
   return {
     subscribe: jest.fn(),
-  } as any;
+  } as unknown as jest.Mocked<PetnamesBridgeMessenger>;
 }
 
 describe('AbstractPetnamesBridge', () => {

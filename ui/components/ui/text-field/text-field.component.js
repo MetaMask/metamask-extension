@@ -19,6 +19,10 @@ const inputLabelBase = {
   color: 'var(--color-text-default)',
 };
 
+const fontFamily = ['"CentraNo1"', 'Helvetica', 'Arial', 'sans-serif'].join(
+  ', ',
+);
+
 const styles = {
   materialLabel: {
     '&$materialFocused': {
@@ -60,6 +64,7 @@ const styles = {
   },
   // Non-material styles
   formLabel: {
+    fontFamily,
     '&$formLabelFocused': {
       color: 'var(--color-text-alternative)',
     },
@@ -70,6 +75,7 @@ const styles = {
   formLabelFocused: {},
   inputFocused: {},
   inputRoot: {
+    fontFamily,
     'label + &': {
       marginTop: '9px',
     },
@@ -77,13 +83,14 @@ const styles = {
     border: '1px solid var(--color-border-default)',
     color: 'var(--color-text-default)',
     height: '48px',
-    borderRadius: '6px',
     padding: '0 16px',
     display: 'flex',
     alignItems: 'center',
     '&$inputFocused': {
       border: '1px solid var(--color-primary-default)',
     },
+    borderRadius: '8px',
+    fontSize: '0.875rem',
   },
   largeInputLabel: {
     ...inputLabelBase,
@@ -192,7 +199,6 @@ const getBorderedThemeInputProps = ({
   InputProps: {
     startAdornment,
     endAdornment,
-    disableUnderline: true,
     classes: {
       root: inputRoot,
       input,
@@ -204,6 +210,7 @@ const getBorderedThemeInputProps = ({
       max,
       autoComplete,
     },
+    disableUnderline: 'true',
   },
 });
 

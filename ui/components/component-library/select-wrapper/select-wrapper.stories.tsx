@@ -7,8 +7,8 @@ import { Button } from '../button';
 import { Text } from '../text';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import README from './README.mdx';
-
-import { SelectWrapper, useSelectContext } from '.';
+import { SelectWrapper } from './select-wrapper';
+import { useSelectContext } from './select-wrapper.context';
 
 export default {
   title: 'Components/ComponentLibrary/SelectWrapper',

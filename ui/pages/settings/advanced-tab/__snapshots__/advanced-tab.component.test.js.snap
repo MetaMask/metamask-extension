@@ -28,7 +28,8 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="button btn--rounded btn-secondary btn--large"
+            class="button btn-secondary btn--large"
+            data-testid="advanced-setting-state-logs-button"
           >
             Download state logs
           </button>
@@ -58,11 +59,235 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="button btn--rounded btn-danger btn--large settings-tab__button--red"
+            class="button btn-danger btn--large settings-tab__button--red"
           >
             Clear activity tab data
           </button>
         </div>
+      </div>
+    </div>
+    <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      data-testid="advanced-setting-smart-account-optin"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+           
+          Use smart account
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          Keep this on to automatically switch accounts created within MetaMask to smart accounts whenever relevant features are available, such as faster transactions, lower network fees and payment flexibility on payment for those. 
+          <a
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            href="https://support.metamask.io/configure/accounts/what-is-a-smart-account/#what-are-metamask-smart-accounts"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Learn more
+          </a>
+        </div>
+      </div>
+      <div
+        class="settings-page__content-item-col"
+      >
+        <label
+          class="toggle-button toggle-button--off"
+          tabindex="0"
+        >
+          <div
+            style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+          >
+            <div
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
+            >
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+              />
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+              />
+            </div>
+            <div
+              style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+            >
+              <div
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+              />
+            </div>
+            <input
+              data-testid="settings-page-smart-account-optin"
+              style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+              type="checkbox"
+              value="false"
+            />
+          </div>
+          <div
+            class="toggle-button__status"
+          >
+            <span
+              class="toggle-button__label-off"
+            >
+              Off
+            </span>
+            <span
+              class="toggle-button__label-on"
+            >
+              On
+            </span>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      data-testid="advanced-setting-dismiss-smart-account-suggestion-enabled"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+           
+          Dismiss "Switch to Smart Account" suggestion
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          Turn this on to no longer see the "Switch to Smart Account" suggestion on any account. Smart accounts unlocks faster transactions, lower network fees and more flexibility on payment for those.
+        </div>
+      </div>
+      <div
+        class="settings-page__content-item-col"
+      >
+        <label
+          class="toggle-button toggle-button--off"
+          tabindex="0"
+        >
+          <div
+            style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+          >
+            <div
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
+            >
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+              />
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+              />
+            </div>
+            <div
+              style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+            >
+              <div
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+              />
+            </div>
+            <input
+              data-testid="settings-page-dismiss-smart-account-suggestion-enabled-toggle"
+              style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+              type="checkbox"
+              value="false"
+            />
+          </div>
+          <div
+            class="toggle-button__status"
+          >
+            <span
+              class="toggle-button__label-off"
+            >
+              Off
+            </span>
+            <span
+              class="toggle-button__label-on"
+            >
+              On
+            </span>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      data-testid="advanced-setting-enable-smart-transactions"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Smart Transactions
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          <span>
+             
+            Turn on Smart Transactions for more reliable and secure transactions on supported networks. 
+            <a
+              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+              href="https://support.metamask.io/transactions-and-gas/transactions/smart-transactions/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Learn more
+            </a>
+            
+             
+          </span>
+        </div>
+      </div>
+      <div
+        class="settings-page__content-item-col"
+      >
+        <label
+          class="toggle-button toggle-button--on"
+          tabindex="0"
+        >
+          <div
+            style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+          >
+            <div
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(139, 153, 255);"
+            >
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
+              />
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;"
+              />
+            </div>
+            <div
+              style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+            >
+              <div
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
+              />
+            </div>
+            <input
+              data-testid="settings-page-stx-opt-in-toggle"
+              style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+              type="checkbox"
+              value="true"
+            />
+          </div>
+          <div
+            class="toggle-button__status"
+          >
+            <span
+              class="toggle-button__label-off"
+            >
+              Off
+            </span>
+            <span
+              class="toggle-button__label-on"
+            >
+              On
+            </span>
+          </div>
+        </label>
       </div>
     </div>
     <div
@@ -85,14 +310,14 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         class="settings-page__content-item-col"
       >
         <label
-          class="toggle-button toggle-button--off"
+          class="toggle-button toggle-button--off hex-data-toggle"
           tabindex="0"
         >
           <div
             style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
           >
             <div
-              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
             >
               <div
                 style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -105,7 +330,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
               style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
             >
               <div
-                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
               />
             </div>
             <input
@@ -151,14 +376,14 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         class="settings-page__content-item-col"
       >
         <label
-          class="toggle-button toggle-button--off"
+          class="toggle-button toggle-button--off show-fiat-on-testnets-toggle"
           tabindex="0"
         >
           <div
             style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
           >
             <div
-              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
             >
               <div
                 style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -171,7 +396,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
               style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
             >
               <div
-                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
               />
             </div>
             <input
@@ -224,7 +449,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
             style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
           >
             <div
-              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(139, 153, 255);"
             >
               <div
                 style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -237,13 +462,79 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
               style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
             >
               <div
-                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
               />
             </div>
             <input
               style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
               type="checkbox"
               value="true"
+            />
+          </div>
+          <div
+            class="toggle-button__status"
+          >
+            <span
+              class="toggle-button__label-off"
+            >
+              Off
+            </span>
+            <span
+              class="toggle-button__label-on"
+            >
+              On
+            </span>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      data-testid="advanced-setting-dismiss-reminder"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Manage Institutional Wallets
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          Turn this on to enable institutional wallets.
+        </div>
+      </div>
+      <div
+        class="settings-page__content-item-col"
+      >
+        <label
+          class="toggle-button toggle-button--off"
+          tabindex="0"
+        >
+          <div
+            style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+          >
+            <div
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
+            >
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+              />
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+              />
+            </div>
+            <div
+              style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+            >
+              <div
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+              />
+            </div>
+            <input
+              style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+              type="checkbox"
+              value="false"
             />
           </div>
           <div
@@ -290,7 +581,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
             style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
           >
             <div
-              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
             >
               <div
                 style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -303,73 +594,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
               style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
             >
               <div
-                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
-              />
-            </div>
-            <input
-              style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-              type="checkbox"
-              value="false"
-            />
-          </div>
-          <div
-            class="toggle-button__status"
-          >
-            <span
-              class="toggle-button__label-off"
-            >
-              Off
-            </span>
-            <span
-              class="toggle-button__label-on"
-            >
-              On
-            </span>
-          </div>
-        </label>
-      </div>
-    </div>
-    <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
-      data-testid="advanced-setting-custom-nonce"
-    >
-      <div
-        class="settings-page__content-item"
-      >
-        <span>
-          Customize transaction nonce
-        </span>
-        <div
-          class="settings-page__content-description"
-        >
-          Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously.
-        </div>
-      </div>
-      <div
-        class="settings-page__content-item-col"
-      >
-        <label
-          class="toggle-button toggle-button--off"
-          tabindex="0"
-        >
-          <div
-            style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
-          >
-            <div
-              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-            >
-              <div
-                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-              />
-              <div
-                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-              />
-            </div>
-            <div
-              style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-            >
-              <div
-                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
               />
             </div>
             <input
@@ -438,7 +663,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
             
           </div>
           <button
-            class="button btn--rounded btn-primary settings-tab__rpc-save-button"
+            class="button btn-primary settings-tab__rpc-save-button"
             data-testid="auto-lockout-button"
           >
             Save
@@ -454,12 +679,12 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         class="settings-page__content-item"
       >
         <span>
-          Back up your data
+          Export your data
         </span>
         <span
           class="settings-page__content-description"
         >
-          You can back up data like your contacts and preferences.
+          You can export data like your contacts and preferences.
         </span>
       </div>
       <div
@@ -469,49 +694,11 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="button btn--rounded btn-secondary btn--large"
-            data-testid="backup-button"
+            class="button btn-secondary btn--large"
+            data-testid="export-data-button"
           >
-            Back up
+            Download
           </button>
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-column"
-      data-testid="advanced-setting-data-restore"
-    >
-      <div
-        class="settings-page__content-item"
-      >
-        <span>
-          Restore user data
-        </span>
-        <span
-          class="settings-page__content-description"
-        >
-          You can restore data like contacts and preferences from a backup file.
-        </span>
-      </div>
-      <div
-        class="settings-page__content-item"
-      >
-        <div
-          class="settings-page__content-item-col"
-        >
-          <label
-            class="button btn btn--rounded btn-secondary btn--large settings-page__button"
-            for="restore-file"
-          >
-            Restore
-          </label>
-          <input
-            accept=".json"
-            data-testid="restore-file"
-            id="restore-file"
-            style="visibility: hidden;"
-            type="file"
-          />
         </div>
       </div>
     </div>
@@ -542,7 +729,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
             style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
           >
             <div
-              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
             >
               <div
                 style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -555,7 +742,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
               style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
             >
               <div
-                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
               />
             </div>
             <input
@@ -576,72 +763,6 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
               class="toggle-button__label-on"
             >
               On
-            </span>
-          </div>
-        </label>
-      </div>
-    </div>
-    <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-column"
-      data-testid="advanced-setting-toggle-ethsign"
-    >
-      <div
-        class="settings-page__content-item"
-      >
-        <span>
-          Eth_sign requests
-        </span>
-        <div
-          class="settings-page__content-description"
-        >
-          If you enable this setting, you might get signature requests that aren’t readable. By signing a message you don't understand, you could be agreeing to give away your funds and NFTs.
-        </div>
-      </div>
-      <div
-        class="settings-page__content-item-col"
-      >
-        <label
-          class="toggle-button toggle-button--off eth-sign-toggle"
-          tabindex="0"
-        >
-          <div
-            style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
-          >
-            <div
-              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-            >
-              <div
-                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-              />
-              <div
-                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-              />
-            </div>
-            <div
-              style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-            >
-              <div
-                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
-              />
-            </div>
-            <input
-              style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-              type="checkbox"
-              value="false"
-            />
-          </div>
-          <div
-            class="toggle-button__status"
-          >
-            <span
-              class="toggle-button__label-off"
-            >
-              OFF (Recommended)
-            </span>
-            <span
-              class="toggle-button__label-on"
-            >
-              ON (Not recommended)
             </span>
           </div>
         </label>

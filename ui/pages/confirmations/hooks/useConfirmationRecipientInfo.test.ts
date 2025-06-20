@@ -1,39 +1,39 @@
-import mockState from '../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import {
+  getMockTypedSignConfirmState,
+  getMockConfirmState,
+} from '../../../../test/data/confirmations/helper';
+import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
+import { getInternalAccountByAddress } from '../../../selectors';
 import useConfirmationRecipientInfo from './useConfirmationRecipientInfo';
 
-const RecipientAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+const SenderAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
 describe('useConfirmationRecipientInfo', () => {
-  describe('when the current confirimation is a signature', () => {
+  describe('when the current confirmation is a signature', () => {
     it('returns the account name of the from address as the recipient name', () => {
-      const { result } = renderHookWithProvider(
+      const mockState = getMockTypedSignConfirmState();
+      const { result } = renderHookWithConfirmContextProvider(
         () => useConfirmationRecipientInfo(),
-        {
-          ...mockState,
-          confirm: {
-            currentConfirmation: {
-              id: '1',
-              msgParams: { from: RecipientAddress },
-            },
-          },
-        },
+        mockState,
       );
 
-      expect(result.current.recipientAddress).toBe(RecipientAddress);
-      expect(result.current.recipientName).toBe(
-        mockState.metamask.identities[RecipientAddress].name,
+      const expectedAccount = getInternalAccountByAddress(
+        mockState,
+        SenderAddress,
       );
+
+      expect(result.current.senderAddress).toBe(SenderAddress);
+      expect(result.current.senderName).toBe(expectedAccount.metadata.name);
     });
   });
 
   it('returns empty strings if there if current confirmation is not defined', () => {
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationRecipientInfo(),
-      mockState,
+      getMockConfirmState(),
     );
 
-    expect(result.current.recipientAddress).toBe('');
-    expect(result.current.recipientName).toBe('');
+    expect(result.current.senderAddress).toBe('');
+    expect(result.current.senderName).toBe('');
   });
 });

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import Confusable from '../../ui/confusable';
 import {
   AvatarAccount,
@@ -7,6 +8,11 @@ import {
   AvatarAccountVariant,
   Text,
   AvatarAccountSize,
+  Icon,
+  IconName,
+  BadgeWrapper,
+  AvatarNetwork,
+  AvatarNetworkSize,
 } from '../../component-library';
 import {
   TextAlign,
@@ -18,23 +24,43 @@ import {
   BackgroundColor,
   TextColor,
   AlignItems,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { getUseBlockie } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip';
+import { I18nContext } from '../../../contexts/i18n';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getImageForChainId } from '../../../selectors/multichain';
 
 type AddressListItemProps = {
   address: string;
   label: string;
+  chainId: string;
+  useConfusable?: boolean;
+  isDuplicate?: boolean;
   onClick: () => void;
 };
 
 export const AddressListItem = ({
   address,
   label,
+  chainId,
+  useConfusable = false,
+  isDuplicate = false,
   onClick,
 }: AddressListItemProps) => {
+  const t = useContext(I18nContext);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+
   const useBlockie = useSelector(getUseBlockie);
+  let displayName: string | React.ReactNode = shortenAddress(address);
+  if (label) {
+    displayName = label;
+    if (useConfusable) {
+      displayName = <Confusable input={label} />;
+    }
+  }
 
   return (
     <Box
@@ -50,17 +76,43 @@ export const AddressListItem = ({
       className="address-list-item"
       alignItems={AlignItems.center}
     >
-      <AvatarAccount
-        borderColor={BorderColor.transparent}
-        size={AvatarAccountSize.Sm}
-        address={address}
-        variant={
-          useBlockie
-            ? AvatarAccountVariant.Blockies
-            : AvatarAccountVariant.Jazzicon
-        }
-        marginInlineEnd={2}
-      />
+      {process.env.REMOVE_GNS ? (
+        <BadgeWrapper
+          badge={
+            <AvatarNetwork
+              size={AvatarNetworkSize.Xs}
+              name={allNetworks?.[chainId as Hex]?.name}
+              src={getImageForChainId(chainId)}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              borderWidth={2}
+            />
+          }
+          marginRight={4}
+        >
+          <AvatarAccount
+            borderColor={BorderColor.transparent}
+            size={AvatarAccountSize.Md}
+            address={address}
+            variant={
+              useBlockie
+                ? AvatarAccountVariant.Blockies
+                : AvatarAccountVariant.Jazzicon
+            }
+          />
+        </BadgeWrapper>
+      ) : (
+        <AvatarAccount
+          borderColor={BorderColor.transparent}
+          size={AvatarAccountSize.Md}
+          address={address}
+          variant={
+            useBlockie
+              ? AvatarAccountVariant.Blockies
+              : AvatarAccountVariant.Jazzicon
+          }
+          marginInlineEnd={2}
+        />
+      )}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -72,8 +124,11 @@ export const AddressListItem = ({
           width={BlockSize.Full}
           textAlign={TextAlign.Left}
           className="address-list-item__label"
+          data-testid="address-list-item-label"
+          style={{ overflow: 'hidden' }}
+          ellipsis
         >
-          {label ? <Confusable input={label} /> : shortenAddress(address)}
+          {displayName}
         </Text>
         <Text
           variant={TextVariant.bodySm}
@@ -81,12 +136,20 @@ export const AddressListItem = ({
           ellipsis
           data-testid="address-list-item-address"
           as="div"
+          display={Display.Flex}
         >
           <Tooltip title={address} position="bottom">
             {shortenAddress(address)}
           </Tooltip>
         </Text>
       </Box>
+      {isDuplicate && (
+        <Box className="address-list-item__duplicate-contact-warning-icon">
+          <Tooltip title={t('duplicateContactTooltip')} position="top">
+            <Icon name={IconName.Danger} color={IconColor.warningDefault} />
+          </Tooltip>
+        </Box>
+      )}
     </Box>
   );
 };

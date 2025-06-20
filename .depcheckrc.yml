@@ -9,6 +9,8 @@ ignores:
   - '@babel/runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
+  # injected via build system
+  - '@metamask/kernel-shims'
 
   #
   # dev deps
@@ -23,11 +25,14 @@ ignores:
   - '@metamask/forwarder'
   - '@metamask/phishing-warning' # statically hosted as part of some e2e tests
   - '@metamask/test-dapp'
+  - '@metamask/test-dapp-multichain'
+  - '@metamask/test-dapp-solana'
   - '@metamask/design-tokens' # Only imported in index.css
-  - '@tsconfig/node20' # required dynamically by TS, used in tsconfig.json
+  - '@tsconfig/node22' # required dynamically by TS, used in tsconfig.json
   - '@sentry/cli' # invoked as `sentry-cli`
   - 'chromedriver'
   - 'depcheck' # ooo meta
+  - 'ethers' # ethers @5.7.0 expected by @account-abstraction/contracts, but conflicts with transitive ethers@6.x
   - 'ganache-cli'
   - 'geckodriver'
   - 'jest'
@@ -39,8 +44,8 @@ ignores:
   - 'wait-on'
   - 'tsx' # used in .devcontainer
   - 'prettier-eslint' # used by the Prettier ESLint VSCode extension
-  # development tool
-  - 'nyc'
+  - 'tweetnacl' # used by solana-wallet-standard
+  - 'bs58' # used by solana-wallet-standard
   # storybook
   - '@storybook/cli'
   - '@storybook/core'
@@ -60,12 +65,41 @@ ignores:
   - 'resolve-url-loader'
   # jest environments
   - 'jest-environment-jsdom'
+  # webpack
+  - '@pmmmwh/react-refresh-webpack-plugin' # dev tool
+  - 'webpack-dev-server' # dev tool
+  - 'html-bundler-webpack-plugin' # build tool
+  - 'postcss-loader' # build tool
+  - '@swc/helpers' # build tool
+  - 'browserslist' # build tool
+  - 'buffer' # polyfill
+  - 'crypto-browserify' # polyfill
+  - 'process' # polyfill
+  - 'stream-http' # polyfill
+  - 'json-schema-to-ts' # misc: typescript helper
+  - 'https-browserify' # polyfill
+  - 'path-browserify' # polyfill
+  - 'nyc' # coverage
+  - 'core-js-pure' # polyfills
   # babel
   - '@babel/plugin-transform-logical-assignment-operators'
   # used in image optimization script
   - 'sharp'
   - 'imagemin'
   - 'imagemin-gifsicle'
+  # trezor
+  - 'ts-mixer'
+  - '@testing-library/dom'
+  - 'mini-css-extract-plugin'
+  - 'webpack-cli'
+  # preinstalled snaps
+  - '@metamask/preinstalled-example-snap'
+  - '@metamask/ens-resolver-snap'
+  - '@metamask/message-signing-snap'
+  - '@metamask/account-watcher'
+  - '@metamask/bitcoin-wallet-snap'
+  - '@metamask/solana-wallet-snap'
+  - '@metamask/institutional-wallet-snap'
 
 # files depcheck should not parse
 ignorePatterns:

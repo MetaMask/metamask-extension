@@ -1,10 +1,10 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { IconColor } from '../../../helpers/constants/design-system';
-import { IconName } from '..';
 import { ButtonIconSize } from './button-icon.types';
 import { ButtonIcon } from './button-icon';
 import README from './README.mdx';
+import { IconName } from '../icon';
 
 export default {
   title: 'Components/ComponentLibrary/ButtonIcon',

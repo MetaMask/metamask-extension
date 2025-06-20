@@ -75,9 +75,6 @@
   "asset": {
     "message": "Turtas"
   },
-  "attemptingConnect": {
-    "message": "Mėginama prisijungti prie „blockchain“."
-  },
   "attributions": {
     "message": "Požymiai"
   },
@@ -208,9 +205,6 @@
   "delete": {
     "message": "Ištrinti"
   },
-  "deleteNetwork": {
-    "message": "Panaikinti tinklą?"
-  },
   "details": {
     "message": "Išsami informacija"
   },
@@ -232,9 +226,6 @@
   "editContact": {
     "message": "Taisyti kontaktą"
   },
-  "ensRegistrationError": {
-    "message": "ENS pavadinimo registracijos klaida"
-  },
   "enterPasswordContinue": {
     "message": "Norėdami tęsti, įveskite slaptažodį"
   },
@@ -253,10 +244,6 @@
   "fast": {
     "message": "Greitas"
   },
-  "fiat": {
-    "message": "Standartinė valiuta",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Failo importavimas neveikia? Spustelėkite čia!",
     "description": "Helps user import their account from a JSON file"
@@ -267,26 +254,11 @@
   "from": {
     "message": "Nuo"
   },
-  "functionType": {
-    "message": "Funkcijos tipas"
-  },
   "gasLimit": {
     "message": "Dujų apribojimas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Dujų apribojimas yra maksimalus dujų vienetų, kuriuos pageidaujate išleisti, skaičius."
-  },
   "gasLimitTooLow": {
     "message": "Dujų apribojimas turi būti bent 21000"
-  },
-  "gasPrice": {
-    "message": "Dujų kaina (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Dujų kaina ypatingai maža"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Dujų kaina nurodo eterių sumą, kurią pageidaujate sumokėti už kiekvieną dujų vienetą."
   },
   "gasUsed": {
     "message": "Sunaudotos dujos"
@@ -329,9 +301,6 @@
     "message": "Importuoti",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importuoti paskyrą"
-  },
   "importAccountMsg": {
     "message": "Importuotos paskyros nebus susietos su pirmiau sukurta „MetaMask“ paskyros atkūrimo fraze. Sužinokite daugiau apie importuotas paskyras"
   },
@@ -356,12 +325,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Gavėjo adresas netinkamas"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Ne ETH tinklas, nustatykite į mažąsias raides"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Netinkamas Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Netinkamas RPC URL"
@@ -399,9 +362,6 @@
   },
   "loading": {
     "message": "Įkeliama..."
-  },
-  "loadingTokens": {
-    "message": "Įkeliami žetonai..."
   },
   "localhost": {
     "message": "Vietinis serveris 8545"
@@ -462,14 +422,8 @@
   "next": {
     "message": "Toliau"
   },
-  "noAddressForName": {
-    "message": "Šiam pavadinimui nenurodytas adresas."
-  },
   "noConversionRateAvailable": {
     "message": "Nėra keitimo kurso"
-  },
-  "noTransactions": {
-    "message": "Neturite jokių operacijų"
   },
   "noWebcamFound": {
     "message": "Jūsų kompiuterio vaizdo kamera nerasta. Bandykite dar kartą."
@@ -494,9 +448,6 @@
   },
   "origin": {
     "message": "Kilmė"
-  },
-  "parameters": {
-    "message": "Parametrai"
   },
   "participateInMetaMetrics": {
     "message": "Dalyvaukite „MetaMetrics“"
@@ -526,12 +477,6 @@
   "prev": {
     "message": "Peržiūra"
   },
-  "primaryCurrencySetting": {
-    "message": "Pagrindinė valiuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Rinkitės vietinę, kad vertės pirmiausia būtų rodomos vietine grandinės valiuta (pvz., ETH). Rinkitės standartinę, kad vertės pirmiausia būtų rodomos jūsų pasirinkta standartine valiuta."
-  },
   "privacyMsg": {
     "message": "Privatumo politika"
   },
@@ -547,9 +492,6 @@
   },
   "readdToken": {
     "message": "Šį žetoną galite bet kada galite įtraukti ir vėl, tiesiog savo paskyros parinkčių meniu nueikite  į „Įtraukti žetoną“."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Ieška, viešieji adresai (0x) arba ENS"
   },
   "reject": {
     "message": "Atmesti"
@@ -574,9 +516,6 @@
   },
   "removeAccountDescription": {
     "message": "Ši paskyra bus pašalinta iš jūsų piniginės. Prieš tęsdami įsitikinkite, kad turite šios importuotos paskyros pradinę atkūrimo frazę arba asmeninį raktą. Paskyras importuoti ir vėl susikurti galite paskyros išskleidžiamajame meniu."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "patvirtinimo laukiančios užklausos"
   },
   "required": {
     "message": "Reikalaujama"
@@ -630,9 +569,6 @@
   "send": {
     "message": "Siųsti"
   },
-  "sendTokens": {
-    "message": "Siųsti žetonus"
-  },
   "settings": {
     "message": "Nustatymai"
   },
@@ -647,9 +583,6 @@
   },
   "showHexDataDescription": {
     "message": "Pasirinkite tai, kad siuntimo ekrane būtų rodomas šešioliktainių duomenų laukas"
-  },
-  "sigRequest": {
-    "message": "Parašo užklausa"
   },
   "sign": {
     "message": "Prisijunkite"
@@ -699,9 +632,6 @@
   "terms": {
     "message": "Naudojimo sąlygos"
   },
-  "tips": {
-    "message": "Arbatpinigiai"
-  },
   "to": {
     "message": "Iki"
   },
@@ -747,9 +677,6 @@
   "transactionErrored": {
     "message": "Įvyko operacijos klaida"
   },
-  "transactionFee": {
-    "message": "Operacijos mokestis"
-  },
   "transactionResubmitted": {
     "message": "Operacija pakartotinai pateikta$2 su iki $1 padidintu dujų mokesčiu"
   },
@@ -777,20 +704,11 @@
   "unknown": {
     "message": "Nežinoma"
   },
-  "unknownNetwork": {
-    "message": "Nežinomas privatusis tinklas"
-  },
   "unknownQrCode": {
     "message": "Klaida: negalime identifikuoti šio QR kodo"
   },
   "unlock": {
     "message": "Atrakinti"
-  },
-  "unlockMessage": {
-    "message": "Laukiančios decentralizuotos svetainės"
-  },
-  "updatedWithDate": {
-    "message": "Atnaujinta $1"
   },
   "urlErrorMsg": {
     "message": "URI reikia atitinkamo HTTP/HTTPS priešdėlio."
@@ -813,13 +731,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Norint naudotis šia funkcija, reikia leisti prieigą prie kameros.."
   },
-  "youSign": {
-    "message": "Pasirašote"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Jūsų asmeninė atkūrimo frazė"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nustatykite nulinę dujų kainą greitėjant"
   }
 }

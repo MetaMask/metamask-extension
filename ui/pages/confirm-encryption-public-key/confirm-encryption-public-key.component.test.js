@@ -1,8 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component';
 
 const baseProps = {
@@ -38,7 +39,7 @@ const baseProps = {
       },
     },
     options: {},
-    methods: [...Object.values(EthMethod)],
+    methods: ETH_EOA_METHODS,
     type: EthAccountType.Eoa,
     name: 'Antonio',
   },
@@ -58,19 +59,6 @@ describe('ConfirmDecryptMessage Component', () => {
       container.querySelector('.request-encryption-public-key__balance-value')
         .textContent,
     ).toMatchInlineSnapshot(`"966.987986 ABC"`);
-  });
-
-  it('should match snapshot when preference is Fiat currency', () => {
-    const { container } = renderWithProvider(
-      <ConfirmEncryptionPublicKey {...baseProps} conversionRate={1572.88} />,
-      store,
-    );
-
-    expect(container).toMatchSnapshot();
-    expect(
-      container.querySelector('.request-encryption-public-key__balance-value')
-        .textContent,
-    ).toMatchInlineSnapshot(`"1520956.064158 DEF"`);
   });
 
   it('should match snapshot when there is no txData', () => {

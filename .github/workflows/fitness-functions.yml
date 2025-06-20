@@ -2,26 +2,22 @@ name: Fitness Functions CI
 
 on:
   pull_request:
-    types: [assigned, opened, synchronize, reopened]
+    types:
+      - opened
+      - reopened
+      - synchronize
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-          fetch-depth: 0
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-
-      - name: Install dependencies
-        run: yarn --immutable
+          is-high-risk-environment: false
+          fetch-depth: 0 # This is needed to checkout all branches
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Run fitness functions
         env:

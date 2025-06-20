@@ -1,33 +1,35 @@
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-import browser from 'webextension-polyfill';
-///: END:ONLY_INCLUDE_IF
-import { memoize } from 'lodash';
-import getFirstPreferredLangCode from '../../app/scripts/lib/get-first-preferred-lang-code';
+import { memoize, escape as lodashEscape } from 'lodash';
 import { fetchLocale, loadRelativeTimeFormatLocaleData } from '../modules/i18n';
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-import { renderDesktopError } from '../../ui/pages/desktop-error/render-desktop-error';
-import { EXTENSION_ERROR_PAGE_TYPES } from '../constants/desktop';
-import { openCustomProtocol } from './deep-linking';
-///: END:ONLY_INCLUDE_IF
-import switchDirection from './switch-direction';
+import getFirstPreferredLangCode from './get-first-preferred-lang-code';
+import { switchDirectionForPreferredLocale } from './switch-direction';
 
+const defaultLocale = 'en';
 const _setupLocale = async (currentLocale) => {
-  const currentLocaleMessages = currentLocale
-    ? await fetchLocale(currentLocale)
-    : {};
-  const enLocaleMessages = await fetchLocale('en');
+  const enRelativeTime = loadRelativeTimeFormatLocaleData(defaultLocale);
+  const enLocale = fetchLocale(defaultLocale);
 
-  await loadRelativeTimeFormatLocaleData('en');
-  if (currentLocale) {
-    await loadRelativeTimeFormatLocaleData(currentLocale);
+  const promises = [enRelativeTime, enLocale];
+  if (currentLocale === defaultLocale) {
+    // enLocaleMessages and currentLocaleMessages are the same; reuse enLocale
+    promises.push(enLocale); // currentLocaleMessages
+  } else if (currentLocale) {
+    // currentLocale does not match enLocaleMessages
+    promises.push(fetchLocale(currentLocale)); // currentLocaleMessages
+    promises.push(loadRelativeTimeFormatLocaleData(currentLocale));
+  } else {
+    // currentLocale is not set
+    promises.push(Promise.resolve({})); // currentLocaleMessages
   }
 
+  const [, enLocaleMessages, currentLocaleMessages] = await Promise.all(
+    promises,
+  );
   return { currentLocaleMessages, enLocaleMessages };
 };
 
 export const setupLocale = memoize(_setupLocale);
 
-const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
+export const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
   return (key) => {
     let message = currentLocaleMessages[key]?.message;
     if (!message && enLocaleMessages[key]) {
@@ -37,54 +39,7 @@ const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
   };
 };
 
-export async function getErrorHtml(
-  errorKey,
-  supportLink,
-  metamaskState,
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  err,
-  ///: END:ONLY_INCLUDE_IF
-) {
-  let response, preferredLocale;
-  if (metamaskState?.currentLocale) {
-    preferredLocale = metamaskState.currentLocale;
-    response = await setupLocale(metamaskState.currentLocale);
-  } else {
-    preferredLocale = await getFirstPreferredLangCode();
-    response = await setupLocale(preferredLocale);
-  }
-
-  const textDirection = ['ar', 'dv', 'fa', 'he', 'ku'].includes(preferredLocale)
-    ? 'rtl'
-    : 'auto';
-
-  switchDirection(textDirection);
-  const { currentLocaleMessages, enLocaleMessages } = response;
-  const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  const isDesktopEnabled = metamaskState?.desktopEnabled === true;
-
-  if (isDesktopEnabled) {
-    let errorType = EXTENSION_ERROR_PAGE_TYPES.CRITICAL_ERROR;
-
-    if (err?.message.includes('No response from RPC')) {
-      errorType = EXTENSION_ERROR_PAGE_TYPES.CONNECTION_LOST;
-    }
-
-    return renderDesktopError({
-      type: errorType,
-      t,
-      isHtmlError: true,
-    });
-  }
-  ///: END:ONLY_INCLUDE_IF
-  /**
-   * The pattern ${errorKey === 'troubleStarting' ? t('troubleStarting') : ''}
-   * is neccessary because we we need linter to see the string
-   * of the locale keys. If we use the variable directly, the linter will not
-   * see the string and will not be able to check if the locale key exists.
-   */
+export function getErrorHtmlBase(errorBody) {
   return `
     <div class="critical-error__container">
       <div class="critical-error">
@@ -94,86 +49,57 @@ export async function getErrorHtml(
           </svg>
         </div>
         <div>
-          <p>
-            ${errorKey === 'troubleStarting' ? t('troubleStarting') : ''}
-            ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
-          </p>
-          <div id="critical-error-button" class="critical-error__link critical-error__link-restart">
-            ${t('restartMetamask')}
-          </div>
-          <p class="critical-error__footer">
-            <span>${t('stillGettingMessage')}</span>
-            <a
-              href=${supportLink}
-              class="critical-error__link"
-              target="_blank"
-              rel="noopener noreferrer">
-                ${t('sendBugReport')}
-              </a>
-          </p>
+          ${errorBody}
         </div>
       </div>
     </div>
-    `;
+  `;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-export const MMD_DOWNLOAD_LINK =
-  'https://github.com/MetaMask/metamask-desktop/releases';
+export async function getErrorHtml(errorKey, supportLink, metamaskState) {
+  let response, preferredLocale;
+  if (metamaskState?.currentLocale) {
+    preferredLocale = metamaskState.currentLocale;
+    response = await setupLocale(metamaskState.currentLocale);
+  } else {
+    preferredLocale = await getFirstPreferredLangCode();
+    response = await setupLocale(preferredLocale);
+  }
 
-function disableDesktop(backgroundConnection) {
-  backgroundConnection.disableDesktopError();
+  switchDirectionForPreferredLocale(preferredLocale);
+
+  const { currentLocaleMessages, enLocaleMessages } = response;
+  const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
+
+  const footer = supportLink
+    ? `
+      <p class="critical-error__footer">
+        <span>${lodashEscape(t('stillGettingMessage'))}</span>
+        <a
+          href="${lodashEscape(supportLink)}"
+          class="critical-error__link"
+          target="_blank"
+          rel="noopener noreferrer">
+            ${lodashEscape(t('sendBugReport'))}
+        </a>
+      </p>
+    `
+    : '';
+
+  /**
+   * The pattern ${errorKey === 'troubleStarting' ? t('troubleStarting') : ''}
+   * is necessary because we we need linter to see the string
+   * of the locale keys. If we use the variable directly, the linter will not
+   * see the string and will not be able to check if the locale key exists.
+   */
+  return getErrorHtmlBase(`
+      <p>
+        ${errorKey === 'troubleStarting' ? t('troubleStarting') : ''}
+        ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
+      </p>
+      <div id="critical-error-button" class="critical-error__link critical-error__link-restart">
+        ${lodashEscape(t('restartMetamask'))}
+      </div>
+      ${footer}
+    `);
 }
-
-export function downloadDesktopApp() {
-  global.platform.openTab({
-    url: MMD_DOWNLOAD_LINK,
-  });
-}
-
-export function downloadExtension() {
-  global.platform.openTab({ url: 'https://metamask.io/' });
-}
-
-export function restartExtension() {
-  browser.runtime.reload();
-}
-
-export function openOrDownloadMMD() {
-  openCustomProtocol('metamask-desktop://pair').catch(() => {
-    window.open(MMD_DOWNLOAD_LINK, '_blank').focus();
-  });
-}
-
-export function registerDesktopErrorActions(backgroundConnection) {
-  const disableDesktopButton = document.getElementById(
-    'desktop-error-button-disable-mmd',
-  );
-  const restartMMButton = document.getElementById(
-    'desktop-error-button-restart-mm',
-  );
-  const downloadMMDButton = document.getElementById(
-    'desktop-error-button-download-mmd',
-  );
-
-  const openOrDownloadMMDButton = document.getElementById(
-    'desktop-error-button-open-or-download-mmd',
-  );
-
-  disableDesktopButton?.addEventListener('click', (_) => {
-    disableDesktop(backgroundConnection);
-  });
-
-  restartMMButton?.addEventListener('click', (_) => {
-    restartExtension();
-  });
-
-  downloadMMDButton?.addEventListener('click', (_) => {
-    downloadDesktopApp();
-  });
-
-  openOrDownloadMMDButton?.addEventListener('click', (_) => {
-    openOrDownloadMMD();
-  });
-}
-///: END:ONLY_INCLUDE_IF

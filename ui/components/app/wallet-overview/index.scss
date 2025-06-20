@@ -3,27 +3,43 @@
 .wallet-overview {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
   flex: 1;
-  min-height: 209px;
   min-width: 0;
-  padding-top: 10px;
   flex-direction: column;
   width: 100%;
+
+  &-fullscreen {
+    align-items: center;
+  }
 
   &__balance {
     flex: 1;
     display: flex;
+    gap: 4px;
     flex-direction: column;
-    align-items: center;
+    align-items: start;
     width: 100%;
+
+    .wallet-overview-fullscreen > & {
+      align-items: center;
+    }
   }
 
   &__buttons {
     display: flex;
     flex-direction: row;
-    height: 68px;
-    margin-bottom: 24px;
+    height: 100%;
+    margin-bottom: 12px;
+    padding: 0 16px;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  &__currency-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
   }
 }
 
@@ -39,13 +55,24 @@
   font-weight: 500;
 }
 
-.eth-overview {
+// Makes the tooltip wrapper take the full width of the flex container same as the button
+.tooltip-button-wrapper {
+  flex: 1;
+}
+
+.coin-overview,
+.eth-overview,
+.token-overview {
+  &__button {
+    flex: 1;
+  }
+
   &__balance {
     display: flex;
     flex-direction: column;
     min-width: 0;
     position: relative;
-    align-items: center;
+    align-items: start;
     margin: 16px 0;
     padding: 0 16px;
     max-width: 326px;
@@ -55,22 +82,19 @@
     display: flex;
     max-width: inherit;
     justify-content: center;
-    flex-wrap: wrap;
+    align-items: center;
+    flex-wrap: nowrap;
   }
 
   &__primary-balance {
     @include design-system.H2;
 
     color: var(--color-text-default);
+    font-weight: 500;
   }
 
   &__cached-star {
     margin-left: 4px;
-  }
-
-  &__portfolio-button {
-    height: inherit;
-    padding-inline-start: 16px;
   }
 
   &__cached-balance,
@@ -123,7 +147,8 @@
     display: flex;
     max-width: inherit;
     justify-content: center;
-    flex-wrap: wrap;
+    align-items: center;
+    flex-wrap: nowrap;
   }
 
   &__primary-balance {
@@ -138,11 +163,6 @@
     @include design-system.H5;
 
     color: var(--color-text-alternative);
-  }
-
-  &__portfolio-button {
-    height: inherit;
-    padding-inline-start: 16px;
   }
 
   &__button:last-of-type {

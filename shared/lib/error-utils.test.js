@@ -1,16 +1,6 @@
-import browser from 'webextension-polyfill';
 import { fetchLocale } from '../modules/i18n';
 import { SUPPORT_LINK } from './ui-utils';
-import {
-  downloadDesktopApp,
-  openOrDownloadMMD,
-  downloadExtension,
-  getErrorHtml,
-  restartExtension,
-  registerDesktopErrorActions,
-  MMD_DOWNLOAD_LINK,
-} from './error-utils';
-import { openCustomProtocol } from './deep-linking';
+import { getErrorHtml } from './error-utils';
 
 jest.mock('../modules/i18n', () => ({
   fetchLocale: jest.fn(),
@@ -84,94 +74,5 @@ describe('Error utils Tests', function () {
     expect(errorHtml).toContain(restartMetamaskMessage);
     expect(errorHtml).toContain(stillGettingMessageMessage);
     expect(errorHtml).toContain(sendBugReportMessage);
-  });
-  describe('desktop', () => {
-    it('downloadDesktopApp opens a new tab on metamask-desktop releases url', () => {
-      downloadDesktopApp();
-
-      expect(global.platform.openTab).toHaveBeenCalledTimes(1);
-      expect(global.platform.openTab).toHaveBeenCalledWith({
-        url: MMD_DOWNLOAD_LINK,
-      });
-    });
-
-    it('downloadExtension opens a new tab on metamask extension url', () => {
-      downloadExtension();
-
-      expect(global.platform.openTab).toHaveBeenCalledTimes(1);
-      expect(global.platform.openTab).toHaveBeenCalledWith({
-        url: 'https://metamask.io/',
-      });
-    });
-
-    it('restartExtension calls runtime reload method', () => {
-      restartExtension();
-
-      expect(browser.runtime.reload).toHaveBeenCalledTimes(1);
-    });
-
-    describe('openOrDownloadMMD', () => {
-      it('launches installed desktop app by calling openCustomProtocol successfully', () => {
-        openCustomProtocol.mockResolvedValue();
-        openOrDownloadMMD();
-
-        expect(openCustomProtocol).toHaveBeenCalledTimes(1);
-        expect(openCustomProtocol).toHaveBeenCalledWith(
-          'metamask-desktop://pair',
-        );
-      });
-
-      it('opens metamask-desktop release url when fails to find and start a local metamask-desktop app', async () => {
-        openCustomProtocol.mockRejectedValue();
-        const focusMock = jest.fn();
-        jest.spyOn(window, 'open').mockReturnValue({
-          focus: focusMock,
-        });
-
-        openOrDownloadMMD();
-
-        // this ensures that we are awaiting for pending promises to resolve
-        // as the openOrDownloadMMD calls a promise, but returns before it is resolved
-        await new Promise(process.nextTick);
-
-        expect(openCustomProtocol).toHaveBeenCalledTimes(1);
-        expect(openCustomProtocol).toHaveBeenCalledWith(
-          'metamask-desktop://pair',
-        );
-
-        expect(window.open).toHaveBeenCalledTimes(1);
-        expect(window.open).toHaveBeenCalledWith(MMD_DOWNLOAD_LINK, '_blank');
-        expect(focusMock).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    it('registerDesktopErrorActions add click event listeners for each desktop error elements', async () => {
-      const addEventListenerMock = jest.fn();
-      jest.spyOn(document, 'getElementById').mockReturnValue({
-        addEventListener: addEventListenerMock,
-      });
-
-      registerDesktopErrorActions();
-
-      expect(document.getElementById).toHaveBeenCalledTimes(4);
-      expect(document.getElementById).toHaveBeenNthCalledWith(
-        1,
-        'desktop-error-button-disable-mmd',
-      );
-      expect(document.getElementById).toHaveBeenNthCalledWith(
-        2,
-        'desktop-error-button-restart-mm',
-      );
-      expect(document.getElementById).toHaveBeenNthCalledWith(
-        3,
-        'desktop-error-button-download-mmd',
-      );
-      expect(document.getElementById).toHaveBeenNthCalledWith(
-        4,
-        'desktop-error-button-open-or-download-mmd',
-      );
-
-      expect(addEventListenerMock).toHaveBeenCalledTimes(4);
-    });
   });
 });

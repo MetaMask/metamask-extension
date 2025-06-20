@@ -11,8 +11,12 @@
 export class CallbackProcessor {
   currentMessageId = 0;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   messageCallbacks = new Map<number, (response?: any) => void>();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   registerCallback(callback: (response?: any) => void) {
     this.currentMessageId += 1;
     this.messageCallbacks.set(this.currentMessageId, callback);

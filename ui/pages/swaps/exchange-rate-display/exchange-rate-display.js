@@ -88,6 +88,7 @@ export default function ExchangeRateDisplay({
         onClick={onQuotesClick}
         color={quoteRateColor}
         className={quoteRateClassName}
+        gap={1}
         data-testid="exchange-rate-display-quote-rate"
       >
         <span>1</span>

@@ -35,7 +35,8 @@ export function maskObject(object, mask) {
     } else if (maskKey && typeof maskKey === 'object') {
       state[key] = maskObject(object[key], maskKey);
     } else if (maskKey === undefined || maskKey === false) {
-      state[key] = typeof object[key];
+      // As typeof null (misleadingly) returns “object,” it would be more readable to display “null” instead of “object.”
+      state[key] = object[key] === null ? null : typeof object[key];
     } else {
       throw new Error(`Unsupported mask entry: ${maskKey}`);
     }

@@ -2,7 +2,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import { getPersistentState } from '@metamask/base-controller';
 
 /**
- * @typedef {import('@metamask/base-controller').ControllerMessenger} ControllerMessenger
+ * @typedef {import('@metamask/base-controller').Messenger} Messenger
  */
 
 /**
@@ -25,7 +25,7 @@ export default class ComposableObservableStore extends ObservableStore {
    *
    * @param {object} options
    * @param {object} [options.config] - Map of internal state keys to child stores
-   * @param {ControllerMessenger} options.controllerMessenger - The controller
+   * @param {Messenger} options.controllerMessenger - The controller
    *   messenger, used for subscribing to events from BaseControllerV2-based
    *   controllers.
    * @param {object} [options.state] - The initial store state
@@ -59,7 +59,7 @@ export default class ComposableObservableStore extends ObservableStore {
       const store = config[key];
       if (store.subscribe) {
         config[key].subscribe((state) => {
-          this.updateState({ [key]: state });
+          this.#onStateChange(key, state);
         });
       } else {
         this.controllerMessenger.subscribe(
@@ -69,12 +69,17 @@ export default class ComposableObservableStore extends ObservableStore {
             if (this.persist) {
               updatedState = getPersistentState(state, config[key].metadata);
             }
-            this.updateState({ [key]: updatedState });
+            this.#onStateChange(key, updatedState);
           },
         );
       }
 
-      initialState[key] = store.state ?? store.getState?.();
+      const initialStoreState = store.state ?? store.getState?.();
+
+      initialState[key] =
+        this.persist && config[key].metadata
+          ? getPersistentState(initialStoreState, config[key].metadata)
+          : initialStoreState;
     }
     this.updateState(initialState);
   }
@@ -98,5 +103,13 @@ export default class ComposableObservableStore extends ObservableStore {
       flatState = { ...flatState, ...state };
     }
     return flatState;
+  }
+
+  #onStateChange(controllerKey, newState) {
+    const oldState = this.getState()[controllerKey];
+
+    this.updateState({ [controllerKey]: newState });
+
+    this.emit('stateChange', { oldState, newState, controllerKey });
   }
 }

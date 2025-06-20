@@ -1,0 +1,22 @@
+.confirm-scroll-to-bottom__button {
+  bottom: 12px;
+  position: absolute;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  height: 36px;
+  width: 36px;
+  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+
+  /** arbitrary value to ensure bottom is above content */
+  z-index: 201;
+
+  /**
+    override design-system defaults.
+    */
+  &:hover {
+    background-color: var(--color-primary-default);
+    color: var(--color-primary-inverse);
+    opacity: 0.95;
+  }
+}

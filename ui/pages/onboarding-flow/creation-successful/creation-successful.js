@@ -1,121 +1,268 @@
-import React, { useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useCallback, useContext, useMemo } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-
-import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
-import Button from '../../../components/ui/button';
 import {
-  FONT_WEIGHT,
-  TEXT_ALIGN,
-  TypographyVariant,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '../../../components/component-library/button';
+import {
+  TextVariant,
+  Display,
   AlignItems,
+  JustifyContent,
+  FlexDirection,
+  BorderRadius,
+  BlockSize,
+  FontWeight,
+  TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
+import {
+  Box,
+  Text,
+  IconName,
+  IconSize,
+  ButtonBase,
+  Icon,
+  ButtonLink,
+  ButtonLinkSize,
+} from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+  ONBOARDING_PIN_EXTENSION_ROUTE,
+  DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { isBeta } from '../../../helpers/utils/build-types';
-import { getFirstTimeFlowType } from '../../../selectors';
+import { getFirstTimeFlowType, getHDEntropyIndex } from '../../../selectors';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
+import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+
+import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 
 export default function CreationSuccessful() {
   const history = useHistory();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const { search } = useLocation();
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
+  const learnMoreLink =
+    'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
+
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
+
+  const isWalletReady =
+    firstTimeFlowType === FirstTimeFlowType.import || seedPhraseBackedUp;
+
+  const searchParams = new URLSearchParams(search);
+  const isFromReminderParam = searchParams.get('isFromReminder');
+
+  const renderTitle = useMemo(() => {
+    if (isWalletReady) {
+      return isFromReminderParam
+        ? t('yourWalletIsReadyFromReminder')
+        : t('yourWalletIsReady');
+    }
+
+    return t('yourWalletIsReadyRemind');
+  }, [isFromReminderParam, isWalletReady, t]);
+
+  const renderDetails1 = useMemo(() => {
+    if (isWalletReady) {
+      return isFromReminderParam
+        ? t('walletReadyLoseSrpFromReminder')
+        : t('walletReadyLoseSrp');
+    }
+
+    return t('walletReadyLoseSrpRemind');
+  }, [isWalletReady, isFromReminderParam, t]);
+
+  const renderDetails2 = useMemo(() => {
+    if (isWalletReady || isFromReminderParam) {
+      return t('walletReadyLearn', [
+        <ButtonLink
+          key="walletReadyLearn"
+          size={ButtonLinkSize.Inherit}
+          textProps={{
+            variant: TextVariant.bodyMd,
+            alignItems: AlignItems.flexStart,
+          }}
+          as="a"
+          href={learnMoreLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('learnHow')}
+        </ButtonLink>,
+      ]);
+    }
+
+    return t('walletReadyLearnRemind');
+  }, [isWalletReady, isFromReminderParam, t]);
+
+  const renderFox = useMemo(() => {
+    if (isWalletReady) {
+      return (
+        <LottieAnimation
+          path="images/animations/fox/celebrating.lottie.json"
+          loop
+          autoplay
+        />
+      );
+    }
+
+    return (
+      <LottieAnimation
+        path="images/animations/fox/celebrating.lottie.json"
+        loop
+        autoplay
+      />
+    );
+  }, [isWalletReady]);
+
+  const onDone = useCallback(() => {
+    if (isFromReminderParam) {
+      history.push(DEFAULT_ROUTE);
+      return;
+    }
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletCreationComplete,
+      properties: {
+        method: firstTimeFlowType,
+        is_profile_syncing_enabled: isBackupAndSyncEnabled,
+        hd_entropy_index: hdEntropyIndex,
+      },
+    });
+    history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+  }, [
+    firstTimeFlowType,
+    isBackupAndSyncEnabled,
+    hdEntropyIndex,
+    trackEvent,
+    history,
+    isFromReminderParam,
+  ]);
 
   return (
-    <div className="creation-successful" data-testid="creation-successful">
-      <Box textAlign={TEXT_ALIGN.CENTER}>
-        <img src="./images/tada.png" />
-        <Typography
-          variant={TypographyVariant.H2}
-          fontWeight={FONT_WEIGHT.BOLD}
-          margin={6}
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      height={BlockSize.Full}
+      gap={6}
+      className="creation-successful"
+      data-testid="wallet-ready"
+    >
+      <Box>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.flexStart}
         >
-          {t('walletCreationSuccessTitle')}
-        </Typography>
-        <Typography variant={TypographyVariant.H4}>
-          {t('walletCreationSuccessDetail')}
-        </Typography>
-      </Box>
-      <Typography
-        variant={TypographyVariant.H4}
-        boxProps={{ align: AlignItems.flexStart }}
-        marginLeft={12}
-      >
-        {t('remember')}
-      </Typography>
-      <ul>
-        <li>
-          <Typography variant={TypographyVariant.H4}>
-            {isBeta()
-              ? t('betaWalletCreationSuccessReminder1')
-              : t('walletCreationSuccessReminder1')}
-          </Typography>
-        </li>
-        <li>
-          <Typography variant={TypographyVariant.H4}>
-            {isBeta()
-              ? t('betaWalletCreationSuccessReminder2')
-              : t('walletCreationSuccessReminder2')}
-          </Typography>
-        </li>
-        <li>
-          <Typography variant={TypographyVariant.H4}>
-            {t('walletCreationSuccessReminder3', [
-              <span
-                key="creation-successful__bold"
-                className="creation-successful__bold"
-              >
-                {t('walletCreationSuccessReminder3BoldSection')}
-              </span>,
-            ])}
-          </Typography>
-        </li>
-        <li>
-          <Button
-            href="https://community.metamask.io/t/what-is-a-secret-recovery-phrase-and-how-to-keep-your-crypto-wallet-secure/3440"
-            target="_blank"
-            type="link"
-            rel="noopener noreferrer"
+          <Text
+            variant={TextVariant.headingLg}
+            as="h2"
+            justifyContent={JustifyContent.center}
+            style={{
+              alignSelf: AlignItems.flexStart,
+            }}
+            marginBottom={4}
           >
-            {t('learnMoreUpperCase')}
-          </Button>
-        </li>
-      </ul>
-      <Box marginTop={6} className="creation-successful__actions">
-        <Button
-          type="link"
-          onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
-        >
-          {t('advancedConfiguration')}
-        </Button>
+            {renderTitle}
+          </Text>
+          <Box
+            width={BlockSize.Full}
+            display={Display.Flex}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+            marginBottom={6}
+          >
+            <Box
+              display={Display.Flex}
+              style={{ width: '144px', height: '144px' }}
+            >
+              {renderFox}
+            </Box>
+          </Box>
+          <Text
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            marginBottom={6}
+          >
+            {renderDetails1}
+          </Text>
+          <Text
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            marginBottom={6}
+          >
+            {renderDetails2}
+          </Text>
+        </Box>
+        {!isFromReminderParam && (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.flexStart}
+            className="creation-successful__settings-actions"
+            gap={4}
+          >
+            <ButtonBase
+              data-testid="manage-default-settings"
+              borderRadius={BorderRadius.LG}
+              width={BlockSize.Full}
+              onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+            >
+              <Box display={Display.Flex} alignItems={AlignItems.center}>
+                <Icon
+                  name={IconName.Setting}
+                  size={IconSize.Md}
+                  marginInlineEnd={3}
+                />
+                <Text
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('manageDefaultSettings')}
+                </Text>
+              </Box>
+              <Icon
+                name={IconName.ArrowRight}
+                color={IconColor.iconAlternative}
+                size={IconSize.Sm}
+              />
+            </ButtonBase>
+          </Box>
+        )}
+      </Box>
+
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+      >
         <Button
           data-testid="onboarding-complete-done"
-          type="primary"
-          large
-          rounded
-          onClick={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event: MetaMetricsEventName.OnboardingWalletCreationComplete,
-              properties: {
-                method: firstTimeFlowType,
-              },
-            });
-            history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
-          }}
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          width={BlockSize.Full}
+          onClick={onDone}
         >
-          {t('gotIt')}
+          {t('done')}
         </Button>
       </Box>
-    </div>
+    </Box>
   );
 }

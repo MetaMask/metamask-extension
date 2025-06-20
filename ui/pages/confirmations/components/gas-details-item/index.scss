@@ -6,6 +6,18 @@
   &__currency-container,
   &__gasfee-label {
     position: relative;
-    white-space: nowrap;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+  }
+
+  &__dangerTooltip {
+    position: relative;
+
+    .mm-icon {
+      position: relative;
+      top: 2px;
+      margin-inline-start: 4px;
+    }
   }
 }

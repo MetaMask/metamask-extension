@@ -75,9 +75,6 @@
   "asset": {
     "message": "Актив"
   },
-  "attemptingConnect": {
-    "message": "Спроба підключення до розподіленої бази даних."
-  },
   "attributions": {
     "message": "Авторство"
   },
@@ -208,9 +205,6 @@
   "delete": {
     "message": "Видалити"
   },
-  "deleteNetwork": {
-    "message": "Видалити мережу?"
-  },
   "details": {
     "message": "Деталі"
   },
@@ -232,9 +226,6 @@
   "editContact": {
     "message": "Редагувати контракт"
   },
-  "ensRegistrationError": {
-    "message": "Помилка у реєстрації ENS ім'я"
-  },
   "enterPasswordContinue": {
     "message": "Введіть пароль, щоб продовжити"
   },
@@ -253,10 +244,6 @@
   "fast": {
     "message": "Швидка"
   },
-  "fiat": {
-    "message": "Вказівка",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Не працює імпорт файлу? Натисніть тут!",
     "description": "Helps user import their account from a JSON file"
@@ -267,26 +254,11 @@
   "from": {
     "message": "Від"
   },
-  "functionType": {
-    "message": "Тип функції"
-  },
   "gasLimit": {
     "message": "Ліміт газу"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ліміт газу – максимальна кількість одиниць газу, яку ви бажаєте витратити."
-  },
   "gasLimitTooLow": {
     "message": "Ліміт газу має бути не менше 21000"
-  },
-  "gasPrice": {
-    "message": "Ціна на пальне (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Ціна газу дуже низька"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Ціна на пальне визначає кількість Ether, яку ви готові заплатити за кожну одиницю пального."
   },
   "gasUsed": {
     "message": "Пального використано"
@@ -329,9 +301,6 @@
     "message": "Імпортувати",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Імпортувати обліковий запис"
-  },
   "importAccountMsg": {
     "message": "Імпортовані облікові записи не будуть пов'язані з вашою первісно створеною початковою фразою облікового запису MetaMask. Дізнайтесь більше про імпортовані облікові записи"
   },
@@ -356,12 +325,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Недійсна адреса отримувача"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Не є мережею ETH, налаштуйте нижній регістр"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Недійсний Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Недійсний RPC URL"
@@ -399,9 +362,6 @@
   },
   "loading": {
     "message": "Завантаження..."
-  },
-  "loadingTokens": {
-    "message": "Завантаження токенів…"
   },
   "localhost": {
     "message": "Локальний хост 8545"
@@ -462,14 +422,8 @@
   "next": {
     "message": "Далі"
   },
-  "noAddressForName": {
-    "message": "На це ім'я не встановлено адреси."
-  },
   "noConversionRateAvailable": {
     "message": "Немає доступного обмінного курсу"
-  },
-  "noTransactions": {
-    "message": "У вас немає транзакцій"
   },
   "noWebcamFound": {
     "message": "Веб-камеру комп’ютера не знайдено. Повторіть спробу."
@@ -494,9 +448,6 @@
   },
   "origin": {
     "message": "Походження"
-  },
-  "parameters": {
-    "message": "Параметри"
   },
   "participateInMetaMetrics": {
     "message": "Взяти участь у MetaMetrics"
@@ -526,12 +477,6 @@
   "prev": {
     "message": "Попередній"
   },
-  "primaryCurrencySetting": {
-    "message": "Первісна валюта"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Оберіть \"рідна\", щоб пріоритезувати показ сум у рідних валютах мережі (напр.ETH). \nОберіть \"фіатна\", щоб пріоритезувати показ сум у ваших обраних фіатних валютах."
-  },
   "privacyMsg": {
     "message": "Політика конфіденційності"
   },
@@ -547,9 +492,6 @@
   },
   "readdToken": {
     "message": "Ви можете знову додати цей токен у меню облікового запису у розділі “Додати токен”. "
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Пошук, публічна адреса (0x), або ENS"
   },
   "reject": {
     "message": "Відхилити"
@@ -574,9 +516,6 @@
   },
   "removeAccountDescription": {
     "message": "Цей обліковий запис буде видалено з вашого гаманця. Будь ласка, переконайтесь, що у вас є оригінальна seed-фраза чи секретний ключ для цього облікового запису. Ви можете імпортувати або створювати облікові записи у випадаючому меню вашого облікового запису."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "запити, що очікують на визнання"
   },
   "required": {
     "message": "Обов'язкове"
@@ -630,9 +569,6 @@
   "send": {
     "message": "Надіслати"
   },
-  "sendTokens": {
-    "message": "Надіслати токени"
-  },
   "settings": {
     "message": "Налаштування"
   },
@@ -647,9 +583,6 @@
   },
   "showHexDataDescription": {
     "message": "Оберіть це, щоб показати поле для шістнадцятирикових даних на екрані надсилання"
-  },
-  "sigRequest": {
-    "message": "Запит підпису"
   },
   "sign": {
     "message": "Підписати"
@@ -699,9 +632,6 @@
   "terms": {
     "message": "Умови використання"
   },
-  "tips": {
-    "message": "Чайові"
-  },
   "to": {
     "message": "Кому"
   },
@@ -747,9 +677,6 @@
   "transactionErrored": {
     "message": "Під час виконання транзакції сталася помилка."
   },
-  "transactionFee": {
-    "message": "Комісія за транзакцію"
-  },
   "transactionResubmitted": {
     "message": "Транзакція повторно подана з підвищеною платою за газ до $1 о $2"
   },
@@ -777,20 +704,11 @@
   "unknown": {
     "message": "невідомо"
   },
-  "unknownNetwork": {
-    "message": "Незнайома приватна мережа"
-  },
   "unknownQrCode": {
     "message": "Помилка: ми не змогли ідентифікувати цей QR-код "
   },
   "unlock": {
     "message": "Розблокувати"
-  },
-  "unlockMessage": {
-    "message": "Децентралізована мережа очікує"
-  },
-  "updatedWithDate": {
-    "message": "Оновлено $1"
   },
   "urlErrorMsg": {
     "message": "URIs вимагають відповідного префікса HTTP/HTTPS."
@@ -813,13 +731,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Вам потрібно дозволити доступ до камери, щоб користуватись цією функцією."
   },
-  "youSign": {
-    "message": "Ви підписуєте"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Ваша секретна seed-фраза"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Ціна пального на прискорення - нуль"
   }
 }

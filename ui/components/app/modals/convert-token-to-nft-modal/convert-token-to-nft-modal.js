@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from '../../modal';
-import Typography from '../../../ui/typography';
-import { TypographyVariant } from '../../../../helpers/constants/design-system';
+import { Text } from '../../../component-library/text';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../../helpers/constants/routes';
 import { getNfts } from '../../../../ducks/metamask/metamask';
 import { ignoreTokens, showImportNftsModal } from '../../../../store/actions';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { getSelectedNetworkClientId } from '../../../../../shared/modules/selectors/networks';
 
 const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
   const history = useHistory();
@@ -20,6 +20,7 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
   const tokenAddedAsNFT = allNfts.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),
   );
+  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   return (
     <Modal
@@ -29,6 +30,7 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
             ignoreTokens({
               tokensToIgnore: tokenAddress,
               dontShowLoadingIndicator: true,
+              networkClientId,
             }),
           );
           const { tokenId } = tokenAddedAsNFT;
@@ -47,16 +49,11 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
       cancelText={t('cancel')}
     >
       <div className="convert-token-to-nft-modal">
-        <Typography
-          variant={TypographyVariant.H6}
-          boxProps={{
-            marginTop: 2,
-          }}
-        >
+        <Text marginTop={2}>
           {tokenAddedAsNFT
             ? t('convertTokenToNFTExistDescription')
             : t('convertTokenToNFTDescription')}
-        </Typography>
+        </Text>
       </div>
     </Modal>
   );

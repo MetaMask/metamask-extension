@@ -14,11 +14,14 @@ default: &default main
 # Note: These build types should be kept in sync with the list in `.github/workflows/update-lavamoat-policies.yml`
 buildTypes:
   main:
+    id: 10
     features:
       - build-main
-      - snaps
       - keyring-snaps
-      - blockaid
+      - multi-srp
+      - multichain
+      - solana
+      - solana-swaps
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -27,7 +30,8 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.3/index.html
+      - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/9.1.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Main build uses the default browser manifest
     manifestOverrides: false
@@ -36,13 +40,27 @@ buildTypes:
     buildNameOverride: MetaMask
 
   beta:
+    id: 11
     features:
       - build-beta
+      - keyring-snaps
+      - multichain
+      - bitcoin
+      - solana
+      - solana-swaps
+      - multi-srp
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_BETA_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
+      - SUPPORT_LINK: https://intercom.help/internal-beta-testing/
+      - SUPPORT_REQUEST_LINK: https://intercom.help/internal-beta-testing/
+      - ALLOW_LOCAL_SNAPS: false
+      - REQUIRE_SNAPS_ALLOWLIST: true
+      - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/9.1.0/index.html
+      - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
@@ -51,100 +69,38 @@ buildTypes:
     buildNameOverride: MetaMask Beta
 
   flask:
+    id: 15
     # Code surrounded using code fences for that feature
     # will not be removed
     features:
-      - snaps
-      - desktop
       - build-flask
       - keyring-snaps
-      - blockaid
-      - petnames
+      - bitcoin
+      - solana
+      - multi-srp
+      - solana-swaps
+      - multichain
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.3/index.html
-      - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
-      - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
+      - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/9.1.0/index.html
+      - SUPPORT_LINK: https://support.metamask.io/
+      - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
+      - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
-
-  desktop:
-    features:
-      - snaps
-      - desktop
-      - build-flask
-      - keyring-snaps
-    env:
-      - INFURA_FLASK_PROJECT_ID
-      - SEGMENT_FLASK_WRITE_KEY
-      - ALLOW_LOCAL_SNAPS: true
-      - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.3/index.html
-      - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
-      - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
-      - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
-      - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
-      - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-    isPrerelease: true
-    manifestOverrides: ./app/build-types/desktop/manifest/
-    buildNameOverride: false
-
-  mmi:
-    features:
-      - build-mmi
-      - snaps
-    env:
-      - INFURA_MMI_PROJECT_ID
-      - SEGMENT_MMI_WRITE_KEY
-      - INFURA_ENV_KEY_REF: INFURA_MMI_PROJECT_ID
-      - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
-      - ALLOW_LOCAL_SNAPS: false
-      - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.3/index.html
-      - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
-      - SUPPORT_LINK: https://mmi-support.zendesk.com/hc/en-us
-      - SUPPORT_REQUEST_LINK: https://mmi-support.zendesk.com/hc/en-us/requests/new
-      - SENTRY_DSN: SENTRY_MMI_DSN
-    # For some reason, MMI uses this type of versioning
-    # Leaving it on for backwards compatibility
-    isPrerelease: true
-    manifestOverrides: ./app/build-types/mmi/manifest/
-    buildNameOverride: MetaMask Institutional
 
 # Build types are composed of a set of features.
 # Each feature can have code fences that add new code
 # as well declaring, defining and overriding env variables
 features:
-  snaps:
-    # Each feature might have variables that only exist when built with that feature active
-    env:
-      # Whether to allow snaps from localhost - local://localhost:8080/snap.manifest.json
-      # Enabled in Flask, will be disabled in Main
-      - ALLOW_LOCAL_SNAPS
-      # Whether to verify that a snap can be installed using an allow list
-      - REQUIRE_SNAPS_ALLOWLIST
-      - IFRAME_EXECUTION_ENVIRONMENT_URL
-    assets:
-      - ./{app,shared,ui}/**/snaps/**
-  desktop:
-    env:
-      - COMPATIBILITY_VERSION_EXTENSION: 1
-      - DISABLE_WEB_SOCKET_ENCRYPTION: false
-      - SKIP_OTP_PAIRING_FLOW: false
-      - WEB_SOCKET_PORT: null
-  blockaid:
-    env:
-      - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
-      - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
-  petnames:
-  conf-redesign:
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners
   ###
@@ -158,57 +114,130 @@ features:
       # Assets that are exclusively included in this feature and ignored in others
       # Supports globs
       - ./{app,shared,ui}/**/beta/**
-  build-mmi:
-    assets:
-      - src: ./app/build-types/mmi/images/
-        dest: images
-      - ./{app,shared,ui}/**/institutional/**
   build-flask:
     assets:
+      - src: ./node_modules/@metamask/account-watcher/dist/preinstalled-snap.json
+        dest: snaps/account-watcher.json
+      - src: ./node_modules/@metamask/preinstalled-example-snap/dist/preinstalled-snap.json
+        dest: snaps/preinstalled-example-snap.json
       - src: ./app/build-types/flask/images/
         dest: images
       - ./{app,shared,ui}/**/flask/**
   keyring-snaps:
     assets:
+      - src: ./node_modules/@metamask/message-signing-snap/dist/preinstalled-snap.json
+        dest: snaps/message-signing-snap.json
+      - src: ./node_modules/@metamask/ens-resolver-snap/dist/preinstalled-snap.json
+        dest: snaps/ens-resolver-snap.json
+      - src: ./node_modules/@metamask/institutional-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/institutional-wallet-snap.json
       - ./{app,shared,ui}/**/keyring-snaps/**
+  bitcoin:
+    assets:
+      - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/bitcoin-wallet-snap.json
+  solana:
+    assets:
+      - src: ./node_modules/@metamask/solana-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/solana-wallet-snap.json
+  multi-srp:
+    assets:
+      # srp-list is a special case and is used in the srp recovery flow now.
+      - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
+  solana-swaps:
+  multichain:
+  ocap-kernel:
+    assets:
+      - ./{app,offscreen,shared,ui}/**/ocap-kernel/**
 
 # Env variables that are required for all types of builds
 #
 # env object supports both declarations (- FOO), and definitions (- FOO: BAR).
 # Variables that were declared have to be defined somewhere in the load chain before usage
 env:
+  - ACCOUNTS_USE_DEV_APIS: false
+  - BRIDGE_USE_DEV_APIS: false
   - SWAPS_USE_DEV_APIS: false
   - PORTFOLIO_URL: https://portfolio.metamask.io
   - TOKEN_ALLOWANCE_IMPROVEMENTS: false
   - TRANSACTION_SECURITY_PROVIDER: false
   # The unlock password
   - PASSWORD: null
+  - TEST_SRP: null
+  - WITH_STATE: null
   # Also see METAMASK_DEBUG and NODE_DEBUG
   - DEBUG: null
   - SUPPORT_LINK: https://support.metamask.io
-  - SUPPORT_REQUEST_LINK: https://metamask.zendesk.com/hc/en-us
+  - SUPPORT_REQUEST_LINK: https://support.metamask.io
   - SKIP_BACKGROUND_INITIALIZATION: false
+  - PPOM_URI: ./ppom_bg.wasm
+  # CDN for blockaid files
+  - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
+  # Blockaid public key for verifying signatures of data files downloaded from CDN
+  - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
+  - REMOVE_GNS: ''
 
-  # TODO(ritave): Move ManifestV3 into a feature?
-  - ENABLE_MV3: false
+  - ENABLE_MV3: true
   # These are exclusively used for MV3
+  - USE_SNOW
   - APPLY_LAVAMOAT
   - FILE_NAMES
 
   # This variable is read by Trezor's source and breaks build if not included
   - ASSET_PREFIX: null
+  - SUITE_TYPE: null
+  - COMMITHASH: null
+  - VERSION: null
+  - IS_CODESIGN_BUILD: null
+
+  ###
+  # Storybook
+  ###
+  - STORYBOOK: false
+  - INFURA_STORYBOOK_PROJECT_ID
+
+  ###
+  # Notifications Feature
+  ###
+  - AUTH_API: https://authentication.api.cx.metamask.io
+  - OIDC_API: https://oidc.api.cx.metamask.io
+  - OIDC_CLIENT_ID: 1132f10a-b4e5-4390-a5f2-d9c6022db564
+  - OIDC_GRANT_TYPE: urn:ietf:params:oauth:grant-type:jwt-bearer
+  - USER_STORAGE_API: https://user-storage.api.cx.metamask.io
+  - CONTENTFUL_ACCESS_SPACE_ID:
+  - CONTENTFUL_ACCESS_TOKEN:
+  - NOTIFICATIONS_SERVICE_URL: https://notification.api.cx.metamask.io
+  - TRIGGERS_SERVICE_URL: https://trigger.api.cx.metamask.io
+  - PUSH_NOTIFICATIONS_SERVICE_URL: https://push.api.cx.metamask.io
+  - VAPID_KEY:
+  - FIREBASE_API_KEY:
+  - FIREBASE_AUTH_DOMAIN:
+  - FIREBASE_STORAGE_BUCKET:
+  - FIREBASE_PROJECT_ID:
+  - FIREBASE_MESSAGING_SENDER_ID:
+  - FIREBASE_APP_ID:
+  - FIREBASE_MEASUREMENT_ID:
+  - __FIREBASE_DEFAULTS__: null
+
+  ###
+  # RPC Failover
+  ###
+
+  - QUICKNODE_MAINNET_URL: null
+  - QUICKNODE_LINEA_MAINNET_URL: null
+  - QUICKNODE_ARBITRUM_URL: null
+  - QUICKNODE_AVALANCHE_URL: null
+  - QUICKNODE_OPTIMISM_URL: null
+  - QUICKNODE_POLYGON_URL: null
+  - QUICKNODE_BASE_URL: null
 
   ###
   # API keys to 3rd party services
   ###
 
-  - PUBNUB_PUB_KEY: null
-  - PUBNUB_SUB_KEY: null
   - SEGMENT_HOST: null
   - SENTRY_DSN: null
   - SENTRY_DSN_DEV: null
-  - OPENSEA_KEY: null
-  - ETHERSCAN_KEY: null
   # also INFURA_PROJECT_ID below
 
   ###
@@ -222,6 +251,10 @@ env:
   # Variables that are modified with hardcoded code
   ###
 
+  # URL of the decoding API used to provide additional data from signature requests
+  - DECODING_API_URL: 'https://signature-insights.api.cx.metamask.io/v1'
+  # Determines if feature flagged Settings Page - Developer Options should be used
+  - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: false
   # Used for debugging changes to the phishing warning page.
   # Modified in <root>/development/build/scripts.js:@getPhishingWarningPageUrl
   - PHISHING_WARNING_PAGE_URL: null
@@ -229,6 +262,10 @@ env:
   - INFURA_PROJECT_ID
   # Modified in <root>/development/build/scripts.js:@getSegmentWriteKey
   - SEGMENT_WRITE_KEY: ''
+  # Modified in <root>/development/build/scripts.js:@getAnalyticsDataDeletionSourceId
+  - ANALYTICS_DATA_DELETION_SOURCE_ID: null
+  # Modified in <root>/development/build/scripts.js:@getAnalyticsDataDeletionEndpoint
+  - ANALYTICS_DATA_DELETION_ENDPOINT: null
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   # Also see DEBUG and NODE_DEBUG
   - METAMASK_DEBUG: false
@@ -255,14 +292,26 @@ env:
   - NODE_DEBUG: ''
   # Used by react-devtools-core
   - EDITOR_URL: ''
-  # CDN for blockaid files
-  - BLOCKAID_FILE_CDN
-  # Blockaid public key for verifying signatures of data files downloaded from CDN
-  - BLOCKAID_PUBLIC_KEY
-  # Determines if feature flagged Multichain UI should be used
-  - MULTICHAIN: ''
-  # Determines if feature flagged Multichain Transactions should be used
-  - TRANSACTION_MULTICHAIN: ''
+  # Determines if feature flagged Chain permissions
+  - CHAIN_PERMISSIONS: ''
+  # Determines if Portfolio View UI should be shown
+  - PORTFOLIO_VIEW: 'true'
+  # Enables use of test gas fee flow to debug gas fee estimation
+  - TEST_GAS_FEE_FLOWS: false
+  # Temporary mechanism to enable security alerts API prior to release
+  - SECURITY_ALERTS_API_ENABLED: 'true'
+  # URL of security alerts API used to validate dApp requests
+  - SECURITY_ALERTS_API_URL: 'https://security-alerts.api.cx.metamask.io'
+  # Temporary mechanism to enable trust signals middleware in production
+  - TRUST_SIGNALS_PROD_ENABLED: 'false'
+
+  # Enables the notifications feature within the build:
+  - NOTIFICATIONS: ''
+
+  # This will be defined if running a unit test
+  - JEST_WORKER_ID: undefined
+
+  - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
 
   ###
   # Meta variables
@@ -270,9 +319,46 @@ env:
 
   # Uses yaml anchors to DRY - https://juju.is/docs/sdk/yaml-anchors-and-aliases
   - METAMASK_BUILD_TYPE_DEFAULT: *default
+  # Path to a JSON file that will be used to override the default manifest values.
+  - MANIFEST_OVERRIDES: null
 
   ###
   # Account Abstraction (EIP-4337)
   ###
-
   - EIP_4337_ENTRYPOINT: null
+
+  ###
+  # Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render
+  # This should NEVER be enabled in production since it slows down react
+  ###
+  - ENABLE_WHY_DID_YOU_RENDER: false
+
+  ###
+  # Unused environment variables referenced in dependencies
+  # Unset environment variables cause a build error. These are set to `null` to tell our build
+  # system that they are intentionally unset.
+  ###
+  - ETHERSCAN_KEY: null # Used by `gridplus-sdk/dist/util.js`
+
+  ###
+  # Public key used to verify EIP-7702 contract address signatures set in LaunchDarkly.
+  ###
+  - EIP_7702_PUBLIC_KEY: '0x3c7a1cCCe462e96D186B8ca9a1BCB2010C3dABa3'
+
+  # Address of DelegationManager smart contract
+  - DELEGATION_MANAGER_ADDRESS: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3'
+
+  # Address of enforcer used for gasless EIP-7702 transactions
+  - GASLESS_7702_ENFORCER_ADDRESS: '0x00e0251aaA263dfE3B3541B758A82D1CBA1c3B6D'
+
+  ###
+  # Host to watch for deep links into MetaMask
+  ###
+  - DEEP_LINK_HOST: 'link.metamask.io'
+  ###
+  # RAW base64 encoded public key used to verify deep link signatures
+  ###
+  - DEEP_LINK_PUBLIC_KEY: BD8cWMMR2J33ax8hvSz8LNt99H3wGBPWuAgw+lsfWcBrw4ZtTHFnWyNkbgXglqJOoc+1OA5ZC4kW4GYU/QIeBNA=
+
+  # Enforce simulation balance changes by converting external transactions to delegations.
+  - ENABLE_ENFORCED_SIMULATIONS: false

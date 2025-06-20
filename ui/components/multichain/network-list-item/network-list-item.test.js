@@ -2,18 +2,24 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import {
-  MATIC_TOKEN_IMAGE_URL,
+  POL_TOKEN_IMAGE_URL,
   POLYGON_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import { NetworkListItem } from '.';
 
 const DEFAULT_PROPS = {
   name: POLYGON_DISPLAY_NAME,
-  iconSrc: MATIC_TOKEN_IMAGE_URL,
+  chainId: '0x1',
+  iconSrc: POL_TOKEN_IMAGE_URL,
   selected: false,
   onClick: () => undefined,
   onDeleteClick: () => undefined,
 };
+
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: jest.fn(),
+}));
 
 describe('NetworkListItem', () => {
   it('renders properly', () => {
@@ -65,16 +71,18 @@ describe('NetworkListItem', () => {
   it('executes onDeleteClick when the delete button is clicked', () => {
     const onDeleteClick = jest.fn();
     const onClick = jest.fn();
-    const { container } = render(
+
+    const { getByTestId } = render(
       <NetworkListItem
         {...DEFAULT_PROPS}
         onDeleteClick={onDeleteClick}
         onClick={onClick}
       />,
     );
-    fireEvent.click(
-      container.querySelector('.multichain-network-list-item__delete'),
-    );
+
+    fireEvent.click(getByTestId('network-list-item-options-button-0x1'));
+
+    fireEvent.click(getByTestId('network-list-item-options-delete'));
     expect(onDeleteClick).toHaveBeenCalledTimes(1);
     expect(onClick).toHaveBeenCalledTimes(0);
   });

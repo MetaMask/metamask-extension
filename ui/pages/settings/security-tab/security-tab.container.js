@@ -2,46 +2,43 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
-  setIncomingTransactionsPreferences,
   setIpfsGateway,
   setIsIpfsGatewayEnabled,
   setParticipateInMetaMetrics,
+  setDataCollectionForMarketing,
   setUseCurrencyRateCheck,
   setUseMultiAccountBalanceChecker,
   setUsePhishDetect,
   setUseTokenDetection,
+  toggleExternalServices,
   setUseAddressBarEnsResolution,
   setOpenSeaEnabled,
   setUseNftDetection,
   setUse4ByteResolution,
   setUseSafeChainsListValidation,
   setUseExternalNameSources,
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  setUseTransactionSimulations,
   setSecurityAlertsEnabled,
-  ///: END:ONLY_INCLUDE_IF
-  setTransactionSecurityCheckEnabled,
+  updateDataDeletionTaskStatus,
+  setSkipDeepLinkInterstitial,
 } from '../../../store/actions';
 import {
-  getAllNetworks,
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   getIsSecurityAlertsEnabled,
-  ///: END:ONLY_INCLUDE_IF
-  getIsTransactionSecurityCheckEnabled,
-  getPetnamesEnabled,
-} from '../../../selectors';
+  getMetaMetricsDataDeletionId,
+  getHDEntropyIndex,
+  getPreferences,
+} from '../../../selectors/selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { openBasicFunctionalityModal } from '../../../ducks/app/app';
+import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
-  const {
-    appState: { warning },
-    metamask,
-  } = state;
-
-  const petnamesEnabled = getPetnamesEnabled(state);
+  const { metamask } = state;
 
   const {
-    incomingTransactionsPreferences,
     participateInMetaMetrics,
+    dataCollectionForMarketing,
     usePhishDetect,
     useTokenDetection,
     ipfsGateway,
@@ -52,16 +49,18 @@ const mapStateToProps = (state) => {
     openSeaEnabled,
     useNftDetection,
     use4ByteResolution,
+    useExternalServices,
     useExternalNameSources,
   } = metamask;
 
-  const allNetworks = getAllNetworks(state);
+  const { skipDeepLinkInterstitial } = getPreferences(state);
+
+  const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
   return {
-    warning,
-    incomingTransactionsPreferences,
-    allNetworks,
+    networkConfigurations,
     participateInMetaMetrics,
+    dataCollectionForMarketing,
     usePhishDetect,
     useTokenDetection,
     ipfsGateway,
@@ -73,21 +72,22 @@ const mapStateToProps = (state) => {
     useNftDetection,
     use4ByteResolution,
     useExternalNameSources,
-    petnamesEnabled,
-    transactionSecurityCheckEnabled:
-      getIsTransactionSecurityCheckEnabled(state),
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    useExternalServices,
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
-    ///: END:ONLY_INCLUDE_IF
+    useTransactionSimulations: metamask.useTransactionSimulations,
+    metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
+    hdEntropyIndex: getHDEntropyIndex(state),
+    skipDeepLinkInterstitial: Boolean(skipDeepLinkInterstitial),
+    isSeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setIncomingTransactionsPreferences: (chainId, value) =>
-      dispatch(setIncomingTransactionsPreferences(chainId, value)),
     setParticipateInMetaMetrics: (val) =>
       dispatch(setParticipateInMetaMetrics(val)),
+    setDataCollectionForMarketing: (val) =>
+      dispatch(setDataCollectionForMarketing(val)),
     setUsePhishDetect: (val) => dispatch(setUsePhishDetect(val)),
     setUseCurrencyRateCheck: (val) => dispatch(setUseCurrencyRateCheck(val)),
     setUseTokenDetection: (val) => dispatch(setUseTokenDetection(val)),
@@ -99,6 +99,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setUseAddressBarEnsResolution(val)),
     setUseSafeChainsListValidation: (val) =>
       dispatch(setUseSafeChainsListValidation(val)),
+    setBasicFunctionalityModalOpen: () =>
+      dispatch(openBasicFunctionalityModal()),
+    setSkipDeepLinkInterstitial: (val) =>
+      dispatch(setSkipDeepLinkInterstitial(val)),
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
     setUseNftDetection: (val) => dispatch(setUseNftDetection(val)),
     setUse4ByteResolution: (value) => {
@@ -107,11 +111,16 @@ const mapDispatchToProps = (dispatch) => {
     setUseExternalNameSources: (value) => {
       return dispatch(setUseExternalNameSources(value));
     },
-    setTransactionSecurityCheckEnabled: (value) =>
-      dispatch(setTransactionSecurityCheckEnabled(value)),
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    toggleExternalServices: (value) => {
+      return dispatch(toggleExternalServices(value));
+    },
+    setUseTransactionSimulations: (value) => {
+      return dispatch(setUseTransactionSimulations(value));
+    },
+    updateDataDeletionTaskStatus: () => {
+      return updateDataDeletionTaskStatus();
+    },
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
-    ///: END:ONLY_INCLUDE_IF
   };
 };
 

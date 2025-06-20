@@ -10,12 +10,16 @@ exports[`TokenInput Component Name of the group should render properly 1`] = `
     >
       <div
         class="unit-input__input-container"
+        style="display: inherit;"
+        title=""
       >
         <input
           class="unit-input__input"
           data-testid="token-input"
           dir="ltr"
+          min="0"
           placeholder="0"
+          step="any"
           style="width: 1.5ch;"
           type="number"
           value="0"

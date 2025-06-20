@@ -6,20 +6,32 @@ import { retrieveIssue } from './shared/issue';
 import {
   Labelable,
   LabelableType,
+  findLabel,
   addLabelToLabelable,
   removeLabelFromLabelable,
   removeLabelFromLabelableIfPresent,
 } from './shared/labelable';
 import {
   Label,
+  RegressionStage,
+  craftRegressionLabel,
   externalContributorLabel,
+  needsTriageLabel,
+  flakyTestsLabel,
   invalidIssueTemplateLabel,
   invalidPullRequestTemplateLabel,
 } from './shared/label';
 import { TemplateType, templates } from './shared/template';
 import { retrievePullRequest } from './shared/pull-request';
 
-const knownBots = ["metamaskbot", "dependabot", "github-actions", "sentry-io"];
+const knownBots = [
+  'metamaskbot',
+  'dependabot',
+  'github-actions',
+  'sentry-io',
+  'devin-ai-integration',
+  'runway-github',
+];
 
 main().catch((error: Error): void => {
   console.error(error);
@@ -73,7 +85,10 @@ async function main(): Promise<void> {
   }
 
   // If author is not part of the MetaMask organisation
-  if (!(await userBelongsToMetaMaskOrg(octokit, labelable?.author))) {
+  if (
+    !knownBots.includes(labelable?.author) &&
+    !(await userBelongsToMetaMaskOrg(octokit, labelable?.author))
+  ) {
     // Add external contributor label to the issue
     await addLabelToLabelable(octokit, labelable, externalContributorLabel);
   }
@@ -85,11 +100,29 @@ async function main(): Promise<void> {
 
   // If labelable's author is a bot we skip the template checks as bots don't use templates
   if (knownBots.includes(labelable.author)) {
-    console.log(`${labelable.type === LabelableType.PullRequest ? 'PR' : 'Issue'} was created by a bot (${labelable.author}). Skip template checks.`);
+    console.log(
+      `${
+        labelable.type === LabelableType.PullRequest ? 'PR' : 'Issue'
+      } was created by a bot (${labelable.author}). Skip template checks.`,
+    );
     process.exit(0); // Stop the process and exit with a success status code
   }
 
   if (labelable.type === LabelableType.Issue) {
+    // If labelable is a flaky test report, no template is needed (we just add a link to circle.ci in the description), we skip the template checks
+    const flakyTestsLabelFound = findLabel(labelable, flakyTestsLabel);
+    if (flakyTestsLabelFound?.id) {
+      console.log(
+        `Issue ${labelable?.number} was created to report a flaky test. Issue's description doesn't need to match issue template in that case as the issue's description only includes a link redirecting to circle.ci. Skip template checks.`,
+      );
+      await removeLabelFromLabelableIfPresent(
+        octokit,
+        labelable,
+        invalidIssueTemplateLabel,
+      );
+      process.exit(0); // Stop the process and exit with a success status code
+    }
+
     if (templateType === TemplateType.GeneralIssue) {
       console.log("Issue matches 'general-issue.yml' template.");
       await removeLabelFromLabelableIfPresent(
@@ -105,26 +138,14 @@ async function main(): Promise<void> {
         invalidIssueTemplateLabel,
       );
 
-      // Extract release version from bug report issue body (if existing)
-      const releaseVersion = extractReleaseVersionFromBugReportIssueBody(
-        labelable.body,
-      );
+      // Add regression label to the bug report issue
+      addRegressionLabelToIssue(octokit, labelable);
 
-      // Add regression prod label to the bug report issue if release version was found in issue body
-      if(isReleaseCandidateIssue(labelable)) {
-        console.log(
-          `Issue ${labelable?.number} is not a production issue. Regression prod label is not needed.`,
-        );
-      } else if (releaseVersion) {
-        await addRegressionProdLabelToIssue(octokit, releaseVersion, labelable);
-      } else {
-        console.log(
-          `No release version was found in body of bug report issue ${labelable?.number}.`,
-        );
-      }
+      // Add needs triage label to the bug report issue
+      addNeedsTriageLabelToIssue(octokit, labelable);
     } else {
       const errorMessage =
-        "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/develop/.github/scripts/shared/template.ts#L14-L37";
+        "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L14-L37";
       console.log(errorMessage);
 
       // Add label to indicate issue doesn't match any template
@@ -143,8 +164,7 @@ async function main(): Promise<void> {
         invalidPullRequestTemplateLabel,
       );
     } else {
-      const errorMessage =
-        `PR body does not match template ('pull-request-template.md').\n\nMake sure PR's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/develop/.github/scripts/shared/template.ts#L40-L47`;
+      const errorMessage = `PR body does not match template ('pull-request-template.md').\n\nMake sure PR's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L40-L47`;
       console.log(errorMessage);
 
       // Add label to indicate PR body doesn't match template
@@ -200,6 +220,30 @@ function extractTemplateTypeFromBody(body: string): TemplateType {
   return TemplateType.None;
 }
 
+// This helper function extracts regression stage (Development, Testing, Production) from bug report issue's body.
+function extractRegressionStageFromBugReportIssueBody(
+  body: string,
+): RegressionStage | undefined {
+  const detectionStageRegex = /### Detection stage\s*\n\s*(.*)/i;
+  const match = body.match(detectionStageRegex);
+  const extractedAnswer = match ? match[1].trim() : undefined;
+
+  switch (extractedAnswer) {
+    case 'On a feature branch':
+      return RegressionStage.DevelopmentFeature;
+    case 'On main branch':
+      return RegressionStage.DevelopmentMain;
+    case 'During release testing':
+      return RegressionStage.Testing;
+    case 'In public beta':
+      return RegressionStage.Beta;
+    case 'In production (default)':
+      return RegressionStage.Production;
+    default:
+      return undefined;
+  }
+}
+
 // This helper function extracts release version from bug report issue's body.
 function extractReleaseVersionFromBugReportIssueBody(
   body: string,
@@ -220,49 +264,62 @@ function extractReleaseVersionFromBugReportIssueBody(
   return version;
 }
 
-// This function adds the correct "regression-prod-x.y.z" label to the issue, and removes other ones
-async function addRegressionProdLabelToIssue(
+// This function adds the "needs-triage" label to the issue if it doesn't have it
+async function addNeedsTriageLabelToIssue(
   octokit: InstanceType<typeof GitHub>,
-  releaseVersion: string,
   issue: Labelable,
 ): Promise<void> {
-  // Craft regression prod label to add
-  const regressionProdLabel: Label = {
-    name: `regression-prod-${releaseVersion}`,
-    color: '5319E7', // violet
-    description: `Regression bug that was found in production in release ${releaseVersion}`,
-  };
+  await addLabelToLabelable(octokit, issue, needsTriageLabel);
+}
+// This function adds the correct regression label to the issue, and removes other ones
+async function addRegressionLabelToIssue(
+  octokit: InstanceType<typeof GitHub>,
+  issue: Labelable,
+): Promise<void> {
+  // Extract regression stage from bug report issue body (if existing)
+  const regressionStage = extractRegressionStageFromBugReportIssueBody(
+    issue.body,
+  );
 
-  let regressionProdLabelFound: boolean = false;
-  const regressionProdLabelsToBeRemoved: {
+  // Extract release version from bug report issue body (if existing)
+  const releaseVersion = extractReleaseVersionFromBugReportIssueBody(
+    issue.body,
+  );
+
+  // Craft regression label to add
+  const regressionLabel: Label = craftRegressionLabel(
+    regressionStage,
+    releaseVersion,
+  );
+
+  let regressionLabelFound: boolean = false;
+  const regressionLabelsToBeRemoved: {
     id: string;
     name: string;
   }[] = [];
 
   // Loop over issue's labels, to see if regression labels are either missing, or to be removed
   issue?.labels?.forEach((label) => {
-    if (label?.name === regressionProdLabel.name) {
-      regressionProdLabelFound = true;
-    } else if (label?.name?.startsWith('regression-prod-')) {
-      regressionProdLabelsToBeRemoved.push(label);
+    if (label?.name === regressionLabel.name) {
+      regressionLabelFound = true;
+    } else if (label?.name?.startsWith('regression-')) {
+      regressionLabelsToBeRemoved.push(label);
     }
   });
 
   // Add regression prod label to the issue if missing
-  if (regressionProdLabelFound) {
+  if (regressionLabelFound) {
     console.log(
-      `Issue ${issue?.number} already has ${regressionProdLabel.name} label.`,
+      `Issue ${issue?.number} already has ${regressionLabel.name} label.`,
     );
   } else {
-    console.log(
-      `Add ${regressionProdLabel.name} label to issue ${issue?.number}.`,
-    );
-    await addLabelToLabelable(octokit, issue, regressionProdLabel);
+    console.log(`Add ${regressionLabel.name} label to issue ${issue?.number}.`);
+    await addLabelToLabelable(octokit, issue, regressionLabel);
   }
 
   // Remove other regression prod label from the issue
   await Promise.all(
-    regressionProdLabelsToBeRemoved.map((label) => {
+    regressionLabelsToBeRemoved.map((label) => {
       removeLabelFromLabelable(octokit, issue, label?.id);
     }),
   );
@@ -292,11 +349,4 @@ async function userBelongsToMetaMaskOrg(
   } = await octokit.graphql(userBelongsToMetaMaskOrgQuery, { login: username });
 
   return Boolean(userBelongsToMetaMaskOrgResult?.user?.organization?.id);
-}
-
-// This function checks if issue is a release candidate (RC) issue, discovered during release regression testing phase. If so, it means it is not a production issue.
-function isReleaseCandidateIssue(
-  issue: Labelable,
-): boolean {
-  return Boolean(issue.labels.find(label => label.name === 'regression-RC'));
 }

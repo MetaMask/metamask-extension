@@ -6,8 +6,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 
-import { Box } from '..';
-
+import { Box } from '../box';
 import type { PolymorphicRef, BoxProps } from '../box';
 
 import { TextProps, TextComponent } from './text.types';
@@ -36,6 +35,7 @@ export const Text: TextComponent = React.forwardRef(
       variant = TextVariant.bodyMd,
       fontWeight,
       fontStyle,
+      fontFamily,
       textTransform,
       textAlign,
       textDirection,
@@ -57,6 +57,7 @@ export const Text: TextComponent = React.forwardRef(
       {
         [`mm-text--font-weight-${fontWeight}`]: Boolean(fontWeight),
         [`mm-text--font-style-${fontStyle}`]: Boolean(fontStyle),
+        [`mm-text--font-family-${fontFamily}`]: Boolean(fontFamily),
         [`mm-text--ellipsis`]: Boolean(ellipsis),
         [`mm-text--text-transform-${textTransform}`]: Boolean(textTransform),
         [`mm-text--text-align-${textAlign}`]: Boolean(textAlign),

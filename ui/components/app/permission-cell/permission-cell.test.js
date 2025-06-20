@@ -1,6 +1,9 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/jest';
+import mockState from '../../../../test/data/mock-state.json';
 import PermissionCell from './permission-cell';
 
 describe('Permission Cell', () => {
@@ -15,6 +18,7 @@ describe('Permission Cell', () => {
     },
     permissionName: 'ethereum-provider',
   };
+  const mockStore = configureMockStore([thunk])(mockState);
 
   it('renders approved permission cell', () => {
     renderWithProvider(
@@ -27,6 +31,7 @@ describe('Permission Cell', () => {
         dateApproved={mockPermissionData?.permissionValue?.date}
         key={`${mockPermissionData.permissionName}-${1}`}
       />,
+      mockStore,
     );
     expect(
       screen.getByText('Access the Ethereum provider.'),
@@ -46,6 +51,7 @@ describe('Permission Cell', () => {
         key={`${mockPermissionData.permissionName}-${1}`}
         revoked
       />,
+      mockStore,
     );
     expect(
       screen.getByText('Access the Ethereum provider.'),
@@ -63,6 +69,7 @@ describe('Permission Cell', () => {
         avatarIcon={mockPermissionData.leftIcon}
         key={`${mockPermissionData.permissionName}-${1}`}
       />,
+      mockStore,
     );
     expect(
       screen.getByText('Access the Ethereum provider.'),

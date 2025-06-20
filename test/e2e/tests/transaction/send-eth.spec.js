@@ -6,52 +6,57 @@ const {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   unlockWallet,
-  editGasfeeForm,
+  editGasFeeForm,
   WINDOW_TITLES,
-  defaultGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+
+const PREFERENCES_STATE_MOCK = {
+  preferences: {
+    showFiatInTestnets: true,
+  },
+  // Enables advanced details due to migration 123
+  useNonceField: true,
+};
 
 describe('Send ETH', function () {
   describe('from inside MetaMask', function () {
     it('finds the transaction in the transactions list using default gas', async function () {
-      if (process.env.MULTICHAIN) {
-        return;
-      }
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
-        async ({ driver, ganacheServer }) => {
-          await logInWithBalanceValidation(driver, ganacheServer);
+        async ({ driver, localNodes }) => {
+          await logInWithBalanceValidation(driver, localNodes[0]);
 
           await openActionMenuAndStartSendFlow(driver);
 
           await driver.fill(
-            'input[placeholder="Enter public address (0x) or ENS name"]',
+            'input[placeholder="Enter public address (0x) or domain name"]',
             '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           );
 
-          const inputAmount = await driver.findElement('.unit-input__input');
-          await inputAmount.fill('1000');
+          const inputAmount = await driver.findElement(
+            'input[placeholder="0"]',
+          );
+
+          await inputAmount.press('1');
+          await inputAmount.press('0');
+          await inputAmount.press('0');
+          await inputAmount.press('0');
 
           await driver.findElement({
-            css: '.send-v2__error-amount',
-            text: 'Insufficient funds for gas',
+            css: '[data-testid="send-page-amount-error"]',
+            text: '. Insufficient funds.',
           });
 
           await inputAmount.press(driver.Key.BACK_SPACE);
           await inputAmount.press(driver.Key.BACK_SPACE);
           await inputAmount.press(driver.Key.BACK_SPACE);
-
-          await driver.assertElementNotPresent('.send-v2__error-amount', {
-            waitAtLeastGuard: 100, // A waitAtLeastGuard of 100ms is the best choice here
-          });
 
           const amountMax = await driver.findClickableElement(
-            '.send-v2__amount-max',
+            '[data-testid="max-clear-button"]',
           );
           await amountMax.click();
 
@@ -69,11 +74,13 @@ describe('Send ETH', function () {
           assert.equal(inputValue, '1');
 
           // Continue to next screen
-          await driver.clickElement({ text: 'Next', tag: 'button' });
+          await driver.clickElement({ text: 'Continue', tag: 'button' });
 
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-          await driver.clickElement('[data-testid="home__activity-tab"]');
+          await driver.clickElement(
+            '[data-testid="account-overview__activity-tab"]',
+          );
           await driver.wait(async () => {
             const confirmedTxes = await driver.findElements(
               '.transaction-list__completed-transactions .activity-list-item',
@@ -91,14 +98,9 @@ describe('Send ETH', function () {
 
     /* eslint-disable-next-line mocha/max-top-level-suites */
     it('finds the transaction in the transactions list using advanced gas modal', async function () {
-      if (process.env.MULTICHAIN) {
-        return;
-      }
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
-          defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -108,25 +110,28 @@ describe('Send ETH', function () {
 
           await openActionMenuAndStartSendFlow(driver);
           await driver.fill(
-            'input[placeholder="Enter public address (0x) or ENS name"]',
+            'input[placeholder="Enter public address (0x) or domain name"]',
             '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           );
 
-          const inputAmount = await driver.findElement('.unit-input__input');
-          await inputAmount.fill('1');
+          const inputAmount = await driver.findElement(
+            'input[placeholder="0"]',
+          );
+          await inputAmount.press('1');
 
           const inputValue = await inputAmount.getProperty('value');
           assert.equal(inputValue, '1');
 
           // Continue to next screen
-          await driver.clickElement({ text: 'Next', tag: 'button' });
+          await driver.clickElement({ text: 'Continue', tag: 'button' });
 
           await driver.delay(1000);
-          const transactionAmounts = await driver.findElements(
-            '.currency-display-component__text',
-          );
-          const transactionAmount = transactionAmounts[0];
-          assert.equal(await transactionAmount.getText(), '1');
+
+          // Transaction Amount
+          await driver.findElement({
+            css: 'h2',
+            text: '1 ETH',
+          });
 
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
@@ -150,48 +155,43 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: {
-            ...defaultGanacheOptions,
-            hardfork: 'london',
-          },
           smartContract,
           title: this.test.fullTitle(),
         },
-        async ({ driver, contractRegistry }) => {
+        async ({ driver, contractRegistry, localNodes }) => {
           const contractAddress = await contractRegistry.getContractAddress(
             smartContract,
           );
-          await unlockWallet(driver);
+          await logInWithBalanceValidation(driver, localNodes[0]);
+
+          // Wait for balance to load
+          await driver.delay(500);
 
           await driver.clickElement('[data-testid="eth-overview-send"]');
           await driver.fill(
-            'input[placeholder="Enter public address (0x) or ENS name"]',
+            'input[placeholder="Enter public address (0x) or domain name"]',
             contractAddress,
           );
 
-          const inputAmount = await driver.findElement('.unit-input__input');
-          await inputAmount.fill('1');
-
-          if (!process.env.MULTICHAIN) {
-            // We need to wait for the text "Max Fee: 0.000xxxx ETH" before continuing
-            await driver.findElement({ text: '0.000', tag: 'span' });
-          }
+          const inputAmount = await driver.findElement(
+            'input[placeholder="0"]',
+          );
+          await inputAmount.sendKeys('1');
 
           // Continue to next screen
-          if (process.env.MULTICHAIN) {
-            await driver.clickElement({ text: 'Continue', tag: 'button' });
-          } else {
-            await driver.clickElement({ text: 'Next', tag: 'button' });
-          }
-
+          await driver.clickElement({ text: 'Continue', tag: 'button' });
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
           // Go back to home screen to check txn
-          await driver.findElement({
-            css: '[data-testid="eth-overview__primary-currency"]',
-            text: '$42,496.38',
-          });
-          await driver.clickElement('[data-testid="home__activity-tab"]');
+          const balance = await driver.findElement(
+            '[data-testid="eth-overview__primary-currency"]',
+          );
+
+          assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
+
+          await driver.clickElement(
+            '[data-testid="account-overview__activity-tab"]',
+          );
 
           await driver.findElement(
             '.transaction-list__completed-transactions .activity-list-item',
@@ -206,23 +206,19 @@ describe('Send ETH', function () {
     });
 
     it('shows no error when cancel transaction when sending via QR code', async function () {
-      if (process.env.MULTICHAIN) {
-        return;
-      }
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await unlockWallet(driver);
 
           await driver.assertElementNotPresent('.loading-overlay__spinner');
-          await driver.findElement({
-            css: '[data-testid="eth-overview__primary-currency"]',
-            text: '$42,500.00',
-          });
+          const balance = await driver.findElement(
+            '[data-testid="eth-overview__primary-currency"]',
+          );
+          assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
 
           await openActionMenuAndStartSendFlow(driver);
           // choose to scan via QR code
@@ -248,10 +244,12 @@ describe('Send ETH', function () {
             dapp: true,
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
+              .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
-            ganacheOptions: defaultGanacheOptions,
-            defaultGanacheOptions,
             title: this.test.fullTitle(),
+            localNodeOptions: {
+              hardfork: 'muirGlacier',
+            },
           },
           async ({ driver }) => {
             await unlockWallet(driver);
@@ -266,34 +264,37 @@ describe('Send ETH', function () {
               windowHandles,
             );
 
-            await driver.assertElementNotPresent(
-              { text: 'Data', tag: 'li' },
-              { findElementGuard: { text: 'Estimated gas fee', tag: 'h6' } }, // make sure the Dialog has loaded
-            );
-
-            await driver.clickElement({ text: 'Edit', tag: 'button' });
+            await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
             await driver.waitForSelector({
-              text: '0.00021 ETH',
+              text: '0.000042 ETH',
             });
             await driver.clickElement({
               text: 'Edit suggested gas fee',
               tag: 'button',
             });
             await driver.waitForSelector({
-              text: '0.00021 ETH',
-              tag: 'h1',
+              text: 'Edit priority',
+              tag: 'header',
             });
-            await editGasfeeForm(driver, '21000', '100');
-            await driver.waitForSelector({
-              css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
-              text: '0.0021 ETH',
+            await editGasFeeForm(driver, '21000', '100');
+            await driver.findElement({
+              css: '[data-testid="first-gas-field"]',
+              text: '0.0021',
             });
+
+            await driver.findElement({
+              css: '[data-testid="native-currency"]',
+              text: '$3.57',
+            });
+
             await driver.clickElement({ text: 'Confirm', tag: 'button' });
             await driver.waitUntilXWindowHandles(2);
             await driver.switchToWindow(extension);
 
             // finds the transaction in the transactions list
-            await driver.clickElement('[data-testid="home__activity-tab"]');
+            await driver.clickElement(
+              '[data-testid="account-overview__activity-tab"]',
+            );
             await driver.waitForSelector(
               '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
             );
@@ -303,7 +304,7 @@ describe('Send ETH', function () {
             });
 
             // the transaction has the expected gas price
-            driver.clickElement(
+            await driver.clickElement(
               '[data-testid="transaction-list-item-primary-currency"]',
             );
             await driver.waitForSelector({
@@ -320,11 +321,8 @@ describe('Send ETH', function () {
             dapp: true,
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
+              .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
-            ganacheOptions: {
-              ...defaultGanacheOptions,
-              hardfork: 'london',
-            },
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
@@ -332,18 +330,16 @@ describe('Send ETH', function () {
 
             // initiates a transaction from the dapp
             await openDapp(driver);
-            await driver.clickElement({ text: 'Create Token', tag: 'button' });
+            await driver.clickElement({
+              text: 'Create Token',
+              tag: 'button',
+            });
             const windowHandles = await driver.waitUntilXWindowHandles(3);
 
             const extension = windowHandles[0];
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.Dialog,
               windowHandles,
-            );
-
-            await driver.assertElementNotPresent(
-              { text: 'Data', tag: 'li' },
-              { findElementGuard: { text: 'Estimated fee', tag: 'p' } }, // make sure the Dialog has loaded
             );
 
             await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
@@ -362,9 +358,14 @@ describe('Send ETH', function () {
 
             await driver.clickElement({ text: 'Save', tag: 'button' });
 
-            await driver.waitForSelector({
-              css: '.currency-display-component__text',
-              text: '0.0550741',
+            await driver.findElement({
+              css: '[data-testid="first-gas-field"]',
+              text: '0.045',
+            });
+
+            await driver.findElement({
+              css: '[data-testid="native-currency"]',
+              text: '$76.59',
             });
 
             await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -376,7 +377,9 @@ describe('Send ETH', function () {
               '[data-testid="eth-overview__primary-currency"]',
             );
 
-            await driver.clickElement('[data-testid="home__activity-tab"]');
+            await driver.clickElement(
+              '[data-testid="account-overview__activity-tab"]',
+            );
             await driver.waitForSelector(
               '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
             );
@@ -415,9 +418,6 @@ describe('Send ETH', function () {
 
     describe('to non-contract address with data that matches ERC20 transfer data signature', function () {
       it('renders the correct recipient on the confirmation screen', async function () {
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         await withFixtures(
           {
             fixtures: new FixtureBuilder()
@@ -428,21 +428,21 @@ describe('Send ETH', function () {
               })
               .withPreferencesControllerPetnamesDisabled()
               .build(),
-            ganacheOptions: defaultGanacheOptions,
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
             await unlockWallet(driver);
 
             await driver.assertElementNotPresent('.loading-overlay__spinner');
-            await driver.findElement({
-              css: '[data-testid="eth-overview__primary-currency"]',
-              text: '$42,500.00',
-            });
+            const balance = await driver.findElement(
+              '[data-testid="eth-overview__primary-currency"]',
+            );
+            assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
 
             await openActionMenuAndStartSendFlow(driver);
+
             await driver.fill(
-              'input[placeholder="Enter public address (0x) or ENS name"]',
+              'input[placeholder="Enter public address (0x) or domain name"]',
               '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
             );
 
@@ -450,32 +450,20 @@ describe('Send ETH', function () {
               'textarea[placeholder="Optional',
               '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
             );
-            if (process.env.MULTICHAIN) {
-              await driver.findClickableElement({
-                text: 'Continue',
-                tag: 'button',
-              });
-              await driver.clickElement({ text: 'Continue', tag: 'button' });
-            } else {
-              await driver.findClickableElement({
-                text: 'Next',
-                tag: 'button',
-              });
-              await driver.clickElement({ text: 'Next', tag: 'button' });
-            }
 
-            await driver.findClickableElement(
-              '[data-testid="sender-to-recipient__name"]',
-            );
-            await driver.clickElement(
-              '[data-testid="sender-to-recipient__name"]',
-            );
+            await driver.findClickableElement({
+              text: 'Continue',
+              tag: 'button',
+            });
+            await driver.clickElement({ text: 'Continue', tag: 'button' });
+
+            await driver.clickElement('[data-testid="recipient-address"]');
 
             const recipientAddress = await driver.findElements({
-              text: '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
+              text: '0xc427D...Acd28',
             });
 
-            assert.equal(recipientAddress.length, 1);
+            assert.equal(recipientAddress.length, 2);
           },
         );
       });

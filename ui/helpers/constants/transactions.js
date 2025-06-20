@@ -19,4 +19,5 @@ export const TOKEN_CATEGORY_HASH = {
   [TransactionType.tokenMethodSetApprovalForAll]: true,
   [TransactionType.tokenMethodTransfer]: true,
   [TransactionType.tokenMethodTransferFrom]: true,
+  [TransactionType.tokenMethodIncreaseAllowance]: true,
 };

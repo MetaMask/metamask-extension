@@ -26,29 +26,20 @@ describe('ExperimentalTab', () => {
     }).not.toThrow();
   });
 
-  describe('with desktop enabled', () => {
-    it('renders ExperimentalTab component without error', () => {
-      const { container } = render({ desktopEnabled: true });
-      expect(container).toMatchSnapshot();
-    });
-  });
-
-  it('should render multiple toggle options', () => {
-    const { getAllByRole } = render({ desktopEnabled: true });
+  it('renders multiple toggle options', () => {
+    const { getAllByRole } = render();
     const toggle = getAllByRole('checkbox');
 
-    expect(toggle).toHaveLength(3);
+    expect(toggle).toHaveLength(2);
   });
 
-  it('should enable add account snap', async () => {
+  it('enables add account snap', async () => {
     const setAddSnapAccountEnabled = jest.fn();
-    const setPetnamesEnabled = jest.fn();
     const { getByTestId } = render(
-      { desktopEnabled: true },
+      {},
       {
         setAddSnapAccountEnabled,
         petnamesEnabled: true,
-        setPetnamesEnabled,
       },
     );
 
@@ -57,26 +48,6 @@ describe('ExperimentalTab', () => {
 
     await waitFor(() => {
       expect(setAddSnapAccountEnabled).toHaveBeenCalledWith(true);
-    });
-  });
-
-  it('should disable petnames', async () => {
-    const setAddSnapAccountEnabled = jest.fn();
-    const setPetnamesEnabled = jest.fn();
-    const { getByTestId } = render(
-      { desktopEnabled: true },
-      {
-        setAddSnapAccountEnabled,
-        petnamesEnabled: true,
-        setPetnamesEnabled,
-      },
-    );
-
-    const toggle = getByTestId('toggle-petnames');
-    fireEvent.click(toggle);
-
-    await waitFor(() => {
-      expect(setPetnamesEnabled).toHaveBeenCalledWith(false);
     });
   });
 });

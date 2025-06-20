@@ -6,15 +6,18 @@ import configureStore from '../../../../../store/store';
 import { AdvancedGasFeePopoverContextProvider } from '../context';
 import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 import { GasEstimateTypes } from '../../../../../../shared/constants/gas';
+import { getSelectedInternalAccountFromMockState } from '../../../../../../test/jest/mocks';
 import AdvancedGasFeeDefaults from './advanced-gas-fee-defaults';
+
+const mockInternalAccount = getSelectedInternalAccountFromMockState(mockState);
 
 const store = configureStore({
   ...mockState,
   metamask: {
     ...mockState.metamask,
     accounts: {
-      [mockState.metamask.selectedAddress]: {
-        address: mockState.metamask.selectedAddress,
+      [mockInternalAccount.address]: {
+        address: mockInternalAccount.address,
         balance: '0x1F4',
       },
     },

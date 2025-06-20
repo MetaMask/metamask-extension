@@ -69,9 +69,6 @@
   "asset": {
     "message": "ሐብት"
   },
-  "attemptingConnect": {
-    "message": "ከ blockchain ጋር ለመገናኘት መሞከር።"
-  },
   "attributions": {
     "message": "አይነታ"
   },
@@ -199,9 +196,6 @@
   "delete": {
     "message": "ሰርዝ"
   },
-  "deleteNetwork": {
-    "message": "አውታረ መረብ ይሰረዝ?"
-  },
   "details": {
     "message": "ዝርዝሮች"
   },
@@ -223,9 +217,6 @@
   "editContact": {
     "message": "ዕውቂያን አርትዕ"
   },
-  "ensRegistrationError": {
-    "message": "በ ENS የስም ምዝገባ ላይ የተፈጠረ ስህተት"
-  },
   "enterPasswordContinue": {
     "message": "ለመቀጠል የይለፍ ቃል ያስገቡ"
   },
@@ -244,10 +235,6 @@
   "fast": {
     "message": "ፈጣን"
   },
-  "fiat": {
-    "message": "ፊያት",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "ፋይል ማስመጣት እየሰራ አይደለም? እዚህ ላይ ጠቅ ያድርጉ!",
     "description": "Helps user import their account from a JSON file"
@@ -258,26 +245,11 @@
   "from": {
     "message": "ከ"
   },
-  "functionType": {
-    "message": "የተግባር ዓይነት"
-  },
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "የነዳጅ ገደብ እርስዎ ወጪ ለማድረግ ዝግጁ የሆኑት ከፍተኛው የነዳጅ መጠን ማለት ነው።"
-  },
   "gasLimitTooLow": {
     "message": "የነዳጅ ገደብ ቢያንስ 21000 መሆን አለበት"
-  },
-  "gasPrice": {
-    "message": "የነዳጅ ዋጋ (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "የነዳጅ ዋጋ እጅግ በጣም ዝቅ ያለ ነው"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "የነዳጅ ዋጋ እርስዎ ለእያንዳንዱ የነዳጅ መጠን መክፈል የሚፈልጉትን የ Ether መጠን ይገልጻል።"
   },
   "gasUsed": {
     "message": "ጥቅም ላይ የዋለ ነዳጅ"
@@ -320,9 +292,6 @@
     "message": "ከውጭ አስመጣ",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "መለያ አስመጣ"
-  },
   "importAccountMsg": {
     "message": "የመጡ መለያዎች በመጀመሪያ ከተፈጠረው የእርስዎ MetaMask መለያ የዘር ሐረግ ጋር አይዛመዱም። ስለሚመጡ መለያዎቸ ተጨማሪ መረጃ ያግኙ"
   },
@@ -347,12 +316,6 @@
   },
   "invalidAddressRecipient": {
     "message": "የተቀባይ አድራሻ ትክክል አይደለም"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETH አውታረ መረብ አይደለም፣ ወደ ትናንሽ ፊደላት ቀይር"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "ልክ ያልሆነ Block Explorer ዩአርኤል"
   },
   "invalidRPC": {
     "message": "ልክ ያልሆነ RPC ዩአርኤል"
@@ -387,9 +350,6 @@
   },
   "loading": {
     "message": "በመጫን ላይ…"
-  },
-  "loadingTokens": {
-    "message": "ተለዋጭ ስሞችን በመጫን ላይ..."
   },
   "lock": {
     "message": "ዘግተህ ውጣ"
@@ -447,14 +407,8 @@
   "next": {
     "message": "ቀጣይ"
   },
-  "noAddressForName": {
-    "message": "በዚህ ስም የተሞላ አድራሻ የለም።"
-  },
   "noConversionRateAvailable": {
     "message": "ምንም የልወጣ ተመን አይገኝም"
-  },
-  "noTransactions": {
-    "message": "ግብይቶች የሉዎትም"
   },
   "noWebcamFound": {
     "message": "የኮምፒዩተርዎ ካሜራ አልተገኘም። እባክዎ እንደገና ይሞክሩ።"
@@ -479,9 +433,6 @@
   },
   "origin": {
     "message": "መነሻ"
-  },
-  "parameters": {
-    "message": "መለኪያዎች"
   },
   "participateInMetaMetrics": {
     "message": "በ MetaMetrics ውስጥ ይሳተፉ"
@@ -511,12 +462,6 @@
   "prev": {
     "message": "የቀደመ"
   },
-  "primaryCurrencySetting": {
-    "message": "ተቀዳሚ የገንዘብ ዓይነት"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "ዋጋዎች በራሳቸው የሰንሰለት ገንዘብ ዓይነት (ለምሳሌ ETH) በቅድሚያ እንዲታዪ ይምረጡ። ዋጋዎች በተመረጠ የፊያት ገንዘብ ዓይነት እንዲታዩ ደግሞ ፊያትን ይምረጡ።"
-  },
   "privacyMsg": {
     "message": "የግለኝነት መጠበቂያ ህግ"
   },
@@ -532,9 +477,6 @@
   },
   "readdToken": {
     "message": "በመለያ አማራጮችዎ ምናሌ ውስጥ ወደ “ተለዋጭ ስም አክል” በመግባት ለወደፊቱ ይህን ተለዋጭ ስም መልሰው ማከል ይችላሉ።"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "ፍለጋ፣ ለሕዝብ ክፍት የሆነ አድራሻ (0x), ወይም ENS"
   },
   "reject": {
     "message": "አይቀበሉ"
@@ -559,9 +501,6 @@
   },
   "removeAccountDescription": {
     "message": "ይህ መለያ ከቋትዎ ይወገዳል። እባክዎ ከመቀጠልዎ በፊት የዚህ የመጣ መለያ የመጀመሪያው የዘር ሐረግ ወይም የግል ቁልፍ እንዳለዎት ያረጋግጡ። መለያዎችን ከመለያ ተቆልቋይ ማስመጣት ወይም መፍጠር ይችላሉ።"
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "ማረጋገጫ የሚጠባበቁ ጥያቄዎች"
   },
   "required": {
     "message": "የሚያስፈልግ"
@@ -615,9 +554,6 @@
   "send": {
     "message": "ላክ"
   },
-  "sendTokens": {
-    "message": "ተለዋጭ ስሞችን ላክ"
-  },
   "settings": {
     "message": "ቅንብሮች"
   },
@@ -632,9 +568,6 @@
   },
   "showHexDataDescription": {
     "message": "በመላኪያ ማያ ላይ የ hex ውሂብ መስክን ለማሳየት ይህን ይምረጡ"
-  },
-  "sigRequest": {
-    "message": "የፊርማ ጥያቄ"
   },
   "sign": {
     "message": "ፈርም"
@@ -684,9 +617,6 @@
   "terms": {
     "message": "የአጠቃቀም ደንቦች"
   },
-  "tips": {
-    "message": "መረጃዎች"
-  },
   "to": {
     "message": "ለ"
   },
@@ -732,9 +662,6 @@
   "transactionErrored": {
     "message": "ግብይቱ እንከን አጋጥሞታል።"
   },
-  "transactionFee": {
-    "message": " የግብይት ክፍያ"
-  },
   "transactionResubmitted": {
     "message": "ግብይቱ በድጋሚ ሲቀርብ የነዳጅ ክፍያ ወደ $1በ$2ጨምሯል"
   },
@@ -762,20 +689,11 @@
   "unknown": {
     "message": "ያልታወቀ"
   },
-  "unknownNetwork": {
-    "message": "የማይታወቅ የግል አውታረ መረብ"
-  },
   "unknownQrCode": {
     "message": "ስህተት፡ ያን የ QR ኮድ መለየት አልቻልንም"
   },
   "unlock": {
     "message": "ክፈት"
-  },
-  "unlockMessage": {
-    "message": "ያልተማከለ ድር ይጠባበቃል"
-  },
-  "updatedWithDate": {
-    "message": "የዘመነ $1"
   },
   "urlErrorMsg": {
     "message": "URIs አግባብነት ያለው የ HTTP/HTTPS ቅድመ ቅጥያ ይፈልጋል።"
@@ -798,13 +716,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "ይህን ባህርይ ለመጠቀም የካሜራን መድረስ መፍቀድ አለብዎት።"
   },
-  "youSign": {
-    "message": "እየፈረሙ ነው"
-  },
   "yourPrivateSeedPhrase": {
     "message": "የግል ዘር ሐረግዎ"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "በስፒድ አፕ ላይ ዜሮ የነዳጅ ዋጋ"
   }
 }

@@ -75,9 +75,6 @@
   "asset": {
     "message": "Aset"
   },
-  "attemptingConnect": {
-    "message": "Sedang cuba menyambungkan kepada rantaian blok."
-  },
   "attributions": {
     "message": "Atribusi"
   },
@@ -208,9 +205,6 @@
   "delete": {
     "message": "Padam"
   },
-  "deleteNetwork": {
-    "message": "Padamkan Rangkaian?"
-  },
   "details": {
     "message": "Butiran"
   },
@@ -228,9 +222,6 @@
   },
   "editContact": {
     "message": "Edit Kenalan"
-  },
-  "ensRegistrationError": {
-    "message": "Ralat dalam pendaftaran nama ENS"
   },
   "enterPasswordContinue": {
     "message": "Masukkan kata laluan untuk teruskan"
@@ -260,26 +251,11 @@
   "from": {
     "message": "Daripada"
   },
-  "functionType": {
-    "message": "Jenis Fungsi"
-  },
   "gasLimit": {
     "message": "Had Gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Had gas ialah jumlah maksimum unit gas yang anda sedia belanjakan."
-  },
   "gasLimitTooLow": {
     "message": "Had gas mestilah sekurang-kurangnya 21000"
-  },
-  "gasPrice": {
-    "message": "Harga Gas (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Harga Gas Teramat Rendah"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Harga gas menentukan jumlah Ether yang anda sedia bayar untuk setiap unit gas."
   },
   "gasUsed": {
     "message": "Gas Digunakan"
@@ -318,9 +294,6 @@
   "history": {
     "message": "Sejarah"
   },
-  "importAccount": {
-    "message": "Import Akaun"
-  },
   "importAccountMsg": {
     "message": "Akaun yang diimport tidak akan dikaitkan dengan frasa benih akaun MetaMask asal yang anda cipta. Ketahui lebih lanjut tentang akaun import"
   },
@@ -345,12 +318,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Alamat penerima tidak sah"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Bukan rangkaian ETH, tetapkan kepada huruf kecil"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "URL Block Explorer tidak sah"
   },
   "invalidRPC": {
     "message": "URL RPC tidak sah"
@@ -388,9 +355,6 @@
   },
   "loading": {
     "message": "Memuatkan..."
-  },
-  "loadingTokens": {
-    "message": "Memuatkan Token..."
   },
   "lock": {
     "message": "Log keluar"
@@ -445,14 +409,8 @@
   "next": {
     "message": "Seterusnya"
   },
-  "noAddressForName": {
-    "message": "Tiada alamat yang ditetapkan untuk nama ini."
-  },
   "noConversionRateAvailable": {
     "message": "Tiada Kadar Penukaran yang Tersedia"
-  },
-  "noTransactions": {
-    "message": "Anda tiada transaksi"
   },
   "noWebcamFound": {
     "message": "Webcam komputer anda tidak dijumpai. Sila cuba semula."
@@ -474,9 +432,6 @@
   },
   "origin": {
     "message": "Asal"
-  },
-  "parameters": {
-    "message": "Parameter"
   },
   "participateInMetaMetrics": {
     "message": "Sertai MetaMetrics"
@@ -506,12 +461,6 @@
   "prev": {
     "message": "Sebelumnya"
   },
-  "primaryCurrencySetting": {
-    "message": "Mata Wang Utama"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Pilih natif untuk mengutamakan nilai paparan dalam mata wang natif rantaian (cth. ETH). Pilih Fiat untuk mengutamakan nilai paparan dalam mata wang fiat yang anda pilih."
-  },
   "privacyMsg": {
     "message": "Dasar Privasi"
   },
@@ -527,9 +476,6 @@
   },
   "readdToken": {
     "message": "Anda boleh tambah token ini kembali pada masa depan dengan pergi ke \"Tambah token\" di dalam menu pilihan akaun anda."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Cari, alamat awam (0x), atau ENS"
   },
   "reject": {
     "message": "Tolak"
@@ -554,9 +500,6 @@
   },
   "removeAccountDescription": {
     "message": "Akaun ini akan dibuang daripada dompet anda. Sila pastikan anda mempunyai ungkapan benih asal atau kunci persendirian untuk akaun yang diimport ini sebelum meneruskan. Anda boleh import atau cipta akaun semula daripada juntai bawah akaun."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "permintaan menunggu untuk diakui"
   },
   "required": {
     "message": "Diwajibkan"
@@ -610,9 +553,6 @@
   "send": {
     "message": "Hantar"
   },
-  "sendTokens": {
-    "message": "Hantar Token"
-  },
   "settings": {
     "message": "Tetapan"
   },
@@ -627,9 +567,6 @@
   },
   "showHexDataDescription": {
     "message": "Pilih ini untuk menunjukkan medan data hex pada skrin hantar"
-  },
-  "sigRequest": {
-    "message": "Permintaan Tandatangan"
   },
   "sign": {
     "message": "Tandatangan"
@@ -679,9 +616,6 @@
   "terms": {
     "message": "Syarat-syarat Penggunaan"
   },
-  "tips": {
-    "message": "Tip"
-  },
   "to": {
     "message": "Kepada"
   },
@@ -724,9 +658,6 @@
   "transactionErrored": {
     "message": "Transaksi berdepan ralat."
   },
-  "transactionFee": {
-    "message": "Yuran Transaksi"
-  },
   "transactionResubmitted": {
     "message": "Transaksi dihantar semula dengan fi gas ditingkatkan kepada $1 pada $2."
   },
@@ -754,20 +685,11 @@
   "unknown": {
     "message": "Tidak diketahui"
   },
-  "unknownNetwork": {
-    "message": "Rangkaian Persendirian Tidak Dikenali"
-  },
   "unknownQrCode": {
     "message": "Ralat: Kami tidak dapat mengenal pasti kod QR tersebut"
   },
   "unlock": {
     "message": "Buka kunci"
-  },
-  "unlockMessage": {
-    "message": "Web ternyahpusat menanti"
-  },
-  "updatedWithDate": {
-    "message": "Dikemaskini $1"
   },
   "urlErrorMsg": {
     "message": "URI memerlukan awalan HTTP/HTTPS yang sesuai."
@@ -790,13 +712,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Anda perlu membenarkan akses kamera untuk menggunakan ciri ini."
   },
-  "youSign": {
-    "message": "Anda menandatangani"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Ungkapan benih peribadi anda"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Sifar harga gas untuk pencepatan"
   }
 }

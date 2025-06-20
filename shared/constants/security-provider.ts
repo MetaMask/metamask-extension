@@ -1,3 +1,8 @@
+import {
+  SecurityAlertResponse,
+  TransactionType,
+} from '@metamask/transaction-controller';
+
 export enum SecurityProvider {
   Blockaid = 'blockaid',
 }
@@ -7,7 +12,7 @@ type SecurityProviderConfig = Record<
   {
     /** translation key for security provider name */
     readonly tKeyName: string;
-    /** URL to securty provider website */
+    /** URL to security provider website */
     readonly url: string;
   }
 >;
@@ -25,7 +30,7 @@ export enum BlockaidReason {
   approvalFarming = 'approval_farming',
   /** Malicious signature on Blur order  */
   blurFarming = 'blur_farming',
-  /** A known malicous site invoked that transaction  */
+  /** A known malicious site invoked that transaction  */
   maliciousDomain = 'malicious_domain',
   /** Malicious signature on a Permit order  */
   permitFarming = 'permit_farming',
@@ -63,20 +68,28 @@ export enum BlockaidResultType {
   Loading = 'loading',
 }
 
-/**
- * @typedef {object} SecurityProviderMessageSeverity
- * @property {0} NOT_MALICIOUS - Indicates message is not malicious
- * @property {1} MALICIOUS - Indicates message is malicious
- * @property {2} NOT_SAFE - Indicates message is not safe
- */
-
-/** @type {SecurityProviderMessageSeverity} */
-export const SECURITY_PROVIDER_MESSAGE_SEVERITY = {
-  NOT_MALICIOUS: 0,
-  MALICIOUS: 1,
-  NOT_SAFE: 2,
-};
-
 export const FALSE_POSITIVE_REPORT_BASE_URL =
   'https://blockaid-false-positive-portal.metamask.io';
+
 export const SECURITY_PROVIDER_UTM_SOURCE = 'metamask-ppom';
+
+export const SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES = [
+  TransactionType.swap,
+  TransactionType.swapApproval,
+  TransactionType.swapAndSend,
+  TransactionType.bridgeApproval,
+  TransactionType.bridge,
+];
+
+export const LOADING_SECURITY_ALERT_RESPONSE: SecurityAlertResponse = {
+  result_type: BlockaidResultType.Loading,
+  reason: BlockaidReason.inProgress,
+};
+
+export enum SecurityAlertSource {
+  /** Validation performed remotely using the Security Alerts API. */
+  API = 'api',
+
+  /** Validation performed locally using the PPOM. */
+  Local = 'local',
+}

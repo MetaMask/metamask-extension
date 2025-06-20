@@ -108,13 +108,14 @@ export const TemplateStory = () => {
                 borderRadius: '10px',
                 boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
               },
+              key: 'snapAccountSuccessMessage',
             },
             children: [
               {
                 name: 'AccountListItem',
                 key: 'accountListItem',
                 properties: {
-                  identity: {
+                  account: {
                     address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
                     id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
                     metadata: {
@@ -126,7 +127,6 @@ export const TemplateStory = () => {
                     options: {},
                     methods: [
                       'personal_sign',
-                      'eth_sign',
                       'eth_signTransaction',
                       'eth_signTypedData_v1',
                       'eth_signTypedData_v3',
@@ -168,7 +168,7 @@ export const TemplateStory = () => {
         header: [
           {
             name: 'SnapAuthorshipHeader',
-            key: 'snapHeader',
+            key: 'snapAccountSuccessMessage',
             properties: { snapId: 'npm:@test/test-snap' },
           },
         ],
@@ -190,7 +190,7 @@ export const TemplateOnlyStory = () => {
           name: 'AccountListItem',
           key: 'accountListItem',
           properties: {
-            identity: {
+            account: {
               address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
               id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
               metadata: {
@@ -202,12 +202,12 @@ export const TemplateOnlyStory = () => {
               options: {},
               methods: [
                 'personal_sign',
-                'eth_sign',
                 'eth_signTransaction',
                 'eth_signTypedData_v1',
                 'eth_signTypedData_v3',
                 'eth_signTypedData_v4',
               ],
+              scopes: ['eip155:0'],
               type: 'eip155:eoa',
               keyring: 'HD Key Tree',
               label: null,

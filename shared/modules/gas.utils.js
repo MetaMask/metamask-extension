@@ -43,8 +43,7 @@ export function getMaximumGasTotalInHexWei({
  * transaction will cost. For gasPrice types this is the same as max.
  *
  * @param {object} options - gas fee parameters object
- * @param {string} [options.gasLimit] - the maximum amount of gas to allow this
- *  transaction to consume. Value is a hex string
+ * @param {string} [options.gasLimitNoBuffer] - gas limit without buffer
  * @param {string} [options.gasPrice] - The fee in wei to pay per gas used.
  *  gasPrice is only set on Legacy type transactions. Value is hex string
  * @param {string} [options.maxFeePerGas] - The maximum fee in wei to pay per
@@ -58,7 +57,7 @@ export function getMaximumGasTotalInHexWei({
  * @returns {string} The minimum total cost of transaction in hex wei string
  */
 export function getMinimumGasTotalInHexWei({
-  gasLimit = '0x0',
+  gasLimitNoBuffer = '0x0',
   gasPrice,
   maxPriorityFeePerGas,
   maxFeePerGas,
@@ -91,16 +90,22 @@ export function getMinimumGasTotalInHexWei({
     );
   }
   if (isEIP1559Estimate === false) {
-    return getMaximumGasTotalInHexWei({ gasLimit, gasPrice });
+    return getMaximumGasTotalInHexWei({
+      gasLimit: gasLimitNoBuffer,
+      gasPrice,
+    });
   }
   const minimumFeePerGas = new Numeric(baseFeePerGas, 16)
     .add(new Numeric(maxPriorityFeePerGas, 16))
     .toString();
 
   if (new Numeric(minimumFeePerGas, 16).greaterThan(maxFeePerGas, 16)) {
-    return getMaximumGasTotalInHexWei({ gasLimit, maxFeePerGas });
+    return getMaximumGasTotalInHexWei({
+      gasLimit: gasLimitNoBuffer,
+      maxFeePerGas,
+    });
   }
-  return new Numeric(gasLimit, 16)
+  return new Numeric(gasLimitNoBuffer, 16)
     .times(new Numeric(minimumFeePerGas, 16))
     .toPrefixedHexString();
 }

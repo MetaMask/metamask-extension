@@ -9,11 +9,8 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import configureStore from '../../../../../store/store';
 import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 
-import {
-  CHAIN_IDS,
-  GOERLI_DISPLAY_NAME,
-  NETWORK_TYPES,
-} from '../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import EditGasItem from './edit-gas-item';
 
 jest.mock('../../../../../store/actions', () => ({
@@ -65,20 +62,7 @@ const render = async ({
   const store = configureStore({
     metamask: {
       currencyRates: {},
-      providerConfig: {
-        chainId: CHAIN_IDS.GOERLI,
-        nickname: GOERLI_DISPLAY_NAME,
-        type: NETWORK_TYPES.GOERLI,
-      },
-      selectedNetworkClientId: 'goerli',
-      networkConfigurations: {
-        goerli: {
-          type: 'rpc',
-          chainId: '0x5',
-          ticker: 'ETH',
-          id: 'goerli',
-        },
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI, ticker: 'ETH' }),
       accountsByChainId: {
         [CHAIN_IDS.GOERLI]: {
           '0xAddress': {
@@ -92,9 +76,6 @@ const render = async ({
           address: '0xAddress',
           balance: '0x176e5b6f173ebe66',
         },
-      },
-      identities: {
-        '0xAddress': {},
       },
       internalAccounts: {
         accounts: {
@@ -110,7 +91,6 @@ const render = async ({
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -121,7 +101,6 @@ const render = async ({
         },
         selectedAccount: 'mock-id',
       },
-      selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
       gasEstimateType: 'fee-market',
       gasFeeEstimates: MOCK_FEE_ESTIMATE,

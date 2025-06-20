@@ -27,11 +27,13 @@ export type RemoveSnapAccountProps = {
   snapId: string;
   snapName: string;
   publicAddress: string;
+  onCancel: () => void;
 };
 
 const RemoveSnapAccount = ({
   snapId,
   publicAddress,
+  onCancel,
 }: RemoveSnapAccountProps) => {
   const t = useI18nContext();
   return (
@@ -45,25 +47,27 @@ const RemoveSnapAccount = ({
       alignItems={AlignItems.center}
       marginBottom={0}
     >
-      <SnapAuthorshipHeader snapId={snapId} />
+      <SnapAuthorshipHeader snapId={snapId} onCancel={onCancel} />
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        paddingLeft={4}
-        paddingRight={4}
+        padding={4}
+        width={BlockSize.Full}
         style={{ flexGrow: 1 }}
       >
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
           justifyContent={JustifyContent.spaceBetween}
+          width={BlockSize.Full}
         >
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
             alignItems={AlignItems.center}
+            width={BlockSize.Full}
           >
             <Box paddingBottom={2}>
               <AvatarIcon
@@ -73,7 +77,11 @@ const RemoveSnapAccount = ({
                 size={AvatarIconSize.Xl}
               />
             </Box>
-            <Text textAlign={TextAlign.Center} variant={TextVariant.headingLg}>
+            <Text
+              textAlign={TextAlign.Center}
+              variant={TextVariant.headingLg}
+              paddingBottom={2}
+            >
               {t('removeSnapAccountTitle')}
             </Text>
             <SnapAccountCard address={publicAddress} remove={true} />

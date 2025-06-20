@@ -75,9 +75,6 @@
   "asset": {
     "message": "Aktīvs"
   },
-  "attemptingConnect": {
-    "message": "Mēģina izveidot savienojumu ar bloku ķēdi."
-  },
   "attributions": {
     "message": "Atribūti"
   },
@@ -208,9 +205,6 @@
   "delete": {
     "message": "Dzēst"
   },
-  "deleteNetwork": {
-    "message": "Dzēst tīklu?"
-  },
   "details": {
     "message": "Informācija"
   },
@@ -231,9 +225,6 @@
   },
   "editContact": {
     "message": "Rediģēt līgumu"
-  },
-  "ensRegistrationError": {
-    "message": "Kļūda ENS vārda reģistrācijā"
   },
   "enterPasswordContinue": {
     "message": "Ievadiet paroli, lai turpinātu"
@@ -263,26 +254,11 @@
   "from": {
     "message": "No"
   },
-  "functionType": {
-    "message": "Funkcijas veids"
-  },
   "gasLimit": {
     "message": "Gas robežvērtība"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Gas robežvērtība ir maksimālais Gas vienību skaits, ko vēlaties tērēt."
-  },
   "gasLimitTooLow": {
     "message": "Minimālajai Gas robežvērtībai jābūt vismaz 21000"
-  },
-  "gasPrice": {
-    "message": "Gas cena (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Ārkārtīgi zema Gas cena"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Gas cena norāda Ether summu, ko vēlaties maksāt par katru Gas vienību."
   },
   "gasUsed": {
     "message": "Izlietotie Gas"
@@ -325,9 +301,6 @@
     "message": "Importēt",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importēt kontu"
-  },
   "importAccountMsg": {
     "message": "Importētie konti netiks piesaistīti sākotnēji izveidotā MetaMask konta atkopšanas frāzei. Uzziniet vairāk par importētajiem kontiem"
   },
@@ -352,12 +325,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Nederīga saņēmēja adrese"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Nav ETH tīkls, iestatīti mazie burti"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Nederīgs Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Nederīgs RPC URL"
@@ -395,9 +362,6 @@
   },
   "loading": {
     "message": "Notiek ielāde..."
-  },
-  "loadingTokens": {
-    "message": "Ielādē marķierus..."
   },
   "localhost": {
     "message": "Resursdators 8545"
@@ -458,14 +422,8 @@
   "next": {
     "message": "Nākamais"
   },
-  "noAddressForName": {
-    "message": "Šim vārdam nav iestatīta adrese."
-  },
   "noConversionRateAvailable": {
     "message": "Konversijas kurss nav pieejams"
-  },
-  "noTransactions": {
-    "message": "Jums nav neviena darījuma."
   },
   "noWebcamFound": {
     "message": "Jūsu datora tīmekļa kamera netika atrasta. Lūdzu, mēģiniet vēlreiz."
@@ -490,9 +448,6 @@
   },
   "origin": {
     "message": "Avots"
-  },
-  "parameters": {
-    "message": "Parametri"
   },
   "participateInMetaMetrics": {
     "message": "Piedalieties MetaMetrics"
@@ -522,12 +477,6 @@
   "prev": {
     "message": "Iepr."
   },
-  "primaryCurrencySetting": {
-    "message": "Primārā valūta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Atlasīt vietējo, lai piešķirtu attēlotajām vērtībām prioritātes ķēdes vietējā vērtībā (piemēram, ETH). Atlasiet Fiat, lai piešķirtu augstāku prioritāti vērtībām jūsu atlasītajā fiat valūtā."
-  },
   "privacyMsg": {
     "message": "Privātuma politika"
   },
@@ -543,9 +492,6 @@
   },
   "readdToken": {
     "message": "Jūs varat šo marķieri iestatīt atpakaļ nākotnē, konta opciju izvēlnē atverot \"Pievienot marķieri\"."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Meklēšana, publiskā adrese (0x) vai ENS"
   },
   "reject": {
     "message": "Noraidīt"
@@ -570,9 +516,6 @@
   },
   "removeAccountDescription": {
     "message": "Šis darījums tiks dzēsts no jūsu maka. Pirms turpiniet, lūdzu, pārliecinieties, ka jums ir šī importētā konta oriģinālā sēklas frāze vai privātā atslēga. Jūs varat importēt vai izveidot kontus vēlreiz, izmantojot konta nolaižamo izvēlni."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "pieprasījumi, kas gaida apstiprinājumu"
   },
   "required": {
     "message": "Nepieciešams"
@@ -626,9 +569,6 @@
   "send": {
     "message": "Sūtīt"
   },
-  "sendTokens": {
-    "message": "Nosūtīt marķierus"
-  },
   "settings": {
     "message": "Iestatījumi"
   },
@@ -643,9 +583,6 @@
   },
   "showHexDataDescription": {
     "message": "Atlasiet šo, lai atvērtu hex datus sūtīšanas ekrānā"
-  },
-  "sigRequest": {
-    "message": "Paraksta pieprasījums"
   },
   "sign": {
     "message": "Parakstīt"
@@ -695,9 +632,6 @@
   "terms": {
     "message": "Lietošanas noteikumi"
   },
-  "tips": {
-    "message": "Dzeramnauda"
-  },
   "to": {
     "message": "Adresāts"
   },
@@ -743,9 +677,6 @@
   "transactionErrored": {
     "message": "Darījumā radusies kļūda."
   },
-  "transactionFee": {
-    "message": "Darījuma nodeva"
-  },
   "transactionResubmitted": {
     "message": "Darījums atkārtoti iesniegts ar maksu par Gas, palielinātu līdz $1 pie $2"
   },
@@ -773,20 +704,11 @@
   "unknown": {
     "message": "Nezināma"
   },
-  "unknownNetwork": {
-    "message": "Nezināms privātais tīkls"
-  },
   "unknownQrCode": {
     "message": "Kļūda: šo QR kodu neizdevās identificēt"
   },
   "unlock": {
     "message": "Atbloķēt"
-  },
-  "unlockMessage": {
-    "message": "Decentralizētais tīkls jau gaida"
-  },
-  "updatedWithDate": {
-    "message": "Atjaunināts $1"
   },
   "urlErrorMsg": {
     "message": "URI jāsākas ar atbilstošo HTTP/HTTPS priedēkli."
@@ -809,13 +731,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Lai lietotu šo funkciju, jādod piekļuve kamerai."
   },
-  "youSign": {
-    "message": "Jūs parakstāt"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Jūsu privātā atkopšanas frāze"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Gas nulles cena pie paātrinājuma"
   }
 }

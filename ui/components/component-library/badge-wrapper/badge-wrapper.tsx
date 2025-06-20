@@ -2,9 +2,8 @@ import React from 'react';
 import classnames from 'classnames';
 
 import { Display } from '../../../helpers/constants/design-system';
-import { Box } from '..';
-import type { BoxProps, PolymorphicRef } from '..';
 
+import { Box, type BoxProps, type PolymorphicRef } from '../box';
 import {
   BadgeWrapperPosition,
   BadgeWrapperAnchorElementShape,
@@ -18,9 +17,9 @@ export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
       children,
       badge,
       badgeContainerProps,
-      position = BadgeWrapperPosition.topRight,
+      position = BadgeWrapperPosition.bottomRight,
       positionObj,
-      anchorElementShape = BadgeWrapperAnchorElementShape.circular,
+      anchorElementShape = BadgeWrapperAnchorElementShape.rectangular,
       className = '',
       ...props
     }: BadgeWrapperProps<C>,
@@ -35,12 +34,18 @@ export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
       {/* Generally the AvatarAccount or AvatarToken */}
       {children}
       <Box
-        className={classnames('mm-badge-wrapper__badge-container', {
-          [`mm-badge-wrapper__badge-container--${anchorElementShape}-${position}`]:
-            !positionObj,
-        })}
-        style={{ ...positionObj }}
         {...badgeContainerProps}
+        className={classnames(
+          'mm-badge-wrapper__badge-container',
+          {
+            [`mm-badge-wrapper__badge-container--${anchorElementShape}-${position}`]:
+              !positionObj,
+          },
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          badgeContainerProps?.className || '',
+        )}
+        style={{ ...positionObj }}
       >
         {/* Generally the AvatarNetwork at SIZES.XS */}
         {badge}

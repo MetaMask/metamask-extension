@@ -6,10 +6,12 @@ import {
   FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, IconName } from '..';
 import { Text } from '../text';
 import README from './README.mdx';
-import { Button, ButtonSize, ButtonVariant } from '.';
+import { Button } from './button';
+import { IconName } from '../icon';
+import { ButtonSize, ButtonVariant } from './button.types';
+import { Box } from '../box';
 
 export default {
   title: 'Components/ComponentLibrary/Button',

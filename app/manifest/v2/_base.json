@@ -15,11 +15,12 @@
       "512": "images/icon-512.png"
     },
     "default_title": "MetaMask",
-    "default_popup": "popup.html"
+    "default_popup": "popup-init.html"
   },
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
+        "default": "Alt+Shift+M",
         "windows": "Alt+Shift+M",
         "mac": "Alt+Shift+M",
         "chromeos": "Alt+Shift+M",
@@ -31,18 +32,18 @@
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "js": [
-        "disable-console.js",
-        "lockdown-install.js",
-        "lockdown-run.js",
-        "lockdown-more.js",
-        "contentscript.js",
-        "inpage.js"
+        "scripts/disable-console.js",
+        "scripts/lockdown-install.js",
+        "scripts/lockdown-run.js",
+        "scripts/lockdown-more.js",
+        "scripts/contentscript.js",
+        "scripts/inpage.js"
       ],
       "run_at": "document_start",
       "all_frames": true
     },
     {
-      "matches": ["*://connect.trezor.io/*/popup.html"],
+      "matches": ["*://connect.trezor.io/*/popup.html*"],
       "js": ["vendor/trezor/content-script.js"]
     }
   ],
@@ -60,17 +61,18 @@
   },
   "manifest_version": 2,
   "name": "__MSG_appName__",
+  "optional_permissions": ["clipboardRead"],
   "permissions": [
     "storage",
     "unlimitedStorage",
     "clipboardWrite",
-    "http://localhost:8545/",
-    "https://*.infura.io/",
-    "https://*.codefi.network/",
-    "https://chainid.network/chains.json",
-    "https://lattice.gridplus.io/*",
+    "http://*/*",
+    "https://*/*",
+    "ws://*/*",
+    "wss://*/*",
     "activeTab",
     "webRequest",
+    "webRequestBlocking",
     "*://*.eth/",
     "notifications"
   ],

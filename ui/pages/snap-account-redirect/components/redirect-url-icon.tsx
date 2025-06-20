@@ -14,7 +14,7 @@ type RedirectUrlIconProps = {
 const RedirectUrlIcon = ({ url, onSubmit }: RedirectUrlIconProps) => {
   return (
     <ButtonIcon
-      data-testid={'snap-account-redirect-url-icon'}
+      data-testid="snap-account-redirect-url-icon"
       onClick={() => {
         global.platform.openTab({ url });
         onSubmit?.();
@@ -22,7 +22,7 @@ const RedirectUrlIcon = ({ url, onSubmit }: RedirectUrlIconProps) => {
       iconName={IconName.Export}
       color={IconColor.primaryDefault}
       size={ButtonIconSize.Sm}
-      ariaLabel={''}
+      ariaLabel=""
     />
   );
 };

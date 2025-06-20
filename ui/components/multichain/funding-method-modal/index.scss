@@ -1,0 +1,7 @@
+.funding-method-item {
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-background-hover);
+  }
+}

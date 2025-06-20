@@ -2,14 +2,32 @@ import React, { memo, useLayoutEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import CheckBox, { CHECKED, INDETERMINATE, UNCHECKED } from '../check-box';
 import Identicon from '../identicon';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../helpers/constants/common';
 import Tooltip from '../tooltip';
-import { Icon, IconName } from '../../component-library';
-import { IconColor } from '../../../helpers/constants/design-system';
+import {
+  Box,
+  ButtonLink,
+  Checkbox,
+  Icon,
+  IconName,
+  Text,
+} from '../../component-library';
+import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  Color,
+  Display,
+  FlexDirection,
+  IconColor,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 const AccountList = ({
   selectNewAccountViaModal,
@@ -26,17 +44,20 @@ const AccountList = ({
   const selectedAccountScrollRef = useRef(null);
   useLayoutEffect(() => {
     selectedAccountScrollRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [selectedAccounts]);
+  }, []);
+
+  const [firstSelectedAccount] = selectedAccounts;
+
+  const handleEvmAccountClick = (account) => {
+    if (!isEvmAccountType(account.type)) {
+      return;
+    }
+    handleAccountClick(account.address);
+  };
 
   const Header = () => {
-    let checked;
-    if (allAreSelected()) {
-      checked = CHECKED;
-    } else if (selectedAccounts.size === 0) {
-      checked = UNCHECKED;
-    } else {
-      checked = INDETERMINATE;
-    }
+    const checked = allAreSelected();
+    const isIndeterminate = !checked && selectedAccounts.size !== 0;
 
     return (
       <div
@@ -47,15 +68,20 @@ const AccountList = ({
       >
         {accounts.length > 1 ? (
           <div className="choose-account-list__select-all">
-            <CheckBox
+            <Checkbox
               className="choose-account-list__header-check-box"
-              dataTestId="choose-account-list-operate-all-check-box"
-              checked={checked}
+              data-testid="choose-account-list-operate-all-check-box"
+              isChecked={checked}
+              isIndeterminate={isIndeterminate}
               onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
             />
-            <div className="choose-account-list__text-grey">
+            <Text
+              as="div"
+              className="choose-account-list__text-grey"
+              color={TextColor.textAlternative}
+            >
               {t('selectAll')}
-            </div>
+            </Text>
             <Tooltip
               position="bottom"
               html={
@@ -73,67 +99,16 @@ const AccountList = ({
             </Tooltip>
           </div>
         ) : null}
-        <div
-          className="choose-account-list__text-blue"
+        <ButtonLink
+          color={TextColor.infoDefault}
+          variant={TextVariant.bodyMdMedium}
+          style={{
+            cursor: 'pointer',
+          }}
           onClick={() => selectNewAccountViaModal(handleAccountClick)}
         >
           {t('newAccount')}
-        </div>
-      </div>
-    );
-  };
-
-  const List = () => {
-    return (
-      <div className="choose-account-list__wrapper">
-        <div className="choose-account-list__list">
-          {accounts.map((account, index) => {
-            const { address, addressLabel, balance } = account;
-            const isSelectedAccount = selectedAccounts.has(address);
-            return (
-              <div
-                key={`choose-account-list-${index}`}
-                onClick={() => handleAccountClick(address)}
-                className="choose-account-list__account"
-                ref={isSelectedAccount ? selectedAccountScrollRef : null}
-              >
-                <div className="choose-account-list__account-info-wrapper">
-                  <CheckBox
-                    className="choose-account-list__list-check-box"
-                    checked={isSelectedAccount}
-                  />
-                  <Identicon diameter={34} address={address} />
-                  <div className="choose-account-list__account__info">
-                    <div className="choose-account-list__account__label">
-                      {addressLabel}
-                    </div>
-                    <UserPreferencedCurrencyDisplay
-                      className="choose-account-list__account__balance"
-                      type={PRIMARY}
-                      value={balance}
-                      style={{ color: 'var(--color-text-alternative)' }}
-                      suffix={nativeCurrency}
-                    />
-                  </div>
-                </div>
-                {addressLastConnectedMap[address] ? (
-                  <Tooltip
-                    title={`${t('lastConnected')} ${
-                      addressLastConnectedMap[address]
-                    }`}
-                  >
-                    <Icon
-                      name={IconName.Info}
-                      color={IconColor.iconMuted}
-                      className="info-circle"
-                      marginInlineStart={2}
-                    />
-                  </Tooltip>
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
+        </ButtonLink>
       </div>
     );
   };
@@ -141,7 +116,112 @@ const AccountList = ({
   return (
     <div className="choose-account-list">
       <Header />
-      <List />
+      <div className="choose-account-list__wrapper">
+        <Box
+          className="choose-account-list__list"
+          style={{ overflowX: 'hidden' }}
+        >
+          {accounts.map((account, index) => {
+            const { address, addressLabel, balance } = account;
+            const isSelectedAccount = selectedAccounts.has(address);
+            return (
+              <Box
+                display={Display.Flex}
+                width={BlockSize.Full}
+                key={`choose-account-list-${index}`}
+                data-testid={`choose-account-list-${index}`}
+                onClick={() => handleEvmAccountClick(account)}
+                className="choose-account-list__account"
+                ref={
+                  isSelectedAccount && address === firstSelectedAccount
+                    ? selectedAccountScrollRef
+                    : null
+                }
+                backgroundColor={
+                  isSelectedAccount
+                    ? Color.primaryMuted
+                    : BackgroundColor.backgroundDefault
+                }
+              >
+                <Box
+                  display={Display.Flex}
+                  width={BlockSize.Full}
+                  alignItems={AlignItems.center}
+                >
+                  <Checkbox
+                    isChecked={isSelectedAccount}
+                    isDisabled={!isEvmAccountType(account.type)}
+                  />
+                  <Box marginLeft={2}>
+                    <Identicon diameter={34} address={address} />
+                  </Box>
+                  <Box
+                    display={Display.Flex}
+                    justifyContent={JustifyContent.spaceBetween}
+                    width={BlockSize.Full}
+                    paddingLeft={3}
+                    style={{
+                      minWidth: 0,
+                    }}
+                  >
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      width={BlockSize.Full}
+                    >
+                      <Text
+                        variant={TextVariant.bodyMdMedium}
+                        style={{
+                          textWrap: 'nowrap',
+                        }}
+                        ellipsis
+                      >
+                        {addressLabel}
+                      </Text>
+                      <Box display={Display.Flex}>
+                        <UserPreferencedCurrencyDisplay
+                          account={account}
+                          type={PRIMARY}
+                          value={balance}
+                          style={{
+                            color: 'var(--color-text-alternative)',
+                            flexWrap: 'nowrap',
+                          }}
+                          suffix={nativeCurrency}
+                          numberOfDecimals={2}
+                          ethNumberOfDecimals={5}
+                          textProps={{
+                            color: TextColor.textAlternative,
+                            variant: TextVariant.bodySm,
+                          }}
+                          suffixProps={{
+                            color: TextColor.textAlternative,
+                            variant: TextVariant.bodySm,
+                          }}
+                        />
+                      </Box>
+                    </Box>
+                  </Box>
+                  {addressLastConnectedMap[address] ? (
+                    <Tooltip
+                      title={`${t('lastConnected')} ${
+                        addressLastConnectedMap[address]
+                      }`}
+                    >
+                      <Icon
+                        name={IconName.Info}
+                        color={IconColor.iconMuted}
+                        className="info-circle"
+                        marginInlineStart={2}
+                      />
+                    </Tooltip>
+                  ) : null}
+                </Box>
+              </Box>
+            );
+          })}
+        </Box>
+      </div>
     </div>
   );
 };

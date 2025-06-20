@@ -30,12 +30,7 @@ const LoadingScreen = ({
     <Box className="loading-overlay">
       {header}
       <Box className="loading-overlay__container" marginBottom={3}>
-        {showLoadingSpinner && (
-          <Spinner
-            color="var(--color-warning-default)"
-            className="loading-overlay__spinner"
-          />
-        )}
+        {showLoadingSpinner && <Spinner className="loading-overlay__spinner" />}
       </Box>
       <Box
         display={Display.Flex}

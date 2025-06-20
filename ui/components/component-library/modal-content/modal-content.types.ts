@@ -43,6 +43,8 @@ export interface ModalContentStyleUtilityProps extends StyleUtilityProps {
   /**
    * Additional props to pass to the dialog node inside of ModalContent component
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modalDialogProps?: any;
 }
 

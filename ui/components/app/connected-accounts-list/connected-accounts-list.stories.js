@@ -1,5 +1,6 @@
 import React from 'react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import ConnectedAccountsList from '.';
 
 export default {
@@ -44,7 +45,7 @@ export default {
         },
       },
       options: {},
-      methods: [...Object.values(EthMethod)],
+      methods: ETH_EOA_METHODS,
       type: EthAccountType.Eoa,
     },
   },

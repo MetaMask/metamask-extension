@@ -1,5 +1,5 @@
 const fs = require('fs');
-const spawn = require('cross-spawn');
+const { spawn } = require('node:child_process');
 
 /**
  * Run a command to completion using the system shell.
@@ -14,7 +14,7 @@ const spawn = require('cross-spawn');
  *
  * @param {string} command - The command to run
  * @param {Array<string>} [args] - The arguments to pass to the command
- * @returns {Array<string>} Lines of output received via STDOUT
+ * @returns {Promise<Array<string>>} Lines of output received via STDOUT
  */
 async function runCommand(command, args) {
   const output = [];
@@ -61,7 +61,7 @@ async function runCommand(command, args) {
       if (errorCode !== null && errorSignal !== null) {
         errorMessage = `Terminated by signal '${errorSignal}'; exited with code '${errorCode}'`;
       } else if (errorSignal !== null) {
-        errorMessage = `Terminaled by signal '${errorSignal}'`;
+        errorMessage = `Terminated by signal '${errorSignal}'`;
       } else if (errorCode === null) {
         errorMessage = 'Exited with no code or signal';
       } else {
@@ -88,15 +88,15 @@ async function runCommand(command, args) {
  *
  * @param {string} command - The command to run
  * @param {Array<string>} [args] - The arguments to pass to the command
- * @param {string} output - The output file to write to
+ * @param {string | undefined} output - The output file to write to
  */
-async function runInShell(command, args, output) {
+async function runInShell(command, args, output = undefined) {
   let errorSignal;
   let errorCode;
   const internalError = new Error('Internal');
   try {
     await new Promise((resolve, reject) => {
-      const childProcess = spawn(command, args);
+      const childProcess = spawn(command, args, { shell: true });
       childProcess.stdout.setEncoding('utf8');
       childProcess.stderr.setEncoding('utf8');
       childProcess.stdout.pipe(process.stdout);
@@ -125,7 +125,7 @@ async function runInShell(command, args, output) {
       if (errorCode !== null && errorSignal !== null) {
         errorMessage = `Terminated by signal '${errorSignal}'; exited with code '${errorCode}'`;
       } else if (errorSignal !== null) {
-        errorMessage = `Terminaled by signal '${errorSignal}'`;
+        errorMessage = `Terminated by signal '${errorSignal}'`;
       } else if (errorCode === null) {
         errorMessage = 'Exited with no code or signal';
       } else {

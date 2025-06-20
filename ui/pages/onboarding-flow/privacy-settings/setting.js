@@ -7,6 +7,7 @@ import {
   TextVariant,
   AlignItems,
   Display,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -16,6 +17,8 @@ export const Setting = ({
   title,
   description,
   showToggle = true,
+  dataTestId,
+  disabled = false,
 }) => {
   const t = useI18nContext();
 
@@ -23,14 +26,19 @@ export const Setting = ({
     <Box
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.center}
+      alignItems={AlignItems.flexStart}
       marginTop={3}
       marginBottom={3}
       className="privacy-settings__setting__wrapper"
+      data-testid={dataTestId}
     >
       <div className="privacy-settings__setting">
         <Text variant={TextVariant.bodyMdMedium}>{title}</Text>
-        <Text variant={TextVariant.bodySm} as="div">
+        <Text
+          variant={TextVariant.bodySm}
+          color={TextColor.textAlternative}
+          as="div"
+        >
           {description}
         </Text>
       </div>
@@ -41,6 +49,7 @@ export const Setting = ({
             onToggle={(val) => setValue(!val)}
             offLabel={t('off')}
             onLabel={t('on')}
+            disabled={disabled}
           />
         </div>
       ) : null}
@@ -54,4 +63,6 @@ Setting.propTypes = {
   title: PropTypes.string,
   description: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   showToggle: PropTypes.bool,
+  dataTestId: PropTypes.string,
+  disabled: PropTypes.bool,
 };

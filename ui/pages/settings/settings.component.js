@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Switch, Route, matchPath } from 'react-router-dom';
+import { Switch, Route, matchPath, Redirect } from 'react-router-dom';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
 
 import {
-  ALERTS_ROUTE,
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
@@ -16,14 +15,18 @@ import {
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
+  DEVELOPER_OPTIONS_ROUTE,
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   DEFAULT_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  SNAP_SETTINGS_ROUTE,
+  REVEAL_SRP_LIST_ROUTE,
+  BACKUPANDSYNC_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
-import AddNetwork from '../../components/app/add-network/add-network';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -31,6 +34,7 @@ import {
   IconName,
   Box,
   Text,
+  IconSize,
 } from '../../components/component-library';
 import {
   AlignItems,
@@ -40,18 +44,23 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 import MetafoxLogo from '../../components/ui/metafox-logo';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import { SnapIcon } from '../../components/app/snaps/snap-icon';
+import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
 import SettingsTab from './settings-tab';
-import AlertsTab from './alerts-tab';
-import NetworksTab from './networks-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
+import DeveloperOptionsTab from './developer-options-tab';
 import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
+import { RevealSrpList } from './security-tab/reveal-srp-list';
+import BackupAndSyncTab from './backup-and-sync-tab';
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -68,6 +77,10 @@ class SettingsPage extends PureComponent {
     isPopup: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
+    settingsPageSnaps: PropTypes.array,
+    snapSettingsTitle: PropTypes.string,
+    toggleNetworkMenu: PropTypes.func.isRequired,
+    useExternalServices: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -120,9 +133,12 @@ class SettingsPage extends PureComponent {
 
     return (
       <div
-        className={classnames('main-container settings-page', {
-          'settings-page--selected': currentPath !== SETTINGS_ROUTE,
-        })}
+        className={classnames(
+          'main-container main-container--has-shadow settings-page',
+          {
+            'settings-page--selected': currentPath !== SETTINGS_ROUTE,
+          },
+        )}
       >
         <Box
           className="settings-page__header"
@@ -206,19 +222,24 @@ class SettingsPage extends PureComponent {
 
   renderTitle() {
     const { t } = this.context;
-    const { isPopup, pathnameI18nKey, addressName } = this.props;
+    const { isPopup, pathnameI18nKey, addressName, snapSettingsTitle } =
+      this.props;
     let titleText;
     if (isPopup && addressName) {
       titleText = t('details');
     } else if (pathnameI18nKey && isPopup) {
       titleText = t(pathnameI18nKey);
+    } else if (snapSettingsTitle) {
+      titleText = snapSettingsTitle;
     } else {
       titleText = t('settings');
     }
 
     return (
       <div className="settings-page__header__title-container__title">
-        <Text variant={TextVariant.headingMd}>{titleText}</Text>
+        <Text variant={TextVariant.headingMd} ellipsis>
+          {titleText}
+        </Text>
       </div>
     );
   }
@@ -289,18 +310,40 @@ class SettingsPage extends PureComponent {
   }
 
   renderTabs() {
-    const { history, currentPath } = this.props;
+    const { history, currentPath, useExternalServices, settingsPageSnaps } =
+      this.props;
     const { t } = this.context;
+
+    const snapsSettings = settingsPageSnaps.map(({ id, name }) => {
+      return {
+        content: name,
+        icon: (
+          <SnapIcon
+            snapId={id}
+            avatarSize={IconSize.Md}
+            style={{ '--size': '20px' }}
+          />
+        ),
+        key: `${SNAP_SETTINGS_ROUTE}/${encodeURIComponent(id)}`,
+      };
+    });
+
     const tabs = [
       {
         content: t('general'),
         icon: <Icon name={IconName.Setting} />,
         key: GENERAL_ROUTE,
       },
+      ...snapsSettings,
       {
         content: t('advanced'),
         icon: <i className="fas fa-sliders-h" />,
         key: ADVANCED_ROUTE,
+      },
+      {
+        content: t('backupAndSync'),
+        icon: <Icon name={IconName.SecurityTime} />,
+        key: BACKUPANDSYNC_ROUTE,
       },
       {
         content: t('contacts'),
@@ -309,18 +352,8 @@ class SettingsPage extends PureComponent {
       },
       {
         content: t('securityAndPrivacy'),
-        icon: <i className="fa fa-lock" />,
+        icon: <Icon name={IconName.Lock} />,
         key: SECURITY_ROUTE,
-      },
-      {
-        content: t('alerts'),
-        icon: <Icon name={IconName.Notification} />,
-        key: ALERTS_ROUTE,
-      },
-      {
-        content: t('networks'),
-        icon: <Icon name={IconName.Plug} />,
-        key: NETWORKS_ROUTE,
       },
       {
         content: t('experimental'),
@@ -333,6 +366,22 @@ class SettingsPage extends PureComponent {
         key: ABOUT_US_ROUTE,
       },
     ];
+
+    if (useExternalServices) {
+      tabs.splice(4, 0, {
+        content: t('notifications'),
+        icon: <Icon name={IconName.Notification} />,
+        key: NOTIFICATIONS_SETTINGS_ROUTE,
+      });
+    }
+
+    if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST) {
+      tabs.splice(-1, 0, {
+        content: t('developerOptions'),
+        icon: <Icon name={IconName.CodeCircle} />,
+        key: DEVELOPER_OPTIONS_ROUTE,
+      });
+    }
 
     return (
       <TabBar
@@ -349,7 +398,12 @@ class SettingsPage extends PureComponent {
           }
           return matchPath(currentPath, { exact: true, path: key });
         }}
-        onSelect={(key) => history.push(key)}
+        onSelect={(key) =>
+          history.push({
+            pathname: key,
+            state: { fromPage: currentPath },
+          })
+        }
       />
     );
   }
@@ -367,26 +421,47 @@ class SettingsPage extends PureComponent {
             />
           )}
         />
-        <Route exact path={ABOUT_US_ROUTE} component={InfoTab} />
+        <Route exact path={ABOUT_US_ROUTE} render={() => <InfoTab />} />
+        <Route
+          path={`${SNAP_SETTINGS_ROUTE}/:snapId`}
+          component={SnapSettingsRenderer}
+        />
         <Route exact path={ADVANCED_ROUTE} component={AdvancedTab} />
-        <Route exact path={ALERTS_ROUTE} component={AlertsTab} />
+        <Route exact path={BACKUPANDSYNC_ROUTE} component={BackupAndSyncTab} />
         <Route
           exact
           path={ADD_NETWORK_ROUTE}
-          render={() => <NetworksTab addNewNetwork />}
+          render={() => {
+            this.props.toggleNetworkMenu({ isAddingNewNetwork: true });
+            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+          }}
         />
         <Route
           exact
           path={NETWORKS_ROUTE}
-          render={() => <NetworksTab addNewNetwork={false} />}
+          render={() => {
+            this.props.toggleNetworkMenu();
+            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+          }}
         />
         <Route
           exact
           path={ADD_POPULAR_CUSTOM_NETWORK}
-          render={() => <AddNetwork />}
+          render={() => {
+            this.props.toggleNetworkMenu();
+            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+          }}
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
         <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
+        {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
+          process.env.IN_TEST) && (
+          <Route
+            exact
+            path={DEVELOPER_OPTIONS_ROUTE}
+            component={DeveloperOptionsTab}
+          />
+        )}
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
         <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
         <Route
@@ -399,6 +474,7 @@ class SettingsPage extends PureComponent {
           path={`${CONTACT_VIEW_ROUTE}/:id`}
           component={ContactListTab}
         />
+        <Route exact path={REVEAL_SRP_LIST_ROUTE} component={RevealSrpList} />
         <Route
           render={(routeProps) => (
             <SettingsTab

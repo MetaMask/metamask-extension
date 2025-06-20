@@ -1,10 +1,10 @@
-import { NetworkType } from '@metamask/controller-utils';
-import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { mockNetworkState } from '../stub/networks';
 
-const createGetSmartTransactionFeesApiResponse = () => {
+export const createGetSmartTransactionFeesApiResponse = () => {
   return {
     tradeTxFees: {
       // Approval tx.
@@ -135,22 +135,18 @@ export const createSwapsMockStore = () => {
       swapsSTXLoading: false,
     },
     metamask: {
-      selectedNetworkClientId: NetworkType.mainnet,
-      networksMetadata: {
-        [NetworkType.mainnet]: {
-          EIPS: {
-            1559: false,
-          },
-          status: NetworkStatus.Available,
+      remoteFeatureFlags: {
+        bridgeConfig: {
+          support: false,
         },
-      },
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        ticker: 'ETH',
       },
       preferences: {
         showFiatInTestnets: true,
+        smartTransactionsOptInStatus: true,
+        tokenNetworkFilter: {},
+        showMultiRpcModal: false,
       },
+      enabledNetworkMap: {},
       transactions: [
         {
           id: 6571648590592143,
@@ -221,15 +217,25 @@ export const createSwapsMockStore = () => {
         },
       ],
       useCurrencyRateCheck: true,
-      currentCurrency: 'ETH',
+      currentCurrency: 'usd',
       currencyRates: {
         ETH: {
           conversionRate: 1,
         },
       },
-      contractExchangeRates: {
-        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
-        '0x1111111111111111111111111111111111111111': 0.1,
+      marketData: {
+        '0x1': {
+          '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
+            price: 2,
+            contractPercentChange1d: 0.004,
+            priceChange1d: 0.00004,
+          },
+          '0x1111111111111111111111111111111111111111': {
+            price: 0.1,
+            contractPercentChange1d: 0.01,
+            priceChange1d: 0.001,
+          },
+        },
       },
       identities: {
         '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
@@ -261,8 +267,9 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
           '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
             address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
@@ -274,8 +281,9 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
           '15e69915-2a1a-4019-93b3-916e11fd432f': {
             address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
@@ -287,8 +295,9 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
           '784225f4-d30b-4e77-a900-c8bbce735b88': {
             address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -300,8 +309,9 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
           '36eb02e0-7925-47f0-859f-076608f09b69': {
             address: '0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe6',
@@ -317,8 +327,9 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -355,13 +366,28 @@ export const createSwapsMockStore = () => {
             'c5b8dbac4c1d3f152cdeb400e2313f309c410acb',
             '2f8d4a878cfa04a6e60d46362f5644deab66572d',
           ],
+          metadata: {
+            id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+            name: '',
+          },
         },
         {
           type: KeyringType.imported,
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
+          metadata: {
+            id: '01JKAF3KP7VPAG0YXEDTDRB6ZV',
+            name: '',
+          },
         },
       ],
-      networkConfigurations: {},
+      ...mockNetworkState({
+        chainId: CHAIN_IDS.MAINNET,
+        ticker: CURRENCY_SYMBOLS.ETH,
+        rpcUrl: 'https://mainnet.infura.io/v3/',
+        blockExplorerUrl: 'https://etherscan.io',
+        id: 'mainnet',
+      }),
+      selectedNetworkClientId: 'mainnet',
       tokens: [
         {
           erc20: true,
@@ -378,11 +404,21 @@ export const createSwapsMockStore = () => {
       ],
       swapsState: {
         swapsFeatureFlags: {
-          smartTransactions: {
-            mobileActive: true,
+          ethereum: {
             extensionActive: true,
+            mobileActive: false,
+            smartTransactions: {
+              expectedDeadline: 45,
+              maxDeadline: 150,
+              extensionReturnTxHashAsap: false,
+            },
           },
-          swapRedesign: {
+          bsc: {
+            extensionActive: true,
+            mobileActive: false,
+            smartTransactions: {},
+          },
+          smartTransactions: {
             mobileActive: true,
             extensionActive: true,
           },
@@ -454,6 +490,23 @@ export const createSwapsMockStore = () => {
               decimals: 18,
             },
             fee: 1,
+            isGasIncludedTrade: false,
+            approvalTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
+            tradeTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
           },
           TEST_AGG_2: {
             trade: {
@@ -488,6 +541,36 @@ export const createSwapsMockStore = () => {
               decimals: 18,
             },
             fee: 1,
+            isGasIncludedTrade: false,
+            approvalTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
+            tradeTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                {
+                  maxFeePerGas: 2310003200,
+                  maxPriorityFeePerGas: 513154852,
+                  tokenFees: [
+                    {
+                      token: {
+                        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+                        symbol: 'DAI',
+                        decimals: 18,
+                      },
+                      balanceNeededToken: '0x426dc933c2e5a',
+                    },
+                  ],
+                },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
           },
         },
         fetchParams: {
@@ -622,6 +705,7 @@ export const createSwapsMockStore = () => {
           ],
         },
       },
+      balances: {},
     },
     appState: {
       modal: {

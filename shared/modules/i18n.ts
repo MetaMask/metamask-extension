@@ -20,6 +20,8 @@ export type I18NMessageDict = {
   [translationKey: string]: I18NMessage;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type I18NSubstitution = string | (() => any) | object;
 
 // A parameterized type (or generic type) of maps that use the same structure (translationKey) key
@@ -89,7 +91,7 @@ export async function fetchLocale(
 ): Promise<I18NMessageDict> {
   try {
     const response = await fetchWithTimeout(
-      `./_locales/${localeCode}/messages.json`,
+      `../_locales/${localeCode}/messages.json`,
     );
     return await response.json();
   } catch (error) {
@@ -104,10 +106,15 @@ export async function loadRelativeTimeFormatLocaleData(
   const languageTag = localeCode.split('_')[0];
   if (
     Intl.RelativeTimeFormat &&
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     typeof (Intl.RelativeTimeFormat as any).__addLocaleData === 'function' &&
     !relativeTimeFormatLocaleData.has(languageTag)
   ) {
     const localeData = await fetchRelativeTimeFormatData(languageTag);
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (Intl.RelativeTimeFormat as any).__addLocaleData(localeData);
     relativeTimeFormatLocaleData.add(languageTag);
   }
@@ -171,7 +178,9 @@ function missingKeyError(
     onError?.(error);
     log.error(error);
 
-    if (process.env.IN_TEST) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    if (process.env.IN_TEST || process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS) {
       throw error;
     }
   }
@@ -182,7 +191,6 @@ function missingKeyError(
 
   warned[localeCode] = warned[localeCode] ?? {};
   warned[localeCode][key] = true;
-
   log.warn(
     `Translator - Unable to find value of key "${key}" for locale "${localeCode}"`,
   );

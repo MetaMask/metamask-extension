@@ -1,17 +1,13 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
-import {
-  getCurrentChainId,
-  getRpcPrefsForCurrentProvider,
-} from '../../../../selectors';
 import { removeAccount } from '../../../../store/actions';
+import { getMultichainNetwork } from '../../../../selectors/multichain';
 import ConfirmRemoveAccount from './confirm-remove-account.component';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    chainId: getCurrentChainId(state),
-    rpcPrefs: getRpcPrefsForCurrentProvider(state),
+    network: getMultichainNetwork(state, ownProps.account),
   };
 };
 

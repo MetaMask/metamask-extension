@@ -1,6 +1,9 @@
+// Many of the state hooks return untyped raw state.
+
 // In order for variables to be considered on the global scope they must be
 // declared using var and not const or let, which is why this rule is disabled
 /* eslint-disable no-var */
+
 import * as Sentry from '@sentry/browser';
 import {
   Success,
@@ -13,16 +16,14 @@ import {
   EthereumSignMessage,
   EthereumSignTypedDataTypes,
 } from '@trezor/connect-web';
+import type { Provider } from '@metamask/network-controller';
+import * as Browser from 'webextension-polyfill';
 import {
   OffscreenCommunicationTarget,
   TrezorAction,
-} from 'shared/constants/offscreen-communication';
-
-declare class Platform {
-  openTab: (opts: { url: string }) => void;
-
-  closeCurrentWindow: () => void;
-}
+} from '../shared/constants/offscreen-communication';
+import type { Preferences } from '../app/scripts/controllers/preferences-controller';
+import type ExtensionPlatform from '../app/scripts/platforms/extension';
 
 declare class MessageSender {
   documentId?: string;
@@ -68,6 +69,8 @@ type sendMessage = {
     callback?: (response: Record<string, unknown>) => void,
   ): void;
   (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     message: any,
     options?: Record<string, unknown>,
     callback?: (response: Record<string, unknown>) => void,
@@ -190,6 +193,9 @@ type sendMessage = {
         url: string;
       };
     },
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     callback: (response: { result: any; error?: Error }) => void,
   );
   (
@@ -202,6 +208,8 @@ declare class Runtime {
   onMessage: {
     addListener: (
       callback: (
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         message: any,
         sender: MessageSender,
         sendResponse: (response?: ResponseType) => void,
@@ -217,24 +225,62 @@ declare class Chrome {
 }
 
 type SentryObject = Sentry & {
-  // Verifies that the user has opted into metrics and then updates the sentry
-  // instance to track sessions and begins the session.
-  startSession: () => void;
+  getMetaMetricsEnabled: () => Promise<boolean>;
+};
 
-  // Verifies that the user has opted out of metrics and then updates the
-  // sentry instance to NOT track sessions and ends the current session.
-  endSession: () => void;
-
-  // Calls either startSession or endSession based on optin status
-  toggleSession: () => void;
+type StateHooks = {
+  getCustomTraces?: () => { [name: string]: number };
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getCleanAppState?: () => Promise<any>;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getLogs?: () => any[];
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getMostRecentPersistedState?: () => any;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getPersistedState: () => Promise<any>;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getSentryAppState?: () => any;
+  getSentryState: () => {
+    browser: string;
+    version: string;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    state?: any;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    persistedState?: any;
+  };
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  metamaskGetState?: () => Promise<any>;
+  throwTestBackgroundError?: (msg?: string) => Promise<void>;
+  throwTestError?: (msg?: string) => void;
+  /**
+   * This is set in `app-init.js` to communicate why MetaMask installed or
+   * updated. It is handled in `background.js`.
+   */
+  onInstalledListener?: Promise<{
+    reason: chrome.runtime.InstalledDetails;
+  }>;
 };
 
 export declare global {
-  var platform: Platform;
+  var platform: ExtensionPlatform;
   // Sentry is undefined in dev, so use optional chaining
   var sentry: SentryObject | undefined;
 
   var chrome: Chrome;
+
+  var ethereumProvider: Provider;
+
+  var stateHooks: StateHooks;
+
+  var browser: Browser;
 
   namespace jest {
     // The interface is being used for declaration merging, which is an acceptable exception to this rule.
@@ -244,4 +290,57 @@ export declare global {
       toNeverResolve(): Promise<R>;
     }
   }
+
+  /**
+   * Unions T with U; U's properties will override T's properties
+   */
+  type OverridingUnion<T, U> = Omit<T, keyof U> & U;
+
+  function setPreference(key: keyof Preferences, value: boolean);
 }
+
+// #region Promise.withResolvers polyfill
+
+// this polyfill can be removed once our TS libs include withResolvers.
+// at time of writing we use TypeScript Version 5.4.5, which includes it in
+// esnext
+
+export declare global {
+  type PromiseWithResolvers<T> = {
+    promise: Promise<T>;
+    resolve: (value: T | PromiseLike<T>) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    reject: (reason?: any) => void;
+  };
+
+  // we're extending the PromiseConstructor interface, to we have to use
+  // `interface` (`type` won't work)
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface PromiseConstructor {
+    /**
+     * Creates a new Promise and returns it in an object, along with its resolve and reject functions.
+     *
+     * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/withResolvers
+     *
+     * @returns An object with the properties `promise`, `resolve`, and `reject`.
+     *
+     * ```ts
+     * const { promise, resolve, reject } = Promise.withResolvers<T>();
+     * ```
+     */
+    withResolvers<T>(): PromiseWithResolvers<T>;
+  }
+}
+// #endregion
+
+// #region used in jest tests to ignore unhandled rejections
+declare global {
+  namespace NodeJS {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+    interface Process {
+      setIgnoreUnhandled: (ignore: boolean) => void;
+      resetIgnoreUnhandled: () => void;
+    }
+  }
+}
+// #endregion

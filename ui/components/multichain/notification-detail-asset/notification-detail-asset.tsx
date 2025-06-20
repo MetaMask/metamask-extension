@@ -77,13 +77,23 @@ export const NotificationDetailAsset: FC<NotificationDetailAssetProps> = ({
 
   const badgeWrapper = icon.badge ? (
     <BadgeWrapper
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       position={icon.badge.position || BadgeWrapperPosition.topRight}
       badge={badgeIcon}
     >
-      <AvatarToken src={icon.src} />
+      <AvatarToken
+        src={icon.src}
+        borderColor={BorderColor.borderMuted}
+        className="notification-detail-asset__icon"
+      />
     </BadgeWrapper>
   ) : (
-    <AvatarToken src={icon.src} />
+    <AvatarToken
+      src={icon.src}
+      borderColor={BorderColor.borderMuted}
+      className="notification-detail-asset__icon"
+    />
   );
 
   const primaryTextLeft = createTextComponent(

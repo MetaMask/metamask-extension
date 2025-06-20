@@ -6,13 +6,17 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { SECOND } from '../../../../shared/constants/time';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import CustodyLabels from '../../institutional/custody-labels/custody-labels';
-///: END:ONLY_INCLUDE_IF
-import { Icon, IconName, IconSize } from '../../component-library';
-import { IconColor } from '../../../helpers/constants/design-system';
+import { Icon, IconName, IconSize, Text } from '../../component-library';
+import {
+  IconColor,
+  TextVariant,
+  TextColor,
+  TextAlign,
+  BlockSize,
+  Display,
+  FontWeight,
+  AlignItems,
+} from '../../../helpers/constants/design-system';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 
 class SelectedAccount extends Component {
@@ -26,12 +30,6 @@ class SelectedAccount extends Component {
 
   static propTypes = {
     selectedAccount: PropTypes.object.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    accountType: PropTypes.string,
-    accountDetails: PropTypes.object,
-    provider: PropTypes.object,
-    isCustodianSupportedChain: PropTypes.bool,
-    ///: END:ONLY_INCLUDE_IF
   };
 
   componentDidMount() {
@@ -47,44 +45,15 @@ class SelectedAccount extends Component {
 
   render() {
     const { t } = this.context;
-    const {
-      selectedAccount,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      accountType,
-      accountDetails,
-      provider,
-      isCustodianSupportedChain,
-      ///: END:ONLY_INCLUDE_IF
-    } = this.props;
+    const { selectedAccount } = this.props;
 
     const checksummedAddress = toChecksumHexAddress(selectedAccount.address);
 
-    let title = this.state.copied
+    const title = this.state.copied
       ? t('copiedExclamation')
       : t('copyToClipboard');
 
-    let showAccountCopyIcon = true;
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const custodyLabels = accountDetails
-      ? accountDetails[checksummedAddress]?.labels
-      : {};
-
-    const showCustodyLabels =
-      getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP &&
-      accountType === 'custody' &&
-      custodyLabels;
-
-    const tooltipText = this.state.copied
-      ? t('copiedExclamation')
-      : t('copyToClipboard');
-
-    title = isCustodianSupportedChain
-      ? tooltipText
-      : t('custodyWrongChain', [provider.nickname || provider.type]);
-
-    showAccountCopyIcon = isCustodianSupportedChain;
-    ///: END:ONLY_INCLUDE_IF
+    const showAccountCopyIcon = true;
 
     return (
       <div className="selected-account">
@@ -96,9 +65,6 @@ class SelectedAccount extends Component {
           <button
             className="selected-account__clickable"
             data-testid="selected-account-click"
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            disabled={!isCustodianSupportedChain}
-            ///: END:ONLY_INCLUDE_IF
             onClick={() => {
               this.setState({ copied: true });
               this.copyTimeout = setTimeout(
@@ -108,15 +74,24 @@ class SelectedAccount extends Component {
               copyToClipboard(checksummedAddress, COPY_OPTIONS);
             }}
           >
-            <div className="selected-account__name">
+            <Text
+              data-testid="selected-account-name"
+              width={BlockSize.Full}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.textDefault}
+              ellipsis
+              textAlign={TextAlign.Center}
+              marginBottom={1}
+            >
               {selectedAccount.metadata.name}
-            </div>
-            <div className="selected-account__address">
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                showCustodyLabels && <CustodyLabels labels={custodyLabels} />
-                ///: END:ONLY_INCLUDE_IF
-              }
+            </Text>
+            <Text
+              data-testid="selected-account-address"
+              variant={TextVariant.bodyXs}
+              color={TextColor.textAlternative}
+              display={Display.Flex}
+              alignItems={AlignItems.Center}
+            >
               {shortenAddress(checksummedAddress)}
               {showAccountCopyIcon && (
                 <div
@@ -132,7 +107,7 @@ class SelectedAccount extends Component {
                   />
                 </div>
               )}
-            </div>
+            </Text>
           </button>
         </Tooltip>
       </div>

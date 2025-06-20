@@ -68,13 +68,13 @@ exports[`Hide Token Confirmation Modal should match snapshot 1`] = `
       class="hide-token-confirmation__buttons"
     >
       <button
-        class="button btn--rounded btn-secondary hide-token-confirmation__button"
+        class="button btn-secondary hide-token-confirmation__button"
         data-testid="hide-token-confirmation__cancel"
       >
         Cancel
       </button>
       <button
-        class="button btn--rounded btn-primary hide-token-confirmation__button"
+        class="button btn-primary hide-token-confirmation__button"
         data-testid="hide-token-confirmation__hide"
       >
         Hide

@@ -9,6 +9,8 @@ global.sentry = {
   captureException: sentryCaptureExceptionMock,
 };
 
+const invalidKeys = ['null', 'undefined'];
+
 describe('migration #88', () => {
   afterEach(() => {
     jest.resetAllMocks();
@@ -207,28 +209,55 @@ describe('migration #88', () => {
     });
   });
 
-  it('deletes undefined-keyed properties from state of NftController.allNftContracts', async () => {
-    const oldStorage = {
-      meta: { version: 87 },
-      data: {
+  for (const invalidKey of invalidKeys) {
+    it(`deletes ${invalidKey}-keyed properties from state of NftController.allNftContracts`, async () => {
+      const oldStorage = {
+        meta: { version: 87 },
+        data: {
+          NftController: {
+            allNftContracts: {
+              '0x111': {
+                '16': [
+                  {
+                    name: 'Contract 1',
+                    address: '0xaaa',
+                  },
+                ],
+                [invalidKey]: [
+                  {
+                    name: 'Contract 2',
+                    address: '0xbbb',
+                  },
+                ],
+              },
+              '0x222': {
+                '64': [
+                  {
+                    name: 'Contract 3',
+                    address: '0xccc',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual({
         NftController: {
           allNftContracts: {
             '0x111': {
-              '16': [
+              '0x10': [
                 {
                   name: 'Contract 1',
                   address: '0xaaa',
                 },
               ],
-              undefined: [
-                {
-                  name: 'Contract 2',
-                  address: '0xbbb',
-                },
-              ],
             },
             '0x222': {
-              '64': [
+              '0x40': [
                 {
                   name: 'Contract 3',
                   address: '0xccc',
@@ -237,34 +266,9 @@ describe('migration #88', () => {
             },
           },
         },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual({
-      NftController: {
-        allNftContracts: {
-          '0x111': {
-            '0x10': [
-              {
-                name: 'Contract 1',
-                address: '0xaaa',
-              },
-            ],
-          },
-          '0x222': {
-            '0x40': [
-              {
-                name: 'Contract 3',
-                address: '0xccc',
-              },
-            ],
-          },
-        },
-      },
+      });
     });
-  });
+  }
 
   it('does not convert chain IDs in NftController.allNftContracts which are already hex strings', async () => {
     const oldStorage = {
@@ -525,14 +529,59 @@ describe('migration #88', () => {
     });
   });
 
-  it('deletes undefined-keyed properties from state of NftController.allNfts', async () => {
-    const oldStorage = {
-      meta: { version: 87 },
-      data: {
+  for (const invalidKey of invalidKeys) {
+    it(`deletes ${invalidKey}-keyed properties from state of NftController.allNfts`, async () => {
+      const oldStorage = {
+        meta: { version: 87 },
+        data: {
+          NftController: {
+            allNfts: {
+              '0x111': {
+                '16': [
+                  {
+                    name: 'NFT 1',
+                    description: 'Description for NFT 1',
+                    image: 'nft1.jpg',
+                    standard: 'ERC721',
+                    tokenId: '1',
+                    address: '0xaaa',
+                  },
+                ],
+                [invalidKey]: [
+                  {
+                    name: 'NFT 2',
+                    description: 'Description for NFT 2',
+                    image: 'nft2.jpg',
+                    standard: 'ERC721',
+                    tokenId: '2',
+                    address: '0xbbb',
+                  },
+                ],
+              },
+              '0x222': {
+                '64': [
+                  {
+                    name: 'NFT 3',
+                    description: 'Description for NFT 3',
+                    image: 'nft3.jpg',
+                    standard: 'ERC721',
+                    tokenId: '3',
+                    address: '0xccc',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual({
         NftController: {
           allNfts: {
             '0x111': {
-              '16': [
+              '0x10': [
                 {
                   name: 'NFT 1',
                   description: 'Description for NFT 1',
@@ -542,19 +591,9 @@ describe('migration #88', () => {
                   address: '0xaaa',
                 },
               ],
-              undefined: [
-                {
-                  name: 'NFT 2',
-                  description: 'Description for NFT 2',
-                  image: 'nft2.jpg',
-                  standard: 'ERC721',
-                  tokenId: '2',
-                  address: '0xbbb',
-                },
-              ],
             },
             '0x222': {
-              '64': [
+              '0x40': [
                 {
                   name: 'NFT 3',
                   description: 'Description for NFT 3',
@@ -567,42 +606,9 @@ describe('migration #88', () => {
             },
           },
         },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual({
-      NftController: {
-        allNfts: {
-          '0x111': {
-            '0x10': [
-              {
-                name: 'NFT 1',
-                description: 'Description for NFT 1',
-                image: 'nft1.jpg',
-                standard: 'ERC721',
-                tokenId: '1',
-                address: '0xaaa',
-              },
-            ],
-          },
-          '0x222': {
-            '0x40': [
-              {
-                name: 'NFT 3',
-                description: 'Description for NFT 3',
-                image: 'nft3.jpg',
-                standard: 'ERC721',
-                tokenId: '3',
-                address: '0xccc',
-              },
-            ],
-          },
-        },
-      },
+      });
     });
-  });
+  }
 
   it('does not convert chain IDs in NftController.allNfts which are already hex strings', async () => {
     const oldStorage = {
@@ -946,13 +952,52 @@ describe('migration #88', () => {
     });
   });
 
-  it('deletes undefined-keyed properties from state of TokenListController.tokensChainsCache', async () => {
-    const oldStorage = {
-      meta: { version: 87 },
-      data: {
+  for (const invalidKey of invalidKeys) {
+    it(`deletes ${invalidKey}-keyed properties from state of TokenListController.tokensChainsCache`, async () => {
+      const oldStorage = {
+        meta: { version: 87 },
+        data: {
+          TokenListController: {
+            tokensChainsCache: {
+              '16': {
+                timestamp: 111111,
+                data: {
+                  '0x111': {
+                    address: '0x111',
+                    symbol: 'TEST1',
+                    decimals: 1,
+                    occurrences: 1,
+                    name: 'Token 1',
+                    iconUrl: 'https://url/to/token1.png',
+                    aggregators: [],
+                  },
+                },
+              },
+              [invalidKey]: {
+                timestamp: 222222,
+                data: {
+                  '0x222': {
+                    address: '0x222',
+                    symbol: 'TEST2',
+                    decimals: 1,
+                    occurrences: 1,
+                    name: 'Token 2',
+                    iconUrl: 'https://url/to/token2.png',
+                    aggregators: [],
+                  },
+                },
+              },
+            },
+          },
+        },
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual({
         TokenListController: {
           tokensChainsCache: {
-            '16': {
+            '0x10': {
               timestamp: 111111,
               data: {
                 '0x111': {
@@ -966,48 +1011,11 @@ describe('migration #88', () => {
                 },
               },
             },
-            undefined: {
-              timestamp: 222222,
-              data: {
-                '0x222': {
-                  address: '0x222',
-                  symbol: 'TEST2',
-                  decimals: 1,
-                  occurrences: 1,
-                  name: 'Token 2',
-                  iconUrl: 'https://url/to/token2.png',
-                  aggregators: [],
-                },
-              },
-            },
           },
         },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual({
-      TokenListController: {
-        tokensChainsCache: {
-          '0x10': {
-            timestamp: 111111,
-            data: {
-              '0x111': {
-                address: '0x111',
-                symbol: 'TEST1',
-                decimals: 1,
-                occurrences: 1,
-                name: 'Token 1',
-                iconUrl: 'https://url/to/token1.png',
-                aggregators: [],
-              },
-            },
-          },
-        },
-      },
+      });
     });
-  });
+  }
 
   it('does not convert chain IDs in TokenListController.tokensChainsCache which are already hex strings', async () => {
     const oldStorage = {
@@ -1241,13 +1249,51 @@ describe('migration #88', () => {
     });
   });
 
-  it('deletes undefined keyed properties from TokensController.allTokens', async () => {
-    const oldStorage = {
-      meta: { version: 87 },
-      data: {
+  for (const invalidKey of invalidKeys) {
+    it(`deletes ${invalidKey} keyed properties from TokensController.allTokens`, async () => {
+      const oldStorage = {
+        meta: { version: 87 },
+        data: {
+          TokensController: {
+            allTokens: {
+              '16': {
+                '0x111': [
+                  {
+                    address: '0xaaa',
+                    decimals: 1,
+                    symbol: 'TEST1',
+                  },
+                ],
+              },
+              '32': {
+                '0x222': [
+                  {
+                    address: '0xbbb',
+                    decimals: 1,
+                    symbol: 'TEST2',
+                  },
+                ],
+              },
+              [invalidKey]: {
+                '0x333': [
+                  {
+                    address: '0xbbb',
+                    decimals: 1,
+                    symbol: 'TEST2',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual({
         TokensController: {
           allTokens: {
-            '16': {
+            '0x10': {
               '0x111': [
                 {
                   address: '0xaaa',
@@ -1256,7 +1302,7 @@ describe('migration #88', () => {
                 },
               ],
             },
-            '32': {
+            '0x20': {
               '0x222': [
                 {
                   address: '0xbbb',
@@ -1265,47 +1311,11 @@ describe('migration #88', () => {
                 },
               ],
             },
-            undefined: {
-              '0x333': [
-                {
-                  address: '0xbbb',
-                  decimals: 1,
-                  symbol: 'TEST2',
-                },
-              ],
-            },
           },
         },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual({
-      TokensController: {
-        allTokens: {
-          '0x10': {
-            '0x111': [
-              {
-                address: '0xaaa',
-                decimals: 1,
-                symbol: 'TEST1',
-              },
-            ],
-          },
-          '0x20': {
-            '0x222': [
-              {
-                address: '0xbbb',
-                decimals: 1,
-                symbol: 'TEST2',
-              },
-            ],
-          },
-        },
-      },
+      });
     });
-  });
+  }
 
   it('does not convert chain IDs in TokensController.allTokens which are already hex strings', async () => {
     const oldStorage = {
@@ -1456,51 +1466,53 @@ describe('migration #88', () => {
     });
   });
 
-  it('deletes undefined-keyed properties from TokensController.allIgnoredTokens', async () => {
-    const oldStorage = {
-      meta: { version: 87 },
-      data: {
+  for (const invalidKey of invalidKeys) {
+    it(`deletes ${invalidKey}-keyed properties from TokensController.allIgnoredTokens`, async () => {
+      const oldStorage = {
+        meta: { version: 87 },
+        data: {
+          TokensController: {
+            allIgnoredTokens: {
+              '16': {
+                '0x1': {
+                  '0x111': ['0xaaa'],
+                },
+              },
+              '32': {
+                '0x2': {
+                  '0x222': ['0xbbb'],
+                },
+              },
+              [invalidKey]: {
+                '0x2': {
+                  '0x222': ['0xbbb'],
+                },
+              },
+            },
+          },
+        },
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual({
         TokensController: {
           allIgnoredTokens: {
-            '16': {
+            '0x10': {
               '0x1': {
                 '0x111': ['0xaaa'],
               },
             },
-            '32': {
-              '0x2': {
-                '0x222': ['0xbbb'],
-              },
-            },
-            undefined: {
+            '0x20': {
               '0x2': {
                 '0x222': ['0xbbb'],
               },
             },
           },
         },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual({
-      TokensController: {
-        allIgnoredTokens: {
-          '0x10': {
-            '0x1': {
-              '0x111': ['0xaaa'],
-            },
-          },
-          '0x20': {
-            '0x2': {
-              '0x222': ['0xbbb'],
-            },
-          },
-        },
-      },
+      });
     });
-  });
+  }
 
   it('does not convert chain IDs in TokensController.allIgnoredTokens which are already hex strings', async () => {
     const oldStorage = {
@@ -1635,41 +1647,43 @@ describe('migration #88', () => {
     });
   });
 
-  it('deletes undefined-keyed properties from  TokensController.allDetectedTokens', async () => {
-    const oldStorage = {
-      meta: { version: 87 },
-      data: {
+  for (const invalidKey of invalidKeys) {
+    it(`deletes ${invalidKey}-keyed properties from  TokensController.allDetectedTokens`, async () => {
+      const oldStorage = {
+        meta: { version: 87 },
+        data: {
+          TokensController: {
+            allDetectedTokens: {
+              '16': {
+                '0x1': {
+                  '0x111': ['0xaaa'],
+                },
+              },
+              [invalidKey]: {
+                '0x2': {
+                  '0x222': ['0xbbb'],
+                },
+              },
+            },
+          },
+        },
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual({
         TokensController: {
           allDetectedTokens: {
-            '16': {
+            '0x10': {
               '0x1': {
                 '0x111': ['0xaaa'],
               },
             },
-            undefined: {
-              '0x2': {
-                '0x222': ['0xbbb'],
-              },
-            },
           },
         },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual({
-      TokensController: {
-        allDetectedTokens: {
-          '0x10': {
-            '0x1': {
-              '0x111': ['0xaaa'],
-            },
-          },
-        },
-      },
+      });
     });
-  });
+  }
 
   it('does not convert chain IDs in TokensController.allDetectedTokens which are already hex strings', async () => {
     const oldStorage = {

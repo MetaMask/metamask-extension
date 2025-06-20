@@ -1,0 +1,120 @@
+diff --git a/dist/index.js b/dist/index.js
+index 6b889a8c93e4c546dd2b1905c968ade143435134..8a63cf3cbc152d84864e1cec07da5c0883a98aef 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -1,6 +1,2 @@
+ 'use strict'
+-if (process.env.NODE_ENV === 'production') {
+-  module.exports = require('./redux-toolkit.cjs.production.min.js')
+-} else {
+-  module.exports = require('./redux-toolkit.cjs.development.js')
+-}
+\ No newline at end of file
++module.exports = require('./redux-toolkit.cjs.development.js')
+diff --git a/dist/redux-toolkit.cjs.development.js b/dist/redux-toolkit.cjs.development.js
+index bb433432ec76331e12d6b62e200f06530055cb16..9caf4051aa96bd14ee2890ef6c79bf5b0fb685c6 100644
+--- a/dist/redux-toolkit.cjs.development.js
++++ b/dist/redux-toolkit.cjs.development.js
+@@ -1,3 +1,13 @@
++var __define = (this && this.__define) || function (obj, key, value) {
++    Object.defineProperty(obj, key, {
++        value: value,
++        enumerable: true,
++        configurable: true,
++        writable: true
++    });
++    return obj[key];
++};
++
+ var __extends = (this && this.__extends) || (function () {
+     var extendStatics = function (d, b) {
+         extendStatics = Object.setPrototypeOf ||
+@@ -9,7 +19,7 @@ var __extends = (this && this.__extends) || (function () {
+         if (typeof b !== "function" && b !== null)
+             throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+         extendStatics(d, b);
+-        function __() { this.constructor = d; }
++        function __() { __define(this, constructor, d); }
+         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+     };
+ })();
+@@ -316,14 +326,14 @@ var MiddlewareArray = /** @class */ (function (_super) {
+         enumerable: false,
+         configurable: true
+     });
+-    MiddlewareArray.prototype.concat = function () {
++    __define(MiddlewareArray.prototype, 'concat', function () {
+         var arr = [];
+         for (var _i = 0; _i < arguments.length; _i++) {
+             arr[_i] = arguments[_i];
+         }
+         return _super.prototype.concat.apply(this, arr);
+-    };
+-    MiddlewareArray.prototype.prepend = function () {
++    });
++    __define(MiddlewareArray.prototype, 'prepend', function () {
+         var arr = [];
+         for (var _i = 0; _i < arguments.length; _i++) {
+             arr[_i] = arguments[_i];
+@@ -332,7 +342,7 @@ var MiddlewareArray = /** @class */ (function (_super) {
+             return new (MiddlewareArray.bind.apply(MiddlewareArray, __spreadArray([void 0], arr[0].concat(this))))();
+         }
+         return new (MiddlewareArray.bind.apply(MiddlewareArray, __spreadArray([void 0], arr.concat(this))))();
+-    };
++    });
+     return MiddlewareArray;
+ }(Array));
+ var EnhancerArray = /** @class */ (function (_super) {
+@@ -353,14 +363,14 @@ var EnhancerArray = /** @class */ (function (_super) {
+         enumerable: false,
+         configurable: true
+     });
+-    EnhancerArray.prototype.concat = function () {
++    __define(EnhancerArray.prototype, 'concat', function () {
+         var arr = [];
+         for (var _i = 0; _i < arguments.length; _i++) {
+             arr[_i] = arguments[_i];
+         }
+         return _super.prototype.concat.apply(this, arr);
+-    };
+-    EnhancerArray.prototype.prepend = function () {
++    });
++    __define(EnhancerArray.prototype, 'prepend', function () {
+         var arr = [];
+         for (var _i = 0; _i < arguments.length; _i++) {
+             arr[_i] = arguments[_i];
+@@ -369,7 +379,7 @@ var EnhancerArray = /** @class */ (function (_super) {
+             return new (EnhancerArray.bind.apply(EnhancerArray, __spreadArray([void 0], arr[0].concat(this))))();
+         }
+         return new (EnhancerArray.bind.apply(EnhancerArray, __spreadArray([void 0], arr.concat(this))))();
+-    };
++    });
+     return EnhancerArray;
+ }(Array));
+ function freezeDraftable(val) {
+diff --git a/dist/redux-toolkit.esm.js b/dist/redux-toolkit.esm.js
+index f26a1669405b4dd92dfecd791dc536078a7e2e12..591e7495fcaf3233d26cfb9c4eae09fd7ae3eb98 100644
+--- a/dist/redux-toolkit.esm.js
++++ b/dist/redux-toolkit.esm.js
+@@ -192,9 +192,6 @@ function getMessage(type) {
+ }
+ function createActionCreatorInvariantMiddleware(options) {
+     if (options === void 0) { options = {}; }
+-    if (process.env.NODE_ENV === "production") {
+-        return function () { return function (next) { return function (action) { return next(action); }; }; };
+-    }
+     var _c = options.isActionCreator, isActionCreator2 = _c === void 0 ? isActionCreator : _c;
+     return function () { return function (next) { return function (action) {
+         if (isActionCreator2(action)) {
+diff --git a/package.json b/package.json
+index 684ea845ee663f719bff6c140001baebdaa69344..568d6215514a8625bfb3be5e49b6cbfe11231e6a 100644
+--- a/package.json
++++ b/package.json
+@@ -23,7 +23,6 @@
+     "access": "public"
+   },
+   "main": "dist/index.js",
+-  "module": "dist/redux-toolkit.esm.js",
+   "unpkg": "dist/redux-toolkit.umd.min.js",
+   "types": "dist/index.d.ts",
+   "devDependencies": {

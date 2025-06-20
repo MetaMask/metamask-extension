@@ -6,7 +6,7 @@ import {
   FlexDirection,
   Display,
 } from '../../../helpers/constants/design-system';
-import { Box } from '..';
+import { Box } from '../box';
 import { TextareaResize } from './textarea.types';
 import { Textarea } from './textarea';
 

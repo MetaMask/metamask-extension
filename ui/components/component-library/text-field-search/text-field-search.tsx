@@ -1,17 +1,11 @@
 import React from 'react';
 import classnames from 'classnames';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  Icon,
-  IconName,
-  IconSize,
-  TextField,
-  TextFieldType,
-} from '..';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { TextFieldProps } from '../text-field/text-field.types';
+import { TextFieldProps, TextFieldType } from '../text-field/text-field.types';
 import { PolymorphicRef } from '../box';
+import { TextField } from '../text-field';
+import { ButtonIcon, ButtonIconSize } from '../button-icon';
+import { Icon, IconName, IconSize } from '../icon';
 import {
   TextFieldSearchProps,
   TextFieldSearchComponent,
@@ -46,6 +40,7 @@ export const TextFieldSearch: TextFieldSearchComponent = React.forwardRef(
             <>
               <ButtonIcon
                 className="mm-text-field__button-clear"
+                data-testid="text-field-search-clear-button"
                 ariaLabel={t('clear')}
                 iconName={IconName.Close}
                 size={ButtonIconSize.Sm}

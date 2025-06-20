@@ -1,12 +1,16 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { NetworkStatus } from '@metamask/network-controller';
-import { NetworkType } from '@metamask/controller-utils';
 import configureStore from '../../../../store/store';
 import testData from '../../../../../.storybook/test-data';
 import { Box } from '../../../../components/component-library';
+import {
+  mockMultichainNetworkState,
+  mockNetworkState,
+} from '../../../../../test/stub/networks';
 
 const STORE_MOCK = {
+  ...testData,
   metamask: {
     approvalFlows: [],
     currentCurrency: 'USD',
@@ -22,15 +26,27 @@ const STORE_MOCK = {
         status: NetworkStatus.Available,
       },
     },
+    ...mockNetworkState({
+      id: 'testNetworkClientId',
+      rpcUrl: 'https://testrpc.com',
+      chainId: '0x1',
+      nickname: 'mainnet',
+      name: 'mainnet',
+      blockExplorerUrl: 'https://etherscan.io',
+      metadata: {
+        EIPS: { 1559: true },
+        status: NetworkStatus.Available,
+      },
+    }),
+    ...mockMultichainNetworkState(),
     pendingApprovals: {
       testId: {
         id: 'testId',
         origin: 'npm:@test/test-snap',
       },
     },
-    providerConfig: {
-      type: NetworkType.rpc,
-      nickname: 'Test Network',
+    enabledNetworkMap: {
+      '0x1': true,
     },
     selectedNetworkClientId: 'testNetworkClientId',
     subjectMetadata: {
@@ -41,14 +57,13 @@ const STORE_MOCK = {
     },
     tokenList: {},
     accounts: testData.metamask.accounts,
-    identities: testData.metamask.identities,
     internalAccounts: testData.metamask.internalAccounts,
     accountsByChainId: testData.metamask.accountsByChainId,
     snaps: {
       'npm:@test/test-snap': {
         id: 'npm:@test/test-snap',
         manifest: {
-          description: 'Test Snap',
+          proposedName: 'Test Snap',
         },
       },
     },
@@ -56,8 +71,12 @@ const STORE_MOCK = {
 };
 
 // eslint-disable-next-line react/prop-types
-export function PendingApproval({ children, requestData, type }) {
-  const mockState = { ...STORE_MOCK };
+export function PendingApproval({ children, requestData, state, type }) {
+  const mockState = {
+    ...STORE_MOCK,
+    metamask: { ...STORE_MOCK.metamask, ...state },
+  };
+
   const pendingApproval = mockState.metamask.pendingApprovals.testId;
 
   pendingApproval.type = type;
@@ -67,13 +86,29 @@ export function PendingApproval({ children, requestData, type }) {
     <Provider store={configureStore(mockState)}>
       <Box
         style={{
+          display: 'flex',
+          flexDirection: 'column',
           height: '592px',
           width: '360px',
-          border: '1px solid lightgrey',
           margin: '0 auto',
         }}
       >
-        {children}
+        <Box
+          style={{
+            display: 'flex',
+            height: '100%',
+            flexDirection: 'column',
+          }}
+        >
+          <Box
+            style={{
+              flex: '1 1 auto',
+              display: 'flex',
+            }}
+          >
+            {children}
+          </Box>
+        </Box>
       </Box>
     </Provider>
   );

@@ -1,35 +1,49 @@
 import namehash from 'eth-ens-namehash';
-import Eth from '@metamask/ethjs-query';
-import EthContract from '@metamask/ethjs-contract';
 import contentHash from '@ensdomains/content-hash';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 import registryAbi from './contracts/registry';
 import resolverAbi from './contracts/resolver';
 
 export default async function resolveEnsToIpfsContentId({ provider, name }) {
-  const eth = new Eth(provider);
   const hash = namehash.hash(name);
-  const contract = new EthContract(eth);
+
   // lookup registry
-  const chainId = Number.parseInt(await eth.net_version(), 10);
+  const chainId = Number.parseInt(
+    await provider.request({ method: 'net_version' }),
+    10,
+  );
   const registryAddress = getRegistryForChainId(chainId);
   if (!registryAddress) {
     throw new Error(
       `EnsIpfsResolver - no known ens-ipfs registry for chainId "${chainId}"`,
     );
   }
-  const Registry = contract(registryAbi).at(registryAddress);
+  const web3Provider = new Web3Provider(provider);
+  const registryContract = new Contract(
+    registryAddress,
+    registryAbi,
+    web3Provider,
+  );
   // lookup resolver
-  const resolverLookupResult = await Registry.resolver(hash);
-  const resolverAddress = resolverLookupResult[0];
+  const resolverAddress = await registryContract.resolver(hash);
   if (hexValueIsEmpty(resolverAddress)) {
     throw new Error(`EnsIpfsResolver - no resolver found for name "${name}"`);
   }
-  const Resolver = contract(resolverAbi).at(resolverAddress);
+  const resolverContract = new Contract(
+    resolverAddress,
+    resolverAbi,
+    web3Provider,
+  );
 
-  const isEIP1577Compliant = await Resolver.supportsInterface('0xbc1c58d1');
-  const isLegacyResolver = await Resolver.supportsInterface('0xd8389dc5');
-  if (isEIP1577Compliant[0]) {
-    const contentLookupResult = await Resolver.contenthash(hash);
+  const isEIP1577Compliant = await resolverContract.supportsInterface(
+    '0xbc1c58d1',
+  );
+  const isLegacyResolver = await resolverContract.supportsInterface(
+    '0xd8389dc5',
+  );
+  if (isEIP1577Compliant) {
+    const contentLookupResult = await resolverContract.contenthash(hash);
     const rawContentHash = contentLookupResult[0];
     let decodedContentHash = contentHash.decode(rawContentHash);
     const type = contentHash.getCodec(rawContentHash);
@@ -41,9 +55,9 @@ export default async function resolveEnsToIpfsContentId({ provider, name }) {
 
     return { type, hash: decodedContentHash };
   }
-  if (isLegacyResolver[0]) {
+  if (isLegacyResolver) {
     // lookup content id
-    const contentLookupResult = await Resolver.content(hash);
+    const contentLookupResult = await resolverContract.content(hash);
     const content = contentLookupResult[0];
     if (hexValueIsEmpty(content)) {
       throw new Error(

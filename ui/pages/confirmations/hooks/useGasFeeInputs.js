@@ -11,6 +11,7 @@ import { GAS_FORM_ERRORS } from '../../../helpers/constants/gas';
 import {
   checkNetworkAndAccountSupports1559,
   getAdvancedInlineGasShown,
+  selectNetworkConfigurationByChainId,
 } from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
@@ -118,6 +119,13 @@ export function useGasFeeInputs(
     ? retryTxMeta
     : _transaction;
 
+  const network = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, transaction?.chainId),
+  );
+
+  const networkClientId =
+    network?.rpcEndpoints?.[network?.defaultRpcEndpointIndex]?.networkClientId;
+
   const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
@@ -130,7 +138,7 @@ export function useGasFeeInputs(
     gasFeeEstimates,
     isGasEstimatesLoading,
     isNetworkBusy,
-  } = useGasFeeEstimates(transaction?.networkClientId);
+  } = useGasFeeEstimates(networkClientId);
 
   const userPrefersAdvancedGas = useSelector(getAdvancedInlineGasShown);
 
@@ -156,7 +164,11 @@ export function useGasFeeInputs(
   });
 
   const [gasLimit, setGasLimit] = useState(() =>
-    Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
+    Number(
+      hexToDecimal(
+        transaction?.txParams?.gasLimit ?? transaction?.txParams?.gas ?? '0x0',
+      ),
+    ),
   );
 
   const properGasLimit = Number(hexToDecimal(transaction?.originalGasEstimate));
@@ -187,7 +199,15 @@ export function useGasFeeInputs(
         setEstimateUsed(transaction?.userFeeLevel);
       }
 
-      setGasLimit(Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')));
+      setGasLimit(
+        Number(
+          hexToDecimal(
+            transaction?.txParams?.gasLimit ??
+              transaction?.txParams?.gas ??
+              '0x0',
+          ),
+        ),
+      );
     }
   }, [
     setEstimateUsed,

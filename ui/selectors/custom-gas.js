@@ -1,3 +1,5 @@
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import { decEthToConvertedCurrency } from '../../shared/modules/conversion.utils';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
@@ -13,7 +15,7 @@ import {
 import { calcGasTotal } from '../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../shared/modules/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
-import { getIsMainnet } from '.';
+import { getIsMainnet } from './selectors';
 
 export function getCustomGasLimit(state) {
   return state.gas.customData.limit;
@@ -188,14 +190,6 @@ export function priceEstimateToWei(priceEstimate) {
 export function getGasPriceInHexWei(price) {
   const value = new Numeric(price, 10).toBase(16).toString();
   return addHexPrefix(priceEstimateToWei(value));
-}
-
-export function getIsEthGasPriceFetched(state) {
-  const gasEstimateType = getGasEstimateType(state);
-  return (
-    gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.ethGasPrice &&
-    getIsMainnet(state)
-  );
 }
 
 export function getIsCustomNetworkGasPriceFetched(state) {

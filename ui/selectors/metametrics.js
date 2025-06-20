@@ -2,6 +2,15 @@ import { createSelector } from 'reselect';
 
 export const selectFragments = (state) => state.metamask.fragments;
 
+export const getDataCollectionForMarketing = (state) =>
+  state.metamask.dataCollectionForMarketing;
+
+export const getParticipateInMetaMetrics = (state) =>
+  Boolean(state.metamask.participateInMetaMetrics);
+
+export const getLatestMetricsEventTimestamp = (state) =>
+  state.metamask.latestNonAnonymousEventTimestamp;
+
 export const selectFragmentBySuccessEvent = createSelector(
   selectFragments,
   (_, fragmentOptions) => fragmentOptions,

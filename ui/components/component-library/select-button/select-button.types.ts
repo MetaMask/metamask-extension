@@ -34,6 +34,9 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
    *   endAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
    * }
    */
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   placeholder?: any;
   /*
    * Value for `SelectButton` component
@@ -45,6 +48,9 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
    *   endAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
    * }
    */
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value?: any;
   /*
    * DefaultValue for SelectButton component
@@ -56,6 +62,9 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
    *   endAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
    * }
    */
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   defaultValue?: any;
   /*
    * isBlock boolean prop for SelectButton component to set display to block

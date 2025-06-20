@@ -42,23 +42,6 @@
   "addContact": {
     "message": "新增合約"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "這會允許在 MetaMask 內使用這個網路。"
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask 不會對自訂的網路做驗證。"
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "了解更多關於$1的事。",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "詐騙與網路安全風險",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "允許這個網站新增一個網路？"
-  },
   "addFriendsAndAddresses": {
     "message": "新增朋友和您信任的位址"
   },
@@ -77,26 +60,8 @@
   "alertDisableTooltip": {
     "message": "這可以在「設定 > 提醒」裡變更"
   },
-  "alertSettingsUnconnectedAccount": {
-    "message": "選擇尚未連結的帳戶瀏覽一個網站時"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "當您瀏覽一個使用 web3 的網站，但目前選擇的帳戶沒有連結時，這個提醒會顯示在一個彈跳視窗。"
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "當一個網站試著使用已經移除的 window.web3 API"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "當您瀏覽一個嘗試使用已經移除的 window.web3 API 的網站，可能會因此故障時，這個提醒會顯示在一個彈跳視窗。"
-  },
   "alerts": {
     "message": "提醒"
-  },
-  "allowExternalExtensionTo": {
-    "message": "允許這個外部擴充功能："
-  },
-  "allowThisSiteTo": {
-    "message": "允許這個網站："
   },
   "allowWithdrawAndSpend": {
     "message": "允許 $1 提款或最多花費以下額度：",
@@ -135,9 +100,6 @@
   },
   "assetOptions": {
     "message": "資產選項"
-  },
-  "attemptingConnect": {
-    "message": "正在嘗試連結區塊鏈。"
   },
   "attributions": {
     "message": "來源"
@@ -197,12 +159,6 @@
   "cancel": {
     "message": "取消"
   },
-  "cancelEdit": {
-    "message": "Cancel Edit"
-  },
-  "cancelSpeedUp": {
-    "message": "cancel or speed up a tranaction."
-  },
   "cancelled": {
     "message": "已取消"
   },
@@ -244,26 +200,6 @@
   },
   "connectManually": {
     "message": "手動連結到目前的網站"
-  },
-  "connectTo": {
-    "message": "連結到 $1",
-    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
-  },
-  "connectToAll": {
-    "message": "連結到您的全部$1",
-    "description": "$1 will be replaced by the translation of connectToAllAccounts"
-  },
-  "connectToAllAccounts": {
-    "message": "帳戶",
-    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
-  },
-  "connectToMultiple": {
-    "message": "連結到 $1",
-    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
-  },
-  "connectToMultipleNumberOfAccounts": {
-    "message": "$1 個帳戶",
-    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "connectWithMetaMask": {
     "message": "連結到 MetaMask"
@@ -364,9 +300,6 @@
   "customSpendLimit": {
     "message": "自訂花費限制"
   },
-  "customSpendingCap": {
-    "message": "自訂花費上限"
-  },
   "customToken": {
     "message": "自訂代幣"
   },
@@ -398,9 +331,6 @@
   },
   "delete": {
     "message": "刪除"
-  },
-  "deleteNetwork": {
-    "message": "刪除網路？"
   },
   "details": {
     "message": "詳情"
@@ -476,12 +406,6 @@
     "message": "這個 RPC 端點回傳了一個不同的鏈 ID：$1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "ensIllegalCharacter": {
-    "message": "Illegal Character for ENS."
-  },
-  "ensRegistrationError": {
-    "message": "ENS 名稱註冊錯誤"
-  },
   "ensUnknownError": {
     "message": "ENS Lookup failed."
   },
@@ -495,10 +419,6 @@
     "message": "代碼：$1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "錯誤詳細資訊",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorMessage": {
     "message": "訊息：$1",
     "description": "Displayed error message for debugging purposes. $1 is the error message"
@@ -506,14 +426,6 @@
   "errorName": {
     "message": "代碼：$1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "重新整理頁面然後再試一次，或從$1聯絡我們尋求支援。",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "重新開啟彈跳視窗然後再試一次，或從$1聯絡我們尋求支援。",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask 遭遇錯誤",
@@ -550,13 +462,6 @@
   "fast": {
     "message": "快"
   },
-  "feeAssociatedRequest": {
-    "message": "這個請求會附帶一筆手續費。"
-  },
-  "fiat": {
-    "message": "法定貨幣",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "檔案匯入失敗？點擊這裡！",
     "description": "Helps user import their account from a JSON file"
@@ -574,51 +479,23 @@
     "message": "來自：$1",
     "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
-  "functionApprove": {
-    "message": "函式：Approve"
-  },
-  "functionType": {
-    "message": "函式型別"
-  },
   "gasLimit": {
     "message": "Gas 上限"
-  },
-  "gasLimitInfoTooltipContent": {
-    "message": "Gas 上限代表願意為交易手續費所付出的最高總價"
   },
   "gasLimitTooLow": {
     "message": "Gas 上限至少為 21000"
   },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Gas 上限至少為 $1",
-    "description": "$1 is the custom gas limit, in decimal."
-  },
-  "gasPrice": {
-    "message": "Gas 價格 (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "您的 gas 費用設定得太高了。考慮降低一些。"
   },
-  "gasPriceExcessiveInput": {
-    "message": "Gas 價格極高"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gas 價格極低"
-  },
   "gasPriceFetchFailed": {
     "message": "由於網路錯誤，gas 價格估計失敗。"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Gas 價格代表願意為交易手續費付出的單位價格，價格越高交易處理速度越快。"
   },
   "gasUsed": {
     "message": "Gas 用量"
   },
   "general": {
     "message": "一般"
-  },
-  "goBack": {
-    "message": "Go Back"
   },
   "goerli": {
     "message": "Goerli 測試網路"
@@ -669,14 +546,8 @@
     "message": "匯入",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "匯入帳戶"
-  },
   "importAccountMsg": {
     "message": " 匯入的帳戶並不會與您原有 MetaMask 帳戶助憶詞建立關聯。請用以下連結瞭解匯入帳戶相關的資料： "
-  },
-  "importMyWallet": {
-    "message": "Import My Wallet"
   },
   "importTokensCamelCase": {
     "message": "Import Tokens"
@@ -706,12 +577,6 @@
   },
   "invalidAddressRecipient": {
     "message": "接收位址錯誤"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "非 ETH 網路，請設定至小寫"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "無效的區塊鏈瀏覽器 URL"
   },
   "invalidChainIdTooBig": {
     "message": "無效的鏈 ID。鏈 ID 數值過大。"
@@ -791,9 +656,6 @@
   "loading": {
     "message": "載入..."
   },
-  "loadingTokens": {
-    "message": "載入代幣..."
-  },
   "lock": {
     "message": "鎖定"
   },
@@ -863,9 +725,6 @@
   "networkNameTestnet": {
     "message": "測試網路"
   },
-  "networkSettingsChainIdDescription": {
-    "message": "鏈 ID 用來簽署交易。它必須和該網路回傳的鏈 ID 一致。您可以輸入一個十進位數值或 0x 開頭的十六進位數值，但我們會顯示成十進位。"
-  },
   "networkURL": {
     "message": "網路 URL"
   },
@@ -897,39 +756,20 @@
   "next": {
     "message": "下一頁"
   },
-  "nextNonceWarning": {
-    "message": "Nonce 比建議的 $1 高",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nftTokenIdPlaceholder": {
     "message": "Enter the NFT ID"
   },
   "noAccountsFound": {
     "message": "指定的搜尋條件找不到帳戶"
   },
-  "noAddressForName": {
-    "message": "此 ENS 尚未指定位址。"
-  },
   "noConversionRateAvailable": {
     "message": "尚未有匯率比較值"
-  },
-  "noTransactions": {
-    "message": "尚未有交易"
   },
   "noWebcamFound": {
     "message": "無法搜尋到攝影鏡頭裝置。請再試一次"
   },
   "noWebcamFoundTitle": {
     "message": "找不到攝影鏡頭"
-  },
-  "nonceField": {
-    "message": "自訂交易 nonce"
-  },
-  "nonceFieldDescription": {
-    "message": "打開此選項來在交易確認視窗中更改 nonce (交易編號)。這是一個進階功能，請小心使用。"
-  },
-  "nonceFieldHeading": {
-    "message": "自訂 nonce"
   },
   "notCurrentAccount": {
     "message": "這是正確的帳戶嗎？它與您的錢包目前所選擇的帳戶不同"
@@ -952,20 +792,12 @@
   "on": {
     "message": "開啟"
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Full Access"
-  },
-  "onlyAddTrustedNetworks": {
-    "message": "惡意的網路提供者可以欺騙您區塊鏈上的狀態或記錄您的網路活動。請只新增您信任的自訂網路。"
-  },
   "onlyConnectTrust": {
-    "message": "記住，只連線到您信任的網站。"
+    "message": "記住，只連線到您信任的網站。",
+    "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
   "origin": {
     "message": "來源"
-  },
-  "parameters": {
-    "message": "參數"
   },
   "participateInMetaMetrics": {
     "message": "參與 MetaMetrics"
@@ -1002,12 +834,6 @@
   "prev": {
     "message": "前一頁"
   },
-  "primaryCurrencySetting": {
-    "message": "主要貨幣"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "選擇原生來優先使用鏈上原生貨幣 (例如 ETH) 顯示金額。選擇法定貨幣來優先使用您選擇的法定貨幣顯示金額。"
-  },
   "privacyMsg": {
     "message": "隱私政策"
   },
@@ -1039,9 +865,6 @@
   "receive": {
     "message": "接收"
   },
-  "recipientAddressPlaceholder": {
-    "message": "搜尋、公開位址 (0x)、或 ENS"
-  },
   "reject": {
     "message": "拒絕"
   },
@@ -1065,9 +888,6 @@
   },
   "removeAccountDescription": {
     "message": "此帳戶將由錢包中移除。在繼續進行之前請確認您已經匯出並妥善備份助憶詞或私鑰。您可以從帳戶下拉選單中匯入或再次建立帳戶。"
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "請求正在等待確認"
   },
   "required": {
     "message": "必填"
@@ -1118,38 +938,8 @@
   "securityAndPrivacy": {
     "message": "安全＆隱私"
   },
-  "seedPhraseIntroSidebarBulletFour": {
-    "message": "寫下來並且存放在不同的秘密地點。"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "儲存在密碼管理器裡"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
-    "message": "存在安全保管箱裡。"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "您的助憶詞就是您的錢包與資金的「總鑰匙」。"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "如果有人向您詢問您的助憶詞，他們十之八九是在詐騙您。"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "永遠永遠不要洩漏您的助憶詞，即使是 MetaMask 官方也一樣！"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "什麼是助憶詞？"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "我應該分享我的助憶詞嗎？"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "我該如何存放我的助憶詞？"
-  },
   "seedPhraseIntroTitle": {
     "message": "保護您的錢包"
-  },
-  "seedPhraseIntroTitleCopy": {
-    "message": "在開始之前，觀賞這段短片來了解何謂助憶詞，以及如何保持您錢包的安全。"
   },
   "seedPhraseReq": {
     "message": "助憶詞為 12, 15, 18, 21 或 24 個單字"
@@ -1185,9 +975,6 @@
     "message": "發送 $1",
     "description": "Symbol of the specified token"
   },
-  "sendTokens": {
-    "message": "發送代幣"
-  },
   "settings": {
     "message": "設定"
   },
@@ -1203,18 +990,8 @@
   "showHexDataDescription": {
     "message": "在交易時顯示十六進位資料"
   },
-  "showIncomingTransactions": {
-    "message": "顯示傳入的交易"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "選擇此項來利用 Etherscan 在交易列表裡顯示傳入的交易",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
   "showPermissions": {
     "message": "顯示權限"
-  },
-  "sigRequest": {
-    "message": "請求簽署"
   },
   "sign": {
     "message": "簽署"
@@ -1300,9 +1077,6 @@
   "supportCenter": {
     "message": "造訪我們的協助中心"
   },
-  "swapSearchNameOrAddress": {
-    "message": "用名稱搜尋或貼上地址"
-  },
   "switchEthereumChainConfirmationDescription": {
     "message": "這將在 MetaMask 中將目前選擇的網路切換到剛才新增的網路："
   },
@@ -1332,9 +1106,6 @@
   },
   "termsOfService": {
     "message": "服務條款"
-  },
-  "tips": {
-    "message": "提示"
   },
   "to": {
     "message": "目的帳戶"
@@ -1391,9 +1162,6 @@
   "transactionErrored": {
     "message": "交易遇到錯誤。"
   },
-  "transactionFee": {
-    "message": "交易手續費"
-  },
   "transactionResubmitted": {
     "message": "交易重新送出，手續費提高至 $1 @ $2"
   },
@@ -1413,9 +1181,6 @@
     "message": "我們在連線到您的 $1 的時候遇到問題，試著檢查 $2 然後再試一次。",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
-  "trustSiteApprovePermission": {
-    "message": "您信任這個網站嗎？當您授予這個權限，$1 就能提領您的 $2 並且代替您自動發送交易。"
-  },
   "tryAgain": {
     "message": "再試一次"
   },
@@ -1428,9 +1193,6 @@
   "unknown": {
     "message": "未知"
   },
-  "unknownNetwork": {
-    "message": "未知私有網路"
-  },
   "unknownQrCode": {
     "message": "錯誤：無法辨識 QR code"
   },
@@ -1440,21 +1202,12 @@
   "unlock": {
     "message": "解鎖"
   },
-  "unlockMessage": {
-    "message": "去中心化網路世界等待著您"
-  },
   "unrecognizedChain": {
     "message": "無法辨識這個自訂網路。我們建議您先$1再繼續。",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
-  "updatedWithDate": {
-    "message": "更新時間 $1"
-  },
   "urlErrorMsg": {
     "message": "URL 需要以適當的 HTTP/HTTPS 作為開頭"
-  },
-  "urlExistsErrorMsg": {
-    "message": "URL 已經在既有的網路列表裡了"
   },
   "usePhishingDetection": {
     "message": "使用網路釣魚偵測"
@@ -1468,13 +1221,6 @@
   "userName": {
     "message": "使用者名稱"
   },
-  "verifyThisTokenOn": {
-    "message": "在 $1 驗證這個代幣的資訊",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "viewAllDetails": {
-    "message": "查看所有詳情"
-  },
   "viewContact": {
     "message": "觀看聯絡資訊"
   },
@@ -1483,7 +1229,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "在 $1 瀏覽",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "在 Etherscan 上瀏覽",
@@ -1509,24 +1255,10 @@
   "whatsThis": {
     "message": "這是什麼？"
   },
-  "xOfY": {
-    "message": "$1 之 $2",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
-  },
-  "xOfYPending": {
-    "message": "$1 之 $2 等待中",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
-  },
   "youNeedToAllowCameraAccess": {
     "message": "需要准許存取攝影鏡頭才能啟用此功能"
   },
-  "youSign": {
-    "message": "正在簽署"
-  },
   "yourPrivateSeedPhrase": {
     "message": "您的助憶詞"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "加速的 Gas 價格為 0"
   }
 }

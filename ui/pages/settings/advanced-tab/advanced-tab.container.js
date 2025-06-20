@@ -5,62 +5,69 @@ import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/prefe
 import { getPreferences } from '../../../selectors';
 import {
   backupUserData,
-  displayWarning,
-  restoreUserData,
   setAutoLockTimeLimit,
-  setDisabledRpcMethodPreference,
   setDismissSeedBackUpReminder,
+  setDismissSmartAccountSuggestionEnabled,
   setFeatureFlag,
   setShowExtensionInFullSizeView,
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
-  setUseNonceField,
+  setSmartTransactionsPreferenceEnabled,
   showModal,
+  setManageInstitutionalWallets,
+  setSmartAccountOptIn,
 } from '../../../store/actions';
+import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
+import {
+  displayErrorInSettings,
+  hideErrorInSettings,
+} from '../../../ducks/app/app';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
   const {
-    appState: { warning },
+    appState: { errorInSettings },
     metamask,
   } = state;
   const {
     featureFlags: { sendHexData } = {},
-    disabledRpcMethodPreferences,
-    useNonceField,
     dismissSeedBackUpReminder,
+    manageInstitutionalWallets,
   } = metamask;
   const {
     showFiatInTestnets,
     showTestNetworks,
     showExtensionInFullSizeView,
     autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
+    dismissSmartAccountSuggestionEnabled,
+    smartAccountOptIn,
   } = getPreferences(state);
 
   return {
-    warning,
+    errorInSettings,
     sendHexData,
     showFiatInTestnets,
     showTestNetworks,
     showExtensionInFullSizeView,
+    smartTransactionsEnabled: getSmartTransactionsPreferenceEnabled(state),
     autoLockTimeLimit,
-    useNonceField,
     dismissSeedBackUpReminder,
-    disabledRpcMethodPreferences,
+    manageInstitutionalWallets,
+    dismissSmartAccountSuggestionEnabled,
+    smartAccountOptIn,
   };
 };
 
 export const mapDispatchToProps = (dispatch) => {
   return {
     backupUserData: () => backupUserData(),
-    restoreUserData: (jsonString) => restoreUserData(jsonString),
     setHexDataFeatureFlag: (shouldShow) =>
       dispatch(setFeatureFlag('sendHexData', shouldShow)),
-    displayWarning: (warning) => dispatch(displayWarning(warning)),
+    displayErrorInSettings: (errorInSettings) =>
+      dispatch(displayErrorInSettings(errorInSettings)),
+    hideErrorInSettings: () => dispatch(hideErrorInSettings()),
     showResetAccountConfirmationModal: () =>
       dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
-    showEthSignModal: () => dispatch(showModal({ name: 'ETH_SIGN' })),
-    setUseNonceField: (value) => dispatch(setUseNonceField(value)),
     setShowFiatConversionOnTestnetsPreference: (value) => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value));
     },
@@ -70,14 +77,23 @@ export const mapDispatchToProps = (dispatch) => {
     setShowExtensionInFullSizeView: (value) => {
       return dispatch(setShowExtensionInFullSizeView(value));
     },
+    setSmartTransactionsEnabled: (value) => {
+      return dispatch(setSmartTransactionsPreferenceEnabled(value));
+    },
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
     },
-    setDisabledRpcMethodPreference: (methodName, isEnabled) => {
-      return dispatch(setDisabledRpcMethodPreference(methodName, isEnabled));
+    setManageInstitutionalWallets: (value) => {
+      return dispatch(setManageInstitutionalWallets(value));
+    },
+    setDismissSmartAccountSuggestionEnabled: (value) => {
+      return dispatch(setDismissSmartAccountSuggestionEnabled(value));
+    },
+    setSmartAccountOptIn: (value) => {
+      return dispatch(setSmartAccountOptIn(value));
     },
   };
 };
