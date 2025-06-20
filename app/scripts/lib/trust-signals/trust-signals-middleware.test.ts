@@ -101,7 +101,7 @@ const createMiddleware = (
   };
 };
 
-describe('TrustSignalsMiddleware', () => {
+describe('createTrustSignalsMiddleware', () => {
   const scanAddressMockAndAddToCache = jest.mocked(scanAddressAndAddToCache);
   let consoleErrorSpy: jest.SpyInstance;
 
@@ -114,7 +114,7 @@ describe('TrustSignalsMiddleware', () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it('should not run if security alerts are disabled in preferences', async () => {
+  it('does not run if security alerts are disabled in preferences', async () => {
     const {
       middleware,
       preferencesController,
@@ -142,7 +142,7 @@ describe('TrustSignalsMiddleware', () => {
   });
 
   describe('eth_sendTransaction', () => {
-    it('should scan a new address and cache the security alert response', async () => {
+    it('does scan a new address and cache the security alert response', async () => {
       scanAddressMockAndAddToCache.mockResolvedValue(
         MOCK_SCAN_RESPONSES.BENIGN,
       );
@@ -168,7 +168,7 @@ describe('TrustSignalsMiddleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    it('should skip scanning when address has cached security alert response', async () => {
+    it('does not scan when address has cached security alert response', async () => {
       scanAddressMockAndAddToCache.mockResolvedValue(
         MOCK_SCAN_RESPONSES.CACHED,
       );
@@ -194,7 +194,7 @@ describe('TrustSignalsMiddleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    it('should handle scan errors gracefully without blocking the transaction', async () => {
+    it('handles scan errors gracefully without blocking the transaction', async () => {
       const error = new Error('Network error');
       scanAddressMockAndAddToCache.mockRejectedValue(error);
       const { middleware, appStateController, networkController } =
@@ -223,7 +223,7 @@ describe('TrustSignalsMiddleware', () => {
       );
     });
 
-    it('should handle timeout errors gracefully without blocking the transaction', async () => {
+    it('handles timeout errors gracefully without blocking the transaction', async () => {
       const timeoutError = new DOMException(
         'The user aborted a request.',
         'AbortError',
@@ -251,7 +251,7 @@ describe('TrustSignalsMiddleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    it('should map chain IDs to supported EVM chains correctly', async () => {
+    it('maps chain IDs to supported EVM chains correctly', async () => {
       scanAddressMockAndAddToCache.mockResolvedValue(
         MOCK_SCAN_RESPONSES.WARNING,
       );
@@ -279,7 +279,7 @@ describe('TrustSignalsMiddleware', () => {
     });
 
     describe('edge cases', () => {
-      it('should skip processing when transaction has no "to" address', async () => {
+      it('does not scan when transaction has no "to" address', async () => {
         const { middleware, appStateController } = createMiddleware();
         const paramsWithoutTo = {
           from: TEST_ADDRESSES.FROM,
@@ -301,7 +301,7 @@ describe('TrustSignalsMiddleware', () => {
         expect(next).toHaveBeenCalled();
       });
 
-      it('should skip processing when params array is empty', async () => {
+      it('does not scan when params array is empty', async () => {
         const { middleware } = createMiddleware();
         const req = createMockRequest('eth_sendTransaction', []);
         const res = createMockResponse();
@@ -313,7 +313,7 @@ describe('TrustSignalsMiddleware', () => {
         expect(next).toHaveBeenCalled();
       });
 
-      it('should skip processing when params is not an array', async () => {
+      it('does not scan when params is not an array', async () => {
         const { middleware } = createMiddleware();
         const req = createMockRequest('eth_sendTransaction', null as any); // eslint-disable-line @typescript-eslint/no-explicit-any
         const res = createMockResponse();
@@ -325,7 +325,7 @@ describe('TrustSignalsMiddleware', () => {
         expect(next).toHaveBeenCalled();
       });
 
-      it('should handle missing chain ID gracefully', async () => {
+      it('handles missing chain ID gracefully', async () => {
         const error = new Error('Chain ID not found');
         scanAddressMockAndAddToCache.mockRejectedValue(error);
         const { middleware, appStateController, networkController } =
@@ -370,7 +370,7 @@ describe('TrustSignalsMiddleware', () => {
       },
     ];
 
-    it('should scan verifying contract address', async () => {
+    it('scans verifying contract address', async () => {
       scanAddressMockAndAddToCache.mockResolvedValue(
         MOCK_SCAN_RESPONSES.BENIGN,
       );
@@ -394,7 +394,7 @@ describe('TrustSignalsMiddleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    it('should handle stringified typed data params', async () => {
+    it('handles stringified typed data params', async () => {
       scanAddressMockAndAddToCache.mockResolvedValue(
         MOCK_SCAN_RESPONSES.BENIGN,
       );
@@ -430,7 +430,7 @@ describe('TrustSignalsMiddleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    it('should skip scanning when verifyingContract is not present', async () => {
+    it('does not scan when verifyingContract is not present', async () => {
       const { middleware } = createMiddleware();
 
       const req = createMockRequest(
@@ -446,7 +446,7 @@ describe('TrustSignalsMiddleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    it('should handle all eth_signTypedData variants', async () => {
+    it('handles all eth_signTypedData variants', async () => {
       const variants = [
         MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
         MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1,
@@ -479,7 +479,7 @@ describe('TrustSignalsMiddleware', () => {
       }
     });
 
-    it('should handle invalid typed data params', async () => {
+    it('handles invalid typed data params', async () => {
       const { middleware } = createMiddleware();
 
       const invalidParamsCases = [
@@ -506,7 +506,7 @@ describe('TrustSignalsMiddleware', () => {
   });
 
   describe('eth_accounts', () => {
-    it('should scan URL when mainFrameOrigin is present', async () => {
+    it('scans URL when mainFrameOrigin is present', async () => {
       const { middleware, phishingController } = createMiddleware();
       const mainFrameOrigin = 'https://example.com';
       const req = {
@@ -527,7 +527,7 @@ describe('TrustSignalsMiddleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    it('should not scan URL when mainFrameOrigin is not present', async () => {
+    it('does not scan URL when mainFrameOrigin is not present', async () => {
       const { middleware, phishingController } = createMiddleware();
       const req = createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS);
       const res = createMockResponse();
@@ -539,7 +539,7 @@ describe('TrustSignalsMiddleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    it('should handle phishing scan errors gracefully', async () => {
+    it('handles phishing scan errors gracefully', async () => {
       const { middleware, phishingController } = createMiddleware();
       const mainFrameOrigin = 'https://malicious.com';
       const req = {
@@ -569,7 +569,7 @@ describe('TrustSignalsMiddleware', () => {
   });
 
   describe('non-transaction methods', () => {
-    it('should ignore non-transaction RPC methods', async () => {
+    it('ignores non-transaction RPC methods', async () => {
       const { middleware, appStateController } = createMiddleware();
       const req = createMockRequest('eth_getBalance', [TEST_ADDRESSES.TO]);
       const res = createMockResponse();
