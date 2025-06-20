@@ -71,9 +71,9 @@ describe('migration #169', () => {
         (newState.data.NetworkOrderController as Record<string, unknown>)
           .enabledNetworkMap,
       ).toStrictEqual({
-        'eip155:1': true,
-        'eip155:137': false,
-        'eip155:10': true,
+        eip155: {
+          '0x1': true,
+        },
       });
     });
 
@@ -105,13 +105,19 @@ describe('migration #169', () => {
         (newState.data.NetworkOrderController as Record<string, unknown>)
           .enabledNetworkMap,
       ).toStrictEqual({
-        'solana:mainnet': true,
+        eip155: {
+          '0x1': true,
+          '0x89': false,
+        },
+        solana: {
+          'solana:mainnet': true,
+        },
       });
     });
   });
 
   describe('when tokenNetworkFilter does not exist', () => {
-    it('should return state unchanged and log warning', async () => {
+    it('should return state unchanged', async () => {
       const oldState = {
         meta: {
           version: oldVersion,
@@ -128,21 +134,51 @@ describe('migration #169', () => {
         },
       };
 
-      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const newState = await migrate(oldState);
+
+      expect(newState.data).toStrictEqual(oldState.data);
+    });
+  });
+
+  describe('when tokenNetworkFilter is empty', () => {
+    it('should return state unchanged and capture exception', async () => {
+      const oldState = {
+        meta: {
+          version: oldVersion,
+        },
+        data: {
+          NetworkOrderController: {},
+          PreferencesController: {
+            preferences: {
+              tokenNetworkFilter: {},
+            },
+          },
+          MultichainNetworkController: {
+            selectedMultichainNetworkChainId: '0x1',
+            isEvmSelected: true,
+          },
+        },
+      };
+
+      const sentrySpy = jest
+        .spyOn(global.sentry, 'captureException')
+        .mockImplementation();
 
       const newState = await migrate(oldState);
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Migration 169: tokenNetworkFilter is not present in preferences - skipping migration',
+      expect(sentrySpy).toHaveBeenCalledWith(
+        new Error(
+          'Migration 169: tokenNetworkFilter is empty, expected at least one network configuration.',
+        ),
       );
       expect(newState.data).toStrictEqual(oldState.data);
 
-      consoleSpy.mockRestore();
+      sentrySpy.mockRestore();
     });
   });
 
   describe('when preferences does not exist', () => {
-    it('should return state unchanged and log warning', async () => {
+    it('should return state unchanged', async () => {
       const oldState = {
         meta: {
           version: oldVersion,
@@ -157,21 +193,14 @@ describe('migration #169', () => {
         },
       };
 
-      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
-
       const newState = await migrate(oldState);
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Migration 169: preferences is not present in PreferencesController',
-      );
       expect(newState.data).toStrictEqual(oldState.data);
-
-      consoleSpy.mockRestore();
     });
   });
 
   describe('when PreferencesController does not exist', () => {
-    it('should return state unchanged and log warning', async () => {
+    it('should return state unchanged', async () => {
       const oldState = {
         meta: {
           version: oldVersion,
@@ -185,21 +214,14 @@ describe('migration #169', () => {
         },
       };
 
-      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
-
       const newState = await migrate(oldState);
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Migration 169: PreferencesController is not present in state',
-      );
       expect(newState.data).toStrictEqual(oldState.data);
-
-      consoleSpy.mockRestore();
     });
   });
 
   describe('when NetworkOrderController does not exist', () => {
-    it('should return state unchanged and log warning', async () => {
+    it('should return state unchanged', async () => {
       const oldState = {
         meta: {
           version: oldVersion,
@@ -219,16 +241,9 @@ describe('migration #169', () => {
         },
       };
 
-      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
-
       const newState = await migrate(oldState);
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Migration 169: NetworkOrderController is not present in state',
-      );
       expect(newState.data).toStrictEqual(oldState.data);
-
-      consoleSpy.mockRestore();
     });
   });
 
@@ -514,77 +529,6 @@ describe('migration #169', () => {
     });
   });
 
-  describe('when multichainNetworkConfigurationsByChainId is invalid', () => {
-    it('should return state unchanged and capture exception when not an object', async () => {
-      const oldState = {
-        meta: {
-          version: oldVersion,
-        },
-        data: {
-          NetworkOrderController: {},
-          PreferencesController: {
-            preferences: {
-              tokenNetworkFilter: {
-                '0x1': true,
-              },
-            },
-          },
-          MultichainNetworkController: {
-            selectedMultichainNetworkChainId: '0x1',
-            multichainNetworkConfigurationsByChainId: 'not an object',
-            isEvmSelected: true,
-          },
-        },
-      };
-
-      const sentrySpy = jest
-        .spyOn(global.sentry, 'captureException')
-        .mockImplementation();
-
-      const newState = await migrate(oldState);
-
-      expect(sentrySpy).toHaveBeenCalledWith(
-        new Error(
-          "Migration 169: multichainNetworkConfigurationsByChainId is type 'string', expected object.",
-        ),
-      );
-      expect(newState.data).toStrictEqual(oldState.data);
-
-      sentrySpy.mockRestore();
-    });
-
-    it('should continue migration when multichainNetworkConfigurationsByChainId is undefined', async () => {
-      const oldState = {
-        meta: {
-          version: oldVersion,
-        },
-        data: {
-          NetworkOrderController: {},
-          PreferencesController: {
-            preferences: {
-              tokenNetworkFilter: {
-                '0x1': true,
-              },
-            },
-          },
-          MultichainNetworkController: {
-            selectedMultichainNetworkChainId: '0x1',
-            isEvmSelected: true,
-          },
-        },
-      };
-
-      const newState = await migrate(oldState);
-
-      expect(
-        (newState.data.NetworkOrderController as Record<string, unknown>)
-          .enabledNetworkMap,
-      ).toStrictEqual({
-        'eip155:1': true,
-      });
-    });
-  });
-
   describe('preserves other state', () => {
     it('should not modify other parts of the state', async () => {
       const oldState = {
@@ -623,8 +567,9 @@ describe('migration #169', () => {
         (newState.data.NetworkOrderController as Record<string, unknown>)
           .enabledNetworkMap,
       ).toStrictEqual({
-        'eip155:1': true,
-        'eip155:137': false,
+        eip155: {
+          '0x1': true,
+        },
       });
 
       // Check that other properties are preserved
@@ -684,10 +629,9 @@ describe('migration #169', () => {
         (newState.data.NetworkOrderController as Record<string, unknown>)
           .enabledNetworkMap,
       ).toStrictEqual({
-        'eip155:1': true, // Ethereum mainnet
-        'eip155:137': false, // Polygon
-        'eip155:10': true, // Optimism
-        'eip155:42161': true, // Arbitrum One
+        eip155: {
+          '0x1': true,
+        },
       });
     });
   });

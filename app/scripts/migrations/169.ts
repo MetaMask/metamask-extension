@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { hasProperty, isObject } from '@metamask/utils';
+import { hasProperty, isObject, parseCaipChainId } from '@metamask/utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 
 type VersionedData = {
@@ -73,13 +73,16 @@ function validateObjectProperty(
  */
 function createEvmEnabledNetworkMap(
   tokenNetworkFilter: Record<string, boolean>,
-): Record<string, boolean> {
-  const enabledNetworkMap: Record<string, boolean> = {};
+): Record<string, Record<string, boolean>> {
+  const caipChainId = formatChainIdToCaip(Object.keys(tokenNetworkFilter)[0]);
 
-  Object.keys(tokenNetworkFilter).forEach((chainId) => {
-    const caipChainId = formatChainIdToCaip(chainId);
-    enabledNetworkMap[caipChainId] = tokenNetworkFilter[chainId];
-  });
+  const { namespace: chainNamespace } = parseCaipChainId(caipChainId);
+
+  const enabledNetworkMap: Record<string, Record<string, boolean>> = {
+    [chainNamespace]: {
+      ...tokenNetworkFilter,
+    },
+  };
 
   return enabledNetworkMap;
 }
@@ -92,9 +95,14 @@ function createEvmEnabledNetworkMap(
  */
 function createNonEvmEnabledNetworkMap(
   selectedMultichainNetworkChainId: string,
-): Record<string, boolean> {
+): Record<string, Record<string, boolean>> {
+  const caipChainId = formatChainIdToCaip(selectedMultichainNetworkChainId);
+  const { namespace: chainNamespace } = parseCaipChainId(caipChainId);
+
   const enabledNetworkMap = {
-    [selectedMultichainNetworkChainId]: true,
+    [chainNamespace]: {
+      [selectedMultichainNetworkChainId]: true,
+    },
   };
 
   return enabledNetworkMap;
@@ -147,6 +155,15 @@ function transformState(
     return state;
   }
 
+  if (Object.keys(tokenNetworkFilter).length === 0) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: tokenNetworkFilter is empty, expected at least one network configuration.`,
+      ),
+    );
+    return state;
+  }
+
   const { MultichainNetworkController: multichainNetworkControllerState } =
     state;
 
@@ -156,11 +173,7 @@ function transformState(
   }
 
   // Extract required state properties
-  const {
-    selectedMultichainNetworkChainId,
-    multichainNetworkConfigurationsByChainId,
-    isEvmSelected,
-  } = multichainNetworkControllerState;
+  const { selectedMultichainNetworkChainId } = multichainNetworkControllerState;
 
   // Validate selectedMultichainNetworkChainId
   if (
@@ -175,28 +188,19 @@ function transformState(
     return state;
   }
 
-  // Validate multichainNetworkConfigurationsByChainId (optional validation)
-  if (
-    multichainNetworkConfigurationsByChainId &&
-    !isObject(multichainNetworkConfigurationsByChainId)
-  ) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: multichainNetworkConfigurationsByChainId is type '${typeof multichainNetworkConfigurationsByChainId}', expected object.`,
-      ),
-    );
-    return state;
-  }
+  // Create enabledNetworkMap by merging both EVM and non-EVM networks
+  const evmEnabledNetworkMap = createEvmEnabledNetworkMap(
+    tokenNetworkFilter as Record<string, boolean>,
+  );
+  const nonEvmEnabledNetworkMap = createNonEvmEnabledNetworkMap(
+    selectedMultichainNetworkChainId,
+  );
 
-  // Create enabledNetworkMap based on network type
-  if (isEvmSelected) {
-    networkOrderControllerState.enabledNetworkMap = createEvmEnabledNetworkMap(
-      tokenNetworkFilter as Record<string, boolean>,
-    );
-  } else {
-    networkOrderControllerState.enabledNetworkMap =
-      createNonEvmEnabledNetworkMap(selectedMultichainNetworkChainId);
-  }
+  // Merge both maps
+  networkOrderControllerState.enabledNetworkMap = {
+    ...evmEnabledNetworkMap,
+    ...nonEvmEnabledNetworkMap,
+  };
 
   return state;
 }
