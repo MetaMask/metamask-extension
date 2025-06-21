@@ -142,39 +142,41 @@ export const SendPageRecipientContent = ({
           </BannerAlert>
         </SendPageRow>
       ) : null}
-      <SendPageRow>
-        <AssetPickerAmount
-          header={t('sendSelectReceiveAsset')}
-          action="receive"
-          asset={isSwapAllowed ? receiveAsset : sendAsset}
-          sendingAsset={
-            isSwapAllowed &&
-            sendAsset && {
-              image:
-                sendAsset.type === AssetType.native
-                  ? nativeCurrencyImageUrl
-                  : tokenList &&
-                    sendAsset.details &&
-                    (nftImageURL ||
-                      tokenList[sendAsset.details.address?.toLowerCase()]
-                        ?.iconUrl),
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-              symbol: sendAsset?.details?.symbol || nativeCurrencySymbol,
+      {isSwapAllowed && (
+        <SendPageRow>
+          <AssetPickerAmount
+            header={t('sendSelectReceiveAsset')}
+            action="receive"
+            asset={isSwapAllowed ? receiveAsset : sendAsset}
+            sendingAsset={
+              isSwapAllowed &&
+              sendAsset && {
+                image:
+                  sendAsset.type === AssetType.native
+                    ? nativeCurrencyImageUrl
+                    : tokenList &&
+                      sendAsset.details &&
+                      (nftImageURL ||
+                        tokenList[sendAsset.details.address?.toLowerCase()]
+                          ?.iconUrl),
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                symbol: sendAsset?.details?.symbol || nativeCurrencySymbol,
+              }
             }
-          }
-          onAssetChange={useCallback(
-            (newAsset) => onAssetChange(newAsset, isSwapAllowed),
-            [onAssetChange, isSwapAllowed],
-          )}
-          isAmountLoading={isLoadingInitialQuotes}
-          amount={amount}
-          isDisabled={!isSwapAllowed}
-          onClick={onClick}
-          showNetworkPicker={false}
-          visibleTabs={[TabName.TOKENS]}
-        />
-      </SendPageRow>
+            onAssetChange={useCallback(
+              (newAsset) => onAssetChange(newAsset, isSwapAllowed),
+              [onAssetChange, isSwapAllowed],
+            )}
+            isAmountLoading={isLoadingInitialQuotes}
+            amount={amount}
+            isDisabled={!isSwapAllowed}
+            onClick={onClick}
+            showNetworkPicker={false}
+            visibleTabs={[TabName.TOKENS]}
+          />
+        </SendPageRow>
+      )}
       <QuoteCard scrollRef={scrollRef} />
       {showHexData ? <SendHexData /> : null}
       {/* SCROLL REF ANCHOR */}
