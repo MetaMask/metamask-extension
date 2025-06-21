@@ -139,16 +139,16 @@ exports[`transaction-details bridge snapshots should render pending bridge snaps
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+              class="mm-box mm-box--display-flex mm-box--justify-content-space-between mm-box--width-full"
               data-testid="transaction-detail-row"
             >
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--padding-right-1 mm-box--width-1/4 mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--padding-right-1 mm-box--min-width-max mm-box--color-text-default"
               >
                 Status
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-box--padding-left-1 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-3/4 mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-text--overflow-wrap-anywhere mm-box--padding-left-1 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--color-text-default"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-text--text-transform-capitalize mm-box--color-warning-default"
@@ -158,16 +158,16 @@ exports[`transaction-details bridge snapshots should render pending bridge snaps
               </p>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+              class="mm-box mm-box--display-flex mm-box--justify-content-space-between mm-box--width-full"
               data-testid="transaction-detail-row"
             >
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--padding-right-1 mm-box--width-1/4 mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--padding-right-1 mm-box--min-width-max mm-box--color-text-default"
               >
                 Bridging
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-box--padding-left-1 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-3/4 mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-text--overflow-wrap-anywhere mm-box--padding-left-1 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--color-text-default"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-wrap-wrap mm-box--justify-content-flex-end mm-box--align-items-center"
@@ -208,16 +208,16 @@ exports[`transaction-details bridge snapshots should render pending bridge snaps
               </p>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+              class="mm-box mm-box--display-flex mm-box--justify-content-space-between mm-box--width-full"
               data-testid="transaction-detail-row"
             >
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--padding-right-1 mm-box--width-1/4 mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--padding-right-1 mm-box--min-width-max mm-box--color-text-default"
               >
                 Time stamp
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-box--padding-left-1 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-3/4 mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-text--overflow-wrap-anywhere mm-box--padding-left-1 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--color-text-default"
               >
                 Jun 20, 2025 at 05:43 PM
               </p>
@@ -234,16 +234,16 @@ exports[`transaction-details bridge snapshots should render pending bridge snaps
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+              class="mm-box mm-box--display-flex mm-box--justify-content-space-between mm-box--width-full"
               data-testid="transaction-detail-row"
             >
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--padding-right-1 mm-box--width-1/4 mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--padding-right-1 mm-box--min-width-max mm-box--color-text-default"
               >
                 You sent
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-box--padding-left-1 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-3/4 mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-text--overflow-wrap-anywhere mm-box--padding-left-1 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--color-text-default"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-wrap-wrap mm-box--justify-content-flex-end mm-box--align-items-center"
@@ -267,16 +267,16 @@ exports[`transaction-details bridge snapshots should render pending bridge snaps
               </p>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+              class="mm-box mm-box--display-flex mm-box--justify-content-space-between mm-box--width-full"
               data-testid="transaction-detail-row"
             >
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--padding-right-1 mm-box--width-1/4 mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--padding-right-1 mm-box--min-width-max mm-box--color-text-default"
               >
                 Total gas fee
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-box--padding-left-1 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-3/4 mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-text--overflow-wrap-anywhere mm-box--padding-left-1 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--color-text-default"
               >
                 <div
                   class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -308,16 +308,16 @@ exports[`transaction-details bridge snapshots should render pending bridge snaps
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+              class="mm-box mm-box--display-flex mm-box--justify-content-space-between mm-box--width-full"
               data-testid="transaction-detail-row"
             >
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--padding-right-1 mm-box--width-1/4 mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--padding-right-1 mm-box--min-width-max mm-box--color-text-default"
               >
                 Nonce
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-box--padding-left-1 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-3/4 mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-text--overflow-wrap-anywhere mm-box--padding-left-1 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--color-text-default"
               >
                 3
               </p>
