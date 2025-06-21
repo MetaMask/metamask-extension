@@ -25,6 +25,10 @@ import {
   BackgroundColor,
 } from '../../helpers/constants/design-system';
 import Mascot from '../../components/ui/mascot';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../shared/constants/app';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
@@ -93,6 +97,18 @@ export default class UnlockPage extends Component {
         redirectTo = location.state.from.pathname + search;
       }
       history.push(redirectTo);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { isUnlocked, history } = this.props;
+
+    if (
+      !prevProps.isUnlocked &&
+      isUnlocked &&
+      getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN
+    ) {
+      history.push(DEFAULT_ROUTE);
     }
   }
 
