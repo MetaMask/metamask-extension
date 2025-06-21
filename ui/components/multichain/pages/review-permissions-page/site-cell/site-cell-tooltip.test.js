@@ -127,7 +127,7 @@ describe('SiteCellTooltip', () => {
         chainId: '0x144',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'zkSync Era Mainnet',
+        name: 'ZKsync Era Mainnet',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
