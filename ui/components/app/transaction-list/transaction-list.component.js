@@ -19,6 +19,7 @@ import {
 ///: END:ONLY_INCLUDE_IF
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
+  nonceSortedCompletedTransactionsSelector,
   nonceSortedCompletedTransactionsSelectorAllChains,
   nonceSortedPendingTransactionsSelector,
   nonceSortedPendingTransactionsSelectorAllChains,
@@ -364,6 +365,10 @@ export default function TransactionList({
     return TEST_CHAINS.includes(currentNetworkConfig.chainId);
   }, [currentNetworkConfig.chainId]);
 
+  const unfilteredCompletedTransactionsCurrentChain = useSelector(
+    nonceSortedCompletedTransactionsSelector,
+  );
+
   const unfilteredCompletedTransactionsAllChains = useSelector(
     nonceSortedCompletedTransactionsSelectorAllChains,
   );
@@ -390,13 +395,17 @@ export default function TransactionList({
     const enabledChainIds = Object.keys(enabledNetworksByNamespace).filter(
       (enabledChainId) => enabledNetworksByNamespace[enabledChainId],
     );
+    const transactionsToFilter = isTokenNetworkFilterEqualCurrentNetwork
+      ? unfilteredCompletedTransactionsCurrentChain
+      : unfilteredCompletedTransactionsAllChains;
 
     // Filter transactions to only include those from enabled networks
-    const filteredTransactions =
-      unfilteredCompletedTransactionsAllChains.filter((transactionGroup) => {
+    const filteredTransactions = transactionsToFilter.filter(
+      (transactionGroup) => {
         const transactionChainId = transactionGroup.initialTransaction?.chainId;
         return enabledChainIds.includes(transactionChainId);
-      });
+      },
+    );
 
     return filteredTransactions;
   }, [
