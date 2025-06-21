@@ -3,7 +3,7 @@ import { Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/multichain';
 import {
-  getEnabledNetworks,
+  getEnabledNetworksByNamespace,
   getSelectedInternalAccount,
   isGlobalNetworkSelectorRemoved,
 } from '../../../../selectors';
@@ -29,8 +29,7 @@ const useMultiChainAssets = () => {
   const locale = useSelector(getIntlLocale);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const enabledNetworks = useSelector(getEnabledNetworks);
-
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const { networkFilter } = useNetworkFilter();
 
   const multichainAssets = useSelector((state) =>
@@ -41,11 +40,13 @@ const useMultiChainAssets = () => {
     return filterAssets(multichainAssets, [
       {
         key: 'chainId',
-        opts: isGlobalNetworkSelectorRemoved ? enabledNetworks : networkFilter,
+        opts: isGlobalNetworkSelectorRemoved
+          ? enabledNetworksByNamespace
+          : networkFilter,
         filterCallback: 'inclusive',
       },
     ]);
-  }, [multichainAssets, enabledNetworks, networkFilter]);
+  }, [multichainAssets, enabledNetworksByNamespace, networkFilter]);
 
   // the following condition is needed to satisfy e2e check-balance.spec.ts
   // this is because the new multichain data is not being mocked within the withSolanaAccountSnap test fixture

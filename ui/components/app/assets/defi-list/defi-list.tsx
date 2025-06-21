@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
-  getEnabledNetworks,
+  getEnabledNetworksByNamespace,
   getSelectedAccount,
   getTokenSortConfig,
   isGlobalNetworkSelectorRemoved,
@@ -37,7 +37,7 @@ type DefiListProps = {
 export default function DefiList({ onClick }: DefiListProps) {
   const t = useI18nContext();
   const { networkFilter } = useNetworkFilter();
-  const enabledNetworks = useSelector(getEnabledNetworks);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const locale = useSelector(getIntlLocale);
 
   const tokenSortConfig = useSelector(getTokenSortConfig);
@@ -95,7 +95,9 @@ export default function DefiList({ onClick }: DefiListProps) {
     const filteredAssets = filterAssets(defiProtocolCells, [
       {
         key: 'chainId',
-        opts: isGlobalNetworkSelectorRemoved ? enabledNetworks : networkFilter,
+        opts: isGlobalNetworkSelectorRemoved
+          ? enabledNetworksByNamespace
+          : networkFilter,
         filterCallback: 'inclusive',
       },
     ]);

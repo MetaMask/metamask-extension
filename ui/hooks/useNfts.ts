@@ -4,11 +4,11 @@ import { isEqual } from 'lodash';
 import { getNftContracts, getAllNfts } from '../ducks/metamask/metamask';
 import {
   getAllChainsToPoll,
-  getEnabledNetworks,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedInternalAccount,
   isGlobalNetworkSelectorRemoved,
 } from '../selectors';
+import { getEnabledNetworksByNamespace } from '../selectors/multichain/networks';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { NFT } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
@@ -31,7 +31,7 @@ export function useNfts({
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
-  const enabledNetworks = useSelector(getEnabledNetworks);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   const nfts = useMemo(() => {
     if (isGlobalNetworkSelectorRemoved) {
@@ -40,7 +40,10 @@ export function useNfts({
 
       Object.entries(allUserNfts ?? {}).forEach(
         ([networkChainId, networkNfts]) => {
-          if (enabledNetworks[networkChainId] && Array.isArray(networkNfts)) {
+          if (
+            enabledNetworksByNamespace?.[networkChainId] &&
+            Array.isArray(networkNfts)
+          ) {
             nftsFromEnabledNetworks[networkChainId] = networkNfts as NFT[];
           }
         },
@@ -61,7 +64,7 @@ export function useNfts({
     overridePopularNetworkFilter,
     allUserNfts,
     chainId,
-    enabledNetworks,
+    enabledNetworksByNamespace,
   ]);
 
   const nftContracts = useSelector(getNftContracts);

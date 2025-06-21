@@ -5,7 +5,7 @@ import {
   type UpdateNetworkFields,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { Hex, isStrictHexString } from '@metamask/utils';
+import { Hex, isStrictHexString, parseCaipChainId } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -74,6 +74,7 @@ import {
   getTokenNetworkFilter,
 } from '../../../../selectors';
 import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
+import { getSelectedMultichainNetworkChainId } from '../../../../selectors/multichain/networks';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -134,6 +135,11 @@ export const NetworksForm = ({
   const [fetchedChainId, setFetchedChainId] = useState<string>();
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
+  const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const templateInfuraRpc = (endpoint: string) =>
     endpoint.endsWith('{infuraProjectId}')
@@ -295,11 +301,15 @@ export const NetworksForm = ({
                 [existingNetwork.chainId]: true,
               }),
             );
-            await dispatch(setEnabledNetworks([existingNetwork.chainId]));
+            await dispatch(
+              setEnabledNetworks([existingNetwork.chainId], namespace),
+            );
           }
         } else {
           await dispatch(addNetwork(networkPayload));
-          await dispatch(setEnabledNetworks([networkPayload.chainId]));
+          await dispatch(
+            setEnabledNetworks([networkPayload.chainId], namespace),
+          );
         }
 
         trackEvent({

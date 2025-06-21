@@ -338,7 +338,13 @@
   "desktopEnabled": false,
   "detectedTokens": [],
   "dismissSeedBackUpReminder": false,
-  "enabledNetworkMap": {},
+  "enabledNetworkMap": {
+    "eip155": {
+      "0x1": true,
+      "0x5": true,
+      "0xaa36a7": true
+    }
+  },
   "ensEntries": {},
   "ensResolutionsByAddress": {},
   "featureFlags": {},

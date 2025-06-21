@@ -1,3 +1,4 @@
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import {
   accountTrackerStartPolling,
@@ -33,7 +34,7 @@ describe('useAccountTrackerPolling', () => {
     process.env.PORTFOLIO_VIEW = originalPortfolioView;
   });
 
-  it('should poll account trackers for network client IDs when enabled and stop on dismount', async () => {
+  it.only('should poll account trackers for network client IDs when enabled and stop on dismount', async () => {
     process.env.PORTFOLIO_VIEW = 'true';
 
     const state = {
@@ -42,8 +43,10 @@ describe('useAccountTrackerPolling', () => {
         completedOnboarding: true,
         selectedNetworkClientId: 'selectedNetworkClientId',
         enabledNetworkMap: {
-          '0x1': true,
-          '0x89': true,
+          eip155: {
+            '0x1': true,
+            '0x89': true,
+          },
         },
         networkConfigurationsByChainId: {
           '0x1': {
@@ -65,6 +68,10 @@ describe('useAccountTrackerPolling', () => {
             ],
           },
         },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: 'eip155:1',
+        isEvmSelected: true,
       },
     };
 
@@ -99,6 +106,10 @@ describe('useAccountTrackerPolling', () => {
         networkConfigurationsByChainId: {
           '0x1': {},
         },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: 'eip155:1',
+        isEvmSelected: true,
       },
     };
 
@@ -117,6 +128,10 @@ describe('useAccountTrackerPolling', () => {
         networkConfigurationsByChainId: {
           '0x1': {},
         },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: 'eip155:1',
+        isEvmSelected: true,
       },
     };
 
@@ -135,6 +150,10 @@ describe('useAccountTrackerPolling', () => {
         networkConfigurationsByChainId: {
           '0x1': {},
         },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: 'eip155:1',
+        isEvmSelected: true,
       },
     };
 

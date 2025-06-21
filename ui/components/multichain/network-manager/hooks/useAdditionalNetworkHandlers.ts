@@ -1,20 +1,31 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ApprovalType } from '@metamask/controller-utils';
 import { UpdateNetworkFields } from '@metamask/network-controller';
+import { ApprovalType } from '@metamask/controller-utils';
+import { parseCaipChainId } from '@metamask/utils';
 import { ORIGIN_METAMASK } from '../../../../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  FEATURED_NETWORK_CHAIN_IDS,
+} from '../../../../../shared/constants/network';
 import {
   hideModal,
   requestUserApproval,
   setEnabledNetworks,
 } from '../../../../store/actions';
-import { getEnabledNetworks } from '../../../../selectors';
+import {
+  getEnabledNetworksByNamespace,
+  getSelectedMultichainNetworkChainId,
+} from '../../../../selectors/multichain/networks';
 
 export const useAdditionalNetworkHandlers = () => {
-  const enabledNetworks = useSelector(getEnabledNetworks);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const dispatch = useDispatch();
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
+  const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   // Memoize the additional network click handler
   const handleAdditionalNetworkClick = useCallback(
@@ -49,12 +60,18 @@ export const useAdditionalNetworkHandlers = () => {
           },
         }),
       );
-      const enabledNetworksArray = Object.keys(enabledNetworks);
+      const enabledNetworksArray = Object.keys(enabledNetworksByNamespace);
+      const filteredPopularNetworks = enabledNetworksArray.filter((key) =>
+        FEATURED_NETWORK_CHAIN_IDS.includes(key),
+      );
       await dispatch(
-        setEnabledNetworks([...enabledNetworksArray, network.chainId]),
+        setEnabledNetworks(
+          [...filteredPopularNetworks, network.chainId],
+          namespace,
+        ),
       );
     },
-    [dispatch, enabledNetworks],
+    [dispatch, enabledNetworksByNamespace, namespace],
   );
 
   return {

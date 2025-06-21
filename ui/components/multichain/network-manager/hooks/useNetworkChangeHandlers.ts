@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { isHexString, type CaipChainId } from '@metamask/utils';
+import { parseCaipChainId, type CaipChainId } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -50,7 +50,7 @@ export const useNetworkChangeHandlers = () => {
     currentChainId,
     permittedChainIds,
     permittedAccountAddresses,
-    enabledNetworks,
+    enabledNetworksByNamespace,
     allChainIds,
   } = useNetworkManagerState();
 
@@ -64,6 +64,7 @@ export const useNetworkChangeHandlers = () => {
 
   const handleEvmNetworkChange = useCallback(
     (chainId: CaipChainId) => {
+      const { namespace } = parseCaipChainId(chainId);
       const hexChainId = convertCaipToHexChainId(chainId);
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
@@ -72,26 +73,35 @@ export const useNetworkChangeHandlers = () => {
 
       const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
 
-      const enabledNetworkKeys = Object.keys(enabledNetworks)
-        // filter out non evm chains
-        .filter((key) => isHexString(key));
+      const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
 
       if (!isPopularNetwork) {
         // if custom network is enabled, select the new network and disable the custom network
-        dispatch(setEnabledNetworks([hexChainId]));
+        dispatch(setEnabledNetworks([hexChainId], namespace));
       } else if (enabledNetworkKeys.includes(hexChainId)) {
+        const filteredPopularNetworks = enabledNetworkKeys.filter((key) =>
+          FEATURED_NETWORK_CHAIN_IDS.includes(key),
+        );
         // deselect if selected
-        const filteredEnabledNetworks = enabledNetworkKeys.filter(
+        const filteredEnabledNetworks = filteredPopularNetworks.filter(
           (key) => key !== hexChainId,
         );
-        dispatch(setEnabledNetworks(filteredEnabledNetworks as CaipChainId[]));
+        dispatch(
+          setEnabledNetworks(
+            filteredEnabledNetworks as CaipChainId[],
+            namespace,
+          ),
+        );
       } else {
+        const filteredPopularNetworks = enabledNetworkKeys.filter((key) =>
+          FEATURED_NETWORK_CHAIN_IDS.includes(key),
+        );
         // multiselect default networks
         dispatch(
-          setEnabledNetworks([
-            ...enabledNetworkKeys,
-            hexChainId,
-          ] as CaipChainId[]),
+          setEnabledNetworks(
+            [...filteredPopularNetworks, hexChainId] as CaipChainId[],
+            namespace,
+          ),
         );
       }
 
@@ -134,7 +144,7 @@ export const useNetworkChangeHandlers = () => {
     [
       evmNetworks,
       dispatch,
-      enabledNetworks,
+      enabledNetworksByNamespace,
       allChainIds,
       tokenNetworkFilter,
       selectedTabOrigin,
@@ -146,14 +156,15 @@ export const useNetworkChangeHandlers = () => {
 
   const handleNonEvmNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
-      const enabledNetworkKeys = Object.keys(enabledNetworks);
+      const { namespace } = parseCaipChainId(chainId);
+      const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
 
       if (enabledNetworkKeys.includes(chainId)) {
-        dispatch(setEnabledNetworks([]));
+        dispatch(setEnabledNetworks([], namespace));
       } else {
         if (hasAnyAccountsInNetwork(chainId)) {
           dispatch(setActiveNetwork(chainId));
-          dispatch(setEnabledNetworks([chainId]));
+          dispatch(setEnabledNetworks([chainId], namespace));
           return;
         }
 
@@ -162,20 +173,23 @@ export const useNetworkChangeHandlers = () => {
             (key: string) => key !== chainId,
           );
           dispatch(
-            setEnabledNetworks(filteredEnabledNetworks as CaipChainId[]),
+            setEnabledNetworks(
+              filteredEnabledNetworks as CaipChainId[],
+              namespace,
+            ),
           );
         } else {
           dispatch(
-            setEnabledNetworks([
-              ...enabledNetworkKeys,
-              chainId,
-            ] as CaipChainId[]),
+            setEnabledNetworks(
+              [...enabledNetworkKeys, chainId] as CaipChainId[],
+              namespace,
+            ),
           );
         }
         setActionMode(ACTION_MODE.ADD_NON_EVM_ACCOUNT);
       }
     },
-    [enabledNetworks, dispatch, hasAnyAccountsInNetwork],
+    [enabledNetworksByNamespace, dispatch, hasAnyAccountsInNetwork],
   );
 
   const getMultichainNetworkConfigurationOrThrow = useCallback(

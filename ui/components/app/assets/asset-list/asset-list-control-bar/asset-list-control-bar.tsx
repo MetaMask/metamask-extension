@@ -11,13 +11,13 @@ import { useNavigate } from 'react-router-dom-v5-compat';
 import { Hex, isHexString } from '@metamask/utils';
 import {
   getAllChainsToPoll,
-  getEnabledNetworks,
   getIsLineaMainnet,
   getIsMainnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getTokenNetworkFilter,
   getUseNftDetection,
 } from '../../../../../selectors';
+import { getEnabledNetworksByNamespace } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   Box,
@@ -75,12 +75,14 @@ type AssetListControlBarProps = {
   showTokensLinks?: boolean;
   showTokenFiatBalance?: boolean;
   showImportTokenButton?: boolean;
+  showSortControl?: boolean;
 };
 
 const AssetListControlBar = ({
   showTokensLinks,
   showTokenFiatBalance,
   showImportTokenButton = true,
+  showSortControl = true,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -99,7 +101,7 @@ const AssetListControlBar = ({
 
   const { collections } = useNftsCollections();
 
-  const enabledNetworks = useSelector(getEnabledNetworks);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
@@ -122,9 +124,9 @@ const AssetListControlBar = ({
 
   const networksToDisplay = useMemo(() => {
     return isGlobalNetworkSelectorRemoved
-      ? enabledNetworks
+      ? enabledNetworksByNamespace
       : tokenNetworkFilter;
-  }, [tokenNetworkFilter, enabledNetworks]);
+  }, [tokenNetworkFilter, enabledNetworksByNamespace]);
 
   const shouldShowRefreshButtons = useMemo(
     () =>
@@ -271,24 +273,27 @@ const AssetListControlBar = ({
   const networkButtonText = useMemo(() => {
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(enabledNetworks).length === 1
+      Object.keys(enabledNetworksByNamespace).length === 1
     ) {
-      const isHexChainId = isHexString(Object.keys(enabledNetworks)[0]);
+      const isHexChainId = isHexString(
+        Object.keys(enabledNetworksByNamespace)[0],
+      );
       return isHexChainId
-        ? allNetworks[Object.keys(enabledNetworks)[0] as `0x${string}`]?.name ??
-            t('currentNetwork')
+        ? allNetworks[
+            Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`
+          ]?.name ?? t('currentNetwork')
         : currentMultichainNetwork.network.nickname ?? t('currentNetwork');
     }
 
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(enabledNetworks).length > 1
+      Object.keys(enabledNetworksByNamespace).length > 1
     ) {
       return t('enabledNetworks');
     }
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(enabledNetworks).length === 0
+      Object.keys(enabledNetworksByNamespace).length === 0
     ) {
       return t('noNetworksSelected');
     }
@@ -341,23 +346,25 @@ const AssetListControlBar = ({
           display={Display.Flex}
           justifyContent={JustifyContent.flexEnd}
         >
-          <Tooltip title={t('sortBy')} position="bottom" distance={20}>
-            <ButtonBase
-              data-testid="sort-by-popover-toggle"
-              className="asset-list-control-bar__button"
-              onClick={toggleTokenSortPopover}
-              size={ButtonBaseSize.Sm}
-              startIconName={IconName.Filter}
-              startIconProps={{ marginInlineEnd: 0 }}
-              backgroundColor={
-                isTokenSortPopoverOpen
-                  ? BackgroundColor.backgroundPressed
-                  : BackgroundColor.backgroundDefault
-              }
-              color={TextColor.textDefault}
-              marginRight={isFullScreen ? 2 : null}
-            />
-          </Tooltip>
+          {showSortControl && (
+            <Tooltip title={t('sortBy')} position="bottom" distance={20}>
+              <ButtonBase
+                data-testid="sort-by-popover-toggle"
+                className="asset-list-control-bar__button"
+                onClick={toggleTokenSortPopover}
+                size={ButtonBaseSize.Sm}
+                startIconName={IconName.Filter}
+                startIconProps={{ marginInlineEnd: 0 }}
+                backgroundColor={
+                  isTokenSortPopoverOpen
+                    ? BackgroundColor.backgroundPressed
+                    : BackgroundColor.backgroundDefault
+                }
+                color={TextColor.textDefault}
+                marginRight={isFullScreen ? 2 : null}
+              />
+            </Tooltip>
+          )}
 
           {showImportTokenButton && (
             <ImportControl

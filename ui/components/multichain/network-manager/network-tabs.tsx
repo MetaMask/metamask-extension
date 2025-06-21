@@ -1,13 +1,15 @@
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { hideModal } from '../../../store/actions';
 import { ModalHeader, ModalBody, Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { CustomNetworks } from './components/custom-networks';
 import { DefaultNetworks } from './components/default-networks';
 
 // Network tabs component
 export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
+  const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
   const dispatch = useDispatch();
   const handleClose = useCallback(() => {
     dispatch(hideModal());
@@ -38,7 +40,11 @@ export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
           <Tab tabKey="networks" name="Default">
             <DefaultNetworks />
           </Tab>
-          <Tab tabKey="custom-networks" name="Custom">
+          <Tab
+            tabKey="custom-networks"
+            name="Custom"
+            disabled={!isEvmNetworkSelected}
+          >
             <CustomNetworks />
           </Tab>
         </Tabs>

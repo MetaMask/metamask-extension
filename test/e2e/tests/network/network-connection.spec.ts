@@ -59,8 +59,10 @@ networkConfigs.forEach((config) => {
             .fixtureMethod(new FixtureBuilder())
             .withPermissionControllerConnectedToTestDapp()
             .withEnabledNetworks({
-              [CHAIN_IDS.MONAD_TESTNET]: true,
-              [CHAIN_IDS.MEGAETH_TESTNET]: true,
+              eip155: {
+                [CHAIN_IDS.MONAD_TESTNET]: true,
+                [CHAIN_IDS.MEGAETH_TESTNET]: true,
+              },
             })
             .build(),
           title: this.test?.fullTitle(),

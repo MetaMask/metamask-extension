@@ -4,7 +4,7 @@ import { type Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
-  getEnabledNetworks,
+  getEnabledNetworksByNamespace,
   getNewTokensImported,
   getPreferences,
   getSelectedAccount,
@@ -57,11 +57,13 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   // network filter to determine which tokens to show in list
   // on EVM we want to filter based on network filter controls, on non-evm we only want tokens from that chain identifier
   const { networkFilter } = useNetworkFilter();
-  const enabledNetworks = useSelector(getEnabledNetworks);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   const networksToShow = useMemo(() => {
-    return isGlobalNetworkSelectorRemoved ? enabledNetworks : networkFilter;
-  }, [networkFilter, enabledNetworks]);
+    return isGlobalNetworkSelectorRemoved
+      ? enabledNetworksByNamespace
+      : networkFilter;
+  }, [enabledNetworksByNamespace, networkFilter]);
 
   const sortedFilteredTokens = useMemo(() => {
     const balances = isEvm ? evmBalances : multichainAssets;

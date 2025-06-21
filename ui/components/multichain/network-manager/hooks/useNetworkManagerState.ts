@@ -25,7 +25,6 @@ import {
   getAllDomains,
   getAllEnabledNetworks,
   getEditedNetwork,
-  getEnabledNetworks,
   getIsAccessedFromDappConnectedSitePopover,
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
@@ -36,9 +35,12 @@ import {
   getPermittedEVMAccountsForSelectedTab,
   getPermittedEVMChainsForSelectedTab,
   getPreferences,
-  getSelectedMultichainNetworkChainId,
   getShowTestNetworks,
 } from '../../../../selectors';
+import {
+  getEnabledNetworksByNamespace,
+  getSelectedMultichainNetworkChainId,
+} from '../../../../selectors/multichain/networks';
 
 export const useNetworkManagerState = ({
   skipNetworkFiltering = false,
@@ -53,6 +55,7 @@ export const useNetworkManagerState = ({
 
   // Redux selectors
   const { tokenNetworkFilter } = useSelector(getPreferences);
+
   const showTestnets = useSelector(getShowTestNetworks);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const isUnlocked = useSelector(getIsUnlocked);
@@ -65,7 +68,7 @@ export const useNetworkManagerState = ({
     getIsAccessedFromDappConnectedSitePopover,
   );
   const completedOnboarding = useSelector(getCompletedOnboarding);
-  const enabledNetworks = useSelector(getEnabledNetworks);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const isNetworkDiscoverButtonEnabled = useSelector(
     getNetworkDiscoverButtonEnabled,
   );
@@ -206,7 +209,7 @@ export const useNetworkManagerState = ({
     multichainNetworks,
     evmNetworks,
     currentChainId,
-    enabledNetworks,
+    enabledNetworksByNamespace,
     editingChainId,
     editCompleted,
     permittedChainIds,

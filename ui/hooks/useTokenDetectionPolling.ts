@@ -1,9 +1,6 @@
 import { useSelector } from 'react-redux';
-import {
-  getChainIdsToPoll,
-  getEnabledChainIds,
-  getUseTokenDetection,
-} from '../selectors';
+import { getChainIdsToPoll, getUseTokenDetection } from '../selectors';
+import { getEnabledChainIds } from '../selectors/multichain/networks';
 import {
   tokenDetectionStartPolling,
   tokenDetectionStopPollingByPollingToken,
