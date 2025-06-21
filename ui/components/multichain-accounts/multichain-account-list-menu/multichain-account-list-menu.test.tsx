@@ -138,10 +138,13 @@ describe('MultichainAccountListMenu', () => {
     jest.clearAllMocks();
   });
 
-  it('displays important controls', () => {
-    const { getByText } = render();
+  it('displays important elements', () => {
+    const { getByText, getByTestId } = render();
 
     expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
+    expect(
+      getByTestId('multichain-account-menu-search-bar'),
+    ).toBeInTheDocument();
     expect(document.querySelector('[aria-label="Back"]')).toStrictEqual(null);
   });
 
