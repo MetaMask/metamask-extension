@@ -11,10 +11,7 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
   SeedlessOnboardingController<EncryptionKey>,
   SeedlessOnboardingControllerMessenger
 > = (request) => {
-  const {
-    controllerMessenger,
-    persistedState,
-  } = request;
+  const { controllerMessenger, persistedState } = request;
 
   const encryptor = encryptorFactory(600_000);
 

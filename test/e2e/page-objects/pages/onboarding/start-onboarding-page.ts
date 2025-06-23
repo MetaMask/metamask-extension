@@ -86,10 +86,12 @@ class StartOnboardingPage {
 
   async createWalletWithSrp(): Promise<void> {
     await this.driver.clickElement(this.createWalletButton);
+    await this.driver.clickElement(this.onboardingCreateWithSrpButton);
   }
 
   async importWallet(): Promise<void> {
     await this.driver.clickElement(this.importWalletButton);
+    await this.driver.clickElement(this.onboardingImportWithSrpButton);
   }
 }
 
