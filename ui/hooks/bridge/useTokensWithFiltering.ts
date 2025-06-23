@@ -192,18 +192,27 @@ export const useTokensWithFiltering = (
           symbol: string,
           address?: string,
           tokenChainId?: string,
-        ) =>
-          filterCondition(symbol, address, tokenChainId) &&
-          (tokenToExclude && tokenChainId
-            ? !(
-                tokenToExclude.symbol === symbol &&
-                (isSolanaChainId(tokenChainId)
-                  ? tokenToExclude.address === address
-                  : tokenToExclude.address?.toLowerCase() ===
-                    address?.toLowerCase()) &&
-                tokenToExclude.chainId === formatChainIdToCaip(tokenChainId)
-              )
-            : true);
+        ) => {
+          // Normalize addresses for comparison: treat native addresses as empty string
+          const normalizeAddress = (addr?: string) => {
+            return addr && isNativeAddress(addr) ? '' : addr;
+          };
+
+          return (
+            filterCondition(symbol, address, tokenChainId) &&
+            (tokenToExclude && tokenChainId
+              ? !(
+                  tokenToExclude.symbol === symbol &&
+                  (isSolanaChainId(tokenChainId)
+                    ? normalizeAddress(tokenToExclude.address) ===
+                      normalizeAddress(address)
+                    : tokenToExclude.address?.toLowerCase() ===
+                      address?.toLowerCase()) &&
+                  tokenToExclude.chainId === formatChainIdToCaip(tokenChainId)
+                )
+              : true)
+          );
+        };
 
         if (
           !chainId ||
