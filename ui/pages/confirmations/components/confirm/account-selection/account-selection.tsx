@@ -36,7 +36,7 @@ export function AccountSelection({
   const evmAccounts = accounts.filter((acc) => isEvmAccountType(acc.type));
 
   const onSelectAllChange = useCallback(
-    (event) => {
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       const { checked } = event.target;
       if (checked) {
         setSelectedAccounts(evmAccounts.map((acc) => acc.address as Hex));
