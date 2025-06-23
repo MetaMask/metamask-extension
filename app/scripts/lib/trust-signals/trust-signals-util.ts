@@ -3,12 +3,21 @@ import { JsonRpcRequest } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { PreferencesController } from '../../controllers/preferences-controller';
 import { SupportedEVMChain } from './types';
 
 // TODO: Remove when we want this enabled in production.
 export function isProdEnabled() {
   const isEnabled = process.env.TRUST_SIGNALS_PROD_ENABLED;
   return isEnabled?.toString() === 'true';
+}
+
+// isSecurityAlertsEnabledByUser is a function that checks if the security alerts are enabled in the preferences controller.
+export function isSecurityAlertsEnabledByUser(
+  preferencesController: PreferencesController,
+) {
+  const { securityAlertsEnabled } = preferencesController.state;
+  return securityAlertsEnabled;
 }
 
 export function isEthSendTransaction(req: JsonRpcRequest): boolean {
@@ -49,6 +58,10 @@ export function isEthSignTypedData(req: JsonRpcRequest): boolean {
     req.method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 ||
     req.method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4
   );
+}
+
+export function isEthAccounts(req: JsonRpcRequest): boolean {
+  return req.method === MESSAGE_TYPE.ETH_ACCOUNTS;
 }
 
 export function hasValidTypedDataParams(
@@ -104,7 +117,7 @@ function mapChainIdToSupportedEVMChain(chainId: string): SupportedEVMChain {
     '0x1e0': SupportedEVMChain.Worldchain,
     '0x79a': SupportedEVMChain.SoneiumMinato,
     '0x7e4': SupportedEVMChain.Ronin,
-    [CHAIN_IDS.APE_MAINNET]: SupportedEVMChain.Apec,
+    [CHAIN_IDS.APECHAIN_MAINNET]: SupportedEVMChain.ApeChain,
     '0x849ea': SupportedEVMChain.ZeroNetwork,
     [CHAIN_IDS.BERACHAIN]: SupportedEVMChain.Berachain,
     '0x138c5': SupportedEVMChain.BerachainBartio,
