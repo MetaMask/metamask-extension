@@ -233,7 +233,7 @@
     "@trezor/connect-web": "~9.4.7",
     "@metamask/controller-utils@npm:^11.7.1-backport": "11.7.1-backport",
     "@metamask/snaps-rpc-methods@npm:^12.3.0": "patch:@metamask/snaps-rpc-methods@npm%3A12.3.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-12.3.0-2489f92f4f.patch",
-    "@metamask/controller-utils@npm:^11.0.0": "11.9.0"
+    "@metamask/controller-utils@npm:^11.10.0": "11.9.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
