@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { useHistory } from 'react-router-dom';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import {
   AlignItems,
@@ -16,6 +17,7 @@ import {
 import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { HiddenAccountList } from '../../multichain/account-list-menu/hidden-account-list';
+import { WALLET_DETAILS_ROUTE_WITH_ID } from '../../../helpers/constants/routes';
 import { matchesSearchPattern } from './utils';
 
 export type MultichainAccountsTreeProps = {
@@ -43,6 +45,8 @@ export const MultichainAccountsTree = ({
   onClose,
   onAccountTreeItemClick,
 }: MultichainAccountsTreeProps) => {
+  const history = useHistory();
+
   const accountsTree = useMemo(() => {
     // We keep a flag to check if there are any hidden accounts
     let hasHiddenAccounts: boolean = false;
@@ -71,6 +75,15 @@ export const MultichainAccountsTree = ({
               size={ButtonLinkSize.Sm}
               color={TextColor.primaryDefault}
               fontWeight={FontWeight.Normal}
+              onClick={() => {
+                history.push(
+                  WALLET_DETAILS_ROUTE_WITH_ID.replace(
+                    ':id',
+                    encodeURIComponent(walletId),
+                  ),
+                );
+                onClose();
+              }}
             >
               Details
             </ButtonLink>
@@ -170,6 +183,7 @@ export const MultichainAccountsTree = ({
     accountTreeItemProps,
     selectedAccount,
     onAccountTreeItemClick,
+    history,
   ]);
 
   return <>{accountsTree}</>;
