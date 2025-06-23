@@ -77,6 +77,10 @@ class Confirmation {
     await accountDetailsButton.sendKeys(Key.RETURN);
   }
 
+  async clickFooterCancelButton() {
+    await this.driver.clickElement(this.footerCancelButton);
+  }
+
   async clickFooterCancelButtonAndAndWaitForWindowToClose() {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.footerCancelButton,
@@ -104,7 +108,7 @@ class Confirmation {
     totalPages: number,
   ): Promise<void> {
     try {
-      await this.driver.findElement({
+      await this.driver.waitForSelector({
         css: this.navigationTitle,
         text: `${currentPage} of ${totalPages}`,
       });
