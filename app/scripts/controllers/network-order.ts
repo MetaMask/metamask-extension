@@ -6,7 +6,7 @@ import {
   NetworkState,
 } from '@metamask/network-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import type { CaipChainId, Hex } from '@metamask/utils';
+import type { CaipChainId, CaipNamespace, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 
@@ -21,7 +21,7 @@ export type NetworksInfo = {
 };
 
 export type EnabledNetworksByChainId = Record<
-  CaipChainId,
+  CaipNamespace,
   Record<string, boolean>
 >;
 

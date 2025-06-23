@@ -262,7 +262,7 @@ export const getEnabledNetworkClientIds = createDeepEqualSelector(
         }
         return acc;
       },
-      [],
+      [] as string[],
     );
   },
 );

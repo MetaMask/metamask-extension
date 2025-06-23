@@ -62,7 +62,7 @@ export const useAdditionalNetworkHandlers = () => {
       );
       const enabledNetworksArray = Object.keys(enabledNetworksByNamespace);
       const filteredPopularNetworks = enabledNetworksArray.filter((key) =>
-        FEATURED_NETWORK_CHAIN_IDS.includes(key),
+        FEATURED_NETWORK_CHAIN_IDS.includes(key as `0x${string}`),
       );
       await dispatch(
         setEnabledNetworks(

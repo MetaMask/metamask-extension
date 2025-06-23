@@ -80,7 +80,7 @@ export const useNetworkChangeHandlers = () => {
         dispatch(setEnabledNetworks([hexChainId], namespace));
       } else if (enabledNetworkKeys.includes(hexChainId)) {
         const filteredPopularNetworks = enabledNetworkKeys.filter((key) =>
-          FEATURED_NETWORK_CHAIN_IDS.includes(key),
+          FEATURED_NETWORK_CHAIN_IDS.includes(key as `0x${string}`),
         );
         // deselect if selected
         const filteredEnabledNetworks = filteredPopularNetworks.filter(
@@ -94,7 +94,7 @@ export const useNetworkChangeHandlers = () => {
         );
       } else {
         const filteredPopularNetworks = enabledNetworkKeys.filter((key) =>
-          FEATURED_NETWORK_CHAIN_IDS.includes(key),
+          FEATURED_NETWORK_CHAIN_IDS.includes(key as `0x${string}`),
         );
         // multiselect default networks
         dispatch(
