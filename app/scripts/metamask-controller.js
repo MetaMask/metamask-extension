@@ -173,6 +173,9 @@ import {
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
 
+///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
+import { RecoveryError } from '@metamask/seedless-onboarding-controller';
+///: END:ONLY_INCLUDE_IF
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -3822,9 +3825,10 @@ export default class MetamaskController extends EventEmitter {
         ensController.reverseResolveAddress.bind(ensController),
 
       ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
-      startOAuthLogin: this.oauthService.startOAuthLogin.bind(
-        this.oauthService,
-      ),
+      startOAuthLogin: this.startOAuthLogin.bind(this),
+      resetOAuthLoginState: this.resetOAuthLoginState.bind(this),
+      createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
+      fetchAllSecretData: this.fetchAllSecretData.bind(this),
       ///: END:ONLY_INCLUDE_IF
 
       // KeyringController
@@ -4686,11 +4690,88 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<boolean>} true if user has not completed the seedless onboarding flow, false otherwise
    */
   async startOAuthLogin(authConnection) {
-    const oauth2LoginResult = this.oauthService.startOAuthLogin(authConnection);
+    const oauth2LoginResult = await this.oauthService.startOAuthLogin(
+      authConnection,
+    );
     const { isNewUser } = await this.seedlessOnboardingController.authenticate(
       oauth2LoginResult,
     );
     return isNewUser;
+  }
+
+  /**
+   * Resets the social login state and onboarding state.
+   */
+  resetOAuthLoginState() {
+    try {
+      this.seedlessOnboardingController.clearState();
+      this.onboardingController.setFirstTimeFlowType(null);
+    } catch (error) {
+      log.error('Error while resetting social login state', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Creates a PRIMARY seed phrase backup for the user.
+   *
+   * Generate Encryption Key from the password using the Threshold OPRF and encrypt the seed phrase with the key.
+   * Save the encrypted seed phrase in the metadata store.
+   *
+   * @param {string} password - The user's password.
+   * @param {number[]} encodedSeedPhrase - The seed phrase to backup.
+   * @param {string} keyringId - The keyring id of the backup seed phrase.
+   */
+  async createSeedPhraseBackup(password, encodedSeedPhrase, keyringId) {
+    try {
+      const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
+
+      const seedPhrase =
+        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
+
+      await this.seedlessOnboardingController.createToprfKeyAndBackupSeedPhrase(
+        password,
+        seedPhrase,
+        keyringId,
+      );
+    } catch (error) {
+      log.error('[createSeedPhraseBackup] error', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Fetches and restores all the backed-up Secret Data (SRPs and Private keys)
+   *
+   * @param {string} password - The user's password.
+   * @returns {Promise<Buffer[]>} The seed phrase.
+   */
+  async fetchAllSecretData(password) {
+    try {
+      // fetch all seed phrases
+      // seedPhrases are sorted by creation date, the latest seed phrase is the first one in the array
+      const allSeedPhrases =
+        await this.seedlessOnboardingController.fetchAllSeedPhrases(password);
+
+      if (allSeedPhrases.length === 0) {
+        return null;
+      }
+
+      return allSeedPhrases.map((phrase) =>
+        this._convertEnglishWordlistIndicesToCodepoints(phrase),
+      );
+    } catch (error) {
+      log.error(
+        'Error while fetching and restoring seed phrase metadata.',
+        error,
+      );
+
+      if (error instanceof RecoveryError) {
+        throw new JsonRpcError(-32603, error.message, error.data);
+      }
+
+      throw error;
+    }
   }
 
   ///: END:ONLY_INCLUDE_IF
@@ -4710,12 +4791,13 @@ export default class MetamaskController extends EventEmitter {
    * For example, a mnemonic phrase can generate many accounts, and is a keyring.
    *
    * @param {string} password
-   * @returns {object} vault
+   * @returns {object} created keyring object
    */
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      return await this.keyringController.createNewVaultAndKeychain(password);
+      await this.keyringController.createNewVaultAndKeychain(password);
+      return this.keyringController.state.keyrings[0];
     } finally {
       releaseLock();
     }
@@ -4839,9 +4921,11 @@ export default class MetamaskController extends EventEmitter {
       }
 
       // create new vault
+      const seedPhraseAsUint8Array =
+        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
       await this.keyringController.createNewVaultAndRestore(
         password,
-        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
+        seedPhraseAsUint8Array,
       );
 
       if (completedOnboarding) {
@@ -4856,6 +4940,20 @@ export default class MetamaskController extends EventEmitter {
           async (keyring) => this.setLedgerTransportPreference(keyring),
         );
       }
+
+      ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
+      const isSocialLoginFlow =
+        this.onboardingController.getIsSocialLoginFlow();
+      if (isSocialLoginFlow) {
+        // if it's social login flow, update the local backup metadata state of SeedlessOnboarding Controller
+        const primaryKeyringId =
+          this.keyringController.state.keyrings[0].metadata.id;
+        this.seedlessOnboardingController.updateBackupMetadataState({
+          keyringId: primaryKeyringId,
+          seedPhrase: seedPhraseAsUint8Array,
+        });
+      }
+      ///: END:ONLY_INCLUDE_IF
     } finally {
       releaseLock();
     }
