@@ -122,6 +122,12 @@ class Confirmation {
     console.log('Verify confirmation heading title is Confirmation Dialog');
     await this.driver.waitForSelector(this.confirmationHeadingTitle);
   }
+
+  async verifyRejectAllButtonNotPresent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.rejectAllButton, {
+      timeout: 5000,
+    });
+  }
 }
 
 export default Confirmation;

@@ -1,11 +1,6 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import {
-  regularDelayMs,
-  unlockWallet,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../../helpers';
+import { unlockWallet, WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
@@ -18,6 +13,7 @@ import TestDapp from '../../../page-objects/pages/test-dapp';
 import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/redesign/personal-sign-confirmation';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import FixtureBuilder from '../../../fixture-builder';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
@@ -114,9 +110,9 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver, localNodes }) => {
-        const addresses = await localNodes[0].getAccounts();
-        const publicAddress = addresses[0].toLowerCase();
+      async ({ driver }) => {
+        const publicAddress = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
+        const confirmation = new PersonalSignConfirmation(driver);
         await unlockWallet(driver);
 
         const testDapp = new TestDapp(driver);
@@ -125,29 +121,25 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
 
         // Create first personal sign
         await testDapp.clickPersonalSign();
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await confirmation.verifyConfirmationHeadingTitle();
 
         // Switch to Dapp
-        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // Create second personal sign
         await testDapp.clickPersonalSign();
 
         // Switch to confirmation window
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const confirmation = new PersonalSignConfirmation(driver);
         await confirmation.check_pageNumbers(1, 2);
         await confirmation.verifyOrigin();
         await confirmation.verifyMessage();
 
         // Confirm first personal sign
         await confirmation.clickFooterConfirmButton();
-        await driver.delay(regularDelayMs);
+        await confirmation.verifyRejectAllButtonNotPresent();
 
         // Confirm second personal sign
         await confirmation.clickFooterConfirmButton();
