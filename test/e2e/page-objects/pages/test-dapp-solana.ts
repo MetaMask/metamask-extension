@@ -340,7 +340,7 @@ export class TestDappSolana {
     const element = await this.driver.findElement(
       this.getElementSelectorTestId(id),
     );
-    const value = await element.getAttribute('value');
+    const value = await element.getText();
 
     return value.split('\n').map((hash) => hash.trim());
   }

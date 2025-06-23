@@ -28,7 +28,7 @@ class HomePage {
 
   private readonly basicFunctionalityOffWarningMessage = {
     text: 'Basic functionality is off',
-    css: '.mm-banner-alert',
+    css: '.mm-banner-base',
   };
 
   protected readonly bridgeButton: string =
@@ -319,6 +319,11 @@ class HomePage {
     await this.driver.waitForSelector({
       text: `Secret Recovery Phrase ${srpNumber} imported`,
     });
+  }
+
+  async check_portfolioLinkIsDisplayed(): Promise<void> {
+    console.log('Check if portfolio link is displayed on homepage');
+    await this.driver.waitForSelector(this.portfolioLink);
   }
 
   /**

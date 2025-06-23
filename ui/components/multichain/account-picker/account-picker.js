@@ -82,22 +82,18 @@ export const AccountPicker = ({
           alignItems={AlignItems.center}
           gap={process.env.REMOVE_GNS ? 0 : 2}
         >
-          {
-            process.env.REMOVE_GNS ? null : (
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-              <AvatarAccount
-                variant={
-                  useBlockie
-                    ? AvatarAccountVariant.Blockies
-                    : AvatarAccountVariant.Jazzicon
-                }
-                address={address}
-                size={showAddress ? Size.MD : Size.XS}
-                borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
-              />
-            )
-            ///: END:ONLY_INCLUDE_IF
-          }
+          {process.env.REMOVE_GNS ? null : (
+            <AvatarAccount
+              variant={
+                useBlockie
+                  ? AvatarAccountVariant.Blockies
+                  : AvatarAccountVariant.Jazzicon
+              }
+              address={address}
+              size={showAddress ? Size.MD : Size.XS}
+              borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
+            />
+          )}
           <Text
             as="span"
             ellipsis
