@@ -5264,7 +5264,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.10.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.5.0, @metamask/controller-utils@npm:^11.6.0, @metamask/controller-utils@npm:^11.7.0, @metamask/controller-utils@npm:^11.8.0, @metamask/controller-utils@npm:^11.9.0":
+"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.5.0, @metamask/controller-utils@npm:^11.6.0, @metamask/controller-utils@npm:^11.7.0, @metamask/controller-utils@npm:^11.8.0, @metamask/controller-utils@npm:^11.9.0":
   version: 11.10.0
   resolution: "@metamask/controller-utils@npm:11.10.0"
   dependencies:
