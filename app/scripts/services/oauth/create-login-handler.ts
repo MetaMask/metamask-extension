@@ -28,7 +28,6 @@ export function createLoginHandler(
       return new AppleLoginHandler({
         ...commonHandlerOptions,
         oAuthClientId: env.appleClientId,
-        serverRedirectUri: env.serverRedirectUri,
       });
     default:
       throw new Error(`Invalid social login provider: ${authConnection}`);

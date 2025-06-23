@@ -8,7 +8,8 @@ import { createLoginHandler } from './create-login-handler';
 
 const MOCK_AUTH_SERVER_URL = 'https://mocked-auth-server-url';
 const MOCK_WEB3AUTH_NETWORK = 'sapphire_devnet';
-const MOCK_AUTH_CONNECTION_ID = 'byoa-server';
+const MOCK_GOOGLE_AUTH_CONNECTION_ID = 'google-auth-id';
+const MOCK_APPLE_AUTH_CONNECTION_ID = 'apple-auth-id';
 const MOCK_GROUPED_AUTH_CONNECTION_ID = 'mm-seedless-onboarding';
 const DEFAULT_GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
 const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
@@ -29,8 +30,9 @@ function getOAuthLoginEnvs(): OAuthLoginEnv {
     googleClientId: DEFAULT_GOOGLE_CLIENT_ID,
     appleClientId: DEFAULT_APPLE_CLIENT_ID,
     authServerUrl: MOCK_AUTH_SERVER_URL,
+    googleAuthConnectionId: MOCK_GOOGLE_AUTH_CONNECTION_ID,
+    appleAuthConnectionId: MOCK_APPLE_AUTH_CONNECTION_ID,
     web3AuthNetwork: MOCK_WEB3AUTH_NETWORK as Web3AuthNetwork,
-    authConnectionId: MOCK_AUTH_CONNECTION_ID,
     groupedAuthConnectionId: MOCK_GROUPED_AUTH_CONNECTION_ID,
   };
 }

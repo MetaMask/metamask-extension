@@ -102,7 +102,6 @@ export type OAuthLoginEnv = {
   appleClientId: string;
   authServerUrl: string;
   web3AuthNetwork: Web3AuthNetwork;
-  serverRedirectUri?: string;
 };
 
 export type OAuthServiceOptions = {
