@@ -173,6 +173,7 @@ import {
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
 
+import { ErrorReportingService } from '@metamask/error-reporting-service';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -562,8 +563,24 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
+    const errorReportingServiceMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'ErrorReportingService',
+        allowedActions: [],
+        allowedEvents: [],
+      });
+    // Initializing the ErrorReportingService populates the
+    // ErrorReportingServiceMessenger.
+    // eslint-disable-next-line no-new
+    new ErrorReportingService({
+      messenger: errorReportingServiceMessenger,
+      captureException,
+    });
+
     const networkControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkController',
+      allowedEvents: [],
+      allowedActions: ['ErrorReportingService:captureException'],
     });
 
     let initialNetworkControllerState = initState.NetworkController;
@@ -3152,42 +3169,6 @@ export default class MetamaskController extends EventEmitter {
         ) {
           this.multichainRatesController.setFiatCurrency(currentCurrency);
         }
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      `MultichainTransactionsController:transactionConfirmed`,
-      (transaction) => {
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.TransactionFinalized,
-          category: MetaMetricsEventCategory.Transactions,
-          properties: {
-            id: transaction.id,
-            timestamp: transaction.timestamp,
-            chain_id_caip: transaction.chain,
-            status: transaction.status,
-            type: transaction.type,
-            fees: transaction.fees,
-          },
-        });
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      `MultichainTransactionsController:transactionSubmitted`,
-      (transaction) => {
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.TransactionSubmitted,
-          category: MetaMetricsEventCategory.Transactions,
-          properties: {
-            id: transaction.id,
-            timestamp: transaction.timestamp,
-            chain_id_caip: transaction.chain,
-            status: transaction.status,
-            type: transaction.type,
-            fees: transaction.fees,
-          },
-        });
       },
     );
   }
