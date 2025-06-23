@@ -4,7 +4,6 @@ const {
   withFixtures,
   regularDelayMs,
   openDapp,
-  defaultGanacheOptions,
   unlockWallet,
   WINDOW_TITLES,
 } = require('../../helpers');
@@ -70,12 +69,11 @@ describe('Sign Typed Data Signature Request', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
-        async ({ driver, ganacheServer }) => {
-          const addresses = await ganacheServer.getAccounts();
-          const publicAddress = addresses[0];
+        async ({ driver, localNodes }) => {
+          const addresses = await localNodes[0].getAccounts();
+          const publicAddress = addresses[0].toLowerCase();
           await unlockWallet(driver);
 
           await openDapp(driver);
@@ -145,7 +143,6 @@ describe('Sign Typed Data Signature Request', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -197,7 +194,6 @@ describe('Sign Typed Data Signature Request', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -261,7 +257,6 @@ describe('Sign Typed Data Signature Request', function () {
     });
   });
 });
-
 async function verifyAndAssertRedesignedSignTypedData(driver, expectedMessage) {
   await driver.findElement({
     css: 'h2',

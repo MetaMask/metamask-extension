@@ -2,13 +2,12 @@
 
 Below is a summary of the validations included:
 
-* Validate that the 'IPFS gateway' toggle is present in the Security & Privacy settings and is ON by default.
-* Validate that the toggle can be turned on and off.
-* Validate that when the toggle is turned on, MetaMask shows images of NFTs
-* Validate that when the toggle is turned off, NFT images are replaced by placeholders and I am prompted to turn on IPFS resolution
+- Validate that the 'IPFS gateway' toggle is present in the Security & Privacy settings and is ON by default.
+- Validate that the toggle can be turned on and off.
+- Validate that when the toggle is turned on, MetaMask shows images of NFTs
+- Validate that when the toggle is turned off, NFT images are replaced by placeholders and I am prompted to turn on IPFS resolution
 
 ```markdown
-
 # Security & Privacy Settings: Verify "IPFS gateway" Toggle Functionality
 
 # Feature: Toggle "IPFS gateway" in Security & Privacy Settings
@@ -47,6 +46,4 @@ When I attempt to view images of my NFTs (e.g. ERC1155) stored on IPFS
 Then MetaMask should display a placeholder image instead of the NFT media
 And I should see a "Show" button
 And clicking "Show" should prompt me to confirm turning ON IPFS resolution
-
-
 ```

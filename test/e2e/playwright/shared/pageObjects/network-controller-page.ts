@@ -1,3 +1,5 @@
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import type { Hex } from '@metamask/utils';
 import { type Locator, type Page } from '@playwright/test';
 import { Tenderly } from '../../swap/tenderly-network';
 
@@ -70,7 +72,11 @@ export class NetworkController {
     ) {
       rpcName = options.rpcName;
       await this.page
-        .getByTestId(`network-list-item-options-button-${options.chainID}`)
+        .getByTestId(
+          `network-list-item-options-button-${toEvmCaipChainId(
+            options.chainID as Hex,
+          )}`,
+        )
         .click();
       await this.networkListEdit.click();
     } else {

@@ -11,7 +11,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-import { Box } from '..';
+import { Box } from '../box';
 import type { BoxProps, PolymorphicRef } from '../box';
 
 import {
@@ -107,9 +107,11 @@ export const Popover: PopoverComponent = React.forwardRef(
     };
 
     useEffect(() => {
-      document.addEventListener('keydown', handleEscKey);
+      document.addEventListener('keydown', handleEscKey, { capture: true });
       if (isOpen) {
-        document.addEventListener('click', handleClickOutside);
+        document.addEventListener('click', handleClickOutside, {
+          capture: true,
+        });
       } else {
         document.removeEventListener('click', handleClickOutside);
       }

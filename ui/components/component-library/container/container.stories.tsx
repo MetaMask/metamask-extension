@@ -9,7 +9,7 @@ import {
 import README from './README.mdx';
 
 import { ContainerMaxWidth } from './container.types';
-import { Container } from '.';
+import { Container } from './container';
 
 export default {
   title: 'Components/ComponentLibrary/Container',

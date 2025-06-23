@@ -20,7 +20,7 @@ export function useSnapHome({ snapId }) {
 
         const newData = await handleSnapRequest({
           snapId,
-          origin: '',
+          origin: 'metamask',
           handler: 'onHomePage',
           request: {
             jsonrpc: '2.0',

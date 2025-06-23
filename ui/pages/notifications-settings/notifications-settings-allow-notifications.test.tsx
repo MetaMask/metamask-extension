@@ -16,6 +16,7 @@ const store = mockStore({
 
 describe('NotificationsSettingsAllowNotifications', () => {
   it('renders correctly', () => {
+    const testId = 'notifications-settings-allow';
     const { getByTestId } = render(
       <Provider store={store}>
         <MetamaskNotificationsProvider>
@@ -25,13 +26,13 @@ describe('NotificationsSettingsAllowNotifications', () => {
             setLoading={() => {
               return null;
             }}
+            dataTestId={testId}
           />
         </MetamaskNotificationsProvider>
       </Provider>,
     );
 
-    expect(
-      getByTestId('notifications-settings-allow-notifications'),
-    ).toBeInTheDocument();
+    expect(getByTestId(`${testId}-toggle-box`)).toBeInTheDocument();
+    expect(getByTestId(`${testId}-toggle-input`)).toBeInTheDocument();
   });
 });

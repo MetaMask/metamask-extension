@@ -1,7 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { TransactionMetricsRequest } from '../../app/scripts/lib/transaction/metrics';
+import { TransactionMetricsRequest } from '../types/metametrics';
 
 type SmartTransactionMetricsProperties = {
   is_smart_transaction: boolean;
@@ -14,7 +12,9 @@ export const getSmartTransactionMetricsProperties = (
   transactionMetricsRequest: TransactionMetricsRequest,
   transactionMeta: TransactionMeta,
 ) => {
-  const isSmartTransaction = transactionMetricsRequest.getIsSmartTransaction();
+  const isSmartTransaction = transactionMetricsRequest.getIsSmartTransaction(
+    transactionMeta.chainId,
+  );
   const properties = {
     is_smart_transaction: isSmartTransaction,
   } as SmartTransactionMetricsProperties;

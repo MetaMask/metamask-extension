@@ -1,0 +1,74 @@
+@use "design-system";
+
+@mixin responsive-widths($sm: 85vw, $md: 80vw, $lg: 62vw) {
+  @include design-system.screen-sm-min {
+    width: $sm;
+  }
+
+  @include design-system.screen-md-min {
+    width: $md;
+  }
+
+  @include design-system.screen-lg-min {
+    width: $lg;
+  }
+}
+
+.import-srp__multi-srp {
+  $height-screen-sm-max: 100%;
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
+
+  flex-flow: column nowrap;
+  z-index: 55;
+  min-height: 68px;
+  padding-left: 24px;
+  padding-right: 24px;
+
+  @include design-system.screen-sm-max {
+    height: $height-screen-sm-max;
+  }
+
+  @include responsive-widths();
+
+  &__srp-inner-container {
+    padding-bottom: 64px;
+    overflow-y: auto;
+  }
+
+  &__srp {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-area: input;
+    gap: 0 24px;
+  }
+
+  &__label {
+    min-width: 16px;
+    max-width: 16px;
+    flex-shrink: 0;
+  }
+
+  &__srp-word {
+    input {
+      flex: 1;
+    }
+  }
+
+  // This makes the import button float at the bottom of the screen.
+  &__import-button {
+    position: fixed;
+    // This is needed to keep the button at the bottom of the screen.
+    /* stylelint-disable length-zero-no-unit */
+    bottom: 0;
+    left: initial;
+    z-index: 99999;
+    width: 100%;
+    margin-left: -24px;
+    padding-left: 24px;
+    padding-right: 24px;
+
+    @include responsive-widths();
+  }
+}

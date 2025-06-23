@@ -6,9 +6,7 @@ import {
   EditGasModes,
   PriorityLevels,
 } from '../../../../../../shared/constants/gas';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../../../helpers/constants/gas';
-///: END:ONLY_INCLUDE_IF
 import { PRIMARY } from '../../../../../helpers/constants/common';
 import { toHumanReadableTime } from '../../../../../helpers/utils/util';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
@@ -23,33 +21,25 @@ import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
 import { useGasItemFeeDetails } from './useGasItemFeeDetails';
 
 const getTitleAndIcon = (priorityLevel, editGasMode) => {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   let icon = priorityLevel;
-  ///: END:ONLY_INCLUDE_IF
   let title = priorityLevel;
   if (priorityLevel === PriorityLevels.dAppSuggested) {
     title = 'dappSuggestedShortLabel';
   } else if (priorityLevel === PriorityLevels.dappSuggestedHigh) {
     title = 'dappSuggestedHighShortLabel';
   } else if (priorityLevel === PriorityLevels.tenPercentIncreased) {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     icon = null;
-    ///: END:ONLY_INCLUDE_IF
     title = 'tenPercentIncreased';
   } else if (
     priorityLevel === PriorityLevels.high &&
     editGasMode === EditGasModes.swaps
   ) {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     icon = 'swapSuggested';
-    ///: END:ONLY_INCLUDE_IF
     title = 'swapSuggested';
   }
   return {
     title,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     icon,
-    ///: END:ONLY_INCLUDE_IF
   };
 };
 
@@ -113,12 +103,7 @@ const EditGasItem = ({ priorityLevel }) => {
     }
   };
 
-  const {
-    title,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    icon,
-    ///: END:ONLY_INCLUDE_IF
-  } = getTitleAndIcon(priorityLevel, editGasMode);
+  const { title, icon } = getTitleAndIcon(priorityLevel, editGasMode);
 
   return (
     <button
@@ -133,17 +118,13 @@ const EditGasItem = ({ priorityLevel }) => {
       data-testid={`edit-gas-fee-item-${priorityLevel}`}
     >
       <span className="edit-gas-item__name">
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-          icon && (
-            <span
-              className={`edit-gas-item__icon edit-gas-item__icon-${priorityLevel}`}
-            >
-              {PRIORITY_LEVEL_ICON_MAP[icon]}
-            </span>
-          )
-          ///: END:ONLY_INCLUDE_IF
-        }
+        {icon && (
+          <span
+            className={`edit-gas-item__icon edit-gas-item__icon-${priorityLevel}`}
+          >
+            {PRIORITY_LEVEL_ICON_MAP[icon]}
+          </span>
+        )}
         {t(title)}
       </span>
       <span

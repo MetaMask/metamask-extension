@@ -251,26 +251,11 @@
   "from": {
     "message": "থেকে"
   },
-  "functionType": {
-    "message": "কার্যকারিতার ধরণ"
-  },
   "gasLimit": {
     "message": "গ্যাসের সীমা"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "গ্যাসের সীমা হল আপনি যে পরিমাণ গ্যাস খরচ করতে চান তার সর্বোচ্চ ইউনিটের পরিমাণ।"
-  },
   "gasLimitTooLow": {
     "message": "গ্যাসের সীমা অবশ্যই অন্তত 21000 এ থাকতে হবে"
-  },
-  "gasPrice": {
-    "message": "গ্যাসের মূল্য (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "গ্যাসের মূল্য অত্যন্ত কম"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "গ্যাসের মূল্য আপনি প্রতি একক গ্যাসের জন্য যে পরিমাণ ইথার প্রদান করতে চান সেটি নির্দেশ করে।"
   },
   "gasUsed": {
     "message": "গ্যাস ব্যবহার করা হয়েছে"
@@ -312,9 +297,6 @@
   "import": {
     "message": "আমদানি",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "অ্যাকাউন্ট আমদানি করুন"
   },
   "importAccountMsg": {
     "message": "আমদানি করা অ্যাকাউন্টগুলি আপনার গোড়ায় তৈরি করা MetaMask অ্যাকাউন্ট সীডফ্রেজের সাথে সংযুক্ত হবে না। আমদানি করা অ্যাকাউন্টগুলি সম্পর্কে আরও জানুন "
@@ -461,9 +443,6 @@
   "origin": {
     "message": "উৎস"
   },
-  "parameters": {
-    "message": "প্যারামিটারসমূহ"
-  },
   "participateInMetaMetrics": {
     "message": "MetaMetrics এ অংশগ্রহণ করুন"
   },
@@ -532,9 +511,6 @@
   "removeAccountDescription": {
     "message": "এই অ্যাকাউন্টটি আপনার ওয়ালেট থেকে অপসারণ করা হবে। অবিরত রাখার আগে অনুগ্রহ করে নিশ্চিত করুন যে এই আমদানি করা অ্যাকাউন্টটির জন্য আপনার মূল সীড ফ্রেজ বা গোপন কী আছে। আপনি অ্যাকাউন্ট ড্রপ-ডাউন থেকে অ্যাকাউন্টগুলি আবার আমদানি বা তৈরি করতে পারবেন।"
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "অনুরোধগুলি স্বীকৃতির জন্য অপেক্ষা করছে"
-  },
   "required": {
     "message": "প্রয়োজন"
   },
@@ -602,9 +578,6 @@
   "showHexDataDescription": {
     "message": "পাঠাবার স্ক্রিনে হেক্স ডেটা ফিল্ডটি দেখাবার জন্য এটি নির্বাচন করুন"
   },
-  "sigRequest": {
-    "message": "স্বাক্ষরের অনুরোধ"
-  },
   "sign": {
     "message": "স্বাক্ষর করুন"
   },
@@ -652,9 +625,6 @@
   },
   "terms": {
     "message": "ব্যবহারের শর্তাবলী"
-  },
-  "tips": {
-    "message": "অর্থসাহায্য এবং পরামর্শ"
   },
   "to": {
     "message": "প্রতি"
@@ -728,17 +698,11 @@
   "unknown": {
     "message": "অজানা"
   },
-  "unknownNetwork": {
-    "message": "অজানা ব্যক্তিগত নেটওয়ার্ক"
-  },
   "unknownQrCode": {
     "message": "ত্রুটি: আমরা ওই QR কোডটি সনাক্ত করতে পারিনি"
   },
   "unlock": {
     "message": "আনলক"
-  },
-  "unlockMessage": {
-    "message": "ছড়িয়ে ছিটিয়ে থাকা ওয়েব অপেক্ষা করছে"
   },
   "urlErrorMsg": {
     "message": "URI গুলির যথাযথ HTTP/HTTPS প্রেফিক্সের প্রয়োজন।"
@@ -761,13 +725,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "এই বৈশিষ্ট্যটি ব্যবহার করতে আপনাকে ক্যামেরা অ্যাক্সেস করার অনুমতি দিতে হবে।"
   },
-  "youSign": {
-    "message": "আপনি স্বাক্ষর করছেন"
-  },
   "yourPrivateSeedPhrase": {
     "message": "আপনার ব্যক্তিগত সীড ফ্রেজ"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "স্পীড আপ এ শূণ্য গ্যাসের মূল্য"
   }
 }

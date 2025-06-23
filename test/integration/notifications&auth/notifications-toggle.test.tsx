@@ -1,10 +1,4 @@
-import {
-  act,
-  fireEvent,
-  waitFor,
-  within,
-  screen,
-} from '@testing-library/react';
+import { act, fireEvent, waitFor, screen } from '@testing-library/react';
 import { integrationTestRender } from '../../lib/render-helpers';
 import * as backgroundConnection from '../../../ui/store/background-connection';
 import { createMockImplementation } from '../helpers';
@@ -36,6 +30,54 @@ const setupSubmitRequestToBackgroundMocks = (
   );
 };
 
+const selectors = {
+  accountOptionsMenuButton: 'account-options-menu-button',
+  notificationsMenuItem: 'notifications-menu-item',
+  notificationsSettingsButton: 'notifications-settings-button',
+  notificationsSettingsAllowToggleInput:
+    'notifications-settings-allow-toggle-input',
+  productAnnouncementsToggleInput: 'product-announcements-toggle-input',
+};
+
+const clickElement = async (testId: string) => {
+  await act(async () => {
+    fireEvent.click(await screen.findByTestId(testId));
+  });
+};
+
+const waitForElement = async (testId: string) => {
+  expect(await screen.findByTestId(testId)).toBeInTheDocument();
+};
+
+const verifyMetametricsEvent = async (
+  expectedEvent: string,
+  expectedCategory: string,
+  expectedProperties: Record<string, unknown>,
+) => {
+  await waitFor(() => {
+    const metametrics =
+      mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+        (call) =>
+          call[0] === 'trackMetaMetricsEvent' &&
+          call[1]?.[0].category === expectedCategory,
+      );
+
+    expect(metametrics?.[0]).toBe('trackMetaMetricsEvent');
+
+    const [metricsEvent] = metametrics?.[1] as unknown as [
+      {
+        event: string;
+        category: string;
+        properties: Record<string, unknown>;
+      },
+    ];
+
+    expect(metricsEvent?.event).toBe(expectedEvent);
+    expect(metricsEvent?.category).toBe(expectedCategory);
+    expect(metricsEvent?.properties).toMatchObject(expectedProperties);
+  });
+};
+
 describe('Notifications Toggle', () => {
   beforeEach(() => {
     jest.resetAllMocks();
@@ -46,38 +88,25 @@ describe('Notifications Toggle', () => {
     window.history.pushState({}, '', '/'); // return to homescreen
   });
 
-  const clickElement = async (testId: string) => {
-    await act(async () => {
-      fireEvent.click(await screen.findByTestId(testId));
-    });
-  };
-
-  const waitForElement = async (testId: string) => {
-    expect(await screen.findByTestId(testId)).toBeInTheDocument();
-  };
-
   it('disabling notifications from settings', async () => {
     const mockedState = getMockedNotificationsState();
     await act(async () => {
       await integrationTestRender({
-        preloadedState: { ...mockedState },
+        preloadedState: {
+          ...mockedState,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
+        },
         backgroundConnection: backgroundConnectionMocked,
       });
 
-      await clickElement('account-options-menu-button');
-      await waitForElement('notifications-menu-item');
-      await clickElement('notifications-menu-item');
-      await waitForElement('notifications-settings-button');
-      await clickElement('notifications-settings-button');
-      await waitForElement('notifications-settings-allow-notifications');
-
-      const toggleSection = await screen.findByTestId(
-        'notifications-settings-allow-notifications',
-      );
-
-      await act(async () => {
-        fireEvent.click(await within(toggleSection).findByRole('checkbox'));
-      });
+      await clickElement(selectors.accountOptionsMenuButton);
+      await waitForElement(selectors.notificationsMenuItem);
+      await clickElement(selectors.notificationsMenuItem);
+      await waitForElement(selectors.notificationsSettingsButton);
+      await clickElement(selectors.notificationsSettingsButton);
+      await waitForElement(selectors.notificationsSettingsAllowToggleInput);
+      await clickElement(selectors.notificationsSettingsAllowToggleInput);
 
       await waitFor(() => {
         const disableNotificationsCall =
@@ -99,69 +128,42 @@ describe('Notifications Toggle', () => {
         );
       });
 
-      await waitFor(() => {
-        const metametrics =
-          mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-            (call) =>
-              call[0] === 'trackMetaMetricsEvent' &&
-              call[1]?.[0].category ===
-                MetaMetricsEventCategory.NotificationSettings,
-          );
-
-        expect(metametrics?.[0]).toBe('trackMetaMetricsEvent');
-
-        const [metricsEvent] = metametrics?.[1] as unknown as [
-          {
-            event: string;
-            category: string;
-            properties: Record<string, unknown>;
-          },
-        ];
-
-        expect(metricsEvent?.event).toBe(
-          MetaMetricsEventName.NotificationsSettingsUpdated,
-        );
-
-        expect(metricsEvent?.category).toBe(
-          MetaMetricsEventCategory.NotificationSettings,
-        );
-
-        expect(metricsEvent?.properties).toMatchObject({
+      await verifyMetametricsEvent(
+        MetaMetricsEventName.NotificationsSettingsUpdated,
+        MetaMetricsEventCategory.NotificationSettings,
+        {
           settings_type: 'notifications',
           was_profile_syncing_on: true,
           old_value: true,
           new_value: false,
-        });
-      });
+        },
+      );
     });
   });
 
-  it('enabling product announcments from settings', async () => {
+  it('enabling product announcements from settings', async () => {
     const mockedState = getMockedNotificationsState();
     await act(async () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedState,
-          isProfileSyncingEnabled: false,
+          isBackupAndSyncEnabled: false,
           isNotificationServicesEnabled: true,
           isFeatureAnnouncementsEnabled: false,
           isMetamaskNotificationsFeatureSeen: true,
+          dataCollectionForMarketing: false,
+          participateInMetaMetrics: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
 
-      await clickElement('account-options-menu-button');
-      await waitForElement('notifications-menu-item');
-      await clickElement('notifications-menu-item');
-      await waitForElement('notifications-settings-button');
-      await clickElement('notifications-settings-button');
-      await waitForElement('notifications-settings-allow-notifications');
-
-      const allToggles = await screen.findAllByTestId('test-toggle');
-
-      await act(async () => {
-        fireEvent.click(allToggles[1]);
-      });
+      await clickElement(selectors.accountOptionsMenuButton);
+      await waitForElement(selectors.notificationsMenuItem);
+      await clickElement(selectors.notificationsMenuItem);
+      await waitForElement(selectors.notificationsSettingsButton);
+      await clickElement(selectors.notificationsSettingsButton);
+      await waitForElement(selectors.productAnnouncementsToggleInput);
+      await clickElement(selectors.productAnnouncementsToggleInput);
 
       await waitFor(() => {
         const enableFeatureNotifications =
@@ -184,39 +186,15 @@ describe('Notifications Toggle', () => {
         );
       });
 
-      await waitFor(() => {
-        const metametrics =
-          mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-            (call) =>
-              call[0] === 'trackMetaMetricsEvent' &&
-              call[1]?.[0].category ===
-                MetaMetricsEventCategory.NotificationSettings,
-          );
-
-        expect(metametrics?.[0]).toBe('trackMetaMetricsEvent');
-
-        const [metricsEvent] = metametrics?.[1] as unknown as [
-          {
-            event: string;
-            category: string;
-            properties: Record<string, unknown>;
-          },
-        ];
-
-        expect(metricsEvent?.event).toBe(
-          MetaMetricsEventName.NotificationsSettingsUpdated,
-        );
-
-        expect(metricsEvent?.category).toBe(
-          MetaMetricsEventCategory.NotificationSettings,
-        );
-
-        expect(metricsEvent?.properties).toMatchObject({
+      await verifyMetametricsEvent(
+        MetaMetricsEventName.NotificationsSettingsUpdated,
+        MetaMetricsEventCategory.NotificationSettings,
+        {
           settings_type: 'product_announcements',
           old_value: false,
           new_value: true,
-        });
-      });
+        },
+      );
     });
   });
 });

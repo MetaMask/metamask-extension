@@ -1,11 +1,11 @@
 import { useCallback, useContext } from 'react';
+import { SortOrder } from '@metamask/bridge-controller';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../shared/constants/metametrics';
-import { SortOrder } from '../../../shared/types/bridge';
 import {
   RequestParams,
   RequestMetadata,
@@ -16,9 +16,10 @@ import {
 } from './events/types';
 
 export type CrossChainSwapsEventProperties = {
-  [MetaMetricsEventName.ActionOpened]: RequestParams & {
+  [MetaMetricsEventName.ActionButtonClicked]: RequestParams & {
     location: MetaMetricsSwapsEventSource;
   };
+  [MetaMetricsEventName.ActionPageViewed]: RequestParams;
   [MetaMetricsEventName.ActionCompleted]: RequestParams &
     RequestMetadata &
     TradeData &

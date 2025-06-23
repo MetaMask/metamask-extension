@@ -1,7 +1,6 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-
 import {
   activeTabHasPermissions,
   getUseExternalServices,
@@ -18,19 +17,21 @@ import {
   getIsSigningQRHardwareTransaction,
   getNewNftAddedMessage,
   getNewTokensImported,
-  getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
   getApprovalFlows,
   getNewTokensImportedError,
   hasPendingApprovals,
   getSelectedInternalAccount,
-  getQueuedRequestCount,
   getEditedNetwork,
   selectPendingApprovalsForNavigation,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  getIsSolanaSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
+  getShowUpdateModal,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
-  closeNotificationPopup,
+  attemptCloseNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
   setWeb3ShimUsageAlertDismissed,
@@ -70,6 +71,7 @@ import {
   AlertTypes,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
+import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -79,18 +81,16 @@ const mapStateToProps = (state) => {
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
-    bridgeState,
+    quotes,
     dataCollectionForMarketing,
     participateInMetaMetrics,
     firstTimeFlowType,
     completedOnboarding,
+    forgottenPassword,
   } = metamask;
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
-  const { forgottenPassword } = metamask;
+  const selectedAccount = getSelectedInternalAccount(state);
+  const { address: selectedAddress } = selectedAccount;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
-  const queuedRequestCount = getQueuedRequestCount(state);
-  const totalUnapprovedAndQueuedRequestCount =
-    totalUnapprovedCount + queuedRequestCount;
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingApprovals = selectPendingApprovalsForNavigation(state);
 
@@ -115,23 +115,36 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
   ]);
 
-  const TEMPORARY_DISABLE_WHATS_NEW = true;
+  let TEMPORARY_DISABLE_WHATS_NEW = true;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  const solanaSupportEnabled = getIsSolanaSupportEnabled(state);
+
+  // TODO: Remove this once the feature flag is enabled by default
+  // If the feature flag is enabled, we should show the whats new modal
+  if (solanaSupportEnabled) {
+    TEMPORARY_DISABLE_WHATS_NEW = false;
+  }
+  ///: END:ONLY_INCLUDE_IF
+
   const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
     ? false
     : getShowWhatsNewPopup(state);
+
+  const shouldShowSeedPhraseReminder =
+    selectedAccount && getShouldShowSeedPhraseReminder(state, selectedAccount);
 
   return {
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
     swapsEnabled,
-    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
+    shouldShowSeedPhraseReminder,
     isPopup,
     isNotification,
     dataCollectionForMarketing,
     selectedAddress,
     totalUnapprovedCount,
-    totalUnapprovedAndQueuedRequestCount,
     participateInMetaMetrics,
     hasApprovalFlows: getApprovalFlows(state)?.length > 0,
     connectedStatusPopoverHasBeenShown,
@@ -141,7 +154,7 @@ const mapStateToProps = (state) => {
     haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
     swapsFetchParams: swapsState.fetchParams,
     showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
-    haveBridgeQuotes: Boolean(Object.values(bridgeState?.quotes || {}).length),
+    haveBridgeQuotes: Boolean(Object.values(quotes || {}).length),
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
@@ -165,6 +178,7 @@ const mapStateToProps = (state) => {
     onboardedInThisUISession: appState.onboardedInThisUISession,
     hasAllowedPopupRedirectApprovals,
     showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
+    showUpdateModal: getShowUpdateModal(state),
   };
 };
 
@@ -172,7 +186,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setDataCollectionForMarketing: (val) =>
       dispatch(setDataCollectionForMarketing(val)),
-    closeNotificationPopup: () => closeNotificationPopup(),
+    attemptCloseNotificationPopup: () => attemptCloseNotificationPopup(),
     setConnectedStatusPopoverHasBeenShown: () =>
       dispatch(setConnectedStatusPopoverHasBeenShown()),
     onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),

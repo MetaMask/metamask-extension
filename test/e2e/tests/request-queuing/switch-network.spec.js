@@ -6,31 +6,32 @@ const {
   DAPP_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  defaultGanacheOptions,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
-describe('Request Queuing Switch Network on Dapp Send Tx while on different networks.', function () {
-  it('should switch to the dapps network automatically when mm network differs, dapp tx is on correct network', async function () {
+describe('Request Queuing - Extension and Dapp on different networks.', function () {
+  it('should not switch to the dapps network automatically when mm network differs', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -77,16 +78,8 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
         // Check correct network switched and on the correct network
         await driver.findElement({
           css: '[data-testid="network-display"]',
-          text: 'Localhost 8545',
+          text: 'Localhost 8546',
         });
-
-        // Check for transaction
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
       },
     );
   });

@@ -1,4 +1,4 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerNetworkDidChangeEvent,
@@ -19,9 +19,10 @@ export type PPOMControllerInitMessenger = ReturnType<
 >;
 
 export function getPPOMControllerMessenger(
-  controllerMessenger: ControllerMessenger<MessengerActions, MessengerEvents>,
+  messenger: Messenger<MessengerActions, MessengerEvents>,
 ): PPOMControllerMessenger {
-  return controllerMessenger.getRestricted({
+  // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
+  return messenger.getRestricted({
     name: 'PPOMController',
     allowedEvents: [
       'NetworkController:stateChange',
@@ -32,9 +33,9 @@ export function getPPOMControllerMessenger(
 }
 
 export function getPPOMControllerInitMessenger(
-  controllerMessenger: ControllerMessenger<MessengerActions, MessengerEvents>,
+  messenger: Messenger<MessengerActions, MessengerEvents>,
 ) {
-  return controllerMessenger.getRestricted({
+  return messenger.getRestricted({
     name: 'PPOMControllerInit',
     allowedEvents: ['PreferencesController:stateChange'],
     allowedActions: [],

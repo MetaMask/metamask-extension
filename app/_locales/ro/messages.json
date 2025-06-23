@@ -254,26 +254,11 @@
   "from": {
     "message": "De la"
   },
-  "functionType": {
-    "message": "Tip funcție"
-  },
   "gasLimit": {
     "message": "Limită gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Limita gaz este numărul maxim de unități de gaz pe care sunteți dispus(ă) să le cheltuiți."
-  },
   "gasLimitTooLow": {
     "message": "Limita de gaz trebuie să fie de cel puțin 21.000"
-  },
-  "gasPrice": {
-    "message": "Preț gas (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Prețul gaz este foarte scăzut"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Prețul în gas indică suma Ether pe care doriți să o plătiți pentru fiecare unitate gas."
   },
   "gasUsed": {
     "message": "Suma gaz folosită"
@@ -309,9 +294,6 @@
   "import": {
     "message": "Importă",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importare cont"
   },
   "importAccountMsg": {
     "message": "Conturile importate nu vor fi asociate cu seedphrase-ul contului dumneavoastră MetaMask creat inițial. Aflați mai multe despre conturile importate"
@@ -458,9 +440,6 @@
   "origin": {
     "message": "Origine"
   },
-  "parameters": {
-    "message": "Parametri"
-  },
   "participateInMetaMetrics": {
     "message": "Participați la MetaMetrics"
   },
@@ -529,9 +508,6 @@
   "removeAccountDescription": {
     "message": "Acest cont va fi eliminat din portofelul dvs. Înainte de a continua, vă rugăm să vă asigurați că aveți expresia seed inițială sau cheia privată pentru acest cont importat. Puteți importa sau crea conturi din nou din meniul derulant al contului."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "solicitări care așteaptă să fie confirmate"
-  },
   "required": {
     "message": "Obligatoriu"
   },
@@ -599,9 +575,6 @@
   "showHexDataDescription": {
     "message": "Selectați această opțiune pentru a arăta câmpul de date hexazecimale în ecranul de trimitere."
   },
-  "sigRequest": {
-    "message": "Solicitare de semnătură"
-  },
   "sign": {
     "message": "Semnați"
   },
@@ -649,9 +622,6 @@
   },
   "terms": {
     "message": "Termeni și condiții"
-  },
-  "tips": {
-    "message": "Cadouri bănești"
   },
   "to": {
     "message": "Către"
@@ -719,17 +689,11 @@
   "unknown": {
     "message": "Necunoscută"
   },
-  "unknownNetwork": {
-    "message": "Rețea privată necunoscută"
-  },
   "unknownQrCode": {
     "message": "Eroare: Acel cod QR nu a putut fi identificat"
   },
   "unlock": {
     "message": "Deblochează"
-  },
-  "unlockMessage": {
-    "message": "Web-ul descentralizat așteaptă"
   },
   "urlErrorMsg": {
     "message": "URL necesită prefixul potrivit HTTP/HTTPS."
@@ -752,13 +716,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Trebuie să permiteți accesul la cameră pentru a folosi această funcție."
   },
-  "youSign": {
-    "message": "Semnați"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Expresia dvs. seed privată"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Preț gas zero la accelerare"
   }
 }

@@ -486,39 +486,17 @@
     "message": "Mula kay/sa: $1",
     "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
-  "functionType": {
-    "message": "Uri ng Function"
-  },
   "gasLimit": {
     "message": "Limitasyon sa Gas"
-  },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ang limitasyon sa gas ay ang maximum na halaga ng mga unit ng gas na handa mong gastusin."
   },
   "gasLimitTooLow": {
     "message": "Ang limitasyon sa gas ay dapat na hindi bababa sa 21000"
   },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Ang limitasyon sa gas ay dapat na hindi bababa sa $1",
-    "description": "$1 is the custom gas limit, in decimal."
-  },
-  "gasPrice": {
-    "message": "Presyo ng Gas (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Hindi makatuwirang naitakda nang mataas ang iyong bayarin sa gas. Subukang babaan ang halaga."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Labis-labis ang Presyo ng Gas"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Sobrang Baba ng Presyo ng Gas"
-  },
   "gasPriceFetchFailed": {
     "message": "Hindi nagtagumpay ang pagtatantya ng presyo ng gas dahil sa error sa network."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Tinutukoy ng presyo ng gas ang halaga ng Ether na handa mong bayaran para sa bawat unit ng gas."
   },
   "gasUsed": {
     "message": "Nagamit na Gas"
@@ -574,9 +552,6 @@
   "import": {
     "message": "Mag-import",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Mag-import ng Account"
   },
   "importAccountMsg": {
     "message": " Ang mga na-import na account ay hindi mauugnay sa orihinal mong nagawang Secret Recovery Phrase ng MetaMask account. Matuto pa tungkol sa mga na-import account "
@@ -846,9 +821,6 @@
   "origin": {
     "message": "Pinagmulan"
   },
-  "parameters": {
-    "message": "Mga Parameter"
-  },
   "participateInMetaMetrics": {
     "message": "Sumali sa MetaMetrics"
   },
@@ -967,9 +939,6 @@
   "removeAccountDescription": {
     "message": "Aalisin ang account na ito sa iyong wallet. Tiyaking nasa iyo ang orihinal na Secret Recovery Phrase o private key para sa na-import na account na ito bago magpatuloy. Puwede kang mag-import o gumawa ulit ng mga account mula sa drop-down ng account. "
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "mga request na hinihintay na tanggapin"
-  },
   "required": {
     "message": "Kinakailangan"
   },
@@ -1016,35 +985,8 @@
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Isulat ito at itabi sa maraming tagong lugar."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Ilagay sa safe-deposit box."
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Ang iyong recovery phrase ay ang iyong “pangunahing key” sa wallet at pondo mo."
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Kung may manghihingi man ng iyong recovery phrase, malamang na sinusubukan ka niyang i-scam."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Huwag kailanmang ibahagi ang iyong recovery phrase kahit na sa MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Ano ang recovery phrase?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Dapat kong ibahagi ang aking recovery phrase?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Paano ko mase-save ang aking recovery phrase?"
-  },
   "seedPhraseIntroTitle": {
     "message": "I-secure ang iyong wallet"
-  },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Bago magsimula, panoorin ang maikling video na ito para matuto tungkol sa recovery phrase at kung paano panatilihing ligtas ang iyong wallet."
   },
   "seedPhraseReq": {
     "message": "Ang mga Secret Recovery Phrase ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
@@ -1095,18 +1037,8 @@
   "showHexDataDescription": {
     "message": "Piliin ito para ipakita ang field ng hex data sa screen ng pagpapadala"
   },
-  "showIncomingTransactions": {
-    "message": "Ipakita ang Mga Papasok na Transaksyon"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Piliin ito para gamitin ang Etherscan sa pagpapakita ng mga papasok na transaksyon sa listahan ng mga transaksyon",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
   "showPermissions": {
     "message": "Ipakita ang mga pahintulot"
-  },
-  "sigRequest": {
-    "message": "Request ng Signature"
   },
   "sign": {
     "message": "Lumagda"
@@ -1417,9 +1349,6 @@
   "termsOfService": {
     "message": "Mga Tuntunin ng Serbisyo"
   },
-  "tips": {
-    "message": "Mga Tip"
-  },
   "to": {
     "message": "Para kay/sa"
   },
@@ -1506,9 +1435,6 @@
   "unknown": {
     "message": "Hindi Alam"
   },
-  "unknownNetwork": {
-    "message": "Hindi Alam na Pribadong Network"
-  },
   "unknownQrCode": {
     "message": "Error: Hindi namin matukoy ang QR code na iyon"
   },
@@ -1517,9 +1443,6 @@
   },
   "unlock": {
     "message": "I-unlock"
-  },
-  "unlockMessage": {
-    "message": "Naghihintay ang decentralized web"
   },
   "unrecognizedChain": {
     "message": "Hindi kinikilala ang custom na network na ito. Inirerekomenda naming $1 ka bago magpatuloy",
@@ -1557,11 +1480,7 @@
     "description": "$1 is a clickable link."
   },
   "welcomeBack": {
-    "message": "Welcome back!"
-  },
-  "whatsNew": {
-    "message": "Ano'ng bago",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
+    "message": "Welcome back"
   },
   "whatsThis": {
     "message": "Ano ito?"
@@ -1569,13 +1488,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang pag-access sa camera para magamit ang feature na ito."
   },
-  "youSign": {
-    "message": "Sina-sign mo ang"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Ang iyong Secret Recovery Phrase"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Walang presyo ng gas sa pagpapabilis"
   }
 }

@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { EthAccountType, KeyringAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -17,7 +17,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { SendPageRow } from '.';
+import { MergedInternalAccount } from '../../../../../selectors/selectors.types';
+import { SendPageRow } from './send-page-row';
 
 type SendPageYourAccountsProps = {
   allowedAccountTypes?: KeyringAccountType[];
@@ -40,9 +41,38 @@ export const SendPageYourAccounts = ({
   }, [accounts]);
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
+  const onClick = useCallback(
+    (account: MergedInternalAccount) => {
+      dispatch(
+        addHistoryEntry(
+          `sendFlow - User clicked recipient from my accounts. address: ${account.address}, nickname ${account.metadata.name}`,
+        ),
+      );
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendRecipientSelected,
+          category: MetaMetricsEventCategory.Send,
+          properties: {
+            location: 'my accounts',
+            inputType: 'click',
+          },
+        },
+        { excludeMetaMetricsId: false },
+      );
+      dispatch(
+        updateRecipient({
+          address: account.address,
+          nickname: account.metadata.name,
+        }),
+      );
+      dispatch(updateRecipientUserInput(account.address));
+    },
+    [dispatch, trackEvent],
+  );
+
   return (
     <SendPageRow>
-      {/* TODO: Replace `any` with type */}
+      {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973 */}
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       {filteredAccounts.map((account: any) => (
         <AccountListItem
@@ -51,31 +81,7 @@ export const SendPageYourAccounts = ({
           key={account.address}
           isPinned={Boolean(account.pinned)}
           shouldScrollToWhenSelected={false}
-          onClick={() => {
-            dispatch(
-              addHistoryEntry(
-                `sendFlow - User clicked recipient from my accounts. address: ${account.address}, nickname ${account.name}`,
-              ),
-            );
-            trackEvent(
-              {
-                event: MetaMetricsEventName.sendRecipientSelected,
-                category: MetaMetricsEventCategory.Send,
-                properties: {
-                  location: 'my accounts',
-                  inputType: 'click',
-                },
-              },
-              { excludeMetaMetricsId: false },
-            );
-            dispatch(
-              updateRecipient({
-                address: account.address,
-                nickname: account.name,
-              }),
-            );
-            dispatch(updateRecipientUserInput(account.address));
-          }}
+          onClick={onClick}
         />
       ))}
     </SendPageRow>

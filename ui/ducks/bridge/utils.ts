@@ -1,16 +1,26 @@
-import type { Hex } from '@metamask/utils';
+import { isStrictHexString, type CaipChainId, type Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { getAddress } from 'ethers/lib/utils';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
+import { toChecksumAddress } from 'ethereumjs-util';
+import {
+  isSolanaChainId,
+  ChainId,
+  type TxData,
+  formatChainIdToHex,
+  BridgeClientId,
+  formatChainIdToCaip,
+} from '@metamask/bridge-controller';
+import { handleFetch } from '@metamask/controller-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
-import type { TxData } from '../../../shared/types/bridge';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
+import { toAssetId } from '../../../shared/lib/asset-utils';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
@@ -73,18 +83,44 @@ export const getTxGasEstimates = async ({
 };
 
 const fetchTokenExchangeRates = async (
-  chainId: string,
+  chainId: Hex | CaipChainId | ChainId,
   currency: string,
   ...tokenAddresses: string[]
 ) => {
-  const exchangeRates = await fetchTokenExchangeRatesUtil(
+  let exchangeRates;
+  if (isSolanaChainId(chainId)) {
+    const queryParams = new URLSearchParams({
+      assetIds: tokenAddresses
+        .map((address) => toAssetId(address, MultichainNetworks.SOLANA))
+        .join(','),
+      includeMarketData: 'true',
+      vsCurrency: currency,
+    });
+    const url = `https://price.api.cx.metamask.io/v3/spot-prices?${queryParams}`;
+    const tokenV3PriceResponse = (await handleFetch(url, {
+      method: 'GET',
+      headers: { 'X-Client-Id': BridgeClientId.EXTENSION },
+    })) as Record<string, { price: number }>;
+
+    exchangeRates = Object.entries(tokenV3PriceResponse).reduce(
+      (acc, [k, curr]) => {
+        acc[k] = curr.price;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+    return exchangeRates;
+  }
+  // EVM chains
+  exchangeRates = await fetchTokenExchangeRatesUtil(
     currency,
     tokenAddresses,
-    chainId,
+    formatChainIdToHex(chainId),
   );
+
   return Object.keys(exchangeRates).reduce(
     (acc: Record<string, number | undefined>, address) => {
-      acc[address.toLowerCase()] = exchangeRates[address];
+      acc[address] = exchangeRates[address];
       return acc;
     },
     {},
@@ -95,7 +131,7 @@ const fetchTokenExchangeRates = async (
 // rate is not available in the TokenRatesController, which happens when the selected token has not been
 // imported into the wallet
 export const getTokenExchangeRate = async (request: {
-  chainId: Hex;
+  chainId: Hex | CaipChainId | ChainId;
   tokenAddress: string;
   currency: string;
 }) => {
@@ -105,23 +141,27 @@ export const getTokenExchangeRate = async (request: {
     currency,
     tokenAddress,
   );
+  const assetId = toAssetId(tokenAddress, formatChainIdToCaip(chainId));
+  if (isSolanaChainId(chainId) && assetId) {
+    return exchangeRates?.[assetId];
+  }
+  // The exchange rate can be checksummed or not, so we need to check both
   const exchangeRate =
-    exchangeRates?.[tokenAddress.toLowerCase()] ??
-    exchangeRates?.[getAddress(tokenAddress)];
+    exchangeRates?.[toChecksumAddress(tokenAddress)] ??
+    exchangeRates?.[tokenAddress.toLowerCase()];
   return exchangeRate;
 };
 
 // This extracts a token's exchange rate from the marketData state object
 // These exchange rates are against the native asset of the chain
 export const exchangeRateFromMarketData = (
-  chainId: string,
+  chainId: Hex | ChainId | CaipChainId,
   tokenAddress: string,
   marketData?: Record<string, ContractMarketData>,
 ) =>
-  (
-    marketData?.[chainId]?.[tokenAddress.toLowerCase() as Hex] ??
-    marketData?.[chainId]?.[getAddress(tokenAddress) as Hex]
-  )?.price;
+  isStrictHexString(tokenAddress) && isStrictHexString(chainId)
+    ? marketData?.[chainId]?.[tokenAddress]?.price
+    : undefined;
 
 export const tokenAmountToCurrency = (
   amount: string | BigNumber,
@@ -159,7 +199,11 @@ export const exchangeRatesFromNativeAndCurrencyRates = (
 };
 
 export const isNetworkAdded = (
-  v: NetworkConfiguration | AddNetworkFields | undefined,
+  v:
+    | NetworkConfiguration
+    | AddNetworkFields
+    | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId })
+    | undefined,
 ): v is NetworkConfiguration =>
   v !== undefined &&
   'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];

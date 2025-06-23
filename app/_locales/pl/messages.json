@@ -254,26 +254,11 @@
   "from": {
     "message": "Z"
   },
-  "functionType": {
-    "message": "Typ funkcji"
-  },
   "gasLimit": {
     "message": "Limit gazu"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Limit gazu to maksymalna ilość jednostek gazu, którą jesteś skłonny użyć w transakcji."
-  },
   "gasLimitTooLow": {
     "message": "Limit gazu musi wynosić co najmniej 21000"
-  },
-  "gasPrice": {
-    "message": "Cena gazu (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Bardzo niska cena gazu"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Cena gazu to ilość kryptowaluty Ether, którą jesteś gotów zapłacić za każdą jednostkę gazu."
   },
   "gasUsed": {
     "message": "Użyty gaz"
@@ -315,9 +300,6 @@
   "import": {
     "message": "Importuj",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importuj konto"
   },
   "importAccountMsg": {
     "message": " Importowane konta nie będą powiązane z Twoją pierwotną frazą seed MetaMask. Dowiedz się więcej o importowaniu kont "
@@ -461,9 +443,6 @@
   "origin": {
     "message": "Pochodzenie"
   },
-  "parameters": {
-    "message": "Parametry"
-  },
   "participateInMetaMetrics": {
     "message": "Weź udział w MetaMetrics"
   },
@@ -532,9 +511,6 @@
   "removeAccountDescription": {
     "message": "To konto będzie usunięte z Twojego portfela. Zanim przejdziesz dalej, upewnij się, że masz frazę seed i klucz prywatny do tego importowanego konta. Możesz później importować lub utworzyć nowe konta z rozwijanego menu kont. "
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "wnioski oczekujące na zatwierdzenie"
-  },
   "required": {
     "message": "Wymagane"
   },
@@ -602,9 +578,6 @@
   "showHexDataDescription": {
     "message": "Wybierz to żeby pokazać pole danych hex na ekranie wysyłania"
   },
-  "sigRequest": {
-    "message": "Prośba o podpis"
-  },
   "sign": {
     "message": "Podpisz"
   },
@@ -649,9 +622,6 @@
   },
   "terms": {
     "message": "Regulamin"
-  },
-  "tips": {
-    "message": "Napiwki"
   },
   "to": {
     "message": "Do"
@@ -722,17 +692,11 @@
   "unknown": {
     "message": "Nieznane"
   },
-  "unknownNetwork": {
-    "message": "Nieznana sieć prywatna"
-  },
   "unknownQrCode": {
     "message": "Błąd: nie mogliśmy odczytać tego kodu QR"
   },
   "unlock": {
     "message": "Odblokuj"
-  },
-  "unlockMessage": {
-    "message": "Zdecentralizowana sieć oczekuje"
   },
   "urlErrorMsg": {
     "message": "URI wymaga prawidłowego prefiksu HTTP/HTTPS."
@@ -755,13 +719,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Żeby użyć tej opcji należy podłączyć kamerę"
   },
-  "youSign": {
-    "message": "Podpisujesz"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Twoja prywatna fraza seed"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Przyspieszenie z zerową ceną gazu"
   }
 }

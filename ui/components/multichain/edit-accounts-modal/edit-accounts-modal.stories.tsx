@@ -22,7 +22,7 @@ export default {
     activeTabOrigin: 'https://test.dapp',
     currentTabHasNoAccounts: false,
     defaultSelectedAccountAddresses: [
-      '0x860092756917d3e069926ba130099375eeeb9440',
+      'eip155:1:0x860092756917d3e069926ba130099375eeeb9440',
     ],
     accounts: [
       {
@@ -37,6 +37,7 @@ export default {
           'eth_signTypedData_v3',
           'eth_signTypedData_v4',
         ],
+        scopes: ['eip155:0'],
         type: 'eip155:eoa',
         metadata: {
           name: 'Account 1',
@@ -47,6 +48,7 @@ export default {
           lastSelected: 1726046726882,
         },
         balance: '0x00',
+        caipAccountId: 'eip155:0:0x860092756917d3e069926ba130099375eeeb9440'
       },
     ],
   },

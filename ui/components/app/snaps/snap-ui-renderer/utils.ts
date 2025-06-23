@@ -9,8 +9,8 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../helpers/constants/design-system';
-import { COMPONENT_MAPPING } from './components';
-import { UIComponent } from './components/types';
+import type { UIComponent } from './components/types';
+import type { COMPONENT_MAPPING } from './components';
 
 export type MapToTemplateParams = {
   map: Record<string, number>;
@@ -25,6 +25,7 @@ export type MapToTemplateParams = {
   };
   t?: (key: string) => string;
   contentBackgroundColor?: string | undefined;
+  componentMap: COMPONENT_MAPPING;
 };
 
 /**
@@ -102,9 +103,9 @@ function generateKey(
 export const mapToTemplate = (params: MapToTemplateParams): UIComponent => {
   const { type, key } = params.element;
   const elementKey = key ?? generateKey(params.map, params.element);
-  const mapped = COMPONENT_MAPPING[
+  const mapped = params.componentMap[
     type as Exclude<JSXElement['type'], 'Option' | 'Radio' | 'SelectorOption'>
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ](params as any);
   return { ...mapped, key: elementKey } as UIComponent;
@@ -112,7 +113,7 @@ export const mapToTemplate = (params: MapToTemplateParams): UIComponent => {
 
 export const mapTextToTemplate = (
   elements: NonEmptyArray<JSXElement | string>,
-  params: Pick<MapToTemplateParams, 'map'>,
+  params: Pick<MapToTemplateParams, 'map' | 'componentMap'>,
 ): NonEmptyArray<UIComponent | string> =>
   elements.map((element) => {
     // With the introduction of JSX elements here can be strings.
@@ -129,11 +130,14 @@ export const mapTextToTemplate = (
  */
 export const FIELD_ELEMENT_TYPES = [
   'FileInput',
+  'AddressInput',
   'Input',
   'Dropdown',
   'RadioGroup',
   'Checkbox',
   'Selector',
+  'AssetSelector',
+  'AccountSelector',
 ];
 
 /**

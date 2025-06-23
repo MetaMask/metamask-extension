@@ -2,22 +2,24 @@ import { useMemo } from 'react';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import useAccountMismatchAlerts from './alerts/signatures/useAccountMismatchAlerts';
 import useDomainMismatchAlerts from './alerts/signatures/useDomainMismatchAlerts';
+import { useAccountTypeUpgrade } from './alerts/transactions/useAccountTypeUpgrade';
+import { useFirstTimeInteractionAlert } from './alerts/transactions/useFirstTimeInteractionAlert';
 import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimateFailedAlerts';
 import { useGasFeeLowAlerts } from './alerts/transactions/useGasFeeLowAlerts';
 import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
+import { useMultipleApprovalsAlerts } from './alerts/transactions/useMultipleApprovalsAlerts';
 import { useNetworkBusyAlerts } from './alerts/transactions/useNetworkBusyAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
+import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
-import { useQueuedConfirmationsAlerts } from './alerts/transactions/useQueuedConfirmationsAlerts';
 import { useResimulationAlert } from './alerts/transactions/useResimulationAlert';
-import { useFirstTimeInteractionAlert } from './alerts/transactions/useFirstTimeInteractionAlert';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOrSubmittingAlerts';
-///: END:ONLY_INCLUDE_IF
-import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import useBlockaidAlerts from './alerts/useBlockaidAlerts';
+import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
+import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOriginSwitchingAlerts';
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
+import { useTrustSignalAlerts } from './alerts/useTrustSignalAlerts';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -30,50 +32,53 @@ function useSignatureAlerts(): Alert[] {
 }
 
 function useTransactionAlerts(): Alert[] {
+  const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
+  const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
   const gasFeeLowAlerts = useGasFeeLowAlerts();
   const gasTooLowAlerts = useGasTooLowAlerts();
   const insufficientBalanceAlerts = useInsufficientBalanceAlerts();
+  const multipleApprovalAlerts = useMultipleApprovalsAlerts();
   const networkBusyAlerts = useNetworkBusyAlerts();
   const noGasPriceAlerts = useNoGasPriceAlerts();
+  const nonContractAddressAlerts = useNonContractAddressAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
   const resimulationAlert = useResimulationAlert();
-  const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
-  ///: END:ONLY_INCLUDE_IF
-  const queuedConfirmationsAlerts = useQueuedConfirmationsAlerts();
+  const trustSignalAlerts = useTrustSignalAlerts();
 
   return useMemo(
     () => [
+      ...accountTypeUpgradeAlerts,
+      ...firstTimeInteractionAlert,
       ...gasEstimateFailedAlerts,
       ...gasFeeLowAlerts,
       ...gasTooLowAlerts,
       ...insufficientBalanceAlerts,
+      ...multipleApprovalAlerts,
       ...networkBusyAlerts,
       ...noGasPriceAlerts,
+      ...nonContractAddressAlerts,
       ...pendingTransactionAlerts,
       ...resimulationAlert,
-      ...firstTimeInteractionAlert,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       ...signingOrSubmittingAlerts,
-      ///: END:ONLY_INCLUDE_IF
-      ...queuedConfirmationsAlerts,
+      ...trustSignalAlerts,
     ],
     [
+      accountTypeUpgradeAlerts,
+      firstTimeInteractionAlert,
       gasEstimateFailedAlerts,
       gasFeeLowAlerts,
       gasTooLowAlerts,
       insufficientBalanceAlerts,
+      multipleApprovalAlerts,
       networkBusyAlerts,
       noGasPriceAlerts,
+      nonContractAddressAlerts,
       pendingTransactionAlerts,
       resimulationAlert,
-      firstTimeInteractionAlert,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       signingOrSubmittingAlerts,
-      ///: END:ONLY_INCLUDE_IF
-      queuedConfirmationsAlerts,
+      trustSignalAlerts,
     ],
   );
 }
@@ -84,6 +89,7 @@ export default function useConfirmationAlerts(): Alert[] {
   const signatureAlerts = useSignatureAlerts();
   const transactionAlerts = useTransactionAlerts();
   const selectedAccountAlerts = useSelectedAccountAlerts();
+  const networkAndOriginSwitchingAlerts = useNetworkAndOriginSwitchingAlerts();
 
   return useMemo(
     () => [
@@ -92,6 +98,7 @@ export default function useConfirmationAlerts(): Alert[] {
       ...signatureAlerts,
       ...transactionAlerts,
       ...selectedAccountAlerts,
+      ...networkAndOriginSwitchingAlerts,
     ],
     [
       blockaidAlerts,
@@ -99,6 +106,7 @@ export default function useConfirmationAlerts(): Alert[] {
       signatureAlerts,
       transactionAlerts,
       selectedAccountAlerts,
+      networkAndOriginSwitchingAlerts,
     ],
   );
 }

@@ -36,11 +36,13 @@ if (featureNotification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT) {
 export const getMockedNotificationsState = () => {
   return {
     ...mockMetaMaskState,
-    isProfileSyncingEnabled: true,
-    isProfileSyncingUpdateLoading: false,
+    isBackupAndSyncEnabled: true,
+    isBackupAndSyncUpdateLoading: false,
     hasAccountSyncingSyncedAtLeastOnce: false,
     isAccountSyncingReadyToBeDispatched: false,
     isAccountSyncingInProgress: false,
+    isContactSyncingEnabled: true,
+    isContactSyncingInProgress: false,
     isMetamaskNotificationsFeatureSeen: true,
     isNotificationServicesEnabled: true,
     isFeatureAnnouncementsEnabled: true,
@@ -53,5 +55,6 @@ export const getMockedNotificationsState = () => {
     useExternalServices: true,
     pendingApprovalCount: 0,
     pendingApprovals: {},
+    subscriptionAccountsSeen: [notificationsAccountAddress],
   };
 };
