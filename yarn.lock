@@ -5684,6 +5684,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/design-tokens@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@metamask/design-tokens@npm:8.0.0"
+  checksum: 10/a541efb23d7c39ca2bcf25ffa7317968556af067336dc8bf9b04c2e004cc50e7590dec9273c576a2e3be12165913ae6c1134f2ba7291edb67790559e9a5b5205
+  languageName: node
+  linkType: hard
+
 "@metamask/ens-controller@npm:^15.0.2":
   version: 15.0.2
   resolution: "@metamask/ens-controller@npm:15.0.2"
@@ -31384,7 +31391,7 @@ __metadata:
     "@metamask/controller-utils": "npm:^11.9.0"
     "@metamask/delegation-controller": "npm:^0.4.0"
     "@metamask/delegation-deployments": "npm:^0.11.0"
-    "@metamask/design-tokens": "npm:^7.1.0"
+    "@metamask/design-tokens": "npm:^8.0.0"
     "@metamask/ens-controller": "npm:^15.0.2"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
     "@metamask/error-reporting-service": "npm:^2.0.0"
