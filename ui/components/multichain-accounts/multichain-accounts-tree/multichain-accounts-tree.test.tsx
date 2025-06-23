@@ -121,6 +121,30 @@ const mockWallets: ConsolidatedWallets = {
             },
             label: '',
           },
+          {
+            address: '0xC5b2b5ae370876c0122910F92a13bef85A133E56',
+            id: 'account-4',
+            metadata: {
+              name: 'Account 4',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+              importTime: 0,
+            },
+            options: {},
+            methods: ETH_EOA_METHODS,
+            scopes: [EthScope.Eoa],
+            type: EthAccountType.Erc4337,
+            balance: '0x0',
+            pinned: false,
+            hidden: false,
+            lastSelected: 0,
+            active: false,
+            keyring: {
+              type: 'HD Key Tree',
+            },
+            label: '',
+          },
         ],
       },
     },
@@ -192,22 +216,19 @@ describe('MultichainAccountsTree', () => {
 
   it('renders pinned accounts at the top of the list', () => {
     // Update mockWallets to include pinned accounts
+    const mockWallet = mockWallets[walletOneId];
+    const mockGroup = mockWallet.groups[walletOneGroupId];
     const updatedMockWallets: ConsolidatedWallets = {
       ...mockWallets,
       [walletOneId]: {
-        ...mockWallets[walletOneId],
+        ...mockWallet,
         groups: {
           [walletOneGroupId]: {
-            ...mockWallets[walletOneId].groups[walletOneGroupId],
+            ...mockGroup,
             accounts: [
+              ...mockGroup.accounts,
               {
-                ...mockWallets[walletOneId].groups[walletOneGroupId]
-                  .accounts[0],
-                pinned: false, // Account 1 is non-pinned
-              },
-              {
-                ...mockWallets[walletOneId].groups[walletOneGroupId]
-                  .accounts[1],
+                ...mockGroup.accounts[1],
                 pinned: true, // Account 2 is pinned
               },
             ],
@@ -228,22 +249,24 @@ describe('MultichainAccountsTree', () => {
 
   it('renders pinned accounts correctly across multiple wallets', () => {
     // Update mockWallets to include pinned accounts in multiple wallets
+    const mockWallet1 = mockWallets[walletOneId];
+    const mockWallet2 = mockWallets[walletTwoId];
+    const mockGroup1 = mockWallet1.groups[walletOneGroupId];
+    const mockGroup2 = mockWallet2.groups[walletTwoGroupId];
     const updatedMockWallets: ConsolidatedWallets = {
       ...mockWallets,
       [walletOneId]: {
-        ...mockWallets[walletOneId],
+        ...mockWallet1,
         groups: {
           [walletOneGroupId]: {
-            ...mockWallets[walletOneId].groups[walletOneGroupId],
+            ...mockGroup1,
             accounts: [
               {
-                ...mockWallets[walletOneId].groups[walletOneGroupId]
-                  .accounts[0],
+                ...mockGroup1.accounts[0],
                 pinned: false, // Account 1 is non-pinned
               },
               {
-                ...mockWallets[walletOneId].groups[walletOneGroupId]
-                  .accounts[1],
+                ...mockGroup1.accounts[1],
                 pinned: true, // Account 2 is pinned
               },
             ],
@@ -251,15 +274,18 @@ describe('MultichainAccountsTree', () => {
         },
       },
       [walletTwoId]: {
-        ...mockWallets[walletTwoId],
+        ...mockWallet2,
         groups: {
           [walletTwoGroupId]: {
-            ...mockWallets[walletTwoId].groups[walletTwoGroupId],
+            ...mockGroup2,
             accounts: [
               {
-                ...mockWallets[walletTwoId].groups[walletTwoGroupId]
-                  .accounts[0],
-                pinned: true, // Account 3 is pinned
+                ...mockGroup2.accounts[0],
+                pinned: false, // Account 3 is non-pinned
+              },
+              {
+                ...mockGroup2.accounts[1],
+                pinned: true, // Account 4 is pinned
               },
             ],
           },
@@ -279,6 +305,7 @@ describe('MultichainAccountsTree', () => {
     expect(walletOneAccountItems[1]).toHaveTextContent('Account 1'); // Non-pinned account
 
     const walletTwoAccountItems = screen.getAllByText(/Account \d/u).slice(2);
-    expect(walletTwoAccountItems[0]).toHaveTextContent('Account 3'); // Pinned account
+    expect(walletTwoAccountItems[0]).toHaveTextContent('Account 4'); // Pinned account
+    expect(walletTwoAccountItems[1]).toHaveTextContent('Account 3'); // Non-pinned account
   });
 });
