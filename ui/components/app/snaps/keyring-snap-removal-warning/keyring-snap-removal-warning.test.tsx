@@ -2,7 +2,7 @@ import React from 'react';
 import { waitFor, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { Snap } from '@metamask/snaps-utils';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import mockStore from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
@@ -127,6 +127,7 @@ describe('Keyring Snap Remove Warning', () => {
   });
 
   it('opens block explorer for account', async () => {
+    // @ts-expect-error mocking platform
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
     const { getByText, getAllByTestId } = renderWithProvider(
       <KeyringSnapRemovalWarning {...defaultArgs} />,

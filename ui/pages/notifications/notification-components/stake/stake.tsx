@@ -1,9 +1,6 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../../../app/scripts/translate';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { t } from '../../../../../shared/lib/translate';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import {
   NotificationComponentType,
@@ -33,7 +30,6 @@ import {
   getNetworkDetailsByChainId,
   getUsdAmount,
 } from '../../../../helpers/utils/notification.util';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import {
   TextVariant,
   BackgroundColor,
@@ -169,9 +165,8 @@ export const components: NotificationComponent<StakeNotification> = {
       },
       Asset: ({ notification }) => {
         const direction = DIRECTION_MAP[notification.type];
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-          `0x${chainId}` as keyof typeof CHAIN_IDS,
+          notification.chain_id,
         );
         return (
           <NotificationDetailAsset
@@ -206,9 +201,8 @@ export const components: NotificationComponent<StakeNotification> = {
         );
       },
       AssetReceived: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-          `0x${chainId}` as keyof typeof CHAIN_IDS,
+          notification.chain_id,
         );
         return (
           <NotificationDetailAsset

@@ -323,14 +323,9 @@ export const getSwapSendFixtures = (
     smartContract: SMART_CONTRACTS.HST,
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     testSpecificMock: mockSwapsApi(swapsQuotes, swapsQuery),
-    localNodeOptions: [
-      {
-        type: 'ganache',
-        options: {
-          hardfork: 'london',
-        },
-      },
-    ],
+    localNodeOptions: {
+      hardfork: 'london',
+    },
     title,
   };
 };

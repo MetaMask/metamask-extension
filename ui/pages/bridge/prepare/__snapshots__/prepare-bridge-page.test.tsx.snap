@@ -12,7 +12,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           style="min-width: 96px; max-width: 190px;"
         >
           <input
@@ -84,9 +84,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
-          >
-            $0.00
-          </p>
+          />
         </div>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative-soft"
@@ -122,7 +120,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
           class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
             style="min-width: 96px; max-width: 190px; opacity: 1;"
           >
             <input
@@ -139,7 +137,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
             />
           </div>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-text--font-weight-normal mm-box--padding-0 mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-text--font-weight-normal mm-box--padding-0 mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
             data-testid="bridge-destination-button"
             data-theme="light"
             style="white-space: nowrap;"
@@ -205,7 +203,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           style="min-width: 96px; max-width: 190px;"
         >
           <input
@@ -277,9 +275,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
-          >
-            $0.00
-          </p>
+          />
         </div>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative-soft"
@@ -315,7 +311,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
           class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
             style="min-width: 96px; max-width: 190px; opacity: 1;"
           >
             <input
@@ -332,7 +328,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
             />
           </div>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-text--font-weight-normal mm-box--padding-0 mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-text--font-weight-normal mm-box--padding-0 mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
             data-testid="bridge-destination-button"
             data-theme="light"
             style="white-space: nowrap;"

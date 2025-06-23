@@ -61,8 +61,6 @@ describe('Privacy Settings Onboarding View', () => {
   const toggleExternalServicesStub = jest.fn();
   const setUseTransactionSimulationsStub = jest.fn();
   const setPreferenceStub = jest.fn();
-  const enableProfileSyncingStub = jest.fn();
-  const disableProfileSyncingStub = jest.fn();
 
   setBackgroundConnection({
     setFeatureFlag: setFeatureFlagStub,
@@ -78,8 +76,6 @@ describe('Privacy Settings Onboarding View', () => {
       onboardingToggleBasicFunctionalityOnStub,
     setUseTransactionSimulations: setUseTransactionSimulationsStub,
     setPreference: setPreferenceStub,
-    enableProfileSyncing: enableProfileSyncingStub,
-    disableProfileSyncing: disableProfileSyncingStub,
   });
 
   it('should update the default settings from each category', () => {

@@ -122,6 +122,7 @@ type AppState = {
   snapsInstallPrivacyWarningShown: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
+  isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
   showNewSrpAddedToast: boolean;
 };
@@ -219,6 +220,7 @@ const initialState: AppState = {
   snapsInstallPrivacyWarningShown: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
+  isAccessedFromDappConnectedSitePopover: false,
   errorInSettings: null,
   showNewSrpAddedToast: false,
 };
@@ -692,6 +694,9 @@ export default function reduceApp(
         ...appState,
         isAddingNewNetwork: Boolean(action.payload?.isAddingNewNetwork),
         isMultiRpcOnboarding: Boolean(action.payload?.isMultiRpcOnboarding),
+        isAccessedFromDappConnectedSitePopover: Boolean(
+          action.payload?.isAccessedFromDappConnectedSitePopover,
+        ),
         isNetworkMenuOpen: !appState.isNetworkMenuOpen,
       };
     case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:

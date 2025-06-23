@@ -16,6 +16,17 @@ export function buildApproveTransactionData(
   ]).encodeFunctionData('approve', [address, amountOrTokenId]) as Hex;
 }
 
+export function buildPermit2ApproveTransactionData(
+  token: string,
+  spender: string,
+  amount: number,
+  expiration: number,
+): Hex {
+  return new Interface([
+    'function approve(address token, address spender, uint160 amount, uint48 nonce)',
+  ]).encodeFunctionData('approve', [token, spender, amount, expiration]) as Hex;
+}
+
 export function buildIncreaseAllowanceTransactionData(
   address: string,
   amount: number,

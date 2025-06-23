@@ -15,6 +15,7 @@ import ContractAddressRegistry from '../seeder/contract-address-registry';
 import { TestSuiteArguments } from '../tests/confirmations/transactions/shared';
 import TransactionConfirmation from '../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import SnapTxInsights from '../page-objects/pages/dialog/snap-txinsight';
+import { mockInsightsSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Test Snap TxInsights', function () {
   it('shows insight for ERC20 transactions', async function () {
@@ -24,6 +25,7 @@ describe('Test Snap TxInsights', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
+        testSpecificMock: mockInsightsSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -59,6 +61,7 @@ describe('Test Snap TxInsights', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
+        testSpecificMock: mockInsightsSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver, contractRegistry }: TestSuiteArguments) => {
@@ -103,6 +106,7 @@ describe('Test Snap TxInsights', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
+        testSpecificMock: mockInsightsSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver, contractRegistry }: TestSuiteArguments) => {

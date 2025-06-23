@@ -56,6 +56,7 @@ import {
   getTemplateState,
 } from './templates';
 
+const CONFIRMATION_TYPES_WITH_HEADER = ['result_success', 'result_error'];
 const SNAP_CUSTOM_UI_DIALOG = Object.values(DIALOG_APPROVAL_TYPES);
 
 /**
@@ -299,6 +300,11 @@ export default function ConfirmationPage({
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName = isSnapDialog && name;
 
+  const hasHeaderMaybe = isSnapDialog;
+  const hasHeader =
+    isSnapCustomUIDialog ||
+    CONFIRMATION_TYPES_WITH_HEADER.includes(pendingConfirmation?.type);
+
   const INPUT_STATE_CONFIRMATIONS = [ApprovalType.SnapDialogPrompt];
 
   // Generating templatedValues is potentially expensive, and if done on every render
@@ -507,7 +513,7 @@ export default function ConfirmationPage({
           />
           <Box
             className="confirmation-page__content"
-            padding={isSnapCustomUIDialog ? 0 : 4}
+            padding={hasHeader || hasHeaderMaybe ? 0 : 4}
             style={{
               overflowY: 'auto',
             }}

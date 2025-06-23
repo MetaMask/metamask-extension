@@ -36,6 +36,7 @@ import type {
   ThrottledOrigins,
   ThrottledOrigin,
 } from '../../../shared/types/origin-throttling';
+import { ScanAddressResponse } from '../lib/trust-signals/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -74,6 +75,7 @@ export type AppStateControllerState = {
   nftsDropdownState: Json;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
+  addressSecurityAlertResponses: Record<string, ScanAddressResponse>;
   // States used for displaying the changed network toast
   switchedNetworkDetails: Record<string, string> | null;
   switchedNetworkNeverShowMessage: boolean;
@@ -81,11 +83,12 @@ export type AppStateControllerState = {
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   termsOfUseLastAgreed?: number;
   snapsInstallPrivacyWarningShown?: boolean;
-  interactiveReplacementToken?: { url: string; oldRefreshToken: string };
-  noteToTraderMessage?: string;
-  custodianDeepLink?: { fromAddress: string; custodyId: string };
   slides: CarouselSlide[];
   throttledOrigins: ThrottledOrigins;
+  upgradeSplashPageAcknowledgedForAccounts: string[];
+  isUpdateAvailable: boolean;
+  updateModalLastDismissedAt: number | null;
+  lastUpdatedAt: number | null;
 };
 
 const controllerName = 'AppStateController';
@@ -157,6 +160,7 @@ type AppStateControllerInitState = Partial<
     | 'qrHardware'
     | 'nftsDropdownState'
     | 'signatureSecurityAlertResponses'
+    | 'addressSecurityAlertResponses'
     | 'switchedNetworkDetails'
     | 'currentExtensionPopupId'
   >
@@ -199,6 +203,10 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   switchedNetworkNeverShowMessage: false,
   slides: [],
   throttledOrigins: {},
+  upgradeSplashPageAcknowledgedForAccounts: [],
+  isUpdateAvailable: false,
+  updateModalLastDismissedAt: null,
+  lastUpdatedAt: null,
   ...getInitialStateOverrides(),
 });
 
@@ -207,6 +215,7 @@ function getInitialStateOverrides() {
     qrHardware: {},
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
+    addressSecurityAlertResponses: {},
     switchedNetworkDetails: null,
     currentExtensionPopupId: 0,
   };
@@ -325,6 +334,10 @@ const controllerMetadata = {
     persist: false,
     anonymous: true,
   },
+  addressSecurityAlertResponses: {
+    persist: false,
+    anonymous: true,
+  },
   switchedNetworkDetails: {
     persist: false,
     anonymous: true,
@@ -349,24 +362,28 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
-  interactiveReplacementToken: {
-    persist: true,
-    anonymous: true,
-  },
-  noteToTraderMessage: {
-    persist: true,
-    anonymous: true,
-  },
-  custodianDeepLink: {
-    persist: true,
-    anonymous: true,
-  },
   slides: {
     persist: true,
     anonymous: true,
   },
   throttledOrigins: {
     persist: false,
+    anonymous: true,
+  },
+  upgradeSplashPageAcknowledgedForAccounts: {
+    persist: true,
+    anonymous: true,
+  },
+  isUpdateAvailable: {
+    persist: false,
+    anonymous: true,
+  },
+  updateModalLastDismissedAt: {
+    persist: true,
+    anonymous: true,
+  },
+  lastUpdatedAt: {
+    persist: true,
     anonymous: true,
   },
 };
@@ -659,6 +676,54 @@ export class AppStateController extends BaseController<
   }
 
   /**
+   * Add account to list of accounts for which user has acknowledged
+   * smart account upgrade splash page.
+   *
+   * @param account
+   */
+  setSplashPageAcknowledgedForAccount(account: string): void {
+    this.update((state) => {
+      state.upgradeSplashPageAcknowledgedForAccounts = [
+        ...state.upgradeSplashPageAcknowledgedForAccounts,
+        account.toLowerCase(),
+      ];
+    });
+  }
+
+  /**
+   * Set whether or not there is an update available
+   *
+   * @param isUpdateAvailable - Whether or not there is an update available
+   */
+  setIsUpdateAvailable(isUpdateAvailable: boolean): void {
+    this.update((state) => {
+      state.isUpdateAvailable = isUpdateAvailable;
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has dismissed the update modal
+   *
+   * @param updateModalLastDismissedAt - timestamp of the last time the user has dismissed the update modal.
+   */
+  setUpdateModalLastDismissedAt(updateModalLastDismissedAt: number): void {
+    this.update((state) => {
+      state.updateModalLastDismissedAt = updateModalLastDismissedAt;
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has updated
+   *
+   * @param lastUpdatedAt - timestamp of the last time the user has updated
+   */
+  setLastUpdatedAt(lastUpdatedAt: number): void {
+    this.update((state) => {
+      state.lastUpdatedAt = lastUpdatedAt;
+    });
+  }
+
+  /**
    * Sets the inactive timeout for the app
    *
    * @param timeoutMinutes - The inactive timeout in minutes.
@@ -946,56 +1011,6 @@ export class AppStateController extends BaseController<
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  /**
-   * Set the interactive replacement token with a url and the old refresh token
-   *
-   * @param opts
-   * @param opts.url
-   * @param opts.oldRefreshToken
-   */
-  showInteractiveReplacementTokenBanner({
-    url,
-    oldRefreshToken,
-  }: {
-    url: string;
-    oldRefreshToken: string;
-  }): void {
-    this.update((state) => {
-      state.interactiveReplacementToken = {
-        url,
-        oldRefreshToken,
-      };
-    });
-  }
-
-  /**
-   * Set the setCustodianDeepLink with the fromAddress and custodyId
-   *
-   * @param opts
-   * @param opts.fromAddress
-   * @param opts.custodyId
-   */
-  setCustodianDeepLink({
-    fromAddress,
-    custodyId,
-  }: {
-    fromAddress: string;
-    custodyId: string;
-  }): void {
-    this.update((state) => {
-      state.custodianDeepLink = { fromAddress, custodyId };
-    });
-  }
-
-  setNoteToTraderMessage(message: string): void {
-    this.update((state) => {
-      state.noteToTraderMessage = message;
-    });
-  }
-
-  ///: END:ONLY_INCLUDE_IF
-
   getSignatureSecurityAlertResponse(
     securityAlertId: string,
   ): SecurityAlertResponse {
@@ -1012,6 +1027,22 @@ export class AppStateController extends BaseController<
         ] = securityAlertResponse;
       });
     }
+  }
+
+  getAddressSecurityAlertResponse(
+    address: string,
+  ): ScanAddressResponse | undefined {
+    return this.state.addressSecurityAlertResponses[address.toLowerCase()];
+  }
+
+  addAddressSecurityAlertResponse(
+    address: string,
+    addressSecurityAlertResponse: ScanAddressResponse,
+  ): void {
+    this.update((state) => {
+      state.addressSecurityAlertResponses[address.toLowerCase()] =
+        addressSecurityAlertResponse;
+    });
   }
 
   /**

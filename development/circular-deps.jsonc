@@ -205,14 +205,6 @@
     "ui/components/multichain/index.js"
   ],
   [
-    "ui/components/multichain/app-header/app-header-unlocked-content.tsx",
-    "ui/components/multichain/app-header/app-header.js",
-    "ui/components/multichain/app-header/index.js",
-    "ui/components/multichain/global-menu/global-menu.js",
-    "ui/components/multichain/global-menu/index.js",
-    "ui/components/multichain/index.js"
-  ],
-  [
     "ui/components/multichain/asset-picker-amount/asset-picker-amount.tsx",
     "ui/components/multichain/asset-picker-amount/asset-picker-modal/AssetList.tsx",
     "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx",

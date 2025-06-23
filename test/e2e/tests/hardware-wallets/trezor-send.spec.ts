@@ -16,6 +16,9 @@ describe('Trezor Hardware', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withTrezorAccount().build(),
+        localNodeOptions: {
+          hardfork: 'muirGlacier',
+        },
         title: this.test?.fullTitle(),
       },
       async ({

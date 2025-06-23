@@ -66,8 +66,7 @@ describe('TransactionAccountDetails', () => {
     });
 
     expect(getByText('Smart account')).toBeInTheDocument();
-    expect(getByText('Now')).toBeInTheDocument();
-    expect(queryByText('Switching to')).toBeNull();
+    expect(queryByText('Now')).toBeNull();
   });
 
   it('does not render if no authorization list', () => {
@@ -83,12 +82,12 @@ describe('TransactionAccountDetails', () => {
       nestedTransactions: [{ to: FROM_MOCK }],
     });
 
-    expect(getByText('Now')).toBeInTheDocument();
+    expect(getByText('Switching To')).toBeInTheDocument();
   });
 
   it('renders required data for upgrade request with nested transactions', () => {
     const { getByText } = renderConfirmation(upgradeAccountConfirmation);
-    expect(getByText('Now')).toBeInTheDocument();
+    expect(getByText('Switching To')).toBeInTheDocument();
     expect(getByText('Smart contract')).toBeInTheDocument();
   });
 

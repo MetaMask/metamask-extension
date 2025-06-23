@@ -11,8 +11,8 @@ import { TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import {
   getImageForChainId,
   getMultichainIsEvm,
-  getMultichainShouldShowFiat,
   isChainIdMainnet,
+  makeGetMultichainShouldShowFiatByChainId,
 } from '../../../../selectors/multichain';
 import { formatWithThreshold } from '../util/formatWithThreshold';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
@@ -36,7 +36,7 @@ export const useTokenDisplayInfo = ({
   const tokenChainImage = getImageForChainId(token.chainId);
   const selectedAccount = useSelector(getSelectedAccount);
   const showFiat = useMultichainSelector(
-    getMultichainShouldShowFiat,
+    makeGetMultichainShouldShowFiatByChainId(token.chainId),
     selectedAccount,
   );
 
@@ -122,7 +122,7 @@ export const useTokenDisplayInfo = ({
     title: token.title,
     tokenImage: token.image,
     primary: formattedPrimary,
-    secondary: token.secondary,
+    secondary: showFiat ? token.secondary : null,
     isStakeable: false,
     tokenChainImage: token.image as string,
   };

@@ -1,6 +1,10 @@
-import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
+import {
+  NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetStateAction,
+} from '@metamask/network-controller';
 import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import {
+  IsAtomicBatchSupportedResult,
   IsAtomicBatchSupportedResultEntry,
   Log,
   TransactionController,
@@ -19,14 +23,24 @@ import {
   SendCalls,
   SendCallsResult,
 } from '@metamask/eth-json-rpc-middleware';
-import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
-import { generateSecurityAlertId } from '../ppom/ppom-util';
+import {
+  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerGetStateAction,
+} from '@metamask/accounts-controller';
+import { KeyringTypes } from '@metamask/keyring-controller';
+
 import { EIP5792ErrorCode } from '../../../../shared/constants/transaction';
+import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
+import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { generateSecurityAlertId } from '../ppom/ppom-util';
 
 type Actions =
+  | AccountsControllerGetStateAction
   | AccountsControllerGetSelectedAccountAction
   | NetworkControllerGetNetworkClientByIdAction
-  | TransactionControllerGetStateAction;
+  | TransactionControllerGetStateAction
+  | PreferencesControllerGetStateAction
+  | NetworkControllerGetStateAction;
 
 export type EIP5792Messenger = Messenger<Actions, never>;
 
@@ -41,7 +55,6 @@ const VERSION = '2.0.0';
 export async function processSendCalls(
   hooks: {
     addTransactionBatch: TransactionController['addTransactionBatch'];
-    getDisabledUpgradeAccountsByChain: () => Record<Hex, Hex[]>;
     getDismissSmartAccountSuggestionEnabled: () => boolean;
     isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
     validateSecurity: (
@@ -56,7 +69,6 @@ export async function processSendCalls(
 ): Promise<SendCallsResult> {
   const {
     addTransactionBatch,
-    getDisabledUpgradeAccountsByChain,
     getDismissSmartAccountSuggestionEnabled,
     isAtomicBatchSupported,
     validateSecurity: validateSecurityHook,
@@ -75,8 +87,6 @@ export async function processSendCalls(
     paramFrom ??
     (messenger.call('AccountsController:getSelectedAccount').address as Hex);
 
-  const disabledUpgradeAccountsByChain = getDisabledUpgradeAccountsByChain();
-
   const dismissSmartAccountSuggestionEnabled =
     getDismissSmartAccountSuggestionEnabled();
 
@@ -86,14 +96,14 @@ export async function processSendCalls(
   });
 
   const chainBatchSupport = batchSupport?.[0];
+  const keyringType = getAccountKeyringType(from, messenger);
 
   validateSendCalls(
     params,
-    from,
     dappChainId,
-    disabledUpgradeAccountsByChain,
     dismissSmartAccountSuggestionEnabled,
     chainBatchSupport,
+    keyringType,
   );
 
   const securityAlertId = generateSecurityAlertId();
@@ -157,85 +167,157 @@ export function getCallsStatus(
   };
 }
 
+async function getAlternateGasFeesCapability(
+  chainIds: Hex[],
+  batchSupport: IsAtomicBatchSupportedResult,
+  getIsSmartTransaction: (chainId: Hex) => boolean,
+  isRelaySupported: (chainId: Hex) => Promise<boolean>,
+  messenger: EIP5792Messenger,
+) {
+  const simulationEnabled = messenger.call(
+    'PreferencesController:getState',
+  ).useTransactionSimulations;
+
+  const relaySupportedChains = await Promise.all(
+    batchSupport
+      .map(({ chainId }) => chainId)
+      .map((chainId) => isRelaySupported(chainId)),
+  );
+
+  const updatedBatchSupport = batchSupport.map((support, index) => ({
+    ...support,
+    relaySupportedForChain: relaySupportedChains[index],
+  }));
+
+  return chainIds.reduce<GetCapabilitiesResult>((acc, chainId) => {
+    const chainBatchSupport = (updatedBatchSupport.find(
+      ({ chainId: batchChainId }) => batchChainId === chainId,
+    ) ?? {}) as IsAtomicBatchSupportedResultEntry & {
+      relaySupportedForChain: boolean;
+    };
+
+    const { isSupported = false, relaySupportedForChain } = chainBatchSupport;
+
+    const isSmartTransaction = getIsSmartTransaction(chainId);
+
+    const alternateGasFees =
+      simulationEnabled &&
+      (isSmartTransaction || (isSupported && relaySupportedForChain));
+
+    if (alternateGasFees) {
+      acc[chainId as Hex] = {
+        alternateGasFees: {
+          supported: true,
+        },
+      };
+    }
+
+    return acc;
+  }, {});
+}
+
 export async function getCapabilities(
   hooks: {
-    getDisabledUpgradeAccountsByChain: () => Record<Hex, Hex[]>;
     getDismissSmartAccountSuggestionEnabled: () => boolean;
+    getIsSmartTransaction: (chainId: Hex) => boolean;
     isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
+    isRelaySupported: (chainId: Hex) => Promise<boolean>;
   },
+  messenger: EIP5792Messenger,
   address: Hex,
   chainIds: Hex[] | undefined,
 ) {
   const {
-    getDisabledUpgradeAccountsByChain,
     getDismissSmartAccountSuggestionEnabled,
+    getIsSmartTransaction,
     isAtomicBatchSupported,
+    isRelaySupported,
   } = hooks;
 
-  const addressNormalized = address.toLowerCase() as Hex;
-
-  const chainIdsNormalized = chainIds?.map(
+  let chainIdsNormalized = chainIds?.map(
     (chainId) => chainId.toLowerCase() as Hex,
   );
+
+  if (!chainIdsNormalized?.length) {
+    const networkConfigurations = messenger.call(
+      'NetworkController:getState',
+    ).networkConfigurationsByChainId;
+    chainIdsNormalized = Object.keys(networkConfigurations) as Hex[];
+  }
 
   const batchSupport = await isAtomicBatchSupported({
     address,
     chainIds: chainIdsNormalized,
   });
 
-  return batchSupport.reduce<GetCapabilitiesResult>(
-    (acc, chainBatchSupport) => {
-      const { chainId } = chainBatchSupport;
-
-      const { delegationAddress, isSupported, upgradeContractAddress } =
-        chainBatchSupport;
-
-      const isUpgradeDisabled =
-        getDisabledUpgradeAccountsByChain()?.[chainId]?.includes(
-          addressNormalized,
-        ) || getDismissSmartAccountSuggestionEnabled();
-
-      const canUpgrade =
-        !isUpgradeDisabled && upgradeContractAddress && !delegationAddress;
-
-      if (!isSupported && !canUpgrade) {
-        return acc;
-      }
-
-      const status = isSupported
-        ? AtomicCapabilityStatus.Supported
-        : AtomicCapabilityStatus.Ready;
-
-      acc[chainId as Hex] = {
-        atomic: {
-          status,
-        },
-      };
-
-      return acc;
-    },
-    {},
+  const alternateGasFeesAcc = await getAlternateGasFeesCapability(
+    chainIdsNormalized,
+    batchSupport,
+    getIsSmartTransaction,
+    isRelaySupported,
+    messenger,
   );
+
+  return chainIdsNormalized.reduce<GetCapabilitiesResult>((acc, chainId) => {
+    const chainBatchSupport = (batchSupport.find(
+      ({ chainId: batchChainId }) => batchChainId === chainId,
+    ) ?? {}) as IsAtomicBatchSupportedResultEntry & {
+      isRelaySupported: boolean;
+    };
+
+    const { delegationAddress, isSupported, upgradeContractAddress } =
+      chainBatchSupport;
+
+    const isUpgradeDisabled = getDismissSmartAccountSuggestionEnabled();
+    let isSupportedAccount = false;
+
+    try {
+      const keyringType = getAccountKeyringType(address, messenger);
+      isSupportedAccount = KEYRING_TYPES_SUPPORTING_7702.includes(keyringType);
+    } catch (error) {
+      // Intentionally empty
+    }
+
+    const canUpgrade =
+      !isUpgradeDisabled &&
+      upgradeContractAddress &&
+      !delegationAddress &&
+      isSupportedAccount;
+
+    if (!isSupported && !canUpgrade) {
+      return acc;
+    }
+
+    const status = isSupported
+      ? AtomicCapabilityStatus.Supported
+      : AtomicCapabilityStatus.Ready;
+
+    if (acc[chainId as Hex] === undefined) {
+      acc[chainId as Hex] = {};
+    }
+
+    acc[chainId as Hex].atomic = {
+      status,
+    };
+
+    return acc;
+  }, alternateGasFeesAcc);
 }
 
 function validateSendCalls(
   sendCalls: SendCalls,
-  from: Hex,
   dappChainId: Hex,
-  disabledUpgradeAccountsByChain: Record<Hex, Hex[]>,
   dismissSmartAccountSuggestionEnabled: boolean,
   chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
+  keyringType: KeyringTypes,
 ) {
   validateSendCallsVersion(sendCalls);
   validateSendCallsChainId(sendCalls, dappChainId, chainBatchSupport);
   validateCapabilities(sendCalls);
-
-  validateUserDisabled(
-    from,
-    disabledUpgradeAccountsByChain,
-    dappChainId,
+  validateUpgrade(
     dismissSmartAccountSuggestionEnabled,
     chainBatchSupport,
+    keyringType,
   );
 }
 
@@ -301,26 +383,26 @@ function validateCapabilities(sendCalls: SendCalls) {
   }
 }
 
-function validateUserDisabled(
-  from: Hex,
-  disabledUpgradeAccountsByChain: Record<Hex, Hex[]>,
-  dappChainId: Hex,
+function validateUpgrade(
   dismissSmartAccountSuggestionEnabled: boolean,
   chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
+  keyringType: KeyringTypes,
 ) {
-  const addressLowerCase = from.toLowerCase() as Hex;
-
   if (chainBatchSupport?.delegationAddress) {
     return;
   }
 
-  const isDisabled =
-    disabledUpgradeAccountsByChain[dappChainId]?.includes(addressLowerCase);
-
-  if (isDisabled || dismissSmartAccountSuggestionEnabled) {
+  if (dismissSmartAccountSuggestionEnabled) {
     throw new JsonRpcError(
       EIP5792ErrorCode.RejectedUpgrade,
-      `EIP-7702 upgrade rejected for this chain and account - Chain ID: ${dappChainId}, Account: ${from}`,
+      'EIP-7702 upgrade disabled by the user',
+    );
+  }
+
+  if (!KEYRING_TYPES_SUPPORTING_7702.includes(keyringType)) {
+    throw new JsonRpcError(
+      EIP5792ErrorCode.RejectedUpgrade,
+      'EIP-7702 upgrade not supported on account',
     );
   }
 }
@@ -343,4 +425,28 @@ function getStatusCode(transactionMeta: TransactionMeta) {
   }
 
   return GetCallsStatusCode.PENDING;
+}
+
+function getAccountKeyringType(
+  accountAddress: Hex,
+  messenger: EIP5792Messenger,
+): KeyringTypes {
+  const { accounts } = messenger.call(
+    'AccountsController:getState',
+  ).internalAccounts;
+
+  const account = Object.values(accounts).find(
+    (acc) => acc.address.toLowerCase() === accountAddress.toLowerCase(),
+  );
+
+  const keyringType = account?.metadata?.keyring?.type;
+
+  if (!keyringType) {
+    throw new JsonRpcError(
+      EIP5792ErrorCode.RejectedUpgrade,
+      'EIP-7702 upgrade not supported as account type is unknown',
+    );
+  }
+
+  return keyringType as KeyringTypes;
 }

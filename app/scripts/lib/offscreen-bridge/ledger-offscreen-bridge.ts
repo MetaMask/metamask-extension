@@ -145,7 +145,7 @@ export class LedgerOffscreenBridge
         (response) => {
           clearTimeout(responseTimeout);
           if (response?.success) {
-            resolve(response.payload);
+            resolve(response.payload || response.success);
           } else {
             reject(
               new Error(response?.payload?.error || 'Unknown Ledger error'),

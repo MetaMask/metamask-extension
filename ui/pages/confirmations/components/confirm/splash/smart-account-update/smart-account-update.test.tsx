@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/dom';
+import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { flushPromises } from '../../../../../../../test/lib/timer-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
@@ -8,15 +9,17 @@ import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/
 import { upgradeAccountConfirmation } from '../../../../../../../test/data/confirmations/batch-transaction';
 import { Confirmation } from '../../../../types/confirm';
 import {
-  disableAccountUpgrade,
   rejectPendingApproval,
+  setSplashPageAcknowledgedForAccount,
+  setSmartAccountOptIn,
 } from '../../../../../../store/actions';
 import { SmartAccountUpdate } from './smart-account-update';
 
 jest.mock('../../../../../../store/actions', () => ({
-  disableAccountUpgrade: jest.fn(),
   setAccountDetailsAddress: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
+  setSplashPageAcknowledgedForAccount: jest.fn(),
+  setSmartAccountOptIn: jest.fn(),
 }));
 
 const mockDispatch = jest.fn();
@@ -63,6 +66,8 @@ describe('Splash', () => {
     );
 
     expect(container.firstChild).toBeNull();
+    expect(setSplashPageAcknowledgedForAccount).toHaveBeenCalledTimes(1);
+    expect(setSmartAccountOptIn).toHaveBeenCalledTimes(1);
   });
 
   it('reject confirmation if user does not accept', async () => {
@@ -81,7 +86,6 @@ describe('Splash', () => {
         name: /Don’t use smart account/iu,
       }),
     );
-    expect(disableAccountUpgrade).toHaveBeenCalledTimes(1);
     await flushPromises();
     expect(rejectPendingApproval).toHaveBeenCalledTimes(1);
   });
@@ -92,6 +96,66 @@ describe('Splash', () => {
         ...upgradeAccountConfirmation,
         origin: 'metamask',
       } as Confirmation),
+    );
+    const { container } = renderWithConfirmContextProvider(
+      <SmartAccountUpdate />,
+      mockStore,
+    );
+
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('does not render if smartAccountOptIn is true for user and its not hardware wallet account', () => {
+    const mockStore = configureMockStore([])(
+      getMockConfirmStateForTransaction(
+        {
+          ...upgradeAccountConfirmation,
+          origin: 'metamask',
+        } as Confirmation,
+        {
+          metamask: {
+            preferences: {
+              smartAccountOptIn: true,
+            },
+            internalAccounts: {
+              accounts: {
+                '0x8a0bbcd42cf79e7cee834e7808eb2fef1cebdb87': {
+                  address: '0x8a0bbcd42cf79e7cee834e7808eb2fef1cebdb87',
+                  metadata: {
+                    keyring: {
+                      type: 'ledger',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      ),
+    );
+    const { container } = renderWithConfirmContextProvider(
+      <SmartAccountUpdate />,
+      mockStore,
+    );
+
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('does not render is splash page is acknowledged for account', () => {
+    const mockStore = configureMockStore([])(
+      getMockConfirmStateForTransaction(
+        {
+          ...upgradeAccountConfirmation,
+          origin: 'metamask',
+        } as Confirmation,
+        {
+          metamask: {
+            upgradeSplashPageAcknowledgedForAccounts: [
+              (upgradeAccountConfirmation as TransactionMeta).txParams.from,
+            ],
+          },
+        },
+      ),
     );
     const { container } = renderWithConfirmContextProvider(
       <SmartAccountUpdate />,

@@ -56,3 +56,39 @@ export async function completeSnapInstallSwitchToTestSnap(driver: Driver) {
   await snapInstall.clickOkButton();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 }
+
+/**
+ * Approve the account in the dialog window and switch back to the `test-snaps`
+ * window.
+ *
+ * @param driver - WebDriver instance used to interact with the browser.
+ */
+export async function approveAccount(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  await driver.waitForSelector({
+    text: 'Connect with MetaMask',
+    tag: 'h3',
+  });
+
+  await driver.clickElement({ text: 'Next' });
+
+  await driver.waitForSelector({
+    text: 'Review permissions',
+    tag: 'h3',
+  });
+
+  await driver.clickElementAndWaitForWindowToClose({ text: 'Confirm' });
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+}
+
+export async function approvePersonalSignMessage(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.waitForSelector({
+    text: 'Signature request',
+    tag: 'h2',
+  });
+
+  await driver.clickElementAndWaitForWindowToClose({ text: 'Confirm' });
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+}

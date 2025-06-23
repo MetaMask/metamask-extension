@@ -63,7 +63,7 @@ export default function RemoteModeIntroducing() {
           paddingTop={2}
           paddingBottom={2}
         >
-          <Icon name={IconName.WalletCard} color={IconColor.infoDefault} />
+          <Icon name={IconName.Cash} color={IconColor.infoDefault} />
           <Text>
             <span style={{ fontWeight: 'bold' }}>Move faster.</span> Allow
             limited actions like swaps or approvals ahead of time.

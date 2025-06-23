@@ -1,8 +1,8 @@
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
-import { withSolanaAccountSnap } from '../solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
+import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
 import {
   clickCancelButton,
   clickConfirmButton,
@@ -17,8 +17,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
           title: this.test?.fullTitle(),
-          mockCalls: true,
-          simulateTransaction: false,
+          mockGetTransactionSuccess: true,
         },
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
@@ -64,8 +63,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
           title: this.test?.fullTitle(),
-          mockCalls: true,
-          simulateTransaction: false,
+          mockGetTransactionSuccess: true,
         },
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
@@ -107,7 +105,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           {
             ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            mockCalls: true,
+            mockGetTransactionSuccess: true,
           },
           async (driver) => {
             const testDapp = new TestDappSolana(driver);

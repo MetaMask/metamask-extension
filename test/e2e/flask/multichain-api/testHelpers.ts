@@ -5,20 +5,15 @@ import {
   KnownNotifications,
 } from '@metamask/chain-agnostic-permission';
 import { JsonRpcRequest } from '@metamask/utils';
-import {
-  convertETHToHexGwei,
-  multipleGanacheOptions,
-  PRIVATE_KEY,
-  regularDelayMs,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 import {
   CONTENT_SCRIPT,
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_INPAGE,
 } from '../../../../app/scripts/constants/stream';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
@@ -39,27 +34,25 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
   ],
   localNodeOptions: [
     {
-      type: 'ganache',
+      type: 'anvil',
       options: {
-        secretKey: PRIVATE_KEY,
-        balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
-        accounts: multipleGanacheOptions.accounts,
+        hardfork: 'muirGlacier',
       },
     },
     {
-      type: 'ganache',
+      type: 'anvil',
       options: {
         port: 8546,
         chainId: 1338,
-        accounts: multipleGanacheOptions.accounts,
+        hardfork: 'muirGlacier',
       },
     },
     {
-      type: 'ganache',
+      type: 'anvil',
       options: {
         port: 7777,
         chainId: 1000,
-        accounts: multipleGanacheOptions.accounts,
+        hardfork: 'muirGlacier',
       },
     },
   ],
@@ -81,24 +74,17 @@ export const getExpectedSessionScope = (scope: string, accounts: string[]) => ({
 export const addAccountInWalletAndAuthorize = async (
   driver: Driver,
 ): Promise<void> => {
-  const editButtons = await driver.findElements('[data-testid="edit"]');
-  await editButtons[0].click();
-  await driver.clickElement({ text: 'New account', tag: 'button' });
-  await driver.clickElement({ text: 'Add account', tag: 'button' });
-  await driver.delay(regularDelayMs);
+  console.log('Adding account in wallet and authorizing');
+  const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
+  await connectAccountConfirmation.check_pageIsLoaded();
+  await connectAccountConfirmation.openEditAccountsModal();
 
-  /**
-   * this needs to be called again, as previous element is stale and will not be found in current frame
-   */
-  const freshEditButtons = await driver.findElements('[data-testid="edit"]');
-  await freshEditButtons[0].click();
-  await driver.delay(regularDelayMs);
+  const editConnectedAccountsModal = new EditConnectedAccountsModal(driver);
+  await editConnectedAccountsModal.check_pageIsLoaded();
+  await editConnectedAccountsModal.addNewEthereumAccount();
 
-  const checkboxes = await driver.findElements('input[type="checkbox" i]');
-  await checkboxes[0].click(); // select all checkbox
-  await driver.delay(regularDelayMs);
-
-  await driver.clickElement({ text: 'Update', tag: 'button' });
+  await connectAccountConfirmation.check_pageIsLoaded();
+  await connectAccountConfirmation.confirmConnect();
 };
 
 /**
@@ -153,13 +139,13 @@ export const passwordLockMetamaskExtension = async (
 };
 
 /**
- * Sometimes we need to escape colon character when using {@link Driver.findElement}, otherwise selenium will treat this as an invalid selector.
+ * We need to replace colon character by dash when using {@link Driver.findElement}, otherwise selenium will treat this as an invalid selector.
  *
  * @param selector - string to manipulate.
- * @returns string with escaped colon char.
+ * @returns string with replaced colon char.
  */
-export const escapeColon = (selector: string): string =>
-  selector.replace(':', '\\:');
+export const replaceColon = (selector: string): string =>
+  selector.replace(':', '-');
 
 export const sendMultichainApiRequest = ({
   driver,

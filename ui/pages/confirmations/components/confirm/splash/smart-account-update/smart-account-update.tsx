@@ -1,6 +1,7 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useCallback, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
 import ZENDESK_URLS from '../../../../../../helpers/constants/zendesk-url';
@@ -25,8 +26,19 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
+import {
+  setSmartAccountOptIn,
+  setSplashPageAcknowledgedForAccount,
+} from '../../../../../../store/actions';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import Name from '../../../../../../components/app/name';
+import {
+  AccountsState,
+  getMemoizedInternalAccountByAddress,
+} from '../../../../../../selectors';
+import { isHardwareKeyring } from '../../../../../../helpers/utils/hardware';
+import { getUpgradeSplashPageAcknowledgedForAccounts } from '../../../../selectors';
+import { getUseSmartAccount } from '../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
 
@@ -67,13 +79,33 @@ const ListItem = ({
 export function SmartAccountUpdate() {
   const [acknowledged, setAcknowledged] = useState(false);
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { handleRejectUpgrade } = useSmartAccountActions();
-
+  const splashPageAcknowledgedForAccountList: string[] = useSelector(
+    getUpgradeSplashPageAcknowledgedForAccounts,
+  );
+  const smartAccountOptIn = useSelector(getUseSmartAccount);
   const { chainId, txParams, origin } = currentConfirmation ?? {};
   const { from } = txParams;
+  const account = useSelector((state: AccountsState) =>
+    getMemoizedInternalAccountByAddress(state as AccountsState, from),
+  );
+  const keyringType = account?.metadata?.keyring?.type;
 
-  if (!currentConfirmation || acknowledged || origin === ORIGIN_METAMASK) {
+  const acknowledgeSmartAccountUpgrade = useCallback(() => {
+    setSplashPageAcknowledgedForAccount(from);
+    setAcknowledged(true);
+    dispatch(setSmartAccountOptIn(true));
+  }, [from, setAcknowledged]);
+
+  if (
+    !currentConfirmation ||
+    acknowledged ||
+    origin === ORIGIN_METAMASK ||
+    splashPageAcknowledgedForAccountList.includes(from.toLowerCase()) ||
+    (smartAccountOptIn && !isHardwareKeyring(keyringType))
+  ) {
     return null;
   }
 
@@ -129,7 +161,7 @@ export function SmartAccountUpdate() {
         />
         <ListItem
           imgSrc="./images/sparkle.svg"
-          title={t('smartAccountPayToken')}
+          title={t('smartAccountSameAccount')}
           description={
             <>
               <Text
@@ -152,6 +184,8 @@ export function SmartAccountUpdate() {
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={handleRejectUpgrade}
           width={BlockSize.Full}
         >
@@ -160,7 +194,7 @@ export function SmartAccountUpdate() {
         <Button
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
-          onClick={() => setAcknowledged(true)}
+          onClick={acknowledgeSmartAccountUpgrade}
           width={BlockSize.Full}
         >
           {t('smartAccountAccept')}

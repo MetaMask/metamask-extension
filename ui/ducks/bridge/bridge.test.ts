@@ -14,7 +14,6 @@ import * as util from '../../helpers/utils/util';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import bridgeReducer from './bridge';
 import {
-  setBridgeFeatureFlags,
   setFromToken,
   setFromTokenInputValue,
   setToToken,
@@ -125,17 +124,6 @@ describe('Ducks - Bridge', () => {
     });
   });
 
-  describe('setBridgeFeatureFlags', () => {
-    it('should call setBridgeFeatureFlags in the background', async () => {
-      const mockSetBridgeFeatureFlags = jest.fn();
-      setBackgroundConnection({
-        [BridgeBackgroundAction.SET_FEATURE_FLAGS]: mockSetBridgeFeatureFlags,
-      } as never);
-      store.dispatch(setBridgeFeatureFlags() as never);
-      expect(mockSetBridgeFeatureFlags).toHaveBeenCalledTimes(1);
-    });
-  });
-
   describe('resetInputFields', () => {
     it('resets to initalState', async () => {
       const state = store.getState().bridge;
@@ -154,6 +142,7 @@ describe('Ducks - Bridge', () => {
         toTokenExchangeRate: null,
         fromTokenExchangeRate: null,
         wasTxDeclined: false,
+        txAlert: null,
         toTokenUsdExchangeRate: null,
       });
     });
@@ -167,11 +156,19 @@ describe('Ducks - Bridge', () => {
       } as never);
 
       store.dispatch(
-        updateQuoteRequestParams({
-          srcChainId: 1,
-          srcTokenAddress: zeroAddress(),
-          destTokenAddress: undefined,
-        }) as never,
+        updateQuoteRequestParams(
+          {
+            srcChainId: 1,
+            srcTokenAddress: zeroAddress(),
+            destTokenAddress: undefined,
+          },
+          {
+            stx_enabled: false,
+            token_symbol_source: 'ETH',
+            token_symbol_destination: 'ETH',
+            security_warnings: [],
+          },
+        ) as never,
       );
 
       expect(mockUpdateParams).toHaveBeenCalledTimes(1);
@@ -180,6 +177,12 @@ describe('Ducks - Bridge', () => {
           srcChainId: 1,
           srcTokenAddress: zeroAddress(),
           destTokenAddress: undefined,
+        },
+        {
+          stx_enabled: false,
+          token_symbol_source: 'ETH',
+          token_symbol_destination: 'ETH',
+          security_warnings: [],
         },
         expect.anything(),
       );
@@ -204,10 +207,7 @@ describe('Ducks - Bridge', () => {
       mockStore.dispatch(resetBridgeState() as never);
 
       expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
-      expect(mockResetBridgeState).toHaveBeenCalledWith(
-        undefined,
-        expect.anything(),
-      );
+      expect(mockResetBridgeState).toHaveBeenCalledWith(expect.anything());
       const actions = mockStore.getActions();
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
@@ -220,6 +220,7 @@ describe('Ducks - Bridge', () => {
         sortOrder: 'cost_ascending',
         toChainId: null,
         toToken: null,
+        txAlert: null,
         toTokenExchangeRate: null,
         wasTxDeclined: false,
         toTokenUsdExchangeRate: null,

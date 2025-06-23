@@ -1,9 +1,10 @@
 import React, { memo } from 'react';
-import classnames from 'classnames';
 import { NameType } from '@metamask/name-controller';
+import classnames from 'classnames';
 import Identicon from '../../../ui/identicon';
-import { Icon, IconName, IconSize } from '../../../component-library';
+import { Icon, IconSize } from '../../../component-library';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
+import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import ShortenedName from './shortened-name';
 import FormattedName from './formatted-value';
 
@@ -15,10 +16,6 @@ export type NameDisplayProps = {
   handleClick?: () => void;
 };
 
-function doesHaveDisplayName(name: string | null): name is string {
-  return Boolean(name);
-}
-
 const NameDisplay = memo(
   ({
     value,
@@ -27,36 +24,47 @@ const NameDisplay = memo(
     variation,
     handleClick,
   }: NameDisplayProps) => {
-    const { name, hasPetname, image } = useDisplayName({
+    const { name, image, icon, displayState } = useDisplayName({
       value,
       type,
       preferContractSymbol,
       variation,
     });
 
-    const hasDisplayName = doesHaveDisplayName(name);
+    const renderIcon = () => {
+      // If icon exists, use it (trust signal /unknown)
+      if (icon) {
+        return (
+          <Icon
+            name={icon.name}
+            className="name__icon"
+            size={IconSize.Md}
+            color={icon.color}
+          />
+        );
+      }
+
+      // Otherwise, use Identicon
+      return <Identicon address={value} diameter={16} image={image} />;
+    };
 
     return (
       <div
         className={classnames({
           name: true,
           name__clickable: Boolean(handleClick),
-          name__saved: hasPetname,
-          name__recognized_unsaved: !hasPetname && hasDisplayName,
-          name__missing: !hasDisplayName,
+          name__saved: displayState === TrustSignalDisplayState.Petname,
+          name__recognized_unsaved:
+            displayState === TrustSignalDisplayState.Recognized,
+          name__missing: displayState === TrustSignalDisplayState.Unknown,
+          name__malicious: displayState === TrustSignalDisplayState.Malicious,
+          name__verified: displayState === TrustSignalDisplayState.Verified,
+          name__warning: displayState === TrustSignalDisplayState.Warning,
         })}
         onClick={handleClick}
       >
-        {hasDisplayName ? (
-          <Identicon address={value} diameter={16} image={image} />
-        ) : (
-          <Icon
-            name={IconName.Question}
-            className="name__icon"
-            size={IconSize.Md}
-          />
-        )}
-        {hasDisplayName ? (
+        {renderIcon()}
+        {name ? (
           <ShortenedName name={name} />
         ) : (
           <FormattedName value={value} type={type} />

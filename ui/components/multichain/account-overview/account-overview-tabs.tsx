@@ -1,25 +1,26 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { endTrace, trace } from '../../../../shared/lib/trace';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import NftsTab from '../../app/assets/nfts/nfts-tab';
-import AssetList from '../../app/assets/asset-list';
-import TransactionList from '../../app/transaction-list';
-import { Tabs, Tab } from '../../ui/tabs';
-import { Box } from '../../component-library';
-
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
-import { detectNfts } from '../../../store/actions';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { endTrace, trace } from '../../../../shared/lib/trace';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAllChainsToPoll } from '../../../selectors';
+import { detectNfts } from '../../../store/actions';
+import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
+import { useAssetListTokenDetection } from '../../app/assets/hooks';
+import NftsTab from '../../app/assets/nfts/nfts-tab';
+import TransactionList from '../../app/transaction-list';
+import { Box } from '../../component-library';
+import { Tab, Tabs } from '../../ui/tabs';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
@@ -44,6 +45,8 @@ export const AccountOverviewTabs = ({
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const allChainIds = useSelector(getAllChainsToPoll);
+
+  useAssetListTokenDetection();
 
   const tabProps = useMemo(
     () => ({
@@ -90,6 +93,8 @@ export const AccountOverviewTabs = ({
     [history],
   );
 
+  const { safeChains } = useSafeChains();
+
   return (
     <Box style={{ flexGrow: '1' }}>
       <Tabs
@@ -108,6 +113,7 @@ export const AccountOverviewTabs = ({
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
+                safeChains={safeChains}
               />
             </Box>
           </Tab>
@@ -123,6 +129,7 @@ export const AccountOverviewTabs = ({
               <DeFiTab
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickDeFi}
+                safeChains={safeChains}
               />
             </Box>
           </Tab>

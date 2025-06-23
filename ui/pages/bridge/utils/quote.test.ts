@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import { ChainId, getNativeAssetForChainId } from '@metamask/bridge-controller';
 import {
   formatTokenAmount,
   formatCurrencyAmount,
@@ -6,6 +7,21 @@ import {
 } from './quote';
 
 describe('Bridge quote utils', () => {
+  describe('getNativeAssetForChainId', () => {
+    it('should return the native asset for a given chainId', () => {
+      const result = getNativeAssetForChainId(ChainId.SOLANA);
+      expect(result).toStrictEqual({
+        address: '0x0000000000000000000000000000000000000000',
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        chainId: 1151111081099710,
+        decimals: 9,
+        iconUrl: '',
+        name: 'Solana',
+        symbol: 'SOL',
+      });
+    });
+  });
+
   describe('formatTokenAmount', () => {
     it('should format token amount with symbol', () => {
       const locale = 'en-US';
