@@ -3624,6 +3624,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setManageInstitutionalWallets.bind(
           preferencesController,
         ),
+      setSmartAccountOptInForAccounts:
+        preferencesController.setSmartAccountOptInForAccounts.bind(
+          preferencesController,
+        ),
 
       // AccountsController
       setSelectedInternalAccount: (id) => {
@@ -3765,10 +3769,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       updateSlides: appStateController.updateSlides.bind(appStateController),
       removeSlide: appStateController.removeSlide.bind(appStateController),
-      setSplashPageAcknowledgedForAccount:
-        appStateController.setSplashPageAcknowledgedForAccount.bind(
-          appStateController,
-        ),
 
       // EnsController
       tryReverseResolveAddress:
