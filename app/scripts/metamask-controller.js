@@ -415,6 +415,7 @@ import { AccountTreeControllerInit } from './controller-init/accounts/account-tr
 ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
 import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
+import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
 ///: END:ONLY_INCLUDE_IF
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -1935,6 +1936,9 @@ export default class MetamaskController extends EventEmitter {
       DeFiPositionsController: DeFiPositionsControllerInit,
       DelegationController: DelegationControllerInit,
       AccountTreeController: AccountTreeControllerInit,
+      ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
+      SeedlessOnboardingController: SeedlessOnboardingControllerInit,
+      ///: END:ONLY_INCLUDE_IF
     };
 
     const {
@@ -1987,6 +1991,11 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.NotificationServicesPushController;
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
     this.accountWalletController = controllersByName.AccountTreeController;
+
+    ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
+    this.seedlessOnboardingController =
+      controllersByName.SeedlessOnboardingController;
+    ///: END:ONLY_INCLUDE_IF
 
     this.notificationServicesController.init();
     this.snapController.init();
@@ -4661,6 +4670,27 @@ export default class MetamaskController extends EventEmitter {
       return null;
     }
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
+
+  /**
+   * Login with social login provider and get User Onboarding details.
+   *
+   * AuthenticationResult is an object that contains the temporary Auth token for next step of onboarding flow
+   * and user's onboarding status to indicate whether the user has already completed the seedless onboarding flow.
+   *
+   * @param {AuthConnection} authConnection - social login provider, `google` | `apple`
+   * @returns {Promise<boolean>} true if user has not completed the seedless onboarding flow, false otherwise
+   */
+  async startOAuthLogin(authConnection) {
+    const oauth2LoginResult = this.oauthService.startOAuthLogin(authConnection);
+    const { isNewUser } = await this.seedlessOnboardingController.authenticate(
+      oauth2LoginResult,
+    );
+    return isNewUser;
+  }
+
+  ///: END:ONLY_INCLUDE_IF
 
   //=============================================================================
   // VAULT / KEYRING RELATED METHODS
