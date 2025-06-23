@@ -9,6 +9,7 @@ import {
 import FixtureBuilder from '../../../fixture-builder';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { Driver } from '../../../webdriver/driver';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
 
 const signatureRequestType = {
   signTypedData: 'Sign Typed Data',
@@ -39,10 +40,9 @@ describe('Sign Typed Data Signature Request', function () {
             .build(),
           title: this.test?.fullTitle(),
         },
-        async ({ driver, localNodes }) => {
+        async ({ driver }) => {
           const confirmation = new SignTypedData(driver);
-          const addresses = await localNodes[0].getAccounts();
-          const publicAddress = addresses[0].toLowerCase();
+          const publicAddress = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
           await unlockWallet(driver);
 
           await openDapp(driver);
@@ -50,17 +50,10 @@ describe('Sign Typed Data Signature Request', function () {
           // creates multiple sign typed data signature requests
           await triggerSignatureRequest(driver, data.type);
 
-          await driver.waitUntilXWindowHandles(3);
-          const windowHandles = await driver.getAllWindowHandles();
           // switches to Dapp
-          await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           // creates second sign typed data signature request
           await triggerSignatureRequest(driver, data.type);
-
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.Dialog,
-            windowHandles,
-          );
 
           await confirmation.check_pageNumbers(1, 2);
 
@@ -68,53 +61,17 @@ describe('Sign Typed Data Signature Request', function () {
 
           // Approve signing typed data
           await finalizeSignatureRequest(driver, 'Confirm');
-          await driver.waitUntilXWindowHandles(3);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await confirmation.verifyRejectAllButtonNotPresent();
+          const windowHandles = await driver.getAllWindowHandles();
 
           // Approve signing typed data
           await finalizeSignatureRequest(driver, 'Confirm');
-          await driver.waitUntilXWindowHandles(2);
+          await driver.waitForWindowToClose(windowHandles);
 
           // switch to the Dapp and verify the signed address for each request
-          await driver.switchToWindowWithTitle('E2E Test Dapp');
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await verifySignatureResult(driver, data.type, publicAddress);
-        },
-      );
-    });
-  });
-
-  testData.forEach((data) => {
-    it(`can initiate and reject a Signature Request of ${data.type}`, async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .build(),
-          title: this.test?.fullTitle(),
-        },
-        async ({ driver }) => {
-          await unlockWallet(driver);
-
-          await openDapp(driver);
-
-          // creates a sign typed data signature request
-          await triggerSignatureRequest(driver, data.type);
-
-          await driver.waitUntilXWindowHandles(3);
-          let windowHandles = await driver.getAllWindowHandles();
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.Dialog,
-            windowHandles,
-          );
-
-          // Reject signing typed data
-          await finalizeSignatureRequest(driver, 'Reject');
-          await driver.waitUntilXWindowHandles(2);
-          windowHandles = await driver.getAllWindowHandles();
-
-          // switch to the Dapp and verify the rejection was successful
-          await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-          await verifySignatureRejection(driver, data.type);
         },
       );
     });
@@ -139,30 +96,27 @@ describe('Sign Typed Data Signature Request', function () {
           // creates multiple sign typed data signature requests
           await triggerSignatureRequest(driver, data.type);
 
-          await driver.waitUntilXWindowHandles(3);
-          const windowHandles = await driver.getAllWindowHandles();
           // switches to Dapp
-          await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
           // creates second sign typed data signature request
           await triggerSignatureRequest(driver, data.type);
 
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.Dialog,
-            windowHandles,
-          );
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           await confirmation.check_pageNumbers(1, 2);
 
           // reject first signature request
           await finalizeSignatureRequest(driver, 'Reject');
-          await driver.waitUntilXWindowHandles(3);
+          await confirmation.verifyRejectAllButtonNotPresent();
 
           // reject second signature request
+          const windowHandles = await driver.getAllWindowHandles();
           await finalizeSignatureRequest(driver, 'Reject');
-          await driver.waitUntilXWindowHandles(2);
+          await driver.waitForWindowToClose(windowHandles);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
           // switch to the Dapp and verify the rejection was successful
-          await driver.switchToWindowWithTitle('E2E Test Dapp');
           await verifySignatureRejection(driver, data.type);
         },
       );
@@ -172,16 +126,23 @@ describe('Sign Typed Data Signature Request', function () {
 
 async function triggerSignatureRequest(driver: Driver, type: string) {
   const testDapp = new TestDapp(driver);
+  const confirmation = new SignTypedData(driver);
 
   switch (type) {
     case signatureRequestType.signTypedData:
       await testDapp.clickSignTypedData();
+      await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+      await confirmation.verifyConfirmationHeadingTitle();
       break;
     case signatureRequestType.signTypedDataV3:
       await testDapp.clickSignTypedDatav3();
+      await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+      await confirmation.verifyConfirmationHeadingTitle();
       break;
     case signatureRequestType.signTypedDataV4:
       await testDapp.clickSignTypedDatav4();
+      await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+      await confirmation.verifyConfirmationHeadingTitle();
       break;
     default:
       throw new Error(`Unsupported signature type: ${type}`);
