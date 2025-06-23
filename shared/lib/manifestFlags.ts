@@ -75,6 +75,10 @@ export type ManifestFlags = {
      * Whether to force the ExtensionStore class to be used during testing
      */
     forceExtensionStore?: boolean;
+    /**
+     * The public key used to verify deep links
+     */
+    deepLinkPublicKey?: string;
   };
 };
 

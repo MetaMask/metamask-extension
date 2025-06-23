@@ -60,6 +60,9 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../helpers/constants/design-system';
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -92,6 +95,9 @@ export default function OnboardingFlow() {
   const isUnlocked = useSelector(getIsUnlocked);
   const showTermsOfUse = useSelector(getShowTermsOfUse);
 
+  const envType = getEnvironmentType();
+  const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
+
   // If the user has not agreed to the terms of use, we show the banner
   // Otherwise, we show the login page
   const [welcomePageState, setWelcomePageState] = useState(
@@ -111,6 +117,7 @@ export default function OnboardingFlow() {
   useEffect(() => {
     if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
       const needsSRP = [
+        ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
         ONBOARDING_REVIEW_SRP_ROUTE,
         ONBOARDING_CONFIRM_SRP_ROUTE,
       ].some((route) => pathname.startsWith(route));
@@ -184,10 +191,10 @@ export default function OnboardingFlow() {
           welcomePageState === WelcomePageState.Login,
       })}
     >
-      <OnboardingAppHeader pageState={welcomePageState} />
+      {!isPopup && <OnboardingAppHeader pageState={welcomePageState} />}
       <RevealSRPModal
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
-        onClose={() => history.push(DEFAULT_ROUTE)}
+        onClose={() => history.goBack()}
         isOpen={showPasswordModalToAllowSRPReveal}
       />
       <Box
@@ -196,16 +203,19 @@ export default function OnboardingFlow() {
         paddingBottom={isWelcomeAndUnlockPage ? 0 : 8}
         width={BlockSize.Full}
         borderStyle={
-          isWelcomeAndUnlockPage ? BorderStyle.none : BorderStyle.solid
+          isWelcomeAndUnlockPage || isPopup
+            ? BorderStyle.none
+            : BorderStyle.solid
         }
         borderRadius={BorderRadius.LG}
-        marginTop={pathname === ONBOARDING_WELCOME_ROUTE ? 0 : 3}
+        marginTop={pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? 0 : 3}
         marginInline="auto"
         borderColor={BorderColor.borderMuted}
         style={{
           maxWidth: isWelcomeAndUnlockPage ? 'none' : '446px',
           minHeight: isWelcomeAndUnlockPage ? 'auto' : '627px',
-          height: pathname === ONBOARDING_WELCOME_ROUTE ? '100%' : 'auto',
+          height:
+            pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? '100%' : 'auto',
         }}
       >
         <Switch>

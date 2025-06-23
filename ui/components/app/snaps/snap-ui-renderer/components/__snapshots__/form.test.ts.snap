@@ -70,7 +70,7 @@ exports[`SnapUIForm will render with fields 1`] = `
             class="mm-box mm-form-text-field snap-ui-renderer__input snap-ui-renderer__field mm-box--display-flex mm-box--flex-direction-column"
           >
             <label
-              class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
               for="input"
             >
               My Input

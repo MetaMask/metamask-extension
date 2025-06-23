@@ -7,7 +7,7 @@ import type {
   AccountGroupId,
   AccountWalletId,
 } from '@metamask/account-tree-controller';
-import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/multichain-accounts-selectors.types';
+import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 
 export default {
   title: 'Components/MultichainAccounts/MultichainAccountsTree',
@@ -60,6 +60,14 @@ const mockWallets: ConsolidatedWallets = {
             scopes: [EthScope.Eoa],
             type: EthAccountType.Eoa,
             balance: '0x0',
+            pinned: false,
+            hidden: false,
+            lastSelected: 0,
+            active: false,
+            keyring: {
+              type: 'HD Key Tree',
+            },
+            label: '',
           },
           {
             address: '0x123456789abcdef0123456789abcdef012345678',
@@ -76,6 +84,14 @@ const mockWallets: ConsolidatedWallets = {
             scopes: [EthScope.Eoa],
             type: EthAccountType.Eoa,
             balance: '0x0',
+            pinned: false,
+            hidden: false,
+            lastSelected: 0,
+            active: false,
+            keyring: {
+              type: 'HD Key Tree',
+            },
+            label: '',
           },
         ],
       },
@@ -108,6 +124,14 @@ const mockWallets: ConsolidatedWallets = {
             scopes: [EthScope.Eoa],
             type: EthAccountType.Erc4337,
             balance: '0x0',
+            pinned: false,
+            hidden: false,
+            lastSelected: 0,
+            active: false,
+            keyring: {
+              type: 'HD Key Tree',
+            },
+            label: '',
           },
         ],
       },

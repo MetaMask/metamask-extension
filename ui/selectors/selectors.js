@@ -2891,6 +2891,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.POLYGON_ZKEVM,
     CHAIN_IDS.MOONBEAM,
     CHAIN_IDS.MOONRIVER,
+    CHAIN_IDS.SEI,
   ].includes(chainId);
 }
 
@@ -2993,6 +2994,20 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
  */
 export function getIsSecurityAlertsEnabled(state) {
   return state.metamask.securityAlertsEnabled;
+}
+
+/**
+ * Gets the cached address security alert response for a given address
+ *
+ * @param {*} state
+ * @param {string} address - The address to get security alert for
+ * @returns the cached address security alert response for the given address
+ */
+export function getAddressSecurityAlertResponse(state, address) {
+  if (!address) {
+    return undefined;
+  }
+  return state.metamask.addressSecurityAlertResponses?.[address.toLowerCase()];
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

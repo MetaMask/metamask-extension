@@ -2,7 +2,10 @@ import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import ConfirmSolanaTxPage from '../../page-objects/pages/send/solana-confirm-tx-page';
-import { withSolanaAccountSnap } from './common-solana';
+import {
+  withSolanaAccountSnap,
+  SHOW_SWAP_SNAP_CONFIRMATION,
+} from './common-solana';
 
 describe('Swap on Solana', function () {
   it('Completes a Swap between SOL and SPL', async function () {
@@ -11,6 +14,7 @@ describe('Swap on Solana', function () {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
         mockSwapSOLtoUSDC: true,
+        showSnapConfirmation: SHOW_SWAP_SNAP_CONFIRMATION,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -48,9 +52,10 @@ describe('Swap on Solana', function () {
           swapFromAmount: '1',
         });
 
-        const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
-
-        await confirmSolanaPage.clickOnConfirm();
+        if (SHOW_SWAP_SNAP_CONFIRMATION) {
+          const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
+          await confirmSolanaPage.clickOnConfirm();
+        }
 
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.check_txAmountInActivity('-0.001 SOL', 1);
@@ -67,6 +72,7 @@ describe('Swap on Solana', function () {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
         mockSwapUSDtoSOL: true,
+        showSnapConfirmation: SHOW_SWAP_SNAP_CONFIRMATION,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -86,9 +92,10 @@ describe('Swap on Solana', function () {
           swapFromAmount: '1',
         });
 
-        const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
-
-        await confirmSolanaPage.clickOnConfirm();
+        if (SHOW_SWAP_SNAP_CONFIRMATION) {
+          const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
+          await confirmSolanaPage.clickOnConfirm();
+        }
 
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.check_txAmountInActivity('-1 USDC', 1);

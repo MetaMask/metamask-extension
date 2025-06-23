@@ -5,7 +5,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import initializedMockState from '../../../../test/data/mock-send-state.json';
 import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import CreatePassword from './create-password';
@@ -59,9 +59,7 @@ describe('Onboarding Create Password', () => {
       const mockStore = configureMockStore()(importFirstTimeFlowState);
 
       renderWithProvider(<CreatePassword />, mockStore);
-      expect(mockHistoryReplace).toHaveBeenCalledWith(
-        ONBOARDING_COMPLETION_ROUTE,
-      );
+      expect(mockHistoryReplace).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
     });
   });
 
@@ -397,9 +395,7 @@ describe('Onboarding Create Password', () => {
       );
 
       await waitFor(() => {
-        expect(mockHistoryPush).toHaveBeenCalledWith(
-          ONBOARDING_COMPLETION_ROUTE,
-        );
+        expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
       });
     });
   });
