@@ -9,7 +9,6 @@ import {
   getPreferences,
   getSelectedAccount,
   getTokenSortConfig,
-  isGlobalNetworkSelectorRemoved,
 } from '../../../../selectors';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
@@ -29,6 +28,8 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+
+const isGlobalNetworkSelectorRemoved = true;
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -54,10 +55,15 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
   const multichainAssets = useMultiChainAssets();
 
+  console.log('evmBalances: ', evmBalances);
+
   // network filter to determine which tokens to show in list
   // on EVM we want to filter based on network filter controls, on non-evm we only want tokens from that chain identifier
   const { networkFilter } = useNetworkFilter();
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+
+  console.log('networkFilter: ', networkFilter);
+  console.log('enabledNetworksByNamespace: ', enabledNetworksByNamespace);
 
   const networksToShow = useMemo(() => {
     return isGlobalNetworkSelectorRemoved
@@ -88,6 +94,8 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     // newTokensImported included in deps, but not in hook's logic
     newTokensImported,
   ]);
+
+  console.log('sorted filtered tokens: ', sortedFilteredTokens);
 
   useEffect(() => {
     if (sortedFilteredTokens) {
