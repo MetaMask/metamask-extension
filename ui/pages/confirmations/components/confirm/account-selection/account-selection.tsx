@@ -101,7 +101,7 @@ export function AccountSelection({
         <Checkbox
           isChecked={allAreSelected}
           isIndeterminate={isSomeSelected}
-          label="Select All"
+          label={t('selectAll')}
           onChange={onSelectAllChange}
         />
       </Box>
