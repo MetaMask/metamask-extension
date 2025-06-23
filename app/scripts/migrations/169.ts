@@ -8,7 +8,7 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 
-export const version = 167;
+export const version = 169;
 
 /**
  * This migration removes app chain permissions from PermissionController if the chain
