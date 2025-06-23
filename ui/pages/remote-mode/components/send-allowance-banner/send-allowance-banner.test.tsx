@@ -17,6 +17,7 @@ const mockAllowance: DailyAllowance = {
   name: TOKEN_DETAILS[TokenSymbol.ETH].name,
   type: AssetType.native,
   address: '',
+  decimals: 18,
 };
 
 const renderComponent = () => {

@@ -3,6 +3,7 @@ import { Box } from '../../../../components/component-library';
 import {
   Display,
   FlexDirection,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 import { BalanceChangeRow } from './balance-change-row';
 import { BalanceChange } from './types';
@@ -17,13 +18,15 @@ import { sortBalanceChanges } from './sortBalanceChanges';
  * @param props.heading
  * @param props.balanceChanges
  * @param props.testId
+ * @param props.labelColor
  * @returns
  */
 export const BalanceChangeList: React.FC<{
   heading: string;
   balanceChanges: BalanceChange[];
   testId?: string;
-}> = ({ heading, balanceChanges, testId }) => {
+  labelColor?: TextColor;
+}> = ({ heading, balanceChanges, testId, labelColor }) => {
   const sortedBalanceChanges = useMemo(() => {
     return sortBalanceChanges(balanceChanges);
   }, [balanceChanges]);
@@ -57,6 +60,7 @@ export const BalanceChangeList: React.FC<{
             label={index === 0 ? heading : undefined}
             balanceChange={balanceChange}
             showFiat={!showFiatTotal && !balanceChange.isUnlimitedApproval}
+            labelColor={labelColor}
           />
         ))}
       </Box>

@@ -22,10 +22,10 @@ type ContentfulBanner = ContentfulSysField & {
     undismissable: boolean;
     startDate?: string;
     endDate?: string;
+    priorityPlacement?: boolean;
+    showInExtension?: boolean;
   };
 };
-
-const noSlides: CarouselSlide[] = [];
 
 type ContentfulBannerResponse = {
   items: ContentfulBanner[];
@@ -36,16 +36,18 @@ type ContentfulBannerResponse = {
   };
 };
 
-export async function fetchCarouselSlidesFromContentful(): Promise<
-  CarouselSlide[]
-> {
+export async function fetchCarouselSlidesFromContentful(): Promise<{
+  prioritySlides: CarouselSlide[];
+  regularSlides: CarouselSlide[];
+}> {
   if (!SPACE_ID || !ACCESS_TOKEN) {
-    return noSlides;
+    return { prioritySlides: [], regularSlides: [] };
   }
 
   const url = new URL(CONTENTFUL_API);
   url.searchParams.set('access_token', ACCESS_TOKEN);
   url.searchParams.set('content_type', CONTENT_TYPE);
+  url.searchParams.set('fields.showInExtension', 'true');
   const res: ContentfulBannerResponse = await fetch(url).then((r) => r.json());
 
   const assets = res.includes?.Asset || [];
@@ -55,17 +57,39 @@ export async function fetchCarouselSlidesFromContentful(): Promise<
     return rawUrl.startsWith('//') ? `https:${rawUrl}` : rawUrl;
   };
 
-  const slides: CarouselSlide[] = res.items.map((entry) => ({
-    id: `contentful-${entry.sys.id}`,
-    title: entry.fields.headline,
-    description: entry.fields.teaser,
-    image: resolveImage(entry.fields.image),
-    href: entry.fields.linkUrl,
-    undismissable: entry.fields.undismissable,
-    dismissed: false,
-    startDate: entry.fields.startDate,
-    endDate: entry.fields.endDate,
-  }));
+  const prioritySlides: CarouselSlide[] = [];
+  const regularSlides: CarouselSlide[] = [];
 
-  return slides;
+  for (const entry of res.items) {
+    const {
+      headline,
+      teaser,
+      image,
+      linkUrl,
+      undismissable,
+      startDate,
+      endDate,
+      priorityPlacement,
+    } = entry.fields;
+
+    const slide: CarouselSlide = {
+      id: `contentful-${entry.sys.id}`,
+      title: headline,
+      description: teaser,
+      image: resolveImage(image),
+      href: linkUrl,
+      undismissable,
+      dismissed: false,
+      startDate,
+      endDate,
+    };
+
+    if (priorityPlacement) {
+      prioritySlides.push(slide);
+    } else {
+      regularSlides.push(slide);
+    }
+  }
+
+  return { prioritySlides, regularSlides };
 }

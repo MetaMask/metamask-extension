@@ -16,3 +16,7 @@ export function selectConfirmationAdvancedDetailsOpen(state: RootState) {
 export function getDismissSmartAccountSuggestionEnabled(state: RootState) {
   return Boolean(getPreferences(state).dismissSmartAccountSuggestionEnabled);
 }
+
+export function getUseSmartAccount(state: RootState) {
+  return Boolean(getPreferences(state).smartAccountOptIn);
+}

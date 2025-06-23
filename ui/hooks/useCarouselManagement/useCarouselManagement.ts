@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import log from 'loglevel';
+import { BigNumber } from 'bignumber.js';
 import { isSolanaAddress } from '../../../shared/lib/multichain/accounts';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
 import { updateSlides } from '../../store/actions';
@@ -11,6 +12,7 @@ import {
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getSlides,
+  getUseExternalServices,
 } from '../../selectors';
 import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import {
@@ -26,6 +28,7 @@ import {
   MULTI_SRP_SLIDE,
   BACKUPANDSYNC_SLIDE,
   SWEEPSTAKES_SLIDE,
+  BASIC_FUNCTIONALITY_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
@@ -66,9 +69,11 @@ export const useCarouselManagement = ({
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const useExternalServices = useSelector(getUseExternalServices);
   const prevSlidesRef = useRef<CarouselSlide[]>();
-
-  const hasZeroBalance = totalBalance === ZERO_BALANCE;
+  const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
+    ZERO_BALANCE,
+  );
 
   useEffect(() => {
     const defaultSlides: CarouselSlide[] = [];
@@ -91,10 +96,12 @@ export const useCarouselManagement = ({
     defaultSlides.push(CASH_SLIDE);
     defaultSlides.push(MULTI_SRP_SLIDE);
     defaultSlides.push(BACKUPANDSYNC_SLIDE);
+    if (!useExternalServices) {
+      defaultSlides.push(BASIC_FUNCTIONALITY_SLIDE);
+    }
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     defaultSlides.push(SOLANA_SLIDE);
     ///: END:ONLY_INCLUDE_IF
-
     defaultSlides.splice(hasZeroBalance ? 0 : 2, 0, fundSlide);
 
     if (isRemoteModeEnabled) {
@@ -134,21 +141,34 @@ export const useCarouselManagement = ({
 
       if (contentfulEnabled) {
         try {
-          const contentfulSlides = await fetchCarouselSlidesFromContentful();
-          const checkedContentfulSlides = contentfulSlides
-            .map((slide) => {
-              const existing = slides.find(
-                (s: CarouselSlide) => s.id === slide.id,
+          const { prioritySlides, regularSlides } =
+            await fetchCarouselSlidesFromContentful();
+          const normalizeContentfulSlides = (slidesToCheck: CarouselSlide[]) =>
+            slidesToCheck
+              .map((slide) => {
+                const existing = slides.find(
+                  (s: CarouselSlide) => s.id === slide.id,
+                );
+                return {
+                  ...slide,
+                  dismissed: existing?.dismissed ?? false,
+                  undismissable:
+                    slide.undismissable || existing?.undismissable || false,
+                };
+              })
+              .filter((slide) =>
+                isActive(slide, testDate ? new Date(testDate) : new Date()),
               );
-              return {
-                ...slide,
-                dismissed: existing?.dismissed ?? false,
-              };
-            })
-            .filter((slide) =>
-              isActive(slide, testDate ? new Date(testDate) : new Date()),
-            );
-          const mergedSlides = [...defaultSlides, ...checkedContentfulSlides];
+          const activePrioritySlides =
+            normalizeContentfulSlides(prioritySlides);
+          const activeRegularSlides = normalizeContentfulSlides(regularSlides);
+
+          const mergedSlides = [
+            ...activePrioritySlides,
+            ...defaultSlides,
+            ...activeRegularSlides,
+          ];
+
           if (!isEqual(prevSlidesRef.current, mergedSlides)) {
             dispatch(updateSlides(mergedSlides));
             prevSlidesRef.current = mergedSlides;
@@ -176,6 +196,7 @@ export const useCarouselManagement = ({
     inTest,
     slides,
     selectedAccount.address,
+    useExternalServices,
   ]);
 
   return { slides };

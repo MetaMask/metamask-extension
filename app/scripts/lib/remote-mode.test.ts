@@ -9,6 +9,7 @@ import { AssetType } from '@metamask/bridge-controller';
 import {
   DailyAllowanceMetadata,
   REMOTE_MODES,
+  NATIVE_ADDRESS,
 } from '../../../shared/lib/remote-mode';
 import { ControllerFlatState } from '../controller-init/controller-list';
 import * as manifestFlags from '../../../shared/lib/manifestFlags';
@@ -284,12 +285,17 @@ describe('remote-mode', () => {
             delegation: {
               delegator: '0xfrom' as Hex,
               delegate: '0xdelegate' as Hex,
+              caveats: [{ enforcer: '0xEnforcer', terms: {} }],
             },
             chainId: '0x1' as Hex,
             tags: [REMOTE_MODES.DAILY_ALLOWANCE],
             meta: JSON.stringify({
               allowances: [
-                { type: AssetType.native, address: '0xto', amount: '1' }, // String
+                {
+                  type: AssetType.native,
+                  address: NATIVE_ADDRESS,
+                  amount: '1',
+                }, // String
                 {
                   type: AssetType.token,
                   address: '0xtokenTo',
@@ -402,7 +408,7 @@ describe('remote-mode', () => {
       if (mockState.delegations && (mockState.delegations as any).daily) {
         (mockState.delegations as any).daily.meta = JSON.stringify({
           allowances: [
-            { type: AssetType.native, address: '0xto', amount: '1' }, // String
+            { type: AssetType.native, address: NATIVE_ADDRESS, amount: '1' }, // String
             {
               type: AssetType.token,
               address: '0xtokenTo',
@@ -484,7 +490,20 @@ describe('remote-mode', () => {
           callData: '0x' as Hex,
         };
         expect(mockEncodeRedeemDelegations).toHaveBeenCalledWith({
-          delegations: [[(mockState.delegations as any)?.daily.delegation]],
+          delegations: [
+            [
+              {
+                ...(mockState.delegations as any)?.daily.delegation,
+                caveats: [
+                  {
+                    ...(mockState.delegations as any)?.daily.delegation
+                      .caveats[0],
+                    args: '0x0000000000000000000000000000000000000000000000000000000000000000',
+                  },
+                ],
+              },
+            ],
+          ],
           modes: [SINGLE_DEFAULT_MODE],
           executions: [[expectedExecution]],
         });
@@ -519,7 +538,20 @@ describe('remote-mode', () => {
           callData: '0xTransferData' as Hex,
         };
         expect(mockEncodeRedeemDelegations).toHaveBeenCalledWith({
-          delegations: [[(mockState.delegations as any)?.daily.delegation]],
+          delegations: [
+            [
+              {
+                ...(mockState.delegations as any)?.daily.delegation,
+                caveats: [
+                  {
+                    ...(mockState.delegations as any)?.daily.delegation
+                      .caveats[0],
+                    args: '0x0000000000000000000000000000000000000000000000000000000000000001',
+                  },
+                ],
+              },
+            ],
+          ],
           modes: [SINGLE_DEFAULT_MODE],
           executions: [[expectedExecution]],
         });
