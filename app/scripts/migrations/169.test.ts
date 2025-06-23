@@ -3,9 +3,9 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
-import { migrate, version } from './167';
+import { migrate, version } from './169';
 
-const oldVersion = 166;
+const oldVersion = 168;
 
 const storage = {
   meta: { version: -1 },
