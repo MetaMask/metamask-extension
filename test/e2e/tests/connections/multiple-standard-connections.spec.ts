@@ -44,7 +44,7 @@ describe('Multiple Standard Dapp Connections', function () {
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: any }) => {
+      async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         const connectAccountConfirmation = new ConnectAccountConfirmation(
@@ -96,7 +96,7 @@ describe('Multiple Standard Dapp Connections', function () {
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: any }) => {
+      async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         const connectAccountConfirmation = new ConnectAccountConfirmation(
