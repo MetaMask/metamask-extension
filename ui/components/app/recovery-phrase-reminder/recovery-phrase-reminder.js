@@ -4,20 +4,23 @@ import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // Components
 import Box from '../../ui/box';
-import Button from '../../ui/button';
+import {
+  Button,
+  ButtonVariant,
+  ButtonSize,
+  Text,
+} from '../../component-library';
 import Popover from '../../ui/popover';
 // Helpers
 import {
   DISPLAY,
   TextAlign,
   TextVariant,
-  BLOCK_SIZES,
   FontWeight,
   JustifyContent,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_UNLOCK_ROUTE } from '../../../helpers/constants/routes';
-import { Text } from '../../component-library';
 
 export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
   const t = useI18nContext();
@@ -61,12 +64,9 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
                   {t('recoveryPhraseReminderHasNotBackedUp')}
                   <Box display={DISPLAY.INLINE_BLOCK} marginLeft={1}>
                     <Button
-                      type="link"
+                      variant={ButtonVariant.Link}
                       onClick={handleBackUp}
-                      style={{
-                        fontSize: 'inherit',
-                        padding: 0,
-                      }}
+                      size={ButtonSize.Inherit}
                     >
                       {t('recoveryPhraseReminderBackupStart')}
                     </Button>
@@ -77,11 +77,9 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
           </ul>
         </Box>
         <Box justifyContent={JustifyContent.center}>
-          <Box width={BLOCK_SIZES.TWO_FIFTHS}>
-            <Button type="primary" onClick={onConfirm}>
-              {t('recoveryPhraseReminderConfirm')}
-            </Button>
-          </Box>
+          <Button variant={ButtonVariant.Primary} block onClick={onConfirm}>
+            {t('recoveryPhraseReminderConfirm')}
+          </Button>
         </Box>
       </Box>
     </Popover>
