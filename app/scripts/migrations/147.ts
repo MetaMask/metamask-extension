@@ -1,4 +1,3 @@
-import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
@@ -18,9 +17,7 @@ export type VersionedData = {
   data: {
     AuthenticationController?: {
       isSignedIn: boolean;
-      sessionData?:
-        | AuthenticationControllerState['sessionData']
-        | previousSessionDataShape;
+      sessionData?: previousSessionDataShape;
     };
   };
 };

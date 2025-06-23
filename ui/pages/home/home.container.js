@@ -1,7 +1,6 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-
 import {
   activeTabHasPermissions,
   getUseExternalServices,
@@ -28,6 +27,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
+  getShowUpdateModal,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -86,10 +86,10 @@ const mapStateToProps = (state) => {
     participateInMetaMetrics,
     firstTimeFlowType,
     completedOnboarding,
+    forgottenPassword,
   } = metamask;
   const selectedAccount = getSelectedInternalAccount(state);
   const { address: selectedAddress } = selectedAccount;
-  const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingApprovals = selectPendingApprovalsForNavigation(state);
@@ -178,6 +178,7 @@ const mapStateToProps = (state) => {
     onboardedInThisUISession: appState.onboardedInThisUISession,
     hasAllowedPopupRedirectApprovals,
     showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
+    showUpdateModal: getShowUpdateModal(state),
   };
 };
 

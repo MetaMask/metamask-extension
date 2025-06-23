@@ -4,6 +4,10 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
+import {
+  TrustSignalDisplayState,
+  useTrustSignals,
+} from '../../../hooks/useTrustSignals';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import {
   MetaMetricsEventCategory,
@@ -24,6 +28,7 @@ import {
   getSelectedAccount,
   getShouldShowFiat,
   getTokenExchangeRates,
+  getSelectedInternalAccount,
 } from '../../../selectors';
 import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
@@ -81,6 +86,18 @@ jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
 }));
 
+jest.mock('../../../hooks/useTrustSignals', () => ({
+  useTrustSignals: jest.fn(),
+  TrustSignalDisplayState: {
+    Malicious: 'malicious',
+    Petname: 'petname',
+    Verified: 'verified',
+    Warning: 'warning',
+    Recognized: 'recognized',
+    Unknown: 'unknown',
+  },
+}));
+
 setBackgroundConnection({
   getGasFeeTimeEstimate: jest.fn(),
 });
@@ -99,6 +116,8 @@ jest.mock('../../../store/actions.ts', () => ({
 }));
 
 const mockStore = configureStore();
+
+const useTrustSignalsMock = jest.mocked(useTrustSignals);
 
 const generateUseSelectorRouter = (opts) => (selector) => {
   if (selector === getConversionRate) {
@@ -119,6 +138,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     return opts.tokens ?? [];
   } else if (selector === selectBridgeHistoryForAccount) {
     return opts.bridgeHistory ?? {};
+  } else if (selector === getSelectedInternalAccount) {
+    return opts.selectedInternalAccount ?? { address: '0xDefaultAddress' };
   } else if (selector === getNames) {
     return {
       [NameType.ETHEREUM_ADDRESS]: {
@@ -145,6 +166,13 @@ describe('TransactionListItem', () => {
   beforeAll(() => {
     useGasFeeEstimates.mockImplementation(
       () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
+    );
+
+    useTrustSignalsMock.mockImplementation((requests) =>
+      requests.map(() => ({
+        state: TrustSignalDisplayState.Unknown,
+        label: null,
+      })),
     );
   });
 

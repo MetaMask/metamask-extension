@@ -8,7 +8,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { WalletSnapOptions } from '../../../../shared/lib/accounts';
+import { CreateAccountSnapOptions } from '../../../../shared/lib/accounts';
 import { CreateSnapAccount } from './create-snap-account';
 
 const newSnapAccount = createMockInternalAccount({
@@ -30,7 +30,7 @@ jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => {
     ),
     useMultichainWalletSnapClient: jest.fn().mockReturnValue({
       createAccount: (
-        options: WalletSnapOptions,
+        options: CreateAccountSnapOptions,
         internalOptions?: SnapKeyringInternalOptions,
       ) => mockCreateAccount(options, internalOptions),
       getNextAvailableAccountName: mockGetNextAvailableAccountName,

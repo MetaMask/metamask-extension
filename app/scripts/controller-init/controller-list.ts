@@ -29,6 +29,7 @@ import {
   SnapController,
   SnapInsightsController,
   SnapInterfaceController,
+  WebSocketService,
 } from '@metamask/snaps-controllers';
 import {
   RateLimitController,
@@ -41,6 +42,7 @@ import { Controller as NotificationServicesPushController } from '@metamask/noti
 import { DelegationController } from '@metamask/delegation-controller';
 
 import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-controller';
+import { AccountTreeController } from '@metamask/account-tree-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -84,13 +86,16 @@ export type Controller =
   | TokenRatesController
   | NftController
   | NftDetectionController
-  | AssetsContractController;
+  | AssetsContractController
+  | AccountTreeController
+  | WebSocketService;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
  * e.g. `{ transactions: [] }`.
  */
 export type ControllerFlatState = AccountsController['state'] &
+  AccountTreeController['state'] &
   AuthenticationController['state'] &
   CronjobController['state'] &
   DeFiPositionsController['state'] &
