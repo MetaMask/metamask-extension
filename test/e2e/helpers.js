@@ -436,6 +436,7 @@ async function withFixtures(options, testSuite) {
 
 const WINDOW_TITLES = Object.freeze({
   ExtensionInFullScreenView: 'MetaMask',
+  ExtensionUpdating: 'MetaMask Updating',
   InstalledExtensions: 'Extensions',
   Dialog: 'MetaMask Dialog',
   Phishing: 'MetaMask Phishing Detection',

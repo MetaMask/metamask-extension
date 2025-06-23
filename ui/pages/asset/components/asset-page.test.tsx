@@ -99,6 +99,7 @@ describe('AssetPage', () => {
       },
       useCurrencyRateCheck: true,
       preferences: {},
+      enabledNetworkMap: {},
       internalAccounts: {
         accounts: {
           [selectedAccountAddress]: {

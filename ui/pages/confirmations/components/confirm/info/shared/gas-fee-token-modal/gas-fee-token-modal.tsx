@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
 import classnames from 'classnames';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import {
   Box,
   Icon,
@@ -31,7 +33,6 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { GasFeeTokenListItem } from '../gas-fee-token-list-item';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { updateSelectedGasFeeToken } from '../../../../../../../store/controller-actions/transaction-controller';
-import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
