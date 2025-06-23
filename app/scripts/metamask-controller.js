@@ -2093,6 +2093,9 @@ export default class MetamaskController extends EventEmitter {
           addTransactionBatch: this.txController.addTransactionBatch.bind(
             this.txController,
           ),
+          addTransaction: this.txController.addTransaction.bind(
+            this.txController,
+          ),
           getDismissSmartAccountSuggestionEnabled: () =>
             this.preferencesController.state.preferences
               .dismissSmartAccountSuggestionEnabled,
