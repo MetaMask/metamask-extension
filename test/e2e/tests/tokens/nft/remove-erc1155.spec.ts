@@ -99,7 +99,12 @@ describe('Remove ERC1155 NFT', function () {
         await homepage.check_expectedBalanceIsDisplayed();
         await homepage.goToNftTab();
         const nftListPage = new NftListPage(driver);
-        if (!isGlobalNetworkSelectorRemoved) {
+        if (isGlobalNetworkSelectorRemoved) {
+          await driver.clickElement('[data-testid="sort-by-networks"]');
+          await driver.clickElement(
+            '[data-testid="modal-header-close-button"]',
+          );
+        } else {
           await nftListPage.filterNftsByNetworks('Popular networks');
         }
         await nftListPage.check_nftNameIsDisplayed(

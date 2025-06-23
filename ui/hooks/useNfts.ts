@@ -6,7 +6,6 @@ import {
   getAllChainsToPoll,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedInternalAccount,
-  isGlobalNetworkSelectorRemoved,
 } from '../selectors';
 import { getEnabledNetworksByNamespace } from '../selectors/multichain/networks';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
@@ -14,6 +13,8 @@ import { NFT } from '../components/multichain/asset-picker-amount/asset-picker-m
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import { usePrevious } from './usePrevious';
 import { useI18nContext } from './useI18nContext';
+
+const isGlobalNetworkSelectorRemoved = true;
 
 export function useNfts({
   overridePopularNetworkFilter = false,
