@@ -4,10 +4,11 @@ import { zeroAddress } from 'ethereumjs-util';
 import { Browser } from 'selenium-webdriver';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   mockEmptyHistoricalPrices,
   mockEmptyPrices,
@@ -42,16 +43,16 @@ describe('Token List', function () {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
 
         await homePage.check_pageIsLoaded();
         await assetListPage.importCustomTokenByChain(
+          chainId,
           tokenAddress,
           symbol,
-          chainId,
         );
 
         await assetListPage.check_tokenGeneralChangePercentageNotPresent(
@@ -99,16 +100,16 @@ describe('Token List', function () {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
 
         await homePage.check_pageIsLoaded();
         await assetListPage.importCustomTokenByChain(
+          chainId,
           tokenAddress,
           symbol,
-          chainId,
         );
 
         await assetListPage.check_tokenGeneralChangePercentage(

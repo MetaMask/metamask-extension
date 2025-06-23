@@ -2,19 +2,22 @@ import { strict as assert } from 'assert';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
-  largeDelayMs,
-  unlockWallet,
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
+import { DAPP_HOST_ADDRESS } from '../../constants';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import HomePage from '../../page-objects/pages/home/homepage';
+import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
+import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
-  addAccountInWalletAndAuthorize,
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
-  updateNetworkCheckboxes,
 } from './testHelpers';
 
 describe('Call `wallet_createSession`, then update the accounts and/or scopes in the permissions page of the wallet for that dapp', function () {
@@ -40,60 +43,58 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
         driver: Driver;
         extensionId: string;
       }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
         await testDapp.connectExternallyConnectable(extensionId);
         await testDapp.initCreateSessionScopes(
           INITIAL_SCOPES,
           CAIP_ACCOUNT_IDS,
         );
-        await addAccountInWalletAndAuthorize(driver);
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
-        await driver.delay(largeDelayMs);
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.openEditAccountsModal();
+
+        const editConnectedAccountsModal = new EditConnectedAccountsModal(
+          driver,
+        );
+        await editConnectedAccountsModal.check_pageIsLoaded();
+        await editConnectedAccountsModal.addNewEthereumAccount();
+        await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
 
         /**
          * We make sure to update selected accounts via wallet extension UI
          */
-        await driver.clickElementSafe(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElementSafe(
-          '[data-testid="global-menu-connected-sites"]',
-        );
-        await driver.clickElementSafe('[data-testid="connection-list-item"]');
-
-        const editButtons = await driver.findElements('[data-testid="edit"]');
-        await editButtons[0].click();
-        const checkboxes = await driver.findElements(
-          'input[type="checkbox" i]',
-        );
-        const firstAccountCheckbox = checkboxes[1];
-        await firstAccountCheckbox.click();
-        await driver.clickElementSafe({ text: 'Update', tag: 'button' });
+        await homePage.headerNavbar.openPermissionsPage();
+        const permissionListPage = new PermissionListPage(driver);
+        await permissionListPage.check_pageIsLoaded();
+        await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
+        const sitePermissionPage = new SitePermissionPage(driver);
+        await sitePermissionPage.check_pageIsLoaded(DAPP_HOST_ADDRESS);
+        await sitePermissionPage.editPermissionsForAccount(['Account 1']);
+        await sitePermissionPage.editPermissionsForNetwork(['Localhost 8545']);
 
         /**
          * And also update selected scope to {@link UPDATED_SCOPE}
          */
-        await updateNetworkCheckboxes(driver, ['Localhost 8546']);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
-
-        const walletSessionChangedNotificationWebElement =
-          await driver.findElement('#wallet-session-changed-result-0');
-
-        const resultSummaries = await driver.findElements('.result-summary');
-        await resultSummaries[1].click();
+        await testDapp.check_pageIsLoaded();
 
         const expectedScope = getExpectedSessionScope(UPDATED_SCOPE, [
           UPDATED_ACCOUNT,
         ]);
 
         const parsedNotificationResult = JSON.parse(
-          await walletSessionChangedNotificationWebElement.getText(),
+          await testDapp.get_walletSessionChangedResult(0),
         );
         const sessionChangedScope =
           parsedNotificationResult.params.sessionScopes;

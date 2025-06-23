@@ -95,6 +95,7 @@ const AccountListItem = ({
   showConnectedStatus = true,
   privacyMode = false,
   showSrpPill = true,
+  showSelectionIndicator = true,
 }) => {
   const t = useI18nContext();
 
@@ -233,11 +234,12 @@ const AccountListItem = ({
           {startAccessory}
         </Box>
       ) : null}
-      {selected && (
+      {selected && showSelectionIndicator && (
         <Box
           className="multichain-account-list-item__selected-indicator"
           borderRadius={BorderRadius.pill}
           backgroundColor={Color.primaryDefault}
+          data-testid="account-list-item-selected-indicator"
         />
       )}
 
@@ -535,6 +537,10 @@ AccountListItem.propTypes = {
    * Determines if SRP pill should be shown
    */
   showSrpPill: PropTypes.bool,
+  /**
+   * Determines if left dark blue selection indicator is displayed or not
+   */
+  showSelectionIndicator: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

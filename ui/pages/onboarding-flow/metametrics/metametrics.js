@@ -25,7 +25,6 @@ import {
 } from '../../../selectors';
 
 import {
-  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -44,6 +43,7 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '../../../components/component-library';
+import { submitRequestToBackground } from '../../../store/background-connection';
 
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
@@ -55,15 +55,15 @@ export default function OnboardingMetametrics() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn);
-
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
 
   const trackEvent = useContext(MetaMetricsContext);
 
-  let nextRouteByBrowser = nextRoute;
+  let nextRouteByBrowser = useSelector(
+    getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
+  );
   if (isFirefox && firstTimeFlowType !== FirstTimeFlowType.restore) {
     nextRouteByBrowser = ONBOARDING_WELCOME_ROUTE;
   }
@@ -72,28 +72,8 @@ export default function OnboardingMetametrics() {
     if (dataCollectionForMarketing === null) {
       await dispatch(setDataCollectionForMarketing(false));
     }
-    const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
+    await dispatch(setParticipateInMetaMetrics(true));
     try {
-      if (firstTimeFlowType) {
-        trackEvent(
-          {
-            category: MetaMetricsEventCategory.Onboarding,
-            event: MetaMetricsEventName.WalletSetupStarted,
-            properties: {
-              account_type:
-                firstTimeFlowType === FirstTimeFlowType.create
-                  ? MetaMetricsEventAccountType.Default
-                  : MetaMetricsEventAccountType.Imported,
-            },
-          },
-          {
-            isOptIn: true,
-            metaMetricsId,
-            flushImmediately: true,
-          },
-        );
-      }
-
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.AppInstalled,
@@ -108,6 +88,9 @@ export default function OnboardingMetametrics() {
           location: 'onboarding_metametrics',
         },
       });
+      // Flush buffered events when user opts in
+      await submitRequestToBackground('trackEventsAfterMetricsOptIn');
+      await submitRequestToBackground('clearEventsAfterMetricsOptIn');
     } finally {
       history.push(nextRouteByBrowser);
     }
@@ -116,6 +99,7 @@ export default function OnboardingMetametrics() {
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
     await dispatch(setDataCollectionForMarketing(false));
+    await submitRequestToBackground('clearEventsAfterMetricsOptIn');
     history.push(nextRouteByBrowser);
   };
 
@@ -224,7 +208,7 @@ export default function OnboardingMetametrics() {
           dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
         }
         label={
-          <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Medium}>
+          <Text fontWeight={FontWeight.Medium}>
             {t('onboardingMetametricsUseDataCheckbox')}
           </Text>
         }
@@ -260,7 +244,6 @@ export default function OnboardingMetametrics() {
         width={BlockSize.Full}
         className="onboarding-metametrics__buttons"
         marginTop={6}
-        marginBottom={4}
         gap={4}
       >
         <Button

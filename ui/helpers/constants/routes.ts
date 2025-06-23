@@ -345,8 +345,12 @@ export const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
 export const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
 export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
+export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 ///: END:ONLY_INCLUDE_IF
+
+export const DEEP_LINK_ROUTE = '/link';
+PATH_NAME_MAP.set(DEEP_LINK_ROUTE, 'Deep link Redirect Page');
