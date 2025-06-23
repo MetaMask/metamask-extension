@@ -95,7 +95,8 @@ export type OAuthProviderConfig = {
 };
 
 export type OAuthLoginEnv = {
-  authConnectionId: string;
+  googleAuthConnectionId: string;
+  appleAuthConnectionId: string;
   groupedAuthConnectionId: string;
   googleClientId: string;
   appleClientId: string;
