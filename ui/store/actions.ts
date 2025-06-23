@@ -36,6 +36,15 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
+  MessageParamsTyped,
+  OriginalRequest,
+  TypedSigningOptions,
+} from '@metamask/signature-controller';
+import {
+  KeyringTypes,
+  SignTypedDataVersion,
+} from '@metamask/keyring-controller';
+import {
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -46,7 +55,6 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
-import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
@@ -6684,4 +6692,23 @@ export function setSkipDeepLinkInterstitial(value: boolean) {
  */
 export async function requestSafeReload() {
   return await submitRequestToBackground('requestSafeReload');
+}
+
+export async function newUnsignedTypedMessage({
+  messageParams,
+  request,
+  version,
+  signingOptions,
+}: {
+  messageParams: MessageParamsTyped;
+  request: OriginalRequest;
+  version: SignTypedDataVersion;
+  signingOptions?: TypedSigningOptions;
+}): Promise<Hex> {
+  return await submitRequestToBackground('newUnsignedTypedMessage', [
+    messageParams,
+    request,
+    version,
+    signingOptions,
+  ]);
 }

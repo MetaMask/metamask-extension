@@ -354,3 +354,6 @@ export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 
 export const DEEP_LINK_ROUTE = '/link';
 PATH_NAME_MAP.set(DEEP_LINK_ROUTE, 'Deep link Redirect Page');
+
+export const PREDICT_ROUTE = '/predict';
+PATH_NAME_MAP.set(PREDICT_ROUTE, 'Predict Page');

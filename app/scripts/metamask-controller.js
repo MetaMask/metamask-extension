@@ -3403,6 +3403,7 @@ export default class MetamaskController extends EventEmitter {
       userStorageController,
       notificationServicesController,
       notificationServicesPushController,
+      signatureController,
     } = this;
 
     return {
@@ -3692,6 +3693,10 @@ export default class MetamaskController extends EventEmitter {
         addressBookController,
       ),
 
+      // SignatureController
+      newUnsignedTypedMessage:
+        signatureController.newUnsignedTypedMessage.bind(signatureController),
+
       // AppStateController
       setLastActiveTime:
         appStateController.setLastActiveTime.bind(appStateController),
@@ -3832,6 +3837,7 @@ export default class MetamaskController extends EventEmitter {
         ),
       setTransactionActive:
         txController.setTransactionActive.bind(txController),
+
       // decryptMessageController
       decryptMessage: this.decryptMessageController.decryptMessage.bind(
         this.decryptMessageController,
