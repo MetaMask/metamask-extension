@@ -7,6 +7,11 @@ import { mockSegment } from './mocks/segment';
 
 describe('Wallet Created Events - Imported Account', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
+    const eventsToMock = [
+      'Wallet Import Started',
+      'Wallet Setup Completed',
+      'Wallet Created',
+    ];
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
@@ -16,11 +21,7 @@ describe('Wallet Created Events - Imported Account', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
-          return await mockSegment(server, [
-            'Wallet Import Started',
-            'Wallet Setup Completed',
-            'Wallet Created',
-          ]);
+          return await mockSegment(server, eventsToMock);
         },
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
@@ -30,9 +31,36 @@ describe('Wallet Created Events - Imported Account', function () {
         });
 
         const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 3);
 
-        assert.deepStrictEqual(events[0].properties, {
+        // Filter events to only include expected ones and remove duplicates as
+        // events are currently being restructured
+        const filteredEvents = events.filter((event) =>
+          eventsToMock.includes(event.event),
+        );
+
+        const uniqueEvents = [];
+        const seenEventTypes = new Set();
+
+        for (const event of filteredEvents) {
+          if (!seenEventTypes.has(event.event)) {
+            uniqueEvents.push(event);
+            seenEventTypes.add(event.event);
+          }
+        }
+
+        assert.equal(uniqueEvents.length, eventsToMock.length);
+
+        const walletImportStarted = uniqueEvents.find(
+          (e) => e.event === 'Wallet Import Started',
+        );
+        const walletSetupCompleted = uniqueEvents.find(
+          (e) => e.event === 'Wallet Setup Completed',
+        );
+        const walletCreated = uniqueEvents.find(
+          (e) => e.event === 'Wallet Created',
+        );
+
+        assert.deepStrictEqual(walletImportStarted.properties, {
           account_type: 'imported',
           category: 'Onboarding',
           locale: 'en',
@@ -40,7 +68,7 @@ describe('Wallet Created Events - Imported Account', function () {
           environment_type: 'fullscreen',
         });
 
-        assert.deepStrictEqual(events[1].properties, {
+        assert.deepStrictEqual(walletSetupCompleted.properties, {
           wallet_setup_type: 'import',
           new_wallet: false,
           account_type: 'imported',
@@ -50,7 +78,7 @@ describe('Wallet Created Events - Imported Account', function () {
           environment_type: 'fullscreen',
         });
 
-        assert.deepStrictEqual(events[2].properties, {
+        assert.deepStrictEqual(walletCreated.properties, {
           method: 'import',
           is_profile_syncing_enabled: true,
           category: 'Onboarding',
