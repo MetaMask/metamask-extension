@@ -6,32 +6,33 @@ const {
   DAPP_URL,
   DAPP_ONE_URL,
   WINDOW_TITLES,
-  defaultGanacheOptions,
   largeDelayMs,
 } = require('../../helpers');
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks.', function () {
-  it('should switch to the dapps network automatically when handling sendTransaction calls', async function () {
+  it('should be possible to send requests from different dapps on different networks', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -120,11 +121,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
 
         // Click Unconfirmed Tx
         await driver.clickElement('.transaction-list-item--unconfirmed');
-
-        await driver.assertElementNotPresent({
-          tag: 'p',
-          text: 'Network switched to Localhost 8546',
-        });
 
         // Confirm Tx
         await driver.clickElement({ text: 'Confirm', tag: 'button' });

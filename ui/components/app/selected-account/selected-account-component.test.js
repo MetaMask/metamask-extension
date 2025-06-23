@@ -41,6 +41,10 @@ jest.mock('../../../selectors', () => {
   };
 });
 
+jest.mock('../../../selectors/multi-srp/multi-srp', () => ({
+  getShouldShowSeedPhraseReminder: () => false,
+}));
+
 describe('SelectedAccount Component', () => {
   const mockStore = configureMockStore()(mockState);
 

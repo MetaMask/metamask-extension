@@ -1,0 +1,48 @@
+@use "design-system";
+
+.solana-bridge-transaction-details-modal {
+  &__content {
+    overflow-y: auto;
+    max-height: 60vh; // Allow scrolling if content exceeds this height
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 0 8px;
+  }
+
+  &__segment {
+    height: 4px;
+    width: 0;
+    transition: width 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    border-radius: var(--rounded-pill);
+    background-color: var(--color-primary-default);
+
+    &--pending {
+      width: 50%;
+    }
+
+    &--complete {
+      width: 100%;
+    }
+  }
+
+  &__segment-container {
+    width: 100%;
+    height: 4px;
+    background-color: var(--color-background-alternative);
+    border-radius: var(--rounded-pill);
+  }
+
+  &__network-badge {
+    margin-right: 8px;
+  }
+
+  &__timestamp {
+    color: var(--color-text-alternative);
+  }
+
+  &__transaction-history {
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+}

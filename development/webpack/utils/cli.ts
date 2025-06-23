@@ -7,6 +7,7 @@
 import type { Options as YargsOptions } from 'yargs';
 import yargs from 'yargs/yargs';
 import parser from 'yargs-parser';
+import type { BuildTypesConfig } from '../../lib/build-type';
 import {
   Browsers,
   type Manifest,
@@ -14,7 +15,6 @@ import {
   uniqueSort,
   toOrange,
 } from './helpers';
-import { type BuildConfig } from './config';
 
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
@@ -91,7 +91,7 @@ export type Features = ReturnType<typeof parseArgv>['features'];
  */
 export function parseArgv(
   argv: string[],
-  { buildTypes, features }: BuildConfig,
+  { buildTypes, features }: BuildTypesConfig,
 ) {
   const allBuildTypeNames = Object.keys(buildTypes);
   const allFeatureNames = Object.keys(features);
@@ -292,7 +292,7 @@ function getOptions(
       array: false,
       choices: ['none', ...buildTypes],
       default: 'main' as const,
-      description: 'Configure features for the build (main, beta, etc)',
+      description: 'Select the build type (main, beta, etc)',
       group: toOrange('Build options:'),
       type: 'string',
     },
@@ -302,7 +302,7 @@ function getOptions(
       choices: allFeatures,
       coerce: uniqueSort,
       default: [] as typeof allFeatures,
-      description: 'Add features not be included in the selected build `type`',
+      description: 'Add features to be included in the selected build `type`',
       group: toOrange('Build options:'),
       type: 'string',
     },
@@ -312,7 +312,7 @@ function getOptions(
       choices: allFeatures,
       coerce: uniqueSort,
       default: [] as typeof allFeatures,
-      description: 'Omit features included in the selected build `type`',
+      description: 'Omit features from the selected build `type`',
       group: toOrange('Build options:'),
       type: 'string',
     },
@@ -348,7 +348,7 @@ function getOptions(
     dryRun: {
       array: false,
       default: false,
-      description: 'Outputs the config without building',
+      description: 'Output the config without building',
       group: toOrange('Options:'),
       type: 'boolean',
     },
@@ -380,6 +380,7 @@ Zip: ${args.zip}
 Snow: ${args.snow}
 LavaMoat: ${args.lavamoat}
 Lockdown: ${args.lockdown}
+Sentry: ${args.sentry}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}
 Browsers: ${args.browser.join(', ')}

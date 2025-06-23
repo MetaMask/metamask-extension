@@ -1,5 +1,7 @@
+import { EventEmitter } from 'events';
 import { CompletedRequest, Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { MOCK_SRP_E2E_IDENTIFIER_BASE_KEY } from '../../../tests/identity/mocks';
 
 const baseUrl =
   'https://user-storage\\.api\\.cx\\.metamask\\.io\\/api\\/v1\\/userstorage';
@@ -17,12 +19,42 @@ export const pathRegexps = {
     `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.notifications}`,
     'u',
   ),
+  [USER_STORAGE_FEATURE_NAMES.addressBook]: new RegExp(
+    `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.addressBook}`,
+    'u',
+  ),
 };
 
-type UserStorageResponseData = { HashedKey: string; Data: string };
+export type UserStorageResponseData = {
+  HashedKey: string;
+  Data: string;
+  // E2E Specific identifier that is not present in the real API
+  SrpIdentifier?: string;
+};
+
+export enum UserStorageMockttpControllerEvents {
+  GET_NOT_FOUND = 'GET_NOT_FOUND',
+  GET_SINGLE = 'GET_SINGLE',
+  GET_ALL = 'GET_ALL',
+  PUT_SINGLE = 'PUT_SINGLE',
+  PUT_BATCH = 'PUT_BATCH',
+  DELETE_NOT_FOUND = 'DELETE_NOT_FOUND',
+  DELETE_SINGLE = 'DELETE_SINGLE',
+  DELETE_ALL = 'DELETE_ALL',
+  DELETE_BATCH_NOT_FOUND = 'DELETE_BATCH_NOT_FOUND',
+  DELETE_BATCH = 'DELETE_BATCH',
+}
 
 const determineIfFeatureEntryFromURL = (url: string) =>
   url.substring(url.lastIndexOf('userstorage') + 12).split('/').length === 2;
+
+const getSrpIdentifierFromHeaders = (headers: Record<string, unknown>) => {
+  const authHeader = headers.authorization;
+  return (
+    authHeader?.toString()?.split(' ')[1] ||
+    `${MOCK_SRP_E2E_IDENTIFIER_BASE_KEY}_1`
+  );
+};
 
 export class UserStorageMockttpController {
   paths: Map<
@@ -33,14 +65,22 @@ export class UserStorageMockttpController {
     }
   > = new Map();
 
+  eventEmitter: EventEmitter = new EventEmitter();
+
   readonly onGet = async (
     path: keyof typeof pathRegexps,
-    request: Pick<CompletedRequest, 'path'>,
+    request: Pick<CompletedRequest, 'path' | 'headers'>,
     statusCode: number = 200,
   ) => {
+    const srpIdentifier = getSrpIdentifierFromHeaders(request.headers);
     const internalPathData = this.paths.get(path);
 
     if (!internalPathData) {
+      this.eventEmitter.emit(UserStorageMockttpControllerEvents.GET_NOT_FOUND, {
+        path,
+        statusCode,
+      });
+
       return {
         statusCode,
         json: null,
@@ -49,11 +89,18 @@ export class UserStorageMockttpController {
 
     const isFeatureEntry = determineIfFeatureEntryFromURL(request.path);
 
+    // If the request is for a single entry, we don't need to check the SRP identifier
+    // because the entry is already identified by the path
     if (isFeatureEntry) {
       const json =
         internalPathData.response?.find(
           (entry) => entry.HashedKey === request.path.split('/').pop(),
         ) || null;
+
+      this.eventEmitter.emit(UserStorageMockttpControllerEvents.GET_SINGLE, {
+        path,
+        statusCode,
+      });
 
       return {
         statusCode,
@@ -61,21 +108,34 @@ export class UserStorageMockttpController {
       };
     }
 
+    // If the request is for all entries, we need to check the SRP identifier
+    // in order to return only the entries that belong to the user
     const json = internalPathData?.response.length
       ? internalPathData.response
       : null;
 
+    const filteredJson = json?.filter((entry) => {
+      return entry.SrpIdentifier === srpIdentifier;
+    });
+    const jsonToReturn = filteredJson?.length ? filteredJson : null;
+
+    this.eventEmitter.emit(UserStorageMockttpControllerEvents.GET_ALL, {
+      path,
+      statusCode,
+    });
+
     return {
       statusCode,
-      json,
+      json: jsonToReturn,
     };
   };
 
   readonly onPut = async (
     path: keyof typeof pathRegexps,
-    request: Pick<CompletedRequest, 'path' | 'body'>,
+    request: Pick<CompletedRequest, 'path' | 'body' | 'headers'>,
     statusCode: number = 204,
   ) => {
+    const srpIdentifier = getSrpIdentifierFromHeaders(request.headers);
     const isFeatureEntry = determineIfFeatureEntryFromURL(request.path);
 
     const data = (await request.body.getJson()) as {
@@ -90,6 +150,14 @@ export class UserStorageMockttpController {
       const internalPathData = this.paths.get(path);
 
       if (!internalPathData) {
+        this.eventEmitter.emit(
+          UserStorageMockttpControllerEvents.DELETE_BATCH_NOT_FOUND,
+          {
+            path,
+            statusCode,
+          },
+        );
+
         return {
           statusCode,
         };
@@ -101,6 +169,11 @@ export class UserStorageMockttpController {
           (entry) => !keysToDelete.includes(entry.HashedKey),
         ),
       });
+
+      this.eventEmitter.emit(UserStorageMockttpControllerEvents.DELETE_BATCH, {
+        path,
+        statusCode,
+      });
     }
 
     if (data?.data) {
@@ -110,11 +183,13 @@ export class UserStorageMockttpController {
               {
                 HashedKey: request.path.split('/').pop() as string,
                 Data: data?.data,
+                SrpIdentifier: srpIdentifier,
               },
             ]
           : Object.entries(data?.data).map(([key, value]) => ({
               HashedKey: key,
               Data: value,
+              SrpIdentifier: srpIdentifier,
             }));
 
       newOrUpdatedSingleOrBatchEntries.forEach((entry) => {
@@ -146,6 +221,21 @@ export class UserStorageMockttpController {
             ],
           });
         }
+
+        if (newOrUpdatedSingleOrBatchEntries.length === 1) {
+          this.eventEmitter.emit(
+            UserStorageMockttpControllerEvents.PUT_SINGLE,
+            {
+              path,
+              statusCode,
+            },
+          );
+        } else {
+          this.eventEmitter.emit(UserStorageMockttpControllerEvents.PUT_BATCH, {
+            path,
+            statusCode,
+          });
+        }
       });
     }
 
@@ -162,6 +252,14 @@ export class UserStorageMockttpController {
     const internalPathData = this.paths.get(path);
 
     if (!internalPathData) {
+      this.eventEmitter.emit(
+        UserStorageMockttpControllerEvents.DELETE_NOT_FOUND,
+        {
+          path,
+          statusCode,
+        },
+      );
+
       return {
         statusCode,
       };
@@ -176,10 +274,20 @@ export class UserStorageMockttpController {
           (entry) => entry.HashedKey !== request.path.split('/').pop(),
         ),
       });
+
+      this.eventEmitter.emit(UserStorageMockttpControllerEvents.DELETE_SINGLE, {
+        path,
+        statusCode,
+      });
     } else {
       this.paths.set(path, {
         ...internalPathData,
         response: [],
+      });
+
+      this.eventEmitter.emit(UserStorageMockttpControllerEvents.DELETE_ALL, {
+        path,
+        statusCode,
       });
     }
 

@@ -1,9 +1,7 @@
 import { strict as assert } from 'assert';
+import { DAPP_URL } from '../../constants';
 import { WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-
-const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
-const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
 class TestDapp {
   private readonly driver: Driver;
@@ -12,6 +10,8 @@ class TestDapp {
     text: 'Add Token(s) to Wallet',
     tag: 'button',
   };
+
+  private readonly addNetworkButton = '#addEthereumChain';
 
   private readonly approveTokensButton = '#approveTokens';
 
@@ -34,17 +34,31 @@ class TestDapp {
   private readonly connectAccountButton = '#connectButton';
 
   private readonly connectMetaMaskMessage = {
-    text: 'Connect with MetaMask',
-    tag: 'h2',
+    text: 'Connect this website with MetaMask',
+    tag: 'p',
   };
 
   private readonly connectedAccount = '#accounts';
 
   private readonly createTokenButton = { text: 'Create Token', tag: 'button' };
 
+  private readonly decryptButton = '#decryptButton';
+
+  private readonly decryptedMessage = '#cleartextDisplay';
+
   private readonly depositPiggyBankContractButton = '#depositButton';
 
+  private readonly eip5792SendCallsError = '#eip5792SendCallsError';
+
   private readonly eip747ContractAddressInput = '#eip747ContractAddress';
+
+  private readonly encryptButton = '#encryptButton';
+
+  private readonly encryptedMessage = '#ciphertextDisplay';
+
+  private readonly encryptMessageInput = '#encryptMessageInput';
+
+  private readonly erc1155DeployButton = '#deployERC1155Button';
 
   private readonly erc1155MintButton = '#batchMintButton';
 
@@ -66,6 +80,8 @@ class TestDapp {
 
   private readonly erc20WatchAssetButton = '#watchAssets';
 
+  private readonly erc721DeployButton = '#deployNFTsButton';
+
   private readonly erc721MintButton = '#mintButton';
 
   private readonly erc721RevokeSetApprovalForAllButton = '#revokeButton';
@@ -74,9 +90,33 @@ class TestDapp {
 
   private readonly erc721TransferFromButton = '#transferFromButton';
 
+  private readonly ethSubscribeResponse =
+    '[data-testid="eth-subscribe-response"]';
+
+  private readonly getAccountsButton = '#getAccounts';
+
+  private readonly getAccountsResult = '#getAccountsResult';
+
+  private readonly getEncryptionKeyButton = '#getEncryptionKeyButton';
+
+  private readonly getEncryptionKeyResult = '#encryptionKeyDisplay';
+
+  private readonly getPermissionsButton = '#getPermissions';
+
+  private readonly getPermissionsResult = '#permissionsResult';
+
   private readonly localhostNetworkMessage = { css: '#chainId', text: '0x539' };
 
   private readonly mmlogo = '#mm-logo';
+
+  private maliciousERC20TransferButton = '#maliciousERC20TransferButton';
+
+  private readonly ethSignButton = '#ethSign';
+
+  private readonly ethSignErrorMessage = {
+    css: '#ethSign',
+    text: 'Error: The method "eth_sign" does not exist / is not available.',
+  };
 
   private readonly personalSignButton = '#personalSign';
 
@@ -87,9 +127,13 @@ class TestDapp {
   private personalSignSigUtilResultSelector =
     '#personalSignVerifySigUtilResult';
 
+  private readonly provider = '#provider';
+
   private readonly revokePermissionButton = '#revokeAccountsPermission';
 
   private readonly sign721PermitButton = '#sign721Permit';
+
+  private readonly sendCallsButton = '#eip5792SendCallsButton';
 
   private sign721PermitResult = '#sign721PermitResult';
 
@@ -183,6 +227,26 @@ class TestDapp {
   }
 
   /**
+   * Sends a JSON-RPC request to the connected wallet using window.ethereum.
+   *
+   * @param method - The RPC method name.
+   * @param params - The parameters for the RPC method.
+   * @returns The result of the RPC call.
+   */
+  async request<T>(method: string, params?: unknown[] | object): Promise<T> {
+    console.log(`Sending request: ${method}`, params);
+    return await this.driver.executeScript(
+      'return window.ethereum.request(arguments[0])',
+      [
+        {
+          method,
+          params,
+        },
+      ],
+    );
+  }
+
+  /**
    * Verifies the accounts connected to the test dapp.
    *
    * @param connectedAccounts - Account addresses to check if connected to test dapp, separated by a comma.
@@ -203,6 +267,52 @@ class TestDapp {
       await this.driver.assertElementNotPresent({
         css: this.connectedAccount,
         text: connectedAccounts.toLowerCase(),
+      });
+    }
+  }
+
+  /**
+   * Verify the decrypted message on test dapp.
+   *
+   * @param message - The decrypted message to verify.
+   */
+  async check_decryptedMessage(message: string) {
+    console.log('Verify decrypted message on test dapp');
+    await this.driver.waitForSelector({
+      css: this.decryptedMessage,
+      text: message,
+    });
+  }
+
+  /**
+   * Verify the EIP-5792 send calls error message on the test dapp.
+   *
+   * @param expectedMessage - The expected error message to verify.
+   */
+  async checkEip5792SendCallsError(expectedMessage: string) {
+    await this.driver.waitForSelector({
+      css: this.eip5792SendCallsError,
+      text: expectedMessage,
+    });
+  }
+
+  /**
+   * Verifies the eth_subscribe response.
+   *
+   * @param shouldBePresent - Whether the eth_subscribe response should be present, defaults to true.
+   * @param guardTime - Time to wait to check if the eth_subscribe response is present, defaults to 1000ms.
+   */
+  async check_ethSubscribeResponse(
+    shouldBePresent: boolean = true,
+    guardTime: number = 1000,
+  ) {
+    if (shouldBePresent) {
+      console.log('Verify eth_subscribe response is displayed');
+      await this.driver.waitForSelector(this.ethSubscribeResponse);
+    } else {
+      console.log('Verify eth_subscribe response is not displayed');
+      await this.driver.assertElementNotPresent(this.ethSubscribeResponse, {
+        waitAtLeastGuard: guardTime,
       });
     }
   }
@@ -277,6 +387,54 @@ class TestDapp {
     });
   }
 
+  /**
+   * Verify get connected accounts result.
+   *
+   * @param expectedResult - The expected account address.
+   */
+  async check_getAccountsResult(expectedResult: string) {
+    console.log(
+      'Verify get connected accounts result contains:',
+      expectedResult,
+    );
+    await this.driver.clickElement(this.getAccountsButton);
+    await this.driver.waitForSelector({
+      css: this.getAccountsResult,
+      text: expectedResult,
+    });
+  }
+
+  /**
+   * Verify the get encryption key result.
+   *
+   * @param encryptionKey - The encryption key to display.
+   */
+  async check_getEncryptionKeyResult(encryptionKey: string) {
+    console.log(
+      'Verify get encryption key result on test dapp: ',
+      encryptionKey,
+    );
+    await this.driver.waitForSelector({
+      css: this.getEncryptionKeyResult,
+      text: encryptionKey,
+    });
+  }
+
+  /**
+   * Verify get permissions result.
+   *
+   * @param expectedPermission - The expected displayed permission.
+   */
+  async check_getPermissionsResult(expectedPermission: string) {
+    console.log('Verify get permissions result contains:', expectedPermission);
+    await this.driver.waitForElementToStopMoving(this.getPermissionsButton);
+    await this.driver.clickElement(this.getPermissionsButton);
+    await this.driver.waitForSelector({
+      css: this.getPermissionsResult,
+      text: expectedPermission,
+    });
+  }
+
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.mmlogo);
@@ -285,6 +443,22 @@ class TestDapp {
       throw e;
     }
     console.log('Test Dapp page is loaded');
+  }
+
+  /**
+   * Verify the number of providers displayed in the test dapp.
+   *
+   * @param expectedNumber - The expected number of providers to be displayed. Defaults to 1.
+   */
+  async check_providerNumber(expectedNumber: number = 1): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} providers to be displayed in test dapp`,
+    );
+    await this.driver.wait(async () => {
+      const providers = await this.driver.findElements(this.provider);
+      return providers.length === expectedNumber;
+    }, 10000);
+    console.log(`${expectedNumber} providers found in test dapp`);
   }
 
   /**
@@ -486,6 +660,10 @@ class TestDapp {
     });
   }
 
+  async check_ethSignErrorMessage(): Promise<void> {
+    await this.driver.waitForSelector(this.ethSignErrorMessage);
+  }
+
   async assertEip747ContractAddressInputValue(expectedValue: string) {
     const formFieldEl = await this.driver.findElement(
       this.eip747ContractAddressInput,
@@ -501,12 +679,28 @@ class TestDapp {
     await this.driver.clickElement(this.addTokensToWalletButton);
   }
 
+  async clickAddNetworkButton() {
+    await this.driver.clickElement(this.addNetworkButton);
+  }
+
+  async clickConnectAccountButton() {
+    await this.driver.clickElement(this.connectAccountButton);
+  }
+
   async clickApproveTokens() {
     await this.driver.clickElement(this.approveTokensButton);
   }
 
+  async clickDecryptButton() {
+    await this.driver.clickElement(this.decryptButton);
+  }
+
   async clickApproveTokensWithoutGas() {
     await this.driver.clickElement(this.approveTokensButtonWithoutGas);
+  }
+
+  async clickERC1155DeployButton() {
+    await this.driver.clickElement(this.erc1155DeployButton);
   }
 
   async clickERC1155MintButton() {
@@ -533,6 +727,10 @@ class TestDapp {
     await this.driver.clickElement(this.erc20WatchAssetButton);
   }
 
+  async clickERC721DeployButton() {
+    await this.driver.clickElement(this.erc721DeployButton);
+  }
+
   async clickERC721MintButton() {
     await this.driver.clickElement(this.erc721MintButton);
   }
@@ -553,12 +751,24 @@ class TestDapp {
     await this.driver.clickElement(this.erc721TransferFromButton);
   }
 
+  async clickGetEncryptionKeyButton() {
+    await this.driver.clickElement(this.getEncryptionKeyButton);
+  }
+
   async clickPermit() {
     await this.driver.clickElement(this.signPermitButton);
   }
 
+  async clickEthSignButton() {
+    await this.driver.clickElement(this.ethSignButton);
+  }
+
   async clickPersonalSign() {
     await this.driver.clickElement(this.personalSignButton);
+  }
+
+  async clickSendCalls() {
+    await this.driver.clickElement(this.sendCallsButton);
   }
 
   async clickSignTypedData() {
@@ -606,22 +816,33 @@ class TestDapp {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   }
 
+  async clickMaliciousERC20TransferButton() {
+    const sendTransactionButton = await this.driver.findElement(
+      this.maliciousERC20TransferButton,
+    );
+    await this.driver.scrollToElement(sendTransactionButton);
+    await this.driver.clickElement(this.maliciousERC20TransferButton);
+  }
+
   /**
    * Connect account to test dapp.
    *
    * @param options - Options for connecting account to test dapp.
    * @param [options.connectAccountButtonEnabled] - Indicates if the connect account button should be enabled.
    * @param options.publicAddress - The public address to connect to test dapp.
+   * @param [options.chainId] - The chain id to connect to, defaults to 0x539.
    */
   async connectAccount({
     connectAccountButtonEnabled = true,
     publicAddress,
+    chainId = '0x539',
   }: {
     connectAccountButtonEnabled?: boolean;
     publicAddress?: string;
+    chainId?: string;
   }) {
     console.log('Connect account to test dapp');
-    await this.driver.clickElement(this.connectAccountButton);
+    await this.clickConnectAccountButton();
     if (connectAccountButtonEnabled) {
       await this.confirmConnectAccountModal();
     } else {
@@ -634,7 +855,10 @@ class TestDapp {
     }
     if (publicAddress) {
       await this.check_connectedAccounts(publicAddress);
-      await this.driver.waitForSelector(this.localhostNetworkMessage);
+      await this.driver.waitForSelector({
+        css: '#chainId',
+        text: chainId,
+      });
     }
   }
 
@@ -659,6 +883,21 @@ class TestDapp {
     await this.driver.refresh();
     await this.check_pageIsLoaded();
     await this.check_connectedAccounts(publicAddress, false);
+  }
+
+  /**
+   * Encrypt a message on test dapp.
+   *
+   * @param message - The message to encrypt.
+   */
+  async encryptMessage(message: string) {
+    console.log(`Encrypt message ${message} in test dapp`);
+    await this.driver.fill(this.encryptMessageInput, message);
+    await this.driver.clickElement(this.encryptButton);
+    await this.driver.waitForSelector({
+      css: this.encryptedMessage,
+      text: '0x',
+    });
   }
 
   async fillERC1155TokenAmount(amount: string) {
@@ -744,22 +983,6 @@ class TestDapp {
     );
   }
 
-  /**
-   * Sign a message with the signTypedDataV3 method.
-   */
-  async signTypedDataV3() {
-    console.log('Sign message with signTypedDataV3');
-    await this.clickSignTypedDatav3();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(
-      this.signTypedDataV3V4SignatureRequestMessage,
-    );
-    await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButtonRedesign,
-    );
-  }
-
   async signTypedDataV3Redesign() {
     await this.clickSignTypedDatav3();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -794,15 +1017,6 @@ class TestDapp {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
     );
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async request(method: string, params: any[]) {
-    await this.openTestDappPage({
-      url: `${DAPP_URL}/request?method=${method}&params=${JSON.stringify(
-        params,
-      )}`,
-    });
   }
 }
 

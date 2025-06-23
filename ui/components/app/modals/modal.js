@@ -9,6 +9,12 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
 
+import {
+  CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
+  ConfirmTurnOnBackupAndSyncModal,
+  TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
+  TurnOnBackupAndSyncModal,
+} from './identity';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 
@@ -26,7 +32,6 @@ import RejectTransactions from './reject-transactions';
 import TransactionAlreadyConfirmed from './transaction-already-confirmed';
 
 // Metamask Notifications
-import ConfirmTurnOffProfileSyncing from './confirm-turn-off-profile-syncing';
 import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-on-metamask-notifications';
 
 const modalContainerBaseStyle = {
@@ -86,7 +91,7 @@ const MODALS = {
     },
     laptopModalStyle: {
       width:
-        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '357px' : '449px',
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '400px' : '449px',
       top: 'calc(33% + 45px)',
       paddingLeft:
         getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : null,
@@ -237,8 +242,21 @@ const MODALS = {
     },
   },
 
-  CONFIRM_TURN_OFF_PROFILE_SYNCING: {
-    contents: <ConfirmTurnOffProfileSyncing />,
+  [CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME]: {
+    contents: <ConfirmTurnOnBackupAndSyncModal />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  [TURN_ON_BACKUP_AND_SYNC_MODAL_NAME]: {
+    contents: <TurnOnBackupAndSyncModal />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

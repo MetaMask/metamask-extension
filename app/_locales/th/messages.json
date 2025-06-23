@@ -133,9 +133,6 @@
   "gasLimitTooLow": {
     "message": "วงเงินแก็สต้องอย่างน้อย 21000"
   },
-  "gasPrice": {
-    "message": "ราคาแก๊ส (GWEI)"
-  },
   "general": {
     "message": "ทั่วไป"
   },
@@ -152,9 +149,6 @@
   "import": {
     "message": "นำเข้า",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "นำเข้าบัญชี"
   },
   "importAccountMsg": {
     "message": "บัญชีที่นำเข้าจะไม่ถูกรวมกับบัญชีที่สร้างด้วยคำเเริ่มต้นบนเมต้ามาร์สในตอนแรก เรียนรู้เพิ่มเติมเกี่ยวกับบัญชีที่นำเข้า"
@@ -301,9 +295,6 @@
   "settings": {
     "message": "การตั้งค่า"
   },
-  "sigRequest": {
-    "message": "ขอลายเซ็น"
-  },
   "sign": {
     "message": "เซ็นชื่อ"
   },
@@ -355,9 +346,6 @@
   "unknown": {
     "message": "ไม่รู้จัก"
   },
-  "unknownNetwork": {
-    "message": "ไม่รู้จักเครือข่ายส่วนตัว"
-  },
   "unlock": {
     "message": "ปลดล็อก"
   },
@@ -369,8 +357,5 @@
   },
   "visitWebSite": {
     "message": "เยี่ยมชมเว็บไซต์ของเรา"
-  },
-  "youSign": {
-    "message": "คุณกำลังเซ็นชื่อ"
   }
 }

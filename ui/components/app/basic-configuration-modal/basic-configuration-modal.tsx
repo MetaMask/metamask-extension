@@ -12,7 +12,11 @@ import {
   FontWeight,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { toggleExternalServices } from '../../../store/actions';
+import {
+  setDataCollectionForMarketing,
+  setParticipateInMetaMetrics,
+  toggleExternalServices,
+} from '../../../store/actions';
 import {
   ModalOverlay,
   ModalContent,
@@ -37,7 +41,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getUseExternalServices } from '../../../selectors';
 import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
+import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import {
   hideBasicFunctionalityModal,
   onboardingToggleBasicFunctionalityOff,
@@ -50,7 +54,7 @@ export function BasicConfigurationModal() {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -111,6 +115,30 @@ export function BasicConfigurationModal() {
               ? t('basicConfigurationModalDisclaimerOff')
               : t('basicConfigurationModalDisclaimerOn')}
           </Text>
+          {isExternalServicesEnabled ? (
+            <Text variant={TextVariant.bodySm}>
+              {t('basicConfigurationModalDisclaimerOffAdditionalText', [
+                <Text
+                  key="basic-functionality-related-features-1"
+                  variant={TextVariant.bodySmBold}
+                  as="span"
+                >
+                  {t(
+                    'basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst',
+                  )}
+                </Text>,
+                <Text
+                  key="basic-functionality-related-features-2"
+                  variant={TextVariant.bodySmBold}
+                  as="span"
+                >
+                  {t(
+                    'basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast',
+                  )}
+                </Text>,
+              ])}
+            </Text>
+          ) : null}
           {isExternalServicesEnabled && (
             <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
               <Checkbox
@@ -135,6 +163,7 @@ export function BasicConfigurationModal() {
               size={ButtonSize.Lg}
               width={BlockSize.Half}
               variant={ButtonVariant.Secondary}
+              data-testid="basic-configuration-modal-cancel-button"
               onClick={closeModal}
             >
               {t('cancel')}
@@ -144,6 +173,7 @@ export function BasicConfigurationModal() {
               disabled={!hasAgreed && isExternalServicesEnabled}
               width={BlockSize.Half}
               variant={ButtonVariant.Primary}
+              data-testid="basic-configuration-modal-toggle-button"
               onClick={() => {
                 const event = onboardingFlow
                   ? {
@@ -154,7 +184,7 @@ export function BasicConfigurationModal() {
                         settings_type: 'basic_functionality',
                         old_value: true,
                         new_value: false,
-                        was_profile_syncing_on: isProfileSyncingEnabled,
+                        was_profile_syncing_on: isBackupAndSyncEnabled,
                       },
                     }
                   : {
@@ -166,11 +196,16 @@ export function BasicConfigurationModal() {
                         old_value: isExternalServicesEnabled,
                         new_value: !isExternalServicesEnabled,
                         was_notifications_on: isMetamaskNotificationsEnabled,
-                        was_profile_syncing_on: isProfileSyncingEnabled,
+                        was_profile_syncing_on: isBackupAndSyncEnabled,
                       },
                     };
 
                 trackEvent(event);
+
+                if (isExternalServicesEnabled || onboardingFlow) {
+                  dispatch(setParticipateInMetaMetrics(false));
+                  dispatch(setDataCollectionForMarketing(false));
+                }
 
                 if (onboardingFlow) {
                   dispatch(hideBasicFunctionalityModal());

@@ -180,4 +180,53 @@ describe('Revoke Dapp Permissions', function () {
       },
     );
   });
+
+  describe('There are pending confirmation in the old network', function () {
+    it('rejects the pending confirmations as permissions are revoked for the network', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+            .build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+          await driver.clickElement('#personalSign');
+
+          const revokePermissionsRequest = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'wallet_revokePermissions',
+            params: [
+              {
+                eth_accounts: {},
+              },
+            ],
+          });
+
+          const revokePermissionsResult = await driver.executeScript(
+            `return window.ethereum.request(${revokePermissionsRequest})`,
+          );
+          assert.deepEqual(revokePermissionsResult, null);
+
+          await driver.waitUntilXWindowHandles(2);
+
+          const afterGetPermissionsRequest = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'wallet_getPermissions',
+          });
+          const afterGetPermissionsResult = await driver.executeScript(
+            `return window.ethereum.request(${afterGetPermissionsRequest})`,
+          );
+          const afterGetPermissionsNames = afterGetPermissionsResult.map(
+            (permission: PermissionConstraint) => permission.parentCapability,
+          );
+          assert.deepEqual(afterGetPermissionsNames, []);
+        },
+      );
+    });
+  });
 });

@@ -248,26 +248,11 @@
   "from": {
     "message": "Från"
   },
-  "functionType": {
-    "message": "Funktionstyp"
-  },
   "gasLimit": {
     "message": "Gasgräns"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Gasgräns innebär det maximala antalet gasenheter som du är villig att spendera."
-  },
   "gasLimitTooLow": {
     "message": "Gasgräns måste vara minst 21 000"
-  },
-  "gasPrice": {
-    "message": "Gas-pris (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gaspris extremt lågt"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Gaspriset anger den summa Ether som du är villig att betala för varje gasenhet."
   },
   "gasUsed": {
     "message": "Gas använd"
@@ -309,9 +294,6 @@
   "import": {
     "message": "Importera",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importera konto"
   },
   "importAccountMsg": {
     "message": "Importerade konton kommer inte att kopplas till din ursprungligen skapade seedphrase för ditt MetaMask-konto. Läs mer om importerade konton"
@@ -455,9 +437,6 @@
   "origin": {
     "message": "Ursprung"
   },
-  "parameters": {
-    "message": "Parametrar"
-  },
   "participateInMetaMetrics": {
     "message": "Delta i MetaMetrics"
   },
@@ -526,9 +505,6 @@
   "removeAccountDescription": {
     "message": "Detta konto kommer att avlägsnas från din plånbok. Säkerställ att du har din ursprungliga seed phrase eller den privata nyckeln till detta importerade konto innan du fortsätter. Du kan importera eller skapa konton igen via kontots rullgardinsmeny."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "anrop som väntar på godkännande"
-  },
   "required": {
     "message": "Krävs"
   },
@@ -596,9 +572,6 @@
   "showHexDataDescription": {
     "message": "Välj detta för att visa hex-datafältet på sändarskärmen"
   },
-  "sigRequest": {
-    "message": "Signaturförfrågan"
-  },
   "sign": {
     "message": "Signera"
   },
@@ -643,9 +616,6 @@
   },
   "terms": {
     "message": "Användarvillkor"
-  },
-  "tips": {
-    "message": "Donationer"
   },
   "to": {
     "message": "Till"
@@ -713,17 +683,11 @@
   "unknown": {
     "message": "okänt"
   },
-  "unknownNetwork": {
-    "message": "Okänt privatnätverk"
-  },
   "unknownQrCode": {
     "message": "Fel: Vi kunde inte identifiera denna QR-kod"
   },
   "unlock": {
     "message": "Lås upp"
-  },
-  "unlockMessage": {
-    "message": "Den decentraliserade webben väntar"
   },
   "urlErrorMsg": {
     "message": "URI:er kräver lämpligt HTTP/HTTPS-prefix."
@@ -746,13 +710,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Du måste tillåta åtkomst till kameran för att använda den här funktionen."
   },
-  "youSign": {
-    "message": "Du signerar"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Din privata seedphrase"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Inget gaspris vid uppsnabbning"
   }
 }

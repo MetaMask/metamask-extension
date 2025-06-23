@@ -1,10 +1,8 @@
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-  WINDOW_TITLES,
-} = require('../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  mockImagesSnap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Images', function () {
@@ -12,7 +10,7 @@ describe('Test Snap Images', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        testSpecificMock: mockImagesSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

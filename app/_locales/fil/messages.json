@@ -227,26 +227,11 @@
   "from": {
     "message": "Mula sa"
   },
-  "functionType": {
-    "message": "Uri ng Function"
-  },
   "gasLimit": {
     "message": "Limitasyon sa Gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ang limitasyon sa gas ay ang maximum na dami ng mga unit ng gas na handa kang gastusin."
-  },
   "gasLimitTooLow": {
     "message": "Ang limitasyon sa gas ay dapat na hindi bababa sa 21000"
-  },
-  "gasPrice": {
-    "message": "Presyo ng Gas (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Napakababa ng Presyo ng Gas"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Tinutukoy ng presyo ng gas ang halaga ng Ether na handa kang ibayad para sa bawat unit ng gas."
   },
   "gasUsed": {
     "message": "Gas na Ginamit"
@@ -276,9 +261,6 @@
   "import": {
     "message": "I-import",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Mag-import ng Account"
   },
   "importAccountMsg": {
     "message": " Ang mga na-import na account ay hindi iuugnay sa orihinal na seedphrase na ginawa ng iyong MetaMask account. Matuto pa tungkol sa mga na-import na account "
@@ -402,9 +384,6 @@
   "origin": {
     "message": "Pinanggalingan"
   },
-  "parameters": {
-    "message": "Mga Parameter"
-  },
   "participateInMetaMetrics": {
     "message": "Makilahok sa MetaMetrics"
   },
@@ -465,9 +444,6 @@
   },
   "removeAccountDescription": {
     "message": "Tatanggalin ang account na ito sa iyong wallet. Pakitiyak na nasa iyo ang orihinal na seed phrase o private key para sa naka-import na account na ito bago magpatuloy. Maaari kang mag-import o gumawa ulit ng mga account mual sa drop-down ng account. "
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "naghihintay na matugunan ang mga request"
   },
   "required": {
     "message": "Kailangan"
@@ -581,9 +557,6 @@
   "terms": {
     "message": "Mga Tuntunin ng Paggamit"
   },
-  "tips": {
-    "message": "Mga Tip"
-  },
   "to": {
     "message": "Para sa"
   },
@@ -650,17 +623,11 @@
   "unknown": {
     "message": "Hindi Alam"
   },
-  "unknownNetwork": {
-    "message": "Hindi Kilalang Pribadong Network"
-  },
   "unknownQrCode": {
     "message": "Error: Hindi namin nakilala ang QR code na iyan"
   },
   "unlock": {
     "message": "I-unlock"
-  },
-  "unlockMessage": {
-    "message": "Naghihintay ang decentralized web"
   },
   "urlErrorMsg": {
     "message": "Kinakailangan ng mga URI ang naaangkop na HTTP/HTTPS prefix."
@@ -680,13 +647,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang access sa camera para magamit ang feature na ito."
   },
-  "youSign": {
-    "message": "Sina-sign mo ang"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Ang iyong pribadong seed phrase"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Zero ang presyo ng gas sa speed up"
   }
 }

@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { Browser } = require('selenium-webdriver');
+const { toEvmCaipChainId } = require('@metamask/multichain-network-controller');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -10,7 +11,6 @@ const {
   DAPP_ONE_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  defaultGanacheOptions,
   veryLargeDelayMs,
   DAPP_TWO_URL,
 } = require('../../helpers');
@@ -112,25 +112,6 @@ async function switchToDialogPopoverValidateDetailsRedesign(
     css: 'p',
     text: expectedDetails.networkText,
   });
-
-  // Get state details
-  await driver.waitForControllersLoaded();
-  const notificationWindowState = await driver.executeScript(() =>
-    window.stateHooks?.getCleanAppState?.(),
-  );
-
-  const {
-    metamask: { selectedNetworkClientId, networkConfigurationsByChainId },
-  } = notificationWindowState;
-
-  const { chainId } = Object.values(networkConfigurationsByChainId).find(
-    ({ rpcEndpoints }) =>
-      rpcEndpoints.some(
-        ({ networkClientId }) => networkClientId === selectedNetworkClientId,
-      ),
-  );
-
-  assert.equal(chainId, expectedDetails.chainId);
 }
 
 async function rejectTransactionRedesign(driver) {
@@ -194,18 +175,20 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
@@ -255,26 +238,28 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
-
+          .withNetworkControllerTripleNode()
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            // Ganache for network 1
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-            // Ganache for network 3
-            {
+          },
+          {
+            type: 'anvil',
+            options: {
               port: 7777,
               chainId: 1000,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
+
         dappOptions: { numberOfDapps: 3 },
         title: this.test.fullTitle(),
       },
@@ -322,7 +307,10 @@ describe('Request-queue UI changes', function () {
         });
 
         // Reject this transaction, wait for second confirmation window to close, third to display
-        await rejectTransactionRedesign(driver);
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Cancel',
+        });
         await driver.delay(veryLargeDelayMs);
 
         if (!IS_FIREFOX) {
@@ -376,22 +364,24 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withPreferencesController({
             preferences: { showTestNetworks: true },
           })
 
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
@@ -422,7 +412,9 @@ describe('Request-queue UI changes', function () {
 
         const networkMenu = await driver.findNestedElement(
           networkRow,
-          `[data-testid="network-list-item-options-button-${CHAIN_IDS.LOCALHOST}"]`,
+          `[data-testid="network-list-item-options-button-${toEvmCaipChainId(
+            CHAIN_IDS.LOCALHOST,
+          )}"]`,
         );
 
         await networkMenu.click();
@@ -450,7 +442,6 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         driverOptions: { constrainWindowSize: true },
       },
@@ -492,19 +483,20 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-
+          .withNetworkControllerDoubleNode()
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
@@ -544,19 +536,20 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-
+          .withNetworkControllerDoubleNode()
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
         driverOptions: { constrainWindowSize: true },
@@ -613,26 +606,27 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-
+          .withNetworkControllerDoubleNode()
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
-        // This test intentionally quits Ganache while the extension is using it, causing
+          },
+        ],
+        // This test intentionally quits the local node server while the extension is using it, causing
         // PollingBlockTracker errors and others. These are expected.
         ignoredConsoleErrors: ['ignore-all'],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer, secondaryGanacheServer }) => {
+      async ({ driver, localNodes }) => {
         await unlockWallet(driver);
 
         // Open the first dapp
@@ -650,9 +644,9 @@ describe('Request-queue UI changes', function () {
           text: 'Ethereum Mainnet',
         });
 
-        // Kill ganache servers
-        await ganacheServer.quit();
-        await secondaryGanacheServer[0].quit();
+        // Kill local node servers
+        await localNodes[0].quit();
+        await localNodes[1].quit();
 
         // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
         await selectDappClickPersonalSign(driver, DAPP_URL);
@@ -679,26 +673,28 @@ describe('Request-queue UI changes', function () {
         // Presently confirmations take up to 10 seconds to display on a dead network
         driverOptions: { timeOut: 30000 },
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
 
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
-        // This test intentionally quits Ganache while the extension is using it, causing
+          },
+        ],
+        // This test intentionally quits the local node server while the extension is using it, causing
         // PollingBlockTracker errors and others. These are expected.
         ignoredConsoleErrors: ['ignore-all'],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer, secondaryGanacheServer }) => {
+      async ({ driver, localNodes }) => {
         await unlockWallet(driver);
 
         // Open the first dapp
@@ -716,9 +712,9 @@ describe('Request-queue UI changes', function () {
           text: 'Ethereum Mainnet',
         });
 
-        // Kill ganache servers
-        await ganacheServer.quit();
-        await secondaryGanacheServer[0].quit();
+        // Kill local node servers
+        await localNodes[0].quit();
+        await localNodes[1].quit();
 
         // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
         await selectDappClickSend(driver, DAPP_URL);

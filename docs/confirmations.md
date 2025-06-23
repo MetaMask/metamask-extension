@@ -58,14 +58,14 @@ Ensure suitable error handling is in place to handle the confirmation being canc
 
 The available message arguments are:
 
-| Name | Description | Example Value |
-| -- | -- | -- |
-| opts.id | The ID of the approval request.<br>Assigned to a random value if not provided. | `"f81f5c8a-33bb-4f31-a4e2-52f8b94c393b"` |
-| opts.origin | The origin of the request.<br>Either the dApp host or "metamask" if internal. | `"metamask.github.io"` |
-| opts.type | An arbitrary string identifying the type of request. | `"eth_signTypedData"` |
-| opts.requestData | Additional fixed data for the request.<br>Must be a JSON compatible object.| `{ transactionId: '123' }` |
-| opts.requestState | Additional mutable data for the request.<br>Must be a JSON compatible object.<br>Can be updated using the `ApprovalController.updateRequestState` action. | `{ status: 'pending' }` |
-| shouldShowRequest | A boolean indicating whether the popup should be displayed. | `true` |
+| Name              | Description                                                                                                                                               | Example Value                            |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| opts.id           | The ID of the approval request.<br>Assigned to a random value if not provided.                                                                            | `"f81f5c8a-33bb-4f31-a4e2-52f8b94c393b"` |
+| opts.origin       | The origin of the request.<br>Either the dApp host or "metamask" if internal.                                                                             | `"metamask.github.io"`                   |
+| opts.type         | An arbitrary string identifying the type of request.                                                                                                      | `"eth_signTypedData"`                    |
+| opts.requestData  | Additional fixed data for the request.<br>Must be a JSON compatible object.                                                                               | `{ transactionId: '123' }`               |
+| opts.requestState | Additional mutable data for the request.<br>Must be a JSON compatible object.<br>Can be updated using the `ApprovalController.updateRequestState` action. | `{ status: 'pending' }`                  |
+| shouldShowRequest | A boolean indicating whether the popup should be displayed.                                                                                               | `true`                                   |
 
 #### Example
 
@@ -90,21 +90,18 @@ This requires you to have provided the `id` when creating the approval request, 
 
 The available message arguments are:
 
-| Name | Description | Example Value |
-| -- | -- | -- |
-| opts.id | The ID of the approval request to update. | `"f81f5c8a-33bb-4f31-a4e2-52f8b94c393b"` |
-| opts.requestState | The updated mutable data for the request.<br>Must be a JSON compatible object. | `{ status: 'pending' }` |
+| Name              | Description                                                                    | Example Value                            |
+| ----------------- | ------------------------------------------------------------------------------ | ---------------------------------------- |
+| opts.id           | The ID of the approval request to update.                                      | `"f81f5c8a-33bb-4f31-a4e2-52f8b94c393b"` |
+| opts.requestState | The updated mutable data for the request.<br>Must be a JSON compatible object. | `{ status: 'pending' }`                  |
 
 #### Example
 
 ```js
-await this.messagingSystem.call(
-  'ApprovalController:updateRequestState',
-  {
-    id,
-    requestState: { counter },
-  },
-);
+await this.messagingSystem.call('ApprovalController:updateRequestState', {
+  id,
+  requestState: { counter },
+});
 ```
 
 ## Frontend
@@ -126,15 +123,15 @@ Add your imported file to the `APPROVAL_TEMPLATES` constant in:
 
 Inside the template file, define a `getValues` function that returns an object with the following properties:
 
-| Name | Description | Example Value |
-| -- | -- | -- |
-| content | An array of objects defining the components to be rendered in the confirmation.<br>Processed by the [MetaMaskTemplateRenderer](../ui/components/app/metamask-template-renderer/metamask-template-renderer.js).  | See example below. |
-| onSubmit | A callback to execute when the user approves the confirmation. | `actions.resolvePendingApproval(...)` |
-| onCancel | A callback to execute when the user rejects the confirmation. | `actions.rejectPendingApproval(...)` |
-| submitText | Text shown for the accept button. | `t('approveButtonText')` |
-| cancelText | Text shown on the reject button. | `t('cancel')` |
-| loadingText | Text shown while waiting for the onSubmit callback to complete. | `t('addingCustomNetwork')` |
-| networkDisplay | A boolean indicating whether to show the current network at the top of the confirmation. | `true` |
+| Name           | Description                                                                                                                                                                                                    | Example Value                         |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| content        | An array of objects defining the components to be rendered in the confirmation.<br>Processed by the [MetaMaskTemplateRenderer](../ui/components/app/metamask-template-renderer/metamask-template-renderer.js). | See example below.                    |
+| onSubmit       | A callback to execute when the user approves the confirmation.                                                                                                                                                 | `actions.resolvePendingApproval(...)` |
+| onCancel       | A callback to execute when the user rejects the confirmation.                                                                                                                                                  | `actions.rejectPendingApproval(...)`  |
+| submitText     | Text shown for the accept button.                                                                                                                                                                              | `t('approveButtonText')`              |
+| cancelText     | Text shown on the reject button.                                                                                                                                                                               | `t('cancel')`                         |
+| loadingText    | Text shown while waiting for the onSubmit callback to complete.                                                                                                                                                | `t('addingCustomNetwork')`            |
+| networkDisplay | A boolean indicating whether to show the current network at the top of the confirmation.                                                                                                                       | `true`                                |
 
 #### Example
 
@@ -191,10 +188,10 @@ content: [
     props: {
       exampleBooleanProperty: true,
       exampleNumberProperty: 123,
-      exampleStringProperty: 'example'
+      exampleStringProperty: 'example',
     },
   },
-]
+];
 ```
 
 ### 4. Define Alerts
@@ -205,11 +202,11 @@ This needs to return an array of any required alerts, based on the current pendi
 
 Each alert is an object with the following properties:
 
-| Name | Description | Example Value |
-| -- | -- | -- |
-| id | A unique string to identify the alert.  | `"MISMATCHED_NETWORK_RPC"` |
-| severity | The severity of the alert.<br>Use the constants from the design system. | `SEVERITIES.DANGER` |
-| content | The component to be rendered inside the alert.<br>Uses the same format as the `content` returned from `getValues`.<br>The component can have nested components via the `children` property. | See example below. |
+| Name     | Description                                                                                                                                                                                 | Example Value              |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| id       | A unique string to identify the alert.                                                                                                                                                      | `"MISMATCHED_NETWORK_RPC"` |
+| severity | The severity of the alert.<br>Use the constants from the design system.                                                                                                                     | `SEVERITIES.DANGER`        |
+| content  | The component to be rendered inside the alert.<br>Uses the same format as the `content` returned from `getValues`.<br>The component can have nested components via the `children` property. | See example below.         |
 
 #### Example
 
@@ -274,16 +271,16 @@ Before creating the first approval, call the `ApprovalController.startFlow` meth
 
 This supports the following parameters:
 
-| Name | Description | Example Value |
-| -- | -- | -- |
-| id | An optional string to identify the flow.<br>Generated automatically if not specified.  | `"550e8400-e29b-41d4-a716-446655440000"` |
-| loadingText | The text to display on the loading page between approvals. | `"Processing something..."` |
+| Name        | Description                                                                           | Example Value                            |
+| ----------- | ------------------------------------------------------------------------------------- | ---------------------------------------- |
+| id          | An optional string to identify the flow.<br>Generated automatically if not specified. | `"550e8400-e29b-41d4-a716-446655440000"` |
+| loadingText | The text to display on the loading page between approvals.                            | `"Processing something..."`              |
 
 #### 2. Create Approval Requests
 
 Create sequential approval requests as normal using the above instructions.
 
-While the an approval request has been approved or rejected but no subsequent approval request has been created, a loading page is automatically displayed containing a spinner.
+While the approval request has been approved or rejected but no subsequent approval request has been created, a loading page is automatically displayed containing a spinner.
 
 This has no text by default, but can be specified using the `loadingText` option above, or by calling the `setFlowLoadingText` method or messenger action.
 
@@ -301,7 +298,7 @@ In rare scenarios where an approval flow is initialized within another approval 
 
 ### Overview
 
-Many types of approvals are not needed before a process is executed, but instead aim to provide a simple status page to display a success or error message after a process has completed.
+Many types of approvals are not needed before a process is executed, but instead aim to provide a simple status page to display a success or error message after a process has been completed.
 
 The standardized result pages exist to simplify the creation of these types of approvals, and to avoid many very similar approval templates with the same intent.
 
@@ -311,38 +308,35 @@ A default success or error message can be displayed simply by calling the `Appro
 
 No options are required but both success and error approvals can be configured with the following:
 
-| Name | Description | Example Value |
-| -- | -- | -- |
-| error | The text of the error message in the center of the window.<br>Also supports templates.<br>Used only by the `error` method. | See example below. |
-| header | The text or template to optionally display above the message at the top of the window. | See example below. |
-| icon | The name of the icon to display above the message.<br>Can be hidden with `null`. | `"confirmation"` |
-| message | The text of message in the center of the window.<br>Also supports templates.<br>Used only by the `success` method. | See example below. |
-| title | The title text in the center of the page.<br>Can be hidden with `null`. | `"Success"`
+| Name    | Description                                                                                                                | Example Value      |
+| ------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| error   | The text of the error message in the center of the window.<br>Also supports templates.<br>Used only by the `error` method. | See example below. |
+| header  | The text or template to optionally display above the message at the top of the window.                                     | See example below. |
+| icon    | The name of the icon to display above the message.<br>Can be hidden with `null`.                                           | `"confirmation"`   |
+| message | The text of message in the center of the window.<br>Also supports templates.<br>Used only by the `success` method.         | See example below. |
+| title   | The title text in the center of the page.<br>Can be hidden with `null`.                                                    | `"Success"`        |
 
 #### Example
 
 ```js
-await this.messagingSystem.call(
-  'ApprovalController:showSuccess',
-  {
-    title: 'Example Success',
-    icon: IconName.UserCircleAdd,
-    header: [
-      {
-        name: 'ExampleHeaderComponent',
-        key: 'exampleHeader',
-        properties: { exampleProperty: 'exampleValue' },
-      },
-    ],
-    message: [
-      {
-        name: 'ExampleMessageComponent',
-        key: 'exampleMessage',
-        properties: { exampleProperty: 'exampleValue' },
-      },
-    ]
-  }
-);
+await this.messagingSystem.call('ApprovalController:showSuccess', {
+  title: 'Example Success',
+  icon: IconName.UserCircleAdd,
+  header: [
+    {
+      name: 'ExampleHeaderComponent',
+      key: 'exampleHeader',
+      properties: { exampleProperty: 'exampleValue' },
+    },
+  ],
+  message: [
+    {
+      name: 'ExampleMessageComponent',
+      key: 'exampleMessage',
+      properties: { exampleProperty: 'exampleValue' },
+    },
+  ],
+});
 ```
 
 For live examples, see [storybook](https://metamask.github.io/metamask-storybook/index.html?path=/docs/pages-confirmationpage-resultsuccess--docs).

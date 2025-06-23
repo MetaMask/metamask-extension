@@ -225,6 +225,7 @@
     flex-flow: row nowrap;
     height: 100%;
     overflow: auto;
+    scrollbar-color: var(--color-icon-muted) transparent;
 
     &__tabs {
       display: flex;

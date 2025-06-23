@@ -3,11 +3,9 @@ const { toHex } = require('@metamask/controller-utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
-  generateGanacheOptions,
   unlockWallet,
   getEventPayloads,
   assertInAnyOrder,
-  genRandInitBal,
 } = require('../../helpers');
 const {
   buildQuote,
@@ -30,6 +28,7 @@ const {
   TRADES_API_MOCK_RESULT,
   NETWORKS_2_API_MOCK_RESULT,
 } = require('../../../data/mock-data');
+const { MOCK_META_METRICS_ID } = require('../../constants');
 
 const numberOfSegmentRequests = 19;
 
@@ -93,19 +92,17 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
 // TODO: (MM-PENDING) These tests are planned for deprecation as part of swaps testing revamp
 describe('Swap Eth for another Token', function () {
   it('Completes a Swap between ETH and DAI after changing initial rate', async function () {
-    const { initialBalanceInHex } = genRandInitBal();
-
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: generateGanacheOptions({
-          balance: initialBalanceInHex,
-        }),
+        localNodeOptions: {
+          hardfork: 'muirGlacier',
+        },
         title: this.test.fullTitle(),
         testSpecificMock: mockSegmentAndMetaswapRequests,
       },
@@ -227,7 +224,7 @@ async function assertPrepareSwapPageLoadedEvents(reqs) {
 async function assertQuotesRequestedEvents(reqs) {
   const assertionsReq3 = [
     (req) => req.event === MetaMetricsEventName.QuotesRequested,
-    (req) => Object.keys(req.properties).length === 15,
+    (req) => Object.keys(req.properties).length === 16,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
@@ -244,16 +241,18 @@ async function assertQuotesRequestedEvents(reqs) {
     (req) => req.properties?.token_from === 'TESTETH',
     (req) => req.properties?.token_from_amount === '2',
     (req) => req.properties?.token_to === 'DAI',
+    (req) => req.properties?.hd_entropy_index === 0,
   ];
 
   const assertionsReq4 = [
     (req) => req.event === MetaMetricsEventName.QuotesRequested,
-    (req) => Object.keys(req.properties).length === 4,
+    (req) => Object.keys(req.properties).length === 5,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
+    (req) => req.properties?.hd_entropy_index === 0,
   ];
 
   assert.ok(
@@ -265,7 +264,7 @@ async function assertQuotesRequestedEvents(reqs) {
 async function assertQuotesReceivedAndBestQuoteReviewedEvents(reqs) {
   const assertionsReq5 = [
     (req) => req.event === MetaMetricsEventName.QuotesReceived,
-    (req) => Object.keys(req.properties).length === 19,
+    (req) => Object.keys(req.properties).length === 20,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
@@ -286,16 +285,18 @@ async function assertQuotesReceivedAndBestQuoteReviewedEvents(reqs) {
     (req) => req.properties?.token_from_amount === '2',
     (req) => req.properties?.token_to === 'DAI',
     (req) => typeof req.properties?.token_to_amount === 'string',
+    (req) => req.properties?.hd_entropy_index === 0,
   ];
 
   const assertionsReq6 = [
     (req) => req.event === MetaMetricsEventName.QuotesReceived,
-    (req) => Object.keys(req.properties).length === 4,
+    (req) => Object.keys(req.properties).length === 5,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
+    (req) => req.properties?.hd_entropy_index === 0,
   ];
 
   const assertionsReq7 = [
@@ -390,7 +391,7 @@ async function assertAllAvailableQuotesOpenedEvents(reqs) {
 async function assertSwapStartedEvents(reqs) {
   const assertionsReq11 = [
     (req) => req.event === MetaMetricsEventName.SwapStarted,
-    (req) => Object.keys(req.properties).length === 25,
+    (req) => Object.keys(req.properties).length === 26,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
@@ -416,16 +417,18 @@ async function assertSwapStartedEvents(reqs) {
     (req) => typeof req.properties?.reg_tx_max_fee_in_usd === 'number',
     (req) => typeof req.properties?.reg_tx_max_fee_in_eth === 'number',
     (req) => typeof req.properties?.other_quote_selected_source === 'string',
+    (req) => req.properties?.hd_entropy_index === 0,
   ];
 
   const assertionsReq12 = [
     (req) => req.event === MetaMetricsEventName.SwapStarted,
-    (req) => Object.keys(req.properties).length === 4,
+    (req) => Object.keys(req.properties).length === 5,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
+    (req) => req.properties?.hd_entropy_index === 0,
   ];
 
   assert.ok(
@@ -437,7 +440,7 @@ async function assertSwapStartedEvents(reqs) {
 async function assertSwapCompletedEvents(reqs) {
   const assertionsReq13 = [
     (req) => req.event === MetaMetricsEventName.SwapCompleted,
-    (req) => Object.keys(req.properties).length === 31,
+    (req) => Object.keys(req.properties).length === 32,
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
     (req) => req.properties?.environment_type === 'background',
@@ -469,15 +472,17 @@ async function assertSwapCompletedEvents(reqs) {
     (req) => typeof req.properties?.trade_gas_cost_in_eth === 'number',
     (req) =>
       typeof req.properties?.trade_and_approval_gas_cost_in_eth === 'number',
+    (req) => req.properties?.hd_entropy_index === 0,
   ];
 
   const assertionsReq14 = [
     (req) => req.event === MetaMetricsEventName.SwapCompleted,
-    (req) => Object.keys(req.properties).length === 4,
+    (req) => Object.keys(req.properties).length === 5,
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
     (req) => req.properties?.environment_type === 'background',
     (req) => req.properties?.locale === 'en',
+    (req) => req.properties?.hd_entropy_index === 0,
   ];
 
   assert.ok(
@@ -489,7 +494,7 @@ async function assertSwapCompletedEvents(reqs) {
 async function assertExitedSwapsEvents(reqs) {
   const assertionsReq15 = [
     (req) => req.event === MetaMetricsEventName.ExitedSwaps,
-    (req) => Object.keys(req.properties).length === 13,
+    (req) => Object.keys(req.properties).length === 14,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
@@ -504,16 +509,18 @@ async function assertExitedSwapsEvents(reqs) {
     (req) => req.properties?.is_hardware_wallet === false,
     (req) => req.properties?.stx_enabled === false,
     (req) => req.properties?.current_stx_enabled === false,
+    (req) => req.properties?.hd_entropy_index === 0,
   ];
 
   const assertionsReq16 = [
     (req) => req.event === MetaMetricsEventName.ExitedSwaps,
-    (req) => Object.keys(req.properties).length === 4,
+    (req) => Object.keys(req.properties).length === 5,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
+    (req) => req.properties?.hd_entropy_index === 0,
   ];
 
   assert.ok(
@@ -523,7 +530,7 @@ async function assertExitedSwapsEvents(reqs) {
 
   const assertionsReq17 = [
     (req) => req.event === MetaMetricsEventName.ExitedSwaps,
-    (req) => Object.keys(req.properties).length === 10,
+    (req) => Object.keys(req.properties).length === 11,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
@@ -535,16 +542,18 @@ async function assertExitedSwapsEvents(reqs) {
     (req) => req.properties?.is_hardware_wallet === false,
     (req) => req.properties?.stx_enabled === false,
     (req) => req.properties?.current_stx_enabled === false,
+    (req) => req.properties?.hd_entropy_index === 0,
   ];
 
   const assertionsReq18 = [
     (req) => req.event === MetaMetricsEventName.ExitedSwaps,
-    (req) => Object.keys(req.properties).length === 4,
+    (req) => Object.keys(req.properties).length === 5,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
+    (req) => req.properties?.hd_entropy_index === 0,
   ];
 
   assert.ok(

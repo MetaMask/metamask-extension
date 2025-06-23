@@ -21,6 +21,7 @@ import type {
   SubjectType,
   ValidPermission,
 } from '@metamask/permission-controller';
+import { PermissionController } from '@metamask/permission-controller';
 import type { Hex, Json } from '@metamask/utils';
 import { InfuraNetworkType } from '@metamask/controller-utils';
 import {
@@ -153,3 +154,11 @@ export type UpsertNetworkConfiguration = (
   networkConfiguration: NetworkConfiguration,
   options?: UpsertNetworkConfigurationOptions,
 ) => Promise<string>;
+type AbstractPermissionController = PermissionController<
+  PermissionSpecificationConstraint,
+  CaveatSpecificationConstraint
+>;
+
+export type GrantedPermissions = Awaited<
+  ReturnType<AbstractPermissionController['requestPermissions']>
+>[0];

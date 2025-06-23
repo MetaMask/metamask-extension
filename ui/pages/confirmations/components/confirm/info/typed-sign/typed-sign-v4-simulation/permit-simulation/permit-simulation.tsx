@@ -14,10 +14,15 @@ import { SignatureRequestType } from '../../../../../../types/confirm';
 import StaticSimulation from '../../../shared/static-simulation/static-simulation';
 import PermitSimulationValueDisplay from '../value-display/value-display';
 
+type TokenDetail = {
+  token: string;
+  amount: string;
+};
+
 function extractTokenDetailsByPrimaryType(
   message: Record<string, unknown>,
   primaryType: PrimaryType,
-): object[] | unknown {
+): TokenDetail[] | unknown {
   let tokenDetails;
 
   switch (primaryType) {
@@ -70,10 +75,20 @@ const PermitSimulation: React.FC<object> = () => {
     />
   );
 
+  const isRevoke = message.allowed === false;
+  let infoRowLabelKey = 'spendingCap';
+  let descriptionKey = 'permitSimulationDetailInfo';
+
+  if (isRevoke) {
+    descriptionKey = 'revokeSimulationDetailsDesc';
+    infoRowLabelKey = 'permitSimulationChange_revoke2';
+  } else if (isNFT) {
+    descriptionKey = 'simulationDetailsApproveDesc';
+    infoRowLabelKey = 'simulationApproveHeading';
+  }
+
   const SpendingCapRow = (
-    <ConfirmInfoRow
-      label={t(isNFT ? 'simulationApproveHeading' : 'spendingCap')}
-    >
+    <ConfirmInfoRow label={t(infoRowLabelKey)}>
       <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
         {Array.isArray(tokenDetails) ? (
           <Box
@@ -81,18 +96,13 @@ const PermitSimulation: React.FC<object> = () => {
             flexDirection={FlexDirection.Column}
             gap={2}
           >
-            {tokenDetails.map(
-              (
-                { token, amount }: { token: string; amount: string },
-                i: number,
-              ) => (
-                <TokenDetail
-                  token={token}
-                  amount={amount}
-                  key={`${token}-${i}`}
-                />
-              ),
-            )}
+            {tokenDetails.map(({ token, amount }, i: number) => (
+              <TokenDetail
+                token={token}
+                amount={amount}
+                key={`${token}-${i}`}
+              />
+            ))}
           </Box>
         ) : (
           <PermitSimulationValueDisplay
@@ -107,14 +117,6 @@ const PermitSimulation: React.FC<object> = () => {
       </Box>
     </ConfirmInfoRow>
   );
-
-  let descriptionKey = 'permitSimulationDetailInfo';
-  if (isNFT) {
-    descriptionKey = 'simulationDetailsApproveDesc';
-  } else if (message.allowed === false) {
-    // revoke permit
-    descriptionKey = 'revokeSimulationDetailsDesc';
-  }
 
   return (
     <StaticSimulation

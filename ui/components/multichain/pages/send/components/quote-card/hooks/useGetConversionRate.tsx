@@ -32,10 +32,14 @@ export default function useGetConversionRate() {
     if (bestQuote && sendAsset && receiveAsset) {
       const primaryTokenAmount = calcTokenAmount(
         bestQuote.sourceAmount,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         sendAsset.details?.decimals || NATIVE_CURRENCY_DECIMALS,
       );
       const secondaryTokenAmount = calcTokenAmount(
         bestQuote.destinationAmount,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         receiveAsset.details?.decimals || NATIVE_CURRENCY_DECIMALS,
       );
 

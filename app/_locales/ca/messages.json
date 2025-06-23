@@ -251,26 +251,11 @@
   "from": {
     "message": "Des de"
   },
-  "functionType": {
-    "message": "Tipus de Funció"
-  },
   "gasLimit": {
     "message": "Límit de gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "El límit de gas és la màxima quantitat d'unitats de gas que estàs disposat a gastar."
-  },
   "gasLimitTooLow": {
     "message": "El límit de gas ha de ser al menys 21000"
-  },
-  "gasPrice": {
-    "message": "Preu del Gas (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Preu del Gas Extremadament Baix"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "El preu del gas especifica la quantitat d'Ether que estàs disposat a pagar per cada unitat de gas."
   },
   "gasUsed": {
     "message": "Gas utilitzat"
@@ -306,9 +291,6 @@
   "import": {
     "message": "Importa",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importa compte"
   },
   "importAccountMsg": {
     "message": "Els comptes importats no s'associaran amb la teva frase de recuperació creada originalment a MetaMask. Aprèn més sobre els comptes importats"
@@ -455,9 +437,6 @@
   "origin": {
     "message": "Origen"
   },
-  "parameters": {
-    "message": "Paràmetres"
-  },
   "participateInMetaMetrics": {
     "message": "Participar a MetaMetrics"
   },
@@ -522,9 +501,6 @@
   },
   "removeAccountDescription": {
     "message": "Aquest compte serà retirat del teu moneder. Si us plau, assegura't que tens la frase de recuperació original o la clau privada per a aquest compte importat abans de continuar. Pots importar o crear comptes novament des del desplegable de comptes."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "peticions esperant ser reconegudes"
   },
   "required": {
     "message": "Obligatori"
@@ -593,9 +569,6 @@
   "showHexDataDescription": {
     "message": "Selecciona això per a mostrar el camp de dades Hex a la pantalla d'enviament"
   },
-  "sigRequest": {
-    "message": "Sol·licitud de Signatura"
-  },
   "sign": {
     "message": "Signar"
   },
@@ -643,9 +616,6 @@
   },
   "terms": {
     "message": "Condicions d'ús"
-  },
-  "tips": {
-    "message": "Propines"
   },
   "to": {
     "message": "A"
@@ -713,17 +683,11 @@
   "unknown": {
     "message": "Desconegut"
   },
-  "unknownNetwork": {
-    "message": "Xarxa privada desconeguda"
-  },
   "unknownQrCode": {
     "message": "Error: No hem pogut identificar aquest codi QR"
   },
   "unlock": {
     "message": "Desbloqueja"
-  },
-  "unlockMessage": {
-    "message": "La web descentralitzada està esperant"
   },
   "urlErrorMsg": {
     "message": "Els URIs requereixen el prefix HTTP/HTTPS  apropiat."
@@ -746,13 +710,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Has de permetre l'accés a la càmera per fer servir aquesta característica."
   },
-  "youSign": {
-    "message": "Estàs signant"
-  },
   "yourPrivateSeedPhrase": {
     "message": "La teva frase privada de seeds"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Gas a cost zero accelerant-se"
   }
 }

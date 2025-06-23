@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -8,24 +8,16 @@ import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
-import { Ganache } from '../../seeder/ganache';
 
 describe('Privacy Mode', function () {
   it('should hide fiat balance and token balance when privacy mode is activated', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.togglePrivacyBalance();
@@ -51,7 +43,6 @@ describe('Privacy Mode', function () {
             },
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -67,7 +58,7 @@ describe('Privacy Mode', function () {
 
         const accountList = new AccountListPage(driver);
         await accountList.check_pageIsLoaded();
-        await accountList.check_accountBalanceDisplayed('25');
+        await accountList.check_accountBalanceDisplayed('$42,500');
       },
     );
   });

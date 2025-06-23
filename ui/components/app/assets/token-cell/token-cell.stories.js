@@ -1,5 +1,5 @@
 import React from 'react';
-import TokenListItem from '.';
+import TokenCell from './token-cell';
 
 export default {
   title: 'Components/App/TokenCell',
@@ -21,14 +21,21 @@ export default {
     },
   },
   args: {
-    address: '0xAnotherToken',
-    symbol: 'TEST',
-    string: '5.000',
-    currentCurrency: 'usd',
-    isOriginalTokenSymbol: true,
+    token: {
+      address: '0xAnotherToken',
+      symbol: 'TEST',
+      string: '5.000',
+      currentCurrency: 'usd',
+      image: '',
+      chainId: '0x1',
+      tokenFiatAmount: 5,
+      aggregators: [],
+      decimals: 18,
+      isNative: false,
+    },
   },
 };
 
-export const DefaultStory = (args) => <TokenListItem {...args} />;
+export const DefaultStory = (args) => <TokenCell {...args} />;
 
 DefaultStory.storyName = 'Default';

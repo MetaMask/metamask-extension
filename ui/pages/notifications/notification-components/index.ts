@@ -23,6 +23,7 @@ export const { TRIGGER_TYPES } = NotificationServicesController.Constants;
  * @returns a generic set of notification component
  */
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const expandComponentsType = <C extends NotificationComponent<any>>(
   components: C,

@@ -10,11 +10,12 @@ jobs:
   check-template-and-add-labels:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Check template and add labels
         id: check-template-and-add-labels

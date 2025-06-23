@@ -14,6 +14,12 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+
+type EventPayload = {
+  event: string;
+  properties: Record<string, unknown>;
+};
 
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 export const WALLET_ETH_BALANCE = '25';
@@ -39,9 +45,11 @@ type AssertSignatureMetricsOptions = {
   withAnonEvents?: boolean;
   securityAlertReason?: string;
   securityAlertResponse?: string;
+  securityAlertSource?: string;
   decodingChangeTypes?: string[];
   decodingResponse?: string;
   decodingDescription?: string | null;
+  requestedThrough?: string;
 };
 
 type SignatureEventProperty = {
@@ -52,6 +60,7 @@ type SignatureEventProperty = {
   locale: 'en';
   security_alert_reason: string;
   security_alert_response: string;
+  security_alert_source?: string;
   signature_type: string;
   eip712_primary_type?: string;
   decoding_change_types?: string[];
@@ -59,6 +68,8 @@ type SignatureEventProperty = {
   decoding_description?: string | null;
   ui_customizations?: string[];
   location?: string;
+  hd_entropy_index?: number;
+  api_source?: string;
 };
 
 const signatureAnonProperties = {
@@ -83,19 +94,23 @@ export async function initializePages(driver: Driver) {
  * @param uiCustomizations
  * @param securityAlertReason
  * @param securityAlertResponse
+ * @param securityAlertSource
  * @param decodingChangeTypes
  * @param decodingResponse
  * @param decodingDescription
+ * @param requestedThrough
  */
 function getSignatureEventProperty(
   signatureType: string,
   primaryType: string,
   uiCustomizations: string[],
-  securityAlertReason: string = BlockaidReason.checkingChain,
+  securityAlertReason: string = BlockaidReason.inProgress,
   securityAlertResponse: string = BlockaidResultType.Loading,
+  securityAlertSource: string = 'api',
   decodingChangeTypes?: string[],
   decodingResponse?: string,
   decodingDescription?: string | null,
+  requestedThrough?: string,
 ): SignatureEventProperty {
   const signatureEventProperty: SignatureEventProperty = {
     account_type: 'MetaMask',
@@ -106,7 +121,10 @@ function getSignatureEventProperty(
     locale: 'en',
     security_alert_reason: securityAlertReason,
     security_alert_response: securityAlertResponse,
+    security_alert_source: securityAlertSource,
     ui_customizations: uiCustomizations,
+    hd_entropy_index: 0,
+    api_source: requestedThrough,
   };
 
   if (primaryType !== '') {
@@ -118,12 +136,12 @@ function getSignatureEventProperty(
     signatureEventProperty.decoding_response = decodingResponse;
     signatureEventProperty.decoding_description = decodingDescription;
   }
+
   return signatureEventProperty;
 }
 
 function assertSignatureRequestedMetrics(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  events: any[],
+  events: EventPayload[],
   signatureEventProperty: SignatureEventProperty,
   withAnonEvents = false,
 ) {
@@ -150,9 +168,11 @@ export async function assertSignatureConfirmedMetrics({
   withAnonEvents = false,
   securityAlertReason,
   securityAlertResponse,
+  securityAlertSource,
   decodingChangeTypes,
   decodingResponse,
   decodingDescription,
+  requestedThrough,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
@@ -161,9 +181,11 @@ export async function assertSignatureConfirmedMetrics({
     uiCustomizations,
     securityAlertReason,
     securityAlertResponse,
+    securityAlertSource,
     decodingChangeTypes,
     decodingResponse,
     decodingDescription,
+    requestedThrough,
   );
 
   assertSignatureRequestedMetrics(
@@ -197,9 +219,11 @@ export async function assertSignatureRejectedMetrics({
   withAnonEvents = false,
   securityAlertReason,
   securityAlertResponse,
+  securityAlertSource,
   decodingChangeTypes,
   decodingResponse,
   decodingDescription,
+  requestedThrough,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
@@ -208,9 +232,11 @@ export async function assertSignatureRejectedMetrics({
     uiCustomizations,
     securityAlertReason,
     securityAlertResponse,
+    securityAlertSource,
     decodingChangeTypes,
     decodingResponse,
     decodingDescription,
+    requestedThrough,
   );
 
   assertSignatureRequestedMetrics(
@@ -222,6 +248,7 @@ export async function assertSignatureRejectedMetrics({
   assertEventPropertiesMatch(events, 'Signature Rejected', {
     ...signatureEventProperty,
     location,
+    hd_entropy_index: 0,
     ...expectedProps,
   });
 
@@ -248,25 +275,26 @@ export async function assertAccountDetailsMetrics(
     locale: 'en',
     chain_id: '0x539',
     environment_type: 'notification',
+    hd_entropy_index: 0,
   });
 }
 
 function assertEventPropertiesMatch(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  events: any[],
+  events: EventPayload[],
   eventName: string,
   expectedProperties: object,
 ) {
   const event = events.find((e) => e.event === eventName);
+
+  assert(event, `${eventName} event not found`);
 
   const actualProperties = { ...event.properties };
   const expectedProps = { ...expectedProperties };
 
   compareDecodingAPIResponse(actualProperties, expectedProps, eventName);
 
-  compareSecurityAlertResponse(actualProperties, expectedProps, eventName);
+  compareSecurityAlertProperties(actualProperties, expectedProps, eventName);
 
-  assert(event, `${eventName} event not found`);
   assert.deepStrictEqual(
     actualProperties,
     expectedProps,
@@ -274,7 +302,7 @@ function assertEventPropertiesMatch(
   );
 }
 
-function compareSecurityAlertResponse(
+function compareSecurityAlertProperties(
   actualProperties: Record<string, unknown>,
   expectedProperties: Record<string, unknown>,
   eventName: string,
@@ -295,6 +323,19 @@ function compareSecurityAlertResponse(
     // Remove the property from both objects to avoid comparison
     delete actualProperties.security_alert_response;
     delete expectedProperties.security_alert_response;
+  }
+
+  if (expectedProperties.security_alert_source) {
+    if (
+      actualProperties.security_alert_source !== 'api' &&
+      expectedProperties.security_alert_source !== 'api'
+    ) {
+      assert.fail(
+        `${eventName} event properties do not match: security_alert_source is ${actualProperties.security_alert_source}`,
+      );
+    }
+    delete actualProperties.security_alert_source;
+    delete expectedProperties.security_alert_source;
   }
 }
 
@@ -370,8 +411,9 @@ export async function openDappAndTriggerSignature(
   driver: Driver,
   type: string,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
   await testDapp.openTestDappPage({ url: DAPP_URL });
+  await testDapp.check_pageIsLoaded();
   await triggerSignature(type);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }

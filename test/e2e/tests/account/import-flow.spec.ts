@@ -1,19 +1,49 @@
 import path from 'path';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import { Mockttp } from 'mockttp';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { DEFAULT_FIXTURE_ACCOUNT_SHORTENED } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
+import {
+  accountsToMockForAccountsSync,
+  getAccountsSyncMockResponse,
+} from '../identity/account-syncing/mock-data';
+import { mockIdentityServices } from '../identity/mocks';
 
 describe('Import flow', function () {
+  const arrange = async () => {
+    const unencryptedAccounts = accountsToMockForAccountsSync;
+    const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
+    const userStorageMockttpController = new UserStorageMockttpController();
+    return {
+      unencryptedAccounts,
+      mockedAccountSyncResponse,
+      userStorageMockttpController,
+    };
+  };
   it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
+    const { mockedAccountSyncResponse, userStorageMockttpController } =
+      await arrange();
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        testSpecificMock: (server: Mockttp) => {
+          userStorageMockttpController.setupPath(
+            USER_STORAGE_FEATURE_NAMES.accounts,
+            server,
+            {
+              getResponse: mockedAccountSyncResponse,
+            },
+          );
+          return mockIdentityServices(server, userStorageMockttpController);
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -36,24 +66,36 @@ describe('Import flow', function () {
         const accountDetailsModal = new AccountDetailsModal(driver);
         await accountDetailsModal.check_pageIsLoaded();
         await accountDetailsModal.check_addressInAccountDetailsModal(
-          DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+          DEFAULT_FIXTURE_ACCOUNT_SHORTENED.toLowerCase(),
         );
       },
     );
   });
 
   it('Import Account using json file', async function () {
+    const { mockedAccountSyncResponse, userStorageMockttpController } =
+      await arrange();
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withAccountsControllerImportedAccount()
           .withKeyringControllerImportedAccountVault()
           .withPreferencesControllerImportedAccountIdentities()
-          .withAccountsControllerImportedAccount()
           .build(),
+        testSpecificMock: (server: Mockttp) => {
+          userStorageMockttpController.setupPath(
+            USER_STORAGE_FEATURE_NAMES.accounts,
+            server,
+            {
+              getResponse: mockedAccountSyncResponse,
+            },
+          );
+          return mockIdentityServices(server, userStorageMockttpController);
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         // Wait until account list is loaded to mitigate race condition
         const headerNavbar = new HeaderNavbar(driver);
@@ -77,7 +119,7 @@ describe('Import flow', function () {
         // Check new imported account has correct name and label
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
         await headerNavbar.check_accountLabel('Account 4');
 
         await headerNavbar.openAccountMenu();
@@ -91,15 +133,27 @@ describe('Import flow', function () {
   it('Import Account using private key of an already active account should result in an error', async function () {
     const testPrivateKey =
       '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9';
+    const { mockedAccountSyncResponse, userStorageMockttpController } =
+      await arrange();
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
           .build(),
+        testSpecificMock: (server: Mockttp) => {
+          userStorageMockttpController.setupPath(
+            USER_STORAGE_FEATURE_NAMES.accounts,
+            server,
+            {
+              getResponse: mockedAccountSyncResponse,
+            },
+          );
+          return mockIdentityServices(server, userStorageMockttpController);
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_accountLabel('Account 1');

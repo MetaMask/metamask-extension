@@ -91,6 +91,7 @@ export function useAssetDetails(
       toAddress,
       tokenAmount,
       decimals,
+      tokenURI,
     } = currentAsset;
 
     return {
@@ -104,6 +105,7 @@ export function useAssetDetails(
       tokenImage: image,
       userBalance: balance,
       assetName: name,
+      tokenURI,
     };
   }
 

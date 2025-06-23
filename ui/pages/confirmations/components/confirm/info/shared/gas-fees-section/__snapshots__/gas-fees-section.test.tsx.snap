@@ -9,66 +9,95 @@ exports[`<GasFeesSection /> renders component for gas fees section 1`] = `
     data-testid="gas-fee-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      data-testid="edit-gas-fees-row"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="edit-gas-fees-row"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center; margin-bottom: 2px;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Network fee
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-1"
-              class=""
-              data-original-title="Amount paid to process the transaction on network."
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                data-testid="edit-gas-fees-row-tooltip"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+              Network fee
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-1"
+                class=""
+                data-original-title="Amount paid to process the transaction on network."
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="edit-gas-fees-row-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
             </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            data-testid="edit-gas-fee-icon"
+            style="text-decoration: none;"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/edit.svg');"
+            />
+            <span
+              class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+            />
+          </button>
+          <p
+            class="mm-box mm-text mm-text--body-md"
+            data-testid="native-currency"
+          >
+            $0.04
+          </p>
+          <div
+            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+            data-testid="selected-gas-fee-token"
+            style="cursor: default; padding-inline-end: 6px;"
+          >
+            <div
+              class="mm-box"
+              data-testid="native-icon"
+            >
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
+              >
+                E
+              </div>
+            </div>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            >
+              ETH
+            </p>
           </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
+        class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
       >
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-          data-testid="edit-gas-fee-icon"
-          style="text-decoration: none;"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/edit.svg');"
-          />
-          <span
-            class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
-          />
-        </button>
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
-          data-testid="first-gas-field"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          data-testid="gas-fee-token-fee"
         >
-          0.0001 ETH
-        </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
-          data-testid="native-currency"
-        >
-          $0.04
+           
         </p>
       </div>
     </div>

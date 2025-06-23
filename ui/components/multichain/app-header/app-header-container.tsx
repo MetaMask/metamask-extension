@@ -6,18 +6,16 @@ import {
   BlockSize,
   Display,
 } from '../../../helpers/constants/design-system';
-import { Box, BoxProps } from '../../component-library';
+import { Box } from '../../component-library';
 
 type AppHeaderContainerProps = {
   isUnlocked: boolean;
   popupStatus: boolean;
-  headerBottomMargin: BoxProps<typeof Box>['marginBottom'];
 };
 
 export const AppHeaderContainer = ({
   isUnlocked,
   popupStatus,
-  headerBottomMargin,
   children,
 }: React.PropsWithChildren<AppHeaderContainerProps>) => {
   const backgroundColor =
@@ -29,9 +27,8 @@ export const AppHeaderContainer = ({
     <Box
       display={Display.Flex}
       className={classnames('multichain-app-header', {
-        'multichain-app-header-shadow': !isUnlocked || popupStatus,
+        'multichain-app-header-shadow': popupStatus,
       })}
-      marginBottom={headerBottomMargin}
       alignItems={AlignItems.center}
       width={BlockSize.Full}
       backgroundColor={backgroundColor}

@@ -47,6 +47,12 @@ BLOCKAID_PUBLIC_KEY=
 ; This should NEVER be enabled in production since it slows down react
 ; ENABLE_WHY_DID_YOU_RENDER=false
 
-; API key used in Etherscan requests to prevent rate limiting.
-; Only applies to Mainnet and Sepolia.
-; ETHERSCAN_API_KEY=
+; A JSON config file that can be used to override the default manifest values.
+; e.g., `.manifest-overrides.json` where the contents might be something like:
+; {
+;  "_flags": {
+;    "remoteFeatureFlags": { }
+;  }
+; }
+; Note: Properties are shallow merged into the manifest.json file at build time.
+;MANIFEST_OVERRIDES=.manifest-overrides.json

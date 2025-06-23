@@ -1,11 +1,14 @@
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   EthAccountType,
   BtcMethod,
   BtcAccountType,
+  SolAccountType,
   EthScope,
   BtcScope,
+  SolMethod,
+  SolScope,
 } from '@metamask/keyring-api';
 import {
   ETH_EOA_METHODS,
@@ -73,9 +76,25 @@ export const MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET: InternalAccount = {
   },
 };
 
+export const MOCK_ACCOUNT_SOLANA_MAINNET: InternalAccount = {
+  id: 'a3f9c2d4-6b8e-4d3a-9b2e-7f4b8e1a9c3d',
+  address: '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC',
+  options: {},
+  methods: [SolMethod.SendAndConfirmTransaction],
+  scopes: [SolScope.Mainnet],
+  type: SolAccountType.DataAccount,
+  metadata: {
+    name: 'Solana Account',
+    keyring: { type: KeyringTypes.snap },
+    importTime: 1691592567600,
+    lastSelected: 1955565999999,
+  },
+};
+
 export const MOCK_ACCOUNTS = {
   [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
   [MOCK_ACCOUNT_ERC4337.id]: MOCK_ACCOUNT_ERC4337,
   [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
   [MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET.id]: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
+  [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
 };

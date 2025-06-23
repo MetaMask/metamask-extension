@@ -1,7 +1,11 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import { useSelector } from 'react-redux';
+import { SolAccountType } from '@metamask/keyring-api';
+import { SOLANA_SLIDE } from '../../../hooks/useCarouselManagement';
+import { fetchCarouselSlidesFromContentful } from '../../../hooks/useCarouselManagement/fetchCarouselSlidesFromContentful';
 import { Carousel } from './carousel';
-import { MARGIN_VALUES, WIDTH_VALUES } from './constants';
+import { MARGIN_VALUES, MAX_SLIDES, WIDTH_VALUES } from './constants';
 
 jest.mock('react-responsive-carousel', () => ({
   Carousel: ({
@@ -21,15 +25,20 @@ jest.mock('react-responsive-carousel', () => ({
   ),
 }));
 
+jest.mock(
+  '../../../hooks/useCarouselManagement/fetchCarouselSlidesFromContentful',
+);
+jest
+  .mocked(fetchCarouselSlidesFromContentful)
+  .mockResolvedValue({ prioritySlides: [], regularSlides: [] });
+
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
   useDispatch: () => jest.fn(),
 }));
 
 jest.mock('reselect', () => ({
-  createSelector: jest.fn(),
-  createDeepEqualSelector: jest.fn(),
-  createSelectorCreator: jest.fn(() => jest.fn()),
+  ...jest.requireActual('reselect'),
   lruMemoize: jest.fn(),
 }));
 
@@ -164,6 +173,7 @@ describe('Carousel', () => {
 
   it('should handle slide click with href', () => {
     const mockOpenTab = jest.fn();
+    // @ts-expect-error mocking platform
     global.platform = {
       openTab: mockOpenTab,
       closeCurrentWindow: jest.fn(),
@@ -228,37 +238,71 @@ describe('Carousel', () => {
   });
 
   it('should limit the number of slides to MAX_SLIDES', () => {
-    const manySlides = [
-      ...mockSlides,
-      {
-        id: '3',
-        title: 'Slide 3',
-        description: 'Description 3',
-        image: 'image3.jpg',
-      },
-      {
-        id: '4',
-        title: 'Slide 4',
-        description: 'Description 4',
-        image: 'image4.jpg',
-      },
-      {
-        id: '5',
-        title: 'Slide 5',
-        description: 'Description 5',
-        image: 'image5.jpg',
-      },
-      {
-        id: '6',
-        title: 'Slide 6',
-        description: 'Description 6',
-        image: 'image6.jpg',
-      },
-    ];
+    const createSlide = (id: string) => ({
+      id,
+      title: `Slide ${id}`,
+      description: `Description ${id}`,
+      image: `imagejpg`,
+    });
+    const slides = [...Array(MAX_SLIDES)].map((_, i) => createSlide(`${i}`));
+    slides.push(createSlide('1 more than max!'));
+    slides.push(createSlide('2 more than max!'));
+    slides.push(createSlide('3 more than max!'));
 
-    const { container } = render(<Carousel slides={manySlides} />);
+    const { container } = render(<Carousel slides={slides} />);
 
     const visibleSlides = container.querySelectorAll('.mm-carousel-slide');
-    expect(visibleSlides).toHaveLength(5);
+    expect(visibleSlides).toHaveLength(MAX_SLIDES);
+  });
+
+  describe('Solana slide filtering', () => {
+    const solanaSlide = {
+      id: SOLANA_SLIDE.id,
+      title: 'solana title',
+      description: 'solana description',
+      image: 'solana-image.jpg',
+    };
+
+    const slidesWithSolana = [...mockSlides, solanaSlide];
+
+    beforeEach(() => {
+      (useSelector as jest.Mock).mockReset();
+    });
+
+    it('should filter out Solana slides when account type is DataAccount', () => {
+      (useSelector as jest.Mock).mockImplementation(() => ({
+        type: SolAccountType.DataAccount,
+      }));
+
+      const { container } = render(<Carousel slides={slidesWithSolana} />);
+
+      const slides = container.querySelectorAll('.mm-carousel-slide');
+      expect(slides).toHaveLength(2);
+
+      const slideTestIds = Array.from(slides).map((slide) =>
+        slide.getAttribute('data-testid'),
+      );
+      expect(slideTestIds).toContain('slide-1');
+      expect(slideTestIds).toContain('slide-2');
+      expect(slideTestIds).not.toContain(`slide-${SOLANA_SLIDE.id}`);
+    });
+
+    it('should include Solana slides when account type is not DataAccount', () => {
+      (useSelector as jest.Mock).mockImplementation(() => ({
+        type: 'OtherAccountType',
+      }));
+
+      const { container } = render(<Carousel slides={slidesWithSolana} />);
+
+      const slides = container.querySelectorAll('.mm-carousel-slide');
+      expect(slides).toHaveLength(3);
+
+      const slideTestIds = Array.from(slides).map((slide) =>
+        slide.getAttribute('data-testid'),
+      );
+      expect(slideTestIds).toContain('slide-1');
+      expect(slideTestIds).toContain('slide-2');
+      expect(slideTestIds).toContain(`slide-${SOLANA_SLIDE.id}`);
+    });
   });
 });

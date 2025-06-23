@@ -16,6 +16,8 @@ import transactions from '../../test/data/transaction-data.json';
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
 import { TransactionGroupCategory } from '../../shared/constants/transaction';
+import { KeyringType } from '../../shared/constants/keyring';
+import { createMockInternalAccount } from '../../test/jest/mocks';
 import { formatDateWithYearContext } from '../helpers/utils/util';
 import { getMessage } from '../helpers/utils/i18n-helper';
 import { mockNetworkState } from '../../test/stub/networks';
@@ -38,6 +40,8 @@ const expectedResults = [
     isPending: false,
     displayedStatusKey: TransactionStatus.confirmed,
     isSubmitted: false,
+    detailsTitle: 'Send',
+    remoteSignerAddress: null,
   },
   {
     title: 'Send',
@@ -196,6 +200,15 @@ const expectedResults = [
 ];
 
 let useI18nContext, useTokenFiatAmount;
+const ADDRESS_MOCK = '0xabc';
+const NAME_MOCK = 'Account 1';
+
+const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
+  address: ADDRESS_MOCK,
+  name: NAME_MOCK,
+  keyringType: KeyringType.hd,
+  snapOptions: undefined,
+});
 
 const renderHookWithRouter = (cb, tokenAddress) => {
   const initialEntries = [
@@ -214,13 +227,45 @@ const renderHookWithRouter = (cb, tokenAddress) => {
         getShowFiatInTestnets: false,
       },
       allNfts: [],
-      tokens: [
-        {
-          address: '0xabca64466f257793eaa52fcfff5066894b76a149',
-          symbol: 'ABC',
-          decimals: 18,
+      internalAccounts: {
+        accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
+        selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
+      },
+      allTokens: {
+        [CHAIN_IDS.MAINNET]: {
+          [ADDRESS_MOCK]: [
+            {
+              address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+              symbol: 'ABC',
+              decimals: 18,
+            },
+          ],
         },
-      ],
+      },
+      allDetectedTokens: {
+        [CHAIN_IDS.MAINNET]: [
+          {
+            [ADDRESS_MOCK]: [
+              {
+                address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+                symbol: 'ABC',
+                decimals: 18,
+              },
+            ],
+          },
+        ],
+      },
+      tokensChainsCache: {
+        '0x4': {
+          data: {
+            '0xabca64466f257793eaa52fcfff5066894b76a149': {
+              address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+              symbol: 'ABC',
+              decimals: 18,
+            },
+          },
+        },
+      },
     },
   };
 

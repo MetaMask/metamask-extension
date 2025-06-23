@@ -23,4 +23,15 @@ describe('TokenDetailsSection', () => {
     );
     expect(container).toMatchSnapshot();
   });
+
+  it('renders network details', () => {
+    const state = getMockTokenTransferConfirmState({});
+    const mockStore = configureMockStore([])(state);
+    const { getByText } = renderWithConfirmContextProvider(
+      <TokenDetailsSection />,
+      mockStore,
+    );
+    expect(getByText('Network')).toBeInTheDocument();
+    expect(getByText('Goerli')).toBeInTheDocument();
+  });
 });

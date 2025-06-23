@@ -30,25 +30,13 @@ import {
   JustifyContent,
 } from '../../helpers/constants/design-system';
 import { deleteExpiredNotifications } from '../../store/actions';
-import { NotificationsList } from './notifications-list';
+import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
 
 export type Notification = NotificationServicesController.Types.INotification;
 
 const { TRIGGER_TYPES, TRIGGER_TYPES_WALLET_SET } =
   NotificationServicesController.Constants;
-
-// NOTE - Tab filters could change once we support more notifications.
-export const enum TAB_KEYS {
-  // Shows all notifications
-  ALL = 'notifications-all-tab',
-
-  // These are only on-chain notifications (no snaps or feature announcements)
-  WALLET = 'notifications-wallet-tab',
-
-  // These are 3rd party notifications (snaps, feature announcements, web3 alerts)
-  WEB3 = 'notifications-other-tab',
-}
 
 // NOTE - these 2 data sources are combined in our controller.
 // FUTURE - we could separate these data sources into separate methods.
@@ -202,7 +190,7 @@ export default function Notifications() {
         {hasNotifySnaps && (
           <Tabs
             defaultActiveTabKey={activeTab}
-            onTabClick={(tab) => setActiveTab(tab)}
+            onTabClick={(tab: string) => setActiveTab(tab as TAB_KEYS)}
             tabsClassName="notifications__tabs"
           >
             <Tab

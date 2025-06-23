@@ -44,6 +44,11 @@ offscreen/scripts/offscreen.ts       @MetaMask/snaps-devs
 # make all such communication opt IN versus opt OUT.
 privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 
+
+# A machine-generated file that tracks circular dependencies in the codebase.
+# It is updated using yarn circular-deps:update
+development/circular-deps.jsonc      @MetaMask/extension-security-team @HowardBraham @dbrans
+
 # The CODEOWNERS file constitutes an agreement amongst organization
 # admins and maintainers to restrict approval capabilities to a subset
 # of contributors. Modifications to this file result in a modification of
@@ -54,15 +59,6 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 # For now, restricting approvals inside the .devcontainer folder to devs
 # who were involved with the Codespaces project.
 .devcontainer/                       @MetaMask/extension-security-team @HowardBraham
-
-# Confirmations team to own code for confirmations on UI.
-app/scripts/controller-init/confirmations                         @MetaMask/confirmations
-app/scripts/lib/ppom                                              @MetaMask/confirmations
-app/scripts/lib/signature                                         @MetaMask/confirmations
-app/scripts/lib/transaction/decode                                @MetaMask/confirmations
-app/scripts/lib/transaction/metrics.*                             @MetaMask/confirmations
-app/scripts/lib/transaction/util.*                                @MetaMask/confirmations
-ui/pages/confirmations                                            @MetaMask/confirmations
 
 # Design System to own code for the component-library folder
 # Slack handle: @metamask-design-system-team | Slack channel: #metamask-design-system
@@ -80,16 +76,19 @@ ui/components/component-library      @MetaMask/design-system-engineers
 **/pages/notification*/**                           @MetaMask/notifications
 **/utils/notification.util.ts                       @MetaMask/notifications
 
-# Identity team is responsible for authentication and profile syncing inside the Extension.
+# Identity team is responsible for authentication and backup and sync inside the Extension.
 # Slack handle: @identity_team | Slack channel: #metamask-identity
 **/identity/**                                          @MetaMask/identity
-ui/pages/settings/security-tab/profile-sync-toggle      @MetaMask/identity
-
 
 # Accounts team is responsible for code related with snap management accounts
 # Slack handle: @accounts-team-devs | Slack channel: #metamask-accounts-team
 
-app/scripts/lib/snap-keyring         @MetaMask/accounts-engineers
+app/scripts/lib/snap-keyring                        @MetaMask/accounts-engineers
+
+# Multichain Accounts
+# This feature is owned by the multichain account tiger team
+# Slack handle: @multichain-accounts-devs | Slack channel: #metamask-bip44-team
+**/multichain-accounts/**                           @MetaMask/accounts-engineers
 
 # Swaps-Bridge team to own code for the swaps folder
 ui/pages/swaps                                        @MetaMask/swaps-engineers
@@ -106,25 +105,46 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 **/snaps/**                          @MetaMask/snaps-devs
 shared/constants/permissions.ts      @MetaMask/snaps-devs
 ui/helpers/utils/permission.js       @MetaMask/snaps-devs
-ui/hooks/useTransactionInsights.js   @MetaMask/snaps-devs
+app/scripts/constants/snaps.ts       @MetaMask/snaps-devs
+
+# Co-owned by Confirmations and Snaps
+ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/snaps-devs
 
 # Wallet UX
-ui/components/multichain              @MetaMask/wallet-ux
 ui/components/app/whats-new-popup     @MetaMask/wallet-ux
 ui/css                                @MetaMask/wallet-ux
 ui/pages/home                         @MetaMask/wallet-ux
-ui/pages/onboarding-flow              @MetaMask/wallet-ux
+ui/components/multichain/             @MetaMask/wallet-ux
+
+# Co-owned by accounts and wallet-ux
+ui/components/multichain/multi-srp/              @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-picker/         @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-details/        @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-overview/       @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-list-item/      @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-list-menu/      @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-list-item-menu/ @MetaMask/accounts-engineers @MetaMask/wallet-ux
+
+# Web3Auth / Onboarding
+ui/pages/onboarding-flow              @MetaMask/web3auth
+
+# Confirmations team to own code for confirmations on UI.
+app/scripts/controller-init/confirmations                         @MetaMask/confirmations
+app/scripts/lib/ppom                                              @MetaMask/confirmations
+app/scripts/lib/signature                                         @MetaMask/confirmations
+app/scripts/lib/transaction/decode                                @MetaMask/confirmations
+app/scripts/lib/transaction/metrics.*                             @MetaMask/confirmations
+app/scripts/lib/transaction/util.*                                @MetaMask/confirmations
+ui/pages/confirmations                                            @MetaMask/confirmations
+ui/components/multichain/pages/send                               @MetaMask/confirmations
 
 # Assets
-ui/components/app/add-network                         @MetaMask/metamask-assets
-ui/components/app/auto-detect-nft                     @MetaMask/metamask-assets
-ui/components/app/auto-detect-token                   @MetaMask/metamask-assets
+ui/components/app/detected-token                   @MetaMask/metamask-assets
 ui/components/app/import-token                        @MetaMask/metamask-assets
-ui/components/app/nft-default-image                   @MetaMask/metamask-assets
-ui/components/app/nft-details                         @MetaMask/metamask-assets
-ui/components/app/nft-options                         @MetaMask/metamask-assets
-ui/components/app/nfts-detection-notice-import-nfts   @MetaMask/metamask-assets
-ui/components/app/nfts-items                          @MetaMask/metamask-assets
-ui/components/app/nfts-tab                            @MetaMask/metamask-assets
+ui/components/app/assets                              @MetaMask/metamask-assets
 ui/components/ui/deprecated-networks                  @MetaMask/metamask-assets
 ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
+
+# Extension Platform
+.yarnrc.yml                                           @MetaMask/extension-platform
+test/e2e/mock-e2e-allowlist.js                        @MetaMask/extension-platform

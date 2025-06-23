@@ -251,26 +251,11 @@
   "from": {
     "message": "Fra "
   },
-  "functionType": {
-    "message": "Funksjonstype "
-  },
   "gasLimit": {
     "message": "Datakraftsgrense "
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Datakraftgrense er det maksimale antall datakraft du er vilig til å benytte. "
-  },
   "gasLimitTooLow": {
     "message": "Datakraftsgrense må være minst 21000"
-  },
-  "gasPrice": {
-    "message": "Bensinpris (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Datakraftspris ekstremt lav "
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Datakraftpris angir mengden Ether du er villig til å betale for hver datakraftenhet."
   },
   "gasUsed": {
     "message": "Brukt datakraft "
@@ -306,9 +291,6 @@
   "import": {
     "message": "Importer",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importér konto"
   },
   "importAccountMsg": {
     "message": "Importerte kontoer blir ikke tilknyttet den opprinnelig opprettede mnemoniske gjenopprettingsfrasen for MetaMask-kontoen din. Finn ut mer om importerte kontoer"
@@ -455,9 +437,6 @@
   "origin": {
     "message": "Opprinnelse"
   },
-  "parameters": {
-    "message": "Parametre"
-  },
   "participateInMetaMetrics": {
     "message": "Delta i MetaMetrics "
   },
@@ -526,9 +505,6 @@
   "removeAccountDescription": {
     "message": "Denne kontoen blir fjernet fra lommeboken din. Forsikre deg om at du har den originale mnemoniske gjenopprettingsfrasen eller den private nøkkelen for denne importerte kontoen før du fortsetter. Du kan importere eller opprette kontoer igjen fra nedtrekksmenyen."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "forespørsler venter på godkjenning"
-  },
   "required": {
     "message": "Påkrevd "
   },
@@ -592,9 +568,6 @@
   },
   "showHexDataDescription": {
     "message": "Velg dette for å vise hex-datafeltet på sendskjermen"
-  },
-  "sigRequest": {
-    "message": "Signaturforespørsel "
   },
   "sign": {
     "message": "Undertegn"
@@ -713,17 +686,11 @@
   "unknown": {
     "message": "Ukjent"
   },
-  "unknownNetwork": {
-    "message": "Ukjent privat nettverk"
-  },
   "unknownQrCode": {
     "message": "Feil: Vi kunne ikke gjenkjenne denne QR-koden"
   },
   "unlock": {
     "message": "Lås opp"
-  },
-  "unlockMessage": {
-    "message": "Det desentraliserte internett venter deg"
   },
   "urlErrorMsg": {
     "message": "URI-er krever det aktuelle HTTP/HTTPS-prefikset."
@@ -746,13 +713,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Du må gi kameratilgang for å bruke denne funksjonen."
   },
-  "youSign": {
-    "message": "Du signerer"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Din private frøfrase"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Null bensinpris for fremskynding"
   }
 }

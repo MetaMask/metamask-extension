@@ -1,9 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  logInWithBalanceValidation,
-} = require('../../helpers');
+const { withFixtures, logInWithBalanceValidation } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const { tEn } = require('../../../lib/i18n-helpers');
@@ -15,15 +11,11 @@ describe('Change assets', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
-
-        // Wait for balance to load
-        await driver.delay(500);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
 
         // Click the Send button
         await driver.clickElement('[data-testid="eth-overview-send"]');
@@ -88,12 +80,11 @@ describe('Change assets', function () {
           .withTokensControllerERC20()
           .withNftControllerERC721()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract: [smartContract, tokenContract],
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
 
         // Click the Send button
         await driver.clickElement({
@@ -162,12 +153,11 @@ describe('Change assets', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
 
         // Choose the nft
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
@@ -250,12 +240,11 @@ describe('Change assets', function () {
             },
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
 
         // Create second account
         await driver.clickElement('[data-testid="account-menu-icon"]');
