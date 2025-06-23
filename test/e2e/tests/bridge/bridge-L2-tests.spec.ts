@@ -51,7 +51,7 @@ describe('Bridge tests', function (this: Suite) {
         );
 
         // Switch to Ethereum to set it as the current network
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
+        await switchToNetworkFromSendFlow(driver, 'Ethereum Mainnet');
 
         await bridgeTransaction(
           driver,
