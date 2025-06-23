@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -29,7 +29,12 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
-import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_METAMETRICS,
+} from '../../../helpers/constants/routes';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
@@ -63,11 +68,16 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const splitSecretRecoveryPhrase = useMemo(
     () => (secretRecoveryPhrase ? secretRecoveryPhrase.split(' ') : []),
     [secretRecoveryPhrase],
   );
+  const searchParams = new URLSearchParams(search);
+  const isFromReminderParam = searchParams.get('isFromReminder')
+    ? '/?isFromReminder=true'
+    : '';
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [matching, setMatching] = useState(false);
@@ -113,8 +123,13 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       },
     });
 
-    history.push(ONBOARDING_COMPLETION_ROUTE);
-  }, [dispatch, hdEntropyIndex, history, trackEvent]);
+    const nextRoute =
+      getBrowserName() === PLATFORM_FIREFOX || isFromReminderParam
+        ? ONBOARDING_COMPLETION_ROUTE
+        : ONBOARDING_METAMETRICS;
+
+    history.push(`${nextRoute}${isFromReminderParam}`);
+  }, [dispatch, hdEntropyIndex, history, trackEvent, isFromReminderParam]);
 
   return (
     <Box
@@ -155,9 +170,14 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
           marginBottom={4}
           width={BlockSize.Full}
         >
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {t('stepOf', [3, 3])}
-          </Text>
+          {!isFromReminderParam && (
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
+              {t('stepOf', [3, 3])}
+            </Text>
+          )}
           <Text variant={TextVariant.headingLg} as="h2">
             {t('confirmRecoveryPhraseTitle')}
           </Text>

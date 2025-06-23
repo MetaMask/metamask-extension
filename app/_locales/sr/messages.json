@@ -698,9 +698,6 @@
   "unlock": {
     "message": "Откључај"
   },
-  "unlockMessage": {
-    "message": "Decentralizovani veb čeka"
-  },
   "urlErrorMsg": {
     "message": "URI-ovi zahtevaju odgovarajući prefiks HTTP / HTTPS."
   },
