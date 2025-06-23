@@ -45,7 +45,14 @@ export default class OAuthService {
       this.#webAuthenticator,
     );
 
-    return this.#handleOAuthLogin(loginHandler);
+    try {
+      return this.#handleOAuthLogin(loginHandler);
+    } catch (error) {
+      const browserLastError = chrome.runtime.lastError;
+      console.error('[startOAuthLogin] error', error);
+      console.error('[startOAuthLogin] browserLastError', browserLastError);
+      throw error;
+    }
   }
 
   /**

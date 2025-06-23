@@ -3808,6 +3808,12 @@ export default class MetamaskController extends EventEmitter {
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
 
+      ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
+      startOAuthLogin: this.oauthService.startOAuthLogin.bind(
+        this.oauthService,
+      ),
+      ///: END:ONLY_INCLUDE_IF
+
       // KeyringController
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
