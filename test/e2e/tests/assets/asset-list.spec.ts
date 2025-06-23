@@ -42,7 +42,6 @@ describe('Multichain Asset List', function (this: Suite) {
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
         await assetListPage.check_tokenItemNumber(3);
         await assetListPage.openNetworksFilter();
-        await driver.delay(10000);
         await assetListPage.clickCurrentNetworkOption();
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
