@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -49,6 +49,17 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
     : '';
   const trackEvent = useContext(MetaMetricsContext);
 
+  const handleOnShowSrpDetailsModal = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.SrpDefinitionClicked,
+      properties: {
+        location: 'review_recovery_phrase',
+      },
+    });
+    setShowSrpDetailsModal(true);
+  }, [trackEvent]);
+
   return (
     <Box
       display={Display.Flex}
@@ -83,9 +94,14 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
           marginBottom={4}
           width={BlockSize.Full}
         >
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {t('stepOf', [2, 3])}
-          </Text>
+          {!isFromReminderParam && (
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
+              {t('stepOf', [2, 3])}
+            </Text>
+          )}
           <Text variant={TextVariant.headingLg} as="h2">
             {t('seedPhraseReviewTitle')}
           </Text>
@@ -100,9 +116,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               <ButtonLink
                 key="seedPhraseReviewDetails"
                 size={ButtonLinkSize.Inherit}
-                onClick={() => {
-                  setShowSrpDetailsModal(true);
-                }}
+                onClick={handleOnShowSrpDetailsModal}
               >
                 {t('secretRecoveryPhrase')}
               </ButtonLink>,

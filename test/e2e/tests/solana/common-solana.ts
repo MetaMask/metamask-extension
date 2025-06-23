@@ -1517,6 +1517,8 @@ export async function mockBridgeGetTokens(mockServer: Mockttp) {
   });
 }
 
+export const SHOW_SWAP_SNAP_CONFIRMATION = false;
+
 const featureFlags = {
   refreshRate: 30000,
   maxRefreshCount: 5,
@@ -1539,13 +1541,27 @@ const featureFlags = {
       ],
       isActiveSrc: true,
       isActiveDest: true,
+      isSnapConfirmationEnabled: false,
     },
   },
 };
+
+const featureFlagsWithSnapConfirmation = {
+  ...featureFlags,
+  chains: {
+    ...featureFlags.chains,
+    '1151111081099710': {
+      ...featureFlags.chains['1151111081099710'],
+      isSnapConfirmationEnabled: true,
+    },
+  },
+};
+
 export async function withSolanaAccountSnap(
   {
     title,
     showNativeTokenAsMainBalance = true,
+    showSnapConfirmation = false,
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
     mockZeroBalance,
@@ -1560,6 +1576,7 @@ export async function withSolanaAccountSnap(
   }: {
     title?: string;
     showNativeTokenAsMainBalance?: boolean;
+    showSnapConfirmation?: boolean;
     numberOfAccounts?: number;
     mockGetTransactionSuccess?: boolean;
     mockGetTransactionFailed?: boolean;
@@ -1603,7 +1620,9 @@ export async function withSolanaAccountSnap(
         // - If this flag is set, the slides count will be 5.
         remoteFeatureFlags: {
           addSolanaAccount: true,
-          bridgeConfig: featureFlags,
+          bridgeConfig: showSnapConfirmation
+            ? featureFlagsWithSnapConfirmation
+            : featureFlags,
         },
       },
       dappPaths,
