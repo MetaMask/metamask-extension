@@ -9,7 +9,7 @@ index 0000000000000000000000000000000000000000..376255036ca54b83a3f3c3e0277c2666
 +This patch is part of a temporary fix that will be reverted soon to make way for a more permanent solution. https://github.com/MetaMask/metamask-extension/pull/23005
 +You can see the changes before compilation on this branch: https://github.com/MetaMask/core/compare/pnf/ext-23622-review?expand=1
 diff --git a/dist/NetworkController.cjs b/dist/NetworkController.cjs
-index 3ee78a58bfc13c0698224ddb5ea8acc92cc9bfe7..e28320942021ab97e141728873780b8a996f6cbd 100644
+index 3ee78a58bfc13c0698224ddb5ea8acc92cc9bfe7..51c9de66f978190e4b17e57127b4d649288bbacd 100644
 --- a/dist/NetworkController.cjs
 +++ b/dist/NetworkController.cjs
 @@ -566,7 +566,6 @@ class NetworkController extends base_controller_1.BaseController {
@@ -21,7 +21,7 @@ index 3ee78a58bfc13c0698224ddb5ea8acc92cc9bfe7..e28320942021ab97e141728873780b8a
      /**
       * Refreshes the network meta with EIP-1559 support and the network status
 diff --git a/dist/NetworkController.mjs b/dist/NetworkController.mjs
-index ce3973cfd949f64ad63265f980d832d2d05d3146..b1747b9075244eae3358a62008fa364bb894d8ff 100644
+index ce3973cfd949f64ad63265f980d832d2d05d3146..230cbcc9a5eebe97813275df4fb5b6e17d8a1481 100644
 --- a/dist/NetworkController.mjs
 +++ b/dist/NetworkController.mjs
 @@ -542,7 +542,6 @@ export class NetworkController extends BaseController {
