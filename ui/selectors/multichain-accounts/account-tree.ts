@@ -57,7 +57,7 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
     const hiddenAccountsSet = new Set(hiddenAccounts);
 
     // Precompute connected account IDs for faster lookup
-    const connectedAccountIds = new Set(
+    const connectedAccountIdsSet = new Set(
       connectedAccounts.map((account) => account.id),
     );
 
@@ -93,7 +93,7 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
             );
             accountWithMetadata.active =
               selectedAccount.id === accountWithMetadata.id &&
-              connectedAccountIds.has(accountWithMetadata.id);
+              connectedAccountIdsSet.has(accountWithMetadata.id);
 
             return accountWithMetadata;
           });
