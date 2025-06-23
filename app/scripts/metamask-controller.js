@@ -1088,7 +1088,10 @@ export default class MetamaskController extends EventEmitter {
         appleClientId: process.env.APPLE_CLIENT_ID,
         googleAuthConnectionId: process.env.GOOGLE_AUTH_CONNECTION_ID,
         appleAuthConnectionId: process.env.APPLE_AUTH_CONNECTION_ID,
-        groupedAuthConnectionId: process.env.GROUPED_AUTH_CONNECTION_ID,
+        googleGrouppedAuthConnectionId:
+          process.env.GOOGLE_GROUPED_AUTH_CONNECTION_ID,
+        appleGrouppedAuthConnectionId:
+          process.env.APPLE_GROUPED_AUTH_CONNECTION_ID,
       },
       webAuthenticator: webAuthenticatorFactory(),
     });

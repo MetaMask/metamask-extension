@@ -78,31 +78,15 @@ export type LoginHandlerOptions = {
   scopes?: string[];
 };
 
-/**
- * The configuration to initiate the OAuth login and get the Authorization Code.
- *
- * - clientId: string - the client ID of the OAuth provider
- * - redirectUri: string - the redirect URI of the OAuth provider
- * - serverRedirectUri: string - the server redirect URI of the OAuth provider, to be used for Apple login
- * - scopes: string[] - the scopes of the OAuth provider
- */
-export type OAuthProviderConfig = {
-  clientId: string;
-  redirectUri?: string;
-  /** for apple, we need to redirect to a server endpoint that will handle the post request and redirect back to client */
-  serverRedirectUri?: string;
-  scopes?: string[];
-};
-
 export type OAuthLoginEnv = {
   googleAuthConnectionId: string;
+  googleGrouppedAuthConnectionId: string;
   appleAuthConnectionId: string;
-  groupedAuthConnectionId: string;
+  appleGrouppedAuthConnectionId: string;
   googleClientId: string;
   appleClientId: string;
   authServerUrl: string;
   web3AuthNetwork: Web3AuthNetwork;
-  serverRedirectUri?: string;
 };
 
 export type OAuthServiceOptions = {
