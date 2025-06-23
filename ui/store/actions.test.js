@@ -6,6 +6,7 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
@@ -125,6 +126,54 @@ describe('Actions', () => {
     });
 
     sinon.restore();
+  });
+
+  describe('#startOAuthLogin', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls socialLogin in background', async () => {
+      const store = mockStore();
+
+      const startOAuthLoginStub = background.startOAuthLogin.callsFake(
+        (_, cb) => cb(null, true),
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(actions.startOAuthLogin(AuthConnection.Google));
+
+      expect(
+        startOAuthLoginStub.calledOnceWith(AuthConnection.Google),
+      ).toStrictEqual(true);
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('throws an error if the social login fails', async () => {
+      const store = mockStore();
+
+      background.startOAuthLogin.callsFake((_, cb) => cb(new Error('error')));
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await expect(
+        store.dispatch(actions.startOAuthLogin(AuthConnection.Google)),
+      ).rejects.toThrow('error');
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
   });
 
   describe('#tryUnlockMetamask', () => {
