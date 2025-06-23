@@ -155,7 +155,7 @@ export const MultichainAccountsTree = ({
 
     // Add a final section for hidden accounts
     if (hasHiddenAccounts) {
-      allWallets.push(<HiddenAccountList onClose={console.log} />);
+      allWallets.push(<HiddenAccountList onClose={onClose} />);
     }
 
     return allWallets;

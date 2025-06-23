@@ -1,10 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
-import type {
-  AccountGroupId,
-  AccountWalletId,
-} from '@metamask/account-tree-controller';
+import type { AccountGroupId, AccountWalletId } from '@metamask/account-tree-controller';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
@@ -20,292 +17,240 @@ const walletTwoId: AccountWalletId = 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8';
 const walletTwoGroupId: AccountGroupId =
   'entropy:01JKAF3PJ247KAM6C03G5Q0NP8:default';
 
+const createAccount = (
+  id: string,
+  name: string,
+  address: string,
+  hidden = false,
+  pinned = false,
+  type = EthAccountType.Eoa,
+): Merge => ({
+  address,
+  id,
+  metadata: {
+    name,
+    keyring: { type: 'HD Key Tree' },
+    importTime: 0,
+  },
+  options: {},
+  methods: ETH_EOA_METHODS,
+  scopes: [type === EthAccountType.Eoa ? EthScope.Eoa : EthScope.Testnet],
+  type,
+  balance: '0x0',
+  pinned,
+  hidden,
+  lastSelected: 0,
+  active: false,
+  keyring: { type: 'HD Key Tree' },
+  label: '',
+});
+
 const mockWallets: ConsolidatedWallets = {
   [walletOneId]: {
     id: walletOneId,
-    metadata: {
-      name: 'Wallet 1',
-    },
+    metadata: { name: 'Wallet 1' },
     groups: {
       [walletOneGroupId]: {
         id: walletOneGroupId,
-        metadata: {
-          name: 'Default',
-        },
+        metadata: { name: 'Default' },
         accounts: [
-          {
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            id: 'account-1',
-            metadata: {
-              name: 'Account 1',
-              keyring: {
-                type: 'HD Key Tree',
-              },
-              importTime: 0,
-            },
-            options: {},
-            methods: ETH_EOA_METHODS,
-            scopes: [EthScope.Eoa],
-            type: EthAccountType.Eoa,
-            balance: '0x0',
-            pinned: false,
-            hidden: false,
-            lastSelected: 0,
-            active: false,
-            keyring: {
-              type: 'HD Key Tree',
-            },
-            label: '',
-          },
-          {
-            address: '0x123456789abcdef0123456789abcdef012345678',
-            id: 'account-2',
-            metadata: {
-              name: 'Account 2',
-              keyring: {
-                type: 'HD Key Tree',
-              },
-              importTime: 0,
-            },
-            options: {},
-            methods: ETH_EOA_METHODS,
-            scopes: [EthScope.Eoa],
-            type: EthAccountType.Eoa,
-            balance: '0x0',
-            pinned: false,
-            hidden: false,
-            lastSelected: 0,
-            active: false,
-            keyring: {
-              type: 'HD Key Tree',
-            },
-            label: '',
-          },
+          createAccount(
+            'account-1',
+            'Account 1',
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          ),
+          createAccount(
+            'account-2',
+            'Account 2',
+            '0x123456789abcdef0123456789abcdef012345678',
+          ),
+          createAccount(
+            'account-3',
+            'Account 3',
+            '0x9339B1D5ed9b127479fD742bf7501CE2f5223C37',
+            true,
+          ),
         ],
       },
     },
   },
   [walletTwoId]: {
     id: walletTwoId,
-    metadata: {
-      name: 'Wallet 2',
-    },
+    metadata: { name: 'Wallet 2' },
     groups: {
       [walletTwoGroupId]: {
         id: walletTwoGroupId,
-        metadata: {
-          name: 'Default',
-        },
+        metadata: { name: 'Default' },
         accounts: [
-          {
-            address: '0xabcdef0123456789abcdef0123456789abcdef01',
-            id: 'account-3',
-            metadata: {
-              name: 'Account 3',
-              keyring: {
-                type: 'HD Key Tree',
-              },
-              importTime: 0,
-            },
-            options: {},
-            methods: ETH_EOA_METHODS,
-            scopes: [EthScope.Testnet],
-            type: EthAccountType.Erc4337,
-            balance: '0x0',
-            pinned: false,
-            hidden: false,
-            lastSelected: 0,
-            active: false,
-            keyring: {
-              type: 'HD Key Tree',
-            },
-            label: '',
-          },
-          {
-            address: '0xC5b2b5ae370876c0122910F92a13bef85A133E56',
-            id: 'account-4',
-            metadata: {
-              name: 'Account 4',
-              keyring: {
-                type: 'HD Key Tree',
-              },
-              importTime: 0,
-            },
-            options: {},
-            methods: ETH_EOA_METHODS,
-            scopes: [EthScope.Eoa],
-            type: EthAccountType.Eoa,
-            balance: '0x0',
-            pinned: false,
-            hidden: false,
-            lastSelected: 0,
-            active: false,
-            keyring: {
-              type: 'HD Key Tree',
-            },
-            label: '',
-          },
+          createAccount(
+            'account-3',
+            'Account 3',
+            '0xabcdef0123456789abcdef0123456789abcdef01',
+            false,
+            false,
+            EthAccountType.Erc4337,
+          ),
+          createAccount(
+            'account-4',
+            'Account 4',
+            '0xC5b2b5ae370876c0122910F92a13bef85A133E56',
+          ),
         ],
       },
     },
   },
-} as const;
+};
 
 const mockConnectedSites = {
   '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [
-    {
-      origin: 'https://test.dapp',
-      iconUrl: 'https://test.dapp/icon.png',
-    },
+    { origin: 'https://test.dapp', iconUrl: 'https://test.dapp/icon.png' },
   ],
 };
 
+const defaultProps: MultichainAccountsTreeProps = {
+  wallets: mockWallets,
+  allowedAccountTypes: [EthAccountType.Eoa, EthAccountType.Erc4337],
+  connectedSites: mockConnectedSites,
+  currentTabOrigin: 'https://test.dapp',
+  privacyMode: false,
+  selectedAccount:
+    mockWallets[walletOneId].groups[`${walletOneId}:default`].accounts[0],
+  onClose: jest.fn(),
+  onAccountTreeItemClick: jest.fn(),
+};
+
+const renderComponent = (props = {}) => {
+  const store = configureStore(mockState);
+  return renderWithProvider(
+    <MultichainAccountsTree {...defaultProps} {...props} />,
+    store,
+  );
+};
+
 describe('MultichainAccountsTree', () => {
-  const mockOnClose = jest.fn();
-  const mockOnAccountListItemItemClicked = jest.fn();
-
-  const defaultProps: MultichainAccountsTreeProps = {
-    wallets: mockWallets,
-    allowedAccountTypes: [EthAccountType.Eoa, EthAccountType.Erc4337],
-    connectedSites: mockConnectedSites,
-    currentTabOrigin: 'https://test.dapp',
-    privacyMode: false,
-    selectedAccount:
-      mockWallets[walletOneId].groups[walletOneGroupId].accounts[0],
-    onClose: mockOnClose,
-    onAccountTreeItemClick: mockOnAccountListItemItemClicked,
-  };
-
-  const renderComponent = (props = {}) => {
-    const store = configureStore(mockState);
-
-    return renderWithProvider(
-      <MultichainAccountsTree {...defaultProps} {...props} />,
-      store,
-    );
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('renders wallet and account items correctly', () => {
     renderComponent();
-
     expect(screen.getByText('Wallet 1')).toBeInTheDocument();
     expect(screen.getByText('Wallet 2')).toBeInTheDocument();
-
     expect(screen.getByText('Account 1')).toBeInTheDocument();
     expect(screen.getByText('Account 2')).toBeInTheDocument();
     expect(screen.getByText('Account 3')).toBeInTheDocument();
+    expect(screen.getByText('Hidden accounts')).toBeInTheDocument();
   });
 
-  it('filters accounts by allowed types', () => {
-    // Only show EOA accounts
-    renderComponent({
-      allowedAccountTypes: [EthAccountType.Eoa],
-    });
-
-    // Account 1 and 2 are EOA and should be visible
-    expect(screen.getByText('Account 1')).toBeInTheDocument();
-    expect(screen.getByText('Account 2')).toBeInTheDocument();
-
-    // Account 3 is ERC4337 and should not be visible
-    expect(screen.queryByText('Account 3')).not.toBeInTheDocument();
-  });
-
-  it('renders pinned accounts at the top of the list', () => {
-    // Update mockWallets to include pinned accounts
-    const mockWallet = mockWallets[walletOneId];
-    const mockGroup = mockWallet.groups[walletOneGroupId];
-    const updatedMockWallets: ConsolidatedWallets = {
-      ...mockWallets,
+  it('does not render empty wallets', () => {
+    const updatedMockWallets = {
       [walletOneId]: {
-        ...mockWallet,
+        ...mockWallets[walletOneId],
         groups: {
-          [walletOneGroupId]: {
-            ...mockGroup,
-            accounts: [
-              ...mockGroup.accounts,
-              {
-                ...mockGroup.accounts[1],
-                pinned: true, // Account 2 is pinned
-              },
-            ],
-          },
-        },
-      },
-    };
-
-    renderComponent({
-      wallets: updatedMockWallets,
-    });
-
-    // Ensure pinned accounts are rendered first
-    const accountItems = screen.getAllByText(/Account \d/u);
-    expect(accountItems[0]).toHaveTextContent('Account 2'); // Pinned account
-    expect(accountItems[1]).toHaveTextContent('Account 1'); // Non-pinned account
-  });
-
-  it('renders pinned accounts correctly across multiple wallets', () => {
-    // Update mockWallets to include pinned accounts in multiple wallets
-    const mockWallet1 = mockWallets[walletOneId];
-    const mockWallet2 = mockWallets[walletTwoId];
-    const mockGroup1 = mockWallet1.groups[walletOneGroupId];
-    const mockGroup2 = mockWallet2.groups[walletTwoGroupId];
-    const updatedMockWallets: ConsolidatedWallets = {
-      ...mockWallets,
-      [walletOneId]: {
-        ...mockWallet1,
-        groups: {
-          [walletOneGroupId]: {
-            ...mockGroup1,
-            accounts: [
-              {
-                ...mockGroup1.accounts[0],
-                pinned: false, // Account 1 is non-pinned
-              },
-              {
-                ...mockGroup1.accounts[1],
-                pinned: true, // Account 2 is pinned
-              },
-            ],
+          [`${walletOneId}:default`]: {
+            ...mockWallets[walletOneId].groups[`${walletOneId}:default`],
+            accounts: [],
           },
         },
       },
       [walletTwoId]: {
-        ...mockWallet2,
+        ...mockWallets[walletTwoId],
         groups: {
-          [walletTwoGroupId]: {
-            ...mockGroup2,
+          [`${walletTwoId}:default`]: {
+            ...mockWallets[walletTwoId].groups[`${walletTwoId}:default`],
+            accounts: [],
+          },
+        },
+      },
+    };
+    renderComponent({ wallets: updatedMockWallets });
+    expect(screen.queryByText('Wallet 1')).not.toBeInTheDocument();
+    expect(screen.queryByText('Wallet 2')).not.toBeInTheDocument();
+  });
+
+  it('filters accounts by allowed types', () => {
+    renderComponent({ allowedAccountTypes: [EthAccountType.Eoa] });
+    expect(screen.getByText('Account 1')).toBeInTheDocument();
+    expect(screen.getByText('Account 2')).toBeInTheDocument();
+    expect(screen.queryByText('Account 3')).not.toBeInTheDocument();
+  });
+
+  it('filters accounts by search pattern based on name', () => {
+    renderComponent({ searchPattern: 'Account 1' });
+    expect(screen.getByText('Account 1')).toBeInTheDocument();
+    expect(screen.queryByText('Account 2')).not.toBeInTheDocument();
+    expect(screen.queryByText('Account 3')).not.toBeInTheDocument();
+  });
+
+  it('filters accounts by search pattern based on address', () => {
+    // Last 10 digits of the address for account 1
+    renderComponent({ searchPattern: 'e70be3e7bc' });
+    expect(screen.getByText('Account 1')).toBeInTheDocument();
+    expect(screen.queryByText('Account 2')).not.toBeInTheDocument();
+    expect(screen.queryByText('Account 3')).not.toBeInTheDocument();
+  });
+
+  it('renders pinned accounts at the top of the list', () => {
+    const updatedMockWallets = {
+      ...mockWallets,
+      [walletOneId]: {
+        ...mockWallets[walletOneId],
+        groups: {
+          [`${walletOneId}:default`]: {
+            ...mockWallets[walletOneId].groups[`${walletOneId}:default`],
             accounts: [
-              {
-                ...mockGroup2.accounts[0],
-                pinned: false, // Account 3 is non-pinned
-              },
-              {
-                ...mockGroup2.accounts[1],
-                pinned: true, // Account 4 is pinned
-              },
+              createAccount(
+                'account-1',
+                'Account 1',
+                '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              ),
+              createAccount(
+                'account-2',
+                'Account 2',
+                '0x123456789abcdef0123456789abcdef012345678',
+                false,
+                true,
+              ),
             ],
           },
         },
       },
     };
+    renderComponent({ wallets: updatedMockWallets });
+    const accountItems = screen.getAllByText(/Account \d/u);
+    expect(accountItems[0]).toHaveTextContent('Account 2');
+    expect(accountItems[1]).toHaveTextContent('Account 1');
+  });
 
-    renderComponent({
-      wallets: updatedMockWallets,
-    });
-
-    // Ensure pinned accounts are rendered first in each wallet
-    const walletOneAccountItems = screen
-      .getAllByText(/Account \d/u)
-      .slice(0, 2);
-    expect(walletOneAccountItems[0]).toHaveTextContent('Account 2'); // Pinned account
-    expect(walletOneAccountItems[1]).toHaveTextContent('Account 1'); // Non-pinned account
-
-    const walletTwoAccountItems = screen.getAllByText(/Account \d/u).slice(2);
-    expect(walletTwoAccountItems[0]).toHaveTextContent('Account 4'); // Pinned account
-    expect(walletTwoAccountItems[1]).toHaveTextContent('Account 3'); // Non-pinned account
+  it('renders hidden accounts correctly across multiple wallets', () => {
+    const updatedMockWallets = {
+      ...mockWallets,
+      [walletOneId]: {
+        ...mockWallets[walletOneId],
+        groups: {
+          [`${walletOneId}:default`]: {
+            ...mockWallets[walletOneId].groups[`${walletOneId}:default`],
+            accounts: [
+              createAccount(
+                'account-1',
+                'Account 1',
+                '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                true,
+              ),
+              createAccount(
+                'account-2',
+                'Account 2',
+                '0x123456789abcdef0123456789abcdef012345678',
+                true,
+              ),
+            ],
+          },
+        },
+      },
+    };
+    renderComponent({ wallets: updatedMockWallets });
+    expect(screen.queryByText('Wallet 1')).not.toBeInTheDocument();
+    expect(screen.getByText('Account 3')).toBeInTheDocument();
+    expect(screen.getByText('Account 4')).toBeInTheDocument();
   });
 });
