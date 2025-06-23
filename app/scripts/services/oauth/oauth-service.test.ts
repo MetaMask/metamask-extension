@@ -10,7 +10,8 @@ const MOCK_AUTH_SERVER_URL = 'https://mocked-auth-server-url';
 const MOCK_WEB3AUTH_NETWORK = 'sapphire_devnet';
 const MOCK_GOOGLE_AUTH_CONNECTION_ID = 'google-auth-id';
 const MOCK_APPLE_AUTH_CONNECTION_ID = 'apple-auth-id';
-const MOCK_GROUPED_AUTH_CONNECTION_ID = 'mm-seedless-onboarding';
+const MOCK_GOOGLE_GROUPED_AUTH_CONNECTION_ID = 'google-group-id';
+const MOCK_APPLE_GROUPED_AUTH_CONNECTION_ID = 'apple-group-id';
 const DEFAULT_GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
 const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
 const OAUTH_AUD = 'metamask';
@@ -33,7 +34,8 @@ function getOAuthLoginEnvs(): OAuthLoginEnv {
     googleAuthConnectionId: MOCK_GOOGLE_AUTH_CONNECTION_ID,
     appleAuthConnectionId: MOCK_APPLE_AUTH_CONNECTION_ID,
     web3AuthNetwork: MOCK_WEB3AUTH_NETWORK as Web3AuthNetwork,
-    groupedAuthConnectionId: MOCK_GROUPED_AUTH_CONNECTION_ID,
+    appleGrouppedAuthConnectionId: MOCK_APPLE_GROUPED_AUTH_CONNECTION_ID,
+    googleGrouppedAuthConnectionId: MOCK_GOOGLE_GROUPED_AUTH_CONNECTION_ID,
   };
 }
 

@@ -196,11 +196,14 @@ export default class OAuthService {
     loginHandler: BaseLoginHandler,
     authCode: string | null,
   ): Promise<OAuthLoginResult> {
-    const { groupedAuthConnectionId } = this.#env;
     const authConnectionId =
       loginHandler.authConnection === AuthConnection.Google
         ? this.#env.googleAuthConnectionId
         : this.#env.appleAuthConnectionId;
+    const groupedAuthConnectionId =
+      loginHandler.authConnection === AuthConnection.Google
+        ? this.#env.googleGrouppedAuthConnectionId
+        : this.#env.appleGrouppedAuthConnectionId;
 
     const authTokenData = await loginHandler.getAuthIdToken(authCode);
     const idToken = authTokenData.jwt_tokens[this.#audience];
