@@ -8,6 +8,7 @@ import {
 } from './common-solana';
 
 describe('Swap on Solana', function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('Completes a Swap between SOL and SPL', async function () {
     await withSolanaAccountSnap(
       {
@@ -66,6 +67,7 @@ describe('Swap on Solana', function () {
       },
     );
   });
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('Completes a Swap between SPL and SOL', async function () {
     await withSolanaAccountSnap(
       {
@@ -106,6 +108,7 @@ describe('Swap on Solana', function () {
       },
     );
   });
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('Swap has no quotes available', async function () {
     await withSolanaAccountSnap(
       {
