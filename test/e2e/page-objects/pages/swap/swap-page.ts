@@ -19,6 +19,9 @@ class SwapPage {
     text: 'Close',
   };
 
+  private readonly swapProcessingMessage =
+    '.prepare-swap-page__balance-message';
+
   private readonly transactionHeader = '[data-testid="awaiting-swap-header"]';
 
   constructor(driver: Driver) {
@@ -82,6 +85,14 @@ class SwapPage {
     await this.driver.clickElement({
       text: 'Continue swapping',
       tag: 'button',
+    });
+  }
+
+  async check_prepareSwapBalanceMessage(balanceAmount: string): Promise<void> {
+    console.log('Check swap balance prepare message');
+    await this.driver.waitForSelector({
+      css: this.swapProcessingMessage,
+      text: `Balance: ${balanceAmount}`,
     });
   }
 }

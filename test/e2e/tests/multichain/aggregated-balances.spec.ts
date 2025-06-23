@@ -14,7 +14,6 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
-import ContractAddressRegistry from '../../seeder/contract-address-registry';
 
 const EXPECTED_BALANCE_USD = '$42,500.00';
 const EXPECTED_SEPOLIA_BALANCE_NATIVE = '25';
@@ -40,14 +39,11 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
       async ({
         driver,
         localNodes,
-        contractRegistry,
       }: {
         driver: Driver;
         localNodes: Anvil[] | Ganache[] | undefined[];
-        contractRegistry: ContractAddressRegistry;
       }) => {
-        const contract = contractRegistry.getContractAddress(smartContract);
-        console.log("// Step 1: Log in and set up page objects");
+        console.log('// Step 1: Log in and set up page objects');
         await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homepage = new HomePage(driver);
@@ -80,12 +76,12 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
 
         console.log('Step 5: Verify balance in send flow');
         await homepage.startSendFlow();
-        await sendTokenPage.checkAccountValueAndSuffix(
-          EXPECTED_BALANCE_USD,
-        );
+        await sendTokenPage.checkAccountValueAndSuffix(EXPECTED_BALANCE_USD);
         await sendTokenPage.clickCancelButton();
 
-        console.log('Step 6: Check balance for "Current Network" in network filter');
+        console.log(
+          'Step 6: Check balance for "Current Network" in network filter',
+        );
         await assetListPage.openNetworksFilter();
         const networkFilterTotal =
           await assetListPage.getCurrentNetworksOptionTotal();
@@ -103,11 +99,11 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         );
         await accountListPage.closeAccountModal();
 
-        console.log('Step 8: Verify balance in send flow after selecting "Current Network"');
-        await homepage.startSendFlow();
-        await sendTokenPage.checkAccountValueAndSuffix(
-          EXPECTED_BALANCE_USD,
+        console.log(
+          'Step 8: Verify balance in send flow after selecting "Current Network"',
         );
+        await homepage.startSendFlow();
+        await sendTokenPage.checkAccountValueAndSuffix(EXPECTED_BALANCE_USD);
         await sendTokenPage.clickCancelButton();
 
         console.log('Step 9: Switch to Sepolia test network');

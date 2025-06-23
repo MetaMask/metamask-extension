@@ -70,6 +70,10 @@ class AssetListPage {
 
   private readonly sendButton = '[data-testid="eth-overview-send"]';
 
+  private readonly swapButton = '[data-testid="eth-overview-swap"]';
+
+  private readonly buySellButton = '[data-testid="coin-overview-buy"]';
+
   private readonly tokenAddressInput =
     '[data-testid="import-tokens-modal-custom-address"]';
 
@@ -147,6 +151,11 @@ class AssetListPage {
   async clickSendButton(): Promise<void> {
     console.log(`Clicking on the send button`);
     await this.driver.clickElement(this.sendButton);
+  }
+
+  async clickSwapButton(): Promise<void> {
+    console.log(`Clicking on the swap button`);
+    await this.driver.clickElement(this.swapButton);
   }
 
   /**
@@ -319,6 +328,16 @@ class AssetListPage {
       },
       { timeout: 5000, interval: 100 },
     );
+  }
+
+  async check_buySellButtonIsPresent(): Promise<void> {
+    console.log(`Verify the buy/sell button is displayed`);
+    await this.driver.waitForSelector(this.buySellButton);
+  }
+
+  async check_multichainTokenListButtonIsPresent(): Promise<void> {
+    console.log(`Verify the multichain-token-list-button is displayed`);
+    await this.driver.waitForSelector(this.tokenListItem);
   }
 
   async check_networkFilterText(expectedText: string): Promise<void> {
