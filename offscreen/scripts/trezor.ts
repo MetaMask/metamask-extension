@@ -51,10 +51,6 @@ export default function init() {
 
           TrezorConnectSDK.init({
             ...msg.params,
-            manifest: {
-              ...msg.params.manifest,
-              name: 'MetaMask',
-            },
             env: 'webextension',
           }).then(() => {
             sendResponse();
