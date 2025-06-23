@@ -30,10 +30,23 @@ const createMockedHandler = () => {
   const metamaskState = {
     permissionHistory: {},
     metaMetricsId: 'metaMetricsId',
-    accounts: {
-      '0x1': {},
-      '0x2': {},
-      '0x3': {},
+    accountsByChainId: {
+      '0x1': {
+        '0x01': {
+          address: '0x01',
+          balance: null,
+        },
+      },
+      '0x2': {
+        '0x01': {
+          address: '0x01',
+          balance: null,
+        },
+        '0x02': {
+          address: '0x02',
+          balance: null,
+        },
+      },
     },
   };
   const getCaip25PermissionFromLegacyPermissionsForOrigin = jest

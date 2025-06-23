@@ -8,15 +8,17 @@ import type {
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
 import type { OriginString } from '@metamask/permission-controller';
+import type { PermissionLogControllerState } from '@metamask/permission-log-controller';
+import type { AccountTrackerControllerState } from '@metamask/assets-controllers';
+import { rpcErrors } from '@metamask/rpc-errors';
 
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../../shared/constants/metametrics';
-import { rpcErrors } from '@metamask/rpc-errors';
+import type { MetaMetricsControllerState } from '../../../controllers/metametrics-controller';
 import { shouldEmitDappViewedEvent } from '../../util';
-import type { FlattenedBackgroundStateProxy } from '../../../../../shared/types';
 import type {
   GetAccounts,
   HandlerWrapper,
@@ -28,7 +30,11 @@ import type {
 export type RequestEthereumAccountsOptions = {
   getAccounts: GetAccounts;
   sendMetrics: SendMetrics;
-  metamaskState: FlattenedBackgroundStateProxy;
+  metamaskState: {
+    metaMetricsId: MetaMetricsControllerState['metaMetricsId'];
+    permissionHistory: PermissionLogControllerState['permissionHistory'];
+    accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
+  };
   getCaip25PermissionFromLegacyPermissionsForOrigin: GetCaip25PermissionFromLegacyPermissionsForOrigin;
   requestPermissionsForOrigin: RequestPermissionsForOrigin;
 };
@@ -153,7 +159,14 @@ async function requestEthereumAccountsHandler<
         },
         properties: {
           is_first_visit: isFirstVisit,
-          number_of_accounts: Object.keys(metamaskState.accounts).length,
+          number_of_accounts: Object.keys(
+            metamaskState.accountsByChainId,
+          ).reduce((total, chainId) => {
+            return (
+              total +
+              Object.keys(metamaskState.accountsByChainId[chainId]).length
+            );
+          }, 0),
           number_of_accounts_connected: ethAccounts.length,
         },
       },
