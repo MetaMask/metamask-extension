@@ -6,42 +6,22 @@ exports[`TransactionList renders TransactionList component correctly 1`] = `
     class="mm-box transaction-list"
   >
     <div
-      class="mm-box asset-list-control-bar mm-box--margin-right-2 mm-box--margin-left-2"
+      class="mm-box mm-box--margin-right-2 mm-box--margin-left-2 mm-box--justify-content-flex-start"
     >
-      <div
-        class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
+        data-testid="sort-by-popover-toggle"
       >
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
-          data-testid="sort-by-networks"
+        <span
+          class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
         >
-          <span
-            class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-          >
-            Goerli
-          </span>
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-down.svg');"
-          />
-        </button>
-        <div
-          class="mm-box asset-list-control-bar__buttons mm-box--display-flex mm-box--justify-content-flex-end"
-        >
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm asset-list-control-bar__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
-            data-testid="asset-list-control-bar-action-button"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-0 mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/more-vertical.svg');"
-            />
-            <span
-              class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
-            />
-          </button>
-        </div>
-      </div>
+          Goerli
+        </span>
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-down.svg');"
+        />
+      </button>
     </div>
     <div
       class="mm-box transaction-list__transactions"
@@ -256,42 +236,22 @@ exports[`TransactionList renders TransactionList component with props hideTokenT
     class="mm-box transaction-list"
   >
     <div
-      class="mm-box asset-list-control-bar mm-box--margin-right-2 mm-box--margin-left-2"
+      class="mm-box mm-box--margin-right-2 mm-box--margin-left-2 mm-box--justify-content-flex-start"
     >
-      <div
-        class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
+        data-testid="sort-by-popover-toggle"
       >
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
-          data-testid="sort-by-networks"
+        <span
+          class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
         >
-          <span
-            class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-          >
-            Goerli
-          </span>
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-down.svg');"
-          />
-        </button>
-        <div
-          class="mm-box asset-list-control-bar__buttons mm-box--display-flex mm-box--justify-content-flex-end"
-        >
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm asset-list-control-bar__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
-            data-testid="asset-list-control-bar-action-button"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-0 mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/more-vertical.svg');"
-            />
-            <span
-              class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
-            />
-          </button>
-        </div>
-      </div>
+          Goerli
+        </span>
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-down.svg');"
+        />
+      </button>
     </div>
     <div
       class="mm-box transaction-list__transactions"
