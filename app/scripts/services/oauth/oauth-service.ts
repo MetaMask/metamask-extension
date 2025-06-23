@@ -1,4 +1,5 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import type {
@@ -34,7 +35,7 @@ export default class OAuthService {
     const permissionGranted =
       await this.#webAuthenticator.requestIdentityPermission();
     if (!permissionGranted) {
-      throw new Error('Identity permission not granted');
+      throw new Error(OAuthErrorMessages.PERMISSION_NOT_GRANTED_ERROR);
     }
 
     // create the login handler for the given social login type
@@ -45,7 +46,14 @@ export default class OAuthService {
       this.#webAuthenticator,
     );
 
-    return this.#handleOAuthLogin(loginHandler);
+    try {
+      return this.#handleOAuthLogin(loginHandler);
+    } catch (error) {
+      if (this.#isUserCancelledLoginError()) {
+        throw new Error(OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR);
+      }
+      throw error;
+    }
   }
 
   /**
@@ -133,7 +141,9 @@ export default class OAuthService {
                 loginHandler.validateState(state);
                 resolve(responseUrl);
               } else {
-                reject(new Error('No redirect URL found'));
+                reject(
+                  new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR),
+                );
               }
             } catch (error: unknown) {
               reject(error);
@@ -142,11 +152,6 @@ export default class OAuthService {
         );
       },
     );
-
-    if (!redirectUrlFromOAuth) {
-      console.error('[identity auth] redirectUrl is null');
-      throw new Error('No redirect URL found');
-    }
 
     // handle the OAuth response from the social login provider and get the Jwt Token in exchange
     const loginResult = await this.#handleOAuthResponse(
@@ -173,7 +178,7 @@ export default class OAuthService {
   ): Promise<OAuthLoginResult> {
     const authCode = this.#getRedirectUrlAuthCode(redirectUrl);
     if (!authCode) {
-      throw new Error('No auth code found');
+      throw new Error(OAuthErrorMessages.NO_AUTH_CODE_FOUND_ERROR);
     }
     const res = await this.#getAuthIdToken(loginHandler, authCode);
     return res;
@@ -211,5 +216,15 @@ export default class OAuthService {
   #getRedirectUrlAuthCode(redirectUrl: string): string | null {
     const url = new URL(redirectUrl);
     return url.searchParams.get('code');
+  }
+
+  #isUserCancelledLoginError(): boolean {
+    const error = browser.runtime.lastError;
+    return (
+      (error instanceof Error &&
+        error.message === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) ||
+      browser.runtime.lastError?.message ===
+        OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR
+    );
   }
 }

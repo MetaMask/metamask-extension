@@ -1,4 +1,5 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { LoginHandlerOptions, AuthTokenResponse, OAuthUserInfo } from './types';
 
 export abstract class BaseLoginHandler {
@@ -61,13 +62,13 @@ export abstract class BaseLoginHandler {
    */
   validateState(state: unknown): void {
     if (typeof state !== 'string') {
-      throw new Error('Invalid state');
+      throw new Error(OAuthErrorMessages.INVALID_OAUTH_STATE_ERROR);
     }
 
     const parsedState = JSON.parse(state);
 
     if (parsedState.nonce !== this.nonce) {
-      throw new Error('Invalid state');
+      throw new Error(OAuthErrorMessages.INVALID_OAUTH_STATE_ERROR);
     }
   }
 
