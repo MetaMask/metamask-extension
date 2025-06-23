@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import initializedMockState from '../../../../test/data/mock-state.json';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import CreationSuccessful from './account-exist';
 
 const mockHistoryPush = jest.fn();
@@ -26,7 +26,7 @@ describe('Account Exist Seedless Onboarding View', () => {
       ...initializedMockState,
       metamask: {
         ...initializedMockState.metamask,
-        firstTimeFlowType: FirstTimeFlowType.seedless,
+        firstTimeFlowType: FirstTimeFlowType.socialCreate,
       },
     };
     const customMockStore = configureMockStore([thunk])(
@@ -49,6 +49,6 @@ describe('Account Exist Seedless Onboarding View', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />);
     const loginButton = getByText('Log in');
     fireEvent.click(loginButton);
-    expect(mockHistoryPush).toHaveBeenCalledWith(UNLOCK_ROUTE);
+    expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE);
   });
 });
