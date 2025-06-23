@@ -893,6 +893,9 @@
   "bridgeSelectDestinationAccount": {
     "message": "Select destination account"
   },
+  "bridgeSelectDifferentQuote": {
+    "message": "Please select a different quote."
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
   },
@@ -1679,7 +1682,7 @@
     "description": "$1 is the name of the page they'll be redirected to if they click the Continue button. Examples of $1: 'the home page'; 'the buy page'; 'the swaps page'; 'the notifications page'"
   },
   "deepLink_DontRemindMeAgain": {
-    "message": "Don't Remind me again"
+    "message": "Don't remind me again"
   },
   "deepLink_Error404Description": {
     "message": "We can't find the page you are looking for."
@@ -2089,6 +2092,12 @@
   },
   "enableIt": {
     "message": " Enable it"
+  },
+  "enableSmartContractAccount": {
+    "message": "Enable smart contract account"
+  },
+  "enableSmartContractAccountDescription": {
+    "message": "You can enable smart account features on supported networks."
   },
   "enableSnap": {
     "message": "Enable"
@@ -6710,6 +6719,9 @@
   "twelveHrTitle": {
     "message": "12hr:"
   },
+  "txAlertTitle": {
+    "message": "This transaction will be reverted"
+  },
   "typeYourSRP": {
     "message": "Enter your Secret Recovery Phrase"
   },
@@ -6850,6 +6862,9 @@
   },
   "userOpContractDeployError": {
     "message": "Contract deployment from a smart contract account is not supported"
+  },
+  "value": {
+    "message": "Value"
   },
   "version": {
     "message": "Version"
