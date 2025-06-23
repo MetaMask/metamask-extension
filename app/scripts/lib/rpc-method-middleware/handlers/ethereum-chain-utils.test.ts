@@ -4,6 +4,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
+import type { NetworkConfiguration } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
 import * as EthChainUtils from './ethereum-chain-utils';
 
@@ -23,22 +24,15 @@ describe('Ethereum Chain Utils', () => {
       rejectApprovalRequestsForOrigin: jest.fn(),
       requestUserApproval: jest.fn(),
       hasApprovalRequestsForOrigin: jest.fn(),
-      toNetworkConfiguration: {},
-      fromNetworkConfiguration: {},
+      toNetworkConfiguration: {} as NetworkConfiguration,
+      fromNetworkConfiguration: {} as NetworkConfiguration,
+      getChainPermissionsFeatureFlag: jest.fn(),
+      requestPermittedChainsPermission: jest.fn(),
       ...mks,
     };
     const response = { result: true, id: '0', jsonrpc: '2.0' } as const;
     const switchChain = (chainId: Hex, networkClientId: string) =>
-      EthChainUtils.switchChain(
-        response,
-        end,
-        '',
-        chainId,
-        {},
-        networkClientId,
-        '',
-        mocks,
-      );
+      EthChainUtils.switchChain(response, end, chainId, networkClientId, mocks);
 
     return {
       mocks,
@@ -74,7 +68,12 @@ describe('Ethereum Chain Utils', () => {
 
         expect(
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
-        ).toHaveBeenCalledWith({ chainId: '0x1', autoApprove: false });
+        ).toHaveBeenCalledWith({
+          chainId: '0x1',
+          autoApprove: false,
+          metadata: {},
+          origin: 'www.test.com',
+        });
       });
 
       it('switches to the chain', async () => {
@@ -121,7 +120,12 @@ describe('Ethereum Chain Utils', () => {
 
         expect(
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
-        ).toHaveBeenCalledWith({ chainId: '0x1', autoApprove: true });
+        ).toHaveBeenCalledWith({
+          chainId: '0x1',
+          autoApprove: true,
+          metadata: {},
+          origin: 'www.test.com',
+        });
         expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet');
         expect(mocks.setTokenNetworkFilter).toHaveBeenCalledWith('0x1');
         expect(mocks.setEnabledNetworks).toHaveBeenCalledWith('0x1');
@@ -141,7 +145,12 @@ describe('Ethereum Chain Utils', () => {
 
         expect(
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
-        ).toHaveBeenCalledWith({ chainId: '0x1', autoApprove: false });
+        ).toHaveBeenCalledWith({
+          chainId: '0x1',
+          autoApprove: false,
+          metadata: {},
+          origin: 'www.test.com',
+        });
         expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet');
         expect(mocks.setTokenNetworkFilter).toHaveBeenCalledWith('0x1');
         expect(mocks.setEnabledNetworks).toHaveBeenCalledWith('0x1');
@@ -217,6 +226,7 @@ describe('Ethereum Chain Utils', () => {
           metadata: {
             isSwitchEthereumChain: true,
           },
+          origin: 'www.test.com',
         });
       });
 
@@ -331,6 +341,7 @@ describe('Ethereum Chain Utils', () => {
             decimals: 18,
           },
           blockExplorerUrls: ['https://explorer.test.com/'],
+          // @ts-expect-error Intentionally disabling type check to test runtime behavior for invalid input
           [unexpectedParam]: 'parameter',
         });
       }).toThrow(
@@ -371,6 +382,7 @@ describe('Ethereum Chain Utils', () => {
           params: [
             {
               chainId: '0x1',
+              // @ts-expect-error Intentionally disabling type check to test runtime behavior for invalid input
               [unexpectedParam]: 'parameter',
             },
           ],
@@ -387,6 +399,7 @@ describe('Ethereum Chain Utils', () => {
         EthChainUtils.validateSwitchEthereumChainParams({
           params: [
             {
+              // @ts-expect-error Intentionally disabling type check to test runtime behavior for invalid input
               chainId: 'invalid_chain_id',
             },
           ],

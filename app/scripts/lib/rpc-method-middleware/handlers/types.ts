@@ -3,7 +3,7 @@ import type {
   EndFlowOptions,
 } from '@metamask/approval-controller';
 import type { NetworkConfiguration } from '@metamask/network-controller';
-import type { JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
+import type { Json, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 import {
   CaveatSpecificationConstraint,
   PermissionController,
@@ -27,10 +27,10 @@ export type FindNetworkConfigurationBy = (
   rpcInfo: Record<string, string>,
 ) => NetworkConfiguration | null;
 
-export type GetCaveat = (options: {
+export type GetCaveat<Result = Record<string, Json>> = (options: {
   target: string;
   caveatType: string;
-}) => Record<string, string[]> | undefined;
+}) => Result | undefined;
 
 export type GetChainPermissionsFeatureFlag = () => boolean;
 
@@ -41,6 +41,9 @@ export type RequestPermittedChainsPermission = (
 export type RequestUserApproval = (
   options?: AddApprovalOptions,
 ) => Promise<unknown>;
+
+export type RevokePermissionsForOrigin = (permissionKeys: string[]) => void;
+export type RejectApprovalRequestsForOrigin = () => void;
 
 export type SetActiveNetwork = (
   networkConfigurationIdOrType: string,
