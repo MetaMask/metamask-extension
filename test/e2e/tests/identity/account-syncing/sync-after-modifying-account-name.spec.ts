@@ -4,25 +4,46 @@ import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import {
-  IDENTITY_TEAM_PASSWORD,
-  IDENTITY_TEAM_SEED_PHRASE,
-} from '../constants';
-import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
+  UserStorageMockttpController,
+  UserStorageMockttpControllerEvents,
+} from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountDetailsModal from '../../../page-objects/pages/dialog/account-details-modal';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HomePage from '../../../page-objects/pages/home/homepage';
-import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
-import { accountsSyncMockResponse } from './mockData';
-import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
+import { completeOnboardFlowIdentity } from '../flows';
+import { ACCOUNT_TYPE } from '../../../constants';
+import {
+  accountsToMockForAccountsSync,
+  getAccountsSyncMockResponse,
+} from './mock-data';
+import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Rename Accounts', function () {
-  if (!IS_ACCOUNT_SYNCING_ENABLED) {
-    return;
-  }
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
+
+  const arrange = async () => {
+    const unencryptedAccounts = accountsToMockForAccountsSync;
+    const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
+    const accountOneNewName = 'Account One New Name';
+
+    const userStorageMockttpController = new UserStorageMockttpController();
+
+    return {
+      unencryptedAccounts,
+      mockedAccountSyncResponse,
+      userStorageMockttpController,
+      accountOneNewName,
+    };
+  };
+
   describe('from inside MetaMask', function () {
     it('syncs renamed account names', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
+      const {
+        unencryptedAccounts,
+        mockedAccountSyncResponse,
+        userStorageMockttpController,
+        accountOneNewName,
+      } = await arrange();
 
       await withFixtures(
         {
@@ -33,7 +54,7 @@ describe('Account syncing - Rename Accounts', function () {
               USER_STORAGE_FEATURE_NAMES.accounts,
               server,
               {
-                getResponse: accountsSyncMockResponse,
+                getResponse: mockedAccountSyncResponse,
               },
             );
 
@@ -41,15 +62,7 @@ describe('Account syncing - Rename Accounts', function () {
           },
         },
         async ({ driver }) => {
-          await completeImportSRPOnboardingFlow({
-            driver,
-            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
-            password: IDENTITY_TEAM_PASSWORD,
-          });
-          const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+          await completeOnboardFlowIdentity(driver);
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -58,22 +71,35 @@ describe('Account syncing - Rename Accounts', function () {
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
           await accountListPage.check_numberOfAvailableAccounts(
-            accountsSyncMockResponse.length,
+            mockedAccountSyncResponse.length,
+            ACCOUNT_TYPE.Ethereum,
           );
           await accountListPage.check_accountDisplayedInAccountList(
-            'My First Synced Account',
+            unencryptedAccounts[0].n,
           );
           await accountListPage.check_accountDisplayedInAccountList(
-            'My Second Synced Account',
+            unencryptedAccounts[1].n,
           );
           await accountListPage.openAccountDetailsModal(
-            'My First Synced Account',
+            unencryptedAccounts[0].n,
           );
           const accountDetailsModal = new AccountDetailsModal(driver);
           await accountDetailsModal.check_pageIsLoaded();
-          await accountDetailsModal.changeAccountLabel(
-            'My Renamed First Account',
+
+          const { prepareEventsEmittedCounter } = arrangeTestUtils(
+            driver,
+            userStorageMockttpController,
           );
+
+          const { waitUntilEventsEmittedNumberEquals } =
+            prepareEventsEmittedCounter(
+              UserStorageMockttpControllerEvents.PUT_SINGLE,
+            );
+
+          await accountDetailsModal.changeAccountLabel(accountOneNewName);
+
+          // Wait for the account name to be synced
+          await waitUntilEventsEmittedNumberEquals(1);
         },
       );
 
@@ -90,15 +116,7 @@ describe('Account syncing - Rename Accounts', function () {
           },
         },
         async ({ driver }) => {
-          await completeImportSRPOnboardingFlow({
-            driver,
-            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
-            password: IDENTITY_TEAM_PASSWORD,
-          });
-          const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+          await completeOnboardFlowIdentity(driver);
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -107,16 +125,17 @@ describe('Account syncing - Rename Accounts', function () {
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
           await accountListPage.check_numberOfAvailableAccounts(
-            accountsSyncMockResponse.length,
+            mockedAccountSyncResponse.length,
+            ACCOUNT_TYPE.Ethereum,
           );
           await accountListPage.check_accountIsNotDisplayedInAccountList(
-            'My First Synced Account',
+            unencryptedAccounts[0].n,
           );
           await accountListPage.check_accountDisplayedInAccountList(
-            'My Renamed First Account',
+            accountOneNewName,
           );
           await accountListPage.check_accountDisplayedInAccountList(
-            'My Second Synced Account',
+            unencryptedAccounts[1].n,
           );
         },
       );

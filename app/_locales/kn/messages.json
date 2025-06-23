@@ -254,26 +254,11 @@
   "from": {
     "message": "ನಿಂದ"
   },
-  "functionType": {
-    "message": "ಕಾರ್ಯದ ಪ್ರಕಾರ"
-  },
   "gasLimit": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿ"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "ಗ್ಯಾಸ್‌ ಮಿತಿ ಎಂದರೆ ನೀವು ಖರ್ಚು ಮಾಡಲು ಸಿದ್ಧವಿರುವ ಗ್ಯಾಸ್‌ನ ಗರಿಷ್ಠ ಪ್ರಮಾಣ."
-  },
   "gasLimitTooLow": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿಯು ಕನಿಷ್ಟ 21000 ಆಗಿರಬೇಕು"
-  },
-  "gasPrice": {
-    "message": "ಗ್ಯಾಸ್ ದರ (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "ಗ್ಯಾಸ್ ದರವು ಅತ್ಯಂತ ಕಡಿಮೆಯಿದೆ"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "ಗ್ಯಾಸ್ ದರವು ಪ್ರತಿ ಯೂನಿಟ್ ಗ್ಯಾಸ್‌ಗೆ ನೀವು ಪಾವತಿಸಲು ಸಿದ್ಧವಿರುವ ಎಥರ್‌ನ ಪ್ರಮಾಣವನ್ನು ಸೂಚಿಸುತ್ತದೆ."
   },
   "gasUsed": {
     "message": "ಗ್ಯಾಸ್ ಬಳಸಲಾಗಿದೆ"
@@ -315,9 +300,6 @@
   "import": {
     "message": "ಆಮದು",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "ಖಾತೆಯನ್ನು ಆಮದು ಮಾಡಿ"
   },
   "importAccountMsg": {
     "message": "ನಿಮ್ಮ ಮೂಲ ರಚಿಸಿರುವ MetaMask ಖಾತೆಯ ಸೀಡ್‌ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ಆಮದು ಮಾಡಲಾದ ಖಾತೆಗಳನ್ನು ಸಂಯೋಜನೆ ಮಾಡಲಾಗಿಲ್ಲ. ಆಮದು ಮಾಡಲಾಗಿರುವ ಖಾತೆಗಳ ಕುರಿತು ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
@@ -467,9 +449,6 @@
   "origin": {
     "message": "ಮೂಲ"
   },
-  "parameters": {
-    "message": "ಪ್ಯಾರಾಮೀಟರ್‌ಗಳು"
-  },
   "participateInMetaMetrics": {
     "message": "MetaMetrics ನಲ್ಲಿ ಭಾಗವಹಿಸಿ"
   },
@@ -538,9 +517,6 @@
   "removeAccountDescription": {
     "message": "ಈ ಖಾತೆಯನ್ನು ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ನಿಂದ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ದಯವಿಟ್ಟು ಮುಂದುವರಿಯುವ ಮೊದಲು ಈ ಆಮದು ಖಾತೆಗಾಗಿ ನೀವು ಸೀಡ್ ಫ್ರೇಸ್ ಅಥವಾ ಖಾಸಗಿ ಕೀಯನ್ನು ಹೊಂದಿರುವಿರಾ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ. ಖಾತೆಯ ಡ್ರಾಪ್-ಡೌನ್‌ನಿಂದ ನೀವು ಮತ್ತೆ ಖಾತೆಗಳನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳಬಹುದು ಅಥವಾ ರಚಿಸಬಹುದು."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "ಅಂಗೀಕರಿಸಲು ನಿರೀಕ್ಷಿಸುತ್ತಿರುವ ವಿನಂತಿಗಳು"
-  },
   "required": {
     "message": "ಅಗತ್ಯವಿದೆ"
   },
@@ -608,9 +584,6 @@
   "showHexDataDescription": {
     "message": "ಕಳುಹಿಸುವ ಪರದೆಯಲ್ಲಿ ಹೆಕ್ಸ್ ಡೇಟಾ ಕ್ಷೇತ್ರವನ್ನು ತೋರಿಸಲು ಇದನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
-  "sigRequest": {
-    "message": "ಸಹಿಯ ವಿನಂತಿ"
-  },
   "sign": {
     "message": "ಸಹಿ"
   },
@@ -658,9 +631,6 @@
   },
   "terms": {
     "message": "ಬಳಕೆಯ ನಿಯಮಗಳು"
-  },
-  "tips": {
-    "message": "ಸಲಹೆಗಳು"
   },
   "to": {
     "message": "ವರೆಗೆ"
@@ -734,17 +704,11 @@
   "unknown": {
     "message": "ಅಪರಿಚಿತ"
   },
-  "unknownNetwork": {
-    "message": "ಅಪರಿಚಿತ ಖಾಸಗಿ ನೆಟ್‌ವರ್ಕ್"
-  },
   "unknownQrCode": {
     "message": "ದೋಷ: ನಮಗೆ ಆ QR ಕೋಡ್ ಅನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
   },
   "unlock": {
     "message": "ಅನ್‌ಲಾಕ್"
-  },
-  "unlockMessage": {
-    "message": "ವಿಕೇಂದ್ರೀಕೃತ ವೆಬ್ ನಿರೀಕ್ಷಿಸುತ್ತಿದೆ"
   },
   "urlErrorMsg": {
     "message": "URI ಗಳಿಗೆ ಸೂಕ್ತವಾದ HTTP/HTTPS ಪೂರ್ವಪ್ರತ್ಯಯದ ಅಗತ್ಯವಿದೆ."
@@ -767,13 +731,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು ನೀವು ಕ್ಯಾಮರಾ ಪ್ರವೇಶವನ್ನು ಅನುಮತಿಸಬೇಕಾಗುತ್ತದೆ."
   },
-  "youSign": {
-    "message": "ನೀವು ಸಹಿ ಮಾಡುತ್ತಿರುವಿರಿ"
-  },
   "yourPrivateSeedPhrase": {
     "message": "ನಿಮ್ಮ ಖಾಸಗಿ ಸೀಡ್ ಫ್ರೇಸ್"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "ವೇಗ ಹೆಚ್ಚಿಸುವುದಕ್ಕೆ ಶೂನ್ಯ ಗ್ಯಾಸ್ ಬೆಲೆ"
   }
 }

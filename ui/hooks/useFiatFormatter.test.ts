@@ -48,6 +48,20 @@ describe('useFiatFormatter', () => {
       );
     });
 
+    it('when truncate limits are passed to the formatter', () => {
+      mockGetIntlLocale.mockReturnValue('en-US');
+      mockGetCurrentCurrency.mockReturnValue('USD');
+      const { result } = renderHook(() => useFiatFormatter());
+      const formatFiat = result.current;
+      expect(
+        formatFiat(100000000000000000, {
+          shorten: true,
+          truncatedCharLimit: 20,
+          truncatedStartChars: 17,
+        }),
+      ).toBe('$100,000,000,000,0...');
+    });
+
     it('when currency symbol on the right for given locale', () => {
       mockGetIntlLocale.mockReturnValue('es-ES');
       mockGetCurrentCurrency.mockReturnValue('EUR');

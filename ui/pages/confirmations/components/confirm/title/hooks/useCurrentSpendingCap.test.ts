@@ -16,6 +16,6 @@ describe('useCurrentSpendingCap', () => {
       mockState,
     );
 
-    expect(result.current.customSpendingCap).toMatchInlineSnapshot(`"#0"`);
+    expect(result.current.customSpendingCap).toMatchInlineSnapshot(`"#1"`);
   });
 });

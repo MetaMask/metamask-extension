@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { SubjectType } from '@metamask/permission-controller';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
 import {
   AlignItems,
@@ -18,6 +19,7 @@ import { getURLHost } from '../../../../helpers/utils/util';
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
+    request: PropTypes.object,
     subjectMetadata: PropTypes.shape({
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
@@ -31,6 +33,7 @@ export default class PermissionPageContainerContent extends PureComponent {
   };
 
   static defaultProps = {
+    request: {},
     selectedAccounts: [],
     requestedChainIds: [],
   };
@@ -47,6 +50,7 @@ export default class PermissionPageContainerContent extends PureComponent {
       selectedAccounts,
       subjectMetadata,
       requestedChainIds,
+      request,
     } = this.props;
 
     const accounts = selectedAccounts.reduce((accumulator, account) => {
@@ -56,9 +60,12 @@ export default class PermissionPageContainerContent extends PureComponent {
       });
       return accumulator;
     }, []);
-
+    const { origin, subjectType } = subjectMetadata;
+    const displayOrigin =
+      subjectType === SubjectType.Website ? getURLHost(origin) : origin;
     return (
       <Box
+        className="permission-page-container-content"
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.flexStart}
@@ -66,7 +73,7 @@ export default class PermissionPageContainerContent extends PureComponent {
         height={BlockSize.Full}
         paddingLeft={4}
         paddingRight={4}
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        backgroundColor={BackgroundColor.backgroundDefault}
       >
         <Box
           display={Display.Flex}
@@ -83,10 +90,10 @@ export default class PermissionPageContainerContent extends PureComponent {
             {t('nativeNetworkPermissionRequestDescription', [
               <Text
                 as="span"
-                key={`description_key_${subjectMetadata.origin}`}
+                key={`description_key_${displayOrigin}`}
                 fontWeight={FontWeight.Medium}
               >
-                {getURLHost(subjectMetadata.origin)}
+                {displayOrigin}
               </Text>,
             ])}
           </Text>
@@ -101,6 +108,9 @@ export default class PermissionPageContainerContent extends PureComponent {
           borderRadius={BorderRadius.XL}
         >
           <PermissionsConnectPermissionList
+            isRequestApprovalPermittedChains={Boolean(
+              request.diff?.permissionDiffMap,
+            )}
             permissions={selectedPermissions}
             subjectName={subjectMetadata.origin}
             accounts={accounts}

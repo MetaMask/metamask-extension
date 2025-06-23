@@ -8,9 +8,16 @@ const {
   unlockWallet,
   editGasFeeForm,
   WINDOW_TITLES,
-  defaultGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+
+const PREFERENCES_STATE_MOCK = {
+  preferences: {
+    showFiatInTestnets: true,
+  },
+  // Enables advanced details due to migration 123
+  useNonceField: true,
+};
 
 describe('Send ETH', function () {
   describe('from inside MetaMask', function () {
@@ -18,11 +25,10 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
-        async ({ driver, ganacheServer }) => {
-          await logInWithBalanceValidation(driver, ganacheServer);
+        async ({ driver, localNodes }) => {
+          await logInWithBalanceValidation(driver, localNodes[0]);
 
           await openActionMenuAndStartSendFlow(driver);
 
@@ -48,10 +54,6 @@ describe('Send ETH', function () {
           await inputAmount.press(driver.Key.BACK_SPACE);
           await inputAmount.press(driver.Key.BACK_SPACE);
           await inputAmount.press(driver.Key.BACK_SPACE);
-
-          await driver.assertElementNotPresent('.send-v2__error-amount', {
-            waitAtLeastGuard: 100, // A waitAtLeastGuard of 100ms is the best choice here
-          });
 
           const amountMax = await driver.findClickableElement(
             '[data-testid="max-clear-button"]',
@@ -99,8 +101,6 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
-          defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -155,21 +155,23 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: {
-            ...defaultGanacheOptions,
-            hardfork: 'london',
-          },
           smartContract,
           title: this.test.fullTitle(),
         },
-        async ({ driver, ganacheServer }) => {
-          await logInWithBalanceValidation(driver, ganacheServer);
+        async ({ driver, contractRegistry, localNodes }) => {
+          const contractAddress = await contractRegistry.getContractAddress(
+            smartContract,
+          );
+          await logInWithBalanceValidation(driver, localNodes[0]);
 
           // Wait for balance to load
           await driver.delay(500);
 
           await driver.clickElement('[data-testid="eth-overview-send"]');
-          await driver.clickElement({ text: 'Account 1', tag: 'button' });
+          await driver.fill(
+            'input[placeholder="Enter public address (0x) or domain name"]',
+            contractAddress,
+          );
 
           const inputAmount = await driver.findElement(
             'input[placeholder="0"]',
@@ -207,7 +209,6 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -243,10 +244,12 @@ describe('Send ETH', function () {
             dapp: true,
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
+              .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
-            ganacheOptions: defaultGanacheOptions,
-            defaultGanacheOptions,
             title: this.test.fullTitle(),
+            localNodeOptions: {
+              hardfork: 'muirGlacier',
+            },
           },
           async ({ driver }) => {
             await unlockWallet(driver);
@@ -263,7 +266,7 @@ describe('Send ETH', function () {
 
             await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
             await driver.waitForSelector({
-              text: '0.00021 ETH',
+              text: '0.000042 ETH',
             });
             await driver.clickElement({
               text: 'Edit suggested gas fee',
@@ -276,7 +279,7 @@ describe('Send ETH', function () {
             await editGasFeeForm(driver, '21000', '100');
             await driver.findElement({
               css: '[data-testid="first-gas-field"]',
-              text: '0.0021 ETH',
+              text: '0.0021',
             });
 
             await driver.findElement({
@@ -318,11 +321,8 @@ describe('Send ETH', function () {
             dapp: true,
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
+              .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
-            ganacheOptions: {
-              ...defaultGanacheOptions,
-              hardfork: 'london',
-            },
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
@@ -360,12 +360,12 @@ describe('Send ETH', function () {
 
             await driver.findElement({
               css: '[data-testid="first-gas-field"]',
-              text: '0.045 ETH',
+              text: '0.045',
             });
 
             await driver.findElement({
               css: '[data-testid="native-currency"]',
-              text: '$76.57',
+              text: '$76.59',
             });
 
             await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -428,7 +428,6 @@ describe('Send ETH', function () {
               })
               .withPreferencesControllerPetnamesDisabled()
               .build(),
-            ganacheOptions: defaultGanacheOptions,
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
@@ -461,10 +460,10 @@ describe('Send ETH', function () {
             await driver.clickElement('[data-testid="recipient-address"]');
 
             const recipientAddress = await driver.findElements({
-              text: '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
+              text: '0xc427D...Acd28',
             });
 
-            assert.equal(recipientAddress.length, 1);
+            assert.equal(recipientAddress.length, 2);
           },
         );
       });

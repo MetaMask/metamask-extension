@@ -1,71 +1,15 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { mockNetworkState } from '../../test/stub/networks';
 import {
-  sendTokenTokenAmountAndToAddressSelector,
-  contractExchangeRateSelector,
   conversionRateSelector,
+  unconfirmedTransactionsHashSelector,
 } from './confirm-transaction';
 
-const getEthersArrayLikeFromObj = (obj) => {
-  const arr = [];
-  Object.keys(obj).forEach((key) => {
-    arr.push([obj[key]]);
-    arr[key] = obj[key];
-  });
-  return arr;
-};
-
 describe('Confirm Transaction Selector', () => {
-  describe('sendTokenTokenAmountAndToAddressSelector', () => {
-    const state = {
-      confirmTransaction: {
-        tokenData: {
-          name: TransactionType.tokenMethodTransfer,
-          args: getEthersArrayLikeFromObj({
-            _to: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            _value: { toString: () => '1' },
-          }),
-        },
-        tokenProps: {
-          decimals: '2',
-          symbol: 'META',
-        },
-      },
-    };
-
-    it('returns token address and calculated token amount', () => {
-      expect(sendTokenTokenAmountAndToAddressSelector(state)).toStrictEqual({
-        toAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        tokenAmount: '0.01',
-      });
-    });
-  });
-
-  describe('contractExchangeRateSelector', () => {
-    const state = {
-      metamask: {
-        marketData: {
-          '0x5': {
-            '0xTokenAddress': { price: '10' },
-          },
-        },
-        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-      },
-      confirmTransaction: {
-        txData: {
-          txParams: {
-            to: '0xTokenAddress',
-          },
-        },
-      },
-    };
-
-    it('returns contract exchange rate in metamask state based on confirm transaction txParams token recipient', () => {
-      expect(contractExchangeRateSelector(state)).toStrictEqual('10');
-    });
-  });
-
   describe('conversionRateSelector', () => {
     it('returns conversionRate from state', () => {
       const state = {
@@ -79,6 +23,51 @@ describe('Confirm Transaction Selector', () => {
         },
       };
       expect(conversionRateSelector(state)).toStrictEqual(556.12);
+    });
+  });
+
+  describe('unconfirmedTransactionsHashSelector', () => {
+    it('returns transactions from all networks', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: 1,
+              chainId: '0x1',
+              status: TransactionStatus.unapproved,
+              type: TransactionType.incoming,
+              txParams: { to: '0xSelectedAddress' },
+            },
+            {
+              id: 2,
+              chainId: '0x2',
+              status: TransactionStatus.unapproved,
+              type: TransactionType.incoming,
+              txParams: { to: '0xOtherAddress' },
+            },
+            {
+              id: 3,
+              chainId: '0x3',
+              status: TransactionStatus.unapproved,
+              type: TransactionType.outgoing,
+              txParams: { to: '0xSelectedAddress' },
+            },
+            {
+              id: 4,
+              chainId: '0x1',
+              status: TransactionStatus.unapproved,
+              type: TransactionType.incoming,
+              txParams: { to: '0xSelectedAddress' },
+            },
+          ],
+        },
+      };
+      expect(unconfirmedTransactionsHashSelector(state)).toStrictEqual({
+        1: state.metamask.transactions[0],
+        2: state.metamask.transactions[1],
+        3: state.metamask.transactions[2],
+        4: state.metamask.transactions[3],
+      });
     });
   });
 });

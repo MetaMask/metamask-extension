@@ -25,8 +25,9 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const TOKEN_RECIPIENT_ADDRESS = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
 describe('Confirmation Redesign Token Send', function () {
+  this.timeout(200000); // This test is very long, so we need an unusually high timeout
   describe('ERC721', function () {
-    describe('Wallet initiated', async function () {
+    describe('Wallet initiated', function () {
       it('Sends a type 0 transaction (Legacy)', async function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
@@ -58,7 +59,7 @@ describe('Confirmation Redesign Token Send', function () {
       });
     });
 
-    describe('dApp initiated', async function () {
+    describe('dApp initiated', function () {
       it('Sends a type 0 transaction (Legacy)', async function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
@@ -92,7 +93,7 @@ describe('Confirmation Redesign Token Send', function () {
   });
 
   describe('ERC1155', function () {
-    describe('Wallet initiated', async function () {
+    describe('Wallet initiated', function () {
       it('Sends a type 0 transaction (Legacy)', async function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
@@ -134,7 +135,7 @@ async function erc1155Mocks(server: Mockttp) {
   return [await mockedERC11554BytesNFTTokenSend(server)];
 }
 
-export async function mockedERC7214BytesNFTTokenSend(mockServer: Mockttp) {
+async function mockedERC7214BytesNFTTokenSend(mockServer: Mockttp) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
     .withQuery({ hex_signature: '0x23b872dd' })
@@ -158,7 +159,7 @@ export async function mockedERC7214BytesNFTTokenSend(mockServer: Mockttp) {
     }));
 }
 
-export async function mockedERC11554BytesNFTTokenSend(mockServer: Mockttp) {
+async function mockedERC11554BytesNFTTokenSend(mockServer: Mockttp) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
     .withQuery({ hex_signature: '0xf242432a' })
@@ -271,6 +272,9 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
 ) {
   await unlockWallet(driver);
 
+  const homePage = new HomePage(driver);
+  await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
   ).getContractAddress(SMART_CONTRACTS.ERC1155);
@@ -296,7 +300,7 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
   await watchAssetConfirmation.clickFooterConfirmButton();
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await new HomePage(driver).goToNftTab();
+  await homePage.goToNftTab();
   await new NFTListPage(driver).clickNFTIconOnActivityList();
 
   const nftDetailsPage = new NFTDetailsPage(driver);

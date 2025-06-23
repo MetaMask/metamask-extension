@@ -1,5 +1,5 @@
 import { PPOMController } from '@metamask/ppom-validator';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from './test/utils';
 import { ControllerApi, ControllerName } from './types';
 import { initControllers } from './utils';
@@ -41,7 +41,7 @@ function buildInitRequestMock() {
 }
 
 function buildControllerMessenger() {
-  return new ControllerMessenger();
+  return new Messenger();
 }
 
 describe('Controller Init Utils', () => {
@@ -56,7 +56,7 @@ describe('Controller Init Utils', () => {
       );
 
       const { controllersByName } = initControllers({
-        baseControllerMessenger: new ControllerMessenger(),
+        baseControllerMessenger: new Messenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: init1Mock,
           [CONTROLLER_NAME_2_MOCK]: init2Mock,

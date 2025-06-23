@@ -251,26 +251,11 @@
   "from": {
     "message": "Od"
   },
-  "functionType": {
-    "message": "Tip funkcije"
-  },
   "gasLimit": {
     "message": "Limit gasa"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Granica gasa je maksimalni iznos jedinica gasa koje ste voljni da potrošite."
-  },
   "gasLimitTooLow": {
     "message": "Limit za gas mora da bude najmanje 21 000"
-  },
-  "gasPrice": {
-    "message": "Cena gasa (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Cena gasa izuzetno niska"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Cena gasa određuje količinu Ethera koju ste spremni da platite za svaku jedinicu gasa."
   },
   "gasUsed": {
     "message": "Korišćen gas"
@@ -312,9 +297,6 @@
   "import": {
     "message": "Uvoz",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Uvezite nalog"
   },
   "importAccountMsg": {
     "message": "Uvezeni nalozi neće biti povezani sa početnom frazom koju ste prvobitno kreirali za MetaMask nalog. Saznajte više o uvezenim nalozima."
@@ -458,9 +440,6 @@
   "origin": {
     "message": "Извор"
   },
-  "parameters": {
-    "message": "Parametri"
-  },
   "participateInMetaMetrics": {
     "message": "Učestvujte u MetaMetrics"
   },
@@ -529,9 +508,6 @@
   "removeAccountDescription": {
     "message": "Uklonićemo ovaj nalog iz vašeg novčanika. Pre nego što nastavite, proverite da li za ovaj uvezeni nalog imate originalnu početnu frazu ili privatni ključ. Ponovo možete da uvezete ili kreirate naloge izborom iz padajućeg menija na nalogu."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "zahtevi koji čekaju da budu potvrđeni"
-  },
   "required": {
     "message": "Obavezno"
   },
@@ -599,9 +575,6 @@
   "showHexDataDescription": {
     "message": "Izaberite ovo da bi se pokazalo polje sa hex podacima na „Pošalji” ekranu "
   },
-  "sigRequest": {
-    "message": "Zahtev za potpisom"
-  },
   "sign": {
     "message": "Potpišite"
   },
@@ -649,9 +622,6 @@
   },
   "terms": {
     "message": "Uslovi korišćenja"
-  },
-  "tips": {
-    "message": "Donacije"
   },
   "to": {
     "message": "Za"
@@ -722,17 +692,11 @@
   "unknown": {
     "message": "Непознато"
   },
-  "unknownNetwork": {
-    "message": "Nepoznata privatna mreža"
-  },
   "unknownQrCode": {
     "message": "Greška: nismo uspeli da identifikujemo taj QR kod"
   },
   "unlock": {
     "message": "Откључај"
-  },
-  "unlockMessage": {
-    "message": "Decentralizovani veb čeka"
   },
   "urlErrorMsg": {
     "message": "URI-ovi zahtevaju odgovarajući prefiks HTTP / HTTPS."
@@ -755,13 +719,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Za upotrebu ove funkcije morate omogućiti pristup kameri."
   },
-  "youSign": {
-    "message": "Vi potpisujete"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Vaša privatna šifra za oporavak naloga (seed phrase)"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nulta cena gasa ubrzava"
   }
 }

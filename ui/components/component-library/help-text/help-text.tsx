@@ -7,8 +7,11 @@ import {
 import { Text } from '../text';
 import type { PolymorphicRef } from '../box';
 import type { TextProps } from '../text';
-import type { HelpTextProps, HelpTextComponent } from './help-text.types';
-import { HelpTextSeverity } from '.';
+import {
+  type HelpTextProps,
+  type HelpTextComponent,
+  HelpTextSeverity,
+} from './help-text.types';
 
 export const HelpText: HelpTextComponent = forwardRef(
   <C extends React.ElementType = 'p'>(
@@ -42,7 +45,7 @@ export const HelpText: HelpTextComponent = forwardRef(
         className={classnames('mm-help-text', className ?? '')}
         ref={ref}
         as={children && typeof children === 'object' ? 'div' : 'p'}
-        variant={TextVariant.bodyXs}
+        variant={TextVariant.bodySm}
         color={severity ? severityColor() : color}
         {...(props as TextProps<C>)}
       >

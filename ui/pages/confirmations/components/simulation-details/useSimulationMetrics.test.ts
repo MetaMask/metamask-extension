@@ -15,6 +15,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { BalanceChange } from './types';
 import {
   AssetType,
@@ -53,18 +54,24 @@ const BALANCE_CHANGE_MOCK = {
   fiatAmount: 1.23,
 } as unknown as BalanceChange;
 
-const DISPLAY_NAME_UNKNOWN_MOCK = { hasPetname: false, name: null };
+const DISPLAY_NAME_UNKNOWN_MOCK = {
+  hasPetname: false,
+  name: null,
+  displayState: TrustSignalDisplayState.Unknown,
+};
 
 const DISPLAY_NAME_DEFAULT_MOCK = {
   hasPetname: false,
   name: SYMBOL_MOCK,
   contractDisplayName: SYMBOL_MOCK,
+  displayState: TrustSignalDisplayState.Unknown,
 };
 
 const DISPLAY_NAME_SAVED_MOCK = {
   hasPetname: true,
   name: 'testName',
   contractDisplayName: SYMBOL_MOCK,
+  displayState: TrustSignalDisplayState.Unknown,
 };
 
 describe('useSimulationMetrics', () => {
@@ -79,10 +86,11 @@ describe('useSimulationMetrics', () => {
   const useLoadingTimeMock = jest.mocked(useLoadingTime);
   const setLoadingCompleteMock = jest.fn();
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let updateTransactionEventFragmentMock: jest.MockedFunction<any>;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let trackEventMock: jest.MockedFunction<any>;
 
@@ -94,7 +102,7 @@ describe('useSimulationMetrics', () => {
       balanceChanges?: BalanceChange[];
       simulationData?: SimulationData | undefined;
     },
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expected: any,
   ) {
@@ -123,12 +131,12 @@ describe('useSimulationMetrics', () => {
       updateTransactionEventFragment: updateTransactionEventFragmentMock,
     });
 
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     useStateMock.mockImplementation(((initialValue: any) => [
       initialValue,
       jest.fn(),
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ]) as any);
 

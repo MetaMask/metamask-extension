@@ -1,8 +1,11 @@
+import { Browser } from 'selenium-webdriver';
+import { Mockttp } from 'mockttp';
 import {
   convertToHexValue,
   TEST_SEED_PHRASE,
   WALLET_PASSWORD,
   withFixtures,
+  unlockWallet,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
@@ -20,19 +23,65 @@ import {
   completeCreateNewWalletOnboardingFlow,
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
+  incompleteCreateNewWalletOnboardingFlow,
+  onboardingMetricsFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 
+const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
+
+async function tokensMock(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(
+      `https://nft.api.cx.metamask.io/users/${IMPORTED_SRP_ACCOUNT_1.toLowerCase()}/tokens`,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          tokens: [],
+          continuation: null,
+        },
+      };
+    });
+}
+
 describe('MetaMask onboarding', function () {
-  const ganacheOptions2 = {
-    accounts: [
+  it("Creates a new wallet, sets up a secure password, and doesn't complete the onboarding process and refreshes the page", async function () {
+    await withFixtures(
       {
-        secretKey:
-          '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-        balance: convertToHexValue(10000000000000000000),
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
       },
-    ],
-  };
+      async ({ driver }: { driver: Driver }) => {
+        await incompleteCreateNewWalletOnboardingFlow({ driver });
+        await driver.refresh();
+
+        await unlockWallet(driver, {
+          navigate: true,
+          waitLoginSuccess: true,
+          password: WALLET_PASSWORD,
+        });
+
+        const secureWalletPage = new SecureWalletPage(driver);
+        await secureWalletPage.check_pageIsLoaded();
+        await secureWalletPage.revealAndConfirmSRP();
+
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          await onboardingMetricsFlow(driver);
+        }
+
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+        await onboardingCompletePage.completeOnboarding();
+
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.check_expectedBalanceIsDisplayed('0');
+      },
+    );
+  });
 
   it('Creates a new wallet, sets up a secure password, and completes the onboarding process', async function () {
     await withFixtures(
@@ -46,7 +95,7 @@ describe('MetaMask onboarding', function () {
         });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
       },
     );
   });
@@ -76,46 +125,28 @@ describe('MetaMask onboarding', function () {
         const wrongSeedPhrase =
           'test test test test test test test test test test test test';
         await driver.navigate();
-        const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
-        await startOnboardingPage.clickImportWalletButton();
 
-        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-        await onboardingMetricsPage.check_pageIsLoaded();
-        await onboardingMetricsPage.clickNoThanksButton();
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
+
+        const startOnboardingPage = new StartOnboardingPage(driver);
+        await startOnboardingPage.check_bannerPageIsLoaded();
+        await startOnboardingPage.agreeToTermsOfUse();
+        await startOnboardingPage.check_loginPageIsLoaded();
+        await startOnboardingPage.importWallet();
 
         const onboardingSrpPage = new OnboardingSrpPage(driver);
         await onboardingSrpPage.check_pageIsLoaded();
+
         await onboardingSrpPage.fillSrp(wrongSeedPhrase);
+        await onboardingSrpPage.clickConfirmButtonWithSrpError();
 
         // check the wrong SRP warning message is displayed
-        await onboardingSrpPage.check_wrongSrpWarningMessage();
+        await onboardingSrpPage.check_srpError();
         await onboardingSrpPage.check_confirmSrpButtonIsDisabled();
-      },
-    );
-  });
-
-  it('Verifies the functionality of selecting different Secret Recovery Phrase word counts', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-        const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
-        await startOnboardingPage.clickImportWalletButton();
-
-        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-        await onboardingMetricsPage.check_pageIsLoaded();
-        await onboardingMetricsPage.clickNoThanksButton();
-
-        const onboardingSrpPage = new OnboardingSrpPage(driver);
-        await onboardingSrpPage.check_pageIsLoaded();
-        await onboardingSrpPage.check_srpDropdownIterations();
       },
     );
   });
@@ -129,14 +160,18 @@ describe('MetaMask onboarding', function () {
       async ({ driver }: { driver: Driver }) => {
         const wrongTestPassword = 'test test test test';
         await driver.navigate();
-        const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
-        await startOnboardingPage.clickCreateWalletButton();
 
-        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-        await onboardingMetricsPage.check_pageIsLoaded();
-        await onboardingMetricsPage.clickNoThanksButton();
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
+
+        const startOnboardingPage = new StartOnboardingPage(driver);
+        await startOnboardingPage.check_bannerPageIsLoaded();
+        await startOnboardingPage.agreeToTermsOfUse();
+        await startOnboardingPage.check_loginPageIsLoaded();
+        await startOnboardingPage.createWalletWithSrp();
 
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.check_pageIsLoaded();
@@ -161,12 +196,26 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: {
-          concurrent: [{ port, chainId, ganacheOptions2 }],
-        },
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              port,
+              chainId,
+            },
+          },
+        ],
+        testSpecificMock: tokensMock,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, secondaryGanacheServer }) => {
+      async ({ driver, localNodes }) => {
+        await localNodes[1].setAccountBalance(
+          IMPORTED_SRP_ACCOUNT_1,
+          convertToHexValue(10000000000000000000),
+        );
         await importSRPOnboardingFlow({
           driver,
           seedPhrase: TEST_SEED_PHRASE,
@@ -197,12 +246,10 @@ describe('MetaMask onboarding', function () {
         await homePage.check_addNetworkMessageIsDisplayed(networkName);
 
         // Check the correct balance for the custom network is displayed
-        if (secondaryGanacheServer && Array.isArray(secondaryGanacheServer)) {
-          await homePage.check_localBlockchainBalanceIsDisplayed(
-            secondaryGanacheServer[0],
-          );
+        if (localNodes[1] && Array.isArray(localNodes)) {
+          await homePage.check_expectedBalanceIsDisplayed('10');
         } else {
-          throw new Error('Custom network Ganache server not available');
+          throw new Error('Custom network server not available');
         }
       },
     );

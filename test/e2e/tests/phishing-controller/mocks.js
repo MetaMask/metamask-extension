@@ -112,6 +112,16 @@ async function setupPhishingDetectionMocks(
         body: emptyHtmlPage(blockProvider),
       };
     });
+
+  await mockServer
+    .forGet(`https://portfolio.metamask.io`)
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: emptyHtmlPage(),
+      };
+    });
 }
 
 /**

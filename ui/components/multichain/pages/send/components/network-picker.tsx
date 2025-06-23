@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentNetwork } from '../../../../../selectors';
 import { toggleNetworkMenu } from '../../../../../store/actions';
 import { PickerNetwork } from '../../../../component-library';
-import { SendPageRow } from '.';
+import { SendPageRow } from './send-page-row';
 
 export const SendPageNetworkPicker = () => {
   const currentNetwork = useSelector(getCurrentNetwork);

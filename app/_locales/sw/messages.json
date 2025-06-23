@@ -248,26 +248,11 @@
   "from": {
     "message": "Kutoka"
   },
-  "functionType": {
-    "message": "Aina ya Shughuli"
-  },
   "gasLimit": {
     "message": "Kikomo cha Gesi"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ukomo wa gesi ni kiwango cha juu kabisa cha cha vizio vya gesi ambavyo upo tayari kutumia."
-  },
   "gasLimitTooLow": {
     "message": "Kikomo cha gesi kinapaswa kua angalau 21000"
-  },
-  "gasPrice": {
-    "message": "Pata Bei (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Bei ya Gesi Ipo Chini Kupita Kiasi"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Bei ya gesi hubainisha kiwango cha Ether ambacho upo radhi kulipia kila kizio cha gesi."
   },
   "gasUsed": {
     "message": "Gesi iliyotumika"
@@ -306,9 +291,6 @@
   "import": {
     "message": "Ingiza",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Ingiza Akaunti"
   },
   "importAccountMsg": {
     "message": "Akaunti zilizoingizwa hazitahusishwa na kirai chako cha kianzio cha akaunti ya MetaMask iliyoundwa awali. Pata maelezo zaidi kuhusu akaunti zilizoingizwa"
@@ -449,9 +431,6 @@
   "origin": {
     "message": "Asili"
   },
-  "parameters": {
-    "message": "Vigezo"
-  },
   "participateInMetaMetrics": {
     "message": "Shiriki katika MetaMetrics"
   },
@@ -520,9 +499,6 @@
   "removeAccountDescription": {
     "message": "Akaunti hii itaondolewa kwenye waleti yako. Tafadhali hakikisha una kirai kianzio cha asili au ufunguo binafsi kwa akaunti hii iliyohamishwa kabla ya kuendelea. Unaweza kuhamisha au kufungua akaunti tena kutoka kwenye menyu ya akaunti."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "maombi yanasubiriwa kutambuliwa"
-  },
   "required": {
     "message": "Inahitajika"
   },
@@ -590,9 +566,6 @@
   "showHexDataDescription": {
     "message": "Chagua hii ili uonyeshe sehemu ya data ya hex kwenye skrini ya tuma"
   },
-  "sigRequest": {
-    "message": "Ombi la Saini"
-  },
   "sign": {
     "message": "Ingia kwenye akaunti"
   },
@@ -640,9 +613,6 @@
   },
   "terms": {
     "message": "Masharti ya Matumizi"
-  },
-  "tips": {
-    "message": "Michango"
   },
   "to": {
     "message": "Kwenda"
@@ -716,17 +686,11 @@
   "unknown": {
     "message": "Haijulikani"
   },
-  "unknownNetwork": {
-    "message": "Mtandao Binafsi Usiojulikana"
-  },
   "unknownQrCode": {
     "message": "Hitilafu: Hatukuweza kubainisha msimbo huo wa QR"
   },
   "unlock": {
     "message": "Fungua"
-  },
-  "unlockMessage": {
-    "message": "Wavuti uliotenganishwa unasubiri"
   },
   "urlErrorMsg": {
     "message": "URI huhitaji kiambishi sahihi cha  HTTP/HTTPS."
@@ -749,13 +713,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Unapaswa kuruhusu kamera ili utumie kipengele hiki."
   },
-  "youSign": {
-    "message": "Unasaini"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Kirai chako kianzio cha binafsi"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Bei ya gesi sifuri kwenye kuongeza kasi"
   }
 }

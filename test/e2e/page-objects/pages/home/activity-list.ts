@@ -19,35 +19,61 @@ class ActivityListPage {
     css: '.transaction-status-label--failed',
   };
 
+  private readonly tooltip = '.tippy-tooltip-content';
+
+  private readonly bridgeTransactionCompleted =
+    '.transaction-status-label--confirmed';
+
+  private readonly bridgeTransactionPending =
+    '.bridge-transaction-details__segment--pending';
+
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
-  private readonly tooltip = '.tippy-tooltip-content';
+  private readonly viewTransactionOnExplorerButton = {
+    text: 'View on block explorer',
+    tag: 'a',
+  };
+
+  private readonly cancelTransactionButton = {
+    text: 'Cancel',
+    tag: 'button',
+  };
+
+  private readonly speedupButton = '[data-testid="speedup-button"]';
+
+  private readonly confirmTransactionReplacementButton = {
+    text: 'Submit',
+    tag: 'button',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   /**
-   * This function checks if the specified number of failed transactions are displayed in the activity list on homepage.
-   * It waits up to 10 seconds for the expected number of failed transactions to be visible.
+   * This function clicks on the activity at the specified index.
+   * Note: this function need to be called after check_completedTxNumberDisplayedInActivity to reduce flakiness.
    *
-   * @param expectedNumber - The number of failed transactions expected to be displayed in activity list. Defaults to 1.
-   * @returns A promise that resolves if the expected number of failed transactions is displayed within the timeout period.
+   * @param expectedNumber - The 1-based index of the activity to be clicked.
    */
-  async check_failedTxNumberDisplayedInActivity(
-    expectedNumber: number = 1,
-  ): Promise<void> {
+  async clickOnActivity(expectedNumber: number): Promise<void> {
+    console.log(`Clicking on activity ${expectedNumber}`);
+    const activities = await this.driver.findElements(this.activityListAction);
+    await activities[expectedNumber - 1].click();
+  }
+
+  /**
+   * This function clicks on the "View on block explorer" button for the specified transaction.
+   *
+   * @param expectedNumber - The 1-based index of the transaction to be clicked.
+   */
+  async viewTransactionOnExplorer(expectedNumber: number): Promise<void> {
     console.log(
-      `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
+      `Viewing transaction on explorer for transaction ${expectedNumber}`,
     );
-    await this.driver.wait(async () => {
-      const failedTxs = await this.driver.findElements(this.failedTransactions);
-      return failedTxs.length === expectedNumber;
-    }, 10000);
-    console.log(
-      `${expectedNumber} failed transactions found in activity list on homepage`,
-    );
+    await this.clickOnActivity(expectedNumber);
+    await this.driver.clickElement(this.viewTransactionOnExplorerButton);
   }
 
   /**
@@ -92,9 +118,31 @@ class ActivityListPage {
         this.confirmedTransactions,
       );
       return confirmedTxs.length === expectedNumber;
-    }, 10000);
+    }, 60000);
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,
+    );
+  }
+
+  /**
+   * This function checks if the specified number of failed transactions is displayed in the activity list on homepage.
+   * It waits up to 10 seconds for the expected number of failed transactions to be visible.
+   *
+   * @param expectedNumber - The number of failed transactions expected to be displayed in activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of failed transactions is displayed within the timeout period.
+   */
+  async check_failedTxNumberDisplayedInActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const failedTxs = await this.driver.findElements(this.failedTransactions);
+      return failedTxs.length === expectedNumber;
+    }, 60000);
+    console.log(
+      `${expectedNumber} failed transactions found in activity list on homepage`,
     );
   }
 
@@ -112,10 +160,58 @@ class ActivityListPage {
         expectedNumber - 1
       ].getText();
       return transactionActionText === expectedAction;
-    });
+    }, 60000);
 
     console.log(
       `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
+    );
+  }
+
+  /**
+   * This function checks the specified number of pending Birdge transactions are displayed in the activity list on the homepage.
+   * It waits up to 10 seconds for the expected number of pending transactions to be visible.
+   *
+   * @param expectedNumber - The number of pending Bridge transactions expected to be displayed in the activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of Bridge pending transactions is displayed within the timeout period.
+   */
+  async check_pendingBridgeTransactionActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} Bridge pending transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const completedTxs = await this.driver.findElements(
+        this.bridgeTransactionPending,
+      );
+      return completedTxs.length === expectedNumber;
+    }, 60000);
+    console.log(
+      `${expectedNumber} Bridge pending transactions found in activity list on homepage`,
+    );
+  }
+
+  /**
+   * This function checks the specified number of completed Birdge transactions are displayed in the activity list on the homepage.
+   * It waits up to 10 seconds for the expected number of completed transactions to be visible.
+   *
+   * @param expectedNumber - The number of completed Bridge transactions expected to be displayed in the activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of Bridge completed transactions is displayed within the timeout period.
+   */
+  async check_completedBridgeTransactionActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} Bridge completed transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const completedTxs = await this.driver.findElements(
+        this.bridgeTransactionCompleted,
+      );
+      return completedTxs.length === expectedNumber;
+    }, 60000);
+    console.log(
+      `${expectedNumber} Bridge transactions found in activity list on homepage`,
     );
   }
 
@@ -135,6 +231,7 @@ class ActivityListPage {
     expectedAmount: string = '-1 ETH',
     expectedNumber: number = 1,
   ): Promise<void> {
+    await this.driver.waitForSelector(this.transactionAmountsInActivity);
     const transactionAmounts = await this.driver.findElements(
       this.transactionAmountsInActivity,
     );
@@ -195,6 +292,37 @@ class ActivityListPage {
     throw new Error(
       `Failed transactions found in activity list: ${errorMessages.join('\n')}`,
     );
+  }
+
+  async click_transactionListItem() {
+    await this.driver.clickElement(this.completedTransactions);
+  }
+
+  async click_cancelTransaction() {
+    await this.driver.clickElement(this.cancelTransactionButton);
+  }
+
+  async click_speedUpTransaction() {
+    await this.driver.clickElement(this.speedupButton);
+  }
+
+  async click_confirmTransactionReplacement() {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmTransactionReplacementButton,
+    );
+  }
+
+  async check_waitForTransactionStatus(status: 'confirmed' | 'cancelled') {
+    await this.driver.waitForSelector(`.transaction-status-label--${status}`, {
+      timeout: 5000,
+    });
+  }
+
+  async check_swapTransactionActivity(swapText: string): Promise<void> {
+    await this.driver.waitForSelector({
+      text: swapText,
+      tag: 'p',
+    });
   }
 }
 

@@ -1,14 +1,11 @@
 import { MockttpServer } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  defaultGanacheOptions,
-  unlockWallet,
-  withFixtures,
-} from '../../helpers';
+import { withFixtures } from '../../helpers';
 import {
   expectMockRequest,
   expectNoMockRequest,
 } from '../../helpers/mock-server';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 async function mockSentryCustomTrace(mockServer: MockttpServer) {
   return [
@@ -47,7 +44,6 @@ describe('Traces', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentryCustomTrace,
         manifestFlags: {
@@ -55,7 +51,7 @@ describe('Traces', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await expectMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
       },
     );
@@ -69,7 +65,6 @@ describe('Traces', function () {
             participateInMetaMetrics: false,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentryCustomTrace,
         manifestFlags: {
@@ -77,7 +72,7 @@ describe('Traces', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await expectNoMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
       },
     );
@@ -91,7 +86,6 @@ describe('Traces', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentryAutomatedTrace,
         manifestFlags: {
@@ -99,7 +93,7 @@ describe('Traces', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await expectMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
       },
     );
@@ -113,7 +107,6 @@ describe('Traces', function () {
             participateInMetaMetrics: false,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentryAutomatedTrace,
         manifestFlags: {
@@ -121,7 +114,7 @@ describe('Traces', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await expectNoMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
       },
     );

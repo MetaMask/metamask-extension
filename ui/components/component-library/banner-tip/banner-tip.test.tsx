@@ -3,8 +3,8 @@ import { render } from '@testing-library/react';
 import React from 'react';
 
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
-
-import { BannerTip, BannerTipLogoType } from '.';
+import { BannerTip } from './banner-tip';
+import { BannerTipLogoType } from './banner-tip.types';
 
 describe('BannerTip', () => {
   it('should render BannerTip element correctly', () => {

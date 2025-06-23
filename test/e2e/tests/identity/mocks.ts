@@ -1,8 +1,10 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
-import { accountsSyncMockResponse } from './account-syncing/mockData';
+import {
+  UserStorageMockttpController,
+  UserStorageResponseData,
+} from '../../helpers/identity/user-storage/userStorageMockttpController';
 
 const AuthMocks = AuthenticationController.Mocks;
 
@@ -13,7 +15,7 @@ type MockResponse = {
 };
 
 /**
- * E2E mock setup for identity APIs (Auth, UserStorage, Profile syncing)
+ * E2E mock setup for identity APIs (Auth, UserStorage, Backup and sync)
  *
  * @param server - server obj used to mock our endpoints
  * @param userStorageMockttpControllerInstance - optional instance of UserStorageMockttpController, useful if you need persisted user storage between tests
@@ -48,7 +50,40 @@ export async function mockIdentityServices(
       server,
     );
   }
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_FEATURE_NAMES.addressBook,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_FEATURE_NAMES.addressBook,
+      server,
+    );
+  }
 }
+
+export const MOCK_SRP_E2E_IDENTIFIER_BASE_KEY = 'MOCK_SRP_IDENTIFIER';
+
+const MOCK_SRP_E2E_IDENTIFIERS = {
+  baseKey: MOCK_SRP_E2E_IDENTIFIER_BASE_KEY,
+  list: new Map<string, string>(),
+};
+
+const getE2ESrpIdentifierForPublicKey = (publicKey: string) => {
+  const { baseKey, list } = MOCK_SRP_E2E_IDENTIFIERS;
+
+  // Check if the identifier already exists
+  if (list.has(publicKey)) {
+    return list.get(publicKey);
+  }
+
+  const nextIteration = list.size + 1;
+  const nextIdentifier = `${baseKey}_${nextIteration}`;
+
+  list.set(publicKey, nextIdentifier);
+
+  return nextIdentifier;
+};
 
 function mockAPICall(server: Mockttp, response: MockResponse) {
   let requestRuleBuilder: RequestRuleBuilder | undefined;
@@ -69,15 +104,35 @@ function mockAPICall(server: Mockttp, response: MockResponse) {
     requestRuleBuilder = server.forDelete(response.url);
   }
 
-  requestRuleBuilder?.thenCallback(() => ({
-    statusCode: 200,
-    json: response.response,
-  }));
+  requestRuleBuilder?.thenCallback(async (request) => {
+    const { path, body } = request;
+
+    const [requestBodyJson, requestBodyText] = await Promise.all([
+      body.getJson(),
+      body.getText(),
+    ]);
+    const requestBody = requestBodyJson ?? requestBodyText;
+
+    const json = (
+      response.response as (
+        requestBody: object | string | undefined,
+        path: string,
+        getE2ESrpIdentifierForPublicKey: (
+          publicKey: string,
+        ) => string | undefined,
+      ) => void
+    )(requestBody, path, getE2ESrpIdentifierForPublicKey);
+
+    return {
+      statusCode: 200,
+      json,
+    };
+  });
 }
 
 type MockInfuraAndAccountSyncOptions = {
-  accountsToMock?: string[];
-  accountsSyncResponse?: typeof accountsSyncMockResponse;
+  accountsToMockBalances?: string[];
+  accountsSyncResponse?: UserStorageResponseData[];
 };
 
 const MOCK_ETH_BALANCE = '0xde0b6b3a7640000';
@@ -96,7 +151,7 @@ export async function mockInfuraAndAccountSync(
   userStorageMockttpController: UserStorageMockttpController,
   options: MockInfuraAndAccountSyncOptions = {},
 ): Promise<void> {
-  const accounts = options.accountsToMock ?? [];
+  const accounts = options.accountsToMockBalances ?? [];
 
   // Set up User Storage / Account Sync mock
   userStorageMockttpController.setupPath(
@@ -133,4 +188,32 @@ export async function mockInfuraAndAccountSync(
   }
 
   mockIdentityServices(mockServer, userStorageMockttpController);
+}
+
+/**
+ * Sets up mock responses for NFT API calls
+ *
+ * @param mockServer - The Mockttp server instance
+ * @param userAddress - The user address to mock the NFT API call for
+ */
+export async function mockNftApiCall(
+  mockServer: Mockttp,
+  userAddress: string,
+): Promise<void> {
+  mockServer
+    .forGet(`https://nft.api.cx.metamask.io/users/${userAddress}/tokens`)
+    .withQuery({
+      limit: 50,
+      includeTopBid: 'true',
+      chainIds: ['1', '59144'],
+      continuation: '',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          tokens: [],
+        },
+      };
+    });
 }

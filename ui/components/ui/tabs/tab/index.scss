@@ -1,13 +1,25 @@
 .tab {
   border-bottom: 2px solid var(--color-border-muted);
-  color: var(--color-text-muted);
+  color: var(--color-text-alternative);
   font-weight: 500;
+  transition: color 200ms ease, border-color 200ms ease;
 
   button {
     min-width: 50px;
     background-color: unset;
     color: unset;
     font-weight: 500;
+    transition: color 50ms ease, border-color 50ms ease;
+
+    &:not([disabled]) {
+      &:hover {
+        color: var(--color-text-default);
+      }
+    }
+  }
+
+  &--disabled {
+    color: var(--color-text-muted);
   }
 
   &--single {
@@ -16,7 +28,8 @@
   }
 
   &--active {
-    color: var(--color-primary-default);
-    border-bottom: 2px solid var(--color-primary-default);
+    color: var(--color-text-default);
+    border-bottom: 2px solid var(--color-text-default);
+    transition: color 200ms cubic-bezier(0.7, 0, 0.15, 1), border-color 200ms cubic-bezier(0.7, 0, 0.15, 1);
   }
 }

@@ -6,6 +6,7 @@ import {
 import {
   createEip1193MethodMiddleware,
   createEthAccountsMethodMiddleware,
+  createMultichainMethodMiddleware,
 } from '.';
 
 const getHandler = () => ({
@@ -60,6 +61,7 @@ jest.mock('./handlers', () => ({
 describe.each([
   ['createEip1193MethodMiddleware', createEip1193MethodMiddleware],
   ['createEthAccountsMethodMiddleware', createEthAccountsMethodMiddleware],
+  ['createMultichainMethodMiddleware', createMultichainMethodMiddleware],
 ])('%s', (_name, createMiddleware) => {
   const method1 = 'method1';
 

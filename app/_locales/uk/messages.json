@@ -254,26 +254,11 @@
   "from": {
     "message": "Від"
   },
-  "functionType": {
-    "message": "Тип функції"
-  },
   "gasLimit": {
     "message": "Ліміт газу"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ліміт газу – максимальна кількість одиниць газу, яку ви бажаєте витратити."
-  },
   "gasLimitTooLow": {
     "message": "Ліміт газу має бути не менше 21000"
-  },
-  "gasPrice": {
-    "message": "Ціна на пальне (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Ціна газу дуже низька"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Ціна на пальне визначає кількість Ether, яку ви готові заплатити за кожну одиницю пального."
   },
   "gasUsed": {
     "message": "Пального використано"
@@ -315,9 +300,6 @@
   "import": {
     "message": "Імпортувати",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Імпортувати обліковий запис"
   },
   "importAccountMsg": {
     "message": "Імпортовані облікові записи не будуть пов'язані з вашою первісно створеною початковою фразою облікового запису MetaMask. Дізнайтесь більше про імпортовані облікові записи"
@@ -467,9 +449,6 @@
   "origin": {
     "message": "Походження"
   },
-  "parameters": {
-    "message": "Параметри"
-  },
   "participateInMetaMetrics": {
     "message": "Взяти участь у MetaMetrics"
   },
@@ -538,9 +517,6 @@
   "removeAccountDescription": {
     "message": "Цей обліковий запис буде видалено з вашого гаманця. Будь ласка, переконайтесь, що у вас є оригінальна seed-фраза чи секретний ключ для цього облікового запису. Ви можете імпортувати або створювати облікові записи у випадаючому меню вашого облікового запису."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "запити, що очікують на визнання"
-  },
   "required": {
     "message": "Обов'язкове"
   },
@@ -608,9 +584,6 @@
   "showHexDataDescription": {
     "message": "Оберіть це, щоб показати поле для шістнадцятирикових даних на екрані надсилання"
   },
-  "sigRequest": {
-    "message": "Запит підпису"
-  },
   "sign": {
     "message": "Підписати"
   },
@@ -658,9 +631,6 @@
   },
   "terms": {
     "message": "Умови використання"
-  },
-  "tips": {
-    "message": "Чайові"
   },
   "to": {
     "message": "Кому"
@@ -734,17 +704,11 @@
   "unknown": {
     "message": "невідомо"
   },
-  "unknownNetwork": {
-    "message": "Незнайома приватна мережа"
-  },
   "unknownQrCode": {
     "message": "Помилка: ми не змогли ідентифікувати цей QR-код "
   },
   "unlock": {
     "message": "Розблокувати"
-  },
-  "unlockMessage": {
-    "message": "Децентралізована мережа очікує"
   },
   "urlErrorMsg": {
     "message": "URIs вимагають відповідного префікса HTTP/HTTPS."
@@ -767,13 +731,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Вам потрібно дозволити доступ до камери, щоб користуватись цією функцією."
   },
-  "youSign": {
-    "message": "Ви підписуєте"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Ваша секретна seed-фраза"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Ціна пального на прискорення - нуль"
   }
 }

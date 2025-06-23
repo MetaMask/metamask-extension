@@ -1,11 +1,8 @@
+import { Mockttp } from 'mockttp';
 import { E2E_SRP } from '../../default-fixture';
 import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
-import {
-  WALLET_PASSWORD,
-  defaultGanacheOptions,
-  withFixtures,
-} from '../../helpers';
+import { WALLET_PASSWORD, withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
@@ -15,21 +12,31 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
+import { mockNftApiCall } from '../identity/mocks';
 
 describe('Add account', function () {
+  const localNodeOptions = {
+    accounts: 1,
+  };
   it('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions,
         title: this.test?.fullTitle(),
+        testSpecificMock: async (server: Mockttp) => {
+          await mockNftApiCall(
+            server,
+            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          );
+        },
       },
-      async ({ driver, ganacheServer }) => {
+      async ({ driver, localNodes }) => {
         await completeImportSRPOnboardingFlow({ driver });
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -41,7 +48,7 @@ describe('Add account', function () {
           accountType: ACCOUNT_TYPE.Ethereum,
         });
         await headerNavbar.check_accountLabel(newAccountName);
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
 
         // Switch back to the first account and transfer some balance to 2nd account so they will not be removed after recovering SRP
         await headerNavbar.openAccountMenu();
@@ -49,7 +56,7 @@ describe('Add account', function () {
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.check_accountLabel('Account 1');
-        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
 
         await sendRedesignedTransactionToAccount({
           driver,
@@ -71,7 +78,7 @@ describe('Add account', function () {
 
         // Check wallet balance for both accounts
         await homePage.check_pageIsLoaded();
-        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
         await accountListPage.check_accountDisplayedInAccountList(
@@ -91,6 +98,7 @@ describe('Add account', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        localNodeOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -106,7 +114,7 @@ describe('Add account', function () {
           accountType: ACCOUNT_TYPE.Ethereum,
         });
         await headerNavbar.check_accountLabel('Account 2');
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
 
         // Check user cannot delete 2nd account generated from the SRP imported in onboarding
         await headerNavbar.openAccountMenu();
@@ -117,13 +125,13 @@ describe('Add account', function () {
         // Create 3rd account with private key
         await accountListPage.addNewImportedAccount(testPrivateKey);
         await headerNavbar.check_accountLabel('Account 3');
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
 
         // Remove the 3rd account imported with a private key
         await headerNavbar.openAccountMenu();
         await accountListPage.removeAccount('Account 3');
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
         await accountListPage.check_accountIsNotDisplayedInAccountList(
           'Account 3',

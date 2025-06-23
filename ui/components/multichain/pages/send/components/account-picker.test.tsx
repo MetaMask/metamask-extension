@@ -9,15 +9,22 @@ import {
   INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
   createMockInternalAccount,
 } from '../../../../../../test/jest/mocks';
-import { CombinedBackgroundAndReduxState } from '../../../../../store/store';
+import type { MetaMaskReduxState } from '../../../../../store/store';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../../app/scripts/lib/multichain/address';
 import { SendPageAccountPicker } from '.';
 
+type State = {
+  metamask: Pick<
+    MetaMaskReduxState['metamask'],
+    'internalAccounts' | 'keyrings'
+  >;
+};
+
 const render = (
-  state: Partial<CombinedBackgroundAndReduxState> = {},
+  state: Partial<State> = {},
   props = {},
   sendStage = SEND_STAGES.ADD_RECIPIENT,
 ) => {
@@ -126,14 +133,22 @@ describe('SendPageAccountPicker', () => {
             {
               type: 'HD Key Tree',
               accounts: [mockAccount.address],
+              metadata: {
+                id: 'test-keyring-id-1',
+                name: '',
+              },
             },
             {
               type: 'Snap Keyring',
               accounts: [mockBtcAccount.address],
+              metadata: {
+                id: 'test-keyring-id-2',
+                name: '',
+              },
             },
           ],
         },
-      } as CombinedBackgroundAndReduxState);
+      });
 
       expect(queryByText(mockAccount.metadata.name)).toBeInTheDocument();
 

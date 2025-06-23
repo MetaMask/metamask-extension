@@ -1,4 +1,4 @@
-import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { RestrictedMessenger } from '@metamask/base-controller';
 import { KeyringControllerGetKeyringForAccountAction } from '@metamask/keyring-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { GetSnap } from '@metamask/snaps-controllers';
@@ -10,7 +10,7 @@ type AllowedActions =
   | KeyringControllerGetKeyringForAccountAction
   | AccountsControllerGetSelectedAccountAction;
 
-export type SnapAndHardwareMessenger = RestrictedControllerMessenger<
+export type SnapAndHardwareMessenger = RestrictedMessenger<
   'SnapAndHardwareMessenger',
   AllowedActions,
   never,

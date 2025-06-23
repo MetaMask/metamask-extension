@@ -6,10 +6,12 @@ import { useAutoSignIn } from './useAutoSignIn';
 
 type ArrangeMocksMetamaskStateOverrides = {
   isUnlocked: boolean;
-  completedOnboarding: boolean;
+  useExternalServices: boolean;
   isSignedIn: boolean;
-  isProfileSyncingEnabled: boolean;
+  completedOnboarding: boolean;
+  isBackupAndSyncEnabled: boolean;
   participateInMetaMetrics: boolean;
+  isNotificationServicesEnabled: boolean;
 };
 
 const arrangeMockState = (
@@ -18,6 +20,7 @@ const arrangeMockState = (
   return {
     metamask: {
       ...stateOverrides,
+      keyrings: [],
     },
   };
 };
@@ -29,14 +32,75 @@ const arrangeMocks = () => {
   };
 };
 
+const prerequisitesStateKeys = [
+  'isUnlocked',
+  'useExternalServices',
+  'isSignedIn',
+  'completedOnboarding',
+];
+
+const authDependentFeaturesStateKeys = [
+  'isBackupAndSyncEnabled',
+  'participateInMetaMetrics',
+  'isNotificationServicesEnabled',
+];
+
+const shouldAutoSignInTestCases: ArrangeMocksMetamaskStateOverrides[] = [];
+const shouldNotAutoSignInTestCases: ArrangeMocksMetamaskStateOverrides[] = [];
+
+// We generate all possible combinations of the prerequisites and auth-dependent features here
+const generateCombinations = (keys: string[]) => {
+  const result: ArrangeMocksMetamaskStateOverrides[] = [];
+  const total = 2 ** keys.length;
+  for (let i = 0; i < total; i++) {
+    const state = {} as ArrangeMocksMetamaskStateOverrides;
+    keys.forEach((key, index) => {
+      state[key as keyof ArrangeMocksMetamaskStateOverrides] = Boolean(
+        Math.floor(i / 2 ** index) % 2,
+      );
+    });
+    result.push(state);
+  }
+  return result;
+};
+
+const prerequisiteCombinations = generateCombinations(prerequisitesStateKeys);
+const authDependentCombinations = generateCombinations(
+  authDependentFeaturesStateKeys,
+);
+
+prerequisiteCombinations.forEach((prerequisiteState) => {
+  authDependentCombinations.forEach((authDependentState) => {
+    const combinedState = {
+      ...prerequisiteState,
+      ...authDependentState,
+    };
+    if (
+      combinedState.isUnlocked &&
+      combinedState.useExternalServices &&
+      combinedState.completedOnboarding &&
+      !combinedState.isSignedIn &&
+      authDependentFeaturesStateKeys.some(
+        (key) => combinedState[key as keyof ArrangeMocksMetamaskStateOverrides],
+      )
+    ) {
+      shouldAutoSignInTestCases.push(combinedState);
+    } else {
+      shouldNotAutoSignInTestCases.push(combinedState);
+    }
+  });
+});
+
 describe('useAutoSignIn', () => {
   it('should initialize correctly', () => {
     const state = arrangeMockState({
       isUnlocked: false,
-      completedOnboarding: false,
-      isProfileSyncingEnabled: false,
+      isBackupAndSyncEnabled: false,
       isSignedIn: false,
+      completedOnboarding: false,
       participateInMetaMetrics: false,
+      useExternalServices: false,
+      isNotificationServicesEnabled: false,
     });
     arrangeMocks();
     const hook = renderHookWithProviderTyped(
@@ -47,17 +111,11 @@ describe('useAutoSignIn', () => {
     );
 
     expect(hook.result.current.autoSignIn).toBeDefined();
+    expect(hook.result.current.shouldAutoSignIn).toBeDefined();
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
-  it.each`
-    isUnlocked | completedOnboarding | isSignedIn | isProfileSyncingEnabled | participateInMetaMetrics
-    ${false}   | ${false}            | ${false}   | ${true}                 | ${true}
-    ${true}    | ${false}            | ${false}   | ${true}                 | ${true}
-    ${false}   | ${true}             | ${false}   | ${true}                 | ${true}
-  `(
-    'should not call performSignIn if isUnlocked: $isUnlocked, completedOnboarding: $completedOnboarding',
-    async (stateOverrides: ArrangeMocksMetamaskStateOverrides) => {
+  shouldNotAutoSignInTestCases.forEach((stateOverrides) => {
+    it(`should not call performSignIn if conditions are not met`, async () => {
       const state = arrangeMockState(stateOverrides);
       const { mockPerformSignInAction } = arrangeMocks();
       const hook = renderHookWithProviderTyped(
@@ -72,30 +130,25 @@ describe('useAutoSignIn', () => {
       });
 
       expect(mockPerformSignInAction).not.toHaveBeenCalled();
-    },
-  );
-
-  it('should call performSignIn if all conditions are met', async () => {
-    const state = arrangeMockState({
-      isUnlocked: true,
-      completedOnboarding: true,
-      // These values ensure that shouldSignIn from the useSignIn hook returns true
-      isProfileSyncingEnabled: true,
-      isSignedIn: false,
-      participateInMetaMetrics: true,
     });
-    const { mockPerformSignInAction } = arrangeMocks();
-    const hook = renderHookWithProviderTyped(
-      () => useAutoSignIn(),
-      state,
-      undefined,
-      MetamaskIdentityProvider,
-    );
+  });
 
-    await act(async () => {
-      await hook.result.current.autoSignIn();
+  shouldAutoSignInTestCases.forEach((stateOverrides) => {
+    it(`should call performSignIn if conditions are met`, async () => {
+      const state = arrangeMockState(stateOverrides);
+      const { mockPerformSignInAction } = arrangeMocks();
+      const hook = renderHookWithProviderTyped(
+        () => useAutoSignIn(),
+        state,
+        undefined,
+        MetamaskIdentityProvider,
+      );
+
+      await act(async () => {
+        await hook.result.current.autoSignIn();
+      });
+
+      expect(mockPerformSignInAction).toHaveBeenCalled();
     });
-
-    expect(mockPerformSignInAction).toHaveBeenCalled();
   });
 });

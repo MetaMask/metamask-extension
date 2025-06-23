@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams, useLocation } from 'react-router-dom';
-import { NetworkConfiguration } from '@metamask/network-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
+import type { EvmNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { formatChainIdToHex, StatusTypes } from '@metamask/bridge-controller';
+import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -21,9 +23,8 @@ import {
 import { Content, Header } from '../../../components/multichain/pages/page';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
 import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getTransactionBreakdownData } from '../../../components/app/transaction-breakdown/transaction-breakdown-utils';
-import { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/store';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { EtherDenomination } from '../../../../shared/constants/common';
@@ -31,10 +32,6 @@ import {
   PRIMARY,
   SUPPORT_REQUEST_LINK,
 } from '../../../helpers/constants/common';
-import {
-  BridgeHistoryItem,
-  StatusTypes,
-} from '../../../../shared/types/bridge-status';
 import {
   AlignItems,
   Display,
@@ -47,8 +44,7 @@ import {
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import { selectedAddressTxListSelector } from '../../../selectors';
+import { selectedAddressTxListSelectorAllChain } from '../../../selectors';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -57,18 +53,20 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import TransactionActivityLog from '../../../components/app/transaction-activity-log';
 import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-  AllowedBridgeChainIds,
+  type AllowedBridgeChainIds,
 } from '../../../../shared/constants/bridge';
+import { getImageForChainId } from '../../../selectors/multichain';
+import { MINUTE } from '../../../../shared/constants/time';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
 
 const getBlockExplorerUrl = (
-  networkConfiguration: NetworkConfiguration | undefined,
+  networkConfiguration: EvmNetworkConfiguration | undefined,
   txHash: string | undefined,
 ) => {
   if (!networkConfiguration || !txHash) {
@@ -141,11 +139,13 @@ export const getIsDelayed = (
   status: StatusTypes,
   bridgeHistoryItem?: BridgeHistoryItem,
 ) => {
+  const tenMinutesInMs = 10 * MINUTE;
   return Boolean(
     status === StatusTypes.PENDING &&
       bridgeHistoryItem?.startTime &&
       Date.now() >
         bridgeHistoryItem.startTime +
+          tenMinutesInMs +
           bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000,
   );
 };
@@ -167,17 +167,13 @@ const CrossChainSwapTxDetails = () => {
   const { srcTxMetaId } = useParams<{ srcTxMetaId: string }>();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
   const selectedAddressTxList = useSelector(
-    selectedAddressTxListSelector,
+    selectedAddressTxListSelectorAllChain,
   ) as TransactionMeta[];
 
-  const networkConfigurationsByChainId = useSelector(
-    getNetworkConfigurationsByChainId,
-  );
-
-  const { transactionGroup, isEarliestNonce } = location.state as {
-    transactionGroup: TransactionGroup;
-    isEarliestNonce: boolean;
-  };
+  const transactionGroup: TransactionGroup | null =
+    location.state?.transactionGroup || null;
+  const isEarliestNonce: boolean | null =
+    location.state?.isEarliestNonce || null;
   const srcChainTxMeta = selectedAddressTxList.find(
     (tx) => tx.id === srcTxMetaId,
   );
@@ -192,25 +188,33 @@ const CrossChainSwapTxDetails = () => {
   });
 
   const srcTxHash = srcChainTxMeta?.hash;
-  const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHash);
+  const srcBlockExplorerUrl = srcNetwork?.isEvm
+    ? getBlockExplorerUrl(srcNetwork, srcTxHash)
+    : undefined;
 
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
-  const destBlockExplorerUrl = getBlockExplorerUrl(destNetwork, destTxHash);
+  const destBlockExplorerUrl = destNetwork?.isEvm
+    ? getBlockExplorerUrl(destNetwork, destTxHash)
+    : undefined;
 
   const status = bridgeHistoryItem
     ? bridgeHistoryItem?.status.status
     : StatusTypes.PENDING;
 
   const srcChainIconUrl = srcNetwork
-    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-        srcNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-      ]
+    ? getImageForChainId(
+        srcNetwork.isEvm
+          ? formatChainIdToHex(srcNetwork.chainId)
+          : srcNetwork.chainId,
+      )
     : undefined;
 
   const destChainIconUrl = destNetwork
-    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-        destNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-      ]
+    ? getImageForChainId(
+        destNetwork.isEvm
+          ? formatChainIdToHex(destNetwork.chainId)
+          : destNetwork.chainId,
+      )
     : undefined;
 
   const srcNetworkName =
@@ -324,18 +328,27 @@ const CrossChainSwapTxDetails = () => {
 
           {/* Bridge step list */}
           {status !== StatusTypes.COMPLETE &&
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             (bridgeHistoryItem || srcChainTxMeta) && (
               <BridgeStepList
                 bridgeHistoryItem={bridgeHistoryItem}
                 srcChainTxMeta={srcChainTxMeta}
-                networkConfigurationsByChainId={networkConfigurationsByChainId}
               />
             )}
 
           {/* Links to block explorers */}
           <BridgeExplorerLinks
-            srcChainId={srcNetwork?.chainId}
-            destChainId={destNetwork?.chainId}
+            srcChainId={
+              srcNetwork?.isEvm
+                ? formatChainIdToHex(srcNetwork?.chainId)
+                : undefined
+            }
+            destChainId={
+              destNetwork?.isEvm
+                ? formatChainIdToHex(destNetwork?.chainId)
+                : undefined
+            }
             srcBlockExplorerUrl={srcBlockExplorerUrl}
             destBlockExplorerUrl={destBlockExplorerUrl}
           />
@@ -461,12 +474,13 @@ const CrossChainSwapTxDetails = () => {
                   : undefined
               }
             />
-
-            <TransactionActivityLog
-              transactionGroup={transactionGroup}
-              className="transaction-list-item-details__transaction-activity-log"
-              isEarliestNonce={isEarliestNonce}
-            />
+            {transactionGroup && typeof isEarliestNonce !== 'undefined' && (
+              <TransactionActivityLog
+                transactionGroup={transactionGroup}
+                className="transaction-list-item-details__transaction-activity-log"
+                isEarliestNonce={isEarliestNonce}
+              />
+            )}
           </Box>
         </Box>
       </Content>
