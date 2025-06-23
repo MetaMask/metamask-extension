@@ -1,4 +1,5 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import type {
@@ -34,7 +35,7 @@ export default class OAuthService {
     const permissionGranted =
       await this.#webAuthenticator.requestIdentityPermission();
     if (!permissionGranted) {
-      throw new Error('Identity permission not granted');
+      throw new Error(OAuthErrorMessages.PERMISSION_NOT_GRANTED_ERROR);
     }
 
     // create the login handler for the given social login type
@@ -48,9 +49,9 @@ export default class OAuthService {
     try {
       return this.#handleOAuthLogin(loginHandler);
     } catch (error) {
-      const browserLastError = chrome.runtime.lastError;
-      console.error('[startOAuthLogin] error', error);
-      console.error('[startOAuthLogin] browserLastError', browserLastError);
+      if (this.#isUserCancelledLoginError()) {
+        throw new Error(OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR);
+      }
       throw error;
     }
   }
@@ -134,13 +135,11 @@ export default class OAuthService {
           (responseUrl) => {
             try {
               if (responseUrl) {
-                const url = new URL(responseUrl);
-                const state = url.searchParams.get('state');
-
-                loginHandler.validateState(state);
                 resolve(responseUrl);
               } else {
-                reject(new Error('No redirect URL found'));
+                reject(
+                  new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR),
+                );
               }
             } catch (error: unknown) {
               reject(error);
@@ -149,11 +148,6 @@ export default class OAuthService {
         );
       },
     );
-
-    if (!redirectUrlFromOAuth) {
-      console.error('[identity auth] redirectUrl is null');
-      throw new Error('No redirect URL found');
-    }
 
     // handle the OAuth response from the social login provider and get the Jwt Token in exchange
     const loginResult = await this.#handleOAuthResponse(
@@ -178,10 +172,15 @@ export default class OAuthService {
     loginHandler: BaseLoginHandler,
     redirectUrl: string,
   ): Promise<OAuthLoginResult> {
-    const authCode = this.#getRedirectUrlAuthCode(redirectUrl);
-    if (!authCode) {
-      throw new Error('No auth code found');
-    }
+    const { authConnection } = loginHandler;
+
+    // We still need to extract the Authorization Code from the redirect URL for Google login (PKCE flow)
+    // For Apple login (BFF flow), the Authorization Code is returned to the Authentication Server in the redirect URL
+    const authCode =
+      authConnection === AuthConnection.Google
+        ? this.#getRedirectUrlAuthCode(redirectUrl)
+        : null;
+
     const res = await this.#getAuthIdToken(loginHandler, authCode);
     return res;
   }
@@ -195,9 +194,13 @@ export default class OAuthService {
    */
   async #getAuthIdToken(
     loginHandler: BaseLoginHandler,
-    authCode: string,
+    authCode: string | null,
   ): Promise<OAuthLoginResult> {
-    const { authConnectionId, groupedAuthConnectionId } = this.#env;
+    const { groupedAuthConnectionId } = this.#env;
+    const authConnectionId =
+      loginHandler.authConnection === AuthConnection.Google
+        ? this.#env.googleAuthConnectionId
+        : this.#env.appleAuthConnectionId;
 
     const authTokenData = await loginHandler.getAuthIdToken(authCode);
     const idToken = authTokenData.jwt_tokens[this.#audience];
@@ -218,5 +221,15 @@ export default class OAuthService {
   #getRedirectUrlAuthCode(redirectUrl: string): string | null {
     const url = new URL(redirectUrl);
     return url.searchParams.get('code');
+  }
+
+  #isUserCancelledLoginError(): boolean {
+    const error = browser.runtime.lastError;
+    return (
+      (error instanceof Error &&
+        error.message === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) ||
+      browser.runtime.lastError?.message ===
+        OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR
+    );
   }
 }

@@ -78,6 +78,9 @@ function createManifestTasks({
         );
         modifyNameAndDescForNonProd(result);
 
+        // Add the `identity` permission to the manifest for Web Authentication Flow
+        addIdentityPermission(result, platform);
+
         if (shouldIncludeOcapKernel) {
           applyOcapKernelChanges(result);
         }
@@ -207,6 +210,23 @@ function createManifestTasks({
       merge(manifest, { sandbox: { pages: [] } });
     }
     manifest.sandbox.pages.push('ocap-kernel/vat/iframe.html');
+  }
+
+  // Add the `identity` permission to the manifest for the given platform.
+  // `Identity` permission is required for the OAuth login.
+  // - For Firefox, we need to declare the permission as the installation permission
+  // - For other platforms, we need to declare the permission as the optional permission
+  function addIdentityPermission(manifest, platform) {
+    if (platform === 'firefox') {
+      // firefox doesn't support `identity` as runtime permission
+      // hence, we need to declare the permission as the installation permission
+      // see more: {@link https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/optional_permissions#browser_compatibility}
+      manifest.permissions.push('identity');
+      return;
+    }
+
+    // for other browsers, we can declare the permission as the optional permission and request it at runtime
+    manifest.optional_permissions.push('identity');
   }
 }
 

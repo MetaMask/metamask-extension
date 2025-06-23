@@ -9,8 +9,6 @@ export class GoogleLoginHandler extends BaseLoginHandler {
 
   readonly #scope = ['profile', 'email'];
 
-  #codeVerifier: string | undefined;
-
   get authConnection() {
     return AuthConnection.Google;
   }
@@ -27,11 +25,9 @@ export class GoogleLoginHandler extends BaseLoginHandler {
   async getAuthUrl(): Promise<string> {
     const authUrl = new URL(this.OAUTH_SERVER_URL);
 
-    const { codeVerifier, challenge } =
-      await this.generateCodeVerifierChallenge();
     const nonce = this.generateNonce();
+    const { challenge } = await this.generateCodeVerifierChallenge();
     const redirectUri = this.options.webAuthenticator.getRedirectURL();
-    this.#codeVerifier = codeVerifier;
 
     authUrl.searchParams.set('client_id', this.options.oAuthClientId);
     authUrl.searchParams.set('response_type', 'code');
@@ -48,7 +44,6 @@ export class GoogleLoginHandler extends BaseLoginHandler {
       }),
     );
     authUrl.searchParams.set('redirect_uri', redirectUri);
-    authUrl.searchParams.set('nonce', nonce);
     authUrl.searchParams.set('prompt', this.prompt);
 
     return authUrl.toString();
@@ -82,7 +77,7 @@ export class GoogleLoginHandler extends BaseLoginHandler {
       redirect_uri: redirectUri,
       login_provider: this.authConnection,
       network: web3AuthNetwork,
-      code_verifier: this.#codeVerifier,
+      code_verifier: this.codeVerifier,
       access_type: 'offline',
     };
 

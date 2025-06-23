@@ -10,7 +10,7 @@ async function generateCodeVerifierAndChallenge(): Promise<{
 }> {
   const bytes = new Uint8Array(32);
   crypto.getRandomValues(bytes);
-  const codeVerifier = Array.from(bytes).join('');
+  const codeVerifier = base64urlencode(bytes);
 
   const challengeBuffer = await crypto.subtle.digest(
     'SHA-256',

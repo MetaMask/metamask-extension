@@ -1,9 +1,13 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { LoginHandlerOptions, AuthTokenResponse, OAuthUserInfo } from './types';
 
 export abstract class BaseLoginHandler {
   public options: LoginHandlerOptions;
 
+  public codeVerifier: string | undefined;
+
+  // For the verification of the state (in the client side)
   public nonce: string | undefined;
 
   // This prompt value is used to force the user to select an account before OAuth login
@@ -36,7 +40,7 @@ export abstract class BaseLoginHandler {
    * @param code - The authorization code from the social login provider.
    * @returns The JWT Token from the Web3Auth Authentication Server.
    */
-  abstract getAuthIdToken(code: string): Promise<AuthTokenResponse>;
+  abstract getAuthIdToken(code?: string | null): Promise<AuthTokenResponse>;
 
   /**
    * Generate the request body data to get the JWT Token from the Web3Auth Authentication Server.
@@ -61,13 +65,13 @@ export abstract class BaseLoginHandler {
    */
   validateState(state: unknown): void {
     if (typeof state !== 'string') {
-      throw new Error('Invalid state');
+      throw new Error(OAuthErrorMessages.INVALID_OAUTH_STATE_ERROR);
     }
 
     const parsedState = JSON.parse(state);
 
     if (parsedState.nonce !== this.nonce) {
-      throw new Error('Invalid state');
+      throw new Error(OAuthErrorMessages.INVALID_OAUTH_STATE_ERROR);
     }
   }
 
@@ -162,10 +166,13 @@ export abstract class BaseLoginHandler {
    *
    * @returns The code verifier and challenge value.
    */
-  protected generateCodeVerifierChallenge(): Promise<{
+  protected async generateCodeVerifierChallenge(): Promise<{
     codeVerifier: string;
     challenge: string;
   }> {
-    return this.options.webAuthenticator.generateCodeVerifierAndChallenge();
+    const { codeVerifier, challenge } =
+      await this.options.webAuthenticator.generateCodeVerifierAndChallenge();
+    this.codeVerifier = codeVerifier;
+    return { codeVerifier, challenge };
   }
 }
