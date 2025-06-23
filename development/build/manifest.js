@@ -72,9 +72,9 @@ function createManifestTasks({
           platformModifications,
           browserVersionMap[platform],
           await getBuildModifications(buildType, platform),
+          customArrayMerge,
           // Only include _flags if manifestFlags has content
           manifestFlags,
-          customArrayMerge,
         );
         modifyNameAndDescForNonProd(result);
 

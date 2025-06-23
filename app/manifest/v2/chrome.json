@@ -4,6 +4,5 @@
     "matches": ["https://metamask.io/*"],
     "ids": ["*"]
   },
-  "minimum_chrome_version": "113",
-  "optional_permissions": ["identity"]
+  "minimum_chrome_version": "113"
 }
