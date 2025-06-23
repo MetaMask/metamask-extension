@@ -76,12 +76,6 @@ export type LoginHandlerOptions = {
   web3AuthNetwork: Web3AuthNetwork;
   webAuthenticator: WebAuthenticator;
   scopes?: string[];
-  /**
-   * The server redirect URI to use for the OAuth login.
-   * This is the URI that the OAuth provider will redirect to after the user has logged in.
-   * This is required for Apple login.
-   */
-  serverRedirectUri?: string;
 };
 
 /**

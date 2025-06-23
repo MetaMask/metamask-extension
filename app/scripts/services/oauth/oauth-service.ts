@@ -135,10 +135,6 @@ export default class OAuthService {
           (responseUrl) => {
             try {
               if (responseUrl) {
-                const url = new URL(responseUrl);
-                const state = url.searchParams.get('state');
-
-                loginHandler.validateState(state);
                 resolve(responseUrl);
               } else {
                 reject(
@@ -176,10 +172,15 @@ export default class OAuthService {
     loginHandler: BaseLoginHandler,
     redirectUrl: string,
   ): Promise<OAuthLoginResult> {
-    const authCode = this.#getRedirectUrlAuthCode(redirectUrl);
-    if (!authCode) {
-      throw new Error(OAuthErrorMessages.NO_AUTH_CODE_FOUND_ERROR);
-    }
+    const { authConnection } = loginHandler;
+
+    // We still need to extract the Authorization Code from the redirect URL for Google login (PKCE flow)
+    // For Apple login (BFF flow), the Authorization Code is returned to the Authentication Server in the redirect URL
+    const authCode =
+      authConnection === AuthConnection.Google
+        ? this.#getRedirectUrlAuthCode(redirectUrl)
+        : null;
+
     const res = await this.#getAuthIdToken(loginHandler, authCode);
     return res;
   }
@@ -193,7 +194,7 @@ export default class OAuthService {
    */
   async #getAuthIdToken(
     loginHandler: BaseLoginHandler,
-    authCode: string,
+    authCode: string | null,
   ): Promise<OAuthLoginResult> {
     const { authConnectionId, groupedAuthConnectionId } = this.#env;
 
