@@ -3637,7 +3637,7 @@ export default class MetamaskController extends EventEmitter {
         ),
       setSmartAccountOptInForAccounts:
         preferencesController.setSmartAccountOptInForAccounts.bind(
-          appStateController,
+          preferencesController,
         ),
 
       // AccountsController

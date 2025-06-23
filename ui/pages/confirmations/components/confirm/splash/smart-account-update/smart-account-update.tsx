@@ -119,7 +119,7 @@ export function SmartAccountUpdate() {
     setSmartAccountOptInForAccounts(selectedAccounts);
     setAcknowledged(true);
     dispatch(setSmartAccountOptIn(true));
-  }, [from, setAcknowledged]);
+  }, [from, setAcknowledged, selectedAccounts]);
 
   const showAccountSelectionVisible = useCallback(() => {
     setAccountSelectionVisible(true);
