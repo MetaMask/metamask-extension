@@ -20,11 +20,7 @@ import {
   ONBOARDING_WELCOME_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  getFirstTimeFlowType,
-  getSocialLoginEmail,
-  getSocialLoginType,
-} from '../../../selectors';
+import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   resetOAuthLoginState,

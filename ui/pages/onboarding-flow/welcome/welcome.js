@@ -16,14 +16,12 @@ import {
 import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { useSentryTrace } from '../../../contexts/sentry-trace';
 import { setFirstTimeFlowType, startOAuthLogin } from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsEventAccountType,
 } from '../../../../shared/constants/metametrics';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';

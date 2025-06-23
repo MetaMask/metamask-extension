@@ -52,15 +52,13 @@ class Index extends PureComponent {
               <LegacyMetaMetricsProvider>
                 <I18nProvider>
                   <LegacyI18nProvider>
-                    <SentryTraceProvider>
-                      <AssetPollingProvider>
-                        <MetamaskIdentityProvider>
-                          <MetamaskNotificationsProvider>
-                            <Routes />
-                          </MetamaskNotificationsProvider>
-                        </MetamaskIdentityProvider>
-                      </AssetPollingProvider>
-                    </SentryTraceProvider>
+                    <AssetPollingProvider>
+                      <MetamaskIdentityProvider>
+                        <MetamaskNotificationsProvider>
+                          <Routes />
+                        </MetamaskNotificationsProvider>
+                      </MetamaskIdentityProvider>
+                    </AssetPollingProvider>
                   </LegacyI18nProvider>
                 </I18nProvider>
               </LegacyMetaMetricsProvider>

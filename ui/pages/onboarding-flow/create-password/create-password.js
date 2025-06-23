@@ -140,6 +140,28 @@ export default function CreatePassword({
     });
   };
 
+  // Helper function to determine account type for analytics
+  const getAccountType = (baseType, includesSocialLogin = false) => {
+    if (includesSocialLogin && socialLoginType) {
+      const socialProvider = String(socialLoginType).toLowerCase();
+      return `${baseType}_${socialProvider}`;
+    }
+    return baseType;
+  };
+
+  const getPasswordStrengthCategory = (passwordValue) => {
+    const isTooShort = passwordValue.length < PASSWORD_MIN_LENGTH;
+    const { score } = zxcvbn(passwordValue);
+
+    if (isTooShort || score < 3) {
+      return 'weak';
+    }
+    if (score === 3) {
+      return 'good';
+    }
+    return 'strong';
+  };
+
   const handleWalletImport = async () => {
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -269,28 +291,6 @@ export default function CreatePassword({
     bufferedEndTrace?.({ name: TraceName.OnboardingPasswordSetupError });
 
     console.error(error);
-  };
-
-  // Helper function to determine account type for analytics
-  const getAccountType = (baseType, includesSocialLogin = false) => {
-    if (includesSocialLogin && socialLoginType) {
-      const socialProvider = String(socialLoginType).toLowerCase();
-      return `${baseType}_${socialProvider}`;
-    }
-    return baseType;
-  };
-
-  const getPasswordStrengthCategory = (passwordValue) => {
-    const isTooShort = passwordValue.length < PASSWORD_MIN_LENGTH;
-    const { score } = zxcvbn(passwordValue);
-
-    if (isTooShort || score < 3) {
-      return 'weak';
-    }
-    if (score === 3) {
-      return 'good';
-    }
-    return 'strong';
   };
 
   const handleCreatePassword = async (event) => {
