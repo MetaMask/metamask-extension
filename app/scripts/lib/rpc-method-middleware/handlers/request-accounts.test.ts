@@ -6,7 +6,9 @@ import {
 } from '@metamask/utils';
 import * as Util from '../../util';
 import { flushPromises } from '../../../../../test/lib/timer-helpers';
-import requestEthereumAccounts from './request-accounts';
+import requestEthereumAccounts, {
+  type RequestEthereumAccountsOptions,
+} from './request-accounts';
 
 jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),
@@ -32,10 +34,23 @@ const createMockedHandler = () => {
   const metamaskState = {
     permissionHistory: {},
     metaMetricsId: 'metaMetricsId',
-    accounts: {
-      '0x1': {},
-      '0x2': {},
-      '0x3': {},
+    accountsByChainId: {
+      '0x1': {
+        '0x01': {
+          address: '0x01',
+          balance: null,
+        },
+      },
+      '0x2': {
+        '0x01': {
+          address: '0x01',
+          balance: null,
+        },
+        '0x02': {
+          address: '0x02',
+          balance: null,
+        },
+      },
     },
   };
   const getCaip25PermissionFromLegacyPermissionsForOrigin = jest
@@ -54,7 +69,8 @@ const createMockedHandler = () => {
       getAccounts,
       getUnlockPromise,
       sendMetrics,
-      metamaskState,
+      metamaskState:
+        metamaskState as unknown as RequestEthereumAccountsOptions['metamaskState'],
       getCaip25PermissionFromLegacyPermissionsForOrigin,
       requestPermissionsForOrigin,
     });

@@ -1,10 +1,62 @@
 import { rpcErrors } from '@metamask/rpc-errors';
+import {
+  JsonRpcParams,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
+import {
+  JsonRpcEngineEndCallback,
+  JsonRpcEngineNextCallback,
+} from '@metamask/json-rpc-engine';
+import { AccountTrackerControllerState } from '@metamask/assets-controllers';
+import { OriginString } from '@metamask/permission-controller';
+import { PermissionLogControllerState } from '@metamask/permission-log-controller';
+
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../../shared/constants/metametrics';
+import { MetaMetricsControllerState } from '../../../controllers/metametrics-controller';
 import { shouldEmitDappViewedEvent } from '../../util';
+import {
+  GetAccounts,
+  GetCaip25PermissionFromLegacyPermissionsForOrigin,
+  GetUnlockPromise,
+  HandlerWrapper,
+  RequestPermissionsForOrigin,
+  SendMetrics,
+} from './types';
+
+export type RequestEthereumAccountsOptions = {
+  getAccounts: GetAccounts;
+  getUnlockPromise: GetUnlockPromise;
+  sendMetrics: SendMetrics;
+  metamaskState: {
+    metaMetricsId: MetaMetricsControllerState['metaMetricsId'];
+    permissionHistory: PermissionLogControllerState['permissionHistory'];
+    accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
+  };
+  getCaip25PermissionFromLegacyPermissionsForOrigin: GetCaip25PermissionFromLegacyPermissionsForOrigin;
+  requestPermissionsForOrigin: RequestPermissionsForOrigin;
+};
+
+type RequestEthereumAccountsConstraint<
+  Params extends JsonRpcParams = JsonRpcParams,
+> = {
+  implementation: (
+    req: JsonRpcRequest<Params> & { origin: OriginString },
+    res: PendingJsonRpcResponse<string[]>,
+    _next: JsonRpcEngineNextCallback,
+    end: JsonRpcEngineEndCallback,
+    {
+      getAccounts,
+      getUnlockPromise,
+      sendMetrics,
+      metamaskState,
+    }: RequestEthereumAccountsOptions,
+  ) => Promise<void>;
+} & HandlerWrapper;
 
 const requestEthereumAccounts = {
   methodNames: [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS],
@@ -17,7 +69,7 @@ const requestEthereumAccounts = {
     getCaip25PermissionFromLegacyPermissionsForOrigin: true,
     requestPermissionsForOrigin: true,
   },
-};
+} satisfies RequestEthereumAccountsConstraint;
 export default requestEthereumAccounts;
 
 // Used to rate-limit pending requests to one per origin
@@ -43,11 +95,13 @@ const locks = new Set();
  * @param options.requestPermissionsForOrigin - A hook that requests CAIP-25 permissions for the origin.
  * @returns A promise that resolves to nothing
  */
-async function requestEthereumAccountsHandler(
-  req,
-  res,
-  _next,
-  end,
+async function requestEthereumAccountsHandler<
+  Params extends JsonRpcParams = JsonRpcParams,
+>(
+  req: JsonRpcRequest<Params> & { origin: OriginString },
+  res: PendingJsonRpcResponse<string[]>,
+  _next: JsonRpcEngineNextCallback,
+  end: JsonRpcEngineEndCallback,
   {
     getAccounts,
     getUnlockPromise,
@@ -55,9 +109,9 @@ async function requestEthereumAccountsHandler(
     metamaskState,
     getCaip25PermissionFromLegacyPermissionsForOrigin,
     requestPermissionsForOrigin,
-  },
+  }: RequestEthereumAccountsOptions,
 ) {
-  const { origin } = req;
+  const { origin } = req ?? {};
   if (locks.has(origin)) {
     res.error = rpcErrors.resourceUnavailable(
       `Already processing ${MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS}. Please wait.`,
@@ -65,7 +119,7 @@ async function requestEthereumAccountsHandler(
     return end();
   }
 
-  let ethAccounts = getAccounts({ ignoreLock: true });
+  let ethAccounts = await getAccounts({ ignoreLock: true });
   if (ethAccounts.length > 0) {
     // We wait for the extension to unlock in this case only, because permission
     // requests are handled when the extension is unlocked, regardless of the
@@ -93,12 +147,12 @@ async function requestEthereumAccountsHandler(
 
   // We cannot derive ethAccounts directly from the CAIP-25 permission
   // because the accounts will not be in order of lastSelected
-  ethAccounts = getAccounts({ ignoreLock: true });
+  ethAccounts = await getAccounts({ ignoreLock: true });
 
   // first time connection to dapp will lead to no log in the permissionHistory
   // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
   // we will leverage that to identify `is_first_visit` for metrics
-  if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
+  if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId ?? '')) {
     const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
       origin,
     );
@@ -111,7 +165,14 @@ async function requestEthereumAccountsHandler(
         },
         properties: {
           is_first_visit: isFirstVisit,
-          number_of_accounts: Object.keys(metamaskState.accounts).length,
+          number_of_accounts: Object.keys(
+            metamaskState.accountsByChainId,
+          ).reduce((total, chainId) => {
+            return (
+              total +
+              Object.keys(metamaskState.accountsByChainId[chainId]).length
+            );
+          }, 0),
           number_of_accounts_connected: ethAccounts.length,
         },
       },
