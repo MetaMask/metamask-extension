@@ -3,6 +3,7 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import * as reactRouterDom from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import {
   TrustSignalDisplayState,
@@ -14,6 +15,9 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
+import mockLegacySwapTxGroup from '../../../../test/data/swap/mock-legacy-swap-transaction-group.json';
+import mockUnifiedSwapTxGroup from '../../../../test/data/swap/mock-unified-swap-transaction-group.json';
+import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-group.json';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -70,17 +74,10 @@ jest.mock('react-redux', () => {
     useDispatch: jest.fn(),
   };
 });
-
-jest.mock('../../../hooks/bridge/useBridgeTxHistoryData', () => {
-  return {
-    ...jest.requireActual('../../../hooks/bridge/useBridgeTxHistoryData'),
-    useBridgeTxHistoryData: jest.fn(() => ({
-      bridgeTxHistoryItem: undefined,
-      isBridgeComplete: false,
-      showBridgeTxDetails: false,
-    })),
-  };
-});
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(),
+}));
 
 jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
@@ -310,5 +307,205 @@ describe('TransactionListItem', () => {
     expect(abortTransactionSigning).toHaveBeenCalledWith(
       transactionGroupSigning.primaryTransaction.id,
     );
+  });
+
+  it('should render pending legacy swap tx summary', () => {
+    useSelector.mockImplementation(generateUseSelectorRouter({}));
+    const { baseElement } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={{
+          ...mockLegacySwapTxGroup,
+          primaryTransaction: {
+            ...mockLegacySwapTxGroup.primaryTransaction,
+            status: TransactionStatus.pending,
+          },
+        }}
+      />,
+      mockStore(mockState),
+    );
+
+    expect(baseElement).toMatchSnapshot();
+  });
+
+  it('should render confirmed legacy swap tx summary', () => {
+    const { baseElement } = renderWithProvider(
+      <TransactionListItem transactionGroup={mockLegacySwapTxGroup} />,
+    );
+
+    expect(baseElement).toMatchSnapshot();
+  });
+
+  it('should render failed legacy swap tx summary', () => {
+    const { baseElement } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={{
+          ...mockLegacySwapTxGroup,
+          primaryTransaction: {
+            ...mockLegacySwapTxGroup.primaryTransaction,
+            status: TransactionStatus.failed,
+          },
+        }}
+      />,
+    );
+
+    expect(baseElement).toMatchSnapshot();
+  });
+
+  it('should render confirmed unified swap tx summary', () => {
+    const { baseElement } = renderWithProvider(
+      <MetaMetricsContext.Provider value={jest.fn()}>
+        <TransactionListItem transactionGroup={mockUnifiedSwapTxGroup} />
+      </MetaMetricsContext.Provider>,
+      mockStore(mockState),
+    );
+
+    expect(baseElement).toMatchSnapshot();
+  });
+
+  it('should render failed unified swap tx summary', () => {
+    const { baseElement } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={{
+          ...mockUnifiedSwapTxGroup,
+          primaryTransaction: {
+            ...mockUnifiedSwapTxGroup.primaryTransaction,
+            status: TransactionStatus.failed,
+          },
+        }}
+      />,
+    );
+
+    expect(baseElement).toMatchSnapshot();
+  });
+
+  it('should render pending bridge tx summary', () => {
+    const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
+    useSelector.mockImplementation(
+      generateUseSelectorRouter({
+        bridgeHistory: {
+          [srcTxMetaId]: {
+            ...bridgeHistoryItem,
+            status: {
+              ...bridgeHistoryItem.status,
+              status: 'PENDING',
+            },
+          },
+        },
+      }),
+    );
+    const { baseElement } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={{
+          ...mockBridgeTxData.transactionGroup,
+          primaryTransaction: {
+            ...mockBridgeTxData.transactionGroup.primaryTransaction,
+            status: TransactionStatus.pending,
+          },
+        }}
+      />,
+    );
+
+    expect(baseElement).toMatchSnapshot();
+  });
+
+  it('should render confirmed bridge tx summary', () => {
+    const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
+    useSelector.mockImplementation(
+      generateUseSelectorRouter({
+        bridgeHistory: {
+          [srcTxMetaId]: {
+            ...bridgeHistoryItem,
+            status: {
+              ...bridgeHistoryItem.status,
+              status: 'PENDING',
+            },
+          },
+        },
+      }),
+    );
+    const { baseElement } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={mockBridgeTxData.transactionGroup}
+      />,
+    );
+
+    expect(baseElement).toMatchSnapshot();
+  });
+
+  it('should render completed bridge tx summary', () => {
+    const mockPush = jest
+      .fn()
+      .mockImplementation((...args) => jest.fn(...args));
+    jest.spyOn(reactRouterDom, 'useHistory').mockReturnValue({
+      push: mockPush,
+    });
+    const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
+    useSelector.mockImplementation(
+      generateUseSelectorRouter({
+        bridgeHistory: {
+          [srcTxMetaId]: bridgeHistoryItem,
+        },
+      }),
+    );
+    const { baseElement, getByTestId } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={mockBridgeTxData.transactionGroup}
+      />,
+    );
+
+    expect(baseElement).toMatchSnapshot();
+
+    fireEvent.click(getByTestId('activity-list-item'));
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
+      state: {
+        transactionGroup: mockBridgeTxData.transactionGroup,
+        isEarliestNonce: false,
+      },
+    });
+  });
+
+  it('should render failed bridge tx summary', () => {
+    const mockPush = jest
+      .fn()
+      .mockImplementation((...args) => jest.fn(...args));
+    jest.spyOn(reactRouterDom, 'useHistory').mockReturnValue({
+      push: mockPush,
+    });
+    const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
+    useSelector.mockImplementation(
+      generateUseSelectorRouter({
+        bridgeHistory: {
+          [srcTxMetaId]: {
+            ...bridgeHistoryItem,
+            status: {
+              ...bridgeHistoryItem.status,
+              status: 'FAILED',
+            },
+          },
+        },
+      }),
+    );
+    const failedTransactionGroup = {
+      ...mockBridgeTxData.transactionGroup,
+      primaryTransaction: {
+        ...mockBridgeTxData.transactionGroup.primaryTransaction,
+        status: TransactionStatus.failed,
+      },
+    };
+    const { baseElement, getByTestId } = renderWithProvider(
+      <TransactionListItem transactionGroup={failedTransactionGroup} />,
+    );
+
+    expect(baseElement).toMatchSnapshot();
+
+    fireEvent.click(getByTestId('activity-list-item'));
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
+      state: {
+        transactionGroup: failedTransactionGroup,
+        isEarliestNonce: false,
+      },
+    });
   });
 });

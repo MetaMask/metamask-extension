@@ -1,0 +1,1918 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TransactionListItemDetails for swaps should render confirmed swap tx details 1`] = `
+<body>
+  <div
+    id="popover-content"
+  >
+    <div>
+      <div
+        class="popover-container"
+      >
+        <div
+          class="popover-bg"
+        />
+        <section
+          class="popover-wrap"
+        >
+          <div
+            class="box popover-header box--padding-6 box--sm:padding-4 box--md:padding-4 box--display-flex box--flex-direction-column box--background-color-background-default box--rounded-xl"
+          >
+            <div
+              class="box popover-header__title box--margin-bottom-2 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
+            >
+              <h2
+                class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-start mm-box--width-full mm-box--color-text-default"
+              >
+                Test Transaction Details
+              </h2>
+              <button
+                aria-label="Close"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="popover-close"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/close.svg');"
+                />
+              </button>
+            </div>
+          </div>
+          <div
+            class="box popover-content box--display-flex box--flex-direction-column box--justify-content-flex-start box--align-items-stretch box--rounded-xl"
+          >
+            <div
+              class="transaction-list-item-details"
+            >
+              <div
+                class="transaction-list-item-details__operations"
+              >
+                <div
+                  class="transaction-list-item-details__header-buttons"
+                />
+              </div>
+              <div
+                class="transaction-list-item-details__header"
+              >
+                <div
+                  class="transaction-list-item-details__tx-status"
+                  data-testid="transaction-list-item-details-tx-status"
+                >
+                  <div>
+                    Status
+                  </div>
+                  <div>
+                    <div />
+                  </div>
+                </div>
+                <div
+                  class="transaction-list-item-details__tx-hash"
+                >
+                  <div>
+                    <a
+                      class="button btn-link"
+                      role="button"
+                      tabindex="0"
+                    >
+                      View on block explorer
+                    </a>
+                  </div>
+                  <div>
+                    <div
+                      class="transaction-list-item-details__header-button"
+                    >
+                      <a
+                        class="button btn-link"
+                        role="button"
+                        tabindex="0"
+                      >
+                        Copy transaction ID
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="transaction-list-item-details__body"
+              >
+                <div
+                  class="transaction-list-item-details__sender-to-recipient-header"
+                >
+                  <div>
+                    From
+                  </div>
+                  <div>
+                    To
+                  </div>
+                </div>
+                <div
+                  class="transaction-list-item-details__sender-to-recipient-container"
+                >
+                  <div
+                    class="sender-to-recipient sender-to-recipient--default"
+                    data-testid="sender-to-recipient"
+                  >
+                    <div
+                      class="sender-to-recipient__party sender-to-recipient__party--sender"
+                    >
+                      <div
+                        class="sender-to-recipient__sender-icon"
+                      >
+                        <div
+                          class=""
+                        >
+                          <div
+                            class="identicon"
+                            style="height: 24px; width: 24px; border-radius: 12px;"
+                          >
+                            <div
+                              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"
+                            >
+                              <svg
+                                height="24"
+                                width="24"
+                                x="0"
+                                y="0"
+                              >
+                                <rect
+                                  fill="#18CDF2"
+                                  height="24"
+                                  transform="translate(-0.786295127845455 -2.478213052095374) rotate(328.9 12 12)"
+                                  width="24"
+                                  x="0"
+                                  y="0"
+                                />
+                                <rect
+                                  fill="#035E56"
+                                  height="24"
+                                  transform="translate(-13.723846281624033 7.94434640381145) rotate(176.2 12 12)"
+                                  width="24"
+                                  x="0"
+                                  y="0"
+                                />
+                                <rect
+                                  fill="#F26602"
+                                  height="24"
+                                  transform="translate(12.500881513667943 -10.653854792247811) rotate(468.9 12 12)"
+                                  width="24"
+                                  x="0"
+                                  y="0"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="sender-to-recipient__tooltip-wrapper"
+                      >
+                        <div
+                          aria-describedby="tippy-tooltip-5"
+                          class="sender-to-recipient__tooltip-container"
+                          data-original-title="null"
+                          data-tooltipped=""
+                          style="display: inline;"
+                          tabindex="0"
+                        >
+                          <div
+                            class="sender-to-recipient__name"
+                          >
+                            <span>
+                              0x0DCD5...3E7bc
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="sender-to-recipient__arrow-container"
+                    >
+                      <div
+                        class="sender-to-recipient__arrow-circle"
+                      >
+                        <i
+                          class="fa fa-arrow-right sender-to-recipient__arrow-circle__icon"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
+                    >
+                      <div
+                        class="sender-to-recipient__tooltip-wrapper"
+                      >
+                        <div
+                          class="sender-to-recipient__tooltip-container"
+                          style="display: inline;"
+                          tabindex="0"
+                          title=""
+                        >
+                          <div
+                            class="mm-box mm-box--display-flex"
+                          >
+                            <div
+                              class="name name__clickable name__missing"
+                            >
+                              <span
+                                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                style="mask-image: url('./images/icons/question.svg');"
+                              />
+                              <p
+                                class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                              >
+                                0x00000...00000
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="transaction-list-item-details__cards-container"
+                >
+                  <div
+                    class="transaction-breakdown transaction-list-item-details__transaction-breakdown"
+                  >
+                    <div
+                      class="transaction-breakdown__title"
+                    >
+                      transaction
+                    </div>
+                    <div
+                      class="transaction-breakdown-row transaction-breakdown-row--with-bottom-border"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Nonce
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="transaction-breakdown__value"
+                        >
+                          1
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Amount
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <span
+                          class="transaction-breakdown__value transaction-breakdown__value--amount"
+                          data-testid="transaction-breakdown-value-amount"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row transaction-breakdown__row-title"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Gas limit (units)
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="transaction-breakdown__value"
+                        >
+                          489075
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row transaction-breakdown__row-title"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Gas used (units)
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="transaction-breakdown__value"
+                        >
+                          357212
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Base fee (GWEI)
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="mm-box currency-display-component transaction-breakdown__value mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                          data-testid="transaction-breakdown__base-fee"
+                          title="0.00000002"
+                        >
+                          <span
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            data-testid="account-value-and-suffix"
+                          >
+                            0.00000002
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Priority fee (GWEI)
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="mm-box currency-display-component transaction-breakdown__value mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                          data-testid="transaction-breakdown__priority-fee"
+                          title="30"
+                        >
+                          <span
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            data-testid="account-value-and-suffix"
+                          >
+                            30
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Total gas fee
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="mm-box currency-display-component transaction-breakdown__value mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                          data-testid="transaction-breakdown__effective-gas-price"
+                          title="0.010716 ETH"
+                        >
+                          <span
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            data-testid="account-value-and-suffix"
+                          >
+                            0.010716
+                          </span>
+                          <span
+                            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                          >
+                            ETH
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row transaction-breakdown-row--with-bottom-border"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Max fee per gas
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="mm-box currency-display-component transaction-breakdown__value mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                          title="0.00000003 ETH"
+                        >
+                          <span
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            data-testid="account-value-and-suffix"
+                          >
+                            0.00000003
+                          </span>
+                          <span
+                            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                          >
+                            ETH
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Total
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="mm-box currency-display-component transaction-breakdown__value transaction-breakdown__value--eth-total mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                          title="0.01071636 ETH"
+                        >
+                          <span
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            data-testid="account-value-and-suffix"
+                          >
+                            0.01071636
+                          </span>
+                          <span
+                            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                          >
+                            ETH
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--margin-top-3 mm-box--margin-bottom-3"
+                  >
+                    <div
+                      class="disclosure"
+                      data-testid="disclosure"
+                    >
+                      <details>
+                        <summary
+                          class="disclosure__summary"
+                        >
+                          <span
+                            class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-inherit"
+                            style="mask-image: url('./images/icons/add.svg');"
+                          />
+                          Activity log
+                        </summary>
+                        <div
+                          class="disclosure__content small"
+                        >
+                          <div
+                            class="transaction-activity-log transaction-list-item-details__transaction-activity-log"
+                          >
+                            <div
+                              class="transaction-activity-log__title"
+                            >
+                              Activity log
+                            </div>
+                            <div
+                              class="transaction-activity-log__activities-container"
+                            >
+                              <div
+                                class="transaction-activity-log__activity"
+                              >
+                                <div
+                                  class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+                                >
+                                  <span
+                                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+                                    style="mask-image: url('./images/icons/add.svg');"
+                                  />
+                                </div>
+                                <div
+                                  class="transaction-activity-log__entry-container"
+                                >
+                                  <div
+                                    class="transaction-activity-log__activity-text"
+                                    title="Transaction created with a value of 0 ETH at 13:53 on 6/20/2025."
+                                  >
+                                    Transaction created with a value of 0 ETH at 13:53 on 6/20/2025.
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="transaction-activity-log__activity"
+                              >
+                                <div
+                                  class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+                                >
+                                  <span
+                                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+                                    style="mask-image: url('./images/icons/arrow-up.svg');"
+                                  />
+                                </div>
+                                <div
+                                  class="transaction-activity-log__entry-container"
+                                >
+                                  <div
+                                    class="transaction-activity-log__activity-text"
+                                    title="Transaction submitted with estimated gas fee of 0.014672 ETH at 13:53 on 6/20/2025."
+                                  >
+                                    Transaction submitted with estimated gas fee of 0.014672 ETH at 13:53 on 6/20/2025.
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="transaction-activity-log__activity"
+                              >
+                                <div
+                                  class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+                                >
+                                  <span
+                                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+                                    style="mask-image: url('./images/icons/check.svg');"
+                                  />
+                                </div>
+                                <div
+                                  class="transaction-activity-log__entry-container"
+                                >
+                                  <div
+                                    class="transaction-activity-log__activity-text"
+                                    title="Transaction confirmed at 13:53 on 6/20/2025."
+                                  >
+                                    Transaction confirmed at 13:53 on 6/20/2025.
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="transaction-activity-log__activity"
+                              >
+                                <div
+                                  class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+                                >
+                                  <span
+                                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+                                    style="mask-image: url('./images/icons/arrow-up.svg');"
+                                  />
+                                </div>
+                                <div
+                                  class="transaction-activity-log__entry-container"
+                                >
+                                  <div
+                                    class="transaction-activity-log__activity-text"
+                                    title="Transaction submitted with estimated gas fee of 0 ETH at 08:53 on 6/23/2025."
+                                  >
+                                    Transaction submitted with estimated gas fee of 0 ETH at 08:53 on 6/23/2025.
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="transaction-activity-log__activity"
+                              >
+                                <div
+                                  class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+                                >
+                                  <span
+                                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+                                    style="mask-image: url('./images/icons/check.svg');"
+                                  />
+                                </div>
+                                <div
+                                  class="transaction-activity-log__entry-container"
+                                >
+                                  <div
+                                    class="transaction-activity-log__activity-text"
+                                    title="Transaction confirmed at 08:53 on 6/23/2025."
+                                  >
+                                    Transaction confirmed at 08:53 on 6/23/2025.
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="disclosure__footer"
+                        />
+                      </details>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div />
+</body>
+`;
+
+exports[`TransactionListItemDetails for swaps should render failed swap tx details 1`] = `
+<body>
+  <div
+    id="popover-content"
+  >
+    <div>
+      <div
+        class="popover-container"
+      >
+        <div
+          class="popover-bg"
+        />
+        <section
+          class="popover-wrap"
+        >
+          <div
+            class="box popover-header box--padding-6 box--sm:padding-4 box--md:padding-4 box--display-flex box--flex-direction-column box--background-color-background-default box--rounded-xl"
+          >
+            <div
+              class="box popover-header__title box--margin-bottom-2 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
+            >
+              <h2
+                class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-start mm-box--width-full mm-box--color-text-default"
+              >
+                Test Transaction Details
+              </h2>
+              <button
+                aria-label="Close"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="popover-close"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/close.svg');"
+                />
+              </button>
+            </div>
+          </div>
+          <div
+            class="box popover-content box--display-flex box--flex-direction-column box--justify-content-flex-start box--align-items-stretch box--rounded-xl"
+          >
+            <div
+              class="transaction-list-item-details"
+            >
+              <div
+                class="transaction-list-item-details__operations"
+              >
+                <div
+                  class="transaction-list-item-details__header-buttons"
+                />
+              </div>
+              <div
+                class="transaction-list-item-details__header"
+              >
+                <div
+                  class="transaction-list-item-details__tx-status"
+                  data-testid="transaction-list-item-details-tx-status"
+                >
+                  <div>
+                    Status
+                  </div>
+                  <div>
+                    <div />
+                  </div>
+                </div>
+                <div
+                  class="transaction-list-item-details__tx-hash"
+                >
+                  <div>
+                    <a
+                      class="button btn-link"
+                      role="button"
+                      tabindex="0"
+                    >
+                      View on block explorer
+                    </a>
+                  </div>
+                  <div>
+                    <div
+                      class="transaction-list-item-details__header-button"
+                    >
+                      <a
+                        class="button btn-link"
+                        role="button"
+                        tabindex="0"
+                      >
+                        Copy transaction ID
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="transaction-list-item-details__body"
+              >
+                <div
+                  class="transaction-list-item-details__sender-to-recipient-header"
+                >
+                  <div>
+                    From
+                  </div>
+                  <div>
+                    To
+                  </div>
+                </div>
+                <div
+                  class="transaction-list-item-details__sender-to-recipient-container"
+                >
+                  <div
+                    class="sender-to-recipient sender-to-recipient--default"
+                    data-testid="sender-to-recipient"
+                  >
+                    <div
+                      class="sender-to-recipient__party sender-to-recipient__party--sender"
+                    >
+                      <div
+                        class="sender-to-recipient__sender-icon"
+                      >
+                        <div
+                          class=""
+                        >
+                          <div
+                            class="identicon"
+                            style="height: 24px; width: 24px; border-radius: 12px;"
+                          >
+                            <div
+                              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"
+                            >
+                              <svg
+                                height="24"
+                                width="24"
+                                x="0"
+                                y="0"
+                              >
+                                <rect
+                                  fill="#18CDF2"
+                                  height="24"
+                                  transform="translate(-0.786295127845455 -2.478213052095374) rotate(328.9 12 12)"
+                                  width="24"
+                                  x="0"
+                                  y="0"
+                                />
+                                <rect
+                                  fill="#035E56"
+                                  height="24"
+                                  transform="translate(-13.723846281624033 7.94434640381145) rotate(176.2 12 12)"
+                                  width="24"
+                                  x="0"
+                                  y="0"
+                                />
+                                <rect
+                                  fill="#F26602"
+                                  height="24"
+                                  transform="translate(12.500881513667943 -10.653854792247811) rotate(468.9 12 12)"
+                                  width="24"
+                                  x="0"
+                                  y="0"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="sender-to-recipient__tooltip-wrapper"
+                      >
+                        <div
+                          aria-describedby="tippy-tooltip-6"
+                          class="sender-to-recipient__tooltip-container"
+                          data-original-title="null"
+                          data-tooltipped=""
+                          style="display: inline;"
+                          tabindex="0"
+                        >
+                          <div
+                            class="sender-to-recipient__name"
+                          >
+                            <span>
+                              0x0DCD5...3E7bc
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="sender-to-recipient__arrow-container"
+                    >
+                      <div
+                        class="sender-to-recipient__arrow-circle"
+                      >
+                        <i
+                          class="fa fa-arrow-right sender-to-recipient__arrow-circle__icon"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
+                    >
+                      <div
+                        class="sender-to-recipient__tooltip-wrapper"
+                      >
+                        <div
+                          class="sender-to-recipient__tooltip-container"
+                          style="display: inline;"
+                          tabindex="0"
+                          title=""
+                        >
+                          <div
+                            class="mm-box mm-box--display-flex"
+                          >
+                            <div
+                              class="name name__clickable name__missing"
+                            >
+                              <span
+                                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                style="mask-image: url('./images/icons/question.svg');"
+                              />
+                              <p
+                                class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                              >
+                                0x00000...00000
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="transaction-list-item-details__cards-container"
+                >
+                  <div
+                    class="transaction-breakdown transaction-list-item-details__transaction-breakdown"
+                  >
+                    <div
+                      class="transaction-breakdown__title"
+                    >
+                      transaction
+                    </div>
+                    <div
+                      class="transaction-breakdown-row transaction-breakdown-row--with-bottom-border"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Nonce
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="transaction-breakdown__value"
+                        >
+                          1
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Amount
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <span
+                          class="transaction-breakdown__value transaction-breakdown__value--amount"
+                          data-testid="transaction-breakdown-value-amount"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row transaction-breakdown__row-title"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Gas limit (units)
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="transaction-breakdown__value"
+                        >
+                          489075
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row transaction-breakdown__row-title"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Gas used (units)
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="transaction-breakdown__value"
+                        >
+                          357212
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Base fee (GWEI)
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="mm-box currency-display-component transaction-breakdown__value mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                          data-testid="transaction-breakdown__base-fee"
+                          title="0.00000002"
+                        >
+                          <span
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            data-testid="account-value-and-suffix"
+                          >
+                            0.00000002
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Priority fee (GWEI)
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="mm-box currency-display-component transaction-breakdown__value mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                          data-testid="transaction-breakdown__priority-fee"
+                          title="30"
+                        >
+                          <span
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            data-testid="account-value-and-suffix"
+                          >
+                            30
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Total gas fee
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="mm-box currency-display-component transaction-breakdown__value mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                          data-testid="transaction-breakdown__effective-gas-price"
+                          title="0.010716 ETH"
+                        >
+                          <span
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            data-testid="account-value-and-suffix"
+                          >
+                            0.010716
+                          </span>
+                          <span
+                            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                          >
+                            ETH
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row transaction-breakdown-row--with-bottom-border"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Max fee per gas
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="mm-box currency-display-component transaction-breakdown__value mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                          title="0.00000003 ETH"
+                        >
+                          <span
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            data-testid="account-value-and-suffix"
+                          >
+                            0.00000003
+                          </span>
+                          <span
+                            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                          >
+                            ETH
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Total
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="mm-box currency-display-component transaction-breakdown__value transaction-breakdown__value--eth-total mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                          title="0.01071636 ETH"
+                        >
+                          <span
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            data-testid="account-value-and-suffix"
+                          >
+                            0.01071636
+                          </span>
+                          <span
+                            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                          >
+                            ETH
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--margin-top-3 mm-box--margin-bottom-3"
+                  >
+                    <div
+                      class="disclosure"
+                      data-testid="disclosure"
+                    >
+                      <details>
+                        <summary
+                          class="disclosure__summary"
+                        >
+                          <span
+                            class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-inherit"
+                            style="mask-image: url('./images/icons/add.svg');"
+                          />
+                          Activity log
+                        </summary>
+                        <div
+                          class="disclosure__content small"
+                        >
+                          <div
+                            class="transaction-activity-log transaction-list-item-details__transaction-activity-log"
+                          >
+                            <div
+                              class="transaction-activity-log__title"
+                            >
+                              Activity log
+                            </div>
+                            <div
+                              class="transaction-activity-log__activities-container"
+                            >
+                              <div
+                                class="transaction-activity-log__activity"
+                              >
+                                <div
+                                  class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+                                >
+                                  <span
+                                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+                                    style="mask-image: url('./images/icons/add.svg');"
+                                  />
+                                </div>
+                                <div
+                                  class="transaction-activity-log__entry-container"
+                                >
+                                  <div
+                                    class="transaction-activity-log__activity-text"
+                                    title="Transaction created with a value of 0 ETH at 13:53 on 6/20/2025."
+                                  >
+                                    Transaction created with a value of 0 ETH at 13:53 on 6/20/2025.
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="transaction-activity-log__activity"
+                              >
+                                <div
+                                  class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+                                >
+                                  <span
+                                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+                                    style="mask-image: url('./images/icons/arrow-up.svg');"
+                                  />
+                                </div>
+                                <div
+                                  class="transaction-activity-log__entry-container"
+                                >
+                                  <div
+                                    class="transaction-activity-log__activity-text"
+                                    title="Transaction submitted with estimated gas fee of 0.014672 ETH at 13:53 on 6/20/2025."
+                                  >
+                                    Transaction submitted with estimated gas fee of 0.014672 ETH at 13:53 on 6/20/2025.
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="transaction-activity-log__activity"
+                              >
+                                <div
+                                  class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+                                >
+                                  <span
+                                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+                                    style="mask-image: url('./images/icons/check.svg');"
+                                  />
+                                </div>
+                                <div
+                                  class="transaction-activity-log__entry-container"
+                                >
+                                  <div
+                                    class="transaction-activity-log__activity-text"
+                                    title="Transaction confirmed at 13:53 on 6/20/2025."
+                                  >
+                                    Transaction confirmed at 13:53 on 6/20/2025.
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="transaction-activity-log__activity"
+                              >
+                                <div
+                                  class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+                                >
+                                  <span
+                                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+                                    style="mask-image: url('./images/icons/arrow-up.svg');"
+                                  />
+                                </div>
+                                <div
+                                  class="transaction-activity-log__entry-container"
+                                >
+                                  <div
+                                    class="transaction-activity-log__activity-text"
+                                    title="Transaction submitted with estimated gas fee of 0 ETH at 08:53 on 6/23/2025."
+                                  >
+                                    Transaction submitted with estimated gas fee of 0 ETH at 08:53 on 6/23/2025.
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="transaction-activity-log__activity"
+                              >
+                                <div
+                                  class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+                                >
+                                  <span
+                                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+                                    style="mask-image: url('./images/icons/check.svg');"
+                                  />
+                                </div>
+                                <div
+                                  class="transaction-activity-log__entry-container"
+                                >
+                                  <div
+                                    class="transaction-activity-log__activity-text"
+                                    title="Transaction confirmed at 08:53 on 6/23/2025."
+                                  >
+                                    Transaction confirmed at 08:53 on 6/23/2025.
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="disclosure__footer"
+                        />
+                      </details>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div />
+</body>
+`;
+
+exports[`TransactionListItemDetails for swaps should render pending swap tx details 1`] = `
+<body>
+  <div
+    id="popover-content"
+  >
+    <div>
+      <div
+        class="popover-container"
+      >
+        <div
+          class="popover-bg"
+        />
+        <section
+          class="popover-wrap"
+        >
+          <div
+            class="box popover-header box--padding-6 box--sm:padding-4 box--md:padding-4 box--display-flex box--flex-direction-column box--background-color-background-default box--rounded-xl"
+          >
+            <div
+              class="box popover-header__title box--margin-bottom-2 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
+            >
+              <h2
+                class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-start mm-box--width-full mm-box--color-text-default"
+              >
+                Test Transaction Details
+              </h2>
+              <button
+                aria-label="Close"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="popover-close"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/close.svg');"
+                />
+              </button>
+            </div>
+          </div>
+          <div
+            class="box popover-content box--display-flex box--flex-direction-column box--justify-content-flex-start box--align-items-stretch box--rounded-xl"
+          >
+            <div
+              class="transaction-list-item-details"
+            >
+              <div
+                class="transaction-list-item-details__operations"
+              >
+                <div
+                  class="transaction-list-item-details__header-buttons"
+                />
+              </div>
+              <div
+                class="transaction-list-item-details__header"
+              >
+                <div
+                  class="transaction-list-item-details__tx-status"
+                  data-testid="transaction-list-item-details-tx-status"
+                >
+                  <div>
+                    Status
+                  </div>
+                  <div>
+                    <div />
+                  </div>
+                </div>
+                <div
+                  class="transaction-list-item-details__tx-hash"
+                >
+                  <div>
+                    <a
+                      class="button btn-link"
+                      role="button"
+                      tabindex="0"
+                    >
+                      View on block explorer
+                    </a>
+                  </div>
+                  <div>
+                    <div
+                      class="transaction-list-item-details__header-button"
+                    >
+                      <a
+                        class="button btn-link"
+                        role="button"
+                        tabindex="0"
+                      >
+                        Copy transaction ID
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="transaction-list-item-details__body"
+              >
+                <div
+                  class="transaction-list-item-details__sender-to-recipient-header"
+                >
+                  <div>
+                    From
+                  </div>
+                  <div>
+                    To
+                  </div>
+                </div>
+                <div
+                  class="transaction-list-item-details__sender-to-recipient-container"
+                >
+                  <div
+                    class="sender-to-recipient sender-to-recipient--default"
+                    data-testid="sender-to-recipient"
+                  >
+                    <div
+                      class="sender-to-recipient__party sender-to-recipient__party--sender"
+                    >
+                      <div
+                        class="sender-to-recipient__sender-icon"
+                      >
+                        <div
+                          class=""
+                        >
+                          <div
+                            class="identicon"
+                            style="height: 24px; width: 24px; border-radius: 12px;"
+                          >
+                            <div
+                              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"
+                            >
+                              <svg
+                                height="24"
+                                width="24"
+                                x="0"
+                                y="0"
+                              >
+                                <rect
+                                  fill="#18CDF2"
+                                  height="24"
+                                  transform="translate(-0.786295127845455 -2.478213052095374) rotate(328.9 12 12)"
+                                  width="24"
+                                  x="0"
+                                  y="0"
+                                />
+                                <rect
+                                  fill="#035E56"
+                                  height="24"
+                                  transform="translate(-13.723846281624033 7.94434640381145) rotate(176.2 12 12)"
+                                  width="24"
+                                  x="0"
+                                  y="0"
+                                />
+                                <rect
+                                  fill="#F26602"
+                                  height="24"
+                                  transform="translate(12.500881513667943 -10.653854792247811) rotate(468.9 12 12)"
+                                  width="24"
+                                  x="0"
+                                  y="0"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="sender-to-recipient__tooltip-wrapper"
+                      >
+                        <div
+                          aria-describedby="tippy-tooltip-4"
+                          class="sender-to-recipient__tooltip-container"
+                          data-original-title="null"
+                          data-tooltipped=""
+                          style="display: inline;"
+                          tabindex="0"
+                        >
+                          <div
+                            class="sender-to-recipient__name"
+                          >
+                            <span>
+                              0x0DCD5...3E7bc
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="sender-to-recipient__arrow-container"
+                    >
+                      <div
+                        class="sender-to-recipient__arrow-circle"
+                      >
+                        <i
+                          class="fa fa-arrow-right sender-to-recipient__arrow-circle__icon"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
+                    >
+                      <div
+                        class="sender-to-recipient__tooltip-wrapper"
+                      >
+                        <div
+                          class="sender-to-recipient__tooltip-container"
+                          style="display: inline;"
+                          tabindex="0"
+                          title=""
+                        >
+                          <div
+                            class="mm-box mm-box--display-flex"
+                          >
+                            <div
+                              class="name name__clickable name__missing"
+                            >
+                              <span
+                                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                style="mask-image: url('./images/icons/question.svg');"
+                              />
+                              <p
+                                class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                              >
+                                0x00000...00000
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="transaction-list-item-details__cards-container"
+                >
+                  <div
+                    class="transaction-breakdown transaction-list-item-details__transaction-breakdown"
+                  >
+                    <div
+                      class="transaction-breakdown__title"
+                    >
+                      transaction
+                    </div>
+                    <div
+                      class="transaction-breakdown-row transaction-breakdown-row--with-bottom-border"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Nonce
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="transaction-breakdown__value"
+                        >
+                          1
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Amount
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <span
+                          class="transaction-breakdown__value transaction-breakdown__value--amount"
+                          data-testid="transaction-breakdown-value-amount"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row transaction-breakdown__row-title"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Gas limit (units)
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="transaction-breakdown__value"
+                        >
+                          489075
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row transaction-breakdown__row-title"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Gas used (units)
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="transaction-breakdown__value"
+                        >
+                          357212
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Base fee (GWEI)
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="mm-box currency-display-component transaction-breakdown__value mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                          data-testid="transaction-breakdown__base-fee"
+                          title="0.00000002"
+                        >
+                          <span
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            data-testid="account-value-and-suffix"
+                          >
+                            0.00000002
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Priority fee (GWEI)
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="mm-box currency-display-component transaction-breakdown__value mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                          data-testid="transaction-breakdown__priority-fee"
+                          title="30"
+                        >
+                          <span
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            data-testid="account-value-and-suffix"
+                          >
+                            30
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Total gas fee
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="mm-box currency-display-component transaction-breakdown__value mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                          data-testid="transaction-breakdown__effective-gas-price"
+                          title="0.010716 ETH"
+                        >
+                          <span
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            data-testid="account-value-and-suffix"
+                          >
+                            0.010716
+                          </span>
+                          <span
+                            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                          >
+                            ETH
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row transaction-breakdown-row--with-bottom-border"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Max fee per gas
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="mm-box currency-display-component transaction-breakdown__value mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                          title="0.00000003 ETH"
+                        >
+                          <span
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            data-testid="account-value-and-suffix"
+                          >
+                            0.00000003
+                          </span>
+                          <span
+                            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                          >
+                            ETH
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="transaction-breakdown-row"
+                      data-testid="transaction-breakdown-row"
+                    >
+                      <div
+                        class="transaction-breakdown-row__title"
+                        data-testid="transaction-breakdown-row-title"
+                      >
+                        Total
+                      </div>
+                      <div
+                        class="transaction-breakdown-row__value"
+                        data-testid="transaction-breakdown-row-value"
+                      >
+                        <div
+                          class="mm-box currency-display-component transaction-breakdown__value transaction-breakdown__value--eth-total mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                          title="0.01071636 ETH"
+                        >
+                          <span
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            data-testid="account-value-and-suffix"
+                          >
+                            0.01071636
+                          </span>
+                          <span
+                            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                          >
+                            ETH
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--margin-top-3 mm-box--margin-bottom-3"
+                  >
+                    <div
+                      class="disclosure"
+                      data-testid="disclosure"
+                    >
+                      <details>
+                        <summary
+                          class="disclosure__summary"
+                        >
+                          <span
+                            class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-inherit"
+                            style="mask-image: url('./images/icons/add.svg');"
+                          />
+                          Activity log
+                        </summary>
+                        <div
+                          class="disclosure__content small"
+                        >
+                          <div
+                            class="transaction-activity-log transaction-list-item-details__transaction-activity-log"
+                          >
+                            <div
+                              class="transaction-activity-log__title"
+                            >
+                              Activity log
+                            </div>
+                            <div
+                              class="transaction-activity-log__activities-container"
+                            >
+                              <div
+                                class="transaction-activity-log__activity"
+                              >
+                                <div
+                                  class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+                                >
+                                  <span
+                                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+                                    style="mask-image: url('./images/icons/add.svg');"
+                                  />
+                                </div>
+                                <div
+                                  class="transaction-activity-log__entry-container"
+                                >
+                                  <div
+                                    class="transaction-activity-log__activity-text"
+                                    title="Transaction created with a value of 0 ETH at 13:53 on 6/20/2025."
+                                  >
+                                    Transaction created with a value of 0 ETH at 13:53 on 6/20/2025.
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="transaction-activity-log__activity"
+                              >
+                                <div
+                                  class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+                                >
+                                  <span
+                                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+                                    style="mask-image: url('./images/icons/arrow-up.svg');"
+                                  />
+                                </div>
+                                <div
+                                  class="transaction-activity-log__entry-container"
+                                >
+                                  <div
+                                    class="transaction-activity-log__activity-text"
+                                    title="Transaction submitted with estimated gas fee of 0.014672 ETH at 13:53 on 6/20/2025."
+                                  >
+                                    Transaction submitted with estimated gas fee of 0.014672 ETH at 13:53 on 6/20/2025.
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="transaction-activity-log__activity"
+                              >
+                                <div
+                                  class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+                                >
+                                  <span
+                                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+                                    style="mask-image: url('./images/icons/check.svg');"
+                                  />
+                                </div>
+                                <div
+                                  class="transaction-activity-log__entry-container"
+                                >
+                                  <div
+                                    class="transaction-activity-log__activity-text"
+                                    title="Transaction confirmed at 13:53 on 6/20/2025."
+                                  >
+                                    Transaction confirmed at 13:53 on 6/20/2025.
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="transaction-activity-log__activity"
+                              >
+                                <div
+                                  class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+                                >
+                                  <span
+                                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+                                    style="mask-image: url('./images/icons/arrow-up.svg');"
+                                  />
+                                </div>
+                                <div
+                                  class="transaction-activity-log__entry-container"
+                                >
+                                  <div
+                                    class="transaction-activity-log__activity-text"
+                                    title="Transaction submitted with estimated gas fee of 0 ETH at 08:53 on 6/23/2025."
+                                  >
+                                    Transaction submitted with estimated gas fee of 0 ETH at 08:53 on 6/23/2025.
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="transaction-activity-log__activity"
+                              >
+                                <div
+                                  class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+                                >
+                                  <span
+                                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+                                    style="mask-image: url('./images/icons/check.svg');"
+                                  />
+                                </div>
+                                <div
+                                  class="transaction-activity-log__entry-container"
+                                >
+                                  <div
+                                    class="transaction-activity-log__activity-text"
+                                    title="Transaction confirmed at 08:53 on 6/23/2025."
+                                  >
+                                    Transaction confirmed at 08:53 on 6/23/2025.
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="disclosure__footer"
+                        />
+                      </details>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div />
+</body>
+`;
