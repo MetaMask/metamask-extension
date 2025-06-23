@@ -81,7 +81,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         );
 
         // Network Selector
-        // Network Selector
         if (isGlobalNetworkSelectorRemoved) {
           await driver.clickElement('[data-testid="sort-by-networks"]');
           await driver.clickElement({
