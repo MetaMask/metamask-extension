@@ -3,20 +3,26 @@ const {
   createInternalTransaction,
 } = require('../../page-objects/flows/transaction');
 
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-  generateGanacheOptions,
-} = require('../../helpers');
+const { withFixtures, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+
+const PREFERENCES_STATE_MOCK = {
+  preferences: {
+    showFiatInTestnets: true,
+  },
+  // Enables advanced details due to migration 123
+  useNonceField: true,
+};
 
 describe('Editing Confirm Transaction', function () {
   it('goes back from confirm page to edit eth value, gas price and gas limit', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
-        ganacheOptions: defaultGanacheOptions,
+        fixtures: new FixtureBuilder()
+          .withPreferencesController(PREFERENCES_STATE_MOCK)
+          .withConversionRateDisabled()
+          .build(),
+        localNodeOptions: { hardfork: 'muirGlacier' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -31,7 +37,7 @@ describe('Editing Confirm Transaction', function () {
 
         await driver.findElement({
           css: '[data-testid="first-gas-field"]',
-          text: '0 ETH',
+          text: '0',
         });
 
         await driver.findElement({
@@ -64,7 +70,7 @@ describe('Editing Confirm Transaction', function () {
         // has correct updated value on the confirm screen the transaction
         await driver.findElement({
           css: '[data-testid="first-gas-field"]',
-          text: '0.0002 ETH',
+          text: '0.0002',
         });
 
         await driver.findElement({
@@ -97,8 +103,10 @@ describe('Editing Confirm Transaction', function () {
   it('goes back from confirm page to edit eth value, baseFee, priorityFee and gas limit - 1559 V2', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        fixtures: new FixtureBuilder()
+          .withConversionRateDisabled()
+          .withPreferencesController(PREFERENCES_STATE_MOCK)
+          .build(),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -113,7 +121,7 @@ describe('Editing Confirm Transaction', function () {
 
         await driver.findElement({
           css: '[data-testid="first-gas-field"]',
-          text: '0.0004 ETH',
+          text: '0.0004',
         });
 
         await driver.findElement({
@@ -158,7 +166,7 @@ describe('Editing Confirm Transaction', function () {
         // has correct updated value on the confirm screen the transaction
         await driver.findElement({
           css: '[data-testid="first-gas-field"]',
-          text: '0.0002 ETH',
+          text: '0.0002',
         });
 
         await driver.findElement({

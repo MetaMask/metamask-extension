@@ -1,14 +1,28 @@
 import { TransactionType } from '@metamask/transaction-controller';
 
+import BigNumber from 'bignumber.js';
 import { createTestProviderTools } from '../../test/stub/provider';
+import {
+  buildApproveTransactionData,
+  buildIncreaseAllowanceTransactionData,
+  buildPermit2ApproveTransactionData,
+} from '../../test/data/confirmations/token-approve';
+import { buildSetApproveForAllTransactionData } from '../../test/data/confirmations/set-approval-for-all';
 import {
   determineTransactionType,
   hasTransactionData,
   isEIP1559Transaction,
   isLegacyTransaction,
+  parseApprovalTransactionData,
   parseStandardTokenTransactionData,
   parseTypedDataMessage,
 } from './transaction.utils';
+
+const DATA_MOCK = '0x12345678';
+const ADDRESS_MOCK = '0x1234567890123456789012345678901234567890';
+const ADDRESS_2_MOCK = '0x1234567890123456789012345678901234567891';
+const EXPIRATION_MOCK = 1234567890;
+const AMOUNT_MOCK = 123;
 
 describe('Transaction.utils', function () {
   describe('parseStandardTokenTransactionData', () => {
@@ -28,7 +42,29 @@ describe('Transaction.utils', function () {
     it('should not throw errors when called without arguments', () => {
       expect(() => parseStandardTokenTransactionData()).not.toThrow();
     });
+
+    it('decodes Permit2 function', () => {
+      const result = parseStandardTokenTransactionData(
+        buildPermit2ApproveTransactionData(
+          ADDRESS_MOCK,
+          ADDRESS_2_MOCK,
+          AMOUNT_MOCK,
+          EXPIRATION_MOCK,
+        ),
+      );
+
+      expect(result.name).toBe('approve');
+      expect(result.args).toStrictEqual(
+        expect.objectContaining({
+          token: ADDRESS_MOCK,
+          spender: ADDRESS_2_MOCK,
+          expiration: EXPIRATION_MOCK,
+        }),
+      );
+      expect(result.args.amount.toString()).toBe(AMOUNT_MOCK.toString());
+    });
   });
+
   describe('isEIP1559Transaction', function () {
     it('should return true if both maxFeePerGas and maxPriorityFeePerGas are hex strings', () => {
       expect(
@@ -431,5 +467,91 @@ describe('Transaction.utils', function () {
         expect(hasTransactionData(data)).toBe(false);
       },
     );
+  });
+
+  describe('parseApprovalTransactionData', () => {
+    it('returns undefined if function does not match', () => {
+      expect(parseApprovalTransactionData(DATA_MOCK)).toBeUndefined();
+    });
+
+    it('returns parsed data if approve', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildApproveTransactionData(ADDRESS_MOCK, AMOUNT_MOCK),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: new BigNumber(AMOUNT_MOCK),
+        isApproveAll: false,
+        isRevokeAll: false,
+        name: 'approve',
+        spender: '0x1234567890123456789012345678901234567890',
+        tokenAddress: undefined,
+      });
+    });
+
+    it('returns parsed data if increaseAllowance', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildIncreaseAllowanceTransactionData(ADDRESS_MOCK, AMOUNT_MOCK),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: new BigNumber(AMOUNT_MOCK),
+        isApproveAll: false,
+        isRevokeAll: false,
+        name: 'increaseAllowance',
+        spender: undefined,
+        tokenAddress: undefined,
+      });
+    });
+
+    it('returns parsed data if approved setApproveForAll', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildSetApproveForAllTransactionData(ADDRESS_MOCK, true),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: undefined,
+        isApproveAll: true,
+        isRevokeAll: false,
+        name: 'setApprovalForAll',
+        spender: undefined,
+        tokenAddress: undefined,
+      });
+    });
+
+    it('returns parsed data if revoked setApproveForAll', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildSetApproveForAllTransactionData(ADDRESS_MOCK, false),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: undefined,
+        isApproveAll: false,
+        isRevokeAll: true,
+        name: 'setApprovalForAll',
+        spender: undefined,
+        tokenAddress: undefined,
+      });
+    });
+
+    it('returns parsed data if Permit2 approve', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildPermit2ApproveTransactionData(
+            ADDRESS_MOCK,
+            ADDRESS_2_MOCK,
+            AMOUNT_MOCK,
+            EXPIRATION_MOCK,
+          ),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: new BigNumber(AMOUNT_MOCK),
+        isApproveAll: false,
+        isRevokeAll: false,
+        name: 'approve',
+        spender: undefined,
+        tokenAddress: ADDRESS_MOCK,
+      });
+    });
   });
 });

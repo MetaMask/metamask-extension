@@ -1,4 +1,5 @@
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
 
 /**
  * With this list we can detect if a transaction is still in progress.
@@ -17,18 +18,6 @@ export const SIGNING_METHODS = Object.freeze([
   'eth_signTypedData_v4',
   'personal_sign',
 ]);
-
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-/**
- * Status for finalized transactions.
- */
-export const FINALIZED_TRANSACTION_STATUSES = [
-  TransactionStatus.rejected,
-  TransactionStatus.failed,
-  TransactionStatus.dropped,
-  TransactionStatus.confirmed,
-];
-///: END:ONLY_INCLUDE_IF
 
 /**
  * Transaction Group Status is a MetaMask construct to track the status of groups
@@ -118,6 +107,10 @@ export enum TransactionGroupCategory {
    * where the final token is sent to another chain.
    */
   bridge = 'bridge',
+  /**
+   * Transaction group representing a redeposit (a send to ourselves), mainly used for consolidation.
+   */
+  redeposit = 'redeposit',
 }
 
 /**
@@ -199,3 +192,26 @@ export enum TokenStandard {
   /** Not a token, but rather the base asset of the selected chain. */
   none = 'NONE',
 }
+
+/**
+ * The hostname used for Ethereum Mainnet transaction simulations, and for
+ * retrieving metadata for transaction simulation supported networks.
+ */
+export const TX_SENTINEL_URL =
+  'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io';
+
+// To be moved to @metamask/rpc-errors in future.
+export enum EIP5792ErrorCode {
+  UnsupportedNonOptionalCapability = 5700,
+  UnsupportedChainId = 5710,
+  UnknownBundleId = 5730,
+  RejectedUpgrade = 5750,
+}
+
+export const APPROVAL_METHOD_NAMES = [
+  'approve',
+  'increaseAllowance',
+  'setApprovalForAll',
+];
+
+export const NATIVE_TOKEN_ADDRESS = '0x0'.padEnd(42, '0') as Hex;

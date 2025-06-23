@@ -69,23 +69,37 @@ export const isPermitSignatureRequest = (request?: Confirmation) => {
   return PRIMARY_TYPES_PERMIT.includes(primaryType);
 };
 
-export const isValidASCIIURL = (urlString?: string) => {
+/**
+ * @param urlString - The URL to check
+ * @returns True if the URL hostname contains only ASCII characters, false otherwise. The URL is still valid if the path contains non-ASCII characters.
+ */
+export const isValidASCIIURL = (urlString?: string): boolean => {
   try {
-    return urlString?.includes(new URL(urlString).host);
+    if (!urlString || urlString.length === 0) {
+      return false;
+    }
+
+    return urlString.includes(new URL(urlString).host);
   } catch (exp: unknown) {
-    console.error(exp);
+    console.error(
+      `Failed to detect if URL hostname contains non-ASCII characters: ${urlString}. Error: ${exp}`,
+    );
     return false;
   }
 };
 
-export const toPunycodeURL = (urlString: string) => {
+/**
+ * Converts the URL to Punycode
+ *
+ * @param urlString - The URL to convert
+ * @returns The Punycode URL
+ */
+export const toPunycodeURL = (urlString: string): string | undefined => {
   try {
     const url = new URL(urlString);
-    const { protocol, hostname, port, search, hash } = url;
-    const pathname =
-      url.pathname === '/' && !urlString.endsWith('/') ? '' : url.pathname;
+    const isWithoutEndSlash = url.pathname === '/' && !urlString.endsWith('/');
 
-    return `${protocol}//${hostname}${port}${pathname}${search}${hash}`;
+    return isWithoutEndSlash ? url.href.slice(0, -1) : url.href;
   } catch (err: unknown) {
     console.error(`Failed to convert URL to Punycode: ${err}`);
     return undefined;

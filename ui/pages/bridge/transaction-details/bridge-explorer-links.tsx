@@ -1,6 +1,6 @@
 import { NetworkConfiguration } from '@metamask/network-controller';
 import React, { useContext } from 'react';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
   Box,
   IconName,

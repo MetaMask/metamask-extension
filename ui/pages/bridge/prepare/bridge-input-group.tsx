@@ -1,7 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { BigNumber } from 'bignumber.js';
-import { getAddress } from 'ethers/lib/utils';
+import {
+  formatChainIdToCaip,
+  isNativeAddress,
+} from '@metamask/bridge-controller';
+import { getAccountLink } from '@metamask/etherscan-link';
+import { type BigNumber } from 'bignumber.js';
 import {
   Text,
   TextField,
@@ -13,13 +17,8 @@ import {
 import { AssetPicker } from '../../../components/multichain/asset-picker-amount/asset-picker';
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getLocale } from '../../../selectors';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import {
-  formatCurrencyAmount,
-  formatTokenAmount,
-  isNativeAddress,
-} from '../utils/quote';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { Column, Row } from '../layout';
 import {
   Display,
@@ -29,18 +28,34 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { AssetType } from '../../../../shared/constants/transaction';
-import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import {
   getBridgeQuotes,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { shortenString } from '../../../helpers/utils/util';
-import type { BridgeToken } from '../../../../shared/types/bridge';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
-import { getMultichainIsSolana } from '../../../selectors/multichain';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
+import {
+  MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
+  MultichainNetworks,
+} from '../../../../shared/constants/multichain/networks';
+import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
+import type { BridgeToken } from '../../../ducks/bridge/types';
+import { getMultichainCurrentChainId } from '../../../selectors/multichain';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
+
+const sanitizeAmountInput = (textToSanitize: string) => {
+  // Remove characters that are not numbers or decimal points if rendering a controlled or pasted value
+  return (
+    textToSanitize
+      .replace(/[^\d.]+/gu, '')
+      // Only allow one decimal point, ignore digits after second decimal point
+      .split('.', 2)
+      .join('.')
+  );
+};
 
 export const BridgeInputGroup = ({
   header,
@@ -54,15 +69,21 @@ export const BridgeInputGroup = ({
   amountInFiat,
   onMaxButtonClick,
   isMultiselectEnabled,
+  onBlockExplorerClick,
+  buttonProps,
+  balanceAmount,
 }: {
-  amountInFiat?: BigNumber;
+  balanceAmount?: BigNumber;
+  amountInFiat?: string;
   onAmountChange?: (value: string) => void;
   token: BridgeToken | null;
+  buttonProps: { testId: string };
   amountFieldProps: Pick<
     React.ComponentProps<typeof TextField>,
     'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
   >;
   onMaxButtonClick?: (value: string) => void;
+  onBlockExplorerClick?: (token: BridgeToken) => void;
 } & Pick<
   React.ComponentProps<typeof AssetPicker>,
   | 'networkProps'
@@ -78,19 +99,18 @@ export const BridgeInputGroup = ({
   const { isInsufficientBalance, isEstimatedReturnLow } =
     useSelector(getValidationErrors);
   const currency = useSelector(getCurrentCurrency);
-  const locale = useSelector(getLocale);
+  const locale = useSelector(getIntlLocale);
 
-  const selectedChainId = networkProps?.network?.chainId;
-  const { balanceAmount } = useLatestBalance(token, selectedChainId);
+  const currentChainId = useSelector(getMultichainCurrentChainId);
+  const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
 
-  const [, handleCopy] = useCopyToClipboard(MINUTE) as [
-    boolean,
-    (text: string) => void,
-  ];
+  const [, handleCopy] = useCopyToClipboard(MINUTE);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const isAmountReadOnly =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     amountFieldProps?.readOnly || amountFieldProps?.disabled;
 
   useEffect(() => {
@@ -100,7 +120,52 @@ export const BridgeInputGroup = ({
     }
   }, [amountFieldProps?.value, isAmountReadOnly, token]);
 
-  const isSolana = useSelector(getMultichainIsSolana);
+  useEffect(() => {
+    return () => {
+      inputRef.current = null;
+    };
+  }, []);
+
+  const isSwap = useIsMultichainSwap();
+
+  const handleAddressClick = () => {
+    if (token && selectedChainId) {
+      const caipChainId = formatChainIdToCaip(selectedChainId);
+      const isSolana = caipChainId === MultichainNetworks.SOLANA;
+
+      let blockExplorerUrl = '';
+      if (isSolana) {
+        const blockExplorerUrls =
+          MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[caipChainId];
+        if (blockExplorerUrls) {
+          blockExplorerUrl = formatBlockExplorerAddressUrl(
+            blockExplorerUrls,
+            token.address,
+          );
+        }
+      } else {
+        const explorerUrl =
+          networkProps?.network?.blockExplorerUrls?.[
+            networkProps?.network?.defaultBlockExplorerUrlIndex ?? 0
+          ];
+        if (explorerUrl) {
+          blockExplorerUrl = getAccountLink(
+            token.address,
+            selectedChainId,
+            {
+              blockExplorerUrl: explorerUrl,
+            },
+            undefined,
+          );
+        }
+      }
+
+      if (blockExplorerUrl) {
+        handleCopy(blockExplorerUrl);
+        onBlockExplorerClick?.(token);
+      }
+    }
+  };
 
   return (
     <Column paddingInline={6} gap={1}>
@@ -136,22 +201,32 @@ export const BridgeInputGroup = ({
           inputRef={inputRef}
           type={TextFieldType.Text}
           className="amount-input"
-          placeholder={'0'}
+          placeholder="0"
           onKeyPress={(e?: React.KeyboardEvent<HTMLDivElement>) => {
-            // Only allow numbers and at most one decimal point
-            if (
-              e &&
-              !/^[0-9]*\.{0,1}[0-9]*$/u.test(
-                `${amountFieldProps.value ?? ''}${e.key}`,
-              )
-            ) {
-              e.preventDefault();
+            if (e) {
+              // Only allow numbers and at most one decimal point
+              if (
+                e.key === '.' &&
+                amountFieldProps.value?.toString().includes('.')
+              ) {
+                e.preventDefault();
+              } else if (!/^[\d.]{1}$/u.test(e.key)) {
+                e.preventDefault();
+              }
             }
           }}
+          onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
+            e.preventDefault();
+            const cleanedValue = sanitizeAmountInput(
+              e.clipboardData.getData('text'),
+            );
+            onAmountChange?.(cleanedValue ?? '');
+          }}
           onChange={(e) => {
-            // Remove characters that are not numbers or decimal points if rendering a controlled or pasted value
-            const cleanedValue = e.target.value.replace(/[^0-9.]+/gu, '');
-            onAmountChange?.(cleanedValue);
+            e.preventDefault();
+            e.stopPropagation();
+            const cleanedValue = sanitizeAmountInput(e.target.value);
+            onAmountChange?.(cleanedValue ?? '');
           }}
           {...amountFieldProps}
         />
@@ -168,6 +243,7 @@ export const BridgeInputGroup = ({
           {(onClickHandler, networkImageSrc) =>
             isAmountReadOnly && !token ? (
               <Button
+                data-testid={buttonProps.testId}
                 onClick={onClickHandler}
                 size={ButtonSize.Lg}
                 paddingLeft={6}
@@ -175,7 +251,7 @@ export const BridgeInputGroup = ({
                 fontWeight={FontWeight.Normal}
                 style={{ whiteSpace: 'nowrap' }}
               >
-                {isSolana ? t('swapSwapTo') : t('bridgeTo')}
+                {isSwap ? t('swapSwapTo') : t('bridgeTo')}
               </Button>
             ) : (
               <BridgeAssetPickerButton
@@ -183,6 +259,7 @@ export const BridgeInputGroup = ({
                 networkImageSrc={networkImageSrc}
                 asset={(token as never) ?? undefined}
                 networkProps={networkProps}
+                data-testid={buttonProps.testId}
               />
             )
           }
@@ -219,24 +296,30 @@ export const BridgeInputGroup = ({
           }
           onClick={() => {
             if (isAmountReadOnly && token && selectedChainId) {
-              handleCopy(getAddress(token.address));
+              handleAddressClick();
+            } else if (token && selectedChainId) {
+              handleCopy(token.address);
             }
           }}
           as={isAmountReadOnly ? 'a' : 'p'}
+          style={{
+            cursor: isAmountReadOnly ? 'pointer' : 'default',
+            textDecoration: isAmountReadOnly ? 'underline' : 'none',
+          }}
         >
           {isAmountReadOnly &&
-          token &&
-          selectedChainId &&
-          token.type === AssetType.token
-            ? shortenString(token.address, {
-                truncatedCharLimit: 11,
-                truncatedStartChars: 4,
-                truncatedEndChars: 4,
-                skipCharacterInEnd: false,
-              })
-            : undefined}
+            token &&
+            selectedChainId &&
+            (isNativeAddress(token.address)
+              ? undefined
+              : shortenString(token.address, {
+                  truncatedCharLimit: 11,
+                  truncatedStartChars: 4,
+                  truncatedEndChars: 4,
+                  skipCharacterInEnd: false,
+                }))}
           {!isAmountReadOnly && balanceAmount
-            ? formatTokenAmount(locale, balanceAmount, token?.symbol)
+            ? formatTokenAmount(locale, balanceAmount.toString(), token?.symbol)
             : undefined}
           {onMaxButtonClick &&
             token &&

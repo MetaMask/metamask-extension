@@ -1,8 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures, defaultGanacheOptions } from '../../helpers';
-import { Ganache } from '../../seeder/ganache';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -23,28 +22,24 @@ function buildFixtures(title: string, chainId: number = 1337) {
       .withNetworkControllerOnPolygon()
       .withTokensControllerERC20({ chainId })
       .build(),
-    ganacheOptions: defaultGanacheOptions,
     smartContract: SMART_CONTRACTS.HST,
     title,
   };
 }
 
 describe('Multichain Asset List', function (this: Suite) {
-  if (!process.env.PORTFOLIO_VIEW) {
-    return;
-  }
+  // Apply to all tests in this suite
+  before(function () {
+    if (!process.env.PORTFOLIO_VIEW) {
+      this.skip();
+    }
+  });
 
   it('persists the preferred asset list preference when changing networks', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
@@ -67,14 +62,8 @@ describe('Multichain Asset List', function (this: Suite) {
   it('allows clicking into the asset details page of native token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
@@ -99,14 +88,8 @@ describe('Multichain Asset List', function (this: Suite) {
   it('switches networks when clicking on send for a token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string, 137),
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
@@ -134,14 +117,8 @@ describe('Multichain Asset List', function (this: Suite) {
   it('switches networks when clicking on swap for a token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string, 137),
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
@@ -163,14 +140,8 @@ describe('Multichain Asset List', function (this: Suite) {
   it('shows correct asset and balance when swapping on a different chain', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const assetListPage = new AssetListPage(driver);
         const selectNetworkDialog = new SelectNetwork(driver);

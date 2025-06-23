@@ -60,6 +60,9 @@ describe('remove-snap-account confirmation', () => {
       appState: {
         ...mockBaseStore.appState,
       },
+      localeMessages: {
+        currentLocale: 'en',
+      },
       activeTab: {
         origin: 'https://uniswap.org/',
       },

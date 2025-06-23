@@ -6,8 +6,11 @@ import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import DeveloperOptionsTab from '.';
 
-const mockSetServiceWorkerKeepAlivePreference = jest.fn();
-
+const mockSetServiceWorkerKeepAlivePreference = jest.fn().mockReturnValue({
+  type: 'SET_SERVICE_WORKER_KEEP_ALIVE',
+  value: true,
+});
+const mockRemoteFeatureFlags = { feature1: 'value1' };
 // eslint-disable-next-line
 /* @ts-expect-error: Avoids error from window property not existing */
 window.metamaskFeatureFlags = {};
@@ -17,16 +20,24 @@ jest.mock('../../../store/actions.ts', () => ({
     mockSetServiceWorkerKeepAlivePreference,
 }));
 
+jest.mock('../../../selectors', () => ({
+  ...jest.requireActual('../../../selectors'),
+  getRemoteFeatureFlags: jest.fn(() => mockRemoteFeatureFlags),
+}));
+
 describe('Develop options tab', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
   it('should match snapshot', () => {
-    const { container } = renderWithProvider(
+    const { getByTestId, container } = renderWithProvider(
       <DeveloperOptionsTab />,
       mockStore,
     );
 
     expect(container).toMatchSnapshot();
+    expect(
+      getByTestId('developer-options-remote-feature-flags').textContent,
+    ).toEqual(JSON.stringify(mockRemoteFeatureFlags));
   });
 
   it('should toggle Service Worker Keep Alive', async () => {

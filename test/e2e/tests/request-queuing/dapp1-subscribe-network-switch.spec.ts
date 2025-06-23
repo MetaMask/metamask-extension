@@ -1,10 +1,6 @@
 import { strict as assert } from 'assert';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  defaultGanacheOptions,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../helpers';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
@@ -17,22 +13,24 @@ describe('Request Queueing', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test?.fullTitle(),
       },
 
-      async ({ driver, ganacheServer }) => {
+      async ({ driver, localNodes }) => {
         await loginWithoutBalanceValidation(driver);
 
         // Connect to dapp
@@ -80,7 +78,7 @@ describe('Request Queueing', function () {
         );
 
         // Mine a block deterministically
-        await ganacheServer.mineBlock();
+        await localNodes[0].mineBlock();
 
         // Wait a couple of seconds for the logs to populate into the messages window variable
         await driver.delay(5000);

@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import {
   AlertController,
@@ -35,7 +35,7 @@ type WithControllerCallback<ReturnValue> = ({
   controller,
 }: {
   controller: AlertController;
-  messenger: ControllerMessenger<
+  messenger: Messenger<
     AllowedActions | AlertControllerGetStateAction,
     AllowedEvents | AlertControllerStateChangeEvent
   >;
@@ -51,19 +51,19 @@ async function withController<ReturnValue>(
   const [{ ...rest }, fn] = args.length === 2 ? args : [{}, args[0]];
   const { ...alertControllerOptions } = rest;
 
-  const controllerMessenger = new ControllerMessenger<
+  const messenger = new Messenger<
     AllowedActions | AlertControllerGetStateAction,
     AllowedEvents | AlertControllerStateChangeEvent
   >();
 
   const alertControllerMessenger: AlertControllerMessenger =
-    controllerMessenger.getRestricted({
+    messenger.getRestricted({
       name: 'AlertController',
       allowedActions: ['AccountsController:getSelectedAccount'],
       allowedEvents: ['AccountsController:selectedAccountChange'],
     });
 
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'AccountsController:getSelectedAccount',
     jest.fn().mockReturnValue(EMPTY_ACCOUNT),
   );
@@ -75,7 +75,7 @@ async function withController<ReturnValue>(
 
   return await fn({
     controller,
-    messenger: controllerMessenger,
+    messenger,
   });
 }
 

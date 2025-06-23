@@ -1,133 +1,132 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { BigNumber } from 'bignumber.js';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import React, { useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { useTokenDisplayInfo } from '../hooks';
 import {
-  getTokenList,
-  selectERC20TokensByChain,
-  getNativeCurrencyForChain,
-} from '../../../../selectors';
+  ButtonSecondary,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+} from '../../../component-library';
+import { getMultichainIsEvm } from '../../../../selectors/multichain';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  isChainIdMainnet,
-  getImageForChainId,
-  getMultichainIsEvm,
-} from '../../../../selectors/multichain';
-import { TokenListItem } from '../../../multichain';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
+  getSafeNativeCurrencySymbol,
+  type SafeChain,
+} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
+import { setEditedNetwork } from '../../../../store/actions';
+import { type TokenWithFiatAmount } from '../types';
+import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
+import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
+import {
+  TokenCellTitle,
+  TokenCellPercentChange,
+  TokenCellPrimaryDisplay,
+  TokenCellSecondaryDisplay,
+} from './cells';
 
-type TokenCellProps = {
-  address: string;
-  symbol: string;
-  string?: string;
-  chainId: string;
-  tokenFiatAmount: number | null;
-  image: string;
-  isNative?: boolean;
+export type TokenCellProps = {
+  token: TokenWithFiatAmount;
   privacyMode?: boolean;
-  onClick?: (chainId: string, address: string) => void;
-};
-
-export const formatWithThreshold = (
-  amount: number | null,
-  threshold: number,
-  locale: string,
-  options: Intl.NumberFormatOptions,
-): string => {
-  if (amount === null) {
-    return '';
-  }
-  if (amount === 0) {
-    return new Intl.NumberFormat(locale, options).format(0);
-  }
-  return amount < threshold
-    ? `<${new Intl.NumberFormat(locale, options).format(threshold)}`
-    : new Intl.NumberFormat(locale, options).format(amount);
+  disableHover?: boolean;
+  onClick?: () => void;
+  fixCurrencyToUSD?: boolean;
+  safeChains?: SafeChain[];
 };
 
 export default function TokenCell({
-  address,
-  image,
-  symbol,
-  chainId,
-  string,
-  tokenFiatAmount,
-  isNative,
+  token,
   privacyMode = false,
   onClick,
+  disableHover = false,
+  fixCurrencyToUSD = false,
+  safeChains,
 }: TokenCellProps) {
-  const locale = useSelector(getIntlLocale);
-  const currentCurrency = useSelector(getCurrentCurrency);
-  const tokenList = useSelector(getTokenList);
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
-  const erc20TokensByChain = useSelector(selectERC20TokensByChain);
-  const isMainnet = chainId ? isChainIdMainnet(chainId) : false;
-  const tokenData = Object.values(tokenList).find(
-    (token) =>
-      isEqualCaseInsensitive(token.symbol, symbol) &&
-      isEqualCaseInsensitive(token.address, address),
+  const nativeCurrencySymbol = useMemo(
+    () => getSafeNativeCurrencySymbol(safeChains, token.chainId),
+    [safeChains, token.chainId],
+  );
+  const [showScamWarningModal, setShowScamWarningModal] = useState(false);
+
+  const tokenDisplayInfo = useTokenDisplayInfo({
+    token,
+    fixCurrencyToUSD,
+  });
+
+  const displayToken = useMemo(
+    () => ({
+      ...token,
+      ...tokenDisplayInfo,
+    }),
+    [token, tokenDisplayInfo],
   );
 
-  const title =
-    tokenData?.name ||
-    (chainId === '0x1' && symbol === 'ETH'
-      ? 'Ethereum'
-      : chainId &&
-        erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]?.name) ||
-    symbol;
+  const handleScamWarningModal = (arg: boolean) => {
+    setShowScamWarningModal(arg);
+  };
 
-  const tokenImage =
-    tokenData?.iconUrl ||
-    (chainId &&
-      erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]?.iconUrl) ||
-    image;
-
-  const secondaryThreshold = 0.01;
-  // Format for fiat balance with currency style
-  const secondary =
-    tokenFiatAmount === null
-      ? undefined
-      : formatWithThreshold(tokenFiatAmount, secondaryThreshold, locale, {
-          style: 'currency',
-          currency: currentCurrency.toUpperCase(),
-        });
-
-  const primary = formatAmount(
-    locale,
-    new BigNumber(Number(string) || '0', 10),
-  );
-
-  const isStakeable = isMainnet && isEvm && isNative;
-
-  function handleOnClick() {
-    if (!onClick || !chainId) {
-      return;
-    }
-    onClick(chainId, address);
-  }
-
-  if (!chainId) {
+  if (!token.chainId) {
     return null;
   }
 
-  const tokenChainImage = getImageForChainId(chainId);
-
   return (
-    <TokenListItem
-      onClick={handleOnClick}
-      tokenSymbol={symbol}
-      tokenImage={isNative ? getNativeCurrencyForChain(chainId) : tokenImage}
-      tokenChainImage={tokenChainImage || undefined}
-      primary={primary}
-      secondary={secondary}
-      title={title}
-      address={address}
-      isStakeable={isStakeable}
-      showPercentage
-      privacyMode={privacyMode}
-      isNativeCurrency={isNative}
-      chainId={chainId}
-    />
+    <>
+      <GenericAssetCellLayout
+        onClick={showScamWarningModal ? undefined : onClick}
+        disableHover={disableHover}
+        badge={<AssetCellBadge {...displayToken} />}
+        headerLeftDisplay={<TokenCellTitle token={displayToken} />}
+        headerRightDisplay={
+          <TokenCellSecondaryDisplay
+            token={displayToken}
+            handleScamWarningModal={handleScamWarningModal}
+            privacyMode={privacyMode}
+          />
+        }
+        footerLeftDisplay={<TokenCellPercentChange token={displayToken} />}
+        footerRightDisplay={
+          <TokenCellPrimaryDisplay
+            token={displayToken}
+            privacyMode={privacyMode}
+          />
+        }
+      />
+      {isEvm && showScamWarningModal && (
+        <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader onClose={() => setShowScamWarningModal(false)}>
+              {t('nativeTokenScamWarningTitle')}
+            </ModalHeader>
+            <ModalBody marginTop={4} marginBottom={4}>
+              {t('nativeTokenScamWarningDescription', [
+                token.symbol,
+                nativeCurrencySymbol ||
+                  t('nativeTokenScamWarningDescriptionExpectedTokenFallback'),
+              ])}
+            </ModalBody>
+            <ModalFooter>
+              <ButtonSecondary
+                onClick={() => {
+                  dispatch(setEditedNetwork({ chainId: token.chainId }));
+                  history.push(NETWORKS_ROUTE);
+                }}
+                block
+              >
+                {t('nativeTokenScamWarningConversion')}
+              </ButtonSecondary>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
+    </>
   );
 }

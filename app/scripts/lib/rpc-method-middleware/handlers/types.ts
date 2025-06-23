@@ -4,6 +4,11 @@ import type {
 } from '@metamask/approval-controller';
 import type { NetworkConfiguration } from '@metamask/network-controller';
 import type { JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
+import {
+  CaveatSpecificationConstraint,
+  PermissionController,
+  PermissionSpecificationConstraint,
+} from '@metamask/permission-controller';
 import type { MessageType } from '../../../../../shared/constants/app';
 
 export type HandlerWrapper = {
@@ -40,3 +45,12 @@ export type RequestUserApproval = (
 export type SetActiveNetwork = (
   networkConfigurationIdOrType: string,
 ) => Promise<void>;
+
+type AbstractPermissionController = PermissionController<
+  PermissionSpecificationConstraint,
+  CaveatSpecificationConstraint
+>;
+
+export type GrantedPermissions = Awaited<
+  ReturnType<AbstractPermissionController['requestPermissions']>
+>[0];

@@ -1,20 +1,24 @@
 import { BigNumber } from 'bignumber.js';
 import { zeroAddress } from 'ethereumjs-util';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import {
-  BUILT_IN_NETWORKS,
-  CHAIN_IDS,
-  FEATURED_RPCS,
-} from '../../../shared/constants/network';
-import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
-import { mockNetworkState } from '../../../test/stub/networks';
-import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
-import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
-import {
+  ChainId,
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
-} from '../../../shared/types/bridge';
+  formatChainIdToCaip,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
+import { SolScope } from '@metamask/keyring-api';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
+import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import {
+  mockMultichainNetworkState,
+  mockNetworkState,
+} from '../../../test/stub/networks';
+import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
+import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   getAllBridgeableNetworks,
   getBridgeQuotes,
@@ -23,10 +27,13 @@ import {
   getFromChains,
   getFromToken,
   getIsBridgeTx,
+  getIsSwap,
   getToChain,
   getToChains,
   getToToken,
   getValidationErrors,
+  getFromTokenConversionRate,
+  getToTokenConversionRate,
 } from './selectors';
 
 describe('Bridge selectors', () => {
@@ -40,7 +47,7 @@ describe('Bridge selectors', () => {
             },
           },
         },
-        bridgeSliceOverrides: { toChainId: '0xe708' },
+        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0xe708') },
         metamaskStateOverrides: {
           ...mockNetworkState(FEATURED_RPCS[1]),
         },
@@ -75,7 +82,7 @@ describe('Bridge selectors', () => {
             },
           },
         },
-        bridgeSliceOverrides: { toChainId: '0xe708' },
+        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0xe708') },
       });
 
       const result = getToChain(state as never);
@@ -107,7 +114,7 @@ describe('Bridge selectors', () => {
       });
       const result = getAllBridgeableNetworks(state as never);
 
-      expect(result).toHaveLength(8);
+      expect(result).toHaveLength(10);
       expect(result[0]).toStrictEqual(
         expect.objectContaining({ chainId: FEATURED_RPCS[0].chainId }),
       );
@@ -150,7 +157,7 @@ describe('Bridge selectors', () => {
       };
       const result = getAllBridgeableNetworks(state as never);
 
-      expect(result).toHaveLength(2);
+      expect(result).toHaveLength(3);
       expect(result[0]).toStrictEqual(
         expect.objectContaining({ chainId: CHAIN_IDS.MAINNET }),
       );
@@ -179,7 +186,9 @@ describe('Bridge selectors', () => {
             },
           },
         },
-        bridgeSliceOverrides: { toChainId: CHAIN_IDS.LINEA_MAINNET },
+        bridgeSliceOverrides: {
+          toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+        },
       });
       const result = getFromChains(state as never);
 
@@ -193,7 +202,15 @@ describe('Bridge selectors', () => {
     });
 
     it('returns empty list when bridgeFeatureFlags are not set', () => {
-      const state = createBridgeMockStore();
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              [CHAIN_IDS.MAINNET]: { isActiveSrc: false, isActiveDest: true },
+            },
+          },
+        },
+      });
       const result = getFromChains(state as never);
 
       expect(result).toHaveLength(0);
@@ -250,28 +267,6 @@ describe('Bridge selectors', () => {
   });
 
   describe('getIsBridgeTx', () => {
-    it('returns false if bridge is not enabled', () => {
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          extensionConfig: {
-            support: false,
-            chains: {
-              '0x1': { isActiveSrc: true, isActiveDest: false },
-              '0x38': { isActiveSrc: false, isActiveDest: true },
-            },
-          },
-        },
-        bridgeSliceOverrides: { toChainId: '0x38' },
-        metamaskStateOverrides: {
-          ...mockNetworkState({ chainId: '0x1' }),
-        },
-      });
-
-      const result = getIsBridgeTx(state as never);
-
-      expect(result).toBe(false);
-    });
-
     it('returns false if toChainId is null', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
@@ -303,7 +298,7 @@ describe('Bridge selectors', () => {
             },
           },
         },
-        bridgeSliceOverrides: { toChainId: '0x1' },
+        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0x1') },
         metamaskStateOverrides: {
           ...mockNetworkState({ chainId: '0x1' }),
         },
@@ -314,43 +309,26 @@ describe('Bridge selectors', () => {
       expect(result).toBe(false);
     });
 
-    it('returns false if useExternalServices is not enabled', () => {
+    it('returns true if fromChain and toChainId have different chainIds', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           extensionConfig: {
             support: true,
             chains: {
               '0x1': { isActiveSrc: true, isActiveDest: false },
-              '0x38': { isActiveSrc: false, isActiveDest: true },
+              [CHAIN_IDS.LINEA_MAINNET]: {
+                isActiveSrc: false,
+                isActiveDest: true,
+              },
             },
           },
         },
-        bridgeSliceOverrides: { toChainId: '0x38' },
-        metamaskStateOverrides: {
-          ...mockNetworkState({ chainId: '0x1' }),
+        bridgeSliceOverrides: {
+          toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
         },
-      });
-
-      const result = getIsBridgeTx(state as never);
-
-      expect(result).toBe(false);
-    });
-
-    it('returns true if bridge is enabled and fromChain and toChainId have different chainIds', () => {
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          extensionConfig: {
-            support: true,
-            chains: {
-              '0x1': { isActiveSrc: true, isActiveDest: false },
-              '0x38': { isActiveSrc: false, isActiveDest: true },
-            },
-          },
-        },
-        bridgeSliceOverrides: { toChainId: '0x38' },
         metamaskStateOverrides: {
           ...mockNetworkState(
-            ...Object.values(BUILT_IN_NETWORKS),
+            { chainId: CHAIN_IDS.MAINNET },
             ...FEATURED_RPCS.filter(
               (network) => network.chainId !== CHAIN_IDS.LINEA_MAINNET, // Linea mainnet is both a built in network, as well as featured RPC
             ),
@@ -387,15 +365,14 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual({
         address: '0x0000000000000000000000000000000000000000',
-        chainId: '0x1',
+        assetId: 'eip155:1/slip44:60',
+        chainId: 'eip155:1',
         decimals: 18,
-        iconUrl: './images/eth_logo.svg',
         image: './images/eth_logo.svg',
         name: 'Ether',
         symbol: 'ETH',
-        type: 'NATIVE',
-        balance: '0',
         string: '0',
+        balance: '0',
       });
     });
 
@@ -407,13 +384,12 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual({
         address: '0x0000000000000000000000000000000000000000',
-        chainId: '0x1',
+        assetId: 'eip155:1/slip44:60',
+        chainId: 'eip155:1',
         decimals: 18,
-        iconUrl: './images/eth_logo.svg',
         image: './images/eth_logo.svg',
         name: 'Ether',
         symbol: 'ETH',
-        type: 'NATIVE',
         balance: '0',
         string: '0',
       });
@@ -475,15 +451,20 @@ describe('Bridge selectors', () => {
           },
         },
         bridgeSliceOverrides: {
-          toChainId: '0x89',
+          toChainId: formatChainIdToCaip('0x89'),
           fromTokenExchangeRate: 1,
           fromToken: { address: zeroAddress(), symbol: 'TEST' },
           toToken: { address: zeroAddress(), symbol: 'TEST' },
           toTokenExchangeRate: 0.99,
-          toNativeExchangeRate: 0.354073,
         },
         bridgeStateOverrides: {
-          quoteRequest: { insufficientBal: false },
+          quoteRequest: {
+            insufficientBal: false,
+            srcChainId: 10,
+            srcTokenAddress: zeroAddress(),
+            destChainId: '0x89',
+            destTokenAddress: zeroAddress(),
+          },
           quotes: mockErc20Erc20Quotes,
           quotesFetchStatus: 1,
           quotesRefreshCount: 5,
@@ -499,8 +480,8 @@ describe('Bridge selectors', () => {
               usdConversionRate: 1,
             },
             POL: {
-              conversionRate: 1,
-              usdConversionRate: 1,
+              conversionRate: 0.99,
+              usdConversionRate: 0.99,
             },
           },
           marketData: {},
@@ -515,41 +496,41 @@ describe('Bridge selectors', () => {
 
       const recommendedQuoteMetadata = {
         adjustedReturn: {
-          valueInCurrency: expect.any(Object),
-          usd: expect.any(Object),
+          usd: '13.84343712858974048',
+          valueInCurrency: '13.84343712858974048',
         },
         cost: {
-          valueInCurrency: new BigNumber('0.15656287141025952'),
-          usd: new BigNumber('0.15656287141025952'),
+          valueInCurrency: '0.15656287141025952',
+          usd: '0.15656287141025952',
         },
         sentAmount: {
-          valueInCurrency: new BigNumber('14'),
-          amount: new BigNumber('14'),
-          usd: new BigNumber('14'),
+          valueInCurrency: '14',
+          amount: '14',
+          usd: '14',
         },
-        swapRate: new BigNumber('0.998877142857142857142857142857142857'),
+        swapRate: '0.99887714285714285714',
         toTokenAmount: {
-          valueInCurrency: new BigNumber('13.8444372'),
-          usd: new BigNumber('13.8444372'),
-          amount: new BigNumber('13.98428'),
+          valueInCurrency: '13.8444372',
+          usd: '13.8444372',
+          amount: '13.98428',
         },
         gasFee: {
-          amount: new BigNumber('7.141025952e-8'),
-          amountMax: new BigNumber('9.933761952e-8'),
-          usd: new BigNumber('7.141025952e-8'),
-          usdMax: new BigNumber('9.933761952e-8'),
-          valueInCurrency: new BigNumber('7.141025952e-8'),
-          valueInCurrencyMax: new BigNumber('9.933761952e-8'),
+          amount: '7.141025952e-8',
+          amountMax: '9.933761952e-8',
+          usd: '7.141025952e-8',
+          usdMax: '9.933761952e-8',
+          valueInCurrency: '7.141025952e-8',
+          valueInCurrencyMax: '9.933761952e-8',
         },
         totalMaxNetworkFee: {
-          amount: new BigNumber('0.00100009933761952'),
-          valueInCurrency: new BigNumber('0.00100009933761952'),
-          usd: new BigNumber('0.00100009933761952'),
+          amount: '0.00100009933761952',
+          valueInCurrency: '0.00100009933761952',
+          usd: '0.00100009933761952',
         },
         totalNetworkFee: {
-          valueInCurrency: new BigNumber('0.00100007141025952'),
-          amount: new BigNumber('0.00100007141025952'),
-          usd: new BigNumber('0.00100007141025952'),
+          valueInCurrency: '0.00100007141025952',
+          amount: '0.00100007141025952',
+          usd: '0.00100007141025952',
         },
       };
 
@@ -570,7 +551,7 @@ describe('Bridge selectors', () => {
         quotesRefreshCount: 5,
         quotesInitialLoadTimeMs: 11000,
         isQuoteGoingToRefresh: false,
-        quoteFetchError: undefined,
+        quoteFetchError: null,
       });
     });
 
@@ -586,14 +567,19 @@ describe('Bridge selectors', () => {
           },
         },
         bridgeSliceOverrides: {
-          toChainId: '0x89',
+          toChainId: formatChainIdToCaip('0x89'),
           fromToken: { address: zeroAddress(), symbol: 'ETH' },
           toToken: { address: zeroAddress(), symbol: 'TEST' },
           fromTokenExchangeRate: 1,
-          toTokenExchangeRate: 0.99,
         },
         bridgeStateOverrides: {
-          quoteRequest: { insufficientBal: false },
+          quoteRequest: {
+            insufficientBal: false,
+            srcChainId: 10,
+            srcTokenAddress: zeroAddress(),
+            destChainId: '0x89',
+            destTokenAddress: zeroAddress(),
+          },
           quotes: mockErc20Erc20Quotes,
           quotesFetchStatus: 1,
           quotesRefreshCount: 2,
@@ -609,16 +595,16 @@ describe('Bridge selectors', () => {
               usdConversionRate: 20,
             },
             POL: {
-              conversionRate: 0.354073,
-              usdConversionRate: 1,
+              conversionRate: 0.9899999999999999,
+              usdConversionRate: 0.99 / 0.354073,
             },
           },
           marketData: {},
           ...mockNetworkState(
+            { chainId: CHAIN_IDS.OPTIMISM },
             { chainId: CHAIN_IDS.MAINNET },
             { chainId: CHAIN_IDS.LINEA_MAINNET },
             { chainId: CHAIN_IDS.POLYGON },
-            { chainId: CHAIN_IDS.OPTIMISM },
           ),
         },
       });
@@ -626,52 +612,52 @@ describe('Bridge selectors', () => {
 
       const recommendedQuoteMetadata = {
         adjustedReturn: {
-          valueInCurrency: new BigNumber('13.843437128589739081572'),
-          usd: new BigNumber('39.080515131939180597564'),
+          valueInCurrency: '13.843437128589739081572',
+          usd: '39.080515131939180597564',
         },
         cost: {
-          valueInCurrency: new BigNumber('0.156562871410260918428'),
-          usd: new BigNumber('240.919484868060819402436'),
+          valueInCurrency: '0.156562871410260918428',
+          usd: '240.919484868060819402436',
         },
         sentAmount: {
-          valueInCurrency: new BigNumber('14'),
-          amount: new BigNumber('14'),
-          usd: new BigNumber('280'),
+          valueInCurrency: '14',
+          amount: '14',
+          usd: '280',
         },
-        swapRate: new BigNumber('0.998877142857142857142857142857142857'),
+        swapRate: '0.99887714285714285714',
         toTokenAmount: {
-          valueInCurrency: new BigNumber('13.844437199999998601572'),
-          amount: new BigNumber('13.98428'),
-          usd: new BigNumber('39.100516560144370997564'),
+          valueInCurrency: '13.844437199999998601572',
+          amount: '13.98428',
+          usd: '39.100516560144370997564',
         },
         gasFee: {
-          amount: new BigNumber('7.141025952e-8'),
-          amountMax: new BigNumber('9.933761952e-8'),
-          valueInCurrency: new BigNumber('7.141025952e-8'),
-          valueInCurrencyMax: new BigNumber('9.933761952e-8'),
-          usd: new BigNumber('0.0000014282051904'),
-          usdMax: new BigNumber('0.0000019867523904'),
+          amount: '7.141025952e-8',
+          amountMax: '9.933761952e-8',
+          valueInCurrency: '7.141025952e-8',
+          valueInCurrencyMax: '9.933761952e-8',
+          usd: '0.0000014282051904',
+          usdMax: '0.0000019867523904',
         },
         totalNetworkFee: {
-          valueInCurrency: new BigNumber('0.00100007141025952'),
-          amount: new BigNumber('0.00100007141025952'),
-          usd: new BigNumber('0.0200014282051904'),
+          valueInCurrency: '0.00100007141025952',
+          amount: '0.00100007141025952',
+          usd: '0.0200014282051904',
         },
         totalMaxNetworkFee: {
-          valueInCurrency: new BigNumber('0.00100009933761952'),
-          amount: new BigNumber('0.00100009933761952'),
-          usd: new BigNumber('0.0200019867523904'),
+          valueInCurrency: '0.00100009933761952',
+          amount: '0.00100009933761952',
+          usd: '0.0200019867523904',
         },
       };
       expect(result.sortedQuotes).toHaveLength(2);
       const EXPECTED_SORTED_COSTS = [
         {
-          valueInCurrency: new BigNumber('0.156562871410260918428'),
-          usd: new BigNumber('240.919484868060819402436'),
+          valueInCurrency: '0.156562871410260918428',
+          usd: '240.919484868060819402436',
         },
         {
-          valueInCurrency: new BigNumber('0.33900008283534602'),
-          usd: new BigNumber('241.43473816584484486'),
+          valueInCurrency: '0.33900008283534602',
+          usd: '241.43473816584484486',
         },
       ];
       result.sortedQuotes.forEach(
@@ -694,7 +680,7 @@ describe('Bridge selectors', () => {
         quotesRefreshCount: 2,
         isQuoteGoingToRefresh: true,
         quotesInitialLoadTimeMs: 11000,
-        quoteFetchError: undefined,
+        quoteFetchError: null,
       });
     });
 
@@ -710,14 +696,20 @@ describe('Bridge selectors', () => {
           },
         },
         bridgeSliceOverrides: {
-          toChainId: '0x89',
+          toChainId: formatChainIdToCaip('0x89'),
           fromToken: { address: zeroAddress(), symbol: 'ETH' },
           toToken: { address: zeroAddress(), symbol: 'TEST' },
           fromTokenExchangeRate: 1,
           toTokenExchangeRate: 0.99,
         },
         bridgeStateOverrides: {
-          quoteRequest: { insufficientBal: true },
+          quoteRequest: {
+            insufficientBal: true,
+            srcChainId: 10,
+            srcTokenAddress: zeroAddress(),
+            destChainId: '0x89',
+            destTokenAddress: zeroAddress(),
+          },
           quotes: mockErc20Erc20Quotes,
           quotesFetchStatus: 1,
           quotesRefreshCount: 1,
@@ -733,16 +725,16 @@ describe('Bridge selectors', () => {
               usdConversionRate: 20,
             },
             POL: {
-              conversionRate: 1,
-              usdConversionRate: 1,
+              conversionRate: 0.99,
+              usdConversionRate: 0.99,
             },
           },
           marketData: {},
           ...mockNetworkState(
+            { chainId: CHAIN_IDS.OPTIMISM },
             { chainId: CHAIN_IDS.MAINNET },
             { chainId: CHAIN_IDS.LINEA_MAINNET },
             { chainId: CHAIN_IDS.POLYGON },
-            { chainId: CHAIN_IDS.OPTIMISM },
           ),
         },
       });
@@ -750,52 +742,52 @@ describe('Bridge selectors', () => {
 
       const recommendedQuoteMetadata = {
         adjustedReturn: {
-          valueInCurrency: new BigNumber('13.84343712858974048'),
-          usd: new BigNumber('13.8244357717948096'),
+          valueInCurrency: '13.84343712858974048',
+          usd: '13.8244357717948096',
         },
         cost: {
-          valueInCurrency: new BigNumber('0.15656287141025952'),
-          usd: new BigNumber('266.1755642282051904'),
+          valueInCurrency: '0.15656287141025952',
+          usd: '266.1755642282051904',
         },
         sentAmount: {
-          valueInCurrency: new BigNumber('14'),
-          amount: new BigNumber('14'),
-          usd: new BigNumber('280'),
+          valueInCurrency: '14',
+          amount: '14',
+          usd: '280',
         },
-        swapRate: new BigNumber('0.998877142857142857142857142857142857'),
+        swapRate: '0.99887714285714285714',
         toTokenAmount: {
-          valueInCurrency: new BigNumber('13.8444372'),
-          amount: new BigNumber('13.98428'),
-          usd: new BigNumber('13.8444372'),
+          valueInCurrency: '13.8444372',
+          amount: '13.98428',
+          usd: '13.8444372',
         },
         gasFee: {
-          amount: new BigNumber('7.141025952e-8'),
-          amountMax: new BigNumber('9.933761952e-8'),
-          valueInCurrency: new BigNumber('7.141025952e-8'),
-          valueInCurrencyMax: new BigNumber('9.933761952e-8'),
-          usd: new BigNumber('0.0000014282051904'),
-          usdMax: new BigNumber('0.0000019867523904'),
+          amount: '7.141025952e-8',
+          amountMax: '9.933761952e-8',
+          valueInCurrency: '7.141025952e-8',
+          valueInCurrencyMax: '9.933761952e-8',
+          usd: '0.0000014282051904',
+          usdMax: '0.0000019867523904',
         },
         totalNetworkFee: {
-          valueInCurrency: new BigNumber('0.00100007141025952'),
-          amount: new BigNumber('0.00100007141025952'),
-          usd: new BigNumber('0.0200014282051904'),
+          valueInCurrency: '0.00100007141025952',
+          amount: '0.00100007141025952',
+          usd: '0.0200014282051904',
         },
         totalMaxNetworkFee: {
-          valueInCurrency: new BigNumber('0.00100009933761952'),
-          amount: new BigNumber('0.00100009933761952'),
-          usd: new BigNumber('0.0200019867523904'),
+          valueInCurrency: '0.00100009933761952',
+          amount: '0.00100009933761952',
+          usd: '0.0200019867523904',
         },
       };
       expect(result.sortedQuotes).toHaveLength(2);
       const EXPECTED_SORTED_COSTS = [
         {
-          valueInCurrency: new BigNumber('0.15656287141025952'),
-          usd: new BigNumber('266.1755642282051904'),
+          valueInCurrency: '0.15656287141025952',
+          usd: '266.1755642282051904',
         },
         {
-          valueInCurrency: new BigNumber('0.33900008283534464'),
-          usd: new BigNumber('266.3580016567068928'),
+          valueInCurrency: '0.33900008283534464',
+          usd: '266.3580016567068928',
         },
       ];
       result.sortedQuotes.forEach(
@@ -819,27 +811,29 @@ describe('Bridge selectors', () => {
         isLoading: false,
         quotesRefreshCount: 1,
         isQuoteGoingToRefresh: false,
-        quoteFetchError: undefined,
+        quoteFetchError: null,
       });
     });
   });
 
   describe('getBridgeQuotes', () => {
     it('should return empty values when quotes are not present', () => {
-      const state = createBridgeMockStore();
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: { quotes: [] },
+      });
 
       const result = getBridgeQuotes(state as never);
 
       expect(result).toStrictEqual({
-        activeQuote: undefined,
+        activeQuote: null,
         isLoading: false,
-        isQuoteGoingToRefresh: false,
-        quotesLastFetchedMs: undefined,
+        isQuoteGoingToRefresh: true,
+        quotesLastFetchedMs: null,
         quotesRefreshCount: 0,
-        recommendedQuote: undefined,
-        quotesInitialLoadTimeMs: undefined,
+        recommendedQuote: null,
+        quotesInitialLoadTimeMs: null,
         sortedQuotes: [],
-        quoteFetchError: undefined,
+        quoteFetchError: null,
       });
     });
 
@@ -923,12 +917,13 @@ describe('Bridge selectors', () => {
   describe('getValidationErrors', () => {
     it('should return isNoQuotesAvailable=true', () => {
       const state = createBridgeMockStore({
-        bridgeSliceOverrides: { toChainId: '0x1' },
+        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0x1') },
         bridgeStateOverrides: {
           srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
           srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotes: [],
           quotesLastFetched: Date.now(),
+          quotesRefreshCount: 1,
         },
       });
       const result = getValidationErrors(state as never);
@@ -938,7 +933,7 @@ describe('Bridge selectors', () => {
 
     it('should  return isNoQuotesAvailable=false on initial load', () => {
       const state = createBridgeMockStore({
-        bridgeSliceOverrides: { toChainId: '0x1' },
+        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0x1') },
         bridgeStateOverrides: {
           srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
           srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
@@ -953,11 +948,12 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientBalance=true', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: '0x1',
+          toChainId: formatChainIdToCaip('0x1'),
           fromToken: { decimals: 6, address: zeroAddress() },
           fromChain: { chainId: CHAIN_IDS.MAINNET },
         },
         bridgeStateOverrides: {
+          minimumBalanceForRentExemption: '890880',
           srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
           srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
@@ -971,9 +967,105 @@ describe('Bridge selectors', () => {
       ).toStrictEqual(true);
     });
 
+    it('should return isInsufficientGasBalance=true when balance === minimumBalanceForRentExemption + srcTokenAmount', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toChainId: formatChainIdToCaip('0x1'),
+          fromToken: { decimals: 9, address: zeroAddress() },
+          fromChain: { chainId: formatChainIdToCaip(ChainId.SOLANA) },
+          srcTokenInputValue: '1000000000',
+        },
+        bridgeStateOverrides: {
+          minimumBalanceForRentExemptionInLamports: '1000000000',
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcTokenAmount: '1000000000',
+            srcChainId: ChainId.SOLANA,
+          },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientGasBalance(new BigNumber(2))).toStrictEqual(
+        true,
+      );
+    });
+
+    it('should return isInsufficientGasBalance=true when balance < minimumBalanceForRentExemption + srcTokenAmount', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toChainId: formatChainIdToCaip('0x1'),
+          fromToken: { decimals: 9, address: zeroAddress() },
+          fromChain: { chainId: formatChainIdToCaip(ChainId.SOLANA) },
+          srcTokenInputValue: '1000000000',
+        },
+        bridgeStateOverrides: {
+          minimumBalanceForRentExemptionInLamports: '1000000000',
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcTokenAmount: '1000000000',
+            srcChainId: ChainId.SOLANA,
+          },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientGasBalance(new BigNumber(1))).toStrictEqual(
+        true,
+      );
+    });
+
+    it('should return isInsufficientGasBalance=false when balance > minimumBalanceForRentExemption + srcTokenAmount', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toChainId: formatChainIdToCaip('0x1'),
+          fromToken: { decimals: 9, address: zeroAddress() },
+          fromChain: { chainId: formatChainIdToCaip(ChainId.SOLANA) },
+          srcTokenInputValue: '1000000000',
+        },
+        bridgeStateOverrides: {
+          minimumBalanceForRentExemptionInLamports: '1000000000',
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcTokenAmount: '1000000000',
+            srcChainId: ChainId.SOLANA,
+          },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(
+        result.isInsufficientGasBalance(new BigNumber(2.0000001)),
+      ).toStrictEqual(false);
+    });
+
+    it('should return isInsufficientGasBalance=false when minimumBalanceForRentExemption is null', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toChainId: formatChainIdToCaip('0x1'),
+          fromToken: { decimals: 9, address: zeroAddress() },
+          fromChain: { chainId: formatChainIdToCaip(ChainId.SOLANA) },
+          srcTokenInputValue: '1000000000',
+        },
+        bridgeStateOverrides: {
+          minimumBalanceForRentExemptionInLamports: null,
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcTokenAmount: '1000000000',
+            srcChainId: ChainId.SOLANA,
+          },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(
+        result.isInsufficientGasBalance(new BigNumber(1.01)),
+      ).toStrictEqual(false);
+    });
+
     it('should return isInsufficientBalance=false when there is no input amount', () => {
       const state = createBridgeMockStore({
-        bridgeSliceOverrides: { toChainId: '0x1' },
+        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0x1') },
         bridgeStateOverrides: {
           srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
           srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
@@ -989,7 +1081,7 @@ describe('Bridge selectors', () => {
 
     it('should return isInsufficientBalance=false when there is no balance', () => {
       const state = createBridgeMockStore({
-        bridgeSliceOverrides: { toChainId: '0x1' },
+        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0x1') },
         bridgeStateOverrides: {
           srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
           srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
@@ -1004,7 +1096,7 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientBalance=false when balance is 0', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: '0x1',
+          toChainId: formatChainIdToCaip('0x1'),
           fromToken: { decimals: 6, address: zeroAddress() },
           fromChain: { chainId: CHAIN_IDS.MAINNET },
         },
@@ -1025,7 +1117,7 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientGasBalance=true when balance is equal to srcAmount and fromToken is native', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: '0x1',
+          toChainId: formatChainIdToCaip('0x1'),
           fromTokenInputValue: '0.001',
           fromToken: { address: zeroAddress(), decimals: 18 },
         },
@@ -1047,7 +1139,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: { destNetworkAllowlist: ['0x89'] },
         bridgeSliceOverrides: {
-          toChainId: '0x89',
+          toChainId: formatChainIdToCaip('0x89'),
           toToken: {
             address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
             symbol: 'TEST',
@@ -1089,7 +1181,7 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientGasBalance=false if there is no fromAmount', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: '0x1',
+          toChainId: formatChainIdToCaip('0x1'),
           fromTokenInputValue: '0.001',
         },
         bridgeStateOverrides: {
@@ -1109,7 +1201,7 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientGasBalance=false when quotes have been loaded', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: '0x1',
+          toChainId: formatChainIdToCaip('0x1'),
           fromTokenInputValue: '0.001',
         },
         bridgeStateOverrides: {
@@ -1128,8 +1220,15 @@ describe('Bridge selectors', () => {
 
     it('should return isInsufficientGasForQuote=true when balance is less than required network fees in quote', () => {
       const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+            },
+          },
+        },
         bridgeSliceOverrides: {
-          toChainId: '0x1',
+          toChainId: formatChainIdToCaip('0x1'),
           fromTokenInputValue: '0.001',
           fromToken: { address: zeroAddress(), decimals: 18 },
         },
@@ -1144,19 +1243,17 @@ describe('Bridge selectors', () => {
 
       expect(
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
-      ).toStrictEqual(new BigNumber('0.00100012486628784'));
+      ).toStrictEqual('0.00100012486628784');
       expect(
         getBridgeQuotes(state as never).activeQuote?.sentAmount.amount,
-      ).toStrictEqual(new BigNumber('0.01'));
-      expect(
-        result.isInsufficientGasForQuote(new BigNumber(0.001)),
-      ).toStrictEqual(true);
+      ).toStrictEqual('0.01');
+      expect(result.isInsufficientGasForQuote(new BigNumber(0.001))).toBe(true);
     });
 
     it('should return isInsufficientGasForQuote=false when balance is greater than max network fees in quote', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: '0x1',
+          toChainId: formatChainIdToCaip('0x1'),
           fromTokenInputValue: '0.001',
           fromToken: { address: zeroAddress(), decimals: 18 },
         },
@@ -1171,13 +1268,13 @@ describe('Bridge selectors', () => {
 
       expect(
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
-      ).toStrictEqual(new BigNumber('0.00100012486628784'));
+      ).toStrictEqual('0.00100012486628784');
       expect(
         getBridgeQuotes(state as never).activeQuote?.totalMaxNetworkFee.amount,
-      ).toStrictEqual(new BigNumber('0.00100017369940784'));
+      ).toStrictEqual('0.00100017369940784');
       expect(
         getBridgeQuotes(state as never).activeQuote?.sentAmount.amount,
-      ).toStrictEqual(new BigNumber('0.01'));
+      ).toStrictEqual('0.01');
       expect(
         result.isInsufficientGasForQuote(new BigNumber('1')),
       ).toStrictEqual(false);
@@ -1188,13 +1285,14 @@ describe('Bridge selectors', () => {
         featureFlagOverrides: {
           extensionConfig: {
             chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: false },
               '0xa': { isActiveSrc: true, isActiveDest: false },
               '0x89': { isActiveSrc: false, isActiveDest: true },
             },
           },
         },
         bridgeSliceOverrides: {
-          toChainId: '0x89',
+          toChainId: formatChainIdToCaip('0x89'),
           fromToken: { address: zeroAddress(), symbol: 'ETH' },
           toToken: { address: zeroAddress(), symbol: 'TEST' },
           fromTokenInputValue: '1',
@@ -1203,6 +1301,12 @@ describe('Bridge selectors', () => {
         },
         bridgeStateOverrides: {
           quotes: mockBridgeQuotesNativeErc20,
+          quoteRequest: {
+            srcChainId: 10,
+            srcTokenAddress: zeroAddress(),
+            destChainId: '0x89',
+            destTokenAddress: zeroAddress(),
+          },
         },
         metamaskStateOverrides: {
           currencyRates: {
@@ -1210,16 +1314,16 @@ describe('Bridge selectors', () => {
               conversionRate: 2524.25,
             },
             POL: {
-              conversionRate: 0.354073,
+              conversionRate: 0.61,
               usdConversionRate: 1,
             },
           },
           marketData: {},
           ...mockNetworkState(
+            { chainId: CHAIN_IDS.OPTIMISM },
             { chainId: CHAIN_IDS.MAINNET },
             { chainId: CHAIN_IDS.LINEA_MAINNET },
             { chainId: CHAIN_IDS.POLYGON },
-            { chainId: CHAIN_IDS.OPTIMISM },
           ),
         },
       });
@@ -1227,16 +1331,16 @@ describe('Bridge selectors', () => {
 
       expect(
         getBridgeQuotes(state as never).activeQuote?.sentAmount.valueInCurrency,
-      ).toStrictEqual(new BigNumber('25.2425'));
+      ).toBe('25.2425');
       expect(
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee
           .valueInCurrency,
-      ).toStrictEqual(new BigNumber('2.52456519372708012'));
+      ).toBe('2.52456519372708012');
       expect(
         getBridgeQuotes(state as never).activeQuote?.adjustedReturn
           .valueInCurrency,
-      ).toStrictEqual(new BigNumber('12.38316502627291988'));
-      expect(result.isEstimatedReturnLow).toStrictEqual(true);
+      ).toBe('12.38316502627291988');
+      expect(result.isEstimatedReturnLow).toBe(true);
     });
 
     it('should return isEstimatedReturnLow=false when return value is more than 65% of sent funds', () => {
@@ -1244,13 +1348,14 @@ describe('Bridge selectors', () => {
         featureFlagOverrides: {
           extensionConfig: {
             chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: false },
               '0xa': { isActiveSrc: true, isActiveDest: false },
               '0x89': { isActiveSrc: false, isActiveDest: true },
             },
           },
         },
         bridgeSliceOverrides: {
-          toChainId: '0x89',
+          toChainId: formatChainIdToCaip(10),
           fromToken: { address: zeroAddress(), symbol: 'ETH' },
           toToken: { address: zeroAddress(), symbol: 'TEST' },
           fromTokenExchangeRate: 2524.25,
@@ -1258,6 +1363,12 @@ describe('Bridge selectors', () => {
           fromTokenInputValue: 1,
         },
         bridgeStateOverrides: {
+          quoteRequest: {
+            srcChainId: 10,
+            srcTokenAddress: zeroAddress(),
+            destChainId: '0x89',
+            destTokenAddress: zeroAddress(),
+          },
           quotes: mockBridgeQuotesNativeErc20,
         },
         metamaskStateOverrides: {
@@ -1267,16 +1378,16 @@ describe('Bridge selectors', () => {
               usdConversionRate: 1,
             },
             POL: {
-              conversionRate: 1,
-              usdConversionRate: 1,
+              conversionRate: 0.95,
+              usdConversionRate: 0.95,
             },
           },
           marketData: {},
           ...mockNetworkState(
+            { chainId: CHAIN_IDS.OPTIMISM },
             { chainId: CHAIN_IDS.MAINNET },
             { chainId: CHAIN_IDS.LINEA_MAINNET },
             { chainId: CHAIN_IDS.POLYGON },
-            { chainId: CHAIN_IDS.OPTIMISM },
           ),
         },
       });
@@ -1284,16 +1395,16 @@ describe('Bridge selectors', () => {
 
       expect(
         getBridgeQuotes(state as never).activeQuote?.sentAmount.valueInCurrency,
-      ).toStrictEqual(new BigNumber('25.2425'));
+      ).toBe('25.2425');
       expect(
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee
           .valueInCurrency,
-      ).toStrictEqual(new BigNumber('2.52456519372708012'));
+      ).toBe('2.52456519372708012');
       expect(
         getBridgeQuotes(state as never).activeQuote?.adjustedReturn
           .valueInCurrency,
-      ).toStrictEqual(new BigNumber('20.69239170627291988'));
-      expect(result.isEstimatedReturnLow).toStrictEqual(false);
+      ).toBe('20.69239170627291988');
+      expect(result.isEstimatedReturnLow).toBe(false);
     });
 
     it('should return isEstimatedReturnLow=false if there are no quotes', () => {
@@ -1315,10 +1426,508 @@ describe('Bridge selectors', () => {
       });
       const result = getValidationErrors(state as never);
 
-      expect(getBridgeQuotes(state as never).activeQuote).toStrictEqual(
-        undefined,
-      );
+      expect(getBridgeQuotes(state as never).activeQuote).toStrictEqual(null);
       expect(result.isEstimatedReturnLow).toStrictEqual(false);
+    });
+  });
+
+  describe('getIsSwap', () => {
+    it('returns true when source and destination chains are the same', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteRequest: {
+            srcChainId: '0x1',
+            destChainId: '0x1',
+          },
+        },
+      });
+
+      const result = getIsSwap(state as never);
+      expect(result).toBe(true);
+    });
+
+    it('returns false when source and destination chains are different', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteRequest: {
+            srcChainId: '0x1',
+            destChainId: '0x89',
+          },
+        },
+      });
+
+      const result = getIsSwap(state as never);
+      expect(result).toBe(false);
+    });
+
+    it('returns false when either chain ID is missing', () => {
+      const stateNoSrc = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteRequest: {
+            destChainId: '0x1',
+          },
+        },
+      });
+      const stateNoDest = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteRequest: {
+            srcChainId: '0x1',
+          },
+        },
+      });
+
+      expect(getIsSwap(stateNoSrc as never)).toBe(false);
+      expect(getIsSwap(stateNoDest as never)).toBe(false);
+    });
+
+    it('handles CAIP chain ID format', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteRequest: {
+            srcChainId: 'eip155:1',
+            destChainId: 'eip155:1',
+          },
+        },
+      });
+
+      const result = getIsSwap(state as never);
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('getFromTokenConversionRate', () => {
+    it('should return default exchange rates when fromChain or fromToken is missing', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {},
+          currencyRates: {},
+        },
+        bridgeSliceOverrides: {
+          fromTokenExchangeRate: 1.0,
+        },
+      });
+
+      const result = getFromTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        valueInCurrency: null,
+        usd: null,
+      });
+    });
+
+    it('should handle EVM tokens correctly', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {
+            '0x1': {
+              '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 1.2 },
+            },
+          },
+          currencyRates: {
+            ETH: { conversionRate: 1500, usdConversionRate: 2000 },
+          },
+          ...mockNetworkState({ chainId: '0x1' }),
+        },
+        bridgeSliceOverrides: {
+          fromToken: {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            decimals: 6,
+          },
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              'eip155:1': { isActiveSrc: true, isActiveDest: false },
+            },
+          },
+        },
+      });
+
+      const result = getFromTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        valueInCurrency: 1800,
+        usd: 2400,
+      });
+    });
+
+    it('should handle native EVM tokens correctly', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {
+            '0x1': {
+              '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 1.2 },
+            },
+          },
+          currencyRates: {
+            ETH: { conversionRate: 2000, usdConversionRate: 2000 },
+          },
+          ...mockNetworkState({ chainId: '0x1' }),
+        },
+        bridgeSliceOverrides: {
+          fromToken: {
+            address: zeroAddress(),
+            decimals: 18,
+          },
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              'eip155:1': { isActiveSrc: true, isActiveDest: false },
+            },
+          },
+        },
+      });
+
+      const result = getFromTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        valueInCurrency: 2000,
+        usd: 2000,
+      });
+    });
+
+    it('should handle Solana tokens correctly', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: 'account-1',
+            accounts: {
+              'account-1': {
+                address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
+                type: 'solana:data-account',
+                scopes: [SolScope.Mainnet],
+              },
+            },
+          },
+          marketData: {},
+          currencyRates: {},
+          ...mockMultichainNetworkState(),
+          conversionRates: {
+            [getNativeAssetForChainId(MultichainNetworks.SOLANA)?.assetId]: {
+              rate: 1.5,
+            },
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+              {
+                rate: 2.0,
+              },
+          },
+          rates: {
+            sol: {
+              conversionRate: 1.5,
+              usdConversionRate: 1.4,
+            },
+          },
+        },
+        bridgeSliceOverrides: {
+          fromTokenExchangeRate: 1.0,
+          fromToken: {
+            address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            decimals: 6,
+          },
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              [MultichainNetworks.SOLANA]: {
+                isActiveSrc: true,
+                isActiveDest: false,
+              },
+            },
+          },
+        },
+      });
+
+      const result = getFromTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        usd: 1.8666666666666665,
+        valueInCurrency: 2,
+      });
+    });
+
+    it('should handle Solana native tokens correctly', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: 'account-1',
+            accounts: {
+              'account-1': {
+                address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
+                type: 'solana:data-account',
+                scopes: [SolScope.Mainnet],
+              },
+            },
+          },
+          marketData: {},
+          currencyRates: {},
+          ...mockNetworkState({ chainId: '0x1' }),
+          conversionRates: {
+            [getNativeAssetForChainId(MultichainNetworks.SOLANA)?.assetId]: {
+              rate: 1.5,
+            },
+          },
+          rates: {
+            sol: {
+              usdConversionRate: 1.4,
+            },
+          },
+        },
+        bridgeSliceOverrides: {
+          fromTokenExchangeRate: 1.0,
+          fromToken: {
+            address: zeroAddress(),
+            decimals: 18,
+          },
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              [MultichainNetworks.SOLANA]: {
+                isActiveSrc: true,
+                isActiveDest: false,
+              },
+            },
+          },
+        },
+      });
+
+      const result = getFromTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        usd: 1.4,
+        valueInCurrency: 1.5,
+      });
+    });
+  });
+
+  describe('getToTokenConversionRate', () => {
+    it('should return default exchange rates when toChain or toToken is missing', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {},
+        },
+        bridgeSliceOverrides: {
+          toTokenExchangeRate: 1.0,
+          toTokenUsdExchangeRate: 2.0,
+        },
+      });
+
+      const result = getToTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        valueInCurrency: null,
+        usd: null,
+      });
+    });
+
+    it('should use bridge state rates when toChain is not imported', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {},
+        },
+        bridgeSliceOverrides: {
+          toTokenExchangeRate: 1.5,
+          toTokenUsdExchangeRate: 2.5,
+          toChainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM),
+          toToken: { address: '0x123', decimals: 18 },
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              [formatChainIdToCaip(CHAIN_IDS.OPTIMISM)]: {
+                isActiveSrc: false,
+                isActiveDest: true,
+              },
+            },
+          },
+        },
+      });
+
+      const result = getToTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        valueInCurrency: 1.5,
+        usd: 2.5,
+      });
+    });
+
+    it('should handle EVM tokens correctly', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {
+            '0xa': {
+              '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 1.2 },
+            },
+          },
+          ...mockNetworkState({ chainId: '0xa' }),
+          currencyRates: {
+            ETH: { conversionRate: 2000, usdConversionRate: 1000 },
+          },
+        },
+        bridgeSliceOverrides: {
+          toTokenExchangeRate: 1.0,
+          toTokenUsdExchangeRate: 2.0,
+          toChainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM),
+          toToken: {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            decimals: 18,
+          },
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              [formatChainIdToCaip(CHAIN_IDS.OPTIMISM)]: {
+                isActiveSrc: false,
+                isActiveDest: true,
+              },
+            },
+          },
+        },
+      });
+
+      const result = getToTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        usd: 1200,
+        valueInCurrency: 2400,
+      });
+    });
+
+    it('should handle native EVM tokens correctly', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {
+            '0xa': {
+              '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 1.2 },
+            },
+          },
+          ...mockNetworkState({ chainId: '0xa' }),
+          currencyRates: {
+            ETH: { conversionRate: 2000, usdConversionRate: 1000 },
+          },
+        },
+        bridgeSliceOverrides: {
+          toTokenExchangeRate: 1.0,
+          toTokenUsdExchangeRate: 2.0,
+          toChainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM),
+          toToken: {
+            address: zeroAddress(),
+            decimals: 6,
+          },
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              [formatChainIdToCaip(CHAIN_IDS.OPTIMISM)]: {
+                isActiveSrc: false,
+                isActiveDest: true,
+              },
+            },
+          },
+        },
+      });
+
+      const result = getToTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        usd: 1000,
+        valueInCurrency: 2000,
+      });
+    });
+
+    it('should handle Solana tokens correctly', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: 'account-1',
+            accounts: {
+              'account-1': {
+                address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
+                type: 'solana:data-account',
+              },
+            },
+          },
+          marketData: {},
+          currencyRates: {},
+          ...mockNetworkState({ chainId: '0x1' }),
+          conversionRates: {
+            [getNativeAssetForChainId(MultichainNetworks.SOLANA)?.assetId]: {
+              rate: 1.5,
+            },
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+              {
+                rate: 2.0,
+              },
+          },
+          rates: {
+            sol: {
+              conversionRate: 1.5,
+              usdConversionRate: 1.4,
+            },
+          },
+        },
+        bridgeSliceOverrides: {
+          toChainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          toToken: {
+            address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            decimals: 6,
+          },
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+                isActiveSrc: false,
+                isActiveDest: true,
+              },
+            },
+          },
+        },
+      });
+
+      const result = getToTokenConversionRate(state);
+
+      expect(result).toStrictEqual({
+        usd: 1.8666666666666665,
+        valueInCurrency: 2,
+      });
+    });
+
+    it('should handle Solana native tokens correctly', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {},
+          currencyRates: {},
+          ...mockNetworkState({ chainId: '0x1' }),
+          conversionRates: {
+            [getNativeAssetForChainId(MultichainNetworks.SOLANA)?.assetId]: {
+              rate: 1.5,
+            },
+          },
+          rates: {
+            sol: {
+              usdConversionRate: 1.4,
+            },
+          },
+        },
+        bridgeSliceOverrides: {
+          toTokenExchangeRate: 1.1,
+          toTokenUsdExchangeRate: 1.2,
+          toToken: {
+            address: zeroAddress(),
+            decimals: 18,
+          },
+          toChainId: MultichainNetworks.SOLANA,
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              [MultichainNetworks.SOLANA]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+          },
+        },
+      });
+
+      const result = getToTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        usd: 1.2,
+        valueInCurrency: 1.1,
+      });
     });
   });
 });

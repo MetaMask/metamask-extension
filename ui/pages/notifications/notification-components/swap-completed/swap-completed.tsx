@@ -5,10 +5,7 @@ import {
   NotificationComponentType,
   type NotificationComponent,
 } from '../types/notifications/notifications';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../../../app/scripts/translate';
+import { t } from '../../../../../shared/lib/translate';
 
 import {
   NotificationListItem,
@@ -33,7 +30,6 @@ import {
   getNetworkDetailsByChainId,
   getUsdAmount,
 } from '../../../../helpers/utils/notification.util';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import {
   TextVariant,
   BackgroundColor,
@@ -51,8 +47,12 @@ const isSwapCompletedNotification = isOfTypeNodeGuard([
 const getTitle = (n: SwapCompletedNotification) => {
   const items = createTextItems(
     [
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       t('notificationItemSwapped') || '',
       n.data.token_in.symbol,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       t('notificationItemSwappedFor') || '',
     ],
     TextVariant.bodySm,
@@ -97,6 +97,8 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
   details: {
     title: ({ notification }) => (
       <NotificationDetailTitle
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         title={`${t('notificationItemSwapped') || ''} ${
           notification.data.token_out.symbol
         }`}
@@ -111,15 +113,16 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
         }
         return (
           <NotificationDetailAddress
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             side={t('account') || ''}
             address={notification.address}
           />
         );
       },
       Asset: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-          `0x${chainId}` as keyof typeof CHAIN_IDS,
+          notification.chain_id,
         );
         return (
           <NotificationDetailAsset
@@ -130,6 +133,8 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
                 position: BadgeWrapperPosition.topRight,
               },
             }}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             label={t('notificationItemSwapped') || ''}
             detail={notification.data.token_in.symbol}
             fiatValue={`$${getUsdAmount(
@@ -146,9 +151,8 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
         );
       },
       AssetReceived: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-          `0x${chainId}` as keyof typeof CHAIN_IDS,
+          notification.chain_id,
         );
         return (
           <NotificationDetailAsset
@@ -159,6 +163,8 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
                 position: BadgeWrapperPosition.topRight,
               },
             }}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             label={t('notificationItemTo') || ''}
             detail={notification.data.token_out.symbol}
             fiatValue={`$${getUsdAmount(
@@ -181,26 +187,33 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
             color: TextColor.successDefault,
             backgroundColor: BackgroundColor.successMuted,
           }}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           label={t('notificationItemStatus') || ''}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           detail={t('notificationItemConfirmed') || ''}
           action={
             <NotificationDetailCopyButton
               notification={notification}
               text={notification.tx_hash}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               displayText={t('notificationItemTransactionId') || ''}
             />
           }
         />
       ),
       Network: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyName, nativeCurrencyLogo } =
-          getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);
+          getNetworkDetailsByChainId(notification.chain_id);
         return (
           <NotificationDetailAsset
             icon={{
               src: nativeCurrencyLogo,
             }}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             label={t('notificationItemNetwork') || ''}
             detail={nativeCurrencyName}
           />
@@ -214,6 +227,8 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
               color: TextColor.infoDefault,
               backgroundColor: BackgroundColor.infoMuted,
             }}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             label={t('notificationItemRate') || ''}
             detail={`1 ${notification.data.token_out.symbol} ≈ ${(
               1 / parseFloat(notification.data.rate)
@@ -234,7 +249,6 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
           notification={notification}
           chainId={notification.chain_id}
           txHash={notification.tx_hash}
-          id={notification.id}
         />
       );
     },

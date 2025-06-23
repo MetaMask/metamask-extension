@@ -1,26 +1,16 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { Suite } from 'mocha';
-import {
-  defaultGanacheOptions,
-  withFixtures,
-  getEventPayloads,
-  unlockWallet,
-} from '../../helpers';
+import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
-import { WebElementWithWaitForElementState } from '../../webdriver/types';
-
-const selectors = {
-  accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
-  globalMenuSettingsButton: '[data-testid="global-menu-settings"]',
-  securityAndPrivacySettings: { text: 'Security & privacy', tag: 'div' },
-  experimentalSettings: { text: 'Experimental', tag: 'div' },
-  deleteMetaMetricsDataButton: '[data-testid="delete-metametrics-data-button"]',
-  clearButton: { text: 'Clear', tag: 'button' },
-  backButton: '[data-testid="settings-back-button"]',
-};
+import { MOCK_META_METRICS_ID } from '../../constants';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -53,7 +43,7 @@ const mockSegment = async (mockServer: Mockttp) => {
         JSON.stringify({
           regulationType: 'DELETE_ONLY',
           subjectType: 'USER_ID',
-          subjectIds: ['fake-metrics-id'],
+          subjectIds: [MOCK_META_METRICS_ID],
         }),
       )
       .thenCallback(() => ({
@@ -89,11 +79,10 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -101,25 +90,21 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.goToPrivacySettings();
 
-        await driver.clickElement(selectors.accountOptionsMenuButton);
-        await driver.clickElement(selectors.globalMenuSettingsButton);
-        await driver.clickElement(selectors.securityAndPrivacySettings);
-
-        await driver.clickElement(selectors.deleteMetaMetricsDataButton);
-
-        // there is a race condition, where we need to wait before clicking clear button otherwise an error is thrown in the background
-        // we cannot wait for a UI conditon, so we a delay to mitigate this until another solution is found
-        await driver.delay(3000);
-        await driver.clickElementAndWaitToDisappear(selectors.clearButton);
-
-        const deleteMetaMetricsDataButton = await driver.findElement(
-          selectors.deleteMetaMetricsDataButton,
+        // delete MetaMetrics data on privacy settings page
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.check_pageIsLoaded();
+        await privacySettings.deleteMetaMetrics();
+        assert.equal(
+          await privacySettings.check_deleteMetaMetricsDataButtonEnabled(),
+          false,
         );
-        await (
-          deleteMetaMetricsDataButton as WebElementWithWaitForElementState
-        ).waitForElementState('disabled');
 
         const events = await getEventPayloads(
           driver,
@@ -133,21 +118,17 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
           environment_type: 'fullscreen',
         });
 
-        await driver.clickElementAndWaitToDisappear(
-          '.mm-box button[aria-label="Close"]',
-        );
-        await driver.clickElement(selectors.accountOptionsMenuButton);
-        await driver.clickElement(selectors.globalMenuSettingsButton);
-        await driver.clickElement(selectors.securityAndPrivacySettings);
+        await settingsPage.closeSettingsPage();
+        await new HomePage(driver).check_pageIsLoaded();
+        await headerNavbar.openSettingsPage();
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.goToPrivacySettings();
 
-        const deleteMetaMetricsDataButtonRefreshed =
-          await driver.findClickableElement(
-            selectors.deleteMetaMetricsDataButton,
-          );
+        // check MetaMetrics data button is enabled when user goes back to privacy settings page
+        await privacySettings.check_pageIsLoaded();
         assert.equal(
-          await deleteMetaMetricsDataButtonRefreshed.isEnabled(),
+          await privacySettings.check_deleteMetaMetricsDataButtonEnabled(),
           true,
-          'Delete MetaMetrics data button is enabled',
         );
       },
     );
@@ -158,27 +139,27 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: false,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver }: TestSuiteArguments) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.goToPrivacySettings();
 
-        await driver.clickElement(selectors.accountOptionsMenuButton);
-        await driver.clickElement(selectors.globalMenuSettingsButton);
-        await driver.clickElement(selectors.securityAndPrivacySettings);
-
-        const deleteMetaMetricsDataButton = await driver.findElement(
-          selectors.deleteMetaMetricsDataButton,
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.check_pageIsLoaded();
+        assert.equal(
+          await privacySettings.check_deleteMetaMetricsDataButtonEnabled(),
+          false,
         );
-        await (
-          deleteMetaMetricsDataButton as WebElementWithWaitForElementState
-        ).waitForElementState('disabled');
       },
     );
   });
@@ -187,24 +168,22 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.goToPrivacySettings();
 
-        await driver.clickElement(selectors.accountOptionsMenuButton);
-        await driver.clickElement(selectors.globalMenuSettingsButton);
-        await driver.clickElement(selectors.securityAndPrivacySettings);
-
-        const deleteMetaMetricsDataButton = await driver.findElement(
-          selectors.deleteMetaMetricsDataButton,
-        );
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.check_pageIsLoaded();
         assert.equal(
-          await deleteMetaMetricsDataButton.isEnabled(),
+          await privacySettings.check_deleteMetaMetricsDataButtonEnabled(),
           false,
-          'Delete MetaMetrics data button is disabled',
         );
       },
     );

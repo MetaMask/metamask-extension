@@ -21,6 +21,8 @@ export async function migrate(
   transformState(versionedData.data);
   return versionedData;
 }
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
   const AppStateController = state?.AppStateController || {};

@@ -1,12 +1,21 @@
 import { Provider } from '@metamask/network-controller';
 import {
   ActionConstraint,
-  ControllerMessenger,
+  Messenger,
   EventConstraint,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import { Hex } from '@metamask/utils';
-import { TransactionMetricsRequest } from '../lib/transaction/metrics';
+import { Duplex } from 'readable-stream';
+import { SubjectType } from '@metamask/permission-controller';
+import { PreinstalledSnap } from '@metamask/snaps-controllers';
+import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
+import { MessageSender } from '../../../types/global';
+import {
+  MetaMetricsEventOptions,
+  MetaMetricsEventPayload,
+} from '../../../shared/constants/metametrics';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -22,23 +31,33 @@ export type ControllerByName = {
  * e.g. `{ TransactionController: { transactions: [] } }`.
  */
 export type ControllerPersistedState = Partial<{
-  [name in ControllerName]: Partial<ControllerByName[name]['state']>;
+  [name in ControllerName]: Partial<
+    ControllerByName[name] extends { state: unknown }
+      ? ControllerByName[name]['state']
+      : never
+  >;
 }>;
 
 /** Generic controller messenger using base template types. */
-export type BaseControllerMessenger = ControllerMessenger<
+export type BaseControllerMessenger = Messenger<
   ActionConstraint,
   EventConstraint
 >;
 
 /** Generic restricted controller messenger using base template types. */
-export type BaseRestrictedControllerMessenger = RestrictedControllerMessenger<
+export type BaseRestrictedControllerMessenger = RestrictedMessenger<
   string,
   ActionConstraint,
   EventConstraint,
   string,
   string
 >;
+
+type SnapSender = {
+  snapId: string;
+};
+
+type Sender = MessageSender | SnapSender;
 
 /**
  * Request to initialize and return a controller instance.
@@ -105,24 +124,94 @@ export type ControllerInitRequest<
   getTransactionMetricsRequest(): TransactionMetricsRequest;
 
   /**
+   * Function to update account balance for network of the transaction
+   */
+  updateAccountBalanceForTransactionNetwork(
+    transactionMeta: TransactionMeta,
+  ): void;
+
+  /**
+   * A promise that resolves when the offscreen document is ready.
+   */
+  offscreenPromise: Promise<void>;
+
+  /**
    * The full persisted state for all controllers.
    * Includes controller name properties.
    * e.g. `{ TransactionController: { transactions: [] } }`.
    */
   persistedState: ControllerPersistedState;
-} & (InitMessengerType extends BaseRestrictedControllerMessenger
-  ? {
-      /**
-       * Required initialization messenger instance.
-       * Generated using the callback specified in `getInitMessengerCallback`.
-       */
-      initMessenger: InitMessengerType;
-    }
-  : unknown);
+
+  /**
+   * Close all connections for the given origin, and removes the references
+   * to them. Ignores unknown origins.
+   *
+   * @param origin - The origin for which to remove all connections.
+   */
+  removeAllConnections(origin: string): void;
+
+  /**
+   * Create a multiplexed stream for connecting to an untrusted context like a
+   * like a website, Snap, or other extension.
+   *
+   * @param options - The options for creating the stream.
+   * @param options.connectionStream - The stream to connect to the untrusted
+   * context.
+   * @param options.sender - The sender of the stream.
+   * @param options.subjectType - The type of the subject of the stream.
+   */
+  setupUntrustedCommunicationEip1193(options: {
+    connectionStream: Duplex;
+    sender: Sender;
+    subjectType: SubjectType;
+  }): void;
+
+  /**
+   * Show a native notification.
+   *
+   * @param title - The title of the notification.
+   * @param message - The message of the notification.
+   * @param url - The URL to open when the notification is clicked.
+   */
+  showNotification: (
+    title: string,
+    message: string,
+    url?: string,
+  ) => Promise<void>;
+
+  /**
+   * Get the MetaMetrics ID.
+   */
+  getMetaMetricsId: () => string;
+
+  /**
+   * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
+   *
+   * @param payload - details of the event
+   * @param options - options for handling/routing the event
+   */
+  trackEvent: (
+    payload: MetaMetricsEventPayload,
+    options?: MetaMetricsEventOptions,
+  ) => void;
+
+  /**
+   * A list of preinstalled Snaps loaded from disk during boot.
+   */
+  preinstalledSnaps: PreinstalledSnap[];
+
+  /**
+   * Required initialization messenger instance.
+   * Generated using the callback specified in `getInitMessengerCallback`.
+   */
+  initMessenger: InitMessengerType;
+};
 
 /**
  * A single background API method available to the UI.
  */
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ControllerApi = (...args: any[]) => unknown;
 

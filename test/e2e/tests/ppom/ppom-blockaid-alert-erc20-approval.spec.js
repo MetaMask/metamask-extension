@@ -3,7 +3,6 @@ const FixtureBuilder = require('../../fixture-builder');
 
 const {
   WINDOW_TITLES,
-  defaultGanacheOptions,
   openDapp,
   unlockWallet,
   withFixtures,
@@ -222,7 +221,6 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval', function () {
             securityAlertsEnabled: true,
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfura,
         title: this.test.fullTitle(),
       },

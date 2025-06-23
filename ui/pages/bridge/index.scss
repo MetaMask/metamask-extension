@@ -1,6 +1,7 @@
 @use "design-system";
 
 @import 'prepare/index';
+@import 'prepare/components/index';
 @import 'quotes/index';
 @import 'transaction-details/index';
 @import 'awaiting-signatures/index';

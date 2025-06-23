@@ -17,33 +17,56 @@ import OnboardingPrivacySettingsPage from '../../../page-objects/pages/onboardin
 import {
   createNewWalletOnboardingFlow,
   importSRPOnboardingFlow,
-  completeImportSRPOnboardingFlow,
 } from '../../../page-objects/flows/onboarding.flow';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
-import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
-import { accountsSyncMockResponse } from './mockData';
+import { completeOnboardFlowIdentity } from '../flows';
+import {
+  accountsToMockForAccountsSync,
+  getAccountsSyncMockResponse,
+} from './mock-data';
 
-describe('Account syncing - Opt-out Profile Sync', function () {
-  if (!IS_ACCOUNT_SYNCING_ENABLED) {
-    return;
-  }
+describe('Account syncing - Opt-out Backup and sync', function () {
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
+
+  const arrange = async () => {
+    const unencryptedAccounts = accountsToMockForAccountsSync;
+    const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
+    const defaultAccountOneName = 'Account 1';
+
+    const userStorageMockttpController = new UserStorageMockttpController();
+
+    return {
+      unencryptedAccounts,
+      mockedAccountSyncResponse,
+      userStorageMockttpController,
+      defaultAccountOneName,
+    };
+  };
+
   describe('from inside MetaMask', function () {
     let walletSrp: string;
-    it('does not sync when profile sync is turned off - previously synced account', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
+
+    it('does not sync when backup and sync is turned off - previously synced accounts', async function () {
+      const {
+        unencryptedAccounts,
+        mockedAccountSyncResponse,
+        userStorageMockttpController,
+        defaultAccountOneName,
+      } = await arrange();
 
       await withFixtures(
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            // Mocks are still set up to ensure that requests are not matched
+            // Setting up this mock to ensure that no User Storage requests are made when Backup and sync is off.
+            // If any requests are made, they will match this mock and cause the test to fail, indicating that accounts are being incorrectly synced.
             userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.accounts,
               server,
               {
-                getResponse: accountsSyncMockResponse,
+                getResponse: mockedAccountSyncResponse,
               },
             );
             return mockIdentityServices(server, userStorageMockttpController);
@@ -68,7 +91,7 @@ describe('Account syncing - Opt-out Profile Sync', function () {
 
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_expectedBalanceIsDisplayed('0');
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -76,29 +99,34 @@ describe('Account syncing - Opt-out Profile Sync', function () {
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(1);
-          await accountListPage.check_accountIsNotDisplayedInAccountList(
-            'My First Synced Account',
+          await accountListPage.check_numberOfAvailableAccounts(
+            1,
+            ACCOUNT_TYPE.Ethereum,
           );
           await accountListPage.check_accountIsNotDisplayedInAccountList(
-            'My Second Synced Account',
+            unencryptedAccounts[0].n,
+          );
+          await accountListPage.check_accountIsNotDisplayedInAccountList(
+            unencryptedAccounts[1].n,
           );
           await accountListPage.check_accountDisplayedInAccountList(
-            'Account 1',
+            defaultAccountOneName,
           );
         },
       );
     });
 
-    it('does not sync when profile sync is turned off - new user', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
+    it('does not sync when backup and sync is turned off - new user', async function () {
+      const { userStorageMockttpController, defaultAccountOneName } =
+        await arrange();
 
       await withFixtures(
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            // Mocks are still set up to ensure that requests are not matched
+            // Setting up this mock to ensure that no User Storage requests are made when Backup and sync is off.
+            // If any requests are made, they will match this mock and cause the test to fail, indicating that accounts are being incorrectly synced.
             userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.accounts,
               server,
@@ -124,7 +152,7 @@ describe('Account syncing - Opt-out Profile Sync', function () {
 
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_expectedBalanceIsDisplayed('0');
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -132,9 +160,12 @@ describe('Account syncing - Opt-out Profile Sync', function () {
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(1);
+          await accountListPage.check_numberOfAvailableAccounts(
+            1,
+            ACCOUNT_TYPE.Ethereum,
+          );
           await accountListPage.check_accountDisplayedInAccountList(
-            'Account 1',
+            defaultAccountOneName,
           );
           await accountListPage.addAccount({
             accountType: ACCOUNT_TYPE.Ethereum,
@@ -165,8 +196,9 @@ describe('Account syncing - Opt-out Profile Sync', function () {
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
+          // Setting up this mock to ensure that no User Storage requests are made when Backup and sync is off.
+          // If any requests are made, they will match this mock and cause the test to fail, indicating that accounts are being incorrectly synced.
           testSpecificMock: (server: Mockttp) => {
-            // Mocks are still set up to ensure that requests are not matched
             userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.accounts,
               server,
@@ -175,14 +207,7 @@ describe('Account syncing - Opt-out Profile Sync', function () {
           },
         },
         async ({ driver }) => {
-          await completeImportSRPOnboardingFlow({
-            driver,
-            seedPhrase: walletSrp,
-            password: IDENTITY_TEAM_PASSWORD,
-          });
-          const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await completeOnboardFlowIdentity(driver);
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -190,9 +215,12 @@ describe('Account syncing - Opt-out Profile Sync', function () {
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(1);
+          await accountListPage.check_numberOfAvailableAccounts(
+            1,
+            ACCOUNT_TYPE.Ethereum,
+          );
           await accountListPage.check_accountDisplayedInAccountList(
-            'Account 1',
+            defaultAccountOneName,
           );
         },
       );

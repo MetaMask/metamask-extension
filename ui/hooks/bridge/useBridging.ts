@@ -1,17 +1,21 @@
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { setBridgeFeatureFlags } from '../../ducks/bridge/actions';
+import { toChecksumAddress } from 'ethereumjs-util';
+import { isStrictHexString } from '@metamask/utils';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  formatChainIdToCaip,
+  UnifiedSwapBridgeEventName,
+  type SwapsTokenObject,
+} from '@metamask/bridge-controller';
+import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
+import {
   getDataCollectionForMarketing,
   getIsBridgeChain,
   getIsBridgeEnabled,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  getUseExternalServices,
-  SwapsEthToken,
-  ///: END:ONLY_INCLUDE_IF
+  type SwapsEthToken,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -21,22 +25,17 @@ import {
 } from '../../../shared/constants/metametrics';
 
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../helpers/utils/portfolio';
-import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
-// eslint-disable-next-line import/no-restricted-paths
+import { trace, TraceName } from '../../../shared/lib/trace';
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
-///: END:ONLY_INCLUDE_IF
 
 const useBridging = () => {
-  const dispatch = useDispatch();
   const history = useHistory();
+  const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
@@ -44,54 +43,74 @@ const useBridging = () => {
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const providerConfig = useSelector(getProviderConfig);
-  const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
   const isBridgeSupported = useSelector(getIsBridgeEnabled);
   const isBridgeChain = useSelector(getIsBridgeChain);
-
-  useEffect(() => {
-    if (isExternalServicesEnabled) {
-      dispatch(setBridgeFeatureFlags());
-    }
-  }, [dispatch, setBridgeFeatureFlags]);
 
   const openBridgeExperience = useCallback(
     (
       location: string,
       token: SwapsTokenObject | SwapsEthToken,
       portfolioUrlSuffix?: string,
+      isSwap = false,
     ) => {
       if (!isBridgeChain || !providerConfig) {
         return;
       }
 
       if (isBridgeSupported) {
+        trace({
+          name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
+          startTime: Date.now(),
+        });
         trackCrossChainSwapsEvent({
-          event: MetaMetricsEventName.ActionOpened,
+          event: MetaMetricsEventName.ActionButtonClicked,
           category: MetaMetricsEventCategory.Navigation,
           properties: {
             location:
               location === 'Home'
                 ? MetaMetricsSwapsEventSource.MainView
                 : MetaMetricsSwapsEventSource.TokenView,
-            chain_id_source: providerConfig.chainId,
+            chain_id_source: formatChainIdToCaip(providerConfig.chainId),
             token_symbol_source: token.symbol,
             token_address_source: token.address,
           },
         });
         trackEvent({
-          event: MetaMetricsEventName.BridgeLinkClicked,
+          event: isSwap
+            ? MetaMetricsEventName.SwapLinkClicked
+            : MetaMetricsEventName.BridgeLinkClicked,
           category: MetaMetricsEventCategory.Navigation,
           properties: {
             token_symbol: token.symbol,
             location,
-            text: 'Bridge',
+            text: isSwap ? 'Swap' : 'Bridge',
             chain_id: providerConfig.chainId,
           },
         });
-        history.push(
-          `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}?token=${token.address?.toLowerCase()}`,
+        dispatch(
+          trackUnifiedSwapBridgeEvent(
+            UnifiedSwapBridgeEventName.ButtonClicked,
+            {
+              location:
+                location === 'Home'
+                  ? MetaMetricsSwapsEventSource.MainView
+                  : MetaMetricsSwapsEventSource.TokenView,
+              token_symbol_source: token.symbol,
+              token_symbol_destination: null,
+            },
+          ),
         );
+        let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
+        url += `?token=${
+          isStrictHexString(token.address)
+            ? toChecksumAddress(token.address)
+            : token.address
+        }`;
+        if (isSwap) {
+          url += '&swaps=true';
+        }
+        history.push(url);
       } else {
         const portfolioUrl = getPortfolioUrl(
           'bridge',
@@ -121,7 +140,6 @@ const useBridging = () => {
     [
       isBridgeSupported,
       isBridgeChain,
-      dispatch,
       history,
       metaMetricsId,
       trackEvent,

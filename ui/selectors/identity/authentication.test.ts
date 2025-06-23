@@ -4,13 +4,31 @@ describe('Authentication Selectors', () => {
   const mockState = {
     metamask: {
       isSignedIn: true,
-      sessionData: {
-        profile: {
-          identifierId: 'identifierId',
-          profileId: 'profileId',
+      srpSessionData: {
+        entropySourceId1: {
+          token: {
+            accessToken: 'accessToken',
+            expiresIn: 0,
+            obtainedAt: 0,
+          },
+          profile: {
+            identifierId: 'identifierId',
+            profileId: 'profileId',
+            metaMetricsId: 'metaMetricsId',
+          },
         },
-        accessToken: 'accessToken',
-        expiresIn: 'expiresIn',
+        entropySourceId2: {
+          token: {
+            accessToken: 'accessToken2',
+            expiresIn: 0,
+            obtainedAt: 0,
+          },
+          profile: {
+            identifierId: 'identifierId2',
+            profileId: 'profileId2',
+            metaMetricsId: 'metaMetricsId2',
+          },
+        },
       },
     },
   };
@@ -21,7 +39,7 @@ describe('Authentication Selectors', () => {
 
   it('should select the session data', () => {
     expect(selectSessionData(mockState)).toEqual(
-      mockState.metamask.sessionData,
+      mockState.metamask.srpSessionData.entropySourceId1,
     );
   });
 });

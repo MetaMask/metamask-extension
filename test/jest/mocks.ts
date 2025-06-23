@@ -22,7 +22,7 @@ import {
 } from '../../ui/ducks/send';
 import { MetaMaskReduxState } from '../../ui/store/store';
 import mockState from '../data/mock-state.json';
-import { isBtcMainnetAddress } from '../../shared/lib/multichain';
+import { isBtcMainnetAddress } from '../../shared/lib/multichain/accounts';
 
 export type MockState = typeof mockState;
 
@@ -312,6 +312,7 @@ export function overrideAccountsFromMockState<
     newKeyrings.push({
       type: keyring.type,
       accounts: newAccountsForKeyring,
+      metadata: keyring.metadata,
     });
   }
 

@@ -3,11 +3,13 @@ const {
   switchToNotificationWindow,
   withFixtures,
   unlockWallet,
-  defaultGanacheOptions,
   WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('../../snaps/enums');
+const {
+  mockLookupSnap,
+} = require('../../mock-response-data/snaps/snap-binary-mocks');
 const {
   expectName,
   focusTestDapp,
@@ -91,7 +93,6 @@ describe('Petnames - Signatures', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -124,7 +125,6 @@ describe('Petnames - Signatures', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -160,7 +160,7 @@ describe('Petnames - Signatures', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        testSpecificMock: mockLookupSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
+const { Key } = require('selenium-webdriver');
 const {
   withFixtures,
-  defaultGanacheOptions,
   openDapp,
   DAPP_URL,
   DAPP_ONE_URL,
@@ -10,7 +10,6 @@ const {
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 
 describe('Switch Ethereum Chain for two dapps', function () {
   it('switches the chainId of two dapps when switchEthereumChain of one dapp is confirmed', async function () {
@@ -18,14 +17,25 @@ describe('Switch Ethereum Chain for two dapps', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        },
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              blockTime: 2,
+              vmErrorsOnRPCResponse: false,
+              mnemonic:
+                'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+              port: 8546,
+              chainId: 1338,
+            },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -82,18 +92,44 @@ describe('Switch Ethereum Chain for two dapps', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerSmartTransactionsOptedOut()
+          .withNetworkControllerDoubleNode()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        },
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              blockTime: 2,
+              vmErrorsOnRPCResponse: false,
+              mnemonic:
+                'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+              port: 8546,
+              chainId: 1338,
+            },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        // disable smart transactions step by step
+        // we cannot use fixtures because migration 135 overrides the opt in value to true
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await driver.clickElement({
+          text: 'Advanced',
+          tag: 'div',
+        });
+        const stxToggle = await driver.findElement(
+          '[data-testid="settings-page-stx-opt-in-toggle"]',
+        );
+        stxToggle.sendKeys(Key.ENTER);
 
         // open two dapps
         await openDapp(driver, undefined, DAPP_URL);
@@ -118,6 +154,12 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const permissionsTab = await driver.findElement(
+          '[data-testid="permissions-tab"]',
+        );
+        await permissionsTab.click();
+
         const editButtons = await driver.findElements('[data-testid="edit"]');
 
         await editButtons[1].click();
@@ -188,126 +230,30 @@ describe('Switch Ethereum Chain for two dapps', function () {
     );
   });
 
-  it('queues send tx after switchEthereum request with a warning, confirming removes pending tx', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-          .build(),
-        dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        },
-        title: this.test.fullTitle(),
-      },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-
-        // open two dapps
-        const dappTwo = await openDapp(driver, undefined, DAPP_ONE_URL);
-        const dappOne = await openDapp(driver, undefined, DAPP_URL);
-
-        // Connect Dapp One
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Connect',
-          tag: 'button',
-        });
-
-        // Switch and connect Dapp Two
-
-        await driver.switchToWindow(dappTwo);
-        assert.equal(await driver.getCurrentUrl(), `${DAPP_ONE_URL}/`);
-
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const editButtons = await driver.findElements('[data-testid="edit"]');
-
-        // Click the edit button for networks
-        await editButtons[1].click();
-
-        // Disconnect Mainnet
-        await driver.clickElement({
-          text: 'Localhost 8545',
-          tag: 'p',
-        });
-
-        await driver.clickElement('[data-testid="connect-more-chains-button"]');
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Connect',
-          tag: 'button',
-        });
-
-        await driver.switchToWindow(dappTwo);
-        assert.equal(await driver.getCurrentUrl(), `${DAPP_ONE_URL}/`);
-
-        // switchEthereumChain request
-        const switchEthereumChainRequest = JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x539' }],
-        });
-
-        // Initiate switchEthereumChain on Dapp Two
-        await driver.executeScript(
-          `window.ethereum.request(${switchEthereumChainRequest})`,
-        );
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.findClickableElements({
-          text: 'Confirm',
-          tag: 'button',
-        });
-        // Switch back to dapp one
-        await driver.switchToWindow(dappOne);
-        assert.equal(await driver.getCurrentUrl(), `${DAPP_URL}/`);
-
-        // Initiate send tx on dapp one
-        await driver.clickElement('#sendButton');
-        await driver.delay(2000);
-
-        // Switch to notification that should still be switchEthereumChain request but with a warning.
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // THIS IS BROKEN
-        // await driver.findElement({
-        //   span: 'span',
-        //   text: 'Switching networks will cancel all pending confirmations',
-        // });
-
-        // Confirm switchEthereumChain with queued pending tx
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-        // Window handles should only be expanded mm, dapp one, dapp 2, and the offscreen document
-        // if this is an MV3 build(3 or 4 total)
-        await driver.wait(async () => {
-          const windowHandles = await driver.getAllWindowHandles();
-          const numberOfWindowHandlesToExpect = isManifestV3 ? 4 : 3;
-          return windowHandles.length === numberOfWindowHandlesToExpect;
-        });
-      },
-    );
-  });
-
   it('queues send tx after switchEthereum request with a warning, if switchEthereum request is cancelled should show pending tx', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        },
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              blockTime: 2,
+              vmErrorsOnRPCResponse: false,
+              mnemonic:
+                'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+              port: 8546,
+              chainId: 1338,
+            },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -336,6 +282,11 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const permissionsTab = await driver.findElement(
+          '[data-testid="permissions-tab"]',
+        );
+        await permissionsTab.click();
 
         const editButtons = await driver.findElements('[data-testid="edit"]');
 
@@ -415,5 +366,168 @@ describe('Switch Ethereum Chain for two dapps', function () {
         });
       },
     );
+  });
+
+  describe('There are pending confirmation in the old network', function () {
+    it('show alerts on permission network if user does not have permission on new network', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerDoubleNode()
+            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+            .build(),
+          dappOptions: { numberOfDapps: 2 },
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
+                blockTime: 2,
+                vmErrorsOnRPCResponse: false,
+                mnemonic:
+                  'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+                port: 8546,
+                chainId: 1338,
+              },
+            },
+          ],
+          title: this.test.fullTitle(),
+        },
+        async ({ driver }) => {
+          await unlockWallet(driver);
+
+          await openDapp(driver);
+
+          await driver.clickElement('#personalSign');
+
+          // switchEthereumChain request
+          const switchEthereumChainRequest = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x53a' }],
+          });
+
+          // Initiate switchEthereumChain on the Dapp
+          await driver.executeScript(
+            `window.ethereum.request(${switchEthereumChainRequest})`,
+          );
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          await driver.clickElement(
+            '[data-testid="confirm-nav__next-confirmation"]',
+          );
+
+          // User reviews pending alerts
+          await driver.clickElement({ text: 'Confirm', tag: 'button' });
+          await driver.clickElement(
+            '[data-testid="alert-modal-action-showPendingConfirmation"]',
+          );
+
+          // user confirms permissions
+          await driver.clickElement(
+            '[data-testid="confirm-nav__next-confirmation"]',
+          );
+          await driver.clickElement({ text: 'Confirm', tag: 'button' });
+          await driver.clickElement('[data-testid="alert-modal-button"]');
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+          // Wait for chain id element to change, there's a page reload.
+          await driver.waitForSelector({
+            css: '#chainId',
+            text: '0x53a',
+          });
+        },
+      );
+    });
+
+    it('show alerts on switch network page if user does has permission on new network', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerDoubleNode()
+            .withPermissionControllerConnectedToTestDappWithChains([
+              '0x539',
+              '0x53a',
+            ])
+            .build(),
+          dappOptions: { numberOfDapps: 2 },
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
+                blockTime: 2,
+                vmErrorsOnRPCResponse: false,
+                mnemonic:
+                  'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+                port: 8546,
+                chainId: 1338,
+              },
+            },
+          ],
+          title: this.test.fullTitle(),
+        },
+        async ({ driver }) => {
+          await unlockWallet(driver);
+
+          await openDapp(driver);
+
+          await driver.clickElement('#personalSign');
+
+          // switchEthereumChain request
+          const switchEthereumChainRequest = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x53a' }],
+          });
+
+          // Initiate switchEthereumChain on the Dapp
+          await driver.executeScript(
+            `window.ethereum.request(${switchEthereumChainRequest})`,
+          );
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          await driver.clickElement(
+            '[data-testid="confirm-nav__next-confirmation"]',
+          );
+
+          // User reviews pending alerts
+          await driver.clickElement({
+            text: 'Switch network',
+            tag: 'button',
+          });
+          await driver.clickElement(
+            '[data-testid="alert-modal-action-showPendingConfirmation"]',
+          );
+
+          // user confirms permissions
+          await driver.clickElement(
+            '[data-testid="confirm-nav__next-confirmation"]',
+          );
+          await driver.clickElement({
+            text: 'Switch network',
+            tag: 'button',
+          });
+          await driver.clickElement('[data-testid="alert-modal-button"]');
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+          // Wait for chain id element to change, there's a page reload.
+          await driver.waitForSelector({
+            css: '#chainId',
+            text: '0x53a',
+          });
+        },
+      );
+    });
   });
 });

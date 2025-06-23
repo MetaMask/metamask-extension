@@ -1,54 +1,73 @@
 import { Mockttp } from 'mockttp';
 import { unlockWallet, withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
-import { mockInfuraAndAccountSync } from '../mocks';
+import { mockInfuraAndAccountSync, mockNftApiCall } from '../mocks';
 import {
   IDENTITY_TEAM_PASSWORD,
   IDENTITY_TEAM_SEED_PHRASE,
 } from '../constants';
 import { ACCOUNT_TYPE } from '../../../constants';
-import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
+import {
+  UserStorageMockttpController,
+  UserStorageMockttpControllerEvents,
+} from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountDetailsModal from '../../../page-objects/pages/dialog/account-details-modal';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
-import { accountsSyncMockResponse } from './mockData';
-import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
+import {
+  accountsToMockForAccountsSync,
+  getAccountsSyncMockResponse,
+} from './mock-data';
+import { arrangeTestUtils } from './helpers';
 
-const INITIAL_ACCOUNTS = [
-  '0xaa4179e7f103701e904d27df223a39aa9c27405a',
-  '0xd2a4afe5c2ff0a16bf81f77ba4201a8107aa874b',
-  '0xd54ba25a07eb3da821face8478c3d965ded63018',
-  '0x2c30c098e2a560988d486c7f25798e790802f953',
-];
+describe('Account syncing - User already has balances on multiple accounts', function () {
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
 
-const ADDITIONAL_ACCOUNTS = [
-  '0x6b65DA6735119E72B72fF842Bd92e9DE0C1e4Ae0',
-  '0x0f205850eaC507473AA0e47cc8eB528D875E7498',
-];
+  const arrange = async () => {
+    const unencryptedAccounts = accountsToMockForAccountsSync;
+    const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
 
-const EXPECTED_ACCOUNT_NAMES = {
-  INITIAL: [
-    'My First Synced Account',
-    'My Second Synced Account',
-    'Account 3',
-    'Account 4',
-  ],
-  WITH_NEW_ACCOUNTS: [
-    'My First Synced Account',
-    'My Second Synced Account',
-    'Account 3',
-    'Account 4',
-    'Account 5',
-    'Account 6',
-  ],
-};
+    const INITIAL_ACCOUNTS = [
+      unencryptedAccounts[0].a,
+      unencryptedAccounts[1].a,
+      '0xd54ba25a07eb3da821face8478c3d965ded63018',
+      '0x2c30c098e2a560988d486c7f25798e790802f953',
+    ];
 
-describe('Account syncing - User already has balances on multple accounts', function () {
-  if (!IS_ACCOUNT_SYNCING_ENABLED) {
-    return;
-  }
+    const ADDITIONAL_ACCOUNTS = [
+      '0x6b65DA6735119E72B72fF842Bd92e9DE0C1e4Ae0',
+      '0x0f205850eaC507473AA0e47cc8eB528D875E7498',
+    ];
+
+    const EXPECTED_ACCOUNT_NAMES = {
+      INITIAL: [
+        unencryptedAccounts[0].n,
+        unencryptedAccounts[1].n,
+        'Account 3',
+        'Account 4',
+      ],
+      WITH_NEW_ACCOUNTS: [
+        unencryptedAccounts[0].n,
+        unencryptedAccounts[1].n,
+        'Account 3',
+        'Account 4',
+        'Account 5',
+        'Account 6',
+      ],
+    };
+
+    const userStorageMockttpController = new UserStorageMockttpController();
+
+    return {
+      mockedAccountSyncResponse,
+      userStorageMockttpController,
+      INITIAL_ACCOUNTS,
+      ADDITIONAL_ACCOUNTS,
+      EXPECTED_ACCOUNT_NAMES,
+    };
+  };
 
   describe('from inside MetaMask', function () {
     /**
@@ -58,8 +77,15 @@ describe('Account syncing - User already has balances on multple accounts', func
      * Phase 3: Verification that any final changes to user storage are persisted and that we don't see any extra accounts created
      */
     it('when a user has balances on more accounts than previously synced, it should be handled gracefully', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
-      let accountsToMock = [...INITIAL_ACCOUNTS];
+      const {
+        mockedAccountSyncResponse,
+        userStorageMockttpController,
+        INITIAL_ACCOUNTS,
+        ADDITIONAL_ACCOUNTS,
+        EXPECTED_ACCOUNT_NAMES,
+      } = await arrange();
+
+      let accountsToMockBalances = [...INITIAL_ACCOUNTS];
 
       // PHASE 1: Initial setup and account creation
       await withFixtures(
@@ -73,8 +99,8 @@ describe('Account syncing - User already has balances on multple accounts', func
               server,
               userStorageMockttpController,
               {
-                accountsSyncResponse: accountsSyncMockResponse,
-                accountsToMock,
+                accountsSyncResponse: mockedAccountSyncResponse,
+                accountsToMockBalances,
               },
             );
           },
@@ -100,7 +126,10 @@ describe('Account syncing - User already has balances on multple accounts', func
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(4);
+          await accountListPage.check_numberOfAvailableAccounts(
+            4,
+            ACCOUNT_TYPE.Ethereum,
+          );
 
           // Verify each initial account name
           for (const accountName of EXPECTED_ACCOUNT_NAMES.INITIAL) {
@@ -110,10 +139,21 @@ describe('Account syncing - User already has balances on multple accounts', func
           }
 
           // Create new account and prepare for additional accounts
+          const { waitUntilSyncedAccountsNumberEquals } = arrangeTestUtils(
+            driver,
+            userStorageMockttpController,
+          );
+
           await accountListPage.addAccount({
             accountType: ACCOUNT_TYPE.Ethereum,
           });
-          accountsToMock = [...INITIAL_ACCOUNTS, ...ADDITIONAL_ACCOUNTS];
+          // Wait for the account to be synced
+          await waitUntilSyncedAccountsNumberEquals(5);
+
+          accountsToMockBalances = [
+            ...INITIAL_ACCOUNTS,
+            ...ADDITIONAL_ACCOUNTS,
+          ];
         },
       );
 
@@ -125,11 +165,17 @@ describe('Account syncing - User already has balances on multple accounts', func
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (server: Mockttp) => {
-            await mockInfuraAndAccountSync(
-              server,
-              userStorageMockttpController,
-              { accountsToMock },
-            );
+            return [
+              await mockInfuraAndAccountSync(
+                server,
+                userStorageMockttpController,
+                { accountsToMockBalances },
+              ),
+              await mockNftApiCall(
+                server,
+                '0x0f205850eac507473aa0e47cc8eb528d875e7498',
+              ),
+            ];
           },
         },
         async ({ driver }) => {
@@ -152,7 +198,10 @@ describe('Account syncing - User already has balances on multple accounts', func
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(6);
+          await accountListPage.check_numberOfAvailableAccounts(
+            6,
+            ACCOUNT_TYPE.Ethereum,
+          );
 
           for (const accountName of EXPECTED_ACCOUNT_NAMES.WITH_NEW_ACCOUNTS) {
             await accountListPage.check_accountDisplayedInAccountList(
@@ -168,7 +217,21 @@ describe('Account syncing - User already has balances on multple accounts', func
           await accountListPage.openAccountDetailsModal('Account 6');
           const accountDetailsModal = new AccountDetailsModal(driver);
           await accountDetailsModal.check_pageIsLoaded();
+
+          const { prepareEventsEmittedCounter } = arrangeTestUtils(
+            driver,
+            userStorageMockttpController,
+          );
+
+          const { waitUntilEventsEmittedNumberEquals } =
+            prepareEventsEmittedCounter(
+              UserStorageMockttpControllerEvents.PUT_SINGLE,
+            );
+
           await accountDetailsModal.changeAccountLabel('My Renamed Account 6');
+
+          // Wait for the account name to be synced
+          await waitUntilEventsEmittedNumberEquals(1);
         },
       );
 
@@ -183,7 +246,7 @@ describe('Account syncing - User already has balances on multple accounts', func
             await mockInfuraAndAccountSync(
               server,
               userStorageMockttpController,
-              { accountsToMock },
+              { accountsToMockBalances },
             );
           },
         },
@@ -207,7 +270,10 @@ describe('Account syncing - User already has balances on multple accounts', func
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(6);
+          await accountListPage.check_numberOfAvailableAccounts(
+            6,
+            ACCOUNT_TYPE.Ethereum,
+          );
           await accountListPage.check_accountDisplayedInAccountList(
             'My Renamed Account 6',
           );
@@ -223,7 +289,10 @@ describe('Account syncing - User already has balances on multple accounts', func
 
           await header.check_pageIsLoaded();
           await header.openAccountMenu();
-          await accountListPage.check_numberOfAvailableAccounts(6);
+          await accountListPage.check_numberOfAvailableAccounts(
+            6,
+            ACCOUNT_TYPE.Ethereum,
+          );
         },
       );
     });

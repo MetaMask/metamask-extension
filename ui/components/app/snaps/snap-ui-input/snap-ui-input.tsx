@@ -17,7 +17,7 @@ export type SnapUIInputProps = {
 
 export const SnapUIInput: FunctionComponent<
   SnapUIInputProps & FormTextFieldProps<'div'>
-> = ({ name, form, label, ...props }) => {
+> = ({ name, form, label, disabled, ...props }) => {
   const { handleInputChange, getValue, focusedInput, setCurrentFocusedInput } =
     useSnapInterfaceContext();
 
@@ -63,6 +63,7 @@ export const SnapUIInput: FunctionComponent<
       value={value}
       onChange={handleChange}
       label={label}
+      disabled={disabled}
       {...props}
     />
   );

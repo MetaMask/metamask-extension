@@ -254,26 +254,11 @@
   "from": {
     "message": "От"
   },
-  "functionType": {
-    "message": "Тип функция"
-  },
   "gasLimit": {
     "message": "Ограничение на газ"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ограничението за газ е максималното количество единици газ, което сте готови да похарчите."
-  },
   "gasLimitTooLow": {
     "message": "Ограничението за газ трябва да бъде поне 21000"
-  },
-  "gasPrice": {
-    "message": "Цената на газа (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Цена на газа е изключително ниска"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Цената на газа определя количеството етер, което сте готови да платите за всяка единица газ."
   },
   "gasUsed": {
     "message": "Използван газ"
@@ -315,9 +300,6 @@
   "import": {
     "message": "Импортиране",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Импортиране на акаунт"
   },
   "importAccountMsg": {
     "message": "Импортираните акаунти няма да бъдат свързани с първоначално създадената ви фраза за метаМаск акаунт. Научете повече за импортираните акаунти"
@@ -467,9 +449,6 @@
   "origin": {
     "message": "Произход"
   },
-  "parameters": {
-    "message": "Параметри"
-  },
   "participateInMetaMetrics": {
     "message": "Участвайте в MetaMetrics"
   },
@@ -538,9 +517,6 @@
   "removeAccountDescription": {
     "message": "Този акаунт ще бъде премахнат от портфейла ви. Моля, уверете се, че имате оригиналната фраза или частен ключ за този импортиран акаунт, преди да продължите. Можете да импортирате или създавате отново акаунти от падащото меню."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "искания, които чакат да бъдат потвърдени"
-  },
   "required": {
     "message": "Задължително"
   },
@@ -608,9 +584,6 @@
   "showHexDataDescription": {
     "message": "Изберете това, за да се покаже полето с шестнадесетични данни на екрана за изпращане"
   },
-  "sigRequest": {
-    "message": "Заявка за подпис"
-  },
   "sign": {
     "message": "Подпис"
   },
@@ -658,9 +631,6 @@
   },
   "terms": {
     "message": "Условия за ползване"
-  },
-  "tips": {
-    "message": "Дарения"
   },
   "to": {
     "message": "На"
@@ -734,17 +704,11 @@
   "unknown": {
     "message": "Неизвестно"
   },
-  "unknownNetwork": {
-    "message": "Неизвестна частна мрежа"
-  },
   "unknownQrCode": {
     "message": "Грешка: Не можахме да идентифицираме този QR код"
   },
   "unlock": {
     "message": "Отключване"
-  },
-  "unlockMessage": {
-    "message": "Децентрализираната мрежа очаква"
   },
   "urlErrorMsg": {
     "message": "URI изискват съответния HTTP / HTTPS префикс."
@@ -767,13 +731,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Трябва да разрешите достъпа на камерата, за да използвате тази функция."
   },
-  "youSign": {
-    "message": "Вие подписвате"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Вашата лична фраза зародиш"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Нулева цена на газ при ускоряване"
   }
 }

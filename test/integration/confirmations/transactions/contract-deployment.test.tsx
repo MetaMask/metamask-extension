@@ -54,6 +54,8 @@ const getMetaMaskStateWithUnapprovedContractDeployment = ({
 }) => {
   return {
     ...mockMetaMaskState,
+    participateInMetaMetrics: true,
+    dataCollectionForMarketing: false,
     preferences: {
       ...mockMetaMaskState.preferences,
       showConfirmationAdvancedDetails,
@@ -147,6 +149,7 @@ describe('Contract Deployment Confirmation', () => {
     const DEPOSIT_HEX_SIG = '0xd0e30db0';
     mock4byte(DEPOSIT_HEX_SIG);
     mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
@@ -225,6 +228,7 @@ describe('Contract Deployment Confirmation', () => {
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.Transaction,
             transaction_type: TransactionType.deployContract,
+            hd_entropy_index: 0,
           },
         }),
       ]),
@@ -308,7 +312,7 @@ describe('Contract Deployment Confirmation', () => {
     const firstGasField = await within(editGasFeesRow).findByTestId(
       'first-gas-field',
     );
-    expect(firstGasField).toHaveTextContent('0.0001 SepoliaETH');
+    expect(firstGasField).toHaveTextContent('0.0001');
     expect(editGasFeesRow).toContainElement(
       await screen.findByTestId('edit-gas-fee-icon'),
     );
@@ -326,6 +330,8 @@ describe('Contract Deployment Confirmation', () => {
 
   it('sets the preference showConfirmationAdvancedDetails to true when advanced details button is clicked', async () => {
     mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       createMockImplementation({ setPreference: {} }),
     );
 
@@ -365,6 +371,8 @@ describe('Contract Deployment Confirmation', () => {
 
   it('displays the advanced transaction details section', async () => {
     mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       createMockImplementation({ setPreference: {} }),
     );
 
@@ -397,7 +405,7 @@ describe('Contract Deployment Confirmation', () => {
     const maxFee = await screen.findByTestId('gas-fee-details-max-fee');
     expect(gasFeesSection).toContainElement(maxFee);
     expect(maxFee).toHaveTextContent(tEn('maxFee') as string);
-    expect(maxFee).toHaveTextContent('0.0023 SepoliaETH');
+    expect(maxFee).toHaveTextContent('0.0023');
 
     const nonceSection = await screen.findByTestId(
       'advanced-details-nonce-section',
