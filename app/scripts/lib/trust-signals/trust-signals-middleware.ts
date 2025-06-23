@@ -36,21 +36,13 @@ export function createTrustSignalsMiddleware(
       }
 
       if (isEthSendTransaction(req)) {
-        handleEthSendTransaction(
-          req,
-          appStateController,
-          networkController,
-          phishingController,
-        );
+        handleEthSendTransaction(req, appStateController, networkController);
+        scanUrl(req, phishingController);
       } else if (isEthSignTypedData(req)) {
-        handleEthSignTypedData(
-          req,
-          appStateController,
-          networkController,
-          phishingController,
-        );
-      } else if (isEthAccounts(req) && isProdEnabled()) {
-        handleEthAccounts(req, phishingController);
+        handleEthSignTypedData(req, appStateController, networkController);
+        scanUrl(req, phishingController);
+      } else if (isEthAccounts(req)) {
+        scanUrl(req, phishingController);
       }
     } catch (error) {
       console.error('[createTrustSignalsMiddleware] error: ', error);
@@ -60,21 +52,22 @@ export function createTrustSignalsMiddleware(
   };
 }
 
-function handleEthSendTransaction(
+function scanUrl(
   req: JsonRpcRequest & { mainFrameOrigin?: string },
-  appStateController: AppStateController,
-  networkController: NetworkController,
   phishingController: PhishingController,
 ) {
   if (req.mainFrameOrigin && isProdEnabled()) {
     phishingController.scanUrl(req.mainFrameOrigin).catch((error) => {
-      console.error(
-        '[createTrustSignalsMiddleware] error scanning url for transaction:',
-        error,
-      );
+      console.error('[createTrustSignalsMiddleware] error:', error);
     });
   }
+}
 
+function handleEthSendTransaction(
+  req: JsonRpcRequest,
+  appStateController: AppStateController,
+  networkController: NetworkController,
+) {
   if (!hasValidTransactionParams(req)) {
     return;
   }
@@ -91,20 +84,10 @@ function handleEthSendTransaction(
 }
 
 function handleEthSignTypedData(
-  req: JsonRpcRequest & { mainFrameOrigin?: string },
+  req: JsonRpcRequest,
   appStateController: AppStateController,
   networkController: NetworkController,
-  phishingController: PhishingController,
 ) {
-  if (req.mainFrameOrigin) {
-    phishingController.scanUrl(req.mainFrameOrigin).catch((error) => {
-      console.error(
-        '[createTrustSignalsMiddleware] error scanning url for signature:',
-        error,
-      );
-    });
-  }
-
   if (!hasValidTypedDataParams(req)) {
     return;
   }
@@ -129,15 +112,4 @@ function handleEthSignTypedData(
       error,
     );
   });
-}
-
-function handleEthAccounts(
-  req: JsonRpcRequest & { mainFrameOrigin?: string },
-  phishingController: PhishingController,
-) {
-  if (req.mainFrameOrigin) {
-    phishingController.scanUrl(req.mainFrameOrigin).catch((error) => {
-      console.error('[createTrustSignalsMiddleware] error:', error);
-    });
-  }
 }
