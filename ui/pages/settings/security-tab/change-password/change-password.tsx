@@ -73,7 +73,7 @@ const ChangePassword = () => {
       return 'weak';
     }
     if (score === 3) {
-      return 'average';
+      return 'good';
     }
     return 'strong';
   };
