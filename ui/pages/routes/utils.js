@@ -23,7 +23,7 @@ import {
   SEND_ROUTE,
   SNAPS_VIEW_ROUTE,
   DEEP_LINK_ROUTE,
-  WALLET_DETAILS_ROUTE_WITH_ID,
+  WALLET_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -185,7 +185,7 @@ export function hideAppHeader(props) {
 
   const isWalletDetailsPage = Boolean(
     matchPath(location.pathname, {
-      path: WALLET_DETAILS_ROUTE_WITH_ID,
+      path: WALLET_DETAILS_ROUTE,
       exact: false,
     }),
   );

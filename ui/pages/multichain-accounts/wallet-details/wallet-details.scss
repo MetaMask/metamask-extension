@@ -1,6 +1,7 @@
 @use "design-system";
 
 .wallet-details-page {
+  max-width: 600px;
   .wallet-details-page__rows-container {
     .wallet-details-page__row {
       display: flex;

@@ -1,5 +1,4 @@
 import React, { useEffect, memo } from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -25,17 +24,19 @@ import { getUseBlockie } from '../../../../selectors';
 import { useMultichainAccountTotalFiatBalance } from '../../../../hooks/useMultichainAccountTotalFiatBalance';
 import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 
+export type WalletDetailsAccountItemProps = {
+  account: InternalAccount;
+  onClick: (account: InternalAccount) => void;
+  onBalanceUpdate: (accountId: string, balance: string) => void;
+  className?: string;
+};
+
 const WalletDetailsAccountItem = ({
   account,
   onClick,
   onBalanceUpdate,
   className,
-}: {
-  account: InternalAccount;
-  onClick: (account: InternalAccount) => void;
-  onBalanceUpdate: (accountId: string, balance: string) => void;
-  className?: string;
-}) => {
+}: WalletDetailsAccountItemProps) => {
   const useBlockie = useSelector(getUseBlockie);
   const { totalFiatBalance } = useMultichainAccountTotalFiatBalance(account);
 
@@ -94,19 +95,6 @@ const WalletDetailsAccountItem = ({
       </Box>
     </Box>
   );
-};
-
-WalletDetailsAccountItem.propTypes = {
-  account: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    address: PropTypes.string.isRequired,
-    metadata: PropTypes.shape({
-      name: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-  onClick: PropTypes.func.isRequired,
-  onBalanceUpdate: PropTypes.func.isRequired,
-  className: PropTypes.string,
 };
 
 export default memo(WalletDetailsAccountItem);

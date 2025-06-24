@@ -54,7 +54,7 @@ import {
   DEFI_ROUTE,
   DEEP_LINK_ROUTE,
   SMART_ACCOUNT_UPDATE,
-  WALLET_DETAILS_ROUTE_WITH_ID,
+  WALLET_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -414,7 +414,7 @@ export default class Routes extends Component {
             exact
           />
           <Authenticated
-            path={WALLET_DETAILS_ROUTE_WITH_ID}
+            path={WALLET_DETAILS_ROUTE}
             component={WalletDetails}
             exact
           />
