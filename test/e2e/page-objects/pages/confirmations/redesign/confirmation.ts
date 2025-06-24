@@ -46,6 +46,22 @@ class Confirmation {
     this.confirmationHeadingTitle = { text: 'Confirmation Dialog' };
   }
 
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.footerCancelButton,
+        this.footerConfirmButton,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for confirmation page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Confirmation page is loaded');
+  }
+
   async clickScrollToBottomButton() {
     await this.driver.clickElementSafe(this.scrollToBottomButton);
   }
@@ -59,6 +75,10 @@ class Confirmation {
       this.headerAccountDetailsButton,
     );
     await accountDetailsButton.sendKeys(Key.RETURN);
+  }
+
+  async clickFooterCancelButton() {
+    await this.driver.clickElement(this.footerCancelButton);
   }
 
   async clickFooterCancelButtonAndAndWaitForWindowToClose() {
@@ -88,7 +108,7 @@ class Confirmation {
     totalPages: number,
   ): Promise<void> {
     try {
-      await this.driver.findElement({
+      await this.driver.waitForSelector({
         css: this.navigationTitle,
         text: `${currentPage} of ${totalPages}`,
       });
@@ -105,6 +125,12 @@ class Confirmation {
   async verifyConfirmationHeadingTitle(): Promise<void> {
     console.log('Verify confirmation heading title is Confirmation Dialog');
     await this.driver.waitForSelector(this.confirmationHeadingTitle);
+  }
+
+  async verifyRejectAllButtonNotPresent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.rejectAllButton, {
+      timeout: 5000,
+    });
   }
 }
 
