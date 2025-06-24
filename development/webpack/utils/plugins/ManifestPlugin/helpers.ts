@@ -1,4 +1,5 @@
 import merge from 'lodash/merge';
+import { MANIFEST_DEV_KEY } from '../../../../build/constants';
 /**
  * Returns a function that will transform a manifest JSON object based on the
  * given build args.
@@ -98,10 +99,35 @@ export function transformManifest(
     transforms.push(addTabsPermission);
   }
 
+  function addManifestKeyAndPermissions(
+    browserManifest: chrome.runtime.Manifest,
+  ) {
+    if (browserManifest.key) {
+      throw new Error(
+        "manifest contains 'key' already; this transform should be removed.",
+      );
+    } else {
+      browserManifest.key = MANIFEST_DEV_KEY;
+    }
+
+    if (browserManifest.optional_permissions?.includes('identity')) {
+      throw new Error(
+        "manifest contains 'identity' already; this transform should be removed.",
+      );
+    } else {
+      browserManifest.optional_permissions?.push('identity');
+    }
+  }
+
+  if (isDevelopment || args.test) {
+    transforms.push(addManifestKeyAndPermissions);
+  }
+
   return transforms.length
     ? (browserManifest: chrome.runtime.Manifest, _browser: string) => {
         const manifestClone = structuredClone(browserManifest);
         transforms.forEach((transform) => transform(manifestClone));
+        console.log('manifestClone', manifestClone);
         return manifestClone;
       }
     : undefined;
