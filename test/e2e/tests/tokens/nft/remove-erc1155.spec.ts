@@ -10,6 +10,7 @@ import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
 import { setupAutoDetectMocking } from './mocks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 
 const isGlobalNetworkSelectorRemoved = true;
 
@@ -34,8 +35,9 @@ describe('Remove ERC1155 NFT', function () {
           .withNftControllerERC1155()
           .withEnabledNetworks({
             eip155: {
-              '0x1': true,
-              '0xe708': true,
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.LOCALHOST]: true,
             },
           })
           .build(),
@@ -70,8 +72,9 @@ describe('Remove ERC1155 NFT', function () {
           .withNetworkControllerOnLinea()
           .withEnabledNetworks({
             eip155: {
-              '0x1': true,
-              '0xe708': true,
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.LOCALHOST]: true,
             },
           })
           .build(),
