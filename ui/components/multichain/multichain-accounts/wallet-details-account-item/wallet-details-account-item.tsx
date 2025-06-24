@@ -6,6 +6,7 @@ import {
   AvatarAccountSize,
   AvatarAccountVariant,
   Box,
+  BoxProps,
   Icon,
   IconName,
   IconSize,
@@ -29,6 +30,7 @@ export type WalletDetailsAccountItemProps = {
   onClick: (account: InternalAccount) => void;
   onBalanceUpdate: (accountId: string, balance: string) => void;
   className?: string;
+  rowStylesProps?: BoxProps<typeof Box>;
 };
 
 const WalletDetailsAccountItem = ({
@@ -36,6 +38,7 @@ const WalletDetailsAccountItem = ({
   onClick,
   onBalanceUpdate,
   className,
+  ...rowStylesProps
 }: WalletDetailsAccountItemProps) => {
   const useBlockie = useSelector(getUseBlockie);
   const { totalFiatBalance } = useMultichainAccountTotalFiatBalance(account);
@@ -51,7 +54,10 @@ const WalletDetailsAccountItem = ({
       onClick={() => onClick(account)}
       width={BlockSize.Full}
       textAlign={TextAlign.Left}
+      padding={4}
+      marginBottom={1}
       style={{ cursor: 'pointer', border: 'none' }}
+      {...rowStylesProps}
     >
       <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
         <AvatarAccount

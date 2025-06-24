@@ -18,10 +18,14 @@ import {
 } from '../../../components/component-library';
 import {
   AlignItems,
+  BlockSize,
   IconColor,
   Display,
   TextVariant,
   TextColor,
+  TextAlign,
+  JustifyContent,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import {
   Content,
@@ -87,7 +91,7 @@ const WalletDetails = () => {
           startAccessory={
             <ButtonIcon
               size={ButtonIconSize.Sm}
-              ariaLabel="Back"
+              ariaLabel={t('back')}
               iconName={IconName.ArrowLeft}
               onClick={handleBack}
             />
@@ -119,6 +123,13 @@ const WalletDetails = () => {
     groupKeys.length > 0 ? wallet.groups[groupKeys[0] as AccountGroupId] : null;
   const accounts = firstGroup?.accounts || [];
 
+  const rowStylesProps = {
+    display: Display.Flex,
+    justifyContent: JustifyContent.spaceBetween,
+    alignItems: AlignItems.center,
+    backgroundColor: BackgroundColor.backgroundAlternative,
+  };
+
   return (
     <Page className="wallet-details-page">
       <Header
@@ -128,7 +139,7 @@ const WalletDetails = () => {
         startAccessory={
           <ButtonIcon
             size={ButtonIconSize.Sm}
-            ariaLabel="Back"
+            ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             onClick={handleBack}
           />
@@ -138,7 +149,12 @@ const WalletDetails = () => {
       </Header>
       <Content>
         <Box marginBottom={4} className="wallet-details-page__rows-container">
-          <Box className="wallet-details-page__row">
+          <Box
+            className="wallet-details-page__row"
+            padding={4}
+            marginBottom={1}
+            {...rowStylesProps}
+          >
             <Text
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
@@ -153,7 +169,12 @@ const WalletDetails = () => {
             </Text>
           </Box>
 
-          <Box className="wallet-details-page__row">
+          <Box
+            className="wallet-details-page__row"
+            padding={4}
+            marginBottom={1}
+            {...rowStylesProps}
+          >
             <Text
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
@@ -180,6 +201,11 @@ const WalletDetails = () => {
           <Box marginBottom={4} className="wallet-details-page__rows-container">
             <Box
               className="wallet-details-page__row wallet-details-page__srp-button"
+              padding={4}
+              marginBottom={1}
+              width={BlockSize.Full}
+              textAlign={TextAlign.Left}
+              {...rowStylesProps}
               as="button"
               onClick={() => setSrpQuizModalVisible(true)}
             >
@@ -223,6 +249,7 @@ const WalletDetails = () => {
                 onClick={handleAccountClick}
                 onBalanceUpdate={handleBalanceUpdate}
                 className="wallet-details-page__row"
+                {...rowStylesProps}
               />
             ))}
           </Box>

@@ -394,7 +394,7 @@ describe('WalletDetails', () => {
   it('navigates back when back button is clicked', () => {
     const { getByLabelText } = renderComponent();
 
-    const backButton = getByLabelText('Back');
+    const backButton = getByLabelText('back');
     fireEvent.click(backButton);
 
     expect(mockHistory.goBack).toHaveBeenCalled();

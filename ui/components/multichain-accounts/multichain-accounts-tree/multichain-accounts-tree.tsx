@@ -50,10 +50,7 @@ export const MultichainAccountsTree = ({
   const handleWalletDetailsClick = useCallback(
     (walletId: string) => {
       history.push(
-        WALLET_DETAILS_ROUTE.replace(
-          ':id',
-          encodeURIComponent(walletId),
-        ),
+        WALLET_DETAILS_ROUTE.replace(':id', encodeURIComponent(walletId)),
       );
       onClose();
     },
