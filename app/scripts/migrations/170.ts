@@ -5,7 +5,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 169;
+export const version = 170;
 
 /**
  * This migration deletes the preference `disabledUpgradeAccountsByChain`, `accountUpgradeDisabledChains` if the user has
