@@ -84,6 +84,14 @@ class AssetListPage {
   private readonly tokenAddressInDetails =
     '[data-testid="address-copy-button-text"]';
 
+  private readonly tokenConfirmListItem =
+    '.import-tokens-modal__confirm-token-list-item-wrapper';
+
+  private readonly tokenDecimalsTitle = {
+    css: '.mm-label',
+    text: 'Token decimal',
+  };
+
   private readonly tokenNameInDetails = '[data-testid="asset-name"]';
 
   private readonly tokenImportedMessageCloseButton =
@@ -94,6 +102,11 @@ class AssetListPage {
 
   private readonly tokenOptionsButton =
     '[data-testid="asset-list-control-bar-action-button"]';
+
+  private readonly tokenSymbolTitle = {
+    css: '.mm-label',
+    text: 'Token symbol',
+  };
 
   private tokenImportSelectNetwork(chainId: string): string {
     return `[data-testid="select-network-item-${chainId}"]`;
@@ -220,9 +233,9 @@ class AssetListPage {
   }
 
   async importCustomTokenByChain(
-    tokenAddress: string,
-    symbol: string,
     chainId: string,
+    tokenAddress: string,
+    symbol?: string,
   ): Promise<void> {
     console.log(`Creating custom token ${symbol} on homepage`);
     await this.driver.clickElement(this.tokenOptionsButton);
@@ -235,8 +248,20 @@ class AssetListPage {
       this.tokenImportSelectNetwork(chainId),
     );
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
-    await this.driver.fill(this.tokenSymbolInput, symbol);
+    await this.driver.waitForSelector(this.tokenSymbolTitle);
+
+    if (symbol) {
+      // do not fill the form until the button is disabled, because there's a form re-render which can clear the input field causing flakiness
+      await this.driver.waitForSelector(this.importTokensNextButton, {
+        state: 'disabled',
+        waitAtLeastGuard: 1000,
+      });
+      await this.driver.fill(this.tokenSymbolInput, symbol);
+    }
+
+    await this.driver.waitForSelector(this.tokenDecimalsTitle);
     await this.driver.clickElement(this.importTokensNextButton);
+    await this.driver.waitForSelector(this.tokenConfirmListItem);
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmImportTokenButton,
     );
@@ -281,7 +306,7 @@ class AssetListPage {
     await this.driver.clickElement(this.networksToggle);
     await this.driver.waitUntil(
       async () => {
-        return await this.driver.findElement(this.allNetworksOption);
+        return Boolean(await this.driver.findElement(this.allNetworksOption));
       },
       {
         timeout: 5000,

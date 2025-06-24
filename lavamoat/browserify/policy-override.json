@@ -121,6 +121,12 @@
         "crypto.getRandomValues": true
       }
     },
+    "@metamask/notification-services-controller>firebase>@firebase/messaging": {
+      "globals": {
+        "PushManager.getSubscription": true,
+        "PushManager.subscribe": true
+      }
+    },
     "@metamask/snaps-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true

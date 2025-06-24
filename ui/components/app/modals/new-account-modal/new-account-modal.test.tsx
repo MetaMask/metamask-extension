@@ -7,7 +7,14 @@ import mockState from '../../../../../test/data/mock-state.json';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
+import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import NewAccountModal from './new-account-modal.container';
+
+const mockAddress = '0x1234567890';
+const mockNewAccount = createMockInternalAccount({
+  name: 'New Account',
+  address: mockAddress,
+});
 
 const mockOnCreateNewAccount = jest.fn();
 const mockNewAccountNumber = 2;
@@ -15,7 +22,11 @@ const mockNewMetamaskState = {
   ...mockState.metamask,
   currentLocale: 'en',
 };
-const mockAddress = '0x1234567890';
+
+jest.mock('../../../../selectors/selectors', () => ({
+  ...jest.requireActual('../../../../selectors/selectors'),
+  getInternalAccountByAddress: () => jest.fn().mockReturnValue(mockNewAccount),
+}));
 
 const mockSubmitRequestToBackground = jest.fn().mockImplementation((method) => {
   switch (method) {

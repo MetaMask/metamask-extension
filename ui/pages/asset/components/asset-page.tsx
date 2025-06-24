@@ -1,5 +1,5 @@
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { EthMethod, SolMethod } from '@metamask/keyring-api';
+import { BtcMethod, EthMethod, SolMethod } from '@metamask/keyring-api';
 import {
   type CaipAssetType,
   type Hex,
@@ -112,7 +112,8 @@ const AssetPage = ({
   const isSigningEnabled =
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation) ||
-    account.methods.includes(SolMethod.SignTransaction);
+    account.methods.includes(SolMethod.SignTransaction) ||
+    account.methods.includes(BtcMethod.SendBitcoin);
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
   const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat);
@@ -299,7 +300,7 @@ const AssetPage = ({
         currentPrice={currentPrice}
         currency={currency}
       />
-      <Box marginTop={4}>
+      <Box marginTop={4} paddingLeft={4} paddingRight={4}>
         {type === AssetType.native ? (
           <CoinButtons
             {...{

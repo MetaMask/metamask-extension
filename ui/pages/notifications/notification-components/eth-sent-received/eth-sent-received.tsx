@@ -1,16 +1,11 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../../../app/scripts/translate';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { t } from '../../../../../shared/lib/translate';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import {
   NotificationComponentType,
   type NotificationComponent,
 } from '../types/notifications/notifications';
-
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import {
   createTextItems,
@@ -57,10 +52,7 @@ const title = (n: ETHNotification) =>
   isSent(n) ? t('notificationItemSentTo') : t('notificationItemReceivedFrom');
 
 const getNativeCurrency = (n: ETHNotification) => {
-  const chainId = decimalToHex(n.chain_id);
-  const nativeCurrency = getNetworkDetailsByChainId(
-    `0x${chainId}` as keyof typeof CHAIN_IDS,
-  );
+  const nativeCurrency = getNetworkDetailsByChainId(n.chain_id);
   return nativeCurrency;
 };
 
@@ -109,9 +101,8 @@ export const components: NotificationComponent<ETHNotification> = {
   },
   details: {
     title: ({ notification }) => {
-      const chainId = decimalToHex(notification.chain_id);
       const { nativeCurrencySymbol } = getNetworkDetailsByChainId(
-        `0x${chainId}` as keyof typeof CHAIN_IDS,
+        notification.chain_id,
       );
       return (
         <NotificationDetailTitle
@@ -167,9 +158,8 @@ export const components: NotificationComponent<ETHNotification> = {
         />
       ),
       Asset: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo, nativeCurrencySymbol } =
-          getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);
+          getNetworkDetailsByChainId(notification.chain_id);
         return (
           <NotificationDetailAsset
             icon={{
@@ -196,9 +186,8 @@ export const components: NotificationComponent<ETHNotification> = {
         );
       },
       Network: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo, nativeCurrencyName } =
-          getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);
+          getNetworkDetailsByChainId(notification.chain_id);
 
         return (
           <NotificationDetailAsset

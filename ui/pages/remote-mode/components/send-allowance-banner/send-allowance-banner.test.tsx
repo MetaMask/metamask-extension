@@ -3,7 +3,11 @@ import configureMockStore from 'redux-mock-store';
 import { AssetType } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import mockState from '../../../../../test/data/mock-state.json';
-import { DailyAllowance, TOKEN_DETAILS, TokenSymbol } from '../../remote.types';
+import {
+  DailyAllowance,
+  TOKEN_DETAILS,
+  TokenSymbol,
+} from '../../../../../shared/lib/remote-mode';
 import SendAllowanceBanner from './send-allowance-banner.component';
 
 const mockAllowance: DailyAllowance = {
@@ -13,6 +17,7 @@ const mockAllowance: DailyAllowance = {
   name: TOKEN_DETAILS[TokenSymbol.ETH].name,
   type: AssetType.native,
   address: '',
+  decimals: 18,
 };
 
 const renderComponent = () => {

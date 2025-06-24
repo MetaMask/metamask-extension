@@ -38,7 +38,13 @@ export const BalanceChangeList: React.FC<{
   if (sortedBalanceChanges.length === 0) {
     return null; // Hide this component.
   }
-  const showFiatTotal = sortedBalanceChanges.length > 1;
+
+  const hasMultipleBalanceChanges = sortedBalanceChanges.length > 1;
+  const hasUnlimitedApproval = balanceChanges.some(
+    (bc) => bc.isUnlimitedApproval,
+  );
+
+  const showFiatTotal = hasMultipleBalanceChanges && !hasUnlimitedApproval;
 
   return (
     <Box>
@@ -53,7 +59,7 @@ export const BalanceChangeList: React.FC<{
             key={index}
             label={index === 0 ? heading : undefined}
             balanceChange={balanceChange}
-            showFiat={!showFiatTotal}
+            showFiat={!showFiatTotal && !balanceChange.isUnlimitedApproval}
             labelColor={labelColor}
           />
         ))}

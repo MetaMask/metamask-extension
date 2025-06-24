@@ -32,7 +32,7 @@ import {
 import { getSelectedInternalAccount } from '../../../selectors';
 import { RevokeWithdrawlConfirmModalType } from '../components/revoke-withdrawl-confirm-modal';
 import { useRemoteMode } from '../hooks/useRemoteMode';
-import { REMOTE_MODES } from '../remote.types';
+import { REMOTE_MODES } from '../../../../shared/lib/remote-mode';
 import {
   REMOTE_ROUTE_SETUP_SWAPS,
   REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
@@ -100,7 +100,7 @@ export default function RemoteModePermissions({
         Remote Mode lets you use your hardware wallet without plugging it in.{' '}
       </Text>
       <Box paddingTop={2} paddingBottom={2}>
-        <Card backgroundColor={BackgroundColor.backgroundMuted}>
+        <Card backgroundColor={BackgroundColor.backgroundSection}>
           <Box
             display={Display.Flex}
             gap={2}
@@ -233,7 +233,7 @@ export default function RemoteModePermissions({
         </Card>
       </Box>
       <Box paddingTop={2} paddingBottom={2}>
-        <Card backgroundColor={BackgroundColor.backgroundMuted}>
+        <Card backgroundColor={BackgroundColor.backgroundSection}>
           <Box
             display={Display.Flex}
             gap={2}

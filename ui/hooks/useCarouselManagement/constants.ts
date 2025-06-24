@@ -1,3 +1,9 @@
+export const BASIC_FUNCTIONALITY_SLIDE = {
+  id: 'basic_functionality',
+  title: 'basicConfigurationBannerTitle',
+  description: 'enableIt',
+  image: './images/basic-functionality.svg',
+};
 export const REMOTE_MODE_SLIDE = {
   id: 'remoteMode',
   title: 'slideRemoteModeTitle',
@@ -38,14 +44,12 @@ export const FUND_SLIDE = {
   href: 'https://portfolio.metamask.io/buy/build-quote',
 };
 
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 export const BRIDGE_SLIDE = {
   id: 'bridge',
   title: 'slideBridgeTitle',
   description: 'slideBridgeDescription',
   image: './images/slide-bridge-icon.svg',
 };
-///: END:ONLY_INCLUDE_IF
 
 export const CARD_SLIDE = {
   id: 'card',

@@ -16,4 +16,4 @@ jobs:
     uses: metamask/github-tools/.github/workflows/pr-line-check.yml@main
     with:
       max_lines: 1000
-      ignore_patterns: '(\.lock$)'
+      ignore_patterns: '(\.lock|\.snap|lavamoat\/.*policy\.json)$'

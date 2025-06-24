@@ -10,14 +10,12 @@ import {
 } from '@metamask/bridge-controller';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getDataCollectionForMarketing,
   getIsBridgeChain,
   getIsBridgeEnabled,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   type SwapsEthToken,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -27,17 +25,13 @@ import {
 } from '../../../shared/constants/metametrics';
 
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../helpers/utils/portfolio';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
-///: END:ONLY_INCLUDE_IF
 
 const useBridging = () => {
   const history = useHistory();
