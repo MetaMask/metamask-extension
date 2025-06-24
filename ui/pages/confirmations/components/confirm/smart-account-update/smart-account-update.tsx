@@ -33,10 +33,10 @@ import {
 import { setSmartAccountOptInForAccounts } from '../../../../../store/actions';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getInternalAccounts, getUseBlockie } from '../../../../../selectors';
-import IconButton from '../../../../../components/ui/icon-button/icon-button-round';
 import { getSmartAccountOptInForAccounts } from '../../../selectors/preferences';
 import { AccountSelection } from '../account-selection';
 import { SmartAccountUpdateSuccess } from './smart-account-update-success';
+import IconButton from '../../../../../components/ui/icon-button';
 
 const ListItem = ({
   imgSrc,
