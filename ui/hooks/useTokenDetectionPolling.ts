@@ -1,5 +1,9 @@
 import { useSelector } from 'react-redux';
-import { getChainIdsToPoll, getUseTokenDetection } from '../selectors';
+import {
+  getChainIdsToPoll,
+  getUseTokenDetection,
+  isGlobalNetworkSelectorRemoved,
+} from '../selectors';
 import { getEnabledChainIds } from '../selectors/multichain/networks';
 import {
   tokenDetectionStartPolling,
@@ -9,7 +13,6 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
-import { isGlobalNetworkSelectorRemoved } from '../selectors/selectors';
 import useMultiPolling from './useMultiPolling';
 
 const useTokenDetectionPolling = () => {
