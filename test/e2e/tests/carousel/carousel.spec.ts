@@ -8,6 +8,7 @@ describe('Carousel component e2e tests', function () {
   const MAX_VISIBLE_SLIDES = MAX_SLIDES;
   const SLIDE_IDS = [
     'solana',
+    'downloadMobileApp',
     'smartAccountUpgrade',
     'bridge',
     'fund',
