@@ -124,15 +124,30 @@ describe('transaction-details', () => {
 
   describe('bridge snapshots', () => {
     it('should render completed bridge snapshot', () => {
-      const { baseElement } = renderWithProvider(
+      const { queryAllByTestId, getByText } = renderWithProvider(
         <CrossChainSwapTxDetails />,
         getMockStore(
           mockBridgeTxData.transactionGroup,
           mockBridgeTxData.srcTxMetaId,
-          mockBridgeTxData.bridgeHistoryItem as BridgeHistoryItem,
+          mockBridgeTxData.bridgeHistoryItem as never,
         ),
       );
-      expect(baseElement).toMatchSnapshot();
+      const expectedRows = [
+        'Statuscomplete',
+        'BridgingPolygonOP Mainnet',
+        'Time stampJun 20, 2025 at 05:43 PM',
+        'You sent2 USDC onPolygon',
+        'Total gas fee0.004455ETH',
+        'Nonce3',
+      ];
+      expect(queryAllByTestId('transaction-detail-row')).toHaveLength(6);
+      queryAllByTestId('transaction-detail-row').forEach((row, i) => {
+        expect(row).toHaveTextContent(expectedRows[i]);
+      });
+
+      expect(getByText('Bridge details')).toBeInTheDocument();
+      expect(getByText('View on PolygonScan')).toBeInTheDocument();
+      expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
     });
 
     it('should render pending bridge snapshot', () => {
@@ -153,14 +168,14 @@ describe('transaction-details', () => {
               ...mockBridgeTxData.bridgeHistoryItem.status,
               status: StatusTypes.PENDING,
             },
-          } as BridgeHistoryItem,
+          } as never,
         ),
       );
       expect(baseElement).toMatchSnapshot();
     });
 
     it('should render confirmed bridge snapshot', () => {
-      const { baseElement } = renderWithProvider(
+      const { queryAllByTestId, getByText } = renderWithProvider(
         <CrossChainSwapTxDetails />,
         getMockStore(
           {
@@ -177,14 +192,29 @@ describe('transaction-details', () => {
               ...mockBridgeTxData.bridgeHistoryItem.status,
               status: StatusTypes.PENDING,
             },
-          } as BridgeHistoryItem,
+          } as never,
         ),
       );
-      expect(baseElement).toMatchSnapshot();
+      const expectedRows = [
+        'Statuspending',
+        'BridgingPolygonOP Mainnet',
+        'Time stampJun 20, 2025 at 05:43 PM',
+        'You sent2 USDC onPolygon',
+        'Total gas fee0.004455ETH',
+        'Nonce3',
+      ];
+      expect(queryAllByTestId('transaction-detail-row')).toHaveLength(6);
+      queryAllByTestId('transaction-detail-row').forEach((row, i) => {
+        expect(row).toHaveTextContent(expectedRows[i]);
+      });
+
+      expect(getByText('Bridge details')).toBeInTheDocument();
+      expect(getByText('View on PolygonScan')).toBeInTheDocument();
+      expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
     });
 
     it('should render failed on src bridge snapshot', () => {
-      const { baseElement } = renderWithProvider(
+      const { queryAllByTestId, getByText } = renderWithProvider(
         <CrossChainSwapTxDetails />,
         getMockStore(
           {
@@ -201,14 +231,29 @@ describe('transaction-details', () => {
               ...mockBridgeTxData.bridgeHistoryItem.status,
               status: StatusTypes.PENDING,
             },
-          } as BridgeHistoryItem,
+          } as never,
         ),
       );
-      expect(baseElement).toMatchSnapshot();
+      const expectedRows = [
+        'Statuspending',
+        'BridgingPolygonOP Mainnet',
+        'Time stampJun 20, 2025 at 05:43 PM',
+        'You sent2 USDC onPolygon',
+        'Total gas fee0.004455ETH',
+        'Nonce3',
+      ];
+      expect(queryAllByTestId('transaction-detail-row')).toHaveLength(6);
+      queryAllByTestId('transaction-detail-row').forEach((row, i) => {
+        expect(row).toHaveTextContent(expectedRows[i]);
+      });
+
+      expect(getByText('Bridge details')).toBeInTheDocument();
+      expect(getByText('View on PolygonScan')).toBeInTheDocument();
+      expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
     });
 
     it('should render failed on dest bridge snapshot', () => {
-      const { baseElement } = renderWithProvider(
+      const { queryAllByTestId, getByText } = renderWithProvider(
         <CrossChainSwapTxDetails />,
         getMockStore(
           {
@@ -225,10 +270,26 @@ describe('transaction-details', () => {
               ...mockBridgeTxData.bridgeHistoryItem.status,
               status: StatusTypes.FAILED,
             },
-          } as BridgeHistoryItem,
+          } as never,
         ),
       );
-      expect(baseElement).toMatchSnapshot();
+
+      const expectedRows = [
+        'Statusfailed',
+        'BridgingPolygonOP Mainnet',
+        'Time stampJun 20, 2025 at 05:43 PM',
+        'You sent2 USDC onPolygon',
+        'Total gas fee0.004455ETH',
+        'Nonce3',
+      ];
+      expect(queryAllByTestId('transaction-detail-row')).toHaveLength(6);
+      queryAllByTestId('transaction-detail-row').forEach((row, i) => {
+        expect(row).toHaveTextContent(expectedRows[i]);
+      });
+
+      expect(getByText('Bridge details')).toBeInTheDocument();
+      expect(getByText('View on PolygonScan')).toBeInTheDocument();
+      expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
     });
   });
 });

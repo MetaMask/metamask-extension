@@ -136,10 +136,28 @@ describe('TransactionListItemDetails Component', () => {
 
 describe('TransactionListItemDetails for swaps', () => {
   it('should render confirmed swap tx details', async () => {
-    const { baseElement } = await render({
+    const { queryByText, queryByTestId, queryAllByTestId } = await render({
       transactionGroup: mockSwapTxGroup,
     });
 
-    expect(baseElement).toMatchSnapshot();
+    expect(queryByText('View on block explorer')).toBeInTheDocument();
+    expect(queryByTestId('sender-to-recipient')).toHaveTextContent(
+      '0x0DCD5...3E7bc0x00000...00000',
+    );
+    const expectedRows = [
+      'Nonce1',
+      'Amount',
+      'Gas limit (units)489075',
+      'Gas used (units)357212',
+      'Base fee (GWEI)0.00000002',
+      'Priority fee (GWEI)30',
+      'Total gas fee0.010716ETH',
+      'Max fee per gas0.00000003ETH',
+      'Total0.01071636ETH',
+    ];
+
+    queryAllByTestId('transaction-breakdown-row').map((row, i) => {
+      expect(row).toHaveTextContent(expectedRows[i]);
+    });
   });
 });

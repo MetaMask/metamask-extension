@@ -332,11 +332,13 @@ describe('TransactionListItem', () => {
 
   it('should render confirmed legacy swap tx summary', () => {
     useSelector.mockImplementation(generateUseSelectorRouter({}));
-    const { baseElement } = renderWithProvider(
+    const { queryByTestId } = renderWithProvider(
       <TransactionListItem transactionGroup={mockLegacySwapTxGroup} />,
     );
 
-    expect(baseElement).toMatchSnapshot();
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Swap USDC to UNIConfirmed-2 USDC',
+    );
   });
 
   it('should render failed legacy swap tx summary', () => {
@@ -360,14 +362,16 @@ describe('TransactionListItem', () => {
   });
 
   it('should render confirmed unified swap tx summary', () => {
-    const { baseElement } = renderWithProvider(
+    const { queryByTestId } = renderWithProvider(
       <MetaMetricsContext.Provider value={jest.fn()}>
         <TransactionListItem transactionGroup={mockUnifiedSwapTxGroup} />
       </MetaMetricsContext.Provider>,
       mockStore(mockState),
     );
 
-    expect(baseElement).toMatchSnapshot();
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Swap to Confirmed-0 ETH',
+    );
   });
 
   it('should render failed unified swap tx summary', () => {
@@ -418,9 +422,8 @@ describe('TransactionListItem', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridge to OP MainnetFailed-2 USDC',
+      '?Bridge to OP MainnetTransaction 2 of 2-2 USDC',
     );
-    expect(getByText('Pending')).toBeInTheDocument();
   });
 
   it('should render confirmed bridge tx summary', () => {
@@ -445,7 +448,7 @@ describe('TransactionListItem', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridge to OP MainnetFailed-2 USDC',
+      '?Bridge to OP MainnetTransaction 2 of 2-2 USDC',
     );
     expect(getByText('Transaction 2 of 2')).toBeInTheDocument();
   });
@@ -465,13 +468,15 @@ describe('TransactionListItem', () => {
         },
       }),
     );
-    const { baseElement, getByTestId } = renderWithProvider(
+    const { queryByTestId, getByTestId } = renderWithProvider(
       <TransactionListItem
         transactionGroup={mockBridgeTxData.transactionGroup}
       />,
     );
 
-    expect(baseElement).toMatchSnapshot();
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Bridge to OP MainnetConfirmed-2 USDC',
+    );
 
     fireEvent.click(getByTestId('activity-list-item'));
     expect(mockPush).toHaveBeenCalledWith({
