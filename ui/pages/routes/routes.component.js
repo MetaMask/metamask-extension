@@ -54,6 +54,7 @@ import {
   DEFI_ROUTE,
   DEEP_LINK_ROUTE,
   PREDICT_ROUTE,
+  PREDICT_ROUTE_BET,
 } from '../../helpers/constants/routes';
 
 import {
@@ -151,7 +152,7 @@ const RemoteModeSetupDailyAllowance = mmLazy(() =>
 );
 const DeepLink = mmLazy(() => import('../deep-link/deep-link'));
 const Predict = mmLazy(() => import('../predict'));
-
+const PredictBet = mmLazy(() => import('../predict/bet'));
 // End Lazy Routes
 
 export default class Routes extends Component {
@@ -405,6 +406,7 @@ export default class Routes extends Component {
             exact
           />
           <Authenticated path={PREDICT_ROUTE} component={Predict} />
+          <Authenticated path={PREDICT_ROUTE_BET} component={PredictBet} />
 
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
