@@ -114,19 +114,20 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
               includeDevnet: false, // Connect to Mainnet only
             });
 
-            // Send a transaction
+            // Prompt the user to send a transaction
             const sendSolTest = await testDapp.getSendSolTest();
             await sendSolTest.sendTransaction();
 
-            // Confirm the signature
+            // User is prompted to connect again
             await driver.delay(largeDelayMs);
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+            await driver.clickElement({ text: 'Connect', tag: 'button' });
 
-            // Look for the permission to be set to Devnet
-            await driver.clickElement({ text: 'Permissions', tag: 'button' });
+            // Look for the chain to be set to Devnet
             const permission = await driver.findElement(
-              By.xpath("//span[contains(text(), 'Solana Devnet')]"),
+              By.xpath("//p[contains(text(), 'Solana Devnet')]"),
             );
+
             assert.ok(permission);
           },
         );
