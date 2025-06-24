@@ -1,7 +1,10 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
-import type { AccountGroupId, AccountWalletId } from '@metamask/account-tree-controller';
+import type {
+  AccountGroupId,
+  AccountWalletId,
+} from '@metamask/account-tree-controller';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
