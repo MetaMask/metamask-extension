@@ -20,7 +20,11 @@ export default function TransactionDetailRow({
   value,
 }: TransactionDetailRowProps) {
   return (
-    <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+    <Box
+      display={Display.Flex}
+      justifyContent={JustifyContent.spaceBetween}
+      data-testid="transaction-detail-row"
+    >
       <Text
         width={BlockSize.OneFourth}
         paddingRight={1}
