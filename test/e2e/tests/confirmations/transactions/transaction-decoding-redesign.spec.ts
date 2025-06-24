@@ -125,7 +125,9 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
-            [CHAIN_IDS.MAINNET]: true,
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
           })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
