@@ -40,7 +40,7 @@ const getMockStore = (
       metamaskStateOverrides: {
         internalAccounts: {
           accounts: {
-            identity: {
+            id: {
               address: '0x30e8ccad5a980bdf30447f8c2c48e70989d9d294',
               scopes: [EthScope.Mainnet],
               type: EthAccountType.Eoa,
