@@ -4864,6 +4864,9 @@
   "save": {
     "message": "Save"
   },
+  "saveSrp": {
+    "message": "Save Secret Recovery Phrase"
+  },
   "scanInstructions": {
     "message": "Place the QR code in front of your camera"
   },
