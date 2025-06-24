@@ -103,9 +103,13 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
 
   useEffect(() => {
     if (!secretRecoveryPhrase) {
-      history.push(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
+      history.push(
+        `${ONBOARDING_REVIEW_SRP_ROUTE}${
+          nextRouteQueryString ? `?${nextRouteQueryString}` : ''
+        }`,
+      );
     }
-  }, [history, secretRecoveryPhrase, isFromReminderParam]);
+  }, [history, secretRecoveryPhrase, nextRouteQueryString]);
 
   const resetQuizWords = useCallback(() => {
     const newQuizWords = generateQuizWords(splitSecretRecoveryPhrase);
