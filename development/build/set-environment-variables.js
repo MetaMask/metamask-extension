@@ -104,13 +104,6 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
       testing: isTestBuild,
     }),
   });
-
-  console.log('variables', variables.get('GOOGLE_AUTH_CONNECTION_ID'));
-  console.log('variables', variables.get('APPLE_AUTH_CONNECTION_ID'));
-  console.log('variables', variables.get('GOOGLE_GROUPED_AUTH_CONNECTION_ID'));
-  console.log('variables', variables.get('APPLE_GROUPED_AUTH_CONNECTION_ID'));
-  console.log('variables', variables.get('AUTH_SERVER_URL'));
-  console.log('variables', variables.get('WEB3AUTH_NETWORK'));
 };
 
 const BUILD_TYPES_TO_SVG_LOGO_PATH = {
