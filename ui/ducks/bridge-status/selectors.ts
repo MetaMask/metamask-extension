@@ -5,6 +5,7 @@ import { getSelectedAddress } from '../../selectors';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { BridgeStatusAppState } from '../../../shared/types/bridge-status';
+import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 
 export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
   state.metamask;
@@ -50,6 +51,33 @@ export const selectBridgeHistoryForApprovalTxId = createSelector(
   (bridgeHistory, approvalTxId) => {
     return Object.values(bridgeHistory).find(
       (bridgeHistoryItem) => bridgeHistoryItem.approvalTxId === approvalTxId,
+    );
+  },
+);
+
+export const selectReceivedSwapsTokenAmountFromTxMeta = createSelector(
+  [
+    selectBridgeHistoryItemForTxMetaId,
+    (_, __, txMeta) => txMeta,
+    (_, __, ___, approvalTxMeta) => approvalTxMeta,
+  ],
+  (bridgeHistoryItem, txMeta, approvalTxMeta) => {
+    if (!bridgeHistoryItem) {
+      return null;
+    }
+    const {
+      quote: { destAsset },
+      account,
+    } = bridgeHistoryItem;
+
+    return getSwapsTokensReceivedFromTxMeta(
+      destAsset.symbol,
+      txMeta,
+      destAsset.address,
+      account,
+      destAsset.decimals,
+      approvalTxMeta,
+      destAsset.chainId,
     );
   },
 );
