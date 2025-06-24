@@ -4,17 +4,20 @@ import {
 } from '@metamask/network-controller';
 import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import {
+  BatchTransactionParams,
   IsAtomicBatchSupportedResult,
   IsAtomicBatchSupportedResultEntry,
   Log,
+  SecurityAlertResponse,
   TransactionController,
   TransactionControllerGetStateAction,
+  TransactionEnvelopeType,
   TransactionMeta,
   TransactionReceipt,
   TransactionStatus,
   ValidateSecurityRequest,
 } from '@metamask/transaction-controller';
-import { Hex, JsonRpcRequest } from '@metamask/utils';
+import { bytesToHex, Hex, JsonRpcRequest } from '@metamask/utils';
 import { Messenger } from '@metamask/base-controller';
 import {
   GetCallsStatusCode,
@@ -28,8 +31,10 @@ import {
   AccountsControllerGetStateAction,
 } from '@metamask/accounts-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { parse, v4 } from 'uuid';
 
 import { EIP5792ErrorCode } from '../../../../shared/constants/transaction';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { generateSecurityAlertId } from '../ppom/ppom-util';
@@ -52,9 +57,56 @@ export enum AtomicCapabilityStatus {
 
 const VERSION = '2.0.0';
 
+async function processSingleTransaction({
+  addTransaction,
+  chainId,
+  from,
+  networkClientId,
+  origin,
+  securityAlertId,
+  transactions,
+  validateSecurity,
+}: {
+  addTransaction: TransactionController['addTransaction'];
+  chainId: Hex;
+  from: Hex;
+  networkClientId: string;
+  origin?: string;
+  securityAlertId: string;
+  transactions: { params: BatchTransactionParams }[];
+  validateSecurity: (
+    securityRequest: ValidateSecurityRequest,
+    chainId: Hex,
+  ) => void;
+}) {
+  const txParams = {
+    from,
+    ...transactions[0].params,
+    type: TransactionEnvelopeType.feeMarket,
+  };
+
+  const securityRequest: ValidateSecurityRequest = {
+    method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+    params: [txParams],
+    origin,
+  };
+  validateSecurity(securityRequest, chainId);
+
+  const batchId = generateBatchId();
+
+  await addTransaction(txParams, {
+    networkClientId,
+    origin,
+    securityAlertResponse: { securityAlertId } as SecurityAlertResponse,
+    batchId,
+  });
+  return batchId;
+}
+
 export async function processSendCalls(
   hooks: {
     addTransactionBatch: TransactionController['addTransactionBatch'];
+    addTransaction: TransactionController['addTransaction'];
     getDismissSmartAccountSuggestionEnabled: () => boolean;
     isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
     validateSecurity: (
@@ -69,6 +121,7 @@ export async function processSendCalls(
 ): Promise<SendCallsResult> {
   const {
     addTransactionBatch,
+    addTransaction,
     getDismissSmartAccountSuggestionEnabled,
     isAtomicBatchSupported,
     validateSecurity: validateSecurityHook,
@@ -109,16 +162,31 @@ export async function processSendCalls(
   const securityAlertId = generateSecurityAlertId();
   const validateSecurity = validateSecurityHook.bind(null, securityAlertId);
 
-  const { batchId: id } = await addTransactionBatch({
-    from,
-    networkClientId,
-    origin,
-    securityAlertId,
-    transactions,
-    validateSecurity,
-  });
+  let batchId: Hex;
+  if (Object.keys(transactions).length === 1) {
+    batchId = await processSingleTransaction({
+      addTransaction,
+      chainId: dappChainId,
+      from,
+      networkClientId,
+      origin,
+      securityAlertId,
+      transactions,
+      validateSecurity,
+    });
+  } else {
+    const result = await addTransactionBatch({
+      from,
+      networkClientId,
+      origin,
+      securityAlertId,
+      transactions,
+      validateSecurity,
+    });
+    batchId = result.batchId;
+  }
 
-  return { id };
+  return { id: batchId };
 }
 
 export function getCallsStatus(
@@ -302,6 +370,17 @@ export async function getCapabilities(
 
     return acc;
   }, alternateGasFeesAcc);
+}
+
+/**
+ * Generate a transaction batch ID.
+ *
+ * @returns  A unique batch ID as a hexadecimal string.
+ */
+function generateBatchId(): Hex {
+  const idString = v4();
+  const idBytes = new Uint8Array(parse(idString));
+  return bytesToHex(idBytes);
 }
 
 function validateSendCalls(
