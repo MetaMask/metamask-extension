@@ -214,6 +214,17 @@ async function mockTokensLinea(mockServer: Mockttp) {
     });
 }
 
+async function mockTokensArbitrum(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(`https://token.api.cx.metamask.io/tokens/42161`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_GET_TOKEN_ARBITRUM,
+      };
+    });
+}
+
 async function mockGetTokenArbitrum(mockServer: Mockttp) {
   return await mockServer
     .forGet(/getTokens/u)
@@ -500,6 +511,30 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
     });
 }
 
+async function mockTokenBlocklistArbitrum(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://tokens.api.cx.metamask.io/blocklist')
+    .withQuery({ chainId: 42161, region: 'global' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [], // Return empty blocklist for Arbitrum
+      };
+    });
+}
+
+async function mockTokenBlocklistLinea(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://tokens.api.cx.metamask.io/blocklist')
+    .withQuery({ chainId: 59144, region: 'global' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [], // Return empty blocklist for Linea
+      };
+    });
+}
+
 // Expected event types for Bridge metrics
 export enum EventTypes {
   BridgeLinkClicked = 'Bridge Link Clicked',
@@ -593,6 +628,7 @@ export const getBridgeFixtures = (
         await mockTopAssetsArbitrum(mockServer),
         await mockTokensEthereum(mockServer),
         await mockTokensLinea(mockServer),
+        await mockTokensArbitrum(mockServer),
         await mockGetTokenArbitrum(mockServer),
         await mockETHtoETH(mockServer),
         await mockETHtoUSDC(mockServer),
@@ -602,6 +638,8 @@ export const getBridgeFixtures = (
         await mockAccountsBalances(mockServer),
         await mockPriceSpotPrices(mockServer),
         await mockPriceSpotPricesV3(mockServer),
+        await mockTokenBlocklistArbitrum(mockServer),
+        await mockTokenBlocklistLinea(mockServer),
       ];
 
       if (withMockedSegment) {
@@ -814,11 +852,18 @@ export const getBridgeL2Fixtures = (
       await mockTopAssetsArbitrum(mockServer),
       await mockTokensEthereum(mockServer),
       await mockTokensLinea(mockServer),
+      await mockTokensArbitrum(mockServer),
       await mockGetTokenArbitrum(mockServer),
       await mockL2toMainnet(mockServer),
       await mockNativeL2toL2(mockServer),
       await mockDAIL2toL2(mockServer),
       await mockDAIL2toMainnet(mockServer),
+      await mockAccountsTransactions(mockServer),
+      await mockAccountsBalances(mockServer),
+      await mockPriceSpotPrices(mockServer),
+      await mockPriceSpotPricesV3(mockServer),
+      await mockTokenBlocklistArbitrum(mockServer),
+      await mockTokenBlocklistLinea(mockServer),
     ],
     manifestFlags: {
       remoteFeatureFlags: {

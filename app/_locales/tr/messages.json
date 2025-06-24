@@ -286,9 +286,6 @@
   "address": {
     "message": "Adres"
   },
-  "addressCopied": {
-    "message": "Adres kopyalandı!"
-  },
   "addressMismatch": {
     "message": "Site adresi uyumsuzluğu"
   },
@@ -1803,9 +1800,6 @@
   },
   "downloadStateLogs": {
     "message": "Durum Günlüklerini İndir"
-  },
-  "dragAndDropBanner": {
-    "message": "Yeniden sıralamak için ağları sürükleyebilirsiniz. "
   },
   "dropped": {
     "message": "Bırakıldı"
@@ -4225,9 +4219,6 @@
   "popularNetworks": {
     "message": "Popüler ağlar"
   },
-  "portfolio": {
-    "message": "Portföy"
-  },
   "preparingSwap": {
     "message": "Swap hazırlanıyor..."
   },
@@ -5544,9 +5535,6 @@
   },
   "statusNotConnected": {
     "message": "Bağlanmadı"
-  },
-  "statusNotConnectedAccount": {
-    "message": "Herhangi bir hesap bağlı değil"
   },
   "step1LatticeWallet": {
     "message": "Lattice1'inizi bağlayın"

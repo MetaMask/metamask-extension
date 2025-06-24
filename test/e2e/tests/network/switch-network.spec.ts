@@ -4,10 +4,9 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import {
-  switchToNetworkFlow,
-  searchAndSwitchToNetworkFlow,
+  searchAndSwitchToNetworkFromGlobalMenuFlow,
+  switchToNetworkFromSendFlow,
 } from '../../page-objects/flows/network.flow';
 
 describe('Switch network - ', function (this: Suite) {
@@ -21,25 +20,24 @@ describe('Switch network - ', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
 
-        // Validate the default network is Localhost 8545
-        await new HeaderNavbar(driver).check_currentSelectedNetwork(
-          'Localhost 8545',
-        );
-
         // Validate the switch network functionality to Ethereum Mainnet
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await homePage.check_localNodeBalanceIsDisplayed();
 
         // Validate the switch network functionality to test network
-        await switchToNetworkFlow(driver, 'Localhost 8545', true);
+        await switchToNetworkFromSendFlow(driver, 'Localhost 8545');
         await homePage.check_localNodeBalanceIsDisplayed();
 
         // Add Arbitrum network and perform the switch network functionality
-        await searchAndSwitchToNetworkFlow(driver, 'Arbitrum One');
+        await searchAndSwitchToNetworkFromGlobalMenuFlow(
+          driver,
+          'Arbitrum One',
+        );
         await homePage.check_localNodeBalanceIsDisplayed();
 
         // Validate the switch network functionality back to Ethereum Mainnet
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
+        await homePage.check_pageIsLoaded();
         await homePage.check_localNodeBalanceIsDisplayed();
       },
     );

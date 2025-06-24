@@ -129,7 +129,9 @@ describe('Test Snap Get Locale', function () {
         // the delay can be removed once the issue is fixed in the app level
         await driver.delay(1000);
         await driver.assertElementNotPresent('.loading-overlay');
-
+        await driver.clickElement(
+          '.settings-page__header__title-container__close-button',
+        );
         // click on the global action menu
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',

@@ -90,6 +90,7 @@ describe('Backup and Sync Settings', function () {
           const backupAndSyncSettingsPage = new BackupAndSyncSettings(driver);
           await backupAndSyncSettingsPage.check_pageIsLoaded();
           await backupAndSyncSettingsPage.toggleAccountSync();
+          await settingsPage.closeSettingsPage();
 
           // Go back to accounts and add a new account
           await header.openAccountMenu();
