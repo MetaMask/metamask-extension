@@ -23,6 +23,7 @@ import {
   BlockSize,
   BorderColor,
 } from '../../../helpers/constants/design-system';
+import { usePolymarket } from '../usePolymarket';
 
 const CLOB_ENDPOINT = 'https://clob.polymarket.com';
 
@@ -30,6 +31,7 @@ const PredictContainer = () => {
   const { marketId } = useParams<{ marketId: string }>();
   const [marketData, setMarketData] = useState<any>(null);
   const [selectedAmount, setSelectedAmount] = useState<number>(10);
+  const { placeOrder } = usePolymarket();
 
   const getMarket = async () => {
     if (!marketId) return;
@@ -66,11 +68,23 @@ const PredictContainer = () => {
   );
 
   const handleBuyNo = () => {
-    console.log(yesToken);
+    console.log(marketData, noToken);
+    placeOrder({
+      tokenId: noToken.token_id,
+      price: noToken.price,
+      size: marketData.minimum_order_size,
+      tickSize: marketData.minimum_tick_size,
+    });
   };
 
   const handleBuyYes = () => {
-    console.log(noToken);
+    console.log(marketData, yesToken);
+    placeOrder({
+      tokenId: yesToken.token_id,
+      price: yesToken.price,
+      size: marketData.minimum_order_size,
+      tickSize: marketData.minimum_tick_size,
+    });
   };
 
   return (
@@ -103,10 +117,7 @@ const PredictContainer = () => {
             marginBottom={2}
           >
             <img
-              src={
-                marketData?.icon ||
-                './images/logo/metamask-fox.svg'
-              }
+              src={marketData?.icon || './images/logo/metamask-fox.svg'}
               alt="Market"
               style={{ width: 40, height: 40, borderRadius: '50%' }}
             />
