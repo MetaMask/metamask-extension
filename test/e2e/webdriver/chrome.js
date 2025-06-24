@@ -1,5 +1,3 @@
-const path = require('path');
-const fs = require('fs');
 const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
@@ -39,30 +37,6 @@ class ChromeDriver {
     ];
 
     if (process.env.MULTIPROVIDER) {
-      // for multi-provider tests, we need to install the second extension
-      // since we assign the constant key to the extension, we need to generate a new random key (id) for the second extension
-      // this can be done by removing the key from the second extension's manifest and then installing the extension
-      const chrome2ManifestPath = path.join(
-        process.cwd(),
-        'dist',
-        'chrome2',
-        'manifest.json',
-      );
-
-      if (fs.existsSync(chrome2ManifestPath)) {
-        const manifest = JSON.parse(
-          fs.readFileSync(chrome2ManifestPath, 'utf8'),
-        );
-
-        // Remove the key from the manifest to generate a new random key (id) for the second extension
-        delete manifest.key;
-
-        fs.writeFileSync(
-          chrome2ManifestPath,
-          JSON.stringify(manifest, null, 2),
-        );
-      }
-
       args.push(
         `load-extension=${process.cwd()}/dist/chrome,${process.cwd()}/dist/chrome2`,
       );

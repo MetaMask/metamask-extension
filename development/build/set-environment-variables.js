@@ -61,6 +61,10 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
       isDevBuild && variables.getMaybe('TEST_GAS_FEE_FLOWS') === true,
     DEEP_LINK_HOST: variables.getMaybe('DEEP_LINK_HOST'),
     DEEP_LINK_PUBLIC_KEY: variables.getMaybe('DEEP_LINK_PUBLIC_KEY'),
+    METAMASK_AUDIENCE: getMetamaskAudience({
+      variables,
+      environment,
+    }),
   });
 };
 
@@ -135,6 +139,23 @@ function getInfuraProjectId({ buildType, variables, environment, testing }) {
     `Infura Project ID environmental variable "${infuraKeyReference}" is set improperly.`,
   );
   return infuraProjectId;
+}
+
+/**
+ * Get the relevant audience value for the current build.
+ *
+ * @param {object} options - The audience options.
+ * @param {keyof ENVIRONMENT} options.environment - The current build environment.
+ * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
+ * @returns {string} The audience.
+ */
+function getMetamaskAudience({ variables, environment }) {
+  if (environment === ENVIRONMENT.PRODUCTION) {
+    return variables.get('METAMASK_AUDIENCE') || 'metamask-prod';
+  } else if (environment === ENVIRONMENT.DEVELOPMENT) {
+    return variables.get('METAMASK_AUDIENCE') || 'metamask';
+  }
+  return 'metamask';
 }
 
 /**

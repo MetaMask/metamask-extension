@@ -7,7 +7,7 @@ export class GoogleLoginHandler extends BaseLoginHandler {
   public readonly OAUTH_SERVER_URL =
     'https://accounts.google.com/o/oauth2/v2/auth';
 
-  readonly #scope = ['profile', 'email'];
+  readonly #scope = ['openid', 'profile', 'email'];
 
   get authConnection() {
     return AuthConnection.Google;

@@ -14,8 +14,6 @@ import type {
 } from './types';
 
 export default class OAuthService {
-  readonly #audience = 'metamask';
-
   #env: OAuthLoginEnv;
 
   #webAuthenticator: WebAuthenticator;
@@ -80,7 +78,7 @@ export default class OAuthService {
     );
 
     const refreshTokenData = await loginHandler.refreshAuthToken(refreshToken);
-    const idToken = refreshTokenData.jwt_tokens[this.#audience];
+    const idToken = refreshTokenData.jwt_tokens[this.#getAudience()];
 
     return {
       idTokens: [idToken],
@@ -215,7 +213,7 @@ export default class OAuthService {
     }
 
     const authTokenData = await loginHandler.getAuthIdToken(authCode);
-    const idToken = authTokenData.jwt_tokens[this.#audience];
+    const idToken = authTokenData.jwt_tokens[this.#getAudience()];
     const userInfo = await loginHandler.getUserInfo(idToken);
 
     return {
@@ -243,5 +241,13 @@ export default class OAuthService {
       browser.runtime.lastError?.message ===
         OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR
     );
+  }
+
+  #getAudience(): string {
+    const audience = process.env.METAMASK_AUDIENCE;
+    if (!audience) {
+      throw new Error('METAMASK_AUDIENCE is not set');
+    }
+    return audience;
   }
 }
