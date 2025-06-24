@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.20.1]
+### Fixed
+- Fixed a case where internal accounts can be undefined ([#33768](https://github.com/MetaMask/metamask-extension/pull/33768))
+- Fixed `wallet_addEthereumChain` RPC error when adding a new chain ([#33821](https://github.com/MetaMask/metamask-extension/pull/33821))
 
 ## [12.20.0]
 ### Added
