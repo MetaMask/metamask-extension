@@ -249,16 +249,8 @@ const CrossChainSwapTxDetails = () => {
 
           {/* Links to block explorers */}
           <BridgeExplorerLinks
-            srcChainId={
-              srcNetwork?.isEvm
-                ? formatChainIdToHex(srcNetwork?.chainId)
-                : undefined
-            }
-            destChainId={
-              destNetwork?.isEvm
-                ? formatChainIdToHex(destNetwork?.chainId)
-                : undefined
-            }
+            srcChainId={srcNetwork?.chainId}
+            destChainId={destNetwork?.chainId}
             srcBlockExplorerUrl={srcBlockExplorerUrl}
             destBlockExplorerUrl={destBlockExplorerUrl}
           />

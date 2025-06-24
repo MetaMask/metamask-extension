@@ -1,6 +1,5 @@
-import { NetworkConfiguration } from '@metamask/network-controller';
 import React, { useContext } from 'react';
-import type { Hex } from '@metamask/utils';
+import type { CaipChainId } from '@metamask/utils';
 import {
   Box,
   IconName,
@@ -14,13 +13,21 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP } from '../../../../shared/constants/common';
+import {
+  formatChainIdToHex,
+  isSolanaChainId,
+} from '@metamask/bridge-controller';
 
 const getBlockExplorerName = (
-  chainId: Hex | undefined,
+  chainId: CaipChainId | undefined,
   blockExplorerUrl: string | undefined,
 ) => {
-  const humanReadableUrl = chainId
-    ? CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId]
+  const hexChainId =
+    chainId && !isSolanaChainId(chainId)
+      ? formatChainIdToHex(chainId)
+      : undefined;
+  const humanReadableUrl = hexChainId
+    ? CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[hexChainId]
     : undefined;
   if (humanReadableUrl) {
     return humanReadableUrl;
@@ -35,8 +42,8 @@ const getBlockExplorerName = (
 const METRICS_LOCATION = 'Activity Tab';
 
 type ExplorerLinksProps = {
-  srcChainId?: Hex;
-  destChainId?: Hex;
+  srcChainId?: CaipChainId;
+  destChainId?: CaipChainId;
   srcBlockExplorerUrl?: string;
   destBlockExplorerUrl?: string;
 };

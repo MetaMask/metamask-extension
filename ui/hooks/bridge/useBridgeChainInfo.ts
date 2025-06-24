@@ -12,17 +12,13 @@ import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constants/common';
 import { type ChainInfo } from '../../pages/bridge/utils/tx-details';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
+import { SOLANA_BLOCK_EXPLORER_URL } from '../../../shared/constants/multichain/networks';
 
-const getSourceAndDestChainIds = ({
-  bridgeHistoryItem,
-}: UseBridgeChainInfoProps) => {
+const getSourceAndDestChainIds = ({ quote }: BridgeHistoryItem) => {
+  const { srcChainId, destChainId } = quote;
   return {
-    srcChainId: bridgeHistoryItem
-      ? bridgeHistoryItem.quote.srcChainId
-      : undefined,
-    destChainId: bridgeHistoryItem
-      ? bridgeHistoryItem.quote.destChainId
-      : undefined,
+    srcChainId,
+    destChainId,
   };
 };
 
@@ -38,16 +34,22 @@ export default function useBridgeChainInfo({
   srcNetwork?: ChainInfo;
   destNetwork?: ChainInfo;
 } {
-  if (srcTxMeta?.type !== TransactionType.bridge) {
+  if (
+    srcTxMeta?.type &&
+    ![TransactionType.bridge, TransactionType.swap].includes(srcTxMeta.type)
+  ) {
     return {
       srcNetwork: undefined,
       destNetwork: undefined,
     };
   }
 
-  const { srcChainId, destChainId } = getSourceAndDestChainIds({
-    bridgeHistoryItem,
-  });
+  const { srcChainId, destChainId } = bridgeHistoryItem
+    ? getSourceAndDestChainIds(bridgeHistoryItem)
+    : {
+        srcChainId: srcTxMeta?.chainId,
+        destChainId: srcTxMeta?.chainId,
+      };
 
   if (!srcChainId || !destChainId) {
     return {
@@ -75,6 +77,7 @@ export default function useBridgeChainInfo({
       ? ({
           isEvm: false,
           nativeCurrency: getNativeAssetForChainId(srcChainId)?.assetId,
+          blockExplorerUrl: SOLANA_BLOCK_EXPLORER_URL,
         } as const)
       : {
           defaultBlockExplorerUrlIndex: 0,
@@ -107,6 +110,7 @@ export default function useBridgeChainInfo({
       ? ({
           isEvm: false,
           nativeCurrency: getNativeAssetForChainId(destChainId)?.assetId,
+          blockExplorerUrl: SOLANA_BLOCK_EXPLORER_URL,
         } as const)
       : {
           defaultBlockExplorerUrlIndex: 0,
