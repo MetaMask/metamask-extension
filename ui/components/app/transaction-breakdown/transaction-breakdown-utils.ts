@@ -2,8 +2,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { getShouldShowFiat } from '../../../selectors';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import { getNativeTokenInfo, getShouldShowFiat } from '../../../selectors';
 import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
 
 import {
@@ -30,6 +29,7 @@ export const getTransactionBreakdownData = ({
   const {
     txParams: { gas, gasPrice, maxFeePerGas, value } = {},
     txReceipt: { gasUsed, effectiveGasPrice, l1Fee: l1HexGasTotal } = {},
+    chainId,
     baseFeePerGas,
     sourceTokenAmount: rawSourceTokenAmount,
     sourceTokenDecimals,
@@ -109,7 +109,8 @@ export const getTransactionBreakdownData = ({
   );
 
   return {
-    nativeCurrency: getNativeCurrency(state),
+    nativeCurrency: (getNativeTokenInfo(state, chainId) as { symbol: string })
+      ?.symbol,
     showFiat: getShouldShowFiat(state),
     totalInHex,
     gas,
