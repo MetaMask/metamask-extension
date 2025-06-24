@@ -17,6 +17,12 @@
   width: 100%;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-default);
+    outline-offset: 2px;
+    box-shadow: none;
+  }
+
   &--disabled,
   &[disabled] {
     cursor: auto;
