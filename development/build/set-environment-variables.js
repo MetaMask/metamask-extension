@@ -24,6 +24,27 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
   variables,
   version,
 }) {
+  const { googleClientId, appleClientId } = getGoogleAndAppleClientId({
+    buildType,
+    variables,
+    environment,
+    testing: isTestBuild,
+  });
+  const { googleAuthConnectionId, appleAuthConnectionId } =
+    getGoogleAndAppleAuthConnectionId({
+      buildType,
+      variables,
+      environment,
+      testing: isTestBuild,
+    });
+  const { googleGroupedAuthConnectionId, appleGroupedAuthConnectionId } =
+    getGoogleAndAppleGroupedAuthConnectionId({
+      buildType,
+      variables,
+      environment,
+      testing: isTestBuild,
+    });
+
   variables.set({
     DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
     EIP_4337_ENTRYPOINT: isTestBuild
@@ -65,7 +86,31 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
       variables,
       environment,
     }),
+    GOOGLE_CLIENT_ID: googleClientId,
+    APPLE_CLIENT_ID: appleClientId,
+    GOOGLE_AUTH_CONNECTION_ID: googleAuthConnectionId,
+    APPLE_AUTH_CONNECTION_ID: appleAuthConnectionId,
+    GOOGLE_GROUPED_AUTH_CONNECTION_ID: googleGroupedAuthConnectionId,
+    APPLE_GROUPED_AUTH_CONNECTION_ID: appleGroupedAuthConnectionId,
+    AUTH_SERVER_URL: getAuthServerUrl({
+      buildType,
+      variables,
+      environment,
+      testing: isTestBuild,
+    }),
+    WEB3AUTH_NETWORK: getWeb3AuthNetwork({
+      variables,
+      environment,
+      testing: isTestBuild,
+    }),
   });
+
+  console.log('variables', variables.get('GOOGLE_AUTH_CONNECTION_ID'));
+  console.log('variables', variables.get('APPLE_AUTH_CONNECTION_ID'));
+  console.log('variables', variables.get('GOOGLE_GROUPED_AUTH_CONNECTION_ID'));
+  console.log('variables', variables.get('APPLE_GROUPED_AUTH_CONNECTION_ID'));
+  console.log('variables', variables.get('AUTH_SERVER_URL'));
+  console.log('variables', variables.get('WEB3AUTH_NETWORK'));
 };
 
 const BUILD_TYPES_TO_SVG_LOGO_PATH = {
@@ -139,6 +184,185 @@ function getInfuraProjectId({ buildType, variables, environment, testing }) {
     `Infura Project ID environmental variable "${infuraKeyReference}" is set improperly.`,
   );
   return infuraProjectId;
+}
+
+/**
+ * Get the Google and Apple client IDs for the current build.
+ *
+ * @param {object} options - The Google and Apple client IDs options.
+ * @param {string} options.buildType - The current build type.
+ * @param {keyof ENVIRONMENT} options.environment - The current build environment.
+ * @param {boolean} options.testing - Whether this is a test build or not.
+ * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
+ * @returns {object} The Google and Apple client IDs.
+ */
+function getGoogleAndAppleClientId({
+  buildType,
+  variables,
+  environment,
+  testing,
+}) {
+  if (testing || environment !== ENVIRONMENT.PRODUCTION) {
+    return {
+      googleClientId: variables.get('GOOGLE_CLIENT_ID'),
+      appleClientId: variables.get('APPLE_CLIENT_ID'),
+    };
+  }
+
+  const googleClientIdReference = variables.get('GOOGLE_CLIENT_ID_REF');
+  const appleClientIdReference = variables.get('APPLE_CLIENT_ID_REF');
+  assert(
+    typeof googleClientIdReference === 'string' &&
+      googleClientIdReference.length > 0,
+    `Build type "${buildType}" has improperly set GOOGLE_CLIENT_ID_REF in builds.yml. Current value: "${googleClientIdReference}"`,
+  );
+  assert(
+    typeof appleClientIdReference === 'string' &&
+      appleClientIdReference.length > 0,
+    `Build type "${buildType}" has improperly set APPLE_CLIENT_ID_REF in builds.yml. Current value: "${appleClientIdReference}"`,
+  );
+  const googleClientId = variables.get(googleClientIdReference);
+  const appleClientId = variables.get(appleClientIdReference);
+  return { googleClientId, appleClientId };
+}
+
+/**
+ * Get the Google and Apple auth connection IDs for the current build.
+ *
+ * @param {object} options - The Google and Apple auth connection IDs options.
+ * @param {string} options.buildType - The current build type.
+ * @param {keyof ENVIRONMENT} options.environment - The current build environment.
+ * @param {boolean} options.testing - Whether this is a test build or not.
+ * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
+ * @returns {object} The Google and Apple auth connection IDs.
+ */
+function getGoogleAndAppleAuthConnectionId({
+  buildType,
+  variables,
+  environment,
+  testing,
+}) {
+  if (testing || environment !== ENVIRONMENT.PRODUCTION) {
+    return {
+      googleAuthConnectionId: variables.get('GOOGLE_AUTH_CONNECTION_ID'),
+      appleAuthConnectionId: variables.get('APPLE_AUTH_CONNECTION_ID'),
+    };
+  }
+  const googleAuthConnectionIdReference = variables.get(
+    'GOOGLE_AUTH_CONNECTION_ID_REF',
+  );
+  const appleAuthConnectionIdReference = variables.get(
+    'APPLE_AUTH_CONNECTION_ID_REF',
+  );
+  assert(
+    typeof googleAuthConnectionIdReference === 'string' &&
+      googleAuthConnectionIdReference.length > 0,
+    `Build type "${buildType}" has improperly set GOOGLE_AUTH_CONNECTION_ID_REF in builds.yml. Current value: "${googleAuthConnectionIdReference}"`,
+  );
+  assert(
+    typeof appleAuthConnectionIdReference === 'string' &&
+      appleAuthConnectionIdReference.length > 0,
+    `Build type "${buildType}" has improperly set APPLE_AUTH_CONNECTION_ID_REF in builds.yml. Current value: "${appleAuthConnectionIdReference}"`,
+  );
+  const googleAuthConnectionId = variables.get(googleAuthConnectionIdReference);
+  const appleAuthConnectionId = variables.get(appleAuthConnectionIdReference);
+  return { googleAuthConnectionId, appleAuthConnectionId };
+}
+
+/**
+ * Get the Google and Apple grouped auth connection IDs for the current build.
+ *
+ * @param {object} options - The Google and Apple grouped auth connection IDs options.
+ * @param {string} options.buildType - The current build type.
+ * @param {keyof ENVIRONMENT} options.environment - The current build environment.
+ * @param {boolean} options.testing - Whether this is a test build or not.
+ * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
+ * @returns {object} The Google and Apple grouped auth connection IDs.
+ */
+function getGoogleAndAppleGroupedAuthConnectionId({
+  buildType,
+  variables,
+  environment,
+  testing,
+}) {
+  if (testing || environment !== ENVIRONMENT.PRODUCTION) {
+    return {
+      googleGroupedAuthConnectionId: variables.get(
+        'GOOGLE_GROUPED_AUTH_CONNECTION_ID',
+      ),
+      appleGroupedAuthConnectionId: variables.get(
+        'APPLE_GROUPED_AUTH_CONNECTION_ID',
+      ),
+    };
+  }
+  const googleGroupedAuthConnectionIdReference = variables.get(
+    'GOOGLE_GROUPED_AUTH_CONNECTION_ID_REF',
+  );
+  const appleGroupedAuthConnectionIdReference = variables.get(
+    'APPLE_GROUPED_AUTH_CONNECTION_ID_REF',
+  );
+  assert(
+    typeof googleGroupedAuthConnectionIdReference === 'string' &&
+      googleGroupedAuthConnectionIdReference.length > 0,
+    `Build type "${buildType}" has improperly set GOOGLE_GROUPED_AUTH_CONNECTION_ID_REF in builds.yml. Current value: "${googleGroupedAuthConnectionIdReference}"`,
+  );
+  assert(
+    typeof appleGroupedAuthConnectionIdReference === 'string' &&
+      appleGroupedAuthConnectionIdReference.length > 0,
+    `Build type "${buildType}" has improperly set APPLE_GROUPED_AUTH_CONNECTION_ID_REF in builds.yml. Current value: "${appleGroupedAuthConnectionIdReference}"`,
+  );
+  const googleGroupedAuthConnectionId = variables.get(
+    googleGroupedAuthConnectionIdReference,
+  );
+  const appleGroupedAuthConnectionId = variables.get(
+    appleGroupedAuthConnectionIdReference,
+  );
+  return { googleGroupedAuthConnectionId, appleGroupedAuthConnectionId };
+}
+
+/**
+ * Get the OAuth2 authentication server URL for the current build.
+ *
+ * @param {object} options - The auth server URL options.
+ * @param {string} options.buildType - The current build type.
+ * @param {keyof ENVIRONMENT} options.environment - The current build environment.
+ * @param {boolean} options.testing - Whether this is a test build or not.
+ * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
+ * @returns {string} The auth server URL.
+ */
+function getAuthServerUrl({ buildType, variables, environment, testing }) {
+  if (testing || environment !== ENVIRONMENT.PRODUCTION) {
+    return variables.get('AUTH_SERVER_URL');
+  }
+  const authServerUrlReference = variables.get('AUTH_SERVER_URL_REF');
+  assert(
+    typeof authServerUrlReference === 'string' &&
+      authServerUrlReference.length > 0,
+    `Build type "${buildType}" has improperly set AUTH_SERVER_URL_REF in builds.yml. Current value: "${authServerUrlReference}"`,
+  );
+  const authServerUrl = variables.get(authServerUrlReference);
+  assert(
+    typeof authServerUrl === 'string' && authServerUrl.length > 0,
+    `Auth Server URL environmental variable "${authServerUrlReference}" is set improperly.`,
+  );
+  return authServerUrl;
+}
+
+/**
+ * Get the Web3Auth network for the current build.
+ *
+ * @param {object} options - The Web3Auth network options.
+ * @param {keyof ENVIRONMENT} options.environment - The current build environment.
+ * @param {boolean} options.testing - Whether this is a test build or not.
+ * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
+ * @returns {string} The Web3Auth network.
+ */
+function getWeb3AuthNetwork({ variables, environment, testing }) {
+  if (testing || environment !== ENVIRONMENT.PRODUCTION) {
+    return variables.get('WEB3AUTH_NETWORK') || 'sapphire_devnet';
+  }
+  const web3AuthNetworkReference = variables.get('WEB3AUTH_NETWORK_REF');
+  return variables.get(web3AuthNetworkReference) || 'sapphire_mainnet';
 }
 
 /**
