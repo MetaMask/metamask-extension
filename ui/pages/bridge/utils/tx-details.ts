@@ -49,11 +49,6 @@ export const getBlockExplorerUrl = (chainInfo?: ChainInfo, txHash?: string) => {
   return getBlockExploreTxUrl(rootUrl, txHash);
 };
 
-/**
- * @param txMeta - The transaction meta
- * @param bridgeHistoryItem - The bridge history item
- * @returns A string representing the bridge amount in decimal form
- */
 export const getBridgeAmountSentFormatted = ({
   bridgeHistoryItem,
   txMeta,
