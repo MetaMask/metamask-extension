@@ -585,17 +585,25 @@ export async function publishSmartTransactionHook({
   transactionController: TransactionController;
   transactionMeta: TransactionMeta;
 }) {
-  const result = await publishSmartTransactionHookHelper(
-    transactionController,
-    smartTransactionsController,
-    initMessenger,
-    flatState,
-    transactionMeta,
-    signedTx as Hex,
-  );
+  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
+    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
 
-  if (result?.transactionHash) {
-    return result;
+  if (isSmartTransaction) {
+    const result = await submitSmartTransactionHook({
+      transactionMeta,
+      signedTransactionInHex: signedTx as Hex,
+      transactionController,
+      smartTransactionsController,
+      controllerMessenger: initMessenger,
+      isSmartTransaction,
+      isHardwareWallet: isHardwareWalletAccount,
+      // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
+      featureFlags,
+    });
+
+    if (result?.transactionHash) {
+      return result;
+    }
   }
 
   const hook = new Delegation7702PublishHook({
@@ -606,35 +614,6 @@ export async function publishSmartTransactionHook({
   }).getHook();
 
   return await hook(transactionMeta, signedTx);
-}
-
-async function publishSmartTransactionHookHelper(
-  transactionController: TransactionController,
-  smartTransactionsController: SmartTransactionsController,
-  hookControllerMessenger: SmartTransactionHookMessenger,
-  flatState: ControllerFlatState,
-  transactionMeta: TransactionMeta,
-  signedTransactionInHex: Hex,
-) {
-  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
-    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
-
-  if (!isSmartTransaction) {
-    // Will cause TransactionController to publish to the RPC provider as normal.
-    return { transactionHash: undefined };
-  }
-
-  return await submitSmartTransactionHook({
-    transactionMeta,
-    signedTransactionInHex,
-    transactionController,
-    smartTransactionsController,
-    controllerMessenger: hookControllerMessenger,
-    isSmartTransaction,
-    isHardwareWallet: isHardwareWalletAccount,
-    // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
-    featureFlags,
-  });
 }
 
 export function publishBatchSmartTransactionHook({
