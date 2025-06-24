@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { SignTypedDataVersion } from '@metamask/eth-sig-util';
 import { hexToNumber } from '@metamask/utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import { Box, Button, Text } from '../../components/component-library';
 
 import { Header, Page } from '../../components/multichain/pages/page';
@@ -11,11 +12,12 @@ import {
   FlexDirection,
   TextVariant,
 } from '../../helpers/constants/design-system';
-import { newUnsignedTypedMessage } from '../../store/actions';
+import { addTransaction, newUnsignedTypedMessage } from '../../store/actions';
 import {
   getSelectedAccount,
   getSelectedNetwork,
 } from '../../selectors/selectors';
+import { encodeApprove } from './utils';
 
 const MSG_TO_SIGN = 'This message attests that I control the given wallet';
 const CLOB_ENDPOINT = 'https://clob.polymarket.com';
@@ -130,6 +132,30 @@ const PredictContainer = () => {
     setApiKey(newApiKey);
   };
 
+  const approveToken = async () => {
+    const usdcAddress = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359';
+    const exchangeAddress = '0x4bFb41d5B3570DeFd03C39a9A4D8dE6Bd8B8982E';
+    const encodedCallData = encodeApprove({
+      spender: exchangeAddress,
+      amount: 10n * 1_000_000n, // 10 USDC as BigInt with 6 decimals
+    });
+
+    const transactionMeta = await addTransaction(
+      {
+        from: account.address,
+        to: usdcAddress,
+        data: encodedCallData,
+        value: '0x0',
+      },
+      {
+        networkClientId: selectedNetwork.clientId,
+        type: TransactionType.tokenMethodApprove,
+      },
+    );
+
+    console.log(transactionMeta);
+  };
+
   return (
     <Page className="main-container" data-testid="remote-mode">
       <Header
@@ -143,6 +169,7 @@ const PredictContainer = () => {
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={2}>
           <Button onClick={createApiKey}>Create API Key</Button>
           <Button onClick={deriveApiKey}>Derive API Key</Button>
+          <Button onClick={approveToken}>Approve Token</Button>
         </Box>
         {apiKey && (
           <>
