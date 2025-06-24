@@ -958,6 +958,9 @@
   "bridgeTransactionProgress": {
     "message": "Transaction $1 of 2"
   },
+  "bridgeTxDetailsBridged": {
+    "message": "Bridged"
+  },
   "bridgeTxDetailsBridging": {
     "message": "Bridging"
   },
@@ -975,6 +978,12 @@
   },
   "bridgeTxDetailsStatus": {
     "message": "Status"
+  },
+  "bridgeTxDetailsSwapped": {
+    "message": "Swapped"
+  },
+  "bridgeTxDetailsSwapping": {
+    "message": "Swapping"
   },
   "bridgeTxDetailsTimestamp": {
     "message": "Time stamp"
@@ -6058,6 +6067,10 @@
   },
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
+  },
+  "swapDetailsTitle": {
+    "message": "Swap details",
+    "description": "Title for the modal showing details about a swap transaction."
   },
   "swapDirectContract": {
     "message": "Direct contract"

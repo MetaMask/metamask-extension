@@ -858,9 +858,6 @@
   "bridgeCreateSolanaAccountTitle": {
     "message": "You'll need a Solana account first."
   },
-  "bridgeDetails": {
-    "message": "$1 details"
-  },
   "bridgeDetailsTitle": {
     "message": "Bridge details",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -7054,10 +7051,6 @@
   "willApproveAmountForBridgingHardware": {
     "message": "You’ll need to confirm two transactions on your hardware wallet."
   },
-  "willApproveAmountForSwapping": {
-    "message": "This will approve $1 for swapping."
-  },
-
   "withdrawing": {
     "message": "Withdrawing"
   },
