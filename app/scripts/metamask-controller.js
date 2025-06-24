@@ -173,6 +173,7 @@ import {
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
 
+import { ErrorReportingService } from '@metamask/error-reporting-service';
 ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
 import { RecoveryError } from '@metamask/seedless-onboarding-controller';
 ///: END:ONLY_INCLUDE_IF
@@ -570,8 +571,24 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
+    const errorReportingServiceMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'ErrorReportingService',
+        allowedActions: [],
+        allowedEvents: [],
+      });
+    // Initializing the ErrorReportingService populates the
+    // ErrorReportingServiceMessenger.
+    // eslint-disable-next-line no-new
+    new ErrorReportingService({
+      messenger: errorReportingServiceMessenger,
+      captureException,
+    });
+
     const networkControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkController',
+      allowedEvents: [],
+      allowedActions: ['ErrorReportingService:captureException'],
     });
 
     let initialNetworkControllerState = initState.NetworkController;
@@ -2110,6 +2127,9 @@ export default class MetamaskController extends EventEmitter {
           addTransactionBatch: this.txController.addTransactionBatch.bind(
             this.txController,
           ),
+          addTransaction: this.txController.addTransaction.bind(
+            this.txController,
+          ),
           getDismissSmartAccountSuggestionEnabled: () =>
             this.preferencesController.state.preferences
               .dismissSmartAccountSuggestionEnabled,
@@ -3188,42 +3208,6 @@ export default class MetamaskController extends EventEmitter {
         }
       },
     );
-
-    this.controllerMessenger.subscribe(
-      `MultichainTransactionsController:transactionConfirmed`,
-      (transaction) => {
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.TransactionFinalized,
-          category: MetaMetricsEventCategory.Transactions,
-          properties: {
-            id: transaction.id,
-            timestamp: transaction.timestamp,
-            chain_id_caip: transaction.chain,
-            status: transaction.status,
-            type: transaction.type,
-            fees: transaction.fees,
-          },
-        });
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      `MultichainTransactionsController:transactionSubmitted`,
-      (transaction) => {
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.TransactionSubmitted,
-          category: MetaMetricsEventCategory.Transactions,
-          properties: {
-            id: transaction.id,
-            timestamp: transaction.timestamp,
-            chain_id_caip: transaction.chain,
-            status: transaction.status,
-            type: transaction.type,
-            fees: transaction.fees,
-          },
-        });
-      },
-    );
   }
 
   /**
@@ -3674,6 +3658,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setManageInstitutionalWallets.bind(
           preferencesController,
         ),
+      setSmartAccountOptInForAccounts:
+        preferencesController.setSmartAccountOptInForAccounts.bind(
+          preferencesController,
+        ),
 
       // AccountsController
       setSelectedInternalAccount: (id) => {
@@ -3815,10 +3803,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       updateSlides: appStateController.updateSlides.bind(appStateController),
       removeSlide: appStateController.removeSlide.bind(appStateController),
-      setSplashPageAcknowledgedForAccount:
-        appStateController.setSplashPageAcknowledgedForAccount.bind(
-          appStateController,
-        ),
 
       // EnsController
       tryReverseResolveAddress:
@@ -6752,6 +6736,112 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Creates middleware hooks that are shared between the Eip1193 and Multichain engines.
+   *
+   * @private
+   * @param {string} origin - The connection's origin string.
+   * @returns {object} The shared hooks.
+   */
+  setupCommonMiddlewareHooks(origin) {
+    return {
+      // Miscellaneous
+      addSubjectMetadata:
+        this.subjectMetadataController.addSubjectMetadata.bind(
+          this.subjectMetadataController,
+        ),
+      getProviderState: this.getProviderState.bind(this),
+      handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
+      requestUserApproval:
+        this.approvalController.addAndShowApprovalRequest.bind(
+          this.approvalController,
+        ),
+      getCaveat: ({ target, caveatType }) => {
+        try {
+          return this.permissionController.getCaveat(
+            origin,
+            target,
+            caveatType,
+          );
+        } catch (e) {
+          if (e instanceof PermissionDoesNotExistError) {
+            // suppress expected error in case that the origin
+            // does not have the target permission yet
+          } else {
+            throw e;
+          }
+        }
+
+        return undefined;
+      },
+      requestPermittedChainsPermissionIncrementalForOrigin: (options) =>
+        this.requestPermittedChainsPermissionIncremental({
+          ...options,
+          origin,
+        }),
+
+      // Network configuration-related
+      addNetwork: this.networkController.addNetwork.bind(
+        this.networkController,
+      ),
+      updateNetwork: this.networkController.updateNetwork.bind(
+        this.networkController,
+      ),
+      setActiveNetwork: async (networkClientId) => {
+        await this.networkController.setActiveNetwork(networkClientId);
+        // if the origin has the CAIP-25 permission
+        // we set per dapp network selection state
+        if (
+          this.permissionController.hasPermission(
+            origin,
+            Caip25EndowmentPermissionName,
+          )
+        ) {
+          this.selectedNetworkController.setNetworkClientIdForDomain(
+            origin,
+            networkClientId,
+          );
+        }
+      },
+      getNetworkConfigurationByChainId:
+        this.networkController.getNetworkConfigurationByChainId.bind(
+          this.networkController,
+        ),
+      setTokenNetworkFilter: (chainId) => {
+        const { tokenNetworkFilter } =
+          this.preferencesController.getPreferences();
+        if (chainId && Object.keys(tokenNetworkFilter).length === 1) {
+          this.preferencesController.setPreference('tokenNetworkFilter', {
+            [chainId]: true,
+          });
+        }
+      },
+      setEnabledNetworks: (chainIds) => {
+        this.networkOrderController.setEnabledNetworks(chainIds);
+      },
+      getCurrentChainIdForDomain: (domain) => {
+        const networkClientId =
+          this.selectedNetworkController.getNetworkClientIdForDomain(domain);
+        const { chainId } =
+          this.networkController.getNetworkConfigurationByNetworkClientId(
+            networkClientId,
+          );
+        return chainId;
+      },
+
+      // Web3 shim-related
+      getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
+        this.alertController,
+      ),
+      setWeb3ShimUsageRecorded:
+        this.alertController.setWeb3ShimUsageRecorded.bind(
+          this.alertController,
+        ),
+      rejectApprovalRequestsForOrigin: () =>
+        this.rejectOriginPendingApprovals(origin),
+    };
+  }
+
+  /**
    * A method for creating an ethereum provider that is safely restricted for the requesting subject.
    *
    * @param {object} options - Provider engine options
@@ -6906,25 +6996,18 @@ export default class MetamaskController extends EventEmitter {
     engine.push(
       createEip1193MethodMiddleware({
         subjectType,
+        ...this.setupCommonMiddlewareHooks(origin),
 
         // Miscellaneous
-        addSubjectMetadata:
-          this.subjectMetadataController.addSubjectMetadata.bind(
-            this.subjectMetadataController,
-          ),
         metamaskState: this.getState(),
-        getProviderState: this.getProviderState.bind(this),
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
         ),
-        handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
-        requestUserApproval:
-          this.approvalController.addAndShowApprovalRequest.bind(
-            this.approvalController,
-          ),
+
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
+
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
         getCaip25PermissionFromLegacyPermissionsForOrigin:
@@ -6933,11 +7016,7 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
-        requestPermittedChainsPermissionIncrementalForOrigin: (options) =>
-          this.requestPermittedChainsPermissionIncremental({
-            ...options,
-            origin,
-          }),
+
         requestPermissionsForOrigin: (requestedPermissions) =>
           this.permissionController.requestPermissions(
             { origin },
@@ -6962,89 +7041,13 @@ export default class MetamaskController extends EventEmitter {
             console.log(e);
           }
         },
-        getCaveat: ({ target, caveatType }) => {
-          try {
-            return this.permissionController.getCaveat(
-              origin,
-              target,
-              caveatType,
-            );
-          } catch (e) {
-            if (e instanceof PermissionDoesNotExistError) {
-              // suppress expected error in case that the origin
-              // does not have the target permission yet
-            } else {
-              throw e;
-            }
-          }
 
-          return undefined;
-        },
-        // network configuration-related
-        setActiveNetwork: async (networkClientId) => {
-          await this.networkController.setActiveNetwork(networkClientId);
-          // if the origin has the CAIP-25 permission
-          // we set per dapp network selection state
-          if (
-            this.permissionController.hasPermission(
-              origin,
-              Caip25EndowmentPermissionName,
-            )
-          ) {
-            this.selectedNetworkController.setNetworkClientIdForDomain(
-              origin,
-              networkClientId,
-            );
-          }
-        },
-        addNetwork: this.networkController.addNetwork.bind(
-          this.networkController,
-        ),
-        updateNetwork: this.networkController.updateNetwork.bind(
-          this.networkController,
-        ),
-        getNetworkConfigurationByChainId:
-          this.networkController.getNetworkConfigurationByChainId.bind(
-            this.networkController,
-          ),
-        setTokenNetworkFilter: (chainId) => {
-          const { tokenNetworkFilter } =
-            this.preferencesController.getPreferences();
-          if (chainId && Object.keys(tokenNetworkFilter).length === 1) {
-            this.preferencesController.setPreference('tokenNetworkFilter', {
-              [chainId]: true,
-            });
-          }
-        },
-        setEnabledNetworks: (chainIds) => {
-          this.networkOrderController.setEnabledNetworks(chainIds);
-        },
-        getCurrentChainIdForDomain: (domain) => {
-          const networkClientId =
-            this.selectedNetworkController.getNetworkClientIdForDomain(domain);
-          const { chainId } =
-            this.networkController.getNetworkConfigurationByNetworkClientId(
-              networkClientId,
-            );
-          return chainId;
-        },
-
-        // Web3 shim-related
-        getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
-          this.alertController,
-        ),
-        setWeb3ShimUsageRecorded:
-          this.alertController.setWeb3ShimUsageRecorded.bind(
-            this.alertController,
-          ),
         updateCaveat: this.permissionController.updateCaveat.bind(
           this.permissionController,
           origin,
         ),
         hasApprovalRequestsForOrigin: () =>
           this.approvalController.has({ origin }),
-        rejectApprovalRequestsForOrigin: () =>
-          this.rejectOriginPendingApprovals(origin),
       }),
     );
 
@@ -7384,92 +7387,9 @@ export default class MetamaskController extends EventEmitter {
     engine.push(
       createMultichainMethodMiddleware({
         subjectType,
-
-        // Miscellaneous
-        addSubjectMetadata:
-          this.subjectMetadataController.addSubjectMetadata.bind(
-            this.subjectMetadataController,
-          ),
-        getProviderState: this.getProviderState.bind(this),
-        handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
-        requestUserApproval:
-          this.approvalController.addAndShowApprovalRequest.bind(
-            this.approvalController,
-          ),
-        getCaveat: ({ target, caveatType }) => {
-          try {
-            return this.permissionController.getCaveat(
-              origin,
-              target,
-              caveatType,
-            );
-          } catch (e) {
-            if (e instanceof PermissionDoesNotExistError) {
-              // suppress expected error in case that the origin
-              // does not have the target permission yet
-            } else {
-              throw e;
-            }
-          }
-
-          return undefined;
-        },
-        addNetwork: this.networkController.addNetwork.bind(
-          this.networkController,
-        ),
-        updateNetwork: this.networkController.updateNetwork.bind(
-          this.networkController,
-        ),
-        setActiveNetwork: async (networkClientId) => {
-          await this.networkController.setActiveNetwork(networkClientId);
-          // if the origin has the CAIP-25 permission
-          // we set per dapp network selection state
-          if (
-            this.permissionController.hasPermission(
-              origin,
-              Caip25EndowmentPermissionName,
-            )
-          ) {
-            this.selectedNetworkController.setNetworkClientIdForDomain(
-              origin,
-              networkClientId,
-            );
-          }
-        },
-        getNetworkConfigurationByChainId:
-          this.networkController.getNetworkConfigurationByChainId.bind(
-            this.networkController,
-          ),
-        getCurrentChainIdForDomain: (domain) => {
-          const networkClientId =
-            this.selectedNetworkController.getNetworkClientIdForDomain(domain);
-          const { chainId } =
-            this.networkController.getNetworkConfigurationByNetworkClientId(
-              networkClientId,
-            );
-          return chainId;
-        },
-
-        // Web3 shim-related
-        getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
-          this.alertController,
-        ),
-        setWeb3ShimUsageRecorded:
-          this.alertController.setWeb3ShimUsageRecorded.bind(
-            this.alertController,
-          ),
-
-        requestPermittedChainsPermissionIncrementalForOrigin: (options) =>
-          this.requestPermittedChainsPermissionIncremental({
-            ...options,
-            origin,
-          }),
-
-        rejectApprovalRequestsForOrigin: () =>
-          this.rejectOriginPendingApprovals(origin),
+        ...this.setupCommonMiddlewareHooks(origin),
       }),
     );
-
     engine.push(this.metamaskMiddleware);
 
     try {

@@ -122,6 +122,7 @@ export default function OnboardingFlow() {
   useEffect(() => {
     if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
       const needsSRP = [
+        ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
         ONBOARDING_REVIEW_SRP_ROUTE,
         ONBOARDING_CONFIRM_SRP_ROUTE,
       ].some((route) => pathname.startsWith(route));
