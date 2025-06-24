@@ -121,7 +121,7 @@ export const SENTRY_BACKGROUND_STATE = {
     txHistory: false,
   },
   CronjobController: {
-    jobs: false,
+    events: false,
   },
   CurrencyController: {
     currentCurrency: true,
@@ -376,6 +376,7 @@ export const SENTRY_BACKGROUND_STATE = {
     isBackupAndSyncEnabled: true,
     isBackupAndSyncUpdateLoading: false,
     isAccountSyncingEnabled: true,
+    isContactSyncingEnabled: true,
     hasAccountSyncingSyncedAtLeastOnce: false,
     isAccountSyncingReadyToBeDispatched: false,
   },

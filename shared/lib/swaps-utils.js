@@ -142,6 +142,9 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
     return v2ApiBaseUrl;
   }
   const chainIdDecimal = chainId && parseInt(chainId, 16);
+  if (isNaN(chainIdDecimal)) {
+    return undefined;
+  }
   const gasApiTypes = ['gasPrices'];
   if (gasApiTypes.includes(type)) {
     return `${gasApiBaseUrl}/networks/${chainIdDecimal}`; // Gas calculations are in its own repo.

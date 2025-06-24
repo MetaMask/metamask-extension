@@ -30,6 +30,9 @@ describe('AssetListControlBar', () => {
     const store = configureMockStore([thunk])({
       metamask: {
         selectedNetworkClientId: 'selectedNetworkClientId',
+        enabledNetworkMap: {
+          '0x1': true,
+        },
         networkConfigurationsByChainId: {
           '0x1': {
             chainId: '0x1',

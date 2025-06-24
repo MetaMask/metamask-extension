@@ -167,7 +167,8 @@ class SwapPage {
 
   async dismissManualTokenWarning(): Promise<void> {
     console.log('Dismiss manual token warning');
-    await this.driver.clickElement({
+    // https://github.com/MetaMask/metamask-extension/issues/31426
+    await this.driver.clickElementSafe({
       text: 'Continue swapping',
       tag: 'button',
     });
