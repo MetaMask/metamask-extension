@@ -367,6 +367,7 @@
     "accountTree": "object",
     "encryptionKey": "string",
     "encryptionSalt": "string",
+    "socialBackupsMetadata": "object",
     "srpSessionData": "object"
   },
   "ramps": "object",
