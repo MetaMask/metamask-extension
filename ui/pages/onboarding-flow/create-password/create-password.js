@@ -24,6 +24,7 @@ import {
   getCurrentKeyring,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
+  getIsSocialLoginFlow,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -48,6 +49,8 @@ import LoadingScreen from '../../../components/ui/loading-screen';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 
+const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
+
 export default function CreatePassword({
   createNewAccount,
   importWithRecoveryPhrase,
@@ -62,6 +65,7 @@ export default function CreatePassword({
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const metametricsId = useSelector(getMetaMetricsId);
@@ -81,7 +85,10 @@ export default function CreatePassword({
 
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
-      if (firstTimeFlowType === FirstTimeFlowType.import) {
+      if (
+        firstTimeFlowType === FirstTimeFlowType.import ||
+        firstTimeFlowType === FirstTimeFlowType.socialImport
+      ) {
         history.replace(ONBOARDING_METAMETRICS);
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
@@ -133,7 +140,7 @@ export default function CreatePassword({
       },
     });
 
-    if (getBrowserName() === PLATFORM_FIREFOX) {
+    if (isFirefox) {
       history.push(ONBOARDING_COMPLETION_ROUTE);
     } else {
       history.push(ONBOARDING_METAMETRICS);
@@ -164,7 +171,17 @@ export default function CreatePassword({
       },
     });
 
-    history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+    if (isSocialLoginFlow) {
+      ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
+      if (isFirefox) {
+        history.push(ONBOARDING_COMPLETION_ROUTE);
+      } else {
+        history.push(ONBOARDING_METAMETRICS);
+      }
+      ///: END:ONLY_INCLUDE_IF
+    } else {
+      history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+    }
   };
 
   const handleCreatePassword = async (event) => {
@@ -240,12 +257,17 @@ export default function CreatePassword({
           marginBottom={4}
           width={BlockSize.Full}
         >
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {t('stepOf', [
-              firstTimeFlowType === FirstTimeFlowType.import ? 2 : 1,
-              firstTimeFlowType === FirstTimeFlowType.import ? 2 : 3,
-            ])}
-          </Text>
+          {!isSocialLoginFlow && (
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
+              {t('stepOf', [
+                firstTimeFlowType === FirstTimeFlowType.import ? 2 : 1,
+                firstTimeFlowType === FirstTimeFlowType.import ? 2 : 3,
+              ])}
+            </Text>
+          )}
           <Text variant={TextVariant.headingLg} as="h2">
             {t('createPassword')}
           </Text>
@@ -254,7 +276,9 @@ export default function CreatePassword({
             color={TextColor.textAlternative}
             as="h2"
           >
-            {t('createPasswordDetails')}
+            {isSocialLoginFlow
+              ? t('createPasswordDetailsSocial')
+              : t('createPasswordDetails')}
           </Text>
         </Box>
         <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />

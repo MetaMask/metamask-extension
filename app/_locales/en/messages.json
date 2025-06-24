@@ -1490,6 +1490,9 @@
   "createPasswordDetails": {
     "message": "Unlocks MetaMask on this device only."
   },
+  "createPasswordDetailsSocial": {
+    "message": "Use this for wallet recovery on all devices."
+  },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
   },
@@ -6841,6 +6844,9 @@
   "use4ByteResolution": {
     "message": "Decode smart contracts"
   },
+  "useDifferentLoginMethod": {
+    "message": "Use a different login method"
+  },
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"
   },
@@ -6974,6 +6980,13 @@
   },
   "walletReadyLoseSrpRemind": {
     "message": "If you don’t back up your Secret Recovery Phrase, you’ll lose access to your funds if you get locked out of the app or get a new device."
+  },
+  "walletReadySocialDetails1": {
+    "message": "You can log in to your wallet anytime with your $1 account and password.",
+    "description": "$1 is the social login type. e.g Google, Apple, etc."
+  },
+  "walletReadySocialDetails2": {
+    "message": "If you forget your password, you won’t be able to access your wallet."
   },
   "wantToAddThisNetwork": {
     "message": "Want to add this network?"

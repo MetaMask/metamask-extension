@@ -30,7 +30,10 @@ import {
 
 import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { setFirstTimeFlowType } from '../../../store/actions';
+import {
+  resetOAuthLoginState,
+  setFirstTimeFlowType,
+} from '../../../store/actions';
 
 export default function AccountNotFound() {
   const history = useHistory();
@@ -38,6 +41,13 @@ export default function AccountNotFound() {
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
+
+  const onLoginWithDifferentMethod = async () => {
+    // clear the social login state
+    await dispatch(resetOAuthLoginState());
+    await dispatch(setFirstTimeFlowType(null));
+    history.push(ONBOARDING_WELCOME_ROUTE);
+  };
 
   const onCreateNewAccount = () => {
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
@@ -132,6 +142,15 @@ export default function AccountNotFound() {
           onClick={onCreateNewAccount}
         >
           {t('accountNotFoundCreateOne')}
+        </Button>
+        <Button
+          data-testid="account-exist-login-with-different-method"
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          width={BlockSize.Full}
+          onClick={onLoginWithDifferentMethod}
+        >
+          {t('useDifferentLoginMethod')}
         </Button>
       </Box>
     </Box>

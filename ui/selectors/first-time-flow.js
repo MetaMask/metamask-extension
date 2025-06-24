@@ -1,10 +1,13 @@
+import { PLATFORM_FIREFOX } from '../../shared/constants/app';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import { getBrowserName } from '../../shared/modules/browser-runtime.utils';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../helpers/constants/routes';
 
@@ -38,8 +41,13 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
     return ONBOARDING_IMPORT_WITH_SRP_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
     return ONBOARDING_METAMETRICS;
-  } else if (getIsSocialLoginFlow(state)) {
-    return ONBOARDING_COMPLETION_ROUTE;
+  } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+    return ONBOARDING_METAMETRICS;
+  } else if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+    if (getBrowserName() === PLATFORM_FIREFOX) {
+      return ONBOARDING_PIN_EXTENSION_ROUTE;
+    }
+    return ONBOARDING_METAMETRICS;
   }
   return DEFAULT_ROUTE;
 }
@@ -58,15 +66,17 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
  */
 export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
   const { firstTimeFlowType } = state.metamask;
-
+  console.log('firstTimeFlowType', firstTimeFlowType);
   if (firstTimeFlowType === FirstTimeFlowType.create) {
     return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.import) {
     return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
     return ONBOARDING_SECURE_YOUR_WALLET_ROUTE;
-  } else if (getIsSocialLoginFlow(state)) {
-    return ONBOARDING_CREATE_PASSWORD_ROUTE;
+  } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+    return ONBOARDING_COMPLETION_ROUTE;
+  } else if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+    return ONBOARDING_PIN_EXTENSION_ROUTE;
   }
   return DEFAULT_ROUTE;
 }

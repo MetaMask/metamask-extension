@@ -4696,6 +4696,7 @@ export default class MetamaskController extends EventEmitter {
     const { isNewUser } = await this.seedlessOnboardingController.authenticate(
       oauth2LoginResult,
     );
+    console.log('isNewUser', isNewUser);
     return isNewUser;
   }
 

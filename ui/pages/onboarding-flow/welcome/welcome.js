@@ -93,6 +93,7 @@ export default function OnboardingWelcome({
     history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
   }, [dispatch, history, trackEvent]);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
   const handleSocialLogin = useCallback(
     async (socialConnectionType) => {
       const isNewUser = await dispatch(startOAuthLogin(socialConnectionType));
@@ -111,9 +112,9 @@ export default function OnboardingWelcome({
         const isNewUser = await handleSocialLogin(socialConnectionType);
         trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.OnboardingWalletCreationStarted,
+          event: MetaMetricsEventName.WalletSetupStarted,
           properties: {
-            account_type: 'metamask',
+            account_type: MetaMetricsEventAccountType.Social,
           },
         });
         if (isNewUser) {
@@ -138,9 +139,9 @@ export default function OnboardingWelcome({
 
         trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.OnboardingWalletCreationStarted,
+          event: MetaMetricsEventName.WalletImportStarted,
           properties: {
-            account_type: 'metamask',
+            account_type: MetaMetricsEventAccountType.Social,
           },
         });
 
@@ -155,6 +156,7 @@ export default function OnboardingWelcome({
     },
     [dispatch, handleSocialLogin, trackEvent, history],
   );
+  ///: END:ONLY_INCLUDE_IF
 
   const handleLogin = useCallback(
     async (loginType, loginOption) => {
@@ -168,7 +170,9 @@ export default function OnboardingWelcome({
       ) {
         onImportClick();
       } else if (loginOption === LOGIN_OPTION.EXISTING) {
+        ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
         await onSocialLoginImportClick(loginType);
+        ///: END:ONLY_INCLUDE_IF
       }
     },
     [

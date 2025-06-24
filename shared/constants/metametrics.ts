@@ -888,6 +888,10 @@ export enum MetaMetricsEventAccountType {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   Snap = 'snap',
   ///: END:ONLY_INCLUDE_IF
+
+  ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
+  Social = 'social',
+  ///: END:ONLY_INCLUDE_IF
 }
 
 export enum QueueType {

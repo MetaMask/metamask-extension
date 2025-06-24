@@ -29,7 +29,10 @@ import {
 } from '../../../helpers/constants/routes';
 import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { setFirstTimeFlowType } from '../../../store/actions';
+import {
+  resetOAuthLoginState,
+  setFirstTimeFlowType,
+} from '../../../store/actions';
 
 export default function AccountExist() {
   const history = useHistory();
@@ -38,8 +41,16 @@ export default function AccountExist() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
 
-  const onDone = () => {
-    dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
+  const onLoginWithDifferentMethod = async () => {
+    // clear the social login state
+    await dispatch(resetOAuthLoginState());
+    // reset the first time flow type
+    await dispatch(setFirstTimeFlowType(null));
+    history.push(ONBOARDING_WELCOME_ROUTE);
+  };
+
+  const onDone = async () => {
+    await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
     history.push(ONBOARDING_UNLOCK_ROUTE);
   };
 
@@ -131,6 +142,15 @@ export default function AccountExist() {
           onClick={onDone}
         >
           {t('accountAlreadyExistsLogin')}
+        </Button>
+        <Button
+          data-testid="account-exist-login-with-different-method"
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          width={BlockSize.Full}
+          onClick={onLoginWithDifferentMethod}
+        >
+          {t('useDifferentLoginMethod')}
         </Button>
       </Box>
     </Box>
