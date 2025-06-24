@@ -4,6 +4,7 @@ import {
 } from '@metamask/network-controller';
 import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import {
+  BatchTransactionParams,
   IsAtomicBatchSupportedResult,
   IsAtomicBatchSupportedResultEntry,
   Log,
@@ -65,7 +66,19 @@ async function processSingleTransaction({
   securityAlertId,
   transactions,
   validateSecurity,
-}: any) {
+}: {
+  addTransaction: TransactionController['addTransaction'];
+  chainId: Hex;
+  from: Hex;
+  networkClientId: string;
+  origin?: string;
+  securityAlertId: string;
+  transactions: { params: BatchTransactionParams }[];
+  validateSecurity: (
+    securityRequest: ValidateSecurityRequest,
+    chainId: Hex,
+  ) => void;
+}) {
   const txParams = {
     from,
     ...transactions[0].params,
