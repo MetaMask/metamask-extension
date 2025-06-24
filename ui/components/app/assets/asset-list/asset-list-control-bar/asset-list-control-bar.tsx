@@ -69,8 +69,7 @@ import Tooltip from '../../../../ui/tooltip';
 import { getMultichainNetwork } from '../../../../../selectors/multichain';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
-
-const isGlobalNetworkSelectorRemoved = true;
+import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;

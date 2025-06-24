@@ -25,11 +25,10 @@ import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { extractUniqueIconAndSymbols } from '../util/extractIconAndSymbol';
 import { getDefiPositions } from '../../../../selectors/assets';
 import { DeFiProtocolPosition } from '../types';
+import { isGlobalNetworkSelectorRemoved } from '../../../../selectors/selectors';
 import { DeFiErrorMessage } from './cells/defi-error-message';
 import { DeFiEmptyStateMessage } from './cells/defi-empty-state';
 import DefiProtocolCell from './cells/defi-protocol-cell';
-
-const isGlobalNetworkSelectorRemoved = true;
 
 type DefiListProps = {
   onClick: (chainId: string, protocolId: string) => void;

@@ -28,8 +28,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-
-const isGlobalNetworkSelectorRemoved = true;
+import { isGlobalNetworkSelectorRemoved } from '../../../../selectors/selectors';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;

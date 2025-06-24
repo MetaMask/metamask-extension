@@ -5,14 +5,13 @@ import { getNftContracts, getAllNfts } from '../ducks/metamask/metamask';
 import {
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedInternalAccount,
+  isGlobalNetworkSelectorRemoved,
 } from '../selectors';
 import { getEnabledNetworksByNamespace } from '../selectors/multichain/networks';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { getNftImage } from '../helpers/utils/nfts';
 import { usePrevious } from './usePrevious';
 import { useI18nContext } from './useI18nContext';
-
-const isGlobalNetworkSelectorRemoved = true;
 
 export function useNftsCollections() {
   const t = useI18nContext();

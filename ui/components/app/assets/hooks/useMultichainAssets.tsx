@@ -5,6 +5,7 @@ import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors
 import {
   getEnabledNetworksByNamespace,
   getSelectedInternalAccount,
+  isGlobalNetworkSelectorRemoved,
 } from '../../../../selectors';
 import {
   TranslateFunction,
@@ -22,8 +23,6 @@ import { TokenWithFiatAmount } from '../types';
 import { getMultiChainAssets } from '../../../../selectors/assets';
 import { filterAssets } from '../util/filter';
 import useNetworkFilter from './useNetworkFilter';
-
-const isGlobalNetworkSelectorRemoved = true;
 
 const useMultiChainAssets = () => {
   const t = useI18nContext();
