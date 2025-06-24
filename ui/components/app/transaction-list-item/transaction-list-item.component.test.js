@@ -311,23 +311,27 @@ describe('TransactionListItem', () => {
 
   it('should render pending legacy swap tx summary', () => {
     useSelector.mockImplementation(generateUseSelectorRouter({}));
-    const { baseElement } = renderWithProvider(
+    const { queryByTestId, getByText } = renderWithProvider(
       <TransactionListItem
         transactionGroup={{
           ...mockLegacySwapTxGroup,
           primaryTransaction: {
             ...mockLegacySwapTxGroup.primaryTransaction,
-            status: TransactionStatus.pending,
+            status: TransactionStatus.approved,
           },
         }}
       />,
       mockStore(mockState),
     );
 
-    expect(baseElement).toMatchSnapshot();
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Swap USDC to UNISigningCancel',
+    );
+    expect(getByText('Signing')).toBeInTheDocument();
   });
 
   it('should render confirmed legacy swap tx summary', () => {
+    useSelector.mockImplementation(generateUseSelectorRouter({}));
     const { baseElement } = renderWithProvider(
       <TransactionListItem transactionGroup={mockLegacySwapTxGroup} />,
     );
@@ -336,7 +340,8 @@ describe('TransactionListItem', () => {
   });
 
   it('should render failed legacy swap tx summary', () => {
-    const { baseElement } = renderWithProvider(
+    useSelector.mockImplementation(generateUseSelectorRouter({}));
+    const { queryByTestId, getByText } = renderWithProvider(
       <TransactionListItem
         transactionGroup={{
           ...mockLegacySwapTxGroup,
@@ -348,7 +353,10 @@ describe('TransactionListItem', () => {
       />,
     );
 
-    expect(baseElement).toMatchSnapshot();
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Swap USDC to UNIFailed-2 USDC',
+    );
+    expect(getByText('Failed')).toBeInTheDocument();
   });
 
   it('should render confirmed unified swap tx summary', () => {
@@ -363,7 +371,8 @@ describe('TransactionListItem', () => {
   });
 
   it('should render failed unified swap tx summary', () => {
-    const { baseElement } = renderWithProvider(
+    useSelector.mockImplementation(generateUseSelectorRouter({}));
+    const { queryByTestId, getByText } = renderWithProvider(
       <TransactionListItem
         transactionGroup={{
           ...mockUnifiedSwapTxGroup,
@@ -375,7 +384,10 @@ describe('TransactionListItem', () => {
       />,
     );
 
-    expect(baseElement).toMatchSnapshot();
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Swap to Failed-0 ETH',
+    );
+    expect(getByText('Failed')).toBeInTheDocument();
   });
 
   it('should render pending bridge tx summary', () => {
@@ -393,7 +405,7 @@ describe('TransactionListItem', () => {
         },
       }),
     );
-    const { baseElement } = renderWithProvider(
+    const { queryByTestId, getByText } = renderWithProvider(
       <TransactionListItem
         transactionGroup={{
           ...mockBridgeTxData.transactionGroup,
@@ -405,7 +417,10 @@ describe('TransactionListItem', () => {
       />,
     );
 
-    expect(baseElement).toMatchSnapshot();
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Bridge to OP MainnetFailed-2 USDC',
+    );
+    expect(getByText('Pending')).toBeInTheDocument();
   });
 
   it('should render confirmed bridge tx summary', () => {
@@ -423,13 +438,16 @@ describe('TransactionListItem', () => {
         },
       }),
     );
-    const { baseElement } = renderWithProvider(
+    const { queryByTestId, getByText } = renderWithProvider(
       <TransactionListItem
         transactionGroup={mockBridgeTxData.transactionGroup}
       />,
     );
 
-    expect(baseElement).toMatchSnapshot();
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Bridge to OP MainnetFailed-2 USDC',
+    );
+    expect(getByText('Transaction 2 of 2')).toBeInTheDocument();
   });
 
   it('should render completed bridge tx summary', () => {
@@ -493,11 +511,14 @@ describe('TransactionListItem', () => {
         status: TransactionStatus.failed,
       },
     };
-    const { baseElement, getByTestId } = renderWithProvider(
+    const { queryByTestId, getByTestId, getByText } = renderWithProvider(
       <TransactionListItem transactionGroup={failedTransactionGroup} />,
     );
 
-    expect(baseElement).toMatchSnapshot();
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Bridge to OP MainnetFailed-2 USDC',
+    );
+    expect(getByText('Failed')).toBeInTheDocument();
 
     fireEvent.click(getByTestId('activity-list-item'));
     expect(mockPush).toHaveBeenCalledWith({

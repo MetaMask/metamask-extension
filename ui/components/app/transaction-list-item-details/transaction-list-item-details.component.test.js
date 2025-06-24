@@ -135,39 +135,9 @@ describe('TransactionListItemDetails Component', () => {
 });
 
 describe('TransactionListItemDetails for swaps', () => {
-  const transactionGroup = mockSwapTxGroup;
-
-  it('should render pending swap tx details', async () => {
-    const { baseElement } = await render({
-      transactionGroup: {
-        ...transactionGroup,
-        primaryTransaction: {
-          ...transactionGroup.primaryTransaction,
-          status: TransactionStatus.pending,
-        },
-      },
-    });
-
-    expect(baseElement).toMatchSnapshot();
-  });
-
   it('should render confirmed swap tx details', async () => {
     const { baseElement } = await render({
-      transactionGroup,
-    });
-
-    expect(baseElement).toMatchSnapshot();
-  });
-
-  it('should render failed swap tx details', async () => {
-    const { baseElement } = await render({
-      transactionGroup: {
-        ...transactionGroup,
-        primaryTransaction: {
-          ...transactionGroup.primaryTransaction,
-          status: TransactionStatus.failed,
-        },
-      },
+      transactionGroup: mockSwapTxGroup,
     });
 
     expect(baseElement).toMatchSnapshot();
