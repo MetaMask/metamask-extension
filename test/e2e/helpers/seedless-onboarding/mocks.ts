@@ -48,8 +48,8 @@ export class OAuthMockttpService {
   }
 
   onPost(
-    path: string,
-    request: Pick<CompletedRequest, 'path' | 'body'>,
+    _path: string,
+    _request: Pick<CompletedRequest, 'path' | 'body'>,
     overrides?: {
       statusCode?: number;
       userEmail?: string;
