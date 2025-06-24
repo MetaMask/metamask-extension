@@ -75,11 +75,6 @@ export const CustomNetworks = React.memo(() => {
   const generateMultichainNetworkListItem = useCallback(
     (network: MultichainNetworkConfiguration) => {
       const isCurrentNetwork = network.chainId === currentChainId;
-      const isTestNetwork = TEST_CHAINS.includes(
-        network.isEvm
-          ? convertCaipToHexChainId(network.chainId)
-          : (network.chainId as Hex),
-      );
       const { onDelete, onEdit, onRpcConfigEdit } = getItemCallbacks(network);
 
       return (
