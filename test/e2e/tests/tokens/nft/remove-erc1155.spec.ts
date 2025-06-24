@@ -9,8 +9,8 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
-import { setupAutoDetectMocking } from './mocks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { setupAutoDetectMocking } from './mocks';
 
 const isGlobalNetworkSelectorRemoved = true;
 
