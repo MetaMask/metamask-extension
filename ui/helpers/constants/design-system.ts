@@ -55,6 +55,8 @@ export enum BackgroundColor {
   backgroundDefault = 'background-default',
   backgroundAlternative = 'background-alternative',
   backgroundMuted = 'background-muted',
+  backgroundSection = 'background-section',
+  backgroundSubsection = 'background-subsection',
   backgroundAlternativeSoft = 'background-alternative-soft',
   backgroundHover = 'background-hover',
   backgroundPressed = 'background-pressed',
@@ -477,7 +479,7 @@ export enum FontWeight {
 }
 
 export enum FontFamily {
-  Default = 'default', // CentraNo1
+  Default = 'default', // Geist
   Accent = 'accent', // MMSans
   Hero = 'hero', // MMPoly
 }

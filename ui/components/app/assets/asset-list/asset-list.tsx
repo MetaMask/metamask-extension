@@ -6,6 +6,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
+import { type SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import DetectedToken from '../../detected-token/detected-token';
 import { usePrimaryCurrencyProperties } from '../hooks';
 import TokenList from '../token-list';
@@ -16,10 +17,14 @@ import AssetListFundingModals from './asset-list-funding-modals';
 export type AssetListProps = {
   onClickAsset: (chainId: string, address: string) => void;
   showTokensLinks?: boolean;
+  safeChains?: SafeChain[];
 };
 
 const TokenListContainer = React.memo(
-  ({ onClickAsset }: Pick<AssetListProps, 'onClickAsset'>) => {
+  ({
+    onClickAsset,
+    safeChains,
+  }: Pick<AssetListProps, 'onClickAsset' | 'safeChains'>) => {
     const trackEvent = useContext(MetaMetricsContext);
     const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
 
@@ -39,11 +44,15 @@ const TokenListContainer = React.memo(
       [],
     );
 
-    return <TokenList onTokenClick={onTokenClick} />;
+    return <TokenList onTokenClick={onTokenClick} safeChains={safeChains} />;
   },
 );
 
-const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
+const AssetList = ({
+  onClickAsset,
+  showTokensLinks,
+  safeChains,
+}: AssetListProps) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
@@ -53,7 +62,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   return (
     <>
       <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
-      <TokenListContainer onClickAsset={onClickAsset} />
+      <TokenListContainer onClickAsset={onClickAsset} safeChains={safeChains} />
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}

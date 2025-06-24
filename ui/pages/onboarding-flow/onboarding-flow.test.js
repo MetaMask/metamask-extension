@@ -136,7 +136,7 @@ describe('Onboarding Flow', () => {
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
 
-      const createPasswordText = queryByText('Create password');
+      const createPasswordText = queryByText('MetaMask password');
       expect(createPasswordText).toBeInTheDocument();
 
       const password = 'a-new-password';
@@ -178,15 +178,16 @@ describe('Onboarding Flow', () => {
     expect(recoveryPhrase).toBeInTheDocument();
   });
 
-  it('should render confirm recovery phrase', () => {
-    const { queryByTestId } = renderWithProvider(
+  it('should render to review recovery phrase from confirm recovery phrase', () => {
+    const { history } = renderWithProvider(
       <OnboardingFlow />,
       store,
       ONBOARDING_CONFIRM_SRP_ROUTE,
     );
 
-    const confirmRecoveryPhrase = queryByTestId('confirm-recovery-phrase');
-    expect(confirmRecoveryPhrase).toBeInTheDocument();
+    expect(history.location.pathname).toStrictEqual(
+      ONBOARDING_REVIEW_SRP_ROUTE,
+    );
   });
 
   it('should render import seed phrase', () => {
@@ -247,7 +248,7 @@ describe('Onboarding Flow', () => {
       ONBOARDING_COMPLETION_ROUTE,
     );
 
-    const creationSuccessful = queryByTestId('creation-successful');
+    const creationSuccessful = queryByTestId('wallet-ready');
     expect(creationSuccessful).toBeInTheDocument();
   });
 

@@ -36,6 +36,7 @@ import type {
   ThrottledOrigins,
   ThrottledOrigin,
 } from '../../../shared/types/origin-throttling';
+import { ScanAddressResponse } from '../lib/trust-signals/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -74,6 +75,7 @@ export type AppStateControllerState = {
   nftsDropdownState: Json;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
+  addressSecurityAlertResponses: Record<string, ScanAddressResponse>;
   // States used for displaying the changed network toast
   switchedNetworkDetails: Record<string, string> | null;
   switchedNetworkNeverShowMessage: boolean;
@@ -83,7 +85,9 @@ export type AppStateControllerState = {
   snapsInstallPrivacyWarningShown?: boolean;
   slides: CarouselSlide[];
   throttledOrigins: ThrottledOrigins;
-  upgradeSplashPageAcknowledgedForAccounts: string[];
+  isUpdateAvailable: boolean;
+  updateModalLastDismissedAt: number | null;
+  lastUpdatedAt: number | null;
 };
 
 const controllerName = 'AppStateController';
@@ -155,6 +159,7 @@ type AppStateControllerInitState = Partial<
     | 'qrHardware'
     | 'nftsDropdownState'
     | 'signatureSecurityAlertResponses'
+    | 'addressSecurityAlertResponses'
     | 'switchedNetworkDetails'
     | 'currentExtensionPopupId'
   >
@@ -197,7 +202,9 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   switchedNetworkNeverShowMessage: false,
   slides: [],
   throttledOrigins: {},
-  upgradeSplashPageAcknowledgedForAccounts: [],
+  isUpdateAvailable: false,
+  updateModalLastDismissedAt: null,
+  lastUpdatedAt: null,
   ...getInitialStateOverrides(),
 });
 
@@ -206,6 +213,7 @@ function getInitialStateOverrides() {
     qrHardware: {},
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
+    addressSecurityAlertResponses: {},
     switchedNetworkDetails: null,
     currentExtensionPopupId: 0,
   };
@@ -324,6 +332,10 @@ const controllerMetadata = {
     persist: false,
     anonymous: true,
   },
+  addressSecurityAlertResponses: {
+    persist: false,
+    anonymous: true,
+  },
   switchedNetworkDetails: {
     persist: false,
     anonymous: true,
@@ -356,8 +368,16 @@ const controllerMetadata = {
     persist: false,
     anonymous: true,
   },
-  upgradeSplashPageAcknowledgedForAccounts: {
+  isUpdateAvailable: {
     persist: false,
+    anonymous: true,
+  },
+  updateModalLastDismissedAt: {
+    persist: true,
+    anonymous: true,
+  },
+  lastUpdatedAt: {
+    persist: true,
     anonymous: true,
   },
 };
@@ -650,17 +670,35 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Add account to list of accounts for which user has acknowledged
-   * smart account upgrade splash page.
+   * Set whether or not there is an update available
    *
-   * @param account
+   * @param isUpdateAvailable - Whether or not there is an update available
    */
-  setSplashPageAcknowledgedForAccount(account: string): void {
+  setIsUpdateAvailable(isUpdateAvailable: boolean): void {
     this.update((state) => {
-      state.upgradeSplashPageAcknowledgedForAccounts = [
-        ...state.upgradeSplashPageAcknowledgedForAccounts,
-        account.toLowerCase(),
-      ];
+      state.isUpdateAvailable = isUpdateAvailable;
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has dismissed the update modal
+   *
+   * @param updateModalLastDismissedAt - timestamp of the last time the user has dismissed the update modal.
+   */
+  setUpdateModalLastDismissedAt(updateModalLastDismissedAt: number): void {
+    this.update((state) => {
+      state.updateModalLastDismissedAt = updateModalLastDismissedAt;
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has updated
+   *
+   * @param lastUpdatedAt - timestamp of the last time the user has updated
+   */
+  setLastUpdatedAt(lastUpdatedAt: number): void {
+    this.update((state) => {
+      state.lastUpdatedAt = lastUpdatedAt;
     });
   }
 
@@ -968,6 +1006,22 @@ export class AppStateController extends BaseController<
         ] = securityAlertResponse;
       });
     }
+  }
+
+  getAddressSecurityAlertResponse(
+    address: string,
+  ): ScanAddressResponse | undefined {
+    return this.state.addressSecurityAlertResponses[address.toLowerCase()];
+  }
+
+  addAddressSecurityAlertResponse(
+    address: string,
+    addressSecurityAlertResponse: ScanAddressResponse,
+  ): void {
+    this.update((state) => {
+      state.addressSecurityAlertResponses[address.toLowerCase()] =
+        addressSecurityAlertResponse;
+    });
   }
 
   /**

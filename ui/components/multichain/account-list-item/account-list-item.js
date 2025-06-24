@@ -94,6 +94,8 @@ const AccountListItem = ({
   shouldScrollToWhenSelected = true,
   showConnectedStatus = true,
   privacyMode = false,
+  showSrpPill = true,
+  showSelectionIndicator = true,
 }) => {
   const t = useI18nContext();
 
@@ -101,21 +103,26 @@ const AccountListItem = ({
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
-
   const snapMetadata = useSelector(getSnapsMetadata);
   const keyrings = useSelector(getMetaMaskKeyrings);
-  const accountLabels = useMemo(
-    () =>
-      getAccountLabels(
-        account.metadata.keyring.type,
-        account,
-        keyrings,
-        account.metadata.keyring.type === KeyringType.snap
-          ? getSnapName(snapMetadata)(account.metadata?.snap?.id)
-          : null,
-      ),
-    [account, keyrings, snapMetadata],
-  );
+
+  const isSrpPill = (label) => {
+    return Boolean(label?.startsWith('SRP'));
+  };
+
+  const accountLabels = useMemo(() => {
+    const labels = getAccountLabels(
+      account.metadata.keyring.type,
+      account,
+      keyrings,
+      account.metadata.keyring.type === KeyringType.snap
+        ? getSnapName(snapMetadata)(account.metadata?.snap?.id)
+        : null,
+    );
+    return showSrpPill
+      ? labels
+      : labels.filter(({ label }) => !isSrpPill(label));
+  }, [account, keyrings, snapMetadata, showSrpPill]);
 
   const useBlockie = useSelector(getUseBlockie);
   const { isEvmNetwork, chainId: multichainChainId } = useMultichainSelector(
@@ -227,11 +234,12 @@ const AccountListItem = ({
           {startAccessory}
         </Box>
       ) : null}
-      {selected && (
+      {selected && showSelectionIndicator && (
         <Box
           className="multichain-account-list-item__selected-indicator"
           borderRadius={BorderRadius.pill}
           backgroundColor={Color.primaryDefault}
+          data-testid="account-list-item-selected-indicator"
         />
       )}
 
@@ -525,6 +533,14 @@ AccountListItem.propTypes = {
    * Determines if the connected status should be shown
    */
   showConnectedStatus: PropTypes.bool,
+  /**
+   * Determines if SRP pill should be shown
+   */
+  showSrpPill: PropTypes.bool,
+  /**
+   * Determines if left dark blue selection indicator is displayed or not
+   */
+  showSelectionIndicator: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

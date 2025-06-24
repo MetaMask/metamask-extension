@@ -1,6 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { merge } from 'lodash';
 import { BtcScope } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/jest';
@@ -168,6 +168,21 @@ describe('AccountListItem', () => {
     expect(
       document.querySelector('.multichain-account-list-item--selected'),
     ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('account-list-item-selected-indicator'),
+    ).toBeInTheDocument();
+  });
+
+  it('does not render selection indicator if showSelectionIndicator is false', async () => {
+    render({ selected: true, showSelectionIndicator: false });
+    expect(
+      document.querySelector('.multichain-account-list-item--selected'),
+    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('account-list-item-selected-indicator'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('renders the account name tooltip for long names', () => {
@@ -357,6 +372,97 @@ describe('AccountListItem', () => {
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
       });
+    });
+  });
+  describe('SRP Pills', () => {
+    it('renders the SRP pill for account when multi SRP are present in state', () => {
+      const { container } = render(
+        {
+          account: {
+            ...mockAccount,
+            metadata: {
+              ...mockAccount.metadata,
+              snap: {
+                id: mockSnap.id,
+              },
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            balance: '0x0',
+          },
+        },
+        {
+          metamask: {
+            keyrings: [
+              {
+                type: 'HD Key Tree',
+                accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                metadata: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                  name: '',
+                },
+              },
+              {
+                type: 'HD Key Tree',
+                accounts: ['0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b'],
+                metadata: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                  name: '',
+                },
+              },
+            ],
+          },
+        },
+      );
+
+      const tag = container.querySelector('.mm-tag');
+      expect(tag.textContent).toBe('SRP #1');
+    });
+
+    it('does not render the SRP pill when explicitly disabled', () => {
+      const { container } = render(
+        {
+          showSrpPill: false,
+          account: {
+            ...mockAccount,
+            metadata: {
+              ...mockAccount.metadata,
+              snap: {
+                id: mockSnap.id,
+              },
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            balance: '0x0',
+          },
+        },
+        {
+          metamask: {
+            keyrings: [
+              {
+                type: 'HD Key Tree',
+                accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                metadata: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                  name: '',
+                },
+              },
+              {
+                type: 'HD Key Tree',
+                accounts: ['0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b'],
+                metadata: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                  name: '',
+                },
+              },
+            ],
+          },
+        },
+      );
+
+      expect(container.querySelector('.mm-tag')).not.toBeInTheDocument();
     });
   });
 });

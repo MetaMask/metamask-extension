@@ -89,6 +89,8 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
+import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
+import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
 
 /**
@@ -616,6 +618,10 @@ async function initialize(backup) {
   );
 
   controller.store.on('update', update);
+  controller.store.on('error', (error) => {
+    log.error('MetaMask controller.store error:', error);
+    sentry?.captureException(error);
+  });
 
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
@@ -624,6 +630,21 @@ async function initialize(backup) {
     await loadPhishingWarningPage();
   }
   await sendReadyMessageToTabs();
+
+  new DeepLinkRouter({
+    getExtensionURL: platform.getExtensionURL,
+    getState: controller.getState.bind(controller),
+  })
+    .on('navigate', async ({ url, parsed }) => {
+      // don't track deep links that are immediately redirected (like /buy)
+      if (!('redirectTo' in parsed)) {
+        await controller.metaMetricsController.trackEvent(
+          createEvent({ signature: parsed.signature, url }),
+        );
+      }
+    })
+    .on('error', (error) => sentry?.captureException(error))
+    .install();
 }
 
 /**
@@ -1138,7 +1159,9 @@ export function setupController(
 
       connectEip1193(portStream, remotePort.sender);
 
-      if (isFirefox) {
+      // for firefox and manifest v2 (non production webpack builds)
+      // we expose the multichain provider via window.postMessage
+      if (isFirefox || !isManifestV3) {
         const mux = setupMultiplex(portStream);
         mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
 
@@ -1452,13 +1475,11 @@ const addAppInstalledEvent = () => {
  *
  * @param {chrome.runtime.InstalledDetails} details
  */
-function handleOnInstalled({ reason }) {
-  switch (reason) {
-    case 'install':
-      onInstall();
-      break;
-    default:
-    // no action
+function handleOnInstalled(details) {
+  if (details.reason === 'install') {
+    onInstall();
+  } else if (details.reason === 'update') {
+    onUpdate();
   }
 }
 
@@ -1472,6 +1493,26 @@ function onInstall() {
     platform.openExtensionInBrowser();
   }
 }
+
+/**
+ * Trigger actions that should happen only upon update installation
+ */
+async function onUpdate() {
+  await isInitialized;
+  log.debug('Update installation detected');
+  controller.appStateController.setLastUpdatedAt(Date.now());
+}
+
+/**
+ * Trigger actions that should happen only when an update is available
+ */
+async function onUpdateAvailable() {
+  await isInitialized;
+  log.debug('An update is available');
+  controller.appStateController.setIsUpdateAvailable(true);
+}
+
+browser.runtime.onUpdateAvailable.addListener(onUpdateAvailable);
 
 function onNavigateToTab() {
   browser.tabs.onActivated.addListener((onActivatedTab) => {

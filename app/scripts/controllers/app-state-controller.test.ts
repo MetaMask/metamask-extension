@@ -476,16 +476,57 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setSplashPageAcknowledgedForAccount', () => {
-    it('adds the account to upgradeSplashPageAcknowledgedForAccounts', async () => {
+  describe('isUpdateAvailable', () => {
+    it('defaults to false', async () => {
       await withController(({ controller }) => {
-        const mockAccount = '0x123';
+        expect(controller.state.isUpdateAvailable).toStrictEqual(false);
+      });
+    });
+  });
 
-        controller.setSplashPageAcknowledgedForAccount(mockAccount);
+  describe('setIsUpdateAvailable', () => {
+    it('sets isUpdateAvailable', async () => {
+      await withController(({ controller }) => {
+        controller.setIsUpdateAvailable(true);
+        expect(controller.state.isUpdateAvailable).toStrictEqual(true);
+      });
+    });
+  });
 
-        expect(
-          controller.state.upgradeSplashPageAcknowledgedForAccounts,
-        ).toStrictEqual([mockAccount]);
+  describe('updateModalLastDismissedAt', () => {
+    it('defaults to null', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.updateModalLastDismissedAt).toStrictEqual(null);
+      });
+    });
+  });
+
+  describe('setUpdateModalLastDismissedAt', () => {
+    it('sets updateModalLastDismissedAt', async () => {
+      await withController(({ controller }) => {
+        const mockParams = Date.now();
+        controller.setUpdateModalLastDismissedAt(mockParams);
+        expect(controller.state.updateModalLastDismissedAt).toStrictEqual(
+          mockParams,
+        );
+      });
+    });
+  });
+
+  describe('lastUpdatedAt', () => {
+    it('defaults to null', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.lastUpdatedAt).toStrictEqual(null);
+      });
+    });
+  });
+
+  describe('setLastUpdatedAt', () => {
+    it('sets lastUpdatedAt', async () => {
+      await withController(({ controller }) => {
+        const mockParams = Date.now();
+        controller.setLastUpdatedAt(mockParams);
+        expect(controller.state.lastUpdatedAt).toStrictEqual(mockParams);
       });
     });
   });

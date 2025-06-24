@@ -70,7 +70,7 @@ describe('Wallet Created Events', () => {
       backgroundConnection: backgroundConnectionMocked,
     });
 
-    await waitForElementByText('Congratulations!');
+    await waitForElementByText('Your wallet is ready!');
 
     const completeOnboardingBtnId = 'onboarding-complete-done';
     const pinExtensionNextBtnId = 'pin-extension-next';
