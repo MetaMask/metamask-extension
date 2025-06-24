@@ -55,15 +55,10 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
   const multichainAssets = useMultiChainAssets();
 
-  console.log('evmBalances: ', evmBalances);
-
   // network filter to determine which tokens to show in list
   // on EVM we want to filter based on network filter controls, on non-evm we only want tokens from that chain identifier
   const { networkFilter } = useNetworkFilter();
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
-
-  console.log('networkFilter: ', networkFilter);
-  console.log('enabledNetworksByNamespace: ', enabledNetworksByNamespace);
 
   const networksToShow = useMemo(() => {
     return isGlobalNetworkSelectorRemoved
@@ -94,8 +89,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     // newTokensImported included in deps, but not in hook's logic
     newTokensImported,
   ]);
-
-  console.log('sorted filtered tokens: ', sortedFilteredTokens);
 
   useEffect(() => {
     if (sortedFilteredTokens) {
