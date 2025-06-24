@@ -37,7 +37,6 @@ import {
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
-  isGlobalNetworkSelectorRemoved,
   getEnabledNetworksByNamespace,
   getSelectedMultichainNetworkChainId,
 } from '../../../selectors';
@@ -128,6 +127,7 @@ import { NetworkFilterComponent } from '../../multichain/network-filter-menu';
 import AssetListControlBar from '../assets/asset-list/asset-list-control-bar';
 import NoTransactions from './no-transactions';
 
+const isGlobalNetworkSelectorRemoved = true;
 const PAGE_INCREMENT = 10;
 
 // When we are on a token page, we only want to show transactions that involve that token.

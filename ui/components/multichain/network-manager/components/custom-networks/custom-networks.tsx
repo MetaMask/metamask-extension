@@ -96,8 +96,8 @@ export const CustomNetworks = React.memo(() => {
               : undefined
           }
           onClick={() => handleNetworkClick(network.chainId)}
-          onDeleteClick={isTestNetwork ? undefined : onDelete}
-          onEditClick={isTestNetwork ? undefined : onEdit}
+          onDeleteClick={onDelete}
+          onEditClick={onEdit}
           selected={isCurrentNetwork}
           onRpcEndpointClick={onRpcConfigEdit}
           disabled={!isNetworkEnabled(network)}
