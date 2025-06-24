@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getPlatform } from '../../lib/util';
+import { mockWebAuthenticator } from '../../../../test/e2e/helpers/seedless-onboarding/mocks';
 import { WebAuthenticator } from './types';
 import { base64urlencode } from './utils';
 
@@ -82,6 +83,10 @@ async function requestIdentityPermission(): Promise<boolean> {
 }
 
 export function webAuthenticatorFactory(): WebAuthenticator {
+  if (process.env.IN_TEST) {
+    return mockWebAuthenticator();
+  }
+
   return {
     launchWebAuthFlow,
     generateCodeVerifierAndChallenge,

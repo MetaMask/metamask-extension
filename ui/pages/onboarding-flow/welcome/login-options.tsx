@@ -101,6 +101,11 @@ export default function LoginOptions({
         </ModalHeader>
         <Box paddingInline={4}>
           <SocialButton
+            data-testid={
+              loginOption === LOGIN_OPTION.EXISTING
+                ? 'onboarding-import-with-google-button'
+                : 'onboarding-create-with-google-button'
+            }
             icon={
               <img
                 src="images/icons/google.svg"
@@ -117,6 +122,11 @@ export default function LoginOptions({
             onClick={() => onLogin(LOGIN_TYPE.GOOGLE)}
           />
           <SocialButton
+            data-testid={
+              loginOption === LOGIN_OPTION.EXISTING
+                ? 'onboarding-import-with-apple-button'
+                : 'onboarding-create-with-apple-button'
+            }
             icon={
               <Icon
                 name={IconName.Apple}

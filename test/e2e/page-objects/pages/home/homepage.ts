@@ -72,6 +72,8 @@ class HomePage {
     testId: 'account-overview__asset-tab',
   };
 
+  private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
@@ -337,6 +339,16 @@ class HomePage {
       text: message,
       tag: 'p',
     });
+  }
+
+  /**
+   * Clicks the copy address button.
+   */
+  async getAccountAddress(): Promise<string> {
+    const accountAddress = await this.driver.findElement(
+      this.copyAddressButton,
+    );
+    return accountAddress.getText();
   }
 }
 

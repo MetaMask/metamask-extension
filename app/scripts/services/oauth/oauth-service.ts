@@ -1,5 +1,9 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import {
+  MOCK_AUTH_CONNECTION_ID,
+  MOCK_GROUPED_AUTH_CONNECTION_ID,
+} from '../../../../test/e2e/constants';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import type {
@@ -196,14 +200,19 @@ export default class OAuthService {
     loginHandler: BaseLoginHandler,
     authCode: string | null,
   ): Promise<OAuthLoginResult> {
-    const authConnectionId =
-      loginHandler.authConnection === AuthConnection.Google
-        ? this.#env.googleAuthConnectionId
-        : this.#env.appleAuthConnectionId;
-    const groupedAuthConnectionId =
-      loginHandler.authConnection === AuthConnection.Google
-        ? this.#env.googleGrouppedAuthConnectionId
-        : this.#env.appleGrouppedAuthConnectionId;
+    let authConnectionId = '';
+    let groupedAuthConnectionId = '';
+
+    if (process.env.IN_TEST) {
+      authConnectionId = MOCK_AUTH_CONNECTION_ID;
+      groupedAuthConnectionId = MOCK_GROUPED_AUTH_CONNECTION_ID;
+    } else if (loginHandler.authConnection === AuthConnection.Google) {
+      authConnectionId = this.#env.googleAuthConnectionId;
+      groupedAuthConnectionId = this.#env.googleGrouppedAuthConnectionId;
+    } else if (loginHandler.authConnection === AuthConnection.Apple) {
+      authConnectionId = this.#env.appleAuthConnectionId;
+      groupedAuthConnectionId = this.#env.appleGrouppedAuthConnectionId;
+    }
 
     const authTokenData = await loginHandler.getAuthIdToken(authCode);
     const idToken = authTokenData.jwt_tokens[this.#audience];

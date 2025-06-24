@@ -117,3 +117,13 @@ export const MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS = {
 
 /* The password for the wallet used in e2e tests*/
 export const WALLET_PASSWORD = 'correct horse battery staple';
+
+export const MOCK_AUTH_CONNECTION_ID = 'torus-test-health';
+export const MOCK_GROUPED_AUTH_CONNECTION_ID = 'torus-test-health-aggregate';
+
+/* Mock Google account used in Social login flow e2e tests*/
+export const MOCK_GOOGLE_ACCOUNT = 'e2e-user@gmail.com';
+export const MOCK_GOOGLE_ACCOUNT_WALLET_ADDRESS =
+  '0xe4D77E3839B91438962D82648e0EE342ec6DBb1d';
+/* Mock Apple account used in Social login flow e2e tests*/
+export const MOCK_APPLE_ACCOUNT = 'e2e-user@appleid.com';

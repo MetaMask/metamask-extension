@@ -46,6 +46,14 @@ const ALLOWLISTED_URLS = [
   'https://metamask.github.io/vault-decryptor/bundle.js',
 ];
 
-const ALLOWLISTED_HOSTS = ['token.api.cx.metamask.io'];
+const ALLOWLISTED_HOSTS = [
+  'token.api.cx.metamask.io',
+  // Seedless Onboarding (TOPRF Service Nodes)
+  'node-1.dev-node.web3auth.io',
+  'node-2.dev-node.web3auth.io',
+  'node-3.dev-node.web3auth.io',
+  'node-4.dev-node.web3auth.io',
+  'node-5.dev-node.web3auth.io',
+];
 
 module.exports = { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS };
