@@ -2090,10 +2090,10 @@ export default class MetamaskController extends EventEmitter {
       processSendCalls: processSendCalls.bind(
         null,
         {
-          addTransactionBatch: this.txController.addTransactionBatch.bind(
+          addTransaction: this.txController.addTransaction.bind(
             this.txController,
           ),
-          addTransaction: this.txController.addTransaction.bind(
+          addTransactionBatch: this.txController.addTransactionBatch.bind(
             this.txController,
           ),
           getDismissSmartAccountSuggestionEnabled: () =>
