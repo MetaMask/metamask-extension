@@ -32,4 +32,5 @@ export type CarouselSlide = {
   undismissable?: boolean;
   startDate?: string;
   endDate?: string;
+  priorityPlacement?: boolean;
 };

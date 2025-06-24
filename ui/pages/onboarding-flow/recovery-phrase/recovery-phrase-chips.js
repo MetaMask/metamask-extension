@@ -122,7 +122,7 @@ export default function RecoveryPhraseChips({
         borderRadius={BorderRadius.LG}
         display={Display.Grid}
         width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundMuted}
+        backgroundColor={BackgroundColor.backgroundSection}
         className="recovery-phrase__secret"
       >
         <Box
@@ -165,7 +165,10 @@ export default function RecoveryPhraseChips({
                 }
                 type={confirmPhase && !isQuizWord ? 'password' : 'text'}
                 readOnly
-                disabled={confirmPhase && !isQuizWord}
+                disabled={
+                  (confirmPhase && !isQuizWord) ||
+                  (!confirmPhase && !phraseRevealed)
+                }
                 onClick={() => {
                   if (!confirmPhase) {
                     return;
@@ -192,7 +195,6 @@ export default function RecoveryPhraseChips({
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.center}
               borderRadius={BorderRadius.SM}
-              backgroundColor={BackgroundColor.backgroundMuted}
               width={BlockSize.Full}
               height={BlockSize.Full}
               paddingTop={2}
@@ -201,10 +203,12 @@ export default function RecoveryPhraseChips({
               className="recovery-phrase__secret-blocker"
             />
             <Box
+              as="button"
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.center}
+              backgroundColor={BackgroundColor.transparent}
               height={BlockSize.Full}
               width={BlockSize.Full}
               gap={2}

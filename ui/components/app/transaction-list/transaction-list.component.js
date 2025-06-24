@@ -251,7 +251,7 @@ const groupEvmTransactionsByDate = (transactionGroups) =>
   groupTransactionsByDate(
     transactionGroups,
     (transactionGroup) => transactionGroup.primaryTransaction.time,
-    false, // maintains nonce ordering for EVM
+    true, // timestamp sorting for EVM
   );
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
