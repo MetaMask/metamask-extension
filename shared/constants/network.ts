@@ -342,7 +342,6 @@ export const SOPHON_TESTNET_DISPLAY_NAME = 'Sophon Testnet';
 export const EDUCHAIN_DISPLAY_NAME = 'EDU Chain';
 export const APECHAIN_DISPLAY_NAME = 'ApeChain';
 export const APECHAIN_TESTNET_DISPLAY_NAME = 'ApeChain Testnet';
-export const SEI_DISPLAY_NAME = 'Sei Network';
 export const ACALA_DISPLAY_NAME = 'Acala';
 export const KARURA_DISPLAY_NAME = 'Karura';
 
@@ -411,7 +410,6 @@ export const CURRENCY_SYMBOLS = {
   BERACHAIN: 'BERA',
   EDUCHAIN: 'EDU',
   APECHAIN: 'APE',
-  SEI: 'SEI',
   ACALA: 'ACA',
   KARURA: 'KAR',
 } as const;
