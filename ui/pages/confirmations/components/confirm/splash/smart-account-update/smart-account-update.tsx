@@ -45,7 +45,7 @@ import {
   getUseBlockie,
 } from '../../../../../../selectors';
 import { isHardwareKeyring } from '../../../../../../helpers/utils/hardware';
-import IconButton from '../../../../../../components/ui/icon-button/icon-button-round';
+import IconButton from '../../../../../../components/ui/icon-button/icon-button';
 import {
   getUseSmartAccount,
   getSmartAccountOptInForAccounts,
