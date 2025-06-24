@@ -13,17 +13,29 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useSelector } from 'react-redux';
+import { getInternalAccountByAddress } from '../../../selectors';
 
 type AccountSecretsSectionProps = {
   includeSRP?: boolean;
+  address: string;
 };
 
 export const AccountSecretsSection = ({
   includeSRP = false,
+  address,
 }: AccountSecretsSectionProps) => {
   const SECRET_RECOVERY_PHRASE_NUMBER = 1;
   const t = useI18nContext();
   const hasBackedUp = false;
+
+  const account = useSelector((state) =>
+    getInternalAccountByAddress(state, address),
+  );
+  const {
+    metadata: { keyring },
+  } = account;
+
 
   const handleShowSRP = () => {
 
