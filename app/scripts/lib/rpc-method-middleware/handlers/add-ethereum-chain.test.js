@@ -80,6 +80,8 @@ const createMockedHandler = () => {
     }),
     requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
     rejectApprovalRequestsForOrigin: jest.fn(),
+    setTokenNetworkFilter: jest.fn(),
+    setEnabledNetworks: jest.fn(),
   };
   const response = {};
   const handler = (request) =>
@@ -192,6 +194,8 @@ describe('addEthereumChainHandler', () => {
         requestPermittedChainsPermissionIncrementalForOrigin:
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
         rejectApprovalRequestsForOrigin: mocks.rejectApprovalRequestsForOrigin,
+        setTokenNetworkFilter: mocks.setTokenNetworkFilter,
+        setEnabledNetworks: mocks.setEnabledNetworks,
       },
     );
   });
@@ -260,6 +264,8 @@ describe('addEthereumChainHandler', () => {
               mocks.requestPermittedChainsPermissionIncrementalForOrigin,
             rejectApprovalRequestsForOrigin:
               mocks.rejectApprovalRequestsForOrigin,
+            setTokenNetworkFilter: mocks.setTokenNetworkFilter,
+            setEnabledNetworks: mocks.setEnabledNetworks,
           },
         );
       });
@@ -308,6 +314,8 @@ describe('addEthereumChainHandler', () => {
               mocks.requestPermittedChainsPermissionIncrementalForOrigin,
             rejectApprovalRequestsForOrigin:
               mocks.rejectApprovalRequestsForOrigin,
+            setTokenNetworkFilter: mocks.setTokenNetworkFilter,
+            setEnabledNetworks: mocks.setEnabledNetworks,
           },
         );
       });

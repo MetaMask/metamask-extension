@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.20.0",
+  "version": "12.20.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -232,7 +232,8 @@
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
     "@trezor/connect-web": "~9.4.7",
     "@metamask/controller-utils@npm:^11.7.1-backport": "11.7.1-backport",
-    "@metamask/snaps-rpc-methods@npm:^12.3.0": "patch:@metamask/snaps-rpc-methods@npm%3A12.3.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-12.3.0-2489f92f4f.patch"
+    "@metamask/snaps-rpc-methods@npm:^12.3.0": "patch:@metamask/snaps-rpc-methods@npm%3A12.3.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-12.3.0-2489f92f4f.patch",
+    "@metamask/controller-utils@npm:^11.10.0": "11.9.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -274,7 +275,7 @@
     "@metamask/bridge-controller": "25.1.0",
     "@metamask/bridge-status-controller": "patch:@metamask/bridge-status-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-21.0.0-7178a3f32f.patch",
     "@metamask/browser-passworder": "^4.3.0",
-    "@metamask/chain-agnostic-permission": "^0.6.0",
+    "@metamask/chain-agnostic-permission": "^0.8.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.9.0",
     "@metamask/delegation-controller": "^0.1.0",
@@ -307,7 +308,7 @@
     "@metamask/message-signing-snap": "1.1.2",
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/multichain-api-client": "^0.6.2",
-    "@metamask/multichain-api-middleware": "^0.1.1",
+    "@metamask/multichain-api-middleware": "^0.3.0",
     "@metamask/multichain-network-controller": "^0.5.1",
     "@metamask/multichain-transactions-controller": "^0.9.0",
     "@metamask/name-controller": "^8.0.3",
