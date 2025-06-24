@@ -137,6 +137,10 @@ export function useTransactionDisplayData(transactionGroup) {
   const { type, txParamsOriginal } = initialTransaction;
   const { from, to } = initialTransaction.txParams || {};
 
+  const isUnifiedSwapTx =
+    [TransactionType.swap, TransactionType.bridge].includes(type) &&
+    Boolean(bridgeHistoryItem);
+
   // for smart contract interactions, methodData can be used to derive the name of the action being taken
   const methodData =
     useSelector((state) =>
@@ -470,7 +474,9 @@ export function useTransactionDisplayData(transactionGroup) {
     primaryValue,
     {
       prefix,
-      displayValue: secondaryDisplayValue,
+      displayValue: isUnifiedSwapTx
+        ? bridgeTokenDisplayData.displayCurrencyAmount
+        : secondaryDisplayValue,
       hideLabel: isTokenCategory || Boolean(swapTokenValue),
       ...secondaryCurrencyPreferences,
     },
@@ -489,9 +495,10 @@ export function useTransactionDisplayData(transactionGroup) {
     recipientAddress,
     secondaryCurrency:
       (isTokenCategory && !tokenFiatAmount) ||
-      ([TransactionType.swap, TransactionType.swapAndSend].includes(type) &&
+      (!isUnifiedSwapTx &&
+        [TransactionType.swap, TransactionType.swapAndSend].includes(type) &&
         !swapTokenFiatAmount) ||
-      (type === TransactionType.bridge && !secondaryDisplayValue)
+      (isUnifiedSwapTx && !secondaryCurrency)
         ? undefined
         : secondaryCurrency,
     displayedStatusKey,
