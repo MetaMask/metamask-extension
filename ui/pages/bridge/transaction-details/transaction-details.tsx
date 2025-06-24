@@ -60,102 +60,16 @@ import {
   type AllowedBridgeChainIds,
 } from '../../../../shared/constants/bridge';
 import { getImageForChainId } from '../../../selectors/multichain';
-import { MINUTE } from '../../../../shared/constants/time';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
-
-const getBlockExplorerUrl = (
-  networkConfiguration: EvmNetworkConfiguration | undefined,
-  txHash: string | undefined,
-) => {
-  if (!networkConfiguration || !txHash) {
-    return undefined;
-  }
-  const index = networkConfiguration.defaultBlockExplorerUrlIndex;
-  if (index === undefined) {
-    return undefined;
-  }
-
-  const rootUrl = networkConfiguration.blockExplorerUrls[index]?.replace(
-    /\/$/u,
-    '',
-  );
-  return `${rootUrl}/tx/${txHash}`;
-};
-
-/**
- * @param options0
- * @param options0.bridgeHistoryItem
- * @param options0.locale
- * @returns A string representing the bridge amount in decimal form
- */
-const getBridgeAmountSentFormatted = ({
-  locale,
-  bridgeHistoryItem,
-}: {
-  locale: string;
-  bridgeHistoryItem?: BridgeHistoryItem;
-}) => {
-  if (!bridgeHistoryItem?.pricingData?.amountSent) {
-    return undefined;
-  }
-
-  return formatAmount(
-    locale,
-    new BigNumber(bridgeHistoryItem.pricingData.amountSent),
-  );
-};
-
-const getBridgeAmountReceivedFormatted = ({
-  locale,
-  bridgeHistoryItem,
-}: {
-  locale: string;
-  bridgeHistoryItem?: BridgeHistoryItem;
-}) => {
-  if (!bridgeHistoryItem) {
-    return undefined;
-  }
-
-  const destAmount = bridgeHistoryItem.status.destChain?.amount;
-  if (!destAmount) {
-    return undefined;
-  }
-
-  const destAssetDecimals = bridgeHistoryItem.quote.destAsset.decimals;
-  return formatAmount(
-    locale,
-    new BigNumber(destAmount).dividedBy(10 ** destAssetDecimals),
-  );
-};
-
-/**
- * @param status - The status of the bridge history item
- * @param bridgeHistoryItem - The bridge history item
- * @returns Whether the bridge history item is delayed
- */
-export const getIsDelayed = (
-  status: StatusTypes,
-  bridgeHistoryItem?: BridgeHistoryItem,
-) => {
-  const tenMinutesInMs = 10 * MINUTE;
-  return Boolean(
-    status === StatusTypes.PENDING &&
-      bridgeHistoryItem?.startTime &&
-      Date.now() >
-        bridgeHistoryItem.startTime +
-          tenMinutesInMs +
-          bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000,
-  );
-};
-
-const StatusToColorMap: Record<StatusTypes, TextColor> = {
-  [StatusTypes.PENDING]: TextColor.warningDefault,
-  [StatusTypes.COMPLETE]: TextColor.successDefault,
-  [StatusTypes.FAILED]: TextColor.errorDefault,
-  [StatusTypes.UNKNOWN]: TextColor.errorDefault,
-};
+import {
+  getBlockExplorerUrl,
+  getBridgeAmountReceivedFormatted,
+  getBridgeAmountSentFormatted,
+  getIsDelayed,
+  BRIDGE_STATUS_TO_COLOR_MAP,
+} from '../utils/tx-details';
 
 const CrossChainSwapTxDetails = () => {
   const t = useI18nContext();
@@ -188,14 +102,10 @@ const CrossChainSwapTxDetails = () => {
   });
 
   const srcTxHash = srcChainTxMeta?.hash;
-  const srcBlockExplorerUrl = srcNetwork?.isEvm
-    ? getBlockExplorerUrl(srcNetwork, srcTxHash)
-    : undefined;
+  const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHash);
 
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
-  const destBlockExplorerUrl = destNetwork?.isEvm
-    ? getBlockExplorerUrl(destNetwork, destTxHash)
-    : undefined;
+  const destBlockExplorerUrl = getBlockExplorerUrl(destNetwork, destTxHash);
 
   const status = bridgeHistoryItem
     ? bridgeHistoryItem?.status.status

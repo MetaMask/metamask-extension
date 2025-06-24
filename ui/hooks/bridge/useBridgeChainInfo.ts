@@ -10,6 +10,7 @@ import {
 } from '@metamask/bridge-controller';
 import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constants/common';
+import { type ChainInfo } from '../../pages/bridge/utils/tx-details';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 
 const getSourceAndDestChainIds = ({
@@ -33,7 +34,10 @@ export type UseBridgeChainInfoProps = {
 export default function useBridgeChainInfo({
   bridgeHistoryItem,
   srcTxMeta,
-}: UseBridgeChainInfoProps) {
+}: UseBridgeChainInfoProps): {
+  srcNetwork?: ChainInfo;
+  destNetwork?: ChainInfo;
+} {
   if (srcTxMeta?.type !== TransactionType.bridge) {
     return {
       srcNetwork: undefined,
