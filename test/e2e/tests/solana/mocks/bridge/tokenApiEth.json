@@ -1,0 +1,52 @@
+[
+  {
+      "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "symbol": "USDC",
+      "decimals": 6,
+      "name": "USDC",
+      "iconUrl": "https://dev-static.cx.metamask.io/api/v1/tokenIcons/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+      "aggregators": [
+          "metamask",
+          "aave",
+          "coinGecko",
+          "openSwap",
+          "uniswapLabs",
+          "zerion",
+          "oneInch",
+          "liFi",
+          "socket",
+          "squid",
+          "rango",
+          "sonarwatch",
+          "sushiSwap",
+          "pmm",
+          "bancor"
+      ],
+      "occurrences": 15
+  },
+  {
+      "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      "symbol": "WETH",
+      "decimals": 18,
+      "name": "Wrapped Ether",
+      "iconUrl": "https://dev-static.cx.metamask.io/api/v1/tokenIcons/1/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+      "aggregators": [
+          "metamask",
+          "aave",
+          "coinGecko",
+          "coinMarketCap",
+          "openSwap",
+          "uniswapLabs",
+          "zerion",
+          "oneInch",
+          "liFi",
+          "socket",
+          "squid",
+          "rango",
+          "sonarwatch",
+          "sushiSwap",
+          "pmm"
+      ],
+      "occurrences": 15
+  }
+]
