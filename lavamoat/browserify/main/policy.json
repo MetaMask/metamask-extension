@@ -1485,7 +1485,6 @@
         "URL": true,
         "console.error": true,
         "console.info": true,
-        "console.log": true,
         "console.warn": true
       },
       "packages": {
