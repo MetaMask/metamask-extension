@@ -8,6 +8,7 @@ import {
   selectBridgeHistoryForAccount,
   selectBridgeHistoryForApprovalTxId,
 } from '../../../ducks/bridge-status/selectors';
+import { TransactionType } from '@metamask/transaction-controller';
 /**
  * A Bridge transaction group's primaryTransaction contains details of the swap,
  * including the source (from) and destination (to) token type (ETH, DAI, etc..)
@@ -43,7 +44,10 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
   );
 
   return {
-    category: TransactionGroupCategory.bridge,
+    category:
+      primaryTransaction.type === TransactionType.bridge
+        ? TransactionGroupCategory.bridge
+        : TransactionGroupCategory.swap,
     displayCurrencyAmount:
       primaryTransaction.chainId === chainId
         ? displayCurrencyAmount
@@ -54,5 +58,8 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
     sourceTokenAmountSent:
       bridgeHistoryItem?.pricingData?.amountSent ??
       primaryTransaction.sourceTokenAmount,
+    destinationTokenSymbol:
+      bridgeHistoryItem?.quote.destAsset.symbol ??
+      primaryTransaction.destinationTokenSymbol,
   };
 }

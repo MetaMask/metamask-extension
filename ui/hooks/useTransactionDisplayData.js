@@ -295,16 +295,21 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.swap) {
     category = TransactionGroupCategory.swap;
     title = t('swapTokenToToken', [
-      initialTransaction.sourceTokenSymbol,
-      initialTransaction.destinationTokenSymbol,
+      bridgeTokenDisplayData.sourceTokenSymbol ??
+        initialTransaction.sourceTokenSymbol,
+      bridgeTokenDisplayData.destinationTokenSymbol ??
+        initialTransaction.destinationTokenSymbol,
     ]);
     subtitle = origin;
     subtitleContainsOrigin = true;
     primarySuffix = isViewingReceivedTokenFromSwap
       ? currentAsset.symbol
-      : initialTransaction.sourceTokenSymbol;
-    primaryDisplayValue = swapTokenValue;
-    secondaryDisplayValue = swapTokenFiatAmount;
+      : bridgeTokenDisplayData.sourceTokenSymbol ??
+        initialTransaction.sourceTokenSymbol;
+    primaryDisplayValue =
+      bridgeTokenDisplayData.sourceTokenAmountSent ?? swapTokenValue;
+    secondaryDisplayValue =
+      bridgeTokenDisplayData.displayCurrencyAmount ?? swapTokenFiatAmount;
     if (isNegative) {
       prefix = '';
     } else if (isViewingReceivedTokenFromSwap) {
@@ -341,10 +346,15 @@ export function useTransactionDisplayData(transactionGroup) {
     }
   } else if (type === TransactionType.swapApproval) {
     category = TransactionGroupCategory.approval;
-    title = t('swapApproval', [primaryTransaction.sourceTokenSymbol]);
+    title = t('swapApproval', [
+      bridgeTokenDisplayData.sourceTokenSymbol ??
+        primaryTransaction.sourceTokenSymbol,
+    ]);
     subtitle = origin;
     subtitleContainsOrigin = true;
-    primarySuffix = primaryTransaction.sourceTokenSymbol;
+    primarySuffix =
+      bridgeTokenDisplayData.sourceTokenSymbol ??
+      primaryTransaction.sourceTokenSymbol;
   } else if (type === TransactionType.tokenMethodApprove) {
     category = TransactionGroupCategory.approval;
     prefix = '';
