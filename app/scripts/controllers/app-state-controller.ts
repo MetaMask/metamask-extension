@@ -92,6 +92,8 @@ export type AppStateControllerState = {
   lastUpdatedAt: number | null;
   enableEnforcedSimulations: boolean;
   enableEnforcedSimulationsForTransactions: Record<string, boolean>;
+  enforcedSimulationsSlippage: number;
+  enforcedSimulationsSlippageForTransactions: Record<string, number>;
 };
 
 const controllerName = 'AppStateController';
@@ -213,6 +215,8 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   lastUpdatedAt: null,
   enableEnforcedSimulations: true,
   enableEnforcedSimulationsForTransactions: {},
+  enforcedSimulationsSlippage: 10,
+  enforcedSimulationsSlippageForTransactions: {},
   ...getInitialStateOverrides(),
 });
 
@@ -395,6 +399,14 @@ const controllerMetadata = {
     anonymous: true,
   },
   enableEnforcedSimulationsForTransactions: {
+    persist: false,
+    anonymous: true,
+  },
+  enforcedSimulationsSlippage: {
+    persist: true,
+    anonymous: true,
+  },
+  enforcedSimulationsSlippageForTransactions: {
     persist: false,
     anonymous: true,
   },
@@ -1146,6 +1158,21 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.enableEnforcedSimulationsForTransactions[transactionId] = enabled;
+    });
+  }
+
+  setEnforcedSimulationsSlippage(value: number): void {
+    this.update((state) => {
+      state.enforcedSimulationsSlippage = value;
+    });
+  }
+
+  setEnforcedSimulationsSlippageForTransaction(
+    transactionId: string,
+    value: number,
+  ): void {
+    this.update((state) => {
+      state.enforcedSimulationsSlippageForTransactions[transactionId] = value;
     });
   }
 }
