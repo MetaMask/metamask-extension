@@ -24,6 +24,7 @@ export function transformManifest(
 ) {
   const transforms: ((
     manifest: chrome.runtime.Manifest,
+    browser?: string,
   ) => chrome.runtime.Manifest | void)[] = [];
 
   function removeLockdown(browserManifest: chrome.runtime.Manifest) {
@@ -101,16 +102,22 @@ export function transformManifest(
 
   function addManifestKeyAndPermissions(
     browserManifest: chrome.runtime.Manifest,
+    browser?: string,
   ) {
-    if (browserManifest.key) {
-      throw new Error(
-        "manifest contains 'key' already; this transform should be removed.",
-      );
-    } else {
+    if (!browserManifest.key) {
       browserManifest.key = MANIFEST_DEV_KEY;
     }
 
-    if (browserManifest.optional_permissions?.includes('identity')) {
+    if (browser === 'firefox') {
+      // Firefox requires the identity as the installation permission
+      if (browserManifest.permissions?.includes('identity')) {
+        throw new Error(
+          "manifest contains 'identity' already; this transform should be removed.",
+        );
+      } else {
+        browserManifest.permissions?.push('identity');
+      }
+    } else if (browserManifest.optional_permissions?.includes('identity')) {
       throw new Error(
         "manifest contains 'identity' already; this transform should be removed.",
       );
@@ -124,10 +131,9 @@ export function transformManifest(
   }
 
   return transforms.length
-    ? (browserManifest: chrome.runtime.Manifest, _browser: string) => {
+    ? (browserManifest: chrome.runtime.Manifest, browser: string) => {
         const manifestClone = structuredClone(browserManifest);
-        transforms.forEach((transform) => transform(manifestClone));
-        console.log('manifestClone', manifestClone);
+        transforms.forEach((transform) => transform(manifestClone, browser));
         return manifestClone;
       }
     : undefined;
