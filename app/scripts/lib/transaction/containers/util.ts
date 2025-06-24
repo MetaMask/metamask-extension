@@ -24,7 +24,12 @@ export async function applyTransactionContainers({
 }): Promise<{
   updateTransaction: (transaction: TransactionMeta) => void;
 }> {
-  const { chainId, simulationData, txParamsOriginal } = transactionMeta;
+  const {
+    chainId,
+    id: transactionid,
+    simulationData,
+    txParamsOriginal,
+  } = transactionMeta;
   const finalMetadata = cloneDeep(transactionMeta);
 
   if (txParamsOriginal) {
@@ -32,10 +37,20 @@ export async function applyTransactionContainers({
   }
 
   if (types.includes(TransactionContainerType.EnforcedSimulations)) {
+    const appControllerState = await messenger.call(
+      'AppStateController:getState',
+    );
+
+    const slippage =
+      appControllerState.enforcedSimulationsSlippageForTransactions[
+        transactionid
+      ] ?? appControllerState.enforcedSimulationsSlippage;
+
     const { updateTransaction } = await enforceSimulations({
       chainId,
       messenger,
       simulationData: simulationData ?? { tokenBalanceChanges: [] },
+      slippage,
       txParams: finalMetadata.txParams,
       useRealSignature: isApproved,
     });

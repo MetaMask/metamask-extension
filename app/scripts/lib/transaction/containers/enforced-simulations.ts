@@ -5,6 +5,7 @@ import {
   TransactionParams,
 } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger, hexToNumber } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import {
   DeleGatorEnvironment,
@@ -30,12 +31,14 @@ export async function enforceSimulations({
   chainId,
   messenger,
   simulationData,
+  slippage,
   txParams,
   useRealSignature = false,
 }: {
   chainId: Hex;
   messenger: TransactionControllerInitMessenger;
   simulationData: SimulationData;
+  slippage: number;
   txParams: TransactionParams;
   useRealSignature?: boolean;
 }) {
@@ -48,6 +51,7 @@ export async function enforceSimulations({
     accountAddress: from,
     environment: delegationEnvironment,
     simulationData,
+    slippage,
   });
 
   log('Delegation', delegation);
@@ -88,12 +92,19 @@ function generateDelegation({
   accountAddress,
   environment,
   simulationData,
+  slippage,
 }: {
   accountAddress: Hex;
   environment: DeleGatorEnvironment;
   simulationData: SimulationData;
+  slippage: number;
 }): UnsignedDelegation {
-  const caveats = generateCaveats(accountAddress, environment, simulationData);
+  const caveats = generateCaveats(
+    accountAddress,
+    environment,
+    simulationData,
+    slippage,
+  );
 
   log('Caveats', caveats);
 
@@ -137,18 +148,21 @@ function generateCaveats(
   recipient: Hex,
   environment: DeleGatorEnvironment,
   simulationData: SimulationData,
+  slippage: number,
 ) {
   const caveatBuilder = createCaveatBuilder(environment);
   const { nativeBalanceChange, tokenBalanceChanges = [] } = simulationData;
 
   if (nativeBalanceChange) {
     const { difference, isDecrease: enforceDecrease } = nativeBalanceChange;
-    const delta = BigInt(difference);
+    const delta = applySlippage(difference, slippage, enforceDecrease);
 
     log('Caveat - Native Balance Change', {
       enforceDecrease,
       recipient,
-      delta,
+      delta: BigInt(difference),
+      slippage,
+      deltaWithSlippage: delta,
     });
 
     caveatBuilder.addCaveat(
@@ -168,14 +182,16 @@ function generateCaveats(
       id: tokenIdHex,
     } = tokenChange;
 
-    const delta = BigInt(difference);
+    const delta = applySlippage(difference, slippage, enforceDecrease);
     const tokenId = tokenIdHex ? BigInt(tokenIdHex) : 0n;
 
     log('Caveat - Token Balance Change', {
       enforceDecrease,
       token,
       recipient,
-      delta,
+      delta: BigInt(difference),
+      slippage,
+      deltaWithSlippage: delta,
     });
 
     switch (standard) {
@@ -217,4 +233,14 @@ function generateCaveats(
   }
 
   return caveatBuilder.build();
+}
+
+function applySlippage(
+  value: Hex,
+  slippage: number,
+  isDecrease: boolean,
+): bigint {
+  const valueBN = new BigNumber(value);
+  const slippageMultiplier = (100 + (isDecrease ? slippage : -slippage)) / 100;
+  return BigInt(valueBN.mul(slippageMultiplier).toFixed(0));
 }

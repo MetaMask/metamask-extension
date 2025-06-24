@@ -71,6 +71,7 @@ describe('Enforced Simulations Utils', () => {
       chainId: CHAIN_ID_MOCK,
       messenger,
       simulationData: cloneDeep(SIMULATION_DATA_MOCK),
+      slippage: 10,
       txParams: TX_PARAMS_MOCK,
     };
   });
