@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -32,6 +38,7 @@ import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_REVIEW_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
@@ -93,6 +100,12 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     generateQuizWords(splitSecretRecoveryPhrase),
   );
   const [answerSrp, setAnswerSrp] = useState('');
+
+  useEffect(() => {
+    if (!secretRecoveryPhrase) {
+      history.push(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
+    }
+  }, [history, secretRecoveryPhrase, isFromReminderParam]);
 
   const resetQuizWords = useCallback(() => {
     const newQuizWords = generateQuizWords(splitSecretRecoveryPhrase);
