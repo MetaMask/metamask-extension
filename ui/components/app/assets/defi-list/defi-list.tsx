@@ -5,7 +5,6 @@ import {
   getEnabledNetworksByNamespace,
   getSelectedAccount,
   getTokenSortConfig,
-  isGlobalNetworkSelectorRemoved,
 } from '../../../../selectors';
 import { useNetworkFilter } from '../hooks';
 import { filterAssets } from '../util/filter';
@@ -29,6 +28,8 @@ import { DeFiProtocolPosition } from '../types';
 import { DeFiErrorMessage } from './cells/defi-error-message';
 import { DeFiEmptyStateMessage } from './cells/defi-empty-state';
 import DefiProtocolCell from './cells/defi-protocol-cell';
+
+const isGlobalNetworkSelectorRemoved = true;
 
 type DefiListProps = {
   onClick: (chainId: string, protocolId: string) => void;

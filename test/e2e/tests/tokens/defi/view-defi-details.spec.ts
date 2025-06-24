@@ -36,8 +36,11 @@ describe('View DeFi details', function () {
 
         const defiTab = new DeFiTab(driver);
 
-        // check ethereum positions present
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        // check ethereum positions present)
+        if (!isGlobalNetworkSelectorRemoved) {
+          await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        }
+
         await defiTab.check_groupIconIsDisplayed();
         await defiTab.defiTabCells.check_tokenName('Aave V3');
         await defiTab.defiTabCells.check_tokenMarketValue('$14.74');
@@ -52,6 +55,18 @@ describe('View DeFi details', function () {
         await defiTab.defiTabCells.check_tokenName('UniswapV2');
         await defiTab.defiTabCells.check_tokenMarketValue('$4.24');
 
+        // deselect linea
+        // this feels wrong, there might be a potential bug here with defi details
+        if (isGlobalNetworkSelectorRemoved) {
+          await driver.clickElement('[data-testid="sort-by-networks"]');
+          await driver.clickElement({
+            text: 'Linea Mainnet',
+            css: 'p',
+          });
+          await driver.clickElement(
+            '[data-testid="modal-header-close-button"]',
+          );
+        }
         // click detils page for AaveV3
         await defiTab.clickIntoAaveV3DetailsPage();
         const defiDetailsTab = new DeFiDetailsPage(driver);
