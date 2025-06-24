@@ -389,7 +389,7 @@ describe('Multichain API', function () {
     const NEW_SCOPES = ['eip155:1338', 'eip155:1000'];
     const TREZOR_ACCOUNT = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
 
-    it('should entirely overwrite old session permissions by those requested in the new `wallet_createSession` request', async function () {
+    it('should merge old session permissions with those requested in the new `wallet_createSession` request', async function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
@@ -449,20 +449,14 @@ describe('Multichain API', function () {
 
           const newgetSessionResult = await testDapp.getSession();
 
-          /**
-           * Assert old sessions don't exist anymore, as they are overwritten by new session scopes
-           */
-          OLD_SCOPES.forEach((scope) =>
-            assert.strictEqual(
-              newgetSessionResult.sessionScopes[scope],
-              undefined,
-              `scope ${scope} should not exist anymore`,
-            ),
+          const expectedNewSessionScopes = [...OLD_SCOPES, ...NEW_SCOPES].map(
+            (scope) => ({
+              [scope]: getExpectedSessionScope(scope, [
+                ACCOUNT_1,
+                TREZOR_ACCOUNT,
+              ]),
+            }),
           );
-
-          const expectedNewSessionScopes = NEW_SCOPES.map((scope) => ({
-            [scope]: getExpectedSessionScope(scope, [TREZOR_ACCOUNT]),
-          }));
 
           for (const expectedSessionScope of expectedNewSessionScopes) {
             const [scopeName] = Object.keys(expectedSessionScope);
