@@ -17,16 +17,13 @@ describe(`migration #${version}`, () => {
       meta: { version: oldVersion },
       data: {
         PreferencesController: {
-          preferences: {
-            disabledUpgradeAccountByChain: {},
-          },
+          disabledUpgradeAccountByChain: {},
+          accountUpgradeDisabledChains: [],
         },
       },
     };
     const expectedData = {
-      PreferencesController: {
-        preferences: {},
-      },
+      PreferencesController: {},
     };
     const newStorage = await migrate(oldStorage);
 
