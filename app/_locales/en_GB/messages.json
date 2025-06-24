@@ -5045,10 +5045,6 @@
   "sendSwapSubmissionWarning": {
     "message": "Clicking this button will immediately initiate your swap transaction. Please review your transaction details before proceeding."
   },
-  "sendTokenAsToken": {
-    "message": "Send $1 as $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sendingAsset": {
     "message": "Sending $1"
   },
