@@ -6671,18 +6671,6 @@ export default class MetamaskController extends EventEmitter {
           );
         return chainId;
       },
-      setTokenNetworkFilter: (chainId) => {
-        const { tokenNetworkFilter } =
-          this.preferencesController.getPreferences();
-        if (chainId && Object.keys(tokenNetworkFilter).length === 1) {
-          this.preferencesController.setPreference('tokenNetworkFilter', {
-            [chainId]: true,
-          });
-        }
-      },
-      setEnabledNetworks: (chainIds) => {
-        this.networkOrderController.setEnabledNetworks(chainIds);
-      },
 
       // Web3 shim-related
       getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
