@@ -4,6 +4,9 @@
 ; This variable is required
 INFURA_PROJECT_ID=00000000000
 
+; Set this to `true` to enable Seedless onboarding (Social login flow)
+SEEDLESS_ONBOARDING_ENABLED=true
+
 ; This variables are required for OAuth Service
 GOOGLE_AUTH_CONNECTION_ID=
 APPLE_AUTH_CONNECTION_ID=
