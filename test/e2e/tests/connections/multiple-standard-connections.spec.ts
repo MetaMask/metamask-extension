@@ -1,5 +1,8 @@
 import { connectToDapp, WINDOW_TITLES, withFixtures } from '../../helpers';
-import { DAPP_HOST_ADDRESS, DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import {
+  DAPP_HOST_ADDRESS,
+  DEFAULT_FIXTURE_ACCOUNT as EVM_ACCOUNT_ONE,
+} from '../../constants';
 import Homepage from '../../page-objects/pages/home/homepage';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
@@ -13,21 +16,54 @@ import {
   connectSolanaTestDapp,
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
 } from '../../flask/solana-wallet-standard/testHelpers';
+import { Driver } from '../../webdriver/driver';
+
+const EVM_ACCOUNT_TWO = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 
 const SOLANA_CAIP_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
-const SOLANA_FIRST_ACCOUNT = `${SOLANA_CAIP_CHAIN_ID}:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer`;
+const SOLANA_ACCOUNT_ONE = `${SOLANA_CAIP_CHAIN_ID}:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer`;
 
 const SOLANA_PERMISSIONS = {
   requiredScopes: {},
   optionalScopes: {
     [SOLANA_CAIP_CHAIN_ID]: {
-      accounts: [SOLANA_FIRST_ACCOUNT],
+      accounts: [SOLANA_ACCOUNT_ONE],
     },
   },
   isMultichainOrigin: true,
 };
 
-const EVM_SECOND_ACCOUNT = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
+/**
+ * Helper to open a permissions page for a specific app hostname
+ *
+ * @param driver - The driver to use.
+ * @param hostname - The hostname to get the permissions page for.
+ * @returns The permissions page for the given host.
+ */
+async function getPermissionsPageForHost(driver: Driver, hostname: string) {
+  const homepage = new Homepage(driver);
+  await homepage.headerNavbar.openPermissionsPage();
+  const permissionListPage = new PermissionListPage(driver);
+  await permissionListPage.check_pageIsLoaded();
+  await permissionListPage.openPermissionPageForSite(hostname);
+  const sitePermissionPage = new SitePermissionPage(driver);
+  await sitePermissionPage.check_pageIsLoaded(hostname);
+  return sitePermissionPage;
+}
+
+/**
+ * Helper to get a request permissions request object with a caveat.
+ *
+ * @param caveat - The caveat to add to the request permissions request object.
+ * @returns The request permissions request object with the caveat.
+ */
+function getRequestPermissionsRequestObject(caveat: object = {}): string {
+  return JSON.stringify({
+    jsonrpc: '2.0',
+    method: 'wallet_requestPermissions',
+    params: [{ eth_accounts: caveat }],
+  });
+}
 
 describe('Multiple Standard Dapp Connections', function () {
   it('should default to existing permitted account when wallet_requestPermissions is called again with no accounts specified', async function () {
@@ -39,7 +75,7 @@ describe('Multiple Standard Dapp Connections', function () {
           .withPreferencesControllerAdditionalAccountIdentities()
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDapp({
-            account: EVM_SECOND_ACCOUNT,
+            account: EVM_ACCOUNT_TWO,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -55,13 +91,10 @@ describe('Multiple Standard Dapp Connections', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.check_pageIsLoaded();
 
-        await testDapp.check_connectedAccounts(EVM_SECOND_ACCOUNT);
+        await testDapp.check_connectedAccounts(EVM_ACCOUNT_TWO);
 
-        const requestPermissionsWithoutAccounts = JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'wallet_requestPermissions',
-          params: [{ eth_accounts: {} }],
-        });
+        const requestPermissionsWithoutAccounts =
+          getRequestPermissionsRequestObject();
 
         await driver.executeScript(
           `window.ethereum.request(${requestPermissionsWithoutAccounts})`,
@@ -70,14 +103,15 @@ describe('Multiple Standard Dapp Connections', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await connectAccountConfirmation.check_pageIsLoaded();
+
         await connectAccountConfirmation.check_isAccountDisplayed(
-          EVM_SECOND_ACCOUNT.toUpperCase(),
+          EVM_ACCOUNT_TWO,
         );
 
         await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_connectedAccounts(EVM_SECOND_ACCOUNT);
+        await testDapp.check_connectedAccounts(EVM_ACCOUNT_TWO);
       },
     );
   });
@@ -91,7 +125,7 @@ describe('Multiple Standard Dapp Connections', function () {
           .withPreferencesControllerAdditionalAccountIdentities()
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDapp({
-            account: EVM_SECOND_ACCOUNT,
+            account: EVM_ACCOUNT_TWO,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -107,24 +141,17 @@ describe('Multiple Standard Dapp Connections', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.check_pageIsLoaded();
 
-        await testDapp.check_connectedAccounts(EVM_SECOND_ACCOUNT);
+        await testDapp.check_connectedAccounts(EVM_ACCOUNT_TWO);
 
-        const requestPermissionsWithAccount1 = JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'wallet_requestPermissions',
-          params: [
-            {
-              eth_accounts: {
-                caveats: [
-                  {
-                    type: 'restrictReturnedAccounts',
-                    value: [DEFAULT_FIXTURE_ACCOUNT],
-                  },
-                ],
+        const requestPermissionsWithAccount1 =
+          getRequestPermissionsRequestObject({
+            caveats: [
+              {
+                type: 'restrictReturnedAccounts',
+                value: [EVM_ACCOUNT_ONE],
               },
-            },
-          ],
-        });
+            ],
+          });
 
         await driver.executeScript(
           `window.ethereum.request(${requestPermissionsWithAccount1})`,
@@ -134,20 +161,18 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await connectAccountConfirmation.check_pageIsLoaded();
 
-        await driver.waitForSelector({
-          text: '0x5CfE7...6a7e1',
-          tag: 'p',
-        });
-
         await connectAccountConfirmation.check_isAccountDisplayed(
-          EVM_SECOND_ACCOUNT.toUpperCase(),
+          EVM_ACCOUNT_ONE,
+        );
+        await connectAccountConfirmation.check_isAccountDisplayed(
+          EVM_ACCOUNT_TWO,
         );
 
         await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const expectedConnectedAccounts = `${EVM_SECOND_ACCOUNT.toLowerCase()},${DEFAULT_FIXTURE_ACCOUNT.toLowerCase()}`;
+        const expectedConnectedAccounts = `${EVM_ACCOUNT_TWO.toLowerCase()},${EVM_ACCOUNT_ONE.toLowerCase()}`;
         await testDapp.check_connectedAccounts(expectedConnectedAccounts);
       },
     );
@@ -167,7 +192,6 @@ describe('Multiple Standard Dapp Connections', function () {
       },
       async (driver) => {
         const testDapp = new TestDappSolana(driver);
-        const homepage = new Homepage(driver);
 
         await testDapp.openTestDappPage();
         await testDapp.switchTo();
@@ -178,12 +202,10 @@ describe('Multiple Standard Dapp Connections', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await homepage.headerNavbar.openPermissionsPage();
-        const permissionListPage = new PermissionListPage(driver);
-        await permissionListPage.check_pageIsLoaded();
-        await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
-        const sitePermissionPage = new SitePermissionPage(driver);
-        await sitePermissionPage.check_pageIsLoaded(DAPP_HOST_ADDRESS);
+        const sitePermissionPage = await getPermissionsPageForHost(
+          driver,
+          DAPP_HOST_ADDRESS.toLowerCase(),
+        );
 
         await sitePermissionPage.check_connectedAccountsNumber(3);
         await sitePermissionPage.check_connectedNetworksNumber(2);
@@ -203,7 +225,6 @@ describe('Multiple Standard Dapp Connections', function () {
       },
       async (driver) => {
         const testDapp = new TestDapp(driver);
-        const homepage = new Homepage(driver);
 
         await testDapp.openTestDappPage();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -217,12 +238,10 @@ describe('Multiple Standard Dapp Connections', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await homepage.headerNavbar.openPermissionsPage();
-        const permissionListPage = new PermissionListPage(driver);
-        await permissionListPage.check_pageIsLoaded();
-        await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
-        const sitePermissionPage = new SitePermissionPage(driver);
-        await sitePermissionPage.check_pageIsLoaded(DAPP_HOST_ADDRESS);
+        const sitePermissionPage = await getPermissionsPageForHost(
+          driver,
+          DAPP_HOST_ADDRESS.toLowerCase(),
+        );
 
         await sitePermissionPage.check_connectedAccountsNumber(2);
         await sitePermissionPage.check_connectedNetworksNumber(4);
@@ -246,27 +265,19 @@ describe('Multiple Standard Dapp Connections', function () {
       },
       async (driver) => {
         const testDapp = new TestDapp(driver);
-        const homepage = new Homepage(driver);
 
         await testDapp.openTestDappPage();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const requestPermissionsWithEthAccount4 = JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'wallet_requestPermissions',
-          params: [
-            {
-              eth_accounts: {
-                caveats: [
-                  {
-                    type: 'restrictReturnedAccounts',
-                    value: [EVM_SECOND_ACCOUNT],
-                  },
-                ],
+        const requestPermissionsWithEthAccount4 =
+          getRequestPermissionsRequestObject({
+            caveats: [
+              {
+                type: 'restrictReturnedAccounts',
+                value: [EVM_ACCOUNT_TWO],
               },
-            },
-          ],
-        });
+            ],
+          });
 
         await driver.executeScript(
           `window.ethereum.request(${requestPermissionsWithEthAccount4})`,
@@ -281,7 +292,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await connectAccountConfirmation.check_pageIsLoaded();
 
         await connectAccountConfirmation.check_isAccountDisplayed(
-          EVM_SECOND_ACCOUNT.toUpperCase(),
+          EVM_ACCOUNT_TWO,
         );
 
         await connectAccountConfirmation.confirmConnect();
@@ -291,12 +302,10 @@ describe('Multiple Standard Dapp Connections', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await homepage.headerNavbar.openPermissionsPage();
-        const permissionListPage = new PermissionListPage(driver);
-        await permissionListPage.check_pageIsLoaded();
-        await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
-        const sitePermissionPage = new SitePermissionPage(driver);
-        await sitePermissionPage.check_pageIsLoaded(DAPP_HOST_ADDRESS);
+        const sitePermissionPage = await getPermissionsPageForHost(
+          driver,
+          DAPP_HOST_ADDRESS.toLowerCase(),
+        );
 
         await sitePermissionPage.check_connectedAccountsNumber(2);
         await sitePermissionPage.check_connectedNetworksNumber(4);

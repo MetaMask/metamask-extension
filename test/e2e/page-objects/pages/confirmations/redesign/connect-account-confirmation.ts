@@ -87,14 +87,10 @@ class ConnectAccountConfirmation {
   }
 
   async check_isAccountDisplayed(account: string): Promise<void> {
-    let accountShort = shortenAddress(account);
-    if (accountShort.startsWith('0X')) {
-      accountShort = accountShort.replace('0X', '0x');
-    }
+    const accountShort = shortenAddress(account);
 
     await this.driver.waitForSelector({
-      text: accountShort,
-      tag: 'p',
+      xpath: `//p[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '${accountShort.toLowerCase()}')]`,
     });
   }
 }

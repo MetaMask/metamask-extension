@@ -9,7 +9,7 @@ import {
 /**
  * TODO: Isolate the merger function from @metamask/chain-agnostic-permissions and reuse it here
  *
- * Merges two Caip25CaveatValue objects using the official @metamask/chain-agnostic-permission utilities.
+ * Merges two Caip25CaveatValue objects
  *
  * @param first - The first Caip25CaveatValue to merge
  * @param second - The second Caip25CaveatValue to merge
