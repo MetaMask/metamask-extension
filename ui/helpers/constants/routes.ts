@@ -354,3 +354,6 @@ export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 ///: END:ONLY_INCLUDE_IF
+
+export const DEEP_LINK_ROUTE = '/link';
+PATH_NAME_MAP.set(DEEP_LINK_ROUTE, 'Deep link Redirect Page');

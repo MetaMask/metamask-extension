@@ -48,6 +48,7 @@
 
   &__secret {
     position: relative;
+    min-height: 216px;
   }
 
   &__secret-blocker-container {
@@ -61,7 +62,7 @@
     top: 0;
     bottom: 0;
     flex-flow: column nowrap;
-    opacity: 0.3;
+    opacity: 0;
   }
 
   &__secret-blocker-text {

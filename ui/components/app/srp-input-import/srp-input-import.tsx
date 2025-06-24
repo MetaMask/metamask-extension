@@ -64,7 +64,12 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
   const onSrpPaste = (rawSrp: string) => {
     const parsedSrp = parseSecretRecoveryPhrase(rawSrp);
     const splittedSrp = parsedSrp.split(' ');
-    const newDraftSrp: DraftSrp[] = splittedSrp.map((word: string) => ({
+    const finalSplittedSrp =
+      splittedSrp.length > MAX_SRP_LENGTH
+        ? splittedSrp.slice(0, MAX_SRP_LENGTH)
+        : splittedSrp;
+
+    const newDraftSrp: DraftSrp[] = finalSplittedSrp.map((word: string) => ({
       word,
       id: uuidv4(),
       active: false,
@@ -252,7 +257,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
-        backgroundColor={BackgroundColor.backgroundMuted}
+        backgroundColor={BackgroundColor.backgroundSection}
         borderRadius={BorderRadius.SM}
         className="srp-input-import__container"
       >
