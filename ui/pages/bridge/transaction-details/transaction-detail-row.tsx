@@ -8,6 +8,7 @@ import {
   TextAlign,
   TextVariant,
   BlockSize,
+  OverflowWrap,
 } from '../../../helpers/constants/design-system';
 
 type TransactionDetailRowProps = {
@@ -24,9 +25,10 @@ export default function TransactionDetailRow({
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
       data-testid="transaction-detail-row"
+      width={BlockSize.Full}
     >
       <Text
-        width={BlockSize.OneFourth}
+        minWidth={BlockSize.Max}
         paddingRight={1}
         variant={TextVariant.bodyMd}
       >
@@ -34,7 +36,7 @@ export default function TransactionDetailRow({
       </Text>
       <Text
         display={Display.Flex}
-        width={BlockSize.ThreeFourths}
+        overflowWrap={OverflowWrap.Anywhere}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.flexEnd}
         textAlign={TextAlign.Right}
