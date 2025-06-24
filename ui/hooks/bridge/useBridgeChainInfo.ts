@@ -58,8 +58,19 @@ export default function useBridgeChainInfo({
     };
   }
 
+  // These utils throw an error if an unsupported chain id is passed in
+  let srcChainIdInCaip, destChainIdInCaip, srcNativeAsset, destNativeAsset;
+  try {
+    srcChainIdInCaip = formatChainIdToCaip(srcChainId);
+    srcNativeAsset = getNativeAssetForChainId(srcChainId);
+    destChainIdInCaip = formatChainIdToCaip(destChainId);
+    destNativeAsset = getNativeAssetForChainId(destChainId);
+  } catch (error) {
+    console.warn('Error getting XChain swaps network info', error);
+    return { srcNetwork: undefined, destNetwork: undefined };
+  }
+
   // Source chain info
-  const srcChainIdInCaip = formatChainIdToCaip(srcChainId);
   const normalizedSrcChainId = isSolanaChainId(srcChainId)
     ? srcChainIdInCaip
     : formatChainIdToHex(srcChainId);
@@ -76,7 +87,7 @@ export default function useBridgeChainInfo({
     ...(isSolanaChainId(srcChainIdInCaip)
       ? ({
           isEvm: false,
-          nativeCurrency: getNativeAssetForChainId(srcChainId)?.assetId,
+          nativeCurrency: srcNativeAsset?.assetId,
           blockExplorerUrl: SOLANA_BLOCK_EXPLORER_URL,
         } as const)
       : {
@@ -86,13 +97,12 @@ export default function useBridgeChainInfo({
           ],
           defaultRpcEndpointIndex: 0,
           rpcEndpoints: [],
-          nativeCurrency: getNativeAssetForChainId(srcChainId)?.symbol,
+          nativeCurrency: srcNativeAsset?.symbol,
           isEvm: true as const,
         }),
   };
 
   // Dest chain info
-  const destChainIdInCaip = formatChainIdToCaip(destChainId);
   const normalizedDestChainId = isSolanaChainId(destChainId)
     ? destChainIdInCaip
     : formatChainIdToHex(destChainId);
@@ -109,7 +119,7 @@ export default function useBridgeChainInfo({
     ...(isSolanaChainId(destChainIdInCaip)
       ? ({
           isEvm: false,
-          nativeCurrency: getNativeAssetForChainId(destChainId)?.assetId,
+          nativeCurrency: destNativeAsset?.assetId,
           blockExplorerUrl: SOLANA_BLOCK_EXPLORER_URL,
         } as const)
       : {
@@ -119,7 +129,7 @@ export default function useBridgeChainInfo({
           ],
           defaultRpcEndpointIndex: 0,
           rpcEndpoints: [],
-          nativeCurrency: getNativeAssetForChainId(destChainId)?.symbol,
+          nativeCurrency: destNativeAsset?.symbol,
           isEvm: true as const,
         }),
   };
