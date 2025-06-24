@@ -1,4 +1,3 @@
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { withFixtures } from '../../../helpers';
 
 import FixtureBuilder from '../../../fixture-builder';
@@ -10,6 +9,7 @@ import { Driver } from '../../../webdriver/driver';
 import { mockDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
 import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 
 const isGlobalNetworkSelectorRemoved = true;
 
@@ -23,6 +23,7 @@ describe('View DeFi details', function () {
             eip155: {
               [CHAIN_IDS.MAINNET]: true,
               [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.LOCALHOST]: true,
             },
           })
           .build(),
@@ -56,7 +57,7 @@ describe('View DeFi details', function () {
         await defiTab.defiTabCells.check_tokenMarketValue('$4.24');
 
         // deselect linea
-        // this feels wrong, there might be a potential bug here with defi details
+        // this feels wrong, there might be a potential bug here with defi
         if (isGlobalNetworkSelectorRemoved) {
           await driver.clickElement('[data-testid="sort-by-networks"]');
           await driver.clickElement({
