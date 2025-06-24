@@ -141,7 +141,7 @@ export function arrangeContactSyncingTestUtils(
   const BASE_INTERVAL = 1000;
 
   const prepareEventsEmittedCounter = (
-    event: UserStorageMockttpControllerEvents,
+    event: typeof UserStorageMockttpControllerEvents[keyof typeof UserStorageMockttpControllerEvents],
   ) => {
     let counter = 0;
     userStorageMockttpController.eventEmitter.on(event, () => {
