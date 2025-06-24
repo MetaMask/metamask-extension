@@ -20,14 +20,21 @@ const walletTwoId: AccountWalletId = 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8';
 const walletTwoGroupId: AccountGroupId =
   'entropy:01JKAF3PJ247KAM6C03G5Q0NP8:default';
 
-const createAccount = (
-  id: string,
-  name: string,
-  address: string,
+const createAccount = ({
+  id,
+  name,
+  address,
   hidden = false,
   pinned = false,
   type = EthAccountType.Eoa,
-): Merge => ({
+}: {
+  id: string;
+  name: string;
+  address: string;
+  hidden?: boolean;
+  pinned?: boolean;
+  type?: EthAccountType;
+}) => ({
   address,
   id,
   metadata: {
@@ -57,22 +64,22 @@ const mockWallets: ConsolidatedWallets = {
         id: walletOneGroupId,
         metadata: { name: 'Default' },
         accounts: [
-          createAccount(
-            'account-1',
-            'Account 1',
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          ),
-          createAccount(
-            'account-2',
-            'Account 2',
-            '0x123456789abcdef0123456789abcdef012345678',
-          ),
-          createAccount(
-            'account-3',
-            'Account 3',
-            '0x9339B1D5ed9b127479fD742bf7501CE2f5223C37',
-            true,
-          ),
+          createAccount({
+            id: 'account-1',
+            name: 'Account 1',
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          }),
+          createAccount({
+            id: 'account-2',
+            name: 'Account 2',
+            address: '0x123456789abcdef0123456789abcdef012345678',
+          }),
+          createAccount({
+            id: 'account-3',
+            name: 'Account 3',
+            address: '0x9339B1D5ed9b127479fD742bf7501CE2f5223C37',
+            hidden: true,
+          }),
         ],
       },
     },
@@ -85,19 +92,17 @@ const mockWallets: ConsolidatedWallets = {
         id: walletTwoGroupId,
         metadata: { name: 'Default' },
         accounts: [
-          createAccount(
-            'account-3',
-            'Account 3',
-            '0xabcdef0123456789abcdef0123456789abcdef01',
-            false,
-            false,
-            EthAccountType.Erc4337,
-          ),
-          createAccount(
-            'account-4',
-            'Account 4',
-            '0xC5b2b5ae370876c0122910F92a13bef85A133E56',
-          ),
+          createAccount({
+            id: 'account-3',
+            name: 'Account 3',
+            address: '0xabcdef0123456789abcdef0123456789abcdef01',
+            type: EthAccountType.Erc4337,
+          }),
+          createAccount({
+            id: 'account-4',
+            name: 'Account 4',
+            address: '0xC5b2b5ae370876c0122910F92a13bef85A133E56',
+          }),
         ],
       },
     },
@@ -117,7 +122,7 @@ const defaultProps: MultichainAccountsTreeProps = {
   currentTabOrigin: 'https://test.dapp',
   privacyMode: false,
   selectedAccount:
-    mockWallets[walletOneId].groups[`${walletOneId}:default`].accounts[0],
+    mockWallets[walletOneId].groups[walletOneGroupId].accounts[0],
   onClose: jest.fn(),
   onAccountTreeItemClick: jest.fn(),
 };
@@ -150,8 +155,8 @@ describe('MultichainAccountsTree', () => {
       [walletOneId]: {
         ...mockWallets[walletOneId],
         groups: {
-          [`${walletOneId}:default`]: {
-            ...mockWallets[walletOneId].groups[`${walletOneId}:default`],
+          [walletOneGroupId]: {
+            ...mockWallets[walletOneId].groups[walletOneGroupId],
             accounts: [],
           },
         },
@@ -159,8 +164,8 @@ describe('MultichainAccountsTree', () => {
       [walletTwoId]: {
         ...mockWallets[walletTwoId],
         groups: {
-          [`${walletTwoId}:default`]: {
-            ...mockWallets[walletTwoId].groups[`${walletTwoId}:default`],
+          [walletTwoGroupId]: {
+            ...mockWallets[walletTwoId].groups[walletTwoGroupId],
             accounts: [],
           },
         },
@@ -199,21 +204,20 @@ describe('MultichainAccountsTree', () => {
       [walletOneId]: {
         ...mockWallets[walletOneId],
         groups: {
-          [`${walletOneId}:default`]: {
-            ...mockWallets[walletOneId].groups[`${walletOneId}:default`],
+          [walletOneGroupId]: {
+            ...mockWallets[walletOneId].groups[walletOneGroupId],
             accounts: [
-              createAccount(
-                'account-1',
-                'Account 1',
-                '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-              ),
-              createAccount(
-                'account-2',
-                'Account 2',
-                '0x123456789abcdef0123456789abcdef012345678',
-                false,
-                true,
-              ),
+              createAccount({
+                id: 'account-1',
+                name: 'Account 1',
+                address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              }),
+              createAccount({
+                id: 'account-2',
+                name: 'Account 2',
+                address: '0x123456789abcdef0123456789abcdef012345678',
+                pinned: true,
+              }),
             ],
           },
         },
@@ -231,21 +235,21 @@ describe('MultichainAccountsTree', () => {
       [walletOneId]: {
         ...mockWallets[walletOneId],
         groups: {
-          [`${walletOneId}:default`]: {
-            ...mockWallets[walletOneId].groups[`${walletOneId}:default`],
+          [walletOneGroupId]: {
+            ...mockWallets[walletOneId].groups[walletOneGroupId],
             accounts: [
-              createAccount(
-                'account-1',
-                'Account 1',
-                '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-                true,
-              ),
-              createAccount(
-                'account-2',
-                'Account 2',
-                '0x123456789abcdef0123456789abcdef012345678',
-                true,
-              ),
+              createAccount({
+                id: 'account-1',
+                name: 'Account 1',
+                address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                hidden: true,
+              }),
+              createAccount({
+                id: 'account-2',
+                name: 'Account 2',
+                address: '0x123456789abcdef0123456789abcdef012345678',
+                hidden: true,
+              }),
             ],
           },
         },
