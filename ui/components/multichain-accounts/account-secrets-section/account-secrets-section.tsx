@@ -21,8 +21,6 @@ type AccountSecretsSectionProps = {
 export const AccountSecretsSection = ({
   includeSRP = false,
 }: AccountSecretsSectionProps) => {
-  // const to define the secret recovery phrase number, at the moment this is just 1.
-  // in the future this will be dynamic based on some array index.
   const SECRET_RECOVERY_PHRASE_NUMBER = 1;
   const t = useI18nContext();
   const hasBackedUp = false;
