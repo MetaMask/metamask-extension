@@ -59,6 +59,8 @@ class SnapListPage {
     tag: 'p',
   };
 
+  private readonly backButton = 'button[aria-label="Back"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -128,6 +130,11 @@ class SnapListPage {
       // make sure the Snap page has loaded
       findElementGuard: this.descriptionWebpack,
     });
+  }
+
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking back button');
+    await this.driver.clickElement(this.backButton);
   }
 }
 
