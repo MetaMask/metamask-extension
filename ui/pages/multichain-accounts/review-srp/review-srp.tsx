@@ -3,13 +3,14 @@ import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { useHistory } from 'react-router-dom';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  AlignItems,
   BackgroundColor,
   BlockSize,
+  Display,
   FontWeight,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { JustifyContent } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSelector } from 'react-redux';
 import { getHDEntropyIndex } from '../../../selectors';
@@ -23,8 +24,9 @@ import {
   ButtonLink,
   IconName,
   Text,
+  ButtonBase,
+  ButtonBaseSize,
 } from '../../../components/component-library';
-import { IconColor } from '../../../helpers/constants/design-system';
 import {
   Button,
   ButtonSize,
@@ -33,8 +35,15 @@ import {
 import { Box } from '../../../components/component-library/box';
 import SRPDetailsModal from '../../../components/app/srp-details-modal';
 import RecoveryPhraseChips from '../../onboarding-flow/recovery-phrase/recovery-phrase-chips';
-import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
-import { Footer, Content, Header, Page } from '../../../components/multichain/pages/page';
+import { ACCOUNT_DETAILS_CONFIRM_SRP_ROUTE, ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
+import {
+  Footer,
+  Content,
+  Header,
+  Page,
+} from '../../../components/multichain/pages/page';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { MINUTE } from '../../../../shared/constants/time';
 
 type ReviewSrpProps = {
   secretRecoveryPhrase: string;
@@ -46,8 +55,8 @@ export const ReviewSrp = ({ secretRecoveryPhrase }: ReviewSrpProps) => {
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [phraseRevealed, setPhraseRevealed] = useState(false);
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
-  const isFromReminderParam = true;
   const trackEvent = useContext(MetaMetricsContext);
+  const [copied, handleCopy] = useCopyToClipboard(MINUTE);
 
   const handleOnShowSrpDetailsModal = useCallback(() => {
     // TODO: create a new event for this
@@ -61,9 +70,14 @@ export const ReviewSrp = ({ secretRecoveryPhrase }: ReviewSrpProps) => {
     setShowSrpDetailsModal(true);
   }, [trackEvent]);
 
+  const handleCopyToClipboard = useCallback(() => {
+    handleCopy(secretRecoveryPhrase);
+  }, [handleCopy, secretRecoveryPhrase]);
+
   return (
     <Page>
-      <Header backgroundColor={BackgroundColor.backgroundDefault}
+      <Header
+        backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={
           <ButtonIcon
             ariaLabel="Back"
@@ -71,7 +85,8 @@ export const ReviewSrp = ({ secretRecoveryPhrase }: ReviewSrpProps) => {
             size={ButtonIconSize.Sm}
             onClick={() => history.goBack()}
           />
-        }>
+        }
+      >
         {t('saveSrp')}
       </Header>
       <Content>
@@ -117,6 +132,20 @@ export const ReviewSrp = ({ secretRecoveryPhrase }: ReviewSrpProps) => {
             setPhraseRevealed(true);
           }}
         />
+        <ButtonBase
+          backgroundColor={BackgroundColor.transparent}
+          onClick={handleCopyToClipboard}
+          paddingRight={0}
+          paddingLeft={0}
+          variant={TextVariant.bodyMdMedium}
+          color={TextColor.primaryDefault}
+          endIconName={copied ? IconName.CopySuccess : IconName.Copy}
+          alignItems={AlignItems.center}
+          data-testid="multichain-review-srp-copy-button"
+          size={ButtonBaseSize.Md}
+        >
+          <Box display={Display.Flex}>{t('copyToClipboard')}</Box>
+        </ButtonBase>
       </Content>
       <Footer>
         <Button
@@ -136,9 +165,7 @@ export const ReviewSrp = ({ secretRecoveryPhrase }: ReviewSrpProps) => {
                 hd_entropy_index: hdEntropyIndex,
               },
             });
-            history.push(
-              `${ONBOARDING_CONFIRM_SRP_ROUTE}${isFromReminderParam}`,
-            );
+            history.push(ACCOUNT_DETAILS_CONFIRM_SRP_ROUTE);
           }}
         >
           {t('continue')}
