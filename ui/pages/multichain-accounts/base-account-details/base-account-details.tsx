@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { AppSliceState } from '../../../ducks/app/app';
@@ -31,6 +31,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AccountDetailsRow } from '../../../components/multichain-accounts/account-details-row';
 import { EditAccountNameModal } from '../../../components/multichain-accounts/edit-account-name-modal';
+import { setAccountDetailsAddress } from '../../../store/actions';
 
 type BaseAccountDetailsProps = {
   children?: React.ReactNode | React.ReactNode[];
@@ -42,6 +43,7 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
   );
   const useBlockie = useSelector(getUseBlockie);
   const history = useHistory();
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
@@ -61,6 +63,17 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
     history.push(ACCOUNT_DETAILS_QR_CODE_ROUTE);
   };
 
+  const handleNavigation = useCallback(() => {
+    dispatch(setAccountDetailsAddress(''));
+    history.push(DEFAULT_ROUTE);
+  }, [history, dispatch]);
+
+  useEffect(() => {
+    if (!address) {
+      history.push(DEFAULT_ROUTE);
+    }
+  }, [dispatch, address, history]);
+
   return (
     <Page backgroundColor={BackgroundColor.backgroundDefault}>
       <Header
@@ -70,7 +83,7 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            onClick={handleNavigation}
           />
         }
       >
