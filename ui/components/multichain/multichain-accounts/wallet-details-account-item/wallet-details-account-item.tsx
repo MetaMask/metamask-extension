@@ -18,6 +18,8 @@ import {
   IconColor,
   TextColor,
   TextVariant,
+  BlockSize,
+  TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { getUseBlockie } from '../../../../selectors';
 import { useMultichainAccountTotalFiatBalance } from '../../../../hooks/useMultichainAccountTotalFiatBalance';
@@ -46,12 +48,9 @@ const WalletDetailsAccountItem = ({
       className={className}
       as="button"
       onClick={() => onClick(account)}
-      style={{
-        cursor: 'pointer',
-        border: 'none',
-        textAlign: 'left',
-        width: '100%',
-      }}
+      width={BlockSize.Full}
+      textAlign={TextAlign.Left}
+      style={{ cursor: 'pointer', border: 'none' }}
     >
       <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
         <AvatarAccount

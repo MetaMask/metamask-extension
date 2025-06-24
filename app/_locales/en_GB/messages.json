@@ -6953,6 +6953,9 @@
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
   },
+  "walletDetails": {
+    "message": "Wallet details"
+  },
   "walletName": {
     "message": "Wallet name"
   },
@@ -6971,6 +6974,13 @@
   },
   "walletReadyLoseSrpRemind": {
     "message": "If you don’t back up your Secret Recovery Phrase, you’ll lose access to your funds if you get locked out of the app or get a new device."
+  },
+  "walletNotFoundTitle": {
+    "message": "Wallet not found"
+  },
+  "walletNotFoundDescription": {
+    "message": "The wallet with ID $1 was not found.",
+    "description": "$1 is the wallet ID"
   },
   "wantToAddThisNetwork": {
     "message": "Want to add this network?"

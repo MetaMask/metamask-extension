@@ -13,6 +13,8 @@ import {
   IconName,
   IconSize,
   Text,
+  BannerAlert,
+  BannerAlertSeverity,
 } from '../../../components/component-library';
 import {
   AlignItems,
@@ -50,30 +52,7 @@ const WalletDetails = () => {
   const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   const wallet = walletsWithAccounts[decodedId as AccountWalletId];
-  if (!wallet) {
-    throw new Error(`Wallet with ID "${id}" not found`);
-  }
-  const keyringId = wallet.id.split(':')[1];
-
-  const isEntropyWallet = wallet.id.includes('entropy');
-  const isFirstHdKeyring = hdKeyrings[0]?.metadata?.id === keyringId;
-  const shouldShowBackupReminder =
-    seedPhraseBackedUp === false && isFirstHdKeyring;
-
-  const groupKeys = Object.keys(wallet.groups || {});
-  // For now it's just the default group, but in the future we will have multiple groups
-  const firstGroup =
-    groupKeys.length > 0 ? wallet.groups[groupKeys[0] as AccountGroupId] : null;
-  const accounts = firstGroup?.accounts || [];
-
   const [accountBalances, setAccountBalances] = useState<AccountBalance>({});
-
-  const handleBalanceUpdate = (accountId: string, balance: string | number) => {
-    setAccountBalances((prev) => ({
-      ...prev,
-      [accountId]: balance,
-    }));
-  };
 
   const totalBalance = useMemo(
     () =>
@@ -83,13 +62,62 @@ const WalletDetails = () => {
     [accountBalances],
   );
 
-  const handleBack = () => {
-    history.goBack();
+  const handleBalanceUpdate = (accountId: string, balance: string | number) => {
+    setAccountBalances((prev) => ({
+      ...prev,
+      [accountId]: balance,
+    }));
   };
 
   const handleAccountClick = (account: { id: string; address: string }) => {
     dispatch(setAccountDetailsAddress(account.address));
   };
+
+  const handleBack = () => {
+    history.goBack();
+  };
+
+  if (!wallet) {
+    return (
+      <Page className="wallet-details-page">
+        <Header
+          textProps={{
+            variant: TextVariant.headingSm,
+          }}
+          startAccessory={
+            <ButtonIcon
+              size={ButtonIconSize.Sm}
+              ariaLabel="Back"
+              iconName={IconName.ArrowLeft}
+              onClick={handleBack}
+            />
+          }
+        >
+          {t('walletDetails')}
+        </Header>
+        <Content>
+          <BannerAlert
+            severity={BannerAlertSeverity.Danger}
+            title={t('walletNotFoundTitle')}
+          >
+            {t('walletNotFoundDescription', [id])}
+          </BannerAlert>
+        </Content>
+      </Page>
+    );
+  }
+
+  const keyringId = wallet.id.split(':')[1];
+
+  const isEntropyWallet = wallet.id.includes('entropy');
+  const isFirstHdKeyring = hdKeyrings[0]?.metadata?.id === keyringId;
+  const shouldShowBackupReminder = !seedPhraseBackedUp && isFirstHdKeyring;
+
+  const groupKeys = Object.keys(wallet.groups || {});
+  // For now it's just the default group, but in the future we will have multiple groups
+  const firstGroup =
+    groupKeys.length > 0 ? wallet.groups[groupKeys[0] as AccountGroupId] : null;
+  const accounts = firstGroup?.accounts || [];
 
   return (
     <Page className="wallet-details-page">
@@ -106,7 +134,7 @@ const WalletDetails = () => {
           />
         }
       >
-        Wallet Details
+        {t('walletDetails')}
       </Header>
       <Content>
         <Box marginBottom={4} className="wallet-details-page__rows-container">
