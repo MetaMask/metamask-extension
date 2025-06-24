@@ -94,7 +94,7 @@ const AccountListItem = ({
   shouldScrollToWhenSelected = true,
   showConnectedStatus = true,
   privacyMode = false,
-  showSrpPill = true,
+  showAccountLabels = true,
   showSelectionIndicator = true,
 }) => {
   const t = useI18nContext();
@@ -106,23 +106,18 @@ const AccountListItem = ({
   const snapMetadata = useSelector(getSnapsMetadata);
   const keyrings = useSelector(getMetaMaskKeyrings);
 
-  const isSrpPill = (label) => {
-    return Boolean(label?.startsWith('SRP'));
-  };
-
-  const accountLabels = useMemo(() => {
-    const labels = getAccountLabels(
-      account.metadata.keyring.type,
-      account,
-      keyrings,
-      account.metadata.keyring.type === KeyringType.snap
-        ? getSnapName(snapMetadata)(account.metadata?.snap?.id)
-        : null,
-    );
-    return showSrpPill
-      ? labels
-      : labels.filter(({ label }) => !isSrpPill(label));
-  }, [account, keyrings, snapMetadata, showSrpPill]);
+  const accountLabels = useMemo(
+    () =>
+      getAccountLabels(
+        account.metadata.keyring.type,
+        account,
+        keyrings,
+        account.metadata.keyring.type === KeyringType.snap
+          ? getSnapName(snapMetadata)(account.metadata?.snap?.id)
+          : null,
+      ),
+    [account, keyrings, snapMetadata],
+  );
 
   const useBlockie = useSelector(getUseBlockie);
   const { isEvmNetwork, chainId: multichainChainId } = useMultichainSelector(
@@ -372,7 +367,7 @@ const AccountListItem = ({
             <AccountNetworkIndicator scopes={account.scopes} />
           </Box>
         </Box>
-        {accountLabels.length > 0 ? (
+        {showAccountLabels && accountLabels.length > 0 ? (
           <Box flexDirection={FlexDirection.Row}>
             {accountLabels.map(({ label, icon }) => {
               return (
@@ -534,9 +529,9 @@ AccountListItem.propTypes = {
    */
   showConnectedStatus: PropTypes.bool,
   /**
-   * Determines if SRP pill should be shown
+   * Determines if account labels should be shown
    */
-  showSrpPill: PropTypes.bool,
+  showAccountLabels: PropTypes.bool,
   /**
    * Determines if left dark blue selection indicator is displayed or not
    */

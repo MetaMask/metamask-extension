@@ -117,7 +117,7 @@ export const MultichainAccountsTree = ({
                       isActive={account.active}
                       privacyMode={privacyMode}
                       isPinned={account.pinned}
-                      showSrpPill={false}
+                      showAccountLabels={false}
                       {...accountTreeItemProps}
                     />
                   </Box>
