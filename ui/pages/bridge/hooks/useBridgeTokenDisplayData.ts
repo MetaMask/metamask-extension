@@ -17,7 +17,6 @@ import { TransactionType } from '@metamask/transaction-controller';
  */
 export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
   const { primaryTransaction } = transactionGroup;
-  const chainId = useSelector(getCurrentChainId);
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
 
   // If the primary transaction is a bridge transaction, use the bridge history item for the primary transaction id
@@ -40,7 +39,7 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
       primaryTransaction.sourceTokenSymbol,
     {},
     true,
-    chainId,
+    primaryTransaction.chainId,
   );
 
   return {
@@ -48,10 +47,7 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
       primaryTransaction.type === TransactionType.bridge
         ? TransactionGroupCategory.bridge
         : TransactionGroupCategory.swap,
-    displayCurrencyAmount:
-      primaryTransaction.chainId === chainId
-        ? displayCurrencyAmount
-        : undefined,
+    displayCurrencyAmount,
     sourceTokenSymbol:
       bridgeHistoryItem?.quote.srcAsset.symbol ??
       primaryTransaction.sourceTokenSymbol,
