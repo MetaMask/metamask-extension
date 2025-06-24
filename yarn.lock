@@ -4346,13 +4346,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/errors@npm:^6.19.1":
-  version: 6.19.1
-  resolution: "@ledgerhq/errors@npm:6.19.1"
-  checksum: 10/8265c6d73c314a4aabbe060ec29e2feebb4e904fe811bf7a9c53cde08e713dcbceded9d927ebb2f0ffc47a7b16524379d4a7e9aa3d61945b8a832be7cd5cf69b
-  languageName: node
-  linkType: hard
-
 "@ledgerhq/errors@npm:^6.21.0":
   version: 6.21.0
   resolution: "@ledgerhq/errors@npm:6.21.0"
