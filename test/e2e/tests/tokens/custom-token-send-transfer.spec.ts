@@ -59,7 +59,7 @@ describe('Transfer custom tokens', function () {
 
           // check transaction details
           const expectedNetworkFee = '0.0001';
-          await tokenTransferRedesignedConfirmPage.check_pageIsLoaded(
+          await tokenTransferRedesignedConfirmPage.check_tokenTransferPageIsLoaded(
             '1',
             symbol,
             expectedNetworkFee,
@@ -116,7 +116,7 @@ describe('Transfer custom tokens', function () {
 
           // check transaction details
           const expectedNetworkFee = '0.0001';
-          await tokenTransferRedesignedConfirmPage.check_pageIsLoaded(
+          await tokenTransferRedesignedConfirmPage.check_tokenTransferPageIsLoaded(
             '1.5',
             symbol,
             expectedNetworkFee,
@@ -184,7 +184,7 @@ describe('Transfer custom tokens', function () {
 
           // check transaction details and confirm
           const expectedNetworkFee = '0.001';
-          await tokenTransferRedesignedConfirmPage.check_pageIsLoaded(
+          await tokenTransferRedesignedConfirmPage.check_tokenTransferPageIsLoaded(
             '1.5',
             symbol,
             expectedNetworkFee,
