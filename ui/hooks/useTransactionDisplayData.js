@@ -388,7 +388,7 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.incoming) {
-    category = TransactionGroupCategory.receive;
+    category = TransactionGroupCategory.received;
     title = t('received');
     prefix = '';
     subtitle = t('fromAddress', [shortenAddress(senderAddress)]);
@@ -396,19 +396,19 @@ export function useTransactionDisplayData(transactionGroup) {
     type === TransactionType.tokenMethodTransferFrom ||
     type === TransactionType.tokenMethodTransfer
   ) {
-    category = TransactionGroupCategory.send;
+    category = TransactionGroupCategory.sent;
     title = t('sendSpecifiedTokens', [
       token?.symbol || nft?.name || t('token'),
     ]);
     recipientAddress = getTokenAddressParam(tokenData);
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TransactionType.tokenMethodSafeTransferFrom) {
-    category = TransactionGroupCategory.send;
+    category = TransactionGroupCategory.sent;
     title = t('safeTransferFrom');
     recipientAddress = getTokenAddressParam(tokenData);
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TransactionType.simpleSend) {
-    category = TransactionGroupCategory.send;
+    category = TransactionGroupCategory.sent;
     title = t('sent');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TransactionType.bridgeApproval) {

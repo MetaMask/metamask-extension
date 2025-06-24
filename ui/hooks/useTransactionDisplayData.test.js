@@ -29,7 +29,7 @@ import { useTransactionDisplayData } from './useTransactionDisplayData';
 const expectedResults = [
   {
     title: 'Sent',
-    category: TransactionGroupCategory.send,
+    category: TransactionGroupCategory.sent,
     subtitle: 'To: 0xffe5b...91a97',
     subtitleContainsOrigin: false,
     date: formatDateWithYearContext(1589314601567),
@@ -40,12 +40,12 @@ const expectedResults = [
     isPending: false,
     displayedStatusKey: TransactionStatus.confirmed,
     isSubmitted: false,
-    detailsTitle: 'Send',
+    detailsTitle: 'Sent',
     remoteSignerAddress: null,
   },
   {
     title: 'Sent',
-    category: TransactionGroupCategory.send,
+    category: TransactionGroupCategory.sent,
     subtitle: 'To: 0x0ccc8...f8848',
     subtitleContainsOrigin: false,
     date: formatDateWithYearContext(1589314355872),
@@ -58,7 +58,7 @@ const expectedResults = [
   },
   {
     title: 'Sent',
-    category: TransactionGroupCategory.send,
+    category: TransactionGroupCategory.sent,
     subtitle: 'To: 0xffe5b...91a97',
     subtitleContainsOrigin: false,
     date: formatDateWithYearContext(1589314345433),
@@ -71,7 +71,7 @@ const expectedResults = [
   },
   {
     title: 'Received',
-    category: TransactionGroupCategory.receive,
+    category: TransactionGroupCategory.received,
     subtitle: 'From: 0x31b98...84523',
     subtitleContainsOrigin: false,
     date: formatDateWithYearContext(1589314295000),
@@ -84,7 +84,7 @@ const expectedResults = [
   },
   {
     title: 'Received',
-    category: TransactionGroupCategory.receive,
+    category: TransactionGroupCategory.received,
     subtitle: 'From: 0x9eca6...6a149',
     subtitleContainsOrigin: false,
     date: formatDateWithYearContext(1588972833000),
@@ -97,7 +97,7 @@ const expectedResults = [
   },
   {
     title: 'Received',
-    category: TransactionGroupCategory.receive,
+    category: TransactionGroupCategory.received,
     subtitle: 'From: 0xee014...efebb',
     subtitleContainsOrigin: false,
     date: formatDateWithYearContext(1585087013000),
@@ -136,7 +136,7 @@ const expectedResults = [
   },
   {
     title: 'Safe transfer from',
-    category: TransactionGroupCategory.send,
+    category: TransactionGroupCategory.sent,
     subtitle: 'To: 0xe7d52...0dd98',
     subtitleContainsOrigin: true,
     primaryCurrency: '-0 ETH',

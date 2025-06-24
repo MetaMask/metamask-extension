@@ -78,12 +78,12 @@ export enum TransactionGroupCategory {
    * Transaction group representing a deposit/incoming transaction. This
    * category maps 1:1 with TransactionType.incoming.
    */
-  receive = 'receive',
+  received = 'received',
   /**
    * Transaction group representing the network native currency being sent from
    * the user.
    */
-  send = 'send',
+  sent = 'sent',
   /**
    * Transaction group representing a signature request This currently only
    * shows up in the UI when its pending user approval in the UI. Once the user
