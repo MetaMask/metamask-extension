@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
@@ -7,7 +8,7 @@ import {
   selectBridgeHistoryForApprovalTxId,
   selectBridgeHistoryItemForTxMetaId,
 } from '../../../ducks/bridge-status/selectors';
-import { TransactionType } from '@metamask/transaction-controller';
+
 /**
  * A Bridge transaction group's primaryTransaction contains details of the swap,
  * including the source (from) and destination (to) token type (ETH, DAI, etc..)

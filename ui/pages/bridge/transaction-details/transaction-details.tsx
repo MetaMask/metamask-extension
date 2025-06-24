@@ -32,10 +32,7 @@ import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
 import { getTransactionBreakdownData } from '../../../components/app/transaction-breakdown/transaction-breakdown-utils';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-import {
-  PRIMARY,
-  SUPPORT_REQUEST_LINK,
-} from '../../../helpers/constants/common';
+import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 import {
   AlignItems,
   Display,
@@ -67,9 +64,6 @@ import {
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { formatTokenAmount } from '../utils/quote';
-import TransactionDetailRow from './transaction-detail-row';
-import BridgeExplorerLinks from './bridge-explorer-links';
-import BridgeStepList from './bridge-step-list';
 import {
   getBlockExplorerUrl,
   getBridgeAmountReceivedFormatted,
@@ -77,6 +71,9 @@ import {
   getIsDelayed,
   STATUS_TO_COLOR_MAP,
 } from '../utils/tx-details';
+import TransactionDetailRow from './transaction-detail-row';
+import BridgeExplorerLinks from './bridge-explorer-links';
+import BridgeStepList from './bridge-step-list';
 
 const CrossChainSwapTxDetails = () => {
   const t = useI18nContext();

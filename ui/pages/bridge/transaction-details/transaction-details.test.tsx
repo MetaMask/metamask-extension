@@ -4,7 +4,6 @@ import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
-import { MINUTE } from '../../../../shared/constants/time';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
@@ -12,7 +11,8 @@ import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import configureStore from '../../../store/store';
 import { TransactionGroup } from '../../../hooks/useTransactionDisplayData';
-import CrossChainSwapTxDetails, { getIsDelayed } from './transaction-details';
+import { getIsDelayed } from '../utils/tx-details';
+import CrossChainSwapTxDetails from './transaction-details';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),

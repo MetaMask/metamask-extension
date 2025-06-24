@@ -1,6 +1,11 @@
 import React, { useContext } from 'react';
 import type { CaipChainId } from '@metamask/utils';
 import {
+  formatChainIdToHex,
+  isSolanaChainId,
+} from '@metamask/bridge-controller';
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP } from '../../../../shared/constants/common';
+import {
   Box,
   IconName,
   ButtonSecondary,
@@ -12,11 +17,6 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP } from '../../../../shared/constants/common';
-import {
-  formatChainIdToHex,
-  isSolanaChainId,
-} from '@metamask/bridge-controller';
 
 const getBlockExplorerName = (
   chainId: CaipChainId | undefined,

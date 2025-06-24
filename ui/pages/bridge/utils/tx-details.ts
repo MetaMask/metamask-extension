@@ -3,14 +3,14 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import { CaipChainId } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { EvmNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import { TextColor } from '../../../helpers/constants/design-system';
 import { MINUTE } from '../../../../shared/constants/time';
+import { TextColor } from '../../../helpers/constants/design-system';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
-import { CaipChainId } from '@metamask/utils';
 
 export type ChainInfo =
   | EvmNetworkConfiguration
@@ -50,9 +50,8 @@ export const getBlockExplorerUrl = (chainInfo?: ChainInfo, txHash?: string) => {
 };
 
 /**
- * @param options0
- * @param options0.bridgeHistoryItem
- * @param options0.locale
+ * @param txMeta - The transaction meta
+ * @param bridgeHistoryItem - The bridge history item
  * @returns A string representing the bridge amount in decimal form
  */
 export const getBridgeAmountSentFormatted = ({
@@ -92,7 +91,9 @@ export const getBridgeAmountReceivedFormatted = ({
       ? bridgeHistoryItem.status.status === StatusTypes.COMPLETE
       : txMeta.status === TransactionStatus.confirmed;
 
-  if (!isTxComplete) return undefined;
+  if (!isTxComplete) {
+    return undefined;
+  }
 
   const destAmount =
     txMeta.swapMetaData?.token_to_amount ??
