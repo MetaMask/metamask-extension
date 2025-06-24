@@ -1,11 +1,8 @@
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-import { type Hex } from '@metamask/utils';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { TEST_CHAINS } from '../../../../../../shared/constants/network';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
-  convertCaipToHexChainId,
   getNetworkIcon,
   getRpcDataByChainId,
   sortNetworks,
