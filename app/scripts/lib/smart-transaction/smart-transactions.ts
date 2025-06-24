@@ -32,6 +32,17 @@ import {
   SMART_TRANSACTION_CONFIRMATION_TYPES,
   ORIGIN_METAMASK,
 } from '../../../../shared/constants/app';
+import {
+  getChainSupportsSmartTransactions,
+  getFeatureFlagsByChainId,
+  getIsSmartTransaction,
+  getSmartTransactionsPreferenceEnabled,
+  isHardwareWallet,
+} from '../../../../shared/modules/selectors';
+import { ControllerFlatState } from '../../controller-init/controller-list';
+import { TransactionControllerInitMessenger } from '../../controller-init/messengers/transaction-controller-messenger';
+import { Delegation7702PublishHook } from '../transaction/hooks/delegation-7702-publish';
+import { getTransactionById } from '../transaction/util';
 
 const namespace = 'SmartTransactions';
 
@@ -531,3 +542,146 @@ export const submitBatchSmartTransactionHook = (
   const smartTransactionHook = new SmartTransactionHook(request);
   return smartTransactionHook.submitBatch();
 };
+
+function getUIState(flatState: ControllerFlatState) {
+  return { metamask: flatState };
+}
+
+function getSmartTransactionCommonParams(
+  flatState: ControllerFlatState,
+  chainId?: string,
+) {
+  // UI state is required to support shared selectors to avoid duplicate logic in frontend and backend.
+  // Ideally all backend logic would instead rely on messenger event / state subscriptions.
+  const uiState = getUIState(flatState);
+
+  // @ts-expect-error Smart transaction selector types does not match controller state
+  const isSmartTransaction = getIsSmartTransaction(uiState, chainId);
+
+  // @ts-expect-error Smart transaction selector types does not match controller state
+  const featureFlags = getFeatureFlagsByChainId(uiState, chainId);
+
+  const isHardwareWalletAccount = isHardwareWallet(uiState);
+
+  return {
+    isSmartTransaction,
+    featureFlags,
+    isHardwareWalletAccount,
+  };
+}
+
+export async function publishSmartTransactionHook({
+  flatState,
+  initMessenger,
+  signedTx,
+  smartTransactionsController,
+  transactionController,
+  transactionMeta,
+}: {
+  flatState: ControllerFlatState;
+  initMessenger: TransactionControllerInitMessenger;
+  signedTx: string;
+  smartTransactionsController: SmartTransactionsController;
+  transactionController: TransactionController;
+  transactionMeta: TransactionMeta;
+}) {
+  const result = await publishSmartTransactionHookHelper(
+    transactionController,
+    smartTransactionsController,
+    initMessenger,
+    flatState,
+    transactionMeta,
+    signedTx as Hex,
+  );
+
+  if (result?.transactionHash) {
+    return result;
+  }
+
+  const hook = new Delegation7702PublishHook({
+    isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
+      transactionController,
+    ),
+    messenger: initMessenger,
+  }).getHook();
+
+  return await hook(transactionMeta, signedTx);
+}
+
+async function publishSmartTransactionHookHelper(
+  transactionController: TransactionController,
+  smartTransactionsController: SmartTransactionsController,
+  hookControllerMessenger: SmartTransactionHookMessenger,
+  flatState: ControllerFlatState,
+  transactionMeta: TransactionMeta,
+  signedTransactionInHex: Hex,
+) {
+  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
+    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
+
+  if (!isSmartTransaction) {
+    // Will cause TransactionController to publish to the RPC provider as normal.
+    return { transactionHash: undefined };
+  }
+
+  return await submitSmartTransactionHook({
+    transactionMeta,
+    signedTransactionInHex,
+    transactionController,
+    smartTransactionsController,
+    controllerMessenger: hookControllerMessenger,
+    isSmartTransaction,
+    isHardwareWallet: isHardwareWalletAccount,
+    // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
+    featureFlags,
+  });
+}
+
+export function publishBatchSmartTransactionHook({
+  transactionController,
+  smartTransactionsController,
+  hookControllerMessenger,
+  flatState,
+  transactions,
+}: {
+  transactionController: TransactionController;
+  smartTransactionsController: SmartTransactionsController;
+  hookControllerMessenger: SmartTransactionHookMessenger;
+  flatState: ControllerFlatState;
+  transactions: PublishBatchHookTransaction[];
+}) {
+  // Get transactionMeta based on the last transaction ID
+  const lastTransaction = transactions[transactions.length - 1];
+  const transactionMeta = getTransactionById(
+    lastTransaction.id ?? '',
+    transactionController,
+  );
+
+  // If we couldn't find the transaction, we should handle that gracefully
+  if (!transactionMeta) {
+    throw new Error(
+      `publishBatchSmartTransactionHook: Could not find transaction with id ${lastTransaction.id}`,
+    );
+  }
+
+  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
+    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
+
+  if (!isSmartTransaction) {
+    throw new Error(
+      'publishBatchSmartTransactionHook: Smart Transaction is required for batch submissions',
+    );
+  }
+
+  return submitBatchSmartTransactionHook({
+    transactions,
+    transactionController,
+    smartTransactionsController,
+    controllerMessenger: hookControllerMessenger,
+    isSmartTransaction,
+    isHardwareWallet: isHardwareWalletAccount,
+    // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
+    featureFlags,
+    transactionMeta,
+  });
+}
