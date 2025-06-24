@@ -25,7 +25,7 @@ import {
 } from '../../../components/component-library';
 import { Content, Header } from '../../../components/multichain/pages/page';
 import {
-  selectBridgeHistoryItemForTxMetaId,
+  selectBridgeHistoryForAccount,
   selectReceivedSwapsTokenAmountFromTxMeta,
 } from '../../../ducks/bridge-status/selectors';
 import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
@@ -95,9 +95,10 @@ const CrossChainSwapTxDetails = () => {
     (tx) => tx.id === srcTxMetaId,
   );
   // Even if user is still on /tx-details/txMetaId, we want to be able to show the bridge history item
-  const bridgeHistoryItem = useSelector((state) =>
-    selectBridgeHistoryItemForTxMetaId(state, srcTxMetaId),
-  );
+  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
+  const bridgeHistoryItem = srcTxMetaId
+    ? bridgeHistory[srcTxMetaId]
+    : undefined;
   const approvalTxMeta = selectedAddressTxList.find(
     (tx) => tx.id === bridgeHistoryItem?.approvalTxId,
   );

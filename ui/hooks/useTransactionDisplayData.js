@@ -38,7 +38,7 @@ import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
-import { selectBridgeHistoryItemForTxMetaId } from '../ducks/bridge-status/selectors';
+import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors';
 import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
 import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../ducks/locale/locale';
@@ -122,9 +122,10 @@ export function useTransactionDisplayData(transactionGroup) {
 
   // Bridge data
   const srcTxMetaId = transactionGroup.initialTransaction.id;
-  const bridgeHistoryItem = useSelector((state) =>
-    selectBridgeHistoryItemForTxMetaId(state, srcTxMetaId),
-  );
+  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
+  const bridgeHistoryItem = srcTxMetaId
+    ? bridgeHistory[srcTxMetaId]
+    : undefined;
   const { destNetwork } = useBridgeChainInfo({
     bridgeHistoryItem,
     srcTxMeta: transactionGroup.initialTransaction,

@@ -5,8 +5,8 @@ import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryD
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import {
+  selectBridgeHistoryForAccount,
   selectBridgeHistoryForApprovalTxId,
-  selectBridgeHistoryItemForTxMetaId,
 } from '../../../ducks/bridge-status/selectors';
 
 /**
@@ -20,10 +20,10 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
 
   // If the primary transaction is a bridge transaction, use the bridge history item for the primary transaction id
   // Otherwise, assume that the primary transaction is an approval transaction and use the bridge history item that has the approvalTxId
-  const bridgeHistoryItemForPrimaryTxId: BridgeHistoryItem | undefined =
-    useSelector((state) =>
-      selectBridgeHistoryItemForTxMetaId(state, primaryTransaction.id),
-    );
+  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
+  const bridgeHistoryItemForPrimaryTxId = primaryTransaction.id
+    ? bridgeHistory[primaryTransaction.id]
+    : undefined;
   const bridgeHistoryItemWithApprovalTxId = useSelector((state) =>
     selectBridgeHistoryForApprovalTxId(state, primaryTransaction.id),
   );

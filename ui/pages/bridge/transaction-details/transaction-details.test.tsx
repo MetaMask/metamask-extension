@@ -79,13 +79,14 @@ describe('transaction-details', () => {
       );
       const expectedRows = [
         'Statuscomplete',
-        'BridgingPolygonOP Mainnet',
+        'BridgedPolygonOP Mainnet',
         'Time stamp',
         'You sent2 USDC onPolygon',
-        'Total gas fee0.004455ETH',
+        'You received1.981 USDC onOP Mainnet',
+        'Total gas fee0.00446 POL',
         'Nonce3',
       ];
-      expect(queryAllByTestId('transaction-detail-row')).toHaveLength(6);
+      expect(queryAllByTestId('transaction-detail-row')).toHaveLength(7);
       queryAllByTestId('transaction-detail-row').forEach((row, i) => {
         expect(row).toHaveTextContent(expectedRows[i]);
       });
@@ -121,7 +122,7 @@ describe('transaction-details', () => {
         'BridgingPolygonOP Mainnet',
         'Time stamp',
         'You sent2 USDC onPolygon',
-        'Total gas fee0.004455ETH',
+        'Total gas fee0.00446 POL',
         'Nonce3',
       ];
       expect(queryAllByTestId('transaction-detail-row')).toHaveLength(6);
@@ -160,7 +161,7 @@ describe('transaction-details', () => {
         'BridgingPolygonOP Mainnet',
         'Time stamp',
         'You sent2 USDC onPolygon',
-        'Total gas fee0.004455ETH',
+        'Total gas fee0.00446 POL',
         'Nonce3',
       ];
       expect(queryAllByTestId('transaction-detail-row')).toHaveLength(6);
@@ -199,7 +200,7 @@ describe('transaction-details', () => {
         'BridgingPolygonOP Mainnet',
         'Time stamp',
         'You sent2 USDC onPolygon',
-        'Total gas fee0.004455ETH',
+        'Total gas fee0.00446 POL',
         'Nonce3',
       ];
       expect(queryAllByTestId('transaction-detail-row')).toHaveLength(6);
@@ -239,7 +240,7 @@ describe('transaction-details', () => {
         'BridgingPolygonOP Mainnet',
         'Time stamp',
         'You sent2 USDC onPolygon',
-        'Total gas fee0.004455ETH',
+        'Total gas fee0.00446 POL',
         'Nonce3',
       ];
       expect(queryAllByTestId('transaction-detail-row')).toHaveLength(6);
@@ -252,4 +253,150 @@ describe('transaction-details', () => {
       expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
     });
   });
+
+  // describe('swap snapshots', () => {
+  //   it('should render completed swap tx', () => {
+  //     const { queryAllByTestId, getByText } = renderWithProvider(
+  //       <CrossChainSwapTxDetails />,
+  //       getMockStore(
+  //         mockBridgeTxData.transactionGroup,
+  //         mockBridgeTxData.srcTxMetaId,
+  //         mockBridgeTxData.bridgeHistoryItem as never,
+  //       ),
+  //     );
+  //     const expectedRows = [
+  //       'Statuscomplete',
+  //       'BridgingPolygonOP Mainnet',
+  //       'Time stamp',
+  //       'You sent2 USDC onPolygon',
+  //       'Total gas fee0.004455ETH',
+  //       'Nonce3',
+  //     ];
+  //     expect(queryAllByTestId('transaction-detail-row')).toHaveLength(6);
+  //     queryAllByTestId('transaction-detail-row').forEach((row, i) => {
+  //       expect(row).toHaveTextContent(expectedRows[i]);
+  //     });
+
+  //     expect(getByText('Bridge details')).toBeInTheDocument();
+  //     expect(getByText('View on PolygonScan')).toBeInTheDocument();
+  //     expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
+  //   });
+
+  //   it('should render pending swap tx', () => {
+  //     const { queryAllByTestId, getByText } = renderWithProvider(
+  //       <CrossChainSwapTxDetails />,
+  //       getMockStore(
+  //         {
+  //           ...mockBridgeTxData.transactionGroup,
+  //           initialTransaction: {
+  //             ...mockBridgeTxData.transactionGroup.initialTransaction,
+  //             status: TransactionStatus.approved,
+  //           },
+  //         },
+  //         mockBridgeTxData.srcTxMetaId,
+  //         {
+  //           ...mockBridgeTxData.bridgeHistoryItem,
+  //           status: {
+  //             ...mockBridgeTxData.bridgeHistoryItem.status,
+  //             status: StatusTypes.PENDING,
+  //           },
+  //         } as never,
+  //       ),
+  //     );
+  //     const expectedRows = [
+  //       'Statuspending',
+  //       'BridgingPolygonOP Mainnet',
+  //       'Time stamp',
+  //       'You sent2 USDC onPolygon',
+  //       'Total gas fee0.004455ETH',
+  //       'Nonce3',
+  //     ];
+  //     expect(queryAllByTestId('transaction-detail-row')).toHaveLength(6);
+  //     queryAllByTestId('transaction-detail-row').forEach((row, i) => {
+  //       expect(row).toHaveTextContent(expectedRows[i]);
+  //     });
+
+  //     expect(getByText('Bridge details')).toBeInTheDocument();
+  //     expect(getByText('View on PolygonScan')).toBeInTheDocument();
+  //     expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
+  //   });
+
+  //   it('should render confirmed swap tx', () => {
+  //     const { queryAllByTestId, getByText } = renderWithProvider(
+  //       <CrossChainSwapTxDetails />,
+  //       getMockStore(
+  //         {
+  //           ...mockBridgeTxData.transactionGroup,
+  //           initialTransaction: {
+  //             ...mockBridgeTxData.transactionGroup.initialTransaction,
+  //             status: TransactionStatus.confirmed,
+  //           },
+  //         },
+  //         mockBridgeTxData.srcTxMetaId,
+  //         {
+  //           ...mockBridgeTxData.bridgeHistoryItem,
+  //           status: {
+  //             ...mockBridgeTxData.bridgeHistoryItem.status,
+  //             status: StatusTypes.PENDING,
+  //           },
+  //         } as never,
+  //       ),
+  //     );
+  //     const expectedRows = [
+  //       'Statuspending',
+  //       'BridgingPolygonOP Mainnet',
+  //       'Time stamp',
+  //       'You sent2 USDC onPolygon',
+  //       'Total gas fee0.004455ETH',
+  //       'Nonce3',
+  //     ];
+  //     expect(queryAllByTestId('transaction-detail-row')).toHaveLength(6);
+  //     queryAllByTestId('transaction-detail-row').forEach((row, i) => {
+  //       expect(row).toHaveTextContent(expectedRows[i]);
+  //     });
+
+  //     expect(getByText('Bridge details')).toBeInTheDocument();
+  //     expect(getByText('View on PolygonScan')).toBeInTheDocument();
+  //     expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
+  //   });
+
+  //   it('should render failed swap tx', () => {
+  //     const { queryAllByTestId, getByText } = renderWithProvider(
+  //       <CrossChainSwapTxDetails />,
+  //       getMockStore(
+  //         {
+  //           ...mockUnifiedSwapTxData,
+  //           initialTransaction: {
+  //             ...mockUnifiedSwapTxData.initialTransaction,
+  //             status: TransactionStatus.failed,
+  //           },
+  //         },
+  //         mockBridgeTxData.srcTxMetaId,
+  //         {
+  //           ...mockBridgeTxData.bridgeHistoryItem,
+  //           status: {
+  //             ...mockBridgeTxData.bridgeHistoryItem.status,
+  //             status: StatusTypes.PENDING,
+  //           },
+  //         } as never,
+  //       ),
+  //     );
+  //     const expectedRows = [
+  //       'Statuspending',
+  //       'BridgingPolygonOP Mainnet',
+  //       'Time stamp',
+  //       'You sent2 USDC onPolygon',
+  //       'Total gas fee0.004455ETH',
+  //       'Nonce3',
+  //     ];
+  //     expect(queryAllByTestId('transaction-detail-row')).toHaveLength(6);
+  //     queryAllByTestId('transaction-detail-row').forEach((row, i) => {
+  //       expect(row).toHaveTextContent(expectedRows[i]);
+  //     });
+
+  //     expect(getByText('Bridge details')).toBeInTheDocument();
+  //     expect(getByText('View on PolygonScan')).toBeInTheDocument();
+  //     expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
+  //   });
+  // });
 });

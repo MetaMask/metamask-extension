@@ -32,10 +32,7 @@ export const selectBridgeHistoryForAccount = createSelector(
   },
 );
 
-/**
- * Returns a bridge history item for a given tx meta id
- */
-export const selectBridgeHistoryItemForTxMetaId = createSelector(
+const selectBridgeHistoryItemForTxMetaId = createSelector(
   [selectBridgeHistoryForAccount, (_, txMetaId?: string) => txMetaId],
   (bridgeHistory, txMetaId) => {
     return txMetaId ? bridgeHistory[txMetaId] : undefined;
