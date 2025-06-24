@@ -1,0 +1,1 @@
+export { ReviewSrp } from './review-srp';
