@@ -6,7 +6,7 @@ import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { MINUTE } from '../../../../shared/constants/time';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-group.json';
+import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';

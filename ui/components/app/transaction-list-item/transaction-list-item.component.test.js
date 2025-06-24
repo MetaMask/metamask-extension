@@ -17,7 +17,7 @@ import {
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
 import mockLegacySwapTxGroup from '../../../../test/data/swap/mock-legacy-swap-transaction-group.json';
 import mockUnifiedSwapTxGroup from '../../../../test/data/swap/mock-unified-swap-transaction-group.json';
-import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-group.json';
+import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
