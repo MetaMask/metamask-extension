@@ -1,14 +1,17 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams, useLocation } from 'react-router-dom';
-import type { TransactionMeta } from '@metamask/transaction-controller';
-import { BigNumber } from 'bignumber.js';
-import type { EvmNetworkConfiguration } from '@metamask/multichain-network-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { formatChainIdToHex, StatusTypes } from '@metamask/bridge-controller';
-import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
+  AvatarToken,
+  AvatarTokenSize,
   BannerAlert,
   BannerAlertSeverity,
   Box,
@@ -21,13 +24,14 @@ import {
   Text,
 } from '../../../components/component-library';
 import { Content, Header } from '../../../components/multichain/pages/page';
-import { selectBridgeHistoryItemForTxMetaId } from '../../../ducks/bridge-status/selectors';
+import {
+  selectBridgeHistoryItemForTxMetaId,
+  selectReceivedSwapsTokenAmountFromTxMeta,
+} from '../../../ducks/bridge-status/selectors';
 import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
 import { getTransactionBreakdownData } from '../../../components/app/transaction-breakdown/transaction-breakdown-utils';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
-import { EtherDenomination } from '../../../../shared/constants/common';
 import {
   PRIMARY,
   SUPPORT_REQUEST_LINK,
@@ -38,20 +42,21 @@ import {
   FlexDirection,
   FlexWrap,
   JustifyContent,
-  TextColor,
   TextTransform,
 } from '../../../helpers/constants/design-system';
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { selectedAddressTxListSelectorAllChain } from '../../../selectors';
+import {
+  getNativeTokenInfo,
+  selectedAddressTxListSelectorAllChain,
+} from '../../../selectors';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import TransactionActivityLog from '../../../components/app/transaction-activity-log';
@@ -59,7 +64,9 @@ import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
   type AllowedBridgeChainIds,
 } from '../../../../shared/constants/bridge';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import { getImageForChainId } from '../../../selectors/multichain';
+import { formatTokenAmount } from '../utils/quote';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
@@ -68,7 +75,7 @@ import {
   getBridgeAmountReceivedFormatted,
   getBridgeAmountSentFormatted,
   getIsDelayed,
-  BRIDGE_STATUS_TO_COLOR_MAP,
+  STATUS_TO_COLOR_MAP,
 } from '../utils/tx-details';
 
 const CrossChainSwapTxDetails = () => {
@@ -109,9 +116,14 @@ const CrossChainSwapTxDetails = () => {
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
   const destBlockExplorerUrl = getBlockExplorerUrl(destNetwork, destTxHash);
 
-  const status = bridgeHistoryItem
+  const bridgeStatus = bridgeHistoryItem
     ? bridgeHistoryItem?.status.status
     : StatusTypes.PENDING;
+  // Show src tx status for swaps
+  const status =
+    srcChainTxMeta?.type === TransactionType.bridge
+      ? bridgeStatus
+      : srcChainTxMeta?.status;
 
   const srcChainIconUrl = srcNetwork
     ? getImageForChainId(
@@ -147,14 +159,36 @@ const CrossChainSwapTxDetails = () => {
     : undefined;
 
   const bridgeAmountSent = getBridgeAmountSentFormatted({
-    locale,
     bridgeHistoryItem,
+    txMeta: srcChainTxMeta,
   });
-  const bridgeAmountReceived = getBridgeAmountReceivedFormatted({
-    locale,
-    bridgeHistoryItem,
-  });
-  const isDelayed = getIsDelayed(status, bridgeHistoryItem);
+
+  const swapAmountReceivedFromTxMeta = useSelector((state) =>
+    selectReceivedSwapsTokenAmountFromTxMeta(
+      state,
+      bridgeHistoryItem?.txMetaId,
+      srcChainTxMeta,
+      approvalTxMeta,
+    ),
+  );
+  const amountReceived =
+    (srcChainTxMeta?.type === TransactionType.swap &&
+      swapAmountReceivedFromTxMeta) ||
+    getBridgeAmountReceivedFormatted({
+      locale,
+      bridgeHistoryItem,
+      txMeta: srcChainTxMeta,
+    });
+
+  const isDelayed =
+    srcChainTxMeta?.type === TransactionType.bridge &&
+    getIsDelayed(bridgeStatus, bridgeHistoryItem);
+
+  // TODO set for gasless swaps
+  const gasCurrency = getNativeTokenInfo(
+    rootState as MetaMaskReduxState,
+    srcChainTxMeta?.chainId ?? '',
+  ) as { decimals: number; symbol: string };
 
   const srcNetworkIconName = (
     <Box display={Display.Flex} gap={1} alignItems={AlignItems.center}>
@@ -168,6 +202,7 @@ const CrossChainSwapTxDetails = () => {
       {srcNetworkName}
     </Box>
   );
+
   const destNetworkIconName = (
     <Box display={Display.Flex} gap={1} alignItems={AlignItems.center}>
       {destNetwork && (
@@ -194,7 +229,11 @@ const CrossChainSwapTxDetails = () => {
           />
         }
       >
-        {t('bridge')} details
+        {t(
+          srcChainTxMeta?.type === TransactionType.bridge
+            ? 'bridgeDetailsTitle'
+            : 'swapDetailsTitle',
+        )}
       </Header>
       <Content className="bridge-transaction-details__content">
         <Box
@@ -270,28 +309,70 @@ const CrossChainSwapTxDetails = () => {
               value={
                 <Text
                   textTransform={TextTransform.Capitalize}
-                  color={status ? StatusToColorMap[status] : undefined}
+                  color={status ? STATUS_TO_COLOR_MAP[status] : undefined}
                 >
                   {status?.toLowerCase()}
                 </Text>
               }
             />
-            <TransactionDetailRow
-              title={t('bridgeTxDetailsBridging')}
-              value={
-                <Box
-                  display={Display.Flex}
-                  gap={1}
-                  alignItems={AlignItems.center}
-                  flexWrap={FlexWrap.Wrap}
-                  justifyContent={JustifyContent.flexEnd}
-                >
-                  {srcNetworkIconName}
-                  <Icon name={IconName.Arrow2Right} size={IconSize.Sm} />
-                  {destNetworkIconName}
-                </Box>
-              }
-            />
+            {srcChainTxMeta?.type === TransactionType.bridge && (
+              <TransactionDetailRow
+                title={t(
+                  status === StatusTypes.COMPLETE
+                    ? 'bridgeTxDetailsBridged'
+                    : 'bridgeTxDetailsBridging',
+                )}
+                value={
+                  <Box
+                    display={Display.Flex}
+                    gap={1}
+                    alignItems={AlignItems.center}
+                    flexWrap={FlexWrap.Wrap}
+                    justifyContent={JustifyContent.flexEnd}
+                  >
+                    {srcNetworkIconName}
+                    <Icon name={IconName.Arrow2Right} size={IconSize.Sm} />
+                    {destNetworkIconName}
+                  </Box>
+                }
+              />
+            )}
+            {srcChainTxMeta?.type === TransactionType.swap && (
+              <TransactionDetailRow
+                title={t(
+                  srcChainTxMeta?.status === TransactionStatus.confirmed
+                    ? 'bridgeTxDetailsSwapped'
+                    : 'bridgeTxDetailsSwapping',
+                )}
+                value={
+                  <Box
+                    display={Display.Flex}
+                    gap={1}
+                    alignItems={AlignItems.center}
+                    flexWrap={FlexWrap.Wrap}
+                    justifyContent={JustifyContent.flexEnd}
+                  >
+                    {bridgeHistoryItem && (
+                      <AvatarToken
+                        size={AvatarTokenSize.Xs}
+                        src={bridgeHistoryItem?.quote.srcAsset.iconUrl}
+                        name={bridgeHistoryItem?.quote.srcAsset.symbol}
+                      />
+                    )}
+                    {bridgeHistoryItem?.quote.srcAsset.symbol}
+                    <Icon name={IconName.Arrow2Right} size={IconSize.Sm} />
+                    {bridgeHistoryItem && (
+                      <AvatarToken
+                        size={AvatarTokenSize.Xs}
+                        src={bridgeHistoryItem?.quote.destAsset.iconUrl}
+                        name={bridgeHistoryItem?.quote.destAsset.symbol}
+                      />
+                    )}
+                    {bridgeHistoryItem?.quote.destAsset.symbol}
+                  </Box>
+                }
+              />
+            )}
             <TransactionDetailRow
               title={t('bridgeTxDetailsTimestamp')}
               value={t('bridgeTxDetailsTimestampValue', [
@@ -320,44 +401,49 @@ const CrossChainSwapTxDetails = () => {
                   justifyContent={JustifyContent.flexEnd}
                 >
                   {t('bridgeTxDetailsTokenAmountOnChain', [
-                    bridgeAmountSent,
-                    bridgeHistoryItem?.quote.srcAsset.symbol,
+                    bridgeAmountSent ?? '',
+                    bridgeHistoryItem?.quote.srcAsset.symbol ?? '',
                   ])}
                   {srcNetworkIconName}
                 </Box>
               }
             />
-            {bridgeAmountReceived &&
-              bridgeHistoryItem?.quote.destAsset.symbol && (
-                <TransactionDetailRow
-                  title={t('bridgeTxDetailsYouReceived')}
-                  value={
-                    <Box
-                      display={Display.Flex}
-                      gap={1}
-                      alignItems={AlignItems.center}
-                      flexWrap={FlexWrap.Wrap}
-                      justifyContent={JustifyContent.flexEnd}
-                    >
-                      {t('bridgeTxDetailsTokenAmountOnChain', [
-                        bridgeAmountReceived,
-                        bridgeHistoryItem?.quote.destAsset.symbol,
-                      ])}
-                      {destNetworkIconName}
-                    </Box>
-                  }
-                />
-              )}
+            {amountReceived && bridgeHistoryItem?.quote.destAsset.symbol && (
+              <TransactionDetailRow
+                title={t('bridgeTxDetailsYouReceived')}
+                value={
+                  <Box
+                    display={Display.Flex}
+                    gap={1}
+                    alignItems={AlignItems.center}
+                    flexWrap={FlexWrap.Wrap}
+                    justifyContent={JustifyContent.flexEnd}
+                  >
+                    {t('bridgeTxDetailsTokenAmountOnChain', [
+                      amountReceived,
+                      bridgeHistoryItem?.quote.destAsset.symbol,
+                    ])}
+                    {destNetworkIconName}
+                  </Box>
+                }
+              />
+            )}
             <TransactionDetailRow
               title={t('bridgeTxDetailsTotalGasFee')}
               value={
-                <UserPreferencedCurrencyDisplay
-                  currency={data?.nativeCurrency}
-                  denomination={EtherDenomination.ETH}
-                  numberOfDecimals={6}
-                  value={data?.hexGasTotal}
-                  type={PRIMARY}
-                />
+                <>
+                  {data?.hexGasTotal &&
+                    gasCurrency?.decimals &&
+                    gasCurrency?.symbol &&
+                    formatTokenAmount(
+                      locale,
+                      new Numeric(data.hexGasTotal, 16)
+                        .toBase(10)
+                        .shiftedBy(gasCurrency.decimals ?? 0)
+                        .toString(),
+                      gasCurrency?.symbol,
+                    )}
+                </>
               }
             />
           </Box>

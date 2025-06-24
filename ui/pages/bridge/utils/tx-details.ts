@@ -56,11 +56,9 @@ export const getBlockExplorerUrl = (chainInfo?: ChainInfo, txHash?: string) => {
  * @returns A string representing the bridge amount in decimal form
  */
 export const getBridgeAmountSentFormatted = ({
-  locale,
   bridgeHistoryItem,
   txMeta,
 }: {
-  locale: string;
   bridgeHistoryItem?: BridgeHistoryItem;
   txMeta?: TransactionMeta;
 }) => {
@@ -68,21 +66,12 @@ export const getBridgeAmountSentFormatted = ({
     return undefined;
   }
 
-  const sentAmount =
-    txMeta.swapMetaData?.token_from_amount ??
-    txMeta.swapTokenValue ??
-    bridgeHistoryItem?.pricingData?.amountSent;
-  const srcAssetDecimals =
-    txMeta.swapMetaData?.token_from_decimals ??
-    txMeta.sourceTokenDecimals ??
-    bridgeHistoryItem?.quote.srcAsset.decimals;
+  const sentAmount = bridgeHistoryItem?.pricingData?.amountSent;
+  const srcAssetDecimals = bridgeHistoryItem?.quote.srcAsset.decimals;
   if (!sentAmount || !srcAssetDecimals) {
     return undefined;
   }
-  return formatAmount(
-    locale,
-    new BigNumber(sentAmount).dividedBy(10 ** srcAssetDecimals),
-  );
+  return sentAmount;
 };
 
 export const getBridgeAmountReceivedFormatted = ({
@@ -130,12 +119,10 @@ export const getBridgeAmountReceivedFormatted = ({
 export const getIsDelayed = (
   status: StatusTypes,
   bridgeHistoryItem?: BridgeHistoryItem,
-  type?: TransactionType,
 ) => {
   const tenMinutesInMs = 10 * MINUTE;
   return Boolean(
-    type === TransactionType.bridge &&
-      status === StatusTypes.PENDING &&
+    status === StatusTypes.PENDING &&
       bridgeHistoryItem?.startTime &&
       Date.now() >
         bridgeHistoryItem.startTime +
@@ -144,7 +131,7 @@ export const getIsDelayed = (
   );
 };
 
-export const BRIDGE_STATUS_TO_COLOR_MAP: Record<
+export const STATUS_TO_COLOR_MAP: Record<
   StatusTypes | TransactionStatus,
   TextColor
 > = {
