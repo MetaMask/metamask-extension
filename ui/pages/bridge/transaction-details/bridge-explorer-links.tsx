@@ -32,25 +32,6 @@ const getBlockExplorerName = (
   return blockExplorerUrl.split('/')[2];
 };
 
-export const getBlockExplorerUrl = (
-  networkConfiguration: NetworkConfiguration | undefined,
-  txHash: string | undefined,
-) => {
-  if (!networkConfiguration || !txHash) {
-    return undefined;
-  }
-  const index = networkConfiguration.defaultBlockExplorerUrlIndex;
-  if (index === undefined) {
-    return undefined;
-  }
-
-  const rootUrl = networkConfiguration.blockExplorerUrls[index]?.replace(
-    /\/$/u,
-    '',
-  );
-  return `${rootUrl}/tx/${txHash}`;
-};
-
 const METRICS_LOCATION = 'Activity Tab';
 
 type ExplorerLinksProps = {
