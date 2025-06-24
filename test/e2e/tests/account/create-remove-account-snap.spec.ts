@@ -38,6 +38,7 @@ describe('Create and remove Snap Account', function (this: Suite) {
         // Remove the snap and check snap is successfully removed
         await snapListPage.removeSnapByName('MetaMask Simple Snap Keyring');
         await snapListPage.check_noSnapInstalledMessageIsDisplayed();
+        await snapListPage.clickBackButton();
 
         // Assert that the snap account is removed from the account list
         await headerNavbar.openAccountMenu();

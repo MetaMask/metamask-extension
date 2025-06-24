@@ -436,6 +436,7 @@ async function withFixtures(options, testSuite) {
 
 const WINDOW_TITLES = Object.freeze({
   ExtensionInFullScreenView: 'MetaMask',
+  ExtensionUpdating: 'MetaMask Updating',
   InstalledExtensions: 'Extensions',
   Dialog: 'MetaMask Dialog',
   Phishing: 'MetaMask Phishing Detection',
@@ -481,6 +482,14 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
   return contract
     ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
     : await driver.openNewPage(dappURL);
+};
+const openPopupWithActiveTabOrigin = async (driver, origin = DAPP_URL) => {
+  await driver.openNewPage(
+    `${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${origin}`,
+  );
+
+  // Resize the popup window after it's opened
+  await driver.driver.manage().window().setRect({ width: 400, height: 600 });
 };
 
 const openDappConnectionsPage = async (driver) => {
@@ -932,6 +941,7 @@ module.exports = {
   withFixtures,
   createDownloadFolder,
   openDapp,
+  openPopupWithActiveTabOrigin,
   openDappConnectionsPage,
   createDappTransaction,
   switchToOrOpenDapp,
