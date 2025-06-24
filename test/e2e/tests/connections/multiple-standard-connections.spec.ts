@@ -24,13 +24,14 @@ const SOLANA_CAIP_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 const SOLANA_ACCOUNT_ONE = `${SOLANA_CAIP_CHAIN_ID}:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer`;
 
 const SOLANA_PERMISSIONS = {
+  isMultichainOrigin: true,
+  sessionProperties: {},
   requiredScopes: {},
   optionalScopes: {
     [SOLANA_CAIP_CHAIN_ID]: {
       accounts: [SOLANA_ACCOUNT_ONE],
     },
   },
-  isMultichainOrigin: true,
 };
 
 /**
@@ -89,6 +90,7 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await testDapp.openTestDappPage();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
         await testDapp.check_pageIsLoaded();
 
         await testDapp.check_connectedAccounts(EVM_ACCOUNT_TWO);
@@ -204,7 +206,7 @@ describe('Multiple Standard Dapp Connections', function () {
 
         const sitePermissionPage = await getPermissionsPageForHost(
           driver,
-          DAPP_HOST_ADDRESS.toLowerCase(),
+          DAPP_HOST_ADDRESS,
         );
 
         await sitePermissionPage.check_connectedAccountsNumber(3);
@@ -229,8 +231,6 @@ describe('Multiple Standard Dapp Connections', function () {
         await testDapp.openTestDappPage();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.check_pageIsLoaded();
-        await testDapp.clickConnectAccountButton();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await connectToDapp(driver);
 
@@ -240,7 +240,7 @@ describe('Multiple Standard Dapp Connections', function () {
 
         const sitePermissionPage = await getPermissionsPageForHost(
           driver,
-          DAPP_HOST_ADDRESS.toLowerCase(),
+          DAPP_HOST_ADDRESS,
         );
 
         await sitePermissionPage.check_connectedAccountsNumber(2);
@@ -304,7 +304,7 @@ describe('Multiple Standard Dapp Connections', function () {
 
         const sitePermissionPage = await getPermissionsPageForHost(
           driver,
-          DAPP_HOST_ADDRESS.toLowerCase(),
+          DAPP_HOST_ADDRESS,
         );
 
         await sitePermissionPage.check_connectedAccountsNumber(2);
