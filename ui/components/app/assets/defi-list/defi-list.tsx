@@ -111,6 +111,7 @@ export default function DefiList({ onClick }: DefiListProps) {
     networkFilter,
     selectedAccount,
     tokenSortConfig,
+    enabledNetworksByNamespace,
   ]);
 
   if (sortedFilteredDefi === undefined) {
