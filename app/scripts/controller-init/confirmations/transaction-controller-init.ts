@@ -19,7 +19,7 @@ import {
   SmartTransactionHookMessenger,
   submitSmartTransactionHook,
   submitBatchSmartTransactionHook,
-} from '../../lib/transaction/smart-transactions';
+} from '../../lib/smart-transaction/smart-transactions';
 import { getTransactionById } from '../../lib/transaction/util';
 import { trace } from '../../../../shared/lib/trace';
 
