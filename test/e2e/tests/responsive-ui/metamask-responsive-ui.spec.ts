@@ -63,7 +63,7 @@ describe('MetaMask Responsive UI', function (this: Suite) {
     );
   });
 
-  it.only('Send Transaction from responsive window', async function () {
+  it('Send Transaction from responsive window', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
