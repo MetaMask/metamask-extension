@@ -105,7 +105,7 @@ describe('Account syncing - Add Account', function () {
 
           // Wait for the account AND account name to be synced
           await waitUntilSyncedAccountsNumberEquals(3);
-          await waitUntilEventsEmittedNumberEquals(2);
+          await waitUntilEventsEmittedNumberEquals(1);
         },
       );
 

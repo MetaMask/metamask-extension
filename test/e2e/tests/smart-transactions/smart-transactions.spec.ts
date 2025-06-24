@@ -28,10 +28,14 @@ async function withFixturesForSmartTransactions(
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
         .withNetworkControllerOnMainnet()
+        .withEnabledNetworks({
+          '0x1': true,
+        })
         .build(),
       title,
       localNodeOptions: {
         hardfork: 'london',
+        chainId: '1',
       },
       testSpecificMock,
       dapp: true,
@@ -70,7 +74,9 @@ const waitForTransactionToComplete = async (
 };
 
 describe('Smart Transactions', function () {
-  it('Swap', async function () {
+  // Skipped as this will be supported in the new swap flow in the future
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('Swap', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
