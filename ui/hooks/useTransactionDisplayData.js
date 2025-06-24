@@ -319,7 +319,7 @@ export function useTransactionDisplayData(transactionGroup) {
     recipientAddress = initialTransaction.swapAndSendRecipient;
 
     category = TransactionGroupCategory.swapAndSend;
-    title = t('sendTokenAsToken', [
+    title = t('sentTokenAsToken', [
       initialTransaction.sourceTokenSymbol,
       initialTransaction.destinationTokenSymbol,
     ]);
@@ -388,7 +388,7 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.incoming) {
-    category = TransactionGroupCategory.received;
+    category = TransactionGroupCategory.receive;
     title = t('received');
     prefix = '';
     subtitle = t('fromAddress', [shortenAddress(senderAddress)]);
@@ -396,19 +396,19 @@ export function useTransactionDisplayData(transactionGroup) {
     type === TransactionType.tokenMethodTransferFrom ||
     type === TransactionType.tokenMethodTransfer
   ) {
-    category = TransactionGroupCategory.sent;
+    category = TransactionGroupCategory.send;
     title = t('sendSpecifiedTokens', [
       token?.symbol || nft?.name || t('token'),
     ]);
     recipientAddress = getTokenAddressParam(tokenData);
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TransactionType.tokenMethodSafeTransferFrom) {
-    category = TransactionGroupCategory.sent;
+    category = TransactionGroupCategory.send;
     title = t('safeTransferFrom');
     recipientAddress = getTokenAddressParam(tokenData);
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TransactionType.simpleSend) {
-    category = TransactionGroupCategory.sent;
+    category = TransactionGroupCategory.send;
     title = t('sent');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TransactionType.bridgeApproval) {
@@ -419,7 +419,7 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitleContainsOrigin = true;
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
   } else if (type === TransactionType.bridge) {
-    title = destChainName ? t('bridgeToChain', [destChainName]) : t('bridge');
+    title = destChainName ? t('bridgedToChain', [destChainName]) : t('bridged');
     category = bridgeTokenDisplayData.category;
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
     primaryDisplayValue = formatAmount(

@@ -16,8 +16,8 @@ import {
 const ICON_MAP = {
   [TransactionGroupCategory.approval]: IconName.Check,
   [TransactionGroupCategory.interaction]: IconName.ProgrammingArrows,
-  [TransactionGroupCategory.received]: IconName.Received,
-  [TransactionGroupCategory.sent]: IconName.Arrow2UpRight,
+  [TransactionGroupCategory.receive]: IconName.Received,
+  [TransactionGroupCategory.send]: IconName.Arrow2UpRight,
   [TransactionGroupCategory.signatureRequest]: IconName.SecurityTick,
   [TransactionGroupCategory.swap]: IconName.SwapHorizontal,
   [TransactionGroupCategory.swapAndSend]: IconName.Arrow2UpRight,
@@ -94,8 +94,8 @@ TransactionIcon.propTypes = {
   category: PropTypes.oneOf([
     TransactionGroupCategory.approval,
     TransactionGroupCategory.interaction,
-    TransactionGroupCategory.received,
-    TransactionGroupCategory.sent,
+    TransactionGroupCategory.receive,
+    TransactionGroupCategory.send,
     TransactionGroupCategory.signatureRequest,
     TransactionGroupCategory.swap,
     TransactionGroupCategory.swapAndSend,
