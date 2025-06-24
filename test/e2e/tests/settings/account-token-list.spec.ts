@@ -66,6 +66,7 @@ describe('Settings', function () {
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.SEPOLIA]: true,
+              [CHAIN_IDS.LOCALHOST]: true,
             },
           })
           .build(),
