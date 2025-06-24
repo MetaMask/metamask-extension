@@ -2735,9 +2735,7 @@ describe('Actions', () => {
     it('calls syncContactsWithUserStorage in the background', async () => {
       const store = mockStore();
 
-      const syncContactsWithUserStorageStub = sinon
-        .stub()
-        .callsFake((cb) => cb());
+      const syncContactsWithUserStorageStub = sinon.stub().resolves();
 
       background.getApi.returns({
         syncContactsWithUserStorage: syncContactsWithUserStorageStub,
