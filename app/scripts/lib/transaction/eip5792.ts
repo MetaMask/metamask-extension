@@ -7,14 +7,16 @@ import {
   IsAtomicBatchSupportedResult,
   IsAtomicBatchSupportedResultEntry,
   Log,
+  SecurityAlertResponse,
   TransactionController,
   TransactionControllerGetStateAction,
+  TransactionEnvelopeType,
   TransactionMeta,
   TransactionReceipt,
   TransactionStatus,
   ValidateSecurityRequest,
 } from '@metamask/transaction-controller';
-import { Hex, JsonRpcRequest } from '@metamask/utils';
+import { bytesToHex, Hex, JsonRpcRequest } from '@metamask/utils';
 import { Messenger } from '@metamask/base-controller';
 import {
   GetCallsStatusCode,
@@ -28,6 +30,7 @@ import {
   AccountsControllerGetStateAction,
 } from '@metamask/accounts-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { parse, v4 } from 'uuid';
 
 import { EIP5792ErrorCode } from '../../../../shared/constants/transaction';
 import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
@@ -52,9 +55,21 @@ export enum AtomicCapabilityStatus {
 
 const VERSION = '2.0.0';
 
+/**
+ * Generate a transaction batch ID.
+ *
+ * @returns  A unique batch ID as a hexadecimal string.
+ */
+function generateBatchId(): Hex {
+  const idString = v4();
+  const idBytes = new Uint8Array(parse(idString));
+  return bytesToHex(idBytes);
+}
+
 export async function processSendCalls(
   hooks: {
     addTransactionBatch: TransactionController['addTransactionBatch'];
+    addTransaction: TransactionController['addTransaction'];
     getDismissSmartAccountSuggestionEnabled: () => boolean;
     isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
     validateSecurity: (
@@ -69,6 +84,7 @@ export async function processSendCalls(
 ): Promise<SendCallsResult> {
   const {
     addTransactionBatch,
+    addTransaction,
     getDismissSmartAccountSuggestionEnabled,
     isAtomicBatchSupported,
     validateSecurity: validateSecurityHook,
@@ -109,16 +125,39 @@ export async function processSendCalls(
   const securityAlertId = generateSecurityAlertId();
   const validateSecurity = validateSecurityHook.bind(null, securityAlertId);
 
-  const { batchId: id } = await addTransactionBatch({
-    from,
-    networkClientId,
-    origin,
-    securityAlertId,
-    transactions,
-    validateSecurity,
-  });
+  let batchId: Hex;
+  if (Object.keys(transactions).length === 1) {
+    const trxnParams = {
+      from,
+      ...transactions[0].params,
+      type: TransactionEnvelopeType.feeMarket,
+    };
+    const securityRequest: ValidateSecurityRequest = {
+      method: 'eth_sendTransaction',
+      params: [trxnParams],
+      origin,
+    };
+    validateSecurity(securityRequest, dappChainId);
+    batchId = generateBatchId();
+    await addTransaction(trxnParams, {
+      networkClientId,
+      origin,
+      securityAlertResponse: { securityAlertId } as SecurityAlertResponse,
+      batchId,
+    });
+  } else {
+    const result = await addTransactionBatch({
+      from,
+      networkClientId,
+      origin,
+      securityAlertId,
+      transactions,
+      validateSecurity,
+    });
+    batchId = result.batchId;
+  }
 
-  return { id };
+  return { id: batchId };
 }
 
 export function getCallsStatus(
