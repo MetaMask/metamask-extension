@@ -31,6 +31,16 @@ export const selectBridgeHistoryForAccount = createSelector(
   },
 );
 
+/**
+ * Returns a bridge history item for a given tx meta id
+ */
+export const selectBridgeHistoryItemForTxMetaId = createSelector(
+  [selectBridgeHistoryForAccount, (_, txMetaId?: string) => txMetaId],
+  (bridgeHistory, txMetaId) => {
+    return txMetaId ? bridgeHistory[txMetaId] : undefined;
+  },
+);
+
 // eslint-disable-next-line jsdoc/require-param
 /**
  * Returns a bridge history item for a given approval tx id

@@ -21,7 +21,7 @@ import {
   Text,
 } from '../../../components/component-library';
 import { Content, Header } from '../../../components/multichain/pages/page';
-import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
+import { selectBridgeHistoryItemForTxMetaId } from '../../../ducks/bridge-status/selectors';
 import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
 import { getTransactionBreakdownData } from '../../../components/app/transaction-breakdown/transaction-breakdown-utils';
 import type { MetaMaskReduxState } from '../../../store/store';
@@ -79,7 +79,6 @@ const CrossChainSwapTxDetails = () => {
   const history = useHistory();
   const location = useLocation();
   const { srcTxMetaId } = useParams<{ srcTxMetaId: string }>();
-  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
   const selectedAddressTxList = useSelector(
     selectedAddressTxListSelectorAllChain,
   ) as TransactionMeta[];
@@ -92,9 +91,12 @@ const CrossChainSwapTxDetails = () => {
     (tx) => tx.id === srcTxMetaId,
   );
   // Even if user is still on /tx-details/txMetaId, we want to be able to show the bridge history item
-  const bridgeHistoryItem = srcTxMetaId
-    ? bridgeHistory[srcTxMetaId]
-    : undefined;
+  const bridgeHistoryItem = useSelector((state) =>
+    selectBridgeHistoryItemForTxMetaId(state, srcTxMetaId),
+  );
+  const approvalTxMeta = selectedAddressTxList.find(
+    (tx) => tx.id === bridgeHistoryItem?.approvalTxId,
+  );
 
   const { srcNetwork, destNetwork } = useBridgeChainInfo({
     bridgeHistoryItem,
