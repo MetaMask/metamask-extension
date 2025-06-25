@@ -1,4 +1,4 @@
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { withFixtures, WINDOW_TITLES, regularDelayMs } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { mockCronjobSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
@@ -30,6 +30,8 @@ describe('Test Snap Cronjob', function () {
           'connectCronJobsButton',
           'Reconnect to Cronjobs Snap',
         );
+
+        await driver.delay(regularDelayMs);
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
