@@ -31,7 +31,7 @@ function getOAuthLoginEnvs(): {
 }
 
 function getOAuthConfig(): OAuthConfig {
-  const config = OAUTH_CONFIG.main;
+  const config = OAUTH_CONFIG.development;
 
   return {
     authServerUrl: config.AUTH_SERVER_URL,

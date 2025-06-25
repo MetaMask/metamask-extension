@@ -7,15 +7,10 @@ import { EncryptionKey, EncryptionResult } from '@metamask/browser-passworder';
 import { ControllerInitFunction } from '../types';
 import { encryptorFactory } from '../../lib/encryptor-factory';
 import { ENVIRONMENT } from '../../../../development/build/constants';
+import { getIsDevOrTestEnv } from '../../../../shared/modules/environment';
 
 const loadWeb3AuthNetwork = (): Web3AuthNetwork => {
-  const { METAMASK_ENVIRONMENT } = process.env;
-  const environment = METAMASK_ENVIRONMENT || ENVIRONMENT.DEVELOPMENT;
-
-  if (
-    environment === ENVIRONMENT.DEVELOPMENT ||
-    environment === ENVIRONMENT.TESTING
-  ) {
+  if (getIsDevOrTestEnv()) {
     return Web3AuthNetwork.Devnet;
   }
   return Web3AuthNetwork.Mainnet;
