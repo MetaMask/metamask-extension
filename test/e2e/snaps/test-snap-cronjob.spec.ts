@@ -32,7 +32,6 @@ describe('Test Snap Cronjob', function () {
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const dialogHandle = await driver.driver.getWindowHandle();
 
         // look for the dialog popup to verify cronjob fired
         await testSnaps.check_messageResultSpan(
@@ -46,8 +45,6 @@ describe('Test Snap Cronjob', function () {
         } catch (error) {
           console.log('Dialog already closed automatically');
         }
-
-        await driver.waitForWindowToClose(dialogHandle);
       },
     );
   });
