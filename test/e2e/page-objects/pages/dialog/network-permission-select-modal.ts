@@ -45,6 +45,32 @@ class NetworkPermissionSelectModal {
   }
 
   /**
+   * Selects a network on the network permission select modal
+   *
+   * @param networkName - The name of the network to select
+   */
+  async selectNetwork(networkName: string): Promise<void> {
+    console.log(
+      `Selecting network ${networkName} on network permission select modal`,
+    );
+    const networkItems = await this.driver.findElements(this.networkListItems);
+    for (const networkItem of networkItems) {
+      const networkNameDiv = await networkItem.findElement(
+        By.css('div[data-testid]'),
+      );
+      const network = await networkNameDiv.getAttribute('data-testid');
+      if (network === networkName) {
+        const checkbox = await networkItem.findElement(By.css(this.checkBox));
+        const isChecked = await checkbox.isSelected();
+        if (!isChecked) {
+          await checkbox.click();
+        }
+        break;
+      }
+    }
+  }
+
+  /**
    * Update Multichain network edit form so that only matching networks are selected.
    *
    * @param selectedNetworkNames - Array of network names that should be selected

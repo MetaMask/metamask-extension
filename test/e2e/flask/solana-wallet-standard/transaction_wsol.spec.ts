@@ -21,6 +21,7 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.check_pageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp, {
             includeDevnet: true,
           });
@@ -37,7 +38,8 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
-          await testDapp.switchTo();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
+          await testDapp.check_pageIsLoaded();
 
           // Assert that the transactions were signed
           await driver.delay(largeDelayMs);
@@ -57,7 +59,8 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
-          await testDapp.switchTo();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
+          await testDapp.check_pageIsLoaded();
 
           // Assert that transaction hashes were received
           await driver.delay(largeDelayMs);
