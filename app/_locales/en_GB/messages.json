@@ -5351,6 +5351,12 @@
   "smartAccountSplashTitle": {
     "message": "Use smart account?"
   },
+  "smartAccountUpdateSuccessMessage": {
+    "message": "Your account will be updated to smart account with your next transaction."
+  },
+  "smartAccountUpdateSuccessTitle": {
+    "message": "Successful!"
+  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."
   },

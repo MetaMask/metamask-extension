@@ -370,7 +370,7 @@ export function parseApprovalTransactionData(data: Hex):
     ? new BigNumber(rawAmountOrTokenId?.toString())
     : undefined;
 
-  const spender = args?._spender;
+  const spender = args?.spender ?? args?._spender ?? args?.[0];
 
   const isApproveAll = name === 'setApprovalForAll' && args?._approved === true;
   const isRevokeAll = name === 'setApprovalForAll' && args?._approved === false;

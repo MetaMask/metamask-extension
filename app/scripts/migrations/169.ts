@@ -1,5 +1,5 @@
-import { Hex } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
+import { Hex } from '@metamask/utils';
 
 type VersionedData = {
   meta: { version: number };

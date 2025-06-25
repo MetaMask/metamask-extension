@@ -1,11 +1,9 @@
 import React, { ReactElement, useCallback, useState } from 'react';
 import { Hex } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
-import ZENDESK_URLS from '../../../../../../helpers/constants/zendesk-url';
+import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -19,40 +17,26 @@ import {
   Icon,
   IconName,
   Text,
-} from '../../../../../../components/component-library';
+} from '../../../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
   BorderColor,
-  BorderRadius,
   Display,
   FlexDirection,
   FontWeight,
   JustifyContent,
   TextColor,
   TextVariant,
-} from '../../../../../../helpers/constants/design-system';
-import {
-  setSmartAccountOptIn,
-  setSmartAccountOptInForAccounts,
-} from '../../../../../../store/actions';
-import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import {
-  AccountsState,
-  getInternalAccounts,
-  getMemoizedInternalAccountByAddress,
-  getUseBlockie,
-} from '../../../../../../selectors';
-import { isHardwareKeyring } from '../../../../../../helpers/utils/hardware';
-import IconButton from '../../../../../../components/ui/icon-button/icon-button-round';
-import {
-  getUseSmartAccount,
-  getSmartAccountOptInForAccounts,
-} from '../../../../selectors/preferences';
-import { useConfirmContext } from '../../../../context/confirm';
-import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
-import { AccountSelection } from '../../account-selection';
+} from '../../../../../helpers/constants/design-system';
+import { setSmartAccountOptInForAccounts } from '../../../../../store/actions';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { getInternalAccounts, getUseBlockie } from '../../../../../selectors';
+import IconButton from '../../../../../components/ui/icon-button/icon-button-round';
+import { getSmartAccountOptInForAccounts } from '../../../selectors/preferences';
+import { AccountSelection } from '../account-selection';
+import { SmartAccountUpdateSuccess } from './smart-account-update-success';
 
 const ListItem = ({
   imgSrc,
@@ -88,18 +72,20 @@ const ListItem = ({
   </Box>
 );
 
-export function SmartAccountUpdate() {
+export function SmartAccountUpdate({
+  wrapped = false,
+  handleRejectUpgrade,
+}: {
+  wrapped?: boolean;
+  handleRejectUpgrade?: () => void;
+}) {
   const [acknowledged, setAcknowledged] = useState(false);
   const [accountSelectionVisible, setAccountSelectionVisible] = useState(false);
   const t = useI18nContext();
-  const dispatch = useDispatch();
   const useBlockie = useSelector(getUseBlockie);
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { handleRejectUpgrade } = useSmartAccountActions();
   const smartAccountOptInForAccounts: Hex[] = useSelector(
     getSmartAccountOptInForAccounts,
   );
-  const smartAccountOptIn = useSelector(getUseSmartAccount);
   const accounts = useSelector(getInternalAccounts);
   const evmAccounts = accounts.filter((acc) => isEvmAccountType(acc.type));
   const [selectedAccounts, setSelectedAccounts] = useState(() => {
@@ -108,18 +94,12 @@ export function SmartAccountUpdate() {
     }
     return (evmAccounts ?? []).map((acc) => acc.address as Hex);
   });
-  const { txParams, origin } = currentConfirmation ?? {};
-  const { from } = txParams;
-  const account = useSelector((state: AccountsState) =>
-    getMemoizedInternalAccountByAddress(state as AccountsState, from),
-  );
-  const keyringType = account?.metadata?.keyring?.type;
 
   const acknowledgeSmartAccountUpgrade = useCallback(() => {
     setSmartAccountOptInForAccounts(selectedAccounts);
     setAcknowledged(true);
-    dispatch(setSmartAccountOptIn(true));
-  }, [from, setAcknowledged, selectedAccounts]);
+    setAccountSelectionVisible(false);
+  }, [setAcknowledged, selectedAccounts]);
 
   const showAccountSelectionVisible = useCallback(() => {
     setAccountSelectionVisible(true);
@@ -129,13 +109,7 @@ export function SmartAccountUpdate() {
     setAccountSelectionVisible(false);
   }, [setAccountSelectionVisible]);
 
-  if (
-    !currentConfirmation ||
-    acknowledged ||
-    origin === ORIGIN_METAMASK ||
-    smartAccountOptInForAccounts?.includes(from.toLowerCase() as Hex) ||
-    (smartAccountOptIn && !isHardwareKeyring(keyringType))
-  ) {
+  if (acknowledged && wrapped) {
     return null;
   }
 
@@ -144,26 +118,38 @@ export function SmartAccountUpdate() {
       display={Display.Flex}
       backgroundColor={BackgroundColor.overlayDefault}
       color={TextColor.primaryDefault}
-      className="smart-account-update__wrapper"
+      className={
+        wrapped
+          ? 'smart-account-update__container-wrapped'
+          : 'smart-account-update__container'
+      }
     >
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
-        borderRadius={BorderRadius.MD}
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.spaceBetween}
-        margin={4}
         padding={4}
-        className="smart-account-update__inner"
+        className={
+          wrapped
+            ? 'smart-account-update__inner-wrapped'
+            : 'smart-account-update__inner'
+        }
       >
-        {accountSelectionVisible ? (
+        {accountSelectionVisible && (
           <AccountSelection
             closeAccountSelection={hideAccountSelectionVisible}
+            onUpdate={acknowledgeSmartAccountUpgrade}
             selectedAccounts={selectedAccounts}
             setSelectedAccounts={setSelectedAccounts}
+            wrapped={wrapped}
           />
-        ) : (
+        )}
+        {!accountSelectionVisible && acknowledged && (
+          <SmartAccountUpdateSuccess />
+        )}
+        {!accountSelectionVisible && !acknowledged && (
           <>
             <Box
               display={Display.Flex}
@@ -260,20 +246,23 @@ export function SmartAccountUpdate() {
                 </>
               }
             />
+            {wrapped && (
+              <Button
+                variant={ButtonVariant.Secondary}
+                size={ButtonSize.Lg}
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onClick={handleRejectUpgrade}
+                width={BlockSize.Full}
+              >
+                {t('smartAccountReject')}
+              </Button>
+            )}
             <Button
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Lg}
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onClick={handleRejectUpgrade}
-              width={BlockSize.Full}
-            >
-              {t('smartAccountReject')}
-            </Button>
-            <Button
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
+              marginTop={wrapped ? 0 : 4}
               onClick={acknowledgeSmartAccountUpgrade}
+              size={ButtonSize.Lg}
+              variant={ButtonVariant.Primary}
               width={BlockSize.Full}
             >
               {t('smartAccountAccept')}
