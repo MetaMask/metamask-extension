@@ -35,11 +35,12 @@ import {
 import { getMetaMaskHdKeyrings } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getWalletsWithAccounts } from '../../../selectors/multichain-accounts/account-tree';
-import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import WalletDetailsAccountItem from '../../../components/multichain/multichain-accounts/wallet-details-account-item/wallet-details-account-item';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import SRPQuiz from '../../../components/app/srp-quiz-modal';
 import { setAccountDetailsAddress } from '../../../store/actions';
+import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
 
 type AccountBalance = {
   [key: string]: string | number;
@@ -52,7 +53,7 @@ const WalletDetails = () => {
   const { id } = useParams();
   const decodedId = decodeURIComponent(id as string);
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
-  const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
+  const seedPhraseBackedUp = useSelector(getIsPrimarySeedPhraseBackedUp);
   const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   const wallet = walletsWithAccounts[decodedId as AccountWalletId];
@@ -115,6 +116,7 @@ const WalletDetails = () => {
 
   const isEntropyWallet = wallet.id.includes('entropy');
   const isFirstHdKeyring = hdKeyrings[0]?.metadata?.id === keyringId;
+  console.log('seedPhraseBackedUp', seedPhraseBackedUp);
   const shouldShowBackupReminder = !seedPhraseBackedUp && isFirstHdKeyring;
 
   const groupKeys = Object.keys(wallet.groups || {});
@@ -207,7 +209,14 @@ const WalletDetails = () => {
               textAlign={TextAlign.Left}
               {...rowStylesProps}
               as="button"
-              onClick={() => setSrpQuizModalVisible(true)}
+              onClick={() => {
+                if (shouldShowBackupReminder) {
+                  const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
+                  history.push(backUpSRPRoute);
+                } else {
+                  setSrpQuizModalVisible(true);
+                }
+              }}
             >
               <Box>
                 <Text

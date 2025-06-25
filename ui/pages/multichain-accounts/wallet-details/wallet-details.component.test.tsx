@@ -35,7 +35,7 @@ jest.mock('../../../selectors', () => ({
 }));
 
 jest.mock('../../../ducks/metamask/metamask', () => ({
-  getSeedPhraseBackedUp: jest.fn(),
+  getIsPrimarySeedPhraseBackedUp: jest.fn(),
 }));
 
 jest.mock('../../../store/actions', () => ({
@@ -100,6 +100,24 @@ jest.mock(
     };
   },
 );
+
+jest.mock('../../../components/app/srp-quiz-modal', () => {
+  return function MockSRPQuiz(props: {
+    keyringId: string;
+    isOpen: boolean;
+    onClose: () => void;
+    closeAfterCompleting: boolean;
+  }) {
+    if (!props.isOpen) {
+      return null;
+    }
+    return (
+      <div data-testid="mock-srp-quiz">
+        <button onClick={props.onClose}>Close SRP Quiz</button>
+      </div>
+    );
+  };
+});
 
 describe('WalletDetails', () => {
   const mockHistory = {
@@ -188,6 +206,43 @@ describe('WalletDetails', () => {
     );
   };
 
+  const setupEntropyWalletTest = (seedPhraseBackedUp: boolean) => {
+    (useParams as jest.Mock).mockReturnValue({
+      id: 'entropy:test-entropy-wallet',
+    });
+
+    const { getWalletsWithAccounts } = jest.requireMock(
+      '../../../selectors/multichain-accounts/account-tree',
+    );
+    const { getMetaMaskHdKeyrings } = jest.requireMock('../../../selectors');
+    const { getIsPrimarySeedPhraseBackedUp } = jest.requireMock(
+      '../../../ducks/metamask/metamask',
+    );
+
+    getWalletsWithAccounts.mockReturnValue({
+      'entropy:test-entropy-wallet': mockEntropyWallet,
+    });
+    getMetaMaskHdKeyrings.mockReturnValue([
+      {
+        type: KeyringTypes.hd,
+        accounts: ['0x123'],
+        metadata: { id: 'test-entropy-wallet', name: 'HD Key Tree' },
+      },
+    ]);
+    getIsPrimarySeedPhraseBackedUp.mockReturnValue(seedPhraseBackedUp);
+
+    return renderComponent();
+  };
+
+  const clickSRPButton = (getByText: (text: string) => HTMLElement) => {
+    const srpButton = getByText('secretRecoveryPhrase').parentElement
+      ?.parentElement;
+    if (!srpButton) {
+      throw new Error('SRP button not found');
+    }
+    fireEvent.click(srpButton);
+  };
+
   beforeEach(() => {
     (useHistory as jest.Mock).mockReturnValue(mockHistory);
     (useParams as jest.Mock).mockReturnValue(mockParams);
@@ -206,7 +261,7 @@ describe('WalletDetails', () => {
       getUseBlockie,
       getHDEntropyIndex,
     } = jest.requireMock('../../../selectors');
-    const { getSeedPhraseBackedUp } = jest.requireMock(
+    const { getIsPrimarySeedPhraseBackedUp } = jest.requireMock(
       '../../../ducks/metamask/metamask',
     );
 
@@ -215,7 +270,7 @@ describe('WalletDetails', () => {
       'test-wallet-id-entropy': mockEntropyWallet,
     });
     getMetaMaskHdKeyrings.mockReturnValue([mockHdKeyring]);
-    getSeedPhraseBackedUp.mockReturnValue(true);
+    getIsPrimarySeedPhraseBackedUp.mockReturnValue(true);
 
     // Mock selectors used by AccountDetails
     getInternalAccountByAddress.mockReturnValue(mockAccount);
@@ -259,7 +314,7 @@ describe('WalletDetails', () => {
       '../../../selectors/multichain-accounts/account-tree',
     );
     const { getMetaMaskHdKeyrings } = jest.requireMock('../../../selectors');
-    const { getSeedPhraseBackedUp } = jest.requireMock(
+    const { getIsPrimarySeedPhraseBackedUp } = jest.requireMock(
       '../../../ducks/metamask/metamask',
     );
 
@@ -267,12 +322,31 @@ describe('WalletDetails', () => {
       'entropy:test-entropy-wallet': mockEntropyWallet,
     });
     getMetaMaskHdKeyrings.mockReturnValue([entropyHdKeyring]);
-    getSeedPhraseBackedUp.mockReturnValue(false);
+    getIsPrimarySeedPhraseBackedUp.mockReturnValue(false);
 
     const { getByText } = renderComponent(customState);
 
     // Look for the actual backup text that appears in the component
     expect(getByText('backup')).toBeInTheDocument();
+  });
+
+  it('navigates to backup route when SRP button is clicked and backup reminder is shown', () => {
+    const { getByText } = setupEntropyWalletTest(false);
+
+    clickSRPButton(getByText);
+
+    expect(mockHistory.push).toHaveBeenCalledWith(
+      '/onboarding/review-recovery-phrase/?isFromReminder=true',
+    );
+  });
+
+  it('opens SRP quiz when SRP button is clicked and seed phrase is backed up', () => {
+    const { getByText, getByTestId } = setupEntropyWalletTest(true);
+
+    clickSRPButton(getByText);
+
+    expect(mockHistory.push).not.toHaveBeenCalled();
+    expect(getByTestId('mock-srp-quiz')).toBeInTheDocument();
   });
 
   it('does not show backup reminder when seed phrase is backed up', () => {
