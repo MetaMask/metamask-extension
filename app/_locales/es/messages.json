@@ -3247,18 +3247,6 @@
   "networkName": {
     "message": "Nombre de la red"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Base"
-  },
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
@@ -3268,26 +3256,8 @@
   "networkNameEthereum": {
     "message": "Ethereum"
   },
-  "networkNameGoerli": {
-    "message": "Goerli"
-  },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "Red principal OP"
-  },
-  "networkNamePolygon": {
-    "message": "Polygon"
-  },
   "networkNameSolana": {
     "message": "Solana"
-  },
-  "networkNameTestnet": {
-    "message": "Red de prueba"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "Opciones de red"
@@ -4799,9 +4769,6 @@
     "message": "Enviar $1",
     "description": "Symbol of the specified token"
   },
-  "sendSwapSubmissionWarning": {
-    "message": "Al hacer clic en este botón se iniciará inmediatamente su transacción de canje. Revise los detalles de la transacción antes de continuar."
-  },
   "sendTokenAsToken": {
     "message": "Enviar $1 como $2",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
@@ -5774,9 +5741,6 @@
     "message": "El intercambio de $1 por $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Las tarifas de gas son estimadas y fluctuarán en función del tráfico de la red y la complejidad de las transacciones."
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask no obtiene dinero de las tarifas de gas. Estas tarifas son estimaciones y pueden cambiar según el nivel de tráfico de la red y la complejidad de la transacción. Más información $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -5785,15 +5749,8 @@
     "message": "aquí",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesLearnMore": {
-    "message": "Obtenga más información sobre las tarifas de gas"
-  },
   "swapGasFeesSplit": {
     "message": "Las tarifas de gas en la pantalla anterior se dividen entre estas dos transacciones."
-  },
-  "swapGasFeesSummary": {
-    "message": "Las tarifas de gas se pagan a los mineros de criptomonedas que procesan transacciones en la red $1. MetaMask no se beneficia de las tarifas de gas.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "Esta cotización incorpora las tarifas de gas al ajustar la cantidad de tokens enviada o recibida. Puede recibir ETH en una transacción separada en su lista de actividades."
@@ -5811,10 +5768,6 @@
   "swapIncludesMMFee": {
     "message": "Incluye una tasa de MetaMask del $1%.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "La cotización refleja la tarifa de MetaMask del $1 %",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Incluye una tarifa MetaMask de $1% - $2",

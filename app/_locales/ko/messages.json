@@ -3247,18 +3247,6 @@
   "networkName": {
     "message": "네트워크 이름"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "기본"
-  },
   "networkNameBitcoin": {
     "message": "비트코인"
   },
@@ -3268,26 +3256,8 @@
   "networkNameEthereum": {
     "message": "이더리움"
   },
-  "networkNameGoerli": {
-    "message": "Goerli"
-  },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP 메인넷"
-  },
-  "networkNamePolygon": {
-    "message": "Polygon"
-  },
   "networkNameSolana": {
     "message": "솔라나"
-  },
-  "networkNameTestnet": {
-    "message": "테스트넷"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "네트워크 옵션"
@@ -4799,9 +4769,6 @@
     "message": "$1 보내기",
     "description": "Symbol of the specified token"
   },
-  "sendSwapSubmissionWarning": {
-    "message": "이 버튼을 클릭하면 즉시 스왑 트랜젝션이 시작됩니다. 계속하기 전에 트랜젝션 세부 정보를 검토하세요."
-  },
   "sendTokenAsToken": {
     "message": "$2(으)로 $1 전송하기",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
@@ -5774,9 +5741,6 @@
     "message": "$1을(를) $2(으)로 스왑",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "가스비는 예상치이며 네트워크 트래픽 및 트랜잭션 복잡성에 따라 변동됩니다."
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask는 가스비로 수익을 얻지 않습니다. 이 가스비는 추정치이며 네트워크의 혼잡도와 거래의 복잡성에 따라 변할 수 있습니다. 자세히 알아보기 $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -5785,15 +5749,8 @@
     "message": "여기",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesLearnMore": {
-    "message": "가스비 자세히 알아보기"
-  },
   "swapGasFeesSplit": {
     "message": "이전 화면의 가스비는 이 두 트랜잭션으로 나뉩니다."
-  },
-  "swapGasFeesSummary": {
-    "message": "가스비는 $1 네트워크에서 트랜잭션을 처리하는 암호화폐 채굴자에게 지급됩니다. MetaMask는 가스비로 수익을 창출하지 않습니다.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "이 견적에는 보내거나 받는 토큰 금액을 조정하는 방식으로 가스비가 포함됩니다. 활동 목록에서 별도의 거래로 ETH를 받을 수 있습니다."
@@ -5811,10 +5768,6 @@
   "swapIncludesMMFee": {
     "message": "$1%의 MetaMask 요금이 포함됩니다.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "견적에는 $1%의 MetaMask 수수료가 반영됩니다",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "$1% MetaMask 요금 - $2 포함",

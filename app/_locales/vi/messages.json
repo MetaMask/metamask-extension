@@ -3247,18 +3247,6 @@
   "networkName": {
     "message": "Tên mạng"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Base"
-  },
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
@@ -3268,26 +3256,8 @@
   "networkNameEthereum": {
     "message": "Ethereum"
   },
-  "networkNameGoerli": {
-    "message": "Goerli"
-  },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP Mainnet"
-  },
-  "networkNamePolygon": {
-    "message": "Polygon"
-  },
   "networkNameSolana": {
     "message": "Solana"
-  },
-  "networkNameTestnet": {
-    "message": "Mạng thử nghiệm"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "Tùy chọn mạng"
@@ -4799,9 +4769,6 @@
     "message": "Gửi $1",
     "description": "Symbol of the specified token"
   },
-  "sendSwapSubmissionWarning": {
-    "message": "Bằng cách nhấp vào nút này, giao dịch hoán đổi của bạn sẽ ngay lập tức bắt đầu. Vui lòng xem lại chi tiết giao dịch của bạn trước khi tiếp tục."
-  },
   "sendTokenAsToken": {
     "message": "Gửi $1 dưới dạng $2",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
@@ -5774,9 +5741,6 @@
     "message": "Giao dịch hoán đổi $1 sang $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Phí gas được ước tính và sẽ dao động dựa trên lưu lượng mạng và độ phức tạp của giao dịch."
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask không kiếm tiền từ phí gas. Các khoản phí này là ước tính và có thể thay đổi dựa trên lưu lượng của mạng và độ phức tạp của giao dịch. Tìm hiểu thêm $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -5785,15 +5749,8 @@
     "message": "tại đây",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesLearnMore": {
-    "message": "Tìm hiểu thêm về phí gas"
-  },
   "swapGasFeesSplit": {
     "message": "Phí gas trên màn hình trước được chia đôi giữa hai giao dịch này."
-  },
-  "swapGasFeesSummary": {
-    "message": "Phí gas được trả cho thợ đào tiền điện tử, họ là những người xử lý các giao dịch trên mạng $1. MetaMask không thu lợi nhuận từ phí gas.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "Báo giá này bao gồm phí gas bằng cách điều chỉnh số lượng token được gửi hoặc nhận. Bạn có thể nhận được ETH trong một giao dịch riêng biệt trên danh sách hoạt động của bạn."
@@ -5811,10 +5768,6 @@
   "swapIncludesMMFee": {
     "message": "Bao gồm $1% phí của MetaMask.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "Báo giá thể hiện khoản phí $1% của MetaMask",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Bao gồm $1% phí của MetaMask – $2",

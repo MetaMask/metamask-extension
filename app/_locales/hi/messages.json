@@ -3247,18 +3247,6 @@
   "networkName": {
     "message": "नेटवर्क का नाम"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "बेस"
-  },
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
@@ -3268,26 +3256,8 @@
   "networkNameEthereum": {
     "message": "Ethereum"
   },
-  "networkNameGoerli": {
-    "message": "गोएर्ली"
-  },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP मेननेट (mainnet)"
-  },
-  "networkNamePolygon": {
-    "message": "बहुभुज"
-  },
   "networkNameSolana": {
     "message": "सोलाना"
-  },
-  "networkNameTestnet": {
-    "message": "Testnet"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "नेटवर्क के विकल्प"
@@ -4799,9 +4769,6 @@
     "message": "$1 भेजें",
     "description": "Symbol of the specified token"
   },
-  "sendSwapSubmissionWarning": {
-    "message": "इस बटन पर क्लिक करने से आपका स्वैप ट्रांसेक्शन तुरंत शुरू हो जाएगा। कृपया आगे बढ़ने से पहले अपने ट्रांसेक्शन विवरण की समीक्षा करें।"
-  },
   "sendTokenAsToken": {
     "message": "$1 को $2 के रूप में भेजें",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
@@ -5774,9 +5741,6 @@
     "message": "$1 से $2 का स्वैप",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "गैस फ़ीस का अनुमान लगाया जाता है और नेटवर्क ट्रैफिक और ट्रांसेक्शन की जटिलता के आधार पर इसमें उतार-चढ़ाव आएगा।"
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask गैस फीस से पैसे नहीं कमाता है। ये शुल्क अनुमानित हैं और इस आधार पर बदल सकते हैं कि नेटवर्क कितना व्यस्त है और ट्रांसेक्शन कितना जटिल है। अधिक जानें $1।",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -5785,15 +5749,8 @@
     "message": "यहाँ",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesLearnMore": {
-    "message": "गैस फ़ीस के बारे में और अधिक जानें"
-  },
   "swapGasFeesSplit": {
     "message": "पिछली स्क्रीन पर गैस फ़ीस इन दो ट्रांसेक्शन के बीच विभाजित हैं।"
-  },
-  "swapGasFeesSummary": {
-    "message": "क्रिप्टो माइनरों को गैस फ़ीस का पेमेंट किया जाता है जो $1 नेटवर्क पर ट्रांसेक्शन की प्रक्रिया करते हैं। MetaMask को गैस फ़ीस से लाभ नहीं होता है।",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "यह कोटेशन भेजे गए या प्राप्त टोकन राशि को एडजस्ट करके गैस फीस को शामिल करता है। आप अपनी गतिविधि सूची में एक अलग ट्रांसेक्शन में ETH प्राप्त कर सकते हैं।"
@@ -5811,10 +5768,6 @@
   "swapIncludesMMFee": {
     "message": "$1% MetaMask फ़ीस शामिल है।",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "उद्धरण $1% MetaMask शुल्क दर्शाता है",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "$1% MetaMask फ़ीस शामिल है - $2",
