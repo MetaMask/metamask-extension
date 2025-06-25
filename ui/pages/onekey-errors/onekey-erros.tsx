@@ -1,7 +1,5 @@
 import React, { useMemo } from 'react';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useSelector } from 'react-redux';
-///: END:ONLY_INCLUDE_IF
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { HardwareErrorCode } from '@onekeyfe/hd-shared';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -19,9 +17,7 @@ import {
 } from '../../helpers/constants/design-system';
 
 import { Content, Header, Page } from '../../components/multichain/pages/page';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getTheme } from '../../selectors';
-///: END:ONLY_INCLUDE_IF
 import MetaFoxLogo from '../../components/ui/metafox-logo';
 import { OneKeyAllowWebUSBConnect } from './onekey-allow-webusb-connect';
 import { OneKeyBridgeInstallationRequired } from './onekey-require-install-bridge';
@@ -38,9 +34,7 @@ export default function OneKeyErrors() {
   // Previous page
   const previousPage = location.state?.fromPage;
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const theme = useSelector((state) => getTheme(state));
-  ///: END:ONLY_INCLUDE_IF
 
   const contentView = useMemo(() => {
     switch (error) {
@@ -82,9 +76,7 @@ export default function OneKeyErrors() {
         <MetaFoxLogo
           unsetIconHeight
           onClick={() => history.push(DEFAULT_ROUTE)}
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           theme={theme}
-          ///: END:ONLY_INCLUDE_IF
         />
       </Box>
 
