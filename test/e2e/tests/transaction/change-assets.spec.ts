@@ -35,7 +35,6 @@ describe('Change assets', function () {
         await homePage.startSendFlow();
 
         await sendTokenPage.check_pageIsLoaded();
-
         await accountListPage.selectAccount('Account 1');
 
         await sendTokenPage.fillAmount('2');
@@ -89,7 +88,7 @@ describe('Change assets', function () {
         await assetListPage.clickOnAsset('TST');
         await homePage.startSendFlow();
 
-        await accountListPage.check_pageIsLoaded();
+        await sendTokenPage.check_pageIsLoaded();
         await accountListPage.selectAccount('Account 1');
         await sendTokenPage.fillAmount('2');
         await sendTokenPage.clickContinueButton();
@@ -139,8 +138,7 @@ describe('Change assets', function () {
         await homePage.clickNFTFromList();
         await nftDetailsPage.check_pageIsLoaded();
         await nftDetailsPage.clickNFTSendButton();
-
-        await accountListPage.check_pageIsLoaded();
+        await sendTokenPage.check_pageIsLoaded();
         await accountListPage.selectAccount('Account 1');
         await sendTokenPage.check_tokenSymbolInAssetPicker('TDN', '1');
         await sendTokenPage.clickContinueButton();
@@ -218,7 +216,7 @@ describe('Change assets', function () {
         await nftDetailsPage.clickNFTSendButton();
 
         // Switch accounts during send flow and check that native currency is selected
-        await accountListPage.check_pageIsLoaded();
+        await sendTokenPage.check_pageIsLoaded();
         await accountListPage.selectAccount('Account 1');
         await sendTokenPage.check_tokenSymbolInAssetPicker('TDN', '1');
         await sendTokenPage.clickAccountPickerButton();
