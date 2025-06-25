@@ -16,6 +16,7 @@ import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
 import LogoTrezor from '../../../components/ui/logo/logo-trezor';
 import LogoLattice from '../../../components/ui/logo/logo-lattice';
+import LogoKeystone from '../../../components/ui/logo/logo-keystone';
 
 import {
   HardwareDeviceNames,
@@ -86,6 +87,7 @@ export default class SelectHardware extends Component {
               { vendorId: 0x534c, productId: 0x0001 },
               { vendorId: 0x1209, productId: 0x53c0 },
               { vendorId: 0x1209, productId: 0x53c1 },
+              { vendorId: 0x1209, productId: 0x3001 },
             ],
           });
         } catch (e) {
@@ -134,6 +136,22 @@ export default class SelectHardware extends Component {
     );
   }
 
+  renderConnectToKeystoneButton() {
+    return (
+      <button
+        data-testid="connect-trezor-btn"
+        className={classnames('hw-connect__btn', {
+          selected: this.state.selectedDevice === HardwareDeviceNames.keystone,
+        })}
+        onClick={(_) =>
+          this.setState({ selectedDevice: HardwareDeviceNames.keystone })
+        }
+      >
+        <LogoKeystone className="hw-connect__btn__img" ariaLabel="Keystone" />
+      </button>
+    );
+  }
+
   renderConnectToLedgerButton() {
     return (
       <button
@@ -172,6 +190,7 @@ export default class SelectHardware extends Component {
         <div className="hw-connect__btn-wrapper">
           {this.renderConnectToLedgerButton()}
           {this.renderConnectToTrezorButton()}
+          {this.renderConnectToKeystoneButton()}
         </div>
         <div
           className="hw-connect__btn-wrapper"
@@ -362,6 +381,8 @@ export default class SelectHardware extends Component {
         return this.renderTrezorTutorialSteps();
       case HardwareDeviceNames.lattice:
         return this.renderLatticeTutorialSteps();
+      case HardwareDeviceNames.keystone:
+        return this.renderKeystoneTutorialSteps();
       case HardwareDeviceNames.qr:
         return this.renderQRHardwareWalletSteps();
       default:
@@ -481,6 +502,85 @@ export default class SelectHardware extends Component {
             rel="noopener noreferrer"
             target="_blank"
             key="lattice-setup-link"
+          >
+            {this.context.t('hardwareWalletSupportLinkConversion')}
+          </a>,
+        ]),
+      },
+    ];
+
+    return (
+      <div className="hw-tutorial">
+        {steps.map((step, index) => (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.center}
+            className="hw-connect"
+            key={index}
+          >
+            <h3 className="hw-connect__title">{step.title}</h3>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              justifyContent={JustifyContent.center}
+              marginBottom={2}
+            >
+              <Button
+                className="hw-connect__external-btn-first"
+                variant={BUTTON_VARIANT.SECONDARY}
+                onClick={() => {
+                  this.context.trackEvent({
+                    category: MetaMetricsEventCategory.Navigation,
+                    event: 'Clicked GridPlus Buy Now',
+                  });
+                  openWindow(HardwareAffiliateLinks.gridplus);
+                }}
+              >
+                {this.context.t('buyNow')}
+              </Button>
+              <Button
+                className="hw-connect__external-btn"
+                variant={BUTTON_VARIANT.SECONDARY}
+                onClick={() => {
+                  this.context.trackEvent({
+                    category: MetaMetricsEventCategory.Navigation,
+                    event: 'Clicked GidPlus Tutorial',
+                  });
+                  openWindow(HardwareAffiliateTutorialLinks.gridplus);
+                }}
+              >
+                {this.context.t('tutorial')}
+              </Button>
+            </Box>
+            <p className="hw-connect__msg">{step.message}</p>
+            {step.asset && (
+              <img
+                className="hw-connect__step-asset"
+                src={`images/${step.asset}.svg`}
+                {...step.dimensions}
+                alt=""
+              />
+            )}
+          </Box>
+        ))}
+      </div>
+    );
+  }
+
+  renderKeystoneTutorialSteps() {
+    const steps = [
+      {
+        asset: 'connect-lattice',
+        dimensions: { width: '225px', height: '75px' },
+        title: this.context.t('step1KeystoneWallet'),
+        message: this.context.t('step1KeystoneWalletMsg', [
+          <a
+            className="hw-connect__msg-link"
+            href={ZENDESK_URLS.HARDWARE_CONNECTION}
+            rel="noopener noreferrer"
+            target="_blank"
+            key="keystone-setup-link"
           >
             {this.context.t('hardwareWalletSupportLinkConversion')}
           </a>,

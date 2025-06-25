@@ -21,7 +21,7 @@ export default function createLoggerMiddleware(opts) {
         return;
       }
       if (process.env.METAMASK_DEBUG) {
-        log.info(`RPC (${opts.origin}):`, req, '->', res);
+        // log.info(`RPC (${opts.origin}):`, req, '->', res);
       } else {
         log.info(
           `RPC (${opts.origin}): ${req.method} -> ${
