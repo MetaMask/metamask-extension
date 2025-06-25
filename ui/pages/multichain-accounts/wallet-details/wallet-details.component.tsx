@@ -116,7 +116,6 @@ const WalletDetails = () => {
 
   const isEntropyWallet = wallet.id.includes('entropy');
   const isFirstHdKeyring = hdKeyrings[0]?.metadata?.id === keyringId;
-  console.log('seedPhraseBackedUp', seedPhraseBackedUp);
   const shouldShowBackupReminder = !seedPhraseBackedUp && isFirstHdKeyring;
 
   const groupKeys = Object.keys(wallet.groups || {});
