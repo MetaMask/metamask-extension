@@ -2174,6 +2174,9 @@
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
+  "enterPasswordCurrent": {
+    "message": "Enter your current password"
+  },
   "enterRpcUrl": {
     "message": "Enter RPC URL"
   },
@@ -4963,11 +4966,11 @@
   "securityChangePasswordTitle": {
     "message": "Password"
   },
-  "securityChangePasswordToastSuccess": {
-    "message": "New password saved"
-  },
   "securityChangePasswordToastError": {
     "message": "Password couldn’t be changed. Please try again."
+  },
+  "securityChangePasswordToastSuccess": {
+    "message": "New password saved"
   },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
@@ -4992,11 +4995,11 @@
   "securitySrpDescription": {
     "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
   },
-  "securitySrpWalletRecovery": {
-    "message": "Manage recovery methods"
-  },
   "securitySrpLabel": {
     "message": "SECRET RECOVERY PHRASES"
+  },
+  "securitySrpWalletRecovery": {
+    "message": "Manage recovery methods"
   },
   "seeAllPermissions": {
     "message": "See all permissions",

@@ -25,23 +25,23 @@ function generateMockJwtToken(userId: string) {
 // Mock OAuth Service and Authentication Server
 export class OAuthMockttpService {
   readonly AUTH_SERVER_TOKEN_PATH =
-    'https://api-develop-torus-byoa.web3auth.io/api/v1/oauth/token';
+    'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/token';
 
   mockAuthServerToken(_overrides?: {
     statusCode?: number;
     json?: Record<string, unknown>;
     userEmail?: string;
   }) {
-    const jwtToken = generateMockJwtToken(
-      _overrides?.userEmail || Math.random().toString(36).slice(2, 10),
+    const userEmail = _overrides?.userEmail || `e2e-user-${Math.random().toString(36).slice(2, 10)}`;
+
+    const idToken = generateMockJwtToken(
+      userEmail,
     );
     return {
       statusCode: 200,
       json: {
         access_token: 'mock-access-token',
-        jwt_tokens: {
-          metamask: jwtToken,
-        },
+        id_token: idToken,
         expires_in: 3600,
       },
     };
