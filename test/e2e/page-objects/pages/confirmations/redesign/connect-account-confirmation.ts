@@ -86,8 +86,21 @@ class ConnectAccountConfirmation {
     return true;
   }
 
-  async check_isAccountDisplayed(account: string): Promise<void> {
+  async check_isAccountDisplayed(
+    account: string,
+    options = {
+      isCaseSensitive: false,
+    },
+  ): Promise<void> {
     const accountShort = shortenAddress(account);
+
+    if (options.isCaseSensitive) {
+      await this.driver.waitForSelector({
+        text: account,
+        tag: 'p',
+      });
+      return;
+    }
 
     await this.driver.waitForSelector({
       xpath: `//p[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '${accountShort.toLowerCase()}')]`,
