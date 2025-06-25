@@ -36,7 +36,7 @@ import {
 } from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
-import { QrKeyring } from '@metamask/eth-qr-keyring';
+import { QrKeyring, QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import { nanoid } from 'nanoid';
 import { captureException } from '@sentry/browser';
 import { AddressBookController } from '@metamask/address-book-controller';
@@ -413,6 +413,7 @@ import {
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
+import { qrKeyringBuilderFactory } from './lib/qr-keyring-builder-factory';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1091,7 +1092,15 @@ export default class MetamaskController extends EventEmitter {
       state: initState.OnboardingController,
     });
 
-    let additionalKeyrings = [keyringBuilderFactory(QrKeyring)];
+    let additionalKeyrings = [
+      qrKeyringBuilderFactory(QrKeyring, QrKeyringScannerBridge, {
+        requestScan: async () => {
+          // TODO: Implement a method to request a QR code scan
+          console.log('Scan request! Resolving with known UR');
+          return 'UR:CRYPTO-HDKEY/ONAXHDCLAXPYSTPELBTLSNGWTTWPGSBSIOWKRFOXHSWSRHURSAHGMYMNTEFLTEBGADAHAXKTNBAAHDCXIODLDNDNZCONGOGMYKJLGHCLTDRYBEJTGOWZWLGLJKEOKIHEFHCLNLAMQDNDZSGEAMTAADDYOEADLNCSDWYKCSFNYKAEYKAOCYIHCHGSOYAYCYIHIAECEYASJNFPINJPFLHSJOCXDPCXJYIHJKJYINDAAAEC';
+        },
+      }),
+    ];
 
     const keyringOverrides = this.opts.overrides?.keyrings;
 
@@ -8508,6 +8517,7 @@ export default class MetamaskController extends EventEmitter {
     return this.keyringController.withKeyring(
       { type: keyringType },
       async ({ keyring }) => {
+        console.log('Keyring selected for device:', keyringType);
         if (options.hdPath && keyring.setHdPath) {
           keyring.setHdPath(options.hdPath);
         }
