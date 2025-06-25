@@ -4410,18 +4410,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "了解"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "シークレットリカバリーフレーズは常に安全かつ秘密の場所に保管してください"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "シークレットリカバリーフレーズのバックアップが必要ですか？"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "シークレットリカバリーフレーズは誰とも決して共有しないでください"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMaskチームが、ユーザーのシークレットリカバリーフレーズを確認することは絶対にありません"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "シークレットリカバリーフレーズは、ご利用のすべてのアカウントを制御します。"
   },

@@ -10,16 +10,24 @@ import { upgradeAccountConfirmation } from '../../../../../../../test/data/confi
 import { Confirmation } from '../../../../types/confirm';
 import {
   rejectPendingApproval,
-  setSplashPageAcknowledgedForAccount,
-  setSmartAccountOptIn,
+  setSmartAccountOptInForAccounts,
 } from '../../../../../../store/actions';
-import { SmartAccountUpdate } from './smart-account-update';
+import { SmartAccountUpdateSplash } from './smart-account-update-splash';
+
+jest.mock('../../../../../../hooks/useMultiPolling', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
+
+jest.mock('../../../../../../hooks/useMultiPolling', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
 
 jest.mock('../../../../../../store/actions', () => ({
   setAccountDetailsAddress: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
-  setSplashPageAcknowledgedForAccount: jest.fn(),
-  setSmartAccountOptIn: jest.fn(),
+  setSmartAccountOptInForAccounts: jest.fn(),
 }));
 
 const mockDispatch = jest.fn();
@@ -39,7 +47,7 @@ describe('Splash', () => {
       ),
     );
     const { getByText } = renderWithConfirmContextProvider(
-      <SmartAccountUpdate />,
+      <SmartAccountUpdateSplash />,
       mockStore,
     );
 
@@ -53,7 +61,7 @@ describe('Splash', () => {
       ),
     );
     const { getAllByRole, container } = renderWithConfirmContextProvider(
-      <SmartAccountUpdate />,
+      <SmartAccountUpdateSplash />,
       mockStore,
     );
 
@@ -66,8 +74,7 @@ describe('Splash', () => {
     );
 
     expect(container.firstChild).toBeNull();
-    expect(setSplashPageAcknowledgedForAccount).toHaveBeenCalledTimes(1);
-    expect(setSmartAccountOptIn).toHaveBeenCalledTimes(1);
+    expect(setSmartAccountOptInForAccounts).toHaveBeenCalledTimes(1);
   });
 
   it('reject confirmation if user does not accept', async () => {
@@ -77,7 +84,7 @@ describe('Splash', () => {
       ),
     );
     const { getByRole } = renderWithConfirmContextProvider(
-      <SmartAccountUpdate />,
+      <SmartAccountUpdateSplash />,
       mockStore,
     );
 
@@ -98,7 +105,7 @@ describe('Splash', () => {
       } as Confirmation),
     );
     const { container } = renderWithConfirmContextProvider(
-      <SmartAccountUpdate />,
+      <SmartAccountUpdateSplash />,
       mockStore,
     );
 
@@ -134,7 +141,7 @@ describe('Splash', () => {
       ),
     );
     const { container } = renderWithConfirmContextProvider(
-      <SmartAccountUpdate />,
+      <SmartAccountUpdateSplash />,
       mockStore,
     );
 
@@ -158,10 +165,25 @@ describe('Splash', () => {
       ),
     );
     const { container } = renderWithConfirmContextProvider(
-      <SmartAccountUpdate />,
+      <SmartAccountUpdateSplash />,
       mockStore,
     );
 
     expect(container.firstChild).toBeNull();
+  });
+
+  it('open account selection when pencil icon is clicked', () => {
+    const mockStore = configureMockStore([])(
+      getMockConfirmStateForTransaction(
+        upgradeAccountConfirmation as Confirmation,
+      ),
+    );
+    const { getByText, getByTestId } = renderWithConfirmContextProvider(
+      <SmartAccountUpdateSplash />,
+      mockStore,
+    );
+
+    fireEvent.click(getByTestId('smart-account-update-edit'));
+    expect(getByText('Edit accounts')).toBeInTheDocument();
   });
 });

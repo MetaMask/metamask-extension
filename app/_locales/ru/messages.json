@@ -4410,18 +4410,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Понятно"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Всегда храните свою секретную фразу для восстановления в надежном и потайном месте."
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Хотите снова сделать резервную копию секретной фразы для восстановления?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Никогда никому не сообщайте никому свою секретную фразу для восстановления."
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Команда MetaMask никогда неожиданно не запросит вашу секретную фразу для восстановления"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Ваша секретная фраза для восстановления контролирует все ваши счета."
   },

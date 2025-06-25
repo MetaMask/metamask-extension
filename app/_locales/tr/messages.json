@@ -4410,18 +4410,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Anladım"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Gizli Kurtarma İfadenizi her zaman güvende ve gizli bir yerde tutun"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Gizli Kurtarma İfadenizi yeniden yedeklemeniz mi gerekiyor?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Gizli Kurtarma İfadenizi asla başkasıyla paylaşmayın"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMask ekibi sizden asla Gizli Kurtarma İfadenizi istemeyecektir"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Gizli Kurtarma İfadeniz tüm hesaplarınızı kontrol eder."
   },

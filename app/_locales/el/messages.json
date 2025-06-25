@@ -4410,18 +4410,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Το κατάλαβα"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Διατηρείτε πάντα τη Μυστική Φράση Ανάκτησης σε ασφαλές και μυστικό μέρος."
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Χρειάζεται να δημιουργήσετε ξανά αντίγραφο ασφαλείας της Μυστικής σας Φράσης Ανάκτησης;"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Ποτέ μην μοιράζεστε τη Μυστική σας Φράση Ανάκτησης με κανέναν"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Η ομάδα του MetaMask δεν θα ζητήσει ποτέ τη Μυστική σας Φράση Ανάκτησης"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Η Μυστική σας Φράση Ανάκτησης ελέγχει όλους τους λογαριασμούς σας."
   },

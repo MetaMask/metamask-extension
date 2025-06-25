@@ -3707,6 +3707,11 @@
         "addons-linter>sha.js": true
       }
     },
+    "crypto-browserify>pbkdf2>create-hash": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
     "crypto-browserify>create-hmac": {
       "packages": {
         "ethereumjs-util>create-hash>cipher-base": true,
@@ -4202,6 +4207,13 @@
         "pumpify>inherits": true,
         "readable-stream": true,
         "koa>content-disposition>safe-buffer": true
+      }
+    },
+    "crypto-browserify>pbkdf2>ripemd160>hash-base": {
+      "packages": {
+        "browserify>buffer": true,
+        "pumpify>inherits": true,
+        "stream-browserify": true
       }
     },
     "ethers>@ethersproject/sha2>hash.js": {
@@ -4818,11 +4830,12 @@
         "setTimeout": true
       },
       "packages": {
-        "ethereumjs-util>create-hash": true,
+        "crypto-browserify>pbkdf2>create-hash": true,
         "process": true,
-        "ethereumjs-util>create-hash>ripemd160": true,
+        "crypto-browserify>pbkdf2>ripemd160": true,
         "koa>content-disposition>safe-buffer": true,
-        "addons-linter>sha.js": true
+        "addons-linter>sha.js": true,
+        "crypto-browserify>pbkdf2>to-buffer": true
       }
     },
     "@material-ui/core>popper.js": {
@@ -5447,6 +5460,13 @@
         "pumpify>inherits": true
       }
     },
+    "crypto-browserify>pbkdf2>ripemd160": {
+      "packages": {
+        "browserify>buffer": true,
+        "crypto-browserify>pbkdf2>ripemd160>hash-base": true,
+        "pumpify>inherits": true
+      }
+    },
     "eth-lattice-keyring>rlp": {
       "globals": {
         "TextEncoder": true
@@ -5688,6 +5708,13 @@
         "console": true
       }
     },
+    "crypto-browserify>pbkdf2>to-buffer": {
+      "packages": {
+        "@lavamoat/lavapack>json-stable-stringify>isarray": true,
+        "koa>content-disposition>safe-buffer": true,
+        "string.prototype.matchall>es-abstract>typed-array-buffer": true
+      }
+    },
     "copy-to-clipboard>toggle-selection": {
       "globals": {
         "document.activeElement": true,
@@ -5708,6 +5735,13 @@
       },
       "packages": {
         "browserify>browser-resolve": true
+      }
+    },
+    "string.prototype.matchall>es-abstract>typed-array-buffer": {
+      "packages": {
+        "browserify>util>which-typed-array>call-bound": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
+        "browserify>util>is-typed-array": true
       }
     },
     "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {
@@ -5754,7 +5788,7 @@
         "react-markdown>unified>bail": true,
         "react-markdown>unified>extend": true,
         "react-markdown>unified>is-buffer": true,
-        "mocha>yargs-unparser>is-plain-obj": true,
+        "react-markdown>unified>is-plain-obj": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
       }

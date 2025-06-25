@@ -4410,18 +4410,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "समझ गया"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "अपने सीक्रेट रिकवरी फ्रेज को हमेशा सुरक्षित और गुप्त स्थान पर रखें।"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "अपने सीक्रेट रिकवरी फ्रेज को फिर से बैकअप करने की आवश्यकता है?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "कभी भी अपना सीक्रेट रिकवरी फ्रेज किसी के साथ शेयर न करें"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMask टीम कभी भी आपके सीक्रेट रिकवरी फ्रेज के बारे में नहीं पूछेगी"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "आपका सीक्रेट रिकवरी फ्रेज आपके सभी एकाउंट्स को नियंत्रित करता है।"
   },

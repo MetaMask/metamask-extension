@@ -4410,18 +4410,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Mengerti"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Jaga selalu Frasa Pemulihan Rahasia Anda di tempat yang aman dan rahasia"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Perlu mencadangkan Frasa Pemulihan Rahasia Anda lagi?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Jangan membagikan Frasa Pemulihan Rahasia Anda kepada siapa pun"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Tim MetaMask tidak akan pernah meminta Frasa Pemulihan Rahasia Anda"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Frasa Pemulihan Rahasia Anda mengendalikan semua akun Anda."
   },
