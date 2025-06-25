@@ -4,7 +4,7 @@ export const OAUTH_CONFIG: Record<string, Record<string, string>> = {
     APPLE_AUTH_CONNECTION_ID: 'mm-apple-dev-extension',
     GOOGLE_GROUPED_AUTH_CONNECTION_ID: 'mm-google-dev',
     APPLE_GROUPED_AUTH_CONNECTION_ID: 'mm-apple-dev',
-    AUTH_SERVER_URL: 'https://auth-service.api.cx.metamask.io',
+    AUTH_SERVER_URL: 'https://auth-service.dev-api.cx.metamask.io',
     WEB3AUTH_NETWORK: 'sapphire_devnet',
   },
   main: {
