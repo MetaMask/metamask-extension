@@ -151,6 +151,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { QrScanResponse } from '@metamask/eth-qr-keyring';
 
 type CustomGasSettings = {
   gas?: string;
@@ -5743,8 +5744,10 @@ export async function submitQRHardwareCryptoHDKey(cbor: Hex) {
   await submitRequestToBackground('submitQRHardwareCryptoHDKey', [cbor]);
 }
 
-export async function completeQrCodeScan(scanResult: string): Promise<void> {
-  await submitRequestToBackground('completeQrCodeScan', scanResult);
+export async function completeQrCodeScan(
+  scanResult: QrScanResponse,
+): Promise<void> {
+  await submitRequestToBackground('completeQrCodeScan', [scanResult]);
 }
 
 export async function submitQRHardwareCryptoAccount(cbor: Hex) {

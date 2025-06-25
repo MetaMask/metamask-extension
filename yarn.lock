@@ -4601,18 +4601,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keystonehq/bc-ur-registry-eth@npm:^0.6.12":
-  version: 0.6.14
-  resolution: "@keystonehq/bc-ur-registry-eth@npm:0.6.14"
-  dependencies:
-    "@keystonehq/bc-ur-registry": "npm:^0.4.4"
-    ethereumjs-util: "npm:^7.0.8"
-    hdkey: "npm:^2.0.1"
-    uuid: "npm:^8.3.2"
-  checksum: 10/d705d7d0d11a82db1417df9666f8a6bc5996eb46b543dc5f979d39d7694910d09c178a1acb6859caf2f93c902f3cc4614eb856936db84ea0b310ac18e5ab139d
-  languageName: node
-  linkType: hard
-
 "@keystonehq/bc-ur-registry-sol@npm:^0.9.2":
   version: 0.9.5
   resolution: "@keystonehq/bc-ur-registry-sol@npm:0.9.5"
@@ -4632,17 +4620,6 @@ __metadata:
     bs58check: "npm:^2.1.2"
     tslib: "npm:^2.3.0"
   checksum: 10/b586d4fac24a3fc28ec2218901e72aa7a1cb55e0e7fc4a7e9d2db80f382fc3115db409301da287c541ba8f9ab2938844dbd8e396e5ba7afd67087232a6c1d7d0
-  languageName: node
-  linkType: hard
-
-"@keystonehq/bc-ur-registry@npm:^0.4.4":
-  version: 0.4.4
-  resolution: "@keystonehq/bc-ur-registry@npm:0.4.4"
-  dependencies:
-    "@ngraveio/bc-ur": "npm:^1.1.5"
-    base58check: "npm:^2.0.0"
-    tslib: "npm:^2.3.0"
-  checksum: 10/640c5ef55e34713d338ecc29fef779203f2488041d54dd2f036ccd56f01dda1859ff20853b4eda53933a1f08f01d3f3e4c2fdc7b2e63886c88a40755da3a562e
   languageName: node
   linkType: hard
 
@@ -4695,16 +4672,6 @@ __metadata:
     bs58: "npm:^5.0.0"
     uuid: "npm:^8.3.2"
   checksum: 10/73483fac3ee64bb4de9c3f64fd40671a6b560334c30b45f65166a79332ac9a0496501abb5a7e2ed09d7f0ba4b1c65f69e1febe5449ec33dabf4a414258caef5a
-  languageName: node
-  linkType: hard
-
-"@keystonehq/ur-decoder@npm:^0.12.2":
-  version: 0.12.2
-  resolution: "@keystonehq/ur-decoder@npm:0.12.2"
-  dependencies:
-    "@keystonehq/bc-ur-registry-eth": "npm:^0.6.12"
-    "@ngraveio/bc-ur": "npm:^1.1.6"
-  checksum: 10/0904492775842dc01035bcf5fc1355918548c3e1ab9f0be677a55301d72bb87fea0377ee866bfa401568b99572114ac10b72d4b2d6cbc22a87a9d3eea2df9c37
   languageName: node
   linkType: hard
 
@@ -5899,18 +5866,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-qr-keyring@npm:@metamask-previews/eth-qr-keyring@1.0.0-065a890":
-  version: 1.0.0-065a890
-  resolution: "@metamask-previews/eth-qr-keyring@npm:1.0.0-065a890"
+"@metamask/eth-qr-keyring@npm:@metamask-previews/eth-qr-keyring@1.0.0-8a027ff":
+  version: 1.0.0-8a027ff
+  resolution: "@metamask-previews/eth-qr-keyring@npm:1.0.0-8a027ff"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
-    "@keystonehq/ur-decoder": "npm:^0.12.2"
     "@metamask/keyring-utils": "npm:3.0.0"
-    "@metamask/utils": "npm:^11.3.0"
-    "@ngraveio/bc-ur": "npm:^1.1.13"
+    "@metamask/utils": "npm:^11.1.0"
     hdkey: "npm:^2.1.0"
-  checksum: 10/1f0575ee238f224a5ff6a3d3e96295b2074776a4701bf41493297151c8940ca05c6c7ff450b97f673e116a16c53f9ded231286aa1bbb4254d457c80eecce4850
+  checksum: 10/220036a142a07f8f917e7a2015d86c78fcc009bfafb8b144b6bc0408c9abf070c4d3ffb650fa1855be2fe9e7587c72f8cef4af058814c77eeee88c76af64f39c
   languageName: node
   linkType: hard
 
@@ -7480,7 +7445,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.2.0, @metamask/utils@npm:^11.3.0, @metamask/utils@npm:^11.4.0":
+"@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.2.0, @metamask/utils@npm:^11.4.0":
   version: 11.4.0
   resolution: "@metamask/utils@npm:11.4.0"
   dependencies:
@@ -7556,7 +7521,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngraveio/bc-ur@npm:^1.0.0, @ngraveio/bc-ur@npm:^1.1.13, @ngraveio/bc-ur@npm:^1.1.5, @ngraveio/bc-ur@npm:^1.1.6":
+"@ngraveio/bc-ur@npm:^1.0.0, @ngraveio/bc-ur@npm:^1.1.13, @ngraveio/bc-ur@npm:^1.1.5":
   version: 1.1.13
   resolution: "@ngraveio/bc-ur@npm:1.1.13"
   dependencies:
@@ -17265,13 +17230,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"base-x@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "base-x@npm:1.1.0"
-  checksum: 10/ca5f485f3868579e908187ccd50f4295a3ed3bd56a5d5dd266ba59a70c391155eabe50cd7976e6b696b5f7eca512019a886fcc6f27b4a738da1611249b3446f7
-  languageName: node
-  linkType: hard
-
 "base-x@npm:^3.0.11, base-x@npm:^3.0.2, base-x@npm:^3.0.8":
   version: 3.0.11
   resolution: "base-x@npm:3.0.11"
@@ -17308,15 +17266,6 @@ __metadata:
   version: 1.0.5
   resolution: "base58-js@npm:1.0.5"
   checksum: 10/46c1b39d3a70bca0a47d56069c74a25d547680afd0f28609c90f280f5d614f5de36db5df993fa334db24008a68ab784a72fcdaa13eb40078e03c8999915a1100
-  languageName: node
-  linkType: hard
-
-"base58check@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "base58check@npm:2.0.0"
-  dependencies:
-    bs58: "npm:^3.0.0"
-  checksum: 10/19f77522a38d66d5c9cc16411880e258899a6807b31477e3ac33ebaa64555126e9b29e7d5d2be88748aae8b1d05f91e5eb3aef4847a033af25b8a0c0f995b037
   languageName: node
   linkType: hard
 
@@ -18139,15 +18088,6 @@ __metadata:
   dependencies:
     base-x: "npm:^5.0.0"
   checksum: 10/7c9bb2b2d93d997a8c652de3510d89772007ac64ee913dc4e16ba7ff47624caad3128dcc7f360763eb6308760c300b3e9fd91b8bcbd489acd1a13278e7949c4e
-  languageName: node
-  linkType: hard
-
-"bs58@npm:^3.0.0":
-  version: 3.1.0
-  resolution: "bs58@npm:3.1.0"
-  dependencies:
-    base-x: "npm:^1.1.0"
-  checksum: 10/6d757a49958c43bc630f3b327511ce3ee065307c24240aa86189f72df0a4a8245c7ce7e7abad209b637f155006952c7b8f04bb4aa6ee4212a891882424bca82e
   languageName: node
   linkType: hard
 
@@ -23113,7 +23053,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereumjs-util@npm:7.1.5, ethereumjs-util@npm:^7.0.8, ethereumjs-util@npm:^7.1.2":
+"ethereumjs-util@npm:7.1.5, ethereumjs-util@npm:^7.1.2":
   version: 7.1.5
   resolution: "ethereumjs-util@npm:7.1.5"
   dependencies:

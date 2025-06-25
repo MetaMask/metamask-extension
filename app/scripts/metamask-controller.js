@@ -955,8 +955,6 @@ export default class MetamaskController extends EventEmitter {
       extension: this.extension,
     });
 
-    console.log('AppStateController initialized');
-
     const currencyRateMessenger = this.controllerMessenger.getRestricted({
       name: 'CurrencyRateController',
       allowedActions: [`${this.networkController.name}:getNetworkClientById`],
@@ -3370,7 +3368,6 @@ export default class MetamaskController extends EventEmitter {
       addressBookController,
       alertController,
       appStateController,
-      // keyringController,
       nftController,
       nftDetectionController,
       currencyRateController,

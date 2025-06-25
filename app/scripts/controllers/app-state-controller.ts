@@ -12,6 +12,7 @@ import {
   AddApprovalRequest,
 } from '@metamask/approval-controller';
 import { DeferredPromise, Json, createDeferredPromise } from '@metamask/utils';
+import type { QrScanResponse } from '@metamask/eth-qr-keyring';
 import { Browser } from 'webextension-polyfill';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -102,7 +103,7 @@ export type AppStateControllerGetStateAction = ControllerGetStateAction<
 
 export type AppStateControllerRequestQrCodeScanAction = {
   type: 'AppStateController:requestQrCodeScan';
-  handler: () => Promise<string>;
+  handler: () => Promise<QrScanResponse>;
 };
 
 /**
@@ -409,7 +410,7 @@ export class AppStateController extends BaseController<
 
   #approvalRequestId: string | null;
 
-  #qrCodeScanPromise: DeferredPromise<string> | null = null;
+  #qrCodeScanPromise: DeferredPromise<QrScanResponse> | null = null;
 
   constructor({
     state = {},
@@ -1130,7 +1131,7 @@ export class AppStateController extends BaseController<
    * @param scannedData - The data that was scanned from the QR code.
    * @throws If no QR code scan is in progress.
    */
-  completeQrCodeScan(scannedData: string): void {
+  completeQrCodeScan(scannedData: QrScanResponse): void {
     if (!this.#qrCodeScanPromise) {
       throw new Error('No QR code scan is in progress.');
     }
@@ -1158,7 +1159,7 @@ export class AppStateController extends BaseController<
       state.isQrCodeScanActive = false;
     });
 
-    this.#qrCodeScanPromise.reject(error);
+    this.#qrCodeScanPromise.reject(error || new Error('Scan cancelled'));
     this.#qrCodeScanPromise = null;
   }
 
@@ -1168,12 +1169,12 @@ export class AppStateController extends BaseController<
    *
    * @returns The scanned QR code data.
    */
-  #requestQrCodeScan(): Promise<string> {
+  #requestQrCodeScan(): Promise<QrScanResponse> {
     if (this.#qrCodeScanPromise) {
       return this.#qrCodeScanPromise.promise;
     }
 
-    const deferredPromise = createDeferredPromise<string>();
+    const deferredPromise = createDeferredPromise<QrScanResponse>();
     this.#qrCodeScanPromise = deferredPromise;
 
     this.update((state) => {
