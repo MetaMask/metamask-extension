@@ -24,6 +24,7 @@ const addEthereumChain = {
     rejectApprovalRequestsForOrigin: true,
     setTokenNetworkFilter: true,
     setEnabledNetworks: true,
+    notifyChainChanged: true,
   },
 };
 
@@ -46,6 +47,7 @@ async function addEthereumChainHandler(
     rejectApprovalRequestsForOrigin,
     setTokenNetworkFilter,
     setEnabledNetworks,
+    notifyChainChanged,
   },
 ) {
   let validParams;
@@ -198,5 +200,6 @@ async function addEthereumChainHandler(
     rejectApprovalRequestsForOrigin,
     setTokenNetworkFilter,
     setEnabledNetworks,
+    notifyChainChanged,
   });
 }
