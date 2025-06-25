@@ -493,6 +493,10 @@ export function useTransactionDisplayData(transactionGroup) {
     transactionGroup?.initialTransaction?.chainId,
   );
 
+  if (!recipientAddress && transferInformation) {
+    recipientAddress = to;
+  }
+
   return {
     title,
     category,
