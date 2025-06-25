@@ -393,7 +393,6 @@ async function mockDAIL2toMainnet(mockServer: Mockttp) {
       srcTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
       destTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,

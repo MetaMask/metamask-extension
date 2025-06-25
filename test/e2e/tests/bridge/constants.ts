@@ -47,6 +47,10 @@ export const TOP_ASSETS_API_LINEA_MOCK_RESULT = [
     address: '0xa219439258ca9da29e9cc4ce5596924745e12b93',
     symbol: 'USDT',
   },
+  {
+    address: '0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f',
+    symbol: 'WETH',
+  },
 ];
 
 export const TOP_ASSETS_API_ARBITRUM_MOCK_RESULT = [
@@ -244,6 +248,15 @@ export const MOCK_TOKENS_ETHEREUM = [
     storage: {},
     fees: {},
   },
+  {
+    symbol: 'WETH',
+    decimals: 18,
+    aggregators: [],
+    occurrences: 1,
+    iconUrl: '',
+    address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    name: 'Wrapped Ether',
+  },
 ];
 
 export const MOCK_TOKENS_LINEA = [
@@ -303,16 +316,22 @@ export const MOCK_TOKENS_LINEA = [
     name: 'Bridged Tether  Linea ',
   },
   {
-    address: '0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f',
     symbol: 'WETH',
     decimals: 18,
-    name: 'Wrapped Ether',
+    aggregators: [
+      'metamask',
+      'coinGecko',
+      'lineaTeam',
+      'lifi',
+      'rubic',
+      'xswap',
+      'rango',
+      'sonarwatch',
+    ],
+    occurrences: 8,
     iconUrl: '',
-    type: 'erc20',
-    aggregators: [],
-    occurrences: 11,
-    erc20Permit: false,
-    storage: {},
+    address: '0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f',
+    name: 'WETH',
   },
   {
     address: '0x0000000000000000000000000000000000000000',
