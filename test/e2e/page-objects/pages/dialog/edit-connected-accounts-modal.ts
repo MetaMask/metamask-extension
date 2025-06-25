@@ -23,6 +23,8 @@ class EditConnectedAccountsModal {
     tag: 'button',
   };
 
+  private readonly selectAllAccountsCheckbox = 'input[title="Select all"]';
+
   private readonly submitAddAccountButton = {
     testId: 'submit-add-account-with-name',
   };
@@ -59,7 +61,14 @@ class EditConnectedAccountsModal {
   }
 
   async disconnectAccount(): Promise<void> {
+    console.log('Disconnect account on edit connected accounts modal');
     await this.driver.clickElementAndWaitToDisappear(this.disconnectButton);
+  }
+
+  async selectAllAccounts(): Promise<void> {
+    console.log('Select all accounts on edit connected accounts modal');
+    await this.driver.clickElement(this.selectAllAccountsCheckbox);
+    await this.driver.clickElementAndWaitToDisappear(this.updateAccountsButton);
   }
 
   /**
@@ -68,6 +77,9 @@ class EditConnectedAccountsModal {
    * @param accountIndex - The index of the account to select (1-based)
    */
   async selectAccount(accountIndex: number): Promise<void> {
+    console.log(
+      `Select account number ${accountIndex} on edit connected accounts modal`,
+    );
     const checkboxes = await this.driver.findElements(this.accountCheckbox);
     const accountCheckbox = checkboxes[accountIndex];
     await accountCheckbox.click();
