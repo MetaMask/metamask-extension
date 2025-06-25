@@ -54,17 +54,13 @@ describe('Send ETH', function () {
           await inputAmount.press(driver.Key.BACK_SPACE);
           await inputAmount.press(driver.Key.BACK_SPACE);
 
-          await driver.clickElement(
-            '[data-testid="max-clear-button"]',
-          );
+          await driver.clickElement('[data-testid="max-clear-button"]');
 
           let inputValue = await inputAmount.getProperty('value');
 
           assert(Number(inputValue) > 24);
 
-          await driver.clickElement(
-            '[data-testid="max-clear-button"]',
-          );
+          await driver.clickElement('[data-testid="max-clear-button"]');
 
           assert.equal(await inputAmount.isEnabled(), true);
 
@@ -276,7 +272,9 @@ describe('Send ETH', function () {
               text: 'Confirm',
               tag: 'button',
             });
-            await driver.switchToWindow(WINDOW_TITLES.ExtensionInFullScreenView);
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.ExtensionInFullScreenView,
+            );
 
             // finds the transaction in the transactions list
             await driver.clickElement(
@@ -350,8 +348,13 @@ describe('Send ETH', function () {
               text: '$76.59',
             });
 
-            await driver.clickElement({ text: 'Confirm', tag: 'button' });
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Confirm',
+              tag: 'button',
+            });
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.ExtensionInFullScreenView,
+            );
 
             // Identify the transaction in the transactions list
             await driver.waitForSelector(
