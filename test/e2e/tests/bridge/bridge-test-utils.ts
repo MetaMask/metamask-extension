@@ -32,6 +32,7 @@ import {
   TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
   MOCK_SWAP_API_AGGREGATOR_LINEA,
+  MOCK_TOKEN_API_AGGREGATOR_LINEA,
 } from './constants';
 
 export class BridgePage {
@@ -513,6 +514,20 @@ async function mockSwapAggregatorLinea(mockServer: Mockttp) {
     });
 }
 
+async function mockTokenAggregatorLinea(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(
+      'https://tokens.api.cx.metamask.io/blocklist?chainId=42161&region=global',
+    )
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_TOKEN_API_AGGREGATOR_LINEA,
+      };
+    });
+}
+
 // Expected event types for Bridge metrics
 export enum EventTypes {
   BridgeLinkClicked = 'Bridge Link Clicked',
@@ -616,6 +631,7 @@ export const getBridgeFixtures = (
         await mockPriceSpotPrices(mockServer),
         await mockPriceSpotPricesV3(mockServer),
         await mockSwapAggregatorLinea(mockServer),
+        await mockTokenAggregatorLinea(mockServer),
       ];
 
       if (withMockedSegment) {
