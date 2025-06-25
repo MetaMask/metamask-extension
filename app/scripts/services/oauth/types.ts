@@ -79,12 +79,22 @@ export type LoginHandlerOptions = {
 };
 
 export type OAuthLoginEnv = {
+  /**
+   * The Google Client ID for the OAuth login.
+   */
+  googleClientId: string;
+
+  /**
+   * The Apple Client ID for the OAuth login.
+   */
+  appleClientId: string;
+};
+
+export type OAuthConfig = {
   googleAuthConnectionId: string;
   googleGrouppedAuthConnectionId: string;
   appleAuthConnectionId: string;
   appleGrouppedAuthConnectionId: string;
-  googleClientId: string;
-  appleClientId: string;
   authServerUrl: string;
   web3AuthNetwork: Web3AuthNetwork;
 };

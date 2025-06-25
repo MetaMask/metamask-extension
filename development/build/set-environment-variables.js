@@ -24,6 +24,13 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
   variables,
   version,
 }) {
+  const { googleClientId, appleClientId } = getGoogleAndAppleClientId({
+    buildType,
+    variables,
+    environment,
+    testing: isTestBuild,
+  });
+
   variables.set({
     DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
     EIP_4337_ENTRYPOINT: isTestBuild
@@ -61,10 +68,8 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
       isDevBuild && variables.getMaybe('TEST_GAS_FEE_FLOWS') === true,
     DEEP_LINK_HOST: variables.getMaybe('DEEP_LINK_HOST'),
     DEEP_LINK_PUBLIC_KEY: variables.getMaybe('DEEP_LINK_PUBLIC_KEY'),
-    METAMASK_AUDIENCE: getMetamaskAudience({
-      variables,
-      environment,
-    }),
+    GOOGLE_CLIENT_ID: googleClientId,
+    APPLE_CLIENT_ID: appleClientId,
   });
 };
 
@@ -142,20 +147,50 @@ function getInfuraProjectId({ buildType, variables, environment, testing }) {
 }
 
 /**
- * Get the relevant audience value for the current build.
+ * Get the Google and Apple client IDs for the current build.
  *
- * @param {object} options - The audience options.
+ * @param {object} options - The Google and Apple client IDs options.
+ * @param {string} options.buildType - The current build type.
  * @param {keyof ENVIRONMENT} options.environment - The current build environment.
+ * @param {boolean} options.testing - Whether this is a test build or not.
  * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
- * @returns {string} The audience.
+ * @returns {object} The Google and Apple client IDs.
  */
-function getMetamaskAudience({ variables, environment }) {
-  if (environment === ENVIRONMENT.PRODUCTION) {
-    return variables.get('METAMASK_AUDIENCE') || 'metamask-prod';
-  } else if (environment === ENVIRONMENT.DEVELOPMENT) {
-    return variables.get('METAMASK_AUDIENCE') || 'metamask';
+function getGoogleAndAppleClientId({
+  buildType,
+  variables,
+  environment,
+  testing,
+}) {
+  const isSeedlessOnboardingEnabled = variables.get(
+    'SEEDLESS_ONBOARDING_ENABLED',
+  );
+  if (
+    testing ||
+    environment !== ENVIRONMENT.PRODUCTION ||
+    !isSeedlessOnboardingEnabled
+  ) {
+    return {
+      googleClientId: variables.get('GOOGLE_CLIENT_ID'),
+      appleClientId: variables.get('APPLE_CLIENT_ID'),
+    };
   }
-  return 'metamask';
+
+  const googleClientIdReference = variables.get('GOOGLE_CLIENT_ID_REF');
+  const appleClientIdReference = variables.get('APPLE_CLIENT_ID_REF');
+  assert(
+    typeof googleClientIdReference === 'string' &&
+      googleClientIdReference.length > 0,
+    `Build type "${buildType}" has improperly set GOOGLE_CLIENT_ID_REF in builds.yml. Current value: "${googleClientIdReference}"`,
+  );
+  assert(
+    typeof appleClientIdReference === 'string' &&
+      appleClientIdReference.length > 0,
+    `Build type "${buildType}" has improperly set APPLE_CLIENT_ID_REF in builds.yml. Current value: "${appleClientIdReference}"`,
+  );
+  const googleClientId = variables.get(googleClientIdReference);
+  const appleClientId = variables.get(appleClientIdReference);
+  return { googleClientId, appleClientId };
 }
 
 /**

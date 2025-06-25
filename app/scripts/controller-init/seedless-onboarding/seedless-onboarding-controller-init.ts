@@ -6,6 +6,18 @@ import {
 import { EncryptionKey, EncryptionResult } from '@metamask/browser-passworder';
 import { ControllerInitFunction } from '../types';
 import { encryptorFactory } from '../../lib/encryptor-factory';
+import { ENVIRONMENT } from '../../../../development/build/constants';
+
+const loadWeb3AuthNetwork = (): Web3AuthNetwork => {
+  const { METAMASK_ENVIRONMENT } = process.env;
+  if (
+    METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
+    METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
+  ) {
+    return Web3AuthNetwork.Devnet;
+  }
+  return Web3AuthNetwork.Mainnet;
+};
 
 export const SeedlessOnboardingControllerInit: ControllerInitFunction<
   SeedlessOnboardingController<EncryptionKey>,
@@ -15,10 +27,7 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
 
   const encryptor = encryptorFactory(600_000);
 
-  const network = process.env.WEB3AUTH_NETWORK as Web3AuthNetwork;
-  if (!process.env.IN_TEST && !network) {
-    throw new Error('WEB3AUTH_NETWORK is not set in the environment');
-  }
+  const network = loadWeb3AuthNetwork();
 
   const controller = new SeedlessOnboardingController({
     messenger: controllerMessenger,

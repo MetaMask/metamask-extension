@@ -174,9 +174,7 @@ import {
 } from '@metamask/bridge-status-controller';
 
 import { ErrorReportingService } from '@metamask/error-reporting-service';
-///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
 import { RecoveryError } from '@metamask/seedless-onboarding-controller';
-///: END:ONLY_INCLUDE_IF
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -416,11 +414,9 @@ import {
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
-///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
 import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
-///: END:ONLY_INCLUDE_IF
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1099,23 +1095,15 @@ export default class MetamaskController extends EventEmitter {
       state: initState.OnboardingController,
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
-    this.oauthService = new OAuthService({
-      env: {
-        web3AuthNetwork: process.env.WEB3AUTH_NETWORK,
-        authServerUrl: process.env.AUTH_SERVER_URL,
-        googleClientId: process.env.GOOGLE_CLIENT_ID,
-        appleClientId: process.env.APPLE_CLIENT_ID,
-        googleAuthConnectionId: process.env.GOOGLE_AUTH_CONNECTION_ID,
-        appleAuthConnectionId: process.env.APPLE_AUTH_CONNECTION_ID,
-        googleGrouppedAuthConnectionId:
-          process.env.GOOGLE_GROUPED_AUTH_CONNECTION_ID,
-        appleGrouppedAuthConnectionId:
-          process.env.APPLE_GROUPED_AUTH_CONNECTION_ID,
-      },
-      webAuthenticator: webAuthenticatorFactory(),
-    });
-    ///: END:ONLY_INCLUDE_IF
+    this.oauthService = process.env.SEEDLESS_ONBOARDING_ENABLED
+      ? new OAuthService({
+          env: {
+            googleClientId: process.env.GOOGLE_CLIENT_ID,
+            appleClientId: process.env.APPLE_CLIENT_ID,
+          },
+          webAuthenticator: webAuthenticatorFactory(),
+        })
+      : null;
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
@@ -1959,10 +1947,12 @@ export default class MetamaskController extends EventEmitter {
       DeFiPositionsController: DeFiPositionsControllerInit,
       DelegationController: DelegationControllerInit,
       AccountTreeController: AccountTreeControllerInit,
-      ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
-      SeedlessOnboardingController: SeedlessOnboardingControllerInit,
-      ///: END:ONLY_INCLUDE_IF
     };
+
+    if (process.env.SEEDLESS_ONBOARDING_ENABLED) {
+      controllerInitFunctions.SeedlessOnboardingController =
+        SeedlessOnboardingControllerInit;
+    }
 
     const {
       controllerApi,
@@ -2015,10 +2005,10 @@ export default class MetamaskController extends EventEmitter {
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
     this.accountWalletController = controllersByName.AccountTreeController;
 
-    ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
-    this.seedlessOnboardingController =
-      controllersByName.SeedlessOnboardingController;
-    ///: END:ONLY_INCLUDE_IF
+    if (process.env.SEEDLESS_ONBOARDING_ENABLED) {
+      this.seedlessOnboardingController =
+        controllersByName.SeedlessOnboardingController;
+    }
 
     this.notificationServicesController.init();
     this.snapController.init();
@@ -3425,7 +3415,7 @@ export default class MetamaskController extends EventEmitter {
       notificationServicesPushController,
     } = this;
 
-    return {
+    let apis = {
       // etc
       getState: this.getState.bind(this),
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
@@ -3807,13 +3797,6 @@ export default class MetamaskController extends EventEmitter {
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
-
-      ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
-      startOAuthLogin: this.startOAuthLogin.bind(this),
-      resetOAuthLoginState: this.resetOAuthLoginState.bind(this),
-      createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
-      fetchAllSecretData: this.fetchAllSecretData.bind(this),
-      ///: END:ONLY_INCLUDE_IF
 
       // KeyringController
       setLocked: this.setLocked.bind(this),
@@ -4374,6 +4357,18 @@ export default class MetamaskController extends EventEmitter {
       isRelaySupported,
       requestSafeReload: this.requestSafeReload.bind(this),
     };
+
+    if (process.env.SEEDLESS_ONBOARDING_ENABLED) {
+      apis = {
+        ...apis,
+        startOAuthLogin: this.startOAuthLogin.bind(this),
+        resetOAuthLoginState: this.resetOAuthLoginState.bind(this),
+        createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
+        fetchAllSecretData: this.fetchAllSecretData.bind(this),
+      };
+    }
+
+    return apis;
   }
 
   rejectOriginPendingApprovals(origin) {
@@ -4662,8 +4657,6 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
-
   /**
    * Login with social login provider and get User Onboarding details.
    *
@@ -4758,8 +4751,6 @@ export default class MetamaskController extends EventEmitter {
       throw error;
     }
   }
-
-  ///: END:ONLY_INCLUDE_IF
 
   //=============================================================================
   // VAULT / KEYRING RELATED METHODS
@@ -4926,19 +4917,19 @@ export default class MetamaskController extends EventEmitter {
         );
       }
 
-      ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
-      const isSocialLoginFlow =
-        this.onboardingController.getIsSocialLoginFlow();
-      if (isSocialLoginFlow) {
-        // if it's social login flow, update the local backup metadata state of SeedlessOnboarding Controller
-        const primaryKeyringId =
-          this.keyringController.state.keyrings[0].metadata.id;
-        this.seedlessOnboardingController.updateBackupMetadataState({
-          keyringId: primaryKeyringId,
-          seedPhrase: seedPhraseAsUint8Array,
-        });
+      if (process.env.SEEDLESS_ONBOARDING_ENABLED) {
+        const isSocialLoginFlow =
+          this.onboardingController.getIsSocialLoginFlow();
+        if (isSocialLoginFlow) {
+          // if it's social login flow, update the local backup metadata state of SeedlessOnboarding Controller
+          const primaryKeyringId =
+            this.keyringController.state.keyrings[0].metadata.id;
+          this.seedlessOnboardingController.updateBackupMetadataState({
+            keyringId: primaryKeyringId,
+            seedPhrase: seedPhraseAsUint8Array,
+          });
+        }
       }
-      ///: END:ONLY_INCLUDE_IF
     } finally {
       releaseLock();
     }
