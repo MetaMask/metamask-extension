@@ -33,9 +33,7 @@ import TransactionList, {
   filterTransactionsByToken,
 } from './transaction-list.component';
 
-<<<<<<< HEAD
 jest.mock('../../../store/controller-actions/transaction-controller');
-=======
 // Mock FEATURED_NETWORK_CHAIN_IDS to include Goerli
 jest.mock('../../../../shared/constants/network', () => ({
   ...jest.requireActual('../../../../shared/constants/network'),
@@ -51,7 +49,6 @@ jest.mock('../../../../shared/constants/network', () => ({
     '0x324',
   ],
 }));
->>>>>>> be1140f81e72365a32ca7d310043fadf63d3eb58
 
 const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
   address: '0xefga64466f257793eaa52fcfff5066894b76a149',
