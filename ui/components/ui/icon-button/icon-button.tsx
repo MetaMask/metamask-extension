@@ -31,7 +31,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       label,
       className = '',
       tooltipRender,
-      round = true,
+      round = false,
       ...props
     },
     ref,

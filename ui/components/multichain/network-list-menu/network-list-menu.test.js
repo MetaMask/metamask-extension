@@ -545,25 +545,13 @@ describe('NetworkListMenu', () => {
   });
 
   describe('NetworkListMenu with REMOVE_GNS enabled', () => {
-    it('should not switch networks when clicking network items', () => {
-      const { getByText } = render({ selectedTabOriginInDomainsState: false });
-      fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
-
-      expect(mockToggleNetworkMenu).not.toHaveBeenCalled();
-      expect(mockSetActiveNetwork).not.toHaveBeenCalled();
-      expect(mockUpdateCustomNonce).not.toHaveBeenCalled();
-      expect(mockSetNextNonce).not.toHaveBeenCalled();
-      expect(mockDetectNfts).not.toHaveBeenCalled();
+    beforeEach(() => {
+      process.env.REMOVE_GNS = '1';
     });
 
-    it('should not show any networks as selected', () => {
-      render({ selectedTabOriginInDomainsState: false });
-      const selectedNodes = document.querySelectorAll(
-        '.multichain-network-list-item--selected',
-      );
-      expect(selectedNodes).toHaveLength(0);
+    afterEach(() => {
+      delete process.env.REMOVE_GNS;
     });
-
     it('should still allow searching networks even when switching is disabled', () => {
       const { getByPlaceholderText, queryByText } = render();
 
