@@ -19,7 +19,10 @@
     },
     "AnnouncementController": { "announcements": "object" },
     "NetworkOrderController": {
-      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
+      "enabledNetworkMap": {
+        "0x539": "boolean"
+      }
     },
     "AccountOrderController": {
       "pinnedAccountList": {},
@@ -52,6 +55,11 @@
           "conversionDate": "number",
           "conversionRate": 1700,
           "usdConversionRate": 1700
+        },
+        "MON": {
+          "conversionDate": "number",
+          "conversionRate": 0.2,
+          "usdConversionRate": 0.2
         }
       }
     },

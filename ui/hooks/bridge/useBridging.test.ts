@@ -87,6 +87,7 @@ describe('useBridging', () => {
             remoteFeatureFlags: {
               bridgeConfig: {
                 support: false,
+                minimumVersion: '0.0.0',
                 refreshRate: 5000,
                 maxRefreshCount: 5,
                 chains: {
@@ -163,6 +164,7 @@ describe('useBridging', () => {
               bridgeConfig: {
                 support: true,
                 refreshRate: 5000,
+                minimumVersion: '0.0.0',
                 maxRefreshCount: 5,
                 chains: {
                   '1': {

@@ -20,7 +20,11 @@ import {
   AlignItems,
 } from '../../../../helpers/constants/design-system';
 
-import { SwapAllowance, TokenInfo, TOKEN_DETAILS } from '../../remote.types';
+import {
+  SwapAllowance,
+  TokenInfo,
+  TOKEN_DETAILS,
+} from '../../../../../shared/lib/remote-mode';
 import { getChainNamesForDisplayByIds } from '../../../../helpers/utils/remote-mode';
 import { SUPPORTED_CHAINS_IDS } from '../../remote.constants';
 
@@ -64,7 +68,7 @@ export default function RemoteModeSwapAllowanceCard({
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
             <img
-              src={selectedToken.iconUrl}
+              src={selectedToken.image}
               alt={selectedToken.name}
               style={{ width: '24px', height: '24px', borderRadius: '50%' }}
             />

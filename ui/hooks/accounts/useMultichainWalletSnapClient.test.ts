@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
 import {
   BtcAccountType,
   BtcMethod,
@@ -7,28 +7,24 @@ import {
   SolMethod,
   SolScope,
 } from '@metamask/keyring-api';
-import { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
+import { renderHook } from '@testing-library/react-hooks';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts/bitcoin-wallet-snap';
-import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-wallet-snap';
 import {
-  createSnapAccount,
-  multichainUpdateTransactions,
-} from '../../store/actions';
+  BITCOIN_WALLET_SNAP_ID,
+  SOLANA_WALLET_SNAP_ID,
+  type CreateAccountSnapOptions,
+} from '../../../shared/lib/accounts';
+import { createSnapAccount } from '../../store/actions';
 import {
-  MultichainWalletSnapOptions,
   useMultichainWalletSnapClient,
   WalletClientType,
 } from './useMultichainWalletSnapClient';
 
 jest.mock('../../store/actions', () => ({
   createSnapAccount: jest.fn(),
-  multichainUpdateTransactions: jest.fn(),
 }));
 
 const mockCreateSnapAccount = createSnapAccount as jest.Mock;
-const mockMultichainUpdateTransactions =
-  multichainUpdateTransactions as jest.Mock;
 
 describe('useMultichainWalletSnapClient', () => {
   beforeEach(() => {
@@ -65,7 +61,7 @@ describe('useMultichainWalletSnapClient', () => {
   ];
 
   testCases.forEach(({ clientType, network, snapId, mockAccount }) => {
-    const options: MultichainWalletSnapOptions = {
+    const options: CreateAccountSnapOptions = {
       scope: network,
       entropySource: 'test-entropy-source',
     };
@@ -107,20 +103,6 @@ describe('useMultichainWalletSnapClient', () => {
         snapId,
         options,
         internalOptions,
-      );
-    });
-
-    it(`force fetches the transactions after creating a ${clientType} account`, async () => {
-      const { result } = renderHook(() =>
-        useMultichainWalletSnapClient(clientType),
-      );
-      const multichainWalletSnapClient = result.current;
-
-      mockCreateSnapAccount.mockResolvedValue(mockAccount);
-
-      await multichainWalletSnapClient.createAccount({ scope: network });
-      expect(mockMultichainUpdateTransactions).toHaveBeenCalledWith(
-        mockAccount.id,
       );
     });
   });

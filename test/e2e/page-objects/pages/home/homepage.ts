@@ -28,7 +28,7 @@ class HomePage {
 
   private readonly basicFunctionalityOffWarningMessage = {
     text: 'Basic functionality is off',
-    css: '.mm-banner-alert',
+    css: '.mm-banner-base',
   };
 
   protected readonly bridgeButton: string =
@@ -40,7 +40,7 @@ class HomePage {
   };
 
   private readonly erc20TokenDropdown = {
-    testId: 'import-token-button',
+    testId: 'asset-list-control-bar-action-button',
   };
 
   private readonly nftTab = {
@@ -186,7 +186,7 @@ class HomePage {
   async check_disabledButtonTooltip(tooltipText: string): Promise<void> {
     console.log(`Check if disabled button tooltip is displayed on homepage`);
     await this.driver.waitForSelector(
-      `.icon-button--disabled [data-tooltipped][data-original-title="${tooltipText}"]`,
+      `.icon-button-round--disabled [data-tooltipped][data-original-title="${tooltipText}"]`,
     );
   }
 
@@ -318,6 +318,24 @@ class HomePage {
   ): Promise<void> {
     await this.driver.waitForSelector({
       text: `Secret Recovery Phrase ${srpNumber} imported`,
+    });
+  }
+
+  async check_portfolioLinkIsDisplayed(): Promise<void> {
+    console.log('Check if portfolio link is displayed on homepage');
+    await this.driver.waitForSelector(this.portfolioLink);
+  }
+
+  /**
+   * Check if the expected warning message is displayed on homepage.
+   *
+   * @param message - The message to be displayed.
+   */
+  async check_warningMessageIsDisplayed(message: string): Promise<void> {
+    console.log(`Check if warning message ${message} is displayed on homepage`);
+    await this.driver.waitForSelector({
+      text: message,
+      tag: 'p',
     });
   }
 }

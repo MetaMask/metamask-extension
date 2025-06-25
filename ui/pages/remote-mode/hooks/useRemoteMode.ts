@@ -1,13 +1,19 @@
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { type Hex, hexToNumber } from '@metamask/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { parseUnits } from 'ethers/lib/utils';
 import {
+  Caveat,
   createDelegation,
   getDeleGatorEnvironment,
 } from '../../../../shared/lib/delegation';
 import {
+  Delegation,
   encodeDisableDelegation,
   getDelegationHashOffchain,
 } from '../../../../shared/lib/delegation/delegation';
@@ -17,14 +23,18 @@ import { getRemoteModeConfig } from '../../../selectors/remote-mode';
 import { addTransaction } from '../../../store/actions';
 import {
   awaitDeleteDelegationEntry,
-  listDelegationEntries,
   signDelegation,
   storeDelegationEntry,
 } from '../../../store/controller-actions/delegation-controller';
 import { useEIP7702Account } from '../../confirmations/hooks/useEIP7702Account';
 import { useEIP7702Networks } from '../../confirmations/hooks/useEIP7702Networks';
-import { REMOTE_MODES } from '../remote.types';
+import {
+  REMOTE_MODES,
+  DailyAllowance,
+} from '../../../../shared/lib/remote-mode';
 import { useConfirmationNavigation } from '../../confirmations/hooks/useConfirmationNavigation';
+import { multiTokenPeriodBuilder } from '../../../../shared/lib/delegation/caveatBuilder/multiTokenPeriod';
+import { DAY_IN_SECONDS } from '../remote.constants';
 
 export const useRemoteMode = ({ account }: { account: Hex }) => {
   const { network7702List } = useEIP7702Networks(account);
@@ -66,6 +76,22 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
     [network7702List, chainId],
   );
 
+  const getRemoteModeDelegation = useCallback(
+    (mode: REMOTE_MODES) => {
+      const allowance =
+        mode === REMOTE_MODES.DAILY_ALLOWANCE
+          ? remoteModeConfig.dailyAllowance
+          : remoteModeConfig.swapAllowance;
+
+      if (!allowance) {
+        return null;
+      }
+
+      return allowance.delegation;
+    },
+    [remoteModeConfig.dailyAllowance, remoteModeConfig.swapAllowance],
+  );
+
   const upgradeAccount = useCallback(async () => {
     // TODO: remove this and use isSupported when it's ready
     if (networkConfig?.isSupported) {
@@ -92,7 +118,7 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
     upgradeContractAddress,
   ]);
 
-  const enableRemoteMode = useCallback(
+  const generateDelegation = useCallback(
     async ({
       selectedAccount,
       authorizedAccount,
@@ -104,10 +130,37 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
       mode: REMOTE_MODES;
       meta?: string;
     }) => {
-      await upgradeAccount();
+      const caveats: Caveat[] = [];
+
+      if (mode === REMOTE_MODES.DAILY_ALLOWANCE) {
+        const parsedMeta = JSON.parse(meta ?? '{}') as {
+          allowances: DailyAllowance[];
+        };
+
+        const tokenPeriodConfigs = parsedMeta.allowances.map((allowance) => {
+          const amountInBaseUnit = parseUnits(
+            allowance.amount.toString(),
+            allowance.decimals,
+          );
+          return {
+            token: allowance.address as Hex,
+            periodAmount: amountInBaseUnit.toBigInt(),
+            periodDuration: DAY_IN_SECONDS,
+            // TODO: check if is the right way to get the start date or check how get latest block timestamp
+            startDate: Math.floor(new Date().getTime() / 1000),
+          };
+        });
+
+        caveats.push(
+          multiTokenPeriodBuilder(
+            getDeleGatorEnvironment(hexToNumber(chainId)),
+            tokenPeriodConfigs,
+          ),
+        );
+      }
 
       const delegation = createDelegation({
-        caveats: [],
+        caveats,
         from: selectedAccount.address as `0x${string}`,
         to: authorizedAccount.address as `0x${string}`,
       });
@@ -116,29 +169,17 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
 
       delegation.signature = signature;
 
-      storeDelegationEntry({
-        delegation,
-        tags: [mode],
-        chainId,
-        meta,
-      });
+      return delegation;
     },
-    [chainId, upgradeAccount],
+    [chainId],
   );
 
-  const disableRemoteMode = useCallback(
-    async ({ mode }: { mode: REMOTE_MODES }): Promise<void> => {
-      const delegationEntries = await listDelegationEntries({
-        from: account,
-        tags: [mode],
-      });
-
-      if (delegationEntries.length === 0) {
-        throw new Error('No delegation entry found');
-      }
-
-      const { delegation } = delegationEntries[0];
-
+  const addDisableDelegationTransaction = useCallback(
+    async ({
+      delegation,
+    }: {
+      delegation: Delegation;
+    }): Promise<TransactionMeta> => {
       const encodedCallData = encodeDisableDelegation({
         delegation,
       });
@@ -158,17 +199,116 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
 
       setTransactionId(transactionMeta.id);
 
+      return transactionMeta;
+    },
+    [account, delegationManagerAddress, globalNetworkClientId],
+  );
+
+  const enableRemoteMode = useCallback(
+    async ({
+      selectedAccount,
+      authorizedAccount,
+      mode,
+      meta,
+    }: {
+      selectedAccount: InternalAccount;
+      authorizedAccount: InternalAccount;
+      mode: REMOTE_MODES;
+      meta?: string;
+    }) => {
+      await upgradeAccount();
+
+      const delegation = await generateDelegation({
+        selectedAccount,
+        authorizedAccount,
+        mode,
+        meta,
+      });
+
+      storeDelegationEntry({
+        delegation,
+        tags: [mode],
+        chainId,
+        meta,
+      });
+    },
+    [chainId, generateDelegation, upgradeAccount],
+  );
+
+  const disableRemoteMode = useCallback(
+    async ({ mode }: { mode: REMOTE_MODES }): Promise<void> => {
+      const delegation = getRemoteModeDelegation(mode);
+
+      if (!delegation) {
+        throw new Error('No delegation entry found');
+      }
+
+      const transactionMeta = await addDisableDelegationTransaction({
+        delegation,
+      });
+
       await awaitDeleteDelegationEntry({
         hash: getDelegationHashOffchain(delegation),
         txMeta: transactionMeta,
       });
     },
-    [account, delegationManagerAddress, globalNetworkClientId],
+    [addDisableDelegationTransaction, getRemoteModeDelegation],
+  );
+
+  const updateRemoteMode = useCallback(
+    async ({
+      selectedAccount,
+      authorizedAccount,
+      mode,
+      meta,
+    }: {
+      selectedAccount: InternalAccount;
+      authorizedAccount: InternalAccount;
+      mode: REMOTE_MODES;
+      meta?: string;
+    }) => {
+      const previousDelegation = getRemoteModeDelegation(mode);
+
+      const delegation = await generateDelegation({
+        selectedAccount,
+        authorizedAccount,
+        mode,
+        meta,
+      });
+
+      const entryToStore = {
+        delegation,
+        tags: [mode],
+        chainId,
+        meta,
+      };
+
+      if (!previousDelegation) {
+        return await storeDelegationEntry(entryToStore);
+      }
+
+      const transactionMeta = await addDisableDelegationTransaction({
+        delegation: previousDelegation,
+      });
+
+      return await awaitDeleteDelegationEntry({
+        hash: getDelegationHashOffchain(previousDelegation),
+        txMeta: transactionMeta,
+        entryToStore,
+      });
+    },
+    [
+      addDisableDelegationTransaction,
+      chainId,
+      generateDelegation,
+      getRemoteModeDelegation,
+    ],
   );
 
   return {
     enableRemoteMode,
     disableRemoteMode,
+    updateRemoteMode,
     remoteModeConfig,
   };
 };

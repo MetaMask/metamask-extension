@@ -3,9 +3,7 @@ import { useSelector } from 'react-redux';
 import { getMultichainSelectedAccountCachedBalance } from '../../../selectors/multichain';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-///: END:ONLY_INCLUDE_IF
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   getIsSwapsChain,
@@ -45,10 +43,8 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
       isSigningEnabled={true}
       isSwapsChain={isSwapsChain}
       defaultSwapsToken={defaultSwapsToken}
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       isBridgeChain={isBridgeChain}
       isBuyableChain={isNativeTokenBuyable}
-      ///: END:ONLY_INCLUDE_IF
     />
   );
 };

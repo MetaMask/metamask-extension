@@ -2,6 +2,7 @@ import { isEqual } from 'lodash';
 import { GetPreferencesResult } from '@metamask/snaps-sdk';
 import { Driver } from '../../webdriver/driver';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
+import { veryLargeDelayMs } from '../../helpers';
 
 const inputLocator = {
   dataManageStateInput: '#dataManageState',
@@ -13,17 +14,24 @@ const inputLocator = {
   messageEd25519Bip32Input: '#bip32Message-ed25519Bip32',
   messageEd25519Input: '#bip32Message-ed25519',
   messageSecp256k1Input: '#bip32Message-secp256k1',
+  personalSignMessageInput: '#personalSignMessage',
   setStateKeyInput: '#setStateKey',
   setStateKeyUnencryptedInput: '#setStateKeyUnencrypted',
+  signTypedDataMessageInput: '#signTypedData',
   dataUnencryptedStateInput: '#dataUnencryptedState',
   getUnencryptedStateInput: '#getUnencryptedState',
   wasmInput: '#wasmInput',
+  backgroundEventDateInput: '#backgroundEventDate',
+  backgroundEventDurationInput: '#backgroundEventDuration',
+  cancelBackgroundEventInput: '#backgroundEventId',
 } satisfies Record<string, string>;
 
 export const buttonLocator = {
   connectBip32Button: '#connectbip32',
   connectBip44Button: '#connectbip44',
   connectClientStatusButton: '#connectclient-status',
+  connectCronJobsButton: '#connectcronjobs',
+  connectCronjobDurationButton: '#connectcronjob-duration',
   connectDialogsButton: '#connectdialogs',
   connectErrorsButton: '#connecterrors',
   connectGetEntropyButton: '#connectGetEntropySnap',
@@ -31,6 +39,7 @@ export const buttonLocator = {
   connectHomePageButton: '#connecthomepage',
   connectjsxButton: '#connectjsx',
   displayJsxButton: '#displayJsx',
+  connectJsonRpcButton: '#connectjson-rpc',
   connectInteractiveButton: '#connectinteractive-ui',
   connectImagesButton: '#connectimages',
   connectLifeCycleButton: '#connectlifecycle-hooks',
@@ -49,13 +58,17 @@ export const buttonLocator = {
   createDialogDisabledButton: '#createDisabledDialogButton',
   clearManageStateButton: '#clearManageState',
   clearUnencryptedManageStateButton: '#clearUnencryptedManageState',
+  ethereumProviderConnectButton: '#connectethereum-provider',
   getAccountButton: '#getAccounts',
+  getAccountsButton: '#sendEthproviderAccounts',
   getBip32CompressedPublicKeyButton: '#bip32GetCompressedPublic',
   getBip32PublicKeyButton: '#bip32GetPublic',
   getPreferencesConnectButton: '#connectpreferences',
   getPreferencesSubmitButton: '#getPreferences',
+  getVersionButton: '#sendEthprovider',
   incrementButton: '#increment',
   getSettingsStateButton: '#settings-state',
+  personalSignButton: '#signPersonalSignMessage',
   publicKeyBip44Button: '#sendBip44Test',
   connectNetworkAccessButton: '#connectnetwork-access',
   sendErrorButton: '#sendError',
@@ -69,6 +82,7 @@ export const buttonLocator = {
   sendNetworkAccessTestButton: '#sendNetworkAccessTest',
   sendManageStateButton: '#sendManageState',
   sendStateButton: '#sendState',
+  sendRpcButton: '#sendRpc',
   sendUnencryptedManageStateButton: '#sendUnencryptedManageState',
   sendWasmMessageButton: '#sendWasmMessage',
   signBip32messageSecp256k1Button: '#sendBip32-secp256k1',
@@ -76,15 +90,26 @@ export const buttonLocator = {
   signEd25519Bip32MessageButton: '#sendBip32-ed25519Bip32',
   signEd25519MessageButton: '#sendBip32-ed25519',
   signEntropyMessageButton: '#signEntropyMessage',
+  signTypedDataButton: '#signTypedDataButton',
   submitClientStatusButton: '#sendClientStatusTest',
   clearStateButton: '#clearState',
   sendUnencryptedStateButton: '#sendUnencryptedState',
   sendGetUnencryptedStateButton: '#sendGetUnencryptedState',
   clearStateUnencryptedButton: '#clearStateUnencrypted',
+  connectBackgroundEventsButton: '#connectbackground-events',
+  scheduleBackgroundEventWithDateButton: '#scheduleBackgroundEventWithDate',
+  scheduleBackgroundEventWithDurationButton:
+    '#scheduleBackgroundEventWithDuration',
+  cancelBackgroundEventButton: '#cancelBackgroundEvent',
+  getBackgroundEventResultButton: '#getBackgroundEvents',
   showPreinstalledDialogButton: '#showPreinstalledDialog',
+  startWebSocket: '#startWebSocket',
+  stopWebSocket: '#stopWebSocket',
+  getWebSocketState: '#getWebSocketState',
 } satisfies Record<string, string>;
 
 const spanLocator = {
+  addressResultSpan: '#ethproviderResult',
   bip32MessageResultEd25519Span: '#bip32MessageResult-ed25519',
   bip32MessageResultSecp256k1Span: '#bip32MessageResult-secp256k1',
   bip32PublicKeyResultSpan: '#bip32PublicKeyResult',
@@ -103,9 +128,13 @@ const spanLocator = {
   interactiveUIResultSpan: '#interactiveUIResult',
   networkAccessResultSpan: '#networkAccessResult',
   messageResultEd25519SBip32Span: '#bip32MessageResult-ed25519Bip32',
+  personalSignResultSpan: '#personalSignResult',
   preferencesResultSpan: '#preferencesResult',
+  providerVersionResultSpan: '#ethproviderResult',
   sendManageStateResultSpan: '#sendManageStateResult',
+  snapUIRenderer: '.snap-ui-renderer__content',
   sendUnencryptedManageStateResultSpan: '#sendUnencryptedManageStateResult',
+  signTypedDataResultSpan: '#signTypedDataResult',
   retrieveManageStateResultSpan: '#retrieveManageStateResult',
   retrieveManageStateUnencryptedResultSpan:
     '#retrieveManageStateUnencryptedResult',
@@ -114,13 +143,17 @@ const spanLocator = {
   wasmResultSpan: '#wasmResult',
   unencryptedStateResultSpan: '#unencryptedStateResult',
   getStateUnencryptedResultSpan: '#getStateUnencryptedResult',
+  backgroundEventResultSpan: '#schedulebackgroundEventResult',
+  getBackgroundEventResultSpan: '#getBackgroundEventsResult',
 } satisfies Record<string, string>;
 
 const dropDownLocator = {
   bip32EntropyDropDown: '#bip32-entropy-selector',
   bip44EntropyDropDown: '#bip44-entropy-selector',
   getEntropyDropDown: '#get-entropy-entropy-selector',
+  networkDropDown: '#select-chain',
 } satisfies Record<string, string>;
+
 export class TestSnaps {
   driver: Driver;
 
@@ -215,6 +248,17 @@ export class TestSnaps {
     });
   }
 
+  async check_messageResultSpanIncludes(
+    spanSelectorId: keyof typeof spanLocator,
+    partialMessage: string,
+  ) {
+    const element = await this.driver.findElement(spanLocator[spanSelectorId]);
+    const spanText = await element.getAttribute('textContent');
+    if (!spanText.includes(partialMessage)) {
+      throw new Error(`Expected partial message "${partialMessage}" not found`);
+    }
+  }
+
   async check_Count(expectedCount: string) {
     console.log(`Checking the count is ${expectedCount}`);
     await this.driver.waitForSelector({
@@ -277,5 +321,69 @@ export class TestSnaps {
       );
     }
     console.log('Preferences result span JSON is valid');
+  }
+
+  /**
+   * Select a network from the dropdown with the given name.
+   *
+   * @param dropDownName - The name of the dropdown locator to select the
+   * network from.
+   * @param name - The name of the network to select.
+   */
+  async scrollAndSelectNetwork(
+    dropDownName: keyof typeof dropDownLocator,
+    name: 'Ethereum' | 'Linea' | 'Sepolia',
+  ) {
+    const locator = dropDownLocator[dropDownName];
+    console.log(`Select ${name} network`);
+    const selector = await this.driver.findElement(locator);
+    await this.driver.scrollToElement(selector);
+    await this.driver.clickElement(locator);
+    await this.driver.clickElement({
+      text: name,
+      css: `${locator} option`,
+    });
+  }
+
+  async waitForWebSocketUpdate(state: {
+    open: boolean;
+    origin: string | null;
+    blockNumber: string | null;
+  }) {
+    const resultElement = await this.driver.findElement('#networkAccessResult');
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          await this.clickButton('getWebSocketState');
+
+          // Wait for response from Snap.
+          await this.driver.waitForSelector('#getWebSocketState', {
+            state: 'enabled',
+          });
+
+          const text = await resultElement.getText();
+
+          const { open, origin, blockNumber } = JSON.parse(text);
+
+          console.log('Retrieved WebSocket state:', {
+            open,
+            origin,
+            blockNumber,
+          });
+
+          const blockNumberMatch =
+            typeof state.blockNumber === 'string'
+              ? typeof blockNumber === state.blockNumber
+              : blockNumber === state.blockNumber;
+
+          return (
+            open === state.open && origin === state.origin && blockNumberMatch
+          );
+        } catch {
+          return false;
+        }
+      },
+      { timeout: veryLargeDelayMs * 2, interval: 200 },
+    );
   }
 }

@@ -68,3 +68,13 @@ export type ChainAddressMarketData = Record<
 >;
 
 export type SymbolCurrencyRateMapping = Record<string, Record<string, number>>;
+
+export type DeFiProtocolPosition = {
+  chainId: Hex;
+  tokenImage: string;
+  underlyingSymbols: string[];
+  marketValue: string;
+  title: string;
+  protocolId: string;
+  iconGroup: { avatarValue: string; symbol: string }[];
+};

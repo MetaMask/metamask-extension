@@ -43,8 +43,10 @@ describe('Test Snap Client Status', function () {
         await testSnaps.check_pageIsLoaded();
         await testSnaps.scrollAndClickButton('submitClientStatusButton');
 
-        // Validate the client status is true when the wallet is locked
-        await testSnaps.check_clientStatus('true');
+        // Validate the client status is accurate
+        await testSnaps.check_clientStatus(
+          JSON.stringify({ locked: true, active: true }, null, 2),
+        );
       },
     );
   });

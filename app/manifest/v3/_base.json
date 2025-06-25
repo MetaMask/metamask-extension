@@ -75,6 +75,7 @@
   },
   "manifest_version": 3,
   "name": "__MSG_appName__",
+  "optional_permissions": ["clipboardRead"],
   "permissions": [
     "activeTab",
     "alarms",

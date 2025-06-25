@@ -4,6 +4,16 @@ import { Driver } from '../../../webdriver/driver';
 class AdvancedSettings {
   private readonly driver: Driver;
 
+  private readonly autoLockoutButton = {
+    testId: 'auto-lockout-button',
+  };
+
+  private readonly autoLockoutTimeHelperText = '#autoTimeout-helper-text';
+
+  private readonly autoLockoutTimeInput = {
+    testId: 'auto-lockout-time',
+  };
+
   private readonly downloadDataButton = '[data-testid="export-data-button"]';
 
   private readonly downloadStateLogsButton =
@@ -59,6 +69,11 @@ class AdvancedSettings {
     );
   }
 
+  async confirmAutoLockout(): Promise<void> {
+    console.log('Confirming auto lockout in advanced settings');
+    await this.driver.clickElement(this.autoLockoutButton);
+  }
+
   async downloadData(): Promise<void> {
     console.log('Downloading data on advanced settings page');
     await this.driver.clickElement(this.downloadDataButton);
@@ -67,6 +82,33 @@ class AdvancedSettings {
   async downloadStateLogs(): Promise<void> {
     console.log('Downloading state logs on advanced settings page');
     await this.driver.clickElement(this.downloadStateLogsButton);
+  }
+
+  /**
+   * Fill the auto lockout time input with the given time in minutes
+   *
+   * @param time - The time in minutes to set the auto lockout time to
+   * @param errorMessage - The error message to check for if expected
+   */
+  async fillAutoLockoutTime(
+    time: string,
+    errorMessage?: string,
+  ): Promise<void> {
+    console.log('Filling auto lockout time in advanced settings');
+    await this.driver.fill(this.autoLockoutTimeInput, time);
+    if (errorMessage) {
+      await this.driver.waitForSelector({
+        css: this.autoLockoutTimeHelperText,
+        text: errorMessage,
+      });
+    } else {
+      await this.driver.assertElementNotPresent(
+        this.autoLockoutTimeHelperText,
+        {
+          waitAtLeastGuard: 100, // A findElementGuard is not possible here, because only this element changes, but a waitAtLeast of 100ms should be sufficient
+        },
+      );
+    }
   }
 
   async toggleShowConversionOnTestnets(): Promise<void> {

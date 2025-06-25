@@ -14,6 +14,7 @@ import {
   selectBridgeQuotes,
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
+  selectMinimumBalanceForRentExemptionInSOL,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
@@ -248,6 +249,17 @@ export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask;
   return quoteRequest;
 };
+
+export const getShouldUseSnapConfirmation = createSelector(
+  getBridgeFeatureFlags,
+  getFromChain,
+  (extensionConfig, fromChain) =>
+    Boolean(
+      fromChain &&
+        extensionConfig.chains[formatChainIdToCaip(fromChain.chainId)]
+          ?.isSnapConfirmationEnabled,
+    ),
+);
 
 export const getQuoteRefreshRate = createSelector(
   getBridgeFeatureFlags,
@@ -512,26 +524,46 @@ export const getFromAmountInCurrency = createSelector(
   },
 );
 
+export const getTxAlerts = (state: BridgeAppState) => state.bridge.txAlert;
+
 export const getValidationErrors = createDeepEqualSelector(
   getBridgeQuotes,
   _getValidatedSrcAmount,
   getFromToken,
   getFromAmount,
+  ({ metamask }: BridgeAppState) =>
+    selectMinimumBalanceForRentExemptionInSOL(metamask),
+  getQuoteRequest,
+  getTxAlerts,
   (
-    { activeQuote, quotesLastFetchedMs, isLoading },
+    { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
     validatedSrcAmount,
     fromToken,
     fromTokenInputValue,
+    minimumBalanceForRentExemptionInSOL,
+    quoteRequest,
+    txAlert,
   ) => {
+    const srcChainId =
+      quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
+    const minimumBalanceToUse =
+      srcChainId && isSolanaChainId(srcChainId)
+        ? minimumBalanceForRentExemptionInSOL
+        : '0';
+
     return {
+      isTxAlertPresent: Boolean(txAlert),
       isNoQuotesAvailable: Boolean(
-        !activeQuote && quotesLastFetchedMs && !isLoading,
+        !activeQuote &&
+          quotesLastFetchedMs &&
+          !isLoading &&
+          quotesRefreshCount > 0,
       ),
       // Shown prior to fetching quotes
       isInsufficientGasBalance: (balance?: BigNumber) => {
         if (balance && !activeQuote && validatedSrcAmount && fromToken) {
           return isNativeAddress(fromToken.address)
-            ? balance.eq(validatedSrcAmount)
+            ? balance.sub(minimumBalanceToUse).lte(validatedSrcAmount)
             : balance.lte(0);
         }
         return false;
@@ -543,6 +575,7 @@ export const getValidationErrors = createDeepEqualSelector(
             ? balance
                 .sub(activeQuote.totalMaxNetworkFee.amount)
                 .sub(activeQuote.sentAmount.amount)
+                .sub(minimumBalanceToUse)
                 .lte(0)
             : balance.lte(activeQuote.totalMaxNetworkFee.amount);
         }
@@ -618,6 +651,22 @@ export const getIsToOrFromSolana = createSelector(
   },
 );
 
+export const getIsSolanaSwap = createSelector(
+  getFromChain,
+  getToChain,
+  (fromChain, toChain) => {
+    if (!fromChain?.chainId || !toChain?.chainId) {
+      return false;
+    }
+
+    const fromChainIsSolana = isSolanaChainId(fromChain.chainId);
+    const toChainIsSolana = isSolanaChainId(toChain.chainId);
+
+    // Return true if BOTH chains are Solana (Solana-to-Solana swap)
+    return fromChainIsSolana && toChainIsSolana;
+  },
+);
+
 export const getHardwareWalletName = (state: BridgeAppState) => {
   const type = getHardwareWalletType(state);
   switch (type) {
@@ -633,3 +682,28 @@ export const getHardwareWalletName = (state: BridgeAppState) => {
       return undefined;
   }
 };
+
+/**
+ * Returns true if Unified UI swaps are enabled for the chain.
+ * Falls back to false when the chain is missing from feature-flags.
+ *
+ * @param _state - Redux state (unused placeholder for reselect signature)
+ * @param chainId - ChainId in either hex (e.g. 0x1) or CAIP format (eip155:1).
+ */
+export const getIsUnifiedUIEnabled = createSelector(
+  [
+    getBridgeFeatureFlags,
+    (_state: BridgeAppState, chainId?: string | number) => chainId,
+  ],
+  (bridgeFeatureFlags, chainId): boolean => {
+    if (chainId === undefined || chainId === null) {
+      return false;
+    }
+
+    const caipChainId = formatChainIdToCaip(chainId);
+
+    return Boolean(
+      bridgeFeatureFlags?.chains?.[caipChainId]?.isUnifiedUIEnabled,
+    );
+  },
+);

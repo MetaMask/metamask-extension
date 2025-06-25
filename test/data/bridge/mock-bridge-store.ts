@@ -49,6 +49,7 @@ export const createBridgeMockStore = ({
     },
     localeMessages: { currentLocale: 'es_419' },
     metamask: {
+      ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
       ...swapsStore.metamask,
       ...mockNetworkState(
         { chainId: CHAIN_IDS.MAINNET },
@@ -82,6 +83,7 @@ export const createBridgeMockStore = ({
         remoteFeatureFlags: {
           ...featureFlagOverrides,
           bridgeConfig: {
+            minimumVersion: '0.0.0',
             support: false,
             refreshRate: 5000,
             maxRefreshCount: 5,
@@ -107,10 +109,7 @@ export const createBridgeMockStore = ({
         },
       },
       ...bridgeStateOverrides,
-      bridgeStatusState: {
-        ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
-        ...bridgeStatusStateOverrides,
-      },
+      ...bridgeStatusStateOverrides,
     },
     send: {
       swapsBlockedTokens: [],

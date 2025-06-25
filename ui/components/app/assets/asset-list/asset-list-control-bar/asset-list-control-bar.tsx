@@ -1,9 +1,15 @@
 import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { Hex } from '@metamask/utils';
 import {
+  getAllChainsToPoll,
+  getEnabledNetworks,
+  getIsLineaMainnet,
+  getIsMainnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getTokenNetworkFilter,
+  getUseNftDetection,
 } from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
@@ -44,12 +50,18 @@ import {
 } from '../../../../../../shared/constants/app';
 import NetworkFilter from '../network-filter';
 import {
+  checkAndUpdateAllNftsOwnershipStatus,
+  detectNfts,
   detectTokens,
   setTokenNetworkFilter,
+  showImportNftsModal,
   showImportTokensModal,
 } from '../../../../../store/actions';
 import Tooltip from '../../../../ui/tooltip';
 import { getMultichainNetwork } from '../../../../../selectors/multichain';
+import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
+import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
+import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
@@ -65,19 +77,58 @@ const AssetListControlBar = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const navigate = useNavigate();
   const popoverRef = useRef<HTMLDivElement>(null);
+  const useNftDetection = useSelector(getUseNftDetection);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
+  const isMainnet = useSelector(getIsMainnet);
+  const isLineaMainnet = useSelector(getIsLineaMainnet);
+  const allChainIds = useSelector(getAllChainsToPoll);
 
+  const { collections } = useNftsCollections();
+
+  const enabledNetworks = useSelector(getEnabledNetworks);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
     useState(false);
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
+  const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
+
+  const allNetworkClientIds = useMemo(() => {
+    return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
+      const entry = allNetworks[chainId as `0x${string}`];
+      if (!entry) {
+        return [];
+      }
+      const index = entry.defaultRpcEndpointIndex;
+      const endpoint = entry.rpcEndpoints[index];
+      return endpoint?.networkClientId ? [endpoint.networkClientId] : [];
+    });
+  }, [tokenNetworkFilter, allNetworks]);
+
+  const networksToDisplay = useMemo(() => {
+    return isGlobalNetworkSelectorRemoved
+      ? enabledNetworks
+      : tokenNetworkFilter;
+  }, [tokenNetworkFilter, enabledNetworks]);
+
+  const shouldShowRefreshButtons = useMemo(
+    () =>
+      (isMainnet || isLineaMainnet || Object.keys(collections).length > 0) &&
+      useNftDetection,
+    [isMainnet, isLineaMainnet, collections, useNftDetection],
+  );
+
+  const shouldShowEnableAutoDetect = useMemo(
+    () => !shouldShowRefreshButtons && !useNftDetection,
+    [shouldShowRefreshButtons, useNftDetection],
+  );
 
   const isTestNetwork = useMemo(() => {
     return (TEST_CHAINS as string[]).includes(
@@ -103,7 +154,7 @@ const AssetListControlBar = ({
   // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
   // This effect is to unblock and derisk in the short-term
   useEffect(() => {
-    if (Object.keys(tokenNetworkFilter).length === 0) {
+    if (Object.keys(networksToDisplay).length === 0) {
       dispatch(setTokenNetworkFilter(allOpts));
     } else {
       dispatch(
@@ -114,20 +165,6 @@ const AssetListControlBar = ({
     }
   }, []);
 
-  // When a network gets added/removed we want to make sure that we switch to the filtered list of the current network
-  // We only want to do this if the "Current Network" filter is selected
-  useEffect(() => {
-    if (Object.keys(tokenNetworkFilter).length === 1) {
-      dispatch(
-        setTokenNetworkFilter({
-          [currentMultichainNetwork.network.chainId]: true,
-        }),
-      );
-    } else {
-      dispatch(setTokenNetworkFilter(allOpts));
-    }
-  }, [Object.keys(allNetworks).length]);
-
   const windowType = getEnvironmentType();
   const isFullScreen =
     windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
@@ -136,28 +173,39 @@ const AssetListControlBar = ({
   const toggleTokenSortPopover = () => {
     setIsNetworkFilterPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
+    setIsImportNftPopoverOpen(false);
     setIsTokenSortPopoverOpen(!isTokenSortPopoverOpen);
   };
 
   const toggleNetworkFilterPopover = () => {
     setIsTokenSortPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
+    setIsImportNftPopoverOpen(false);
     setIsNetworkFilterPopoverOpen(!isNetworkFilterPopoverOpen);
   };
 
   const toggleImportTokensPopover = () => {
     setIsTokenSortPopoverOpen(false);
     setIsNetworkFilterPopoverOpen(false);
+    setIsImportNftPopoverOpen(false);
     setIsImportTokensPopoverOpen(!isImportTokensPopoverOpen);
+  };
+
+  const toggleImportNftPopover = () => {
+    setIsTokenSortPopoverOpen(false);
+    setIsNetworkFilterPopoverOpen(false);
+    setIsImportTokensPopoverOpen(false);
+    setIsImportNftPopoverOpen(!isImportNftPopoverOpen);
   };
 
   const closePopover = () => {
     setIsTokenSortPopoverOpen(false);
     setIsNetworkFilterPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
+    setIsImportNftPopoverOpen(false);
   };
 
-  const handleImport = () => {
+  const handleTokenImportModal = () => {
     dispatch(showImportTokensModal());
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
@@ -166,6 +214,11 @@ const AssetListControlBar = ({
         location: 'HOME',
       },
     });
+    closePopover();
+  };
+
+  const handleNftImportModal = () => {
+    dispatch(showImportNftsModal({}));
     closePopover();
   };
 
@@ -178,6 +231,19 @@ const AssetListControlBar = ({
     });
   };
 
+  const onEnableAutoDetect = () => {
+    navigate(SECURITY_ROUTE);
+  };
+
+  const handleNftRefresh = () => {
+    if (isMainnet || isLineaMainnet) {
+      dispatch(detectNfts(allChainIds));
+    }
+    // loop through allNetworkClientIds and call checkAndUpdateAllNftsOwnershipStatus for each one
+    allNetworkClientIds.forEach((networkClientId) => {
+      checkAndUpdateAllNftsOwnershipStatus(networkClientId);
+    });
+  };
   const isDisabled = useMemo(() => {
     const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(
       currentMultichainNetwork.network.chainId as Hex,
@@ -247,12 +313,17 @@ const AssetListControlBar = ({
           {showImportTokenButton && (
             <ImportControl
               showTokensLinks={showTokensLinks}
-              onClick={toggleImportTokensPopover}
+              onClick={
+                showTokensLinks
+                  ? toggleImportTokensPopover
+                  : toggleImportNftPopover
+              }
             />
           )}
         </Box>
       </Box>
 
+      {/* Network Filter Popover */}
       <Popover
         onClickOutside={closePopover}
         isOpen={isNetworkFilterPopoverOpen}
@@ -289,6 +360,7 @@ const AssetListControlBar = ({
         <SortControl handleClose={closePopover} />
       </Popover>
 
+      {/* Tokens Popover */}
       <Popover
         onClickOutside={closePopover}
         isOpen={isImportTokensPopoverOpen}
@@ -303,7 +375,10 @@ const AssetListControlBar = ({
           minWidth: isFullScreen ? '158px' : '',
         }}
       >
-        <SelectableListItem onClick={handleImport} testId="importTokens">
+        <SelectableListItem
+          onClick={handleTokenImportModal}
+          testId="importTokens"
+        >
           <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
           {t('importTokensCamelCase')}
         </SelectableListItem>
@@ -315,6 +390,59 @@ const AssetListControlBar = ({
           />
           {t('refreshList')}
         </SelectableListItem>
+      </Popover>
+
+      {/* NFT Popover */}
+      <Popover
+        onClickOutside={closePopover}
+        isOpen={isImportNftPopoverOpen}
+        position={PopoverPosition.BottomEnd}
+        referenceElement={popoverRef.current}
+        matchWidth={false}
+        style={{
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: 0,
+          minWidth: isFullScreen ? '158px' : '',
+        }}
+      >
+        <SelectableListItem onClick={handleNftImportModal} testId="import-nfts">
+          <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
+
+          {t('importNFT')}
+        </SelectableListItem>
+
+        <Box className="nfts-tab__link" justifyContent={JustifyContent.flexEnd}>
+          {shouldShowRefreshButtons && (
+            <SelectableListItem
+              onClick={handleNftRefresh}
+              testId="refresh-list-button"
+            >
+              <Icon
+                name={IconName.Refresh}
+                size={IconSize.Sm}
+                marginInlineEnd={2}
+              />
+
+              {t('refreshList')}
+            </SelectableListItem>
+          )}
+          {shouldShowEnableAutoDetect && (
+            <SelectableListItem
+              onClick={onEnableAutoDetect}
+              testId="enable-autodetect-button"
+            >
+              <Icon
+                name={IconName.Setting}
+                size={IconSize.Sm}
+                marginInlineEnd={2}
+              />
+
+              {t('enableAutoDetect')}
+            </SelectableListItem>
+          )}
+        </Box>
       </Popover>
     </Box>
   );
