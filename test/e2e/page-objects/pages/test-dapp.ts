@@ -74,6 +74,8 @@ class TestDapp {
 
   private readonly erc1155WatchButton = '#watchAssetButton';
 
+  private readonly erc20CreateTokenButton = '#createToken';
+
   private readonly erc20TokenAddresses = '#erc20TokenAddresses';
 
   private readonly erc20TokenTransferButton = '#transferTokens';
@@ -717,6 +719,10 @@ class TestDapp {
 
   async clickERC1155WatchButton() {
     await this.driver.clickElement(this.erc1155WatchButton);
+  }
+
+  async clickERC20CreateTokenButton() {
+    await this.driver.clickElement(this.erc20CreateTokenButton);
   }
 
   async clickERC20TokenTransferButton() {
