@@ -3360,7 +3360,7 @@ export default class MetamaskController extends EventEmitter {
       addressBookController,
       alertController,
       appStateController,
-      keyringController,
+      // keyringController,
       nftController,
       nftDetectionController,
       currencyRateController,
