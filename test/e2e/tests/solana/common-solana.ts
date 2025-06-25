@@ -10,6 +10,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
@@ -1740,6 +1741,7 @@ export async function withSolanaAccountSnap(
     }) => {
       await loginWithBalanceValidation(driver);
       const headerComponent = new HeaderNavbar(driver);
+      const assetList = new AssetListPage(driver);
       const accountListPage = new AccountListPage(driver);
 
       for (let i = 1; i <= numberOfAccounts; i++) {
@@ -1750,7 +1752,7 @@ export async function withSolanaAccountSnap(
         });
         await new NonEvmHomepage(driver).check_pageIsLoaded();
         await headerComponent.check_accountLabel(`Solana ${i}`);
-        await headerComponent.check_currentSelectedNetwork('Solana');
+        await assetList.check_networkFilterText('Solana');
       }
 
       if (numberOfAccounts > 0) {

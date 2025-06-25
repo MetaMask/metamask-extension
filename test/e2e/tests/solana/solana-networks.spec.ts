@@ -1,7 +1,11 @@
 import { Suite } from 'mocha';
-import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import {
+  switchToEditRPCViaGlobalMenuNetworks,
+  switchToNetworkFromSendFlow,
+} from '../../page-objects/flows/network.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { withSolanaAccountSnap } from './common-solana';
 
 describe('Solana network', function (this: Suite) {
@@ -13,12 +17,13 @@ describe('Solana network', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_pageIsLoaded();
         await headerNavbar.check_accountLabel('Solana 1');
-        await headerNavbar.check_currentSelectedNetwork('Solana');
+        const assetList = new AssetListPage(driver);
+        await assetList.check_networkFilterText('Solana');
         await headerNavbar.check_ifNetworkPickerClickable(true);
         await headerNavbar.openAccountMenu();
         const accountMenu = new AccountListPage(driver);
         await accountMenu.switchToAccount('Account 1');
-        await headerNavbar.check_currentSelectedNetwork('Localhost 8545');
+        await assetList.check_networkFilterText('Localhost 8545');
         await headerNavbar.check_ifNetworkPickerClickable(true);
       },
     );
@@ -34,14 +39,14 @@ describe('Solana network', function (this: Suite) {
 
         // Switch to Linea Mainnet to set it as the selected network
         // in the network-controller
-        await switchToNetworkFlow(driver, 'Linea Mainnet');
+        await switchToNetworkFromSendFlow(driver, 'Linea');
 
         // Switch back to Solana Mainnet
-        await switchToNetworkFlow(driver, 'Solana');
+        await switchToNetworkFromSendFlow(driver, 'Solana');
 
         // Linea, still as the selected network in the network-controller
         // but not in the UI, should be removed from the network-controller
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         await driver.clickElement(
           '[data-testid="network-list-item-options-button-eip155:59144"]',
         );
@@ -55,7 +60,8 @@ describe('Solana network', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         const accountMenu = new AccountListPage(driver);
         await accountMenu.switchToAccount('Account 1');
-        await headerNavbar.check_currentSelectedNetwork('Ethereum Mainnet');
+        const assetList = new AssetListPage(driver);
+        await assetList.check_networkFilterText('Ethereum');
       },
     );
   });

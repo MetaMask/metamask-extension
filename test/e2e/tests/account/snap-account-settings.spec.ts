@@ -35,11 +35,10 @@ describe('Add snap account experimental settings', function (this: Suite) {
         const experimentalSettings = new ExperimentalSettings(driver);
         await experimentalSettings.check_pageIsLoaded();
         await experimentalSettings.toggleAddAccountSnap();
-
-        // Make sure the "Add account Snap" button is visible.
         await driver.clickElement(
           '.settings-page__header__title-container__close-button',
         );
+        // Make sure the "Add account Snap" button is visible.
         await headerNavbar.openAccountMenu();
         await accountListPage.openAddAccountModal();
         await accountListPage.check_addAccountSnapButtonIsDisplayed();
