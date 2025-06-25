@@ -45,7 +45,7 @@ import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
 } from '../../../../shared/modules/selectors/networks';
-import { setActiveNetworkWithError } from '../../../store/actions';
+import { detectNfts, setActiveNetworkWithError } from '../../../store/actions';
 import { setToChainId } from '../../../ducks/bridge/actions';
 import MaxClearButton from './max-clear-button';
 import {
