@@ -1,23 +1,30 @@
 import React, { ReactElement, useCallback, useState } from 'react';
-import { NameType } from '@metamask/name-controller';
+import { Hex } from '@metamask/utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useSelector } from 'react-redux';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
 import ZENDESK_URLS from '../../../../../../helpers/constants/zendesk-url';
 import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
   Box,
   Button,
   ButtonLink,
   ButtonLinkSize,
   ButtonSize,
   ButtonVariant,
+  Icon,
+  IconName,
   Text,
 } from '../../../../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
@@ -26,12 +33,26 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
-import { setSplashPageAcknowledgedForAccount } from '../../../../../../store/actions';
+import {
+  setSmartAccountOptIn,
+  setSmartAccountOptInForAccounts,
+} from '../../../../../../store/actions';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import Name from '../../../../../../components/app/name';
-import { getUpgradeSplashPageAcknowledgedForAccounts } from '../../../../selectors';
+import {
+  AccountsState,
+  getInternalAccounts,
+  getMemoizedInternalAccountByAddress,
+  getUseBlockie,
+} from '../../../../../../selectors';
+import { isHardwareKeyring } from '../../../../../../helpers/utils/hardware';
+import IconButton from '../../../../../../components/ui/icon-button/icon-button-round';
+import {
+  getUseSmartAccount,
+  getSmartAccountOptInForAccounts,
+} from '../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
+import { AccountSelection } from '../../account-selection';
 
 const ListItem = ({
   imgSrc,
@@ -69,26 +90,51 @@ const ListItem = ({
 
 export function SmartAccountUpdate() {
   const [acknowledged, setAcknowledged] = useState(false);
+  const [accountSelectionVisible, setAccountSelectionVisible] = useState(false);
   const t = useI18nContext();
+  const dispatch = useDispatch();
+  const useBlockie = useSelector(getUseBlockie);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { handleRejectUpgrade } = useSmartAccountActions();
-  const splashPageAcknowledgedForAccountList: string[] = useSelector(
-    getUpgradeSplashPageAcknowledgedForAccounts,
+  const smartAccountOptInForAccounts: Hex[] = useSelector(
+    getSmartAccountOptInForAccounts,
   );
-
-  const { chainId, txParams, origin } = currentConfirmation ?? {};
+  const smartAccountOptIn = useSelector(getUseSmartAccount);
+  const accounts = useSelector(getInternalAccounts);
+  const evmAccounts = accounts.filter((acc) => isEvmAccountType(acc.type));
+  const [selectedAccounts, setSelectedAccounts] = useState(() => {
+    if (smartAccountOptInForAccounts?.length) {
+      return smartAccountOptInForAccounts;
+    }
+    return (evmAccounts ?? []).map((acc) => acc.address as Hex);
+  });
+  const { txParams, origin } = currentConfirmation ?? {};
   const { from } = txParams;
+  const account = useSelector((state: AccountsState) =>
+    getMemoizedInternalAccountByAddress(state as AccountsState, from),
+  );
+  const keyringType = account?.metadata?.keyring?.type;
 
   const acknowledgeSmartAccountUpgrade = useCallback(() => {
-    setSplashPageAcknowledgedForAccount(from);
+    setSmartAccountOptInForAccounts(selectedAccounts);
     setAcknowledged(true);
-  }, [from, setAcknowledged]);
+    dispatch(setSmartAccountOptIn(true));
+  }, [from, setAcknowledged, selectedAccounts]);
+
+  const showAccountSelectionVisible = useCallback(() => {
+    setAccountSelectionVisible(true);
+  }, [setAccountSelectionVisible]);
+
+  const hideAccountSelectionVisible = useCallback(() => {
+    setAccountSelectionVisible(false);
+  }, [setAccountSelectionVisible]);
 
   if (
     !currentConfirmation ||
     acknowledged ||
     origin === ORIGIN_METAMASK ||
-    splashPageAcknowledgedForAccountList.includes(from.toLowerCase())
+    smartAccountOptInForAccounts?.includes(from.toLowerCase() as Hex) ||
+    (smartAccountOptIn && !isHardwareKeyring(keyringType))
   ) {
     return null;
   }
@@ -111,78 +157,129 @@ export function SmartAccountUpdate() {
         padding={4}
         className="smart-account-update__inner"
       >
-        <img
-          width="100%"
-          src="./images/smart-transactions/smart-account-update.svg"
-        />
-        <Text fontWeight={FontWeight.Medium} variant={TextVariant.headingLg}>
-          {t('smartAccountSplashTitle')}
-        </Text>
-        <Box display={Display.Flex} alignItems={AlignItems.center}>
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMd}
-            marginInlineEnd={2}
-          >
-            {t('smartAccountRequestFor')}
-          </Text>
-          <Name
-            value={from}
-            type={NameType.ETHEREUM_ADDRESS}
-            preferContractSymbol
-            variation={chainId}
+        {accountSelectionVisible ? (
+          <AccountSelection
+            closeAccountSelection={hideAccountSelectionVisible}
+            selectedAccounts={selectedAccounts}
+            setSelectedAccounts={setSelectedAccounts}
           />
-        </Box>
-        <ListItem
-          imgSrc="./images/speedometer.svg"
-          title={t('smartAccountBetterTransaction')}
-          description={t('smartAccountBetterTransactionDescription')}
-        />
-        <ListItem
-          imgSrc="./images/petrol-pump.svg"
-          title={t('smartAccountPayToken')}
-          description={t('smartAccountPayTokenDescription')}
-        />
-        <ListItem
-          imgSrc="./images/sparkle.svg"
-          title={t('smartAccountSameAccount')}
-          description={
-            <>
+        ) : (
+          <>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.spaceBetween}
+            >
               <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodyMd}
-                fontWeight={FontWeight.Normal}
+                color={TextColor.textDefault}
+                variant={TextVariant.headingMd}
               >
-                {t('smartAccountFeaturesDescription')}{' '}
-                <ButtonLink
-                  size={ButtonLinkSize.Inherit}
-                  href={ZENDESK_URLS.ACCOUNT_UPGRADE}
-                  externalLink
-                >
-                  {t('learnMoreUpperCaseWithDot')}
-                </ButtonLink>
+                {t('smartAccountSplashInfo')}
               </Text>
-            </>
-          }
-        />
-        <Button
-          variant={ButtonVariant.Secondary}
-          size={ButtonSize.Lg}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onClick={handleRejectUpgrade}
-          width={BlockSize.Full}
-        >
-          {t('smartAccountReject')}
-        </Button>
-        <Button
-          variant={ButtonVariant.Primary}
-          size={ButtonSize.Lg}
-          onClick={acknowledgeSmartAccountUpgrade}
-          width={BlockSize.Full}
-        >
-          {t('smartAccountAccept')}
-        </Button>
+              <IconButton
+                Icon={<Icon name={IconName.Edit} />}
+                onClick={showAccountSelectionVisible}
+                label=""
+                className="smart-account-update__edit"
+                data-testid="smart-account-update-edit"
+              />
+            </Box>
+            <img
+              width="80%"
+              src="./images/smart-transactions/smart-account-update.svg"
+            />
+            <Text
+              fontWeight={FontWeight.Medium}
+              variant={TextVariant.headingLg}
+            >
+              {t('smartAccountSplashTitle')}
+            </Text>
+            {selectedAccounts.length > 0 && (
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+                width={BlockSize.Full}
+              >
+                <Text
+                  className="smart-account-update__request-for"
+                  color={TextColor.textAlternative}
+                  marginInlineEnd={2}
+                  variant={TextVariant.bodyMd}
+                >
+                  {t('smartAccountRequestFor')}
+                </Text>
+                <Box display={Display.Flex}>
+                  {selectedAccounts.map((address) => (
+                    <AvatarAccount
+                      borderColor={BorderColor.transparent}
+                      className="smart-account-update__acc-avatar"
+                      size={AvatarAccountSize.Sm}
+                      address={address}
+                      variant={
+                        useBlockie
+                          ? AvatarAccountVariant.Blockies
+                          : AvatarAccountVariant.Jazzicon
+                      }
+                      marginInlineEnd={2}
+                    />
+                  ))}
+                </Box>
+              </Box>
+            )}
+            <ListItem
+              imgSrc="./images/speedometer.svg"
+              title={t('smartAccountBetterTransaction')}
+              description={t('smartAccountBetterTransactionDescription')}
+            />
+            <ListItem
+              imgSrc="./images/petrol-pump.svg"
+              title={t('smartAccountPayToken')}
+              description={t('smartAccountPayTokenDescription')}
+            />
+            <ListItem
+              imgSrc="./images/sparkle.svg"
+              title={t('smartAccountSameAccount')}
+              description={
+                <>
+                  <Text
+                    color={TextColor.textAlternative}
+                    variant={TextVariant.bodyMd}
+                    fontWeight={FontWeight.Normal}
+                  >
+                    {t('smartAccountFeaturesDescription')}{' '}
+                    <ButtonLink
+                      size={ButtonLinkSize.Inherit}
+                      href={ZENDESK_URLS.ACCOUNT_UPGRADE}
+                      externalLink
+                    >
+                      {t('learnMoreUpperCaseWithDot')}
+                    </ButtonLink>
+                  </Text>
+                </>
+              }
+            />
+            <Button
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Lg}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={handleRejectUpgrade}
+              width={BlockSize.Full}
+            >
+              {t('smartAccountReject')}
+            </Button>
+            <Button
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              onClick={acknowledgeSmartAccountUpgrade}
+              width={BlockSize.Full}
+            >
+              {t('smartAccountAccept')}
+            </Button>
+          </>
+        )}
       </Box>
     </Box>
   );
