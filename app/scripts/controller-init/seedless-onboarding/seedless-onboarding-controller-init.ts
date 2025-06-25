@@ -10,9 +10,11 @@ import { ENVIRONMENT } from '../../../../development/build/constants';
 
 const loadWeb3AuthNetwork = (): Web3AuthNetwork => {
   const { METAMASK_ENVIRONMENT } = process.env;
+  const environment = METAMASK_ENVIRONMENT || ENVIRONMENT.DEVELOPMENT;
+
   if (
-    METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
-    METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
+    environment === ENVIRONMENT.DEVELOPMENT ||
+    environment === ENVIRONMENT.TESTING
   ) {
     return Web3AuthNetwork.Devnet;
   }

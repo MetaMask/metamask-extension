@@ -48,6 +48,7 @@ import PasswordForm from '../../../components/app/password-form/password-form';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
@@ -65,6 +66,8 @@ export default function CreatePassword({
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
+  const isSeedlessOnboardingFeatureEnabled =
+    getIsSeedlessOnboardingFeatureEnabled();
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
@@ -171,14 +174,12 @@ export default function CreatePassword({
       },
     });
 
-    if (isSocialLoginFlow) {
-      ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
+    if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
       if (isFirefox) {
         history.push(ONBOARDING_COMPLETION_ROUTE);
       } else {
         history.push(ONBOARDING_METAMETRICS);
       }
-      ///: END:ONLY_INCLUDE_IF
     } else {
       history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
     }

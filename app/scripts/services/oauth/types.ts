@@ -120,25 +120,11 @@ export type OAuthServiceOptions = {
  * - jwt_tokens: Record<string, string> - the JWT Tokens issued from the Web3Auth Authentication Server
  */
 export type AuthTokenResponse = {
-  success: boolean;
-  message: string;
-  /**
-   * The JWT Tokens issued from the Web3Auth Authentication Server.
-   * The key is the audience value and the value is the JWT Token.
-   */
-  jwt_tokens: Record<string, string>;
-
-  /**
-   * The refresh token issued from the Web3Auth Authentication Server.
-   * This is used to refresh the JWT Token.
-   */
+  id_token: string;
   refresh_token: string;
-
-  /**
-   * The revoke token issued from the Web3Auth Authentication Server.
-   * This is used to revoke the Refresh Token.
-   */
   revoke_token: string;
+  indexes: number[];
+  endpoints: Record<string, string>;
 };
 
 /**

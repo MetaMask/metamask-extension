@@ -259,6 +259,7 @@ import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import { updateCurrentLocale } from '../../shared/lib/translate';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -1095,7 +1096,7 @@ export default class MetamaskController extends EventEmitter {
       state: initState.OnboardingController,
     });
 
-    this.oauthService = process.env.SEEDLESS_ONBOARDING_ENABLED
+    this.oauthService = getIsSeedlessOnboardingFeatureEnabled()
       ? new OAuthService({
           env: {
             googleClientId: process.env.GOOGLE_CLIENT_ID,
@@ -1949,7 +1950,7 @@ export default class MetamaskController extends EventEmitter {
       AccountTreeController: AccountTreeControllerInit,
     };
 
-    if (process.env.SEEDLESS_ONBOARDING_ENABLED) {
+    if (getIsSeedlessOnboardingFeatureEnabled()) {
       controllerInitFunctions.SeedlessOnboardingController =
         SeedlessOnboardingControllerInit;
     }
@@ -4357,8 +4358,11 @@ export default class MetamaskController extends EventEmitter {
       isRelaySupported,
       requestSafeReload: this.requestSafeReload.bind(this),
     };
-
-    if (process.env.SEEDLESS_ONBOARDING_ENABLED) {
+    console.log(
+      'getIsSeedlessOnboardingFeatureEnabled()',
+      getIsSeedlessOnboardingFeatureEnabled(),
+    );
+    if (getIsSeedlessOnboardingFeatureEnabled()) {
       apis = {
         ...apis,
         startOAuthLogin: this.startOAuthLogin.bind(this),
@@ -4367,6 +4371,7 @@ export default class MetamaskController extends EventEmitter {
         fetchAllSecretData: this.fetchAllSecretData.bind(this),
       };
     }
+    console.log('apis', apis);
 
     return apis;
   }
@@ -4670,6 +4675,7 @@ export default class MetamaskController extends EventEmitter {
     const oauth2LoginResult = await this.oauthService.startOAuthLogin(
       authConnection,
     );
+    console.log('oauth2LoginResult', oauth2LoginResult);
     const { isNewUser } = await this.seedlessOnboardingController.authenticate(
       oauth2LoginResult,
     );
@@ -4917,7 +4923,7 @@ export default class MetamaskController extends EventEmitter {
         );
       }
 
-      if (process.env.SEEDLESS_ONBOARDING_ENABLED) {
+      if (getIsSeedlessOnboardingFeatureEnabled()) {
         const isSocialLoginFlow =
           this.onboardingController.getIsSocialLoginFlow();
         if (isSocialLoginFlow) {

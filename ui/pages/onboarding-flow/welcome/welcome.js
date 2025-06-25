@@ -21,6 +21,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
 import { LOGIN_OPTION, LOGIN_TYPE } from './types';
@@ -37,6 +38,8 @@ export default function OnboardingWelcome({
   const dispatch = useDispatch();
   const history = useHistory();
   const currentKeyring = useSelector(getCurrentKeyring);
+  const isSeedlessOnboardingFeatureEnabled =
+    getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
@@ -93,13 +96,15 @@ export default function OnboardingWelcome({
     history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
   }, [dispatch, history, trackEvent]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
   const handleSocialLogin = useCallback(
     async (socialConnectionType) => {
-      const isNewUser = await dispatch(startOAuthLogin(socialConnectionType));
-      return isNewUser;
+      if (isSeedlessOnboardingFeatureEnabled) {
+        const isNewUser = await dispatch(startOAuthLogin(socialConnectionType));
+        return isNewUser;
+      }
+      return true;
     },
-    [dispatch],
+    [dispatch, isSeedlessOnboardingFeatureEnabled],
   );
 
   const onSocialLoginCreateClick = useCallback(
@@ -156,23 +161,28 @@ export default function OnboardingWelcome({
     },
     [dispatch, handleSocialLogin, trackEvent, history],
   );
-  ///: END:ONLY_INCLUDE_IF
 
   const handleLogin = useCallback(
     async (loginType, loginOption) => {
+      console.log('loginType', loginType);
+      console.log('loginOption', loginOption);
+      console.log(
+        'isSeedlessOnboardingFeatureEnabled',
+        isSeedlessOnboardingFeatureEnabled,
+      );
       if (loginOption === LOGIN_OPTION.NEW && loginType === LOGIN_TYPE.SRP) {
         onCreateClick();
-      } else if (loginOption === LOGIN_OPTION.NEW) {
-        await onSocialLoginCreateClick(loginType);
       } else if (
         loginOption === LOGIN_OPTION.EXISTING &&
         loginType === LOGIN_TYPE.SRP
       ) {
         onImportClick();
-      } else if (loginOption === LOGIN_OPTION.EXISTING) {
-        ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
-        await onSocialLoginImportClick(loginType);
-        ///: END:ONLY_INCLUDE_IF
+      } else if (isSeedlessOnboardingFeatureEnabled) {
+        if (loginOption === LOGIN_OPTION.NEW) {
+          await onSocialLoginCreateClick(loginType);
+        } else if (loginOption === LOGIN_OPTION.EXISTING) {
+          await onSocialLoginImportClick(loginType);
+        }
       }
     },
     [
@@ -180,6 +190,7 @@ export default function OnboardingWelcome({
       onImportClick,
       onSocialLoginCreateClick,
       onSocialLoginImportClick,
+      isSeedlessOnboardingFeatureEnabled,
     ],
   );
 

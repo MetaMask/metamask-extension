@@ -55,9 +55,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
-///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
-///: END:ONLY_INCLUDE_IF
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -200,8 +198,6 @@ export function startOAuthLogin(
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
-
 /**
  * Resets the social login state.
  *
@@ -308,8 +304,6 @@ export function restoreSocialBackupAndGetSeedPhrase(
     }
   };
 }
-
-///: END:ONLY_INCLUDE_IF
 
 export function tryUnlockMetamask(
   password: string,
@@ -521,8 +515,6 @@ export function submitPassword(password: string): Promise<void> {
   });
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
-
 /**
  * Creates a seed phrase backup in the metadata store for seedless onboarding flow.
  *
@@ -562,8 +554,6 @@ export async function fetchAllSecretData(
   );
   return encodedSeedPhrases;
 }
-
-///: END:ONLY_INCLUDE_IF
 
 export function createNewVault(password: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
