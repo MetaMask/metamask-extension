@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
@@ -8,6 +9,12 @@ import {
   searchAndSwitchToNetworkFromGlobalMenuFlow,
   switchToNetworkFromSendFlow,
 } from '../../page-objects/flows/network.flow';
+import {
+  mockGasPricesArbitrum,
+  mockSwapTokensArbitrum,
+  mockSwapAggregatorMetadataArbitrum,
+  mockTopAssetsArbitrum,
+} from '../bridge/bridge-test-utils';
 
 describe('Switch network - ', function (this: Suite) {
   it('Switch networks to existing and new networks', async function () {
@@ -15,6 +22,15 @@ describe('Switch network - ', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          const standardMocks = [
+            await mockGasPricesArbitrum(mockServer),
+            await mockTopAssetsArbitrum(mockServer),
+            await mockSwapTokensArbitrum(mockServer),
+            await mockSwapAggregatorMetadataArbitrum(mockServer),
+          ];
+          return standardMocks;
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
