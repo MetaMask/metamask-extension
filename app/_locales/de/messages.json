@@ -4208,6 +4208,9 @@
   "onekeyWebUSBNotConnectedErrorMessage": {
     "message": "Benutzerautorisierung ist erforderlich, um das OneKey-Gerät zu verbinden. Wenn Sie Ihr OneKey verbinden möchten, klicken Sie auf \"Gerät verbinden\" und genehmigen Sie die USB-Verbindung"
   },
+  "onekeyDeviceCheckPassphraseStateError": {
+    "message": "Pin oder Passphrase stimmt nicht mit dem aktuellen Konto überein"
+  },
   "only": {
     "message": "nur"
   },
