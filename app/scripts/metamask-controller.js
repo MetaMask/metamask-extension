@@ -937,25 +937,25 @@ export default class MetamaskController extends EventEmitter {
       getChainId: () => this.#getGlobalChainId(),
     });
 
+    const appStateControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'AppStateController',
+      allowedActions: [
+        `${this.approvalController.name}:addRequest`,
+        `${this.approvalController.name}:acceptRequest`,
+        `PreferencesController:getState`,
+      ],
+      allowedEvents: ['PreferencesController:stateChange'],
+    });
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
       isUnlocked: this.isUnlocked.bind(this),
       state: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'AppStateController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `PreferencesController:getState`,
-        ],
-        allowedEvents: [
-          `KeyringController:qrKeyringStateChange`,
-          'PreferencesController:stateChange',
-        ],
-      }),
+      messenger: appStateControllerMessenger,
       extension: this.extension,
     });
+
+    console.log('AppStateController initialized');
 
     const currencyRateMessenger = this.controllerMessenger.getRestricted({
       name: 'CurrencyRateController',
@@ -1094,11 +1094,10 @@ export default class MetamaskController extends EventEmitter {
 
     let additionalKeyrings = [
       qrKeyringBuilderFactory(QrKeyring, QrKeyringScannerBridge, {
-        requestScan: async () => {
-          // TODO: Implement a method to request a QR code scan
-          console.log('Scan request! Resolving with known UR');
-          return 'UR:CRYPTO-HDKEY/ONAXHDCLAXPYSTPELBTLSNGWTTWPGSBSIOWKRFOXHSWSRHURSAHGMYMNTEFLTEBGADAHAXKTNBAAHDCXIODLDNDNZCONGOGMYKJLGHCLTDRYBEJTGOWZWLGLJKEOKIHEFHCLNLAMQDNDZSGEAMTAADDYOEADLNCSDWYKCSFNYKAEYKAOCYIHCHGSOYAYCYIHIAECEYASJNFPINJPFLHSJOCXDPCXJYIHJKJYINDAAAEC';
-        },
+        requestScan: async () =>
+          appStateControllerMessenger.call(
+            'AppStateController:requestQrCodeScan',
+          ),
       }),
     ];
 
@@ -1207,6 +1206,8 @@ export default class MetamaskController extends EventEmitter {
       encryptor: opts.encryptor || encryptorFactory(600_000),
       messenger: keyringControllerMessenger,
     });
+
+    console.log('KeyringController initialized');
 
     this.controllerMessenger.subscribe('KeyringController:unlock', () =>
       this._onUnlock(),
@@ -3531,9 +3532,11 @@ export default class MetamaskController extends EventEmitter {
         this.attemptLedgerTransportCreation.bind(this),
 
       // qr hardware devices
-      submitQRHardwareCryptoHDKey: () => null,
-      submitQRHardwareCryptoAccount: () => null,
-      cancelSyncQRHardware: () => null,
+      completeQrCodeScan:
+        appStateController.completeQrCodeScan.bind(appStateController),
+      cancelQrCodeScan:
+        appStateController.cancelQrCodeScan.bind(appStateController),
+      // TODO: Phase 2: Transaction and message signing
       submitQRHardwareSignature: () => null,
       cancelQRHardwareSignRequest: () => null,
 
@@ -5248,7 +5251,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async forgetDevice(deviceName) {
     return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
-      for (const address of keyring.accounts) {
+      for (const address of await keyring.getAccounts()) {
         this._onAccountRemoved(address);
       }
 
@@ -8517,7 +8520,6 @@ export default class MetamaskController extends EventEmitter {
     return this.keyringController.withKeyring(
       { type: keyringType },
       async ({ keyring }) => {
-        console.log('Keyring selected for device:', keyringType);
         if (options.hdPath && keyring.setHdPath) {
           keyring.setHdPath(options.hdPath);
         }

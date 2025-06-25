@@ -5743,6 +5743,10 @@ export async function submitQRHardwareCryptoHDKey(cbor: Hex) {
   await submitRequestToBackground('submitQRHardwareCryptoHDKey', [cbor]);
 }
 
+export async function completeQrCodeScan(scanResult: string): Promise<void> {
+  await submitRequestToBackground('completeQrCodeScan', scanResult);
+}
+
 export async function submitQRHardwareCryptoAccount(cbor: Hex) {
   await submitRequestToBackground('submitQRHardwareCryptoAccount', [cbor]);
 }
@@ -5766,6 +5770,18 @@ export async function submitQRHardwareSignature(requestId: string, cbor: Hex) {
     requestId,
     cbor,
   ]);
+}
+
+export function cancelQrCodeScan(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(hideLoadingIndication());
+    await submitRequestToBackground('cancelQrCodeScan');
+  };
 }
 
 export function cancelQRHardwareSignRequest(): ThunkAction<

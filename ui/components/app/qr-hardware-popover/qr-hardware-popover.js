@@ -1,14 +1,17 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
-import { getCurrentQRHardwareState } from '../../../selectors';
+import {
+  getCurrentQRHardwareState,
+  isQrCodeScanActive,
+} from '../../../selectors';
 import Popover from '../../ui/popover';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  cancelSyncQRHardware as cancelSyncQRHardwareAction,
   cancelQRHardwareSignRequest as cancelQRHardwareSignRequestAction,
   cancelTx,
   rejectPendingApproval,
+  cancelQrCodeScan,
 } from '../../../store/actions';
 import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 import QRHardwareSignRequest from './qr-hardware-sign-request';
@@ -17,10 +20,10 @@ const QRHardwarePopover = () => {
   const t = useI18nContext();
 
   const qrHardware = useSelector(getCurrentQRHardwareState);
-  const { sync, sign } = qrHardware;
-  const showWalletImporter = sync?.reading;
+  const { sign } = qrHardware;
+  const isScanActive = useSelector(isQrCodeScanActive);
   const showSignRequest = sign?.request;
-  const showPopover = showWalletImporter || showSignRequest;
+  const showPopover = isScanActive || showSignRequest;
   const [errorTitle, setErrorTitle] = useState('');
 
   const { txData } = useSelector((state) => {
@@ -36,7 +39,7 @@ const QRHardwarePopover = () => {
 
   const dispatch = useDispatch();
   const walletImporterCancel = useCallback(
-    () => dispatch(cancelSyncQRHardwareAction()),
+    () => dispatch(cancelQrCodeScan()),
     [dispatch],
   );
 
@@ -55,20 +58,21 @@ const QRHardwarePopover = () => {
     let _title = '';
     if (showSignRequest) {
       _title = t('QRHardwareSignRequestTitle');
-    } else if (showWalletImporter) {
+    } else if (isScanActive) {
       _title = t('QRHardwareWalletImporterTitle');
     }
     if (errorTitle !== '') {
       _title = errorTitle;
     }
     return _title;
-  }, [showSignRequest, showWalletImporter, t, errorTitle]);
+  }, [showSignRequest, isScanActive, t, errorTitle]);
+
   return showPopover ? (
     <Popover
       title={title}
-      onClose={showWalletImporter ? walletImporterCancel : signRequestCancel}
+      onClose={isScanActive ? walletImporterCancel : signRequestCancel}
     >
-      {showWalletImporter && (
+      {isScanActive && (
         <QRHardwareWalletImporter
           handleCancel={walletImporterCancel}
           setErrorTitle={setErrorTitle}

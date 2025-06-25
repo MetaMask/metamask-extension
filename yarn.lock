@@ -5899,18 +5899,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-qr-keyring@file:../accounts/packages/keyring-eth-qr/::locator=metamask-crx%40workspace%3A.":
-  version: 1.0.0
-  resolution: "@metamask/eth-qr-keyring@file:../accounts/packages/keyring-eth-qr/#../accounts/packages/keyring-eth-qr/::hash=955d74&locator=metamask-crx%40workspace%3A."
+"@metamask/eth-qr-keyring@npm:@metamask-previews/eth-qr-keyring@1.0.0-065a890":
+  version: 1.0.0-065a890
+  resolution: "@metamask-previews/eth-qr-keyring@npm:1.0.0-065a890"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
     "@keystonehq/ur-decoder": "npm:^0.12.2"
-    "@metamask/keyring-utils": "npm:^3.0.0"
+    "@metamask/keyring-utils": "npm:3.0.0"
     "@metamask/utils": "npm:^11.3.0"
     "@ngraveio/bc-ur": "npm:^1.1.13"
     hdkey: "npm:^2.1.0"
-  checksum: 10/5fa35a7f6b455c031a9035d1f9d7ed8c61ecaa5a2c97b3c23b2cce2e7182ccad74b3a48dda85f34cc2f40e66ef327d4cff2fde91262c1dc2f8f4c3a8eec6a614
+  checksum: 10/1f0575ee238f224a5ff6a3d3e96295b2074776a4701bf41493297151c8940ca05c6c7ff450b97f673e116a16c53f9ded231286aa1bbb4254d457c80eecce4850
   languageName: node
   linkType: hard
 
@@ -6418,7 +6418,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-utils@npm:^3.0.0":
+"@metamask/keyring-utils@npm:3.0.0, @metamask/keyring-utils@npm:^3.0.0":
   version: 3.0.0
   resolution: "@metamask/keyring-utils@npm:3.0.0"
   dependencies:

@@ -69,6 +69,7 @@ export const SENTRY_BACKGROUND_STATE = {
     outdatedBrowserWarningLastShown: true,
     popupGasPollTokens: true,
     qrHardware: true,
+    isQrCodeScanActive: true,
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
     showBetaHeader: true,
