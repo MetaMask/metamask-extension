@@ -2102,10 +2102,10 @@ export default class MetamaskController extends EventEmitter {
       processSendCalls: processSendCalls.bind(
         null,
         {
-          addTransactionBatch: this.txController.addTransactionBatch.bind(
+          addTransaction: this.txController.addTransaction.bind(
             this.txController,
           ),
-          addTransaction: this.txController.addTransaction.bind(
+          addTransactionBatch: this.txController.addTransactionBatch.bind(
             this.txController,
           ),
           getDismissSmartAccountSuggestionEnabled: () =>
@@ -2374,7 +2374,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
-    this.#restartSmartTransactionPoller();
     this.tokenDetectionController.enable();
     this.getInfuraFeatureFlags();
   }
@@ -2712,7 +2711,6 @@ export default class MetamaskController extends EventEmitter {
       'PreferencesController:stateChange',
       previousValueComparator(async (prevState, currState) => {
         const { currentLocale } = currState;
-        this.#restartSmartTransactionPoller();
 
         await updateCurrentLocale(currentLocale);
         this.#checkTokenListPolling(currState, prevState);
@@ -2997,21 +2995,6 @@ export default class MetamaskController extends EventEmitter {
           hexToBigInt(chainId).toString(10),
         );
         this.removeAllScopePermissions(scopeString);
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      'NetworkController:networkDidChange',
-      async () => {
-        if (this.preferencesController.state.useExternalServices === true) {
-          this.txController.stopIncomingTransactionPolling();
-
-          await this.txController.updateIncomingTransactions({
-            tags: ['network-change'],
-          });
-
-          this.txController.startIncomingTransactionPolling();
-        }
       },
     );
 
@@ -8073,10 +8056,6 @@ export default class MetamaskController extends EventEmitter {
         this._notifyAccountsChange(origin, accounts);
       }
     }
-
-    await this.txController.updateIncomingTransactions({
-      tags: ['account-change'],
-    });
   }
 
   _notifyAccountsChange(origin, newAccounts) {
@@ -8586,21 +8565,6 @@ export default class MetamaskController extends EventEmitter {
     );
 
     return globalNetworkClient.configuration.chainId;
-  }
-
-  #getAllAddedNetworks() {
-    const networksConfig =
-      this.networkController.state.networkConfigurationsByChainId;
-    const chainIds = Object.keys(networksConfig);
-
-    return chainIds;
-  }
-
-  #restartSmartTransactionPoller() {
-    if (this.preferencesController.state.useExternalServices === true) {
-      this.txController.stopIncomingTransactionPolling();
-      this.txController.startIncomingTransactionPolling();
-    }
   }
 
   /**
