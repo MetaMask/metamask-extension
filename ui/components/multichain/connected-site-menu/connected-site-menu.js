@@ -67,9 +67,9 @@ export const ConnectedSiteMenu = ({
     />
   ) : (
     <AvatarFavicon
-      name={connectedSubjectsMetadata?.name}
+      name={connectedSubjectsMetadata.name}
       size={Size.SM}
-      src={connectedSubjectsMetadata?.iconUrl}
+      src={connectedSubjectsMetadata.iconUrl}
     />
   );
   return (
