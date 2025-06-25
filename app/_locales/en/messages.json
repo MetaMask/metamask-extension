@@ -4201,6 +4201,9 @@
   "onekeyExitBootloaderMode": {
     "message": "OneKey needs to exit bootloader mode to use this feature."
   },
+  "onekeyDeviceCheckPassphraseStateError": {
+    "message": "Pin or passphrase does not match the current account"
+  },
   "onekeyForceUpdate": {
     "message": "OneKey firmware needs to be updated. $1"
   },

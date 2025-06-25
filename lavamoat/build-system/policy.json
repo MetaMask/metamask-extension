@@ -919,11 +919,27 @@
         "define": true
       },
       "packages": {
+        "@jridgewell/set-array": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true
+      }
+    },
+    "tailwindcss>sucrase>@jridgewell/gen-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
         "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
     "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
+      "globals": {
+        "define": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": {
       "globals": {
         "define": true
       }
@@ -1028,7 +1044,7 @@
     },
     "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals": {
       "packages": {
-        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": true
+        "webpack>eslint-scope": true
       }
     },
     "@noble/hashes": {
@@ -1197,7 +1213,6 @@
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true,
         "@typescript-eslint/parser>@typescript-eslint": true,
         "eslint": true,
-        "eslint-plugin-jest>@typescript-eslint/utils>eslint-scope": true,
         "eslint>eslint-scope": true,
         "webpack>eslint-scope": true,
         "eslint-plugin-jest>@typescript-eslint/utils>webpack>eslint-scope": true,
@@ -1746,7 +1761,7 @@
         "string.prototype.matchall>call-bind>set-function-length": true
       }
     },
-    "string.prototype.matchall>es-abstract>typed-array-buffer>call-bound": {
+    "browserify>util>which-typed-array>call-bound": {
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>get-intrinsic": true
@@ -2841,24 +2856,6 @@
     "eslint-plugin-react-hooks": {
       "globals": {
         "process.env.NODE_ENV": true
-      }
-    },
-    "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "eslint>eslint-scope>esrecurse": true,
-        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope>estraverse": true
-      }
-    },
-    "eslint-plugin-jest>@typescript-eslint/utils>eslint-scope": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "eslint>eslint-scope>esrecurse": true,
-        "eslint-plugin-jest>@typescript-eslint/utils>eslint-scope>estraverse": true
       }
     },
     "eslint>eslint-scope": {
@@ -4255,7 +4252,7 @@
     "gulp>vinyl-fs>glob-stream>unique-stream>json-stable-stringify": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>es-abstract>typed-array-buffer>call-bound": true,
+        "browserify>util>which-typed-array>call-bound": true,
         "@lavamoat/lavapack>json-stable-stringify>isarray": true,
         "@lavamoat/lavapack>json-stable-stringify>jsonify": true,
         "@lavamoat/lavapack>json-stable-stringify>object-keys": true
@@ -4743,6 +4740,14 @@
         "browserify>module-deps>stream-combiner2": true,
         "browserify>module-deps>through2": true,
         "watchify>xtend": true
+      }
+    },
+    "nanoid": {
+      "builtin": {
+        "crypto.randomFillSync": true
+      },
+      "globals": {
+        "Buffer.allocUnsafe": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>nanomatch": {
@@ -5286,7 +5291,7 @@
       },
       "packages": {
         "tailwindcss>postcss-js>camelcase-css": true,
-        "postcss": true
+        "tailwindcss>postcss": true
       }
     },
     "stylelint>postcss-less": {
@@ -5312,8 +5317,8 @@
     },
     "tailwindcss>postcss-nested": {
       "packages": {
-        "postcss": true,
-        "stylelint>postcss-selector-parser": true
+        "stylelint>postcss-selector-parser": true,
+        "tailwindcss>postcss": true
       }
     },
     "stylelint>postcss-reporter": {
@@ -5494,6 +5499,28 @@
       "packages": {
         "stylelint>sugarss>postcss>picocolors": true,
         "stylelint>sugarss>postcss>source-map": true
+      }
+    },
+    "tailwindcss>postcss": {
+      "builtin": {
+        "fs": true,
+        "path": true,
+        "url": true
+      },
+      "globals": {
+        "Buffer": true,
+        "URL": true,
+        "atob": true,
+        "btoa": true,
+        "console": true,
+        "process.env.LANG": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "nanoid": true,
+        "nanoid/non-secure": true,
+        "postcss>picocolors": true,
+        "postcss>source-map-js": true
       }
     },
     "eslint-plugin-prettier>prettier-linter-helpers": {
@@ -7065,7 +7092,7 @@
     },
     "string.prototype.matchall>side-channel>side-channel-map": {
       "packages": {
-        "string.prototype.matchall>es-abstract>typed-array-buffer>call-bound": true,
+        "browserify>util>which-typed-array>call-bound": true,
         "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true
@@ -7073,7 +7100,7 @@
     },
     "string.prototype.matchall>side-channel>side-channel-weakmap": {
       "packages": {
-        "string.prototype.matchall>es-abstract>typed-array-buffer>call-bound": true,
+        "browserify>util>which-typed-array>call-bound": true,
         "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true,
@@ -7569,7 +7596,7 @@
     },
     "tailwindcss>sucrase": {
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
+        "tailwindcss>sucrase>@jridgewell/gen-mapping": true,
         "tailwindcss>sucrase>lines-and-columns": true,
         "tailwindcss>sucrase>ts-interface-checker": true
       }
@@ -7701,10 +7728,10 @@
         "chokidar>normalize-path": true,
         "tailwindcss>object-hash": true,
         "postcss>picocolors": true,
-        "postcss": true,
         "tailwindcss>postcss-js": true,
         "tailwindcss>postcss-nested": true,
         "stylelint>postcss-selector-parser": true,
+        "tailwindcss>postcss": true,
         "tailwindcss>sucrase": true
       }
     },

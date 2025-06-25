@@ -32,6 +32,8 @@ function handleBlockErrorEvent(payload: Unsuccessful) {
     HardwareErrorCode.NewFirmwareForceUpdate,
     HardwareErrorCode.NotAllowInBootloaderMode,
     HardwareErrorCode.CallMethodNeedUpgradeFirmware,
+    HardwareErrorCode.DeviceCheckPassphraseStateError,
+    HardwareErrorCode.DeviceCheckUnlockTypeError,
   ];
 
   if (code && typeof code === 'number' && errorCodes.includes(code)) {
@@ -73,7 +75,7 @@ export default function init() {
           const settings: Partial<ConnectSettings> = {
             debug: true,
             fetchConfig: false,
-            connectSrc: 'https://jssdk.onekey.so/1.0.27-alpha.0/',
+            connectSrc: 'https://jssdk.onekey.so/1.1.0/',
             env: msg.params.env,
           };
 
@@ -146,6 +148,15 @@ export default function init() {
 
           sendResponse();
 
+          break;
+
+        case OneKeyAction.getDeviceFeatures:
+          sdk?.getFeatures().then((result) => {
+            if (!result?.success) {
+              handleBlockErrorEvent(result);
+            }
+            sendResponse(result);
+          });
           break;
 
         case OneKeyAction.getPublicKey:

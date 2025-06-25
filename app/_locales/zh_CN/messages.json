@@ -4104,6 +4104,9 @@
   "onekeyExitBootloaderMode": {
     "message": "OneKey 需要退出引导模式才能使用该功能。"
   },
+  "onekeyDeviceCheckPassphraseStateError": {
+    "message": "PIN 或 passphrase 不匹配当前账户"
+  },
   "onekeyForceUpdate": {
     "message": "OneKey 固件需要更新。$1"
   },

@@ -4104,6 +4104,9 @@
   "onekeyExitBootloaderMode": {
     "message": "Το OneKey πρέπει να βγει από τη λειτουργία bootloader για να χρησιμοποιήσει αυτή τη λειτουργία."
   },
+  "onekeyDeviceCheckPassphraseStateError": {
+    "message": "Ο PIN ή η μυστική φράση δεν ταιριάζει με το τρέχον λογαριασμό"
+  },
   "onekeyForceUpdate": {
     "message": "Το firmware του OneKey χρειάζεται ενημέρωση. $1"
   },
