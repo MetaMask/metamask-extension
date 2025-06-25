@@ -172,10 +172,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     [nonTestNetworkConfigurations, testNetworkConfigurations],
   );
 
-  const _supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
-    (caipChainId) => allNetworksList.includes(caipChainId as CaipChainId),
-  );
-
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
     useState(false);
@@ -211,14 +207,17 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       caipChainId.startsWith('eip155:') && caipChainId !== 'wallet:eip155',
   );
 
-  let supportedRequestedCaipChainIds = _supportedRequestedCaipChainIds;
+  let supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
+    (caipChainId) => allNetworksList.includes(caipChainId as CaipChainId),
+  );
+
   if (hasWalletEip155 && !hasOtherEip155Scopes) {
-    supportedRequestedCaipChainIds = [
-      ..._supportedRequestedCaipChainIds,
-      ...defaultSelectedNetworkList.filter(
-        (chainId) => !_supportedRequestedCaipChainIds.includes(chainId),
-      ),
-    ];
+    supportedRequestedCaipChainIds = Array.from(
+      new Set([
+        ...supportedRequestedCaipChainIds,
+        ...defaultSelectedNetworkList,
+      ]),
+    );
   }
 
   const defaultSelectedChainIds =
