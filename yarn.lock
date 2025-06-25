@@ -7487,11 +7487,11 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-    "@metamask/accounts-controller": ^30.0.0
+    "@metamask/accounts-controller": ^31.0.0
     "@metamask/approval-controller": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-    "@metamask/gas-fee-controller": ^23.0.0
-    "@metamask/network-controller": ^23.0.0
+    "@metamask/gas-fee-controller": ^24.0.0
+    "@metamask/network-controller": ^24.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
   checksum: 10/55eb5a88a09f5152b638975b85156817c012041a3c56e1552e1e21de3db8f63f1820d1fd14f8cfa2983bd019cb399c34a7c7e45875853a02f1606fdc804f3bc8
   languageName: node
