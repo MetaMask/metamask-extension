@@ -23,6 +23,7 @@ import {
 } from '@metamask/accounts-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import * as MMUtils from '@metamask/utils';
 
 import {
   PreferencesControllerGetStateAction,
@@ -325,6 +326,16 @@ describe('EIP-5792', () => {
           REQUEST_MOCK,
         ),
       ).toStrictEqual({ id: BATCH_ID_MOCK });
+    });
+
+    it('does not validate send call if there is only 1 nested transaction', async () => {
+      const result = await processSendCalls(
+        sendCallsHooks,
+        messenger,
+        { ...SEND_CALLS_MOCK, calls: [{ to: '0x123' }], version: '1.0' },
+        REQUEST_MOCK,
+      );
+      expect(result.id).toBeDefined();
     });
 
     it('throws if version not supported', async () => {

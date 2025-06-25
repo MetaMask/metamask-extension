@@ -140,9 +140,6 @@ export async function processSendCalls(
     paramFrom ??
     (messenger.call('AccountsController:getSelectedAccount').address as Hex);
 
-  const dismissSmartAccountSuggestionEnabled =
-    getDismissSmartAccountSuggestionEnabled();
-
   const batchSupport = await isAtomicBatchSupported({
     address: from,
     chainIds: [dappChainId],
@@ -150,14 +147,6 @@ export async function processSendCalls(
 
   const chainBatchSupport = batchSupport?.[0];
   const keyringType = getAccountKeyringType(from, messenger);
-
-  validateSendCalls(
-    params,
-    dappChainId,
-    dismissSmartAccountSuggestionEnabled,
-    chainBatchSupport,
-    keyringType,
-  );
 
   const securityAlertId = generateSecurityAlertId();
   const validateSecurity = validateSecurityHook.bind(null, securityAlertId);
@@ -175,6 +164,15 @@ export async function processSendCalls(
       validateSecurity,
     });
   } else {
+    const dismissSmartAccountSuggestionEnabled =
+      getDismissSmartAccountSuggestionEnabled();
+    validateSendCalls(
+      params,
+      dappChainId,
+      dismissSmartAccountSuggestionEnabled,
+      chainBatchSupport,
+      keyringType,
+    );
     const result = await addTransactionBatch({
       from,
       networkClientId,
