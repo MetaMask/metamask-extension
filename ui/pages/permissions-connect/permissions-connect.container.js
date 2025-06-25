@@ -37,7 +37,7 @@ import {
   CONNECT_SNAP_RESULT_ROUTE,
 } from '../../helpers/constants/routes';
 import PermissionApproval from './permissions-connect.component';
-import { getRequestedCaip25CaveatValue } from './connect-page/utils';
+import { getCaip25CaveatValueFromPermissions } from './connect-page/utils';
 
 const mapStateToProps = (state, ownProps) => {
   const {
@@ -65,7 +65,7 @@ const mapStateToProps = (state, ownProps) => {
     const permissions = getPermissions(state, origin);
 
     if (permissions) {
-      const existingCaveat = getRequestedCaip25CaveatValue(permissions);
+      const existingCaveat = getCaip25CaveatValueFromPermissions(permissions);
 
       // Save existing permissions to be added along with the new ones
       permissionsRequest.existingCaveat = existingCaveat;

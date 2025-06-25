@@ -8,6 +8,7 @@ import {
   Caip25CaveatType,
   Caip25CaveatValue,
   Caip25EndowmentPermissionName,
+  isCaipAccountIdInPermittedAccountIds,
   setEthAccounts,
   setPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
@@ -25,7 +26,7 @@ export type PermissionsRequest = Record<
  * @param permissions - The {@link PermissionsRequest} with the target name of the {@link Caip25EndowmentPermissionName}.
  * @returns The {@link Caip25CaveatValue}.
  */
-export function getRequestedCaip25CaveatValue(
+export function getCaip25CaveatValueFromPermissions(
   permissions?: PermissionsRequest,
 ): Caip25CaveatValue {
   return (
@@ -112,14 +113,13 @@ export function getDefaultAccounts(
     existingPermittedCaipAccountIds &&
     existingPermittedCaipAccountIds.length > 0
   ) {
-    const addresses = existingPermittedCaipAccountIds.map((caipAccountId) => {
-      const { address } = parseCaipAccountId(caipAccountId);
-      return address.toLowerCase();
-    });
+    const accounts = allAccounts.filter((account) =>
+      isCaipAccountIdInPermittedAccountIds(
+        account.caipAccountId,
+        existingPermittedCaipAccountIds,
+      ),
+    );
 
-    const accounts = allAccounts.filter((account) => {
-      return addresses.includes(account.address.toLowerCase());
-    });
     defaultAccounts.push(...accounts);
   }
 

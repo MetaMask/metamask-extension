@@ -75,7 +75,7 @@ import { CreateSolanaAccountModal } from '../../../components/multichain/create-
 import { mergeCaip25CaveatValues } from '../../../../shared/lib/caip25-caveat-merger';
 import {
   PermissionsRequest,
-  getRequestedCaip25CaveatValue,
+  getCaip25CaveatValueFromPermissions,
   getDefaultAccounts,
 } from './utils';
 
@@ -116,7 +116,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
+  const requestedCaip25CaveatValue = getCaip25CaveatValueFromPermissions(
     request.permissions,
   );
 
