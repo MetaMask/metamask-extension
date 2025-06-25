@@ -360,3 +360,6 @@ PATH_NAME_MAP.set(PREDICT_ROUTE, 'Predict Page');
 
 export const PREDICT_ROUTE_BET = '/predict-bet/:marketId';
 PATH_NAME_MAP.set(PREDICT_ROUTE_BET, 'Place bet');
+
+export const PREDICT_ROUTE_POSITIONS = '/predict-positions';
+PATH_NAME_MAP.set(PREDICT_ROUTE_POSITIONS, 'Predict Positions');
