@@ -8,6 +8,7 @@ import {
 
 /**
  * TODO: Isolate the merger function from @metamask/chain-agnostic-permissions and reuse it here
+ * See https://github.com/MetaMask/MetaMask-planning/issues/5113
  *
  * Merges two Caip25CaveatValue objects
  *
