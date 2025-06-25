@@ -111,7 +111,7 @@ async function bridgeUserActions(): Promise<{
 
   const fixtureBuilder = new FixtureBuilder()
     .withNetworkControllerOnMainnet()
-    .withEnabledNetworks({ '0x1': true });
+    .withEnabledNetworks({ eip155: { '0x1': true } });
 
   await withFixtures(
     {
