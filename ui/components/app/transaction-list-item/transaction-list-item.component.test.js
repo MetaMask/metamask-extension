@@ -33,6 +33,7 @@ import {
   getShouldShowFiat,
   getTokenExchangeRates,
   getSelectedInternalAccount,
+  getMarketData,
 } from '../../../selectors';
 import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
@@ -155,6 +156,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
         },
       },
     };
+  } else if (selector === getMarketData) {
+    return opts.marketData ?? {};
   }
   return undefined;
 };
