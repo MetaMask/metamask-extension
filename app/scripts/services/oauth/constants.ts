@@ -1,7 +1,7 @@
 export const OAUTH_CONFIG: Record<string, Record<string, string>> = {
   development: {
-    GOOGLE_AUTH_CONNECTION_ID: 'css-byoa-server',
-    APPLE_AUTH_CONNECTION_ID: 'css-byoa-server',
+    GOOGLE_AUTH_CONNECTION_ID: 'css-byoa-server-new-aud',
+    APPLE_AUTH_CONNECTION_ID: 'css-byoa-server-new-aud',
     GOOGLE_GROUPED_AUTH_CONNECTION_ID: 'css-byoa-server-seedless-onboarding',
     APPLE_GROUPED_AUTH_CONNECTION_ID: 'css-byoa-server-seedless-onboarding',
     AUTH_SERVER_URL: 'https://auth-service.dev-api.cx.metamask.io',
