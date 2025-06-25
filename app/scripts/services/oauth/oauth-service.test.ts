@@ -2,16 +2,11 @@ import {
   AuthConnection,
   Web3AuthNetwork,
 } from '@metamask/seedless-onboarding-controller';
-import { OAuthLoginEnv, WebAuthenticator } from './types';
+import { OAuthConfig, WebAuthenticator } from './types';
 import OAuthService from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
+import { OAUTH_CONFIG } from './constants';
 
-const MOCK_AUTH_SERVER_URL = 'https://mocked-auth-server-url';
-const MOCK_WEB3AUTH_NETWORK = 'sapphire_devnet';
-const MOCK_GOOGLE_AUTH_CONNECTION_ID = 'google-auth-id';
-const MOCK_APPLE_AUTH_CONNECTION_ID = 'apple-auth-id';
-const MOCK_GOOGLE_GROUPED_AUTH_CONNECTION_ID = 'google-group-id';
-const MOCK_APPLE_GROUPED_AUTH_CONNECTION_ID = 'apple-group-id';
 const DEFAULT_GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
 const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
 const OAUTH_AUD = 'metamask';
@@ -26,16 +21,26 @@ const MOCK_STATE = JSON.stringify({
   nonce: MOCK_NONCE,
 });
 
-function getOAuthLoginEnvs(): OAuthLoginEnv {
+function getOAuthLoginEnvs(): {
+  googleClientId: string;
+  appleClientId: string;
+} {
   return {
     googleClientId: DEFAULT_GOOGLE_CLIENT_ID,
     appleClientId: DEFAULT_APPLE_CLIENT_ID,
-    authServerUrl: MOCK_AUTH_SERVER_URL,
-    googleAuthConnectionId: MOCK_GOOGLE_AUTH_CONNECTION_ID,
-    appleAuthConnectionId: MOCK_APPLE_AUTH_CONNECTION_ID,
-    web3AuthNetwork: MOCK_WEB3AUTH_NETWORK as Web3AuthNetwork,
-    appleGrouppedAuthConnectionId: MOCK_APPLE_GROUPED_AUTH_CONNECTION_ID,
-    googleGrouppedAuthConnectionId: MOCK_GOOGLE_GROUPED_AUTH_CONNECTION_ID,
+  };
+}
+
+function getOAuthConfig(): OAuthConfig {
+  const config = OAUTH_CONFIG.main;
+
+  return {
+    authServerUrl: config.AUTH_SERVER_URL,
+    web3AuthNetwork: config.WEB3AUTH_NETWORK as Web3AuthNetwork,
+    googleAuthConnectionId: config.GOOGLE_AUTH_CONNECTION_ID,
+    googleGrouppedAuthConnectionId: config.GOOGLE_GROUPED_AUTH_CONNECTION_ID,
+    appleAuthConnectionId: config.APPLE_AUTH_CONNECTION_ID,
+    appleGrouppedAuthConnectionId: config.APPLE_GROUPED_AUTH_CONNECTION_ID,
   };
 }
 
@@ -89,7 +94,7 @@ describe('OAuthService - startOAuthLogin', () => {
 
     const googleLoginHandler = createLoginHandler(
       AuthConnection.Google,
-      getOAuthLoginEnvs(),
+      getOAuthConfig(),
       mockWebAuthenticator,
     );
 
@@ -112,7 +117,7 @@ describe('OAuthService - startOAuthLogin', () => {
 
     const appleLoginHandler = createLoginHandler(
       AuthConnection.Apple,
-      getOAuthLoginEnvs(),
+      getOAuthConfig(),
       mockWebAuthenticator,
     );
 
@@ -146,6 +151,8 @@ describe('OAuthService - getNewRefreshToken', () => {
   });
 
   it('should be able to get new refresh token', async () => {
+    const oauthConfig = getOAuthConfig();
+
     const oauthService = new OAuthService({
       env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
@@ -161,7 +168,7 @@ describe('OAuthService - getNewRefreshToken', () => {
     });
 
     expect(fetch).toHaveBeenCalledWith(
-      `${getOAuthLoginEnvs().authServerUrl}/api/v1/oauth/token`,
+      `${oauthConfig.authServerUrl}/api/v1/oauth/token`,
       {
         method: 'POST',
         headers: {
@@ -170,7 +177,7 @@ describe('OAuthService - getNewRefreshToken', () => {
         body: JSON.stringify({
           client_id: DEFAULT_GOOGLE_CLIENT_ID,
           login_provider: AuthConnection.Google,
-          network: getOAuthLoginEnvs().web3AuthNetwork,
+          network: oauthConfig.web3AuthNetwork,
           refresh_token: 'MOCK_REFRESH_TOKEN',
           grant_type: 'refresh_token',
         }),
@@ -201,6 +208,7 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
       env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
     });
+    const oauthConfig = getOAuthConfig();
 
     const result = await oauthService.revokeAndGetNewRefreshToken({
       connection: AuthConnection.Google,
@@ -213,7 +221,7 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
     });
 
     expect(fetch).toHaveBeenCalledWith(
-      `${getOAuthLoginEnvs().authServerUrl}/api/v1/oauth/revoke`,
+      `${oauthConfig.authServerUrl}/api/v1/oauth/revoke`,
       {
         method: 'POST',
         headers: {

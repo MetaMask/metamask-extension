@@ -3,13 +3,13 @@ import { AppleLoginHandler } from './apple-login-handler';
 import { GoogleLoginHandler } from './google-login-handler';
 import type {
   LoginHandlerOptions,
-  OAuthLoginEnv,
+  OAuthConfig,
   WebAuthenticator,
 } from './types';
 
 export function createLoginHandler(
   authConnection: AuthConnection,
-  env: OAuthLoginEnv,
+  env: OAuthConfig,
   webAuthenticator: WebAuthenticator,
 ) {
   const commonHandlerOptions: Omit<LoginHandlerOptions, 'oAuthClientId'> = {

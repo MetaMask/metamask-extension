@@ -1096,16 +1096,8 @@ export default class MetamaskController extends EventEmitter {
     this.oauthService = process.env.SEEDLESS_ONBOARDING_ENABLED
       ? new OAuthService({
           env: {
-            web3AuthNetwork: process.env.WEB3AUTH_NETWORK,
-            authServerUrl: process.env.AUTH_SERVER_URL,
             googleClientId: process.env.GOOGLE_CLIENT_ID,
             appleClientId: process.env.APPLE_CLIENT_ID,
-            googleAuthConnectionId: process.env.GOOGLE_AUTH_CONNECTION_ID,
-            appleAuthConnectionId: process.env.APPLE_AUTH_CONNECTION_ID,
-            googleGrouppedAuthConnectionId:
-              process.env.GOOGLE_GROUPED_AUTH_CONNECTION_ID,
-            appleGrouppedAuthConnectionId:
-              process.env.APPLE_GROUPED_AUTH_CONNECTION_ID,
           },
           webAuthenticator: webAuthenticatorFactory(),
         })

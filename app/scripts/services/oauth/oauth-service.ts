@@ -1,21 +1,31 @@
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import {
+  AuthConnection,
+  Web3AuthNetwork,
+} from '@metamask/seedless-onboarding-controller';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import { ENVIRONMENT } from '../../../../development/build/constants';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import type {
-  OAuthLoginEnv,
+  OAuthConfig,
   OAuthLoginResult,
   OAuthServiceOptions,
   WebAuthenticator,
 } from './types';
+import { OAUTH_CONFIG } from './constants';
 
 export default class OAuthService {
-  #env: OAuthLoginEnv;
+  #env: OAuthConfig;
 
   #webAuthenticator: WebAuthenticator;
 
+  readonly #audience = 'metamask';
+
   constructor({ env, webAuthenticator }: OAuthServiceOptions) {
-    this.#env = env;
+    this.#env = {
+      ...env,
+      ...this.#loadConfig(),
+    };
     this.#webAuthenticator = webAuthenticator;
   }
 
@@ -74,7 +84,7 @@ export default class OAuthService {
     );
 
     const refreshTokenData = await loginHandler.refreshAuthToken(refreshToken);
-    const idToken = refreshTokenData.jwt_tokens[this.#getAudience()];
+    const idToken = refreshTokenData.jwt_tokens[this.#audience];
 
     return {
       idTokens: [idToken],
@@ -104,6 +114,27 @@ export default class OAuthService {
     return {
       newRefreshToken: res.refresh_token,
       newRevokeToken: res.revoke_token,
+    };
+  }
+
+  #loadConfig(): OAuthConfig {
+    const { METAMASK_ENVIRONMENT, METAMASK_BUILD_TYPE } = process.env;
+    const buildType = METAMASK_BUILD_TYPE || 'development';
+
+    let config: Record<string, string> = {};
+    if (METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT) {
+      config = OAUTH_CONFIG.development;
+    } else {
+      config = OAUTH_CONFIG[buildType];
+    }
+
+    return {
+      authServerUrl: config.AUTH_SERVER_URL,
+      web3AuthNetwork: config.WEB3AUTH_NETWORK as Web3AuthNetwork,
+      googleAuthConnectionId: config.GOOGLE_AUTH_CONNECTION_ID,
+      googleGrouppedAuthConnectionId: config.GOOGLE_GROUPED_AUTH_CONNECTION_ID,
+      appleAuthConnectionId: config.APPLE_AUTH_CONNECTION_ID,
+      appleGrouppedAuthConnectionId: config.APPLE_GROUPED_AUTH_CONNECTION_ID,
     };
   }
 
@@ -204,7 +235,7 @@ export default class OAuthService {
         : this.#env.appleGrouppedAuthConnectionId;
 
     const authTokenData = await loginHandler.getAuthIdToken(authCode);
-    const idToken = authTokenData.jwt_tokens[this.#getAudience()];
+    const idToken = authTokenData.jwt_tokens[this.#audience];
     const userInfo = await loginHandler.getUserInfo(idToken);
 
     return {
@@ -232,13 +263,5 @@ export default class OAuthService {
       browser.runtime.lastError?.message ===
         OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR
     );
-  }
-
-  #getAudience(): string {
-    const audience = process.env.METAMASK_AUDIENCE;
-    if (!audience) {
-      throw new Error('METAMASK_AUDIENCE is not set');
-    }
-    return audience;
   }
 }
