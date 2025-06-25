@@ -4172,6 +4172,9 @@
   "onekeyExitBootloaderMode": {
     "message": "OneKey, bu özelliği kullanmak için önyükleme modundan çıkmalıdır."
   },
+  "onekeyDeviceCheckPassphraseStateError": {
+    "message": "Pin veya şifre mevcut hesapla eşleşmiyor"
+  },
   "onekeyForceUpdate": {
     "message": "OneKey firmware'inin güncellenmesi gerekiyor. $1"
   },

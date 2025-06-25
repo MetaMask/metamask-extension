@@ -4172,6 +4172,9 @@
   "onekeyExitBootloaderMode": {
     "message": "Kailangan ng OneKey na lumabas sa bootloader mode para magamit ang feature na ito."
   },
+  "onekeyDeviceCheckPassphraseStateError": {
+    "message": "Ang PIN o ang passphrase ay hindi tumugma sa kasalukuyang account"
+  },
   "onekeyForceUpdate": {
     "message": "Kailangan i-update ang firmware ng OneKey. $1"
   },

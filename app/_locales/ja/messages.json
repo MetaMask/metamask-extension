@@ -4172,6 +4172,9 @@
   "onekeyExitBootloaderMode": {
     "message": "OneKeyはこの機能を使用するためにブートローダーモードを終了する必要があります。"
   },
+  "onekeyDeviceCheckPassphraseStateError": {
+    "message": "PINまたはパスフレーズが現在のアカウントと一致しません"
+  },
   "onekeyForceUpdate": {
     "message": "OneKeyファームウェアの更新が必要です。$1"
   },

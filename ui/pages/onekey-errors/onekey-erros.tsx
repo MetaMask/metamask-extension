@@ -24,7 +24,10 @@ import { OneKeyBridgeInstallationRequired } from './onekey-require-install-bridg
 import { OneKeyForceUpdateFirmware } from './onekey-force-update-firmware';
 import { OneKeyUpdateFirmware } from './onekey-update-firmware';
 import { OneKeyExitBootloaderMode } from './onekey-exit-bootloader-mode';
+import { OneKeyCommonError } from './onekey-common-error';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OneKeyErrors() {
   const history = useHistory();
   const location = useLocation();
@@ -58,10 +61,17 @@ export default function OneKeyErrors() {
         return (
           <OneKeyExitBootloaderMode data-testid="onekey-exit-bootloader-mode" />
         );
+      case HardwareErrorCode.DeviceCheckPassphraseStateError.toString():
+      case HardwareErrorCode.DeviceCheckUnlockTypeError.toString():
+        return (
+          <OneKeyCommonError
+            error={t('onekeyDeviceCheckPassphraseStateError')}
+          />
+        );
       default:
         return null;
     }
-  }, [error]);
+  }, [error, t]);
 
   return (
     <div className="main-container" data-testid="onekey-errors-page">

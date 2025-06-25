@@ -12,7 +12,10 @@ import type {
   EVMSignTypedDataParams,
   EVMGetPublicKeyParams,
 } from '@onekeyfe/hd-core';
-import type { EthereumMessageSignature } from '@onekeyfe/hd-transport';
+import type {
+  EthereumMessageSignature,
+  Features,
+} from '@onekeyfe/hd-transport';
 import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
@@ -107,6 +110,20 @@ export class OneKeyOffscreenBridge implements OneKeyBridge {
         },
       );
     });
+  }
+
+  getDeviceFeatures() {
+    return new Promise((resolve) => {
+      chrome.runtime.sendMessage(
+        {
+          target: OffscreenCommunicationTarget.onekeyOffscreen,
+          action: OneKeyAction.getDeviceFeatures,
+        },
+        (response) => {
+          resolve(response);
+        },
+      );
+    }) as OneKeyResponse<Features>;
   }
 
   getPublicKey(params: { path: string; coin: string }) {

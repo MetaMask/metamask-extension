@@ -4205,6 +4205,9 @@
   "onekeyExitBootloaderMode": {
     "message": "इस सुविधा का उपयोग करने के लिए OneKey को बूटलोडर मोड से बाहर निकलना होगा।"
   },
+  "onekeyDeviceCheckPassphraseStateError": {
+    "message": "पिन या पासवर्ड वर्तमान खाते से मेल नहीं खाता"
+  },
   "onekeyForceUpdate": {
     "message": "OneKey फर्मवेयर को अपडेट करने की आवश्यकता है। $1"
   },

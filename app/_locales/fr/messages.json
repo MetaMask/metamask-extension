@@ -4172,6 +4172,9 @@
   "onekeyExitBootloaderMode": {
     "message": "OneKey doit quitter le mode bootloader pour utiliser cette fonctionnalité."
   },
+  "onekeyDeviceCheckPassphraseStateError": {
+    "message": "Le PIN ou la phrase secrète ne correspond pas au compte actuel"
+  },
   "onekeyForceUpdate": {
     "message": "Le firmware OneKey doit être mis à jour. $1"
   },
