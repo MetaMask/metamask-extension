@@ -955,17 +955,14 @@ export const getBridgeL2Fixtures = (
       await mockNativeL2toL2(mockServer),
       await mockDAIL2toL2(mockServer),
       await mockDAIL2toMainnet(mockServer),
-<<<<<<< gns-feature-flag-removal
       await mockGasPricesArbitrum(mockServer),
       await mockGasPricesMainnet(mockServer),
       await mockSwapAggregatorMetadataLinea(mockServer),
       await mockSwapTokensLinea(mockServer),
       await mockSwapTokensArbitrum(mockServer),
       await mockSwapAggregatorMetadataArbitrum(mockServer),
-=======
       await mockPriceSpotPrices(mockServer),
       await mockPriceSpotPricesV3(mockServer),
->>>>>>> main
     ],
     manifestFlags: {
       remoteFeatureFlags: {
