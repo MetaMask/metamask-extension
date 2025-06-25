@@ -193,7 +193,14 @@ export const useTokensWithFiltering = (
           address?: string,
           tokenChainId?: string,
         ) => {
-          // Normalize addresses for comparison: treat native addresses as empty string
+          /**
+           * Native tokens can be represented differently across the codebase:
+           * - When selected as source: address = '0x0000000000000000000000000000000000000000'
+           * - When yielded in token lists: address = '' (empty string)
+           *
+           * @param addr - The token address to normalize
+           * @returns Empty string for native addresses, original address otherwise
+           */
           const normalizeAddress = (addr?: string) => {
             return addr && isNativeAddress(addr) ? '' : addr;
           };
@@ -204,9 +211,11 @@ export const useTokensWithFiltering = (
               ? !(
                   tokenToExclude.symbol === symbol &&
                   (isSolanaChainId(tokenChainId)
-                    ? normalizeAddress(tokenToExclude.address) ===
+                    ? // For Solana: normalize both addresses before comparison to handle native SOL
+                      normalizeAddress(tokenToExclude.address) ===
                       normalizeAddress(address)
-                    : tokenToExclude.address?.toLowerCase() ===
+                    : // For EVM: use case-insensitive comparison (native tokens already normalized)
+                      tokenToExclude.address?.toLowerCase() ===
                       address?.toLowerCase()) &&
                   tokenToExclude.chainId === formatChainIdToCaip(tokenChainId)
                 )
