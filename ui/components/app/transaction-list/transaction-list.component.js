@@ -377,11 +377,6 @@ export default function TransactionList({
     nonceSortedCompletedTransactionsSelectorAllChains,
   );
 
-  console.log(
-    'unfilteredCompletedTransactionsAllChains',
-    unfilteredCompletedTransactionsAllChains,
-  );
-
   const chainId = useSelector(getCurrentChainId);
   const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 
@@ -405,49 +400,17 @@ export default function TransactionList({
       (enabledChainId) => enabledNetworksByNamespace[enabledChainId],
     );
 
-    console.log('enabledNetworksByNamespace:', enabledNetworksByNamespace);
-    console.log('enabledChainIds:', enabledChainIds);
-
     const transactionsToFilter = isTokenNetworkFilterEqualCurrentNetwork
       ? unfilteredCompletedTransactionsCurrentChain
       : unfilteredCompletedTransactionsAllChains;
-
-    console.log(
-      'isTokenNetworkFilterEqualCurrentNetwork',
-      isTokenNetworkFilterEqualCurrentNetwork,
-    );
-    console.log(
-      'transactionsToFilter before filtering:',
-      transactionsToFilter.map((tx) => ({
-        chainId: tx.initialTransaction?.chainId,
-        nonce: tx.nonce,
-        type: tx.initialTransaction?.type,
-      })),
-    );
 
     // Filter transactions to only include those from enabled networks
     const filteredTransactions = transactionsToFilter.filter(
       (transactionGroup) => {
         const transactionChainId = transactionGroup.initialTransaction?.chainId;
-        console.log('transactionChainId', transactionChainId);
         const isIncluded = enabledChainIds.includes(transactionChainId);
-        if (!isIncluded) {
-          console.log(
-            `Filtering out transaction with chainId: ${transactionChainId}, not in enabledChainIds:`,
-            enabledChainIds,
-          );
-        }
         return isIncluded;
       },
-    );
-
-    console.log(
-      'filteredTransactions after filtering:',
-      filteredTransactions.map((tx) => ({
-        chainId: tx.initialTransaction?.chainId,
-        nonce: tx.nonce,
-        type: tx.initialTransaction?.type,
-      })),
     );
 
     return filteredTransactions;
@@ -456,11 +419,6 @@ export default function TransactionList({
     currentMultichainChainId,
     unfilteredCompletedTransactionsAllChains,
   ]);
-
-  console.log(
-    'enabledNetworksFilteredCompletedTransactions',
-    enabledNetworksFilteredCompletedTransactions,
-  );
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
 
