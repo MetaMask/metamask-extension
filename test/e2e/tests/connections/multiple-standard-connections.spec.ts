@@ -55,14 +55,26 @@ async function getPermissionsPageForHost(driver: Driver, hostname: string) {
 /**
  * Helper to get a request permissions request object with a caveat.
  *
- * @param caveat - The caveat to add to the request permissions request object.
+ * @param accounts - The accounts to be requested.
  * @returns The request permissions request object with the caveat.
  */
-function getRequestPermissionsRequestObject(caveat: object = {}): string {
+function getRequestPermissionsRequestObject(accounts: string[] = []): string {
+  const caveats =
+    accounts.length > 0
+      ? {
+          caveats: [
+            {
+              type: 'restrictReturnedAccounts',
+              value: accounts,
+            },
+          ],
+        }
+      : {};
+
   return JSON.stringify({
     jsonrpc: '2.0',
     method: 'wallet_requestPermissions',
-    params: [{ eth_accounts: caveat }],
+    params: [{ eth_accounts: caveats }],
   });
 }
 
@@ -146,14 +158,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await testDapp.check_connectedAccounts(EVM_ACCOUNT_TWO);
 
         const requestPermissionsWithAccount1 =
-          getRequestPermissionsRequestObject({
-            caveats: [
-              {
-                type: 'restrictReturnedAccounts',
-                value: [EVM_ACCOUNT_ONE],
-              },
-            ],
-          });
+          getRequestPermissionsRequestObject([EVM_ACCOUNT_ONE]);
 
         await driver.executeScript(
           `window.ethereum.request(${requestPermissionsWithAccount1})`,
@@ -166,11 +171,12 @@ describe('Multiple Standard Dapp Connections', function () {
         await connectAccountConfirmation.check_isAccountDisplayed(
           EVM_ACCOUNT_ONE,
         );
+
         await connectAccountConfirmation.check_isAccountDisplayed(
           EVM_ACCOUNT_TWO,
         );
 
-        await connectAccountConfirmation.confirmConnect();
+        await await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
@@ -269,18 +275,11 @@ describe('Multiple Standard Dapp Connections', function () {
         await testDapp.openTestDappPage();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const requestPermissionsWithEthAccount4 =
-          getRequestPermissionsRequestObject({
-            caveats: [
-              {
-                type: 'restrictReturnedAccounts',
-                value: [EVM_ACCOUNT_TWO],
-              },
-            ],
-          });
+        const requestPermissionsWithEthAccount2 =
+          getRequestPermissionsRequestObject([EVM_ACCOUNT_TWO]);
 
         await driver.executeScript(
-          `window.ethereum.request(${requestPermissionsWithEthAccount4})`,
+          `window.ethereum.request(${requestPermissionsWithEthAccount2})`,
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
