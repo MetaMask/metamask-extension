@@ -389,7 +389,7 @@ describe('Multichain API', function () {
     const NEW_SCOPES = ['eip155:1338', 'eip155:1000'];
     const TREZOR_ACCOUNT = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
 
-    it('should merge old session permissions with those requested in the new `wallet_createSession` request', async function () {
+    it('should include old session permissions as pre-selected in the connection screen along with those requested in the new `wallet_createSession` request', async function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
