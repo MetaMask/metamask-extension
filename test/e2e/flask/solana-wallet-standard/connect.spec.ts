@@ -130,6 +130,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           ]);
           await networkPermissionSelectModal.clickConfirmEditButton();
 
+          // Click connect
           await connectAccountConfirmation.check_pageIsLoaded();
           await connectAccountConfirmation.confirmConnect();
 
