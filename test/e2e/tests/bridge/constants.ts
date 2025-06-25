@@ -142,6 +142,18 @@ export const FAILED_DEST_TRANSACTION = {
   },
 };
 
+export const MOCK_TOKENS_ARBITRUM = [
+  {
+    symbol: 'DAI',
+    decimals: 18,
+    aggregators: [],
+    occurrences: 1,
+    iconUrl: '',
+    address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
+    name: 'Dai Stablecoin',
+  },
+];
+
 export const MOCK_TOKENS_ETHEREUM = [
   {
     symbol: 'DAI',
@@ -276,6 +288,29 @@ export const MOCK_TOKENS_LINEA = [
       'https://assets.coingecko.com/coins/images/31271/thumb/usdt.jpeg?1696530095',
     address: '0xa219439258ca9da29e9cc4ce5596924745e12b93',
     name: 'Bridged Tether  Linea ',
+  },
+  {
+    address: '0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f',
+    symbol: 'WETH',
+    decimals: 18,
+    name: 'Wrapped Ether',
+    iconUrl: '',
+    type: 'erc20',
+    aggregators: [],
+    occurrences: 11,
+    erc20Permit: false,
+    storage: {},
+  },
+  {
+    address: '0x0000000000000000000000000000000000000000',
+    symbol: 'ETH',
+    decimals: 18,
+    name: 'Ether',
+    iconUrl: '',
+    type: 'native',
+    aggregators: [],
+    occurrences: 100,
+    erc20Permit: false,
   },
 ];
 

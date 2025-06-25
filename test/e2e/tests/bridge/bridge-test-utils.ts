@@ -17,6 +17,7 @@ import { mockSegment } from '../metrics/mocks/segment';
 import {
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
+  MOCK_TOKENS_ARBITRUM,
   MOCK_TOKENS_ETHEREUM,
   MOCK_TOKENS_LINEA,
   MOCK_GET_TOKEN_ARBITRUM,
@@ -219,7 +220,7 @@ async function mockTokensArbitrum(mockServer: Mockttp) {
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: MOCK_TOKENS_ETHEREUM,
+        json: MOCK_TOKENS_ARBITRUM,
       };
     });
 }
@@ -683,6 +684,8 @@ export const getQuoteNegativeCasesFixtures = (
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockTopAssetsLinea(mockServer),
       await mockGetQuoteInvalid(mockServer, options),
+      await mockTokensLinea(mockServer),
+      await mockPriceSpotPrices(mockServer),
     ],
     manifestFlags: {
       remoteFeatureFlags: {
@@ -725,6 +728,7 @@ export const getBridgeNegativeCasesFixtures = (
       await mockTopAssetsLinea(mockServer),
       await mockETHtoETH(mockServer),
       await mockGetTxStatusInvalid(mockServer, options),
+      await mockPriceSpotPrices(mockServer),
     ],
     manifestFlags: {
       remoteFeatureFlags: {
@@ -763,6 +767,7 @@ export const getInsufficientFundsFixtures = (
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
+      await mockTokensLinea(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockETHtoWETH(mockServer),
     ],
