@@ -13,6 +13,7 @@ export enum HardwareKeyringNames {
   ledger = 'Ledger',
   trezor = 'Trezor',
   oneKey = 'OneKey',
+  keystone = 'Keystone',
   lattice = 'Lattice1',
   qr = 'QR',
 }
@@ -21,6 +22,7 @@ export enum HardwareDeviceNames {
   ledger = 'ledger',
   trezor = 'trezor',
   oneKey = 'oneKey',
+  keystone = 'keystone',
   lattice = 'lattice',
   qr = 'QR Hardware',
 }

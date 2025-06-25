@@ -154,6 +154,9 @@ export const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
 PATH_NAME_MAP[`${CONNECT_ROUTE}/:id${CONNECT_SNAP_RESULT_ROUTE}`] =
   'Snap Install Result Page';
 
+export const KEYSTONE_USB_BRIDGE = '/keystone-usb-bridge';
+PATH_NAME_MAP[KEYSTONE_USB_BRIDGE] = 'Keystone USB Bridge Page';
+
 export const SNAPS_ROUTE = '/snaps';
 PATH_NAME_MAP[SNAPS_ROUTE] = 'Snaps List Page';
 

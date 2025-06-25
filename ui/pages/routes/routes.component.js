@@ -52,6 +52,7 @@ import {
   REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
   IMPORT_SRP_ROUTE,
   DEFI_ROUTE,
+  KEYSTONE_USB_BRIDGE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -130,6 +131,7 @@ const DeFiPage = mmLazy(() => import('../defi'));
 const PermissionsPage = mmLazy(() =>
   import('../../components/multichain/pages/permissions-page/permissions-page'),
 );
+const KeystoneBridge = mmLazy(() => import('../keystone/keystone-bridge'));
 const Connections = mmLazy(() =>
   import('../../components/multichain/pages/connections'),
 );
@@ -396,6 +398,11 @@ export default class Routes extends Component {
           <Authenticated
             path={REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE}
             component={RemoteModeSetupDailyAllowance}
+            exact
+          />
+          <Authenticated
+            path={KEYSTONE_USB_BRIDGE}
+            component={KeystoneBridge}
             exact
           />
 

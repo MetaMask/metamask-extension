@@ -1,4 +1,5 @@
 export const OFFSCREEN_LEDGER_INIT_TIMEOUT = 4000;
+export const OFFSCREEN_KEYSTONE_INIT_TIMEOUT = 4000;
 export const OFFSCREEN_LOAD_TIMEOUT = OFFSCREEN_LEDGER_INIT_TIMEOUT + 1000;
 
 /**
@@ -9,6 +10,7 @@ export enum OffscreenCommunicationTarget {
   trezorOffscreen = 'trezor-offscreen',
   ledgerOffscreen = 'ledger-offscreen',
   latticeOffscreen = 'lattice-offscreen',
+  keystoneOffscreen = 'keystone-offscreen',
   extension = 'extension-offscreen',
   extensionMain = 'extension',
 }
@@ -21,6 +23,7 @@ export enum OffscreenCommunicationEvents {
   trezorDeviceConnect = 'trezor-device-connect',
   ledgerDeviceConnect = 'ledger-device-connect',
   metamaskBackgroundReady = 'metamask-background-ready',
+  keystoneDeviceConnect = 'keystone-device-connect',
 }
 
 /**
@@ -33,6 +36,14 @@ export enum TrezorAction {
   signTransaction = 'trezor-sign-transaction',
   signMessage = 'trezor-sign-message',
   signTypedData = 'trezor-sign-typed-data',
+}
+
+export enum KeystoneAction {
+  init = "keystone-init",
+  getKeys = "keystone-get-keys",
+  signTransaction = "keystone-sign-transaction",
+  signPersonalMessage = "keystone-sign-personal-message",
+  signEIP712Message = "keystone-sign-eip712-message",
 }
 
 /**
@@ -56,4 +67,5 @@ export enum LedgerAction {
 export enum KnownOrigins {
   lattice = 'https://lattice.gridplus.io',
   ledger = 'https://metamask.github.io',
+  keystone = 'http://localhost:4173',
 }

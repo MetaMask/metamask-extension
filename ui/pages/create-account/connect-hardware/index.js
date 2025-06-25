@@ -71,11 +71,22 @@ export const TREZOR_HD_PATHS = [
   { name: `Trezor Testnets`, value: TREZOR_TESTNET_PATH },
 ];
 
+const KEYSTONE_BIP44_PATH = `m/44'/60'/0'`;
+const KEYSTONE_LEDGER_LIVE_PATH = `m/44'/60'/x'/0/0`;
+const KEYSTONE_LEDGER_LEGACY_PATH = `m/44'/60'/0'/x`;
+
+const KEYSTONE_HD_PATHS = [
+  { name: `BIP44 Standard`, value: KEYSTONE_BIP44_PATH },
+  { name: `Legacy Legacy`, value: KEYSTONE_LEDGER_LEGACY_PATH },
+  { name: `Ledger Live`, value: KEYSTONE_LEDGER_LIVE_PATH },
+];
+
 const HD_PATHS = {
   ledger: LEDGER_HD_PATHS,
   lattice: LATTICE_HD_PATHS,
   trezor: TREZOR_HD_PATHS,
   oneKey: TREZOR_HD_PATHS,
+  keystone: KEYSTONE_HD_PATHS,
 };
 
 const getErrorMessage = (errorCode, t) => {

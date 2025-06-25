@@ -1,0 +1,22 @@
+@use "design-system";
+
+.keystone-usb-bridge {
+  &__container {
+    flex: 1;
+    flex-direction: row;
+    display: flex;
+  }
+
+  &__header {
+    flex-direction: column;
+    display: flex;
+    width: 30vw;
+    min-width: 300px;
+  }
+
+  &__content {
+    flex: 1;
+    flex-direction: column;
+    display: flex;
+  }
+}
