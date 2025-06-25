@@ -35,7 +35,10 @@ import TransactionList, {
 
 <<<<<<< HEAD
 jest.mock('../../../store/controller-actions/transaction-controller');
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> main
 // Mock FEATURED_NETWORK_CHAIN_IDS to include Goerli
 jest.mock('../../../../shared/constants/network', () => ({
   ...jest.requireActual('../../../../shared/constants/network'),
@@ -51,7 +54,10 @@ jest.mock('../../../../shared/constants/network', () => ({
     '0x324',
   ],
 }));
+<<<<<<< HEAD
 >>>>>>> be1140f81e72365a32ca7d310043fadf63d3eb58
+=======
+>>>>>>> main
 
 const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
   address: '0xefga64466f257793eaa52fcfff5066894b76a149',
@@ -61,10 +67,15 @@ const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
 const defaultState = {
   metamask: {
     ...mockState.metamask,
+<<<<<<< HEAD
     enabledNetworkMap: {
       eip155: {
         [CHAIN_IDS.GOERLI]: true,
       },
+=======
+    eip155: {
+      [CHAIN_IDS.GOERLI]: true,
+>>>>>>> main
     },
     transactions: [MOCK_TRANSACTION_BY_TYPE[TransactionType.incoming]],
     internalAccounts: {
