@@ -17,6 +17,7 @@ import { mockSegment } from '../metrics/mocks/segment';
 import {
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
+  MOCK_TOKENS_ARBITRUM,
   MOCK_TOKENS_ETHEREUM,
   MOCK_TOKENS_LINEA,
   MOCK_GET_TOKEN_ARBITRUM,
@@ -140,7 +141,6 @@ export async function bridgeTransaction(
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer
     .forGet(`https://portfolio.metamask.io/bridge`)
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -214,6 +214,17 @@ async function mockTokensLinea(mockServer: Mockttp) {
     });
 }
 
+async function mockTokensArbitrum(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(`https://token.api.cx.metamask.io/tokens/42161`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_TOKENS_ARBITRUM,
+      };
+    });
+}
+
 async function mockGetTokenArbitrum(mockServer: Mockttp) {
   return await mockServer
     .forGet(/getTokens/u)
@@ -233,7 +244,6 @@ async function mockETHtoETH(mockServer: Mockttp) {
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0x0000000000000000000000000000000000000000',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -249,7 +259,6 @@ async function mockETHtoWETH(mockServer: Mockttp) {
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -265,7 +274,6 @@ async function mockETHtoUSDC(mockServer: Mockttp) {
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -297,7 +305,6 @@ async function mockUSDCtoDAI(mockServer: Mockttp) {
       srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       destTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -338,7 +345,6 @@ async function mockL2toMainnet(mockServer: Mockttp) {
       destChainId: 1,
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -355,7 +361,6 @@ async function mockNativeL2toL2(mockServer: Mockttp) {
       destChainId: 42161,
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -370,9 +375,7 @@ async function mockDAIL2toL2(mockServer: Mockttp) {
       srcChainId: 59144,
       destChainId: 42161,
       srcTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
-      destTokenAddress: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -390,7 +393,6 @@ async function mockDAIL2toMainnet(mockServer: Mockttp) {
       srcTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
       destTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -574,9 +576,11 @@ export const getBridgeFixtures = (
       },
     })
     .withEnabledNetworks({
-      '0x1': true,
-      '0xe708': true,
-      '0xa4b1': true,
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+        '0xa4b1': true,
+      },
     });
 
   if (withErc20) {
@@ -671,9 +675,11 @@ export const getQuoteNegativeCasesFixtures = (
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
-      '0x1': true,
-      '0xe708': true,
-      '0xa4b1': true,
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+        '0xa4b1': true,
+      },
     });
 
   return {
@@ -681,6 +687,8 @@ export const getQuoteNegativeCasesFixtures = (
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockTopAssetsLinea(mockServer),
       await mockGetQuoteInvalid(mockServer, options),
+      await mockTokensLinea(mockServer),
+      await mockPriceSpotPrices(mockServer),
     ],
     manifestFlags: {
       remoteFeatureFlags: {
@@ -713,16 +721,20 @@ export const getBridgeNegativeCasesFixtures = (
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
-      '0x1': true,
-      '0xe708': true,
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+      },
     });
 
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockTopAssetsLinea(mockServer),
+      await mockTokensLinea(mockServer),
       await mockETHtoETH(mockServer),
       await mockGetTxStatusInvalid(mockServer, options),
+      await mockPriceSpotPrices(mockServer),
     ],
     manifestFlags: {
       remoteFeatureFlags: {
@@ -754,13 +766,16 @@ export const getInsufficientFundsFixtures = (
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
-      '0x1': true,
-      '0xe708': true,
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+      },
     });
 
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
+      await mockTokensLinea(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockETHtoWETH(mockServer),
     ],
@@ -794,15 +809,17 @@ export const getBridgeL2Fixtures = (
     .withBridgeControllerDefaultState()
     .withNetworkControllerOnLineaLocahost()
     .withEnabledNetworks({
-      '0x1': true, // Ethereum Mainnet
-      '0xa4b1': true, // Arbitrum One
-      '0xe708': true, // Linea Mainnet
-      '0xa': true, // Optimism
-      '0x89': true, // Polygon
-      '0x38': true, // BSC
-      '0xa86a': true, // Avalanche
-      '0x2105': true, // Base
-      '0x144': true, // zkSync Era
+      eip155: {
+        '0x1': true, // Ethereum Mainnet
+        '0xa4b1': true, // Arbitrum One
+        '0xe708': true, // Linea Mainnet
+        '0xa': true, // Optimism
+        '0x89': true, // Polygon
+        '0x38': true, // BSC
+        '0xa86a': true, // Avalanche
+        '0x2105': true, // Base
+        '0x144': true, // zkSync Era
+      },
     });
 
   return {
@@ -812,6 +829,7 @@ export const getBridgeL2Fixtures = (
       await mockGetTxStatus(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockTopAssetsArbitrum(mockServer),
+      await mockTokensArbitrum(mockServer),
       await mockTokensEthereum(mockServer),
       await mockTokensLinea(mockServer),
       await mockGetTokenArbitrum(mockServer),
@@ -819,6 +837,8 @@ export const getBridgeL2Fixtures = (
       await mockNativeL2toL2(mockServer),
       await mockDAIL2toL2(mockServer),
       await mockDAIL2toMainnet(mockServer),
+      await mockPriceSpotPrices(mockServer),
+      await mockPriceSpotPricesV3(mockServer),
     ],
     manifestFlags: {
       remoteFeatureFlags: {

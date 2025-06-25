@@ -5,9 +5,10 @@ import { regularDelayMs, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 const SOLANA_URL_REGEX_MAINNET =
@@ -1737,7 +1738,7 @@ export async function withSolanaAccountSnap(
       mockServer: Mockttp;
       extensionId: string;
     }) => {
-      await loginWithoutBalanceValidation(driver);
+      await loginWithBalanceValidation(driver);
       const headerComponent = new HeaderNavbar(driver);
       const accountListPage = new AccountListPage(driver);
 
@@ -1747,7 +1748,9 @@ export async function withSolanaAccountSnap(
           accountType: ACCOUNT_TYPE.Solana,
           accountName: `Solana ${i}`,
         });
+        await new NonEvmHomepage(driver).check_pageIsLoaded();
         await headerComponent.check_accountLabel(`Solana ${i}`);
+        await headerComponent.check_currentSelectedNetwork('Solana');
       }
 
       if (numberOfAccounts > 0) {
