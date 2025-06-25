@@ -1573,7 +1573,7 @@ export async function withSolanaAccountSnap(
     dappPaths,
     withProtocolSnap,
     withCustomMocks,
-    fixtureModifications,
+    withFixtureBuilder,
   }: {
     title?: string;
     showNativeTokenAsMainBalance?: boolean;
@@ -1595,7 +1595,7 @@ export async function withSolanaAccountSnap(
       | Promise<MockedEndpoint[] | MockedEndpoint>
       | MockedEndpoint[]
       | MockedEndpoint;
-    fixtureModifications?: (builder: FixtureBuilder) => FixtureBuilder;
+    withFixtureBuilder?: (builder: FixtureBuilder) => FixtureBuilder;
   },
   test: (
     driver: Driver,
@@ -1610,8 +1610,8 @@ export async function withSolanaAccountSnap(
       fixtures.withPreferencesControllerShowNativeTokenAsMainBalanceDisabled();
   }
 
-  if (fixtureModifications) {
-    fixtures = fixtureModifications(fixtures);
+  if (withFixtureBuilder) {
+    fixtures = withFixtureBuilder(fixtures);
   }
 
   await withFixtures(

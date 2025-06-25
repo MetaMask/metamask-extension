@@ -191,7 +191,7 @@ describe('Multiple Standard Dapp Connections', function () {
       {
         ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
         title: this.test?.fullTitle(),
-        fixtureModifications: (builder) =>
+        withFixtureBuilder: (builder) =>
           builder
             .withKeyringControllerAdditionalAccountVault()
             .withPreferencesControllerAdditionalAccountIdentities()
@@ -225,7 +225,7 @@ describe('Multiple Standard Dapp Connections', function () {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        fixtureModifications: (builder) =>
+        withFixtureBuilder: (builder) =>
           builder.withPermissionControllerConnectedToMultichainTestDapp({
             // @ts-expect-error Type error is expected here since its being inferred as null
             value: SOLANA_PERMISSIONS,
@@ -259,7 +259,7 @@ describe('Multiple Standard Dapp Connections', function () {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        fixtureModifications: (builder) =>
+        withFixtureBuilder: (builder) =>
           builder
             .withKeyringControllerAdditionalAccountVault()
             .withPreferencesControllerAdditionalAccountIdentities()
