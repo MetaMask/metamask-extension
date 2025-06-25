@@ -4358,10 +4358,7 @@ export default class MetamaskController extends EventEmitter {
       isRelaySupported,
       requestSafeReload: this.requestSafeReload.bind(this),
     };
-    console.log(
-      'getIsSeedlessOnboardingFeatureEnabled()',
-      getIsSeedlessOnboardingFeatureEnabled(),
-    );
+
     if (getIsSeedlessOnboardingFeatureEnabled()) {
       apis = {
         ...apis,
@@ -4369,9 +4366,9 @@ export default class MetamaskController extends EventEmitter {
         resetOAuthLoginState: this.resetOAuthLoginState.bind(this),
         createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
         fetchAllSecretData: this.fetchAllSecretData.bind(this),
+        changePassword: this.changePassword.bind(this),
       };
     }
-    console.log('apis', apis);
 
     return apis;
   }
@@ -4756,6 +4753,30 @@ export default class MetamaskController extends EventEmitter {
 
       throw error;
     }
+  }
+
+  /**
+   * Changes the password of the current wallet.
+   *
+   * If the wallet is created with social login, the password is changed for the seedless onboarding flow and sync across the devices too.
+   *
+   * @param {string} newPassword - The new password.
+   * @param {string} oldPassword - The old password.
+   * @returns {Promise<void>}
+   */
+  async changePassword(newPassword, oldPassword) {
+    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+
+    if (isSocialLoginFlow) {
+      // change password for the social login flow
+      await this.seedlessOnboardingController.changePassword(
+        newPassword,
+        oldPassword,
+      );
+    }
+
+    // also update the vault password for keyring controller
+    await this.keyringController.changePassword(newPassword);
   }
 
   //=============================================================================

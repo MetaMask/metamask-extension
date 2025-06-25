@@ -61,6 +61,7 @@ import {
   RestrictedEthMethods,
 } from '../../shared/constants/permissions';
 import * as NetworkConstantsModule from '../../shared/constants/network';
+import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import MetaMaskController from './metamask-controller';
 import { PermissionNames } from './controllers/permissions';
@@ -312,6 +313,7 @@ const noop = () => undefined;
 describe('MetaMaskController', () => {
   beforeAll(async () => {
     await ganacheServer.start();
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
   });
 
   beforeEach(() => {
@@ -793,6 +795,52 @@ describe('MetaMaskController', () => {
 
         expect(fetchSrpBackupSpy).toHaveBeenCalledWith(password);
         expect(srpBackup.toString('utf8')).toStrictEqual(mockSeedPhrase);
+      });
+    });
+
+    describe('#changePassword', () => {
+      it('should change the password for both seedless onboarding and keyring controller', async () => {
+        const oldPassword = 'old-password';
+        const newPassword = 'new-password';
+
+        metamaskController.onboardingController.setFirstTimeFlowType(
+          FirstTimeFlowType.socialCreate,
+        );
+
+        await metamaskController.createNewVaultAndKeychain(oldPassword);
+
+        const changePwdSeedlessOnboardingSpy = jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'changePassword',
+          )
+          .mockResolvedValueOnce();
+        const changePwdKeyringControllerSpy = jest
+          .spyOn(metamaskController.keyringController, 'changePassword')
+          .mockResolvedValueOnce();
+
+        await metamaskController.changePassword(newPassword, oldPassword);
+
+        expect(changePwdSeedlessOnboardingSpy).toHaveBeenCalledWith(
+          newPassword,
+          oldPassword,
+        );
+        expect(changePwdKeyringControllerSpy).toHaveBeenCalledWith(newPassword);
+      });
+
+      it('should change the password for Keyring Vault for the SRP flow', async () => {
+        const oldPassword = 'old-password';
+        const newPassword = 'new-password';
+
+        await metamaskController.createNewVaultAndKeychain(oldPassword);
+
+        const changePwdKeyringControllerSpy = jest
+          .spyOn(metamaskController.keyringController, 'changePassword')
+          .mockResolvedValueOnce();
+
+        await metamaskController.changePassword(newPassword, oldPassword);
+
+        expect(changePwdKeyringControllerSpy).toHaveBeenCalledWith(newPassword);
       });
     });
 
@@ -4471,6 +4519,8 @@ describe('MetaMaskController', () => {
 
     it('in mv3, it should not reset states if isFirstMetaMaskControllerSetup is false', () => {
       browserPolyfillMock.storage.session.set.mockReset();
+      console.log('METAMASK_ENVIRONMENT', process.env.METAMASK_ENVIRONMENT);
+      console.log('METAMASK_BUILD_TYPE', process.env.METAMASK_BUILD_TYPE);
 
       const metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
