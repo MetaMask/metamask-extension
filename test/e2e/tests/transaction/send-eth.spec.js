@@ -26,8 +26,8 @@ describe('Send ETH', function () {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
         },
-        async ({ driver }) => {
-          await logInWithBalanceValidation(driver);
+        async ({ driver, localNodes }) => {
+          await logInWithBalanceValidation(driver, localNodes[0]);
 
           await openActionMenuAndStartSendFlow(driver);
 
