@@ -726,6 +726,7 @@ export const getBridgeNegativeCasesFixtures = (
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockTopAssetsLinea(mockServer),
+      await mockTokensLinea(mockServer),
       await mockETHtoETH(mockServer),
       await mockGetTxStatusInvalid(mockServer, options),
       await mockPriceSpotPrices(mockServer),
