@@ -4122,6 +4122,9 @@
   "onekeyExitBootloaderMode": {
     "message": "OneKey необходимо выйти из режима загрузчика для использования этой функции."
   },
+  "onekeyDeviceCheckPassphraseStateError": {
+    "message": "PIN или пароль не совпадают с текущим аккаунтом"
+  },
   "onekeyForceUpdate": {
     "message": "Прошивка OneKey требует обновления. $1"
   },
