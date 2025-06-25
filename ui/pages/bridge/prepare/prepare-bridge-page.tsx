@@ -20,6 +20,7 @@ import {
   isNativeAddress,
   UnifiedSwapBridgeEventName,
   BRIDGE_DEFAULT_SLIPPAGE,
+  GenericQuoteRequest,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -380,7 +381,7 @@ const PrepareBridgePage = () => {
     return isSolanaChainId(toChain.chainId);
   }, [toChain?.chainId]);
 
-  const quoteParams = useMemo(
+  const quoteParams: Partial<GenericQuoteRequest> = useMemo(
     () => ({
       srcTokenAddress: fromToken?.address,
       destTokenAddress: toToken?.address,
@@ -406,6 +407,7 @@ const PrepareBridgePage = () => {
       slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
+      gasIncluded: smartTransactionsEnabled,
     }),
     [
       fromToken?.address,
@@ -418,6 +420,7 @@ const PrepareBridgePage = () => {
       selectedAccount?.address,
       selectedDestinationAccount?.address,
       providerConfig?.rpcUrl,
+      smartTransactionsEnabled,
     ],
   );
 
