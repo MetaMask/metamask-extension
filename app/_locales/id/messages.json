@@ -4190,6 +4190,9 @@
   "onekeyExitBootloaderMode": {
     "message": "OneKey perlu keluar dari mode bootloader untuk menggunakan fitur ini."
   },
+  "onekeyDeviceCheckPassphraseStateError": {
+    "message": "Pin atau kata sandi tidak cocok dengan akun saat ini"
+  },
   "onekeyForceUpdate": {
     "message": "Firmware OneKey perlu diperbarui. $1"
   },

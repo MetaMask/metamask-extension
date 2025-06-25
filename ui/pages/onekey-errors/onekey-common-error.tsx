@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   Box,
@@ -17,7 +17,7 @@ import {
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export function OneKeyExitBootloaderMode() {
+export function OneKeyCommonError({ error }: { error: string }) {
   const t = useI18nContext();
 
   return (
@@ -33,16 +33,8 @@ export function OneKeyExitBootloaderMode() {
       data-testid="notifications-settings-allow-notifications"
     >
       <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-        {t('onekeyExitBootloaderMode')}
+        {error}
       </Text>
-      <Button
-        variant={ButtonVariant.Primary}
-        externalLink
-        href="https://help.onekey.so/hc/articles/8352275268623"
-        type="primary"
-      >
-        {t('onekeyHardwareHelpLink')}
-      </Button>
     </Box>
   );
 }
