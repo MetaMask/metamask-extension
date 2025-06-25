@@ -13,5 +13,10 @@ export function useIsEnforcedSimulationsSupported() {
     Boolean(simulationData?.nativeBalanceChange) ||
     Boolean(simulationData?.tokenBalanceChanges?.length);
 
-  return !isInternalOrigin && isUpgraded && hasBalanceChanges;
+  return (
+    process.env.ENABLE_ENFORCED_SIMULATIONS &&
+    !isInternalOrigin &&
+    isUpgraded &&
+    hasBalanceChanges
+  );
 }
