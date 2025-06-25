@@ -19,7 +19,7 @@ export const RevealSrpList = () => {
 
   const onSrpActionComplete = (keyringId: string, triggerBackup?: boolean) => {
     if (triggerBackup) {
-      const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
+      const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true&isFromSettingsSecurity=true`;
       history.push(backUpSRPRoute);
     } else {
       setSelectedKeyringId(keyringId);

@@ -53,6 +53,7 @@ import {
   IMPORT_SRP_ROUTE,
   DEFI_ROUTE,
   DEEP_LINK_ROUTE,
+  SMART_ACCOUNT_UPDATE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -85,6 +86,7 @@ import {
   isCorrectSignatureApprovalType,
 } from '../../../shared/lib/confirmation.utils';
 import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
+import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -304,6 +306,10 @@ export default class Routes extends Component {
             path={RESTORE_VAULT_ROUTE}
             component={RestoreVaultPage}
             exact
+          />
+          <Authenticated
+            path={SMART_ACCOUNT_UPDATE}
+            component={SmartAccountUpdate}
           />
           <Authenticated
             // `:keyringId` is optional here, if not provided, this will fallback
