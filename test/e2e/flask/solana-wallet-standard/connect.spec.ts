@@ -72,8 +72,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           );
           await connectAccountConfirmation.check_pageIsLoaded();
           await connectAccountConfirmation.cancelConnect();
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
-          await testDapp.check_pageIsLoaded();
+          await testDapp.switchTo();
 
           // Verify we're not connected
           const connectionStatus = await header.getConnectionStatus();
@@ -135,8 +134,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await connectAccountConfirmation.confirmConnect();
 
           // Switch back to test dapp
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
-          await testDapp.check_pageIsLoaded();
+          await testDapp.switchTo();
 
           // Verify we're not connected
           const connectionStatus = await header.getConnectionStatus();
@@ -200,8 +198,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await switchToAccount(driver, 'Solana 1');
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
-          await testDapp.check_pageIsLoaded();
+          await testDapp.switchTo();
 
           // Check that we're connected to the first account
           const account2 = await header.getAccount();
@@ -238,8 +235,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await switchToAccount(driver, 'Solana 1');
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
-          await testDapp.check_pageIsLoaded();
+          await testDapp.switchTo();
+
           // Check that we're still connected to the second account
           account = await header.getAccount();
           assertConnected(account, account2Short);
@@ -249,8 +246,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await switchToAccount(driver, 'Solana 2');
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
-          await testDapp.check_pageIsLoaded();
+          await testDapp.switchTo();
 
           // Check that we're still connected to the second account
           account = await header.getAccount();

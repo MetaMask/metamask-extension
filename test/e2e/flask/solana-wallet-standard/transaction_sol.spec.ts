@@ -36,8 +36,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
-          await testDapp.check_pageIsLoaded();
+          await testDapp.switchTo();
 
           await driver.delay(largeDelayMs);
           const signedTransaction = await sendSolTest.getSignedTransaction();
@@ -51,8 +50,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
-          await testDapp.check_pageIsLoaded();
+          await testDapp.switchTo();
 
           // Assert that a transaction hash is received
           await driver.delay(largeDelayMs);
@@ -85,8 +83,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickCancelButton(driver);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
-          await testDapp.check_pageIsLoaded();
+          await testDapp.switchTo();
 
           // 2. Send another transaction
           await sendSolTest.sendTransaction();
@@ -95,8 +92,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
-          await testDapp.check_pageIsLoaded();
+          await testDapp.switchTo();
 
           // Assert that a transaction hash is received
           await driver.delay(largeDelayMs);

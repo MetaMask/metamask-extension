@@ -117,8 +117,7 @@ export const connectSolanaTestDapp = async (
   await connectAccountConfirmation.confirmConnect();
 
   // Go back to the test dapp window
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
-  await testDapp.check_pageIsLoaded();
+  await testDapp.switchTo();
   console.log('solana test dapp connected');
 };
 

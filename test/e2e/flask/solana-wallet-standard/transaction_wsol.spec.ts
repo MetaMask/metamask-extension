@@ -38,8 +38,7 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
-          await testDapp.check_pageIsLoaded();
+          await testDapp.switchTo();
 
           // Assert that the transactions were signed
           await driver.delay(largeDelayMs);
@@ -59,8 +58,7 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
-          await testDapp.check_pageIsLoaded();
+          await testDapp.switchTo();
 
           // Assert that transaction hashes were received
           await driver.delay(largeDelayMs);

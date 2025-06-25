@@ -1,5 +1,6 @@
 import { dataTestIds } from '@metamask/test-dapp-solana';
 import { By } from 'selenium-webdriver';
+import { WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
@@ -47,6 +48,14 @@ export class TestDappSolana {
       throw e;
     }
     console.log('Solana Test Dapp page is loaded');
+  }
+
+  /**
+   * Focus on the Solana test dapp window.
+   */
+  async switchTo() {
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
+    await this.check_pageIsLoaded();
   }
 
   async clickUpdateEndpointButton() {
