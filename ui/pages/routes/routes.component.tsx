@@ -65,6 +65,7 @@ import {
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
+  KEYSTONE_USB_BRIDGE,
 } from '../../helpers/constants/routes';
 import {
   getProviderConfig,
@@ -156,6 +157,7 @@ import {
   setTheme,
   showAppHeader,
 } from './utils';
+import KeystoneBridge from '../keystone/keystone-bridge';
 
 // TODO: Fix `as unknown as` casting once `mmLazy` is updated to handle named exports, wrapped components, and other React module types.
 // Casting is preferable over `@ts-expect-error` annotations in this case,
@@ -648,6 +650,11 @@ export default function Routes() {
           <Authenticated
             path={NONEVM_BALANCE_CHECK_ROUTE}
             component={NonEvmBalanceCheck}
+          />
+          <Authenticated
+            path={KEYSTONE_USB_BRIDGE}
+            component={KeystoneBridge}
+            exact
           />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>

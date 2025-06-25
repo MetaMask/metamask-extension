@@ -2,6 +2,7 @@ import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { ProxySnapExecutor } from '@metamask/snaps-execution-environments';
 import { isObject } from '@metamask/utils';
 import {
+  OFFSCREEN_KEYSTONE_INIT_TIMEOUT,
   OFFSCREEN_LEDGER_INIT_TIMEOUT,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
@@ -13,6 +14,7 @@ import { runKernel } from './ocap-kernel';
 import initLedger from './ledger';
 import initTrezor from './trezor';
 import initLattice from './lattice';
+import initKeystone from './keystone';
 
 /**
  * Initialize a post message stream with the parent window that is initialized
@@ -52,6 +54,17 @@ async function init(): Promise<void> {
     await Promise.race([initLedger(), ledgerInitTimeout]);
   } catch (error) {
     console.error('Ledger initialization failed:', error);
+  }
+
+  try {
+    const keystoneInitTimeout = new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(new Error('Keystone initialization timed out'));
+      }, OFFSCREEN_KEYSTONE_INIT_TIMEOUT);
+    });
+    await Promise.race([initKeystone(), keystoneInitTimeout]);
+  } catch (error) {
+    console.error('Keystone initialization failed:', error);
   }
 }
 
