@@ -6,6 +6,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilder from '../../fixture-builder';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   mockBitcoinFeatureFlag,
   mockExchangeRates,
@@ -23,6 +24,9 @@ export async function withBtcAccountSnap(
         .withEnabledNetworks({
           eip155: {
             '0x539': true,
+          },
+          bip122: {
+            [MultichainNetworks.BITCOIN]: true,
           },
         })
         .build(),
