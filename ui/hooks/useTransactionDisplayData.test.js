@@ -159,7 +159,7 @@ const expectedResults = [
     isPending: false,
   },
   {
-    title: 'Send BAT as ETH',
+    title: 'Sent BAT as ETH',
     category: TransactionType.swapAndSend,
     subtitle: 'metamask',
     subtitleContainsOrigin: true,
@@ -172,7 +172,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Send USDC as DAI',
+    title: 'Sent USDC as DAI',
     category: TransactionType.swapAndSend,
     subtitle: 'metamask',
     subtitleContainsOrigin: true,
@@ -185,7 +185,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Send BNB as USDC',
+    title: 'Sent BNB as USDC',
     category: TransactionType.swapAndSend,
     subtitle: 'metamask',
     subtitleContainsOrigin: true,
