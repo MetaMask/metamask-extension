@@ -191,6 +191,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       )
     : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
 
+  let supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
+    (caipChainId) => allNetworksList.includes(caipChainId as CaipChainId),
+  );
+
   // Only EVM networks should be selected if this request comes from the EIP-1193 API
   if (isEip1193Request) {
     defaultSelectedNetworkList = defaultSelectedNetworkList.filter(
@@ -199,19 +203,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         return namespace === KnownCaipNamespace.Eip155;
       },
     );
-  }
 
-  const hasWalletEip155 = requestedCaipChainIds.includes('wallet:eip155');
-  const hasOtherEip155Scopes = requestedCaipChainIds.some(
-    (caipChainId) =>
-      caipChainId.startsWith('eip155:') && caipChainId !== 'wallet:eip155',
-  );
-
-  let supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
-    (caipChainId) => allNetworksList.includes(caipChainId as CaipChainId),
-  );
-
-  if (hasWalletEip155 && !hasOtherEip155Scopes) {
     supportedRequestedCaipChainIds = Array.from(
       new Set([
         ...supportedRequestedCaipChainIds,
