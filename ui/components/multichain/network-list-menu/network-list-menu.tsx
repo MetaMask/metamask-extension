@@ -365,10 +365,12 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       dispatch(setTokenNetworkFilter(allOpts));
     }
 
+    const { namespace } = parseCaipChainId(currentChainId);
+
     if (Object.keys(enabledNetworks).length === 1) {
-      dispatch(setEnabledNetworks([hexChainId]));
+      dispatch(setEnabledNetworks([hexChainId], namespace));
     } else {
-      dispatch(setEnabledNetworks(Object.keys(evmNetworks)));
+      dispatch(setEnabledNetworks(Object.keys(evmNetworks), namespace));
     }
 
     // If presently on a dapp, communicate a change to

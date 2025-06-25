@@ -28,7 +28,9 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              '0x1': true,
+              eip155: {
+                '0x1': true,
+              },
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -55,7 +57,9 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              '0x1': true,
+              eip155: {
+                '0x1': true,
+              },
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -116,7 +120,9 @@ describe('Account-watcher snap', function (this: Suite) {
               })
               .withNetworkControllerOnMainnet()
               .withEnabledNetworks({
-                '0x1': true,
+                eip155: {
+                  '0x1': true,
+                },
               })
               .build(),
             title: this.test?.fullTitle(),
@@ -152,7 +158,9 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              '0x1': true,
+              eip155: {
+                '0x1': true,
+              },
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -185,7 +193,9 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              '0x1': true,
+              eip155: {
+                '0x1': true,
+              },
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -217,7 +227,9 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              '0x1': true,
+              eip155: {
+                '0x1': true,
+              },
             })
             .build(),
           title: this.test?.fullTitle(),
