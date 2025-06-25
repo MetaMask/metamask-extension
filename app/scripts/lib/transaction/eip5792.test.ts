@@ -23,7 +23,6 @@ import {
 } from '@metamask/accounts-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import * as MMUtils from '@metamask/utils';
 
 import {
   PreferencesControllerGetStateAction,
