@@ -1,5 +1,6 @@
 import * as path from 'path';
 import { strict as assert } from 'assert';
+import { By } from 'selenium-webdriver';
 import nacl from 'tweetnacl';
 import { largeDelayMs, regularDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -13,7 +14,6 @@ import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/r
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import SnapConfirmation from '../../page-objects/pages/confirmations/redesign/snap-confirmation';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
@@ -128,9 +128,11 @@ export const connectSolanaTestDapp = async (
  * @param driver
  */
 export const clickConfirmButton = async (driver: Driver): Promise<void> => {
-  const snapConfirmation = new SnapConfirmation(driver);
-  await snapConfirmation.check_pageIsLoaded();
-  await snapConfirmation.confirm();
+  const footerButtons = await driver.findClickableElements(
+    By.css('button.snap-ui-renderer__footer-button'),
+  );
+  const confirmButton = footerButtons[1];
+  await confirmButton.click();
 };
 
 /**
@@ -140,9 +142,11 @@ export const clickConfirmButton = async (driver: Driver): Promise<void> => {
  * @param driver
  */
 export const clickCancelButton = async (driver: Driver): Promise<void> => {
-  const snapConfirmation = new SnapConfirmation(driver);
-  await snapConfirmation.check_pageIsLoaded();
-  await snapConfirmation.cancel();
+  const footerButtons = await driver.findClickableElements(
+    By.css('button.snap-ui-renderer__footer-button'),
+  );
+  const cancelButton = footerButtons[0];
+  await cancelButton.click();
 };
 
 /**
