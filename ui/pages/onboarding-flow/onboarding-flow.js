@@ -67,6 +67,7 @@ import {
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -99,6 +100,12 @@ export default function OnboardingFlow() {
   const isUnlocked = useSelector(getIsUnlocked);
   const showTermsOfUse = useSelector(getShowTermsOfUse);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const isSeedlessOnboardingFeatureEnabled =
+    getIsSeedlessOnboardingFeatureEnabled();
+  console.log(
+    'isSeedlessOnboardingFeatureEnabled',
+    isSeedlessOnboardingFeatureEnabled,
+  );
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
@@ -149,13 +156,13 @@ export default function OnboardingFlow() {
 
   const handleCreateNewAccount = async (password) => {
     let newSecretRecoveryPhrase;
-    console.log('firstTimeFlowType', firstTimeFlowType);
-    if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-      ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
+    if (
+      isSeedlessOnboardingFeatureEnabled &&
+      firstTimeFlowType === FirstTimeFlowType.socialCreate
+    ) {
       newSecretRecoveryPhrase = await dispatch(
         createNewVaultAndSyncWithSocial(password),
       );
-      ///: END:ONLY_INCLUDE_IF
     } else {
       newSecretRecoveryPhrase = await dispatch(
         createNewVaultAndGetSeedPhrase(password),
@@ -168,12 +175,13 @@ export default function OnboardingFlow() {
   const handleUnlock = async (password) => {
     let retrievedSecretRecoveryPhrase;
 
-    if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-      ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
+    if (
+      isSeedlessOnboardingFeatureEnabled &&
+      firstTimeFlowType === FirstTimeFlowType.socialImport
+    ) {
       retrievedSecretRecoveryPhrase = await dispatch(
         restoreSocialBackupAndGetSeedPhrase(password),
       );
-      ///: END:ONLY_INCLUDE_IF
     } else {
       retrievedSecretRecoveryPhrase = await dispatch(
         unlockAndGetSeedPhrase(password),
@@ -246,17 +254,11 @@ export default function OnboardingFlow() {
         }}
       >
         <Switch>
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
-          }
           <Route path={ONBOARDING_ACCOUNT_EXIST} component={AccountExist} />
           <Route
             path={ONBOARDING_ACCOUNT_NOT_FOUND}
             component={AccountNotFound}
           />
-          {
-            ///: END:ONLY_INCLUDE_IF
-          }
           <Route
             path={ONBOARDING_CREATE_PASSWORD_ROUTE}
             render={(routeProps) => (

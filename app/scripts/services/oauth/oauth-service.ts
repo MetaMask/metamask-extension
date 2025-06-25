@@ -24,8 +24,6 @@ export default class OAuthService {
 
   #webAuthenticator: WebAuthenticator;
 
-  readonly #audience = 'metamask';
-
   constructor({ env, webAuthenticator }: OAuthServiceOptions) {
     this.#env = {
       ...env,
@@ -89,7 +87,7 @@ export default class OAuthService {
     );
 
     const refreshTokenData = await loginHandler.refreshAuthToken(refreshToken);
-    const idToken = refreshTokenData.jwt_tokens[this.#audience];
+    const idToken = refreshTokenData.id_token;
 
     return {
       idTokens: [idToken],
@@ -245,7 +243,7 @@ export default class OAuthService {
     }
 
     const authTokenData = await loginHandler.getAuthIdToken(authCode);
-    const idToken = authTokenData.jwt_tokens[this.#audience];
+    const idToken = authTokenData.id_token;
     const userInfo = await loginHandler.getUserInfo(idToken);
 
     return {

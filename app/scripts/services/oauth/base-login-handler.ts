@@ -81,9 +81,7 @@ export abstract class BaseLoginHandler {
    * @param refreshToken - The refresh token from the Web3Auth Authentication Server.
    * @returns The JWT Token from the Web3Auth Authentication Server and new refresh token.
    */
-  async refreshAuthToken(
-    refreshToken: string,
-  ): Promise<Pick<AuthTokenResponse, 'jwt_tokens'>> {
+  async refreshAuthToken(refreshToken: string): Promise<AuthTokenResponse> {
     const { web3AuthNetwork } = this.options;
     const requestData = {
       client_id: this.options.oAuthClientId,
