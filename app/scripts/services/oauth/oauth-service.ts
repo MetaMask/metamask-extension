@@ -8,6 +8,7 @@ import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import type {
   OAuthConfig,
+  OAuthLoginEnv,
   OAuthLoginResult,
   OAuthServiceOptions,
   WebAuthenticator,
@@ -15,7 +16,7 @@ import type {
 import { OAUTH_CONFIG } from './constants';
 
 export default class OAuthService {
-  #env: OAuthConfig;
+  #env: OAuthConfig & OAuthLoginEnv;
 
   #webAuthenticator: WebAuthenticator;
 

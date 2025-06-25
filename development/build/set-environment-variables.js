@@ -71,10 +71,6 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
     GOOGLE_CLIENT_ID: googleClientId,
     APPLE_CLIENT_ID: appleClientId,
   });
-
-  console.log('METAMASK_ENVIRONMENT', variables.get('METAMASK_ENVIRONMENT'));
-  console.log('METAMASK_BUILD_TYPE', variables.get('METAMASK_BUILD_TYPE'));
-  console.log('BUILD_NAME', variables.get('METAMASK_BUILD_NAME'));
 };
 
 const BUILD_TYPES_TO_SVG_LOGO_PATH = {
@@ -166,7 +162,14 @@ function getGoogleAndAppleClientId({
   environment,
   testing,
 }) {
-  if (testing || environment !== ENVIRONMENT.PRODUCTION) {
+  const isSeedlessOnboardingEnabled = variables.get(
+    'SEEDLESS_ONBOARDING_ENABLED',
+  );
+  if (
+    testing ||
+    environment !== ENVIRONMENT.PRODUCTION ||
+    !isSeedlessOnboardingEnabled
+  ) {
     return {
       googleClientId: variables.get('GOOGLE_CLIENT_ID'),
       appleClientId: variables.get('APPLE_CLIENT_ID'),

@@ -1,9 +1,3 @@
-export enum BuildType {
-  MAIN = 'main',
-  BETA = 'beta',
-  FLASK = 'flask',
-}
-
 export const OAUTH_CONFIG: Record<string, Record<string, string>> = {
   development: {
     GOOGLE_AUTH_CONNECTION_ID: 'mm-google-dev-extension',

@@ -78,6 +78,18 @@ export type LoginHandlerOptions = {
   scopes?: string[];
 };
 
+export type OAuthLoginEnv = {
+  /**
+   * The Google Client ID for the OAuth login.
+   */
+  googleClientId: string;
+
+  /**
+   * The Apple Client ID for the OAuth login.
+   */
+  appleClientId: string;
+};
+
 export type OAuthConfig = {
   googleAuthConnectionId: string;
   googleGrouppedAuthConnectionId: string;
@@ -91,17 +103,7 @@ export type OAuthServiceOptions = {
   /**
    * The environment variables required for the OAuth login and get JWT Token.
    */
-  env: {
-    /**
-     * The Google Client ID for the OAuth login.
-     */
-    googleClientId: string;
-
-    /**
-     * The Apple Client ID for the OAuth login.
-     */
-    appleClientId: string;
-  };
+  env: OAuthLoginEnv;
 
   /**
    * The WebAuthenticator to use for the OAuth login.

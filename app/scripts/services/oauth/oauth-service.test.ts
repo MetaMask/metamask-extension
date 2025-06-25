@@ -85,8 +85,10 @@ describe('OAuthService - startOAuthLogin', () => {
   });
 
   it('should start the OAuth login process with `Google`', async () => {
+    const oauthEnv = getOAuthLoginEnvs();
+
     const oauthService = new OAuthService({
-      env: getOAuthLoginEnvs(),
+      env: oauthEnv,
       webAuthenticator: mockWebAuthenticator,
     });
 
@@ -94,7 +96,10 @@ describe('OAuthService - startOAuthLogin', () => {
 
     const googleLoginHandler = createLoginHandler(
       AuthConnection.Google,
-      getOAuthConfig(),
+      {
+        ...oauthEnv,
+        ...getOAuthConfig(),
+      },
       mockWebAuthenticator,
     );
 
@@ -108,8 +113,10 @@ describe('OAuthService - startOAuthLogin', () => {
   });
 
   it('should start the OAuth login process with `Apple`', async () => {
+    const oauthEnv = getOAuthLoginEnvs();
+
     const oauthService = new OAuthService({
-      env: getOAuthLoginEnvs(),
+      env: oauthEnv,
       webAuthenticator: mockWebAuthenticator,
     });
 
@@ -117,7 +124,10 @@ describe('OAuthService - startOAuthLogin', () => {
 
     const appleLoginHandler = createLoginHandler(
       AuthConnection.Apple,
-      getOAuthConfig(),
+      {
+        ...oauthEnv,
+        ...getOAuthConfig(),
+      },
       mockWebAuthenticator,
     );
 
