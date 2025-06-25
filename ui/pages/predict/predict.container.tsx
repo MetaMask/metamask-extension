@@ -1,12 +1,14 @@
 import React from 'react';
 
 import { Box, Button, Text } from '../../components/component-library';
-
+import PredictMarketsContainer from './markets/predict.markets.container';
 import { Header, Page } from '../../components/multichain/pages/page';
+
 import {
   Display,
   FlexDirection,
   TextVariant,
+  BackgroundColor,
 } from '../../helpers/constants/design-system';
 import { usePolymarket } from './usePolymarket';
 
@@ -14,15 +16,16 @@ const PredictContainer = () => {
   const { apiKey, createApiKey, deriveApiKey, approveToken } = usePolymarket();
 
   return (
-    <Page className="main-container" data-testid="remote-mode">
+    <Page className="main-container" data-testid="remote-mode" backgroundColor={BackgroundColor.backgroundAlternative}>
       <Header
         textProps={{
           variant: TextVariant.headingSm,
         }}
       >
-        Predict
+        Predictive markets
       </Header>
-      <Box>
+      <Box backgroundColor={BackgroundColor.backgroundAlternative} padding={4}>
+        <PredictMarketsContainer />
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={2}>
           <Button onClick={createApiKey}>Create API Key</Button>
           <Button onClick={deriveApiKey}>Derive API Key</Button>
