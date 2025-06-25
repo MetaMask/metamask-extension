@@ -192,6 +192,7 @@ export const CHAIN_IDS = {
   SOPHON: '0xc3b8',
   SOPHON_TESTNET: '0x1fa72e78',
   EDUCHAIN: '0xa3c3',
+  CHILIZ: '0x15b38',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -340,6 +341,7 @@ export const SOPHON_TESTNET_DISPLAY_NAME = 'Sophon Testnet';
 export const EDUCHAIN_DISPLAY_NAME = 'EDU Chain';
 export const APECHAIN_DISPLAY_NAME = 'ApeChain';
 export const APECHAIN_TESTNET_DISPLAY_NAME = 'ApeChain Testnet';
+export const CHILIZ_DISPLAY_NAME = 'Chiliz Chain';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -406,6 +408,7 @@ export const CURRENCY_SYMBOLS = {
   BERACHAIN: 'BERA',
   EDUCHAIN: 'EDU',
   APECHAIN: 'APE',
+  CHILIZ: 'CHZ',
 } as const;
 
 // Non-EVM currency symbols
@@ -600,6 +603,7 @@ export const BERACHAIN_NATIVE_TOKEN_IMAGE_URL = './images/berachain-native.svg';
 export const EDUCHAIN_IMAGE_URL = './images/educhain.svg';
 export const APECHAIN_IMAGE_URL = './images/apechain.svg';
 export const APECHAIN_NATIVE_TOKEN_IMAGE_URL = './images/apechain-native.svg';
+export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -634,12 +638,10 @@ export const TEST_NETWORK_TICKER_MAP: {
     'localhost' | 'mainnet' | 'rpc' | 'linea-mainnet'
   >]: string;
 } = {
-  [NETWORK_TYPES.GOERLI]: `${typedCapitalize(NETWORK_TYPES.GOERLI)}${
-    CURRENCY_SYMBOLS.ETH
-  }`,
-  [NETWORK_TYPES.SEPOLIA]: `${typedCapitalize(NETWORK_TYPES.SEPOLIA)}${
-    CURRENCY_SYMBOLS.ETH
-  }`,
+  [NETWORK_TYPES.GOERLI]: `${typedCapitalize(NETWORK_TYPES.GOERLI)}${CURRENCY_SYMBOLS.ETH
+    }`,
+  [NETWORK_TYPES.SEPOLIA]: `${typedCapitalize(NETWORK_TYPES.SEPOLIA)}${CURRENCY_SYMBOLS.ETH
+    }`,
   [NETWORK_TYPES.LINEA_GOERLI]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.LINEA_SEPOLIA]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.MEGAETH_TESTNET]: 'MegaETH',
@@ -745,6 +747,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.APECHAIN_MAINNET]: APECHAIN_DISPLAY_NAME,
   [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.SEI]: SEI_DISPLAY_NAME,
+  [CHAIN_IDS.CHILIZ]: CHILIZ_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -890,6 +893,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.APECHAIN_MAINNET]: CURRENCY_SYMBOLS.APECHAIN,
   [CHAIN_IDS.APECHAIN_TESTNET]: CURRENCY_SYMBOLS.APECHAIN,
   [CHAIN_IDS.SEI]: CURRENCY_SYMBOLS.SEI,
+  [CHAIN_IDS.CHILIZ]: CURRENCY_SYMBOLS.CHILIZ,
 } as const;
 
 /**
@@ -1043,6 +1047,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.EDUCHAIN]: EDUCHAIN_IMAGE_URL,
   [CHAIN_IDS.APECHAIN_MAINNET]: APECHAIN_IMAGE_URL,
   [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_IMAGE_URL,
+  [CHAIN_IDS.CHILIZ]: CHILIZ_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1110,6 +1115,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.APECHAIN_MAINNET]: APECHAIN_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_NATIVE_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_MAINNET]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.CHILIZ]: CHILIZ_IMAGE_URL,
 } as const;
 
 /**
@@ -1132,9 +1138,8 @@ const defaultEtherscanSubdomainPrefix = 'api';
 export const ETHERSCAN_SUPPORTED_NETWORKS = {
   [CHAIN_IDS.GOERLI]: {
     domain: defaultEtherscanDomain,
-    subdomain: `${defaultEtherscanSubdomainPrefix}-${
-      CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.GOERLI]
-    }`,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-${CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.GOERLI]
+      }`,
   },
   [CHAIN_IDS.MAINNET]: {
     domain: defaultEtherscanDomain,
@@ -1142,9 +1147,8 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
   },
   [CHAIN_IDS.SEPOLIA]: {
     domain: defaultEtherscanDomain,
-    subdomain: `${defaultEtherscanSubdomainPrefix}-${
-      CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.SEPOLIA]
-    }`,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-${CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.SEPOLIA]
+      }`,
   },
   [CHAIN_IDS.LINEA_GOERLI]: {
     domain: 'lineascan.build',
