@@ -2090,6 +2090,9 @@ export default class MetamaskController extends EventEmitter {
       processSendCalls: processSendCalls.bind(
         null,
         {
+          addTransaction: this.txController.addTransaction.bind(
+            this.txController,
+          ),
           addTransactionBatch: this.txController.addTransactionBatch.bind(
             this.txController,
           ),
@@ -2359,7 +2362,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
-    this.#restartSmartTransactionPoller();
     this.tokenDetectionController.enable();
     this.getInfuraFeatureFlags();
   }
@@ -2697,7 +2699,6 @@ export default class MetamaskController extends EventEmitter {
       'PreferencesController:stateChange',
       previousValueComparator(async (prevState, currState) => {
         const { currentLocale } = currState;
-        this.#restartSmartTransactionPoller();
 
         await updateCurrentLocale(currentLocale);
         this.#checkTokenListPolling(currState, prevState);
@@ -2982,21 +2983,6 @@ export default class MetamaskController extends EventEmitter {
           hexToBigInt(chainId).toString(10),
         );
         this.removeAllScopePermissions(scopeString);
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      'NetworkController:networkDidChange',
-      async () => {
-        if (this.preferencesController.state.useExternalServices === true) {
-          this.txController.stopIncomingTransactionPolling();
-
-          await this.txController.updateIncomingTransactions({
-            tags: ['network-change'],
-          });
-
-          this.txController.startIncomingTransactionPolling();
-        }
       },
     );
 
@@ -3621,6 +3607,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setManageInstitutionalWallets.bind(
           preferencesController,
         ),
+      setSmartAccountOptInForAccounts:
+        preferencesController.setSmartAccountOptInForAccounts.bind(
+          preferencesController,
+        ),
 
       // AccountsController
       setSelectedInternalAccount: (id) => {
@@ -3762,10 +3752,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       updateSlides: appStateController.updateSlides.bind(appStateController),
       removeSlide: appStateController.removeSlide.bind(appStateController),
-      setSplashPageAcknowledgedForAccount:
-        appStateController.setSplashPageAcknowledgedForAccount.bind(
-          appStateController,
-        ),
 
       // EnsController
       tryReverseResolveAddress:
@@ -6646,6 +6632,18 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.getNetworkConfigurationByChainId.bind(
           this.networkController,
         ),
+      setTokenNetworkFilter: (chainId) => {
+        const { tokenNetworkFilter } =
+          this.preferencesController.getPreferences();
+        if (chainId && Object.keys(tokenNetworkFilter).length === 1) {
+          this.preferencesController.setPreference('tokenNetworkFilter', {
+            [chainId]: true,
+          });
+        }
+      },
+      setEnabledNetworks: (chainIds) => {
+        this.networkOrderController.setEnabledNetworks(chainIds);
+      },
       getCurrentChainIdForDomain: (domain) => {
         const networkClientId =
           this.selectedNetworkController.getNetworkClientIdForDomain(domain);
@@ -6868,19 +6866,6 @@ export default class MetamaskController extends EventEmitter {
             // for the origin do not exist
             console.log(e);
           }
-        },
-
-        setTokenNetworkFilter: (chainId) => {
-          const { tokenNetworkFilter } =
-            this.preferencesController.getPreferences();
-          if (chainId && Object.keys(tokenNetworkFilter).length === 1) {
-            this.preferencesController.setPreference('tokenNetworkFilter', {
-              [chainId]: true,
-            });
-          }
-        },
-        setEnabledNetworks: (chainIds) => {
-          this.networkOrderController.setEnabledNetworks(chainIds);
         },
 
         updateCaveat: this.permissionController.updateCaveat.bind(
@@ -8059,10 +8044,6 @@ export default class MetamaskController extends EventEmitter {
         this._notifyAccountsChange(origin, accounts);
       }
     }
-
-    await this.txController.updateIncomingTransactions({
-      tags: ['account-change'],
-    });
   }
 
   _notifyAccountsChange(origin, newAccounts) {
@@ -8572,21 +8553,6 @@ export default class MetamaskController extends EventEmitter {
     );
 
     return globalNetworkClient.configuration.chainId;
-  }
-
-  #getAllAddedNetworks() {
-    const networksConfig =
-      this.networkController.state.networkConfigurationsByChainId;
-    const chainIds = Object.keys(networksConfig);
-
-    return chainIds;
-  }
-
-  #restartSmartTransactionPoller() {
-    if (this.preferencesController.state.useExternalServices === true) {
-      this.txController.stopIncomingTransactionPolling();
-      this.txController.startIncomingTransactionPolling();
-    }
   }
 
   /**

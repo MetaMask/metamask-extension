@@ -15,6 +15,7 @@ import {
 } from '../../multichain/account-list-item';
 import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import { HiddenAccountList } from '../../multichain/account-list-menu/hidden-account-list';
 import { matchesSearchPattern } from './utils';
 
 export type MultichainAccountsTreeProps = {
@@ -43,8 +44,11 @@ export const MultichainAccountsTree = ({
   onAccountTreeItemClick,
 }: MultichainAccountsTreeProps) => {
   const accountsTree = useMemo(() => {
-    return Object.entries(wallets).reduce(
-      (allWallets, [walletId, walletData]) => {
+    // We keep a flag to check if there are any hidden accounts
+    let hasHiddenAccounts: boolean = false;
+
+    const allWallets = Object.entries(wallets).reduce(
+      (walletsAccumulator, [walletId, walletData]) => {
         const walletName = walletData.metadata?.name;
 
         const walletHeader = (
@@ -82,7 +86,9 @@ export const MultichainAccountsTree = ({
                 ? matchesSearchPattern(searchPattern, account)
                 : true;
               const isAllowedType = allowedAccountTypes.includes(account.type);
-              return matchesSearch && isAllowedType;
+              hasHiddenAccounts ||= account.hidden;
+
+              return matchesSearch && isAllowedType && !account.hidden;
             });
 
             if (filteredAccounts.length === 0) {
@@ -90,33 +96,39 @@ export const MultichainAccountsTree = ({
             }
 
             // Create account items for group
-            const accountItems = filteredAccounts.map((account) => {
-              const connectedSite = connectedSites[account.address]?.find(
-                ({ origin }) => origin === currentTabOrigin,
-              );
+            const accountItems = filteredAccounts
+              .sort((accountA, accountB) => {
+                // Convert boolean values to numbers for sorting
+                return Number(accountB.pinned) - Number(accountA.pinned);
+              })
+              .map((account) => {
+                const connectedSite = connectedSites[account.address]?.find(
+                  ({ origin }) => origin === currentTabOrigin,
+                );
 
-              return (
-                <Box
-                  className="multichain-account-menu-popover__list--menu-item"
-                  key={`box-${account.id}`}
-                >
-                  <AccountListItem
-                    onClick={onAccountTreeItemClick}
-                    account={account}
-                    key={`account-list-item-${account.id}`}
-                    selected={selectedAccount.id === account.id}
-                    closeMenu={onClose}
-                    connectedAvatar={connectedSite?.iconUrl}
-                    menuType={AccountListItemMenuTypes.Account}
-                    currentTabOrigin={currentTabOrigin}
-                    isActive={account.active}
-                    privacyMode={privacyMode}
-                    showSrpPill={false}
-                    {...accountTreeItemProps}
-                  />
-                </Box>
-              );
-            });
+                return (
+                  <Box
+                    className="multichain-account-menu-popover__list--menu-item"
+                    key={`box-${account.id}`}
+                  >
+                    <AccountListItem
+                      onClick={onAccountTreeItemClick}
+                      account={account}
+                      key={`account-list-item-${account.id}`}
+                      selected={selectedAccount.id === account.id}
+                      closeMenu={onClose}
+                      connectedAvatar={connectedSite?.iconUrl}
+                      menuType={AccountListItemMenuTypes.Account}
+                      currentTabOrigin={currentTabOrigin}
+                      isActive={account.active}
+                      privacyMode={privacyMode}
+                      isPinned={account.pinned}
+                      showAccountLabels={false}
+                      {...accountTreeItemProps}
+                    />
+                  </Box>
+                );
+              });
 
             return [
               <Box
@@ -133,13 +145,20 @@ export const MultichainAccountsTree = ({
 
         // Skip adding wallet if no groupsItems exist
         if (groupsItems.length === 0) {
-          return allWallets;
+          return walletsAccumulator;
         }
 
-        return [...allWallets, walletHeader, ...groupsItems];
+        return [...walletsAccumulator, walletHeader, ...groupsItems];
       },
       [] as React.ReactNode[],
     );
+
+    // Add a final section for hidden accounts
+    if (hasHiddenAccounts) {
+      allWallets.push(<HiddenAccountList onClose={onClose} />);
+    }
+
+    return allWallets;
   }, [
     wallets,
     searchPattern,

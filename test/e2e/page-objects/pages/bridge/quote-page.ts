@@ -59,6 +59,8 @@ class BridgeQuotePage {
     css: '.mm-text--body-md',
   };
 
+  private switchTokensButton = '[data-testid="switch-tokens"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -186,6 +188,10 @@ class BridgeQuotePage {
       throw e;
     }
     console.log('Price matches expected format');
+  }
+
+  async switchTokens(): Promise<void> {
+    await this.driver.clickElement(this.switchTokensButton);
   }
 }
 
