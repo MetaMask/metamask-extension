@@ -202,7 +202,7 @@ describe('TransactionListItem', () => {
         event: MetaMetricsEventName.ActivityDetailsOpened,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
-          activity_type: 'sent',
+          activity_type: 'send',
         },
       });
       const popoverClose = queryByTestId('popover-close');
@@ -211,7 +211,7 @@ describe('TransactionListItem', () => {
         event: MetaMetricsEventName.ActivityDetailsClosed,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
-          activity_type: 'sent',
+          activity_type: 'send',
         },
       });
     });
