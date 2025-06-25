@@ -282,6 +282,7 @@ export const GlobalMenu = ({
       {process.env.REMOVE_GNS && (
         <MenuItem
           iconName={IconName.Hierarchy}
+          data-testid="global-menu-networks"
           onClick={() => {
             dispatch(toggleNetworkMenu());
             closeMenu();
