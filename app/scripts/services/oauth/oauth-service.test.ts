@@ -9,7 +9,6 @@ import { OAUTH_CONFIG } from './constants';
 
 const DEFAULT_GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
 const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
-const OAUTH_AUD = 'metamask';
 const MOCK_USER_ID = 'user-id';
 const MOCK_REDIRECT_URI = 'https://mocked-redirect-uri';
 const MOCK_JWT_TOKEN =
@@ -71,9 +70,7 @@ describe('OAuthService - startOAuthLogin', () => {
         return Promise.resolve({
           json: jest.fn().mockResolvedValue({
             verifier_id: MOCK_USER_ID,
-            jwt_tokens: {
-              [OAUTH_AUD]: MOCK_JWT_TOKEN,
-            },
+            id_token: MOCK_JWT_TOKEN,
           }),
         });
       }) as jest.Mock,
@@ -148,12 +145,9 @@ describe('OAuthService - getNewRefreshToken', () => {
       jest.fn(() => {
         return Promise.resolve({
           json: jest.fn().mockResolvedValue({
-            success: true,
-            message: 'Token refreshed successfully',
-            jwt_tokens: {
-              [OAUTH_AUD]: 'MOCK_NEW_JWT_TOKEN',
-            },
+            id_token: 'MOCK_NEW_JWT_TOKEN',
             refresh_token: 'MOCK_NEW_REFRESH_TOKEN',
+            revoke_token: 'MOCK_NEW_REVOKE_TOKEN',
           }),
         });
       }) as jest.Mock,
