@@ -41,8 +41,11 @@ describe('Import flow', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
-            [CHAIN_IDS.MAINNET]: true,
-            [CHAIN_IDS.LINEA_MAINNET]: true,
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
           })
           .withTokensController({
             tokenList: [
@@ -116,9 +119,12 @@ describe('Import flow', function () {
           .withNetworkControllerOnMainnet()
           .withNetworkControllerOnPolygon()
           .withEnabledNetworks({
-            [CHAIN_IDS.MAINNET]: true,
-            [CHAIN_IDS.POLYGON]: true,
-            [CHAIN_IDS.LINEA_MAINNET]: true,
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
           })
           .withTokensController({
             tokenList: [],
@@ -188,9 +194,12 @@ describe('Import flow', function () {
           .withNetworkControllerOnMainnet()
           .withNetworkControllerOnPolygon()
           .withEnabledNetworks({
-            [CHAIN_IDS.MAINNET]: true,
-            [CHAIN_IDS.POLYGON]: true,
-            [CHAIN_IDS.LINEA_MAINNET]: true,
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
           })
           .withTokensController({
             tokenList: [],
