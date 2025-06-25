@@ -205,7 +205,7 @@ const expectedResults = [
     date: formatDateWithYearContext(1585088013000),
     primaryCurrency: '-1.234 ABC',
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
-    recipientAddress: undefined,
+    recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: undefined,
     isPending: false,
     displayedStatusKey: TransactionStatus.confirmed,
