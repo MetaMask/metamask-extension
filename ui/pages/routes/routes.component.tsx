@@ -60,6 +60,7 @@ import {
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
   REWARDS_ROUTE,
+  KEYSTONE_USB_BRIDGE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -143,6 +144,7 @@ import { createRouteWithLayout } from '../../layouts/route-with-layout';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
+import KeystoneBridge from '../keystone/keystone-bridge';
 
 // TODO: Fix `as unknown as` casting once `mmLazy` is updated to handle named exports, wrapped components, and other React module types.
 // Casting is preferable over `@ts-expect-error` annotations in this case,
@@ -754,6 +756,12 @@ export default function Routes() {
       createRouteWithLayout({
         path: REWARDS_ROUTE,
         component: RewardsPage,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
+        path: KEYSTONE_USB_BRIDGE,
+        component: KeystoneBridge,
         layout: RootLayout,
         authenticated: true,
       }),

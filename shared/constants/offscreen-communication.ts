@@ -1,4 +1,5 @@
 export const OFFSCREEN_LEDGER_INIT_TIMEOUT = 4000;
+export const OFFSCREEN_KEYSTONE_INIT_TIMEOUT = 4000;
 export const OFFSCREEN_LOAD_TIMEOUT = OFFSCREEN_LEDGER_INIT_TIMEOUT + 1000;
 
 /**
@@ -15,6 +16,9 @@ export enum OffscreenCommunicationTarget {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   latticeOffscreen = 'lattice-offscreen',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  keystoneOffscreen = 'keystone-offscreen',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   extension = 'extension-offscreen',
@@ -37,6 +41,7 @@ export enum OffscreenCommunicationEvents {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   metamaskBackgroundReady = 'metamask-background-ready',
+  keystoneDeviceConnect = 'keystone-device-connect',
 }
 
 /**
@@ -61,6 +66,15 @@ export enum TrezorAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   signTypedData = 'trezor-sign-typed-data',
+}
+
+export enum KeystoneAction {
+  init = "keystone-init",
+  getKeys = "keystone-get-keys",
+  signTransaction = "keystone-sign-transaction",
+  signPersonalMessage = "keystone-sign-personal-message",
+  signEIP712Message = "keystone-sign-eip712-message",
+  dispose = "keystone-dispose",
 }
 
 /**
@@ -99,4 +113,5 @@ export enum KnownOrigins {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   ledger = 'https://metamask.github.io',
+  keystone = 'http://localhost:4173',
 }

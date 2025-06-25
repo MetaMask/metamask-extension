@@ -7273,6 +7273,12 @@
     "message": "You can connect MetaMask to your Lattice1 device once it is set up and online. Unlock your device and have your Device ID ready.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
+  "step1KeystoneWallet": {
+    "message": "Connect your Keystone"
+  },
+  "step1KeystoneWalletMsg": {
+    "message": "You can connect MetaMask to your Keystone device once it is set up. Unlock your device and stay at the Home screen."
+  },
   "step1LedgerWallet": {
     "message": "Download Ledger app"
   },
