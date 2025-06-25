@@ -25,10 +25,17 @@ import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain
 import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  startIncomingTransactionPolling,
+  stopIncomingTransactionPolling,
+} from '../../../store/controller-actions/transaction-controller';
 import TransactionList, {
   filterTransactionsByToken,
 } from './transaction-list.component';
 
+<<<<<<< HEAD
+jest.mock('../../../store/controller-actions/transaction-controller');
+=======
 // Mock FEATURED_NETWORK_CHAIN_IDS to include Goerli
 jest.mock('../../../../shared/constants/network', () => ({
   ...jest.requireActual('../../../../shared/constants/network'),
@@ -44,6 +51,7 @@ jest.mock('../../../../shared/constants/network', () => ({
     '0x324',
   ],
 }));
+>>>>>>> be1140f81e72365a32ca7d310043fadf63d3eb58
 
 const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
   address: '0xefga64466f257793eaa52fcfff5066894b76a149',
@@ -217,6 +225,14 @@ const render = (state = defaultState) => {
 };
 
 describe('TransactionList', () => {
+  const startIncomingTransactionPollingMock = jest.mocked(
+    startIncomingTransactionPolling,
+  );
+
+  const stopIncomingTransactionPollingMock = jest.mocked(
+    stopIncomingTransactionPolling,
+  );
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -392,6 +408,26 @@ describe('TransactionList', () => {
       name: 'View on block explorer',
     });
     expect(viewOnExplorerBtn).toBeInTheDocument();
+  });
+
+  it('starts incoming transaction polling on mount', () => {
+    render();
+    expect(startIncomingTransactionPollingMock).toHaveBeenCalled();
+  });
+
+  it('stops incoming transaction polling on mount', () => {
+    render();
+    expect(stopIncomingTransactionPollingMock).toHaveBeenCalled();
+  });
+
+  it('stops incoming transaction polling on unmount', () => {
+    const { unmount } = render();
+
+    const count = stopIncomingTransactionPollingMock.mock.calls.length;
+
+    unmount();
+
+    expect(stopIncomingTransactionPollingMock).toHaveBeenCalledTimes(count + 1);
   });
 
   describe('keepOnlyNonEvmTransactionsForToken', () => {

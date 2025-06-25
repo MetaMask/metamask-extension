@@ -126,6 +126,10 @@ import {
 import { NetworkFilterComponent } from '../../multichain/network-filter-menu';
 import AssetListControlBar from '../assets/asset-list/asset-list-control-bar';
 import { isGlobalNetworkSelectorRemoved } from '../../../selectors/selectors';
+import {
+  startIncomingTransactionPolling,
+  stopIncomingTransactionPolling,
+} from '../../../store/controller-actions/transaction-controller';
 import NoTransactions from './no-transactions';
 
 const PAGE_INCREMENT = 10;
@@ -522,6 +526,18 @@ export default function TransactionList({
   const isFullScreen =
     windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
     windowType !== ENVIRONMENT_TYPE_POPUP;
+
+  useEffect(() => {
+    stopIncomingTransactionPolling();
+    startIncomingTransactionPolling();
+
+    return () => {
+      stopIncomingTransactionPolling();
+    };
+  }, [
+    // Required to restart polling on new account
+    selectedAccount,
+  ]);
 
   const renderDateStamp = (index, dateGroup) => {
     return index === 0 ? (
