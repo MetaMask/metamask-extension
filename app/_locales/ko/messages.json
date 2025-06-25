@@ -4413,18 +4413,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "확인"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "비밀복구구문은 언제나 보안이 유지되고 알려지지 않은 곳에 보관해야 합니다."
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "비밀복구구문을 다시 백업해야 합니까?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "절대로 다른 사람과 비밀복구구문을 공유하지 마십시오"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMask 팀에서는 절대로 비밀복구구문을 묻지 않습니다"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "비밀복구구문은 모든 계정을 관리합니다."
   },

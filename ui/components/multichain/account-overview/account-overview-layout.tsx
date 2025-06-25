@@ -1,10 +1,11 @@
 import React, { useContext, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
+import { useHistory } from 'react-router-dom';
+
 import {
   showModal,
   removeSlide,
-  setAccountDetailsAddress,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   setSelectedAccount,
   ///: END:ONLY_INCLUDE_IF
@@ -12,7 +13,6 @@ import {
 import { Carousel } from '..';
 import {
   getAppIsLoading,
-  getSelectedAccount,
   getSwapsDefaultToken,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   hasCreatedSolanaAccount,
@@ -25,6 +25,7 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
+import { SMART_ACCOUNT_UPDATE } from '../../../helpers/constants/routes';
 import { TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../../app/modals/identity';
 import {
   useCarouselManagement,
@@ -57,7 +58,7 @@ export const AccountOverviewLayout = ({
   const isLoading = useSelector(getAppIsLoading);
   const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
-  const selectedAccount = useSelector(getSelectedAccount);
+  const history = useHistory();
 
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
@@ -100,7 +101,7 @@ export const AccountOverviewLayout = ({
     ///: END:ONLY_INCLUDE_IF
 
     if (id === SMART_ACCOUNT_UPGRADE_SLIDE.id) {
-      dispatch(setAccountDetailsAddress(selectedAccount.address));
+      history.replace(SMART_ACCOUNT_UPDATE);
     }
 
     trackEvent({
