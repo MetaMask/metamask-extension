@@ -1,25 +1,28 @@
 import { useSelector } from 'react-redux';
+import { hexToNumber } from '@metamask/utils';
+import { SignTypedDataVersion } from '@metamask/keyring-controller';
+import { useState } from 'react';
+import { TransactionType } from '@metamask/transaction-controller';
+import { getContractConfig } from '@polymarket/clob-client';
 import {
   getSelectedAccount,
   getSelectedNetwork,
 } from '../../selectors/selectors';
-import { hexToNumber } from '@metamask/utils';
 import { addTransaction, newUnsignedTypedMessage } from '../../store/actions';
-import { SignTypedDataVersion } from '@metamask/keyring-controller';
-import { useState } from 'react';
 import {
   buildOrderCreationArgs,
   buildPolyHmacSignature,
   encodeApprove,
   generateSalt,
 } from './utils';
-import { TransactionType } from '@metamask/transaction-controller';
 import { ROUNDING_CONFIG, Side, SignatureType, TickSize } from './types';
 
 const CLOB_ENDPOINT = 'https://clob.polymarket.com';
-//const USDC_ADDRESS = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359';
 const USDC_ADDRESS = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
+const CONDITIONAL_TOKEN_ADDRESS = '0x4D97DCd97eC945f40cF65F87097ACe5EA0476045';
 const EXCHANGE_ADDRESS = '0x4bFb41d5B3570DeFd03C39a9A4D8dE6Bd8B8982E';
+const NEG_RISK_ADDRESS = '0xC5d563A36AE78145C45a50134d48A1215220f80a';
+const NEG_RISK_ADAPTER_ADDRESS = '0xd91E80cF2E7be2e162c6513ceD06f1dD0dA35296';
 
 const ClobAuthDomain = {
   ClobAuth: [
@@ -35,11 +38,11 @@ const EIP712Domain = [
   { name: 'chainId', type: 'uint256' },
 ];
 
-export interface L2HeaderArgs {
+export type L2HeaderArgs = {
   method: string;
   requestPath: string;
   body?: string;
-}
+};
 
 const MSG_TO_SIGN = 'This message attests that I control the given wallet';
 
@@ -113,7 +116,7 @@ export const usePolymarket = () => {
     if (timestamp !== undefined) {
       ts = timestamp;
     }
-    const address = account.address;
+    const { address } = account;
 
     const sig = buildPolyHmacSignature(
       apiKey?.secret || '',
@@ -191,16 +194,84 @@ export const usePolymarket = () => {
     console.log(transactionMeta);
   };
 
+  const approveConditionalToken = async () => {
+    const encodedCallData = encodeApprove({
+      spender: EXCHANGE_ADDRESS,
+      amount: 10n * 1_000_000n, // 10 USDC as BigInt with 6 decimals
+    });
+
+    const transactionMeta = await addTransaction(
+      {
+        from: account.address,
+        to: CONDITIONAL_TOKEN_ADDRESS,
+        data: encodedCallData,
+        value: '0x0',
+      },
+      {
+        networkClientId: selectedNetwork.clientId,
+        type: TransactionType.tokenMethodApprove,
+      },
+    );
+
+    console.log(transactionMeta);
+  };
+
+  const approveNegRiskToken = async () => {
+    const encodedCallData = encodeApprove({
+      spender: NEG_RISK_ADDRESS,
+      amount: 10n * 1_000_000n, // 10 USDC as BigInt with 6 decimals
+    });
+
+    const transactionMeta = await addTransaction(
+      {
+        from: account.address,
+        to: USDC_ADDRESS,
+        data: encodedCallData,
+        value: '0x0',
+      },
+      {
+        networkClientId: selectedNetwork.clientId,
+        type: TransactionType.tokenMethodApprove,
+      },
+    );
+
+    console.log(transactionMeta);
+  };
+
+  const approveNegRiskAdapterToken = async () => {
+    const encodedCallData = encodeApprove({
+      spender: NEG_RISK_ADAPTER_ADDRESS,
+      amount: 10n * 1_000_000n, // 10 USDC as BigInt with 6 decimals
+    });
+
+    const transactionMeta = await addTransaction(
+      {
+        from: account.address,
+        to: USDC_ADDRESS,
+        data: encodedCallData,
+        value: '0x0',
+      },
+      {
+        networkClientId: selectedNetwork.clientId,
+        type: TransactionType.tokenMethodApprove,
+      },
+    );
+
+    console.log(transactionMeta);
+  };
+
   const placeOrder = async ({
     tokenId,
     price,
     size,
     tickSize,
+    side,
   }: {
     tokenId: string;
     price: number;
     size: number;
     tickSize: TickSize;
+    side: Side;
   }) => {
     const orderArgs = buildOrderCreationArgs({
       signer: account.address,
@@ -210,7 +281,7 @@ export const usePolymarket = () => {
         tokenID: tokenId,
         price,
         size,
-        side: Side.BUY,
+        side,
       },
       roundConfig: ROUNDING_CONFIG[tickSize],
     });
@@ -230,13 +301,25 @@ export const usePolymarket = () => {
       signatureType: orderArgs.signatureType ?? SignatureType.EOA,
     };
 
+    console.log(order);
+
+    const negRisk = await fetch(
+      `${CLOB_ENDPOINT}/neg-risk?token_id=${tokenId}`,
+    );
+    const negRiskData = await negRisk.json();
+    console.log(negRiskData);
+
+    const verifyingContract = negRiskData.neg_risk
+      ? getContractConfig(hexToNumber(chainId)).negRiskExchange
+      : getContractConfig(hexToNumber(chainId)).exchange;
+
     const typedData = {
       primaryType: 'Order',
       domain: {
         name: 'Polymarket CTF Exchange',
         version: '1',
         chainId: hexToNumber(chainId),
-        verifyingContract: EXCHANGE_ADDRESS,
+        verifyingContract,
       },
       types: {
         EIP712Domain: [
@@ -305,6 +388,9 @@ export const usePolymarket = () => {
     createApiKey,
     deriveApiKey,
     approveToken,
+    approveNegRiskToken,
+    approveNegRiskAdapterToken,
+    approveConditionalToken,
     placeOrder,
     apiKey,
   };

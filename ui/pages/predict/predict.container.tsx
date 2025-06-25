@@ -13,7 +13,15 @@ import {
 import { usePolymarket } from './usePolymarket';
 
 const PredictContainer = () => {
-  const { apiKey, createApiKey, deriveApiKey, approveToken } = usePolymarket();
+  const {
+    apiKey,
+    createApiKey,
+    deriveApiKey,
+    approveToken,
+    approveNegRiskToken,
+    approveNegRiskAdapterToken,
+    approveConditionalToken,
+  } = usePolymarket();
 
   return (
     <Page className="main-container" data-testid="remote-mode" backgroundColor={BackgroundColor.backgroundAlternative}>
@@ -30,6 +38,13 @@ const PredictContainer = () => {
           <Button onClick={createApiKey}>Create API Key</Button>
           <Button onClick={deriveApiKey}>Derive API Key</Button>
           <Button onClick={approveToken}>Approve Token</Button>
+          <Button onClick={approveNegRiskToken}>Approve Neg Risk Token</Button>
+          <Button onClick={approveNegRiskAdapterToken}>
+            Approve Neg Risk Adapter Token
+          </Button>
+          <Button onClick={approveConditionalToken}>
+            Approve Conditional Token
+          </Button>
         </Box>
         {apiKey && (
           <>

@@ -24,6 +24,7 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 import { usePolymarket } from '../usePolymarket';
+import { Side } from '../types';
 
 const CLOB_ENDPOINT = 'https://clob.polymarket.com';
 
@@ -52,7 +53,9 @@ const PredictContainer = () => {
   }, [marketId]);
 
   const getTimeRemaining = () => {
-    if (!marketData?.end_date_iso) return '';
+    if (!marketData?.end_date_iso) {
+      return '';
+    }
     const endDate = new Date(marketData.end_date_iso);
     const now = new Date();
     const diff = endDate.getTime() - now.getTime();
@@ -74,6 +77,7 @@ const PredictContainer = () => {
       price: noToken.price,
       size: marketData.minimum_order_size,
       tickSize: marketData.minimum_tick_size,
+      side: Side.BUY,
     });
   };
 
@@ -84,6 +88,7 @@ const PredictContainer = () => {
       price: yesToken.price,
       size: marketData.minimum_order_size,
       tickSize: marketData.minimum_tick_size,
+      side: Side.BUY,
     });
   };
 

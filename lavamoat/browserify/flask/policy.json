@@ -470,7 +470,7 @@
         "ethers>@ethersproject/strings": true,
         "ethers>@ethersproject/transactions": true,
         "ethers>@ethersproject/providers>@ethersproject/web": true,
-        "ethers>@ethersproject/providers>bech32": true
+        "@ethersproject/providers>bech32": true
       }
     },
     "@ethersproject/providers>@ethersproject/random": {
@@ -3150,6 +3150,11 @@
         "define": true
       }
     },
+    "@metamask/keyring-controller>ethereumjs-wallet>aes-js": {
+      "globals": {
+        "define": true
+      }
+    },
     "eth-lattice-keyring>gridplus-sdk>aes-js": {
       "globals": {
         "define": true
@@ -3939,7 +3944,7 @@
     },
     "@metamask/keyring-controller>ethereumjs-wallet": {
       "packages": {
-        "eth-lattice-keyring>gridplus-sdk>aes-js": true,
+        "@metamask/keyring-controller>ethereumjs-wallet>aes-js": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "browserify>buffer": true,
         "crypto-browserify": true,
@@ -4110,7 +4115,7 @@
         "@ethereumjs/tx": true,
         "@ethersproject/abi": true,
         "eth-lattice-keyring>gridplus-sdk>aes-js": true,
-        "bitcoin-address-validation>bech32": true,
+        "eth-lattice-keyring>gridplus-sdk>bech32": true,
         "eth-lattice-keyring>gridplus-sdk>bignumber.js": true,
         "eth-lattice-keyring>gridplus-sdk>bitwise": true,
         "bn.js": true,
