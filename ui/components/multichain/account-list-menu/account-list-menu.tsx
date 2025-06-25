@@ -40,7 +40,11 @@ import {
   getUpdatedAndSortedAccounts,
   getHiddenAccountsList,
 } from '../../../selectors';
-import { detectNfts, setSelectedAccount } from '../../../store/actions';
+import {
+  detectNfts,
+  fetchNativeBalances,
+  setSelectedAccount,
+} from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -56,6 +60,7 @@ import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
+import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import { AccountMenu } from '../account-menu';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { HiddenAccountList } from './hidden-account-list';
@@ -86,9 +91,11 @@ export const AccountListMenu = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
   }, []);
+
   const accounts: InternalAccountWithBalance[] = useSelector(
     getMetaMaskAccountsOrdered,
   );
@@ -99,6 +106,25 @@ export const AccountListMenu = ({
       ),
     [accounts, allowedAccountTypes],
   );
+
+  const accountsAddresses = useMemo(
+    () =>
+      accounts
+        .map((account) => {
+          if (
+            account.type === EthAccountType.Eoa ||
+            account.type === EthAccountType.Erc4337
+          ) {
+            return account.address;
+          }
+          return null;
+        })
+        .filter((address) => address !== null),
+    [accounts],
+  );
+
+  console.log('accountsAddresses ......', accountsAddresses);
+
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
   const filteredUpdatedAccountList = useMemo(
@@ -115,6 +141,27 @@ export const AccountListMenu = ({
   ) as AccountConnections;
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const dispatch = useDispatch();
+
+  const networkClientId = useSelector(getSelectedNetworkClientId);
+
+  console.log('networkClientId ......', networkClientId);
+
+  useEffect(() => {
+    const fetchBalances = async () => {
+      // const addresses = [
+      //   '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+      //   '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe',
+      //   '0xF977814e90dA44bFA03b6295A0616a897441aceC',
+      // ];
+      const result = await fetchNativeBalances(
+        accountsAddresses,
+        networkClientId,
+      );
+      console.log('result *************', result);
+    };
+
+    fetchBalances();
+  }, [accountsAddresses, networkClientId]);
 
   const [searchQuery, setSearchQuery] = useState('');
 

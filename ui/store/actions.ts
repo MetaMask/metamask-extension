@@ -2289,6 +2289,22 @@ export async function getBalancesInSingleCall(
   ]);
 }
 
+/**
+ * To fetch the native token balances for multiple addresses in a single call
+ *
+ * @param addresses - the targeted list of addresses
+ * @param networkClientId - unique identifier for the network client
+ */
+export async function fetchNativeBalances(
+  addresses: string[],
+  networkClientId: string,
+): Promise<NativeBalanceResult[]> {
+  return await submitRequestToBackground('fetchNativeBalances', [
+    addresses,
+    networkClientId,
+  ]);
+}
+
 export function addNft(
   address: string,
   tokenID: string,
