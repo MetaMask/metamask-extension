@@ -3936,7 +3936,7 @@
     "message": "Create a new wallet"
   },
   "onboardingImportWallet": {
-    "message": "Import using Secret Recovery Phrase"
+    "message": "I have an existing wallet"
   },
   "onboardingMetametricsAgree": {
     "message": "I agree"
@@ -6798,6 +6798,9 @@
   },
   "unlockPageIncorrectPassword": {
     "message": "Password is incorrect. Please try again."
+  },
+  "unlockPageTooManyFailedAttempts": {
+    "message": "Too many failed attempts. Please try again in "
   },
   "unpin": {
     "message": "Unpin"
