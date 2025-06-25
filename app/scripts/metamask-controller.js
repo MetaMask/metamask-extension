@@ -36,7 +36,7 @@ import {
 } from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
-import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
+import { QrKeyring } from '@metamask/eth-qr-keyring';
 import { nanoid } from 'nanoid';
 import { captureException } from '@sentry/browser';
 import { AddressBookController } from '@metamask/address-book-controller';
@@ -1091,14 +1091,14 @@ export default class MetamaskController extends EventEmitter {
       state: initState.OnboardingController,
     });
 
-    let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
+    let additionalKeyrings = [keyringBuilderFactory(QrKeyring)];
 
     const keyringOverrides = this.opts.overrides?.keyrings;
 
     if (isManifestV3 === false) {
       const additionalKeyringTypes = [
         keyringOverrides?.lattice || LatticeKeyring,
-        QRHardwareKeyring,
+        QrKeyring,
       ];
 
       const additionalBridgedKeyringTypes = [
@@ -3522,16 +3522,11 @@ export default class MetamaskController extends EventEmitter {
         this.attemptLedgerTransportCreation.bind(this),
 
       // qr hardware devices
-      submitQRHardwareCryptoHDKey:
-        keyringController.submitQRCryptoHDKey.bind(keyringController),
-      submitQRHardwareCryptoAccount:
-        keyringController.submitQRCryptoAccount.bind(keyringController),
-      cancelSyncQRHardware:
-        keyringController.cancelQRSynchronization.bind(keyringController),
-      submitQRHardwareSignature:
-        keyringController.submitQRSignature.bind(keyringController),
-      cancelQRHardwareSignRequest:
-        keyringController.cancelQRSignRequest.bind(keyringController),
+      submitQRHardwareCryptoHDKey: () => null,
+      submitQRHardwareCryptoAccount: () => null,
+      cancelSyncQRHardware: () => null,
+      submitQRHardwareSignature: () => null,
+      cancelQRHardwareSignRequest: () => null,
 
       // vault management
       submitPassword: this.submitPassword.bind(this),
@@ -8499,7 +8494,7 @@ export default class MetamaskController extends EventEmitter {
         keyringType = keyringOverrides?.ledger?.type || LedgerKeyring.type;
         break;
       case HardwareDeviceNames.qr:
-        keyringType = QRHardwareKeyring.type;
+        keyringType = QrKeyring.type;
         break;
       case HardwareDeviceNames.lattice:
         keyringType = keyringOverrides?.lattice?.type || LatticeKeyring.type;
