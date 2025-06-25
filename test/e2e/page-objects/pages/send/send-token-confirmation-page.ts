@@ -1,5 +1,5 @@
-import { Driver } from '../../../webdriver/driver';
 import { strict as assert } from 'assert';
+import { Driver } from '../../../webdriver/driver';
 
 class SendTokenConfirmPage {
   private driver: Driver;
@@ -34,28 +34,17 @@ class SendTokenConfirmPage {
       text: nftName,
     });
 
-    const senderAddressElement = await this.driver.findElement(
-      this.senderAddress,
-      5000,
-    );
-    const recipientAddressElement = await this.driver.findElement(
-      this.recepientAddress,
-      5000,
-    );
-    const senderAddressText = await senderAddressElement.getText();
-    const recipientAddressText = await recipientAddressElement.getText();
+    await this.driver.waitForSelector({
+      css: this.senderAddress,
+      text: sender,
+    });
 
-    assert.equal(
-      senderAddressText,
-      sender,
-      `Sender address mismatch: expected ${sender}, got ${senderAddressText}`,
-    );
-    assert.equal(
-      recipientAddressText,
-      recipient,
-      `Recipient address mismatch: expected ${recipient}, got ${recipientAddressText}`,
-    );
-    console.log('NFT transfer details are correct');
+    await this.driver.waitForSelector({
+      css: this.recepientAddress,
+      text: recipient,
+    });
+
+    console.log('NFT transfer details are displayed correctly');
   }
 
   async check_tokenTransfer(options: {
@@ -92,14 +81,6 @@ class SendTokenConfirmPage {
       { timeout: 10000 },
     );
 
-    const senderAddressElement = await this.driver.findElement(
-      this.senderAddress,
-      5000,
-    );
-    const recipientAddressElement = await this.driver.findElement(
-      this.recepientAddress,
-      5000,
-    );
     console.log('Token transfer details are correct');
   }
 
