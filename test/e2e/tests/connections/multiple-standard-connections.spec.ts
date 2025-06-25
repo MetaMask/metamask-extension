@@ -1,3 +1,4 @@
+import { SolScope } from '@metamask/keyring-api';
 import { connectToDapp, WINDOW_TITLES, withFixtures } from '../../helpers';
 import {
   DAPP_HOST_ADDRESS,
@@ -20,15 +21,14 @@ import { Driver } from '../../webdriver/driver';
 
 const EVM_ACCOUNT_TWO = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 
-const SOLANA_CAIP_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
-const SOLANA_ACCOUNT_ONE = `${SOLANA_CAIP_CHAIN_ID}:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer`;
+const SOLANA_ACCOUNT_ONE = `${SolScope.Mainnet}:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer`;
 
 const SOLANA_PERMISSIONS = {
   isMultichainOrigin: true,
   sessionProperties: {},
   requiredScopes: {},
   optionalScopes: {
-    [SOLANA_CAIP_CHAIN_ID]: {
+    [SolScope.Mainnet]: {
       accounts: [SOLANA_ACCOUNT_ONE],
     },
   },
