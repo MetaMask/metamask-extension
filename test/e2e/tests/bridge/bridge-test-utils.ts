@@ -516,9 +516,8 @@ async function mockSwapAggregatorLinea(mockServer: Mockttp) {
 
 async function mockTokenAggregatorLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet(
-      'https://tokens.api.cx.metamask.io/blocklist?chainId=42161&region=global',
-    )
+    .forGet('https://tokens.api.cx.metamask.io/blocklist')
+    .withQuery({ chainId: '42161', region: 'global' })
     .always()
     .thenCallback(() => {
       return {
