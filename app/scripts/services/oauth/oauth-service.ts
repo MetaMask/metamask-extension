@@ -3,11 +3,11 @@ import {
   Web3AuthNetwork,
 } from '@metamask/seedless-onboarding-controller';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
-import { ENVIRONMENT } from '../../../../development/build/constants';
 import {
   MOCK_AUTH_CONNECTION_ID,
   MOCK_GROUPED_AUTH_CONNECTION_ID,
 } from '../../../../test/e2e/constants';
+import { getIsDevOrTestEnv } from '../../../../shared/modules/environment';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import type {
@@ -121,14 +121,16 @@ export default class OAuthService {
   }
 
   #loadConfig(): OAuthConfig {
-    const { METAMASK_ENVIRONMENT, METAMASK_BUILD_TYPE } = process.env;
+    const { METAMASK_BUILD_TYPE } = process.env;
     const buildType = METAMASK_BUILD_TYPE || 'development';
+    const isDevOrTestEnv = getIsDevOrTestEnv();
 
     let config: Record<string, string> = {};
-    if (METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT) {
+    if (isDevOrTestEnv) {
       config = OAUTH_CONFIG.development;
     } else {
-      config = OAUTH_CONFIG[buildType];
+      // if the build type is not found, use the main config
+      config = OAUTH_CONFIG[buildType] || OAUTH_CONFIG.main;
     }
 
     return {

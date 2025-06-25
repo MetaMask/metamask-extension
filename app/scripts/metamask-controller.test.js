@@ -311,6 +311,7 @@ const noop = () => undefined;
 
 describe('MetaMaskController', () => {
   beforeAll(async () => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
     await ganacheServer.start();
   });
 

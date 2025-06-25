@@ -4358,10 +4358,7 @@ export default class MetamaskController extends EventEmitter {
       isRelaySupported,
       requestSafeReload: this.requestSafeReload.bind(this),
     };
-    console.log(
-      'getIsSeedlessOnboardingFeatureEnabled()',
-      getIsSeedlessOnboardingFeatureEnabled(),
-    );
+
     if (getIsSeedlessOnboardingFeatureEnabled()) {
       apis = {
         ...apis,
@@ -4371,7 +4368,6 @@ export default class MetamaskController extends EventEmitter {
         fetchAllSecretData: this.fetchAllSecretData.bind(this),
       };
     }
-    console.log('apis', apis);
 
     return apis;
   }
@@ -4675,11 +4671,11 @@ export default class MetamaskController extends EventEmitter {
     const oauth2LoginResult = await this.oauthService.startOAuthLogin(
       authConnection,
     );
-    console.log('oauth2LoginResult', oauth2LoginResult);
+
     const { isNewUser } = await this.seedlessOnboardingController.authenticate(
       oauth2LoginResult,
     );
-    console.log('isNewUser', isNewUser);
+
     return isNewUser;
   }
 
