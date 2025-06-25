@@ -311,6 +311,30 @@ describe('Actions', () => {
     });
   });
 
+  describe('#changePassword', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('should change the password for both seedless onboarding and keyring controller', async () => {
+      const store = mockStore();
+      const oldPassword = 'old-password';
+      const newPassword = 'new-password';
+
+      const changePasswordStub = background.changePassword.callsFake(
+        (_, __, cb) => cb(),
+      );
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.changePassword(newPassword, oldPassword));
+
+      expect(
+        changePasswordStub.calledOnceWith(newPassword, oldPassword),
+      ).toStrictEqual(true);
+    });
+  });
+
   describe('#tryUnlockMetamask', () => {
     afterEach(() => {
       sinon.restore();
