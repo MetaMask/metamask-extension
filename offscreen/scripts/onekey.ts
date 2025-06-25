@@ -73,7 +73,7 @@ export default function init() {
           const settings: Partial<ConnectSettings> = {
             debug: true,
             fetchConfig: false,
-            connectSrc: 'https://jssdk.onekey.so/1.0.27-alpha.0/',
+            connectSrc: 'https://jssdk.onekey.so/1.0.35/',
             env: msg.params.env,
           };
 
