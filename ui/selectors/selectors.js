@@ -1056,10 +1056,16 @@ export function getAddressBook(state) {
 
 export function getCompleteAddressBook(state) {
   const addresses = state.metamask.addressBook;
-  const addressWithChainId = Object.fromEntries(
-    Object.entries(addresses).filter(([key]) => key !== '*'),
-  );
-  return Object.values(addressWithChainId);
+  const addressWithChainId = Object.entries(addresses)
+    .filter(([chainId, _]) => chainId !== '*')
+    .map(([chainId, addresse]) =>
+      Object.values(addresse).map((address) => ({
+        ...address,
+        chainId,
+      })),
+    )
+    .flat();
+  return addressWithChainId;
 }
 
 export function getEnsResolutionByAddress(state, address) {

@@ -332,53 +332,53 @@ const TokenButtons = ({
         round={!displayNewIconButtons}
       />
 
-      <IconButton
-        className="token-overview__button"
-        Icon={
-          displayNewIconButtons ? (
-            <Icon
-              name={IconName.SwapHorizontal}
-              color={IconColor.iconAlternative}
-              size={IconSize.Md}
-            />
-          ) : (
-            <Icon
-              name={IconName.SwapHorizontal}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
-          )
-        }
-        onClick={handleSwapOnClick}
-        label={t('swap')}
-        disabled={!isSwapsChain}
-        round={!displayNewIconButtons}
-      />
       {displayNewIconButtons ? null : (
         <IconButton
           className="token-overview__button"
-          data-testid="token-overview-bridge"
           Icon={
             displayNewIconButtons ? (
               <Icon
-                name={IconName.Bridge}
+                name={IconName.SwapHorizontal}
                 color={IconColor.iconAlternative}
                 size={IconSize.Md}
               />
             ) : (
               <Icon
-                name={IconName.Bridge}
+                name={IconName.SwapHorizontal}
                 color={IconColor.iconDefault}
                 size={IconSize.Sm}
               />
             )
           }
-          label={t('bridge')}
-          onClick={() => handleBridgeOnClick(false)}
-          disabled={!isBridgeChain}
+          onClick={handleSwapOnClick}
+          label={t('swap')}
+          disabled={!isSwapsChain}
           round={!displayNewIconButtons}
         />
       )}
+      <IconButton
+        className="token-overview__button"
+        data-testid="token-overview-bridge"
+        Icon={
+          displayNewIconButtons ? (
+            <Icon
+              name={IconName.Bridge}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          ) : (
+            <Icon
+              name={IconName.Bridge}
+              color={IconColor.iconDefault}
+              size={IconSize.Sm}
+            />
+          )
+        }
+        label={t('bridge')}
+        onClick={() => handleBridgeOnClick(false)}
+        disabled={!isBridgeChain}
+        round={!displayNewIconButtons}
+      />
     </Box>
   );
 };

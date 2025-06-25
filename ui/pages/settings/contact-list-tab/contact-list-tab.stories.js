@@ -37,6 +37,7 @@ export const DefaultStory = (args) => {
 
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
+  completeAddressBook: addresses,
   addressBook: addresses,
   internalAccounts,
   hideAddressBook: false,

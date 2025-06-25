@@ -19,6 +19,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  getAllChainsToPoll,
   getCurrentNetwork,
   getIpfsGateway,
   getNativeCurrencyImage,
@@ -113,6 +114,7 @@ export const AssetPickerAmount = ({
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const showNetworkPickerinModal = process.env.REMOVE_GNS && showNetworkPicker;
   const currentNetwork = useSelector(getCurrentNetwork);
+  const allChainIds = useSelector(getAllChainsToPoll);
   useEffect(() => {
     // if this input is immutable – avoids double fire
     if (isDisabled) {
@@ -255,6 +257,7 @@ export const AssetPickerAmount = ({
                         networkConfig.defaultRpcEndpointIndex
                       ];
                     dispatch(setToChainId(networkConfig.chainId));
+                    dispatch(detectNfts(allChainIds));
                     dispatch(
                       setActiveNetworkWithError(
                         'networkClientId' in rpcEndpoint

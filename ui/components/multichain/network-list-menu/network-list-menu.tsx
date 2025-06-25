@@ -379,7 +379,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       // to ensure that the isConnected value can be accurately inferred from
       // NetworkController.state.networksMetadata in return value of
       // `metamask_getProviderState` requests and `metamask_chainChanged` events.
-      setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId);
+      dispatch(
+        setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId),
+      );
     }
 
     if (permittedAccountAddresses.length > 0) {

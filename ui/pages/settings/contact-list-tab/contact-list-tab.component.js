@@ -68,7 +68,7 @@ export default class ContactListTab extends Component {
     } = this.props;
 
     const updatedAddressBook = process.env.REMOVE_GNS
-      ? completeAddressBook.flatMap((add) => Object.values(add))
+      ? Object.entries(completeAddressBook).map(([_, value]) => value)
       : addressBook;
 
     const contacts = updatedAddressBook.filter(({ name }) => Boolean(name));
