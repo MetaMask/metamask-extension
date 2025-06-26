@@ -1,31 +1,39 @@
 import { IncomingWebhook } from '@slack/webhook';
 import type { AnyBlock } from '@slack/types';
+import { version } from '../../package.json';
 
 async function main() {
   const env = {
     OWNER: process.env.OWNER || 'metamask',
     REPOSITORY: process.env.REPOSITORY || 'metamask-extension',
+    RUN_ID: process.env.RUN_ID || '',
     BRANCH: process.env.BRANCH || 'main',
-    DOWNLOAD_URL_CHROME: process.env.DOWNLOAD_URL_CHROME || '',
-    DOWNLOAD_URL_FIREFOX: process.env.DOWNLOAD_URL_FIREFOX || '',
-    DOWNLOAD_URL_EXPERIMENTAL_CHROME: process.env.DOWNLOAD_URL_EXPERIMENTAL_CHROME || '',
-    DOWNLOAD_URL_EXPERIMENTAL_FIREFOX: process.env.DOWNLOAD_URL_EXPERIMENTAL_FIREFOX || '',
-    SLACK_WEBHOOK_URL: process.env.SLACK_WEBHOOK_URL || '',
-    GITHUB_RUN_ID: process.env.GITHUB_RUN_ID || '',
-    VERSION: process.env.VERSION || '',
+    HOST_URL: process.env.HOST_URL || '',
+    SLACK_NIGHTLY_BUILDS_WEBHOOK_URL:
+      process.env.SLACK_NIGHTLY_BUILDS_WEBHOOK_URL || '',
   };
 
-  if (!env.SLACK_WEBHOOK_URL) {
-    console.log('No Slack webhook URL provided, skipping Slack notification');
-    return;
-  }
+  if (!env.RUN_ID) throw new Error('RUN_ID not found');
+  if (!env.HOST_URL) throw new Error('HOST_URL not found');
+  if (!env.SLACK_NIGHTLY_BUILDS_WEBHOOK_URL)
+    throw new Error('SLACK_NIGHTLY_BUILDS_WEBHOOK_URL not found');
 
-  if (!env.DOWNLOAD_URL_CHROME && !env.DOWNLOAD_URL_FIREFOX && !env.DOWNLOAD_URL_EXPERIMENTAL_CHROME && !env.DOWNLOAD_URL_EXPERIMENTAL_FIREFOX) {
-    console.log('No download URLs provided, skipping Slack notification');
-    return;
-  }
+  console.log(
+    `🚀 Posting nightly builds for the ${env.REPOSITORY} repository ${env.BRANCH} branch to Slack`,
+  );
 
-  const webhook = new IncomingWebhook(env.SLACK_WEBHOOK_URL);
+  const buildMap = {
+    builds: {
+      chrome: `${env.HOST_URL}/build-dist-browserify/builds/metamask-chrome-${version}.zip`,
+      firefox: `${env.HOST_URL}/build-dist-mv2-browserify/builds/metamask-firefox-${version}.zip`,
+    },
+    'builds (experimental)': {
+      chrome: `${env.HOST_URL}/build-experimental-browserify/builds/metamask-experimental-chrome-${version}.zip`,
+      firefox: `${env.HOST_URL}/build-experimental-mv2-browserify/builds/metamask-experimental-firefox-${version}.zip`,
+    },
+  };
+
+  const webhook = new IncomingWebhook(env.SLACK_NIGHTLY_BUILDS_WEBHOOK_URL);
 
   const repositoryUrl = new URL('https://github.com');
   repositoryUrl.pathname = `/${env.OWNER}/${env.REPOSITORY}`;
@@ -34,7 +42,7 @@ async function main() {
   branchUrl.pathname += `/tree/${env.BRANCH}`;
 
   const runUrl = new URL(repositoryUrl);
-  runUrl.pathname += `/actions/runs/${env.GITHUB_RUN_ID}`;
+  runUrl.pathname += `/actions/runs/${env.RUN_ID}`;
 
   const currentDate = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
@@ -44,8 +52,6 @@ async function main() {
     minute: '2-digit',
     timeZoneName: 'short',
   });
-
-  console.log(`🚀 Posting nightly build links for ${env.REPOSITORY} ${env.BRANCH} to Slack`);
 
   const blocks: AnyBlock[] = [
     {
@@ -78,7 +84,7 @@ async function main() {
             },
             {
               type: 'text',
-              text: ` (v${env.VERSION})`,
+              text: ` (v${version})`,
             },
           ],
         },
@@ -104,123 +110,95 @@ async function main() {
     {
       type: 'divider',
     },
-  ];
-
-  // Add download links section
-  const downloadElements = [
     {
-      type: 'emoji' as const,
-      name: 'package',
+      type: 'rich_text',
+      elements: [
+        {
+          type: 'rich_text_section',
+          elements: [
+            {
+              type: 'emoji' as const,
+              name: 'package',
+            },
+            {
+              type: 'text' as const,
+              text: ' Download Links:\n',
+              style: {
+                bold: true,
+              },
+            },
+            {
+              type: 'emoji' as const,
+              name: 'chrome',
+            },
+            {
+              type: 'text' as const,
+              text: ' ',
+            },
+            {
+              type: 'link' as const,
+              url: buildMap.builds.chrome,
+              text: 'Main Chrome Extension',
+            },
+            {
+              type: 'text' as const,
+              text: '\n',
+            },
+            {
+              type: 'emoji' as const,
+              name: 'firefox',
+            },
+            {
+              type: 'text' as const,
+              text: ' ',
+            },
+            {
+              type: 'link' as const,
+              url: buildMap.builds.firefox,
+              text: 'Main Firefox Extension',
+            },
+            {
+              type: 'text' as const,
+              text: '\n',
+            },
+            {
+              type: 'emoji' as const,
+              name: 'test_tube',
+            },
+            {
+              type: 'text' as const,
+              text: ' ',
+            },
+            {
+              type: 'link' as const,
+              url: buildMap['builds (experimental)'].chrome,
+              text: 'Experimental Chrome Extension',
+            },
+            {
+              type: 'text' as const,
+              text: '\n',
+            },
+            {
+              type: 'emoji' as const,
+              name: 'test_tube',
+            },
+            {
+              type: 'text' as const,
+              text: ' ',
+            },
+            {
+              type: 'link' as const,
+              url: buildMap['builds (experimental)'].firefox,
+              text: 'Experimental Firefox Extension',
+            },
+            {
+              type: 'text' as const,
+              text: '\n',
+            },
+          ],
+        },
+      ],
     },
-    {
-      type: 'text' as const,
-      text: ' Download Links:\n',
-      style: {
-        bold: true,
-      },
-    },
-  ];
-
-  if (env.DOWNLOAD_URL_CHROME) {
-    downloadElements.push(
-      {
-        type: 'emoji' as const,
-        name: 'chrome',
-      },
-      {
-        type: 'text' as const,
-        text: ' ',
-      },
-      {
-        type: 'link' as const,
-        url: env.DOWNLOAD_URL_CHROME,
-        text: 'Main Chrome Extension',
-      },
-      {
-        type: 'text' as const,
-        text: '\n',
-      },
-    );
-  }
-
-  if (env.DOWNLOAD_URL_FIREFOX) {
-    downloadElements.push(
-      {
-        type: 'emoji' as const,
-        name: 'firefox',
-      },
-      {
-        type: 'text' as const,
-        text: ' ',
-      },
-      {
-        type: 'link' as const,
-        url: env.DOWNLOAD_URL_FIREFOX,
-        text: 'Main Firefox Extension',
-      },
-      {
-        type: 'text' as const,
-        text: '\n',
-      },
-    );
-  }
-
-  if (env.DOWNLOAD_URL_EXPERIMENTAL_CHROME) {
-    downloadElements.push(
-      {
-        type: 'emoji' as const,
-        name: 'test_tube',
-      },
-      {
-        type: 'text' as const,
-        text: ' ',
-      },
-      {
-        type: 'link' as const,
-        url: env.DOWNLOAD_URL_EXPERIMENTAL_CHROME,
-        text: 'Experimental Chrome Extension',
-      },
-      {
-        type: 'text' as const,
-        text: '\n',
-      },
-    );
-  }
-
-  if (env.DOWNLOAD_URL_EXPERIMENTAL_FIREFOX) {
-    downloadElements.push(
-      {
-        type: 'emoji' as const,
-        name: 'test_tube',
-      },
-      {
-        type: 'text' as const,
-        text: ' ',
-      },
-      {
-        type: 'link' as const,
-        url: env.DOWNLOAD_URL_EXPERIMENTAL_FIREFOX,
-        text: 'Experimental Firefox Extension',
-      },
-      {
-        type: 'text' as const,
-        text: '\n',
-      },
-    );
-  }
-
-  blocks.push({
-    type: 'rich_text',
-    elements: [
-      {
-        type: 'rich_text_section',
-        elements: downloadElements,
-      },
-    ],
-  });
-
-  // Add build info section
-  blocks.push(
     {
       type: 'divider',
     },
@@ -250,15 +228,12 @@ async function main() {
         },
       ],
     },
-  );
+  ];
 
-  try {
-    await webhook.send({ blocks });
-    console.log('✅ Successfully posted nightly build notification to Slack');
-  } catch (error) {
-    console.error('❌ Failed to post to Slack:', error);
-    process.exit(1);
-  }
+  await webhook.send({ blocks });
+  console.log(
+    '✅ Successfully posted the nightly builds notification to Slack',
+  );
 }
 
 main();
