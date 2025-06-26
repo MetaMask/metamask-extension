@@ -12,7 +12,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
-const isGlobalNetworkSelectorRemoved = true;
+const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
 
 describe('MetaMask Responsive UI', function (this: Suite) {
   const driverOptions = { constrainWindowSize: true };
