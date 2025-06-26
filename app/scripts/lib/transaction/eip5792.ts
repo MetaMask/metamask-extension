@@ -4,6 +4,7 @@ import {
 } from '@metamask/network-controller';
 import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import {
+  BatchTransactionParams,
   IsAtomicBatchSupportedResult,
   IsAtomicBatchSupportedResultEntry,
   Log,
@@ -33,6 +34,7 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { parse, v4 } from 'uuid';
 
 import { EIP5792ErrorCode } from '../../../../shared/constants/transaction';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { generateSecurityAlertId } from '../ppom/ppom-util';
@@ -55,15 +57,50 @@ export enum AtomicCapabilityStatus {
 
 const VERSION = '2.0.0';
 
-/**
- * Generate a transaction batch ID.
- *
- * @returns  A unique batch ID as a hexadecimal string.
- */
-function generateBatchId(): Hex {
-  const idString = v4();
-  const idBytes = new Uint8Array(parse(idString));
-  return bytesToHex(idBytes);
+async function processSingleTransaction({
+  addTransaction,
+  chainId,
+  from,
+  networkClientId,
+  origin,
+  securityAlertId,
+  transactions,
+  validateSecurity,
+}: {
+  addTransaction: TransactionController['addTransaction'];
+  chainId: Hex;
+  from: Hex;
+  networkClientId: string;
+  origin?: string;
+  securityAlertId: string;
+  transactions: { params: BatchTransactionParams }[];
+  validateSecurity: (
+    securityRequest: ValidateSecurityRequest,
+    chainId: Hex,
+  ) => void;
+}) {
+  const txParams = {
+    from,
+    ...transactions[0].params,
+    type: TransactionEnvelopeType.feeMarket,
+  };
+
+  const securityRequest: ValidateSecurityRequest = {
+    method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+    params: [txParams],
+    origin,
+  };
+  validateSecurity(securityRequest, chainId);
+
+  const batchId = generateBatchId();
+
+  await addTransaction(txParams, {
+    networkClientId,
+    origin,
+    securityAlertResponse: { securityAlertId } as SecurityAlertResponse,
+    batchId,
+  });
+  return batchId;
 }
 
 export async function processSendCalls(
@@ -127,23 +164,15 @@ export async function processSendCalls(
 
   let batchId: Hex;
   if (Object.keys(transactions).length === 1) {
-    const trxnParams = {
+    batchId = await processSingleTransaction({
+      addTransaction,
+      chainId: dappChainId,
       from,
-      ...transactions[0].params,
-      type: TransactionEnvelopeType.feeMarket,
-    };
-    const securityRequest: ValidateSecurityRequest = {
-      method: 'eth_sendTransaction',
-      params: [trxnParams],
-      origin,
-    };
-    validateSecurity(securityRequest, dappChainId);
-    batchId = generateBatchId();
-    await addTransaction(trxnParams, {
       networkClientId,
       origin,
-      securityAlertResponse: { securityAlertId } as SecurityAlertResponse,
-      batchId,
+      securityAlertId,
+      transactions,
+      validateSecurity,
     });
   } else {
     const result = await addTransactionBatch({
@@ -341,6 +370,17 @@ export async function getCapabilities(
 
     return acc;
   }, alternateGasFeesAcc);
+}
+
+/**
+ * Generate a transaction batch ID.
+ *
+ * @returns  A unique batch ID as a hexadecimal string.
+ */
+function generateBatchId(): Hex {
+  const idString = v4();
+  const idBytes = new Uint8Array(parse(idString));
+  return bytesToHex(idBytes);
 }
 
 function validateSendCalls(
