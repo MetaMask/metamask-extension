@@ -1,8 +1,9 @@
 import { strict as assert } from 'assert';
-import { By } from 'selenium-webdriver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import {
   clickCancelButton,
   clickConfirmButton,
@@ -22,6 +23,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.check_pageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp, {
             includeDevnet: true,
           });
@@ -68,6 +70,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.check_pageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp, {
             includeDevnet: true,
           });
@@ -110,25 +113,32 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           async (driver) => {
             const testDapp = new TestDappSolana(driver);
             await testDapp.openTestDappPage();
+            await testDapp.check_pageIsLoaded();
             await connectSolanaTestDapp(driver, testDapp, {
               includeDevnet: false, // Connect to Mainnet only
             });
 
-            // Prompt the user to send a transaction
+            // Send a transaction
             const sendSolTest = await testDapp.getSendSolTest();
             await sendSolTest.sendTransaction();
 
-            // User is prompted to connect again
+            // Confirm the signature
             await driver.delay(largeDelayMs);
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-            await driver.clickElement({ text: 'Connect', tag: 'button' });
 
-            // Look for the chain to be set to Devnet
-            const permission = await driver.findElement(
-              By.xpath("//p[contains(text(), 'Solana Devnet')]"),
+            // Look for the permission to be set to Devnet
+            const connectAccountConfirmation = new ConnectAccountConfirmation(
+              driver,
             );
-
-            assert.ok(permission);
+            await connectAccountConfirmation.check_pageIsLoaded();
+            await connectAccountConfirmation.goToPermissionsTab();
+            await connectAccountConfirmation.openEditNetworksModal();
+            const networkPermissionSelectModal =
+              new NetworkPermissionSelectModal(driver);
+            await networkPermissionSelectModal.check_pageIsLoaded();
+            await networkPermissionSelectModal.check_networkStatus([
+              'Solana Devnet',
+            ]);
           },
         );
       });

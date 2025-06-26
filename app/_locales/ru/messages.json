@@ -911,9 +911,6 @@
   "bridgeTo": {
     "message": "Мост в"
   },
-  "bridgeToChain": {
-    "message": "Мост к $1"
-  },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Если вы добавили этот токен вручную. Убедитесь, что вы осознаете риски для своих средств, прежде чем использовать мост."
   },
@@ -4413,18 +4410,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Понятно"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Всегда храните свою секретную фразу для восстановления в надежном и потайном месте."
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Хотите снова сделать резервную копию секретной фразы для восстановления?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Никогда никому не сообщайте никому свою секретную фразу для восстановления."
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Команда MetaMask никогда неожиданно не запросит вашу секретную фразу для восстановления"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Ваша секретная фраза для восстановления контролирует все ваши счета."
   },
@@ -4795,16 +4780,8 @@
   "sendSelectSendAsset": {
     "message": "Выберите актив для отправки"
   },
-  "sendSpecifiedTokens": {
-    "message": "Отправить $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Нажатие этой кнопки немедленно инициирует транзакцию обмена. Прежде чем продолжить, проверьте детали транзакции."
-  },
-  "sendTokenAsToken": {
-    "message": "Отправить $1 как $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Идет отправка $1"

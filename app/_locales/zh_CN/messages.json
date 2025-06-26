@@ -911,9 +911,6 @@
   "bridgeTo": {
     "message": "桥接至"
   },
-  "bridgeToChain": {
-    "message": "桥接至 $1"
-  },
   "bridgeTokenCannotVerifyDescription": {
     "message": "如果您手动添加了此代币，请务必在桥接之前了解资金面临的风险。"
   },
@@ -4413,18 +4410,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "明白了"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "始终将您的账户私钥助记词保存在安全和秘密的地方"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "需要再次备份您的账户私钥助记词？"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "切勿与任何人分享您的账户私钥助记词"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMask 团队绝对不会索要您的账户私钥助记词"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "您的账户私钥助记词控制您的所有账户。"
   },
@@ -4795,16 +4780,8 @@
   "sendSelectSendAsset": {
     "message": "选择要发送的资产"
   },
-  "sendSpecifiedTokens": {
-    "message": "发送 $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "点击此按钮将立即启动您的兑换交易。在继续操作之前，请查看您的交易详情。"
-  },
-  "sendTokenAsToken": {
-    "message": "将 $1 作为 $2 发送",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "正在发送 $1"
