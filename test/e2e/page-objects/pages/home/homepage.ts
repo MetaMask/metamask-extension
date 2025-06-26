@@ -158,7 +158,7 @@ class HomePage {
     await this.driver.clickElement(this.privacyBalanceToggle);
   }
 
-   async waitForLoadingOverlayToDisappear(): Promise<void> {
+  async waitForLoadingOverlayToDisappear(): Promise<void> {
     console.log(`Wait for loading overlay to disappear`);
     await this.driver.assertElementNotPresent(this.loadingOverlay, {
       waitAtLeastGuard: 1000,
