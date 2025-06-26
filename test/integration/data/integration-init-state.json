@@ -338,6 +338,7 @@
   "desktopEnabled": false,
   "detectedTokens": [],
   "dismissSeedBackUpReminder": false,
+  "domains": {},
   "enabledNetworkMap": {
     "eip155": {
       "0x1": true,
@@ -2071,6 +2072,5 @@
   "versionFileETag": "W/\"598946a37f16c5b882a0bebbadf4509f\"",
   "versionInfo": [],
   "web3ShimUsageOrigins": {},
-  "welcomeScreenSeen": false,
-  "domains": {}
+  "welcomeScreenSeen": false
 }
