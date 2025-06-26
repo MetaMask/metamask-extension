@@ -659,6 +659,9 @@ describe('Request-queue UI changes', function () {
         await driver.clickElement({ css: 'button', text: 'Cancel' });
 
         if (!isGlobalNetworkSelectorRemoved) {
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
           // Wait for network to automatically change to localhost
           await driver.findElement({
             css: '[data-testid="network-display"]',

@@ -319,7 +319,11 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await driver.clickElement('[data-testid="modal-header-close-button"]');
+        if (isGlobalNetworkSelectorRemoved) {
+          await driver.clickElement(
+            '[data-testid="modal-header-close-button"]',
+          );
+        }
 
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
