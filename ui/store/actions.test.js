@@ -3073,7 +3073,7 @@ describe('Actions', () => {
         actions.importMnemonicToVault('mnemonic'),
       );
 
-      expect(result).toEqual(mockResult);
+      expect(result).toStrictEqual(mockResult);
     });
   });
 
