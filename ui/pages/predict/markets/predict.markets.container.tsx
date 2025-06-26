@@ -17,8 +17,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { MarketGamma } from '../types';
 import PredictNavigation from '../predict.navigation';
-
-const GAMMA_API_ENDPOINT = 'https://gamma-api.polymarket.com';
+import { GAMMA_API_ENDPOINT } from '../utils';
 
 const PredictMarketsContainer = () => {
   const [marketData, setMarketData] = useState<any[]>([]);

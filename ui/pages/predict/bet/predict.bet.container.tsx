@@ -27,8 +27,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { usePolymarket } from '../usePolymarket';
 import { Market } from '../types';
-
-const CLOB_ENDPOINT = 'https://clob.polymarket.com';
+import { CLOB_ENDPOINT } from '../utils';
 
 const PredictContainer = () => {
   const { marketId } = useParams<{ marketId: string }>();

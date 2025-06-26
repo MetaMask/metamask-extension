@@ -58,6 +58,7 @@ import {
   PREDICT_ROUTE_POSITIONS,
   PREDICT_ROUTE_PROFIT,
   PREDICT_ROUTE_SETTINGS,
+  PREDICT_ROUTE_ORDERS,
 } from '../../helpers/constants/routes';
 
 import {
@@ -159,6 +160,7 @@ const PredictBet = mmLazy(() => import('../predict/bet'));
 const PredictPositions = mmLazy(() => import('../predict/positions'));
 const PredictProfit = mmLazy(() => import('../predict/profit'));
 const PredictSettings = mmLazy(() => import('../predict/settings'));
+const PredictOrders = mmLazy(() => import('../predict/orders'));
 // End Lazy Routes
 
 export default class Routes extends Component {
@@ -424,6 +426,10 @@ export default class Routes extends Component {
           <Authenticated
             path={PREDICT_ROUTE_SETTINGS}
             component={PredictSettings}
+          />
+          <Authenticated
+            path={PREDICT_ROUTE_ORDERS}
+            component={PredictOrders}
           />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>

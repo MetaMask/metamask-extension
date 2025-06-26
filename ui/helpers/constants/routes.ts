@@ -369,3 +369,6 @@ PATH_NAME_MAP.set(PREDICT_ROUTE_PROFIT, 'Predict Profit');
 
 export const PREDICT_ROUTE_SETTINGS = '/predict-settings';
 PATH_NAME_MAP.set(PREDICT_ROUTE_SETTINGS, 'Predict Settings');
+
+export const PREDICT_ROUTE_ORDERS = '/predict-orders';
+PATH_NAME_MAP.set(PREDICT_ROUTE_ORDERS, 'Predict Orders');

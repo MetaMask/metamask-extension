@@ -508,6 +508,7 @@ export const usePolymarket = () => {
     approveAllowances,
     placeOrder,
     redeemPosition,
+    createL2Headers,
     apiKey,
   };
 };

@@ -48,6 +48,26 @@ const PredictNavigation = () => {
         round={true}
       />
       <IconButton
+        className={'orders__button'}
+        Icon={
+          <Icon
+            name={IconName.Bank}
+            size={IconSize.Sm}
+            color={
+              window.location.hash === '#predict-orders'
+                ? IconColor.warningDefault
+                : IconColor.iconDefault
+            }
+          />
+        }
+        label={'Orders'}
+        onClick={() => {
+          window.location.hash = 'predict-orders';
+        }}
+        width={BlockSize.Full}
+        round={true}
+      />
+      <IconButton
         className={'positions__button'}
         Icon={
           <Icon
@@ -89,16 +109,21 @@ const PredictNavigation = () => {
       />
       <IconButton
         className={'settings__button'}
-        Icon={<Icon name={IconName.Setting} size={IconSize.Sm} />}
+        Icon={
+          <Icon
+            name={IconName.Setting}
+            size={IconSize.Sm}
+            color={
+              window.location.hash === '#predict-profit'
+                ? IconColor.warningDefault
+                : IconColor.iconDefault
+            }
+          />
+        }
         label={'Settings'}
         onClick={() => {
           window.location.hash = 'predict-settings';
         }}
-        color={
-          window.location.hash === '#predict-profit'
-            ? IconColor.warningDefault
-            : IconColor.iconDefault
-        }
         width={BlockSize.Full}
         round={true}
       />

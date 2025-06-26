@@ -26,21 +26,19 @@ import PredictNavigation from '../predict.navigation';
 import { getSelectedInternalAccount } from '../../../selectors';
 import { usePolymarket } from '../usePolymarket';
 import { UserPosition } from '../types';
-
-const CLOB_ENDPOINT = 'https://clob.polymarket.com';
-const DATA_API_ENDPOINT = 'https://data-api.polymarket.com';
+import { CLOB_ENDPOINT, DATA_API_ENDPOINT } from '../utils';
 
 const PredictContainer = () => {
   const [positions, setPositions] = useState<UserPosition[]>([]);
   const [loading, setLoading] = useState(true);
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const { placeOrder } = usePolymarket();
+  const { placeOrder, redeemPosition } = usePolymarket();
 
   const getPositions = async () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${DATA_API_ENDPOINT}/positions?limit=5&user=${selectedAccount.address}`,
+        `${DATA_API_ENDPOINT}/positions?limit=10&user=${selectedAccount.address}`,
         {
           method: 'GET',
           headers: {
@@ -129,6 +127,7 @@ const PredictContainer = () => {
                   flexDirection={FlexDirection.Row}
                   alignItems={AlignItems.center}
                   gap={3}
+                  justifyContent={JustifyContent.spaceBetween}
                 >
                   <img
                     src={position.icon}
@@ -176,38 +175,66 @@ const PredictContainer = () => {
                   alignItems={AlignItems.center}
                   gap={3}
                   marginTop={2}
+                  justifyContent={JustifyContent.spaceBetween}
                 >
-                  <Box>
-                    <Text
-                      variant={TextVariant.bodySm}
-                      color={TextColor.textAlternative}
-                    >
-                      Avg
-                    </Text>
-                    <Text variant={TextVariant.headingSm}>
-                      {Math.round(position.avgPrice * 100)}¢
-                    </Text>
-                  </Box>
-                  <Box>
-                    <Text
-                      variant={TextVariant.bodySm}
-                      color={TextColor.textAlternative}
-                    >
-                      Now
-                    </Text>
-                    <Text variant={TextVariant.headingSm}>
-                      {position.curPrice === null
-                        ? '...'
-                        : `${Math.round(position.curPrice * 100)}¢`}
-                    </Text>
-                  </Box>
-                  <Button
-                    variant={ButtonVariant.Primary}
-                    style={{ marginLeft: 'auto' }}
-                    onClick={() => handleSell(position)}
+                  <Box
+                    display={Display.Flex}
+                    flexDirection={FlexDirection.Row}
+                    gap={2}
                   >
-                    Sell
-                  </Button>
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      justifyContent={JustifyContent.spaceBetween}
+                      alignItems={AlignItems.center}
+                    >
+                      <Text
+                        variant={TextVariant.bodySm}
+                        color={TextColor.textAlternative}
+                      >
+                        Avg
+                      </Text>
+                      <Text variant={TextVariant.headingSm}>
+                        {Math.round(position.avgPrice * 100)}¢
+                      </Text>
+                    </Box>
+                    <Box>
+                      <Text
+                        variant={TextVariant.bodySm}
+                        color={TextColor.textAlternative}
+                      >
+                        Now
+                      </Text>
+                      <Text variant={TextVariant.headingSm}>
+                        {position.curPrice === null
+                          ? '...'
+                          : `${Math.round(position.curPrice * 100)}¢`}
+                      </Text>
+                    </Box>
+                  </Box>
+
+                  <Box
+                    display={Display.Flex}
+                    flexDirection={FlexDirection.Row}
+                    gap={2}
+                  >
+                    {position.redeemable && (
+                      <Button
+                        variant={ButtonVariant.Primary}
+                        style={{ marginLeft: 'auto' }}
+                        onClick={() => redeemPosition(position)}
+                      >
+                        Redeem
+                      </Button>
+                    )}
+                    <Button
+                      variant={ButtonVariant.Primary}
+                      style={{ marginLeft: 'auto' }}
+                      onClick={() => handleSell(position)}
+                    >
+                      Sell
+                    </Button>
+                  </Box>
                 </Box>
               </Box>
             );
