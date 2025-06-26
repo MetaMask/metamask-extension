@@ -46,6 +46,29 @@ export const encodeErc1155Approve = ({
   return concat([encodedSignature, encodedData]);
 };
 
+export const encodeRedeemPositions = ({
+  collateralToken,
+  parentCollectionId,
+  conditionId,
+  indexSets,
+}: {
+  collateralToken: string;
+  parentCollectionId: string;
+  conditionId: string;
+  indexSets: (bigint | string | number)[];
+}): Hex => {
+  const encodedSignature = toFunctionSelector(
+    'redeemPositions(address,bytes32,bytes32,uint256[])',
+  );
+  const encodedData = toHex(
+    encode(
+      ['address', 'bytes32', 'bytes32', 'uint256[]'],
+      [collateralToken, parentCollectionId, conditionId, indexSets],
+    ),
+  );
+  return concat([encodedSignature, encodedData]);
+};
+
 export const generateSalt = (): Hex => {
   return `0x${BigInt(Math.floor(Math.random() * 1000000)).toString(16)}`;
 };

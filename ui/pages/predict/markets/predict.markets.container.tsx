@@ -70,104 +70,109 @@ const PredictMarketsContainer = () => {
 
   return (
     <>
-    <PredictNavigation />
-    <Box>
-      {loading ? (
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
-          padding={8}
-        >
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            Loading positions...
-          </Text>
-        </Box>
-      ) : marketData && marketData.length > 0 ? (
-        marketData.map((market: MarketGamma) => {
-          return (
-            <Box
-              key={market.conditionId}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              borderRadius={BorderRadius.LG}
-              padding={4}
-              marginBottom={4}
+      <PredictNavigation />
+      <Box>
+        {loading ? (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+            padding={8}
+          >
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
             >
+              Loading positions...
+            </Text>
+          </Box>
+        ) : marketData && marketData.length > 0 ? (
+          marketData.map((market: MarketGamma) => {
+            return (
               <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Row}
-                alignItems={AlignItems.center}
-                gap={3}
+                key={market.conditionId}
+                backgroundColor={BackgroundColor.backgroundDefault}
+                borderRadius={BorderRadius.LG}
+                padding={4}
+                marginBottom={4}
               >
-                <img
-                  src={market.image}
-                  alt={market.question}
-                  style={{ width: 48, height: 48, borderRadius: 8 }}
-                />
-                <Box>
-                  <Text variant={TextVariant.headingSm}>{market.question}</Text>
-                </Box>
-              </Box>
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Row}
-                alignItems={AlignItems.center}
-                gap={3}
-                marginTop={2}
-              >
-                <Box>
-                  <Text variant={TextVariant.bodySm}>
-                    {getDaysLeft(market.endDate)}
-                  </Text>
-                </Box>
-                <Box>
-                  <Text variant={TextVariant.bodySm}>
-                    ${calculateVolume(market.volume)} Vol
-                  </Text>
-                </Box>
-              </Box>
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Row}
-                gap={2}
-                marginTop={2}
-                width={BlockSize.Full}
-              >
-                <Button
-                  style={{
-                    width: '100%',
-                    flex: 1,
-                    backgroundColor: '#393939',
-                    color: 'white',
-                  }}
-                  onClick={() => {
-                    history.push(`/predict-bet/${market.conditionId}`);
-                  }}
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Row}
+                  alignItems={AlignItems.center}
+                  gap={3}
                 >
-                  Buy No ($10)
-                </Button>
-                <Button
-                  style={{
-                    width: '100%',
-                    flex: 1,
-                    backgroundColor: '#393939',
-                    color: 'white',
-                  }}
-                  onClick={() => {
-                    history.push(`/predict-bet/${market.conditionId}`);
-                  }}
+                  <img
+                    src={market.image}
+                    alt={market.question}
+                    style={{ width: 48, height: 48, borderRadius: 8 }}
+                  />
+                  <Box>
+                    <Text variant={TextVariant.headingSm}>
+                      {market.question}
+                    </Text>
+                  </Box>
+                </Box>
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Row}
+                  alignItems={AlignItems.center}
+                  gap={3}
+                  marginTop={2}
                 >
-                  Buy Yes ($10)
-                </Button>
+                  <Box>
+                    <Text variant={TextVariant.bodySm}>
+                      {getDaysLeft(market.endDate)}
+                    </Text>
+                  </Box>
+                  <Box>
+                    <Text variant={TextVariant.bodySm}>
+                      ${calculateVolume(market.volume)} Vol
+                    </Text>
+                  </Box>
+                </Box>
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Row}
+                  gap={2}
+                  marginTop={2}
+                  width={BlockSize.Full}
+                >
+                  <Button
+                    style={{
+                      width: '100%',
+                      flex: 1,
+                      backgroundColor: '#393939',
+                      color: 'white',
+                    }}
+                    onClick={() => {
+                      history.push(`/predict-bet/${market.conditionId}`);
+                    }}
+                  >
+                    Buy No ($10)
+                  </Button>
+                  <Button
+                    style={{
+                      width: '100%',
+                      flex: 1,
+                      backgroundColor: '#393939',
+                      color: 'white',
+                    }}
+                    onClick={() => {
+                      history.push(`/predict-bet/${market.conditionId}`);
+                    }}
+                  >
+                    Buy Yes ($10)
+                  </Button>
+                </Box>
               </Box>
-            </Box>
-          );
-        })
-      ) : (
-        <Text>No markets found.</Text>
-      )}
-    </Box>
+            );
+          })
+        ) : (
+          <Text>No markets found.</Text>
+        )}
+      </Box>
     </>
   );
 };

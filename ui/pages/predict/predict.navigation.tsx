@@ -1,5 +1,4 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 
 import {
   Box,
@@ -85,6 +84,21 @@ const PredictNavigation = () => {
         onClick={() => {
           window.location.hash = 'predict-profit';
         }}
+        width={BlockSize.Full}
+        round={true}
+      />
+      <IconButton
+        className={'settings__button'}
+        Icon={<Icon name={IconName.Setting} size={IconSize.Sm} />}
+        label={'Settings'}
+        onClick={() => {
+          window.location.hash = 'predict-settings';
+        }}
+        color={
+          window.location.hash === '#predict-profit'
+            ? IconColor.warningDefault
+            : IconColor.iconDefault
+        }
         width={BlockSize.Full}
         round={true}
       />

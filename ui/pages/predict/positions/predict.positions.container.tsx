@@ -48,10 +48,11 @@ const PredictContainer = () => {
           },
         },
       );
-      const tradesData = await response.json();
-      setPositions(tradesData);
+      const positionsData = await response.json();
+      console.log(positionsData);
+      setPositions(positionsData);
     } catch (error) {
-      console.error('Error fetching trades:', error);
+      console.error('Error fetching positions:', error);
       setPositions([]);
     } finally {
       setLoading(false);
@@ -93,9 +94,7 @@ const PredictContainer = () => {
           textAlign={TextAlign.Center}
         >
           <Text variant={TextVariant.headingMd}>Positions</Text>
-          <Text variant={TextVariant.bodySm}>
-            Your current positions.
-          </Text>
+          <Text variant={TextVariant.bodySm}>Your current positions.</Text>
         </Box>
         <PredictNavigation />
         {loading && (
@@ -119,7 +118,7 @@ const PredictContainer = () => {
           positions.map((position: UserPosition) => {
             return (
               <Box
-                key={position.conditionId}
+                key={`${position.outcomeIndex}-${position.asset}`}
                 backgroundColor={BackgroundColor.backgroundDefault}
                 borderRadius={BorderRadius.LG}
                 padding={4}

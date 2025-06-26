@@ -14,9 +14,15 @@ import {
   buildPolyHmacSignature,
   encodeApprove,
   encodeErc1155Approve,
+  encodeRedeemPositions,
   generateSalt,
 } from './utils';
-import { ROUNDING_CONFIG, SignatureType, TickSize } from './types';
+import {
+  ROUNDING_CONFIG,
+  SignatureType,
+  TickSize,
+  UserPosition,
+} from './types';
 
 const CLOB_ENDPOINT = 'https://clob.polymarket.com';
 
@@ -468,11 +474,40 @@ export const usePolymarket = () => {
     console.log(responseData);
   };
 
+  const redeemPosition = async (position: UserPosition) => {
+    if (!position.redeemable) {
+      console.error('Position is not redeemable');
+      return;
+    }
+
+    const encodedCallData = encodeRedeemPositions({
+      collateralToken: contractConfig.collateral,
+      parentCollectionId: '0x0',
+      conditionId: position.conditionId,
+      indexSets: [position.outcomeIndex + 1],
+    });
+
+    await addTransaction(
+      {
+        from: account.address,
+        to: contractConfig.conditionalTokens,
+        data: encodedCallData,
+        value: '0x0',
+      },
+      {
+        networkClientId: selectedNetwork.clientId,
+        type: TransactionType.contractInteraction,
+        requireApproval: false,
+      },
+    );
+  };
+
   return {
     createApiKey,
     deriveApiKey,
     approveAllowances,
     placeOrder,
+    redeemPosition,
     apiKey,
   };
 };

@@ -68,18 +68,23 @@ const PredictContainer = () => {
     return `${days}D left`;
   };
 
-  const yesToken = market?.tokens?.find(
-    (token: Token) => token.outcome === 'Yes',
-  );
-  const noToken = market?.tokens?.find(
-    (token: Token) => token.outcome === 'No',
-  );
+  const isYesToken = (token: Token) => {
+    return token.outcome === 'Yes';
+  };
 
-  const handleBuyNo = () => {
-    console.log(market, noToken);
+  const isNoToken = (token: Token) => {
+    return token.outcome === 'No';
+  };
+
+  const isYesNoToken = (token: Token) => {
+    return isYesToken(token) || isNoToken(token);
+  };
+
+  const handleBuy = (token: Token) => {
+    console.log(market, token);
     placeOrder({
-      tokenId: noToken?.token_id || '',
-      price: noToken?.price || 0,
+      tokenId: token.token_id,
+      price: token.price,
       size: Number(market?.minimum_order_size),
       tickSize: market?.minimum_tick_size as TickSize,
       side: Side.BUY,
@@ -87,16 +92,20 @@ const PredictContainer = () => {
     });
   };
 
-  const handleBuyYes = () => {
-    console.log(market, yesToken);
-    placeOrder({
-      tokenId: yesToken?.token_id || '',
-      price: yesToken?.price || 0,
-      size: Number(market?.minimum_order_size),
-      tickSize: market?.minimum_tick_size as TickSize,
-      side: Side.BUY,
-      negRisk: market?.neg_risk || false,
-    });
+  const getTokenButtonBackgroundColor = (token: Token, index: number) => {
+    if (isYesNoToken(token)) {
+      return isYesToken(token) ? '#A5FFB0' : '#FFB0B0';
+    }
+    return index === 0 ? '#A5FFB0' : '#FFB0B0';
+  };
+
+  const getTokenTextColor = (token: Token, index: number) => {
+    if (isYesNoToken(token)) {
+      return isYesToken(token)
+        ? TextColor.successDefault
+        : TextColor.errorDefault;
+    }
+    return index === 0 ? TextColor.successDefault : TextColor.errorDefault;
   };
 
   return (
@@ -161,12 +170,17 @@ const PredictContainer = () => {
             justifyContent={JustifyContent.spaceBetween}
             marginTop={1}
           >
-            <Text color={TextColor.successDefault} fontWeight={FontWeight.Bold}>
-              {`${((yesToken?.price || 0) * 100).toFixed(1)}% YES`}
-            </Text>
-            <Text color={TextColor.errorDefault} fontWeight={FontWeight.Bold}>
-              {`NO ${((noToken?.price || 0) * 100).toFixed(1)}%`}
-            </Text>
+            {market?.tokens.map((token: Token, index: number) => {
+              return (
+                <Text
+                  key={token.token_id}
+                  color={getTokenTextColor(token, index)}
+                  fontWeight={FontWeight.Bold}
+                >
+                  {`${((token.price || 0) * 100).toFixed(1)}% ${token.outcome}`}
+                </Text>
+              );
+            })}
           </Box>
         </Box>
         <Box
@@ -259,20 +273,21 @@ const PredictContainer = () => {
           </Button>
         </Box>
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={2}>
-          <Button
-            style={{ backgroundColor: '#FFB0B0', flex: 1 }}
-            onClick={handleBuyNo}
-            color={TextColor.textDefault}
-          >
-            Buy no ({noToken?.price}¢)
-          </Button>
-          <Button
-            style={{ backgroundColor: '#A5FFB0', flex: 1 }}
-            onClick={handleBuyYes}
-            color={TextColor.textDefault}
-          >
-            Buy yes ({yesToken?.price}¢)
-          </Button>
+          {market?.tokens.map((token: Token, index: number) => {
+            return (
+              <Button
+                key={token.token_id}
+                style={{
+                  backgroundColor: getTokenButtonBackgroundColor(token, index),
+                  flex: 1,
+                }}
+                onClick={() => handleBuy(token)}
+                color={TextColor.textDefault}
+              >
+                {`Buy ${token.outcome} (${token.price}¢)`}
+              </Button>
+            );
+          })}
         </Box>
       </Box>
     </Page>
