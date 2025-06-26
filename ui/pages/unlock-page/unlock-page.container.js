@@ -18,10 +18,11 @@ import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
   const {
-    metamask: { isUnlocked },
+    metamask: { isUnlocked, firstTimeFlow },
   } = state;
   return {
     isUnlocked,
+    firstTimeFlow,
   };
 };
 
@@ -53,7 +54,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     history.push(RESTORE_VAULT_ROUTE);
 
     if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-      global.platform.openExtensionInBrowser(RESTORE_VAULT_ROUTE);
+      global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
     }
   };
 
