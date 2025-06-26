@@ -94,6 +94,7 @@ import {
   setTheme,
   showAppHeader,
 } from './utils';
+import { MultichainAccountDetails } from '../multichain-accounts/account-details';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() =>
@@ -426,6 +427,19 @@ export default class Routes extends Component {
     return routes;
   }
 
+  renderAccountDetails() {
+    const { accountDetailsAddress, isMultichainAccountsState1Enabled } =
+      this.props;
+    if (!accountDetailsAddress) {
+      return null;
+    }
+    return isMultichainAccountsState1Enabled ? (
+      <MultichainAccountDetails address={accountDetailsAddress} />
+    ) : (
+      <AccountDetails address={accountDetailsAddress} />
+    );
+  }
+
   render() {
     const {
       isLoading,
@@ -444,6 +458,7 @@ export default class Routes extends Component {
       accountDetailsAddress,
       isImportTokensModalOpen,
       isDeprecatedNetworkModalOpen,
+      isMultichainAccountsState1Enabled,
       location,
       isImportNftsModalOpen,
       hideImportNftsModal,
@@ -559,9 +574,7 @@ export default class Routes extends Component {
           <NetworkListMenu onClose={networkMenuClose} />
         ) : null}
         <NetworkConfirmationPopover />
-        {accountDetailsAddress ? (
-          <AccountDetails address={accountDetailsAddress} />
-        ) : null}
+        {this.renderAccountDetails()}
         {isImportNftsModalOpen ? (
           <ImportNftsModal onClose={hideImportNftsModal} />
         ) : null}
