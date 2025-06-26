@@ -375,7 +375,7 @@ describe('EIP-5792', () => {
       ).rejects.toThrow('EIP-7702 upgrade disabled by the user');
     });
 
-    it('does not throws if user enabled preference to dismiss option to upgrade account for single nested transaction', async () => {
+    it('does not throw if user enabled preference to dismiss option to upgrade account for single nested transaction', async () => {
       getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(true);
 
       const result = await processSendCalls(
