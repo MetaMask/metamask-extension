@@ -2,6 +2,7 @@ import {
   AuthConnection,
   Web3AuthNetwork,
 } from '@metamask/seedless-onboarding-controller';
+import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { OAuthConfig, WebAuthenticator } from './types';
 import OAuthService from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
@@ -135,6 +136,22 @@ describe('OAuthService - startOAuthLogin', () => {
       },
       expect.any(Function),
     );
+  });
+
+  it('should throw an error if the state validation fails - google', async () => {
+    const oauthEnv = getOAuthLoginEnvs();
+
+    const oauthService = new OAuthService({
+      env: oauthEnv,
+      webAuthenticator: {
+        ...mockWebAuthenticator,
+        generateNonce: jest.fn().mockReturnValue(Math.random().toString()),
+      },
+    });
+
+    await expect(
+      oauthService.startOAuthLogin(AuthConnection.Google),
+    ).rejects.toThrow(OAuthErrorMessages.INVALID_OAUTH_STATE_ERROR);
   });
 });
 

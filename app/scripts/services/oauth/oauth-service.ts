@@ -169,7 +169,12 @@ export default class OAuthService {
           (responseUrl) => {
             try {
               if (responseUrl) {
-                resolve(responseUrl);
+                try {
+                  loginHandler.validateState(responseUrl);
+                  resolve(responseUrl);
+                } catch (error) {
+                  reject(error);
+                }
               } else {
                 reject(
                   new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR),
