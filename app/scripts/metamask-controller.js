@@ -1102,16 +1102,20 @@ export default class MetamaskController extends EventEmitter {
         })
       : null;
 
-    let additionalKeyrings = [
-      qrKeyringBuilderFactory(QrKeyring, QrKeyringScannerBridge, {
-        requestScan: async () =>
-          appStateControllerMessenger.call(
-            'AppStateController:requestQrCodeScan',
-          ),
-      }),
-    ];
-
     const keyringOverrides = this.opts.overrides?.keyrings;
+
+    let additionalKeyrings = [
+      qrKeyringBuilderFactory(
+        keyringOverrides?.qr || QrKeyring,
+        keyringOverrides?.qrBridge || QrKeyringScannerBridge,
+        {
+          requestScan: async () =>
+            appStateControllerMessenger.call(
+              'AppStateController:requestQrCodeScan',
+            ),
+        },
+      ),
+    ];
 
     if (isManifestV3 === false) {
       const additionalKeyringTypes = [
