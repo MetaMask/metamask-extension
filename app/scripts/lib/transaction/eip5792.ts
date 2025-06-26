@@ -57,113 +57,6 @@ export enum AtomicCapabilityStatus {
 
 const VERSION = '2.0.0';
 
-async function processSingleTransaction({
-  addTransaction,
-  chainId,
-  from,
-  networkClientId,
-  origin,
-  securityAlertId,
-  sendCalls,
-  transactions,
-  validateSecurity,
-}: {
-  addTransaction: TransactionController['addTransaction'];
-  chainId: Hex;
-  from: Hex;
-  networkClientId: string;
-  origin?: string;
-  securityAlertId: string;
-  sendCalls: SendCalls;
-  transactions: { params: BatchTransactionParams }[];
-  validateSecurity: (
-    securityRequest: ValidateSecurityRequest,
-    chainId: Hex,
-  ) => void;
-}) {
-  validateSingleSendCall(sendCalls, chainId);
-
-  const txParams = {
-    from,
-    ...transactions[0].params,
-    type: TransactionEnvelopeType.feeMarket,
-  };
-
-  const securityRequest: ValidateSecurityRequest = {
-    method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
-    params: [txParams],
-    origin,
-  };
-  validateSecurity(securityRequest, chainId);
-
-  const batchId = generateBatchId();
-
-  await addTransaction(txParams, {
-    networkClientId,
-    origin,
-    securityAlertResponse: { securityAlertId } as SecurityAlertResponse,
-    batchId,
-  });
-  return batchId;
-}
-
-async function processMultipleTransaction({
-  addTransactionBatch,
-  isAtomicBatchSupported,
-  chainId,
-  from,
-  getDismissSmartAccountSuggestionEnabled,
-  keyringType,
-  networkClientId,
-  origin,
-  sendCalls,
-  securityAlertId,
-  transactions,
-  validateSecurity,
-}: {
-  addTransactionBatch: TransactionController['addTransactionBatch'];
-  isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
-  chainId: Hex;
-  from: Hex;
-  getDismissSmartAccountSuggestionEnabled: () => boolean;
-  keyringType: KeyringTypes;
-  networkClientId: string;
-  origin?: string;
-  sendCalls: SendCalls;
-  securityAlertId: string;
-  transactions: { params: BatchTransactionParams }[];
-  validateSecurity: (
-    securityRequest: ValidateSecurityRequest,
-    chainId: Hex,
-  ) => Promise<void>;
-}) {
-  const batchSupport = await isAtomicBatchSupported({
-    address: from,
-    chainIds: [chainId],
-  });
-
-  const chainBatchSupport = batchSupport?.[0];
-
-  const dismissSmartAccountSuggestionEnabled =
-    getDismissSmartAccountSuggestionEnabled();
-  validateSendCalls(
-    sendCalls,
-    chainId,
-    dismissSmartAccountSuggestionEnabled,
-    chainBatchSupport,
-    keyringType,
-  );
-  const result = await addTransactionBatch({
-    from,
-    networkClientId,
-    origin,
-    securityAlertId,
-    transactions,
-    validateSecurity,
-  });
-  return result.batchId;
-}
-
 export async function processSendCalls(
   hooks: {
     addTransactionBatch: TransactionController['addTransactionBatch'];
@@ -201,8 +94,6 @@ export async function processSendCalls(
     paramFrom ??
     (messenger.call('AccountsController:getSelectedAccount').address as Hex);
 
-  const keyringType = getAccountKeyringType(from, messenger);
-
   const securityAlertId = generateSecurityAlertId();
   const validateSecurity = validateSecurityHook.bind(null, securityAlertId);
 
@@ -226,7 +117,7 @@ export async function processSendCalls(
       chainId: dappChainId,
       from,
       getDismissSmartAccountSuggestionEnabled,
-      keyringType,
+      messenger,
       networkClientId,
       origin,
       sendCalls: params,
@@ -283,55 +174,6 @@ export function getCallsStatus(
     status,
     receipts,
   };
-}
-
-async function getAlternateGasFeesCapability(
-  chainIds: Hex[],
-  batchSupport: IsAtomicBatchSupportedResult,
-  getIsSmartTransaction: (chainId: Hex) => boolean,
-  isRelaySupported: (chainId: Hex) => Promise<boolean>,
-  messenger: EIP5792Messenger,
-) {
-  const simulationEnabled = messenger.call(
-    'PreferencesController:getState',
-  ).useTransactionSimulations;
-
-  const relaySupportedChains = await Promise.all(
-    batchSupport
-      .map(({ chainId }) => chainId)
-      .map((chainId) => isRelaySupported(chainId)),
-  );
-
-  const updatedBatchSupport = batchSupport.map((support, index) => ({
-    ...support,
-    relaySupportedForChain: relaySupportedChains[index],
-  }));
-
-  return chainIds.reduce<GetCapabilitiesResult>((acc, chainId) => {
-    const chainBatchSupport = (updatedBatchSupport.find(
-      ({ chainId: batchChainId }) => batchChainId === chainId,
-    ) ?? {}) as IsAtomicBatchSupportedResultEntry & {
-      relaySupportedForChain: boolean;
-    };
-
-    const { isSupported = false, relaySupportedForChain } = chainBatchSupport;
-
-    const isSmartTransaction = getIsSmartTransaction(chainId);
-
-    const alternateGasFees =
-      simulationEnabled &&
-      (isSmartTransaction || (isSupported && relaySupportedForChain));
-
-    if (alternateGasFees) {
-      acc[chainId as Hex] = {
-        alternateGasFees: {
-          supported: true,
-        },
-      };
-    }
-
-    return acc;
-  }, {});
 }
 
 export async function getCapabilities(
@@ -420,6 +262,115 @@ export async function getCapabilities(
 
     return acc;
   }, alternateGasFeesAcc);
+}
+
+async function processSingleTransaction({
+  addTransaction,
+  chainId,
+  from,
+  networkClientId,
+  origin,
+  securityAlertId,
+  sendCalls,
+  transactions,
+  validateSecurity,
+}: {
+  addTransaction: TransactionController['addTransaction'];
+  chainId: Hex;
+  from: Hex;
+  networkClientId: string;
+  origin?: string;
+  securityAlertId: string;
+  sendCalls: SendCalls;
+  transactions: { params: BatchTransactionParams }[];
+  validateSecurity: (
+    securityRequest: ValidateSecurityRequest,
+    chainId: Hex,
+  ) => void;
+}) {
+  validateSingleSendCall(sendCalls, chainId);
+
+  const txParams = {
+    from,
+    ...transactions[0].params,
+    type: TransactionEnvelopeType.feeMarket,
+  };
+
+  const securityRequest: ValidateSecurityRequest = {
+    method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+    params: [txParams],
+    origin,
+  };
+  validateSecurity(securityRequest, chainId);
+
+  const batchId = generateBatchId();
+
+  await addTransaction(txParams, {
+    networkClientId,
+    origin,
+    securityAlertResponse: { securityAlertId } as SecurityAlertResponse,
+    batchId,
+  });
+  return batchId;
+}
+
+async function processMultipleTransaction({
+  addTransactionBatch,
+  isAtomicBatchSupported,
+  chainId,
+  from,
+  getDismissSmartAccountSuggestionEnabled,
+  networkClientId,
+  messenger,
+  origin,
+  sendCalls,
+  securityAlertId,
+  transactions,
+  validateSecurity,
+}: {
+  addTransactionBatch: TransactionController['addTransactionBatch'];
+  isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
+  chainId: Hex;
+  from: Hex;
+  getDismissSmartAccountSuggestionEnabled: () => boolean;
+  messenger: EIP5792Messenger;
+  networkClientId: string;
+  origin?: string;
+  sendCalls: SendCalls;
+  securityAlertId: string;
+  transactions: { params: BatchTransactionParams }[];
+  validateSecurity: (
+    securityRequest: ValidateSecurityRequest,
+    chainId: Hex,
+  ) => Promise<void>;
+}) {
+  const batchSupport = await isAtomicBatchSupported({
+    address: from,
+    chainIds: [chainId],
+  });
+
+  const chainBatchSupport = batchSupport?.[0];
+
+  const keyringType = getAccountKeyringType(from, messenger);
+
+  const dismissSmartAccountSuggestionEnabled =
+    getDismissSmartAccountSuggestionEnabled();
+  validateSendCalls(
+    sendCalls,
+    chainId,
+    dismissSmartAccountSuggestionEnabled,
+    chainBatchSupport,
+    keyringType,
+  );
+  const result = await addTransactionBatch({
+    from,
+    networkClientId,
+    origin,
+    securityAlertId,
+    transactions,
+    validateSecurity,
+  });
+  return result.batchId;
 }
 
 /**
@@ -543,6 +494,55 @@ function validateUpgrade(
       'EIP-7702 upgrade not supported on account',
     );
   }
+}
+
+async function getAlternateGasFeesCapability(
+  chainIds: Hex[],
+  batchSupport: IsAtomicBatchSupportedResult,
+  getIsSmartTransaction: (chainId: Hex) => boolean,
+  isRelaySupported: (chainId: Hex) => Promise<boolean>,
+  messenger: EIP5792Messenger,
+) {
+  const simulationEnabled = messenger.call(
+    'PreferencesController:getState',
+  ).useTransactionSimulations;
+
+  const relaySupportedChains = await Promise.all(
+    batchSupport
+      .map(({ chainId }) => chainId)
+      .map((chainId) => isRelaySupported(chainId)),
+  );
+
+  const updatedBatchSupport = batchSupport.map((support, index) => ({
+    ...support,
+    relaySupportedForChain: relaySupportedChains[index],
+  }));
+
+  return chainIds.reduce<GetCapabilitiesResult>((acc, chainId) => {
+    const chainBatchSupport = (updatedBatchSupport.find(
+      ({ chainId: batchChainId }) => batchChainId === chainId,
+    ) ?? {}) as IsAtomicBatchSupportedResultEntry & {
+      relaySupportedForChain: boolean;
+    };
+
+    const { isSupported = false, relaySupportedForChain } = chainBatchSupport;
+
+    const isSmartTransaction = getIsSmartTransaction(chainId);
+
+    const alternateGasFees =
+      simulationEnabled &&
+      (isSmartTransaction || (isSupported && relaySupportedForChain));
+
+    if (alternateGasFees) {
+      acc[chainId as Hex] = {
+        alternateGasFees: {
+          supported: true,
+        },
+      };
+    }
+
+    return acc;
+  }, {});
 }
 
 function getStatusCode(transactionMeta: TransactionMeta) {
