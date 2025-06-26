@@ -99,6 +99,9 @@ PATH_NAME_MAP.set(
   'Reveal Secret Recovery Phrase Page',
 );
 
+export const SMART_ACCOUNT_UPDATE = '/smart-account-update';
+PATH_NAME_MAP.set(SMART_ACCOUNT_UPDATE, 'Smart Account Update Page');
+
 export const IMPORT_SRP_ROUTE = '/import-srp';
 PATH_NAME_MAP.set(IMPORT_SRP_ROUTE, 'Import Secret Recovery Phrase Page');
 
@@ -354,3 +357,6 @@ export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 
 export const DEEP_LINK_ROUTE = '/link';
 PATH_NAME_MAP.set(DEEP_LINK_ROUTE, 'Deep link Redirect Page');
+
+export const WALLET_DETAILS_ROUTE = '/wallet-details/:id';
+PATH_NAME_MAP.set(WALLET_DETAILS_ROUTE, 'Wallet Details Page');
