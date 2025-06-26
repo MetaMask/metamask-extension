@@ -3,7 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { getUseBlockie } from '../../../selectors';
+import {
+  getIsMultichainAccountsState1Enabled,
+  getUseBlockie,
+} from '../../../selectors';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -52,6 +55,9 @@ export const BaseAccountDetails = ({
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useI18nContext();
+  const isMultichainAccountsState1Enabled = useSelector(
+    getIsMultichainAccountsState1Enabled,
+  );
   const {
     metadata: { name },
     type,
@@ -73,10 +79,11 @@ export const BaseAccountDetails = ({
   }, [history, dispatch]);
 
   useEffect(() => {
-    if (!address) {
+    if (!address || !isMultichainAccountsState1Enabled) {
       history.push(DEFAULT_ROUTE);
     }
-  }, [dispatch, address, history]);
+  }, [dispatch, address, history, isMultichainAccountsState1Enabled]);
+
   // we can never have a scenario where an account is not associated with a wallet.
   const { id: walletId, name: walletName } = useSelector((state) =>
     getWalletIdAndNameByAccountAddress(state, address),
