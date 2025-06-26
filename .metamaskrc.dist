@@ -2,7 +2,9 @@
 ; Defaults are set in builds.yml
 
 ; This variable is required
-INFURA_PROJECT_ID=00000000000
+; apikey=7b2ad717c11e40dfbc02d5e899a4f228
+; https=https://mainnet.infura.io/v3/7b2ad717c11e40dfbc02d5e899a4f228
+INFURA_PROJECT_ID=7b2ad717c11e40dfbc02d5e899a4f228
 
 ; This variable is not required but it's necessary for the storybook
 ; to render stories that use onchain data.
