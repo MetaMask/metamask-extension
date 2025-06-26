@@ -1,9 +1,6 @@
 name: Nightly Build
 
 on:
-  push:
-    branches:
-      - INFRA-2663-nightlybuilds
   schedule:
     # Run daily at 02:00 UTC
     - cron: '0 2 * * *'
