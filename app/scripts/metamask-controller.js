@@ -4858,7 +4858,7 @@ export default class MetamaskController extends EventEmitter {
         );
       }
 
-      let discoveredAccounts = {
+      const discoveredAccounts = {
         bitcoin: 0,
         solana: 0,
       };
