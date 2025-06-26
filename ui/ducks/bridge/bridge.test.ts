@@ -184,7 +184,6 @@ describe('Ducks - Bridge', () => {
           token_symbol_destination: 'ETH',
           security_warnings: [],
         },
-        expect.anything(),
       );
     });
   });
@@ -207,7 +206,7 @@ describe('Ducks - Bridge', () => {
       mockStore.dispatch(resetBridgeState() as never);
 
       expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
-      expect(mockResetBridgeState).toHaveBeenCalledWith(expect.anything());
+      expect(mockResetBridgeState).toHaveBeenCalledWith();
       const actions = mockStore.getActions();
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
