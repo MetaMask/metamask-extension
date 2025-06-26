@@ -217,12 +217,21 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       },
     );
 
-    supportedRequestedCaipChainIds = Array.from(
-      new Set([
-        ...supportedRequestedCaipChainIds,
-        ...defaultSelectedNetworkList,
-      ]),
+    const isRequestingSpecificChains = supportedRequestedCaipChainIds.some(
+      (caipChainId) => {
+        const { namespace } = parseCaipChainId(caipChainId);
+        return namespace === KnownCaipNamespace.Eip155;
+      },
     );
+
+    // If the request is for EVM and no specific chains are requested,
+    // we merge the default chains with existing permitted chains
+    if (!isRequestingSpecificChains && existingCaip25CaveatValue) {
+      supportedRequestedCaipChainIds = [
+        ...defaultSelectedNetworkList,
+        ...supportedRequestedCaipChainIds,
+      ];
+    }
   }
 
   const defaultSelectedChainIds =

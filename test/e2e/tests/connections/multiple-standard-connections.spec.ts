@@ -79,6 +79,31 @@ function getRequestPermissionsRequestObject(accounts: string[] = []): string {
   });
 }
 
+/**
+ * Helper to get a request permissions request object with network restrictions.
+ *
+ * @param networks - Array of network IDs to restrict switching to
+ * @returns the wallet_requestPermissions request string
+ */
+function getRestrictedNetworks(networks: string[]): string {
+  const restrictNetworks = {
+    'endowment:permitted-chains': {
+      caveats: [
+        {
+          type: 'restrictNetworkSwitching',
+          value: networks,
+        },
+      ],
+    },
+  };
+
+  return JSON.stringify({
+    jsonrpc: '2.0',
+    method: 'wallet_requestPermissions',
+    params: [restrictNetworks],
+  });
+}
+
 describe('Multiple Standard Dapp Connections', function () {
   it('should default account selection to already permitted account(s) when `wallet_requestPermissions` is called with no accounts specified', async function () {
     await withFixtures(
@@ -314,6 +339,53 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await sitePermissionPage.check_connectedAccountsNumber(2);
         await sitePermissionPage.check_connectedNetworksNumber(4);
+      },
+    );
+  });
+
+  it('should be able to request specific chains when connecting through the EVM provider with existing permissions', async function () {
+    await withSolanaAccountSnap(
+      {
+        title: this.test?.fullTitle(),
+        withFixtureBuilder: (builder) =>
+          builder.withPermissionControllerConnectedToMultichainTestDapp({
+            // @ts-expect-error Type error is expected here since its being inferred as null
+            value: SOLANA_PERMISSIONS,
+          }),
+      },
+      async (driver) => {
+        const testDapp = new TestDapp(driver);
+
+        await testDapp.openTestDappPage();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.check_pageIsLoaded();
+
+        const requestSpecificNetwork = getRestrictedNetworks(['0x1']);
+
+        await driver.executeScript(
+          `window.ethereum.request(${requestSpecificNetwork})`,
+        );
+
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        const sitePermissionPage = await getPermissionsPageForHost(
+          driver,
+          DAPP_HOST_ADDRESS,
+        );
+
+        await sitePermissionPage.check_connectedAccountsNumber(2);
+        await sitePermissionPage.check_connectedNetworksNumber(2);
       },
     );
   });
