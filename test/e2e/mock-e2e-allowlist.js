@@ -47,7 +47,6 @@ const ALLOWLISTED_URLS = [
 ];
 
 const ALLOWLISTED_HOSTS = [
-  'token.api.cx.metamask.io',
   // Seedless Onboarding (TOPRF Service Nodes)
   'node-1.dev-node.web3auth.io',
   'node-2.dev-node.web3auth.io',
