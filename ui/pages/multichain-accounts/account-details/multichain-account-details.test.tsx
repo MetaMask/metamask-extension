@@ -9,7 +9,7 @@ import {
   MOCK_ACCOUNT_ERC4337,
   MOCK_ACCOUNT_SOLANA_MAINNET,
 } from '../../../../test/data/mock-accounts';
-import { AccountDetails } from './account-details';
+import { MultichainAccountDetails } from './multichain-account-details';
 
 const middleware = [thunk];
 const mockStore = configureMockStore(middleware);
@@ -32,6 +32,9 @@ const createMockState = (address: string, account = MOCK_ACCOUNT_EOA) => ({
   appState: {
     accountDetailsAddress: address,
   },
+  activeTab: {
+    origin: 'test',
+  },
   metamask: {
     internalAccounts: {
       accounts: {
@@ -42,6 +45,66 @@ const createMockState = (address: string, account = MOCK_ACCOUNT_EOA) => ({
       },
       selectedAccount: account.id,
     },
+    networkConfigurationsByChainId: {
+      '0x1': {
+        chainId: '0x1',
+        name: 'Ethereum Mainnet',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            networkClientId: 'mainnet',
+            url: 'https://mainnet.infura.io/v3/',
+            type: 'infura',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: ['https://etherscan.io'],
+        defaultBlockExplorerUrlIndex: 0,
+      },
+    },
+    selectedNetworkClientId: 'mainnet',
+    networksMetadata: {
+      mainnet: {
+        status: 'available',
+      },
+    },
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: [address],
+        metadata: {
+          id: 'keyring1',
+          name: 'HD Key Tree',
+        },
+      },
+    ],
+    accountTree: {
+      wallets: {
+        'wallet:1': {
+          metadata: {
+            name: 'Wallet 1',
+          },
+          groups: {
+            'group:1': {
+              metadata: {
+                name: 'Group 1',
+              },
+              accounts: [account.id],
+            },
+          },
+        },
+      },
+    },
+    accountsByChainId: {
+      '0x1': {
+        [address]: {
+          balance: '0x0',
+        },
+      },
+    },
+    pinnedAccounts: [],
+    hiddenAccounts: [],
+    permissionHistory: {},
   },
 });
 
@@ -57,13 +120,14 @@ describe('AccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <AccountDetails />
+          <MultichainAccountDetails address={MOCK_ACCOUNT_EOA.address} />
         </MemoryRouter>,
         store,
       );
 
-      // Should render the base account details (which includes account name)
-      expect(screen.getByText('Account 1')).toBeInTheDocument();
+      // Should render the base account details (which includes account name in header and details)
+      const accountNameElements = screen.getAllByText('Account 1');
+      expect(accountNameElements).toHaveLength(2);
     });
 
     it('should render EVM account details for ERC-4337 accounts', () => {
@@ -75,13 +139,14 @@ describe('AccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <AccountDetails />
+          <MultichainAccountDetails address={MOCK_ACCOUNT_ERC4337.address} />
         </MemoryRouter>,
         store,
       );
 
-      // Should render the base account details (which includes account name)
-      expect(screen.getByText('Account 2')).toBeInTheDocument();
+      // Should render the base account details (which includes account name in header and details)
+      const accountNameElements = screen.getAllByText('Account 2');
+      expect(accountNameElements).toHaveLength(2);
     });
 
     it('should render account details for Solana accounts', () => {
@@ -93,13 +158,16 @@ describe('AccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <AccountDetails />
+          <MultichainAccountDetails
+            address={MOCK_ACCOUNT_SOLANA_MAINNET.address}
+          />
         </MemoryRouter>,
         store,
       );
 
-      // Should render the base account details (which includes account name)
-      expect(screen.getByText('Solana Account')).toBeInTheDocument();
+      // Should render the base account details (which includes account name in header and details)
+      const accountNameElements = screen.getAllByText('Solana Account');
+      expect(accountNameElements).toHaveLength(2);
     });
 
     it('should navigate to default route when no address is provided', () => {
@@ -108,7 +176,7 @@ describe('AccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <AccountDetails />
+          <MultichainAccountDetails address={''} />
         </MemoryRouter>,
         store,
       );
