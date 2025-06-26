@@ -4672,9 +4672,12 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.getAccountByAddress(newAccountAddress);
       this.accountsController.setSelectedAccount(account.id);
 
-      await this._addAccountsWithBalance(id);
+      const discoveredAccounts = await this._addAccountsWithBalance(id);
 
-      return newAccountAddress;
+      return {
+        newAccountAddress,
+        discoveredAccounts,
+      };
     } finally {
       releaseLock();
     }
@@ -4855,6 +4858,11 @@ export default class MetamaskController extends EventEmitter {
         );
       }
 
+      let discoveredAccounts = {
+        bitcoin: 0,
+        solana: 0,
+      };
+
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       const btcClient = await this._getMultichainWalletSnapClient(
         BITCOIN_WALLET_SNAP_ID,
@@ -4864,6 +4872,8 @@ export default class MetamaskController extends EventEmitter {
         entropySource,
         btcScope,
       );
+
+      discoveredAccounts.bitcoin = btcAccounts.length;
 
       // If none accounts got discovered, we still create the first (default) one.
       if (btcAccounts.length === 0) {
@@ -4884,6 +4894,8 @@ export default class MetamaskController extends EventEmitter {
         solScope,
       );
 
+      discoveredAccounts.solana = solanaAccounts.length;
+
       // If none accounts got discovered, we still create the first (default) one.
       if (solanaAccounts.length === 0) {
         await this._addSnapAccount(entropySource, solanaClient, {
@@ -4891,6 +4903,8 @@ export default class MetamaskController extends EventEmitter {
         });
       }
       ///: END:ONLY_INCLUDE_IF
+
+      return discoveredAccounts;
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
     } finally {

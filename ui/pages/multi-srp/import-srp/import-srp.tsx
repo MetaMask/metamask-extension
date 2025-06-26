@@ -83,9 +83,19 @@ export const ImportSrp = () => {
   async function importWallet() {
     const joinedSrp = secretRecoveryPhrase.join(' ');
     if (joinedSrp) {
-      await dispatch(actions.importMnemonicToVault(joinedSrp));
+      const result = (await dispatch(
+        actions.importMnemonicToVault(joinedSrp),
+      )) as unknown as {
+        newAccountAddress: string;
+        discoveredAccounts: { bitcoin: number; solana: number };
+      };
+
+      const { discoveredAccounts } = result;
+
       // Clear the secret recovery phrase after importing
       setSecretRecoveryPhrase(Array(defaultNumberOfWords).fill(''));
+
+      return { discoveredAccounts };
     }
   }
 
@@ -416,16 +426,26 @@ export const ImportSrp = () => {
               try {
                 setLoading(true);
                 await dispatch(actions.lockAccountSyncing());
-                await importWallet();
+                const result = await importWallet();
+
                 history.push(DEFAULT_ROUTE);
                 dispatch(setShowNewSrpAddedToast(true));
-                trackEvent({
-                  event:
-                    MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
-                  properties: {
-                    hd_entropy_index: newHdEntropyIndex,
-                  },
-                });
+
+                // If the SRP was imported successfully, we can track the number of accounts discovered
+                if (result) {
+                  const { discoveredAccounts } = result;
+                  trackEvent({
+                    event:
+                      MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
+                    properties: {
+                      hd_entropy_index: newHdEntropyIndex,
+                      number_of_solana_accounts_discovered:
+                        discoveredAccounts?.solana,
+                      number_of_bitcoin_accounts_discovered:
+                        discoveredAccounts?.bitcoin,
+                    },
+                  });
+                }
               } catch (e) {
                 setSrpError(
                   e instanceof Error
