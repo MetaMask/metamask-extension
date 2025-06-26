@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 class SendTokenConfirmPage {
@@ -10,7 +9,7 @@ class SendTokenConfirmPage {
 
   private readonly nftImage = '[data-testid="nft-default-image"]';
 
-  private readonly recepientAddress = '[data-testid="recipient-address"]';
+  private readonly recipientAddress = '[data-testid="recipient-address"]';
 
   private readonly senderAddress = '[data-testid="sender-address"]';
 
@@ -40,7 +39,7 @@ class SendTokenConfirmPage {
     });
 
     await this.driver.waitForSelector({
-      css: this.recepientAddress,
+      css: this.recipientAddress,
       text: recipient,
     });
 
@@ -75,7 +74,7 @@ class SendTokenConfirmPage {
 
     await this.driver.waitForSelector(
       {
-        css: this.recepientAddress,
+        css: this.recipientAddress,
         text: recipient,
       },
       { timeout: 10000 },
@@ -86,7 +85,7 @@ class SendTokenConfirmPage {
 
   async check_pageIsLoaded(): Promise<void> {
     console.log('Checking if Send Token Confirmation page is loaded');
-    await this.driver.waitForSelector(this.recepientAddress, {
+    await this.driver.waitForSelector(this.recipientAddress, {
       timeout: 10000,
     });
     await this.driver.waitForSelector(this.senderAddress, { timeout: 10000 });
