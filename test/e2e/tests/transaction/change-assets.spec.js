@@ -64,7 +64,7 @@ describe('Change assets', function () {
         // Ensure it was sent
         await driver.waitForSelector({
           css: 'p',
-          text: 'Send Test Dapp NFTs #1',
+          text: 'Sent Test Dapp NFTs #1',
         });
       },
     );
@@ -141,7 +141,7 @@ describe('Change assets', function () {
         // Ensure it was sent
         await driver.waitForSelector({
           css: 'p',
-          text: 'Send Test Dapp NFTs #1',
+          text: 'Sent Test Dapp NFTs #1',
         });
       },
     );
