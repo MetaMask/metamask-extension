@@ -16,7 +16,7 @@ import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
   connectSolanaTestDapp,
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
-  acccount1 as SOLANA_ADDRESS_ONE,
+  account1 as SOLANA_ADDRESS_ONE,
 } from '../../flask/solana-wallet-standard/testHelpers';
 import { Driver } from '../../webdriver/driver';
 
