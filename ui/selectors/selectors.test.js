@@ -197,6 +197,7 @@ describe('Selectors', () => {
             networkClientId: 'testNetworkConfigurationId',
             origin,
           },
+          domains: {},
         },
       };
 
