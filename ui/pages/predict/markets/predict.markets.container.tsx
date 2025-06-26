@@ -15,7 +15,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Market, MarketGamma } from '../types';
+import { MarketGamma } from '../types';
+import PredictNavigation from '../predict.navigation';
 
 const GAMMA_API_ENDPOINT = 'https://gamma-api.polymarket.com';
 
@@ -68,6 +69,8 @@ const PredictMarketsContainer = () => {
   }, []);
 
   return (
+    <>
+    <PredictNavigation />
     <Box>
       {loading ? (
         <Box
@@ -165,6 +168,7 @@ const PredictMarketsContainer = () => {
         <Text>No markets found.</Text>
       )}
     </Box>
+    </>
   );
 };
 

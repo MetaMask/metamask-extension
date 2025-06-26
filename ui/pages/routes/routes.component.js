@@ -56,6 +56,7 @@ import {
   PREDICT_ROUTE,
   PREDICT_ROUTE_BET,
   PREDICT_ROUTE_POSITIONS,
+  PREDICT_ROUTE_PROFIT,
 } from '../../helpers/constants/routes';
 
 import {
@@ -155,6 +156,7 @@ const DeepLink = mmLazy(() => import('../deep-link/deep-link'));
 const Predict = mmLazy(() => import('../predict'));
 const PredictBet = mmLazy(() => import('../predict/bet'));
 const PredictPositions = mmLazy(() => import('../predict/positions'));
+const PredictProfit = mmLazy(() => import('../predict/profit'));
 // End Lazy Routes
 
 export default class Routes extends Component {
@@ -410,6 +412,7 @@ export default class Routes extends Component {
           <Authenticated path={PREDICT_ROUTE} component={Predict} />
           <Authenticated path={PREDICT_ROUTE_BET} component={PredictBet} />
           <Authenticated path={PREDICT_ROUTE_POSITIONS} component={PredictPositions} />
+          <Authenticated path={PREDICT_ROUTE_PROFIT} component={PredictProfit} />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>

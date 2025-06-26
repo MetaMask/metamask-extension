@@ -8,6 +8,7 @@ import {
   ButtonVariant,
   Text,
 } from '../../../components/component-library';
+import PredictNavigation from '../predict.navigation';
 
 import { Page } from '../../../components/multichain/pages/page';
 import {
@@ -106,7 +107,7 @@ const PredictContainer = () => {
           flexDirection={FlexDirection.Column}
           justifyContent={JustifyContent.center}
           textAlign={TextAlign.Center}
-          marginBottom={4}
+          marginBottom={2}
         >
           <Text variant={TextVariant.headingMd}>Place bet</Text>
           <Text variant={TextVariant.bodySm}>
@@ -114,6 +115,7 @@ const PredictContainer = () => {
             this prediction market.
           </Text>
         </Box>
+        <PredictNavigation />
         <Box
           backgroundColor={BackgroundColor.backgroundDefault}
           borderRadius={BorderRadius.LG}

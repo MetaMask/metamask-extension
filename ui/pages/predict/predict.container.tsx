@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Box, Button, Text } from '../../components/component-library';
 import { Header, Page } from '../../components/multichain/pages/page';
+import PredictNavigation from './predict.navigation';
 
 import {
   Display,
@@ -25,10 +26,19 @@ const PredictContainer = () => {
         textProps={{
           variant: TextVariant.headingSm,
         }}
+        marginTop={0}
+        marginBottom={0}
+        paddingBottom={0}
       >
-        Predictive markets
+        <Text variant={TextVariant.headingMd}>Markets</Text>
+        <Text variant={TextVariant.bodySm}>Explore the current markets.</Text>
       </Header>
-      <Box backgroundColor={BackgroundColor.backgroundAlternative} padding={4}>
+      <Box
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        paddingLeft={4}
+        paddingRight={4}
+        paddingBottom={4}
+      >
         <PredictMarketsContainer />
         <Box
           display={Display.Grid}

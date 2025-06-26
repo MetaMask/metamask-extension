@@ -21,6 +21,7 @@ import {
   TextAlign,
   AlignItems,
 } from '../../../helpers/constants/design-system';
+import PredictNavigation from '../predict.navigation';
 
 import { getSelectedInternalAccount } from '../../../selectors';
 import { usePolymarket } from '../usePolymarket';
@@ -90,13 +91,13 @@ const PredictContainer = () => {
           flexDirection={FlexDirection.Column}
           justifyContent={JustifyContent.center}
           textAlign={TextAlign.Center}
-          marginBottom={4}
         >
           <Text variant={TextVariant.headingMd}>Positions</Text>
           <Text variant={TextVariant.bodySm}>
-            Your current and historic predictions.
+            Your current positions.
           </Text>
         </Box>
+        <PredictNavigation />
         {loading && (
           <Box
             display={Display.Flex}
