@@ -588,7 +588,7 @@ describe('Request-queue UI changes', function () {
         if (!isGlobalNetworkSelectorRemoved) {
           // Ensure network was reset to original
           await driver.findElement({
-            css: '.multichain-app-header__contents--avatar-network .mm-text',
+            css: '[data-testid="network-display"]',
             text: 'Localhost 8545',
           });
         }
@@ -660,8 +660,8 @@ describe('Request-queue UI changes', function () {
 
         if (!isGlobalNetworkSelectorRemoved) {
           // Wait for network to automatically change to localhost
-          await driver.waitForSelector({
-            css: '.multichain-app-header__contents--avatar-network .mm-text',
+          await driver.findElement({
+            css: '[data-testid="network-display"]',
             text: 'Localhost 8545',
           });
         }
