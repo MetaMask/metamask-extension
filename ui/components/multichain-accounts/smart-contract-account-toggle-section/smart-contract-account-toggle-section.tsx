@@ -1,5 +1,4 @@
 import React from 'react';
-import { Hex } from '@metamask/utils';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import {
   AlignItems,
@@ -46,7 +45,7 @@ export const SmartContractAccountToggleSection = ({
               <SmartContractAccountToggle
                 key={network.chainIdHex}
                 networkConfig={network}
-                address={address as Hex}
+                address={address}
               />
             ))}
           </Box>

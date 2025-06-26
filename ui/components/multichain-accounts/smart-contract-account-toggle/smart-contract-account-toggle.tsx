@@ -32,7 +32,7 @@ export const SmartContractAccountToggle = ({
 
   const prevHasPendingRequests = useRef<boolean>();
   const { hasPendingRequests } = useBatchAuthorizationRequests(
-    address,
+    address as Hex,
     chainIdHex,
   );
 
@@ -40,7 +40,7 @@ export const SmartContractAccountToggle = ({
   useEffect(() => {
     const checkUpgradeStatus = async () => {
       try {
-        const upgraded = await isUpgraded(address);
+        const upgraded = await isUpgraded(address as Hex);
         setAddressSupportSmartAccount(upgraded);
       } catch (error) {
         // Fall back to isSupported if we can't determine upgrade status
@@ -66,9 +66,9 @@ export const SmartContractAccountToggle = ({
 
     // Dispatch the transaction
     if (addressSupportSmartAccount) {
-      await downgradeAccount(address);
+      await downgradeAccount(address as Hex);
     } else if (upgradeContractAddress) {
-      await upgradeAccount(address, upgradeContractAddress);
+      await upgradeAccount(address as Hex, upgradeContractAddress);
     }
   }, [
     address,
