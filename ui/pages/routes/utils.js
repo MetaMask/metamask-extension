@@ -25,6 +25,7 @@ import {
   DEEP_LINK_ROUTE,
   WALLET_DETAILS_ROUTE,
   ACCOUNT_DETAILS_ROUTE,
+  ACCOUNT_DETAILS_QR_CODE_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -233,6 +234,17 @@ export function hideAppHeader(props) {
   );
 
   if (isMultichainAccountDetailsPage) {
+    return true;
+  }
+
+  const isMultichainAccountDetailsQRCodePage = Boolean(
+    matchPath(location.pathname, {
+      path: ACCOUNT_DETAILS_QR_CODE_ROUTE,
+      exact: false,
+    }),
+  );
+
+  if (isMultichainAccountDetailsQRCodePage) {
     return true;
   }
 
