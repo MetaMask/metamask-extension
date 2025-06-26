@@ -22,12 +22,7 @@ export const getAccountTypeCategory = (
   const keyringType = metadata?.keyring?.type as KeyringTypes;
   const snapId = metadata?.snap?.id;
 
-  // EVM accounts (EOA and ERC-4337)
-  if (isEvmAccountType(type)) {
-    return 'evm';
-  }
-
-  // Hardware accounts
+  // Hardware accounts (must be checked before EVM check)
   if (
     keyringType &&
     [
@@ -41,22 +36,27 @@ export const getAccountTypeCategory = (
     return 'hardware';
   }
 
-  // Private key accounts
+  // Private key accounts (must be checked before EVM check)
   if (keyringType === KeyringTypes.simple) {
     return 'private-key';
   }
 
-  // Solana accounts
-  if (type === SolAccountType.DataAccount) {
-    return 'solana';
-  }
-
-  // Institutional-EVM accounts
+  // Institutional-EVM accounts (must be checked before EVM check)
   if (
     keyringType === KeyringTypes.snap &&
     snapId === 'npm:@metamask/institutional-wallet-snap'
   ) {
     return 'institutional-evm';
+  }
+
+  // EVM accounts (EOA and ERC-4337) - general fallback
+  if (isEvmAccountType(type)) {
+    return 'evm';
+  }
+
+  // Solana accounts
+  if (type === SolAccountType.DataAccount) {
+    return 'solana';
   }
 
   return 'unknown';

@@ -47,7 +47,7 @@ export const MOCK_ACCOUNT_PRIVATE_KEY: InternalAccount = {
   metadata: {
     name: 'Account 58',
     importTime: 1750963640738,
-    keyring: { type: 'Simple Key Pair' },
+    keyring: { type: KeyringTypes.simple },
     lastSelected: 1750963640759,
   },
 };
