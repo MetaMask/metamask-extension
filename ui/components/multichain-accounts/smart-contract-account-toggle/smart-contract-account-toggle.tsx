@@ -12,13 +12,15 @@ import {
 } from '../../../helpers/constants/design-system';
 import { EIP7702NetworkConfiguration } from '../../../pages/confirmations/hooks/useEIP7702Networks';
 
+type SmartContractAccountToggleProps = {
+  networkConfig: EIP7702NetworkConfiguration;
+  address: string;
+};
+
 export const SmartContractAccountToggle = ({
   networkConfig,
   address,
-}: {
-  networkConfig: EIP7702NetworkConfiguration;
-  address: Hex;
-}) => {
+}: SmartContractAccountToggleProps) => {
   const { name, isSupported, upgradeContractAddress, chainIdHex } =
     networkConfig;
   const { downgradeAccount, upgradeAccount, isUpgraded } = useEIP7702Account({

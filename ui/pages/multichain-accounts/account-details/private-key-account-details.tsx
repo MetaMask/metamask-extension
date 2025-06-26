@@ -12,7 +12,7 @@ export const PrivateKeyAccountDetails = ({ address, account }: PrivateKeyAccount
 
   return (
     <BaseAccountDetails address={address} account={account}>
-      <SmartContractAccountToggleSection />
+      <SmartContractAccountToggleSection address={address} />
     </BaseAccountDetails>
   );
 };

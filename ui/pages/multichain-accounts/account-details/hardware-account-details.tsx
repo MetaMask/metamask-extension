@@ -12,7 +12,7 @@ export const HardwareAccountDetails = ({ address, account }: HardwareAccountDeta
 
   return (
     <BaseAccountDetails address={address} account={account}>
-      <SmartContractAccountToggleSection />
+      <SmartContractAccountToggleSection address={address} />
     </BaseAccountDetails>
   );
 };

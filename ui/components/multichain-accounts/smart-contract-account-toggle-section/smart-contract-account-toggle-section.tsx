@@ -13,15 +13,17 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { AppSliceState } from '../../../ducks/app/app';
 import { useEIP7702Networks } from '../../../pages/confirmations/hooks/useEIP7702Networks';
 import { SmartContractAccountToggle } from '../smart-contract-account-toggle';
 import Preloader from '../../ui/icon/preloader';
 
-export const SmartContractAccountToggleSection = () => {
-  const address = useSelector(
-    (state: AppSliceState) => state.appState.accountDetailsAddress,
-  );
+type SmartContractAccountToggleSectionProps = {
+  address: Hex;
+};
+
+export const SmartContractAccountToggleSection = ({
+  address,
+}: SmartContractAccountToggleSectionProps) => {
   const t = useI18nContext();
   const { network7702List, pending } = useEIP7702Networks(address);
 
