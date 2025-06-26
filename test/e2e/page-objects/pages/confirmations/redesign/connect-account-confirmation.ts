@@ -96,7 +96,7 @@ class ConnectAccountConfirmation {
 
     if (options.isCaseSensitive) {
       await this.driver.waitForSelector({
-        text: account,
+        text: accountShort,
         tag: 'p',
       });
       return;

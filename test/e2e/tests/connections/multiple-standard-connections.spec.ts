@@ -2,7 +2,7 @@ import { SolScope } from '@metamask/keyring-api';
 import { connectToDapp, WINDOW_TITLES, withFixtures } from '../../helpers';
 import {
   DAPP_HOST_ADDRESS,
-  DEFAULT_FIXTURE_ACCOUNT as EVM_ACCOUNT_ONE,
+  DEFAULT_FIXTURE_ACCOUNT as EVM_ADDRESS_ONE,
 } from '../../constants';
 import Homepage from '../../page-objects/pages/home/homepage';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
@@ -16,12 +16,13 @@ import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
   connectSolanaTestDapp,
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+  acccount1 as SOLANA_ADDRESS_ONE,
 } from '../../flask/solana-wallet-standard/testHelpers';
 import { Driver } from '../../webdriver/driver';
 
-const EVM_ACCOUNT_TWO = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
+const EVM_ADDRESS_TWO = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 
-const SOLANA_ACCOUNT_ONE = `${SolScope.Mainnet}:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer`;
+const SOLANA_ACCOUNT_ONE = `${SolScope.Mainnet}:${SOLANA_ADDRESS_ONE}`;
 
 const SOLANA_PERMISSIONS = {
   isMultichainOrigin: true,
@@ -79,7 +80,7 @@ function getRequestPermissionsRequestObject(accounts: string[] = []): string {
 }
 
 describe('Multiple Standard Dapp Connections', function () {
-  it(' should default account selection to already permitted account(s) when `wallet_requestPermissions` is called with no accounts specified', async function () {
+  it('should default account selection to already permitted account(s) when `wallet_requestPermissions` is called with no accounts specified', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -88,7 +89,7 @@ describe('Multiple Standard Dapp Connections', function () {
           .withPreferencesControllerAdditionalAccountIdentities()
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDapp({
-            account: EVM_ACCOUNT_TWO,
+            account: EVM_ADDRESS_TWO,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -105,7 +106,7 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await testDapp.check_pageIsLoaded();
 
-        await testDapp.check_connectedAccounts(EVM_ACCOUNT_TWO);
+        await testDapp.check_connectedAccounts(EVM_ADDRESS_TWO);
 
         const requestPermissionsWithoutAccounts =
           getRequestPermissionsRequestObject();
@@ -119,13 +120,13 @@ describe('Multiple Standard Dapp Connections', function () {
         await connectAccountConfirmation.check_pageIsLoaded();
 
         await connectAccountConfirmation.check_isAccountDisplayed(
-          EVM_ACCOUNT_TWO,
+          EVM_ADDRESS_TWO,
         );
 
         await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_connectedAccounts(EVM_ACCOUNT_TWO);
+        await testDapp.check_connectedAccounts(EVM_ADDRESS_TWO);
       },
     );
   });
@@ -139,7 +140,7 @@ describe('Multiple Standard Dapp Connections', function () {
           .withPreferencesControllerAdditionalAccountIdentities()
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDapp({
-            account: EVM_ACCOUNT_TWO,
+            account: EVM_ADDRESS_TWO,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -155,10 +156,10 @@ describe('Multiple Standard Dapp Connections', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.check_pageIsLoaded();
 
-        await testDapp.check_connectedAccounts(EVM_ACCOUNT_TWO);
+        await testDapp.check_connectedAccounts(EVM_ADDRESS_TWO);
 
         const requestPermissionsWithAccount1 =
-          getRequestPermissionsRequestObject([EVM_ACCOUNT_ONE]);
+          getRequestPermissionsRequestObject([EVM_ADDRESS_ONE]);
 
         await driver.executeScript(
           `window.ethereum.request(${requestPermissionsWithAccount1})`,
@@ -169,18 +170,18 @@ describe('Multiple Standard Dapp Connections', function () {
         await connectAccountConfirmation.check_pageIsLoaded();
 
         await connectAccountConfirmation.check_isAccountDisplayed(
-          EVM_ACCOUNT_ONE,
+          EVM_ADDRESS_ONE,
         );
 
         await connectAccountConfirmation.check_isAccountDisplayed(
-          EVM_ACCOUNT_TWO,
+          EVM_ADDRESS_TWO,
         );
 
         await await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const expectedConnectedAccounts = `${EVM_ACCOUNT_TWO.toLowerCase()},${EVM_ACCOUNT_ONE.toLowerCase()}`;
+        const expectedConnectedAccounts = `${EVM_ADDRESS_TWO.toLowerCase()},${EVM_ADDRESS_ONE.toLowerCase()}`;
         await testDapp.check_connectedAccounts(expectedConnectedAccounts);
       },
     );
@@ -276,7 +277,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const requestPermissionsWithEthAccount2 =
-          getRequestPermissionsRequestObject([EVM_ACCOUNT_TWO]);
+          getRequestPermissionsRequestObject([EVM_ADDRESS_TWO]);
 
         await driver.executeScript(
           `window.ethereum.request(${requestPermissionsWithEthAccount2})`,
@@ -291,7 +292,12 @@ describe('Multiple Standard Dapp Connections', function () {
         await connectAccountConfirmation.check_pageIsLoaded();
 
         await connectAccountConfirmation.check_isAccountDisplayed(
-          EVM_ACCOUNT_TWO,
+          EVM_ADDRESS_TWO,
+        );
+
+        await connectAccountConfirmation.check_isAccountDisplayed(
+          SOLANA_ADDRESS_ONE,
+          { isCaseSensitive: true },
         );
 
         await connectAccountConfirmation.confirmConnect();
