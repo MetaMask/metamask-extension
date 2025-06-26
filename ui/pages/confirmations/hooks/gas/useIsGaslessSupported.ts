@@ -15,7 +15,7 @@ export function useIsGaslessSupported() {
     useConfirmContext<TransactionMeta>();
 
   const { chainId, txParams } = transactionMeta;
-  const { from } = txParams;
+  const { from } = txParams ?? {};
 
   const isSmartTransaction = useSelector((state: SmartTransactionsState) =>
     getIsSmartTransaction(state, chainId),

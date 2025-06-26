@@ -7,6 +7,7 @@ import { sumHexes } from '../../../../../../shared/modules/conversion.utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   getMultichainNetworkConfigurationsByChainId,
+  getUseTransactionSimulations,
   selectTransactionAvailableBalance,
   selectTransactionFeeById,
   selectTransactionValue,
@@ -31,12 +32,15 @@ export function useInsufficientBalanceAlerts({
     id: transactionId,
     chainId,
     selectedGasFeeToken,
+    simulationData,
   } = currentConfirmation ?? {};
 
   const batchTransactionValues =
     currentConfirmation?.nestedTransactions?.map(
       (trxn) => (trxn.value as Hex) ?? 0x0,
     ) ?? [];
+
+  const isSimulationEnabled = useSelector(getUseTransactionSimulations);
 
   const balance = useSelector((state) =>
     selectTransactionAvailableBalance(state, transactionId, chainId),
@@ -66,8 +70,12 @@ export function useInsufficientBalanceAlerts({
     balance,
   });
 
+  const hasSimulationFinished = isSimulationEnabled && Boolean(simulationData);
+
   const showAlert =
-    insufficientBalance && (ignoreGasFeeToken || !selectedGasFeeToken);
+    insufficientBalance &&
+    hasSimulationFinished &&
+    (ignoreGasFeeToken || !selectedGasFeeToken);
 
   return useMemo(() => {
     if (!showAlert) {

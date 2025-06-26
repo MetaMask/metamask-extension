@@ -27,8 +27,10 @@ import configureStore from '../../../../../store/store';
 import * as confirmContext from '../../../context/confirm';
 import { SignatureRequestType } from '../../../types/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
+import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported';
 import Footer from './footer';
 
+jest.mock('../../../hooks/gas/useIsGaslessSupported');
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => jest.fn(),
@@ -55,10 +57,16 @@ const render = (args?: Record<string, unknown>) => {
 
 describe('ConfirmFooter', () => {
   const mockUseOriginThrottling = useOriginThrottling as jest.Mock;
+  const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
 
   beforeEach(() => {
     mockUseOriginThrottling.mockReturnValue({
       shouldThrottleOrigin: false,
+    });
+
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: false,
     });
   });
 
@@ -123,6 +131,48 @@ describe('ConfirmFooter', () => {
       const mockStateTypedSign = getMockContractInteractionConfirmState();
       const { getByText } = render(mockStateTypedSign);
 
+      const confirmButton = getByText('Confirm');
+      expect(confirmButton).toBeDisabled();
+    });
+
+    it('when simulation is enabled but no simulation data or insufficient native balance', () => {
+      useIsGaslessSupportedMock.mockReturnValue({
+        isSmartTransaction: true,
+        isSupported: true,
+      });
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: {
+          ...genUnapprovedContractInteractionConfirmation(),
+          simulationData: undefined, // No simulation data
+        },
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: () => undefined,
+      });
+
+      const mockState2 = {
+        ...getMockContractInteractionConfirmState(),
+        metamask: {
+          ...getMockContractInteractionConfirmState().metamask,
+          useTransactionSimulations: true, // Simulations enabled
+        },
+        appState: {
+          ...getMockContractInteractionConfirmState().appState,
+          confirmAlerts: {
+            alerts: {
+              '1': [
+                {
+                  key: 'insufficientNativeToken',
+                  severity: Severity.Danger,
+                  message: 'Not enough native token to cover fees',
+                },
+              ],
+            },
+            confirmed: {},
+          },
+        },
+      };
+
+      const { getByText } = render(mockState2);
       const confirmButton = getByText('Confirm');
       expect(confirmButton).toBeDisabled();
     });
