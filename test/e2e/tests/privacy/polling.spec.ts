@@ -2,11 +2,13 @@ import { strict as assert } from 'assert';
 import { JsonRpcRequest } from '@metamask/utils';
 import { MockedEndpoint } from 'mockttp';
 import { expect } from '@playwright/test';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { ACCOUNTS_PROD_API_BASE_URL } from '../../../../shared/constants/accounts';
 
 const infuraMainnetUrl =
   'https://mainnet.infura.io/v3/00000000000000000000000000000000';
@@ -232,6 +234,20 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
           result: '0x15af1d78b58c40000',
         },
       })),
+    await mockServer
+      .forGet(
+        `${ACCOUNTS_PROD_API_BASE_URL}/v2/accounts/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/balances`,
+      )
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            count: 0,
+            balances: [],
+            unprocessedNetworks: [],
+          },
+        };
+      }),
   ];
 }
 const DELAY_UNTIL_NEXT_POLL = 20000;
@@ -265,6 +281,12 @@ describe('Account Tracker API polling', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+              '0xe708': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
@@ -287,14 +309,6 @@ describe('Account Tracker API polling', function () {
               (obj.params as unknown[])?.[1] === '3',
           );
 
-          const ethGetBalanceInfuraRequests = infuraJsonRpcRequests.filter(
-            (obj) =>
-              obj.method === 'eth_getBalance' &&
-              (obj.params as unknown[])?.[1] === '3',
-          );
-
-          // We will call eth_getBalance for Sepolia and Linea Sepolia because multicall is not available for them
-          expect(ethGetBalanceInfuraRequests.length).toEqual(2);
           // We will call eth_call for linea mainnet and mainnet
           expect(ethCallInfuraRequests.length).toEqual(2);
         } else {
@@ -353,7 +367,12 @@ describe('Account Tracker API polling', function () {
         {
           fixtures: new FixtureBuilder()
             .withNetworkControllerOnMainnet()
-            .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true,
+                '0xe708': true,
+              },
+            })
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: mockAccountApiForPortfolioView,

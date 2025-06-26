@@ -1,3 +1,5 @@
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { BtcScope } from '@metamask/keyring-api';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import {
   tokenRatesStartPolling,
@@ -39,6 +41,12 @@ describe('useTokenRatesPolling', () => {
         completedOnboarding: true,
         useCurrencyRateCheck: true,
         selectedNetworkClientId: 'selectedNetworkClientId',
+        enabledNetworkMap: {
+          eip155: {
+            '0x1': true,
+            '0x89': true,
+          },
+        },
         networkConfigurationsByChainId: {
           '0x1': {
             chainId: '0x1',
@@ -57,6 +65,10 @@ describe('useTokenRatesPolling', () => {
             ],
           },
         },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: BtcScope.Mainnet,
+        isEvmSelected: true,
       },
     };
 
@@ -87,6 +99,10 @@ describe('useTokenRatesPolling', () => {
           '0x1': {},
           '0x89': {},
         },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: BtcScope.Mainnet,
+        isEvmSelected: true,
       },
     };
 
@@ -107,6 +123,10 @@ describe('useTokenRatesPolling', () => {
           '0x1': {},
           '0x89': {},
         },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: BtcScope.Mainnet,
+        isEvmSelected: true,
       },
     };
 
@@ -127,6 +147,10 @@ describe('useTokenRatesPolling', () => {
           '0x1': {},
           '0x89': {},
         },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: BtcScope.Mainnet,
+        isEvmSelected: true,
       },
     };
 
@@ -144,6 +168,10 @@ describe('useTokenRatesPolling', () => {
         completedOnboarding: true,
         useCurrencyRateCheck: true,
         networkConfigurationsByChainId: {},
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: BtcScope.Mainnet,
+        isEvmSelected: true,
       },
     };
 

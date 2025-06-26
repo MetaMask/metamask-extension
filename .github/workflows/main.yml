@@ -12,7 +12,14 @@ on:
       - opened
       - reopened
       - synchronize
+    branches-ignore:
+      - master
   merge_group:
+  schedule:
+    # Run the full suite "overnight," once every half hour from 1:00am UTC until 2:59am UTC.
+    # This helps with "Top 10 failed tests on the metamask-extension repository main branch,"
+    # especially the Monday morning list, which is otherwise usually a fake empty.
+    - cron: '0,30 1-2 * * *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -40,6 +47,7 @@ jobs:
           is-high-risk-environment: false
           cache-node-modules: true
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
   lint-workflows:
     name: Lint workflows
@@ -61,6 +69,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Check circular dependencies
         run: yarn circular-deps:check
@@ -199,6 +208,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -274,6 +284,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -304,6 +315,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -323,7 +335,6 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
-    if: ${{ github.event_name == 'pull_request' }}
     needs:
       - build-dist-browserify
       - build-dist-mv2-browserify

@@ -23,7 +23,10 @@ export function AccountOverview(props: AccountOverviewProps) {
       case EthAccountType.Eoa:
       case EthAccountType.Erc4337:
         return <AccountOverviewEth {...props}></AccountOverviewEth>;
+      case BtcAccountType.P2pkh:
+      case BtcAccountType.P2sh:
       case BtcAccountType.P2wpkh:
+      case BtcAccountType.P2tr:
       case SolAccountType.DataAccount:
         return <AccountOverviewNonEvm {...props}></AccountOverviewNonEvm>;
       default:

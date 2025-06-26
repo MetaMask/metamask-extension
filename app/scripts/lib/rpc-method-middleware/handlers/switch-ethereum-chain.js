@@ -19,6 +19,7 @@ const switchEthereumChain = {
     requestPermittedChainsPermissionIncrementalForOrigin: true,
     rejectApprovalRequestsForOrigin: true,
     setTokenNetworkFilter: true,
+    setEnabledNetworks: true,
     hasApprovalRequestsForOrigin: true,
   },
 };
@@ -39,6 +40,7 @@ async function switchEthereumChainHandler(
     requestPermittedChainsPermissionIncrementalForOrigin,
     rejectApprovalRequestsForOrigin,
     setTokenNetworkFilter,
+    setEnabledNetworks,
     hasApprovalRequestsForOrigin,
   },
 ) {
@@ -87,6 +89,7 @@ async function switchEthereumChainHandler(
     requestPermittedChainsPermissionIncrementalForOrigin,
     rejectApprovalRequestsForOrigin,
     setTokenNetworkFilter,
+    setEnabledNetworks,
     requestUserApproval,
     hasApprovalRequestsForOrigin,
     toNetworkConfiguration,
