@@ -9,11 +9,10 @@ import { HardwareAccountDetails } from './hardware-account-details';
 import { PrivateKeyAccountDetails } from './private-key-account-details';
 import { InstitutionalEVMAccountDetails } from './institutional-evm-account-details';
 
-type MultichainAccountDetailsProps = {
-  address: string;
-};
-
-export const MultichainAccountDetails = ({ address }: MultichainAccountDetailsProps) => {
+export const MultichainAccountDetails = () => {
+  const address = useSelector(
+    (state: AppSliceState) => state.appState.accountDetailsAddress,
+  );
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
   );
