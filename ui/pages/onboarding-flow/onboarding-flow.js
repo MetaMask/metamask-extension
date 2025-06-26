@@ -127,7 +127,7 @@ export default function OnboardingFlow() {
       ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
       ONBOARDING_REVIEW_SRP_ROUTE,
       ONBOARDING_CONFIRM_SRP_ROUTE,
-    ].some((route) => pathname.startsWith(route));
+    ].some((route) => pathname?.startsWith(route));
 
     if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
       if (isSRPBackupRoute) {
