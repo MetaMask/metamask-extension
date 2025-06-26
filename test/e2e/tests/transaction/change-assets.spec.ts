@@ -56,7 +56,7 @@ describe('Change assets', function () {
         await sendTokenConfirmationPage.clickOnConfirm();
 
         await activityListPage.check_transactionActivityByText(
-          'Send Test Dapp NFTs #1',
+          'Sent Test Dapp NFTs #1',
         );
       },
     );
@@ -109,7 +109,7 @@ describe('Change assets', function () {
         await sendTokenConfirmationPage.clickOnConfirm();
 
         await activityListPage.check_transactionActivityByText(
-          'Send Test Dapp NFTs #1',
+          'Sent Test Dapp NFTs #1',
         );
       },
     );
@@ -161,7 +161,7 @@ describe('Change assets', function () {
         });
         await sendTokenConfirmationPage.clickOnConfirm();
 
-        await activityListPage.check_transactionActivityByText('Send');
+        await activityListPage.check_transactionActivityByText('Sent');
         await activityListPage.check_txAmountInActivity('-2 ETH');
       },
     );
@@ -252,7 +252,7 @@ describe('Change assets', function () {
         });
         await sendTokenConfirmationPage.clickOnConfirm();
 
-        await activityListPage.check_transactionActivityByText('Send');
+        await activityListPage.check_transactionActivityByText('Sent');
         await activityListPage.check_txAmountInActivity('-2 ETH');
       },
     );
