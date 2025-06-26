@@ -1,19 +1,13 @@
 import { Suite } from 'mocha';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { assertRejectedSignature } from '../confirmations/signatures/signature-helpers';
 import { withSignatureFixtures } from '../confirmations/helpers';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
-import { withFixtures } from '../../helpers';
+import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import Petnames from './petnames-helpers';
-
-const WINDOW_TITLES = {
-  Dialog: 'MetaMask Notification',
-  TestDApp: 'E2E Test Dapp',
-};
 
 describe('Petnames - Signatures', function (this: Suite) {
   it('can save names for addresses in type 3 signatures', async function () {
@@ -32,7 +26,7 @@ describe('Petnames - Signatures', function (this: Suite) {
         await petnames.saveName('0xbBbBB...bBBbB', undefined, 'test2.lens');
         await petnames.expectName('0xCcCCc...ccccC', false);
         await petnames.saveName('0xCcCCc...ccccC', 'Custom Name');
-        await assertRejectedSignature();
+        await driver.clickElement({ tag: 'button', text: 'Cancel' });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav3();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -62,7 +56,7 @@ describe('Petnames - Signatures', function (this: Suite) {
         await petnames.saveName('0xB0Bda...bEa57', undefined, 'Test Token 2');
         await petnames.expectName('0xCcCCc...ccccC', false);
         await petnames.saveName('0xCcCCc...ccccC', 'Custom Name');
-        await assertRejectedSignature();
+        await driver.clickElement({ tag: 'button', text: 'Cancel' });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav4();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

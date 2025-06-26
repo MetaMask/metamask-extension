@@ -404,7 +404,7 @@ export async function assertPastedAddress() {
 }
 
 export async function assertRejectedSignature() {
-  testDapp.assertUserRejectedRequest();
+  await testDapp.assertUserRejectedRequest();
 }
 
 export async function openDappAndTriggerSignature(
