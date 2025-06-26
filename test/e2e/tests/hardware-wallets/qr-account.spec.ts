@@ -1,7 +1,10 @@
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
-import { KNOWN_QR_ACCOUNTS } from '../../../stub/keyring-bridge';
+import {
+  KNOWN_QR_ACCOUNTS,
+  KNOWN_QR_BASE_NAME,
+} from '../../../stub/keyring-bridge';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ConnectHardwareWalletPage from '../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -49,7 +52,9 @@ describe('QR Hardware', function () {
         await new HomePage(driver).check_expectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountDisplayedInAccountList('QR 1');
+        await accountListPage.check_accountDisplayedInAccountList(
+          `${KNOWN_QR_BASE_NAME} 1`,
+        );
         await accountListPage.check_accountAddressDisplayedInAccountList(
           shortenAddress(KNOWN_QR_ACCOUNTS[0]),
         );
@@ -94,7 +99,7 @@ describe('QR Hardware', function () {
         await accountListPage.check_pageIsLoaded();
         for (let i = 0; i < 3; i++) {
           await accountListPage.check_accountDisplayedInAccountList(
-            `QR ${i + 1}`,
+            `${KNOWN_QR_BASE_NAME} ${i + 1}`,
           );
           await accountListPage.check_accountAddressDisplayedInAccountList(
             shortenAddress(KNOWN_QR_ACCOUNTS[i]),
@@ -102,7 +107,7 @@ describe('QR Hardware', function () {
         }
 
         // Remove QR 1 account and check QR 1 account is removed
-        await accountListPage.removeAccount('QR 1');
+        await accountListPage.removeAccount(`${KNOWN_QR_BASE_NAME} 1`);
         await homePage.check_pageIsLoaded();
         await homePage.check_expectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
