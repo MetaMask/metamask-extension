@@ -615,6 +615,9 @@
   "back": {
     "message": "Back"
   },
+  "backup": {
+    "message": "Backup"
+  },
   "backupAndSync": {
     "message": "Backup and sync"
   },
@@ -958,6 +961,9 @@
   "bridgeTransactionProgress": {
     "message": "Transaction $1 of 2"
   },
+  "bridgeTxDetailsBridged": {
+    "message": "Bridged"
+  },
   "bridgeTxDetailsBridging": {
     "message": "Bridging"
   },
@@ -975,6 +981,12 @@
   },
   "bridgeTxDetailsStatus": {
     "message": "Status"
+  },
+  "bridgeTxDetailsSwapped": {
+    "message": "Swapped"
+  },
+  "bridgeTxDetailsSwapping": {
+    "message": "Swapping"
   },
   "bridgeTxDetailsTimestamp": {
     "message": "Time stamp"
@@ -6053,6 +6065,10 @@
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
   },
+  "swapDetailsTitle": {
+    "message": "Swap details",
+    "description": "Title for the modal showing details about a swap transaction."
+  },
   "swapDirectContract": {
     "message": "Direct contract"
   },
@@ -6949,6 +6965,19 @@
   },
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
+  },
+  "walletDetails": {
+    "message": "Wallet details"
+  },
+  "walletName": {
+    "message": "Wallet name"
+  },
+  "walletNotFoundDescription": {
+    "message": "The wallet with ID $1 was not found.",
+    "description": "$1 is the wallet ID"
+  },
+  "walletNotFoundTitle": {
+    "message": "Wallet not found"
   },
   "walletReadyLearn": {
     "message": "$1 you can keep this phrase safe so you never lose access to your money.",

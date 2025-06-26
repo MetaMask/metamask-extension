@@ -188,9 +188,8 @@ exports[`Bridge renders the component with initial props 1`] = `
                   />
                 </div>
                 <button
-                  class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-text--font-weight-normal mm-box--padding-0 mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
+                  class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-text--font-weight-normal mm-box--padding-0 mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
                   data-testid="bridge-destination-button"
-                  data-theme="light"
                   style="white-space: nowrap;"
                 >
                   Bridge to

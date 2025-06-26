@@ -43,4 +43,20 @@
   height: 100%;
   min-width: 360px;
   max-width: 480px;
+  overflow-y: scroll;
+  // Scroll bar styles
+  // Firefox
+  scrollbar-width: none;
+  scrollbar-color: var(--color-icon-muted) transparent;
+
+  // Webkit: Chrome, Brave
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    background: var(--color-icon-muted);
+  }
 }
