@@ -102,10 +102,6 @@ export default function OnboardingFlow() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
-  console.log(
-    'isSeedlessOnboardingFeatureEnabled',
-    isSeedlessOnboardingFeatureEnabled,
-  );
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;

@@ -164,12 +164,6 @@ export default function OnboardingWelcome({
 
   const handleLogin = useCallback(
     async (loginType, loginOption) => {
-      console.log('loginType', loginType);
-      console.log('loginOption', loginOption);
-      console.log(
-        'isSeedlessOnboardingFeatureEnabled',
-        isSeedlessOnboardingFeatureEnabled,
-      );
       if (loginOption === LOGIN_OPTION.NEW && loginType === LOGIN_TYPE.SRP) {
         onCreateClick();
       } else if (

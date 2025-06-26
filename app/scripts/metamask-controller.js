@@ -2006,7 +2006,7 @@ export default class MetamaskController extends EventEmitter {
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
     this.accountWalletController = controllersByName.AccountTreeController;
 
-    if (process.env.SEEDLESS_ONBOARDING_ENABLED) {
+    if (getIsSeedlessOnboardingFeatureEnabled()) {
       this.seedlessOnboardingController =
         controllersByName.SeedlessOnboardingController;
     }

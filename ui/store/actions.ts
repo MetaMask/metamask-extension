@@ -458,7 +458,6 @@ export function createNewVaultAndGetSeedPhrase(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-    console.log('createNewVaultAndGetSeedPhrase', password);
     try {
       await createNewVault(password);
       const seedPhrase = await getSeedPhrase(password);
