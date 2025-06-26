@@ -32,18 +32,10 @@ describe('Multichain API - Non EVM', function () {
               WINDOW_TITLES.MultichainTestDApp,
             );
 
-            const invokeMethod = 'signIn';
-            await driver.clickElementSafe(
-              `[data-testid="${replaceColon(
-                SOLANA_SCOPE,
-              )}-${invokeMethod}-option"]`,
-            );
-
-            await driver.delay(largeDelayMs);
-
-            await driver.clickElementSafe(
-              `[data-testid="invoke-method-${replaceColon(SOLANA_SCOPE)}-btn"]`,
-            );
+            await testDapp.invokeMethod({
+              scope: SOLANA_SCOPE,
+              method: 'signIn',
+            });
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
