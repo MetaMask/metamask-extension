@@ -44,7 +44,7 @@ const state = {
         date: null,
       },
     },
-    domains: [],
+    domains: {},
     orderedNetworkList: [],
     enabledNetworkMap: {
       '0x1': true,
