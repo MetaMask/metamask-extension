@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
-import IconButton from '../../../../../components/ui/icon-button/icon-button-round';
 import {
   Box,
   ButtonLink,
@@ -23,6 +22,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import IconButton from '../../../../../components/ui/icon-button';
 
 export function SmartAccountUpdateSuccess() {
   const t = useI18nContext();

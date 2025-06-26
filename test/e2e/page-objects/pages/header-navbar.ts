@@ -26,8 +26,6 @@ class HeaderNavbar {
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
-  private readonly switchNetworkDropDown = '[data-testid="network-display"]';
-
   private readonly networkPicker = '.mm-picker-network';
 
   private readonly notificationsButton =
@@ -39,8 +37,16 @@ class HeaderNavbar {
   private readonly firstTimeTurnOnNotificationsButton =
     '[data-testid="turn-on-notifications-button"]';
 
+  private readonly globalNetworksMenu = '[data-testid="global-menu-networks"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async openGlobalNetworksMenu(): Promise<void> {
+    console.log('Open global menu');
+    await this.driver.clickElement(this.threeDotMenuButton);
+    await this.driver.clickElement(this.globalNetworksMenu);
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -113,11 +119,6 @@ class HeaderNavbar {
     await this.driver.clickElement(this.settingsButton);
   }
 
-  async clickSwitchNetworkDropDown(): Promise<void> {
-    console.log(`Click switch network menu`);
-    await this.driver.clickElement(this.switchNetworkDropDown);
-  }
-
   async enableNotifications(): Promise<void> {
     console.log('Enabling notifications for the first time');
     await this.openThreeDotMenu();
@@ -142,13 +143,6 @@ class HeaderNavbar {
       css: this.notificationCountOption,
       text: count.toString(),
     });
-  }
-
-  async check_currentSelectedNetwork(networkName: string): Promise<void> {
-    console.log(`Validate the Switch network to ${networkName}`);
-    await this.driver.waitForSelector(
-      `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
-    );
   }
 
   async check_ifNetworkPickerClickable(clickable: boolean): Promise<void> {

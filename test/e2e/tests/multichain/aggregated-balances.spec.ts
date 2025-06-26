@@ -6,17 +6,16 @@ import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
+import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 
 const EXPECTED_MAINNET_BALANCE_USD = '$84,985.04';
 const EXPECTED_CURRENT_NETWORK_BALANCE_USD = '$42,492.52';
 const EXPECTED_SEPOLIA_BALANCE_NATIVE = '24.9956';
-const NETWORK_NAME_MAINNET = 'Ethereum Mainnet';
 const NETWORK_NAME_SEPOLIA = 'Sepolia';
 const SEPOLIA_NATIVE_TOKEN = 'SepoliaETH';
 
@@ -41,15 +40,13 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
 
         const homepage = new HomePage(driver);
         const headerNavbar = new HeaderNavbar(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
         const settingsPage = new SettingsPage(driver);
         const accountListPage = new AccountListPage(driver);
         const assetListPage = new AssetListPage(driver);
         const sendTokenPage = new SendTokenPage(driver);
 
         // Step 2: Switch to Ethereum Mainnet
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
 
         // Step 3: Enable fiat balance display in settings
         await headerNavbar.openSettingsPage();
@@ -100,9 +97,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         await sendTokenPage.clickCancelButton();
 
         // Step 9: Switch to Sepolia test network
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await driver.clickElement('.toggle-button');
-        await driver.clickElement({ text: NETWORK_NAME_SEPOLIA, tag: 'p' });
+        await switchToNetworkFromSendFlow(driver, 'Sepolia');
 
         // Step 10: Verify native balance on Sepolia network
         await homepage.check_expectedBalanceIsDisplayed(

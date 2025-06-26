@@ -29,6 +29,9 @@ describe('Preinstalled example Snap', function () {
           true,
         );
         await preInstalledExample.check_selectedDropdownOption('Option 2');
+        await driver.clickElement(
+          '.settings-page__header__title-container__close-button',
+        );
 
         // Navigate to `test-snaps` page, we don't need to connect because the Snap uses
         // initialConnections to pre-approve the dapp.
@@ -77,7 +80,6 @@ async function navigateToPreInstalledExample(driver: Driver) {
   const preInstalledExample = new PreinstalledExampleSettings(driver);
 
   await headerNavbar.openSettingsPage();
-  await headerNavbar.check_pageIsLoaded();
 
   await settingsPage.goToPreInstalledExample();
   await preInstalledExample.check_pageIsLoaded();

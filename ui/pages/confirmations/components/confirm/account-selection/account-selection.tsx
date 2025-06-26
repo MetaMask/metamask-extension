@@ -5,7 +5,7 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { useSelector } from 'react-redux';
 
 import AccountListItem from '../../../../../components/multichain/account-list-item/account-list-item';
-import IconButton from '../../../../../components/ui/icon-button/icon-button-round';
+import IconButton from '../../../../../components/ui/icon-button/icon-button';
 import {
   BlockSize,
   Display,

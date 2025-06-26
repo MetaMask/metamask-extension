@@ -19,6 +19,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  getAllChainsToPoll,
   getCurrentNetwork,
   getIpfsGateway,
   getNativeCurrencyImage,
@@ -44,7 +45,7 @@ import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
 } from '../../../../shared/modules/selectors/networks';
-import { setActiveNetworkWithError } from '../../../store/actions';
+import { detectNfts, setActiveNetworkWithError } from '../../../store/actions';
 import { setToChainId } from '../../../ducks/bridge/actions';
 import MaxClearButton from './max-clear-button';
 import {
@@ -111,8 +112,9 @@ export const AssetPickerAmount = ({
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const showNetworkPickerinModal = process.env.REMOVE_GNS && showNetworkPicker;
+  const showNetworkPickerinModal = showNetworkPicker;
   const currentNetwork = useSelector(getCurrentNetwork);
+  const allChainIds = useSelector(getAllChainsToPoll);
   useEffect(() => {
     // if this input is immutable – avoids double fire
     if (isDisabled) {
@@ -255,6 +257,7 @@ export const AssetPickerAmount = ({
                         networkConfig.defaultRpcEndpointIndex
                       ];
                     dispatch(setToChainId(networkConfig.chainId));
+                    dispatch(detectNfts(allChainIds));
                     dispatch(
                       setActiveNetworkWithError(
                         'networkClientId' in rpcEndpoint

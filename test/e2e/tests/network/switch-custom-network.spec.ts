@@ -2,9 +2,9 @@ import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import AddNetworkConfirmation from '../../page-objects/pages/confirmations/redesign/add-network-confirmations';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 
 describe('Switch ethereum chain', function (this: Suite) {
   it('should successfully change the network in response to wallet_switchEthereumChain', async function () {
@@ -43,9 +43,8 @@ describe('Switch ethereum chain', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await new HeaderNavbar(driver).check_currentSelectedNetwork(
-          'Localhost 8546',
-        );
+        const assetList = new AssetListPage(driver);
+        await assetList.check_networkFilterText('Localhost 8546');
       },
     );
   });
