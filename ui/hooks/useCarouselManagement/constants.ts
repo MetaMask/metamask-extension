@@ -86,7 +86,7 @@ export const DOWNLOAD_MOBILE_APP_SLIDE = {
   id: 'downloadMobileApp',
   title: 'slideDownloadMobileAppTitle',
   description: 'slideDownloadMobileAppDescription',
-  image: './images/slide-metamask-icon.png',
+  image: './images/slide-metamask-icon.svg',
 };
 
 export const ZERO_BALANCE = '0x0';
