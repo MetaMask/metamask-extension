@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import nock from 'nock';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
@@ -37,6 +38,10 @@ const renderComponent = (props) => {
         networkId: '0x1',
         networkRpcUrl: 'https://mainnet.infura.io/v3/',
       },
+      multichainNetworkConfigurationsByChainId:
+        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      selectedMultichainNetworkChainId: 'eip155:1',
+      isEvmSelected: true,
     },
   });
   return renderWithProvider(<NetworksForm {...props} />, store);

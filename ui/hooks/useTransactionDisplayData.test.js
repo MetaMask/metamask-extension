@@ -28,7 +28,7 @@ import { useTransactionDisplayData } from './useTransactionDisplayData';
 
 const expectedResults = [
   {
-    title: 'Send',
+    title: 'Sent',
     category: TransactionGroupCategory.send,
     subtitle: 'To: 0xffe5b...91a97',
     subtitleContainsOrigin: false,
@@ -40,11 +40,11 @@ const expectedResults = [
     isPending: false,
     displayedStatusKey: TransactionStatus.confirmed,
     isSubmitted: false,
-    detailsTitle: 'Send',
+    detailsTitle: 'Sent',
     remoteSignerAddress: null,
   },
   {
-    title: 'Send',
+    title: 'Sent',
     category: TransactionGroupCategory.send,
     subtitle: 'To: 0x0ccc8...f8848',
     subtitleContainsOrigin: false,
@@ -57,7 +57,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Send',
+    title: 'Sent',
     category: TransactionGroupCategory.send,
     subtitle: 'To: 0xffe5b...91a97',
     subtitleContainsOrigin: false,
@@ -70,7 +70,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Receive',
+    title: 'Received',
     category: TransactionGroupCategory.receive,
     subtitle: 'From: 0x31b98...84523',
     subtitleContainsOrigin: false,
@@ -83,7 +83,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Receive',
+    title: 'Received',
     category: TransactionGroupCategory.receive,
     subtitle: 'From: 0x9eca6...6a149',
     subtitleContainsOrigin: false,
@@ -96,7 +96,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Receive',
+    title: 'Received',
     category: TransactionGroupCategory.receive,
     subtitle: 'From: 0xee014...efebb',
     subtitleContainsOrigin: false,
@@ -159,7 +159,7 @@ const expectedResults = [
     isPending: false,
   },
   {
-    title: 'Send BAT as ETH',
+    title: 'Sent BAT as ETH',
     category: TransactionType.swapAndSend,
     subtitle: 'metamask',
     subtitleContainsOrigin: true,
@@ -172,7 +172,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Send USDC as DAI',
+    title: 'Sent USDC as DAI',
     category: TransactionType.swapAndSend,
     subtitle: 'metamask',
     subtitleContainsOrigin: true,
@@ -185,7 +185,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Send BNB as USDC',
+    title: 'Sent BNB as USDC',
     category: TransactionType.swapAndSend,
     subtitle: 'metamask',
     subtitleContainsOrigin: true,

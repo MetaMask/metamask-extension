@@ -25,7 +25,7 @@ describe('Transaction activity list', function (this: Suite) {
 
         const activityList = new ActivityListPage(driver);
         await activityList.check_confirmedTxNumberDisplayedInActivity(1);
-        await activityList.check_txAction('Receive', 1);
+        await activityList.check_txAction('Received', 1);
         await activityList.check_txAmountInActivity('0.00708 SOL', 1);
         await activityList.check_noFailedTransactions();
         await activityList.clickOnActivity(1);

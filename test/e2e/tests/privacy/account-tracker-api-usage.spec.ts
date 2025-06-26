@@ -117,8 +117,10 @@ describe('Account Tracker API Usage', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
-            [CHAIN_IDS.MAINNET]: true,
-            [CHAIN_IDS.LINEA_MAINNET]: true,
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+            },
           })
           .build(),
         title: this.test?.fullTitle(),

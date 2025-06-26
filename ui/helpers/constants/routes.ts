@@ -357,3 +357,6 @@ export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 
 export const DEEP_LINK_ROUTE = '/link';
 PATH_NAME_MAP.set(DEEP_LINK_ROUTE, 'Deep link Redirect Page');
+
+export const WALLET_DETAILS_ROUTE = '/wallet-details/:id';
+PATH_NAME_MAP.set(WALLET_DETAILS_ROUTE, 'Wallet Details Page');

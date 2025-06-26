@@ -230,7 +230,9 @@ describe('Swap', function () {
           fixtures: new FixtureBuilder()
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              '0x1': true,
+              eip155: {
+                '0x1': true,
+              },
             })
             .withTokensController({
               allTokens: {

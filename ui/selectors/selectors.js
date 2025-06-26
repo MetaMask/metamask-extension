@@ -141,6 +141,7 @@ import {
   getMultichainNetworkProviders,
   getMultichainNetwork,
 } from './multichain';
+import { getSelectedMultichainNetworkChainId } from './multichain/networks';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
 
@@ -1427,8 +1428,11 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const enabledNetworks = getEnabledNetworks(state);
   const tokenNetworkFilter = getTokenNetworkFilter(state);
 
+  const currentMultichainChainId = getSelectedMultichainNetworkChainId(state);
+  const { namespace } = parseCaipChainId(currentMultichainChainId);
+
   const networks = isGlobalNetworkSelectorRemoved
-    ? enabledNetworks
+    ? enabledNetworks?.[namespace] ?? {}
     : tokenNetworkFilter;
 
   if (
@@ -2720,16 +2724,6 @@ export const getChainIdsToPoll = createDeepEqualSelector(
   },
 );
 
-export const getEnabledChainIds = createDeepEqualSelector(
-  getNetworkConfigurationsByChainId,
-  getEnabledNetworks,
-  (networkConfigurations, enabledNetworks) => {
-    return Object.keys(networkConfigurations).filter(
-      (chainId) => enabledNetworks[chainId],
-    );
-  },
-);
-
 // @deprecated('Use `getEnabledNetworkClientIds` instead')
 export const getNetworkClientIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
@@ -2758,25 +2752,6 @@ export const getNetworkClientIdsToPoll = createDeepEqualSelector(
           chainId === currentChainId ||
           FEATURED_NETWORK_CHAIN_IDS.includes(chainId)
         ) {
-          acc.push(
-            network.rpcEndpoints[network.defaultRpcEndpointIndex]
-              .networkClientId,
-          );
-        }
-        return acc;
-      },
-      [],
-    );
-  },
-);
-
-export const getEnabledNetworkClientIds = createDeepEqualSelector(
-  getNetworkConfigurationsByChainId,
-  getEnabledNetworks,
-  (networkConfigurations, enabledNetworks) => {
-    return Object.entries(networkConfigurations).reduce(
-      (acc, [chainId, network]) => {
-        if (enabledNetworks[chainId]) {
           acc.push(
             network.rpcEndpoints[network.defaultRpcEndpointIndex]
               .networkClientId,

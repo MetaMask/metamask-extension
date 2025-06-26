@@ -10,6 +10,7 @@ import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 describe('MetaMask Responsive UI', function (this: Suite) {
   const driverOptions = { constrainWindowSize: true };
@@ -63,7 +64,14 @@ describe('MetaMask Responsive UI', function (this: Suite) {
   it('Send Transaction from responsive window', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withEnabledNetworks({
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LOCALHOST]: true,
+            },
+          })
+          .build(),
         driverOptions,
         title: this.test?.fullTitle(),
       },

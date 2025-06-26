@@ -911,9 +911,6 @@
   "bridgeTo": {
     "message": "I-bridge papunta sa"
   },
-  "bridgeToChain": {
-    "message": "I-bridge papunta sa $1"
-  },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Kapag idinagdag mo ang token na ito nang mano-mano, tiyaking alam mo ang mga panganib nito sa mga pondo mo bago ka mag-bridge."
   },
@@ -4783,16 +4780,8 @@
   "sendSelectSendAsset": {
     "message": "Piliin ang asset na ipapadala"
   },
-  "sendSpecifiedTokens": {
-    "message": "Magpadala ng $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Ang pag-click sa button na ito ay kaagad na magpapasimula sa iyong swap na transaksyon. Mangyaring suriin ang detalye ng iyong mga transaksyon bago magpatuloy."
-  },
-  "sendTokenAsToken": {
-    "message": "Ipadala ang $1 bilang $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Ipinapadala ang $1"

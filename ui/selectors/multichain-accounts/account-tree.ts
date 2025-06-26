@@ -113,3 +113,38 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
     );
   },
 );
+
+export type WalletMetadata = {
+  id: string;
+  name: string;
+};
+
+/**
+ * Retrieve the wallet ID and name for an account with a given address.
+ *
+ * @param walletsWithAccounts - The consolidated wallets with accounts.
+ * @param address - The address of the account to find.
+ * @returns The wallet ID and name for the account, or null if not found.
+ */
+export const getWalletIdAndNameByAccountAddress = createDeepEqualSelector(
+  getWalletsWithAccounts,
+  (_, address: string) => address,
+  (walletsWithAccounts: ConsolidatedWallets, address: string) => {
+    // Find the wallet that contains the account with the given address
+    for (const [walletId, wallet] of Object.entries(walletsWithAccounts)) {
+      for (const group of Object.values(wallet.groups)) {
+        const account = group.accounts.find(
+          (acc) => acc.address.toLowerCase() === address.toLowerCase(),
+        );
+        if (account) {
+          return {
+            id: walletId,
+            name: wallet.metadata.name,
+          };
+        }
+      }
+    }
+
+    return null;
+  },
+);

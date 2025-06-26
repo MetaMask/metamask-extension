@@ -3,12 +3,8 @@ import { Box, Text } from '../../../components/component-library';
 import {
   JustifyContent,
   Display,
-  FlexDirection,
-  AlignItems,
-  TextAlign,
   TextVariant,
   BlockSize,
-  OverflowWrap,
 } from '../../../helpers/constants/design-system';
 
 type TransactionDetailRowProps = {
@@ -34,17 +30,7 @@ export default function TransactionDetailRow({
       >
         {title}
       </Text>
-      <Text
-        display={Display.Flex}
-        overflowWrap={OverflowWrap.Anywhere}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexEnd}
-        textAlign={TextAlign.Right}
-        paddingLeft={1}
-        variant={TextVariant.bodyMd}
-      >
-        {value}
-      </Text>
+      {value}
     </Box>
   );
 }

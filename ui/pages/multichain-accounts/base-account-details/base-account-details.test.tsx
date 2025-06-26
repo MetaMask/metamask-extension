@@ -35,9 +35,17 @@ const createMockState = (
   address: string,
   account = MOCK_ACCOUNT_EOA,
   useBlockie = false,
+  walletName = 'Mock Wallet',
 ) => ({
   appState: {
     accountDetailsAddress: address,
+  },
+  activeTab: {
+    id: 1,
+    title: 'Test Dapp',
+    origin: 'https://test-dapp.com',
+    protocol: 'https:',
+    url: 'https://test-dapp.com',
   },
   metamask: {
     useBlockie,
@@ -50,6 +58,79 @@ const createMockState = (
       },
       selectedAccount: account.id,
     },
+    accountTree: {
+      wallets: {
+        'mock-wallet-id': {
+          id: 'mock-wallet-id',
+          metadata: {
+            name: walletName,
+          },
+          groups: {
+            'mock-wallet-id:default': {
+              id: 'mock-wallet-id:default',
+              metadata: {
+                name: 'Default',
+              },
+              accounts: [account.id],
+            },
+          },
+        },
+      },
+    },
+    // Required for network selectors
+    networkConfigurationsByChainId: {
+      '0x1': {
+        chainId: '0x1',
+        name: 'Ethereum Mainnet',
+        nativeCurrency: 'ETH',
+        blockExplorerUrls: ['https://etherscan.io'],
+        rpcEndpoints: [
+          {
+            url: 'https://mainnet.infura.io/v3/your-project-id',
+            type: 'infura',
+            networkClientId: 'mainnet',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        defaultBlockExplorerUrlIndex: 0,
+      },
+    },
+    selectedNetworkClientId: 'mainnet',
+    // Required for account balance selectors
+    accountsByChainId: {
+      '0x1': {
+        [address]: {
+          balance: '0x0',
+          address,
+        },
+      },
+    },
+    // Required for keyring selectors
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: [address],
+        index: 0,
+        metadata: {
+          id: 'mock-hd-keyring-id',
+          name: 'HD Key Tree',
+        },
+      },
+    ],
+    // Required for permission selectors
+    permissionHistory: {
+      'https://test-dapp.com': {
+        eth_accounts: {
+          accounts: {
+            [address]: Date.now(),
+          },
+        },
+      },
+    },
+    // Required for account lists
+    pinnedAccountsList: [],
+    hiddenAccountsList: [],
+    connectedAccounts: [],
   },
 });
 
@@ -76,9 +157,13 @@ describe('BaseAccountDetails', () => {
       // Check if account details section is rendered
       expect(screen.getByText('accountName')).toBeInTheDocument();
       expect(screen.getByText('address')).toBeInTheDocument();
+      expect(screen.getByText('wallet')).toBeInTheDocument();
 
       // Check if shortened address is displayed (short address stays as-is)
       expect(screen.getByText('0x123')).toBeInTheDocument();
+
+      // Check if wallet name is displayed
+      expect(screen.getByText('Mock Wallet')).toBeInTheDocument();
     });
 
     it('should render with non-EVM (Solana) account correctly', () => {
@@ -100,6 +185,9 @@ describe('BaseAccountDetails', () => {
 
       // Check if Solana address is displayed correctly (7 chars + ... + 5 chars)
       expect(screen.getByText('8A4AptC...aaLGC')).toBeInTheDocument();
+
+      // Check if wallet name is displayed
+      expect(screen.getByText('Mock Wallet')).toBeInTheDocument();
     });
 
     it('should render children when passed', () => {
@@ -149,10 +237,31 @@ describe('BaseAccountDetails', () => {
         store,
       );
 
-      const addressRowButton = screen.getByLabelText('next');
+      // Find all "next" buttons and click the first one (address row)
+      const nextButtons = screen.getAllByLabelText('next');
+      const addressRowButton = nextButtons[0];
       fireEvent.click(addressRowButton);
 
       expect(mockPush).toHaveBeenCalledWith(ACCOUNT_DETAILS_QR_CODE_ROUTE);
+    });
+
+    it('should navigate to wallet details when wallet row is clicked', () => {
+      const state = createMockState(MOCK_ACCOUNT_EOA.address);
+      const store = mockStore(state);
+
+      renderWithProvider(
+        <MemoryRouter>
+          <BaseAccountDetails />
+        </MemoryRouter>,
+        store,
+      );
+
+      // Find all "next" buttons and click the second one (wallet row)
+      const nextButtons = screen.getAllByLabelText('next');
+      const walletRowButton = nextButtons[1];
+      fireEvent.click(walletRowButton);
+
+      expect(mockPush).toHaveBeenCalledWith('/wallet-details/mock-wallet-id');
     });
   });
 

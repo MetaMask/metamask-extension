@@ -282,10 +282,10 @@ describe('Account Tracker API polling', function () {
           .withNetworkControllerOnMainnet()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({
-            '0x5': true,
-            '0x38': true,
-            '0x1': true,
-            '0xe708': true,
+            eip155: {
+              '0x1': true,
+              '0xe708': true,
+            },
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -309,14 +309,6 @@ describe('Account Tracker API polling', function () {
               (obj.params as unknown[])?.[1] === '3',
           );
 
-          const ethGetBalanceInfuraRequests = infuraJsonRpcRequests.filter(
-            (obj) =>
-              obj.method === 'eth_getBalance' &&
-              (obj.params as unknown[])?.[1] === '3',
-          );
-
-          // We will call eth_getBalance for Sepolia and Linea Sepolia because multicall is not available for them
-          expect(ethGetBalanceInfuraRequests.length).toEqual(2);
           // We will call eth_call for linea mainnet and mainnet
           expect(ethCallInfuraRequests.length).toEqual(2);
         } else {
@@ -375,7 +367,12 @@ describe('Account Tracker API polling', function () {
         {
           fixtures: new FixtureBuilder()
             .withNetworkControllerOnMainnet()
-            .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true,
+                '0xe708': true,
+              },
+            })
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: mockAccountApiForPortfolioView,

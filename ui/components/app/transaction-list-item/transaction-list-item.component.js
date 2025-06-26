@@ -111,6 +111,10 @@ function TransactionListItemInner({
     transactionGroup,
     isEarliestNonce,
   });
+  const isUnifiedSwapTx =
+    (isBridgeTx ||
+      transactionGroup.initialTransaction.type === TransactionType.swap) &&
+    bridgeTxHistoryItem;
 
   const getTestNetworkBackgroundColor = (networkId) => {
     switch (true) {
@@ -199,9 +203,10 @@ function TransactionListItemInner({
     detailsTitle,
     remoteSignerAddress,
   } = useTransactionDisplayData(transactionGroup);
-  const displayedStatusKey = isBridgeFailed
-    ? TransactionStatus.failed
-    : displayedStatusKeyFromSrcTransaction;
+  const displayedStatusKey =
+    isBridgeTx && isBridgeFailed
+      ? TransactionStatus.failed
+      : displayedStatusKeyFromSrcTransaction;
   const date = formatDateWithYearContext(
     transactionGroup.primaryTransaction.time,
     'MMM d, y',
@@ -295,7 +300,7 @@ function TransactionListItemInner({
       <ActivityListItem
         data-testid="activity-list-item"
         onClick={
-          isBridgeTx && showBridgeTxDetails
+          isUnifiedSwapTx && showBridgeTxDetails
             ? showBridgeTxDetails
             : toggleShowDetails
         }
