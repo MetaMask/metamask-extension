@@ -1,9 +1,4 @@
-import {
-  EthAccountType,
-  BtcAccountType,
-  SolAccountType,
-  isEvmAccountType
-} from '@metamask/keyring-api';
+import { SolAccountType, isEvmAccountType } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 
@@ -13,37 +8,36 @@ export type AccountTypeCategory =
   | 'hardware'
   | 'private-key'
   | 'institutional-evm'
-  | 'bitcoin'
-  | 'snap'
   | 'unknown';
 
 /**
  * Determines the account type category based on the account's type and keyring information
  */
-export const getAccountTypeCategory = (account: InternalAccount): AccountTypeCategory => {
+export const getAccountTypeCategory = (
+  account: InternalAccount,
+): AccountTypeCategory => {
   if (!account) return 'unknown';
 
   const { type, metadata } = account;
-  const keyringType = metadata?.keyring?.type;
+  const keyringType = metadata?.keyring?.type as KeyringTypes;
   const snapId = metadata?.snap?.id;
 
   // EVM accounts (EOA and ERC-4337)
   if (isEvmAccountType(type)) {
-    // Check if it's an institutional account (through institutional snap)
-    if (snapId === 'npm:@metamask/institutional-wallet-snap') {
-      return 'institutional-evm';
-    }
     return 'evm';
   }
 
   // Hardware accounts
-  if (keyringType && [
-    KeyringTypes.ledger,
-    KeyringTypes.trezor,
-    KeyringTypes.oneKey,
-    KeyringTypes.lattice,
-    KeyringTypes.qr
-  ].includes(keyringType)) {
+  if (
+    keyringType &&
+    [
+      KeyringTypes.ledger,
+      KeyringTypes.trezor,
+      KeyringTypes.oneKey,
+      KeyringTypes.lattice,
+      KeyringTypes.qr,
+    ].includes(keyringType)
+  ) {
     return 'hardware';
   }
 
@@ -57,14 +51,12 @@ export const getAccountTypeCategory = (account: InternalAccount): AccountTypeCat
     return 'solana';
   }
 
-  // Bitcoin accounts
-  if (Object.values(BtcAccountType).includes(type)) {
-    return 'bitcoin';
-  }
-
-  // Snap accounts (non-institutional)
-  if (keyringType === KeyringTypes.snap && snapId !== 'npm:@metamask/institutional-wallet-snap') {
-    return 'snap';
+  // Institutional-EVM accounts
+  if (
+    keyringType === KeyringTypes.snap &&
+    snapId === 'npm:@metamask/institutional-wallet-snap'
+  ) {
+    return 'institutional-evm';
   }
 
   return 'unknown';
@@ -101,20 +93,8 @@ export const isPrivateKeyAccount = (account: InternalAccount): boolean => {
 /**
  * Checks if an account is an institutional EVM account
  */
-export const isInstitutionalEVMAccount = (account: InternalAccount): boolean => {
+export const isInstitutionalEVMAccount = (
+  account: InternalAccount,
+): boolean => {
   return getAccountTypeCategory(account) === 'institutional-evm';
-};
-
-/**
- * Checks if an account is a Bitcoin account
- */
-export const isBitcoinAccount = (account: InternalAccount): boolean => {
-  return getAccountTypeCategory(account) === 'bitcoin';
-};
-
-/**
- * Checks if an account is a snap account (non-institutional)
- */
-export const isSnapAccount = (account: InternalAccount): boolean => {
-  return getAccountTypeCategory(account) === 'snap';
 };
