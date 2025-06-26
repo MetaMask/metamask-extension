@@ -9,7 +9,7 @@ const baseManifest = isManifestV3
   : require('../../app/manifest/v2/_base.json');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
-const { TASKS, ENVIRONMENT } = require('./constants');
+const { TASKS, ENVIRONMENT, MANIFEST_DEV_KEY } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getEnvironment, getBuildName } = require('./utils');
 const { fromIniFile } = require('./config');
@@ -78,6 +78,9 @@ function createManifestTasks({
         );
         modifyNameAndDescForNonProd(result);
 
+        // Add the `identity` permission to the manifest for Web Authentication Flow
+        addIdentityPermission(result, platform);
+
         if (shouldIncludeOcapKernel) {
           applyOcapKernelChanges(result);
         }
@@ -92,6 +95,7 @@ function createManifestTasks({
   // dev: add perms
   const envDev = createTaskForModifyManifestForEnvironment((manifest) => {
     manifest.permissions = [...manifest.permissions, 'webRequestBlocking'];
+    manifest.key = MANIFEST_DEV_KEY;
   });
 
   // testDev: add perms
@@ -102,6 +106,7 @@ function createManifestTasks({
       'http://localhost/*',
       'tabs', // test builds need tabs permission for switchToWindowWithTitle
     ];
+    manifest.key = MANIFEST_DEV_KEY;
   });
 
   // test: add permissions
@@ -112,7 +117,14 @@ function createManifestTasks({
       'http://localhost/*',
       'tabs', // test builds need tabs permission for switchToWindowWithTitle
     ];
+    manifest.key = MANIFEST_DEV_KEY;
   });
+
+  const envScriptDist = createTaskForModifyManifestForEnvironment(
+    (manifest) => {
+      manifest.key = MANIFEST_DEV_KEY;
+    },
+  );
 
   // high level manifest tasks
   const dev = createTask(
@@ -130,9 +142,14 @@ function createManifestTasks({
     composeSeries(prepPlatforms, envTest),
   );
 
+  const scriptDist = createTask(
+    TASKS.MANIFEST_SCRIPT_DIST,
+    composeSeries(prepPlatforms, envScriptDist),
+  );
+
   const prod = createTask(TASKS.MANIFEST_PROD, prepPlatforms);
 
-  return { prod, dev, testDev, test };
+  return { prod, dev, testDev, test, scriptDist };
 
   // helper for modifying each platform's manifest.json in place
   function createTaskForModifyManifestForEnvironment(transformFn) {
@@ -193,6 +210,23 @@ function createManifestTasks({
       merge(manifest, { sandbox: { pages: [] } });
     }
     manifest.sandbox.pages.push('ocap-kernel/vat/iframe.html');
+  }
+
+  // Add the `identity` permission to the manifest for the given platform.
+  // `Identity` permission is required for the OAuth login.
+  // - For Firefox, we need to declare the permission as the installation permission
+  // - For other platforms, we need to declare the permission as the optional permission
+  function addIdentityPermission(manifest, platform) {
+    if (platform === 'firefox') {
+      // firefox doesn't support `identity` as runtime permission
+      // hence, we need to declare the permission as the installation permission
+      // see more: {@link https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/optional_permissions#browser_compatibility}
+      manifest.permissions.push('identity');
+      return;
+    }
+
+    // for other browsers, we can declare the permission as the optional permission and request it at runtime
+    manifest.optional_permissions.push('identity');
   }
 }
 
