@@ -70,7 +70,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
         // The scrollable container
         root: scrollContainerRef.current,
         // Trigger when sentinel is visible
-        threshold: 0.5,
+        threshold: [0, 0.5],
       },
     );
 
@@ -1209,7 +1209,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
               however any information submitted to a blockchain protocol for
               processing.&nbsp;
             </Text>
-            <div ref={bottomRef} style={{ height: '1px' }} />
+            <div ref={bottomRef} style={{ height: '2px' }} />
           </Box>
           {shouldShowScrollButton && (
             <Box className="terms-of-use-popup__scroll-button-container">
