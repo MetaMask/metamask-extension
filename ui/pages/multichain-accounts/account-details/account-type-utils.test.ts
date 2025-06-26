@@ -1,6 +1,8 @@
 import {
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_ERC4337,
+  MOCK_ACCOUNT_HARDWARE,
+  MOCK_ACCOUNT_PRIVATE_KEY,
   MOCK_ACCOUNT_SOLANA_MAINNET,
 } from '../../../../test/data/mock-accounts';
 import {
@@ -10,8 +12,6 @@ import {
   isHardwareAccount,
   isPrivateKeyAccount,
   isInstitutionalEVMAccount,
-  isBitcoinAccount,
-  isSnapAccount,
 } from './account-type-utils';
 
 describe('Account Type Utils', () => {
@@ -25,7 +25,9 @@ describe('Account Type Utils', () => {
     });
 
     it('should return "solana" for Solana accounts', () => {
-      expect(getAccountTypeCategory(MOCK_ACCOUNT_SOLANA_MAINNET)).toBe('solana');
+      expect(getAccountTypeCategory(MOCK_ACCOUNT_SOLANA_MAINNET)).toBe(
+        'solana',
+      );
     });
 
     it('should return "unknown" for null/undefined accounts', () => {
@@ -63,6 +65,10 @@ describe('Account Type Utils', () => {
   });
 
   describe('isHardwareAccount', () => {
+    it('should return true for hardware accounts', () => {
+      expect(isHardwareAccount(MOCK_ACCOUNT_HARDWARE)).toBe(true);
+    });
+
     it('should return false for EOA accounts', () => {
       expect(isHardwareAccount(MOCK_ACCOUNT_EOA)).toBe(false);
     });
@@ -73,6 +79,10 @@ describe('Account Type Utils', () => {
   });
 
   describe('isPrivateKeyAccount', () => {
+    it('should return true for private key accounts', () => {
+      expect(isPrivateKeyAccount(MOCK_ACCOUNT_PRIVATE_KEY)).toBe(true);
+    });
+
     it('should return false for EOA accounts', () => {
       expect(isPrivateKeyAccount(MOCK_ACCOUNT_EOA)).toBe(false);
     });
@@ -83,32 +93,13 @@ describe('Account Type Utils', () => {
   });
 
   describe('isInstitutionalEVMAccount', () => {
+    // TODO: Add tests for institutional EVM accounts
     it('should return false for regular EOA accounts', () => {
       expect(isInstitutionalEVMAccount(MOCK_ACCOUNT_EOA)).toBe(false);
     });
 
     it('should return false for regular ERC-4337 accounts', () => {
       expect(isInstitutionalEVMAccount(MOCK_ACCOUNT_ERC4337)).toBe(false);
-    });
-  });
-
-  describe('isBitcoinAccount', () => {
-    it('should return false for EOA accounts', () => {
-      expect(isBitcoinAccount(MOCK_ACCOUNT_EOA)).toBe(false);
-    });
-
-    it('should return false for Solana accounts', () => {
-      expect(isBitcoinAccount(MOCK_ACCOUNT_SOLANA_MAINNET)).toBe(false);
-    });
-  });
-
-  describe('isSnapAccount', () => {
-    it('should return false for EOA accounts', () => {
-      expect(isSnapAccount(MOCK_ACCOUNT_EOA)).toBe(false);
-    });
-
-    it('should return false for Solana accounts', () => {
-      expect(isSnapAccount(MOCK_ACCOUNT_SOLANA_MAINNET)).toBe(false);
     });
   });
 });

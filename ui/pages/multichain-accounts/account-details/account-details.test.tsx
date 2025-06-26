@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -67,7 +67,10 @@ describe('AccountDetails', () => {
     });
 
     it('should render EVM account details for ERC-4337 accounts', () => {
-      const state = createMockState(MOCK_ACCOUNT_ERC4337.address, MOCK_ACCOUNT_ERC4337);
+      const state = createMockState(
+        MOCK_ACCOUNT_ERC4337.address,
+        MOCK_ACCOUNT_ERC4337,
+      );
       const store = mockStore(state);
 
       renderWithProvider(
@@ -81,8 +84,11 @@ describe('AccountDetails', () => {
       expect(screen.getByText('Account 2')).toBeInTheDocument();
     });
 
-    it('should render base account details for Solana accounts', () => {
-      const state = createMockState(MOCK_ACCOUNT_SOLANA_MAINNET.address, MOCK_ACCOUNT_SOLANA_MAINNET);
+    it('should render account details for Solana accounts', () => {
+      const state = createMockState(
+        MOCK_ACCOUNT_SOLANA_MAINNET.address,
+        MOCK_ACCOUNT_SOLANA_MAINNET,
+      );
       const store = mockStore(state);
 
       renderWithProvider(
