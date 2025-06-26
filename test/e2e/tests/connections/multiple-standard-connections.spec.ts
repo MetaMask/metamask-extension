@@ -130,7 +130,7 @@ describe('Multiple Standard Dapp Connections', function () {
     );
   });
 
-  it('should show both accounts when wallet_requestPermissions is called with specific account while another is already connected', async function () {
+  it('should default account selection to both accounts when `wallet_requestPermissions` is called with specific account while another is already connected', async function () {
     await withFixtures(
       {
         dapp: true,
