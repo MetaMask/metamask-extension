@@ -20,7 +20,7 @@ const {
 } = require('../../../../app/scripts/controllers/permissions');
 const { CaveatTypes } = require('../../../../shared/constants/permissions');
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
+const isGlobalNetworkSelectorRemoved = 'true';
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs
