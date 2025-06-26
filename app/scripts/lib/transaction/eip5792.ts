@@ -355,6 +355,7 @@ async function processMultipleTransaction({
 
   const dismissSmartAccountSuggestionEnabled =
     getDismissSmartAccountSuggestionEnabled();
+
   validateSendCalls(
     sendCalls,
     chainId,
@@ -362,6 +363,7 @@ async function processMultipleTransaction({
     chainBatchSupport,
     keyringType,
   );
+
   const result = await addTransactionBatch({
     from,
     networkClientId,
