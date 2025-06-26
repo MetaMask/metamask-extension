@@ -100,7 +100,7 @@ To start a development build (e.g. with logging and file watching) run `yarn sta
 
 You can start a development build with a preloaded wallet state, by adding `TEST_SRP='<insert SRP here>'` and `PASSWORD='<insert wallet password here>'` to the `.metamaskrc` file. Then you have the following options:
 
-1. Start the wallet with the default fixture flags, by running `yarn start:with-state`.
+1. Start the wallet with the default fixture flags, by running `yarn start:with-state`
 2. Check the list of available fixture flags, by running `yarn start:with-state --help`.
 3. Start the wallet with custom fixture flags, by running `yarn start:with-state --FIXTURE_NAME=VALUE` for example `yarn start:with-state --withAccounts=100`. You can pass as many flags as you want. The rest of the fixtures will take the default values.
 
