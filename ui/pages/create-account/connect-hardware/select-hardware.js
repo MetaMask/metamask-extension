@@ -298,7 +298,7 @@ export default class SelectHardware extends Component {
               >
                 {this.context.t('ledgerFirefoxNotSupportedDescription1')}
                 <a
-                  className="hw-connect__msg-link"
+                  className="hw-connect__href-link"
                   href={LEDGER_FIREFOX_NOT_SUPPORTED_URL}
                   target="_blank"
                   rel="noreferrer"
