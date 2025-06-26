@@ -76,7 +76,7 @@ export const AddressQRCode = () => {
   }, [chainId, trackEvent, addressLink]);
 
   useEffect(() => {
-    if (!address || isMultichainAccountsState1Enabled) {
+    if (!address || !isMultichainAccountsState1Enabled) {
       history.push(ACCOUNT_DETAILS_ROUTE);
     }
   }, [address, history, isMultichainAccountsState1Enabled]);
