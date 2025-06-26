@@ -1150,7 +1150,6 @@ export class AppStateController extends BaseController<
    * @param error - The error to reject the promise with.
    */
   cancelQrCodeScan(error?: Error): void {
-    console.log('Cancelling QR code scan', error);
     if (!this.#qrCodeScanPromise) {
       throw new Error('No QR code scan is in progress.');
     }
