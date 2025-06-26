@@ -34,6 +34,7 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   DEFAULT_ROUTE,
+  SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getFirstTimeFlowType,
@@ -65,17 +66,18 @@ export default function CreationSuccessful() {
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
   const searchParams = new URLSearchParams(search);
-  const isFromReminderParam = searchParams.get('isFromReminder');
+  const isFromReminder = searchParams.get('isFromReminder');
+  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
 
   const renderTitle = useMemo(() => {
     if (isWalletReady) {
-      return isFromReminderParam
+      return isFromReminder
         ? t('yourWalletIsReadyFromReminder')
         : t('yourWalletIsReady');
     }
 
     return t('yourWalletIsReadyRemind');
-  }, [isFromReminderParam, isWalletReady, t]);
+  }, [isFromReminder, isWalletReady, t]);
 
   const renderDetails1 = useMemo(() => {
     if (userSocialLoginType) {
@@ -83,20 +85,20 @@ export default function CreationSuccessful() {
     }
 
     if (isWalletReady) {
-      return isFromReminderParam
+      return isFromReminder
         ? t('walletReadyLoseSrpFromReminder')
         : t('walletReadyLoseSrp');
     }
 
     return t('walletReadyLoseSrpRemind');
-  }, [userSocialLoginType, isWalletReady, t, isFromReminderParam]);
+  }, [userSocialLoginType, isWalletReady, t, isFromReminder]);
 
   const renderDetails2 = useMemo(() => {
     if (userSocialLoginType) {
       return t('walletReadySocialDetails2');
     }
 
-    if (isWalletReady || isFromReminderParam) {
+    if (isWalletReady || isFromReminder) {
       return t('walletReadyLearn', [
         <ButtonLink
           key="walletReadyLearn"
@@ -116,10 +118,10 @@ export default function CreationSuccessful() {
     }
 
     return t('walletReadyLearnRemind');
-  }, [userSocialLoginType, isWalletReady, isFromReminderParam, t]);
+  }, [userSocialLoginType, isWalletReady, isFromReminder, t]);
 
   const renderFox = useMemo(() => {
-    if (isWalletReady) {
+    if (isWalletReady || isFromReminder) {
       return (
         <LottieAnimation
           path="images/animations/fox/celebrating.lottie.json"
@@ -136,11 +138,11 @@ export default function CreationSuccessful() {
         autoplay
       />
     );
-  }, [isWalletReady]);
+  }, [isWalletReady, isFromReminder]);
 
   const onDone = useCallback(() => {
-    if (isFromReminderParam) {
-      history.push(DEFAULT_ROUTE);
+    if (isFromReminder) {
+      history.push(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
       return;
     }
 
@@ -160,7 +162,8 @@ export default function CreationSuccessful() {
     hdEntropyIndex,
     trackEvent,
     history,
-    isFromReminderParam,
+    isFromReminder,
+    isFromSettingsSecurity,
   ]);
 
   return (
@@ -220,7 +223,7 @@ export default function CreationSuccessful() {
             {renderDetails2}
           </Text>
         </Box>
-        {!isFromReminderParam && (
+        {!isFromReminder && (
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}

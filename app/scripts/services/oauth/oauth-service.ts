@@ -123,11 +123,13 @@ export default class OAuthService {
   #loadConfig(): OAuthConfig {
     const { METAMASK_BUILD_TYPE } = process.env;
     const buildType = METAMASK_BUILD_TYPE || 'development';
+    const isDevOrTestEnv = getIsDevOrTestEnv();
 
     let config: Record<string, string> = {};
-    if (getIsDevOrTestEnv()) {
+    if (isDevOrTestEnv) {
       config = OAUTH_CONFIG.development;
     } else {
+      // if the build type is not found, use the main config
       config = OAUTH_CONFIG[buildType] || OAUTH_CONFIG.main;
     }
 

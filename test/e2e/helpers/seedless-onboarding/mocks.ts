@@ -32,11 +32,9 @@ export class OAuthMockttpService {
     json?: Record<string, unknown>;
     userEmail?: string;
   }) {
-    const userEmail = _overrides?.userEmail || `e2e-user-${Math.random().toString(36).slice(2, 10)}`;
-
-    const idToken = generateMockJwtToken(
-      userEmail,
-    );
+    const userEmail =
+      _overrides?.userEmail || `e2e-user-${crypto.randomUUID()}`;
+    const idToken = generateMockJwtToken(userEmail);
     return {
       statusCode: 200,
       json: {

@@ -3945,7 +3945,7 @@
     "message": "Create a new wallet"
   },
   "onboardingImportWallet": {
-    "message": "Import using Secret Recovery Phrase"
+    "message": "I have an existing wallet"
   },
   "onboardingMetametricsAgree": {
     "message": "I agree"
@@ -4650,28 +4650,16 @@
     "message": "Recommended"
   },
   "recoveryPhraseReminderBackupStart": {
-    "message": "Start here"
+    "message": "Back up now"
   },
   "recoveryPhraseReminderConfirm": {
-    "message": "Got it"
-  },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Always keep your Secret Recovery Phrase in a secure and secret place"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Need to backup your Secret Recovery Phrase again?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Never share your Secret Recovery Phrase with anyone"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "The MetaMask team will never ask for your Secret Recovery Phrase"
+    "message": "Remind me later"
   },
   "recoveryPhraseReminderSubText": {
-    "message": "Your Secret Recovery Phrase controls all of your accounts."
+    "message": "If you don’t back up your wallet, you’ll lose access to your funds if you get locked out of the app or get a new device."
   },
   "recoveryPhraseReminderTitle": {
-    "message": "Protect your funds"
+    "message": "Protect your wallet"
   },
   "redeposit": {
     "message": "Redeposit"
@@ -5408,6 +5396,12 @@
   },
   "smartAccountSplashTitle": {
     "message": "Use smart account?"
+  },
+  "smartAccountUpdateSuccessMessage": {
+    "message": "Your account will be updated to smart account with your next transaction."
+  },
+  "smartAccountUpdateSuccessTitle": {
+    "message": "Successful!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."
@@ -6835,6 +6829,9 @@
   },
   "unlockPageIncorrectPassword": {
     "message": "Password is incorrect. Please try again."
+  },
+  "unlockPageTooManyFailedAttempts": {
+    "message": "Too many failed attempts. Please try again in "
   },
   "unpin": {
     "message": "Unpin"
