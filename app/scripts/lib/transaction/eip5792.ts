@@ -109,7 +109,7 @@ async function processSingleTransaction({
 
 async function processMultipleTransaction({
   addTransactionBatch,
-  chainBatchSupport,
+  isAtomicBatchSupported,
   chainId,
   from,
   getDismissSmartAccountSuggestionEnabled,
@@ -122,7 +122,7 @@ async function processMultipleTransaction({
   validateSecurity,
 }: {
   addTransactionBatch: TransactionController['addTransactionBatch'];
-  chainBatchSupport: IsAtomicBatchSupportedResultEntry;
+  isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
   chainId: Hex;
   from: Hex;
   getDismissSmartAccountSuggestionEnabled: () => boolean;
@@ -137,6 +137,13 @@ async function processMultipleTransaction({
     chainId: Hex,
   ) => Promise<void>;
 }) {
+  const batchSupport = await isAtomicBatchSupported({
+    address: from,
+    chainIds: [chainId],
+  });
+
+  const chainBatchSupport = batchSupport?.[0];
+
   const dismissSmartAccountSuggestionEnabled =
     getDismissSmartAccountSuggestionEnabled();
   validateSendCalls(
@@ -194,12 +201,6 @@ export async function processSendCalls(
     paramFrom ??
     (messenger.call('AccountsController:getSelectedAccount').address as Hex);
 
-  const batchSupport = await isAtomicBatchSupported({
-    address: from,
-    chainIds: [dappChainId],
-  });
-
-  const chainBatchSupport = batchSupport?.[0];
   const keyringType = getAccountKeyringType(from, messenger);
 
   const securityAlertId = generateSecurityAlertId();
@@ -221,7 +222,7 @@ export async function processSendCalls(
   } else {
     batchId = await processMultipleTransaction({
       addTransactionBatch,
-      chainBatchSupport,
+      isAtomicBatchSupported,
       chainId: dappChainId,
       from,
       getDismissSmartAccountSuggestionEnabled,
