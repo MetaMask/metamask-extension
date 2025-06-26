@@ -3026,6 +3026,21 @@
   "ledgerMultipleDevicesUnsupportedInfoDescription": {
     "message": "To connect a new device, disconnect the previous one."
   },
+  "ledgerFirefoxNotSupportedTitle":{
+    "message": "Firefox Not Supported"
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "We're having trouble connecting to Ledger. Check out our "
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "guide"
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " on how to connect a hardware wallet, then try again."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger no longer supports Firefox, so you might need to use a different browser."
+  },
   "ledgerMultipleDevicesUnsupportedInfoTitle": {
     "message": "You can only connect one Ledger at a time"
   },
