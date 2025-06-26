@@ -1,30 +1,21 @@
-import React, { useState, useEffect } from 'react';
 import { BigNumber } from 'bignumber.js';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import {
-  Box,
-  Button,
-  ButtonVariant,
-  ButtonLink,
-  Text,
-} from '../../../components/component-library';
+import { Box, Button, Text } from '../../../components/component-library';
 
-import { Page } from '../../../components/multichain/pages/page';
 import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  BorderRadius,
   Display,
   FlexDirection,
-  BorderRadius,
-  BackgroundColor,
   JustifyContent,
-  TextVariant,
-  FontWeight,
   TextColor,
-  TextAlign,
-  AlignItems,
-  BlockSize,
-  BorderColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
+import { Market, MarketGamma } from '../types';
 
 const GAMMA_API_ENDPOINT = 'https://gamma-api.polymarket.com';
 
@@ -35,9 +26,9 @@ const PredictMarketsContainer = () => {
 
   const calculateVolume = (value: string | number | undefined) =>
     value
-      ? new BigNumber(
-          typeof value === 'string' ? value : value.toString(),
-        ).toNumber().toFixed(2)
+      ? new BigNumber(typeof value === 'string' ? value : value.toString())
+          .toNumber()
+          .toFixed(2)
       : '0.00';
 
   const getMarkets = async () => {
@@ -53,6 +44,7 @@ const PredictMarketsContainer = () => {
         },
       );
       const marketsData = await response.json();
+      console.log('marketsData', marketsData);
       setMarketData(marketsData);
     } catch (error) {
       console.error('Error fetching trades:', error);
@@ -90,15 +82,14 @@ const PredictMarketsContainer = () => {
           </Text>
         </Box>
       ) : marketData && marketData.length > 0 ? (
-        marketData.map((market: any) => {
+        marketData.map((market: MarketGamma) => {
           return (
             <Box
-              key={market.transactionHash}
+              key={market.conditionId}
               backgroundColor={BackgroundColor.backgroundDefault}
               borderRadius={BorderRadius.LG}
               padding={4}
               marginBottom={4}
-              key={market.conditionId}
             >
               <Box
                 display={Display.Flex}

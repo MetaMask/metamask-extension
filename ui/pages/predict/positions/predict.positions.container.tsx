@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
+import { Side } from '@polymarket/clob-client';
 import {
   Box,
   Button,
@@ -23,18 +24,18 @@ import {
 
 import { getSelectedInternalAccount } from '../../../selectors';
 import { usePolymarket } from '../usePolymarket';
-import { Side } from '../types';
+import { UserPosition } from '../types';
 
 const CLOB_ENDPOINT = 'https://clob.polymarket.com';
 const DATA_API_ENDPOINT = 'https://data-api.polymarket.com';
 
 const PredictContainer = () => {
-  const [marketData, setMarketData] = useState<any[]>([]);
+  const [positions, setPositions] = useState<UserPosition[]>([]);
   const [loading, setLoading] = useState(true);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const { placeOrder } = usePolymarket();
 
-  const getTrades = async () => {
+  const getPositions = async () => {
     try {
       setLoading(true);
       const response = await fetch(
@@ -47,10 +48,10 @@ const PredictContainer = () => {
         },
       );
       const tradesData = await response.json();
-      setMarketData(tradesData);
+      setPositions(tradesData);
     } catch (error) {
       console.error('Error fetching trades:', error);
-      setMarketData([]);
+      setPositions([]);
     } finally {
       setLoading(false);
     }
@@ -58,26 +59,26 @@ const PredictContainer = () => {
 
   // Call getTrades on mount
   useEffect(() => {
-    getTrades();
+    getPositions();
   }, []);
 
-  const handleSell = async (trade: any) => {
-    console.log(trade);
+  const handleSell = async (position: UserPosition) => {
+    console.log(position);
     const tickSize = await fetch(
-      `${CLOB_ENDPOINT}/tick-size?token_id=${trade.asset}`,
+      `${CLOB_ENDPOINT}/tick-size?token_id=${position.asset}`,
     );
     const tickSizeData = await tickSize.json();
-    console.log(tickSizeData);
     if (!tickSizeData) {
       console.error('No tick size found');
       return;
     }
     placeOrder({
-      tokenId: trade.asset,
-      price: trade.curPrice,
-      size: trade.size,
+      tokenId: position.asset,
+      price: position.curPrice,
+      size: position.size,
       tickSize: tickSizeData.minimum_tick_size,
       side: Side.SELL,
+      negRisk: position.negativeRisk,
     });
   };
 
@@ -96,7 +97,7 @@ const PredictContainer = () => {
             Your current and historic predictions.
           </Text>
         </Box>
-        {loading ? (
+        {loading && (
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
@@ -111,11 +112,13 @@ const PredictContainer = () => {
               Loading positions...
             </Text>
           </Box>
-        ) : marketData && marketData.length > 0 ? (
-          marketData.map((position: any) => {
+        )}
+        {positions &&
+          positions.length > 0 &&
+          positions.map((position: UserPosition) => {
             return (
               <Box
-                key={position.transactionHash}
+                key={position.conditionId}
                 backgroundColor={BackgroundColor.backgroundDefault}
                 borderRadius={BorderRadius.LG}
                 padding={4}
@@ -193,9 +196,9 @@ const PredictContainer = () => {
                       Now
                     </Text>
                     <Text variant={TextVariant.headingSm}>
-                      {position.curPrice != null
-                        ? Math.round(position.curPrice * 100) + '¢'
-                        : '...'}
+                      {position.curPrice === null
+                        ? '...'
+                        : `${Math.round(position.curPrice * 100)}¢`}
                     </Text>
                   </Box>
                   <Button
@@ -208,10 +211,8 @@ const PredictContainer = () => {
                 </Box>
               </Box>
             );
-          })
-        ) : (
-          <Text>No positions found.</Text>
-        )}
+          })}
+        {!loading && positions.length === 0 && <Text>No positions found.</Text>}
       </Box>
     </Page>
   );

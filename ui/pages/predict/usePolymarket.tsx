@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 import { hexToNumber } from '@metamask/utils';
 import { SignTypedDataVersion } from '@metamask/keyring-controller';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { getContractConfig } from '@polymarket/clob-client';
+import { getContractConfig, Side } from '@polymarket/clob-client';
 import {
   getSelectedAccount,
   getSelectedNetwork,
@@ -13,16 +13,12 @@ import {
   buildOrderCreationArgs,
   buildPolyHmacSignature,
   encodeApprove,
+  encodeErc1155Approve,
   generateSalt,
 } from './utils';
-import { ROUNDING_CONFIG, Side, SignatureType, TickSize } from './types';
+import { ROUNDING_CONFIG, SignatureType, TickSize } from './types';
 
 const CLOB_ENDPOINT = 'https://clob.polymarket.com';
-const USDC_ADDRESS = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
-const CONDITIONAL_TOKEN_ADDRESS = '0x4D97DCd97eC945f40cF65F87097ACe5EA0476045';
-const EXCHANGE_ADDRESS = '0x4bFb41d5B3570DeFd03C39a9A4D8dE6Bd8B8982E';
-const NEG_RISK_ADDRESS = '0xC5d563A36AE78145C45a50134d48A1215220f80a';
-const NEG_RISK_ADAPTER_ADDRESS = '0xd91E80cF2E7be2e162c6513ceD06f1dD0dA35296';
 
 const ClobAuthDomain = {
   ClobAuth: [
@@ -61,6 +57,9 @@ export const usePolymarket = () => {
       ? JSON.parse(localStorage.getItem('apiKey') || '{}')
       : null,
   );
+  const contractConfig = useMemo(() => {
+    return getContractConfig(hexToNumber(chainId));
+  }, [chainId]);
 
   const getL1Headers = async () => {
     const domain = {
@@ -172,92 +171,175 @@ export const usePolymarket = () => {
     localStorage.setItem('apiKey', JSON.stringify(newApiKey));
   };
 
-  const approveToken = async () => {
+  const approveCollateralExchange = async () => {
     const encodedCallData = encodeApprove({
-      spender: EXCHANGE_ADDRESS,
-      amount: 10n * 1_000_000n, // 10 USDC as BigInt with 6 decimals
+      spender: contractConfig.exchange,
+      amount: 100n * 1_000_000n, // 100 USDC as BigInt with 6 decimals
     });
 
     const transactionMeta = await addTransaction(
       {
         from: account.address,
-        to: USDC_ADDRESS,
+        to: contractConfig.collateral,
         data: encodedCallData,
         value: '0x0',
       },
       {
         networkClientId: selectedNetwork.clientId,
         type: TransactionType.tokenMethodApprove,
+        requireApproval: false,
       },
     );
 
-    console.log(transactionMeta);
+    return transactionMeta;
   };
 
-  const approveConditionalToken = async () => {
+  const approveCollateralConditionalToken = async () => {
     const encodedCallData = encodeApprove({
-      spender: EXCHANGE_ADDRESS,
-      amount: 10n * 1_000_000n, // 10 USDC as BigInt with 6 decimals
+      spender: contractConfig.conditionalTokens,
+      amount: 100n * 1_000_000n, // 100 USDC as BigInt with 6 decimals
     });
 
     const transactionMeta = await addTransaction(
       {
         from: account.address,
-        to: CONDITIONAL_TOKEN_ADDRESS,
+        to: contractConfig.collateral,
         data: encodedCallData,
         value: '0x0',
       },
       {
         networkClientId: selectedNetwork.clientId,
         type: TransactionType.tokenMethodApprove,
+        requireApproval: false,
       },
     );
 
-    console.log(transactionMeta);
+    return transactionMeta;
   };
 
-  const approveNegRiskToken = async () => {
-    const encodedCallData = encodeApprove({
-      spender: NEG_RISK_ADDRESS,
-      amount: 10n * 1_000_000n, // 10 USDC as BigInt with 6 decimals
+  const approveConditionalExchange = async () => {
+    const encodedCallData = encodeErc1155Approve({
+      spender: contractConfig.exchange,
+      approved: true,
     });
 
     const transactionMeta = await addTransaction(
       {
         from: account.address,
-        to: USDC_ADDRESS,
+        to: contractConfig.conditionalTokens,
         data: encodedCallData,
         value: '0x0',
       },
       {
         networkClientId: selectedNetwork.clientId,
         type: TransactionType.tokenMethodApprove,
+        requireApproval: false,
       },
     );
 
-    console.log(transactionMeta);
+    return transactionMeta;
+  };
+
+  const approveCollateralNegRiskExchange = async () => {
+    const encodedCallData = encodeApprove({
+      spender: contractConfig.negRiskExchange,
+      amount: 100n * 1_000_000n, // 100 USDC as BigInt with 6 decimals
+    });
+
+    const transactionMeta = await addTransaction(
+      {
+        from: account.address,
+        to: contractConfig.collateral,
+        data: encodedCallData,
+        value: '0x0',
+      },
+      {
+        networkClientId: selectedNetwork.clientId,
+        type: TransactionType.tokenMethodApprove,
+        requireApproval: false,
+      },
+    );
+
+    return transactionMeta;
   };
 
   const approveNegRiskAdapterToken = async () => {
     const encodedCallData = encodeApprove({
-      spender: NEG_RISK_ADAPTER_ADDRESS,
+      spender: contractConfig.negRiskAdapter,
       amount: 10n * 1_000_000n, // 10 USDC as BigInt with 6 decimals
     });
 
     const transactionMeta = await addTransaction(
       {
         from: account.address,
-        to: USDC_ADDRESS,
+        to: contractConfig.collateral,
         data: encodedCallData,
         value: '0x0',
       },
       {
         networkClientId: selectedNetwork.clientId,
         type: TransactionType.tokenMethodApprove,
+        requireApproval: false,
       },
     );
 
-    console.log(transactionMeta);
+    return transactionMeta;
+  };
+
+  const approveConditionalNegRiskExchange = async () => {
+    const encodedCallData = encodeErc1155Approve({
+      spender: contractConfig.negRiskExchange,
+      approved: true,
+    });
+
+    const transactionMeta = await addTransaction(
+      {
+        from: account.address,
+        to: contractConfig.conditionalTokens,
+        data: encodedCallData,
+        value: '0x0',
+      },
+      {
+        networkClientId: selectedNetwork.clientId,
+        type: TransactionType.tokenMethodApprove,
+        requireApproval: false,
+      },
+    );
+
+    return transactionMeta;
+  };
+
+  const approveConditionalNegRiskAdapter = async () => {
+    const encodedCallData = encodeErc1155Approve({
+      spender: contractConfig.negRiskAdapter,
+      approved: true,
+    });
+
+    const transactionMeta = await addTransaction(
+      {
+        from: account.address,
+        to: contractConfig.conditionalTokens,
+        data: encodedCallData,
+        value: '0x0',
+      },
+      {
+        networkClientId: selectedNetwork.clientId,
+        type: TransactionType.tokenMethodApprove,
+        requireApproval: false,
+      },
+    );
+
+    return transactionMeta;
+  };
+
+  const approveAllowances = async () => {
+    await approveCollateralConditionalToken();
+    await approveCollateralExchange();
+    await approveConditionalExchange();
+    await approveCollateralNegRiskExchange();
+    await approveNegRiskAdapterToken();
+    await approveConditionalNegRiskExchange();
+    await approveConditionalNegRiskAdapter();
   };
 
   const placeOrder = async ({
@@ -266,12 +348,14 @@ export const usePolymarket = () => {
     size,
     tickSize,
     side,
+    negRisk,
   }: {
     tokenId: string;
     price: number;
     size: number;
     tickSize: TickSize;
     side: Side;
+    negRisk: boolean;
   }) => {
     const orderArgs = buildOrderCreationArgs({
       signer: account.address,
@@ -287,8 +371,8 @@ export const usePolymarket = () => {
     });
 
     const order = {
-      salt: hexToNumber(generateSalt()),
-      maker: orderArgs.maker,
+      salt: hexToNumber(generateSalt()).toString(),
+      maker: account.address,
       signer: orderArgs.signer ?? account.address,
       taker: orderArgs.taker,
       tokenId: orderArgs.tokenId,
@@ -297,19 +381,13 @@ export const usePolymarket = () => {
       expiration: orderArgs.expiration ?? '0',
       nonce: orderArgs.nonce,
       feeRateBps: orderArgs.feeRateBps,
-      side: orderArgs.side.toString(),
+      side: orderArgs.side,
       signatureType: orderArgs.signatureType ?? SignatureType.EOA,
     };
 
     console.log(order);
 
-    const negRisk = await fetch(
-      `${CLOB_ENDPOINT}/neg-risk?token_id=${tokenId}`,
-    );
-    const negRiskData = await negRisk.json();
-    console.log(negRiskData);
-
-    const verifyingContract = negRiskData.neg_risk
+    const verifyingContract = negRisk
       ? getContractConfig(hexToNumber(chainId)).negRiskExchange
       : getContractConfig(hexToNumber(chainId)).exchange;
 
@@ -344,6 +422,8 @@ export const usePolymarket = () => {
       message: order,
     };
 
+    console.log(typedData);
+
     const signature = await newUnsignedTypedMessage({
       messageParams: {
         data: typedData,
@@ -361,10 +441,14 @@ export const usePolymarket = () => {
       signature,
     };
 
-    console.log(signedOrder);
+    console.log('internal order', signedOrder);
 
     const body = JSON.stringify({
-      order: signedOrder,
+      order: {
+        ...signedOrder,
+        side,
+        salt: parseInt(signedOrder.salt, 10),
+      },
       owner: apiKey?.key,
       orderType: 'GTC',
     });
@@ -387,10 +471,7 @@ export const usePolymarket = () => {
   return {
     createApiKey,
     deriveApiKey,
-    approveToken,
-    approveNegRiskToken,
-    approveNegRiskAdapterToken,
-    approveConditionalToken,
+    approveAllowances,
     placeOrder,
     apiKey,
   };

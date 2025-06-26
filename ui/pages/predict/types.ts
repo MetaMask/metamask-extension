@@ -1,8 +1,38 @@
-export interface RoundConfig {
+import { Side, Token } from '@polymarket/clob-client';
+import { UtilsSide } from './utils';
+
+export type UserPosition = {
+  proxyWallet: string;
+  asset: string;
+  conditionId: string;
+  size: number;
+  avgPrice: number;
+  initialValue: number;
+  currentValue: number;
+  cashPnl: number;
+  percentPnl: number;
+  totalBought: number;
+  realizedPnl: number;
+  percentRealizedPnl: number;
+  curPrice: number;
+  redeemable: boolean;
+  title: string;
+  slug: string;
+  icon: string;
+  eventSlug: string;
+  outcome: string;
+  outcomeIndex: number;
+  oppositeOutcome: string;
+  oppositeAsset: string;
+  endDate: string;
+  negativeRisk: boolean;
+};
+
+export type RoundConfig = {
   readonly price: number;
   readonly size: number;
   readonly amount: number;
-}
+};
 
 export type TickSize = '0.1' | '0.01' | '0.001' | '0.0001';
 
@@ -29,11 +59,6 @@ export const ROUNDING_CONFIG: Record<TickSize, RoundConfig> = {
   },
 };
 
-export enum Side {
-  BUY,
-  SELL,
-}
-
 export enum SignatureType {
   /**
    * ECDSA EIP712 signatures signed by EOAs
@@ -52,7 +77,7 @@ export enum SignatureType {
 }
 
 // Simplified order for users
-export interface UserOrder {
+export type UserOrder = {
   /**
    * TokenID of the Conditional token asset being traded
    */
@@ -92,7 +117,7 @@ export interface UserOrder {
    * Address of the order taker. The zero address is used to indicate a public order
    */
   taker?: string;
-}
+};
 
 export enum OrderType {
   GTC = 'GTC',
@@ -102,7 +127,7 @@ export enum OrderType {
 }
 
 // Simplified market order for users
-export interface UserMarketOrder {
+export type UserMarketOrder = {
   /**
    * TokenID of the Conditional token asset being traded
    */
@@ -146,9 +171,9 @@ export interface UserMarketOrder {
    * - FAK (Fill and Kill): The order can be partially filled, and any unfilled portion is canceled.
    */
   orderType?: OrderType.FOK | OrderType.FAK;
-}
+};
 
-export interface OrderData {
+export type OrderData = {
   /**
    * Maker of the order, i.e the source of funds for the order
    */
@@ -179,7 +204,7 @@ export interface OrderData {
   /**
    * The side of the order, BUY or SELL
    */
-  side: Side;
+  side: UtilsSide;
 
   /**
    * Fee rate, in basis points, charged to the order maker, charged on proceeds
@@ -206,4 +231,47 @@ export interface OrderData {
    * Signature type used by the Order. Default value 'EOA'
    */
   signatureType?: SignatureType;
-}
+};
+
+export type Rate = {
+  asset_address: string;
+  rewards_daily_rate: number;
+};
+
+export type Rewards = {
+  max_spread: number;
+  min_size: number;
+  rates: Rate[];
+};
+
+export type Market = {
+  condition_id: string;
+  question_id: string;
+  tokens: Token[];
+  rewards: Rewards;
+  minimum_order_size: string;
+  minimum_tick_size: string;
+  category: string;
+  end_date_iso: string;
+  game_start_time: string;
+  question: string;
+  market_slug: string;
+  min_incentive_size: string;
+  max_incentive_spread: string;
+  active: boolean;
+  closed: boolean;
+  seconds_delay: number;
+  icon: string;
+  fpmm: string;
+  image: string;
+  neg_risk: boolean;
+};
+
+export type MarketGamma = {
+  conditionId: string;
+  image: string;
+  question: string;
+  endDate: string;
+  volume: string;
+  negRisk: boolean;
+};

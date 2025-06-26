@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 
+import { Side, TickSize, Token } from '@polymarket/clob-client';
 import {
   Box,
   Button,
@@ -24,18 +25,20 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 import { usePolymarket } from '../usePolymarket';
-import { Side } from '../types';
+import { Market } from '../types';
 
 const CLOB_ENDPOINT = 'https://clob.polymarket.com';
 
 const PredictContainer = () => {
   const { marketId } = useParams<{ marketId: string }>();
-  const [marketData, setMarketData] = useState<any>(null);
+  const [market, setMarket] = useState<Market | null>(null);
   const [selectedAmount, setSelectedAmount] = useState<number>(10);
   const { placeOrder } = usePolymarket();
 
-  const getMarket = async () => {
-    if (!marketId) return;
+  const getMarket = useCallback(async () => {
+    if (!marketId) {
+      return;
+    }
 
     const response = await fetch(`${CLOB_ENDPOINT}/markets/${marketId}`, {
       method: 'GET',
@@ -45,50 +48,53 @@ const PredictContainer = () => {
     });
 
     const marketData = await response.json();
-    setMarketData(marketData);
-  };
+    console.log('marketData', marketData);
+    setMarket(marketData);
+  }, [marketId]);
 
   useEffect(() => {
     getMarket();
-  }, [marketId]);
+  }, [getMarket, marketId]);
 
   const getTimeRemaining = () => {
-    if (!marketData?.end_date_iso) {
+    if (!market?.end_date_iso) {
       return '';
     }
-    const endDate = new Date(marketData.end_date_iso);
+    const endDate = new Date(market.end_date_iso);
     const now = new Date();
     const diff = endDate.getTime() - now.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     return `${days}D left`;
   };
 
-  const yesToken = marketData?.tokens?.find(
-    (token: any) => token.outcome === 'Yes',
+  const yesToken = market?.tokens?.find(
+    (token: Token) => token.outcome === 'Yes',
   );
-  const noToken = marketData?.tokens?.find(
-    (token: any) => token.outcome === 'No',
+  const noToken = market?.tokens?.find(
+    (token: Token) => token.outcome === 'No',
   );
 
   const handleBuyNo = () => {
-    console.log(marketData, noToken);
+    console.log(market, noToken);
     placeOrder({
-      tokenId: noToken.token_id,
-      price: noToken.price,
-      size: marketData.minimum_order_size,
-      tickSize: marketData.minimum_tick_size,
+      tokenId: noToken?.token_id || '',
+      price: noToken?.price || 0,
+      size: Number(market?.minimum_order_size),
+      tickSize: market?.minimum_tick_size as TickSize,
       side: Side.BUY,
+      negRisk: market?.neg_risk || false,
     });
   };
 
   const handleBuyYes = () => {
-    console.log(marketData, yesToken);
+    console.log(market, yesToken);
     placeOrder({
-      tokenId: yesToken.token_id,
-      price: yesToken.price,
-      size: marketData.minimum_order_size,
-      tickSize: marketData.minimum_tick_size,
+      tokenId: yesToken?.token_id || '',
+      price: yesToken?.price || 0,
+      size: Number(market?.minimum_order_size),
+      tickSize: market?.minimum_tick_size as TickSize,
       side: Side.BUY,
+      negRisk: market?.neg_risk || false,
     });
   };
 
@@ -122,13 +128,13 @@ const PredictContainer = () => {
             marginBottom={2}
           >
             <img
-              src={marketData?.icon || './images/logo/metamask-fox.svg'}
+              src={market?.icon || './images/logo/metamask-fox.svg'}
               alt="Market"
               style={{ width: 40, height: 40, borderRadius: '50%' }}
             />
             <Box>
               <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Bold}>
-                {marketData?.question || 'Loading...'}
+                {market?.question || 'Loading...'}
               </Text>
               <Text
                 variant={TextVariant.bodySm}

@@ -1,7 +1,8 @@
+import crypto from 'crypto';
 import { encode } from '@metamask/abi-utils';
 import { parseUnits } from '@ethersproject/units';
 
-import crypto from 'crypto';
+import { Side } from '@polymarket/clob-client';
 
 import {
   toFunctionSelector,
@@ -9,13 +10,13 @@ import {
   concat,
   type Hex,
 } from '../../../shared/lib/delegation/utils';
-import {
-  OrderData,
-  RoundConfig,
-  Side,
-  SignatureType,
-  UserOrder,
-} from './types';
+import { OrderData, RoundConfig, SignatureType, UserOrder } from './types';
+
+export enum UtilsSide {
+  BUY,
+
+  SELL,
+}
 
 const COLLATERAL_TOKEN_DECIMALS = 6;
 
@@ -31,6 +32,20 @@ export const encodeApprove = ({
   return concat([encodedSignature, encodedData]);
 };
 
+export const encodeErc1155Approve = ({
+  spender,
+  approved,
+}: {
+  spender: string;
+  approved: boolean;
+}): Hex => {
+  const encodedSignature = toFunctionSelector(
+    'setApprovalForAll(address,bool)',
+  );
+  const encodedData = toHex(encode(['address', 'bool'], [spender, approved]));
+  return concat([encodedSignature, encodedData]);
+};
+
 export const generateSalt = (): Hex => {
   return `0x${BigInt(Math.floor(Math.random() * 1000000)).toString(16)}`;
 };
@@ -41,10 +56,12 @@ function replaceAll(s: string, search: string, replace: string) {
 
 /**
  * Builds the canonical Polymarket CLOB HMAC signature
- * @param signer
- * @param key
+ *
  * @param secret
- * @param passphrase
+ * @param timestamp
+ * @param method
+ * @param requestPath
+ * @param body
  * @returns string
  */
 export const buildPolyHmacSignature = (
@@ -108,7 +125,7 @@ export const getOrderRawAmounts = (
   size: number,
   price: number,
   roundConfig: RoundConfig,
-): { side: Side; rawMakerAmt: number; rawTakerAmt: number } => {
+): { side: UtilsSide; rawMakerAmt: number; rawTakerAmt: number } => {
   const rawPrice = roundNormal(price, roundConfig.price);
 
   if (side === Side.BUY) {
@@ -124,31 +141,37 @@ export const getOrderRawAmounts = (
     }
 
     return {
-      side: Side.BUY,
-      rawMakerAmt,
-      rawTakerAmt,
-    };
-  } else {
-    const rawMakerAmt = roundDown(size, roundConfig.size);
-
-    let rawTakerAmt = rawMakerAmt * rawPrice;
-    if (decimalPlaces(rawTakerAmt) > roundConfig.amount) {
-      rawTakerAmt = roundUp(rawTakerAmt, roundConfig.amount + 4);
-      if (decimalPlaces(rawTakerAmt) > roundConfig.amount) {
-        rawTakerAmt = roundDown(rawTakerAmt, roundConfig.amount);
-      }
-    }
-
-    return {
-      side: Side.SELL,
+      side: UtilsSide.BUY,
       rawMakerAmt,
       rawTakerAmt,
     };
   }
+  const rawMakerAmt = roundDown(size, roundConfig.size);
+
+  let rawTakerAmt = rawMakerAmt * rawPrice;
+  if (decimalPlaces(rawTakerAmt) > roundConfig.amount) {
+    rawTakerAmt = roundUp(rawTakerAmt, roundConfig.amount + 4);
+    if (decimalPlaces(rawTakerAmt) > roundConfig.amount) {
+      rawTakerAmt = roundDown(rawTakerAmt, roundConfig.amount);
+    }
+  }
+
+  return {
+    side: UtilsSide.SELL,
+    rawMakerAmt,
+    rawTakerAmt,
+  };
 };
 
 /**
  * Translate simple user order to args used to generate Orders
+ *
+ * @param options
+ * @param options.signer
+ * @param options.maker
+ * @param options.signatureType
+ * @param options.userOrder
+ * @param options.roundConfig
  */
 export const buildOrderCreationArgs = ({
   signer,
@@ -212,5 +235,5 @@ export const buildOrderCreationArgs = ({
     signer,
     expiration: (userOrder.expiration || 0).toString(),
     signatureType,
-  } as OrderData;
+  };
 };

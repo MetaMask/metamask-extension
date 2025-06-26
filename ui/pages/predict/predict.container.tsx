@@ -1,30 +1,26 @@
 import React from 'react';
 
 import { Box, Button, Text } from '../../components/component-library';
-import PredictMarketsContainer from './markets/predict.markets.container';
 import { Header, Page } from '../../components/multichain/pages/page';
 
 import {
   Display,
-  FlexDirection,
   TextVariant,
   BackgroundColor,
 } from '../../helpers/constants/design-system';
+import PredictMarketsContainer from './markets/predict.markets.container';
 import { usePolymarket } from './usePolymarket';
 
 const PredictContainer = () => {
-  const {
-    apiKey,
-    createApiKey,
-    deriveApiKey,
-    approveToken,
-    approveNegRiskToken,
-    approveNegRiskAdapterToken,
-    approveConditionalToken,
-  } = usePolymarket();
+  const { apiKey, createApiKey, deriveApiKey, approveAllowances } =
+    usePolymarket();
 
   return (
-    <Page className="main-container" data-testid="remote-mode" backgroundColor={BackgroundColor.backgroundAlternative}>
+    <Page
+      className="main-container"
+      data-testid="remote-mode"
+      backgroundColor={BackgroundColor.backgroundAlternative}
+    >
       <Header
         textProps={{
           variant: TextVariant.headingSm,
@@ -34,17 +30,16 @@ const PredictContainer = () => {
       </Header>
       <Box backgroundColor={BackgroundColor.backgroundAlternative} padding={4}>
         <PredictMarketsContainer />
-        <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={2}>
+        <Box
+          display={Display.Grid}
+          style={{
+            gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+          }}
+          gap={2}
+        >
           <Button onClick={createApiKey}>Create API Key</Button>
           <Button onClick={deriveApiKey}>Derive API Key</Button>
-          <Button onClick={approveToken}>Approve Token</Button>
-          <Button onClick={approveNegRiskToken}>Approve Neg Risk Token</Button>
-          <Button onClick={approveNegRiskAdapterToken}>
-            Approve Neg Risk Adapter Token
-          </Button>
-          <Button onClick={approveConditionalToken}>
-            Approve Conditional Token
-          </Button>
+          <Button onClick={approveAllowances}>Approve Allowances</Button>
         </Box>
         {apiKey && (
           <>
