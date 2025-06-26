@@ -28,24 +28,30 @@ const MOCK_DELEGATION_SIGNATURE =
   '0x2261a7810ed3e9cde160895909e138e2f68adb2da86fcf98ea0840701df107721fb369ab9b52550ea98832c09f8185284aca4c94bd345e867a4f4461868dd7751b';
 
 export async function enforceSimulations({
-  chainId,
   messenger,
-  simulationData,
-  slippage,
-  txParams,
+  transactionMeta,
   useRealSignature = false,
 }: {
-  chainId: Hex;
   messenger: TransactionControllerInitMessenger;
-  simulationData: SimulationData;
-  slippage: number;
-  txParams: TransactionParams;
+  transactionMeta: TransactionMeta;
   useRealSignature?: boolean;
 }) {
+  log('Enforcing simulations', {
+    transactionMeta,
+    useRealSignature,
+  });
+
+  const {
+    chainId,
+    simulationData = { tokenBalanceChanges: [] },
+    txParams,
+  } = transactionMeta;
+
   const from = txParams.from as Hex;
   const chainIdDecimal = hexToNumber(chainId);
   const delegationEnvironment = getDeleGatorEnvironment(chainIdDecimal);
   const delegationManagerAddress = delegationEnvironment.DelegationManager;
+  const slippage = getSlippage(messenger, transactionMeta.id);
 
   const delegation = generateDelegation({
     accountAddress: from,
@@ -182,16 +188,23 @@ function generateCaveats(
       id: tokenIdHex,
     } = tokenChange;
 
-    const delta = applySlippage(difference, slippage, enforceDecrease);
+    const delta = BigInt(difference);
+
+    const deltaWithSlippage = applySlippage(
+      difference,
+      slippage,
+      enforceDecrease,
+    );
+
     const tokenId = tokenIdHex ? BigInt(tokenIdHex) : 0n;
 
     log('Caveat - Token Balance Change', {
       enforceDecrease,
       token,
       recipient,
-      delta: BigInt(difference),
+      delta,
       slippage,
-      deltaWithSlippage: delta,
+      deltaWithSlippage,
     });
 
     switch (standard) {
@@ -201,7 +214,7 @@ function generateCaveats(
           enforceDecrease,
           token,
           recipient,
-          delta,
+          deltaWithSlippage,
         );
         break;
 
@@ -233,6 +246,21 @@ function generateCaveats(
   }
 
   return caveatBuilder.build();
+}
+
+function getSlippage(
+  messenger: TransactionControllerInitMessenger,
+  transactionId: string,
+): number {
+  const appControllerState = messenger.call('AppStateController:getState');
+  const defaultValue = appControllerState.enforcedSimulationsSlippage;
+
+  const transactionOverride =
+    appControllerState.enforcedSimulationsSlippageForTransactions[
+      transactionId
+    ];
+
+  return transactionOverride ?? defaultValue;
 }
 
 function applySlippage(
