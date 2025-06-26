@@ -45,6 +45,9 @@ export const UserStorageMockttpControllerEvents = {
   DELETE_BATCH: 'DELETE_BATCH',
 } as const;
 
+// Helper type for converting const objects to enum-like types
+export type AsEnum<T> = T[keyof T];
+
 const determineIfFeatureEntryFromURL = (url: string) =>
   url.substring(url.lastIndexOf('userstorage') + 12).split('/').length === 2;
 
