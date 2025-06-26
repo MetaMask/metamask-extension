@@ -52,7 +52,6 @@
     "updateModalLastDismissedAt": null,
     "lastUpdatedAt": null,
     "qrHardware": {},
-    "isQrCodeScanActive": false,
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "addressSecurityAlertResponses": "object",

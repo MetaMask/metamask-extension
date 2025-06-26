@@ -1,9 +1,10 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import {
+  getActiveQrCodeScanRequest,
   getCurrentQRHardwareState,
-  isQrCodeScanActive,
 } from '../../../selectors';
 import Popover from '../../ui/popover';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -21,9 +22,7 @@ const QRHardwarePopover = () => {
 
   const qrHardware = useSelector(getCurrentQRHardwareState);
   const { sign } = qrHardware;
-  const isScanActive = useSelector(isQrCodeScanActive);
-  const showSignRequest = sign?.request;
-  const showPopover = isScanActive || showSignRequest;
+  const activeScanRequest = useSelector(getActiveQrCodeScanRequest);
   const [errorTitle, setErrorTitle] = useState('');
 
   const { txData } = useSelector((state) => {
@@ -55,30 +54,34 @@ const QRHardwarePopover = () => {
   }, [dispatch, _txData]);
 
   const title = useMemo(() => {
-    let _title = '';
-    if (showSignRequest) {
-      _title = t('QRHardwareSignRequestTitle');
-    } else if (isScanActive) {
-      _title = t('QRHardwareWalletImporterTitle');
+    if (activeScanRequest === QrScanRequestType.SIGN) {
+      return t('QRHardwareSignRequestTitle');
+    }
+    if (activeScanRequest === QrScanRequestType.PAIR) {
+      return t('QRHardwareWalletImporterTitle');
     }
     if (errorTitle !== '') {
-      _title = errorTitle;
+      return errorTitle;
     }
-    return _title;
-  }, [showSignRequest, isScanActive, t, errorTitle]);
+    return '';
+  }, [activeScanRequest, t, errorTitle]);
 
-  return showPopover ? (
+  return activeScanRequest ? (
     <Popover
       title={title}
-      onClose={isScanActive ? walletImporterCancel : signRequestCancel}
+      onClose={
+        activeScanRequest === QrScanRequestType.PAIR
+          ? walletImporterCancel
+          : signRequestCancel
+      }
     >
-      {isScanActive && (
+      {activeScanRequest === QrScanRequestType.PAIR && (
         <QRHardwareWalletImporter
           handleCancel={walletImporterCancel}
           setErrorTitle={setErrorTitle}
         />
       )}
-      {showSignRequest && (
+      {activeScanRequest === QrScanRequestType.SIGN && (
         <QRHardwareSignRequest
           setErrorTitle={setErrorTitle}
           handleCancel={signRequestCancel}

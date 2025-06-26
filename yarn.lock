@@ -5883,16 +5883,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-qr-keyring@npm:@metamask-previews/eth-qr-keyring@1.0.0-8a027ff":
-  version: 1.0.0-8a027ff
-  resolution: "@metamask-previews/eth-qr-keyring@npm:1.0.0-8a027ff"
+"@metamask/eth-qr-keyring@npm:@metamask-previews/eth-qr-keyring@1.0.0-ae6ca94":
+  version: 1.0.0-ae6ca94
+  resolution: "@metamask-previews/eth-qr-keyring@npm:1.0.0-ae6ca94"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
     "@metamask/keyring-utils": "npm:3.0.0"
     "@metamask/utils": "npm:^11.1.0"
     hdkey: "npm:^2.1.0"
-  checksum: 10/220036a142a07f8f917e7a2015d86c78fcc009bfafb8b144b6bc0408c9abf070c4d3ffb650fa1855be2fe9e7587c72f8cef4af058814c77eeee88c76af64f39c
+  checksum: 10/e1e09e7112d26e233b73fedbb5fb942706d165f30cfb4c5badb094403ba260bd24a80c4e6c787bde7bc8ffeacd6d0d171ab752bd582f91141380bce5c23d79e3
   languageName: node
   linkType: hard
 

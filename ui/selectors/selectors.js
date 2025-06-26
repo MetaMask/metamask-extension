@@ -295,9 +295,8 @@ export function getCurrentQRHardwareState(state) {
   return qrHardware || {};
 }
 
-export function isQrCodeScanActive(state) {
-  const { isQrCodeScanActive: isActive } = state.metamask;
-  return Boolean(isActive);
+export function getActiveQrCodeScanRequest(state) {
+  return state.metamask.activeQrCodeScanRequest;
 }
 
 export function getIsSigningQRHardwareTransaction(state) {

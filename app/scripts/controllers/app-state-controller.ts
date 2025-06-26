@@ -12,7 +12,10 @@ import {
   AddApprovalRequest,
 } from '@metamask/approval-controller';
 import { DeferredPromise, Json, createDeferredPromise } from '@metamask/utils';
-import type { QrScanResponse } from '@metamask/eth-qr-keyring';
+import type {
+  QrScanRequestType,
+  QrScanResponse,
+} from '@metamask/eth-qr-keyring';
 import { Browser } from 'webextension-polyfill';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -72,7 +75,7 @@ export type AppStateControllerState = {
   // multiple networks.
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
   qrHardware: Json;
-  isQrCodeScanActive: boolean;
+  activeQrCodeScanRequest?: QrScanRequestType;
   nftsDropdownState: Json;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
@@ -103,7 +106,7 @@ export type AppStateControllerGetStateAction = ControllerGetStateAction<
 
 export type AppStateControllerRequestQrCodeScanAction = {
   type: 'AppStateController:requestQrCodeScan';
-  handler: () => Promise<QrScanResponse>;
+  handler: (type: QrScanRequestType) => Promise<QrScanResponse>;
 };
 
 /**
@@ -217,7 +220,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
 function getInitialStateOverrides() {
   return {
     qrHardware: {},
-    isQrCodeScanActive: false,
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
     addressSecurityAlertResponses: {},
@@ -327,7 +329,7 @@ const controllerMetadata = {
     persist: false,
     anonymous: true,
   },
-  isQrCodeScanActive: {
+  activeQrCodeScanRequest: {
     persist: false,
     anonymous: true,
   },
@@ -1137,7 +1139,7 @@ export class AppStateController extends BaseController<
     }
 
     this.update((state) => {
-      state.isQrCodeScanActive = false;
+      delete state.activeQrCodeScanRequest;
     });
 
     this.#qrCodeScanPromise.resolve(scannedData);
@@ -1156,7 +1158,7 @@ export class AppStateController extends BaseController<
     }
 
     this.update((state) => {
-      state.isQrCodeScanActive = false;
+      delete state.activeQrCodeScanRequest;
     });
 
     this.#qrCodeScanPromise.reject(error || new Error('Scan cancelled'));
@@ -1167,9 +1169,10 @@ export class AppStateController extends BaseController<
    * Requests a QR code scan and returns a promise that resolves with the scanned data.
    * If a scan is already in progress, it returns the existing promise.
    *
+   * @param type - The type of QR code scan request.
    * @returns The scanned QR code data.
    */
-  #requestQrCodeScan(): Promise<QrScanResponse> {
+  #requestQrCodeScan(type: QrScanRequestType): Promise<QrScanResponse> {
     if (this.#qrCodeScanPromise) {
       return this.#qrCodeScanPromise.promise;
     }
@@ -1178,7 +1181,7 @@ export class AppStateController extends BaseController<
     this.#qrCodeScanPromise = deferredPromise;
 
     this.update((state) => {
-      state.isQrCodeScanActive = true;
+      state.activeQrCodeScanRequest = type;
     });
 
     return deferredPromise.promise;
