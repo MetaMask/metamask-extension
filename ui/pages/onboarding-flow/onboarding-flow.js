@@ -135,7 +135,11 @@ export default function OnboardingFlow() {
       }
     }
 
-    if (isPrimarySeedPhraseBackedUp && isSRPBackupRoute) {
+    if (
+      isPrimarySeedPhraseBackedUp &&
+      isSRPBackupRoute &&
+      completedOnboarding
+    ) {
       history.replace(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
     }
 
