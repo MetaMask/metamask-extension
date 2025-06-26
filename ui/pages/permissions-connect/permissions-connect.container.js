@@ -14,7 +14,6 @@ import {
   getSnapsInstallPrivacyWarningShown,
   getRequestType,
   getTargetSubjectMetadata,
-  getPermissions,
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 
@@ -37,7 +36,6 @@ import {
   CONNECT_SNAP_RESULT_ROUTE,
 } from '../../helpers/constants/routes';
 import PermissionApproval from './permissions-connect.component';
-import { getCaip25CaveatValueFromPermissions } from './connect-page/utils';
 
 const mapStateToProps = (state, ownProps) => {
   const {
@@ -60,17 +58,6 @@ const mapStateToProps = (state, ownProps) => {
   const { metadata = {}, diff = {} } = permissionsRequest || {};
   const { origin } = metadata;
   const nativeCurrency = getNativeCurrency(state);
-
-  if (permissionsRequest) {
-    const permissions = getPermissions(state, origin);
-
-    if (permissions) {
-      const existingCaveat = getCaip25CaveatValueFromPermissions(permissions);
-
-      // Save existing permissions to be added along with the new ones
-      permissionsRequest.existingCaveat = existingCaveat;
-    }
-  }
 
   const isRequestApprovalPermittedChains = Boolean(diff?.permissionDiffMap);
   const isRequestingAccounts = Boolean(

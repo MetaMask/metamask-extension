@@ -5,7 +5,6 @@ import {
   getAllNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
-  Caip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
@@ -16,7 +15,10 @@ import {
 } from '@metamask/utils';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getUpdatedAndSortedAccountsWithCaipAccountId } from '../../../selectors';
+import {
+  getPermissions,
+  getUpdatedAndSortedAccountsWithCaipAccountId,
+} from '../../../selectors';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
 import {
   AvatarBase,
@@ -84,11 +86,10 @@ export type ConnectPageRequest = {
   origin: string;
   permissions?: PermissionsRequest;
   metadata?: {
+    origin: string;
     isEip1193Request?: boolean;
     promptToCreateSolanaAccount?: boolean;
   };
-  /** Existing caveat value, granted on a previous connection. */
-  existingCaveat?: Caip25CaveatValue;
 };
 
 export type ConnectPageProps = {
@@ -116,15 +117,27 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
+  const existingPermissions = useSelector((state) =>
+    getPermissions(state, request.metadata?.origin),
+  );
+
+  const existingCaip25CaveatValue = useMemo(
+    () =>
+      existingPermissions
+        ? getCaip25CaveatValueFromPermissions(existingPermissions)
+        : null,
+    [existingPermissions],
+  );
+
   const requestedCaip25CaveatValue = getCaip25CaveatValueFromPermissions(
     request.permissions,
   );
 
   const requestedCaip25CaveatValueWithExistingPermissions =
-    request.existingCaveat
+    existingCaip25CaveatValue
       ? mergeCaip25CaveatValues(
           requestedCaip25CaveatValue,
-          request.existingCaveat,
+          existingCaip25CaveatValue,
         )
       : requestedCaip25CaveatValue;
 
