@@ -63,6 +63,7 @@ describe('Feature Flags Selectors', () => {
         networksMetadata: {
           'test-client-id': { status: 'available' },
         },
+        domains: {},
         // Swaps feature flags
         swapsState: {
           swapsFeatureFlags: {

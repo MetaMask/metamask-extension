@@ -1354,7 +1354,8 @@
         "origin": "tmashuang.github.io"
       }
     ],
-    "swapsState": {}
+    "swapsState": {},
+    "domains": {}
   },
   "ramps": {
     "buyableChains": [

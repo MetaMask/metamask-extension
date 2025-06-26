@@ -2287,7 +2287,8 @@
     },
     "txHistory": {},
     "throttledOrigins": {},
-    "delegations": {}
+    "delegations": {},
+    "domains": {}
   },
   "ramps": {
     "buyableChains": [
