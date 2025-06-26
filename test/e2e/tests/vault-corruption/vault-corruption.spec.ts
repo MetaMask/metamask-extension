@@ -154,6 +154,7 @@ describe('Vault Corruption', function () {
 
     const homePage = new HomePage(driver);
     await homePage.check_pageIsLoaded();
+    await homePage.waitForLoadingOverlayToDisappear();
 
     const headerNavbar = new HeaderNavbar(driver);
     const firstAddress = await getFirstAddress(driver, headerNavbar);
