@@ -14,7 +14,7 @@ export const EVMAccountDetails = ({
 }: EVMAccountDetailsProps) => {
   return (
     <BaseAccountDetails address={address} account={account}>
-      <SmartContractAccountToggleSection />
+      <SmartContractAccountToggleSection address={address} />
     </BaseAccountDetails>
   );
 };
