@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { submitQRHardwareSignature } from '../../../../store/actions';
+import { completeQrCodeScan } from '../../../../store/actions';
 import Player from './player';
 import Reader from './reader';
 
@@ -25,7 +25,7 @@ const QRHardwareSignRequest = ({ request, handleCancel, setErrorTitle }) => {
     return (
       <Reader
         cancelQRHardwareSignRequest={handleCancel}
-        submitQRHardwareSignature={submitQRHardwareSignature}
+        submitQRHardwareSignature={completeQrCodeScan}
         requestId={request.requestId}
         setErrorTitle={setErrorTitle}
       />

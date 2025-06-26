@@ -12,10 +12,7 @@ import {
   AddApprovalRequest,
 } from '@metamask/approval-controller';
 import { DeferredPromise, Json, createDeferredPromise } from '@metamask/utils';
-import type {
-  QrScanRequestType,
-  QrScanResponse,
-} from '@metamask/eth-qr-keyring';
+import type { QrScanRequest, SerializedUR } from '@metamask/eth-qr-keyring';
 import { Browser } from 'webextension-polyfill';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -75,7 +72,7 @@ export type AppStateControllerState = {
   // multiple networks.
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
   qrHardware: Json;
-  activeQrCodeScanRequest?: QrScanRequestType;
+  activeQrCodeScanRequest?: QrScanRequest;
   nftsDropdownState: Json;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
@@ -106,7 +103,7 @@ export type AppStateControllerGetStateAction = ControllerGetStateAction<
 
 export type AppStateControllerRequestQrCodeScanAction = {
   type: 'AppStateController:requestQrCodeScan';
-  handler: (type: QrScanRequestType) => Promise<QrScanResponse>;
+  handler: (request: QrScanRequest) => Promise<SerializedUR>;
 };
 
 /**
@@ -412,7 +409,7 @@ export class AppStateController extends BaseController<
 
   #approvalRequestId: string | null;
 
-  #qrCodeScanPromise: DeferredPromise<QrScanResponse> | null = null;
+  #qrCodeScanPromise: DeferredPromise<SerializedUR> | null = null;
 
   constructor({
     state = {},
@@ -1133,7 +1130,7 @@ export class AppStateController extends BaseController<
    * @param scannedData - The data that was scanned from the QR code.
    * @throws If no QR code scan is in progress.
    */
-  completeQrCodeScan(scannedData: QrScanResponse): void {
+  completeQrCodeScan(scannedData: SerializedUR): void {
     if (!this.#qrCodeScanPromise) {
       throw new Error('No QR code scan is in progress.');
     }
@@ -1153,6 +1150,7 @@ export class AppStateController extends BaseController<
    * @param error - The error to reject the promise with.
    */
   cancelQrCodeScan(error?: Error): void {
+    console.log('Cancelling QR code scan', error);
     if (!this.#qrCodeScanPromise) {
       throw new Error('No QR code scan is in progress.');
     }
@@ -1169,19 +1167,19 @@ export class AppStateController extends BaseController<
    * Requests a QR code scan and returns a promise that resolves with the scanned data.
    * If a scan is already in progress, it returns the existing promise.
    *
-   * @param type - The type of QR code scan request.
+   * @param request - The QR code scan request.
    * @returns The scanned QR code data.
    */
-  #requestQrCodeScan(type: QrScanRequestType): Promise<QrScanResponse> {
+  #requestQrCodeScan(request: QrScanRequest): Promise<SerializedUR> {
     if (this.#qrCodeScanPromise) {
       return this.#qrCodeScanPromise.promise;
     }
 
-    const deferredPromise = createDeferredPromise<QrScanResponse>();
+    const deferredPromise = createDeferredPromise<SerializedUR>();
     this.#qrCodeScanPromise = deferredPromise;
 
     this.update((state) => {
-      state.activeQrCodeScanRequest = type;
+      state.activeQrCodeScanRequest = request;
     });
 
     return deferredPromise.promise;

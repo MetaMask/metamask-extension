@@ -2,14 +2,10 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
-import {
-  getActiveQrCodeScanRequest,
-  getCurrentQRHardwareState,
-} from '../../../selectors';
+import { getActiveQrCodeScanRequest } from '../../../selectors';
 import Popover from '../../ui/popover';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  cancelQRHardwareSignRequest as cancelQRHardwareSignRequestAction,
   cancelTx,
   rejectPendingApproval,
   cancelQrCodeScan,
@@ -20,8 +16,6 @@ import QRHardwareSignRequest from './qr-hardware-sign-request';
 const QRHardwarePopover = () => {
   const t = useI18nContext();
 
-  const qrHardware = useSelector(getCurrentQRHardwareState);
-  const { sign } = qrHardware;
   const activeScanRequest = useSelector(getActiveQrCodeScanRequest);
   const [errorTitle, setErrorTitle] = useState('');
 
@@ -34,7 +28,7 @@ const QRHardwarePopover = () => {
   const _txData = useMemo(() => {
     return txData;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sign?.request?.requestId]);
+  }, [activeScanRequest?.requestId]);
 
   const dispatch = useDispatch();
   const walletImporterCancel = useCallback(
@@ -50,7 +44,7 @@ const QRHardwarePopover = () => {
       ),
     );
     dispatch(cancelTx(_txData));
-    dispatch(cancelQRHardwareSignRequestAction());
+    dispatch(cancelQrCodeScan());
   }, [dispatch, _txData]);
 
   const title = useMemo(() => {
@@ -70,22 +64,22 @@ const QRHardwarePopover = () => {
     <Popover
       title={title}
       onClose={
-        activeScanRequest === QrScanRequestType.PAIR
+        activeScanRequest.type === QrScanRequestType.PAIR
           ? walletImporterCancel
           : signRequestCancel
       }
     >
-      {activeScanRequest === QrScanRequestType.PAIR && (
+      {activeScanRequest.type === QrScanRequestType.PAIR && (
         <QRHardwareWalletImporter
           handleCancel={walletImporterCancel}
           setErrorTitle={setErrorTitle}
         />
       )}
-      {activeScanRequest === QrScanRequestType.SIGN && (
+      {activeScanRequest.type === QrScanRequestType.SIGN && (
         <QRHardwareSignRequest
           setErrorTitle={setErrorTitle}
           handleCancel={signRequestCancel}
-          request={sign.request}
+          request={activeScanRequest.request}
         />
       )}
     </Popover>

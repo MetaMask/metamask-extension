@@ -22,7 +22,10 @@ const Reader = ({
       const buffer = ethSignature.getRequestId();
       const signId = uuid.stringify(buffer);
       if (signId === requestId) {
-        return await submitQRHardwareSignature(signId, ur.cbor.toString('hex'));
+        return await submitQRHardwareSignature({
+          type: ur.type,
+          cbor: ur.cbor.toString('hex'),
+        });
       }
       setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
       throw new Error(t('QRHardwareMismatchedSignId'));

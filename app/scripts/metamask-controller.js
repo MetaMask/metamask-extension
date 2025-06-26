@@ -1109,9 +1109,10 @@ export default class MetamaskController extends EventEmitter {
         keyringOverrides?.qr || QrKeyring,
         keyringOverrides?.qrBridge || QrKeyringScannerBridge,
         {
-          requestScan: async () =>
+          requestScan: async (request) =>
             appStateControllerMessenger.call(
               'AppStateController:requestQrCodeScan',
+              request,
             ),
         },
       ),
@@ -1220,8 +1221,6 @@ export default class MetamaskController extends EventEmitter {
       encryptor: opts.encryptor || encryptorFactory(600_000),
       messenger: keyringControllerMessenger,
     });
-
-    console.log('KeyringController initialized');
 
     this.controllerMessenger.subscribe('KeyringController:unlock', () =>
       this._onUnlock(),

@@ -5883,16 +5883,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-qr-keyring@npm:@metamask-previews/eth-qr-keyring@1.0.0-ae6ca94":
-  version: 1.0.0-ae6ca94
-  resolution: "@metamask-previews/eth-qr-keyring@npm:1.0.0-ae6ca94"
+"@metamask/eth-qr-keyring@npm:@metamask-previews/eth-qr-keyring@1.0.0-e4f6caa":
+  version: 1.0.0-e4f6caa
+  resolution: "@metamask-previews/eth-qr-keyring@npm:1.0.0-e4f6caa"
   dependencies:
+    "@ethereumjs/rlp": "npm:^5.0.2"
+    "@ethereumjs/tx": "npm:^5.4.0"
     "@ethereumjs/util": "npm:^9.1.0"
     "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/keyring-utils": "npm:3.0.0"
     "@metamask/utils": "npm:^11.1.0"
     hdkey: "npm:^2.1.0"
-  checksum: 10/e1e09e7112d26e233b73fedbb5fb942706d165f30cfb4c5badb094403ba260bd24a80c4e6c787bde7bc8ffeacd6d0d171ab752bd582f91141380bce5c23d79e3
+    uuid: "npm:^9.0.1"
+  checksum: 10/7f3bcafa3638b38f90aaf06876f7d73d373287c88b7cf71cc9f65cca6637b97a0bc19ac7c771fdaf43c37a9aa75b29418c3bc01eee85f0c111a6707cd99c2214
   languageName: node
   linkType: hard
 

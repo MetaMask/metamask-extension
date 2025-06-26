@@ -144,6 +144,7 @@ import {
 import { getSelectedMultichainNetworkChainId } from './multichain/networks';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
 export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
@@ -290,17 +291,16 @@ export function isCurrentProviderCustom(state) {
   );
 }
 
-export function getCurrentQRHardwareState(state) {
-  const { qrHardware } = state.metamask;
-  return qrHardware || {};
-}
-
 export function getActiveQrCodeScanRequest(state) {
   return state.metamask.activeQrCodeScanRequest;
 }
 
 export function getIsSigningQRHardwareTransaction(state) {
-  return state.metamask.qrHardware?.sign?.request !== undefined;
+  const activeQrCodeScanRequest = getActiveQrCodeScanRequest(state);
+  return (
+    activeQrCodeScanRequest &&
+    activeQrCodeScanRequest.type === QrScanRequestType.SIGN
+  );
 }
 
 export function getCurrentKeyring(state) {

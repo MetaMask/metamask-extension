@@ -759,7 +759,7 @@
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": true,
         "browserify>buffer": true,
         "@metamask/eth-qr-keyring>hdkey": true,
-        "uuid": true
+        "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>uuid": true
       }
     },
     "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
@@ -1356,11 +1356,14 @@
     },
     "@metamask/eth-qr-keyring": {
       "packages": {
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
+        "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
-        "@metamask/eth-qr-keyring>hdkey": true
+        "@metamask/eth-qr-keyring>hdkey": true,
+        "@metamask/eth-qr-keyring>uuid": true
       }
     },
     "@metamask/controller-utils>@metamask/eth-query": {
@@ -5971,6 +5974,17 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
+      }
+    },
+    "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>uuid": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
+      }
+    },
+    "@metamask/eth-qr-keyring>uuid": {
+      "globals": {
+        "crypto": true
       }
     },
     "@metamask/eth-snap-keyring>uuid": {
