@@ -354,7 +354,7 @@ class SendTokenPage {
     const assetPickerSymbol = await this.driver.waitForSelector(
       this.assetPickerSymbol,
     );
-
+    this.driver.waitForNonEmptyElement(assetPickerSymbol);
     const text = await assetPickerSymbol.getText();
     assert.equal(
       text,

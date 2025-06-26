@@ -94,13 +94,13 @@ class SendTokenConfirmPage {
 
   async clickOnCancel(): Promise<void> {
     console.log('Clicking on Cancel button');
-    await this.driver.clickElement(this.cancelButton);
+    await this.driver.clickElementAndWaitToDisappear(this.cancelButton);
     console.log('Cancel button clicked');
   }
 
   async clickOnConfirm(): Promise<void> {
     console.log('Clicking on Confirm button');
-    await this.driver.clickElement(this.confirmButton);
+    await this.driver.clickElementAndWaitToDisappear(this.confirmButton);
     console.log('Confirm button clicked');
   }
 }
