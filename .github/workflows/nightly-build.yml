@@ -1,6 +1,9 @@
 name: Nightly Build
 
 on:
+  push:
+    branches:
+      - INFRA-2663-nightlybuilds
   schedule:
     # Run daily at 02:00 UTC
     - cron: '0 2 * * *'
@@ -16,22 +19,9 @@ permissions:
   id-token: write
 
 jobs:
-  prep-deps:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          cache-node-modules: true
-          skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
-
   # Main Chrome build
   build-dist-browserify:
     uses: ./.github/workflows/run-build.yml
-    needs:
-      - prep-deps
     with:
       build-name: build-dist-browserify
       build-command: 'yarn build dist'
@@ -40,8 +30,6 @@ jobs:
   # Main Firefox build
   build-dist-mv2-browserify:
     uses: ./.github/workflows/run-build.yml
-    needs:
-      - prep-deps
     with:
       build-name: build-dist-mv2-browserify
       build-command: 'yarn build dist'
@@ -52,8 +40,6 @@ jobs:
   # Experimental Chrome build
   build-experimental-browserify:
     uses: ./.github/workflows/run-build.yml
-    needs:
-      - prep-deps
     with:
       build-name: build-experimental-browserify
       build-command: 'yarn build --build-type experimental dist'
@@ -62,8 +48,6 @@ jobs:
   # Experimental Firefox build
   build-experimental-mv2-browserify:
     uses: ./.github/workflows/run-build.yml
-    needs:
-      - prep-deps
     with:
       build-name: build-experimental-mv2-browserify
       build-command: 'yarn build --build-type experimental dist'
