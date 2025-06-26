@@ -6,6 +6,7 @@ import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
 import { Manifest } from '../utils/helpers';
 import { transformManifest } from '../utils/plugins/ManifestPlugin/helpers';
+import { MANIFEST_DEV_KEY } from '../../build/constants';
 import { generateCases, type Combination, mockWebpack } from './helpers';
 
 describe('ManifestPlugin', () => {
@@ -299,7 +300,10 @@ describe('ManifestPlugin', () => {
     const notEmptyTestManifest = {
       _flags: { remoteFeatureFlags: { testFlag: false, testFlag2: 'value1' } },
     } as unknown as chrome.runtime.Manifest;
-    const mockFlags = { _flags: { remoteFeatureFlags: { testFlag: true } } };
+    const mockFlags = {
+      _flags: { remoteFeatureFlags: { testFlag: true } },
+      key: MANIFEST_DEV_KEY,
+    };
     const manifestOverridesPath = 'testManifestOverridesPath.json';
     const fs = require('node:fs');
     const { mock } = require('node:test');
@@ -354,6 +358,7 @@ describe('ManifestPlugin', () => {
               testFlag: true,
             },
           },
+          key: MANIFEST_DEV_KEY,
         },
         'manifest should merge original properties with overrides, with overrides taking precedence',
       );

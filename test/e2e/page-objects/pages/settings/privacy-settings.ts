@@ -138,6 +138,15 @@ class PrivacySettings {
     console.log('Privacy & Security Settings page is loaded');
   }
 
+  async check_srpListIsLoaded(): Promise<void> {
+    console.log('Check SRP list is loaded on privacy settings page');
+    const srpSelector = {
+      text: `Secret Recovery Phrase 1`,
+      tag: 'p',
+    };
+    await this.driver.waitForSelector(srpSelector);
+  }
+
   async deleteMetaMetrics(): Promise<void> {
     console.log('Click to delete MetaMetrics data on privacy settings page');
     await this.driver.clickElement(this.deleteMetaMetricsDataButton);
@@ -231,20 +240,14 @@ class PrivacySettings {
     await this.driver.clickElement(this.revealSrpButton);
   }
 
-  async openRevealSrpQuiz(srpIndex?: number): Promise<void> {
-    console.log('Open reveal SRP quiz on privacy settings page');
-
-    if (srpIndex) {
-      await this.openSrpList();
-      // We only pass in the srpIndex when there are multiple SRPs
-      const srpSelector = {
-        text: `Secret Recovery Phrase ${srpIndex.toString()}`,
-        tag: 'p',
-      };
-      await this.driver.clickElement(srpSelector);
-    } else {
-      await this.driver.clickElement(this.revealSrpButton);
-    }
+  async openRevealSrpQuiz(srpIndex: number = 1): Promise<void> {
+    await this.openSrpList();
+    // We only pass in the srpIndex when there are multiple SRPs
+    const srpSelector = {
+      text: `Secret Recovery Phrase ${srpIndex.toString()}`,
+      tag: 'p',
+    };
+    await this.driver.clickElement(srpSelector);
 
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
   }

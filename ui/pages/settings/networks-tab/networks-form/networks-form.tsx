@@ -5,7 +5,7 @@ import {
   type UpdateNetworkFields,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { Hex, isStrictHexString } from '@metamask/utils';
+import { Hex, isStrictHexString, parseCaipChainId } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -32,6 +32,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules
 import {
   addNetwork,
   setEditedNetwork,
+  setEnabledNetworks,
   setTokenNetworkFilter,
   showDeprecatedNetworkModal,
   toggleNetworkMenu,
@@ -73,6 +74,7 @@ import {
   getTokenNetworkFilter,
 } from '../../../../selectors';
 import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
+import { getSelectedMultichainNetworkChainId } from '../../../../selectors/multichain/networks';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -81,11 +83,17 @@ export const NetworksForm = ({
   existingNetwork,
   onRpcAdd,
   onBlockExplorerAdd,
+  toggleNetworkMenuAfterSubmit = true,
+  onComplete,
+  onEdit,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   existingNetwork?: UpdateNetworkFields;
   onRpcAdd: () => void;
   onBlockExplorerAdd: () => void;
+  toggleNetworkMenuAfterSubmit?: boolean;
+  onComplete?: () => void;
+  onEdit?: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -127,6 +135,11 @@ export const NetworksForm = ({
   const [fetchedChainId, setFetchedChainId] = useState<string>();
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
+  const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const templateInfuraRpc = (endpoint: string) =>
     endpoint.endsWith('{infuraProjectId}')
@@ -288,9 +301,15 @@ export const NetworksForm = ({
                 [existingNetwork.chainId]: true,
               }),
             );
+            await dispatch(
+              setEnabledNetworks([existingNetwork.chainId], namespace),
+            );
           }
         } else {
           await dispatch(addNetwork(networkPayload));
+          await dispatch(
+            setEnabledNetworks([networkPayload.chainId], namespace),
+          );
         }
 
         trackEvent({
@@ -327,7 +346,8 @@ export const NetworksForm = ({
     } catch (e) {
       console.error(e);
     } finally {
-      dispatch(toggleNetworkMenu());
+      toggleNetworkMenuAfterSubmit && dispatch(toggleNetworkMenu());
+      onComplete?.();
     }
   };
 
@@ -555,6 +575,7 @@ export const NetworksForm = ({
                         chainId: chainIdHex,
                       }),
                     );
+                    onEdit?.();
                   }
                 }}
               >

@@ -24,6 +24,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   EIP5792ErrorCode,
+  NATIVE_TOKEN_ADDRESS,
   TokenStandard,
   TransactionApprovalAmountType,
   TransactionMetaMetricsEvent,
@@ -1257,6 +1258,10 @@ function addGaslessProperties(
     (token) =>
       token.tokenAddress.toLowerCase() === selectedGasFeeToken?.toLowerCase(),
   )?.symbol;
+
+  if (selectedGasFeeToken?.toLowerCase() === NATIVE_TOKEN_ADDRESS) {
+    properties.gas_paid_with = 'pre-funded_ETH';
+  }
 
   properties.gas_insufficient_native_asset = isInsufficientNativeBalance(
     transactionMeta,

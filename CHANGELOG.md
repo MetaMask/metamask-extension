@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.20.1]
+### Fixed
+- Fixed a case where internal accounts can be undefined ([#33768](https://github.com/MetaMask/metamask-extension/pull/33768))
+- Fixed `wallet_addEthereumChain` RPC error when adding a new chain ([#33821](https://github.com/MetaMask/metamask-extension/pull/33821))
+
 ## [12.20.0]
 ### Added
 - Rebrand "Profile syncing" to "Backup and sync", adding a dedicated settings menu and more ([#32129](https://github.com/MetaMask/metamask-extension/pull/32129))
@@ -6380,7 +6385,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.20.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.20.1...HEAD
+[12.20.1]: https://github.com/MetaMask/metamask-extension/compare/v12.20.0...v12.20.1
 [12.20.0]: https://github.com/MetaMask/metamask-extension/compare/v12.18.3...v12.20.0
 [12.18.3]: https://github.com/MetaMask/metamask-extension/compare/v12.18.2...v12.18.3
 [12.18.2]: https://github.com/MetaMask/metamask-extension/compare/v12.18.1...v12.18.2

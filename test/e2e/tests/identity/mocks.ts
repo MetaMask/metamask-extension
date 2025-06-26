@@ -50,6 +50,16 @@ export async function mockIdentityServices(
       server,
     );
   }
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_FEATURE_NAMES.addressBook,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_FEATURE_NAMES.addressBook,
+      server,
+    );
+  }
 }
 
 export const MOCK_SRP_E2E_IDENTIFIER_BASE_KEY = 'MOCK_SRP_IDENTIFIER';
