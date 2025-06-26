@@ -413,6 +413,8 @@ import {
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
+import OAuthService from './services/oauth/oauth-service';
+import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1090,6 +1092,16 @@ export default class MetamaskController extends EventEmitter {
       messenger: onboardingControllerMessenger,
       state: initState.OnboardingController,
     });
+
+    this.oauthService = process.env.SEEDLESS_ONBOARDING_ENABLED
+      ? new OAuthService({
+          env: {
+            googleClientId: process.env.GOOGLE_CLIENT_ID,
+            appleClientId: process.env.APPLE_CLIENT_ID,
+          },
+          webAuthenticator: webAuthenticatorFactory(),
+        })
+      : null;
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
@@ -7840,6 +7852,7 @@ export default class MetamaskController extends EventEmitter {
       this.tokenBalancesController.stopAllPolling();
       this.appStateController.clearPollingTokens();
       this.accountTrackerController.stopAllPolling();
+      this.deFiPositionsController.stopAllPolling();
     } catch (error) {
       console.error(error);
     }
