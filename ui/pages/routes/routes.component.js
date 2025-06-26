@@ -56,6 +56,7 @@ import {
   SMART_ACCOUNT_UPDATE,
   WALLET_DETAILS_ROUTE,
   ACCOUNT_DETAILS_ROUTE,
+  ACCOUNT_DETAILS_QR_CODE_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -89,6 +90,7 @@ import {
 } from '../../../shared/lib/confirmation.utils';
 import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
 import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
+import { MultichainAccountDetails } from '../multichain-accounts/account-details';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -96,7 +98,7 @@ import {
   setTheme,
   showAppHeader,
 } from './utils';
-import { MultichainAccountDetails } from '../multichain-accounts/account-details';
+import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() =>
@@ -423,6 +425,11 @@ export default class Routes extends Component {
           <Authenticated
             path={ACCOUNT_DETAILS_ROUTE}
             component={MultichainAccountDetails}
+            exact
+          />
+          <Authenticated
+            path={ACCOUNT_DETAILS_QR_CODE_ROUTE}
+            component={AddressQRCode}
             exact
           />
 
