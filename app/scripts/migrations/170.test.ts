@@ -12,12 +12,12 @@ describe(`migration #${version}`, () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('removes the disabledUpgradeAccountByChain preference', async () => {
+  it('removes the disabledUpgradeAccountsByChain preference', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
         PreferencesController: {
-          disabledUpgradeAccountByChain: {},
+          disabledUpgradeAccountsByChain: {},
           accountUpgradeDisabledChains: [],
         },
       },

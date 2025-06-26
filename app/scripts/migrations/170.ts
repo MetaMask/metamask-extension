@@ -33,6 +33,6 @@ function transformState(state: Record<string, unknown>) {
     | Record<string, unknown>
     | undefined;
 
-  delete preferencesControllerState?.disabledUpgradeAccountByChain;
+  delete preferencesControllerState?.disabledUpgradeAccountsByChain;
   delete preferencesControllerState?.accountUpgradeDisabledChains;
 }
