@@ -255,7 +255,7 @@ describe('Multiple Standard Dapp Connections', function () {
     );
   });
 
-  it('should show Solana account and requested Ethereum account when wallet_requestPermissions is called with specific Ethereum account', async function () {
+  it('should default account selection to already permissioned Solana account and requested Ethereum account when `wallet_requestPermissions` is called with specific Ethereum account', async function () {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
