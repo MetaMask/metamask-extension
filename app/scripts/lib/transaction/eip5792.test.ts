@@ -327,14 +327,15 @@ describe('EIP-5792', () => {
       ).toStrictEqual({ id: BATCH_ID_MOCK });
     });
 
-    it('does not validate send call if there is only 1 nested transaction', async () => {
-      const result = await processSendCalls(
-        sendCallsHooks,
-        messenger,
-        { ...SEND_CALLS_MOCK, calls: [{ to: '0x123' }], version: '1.0' },
-        REQUEST_MOCK,
-      );
-      expect(result.id).toBeDefined();
+    it('throws if version not supported for single nested transaction', async () => {
+      await expect(
+        processSendCalls(
+          sendCallsHooks,
+          messenger,
+          { ...SEND_CALLS_MOCK, calls: [{ to: '0x123' }], version: '1.0' },
+          REQUEST_MOCK,
+        ),
+      ).rejects.toThrow(`Version not supported: Got 1.0, expected 2.0.0`);
     });
 
     it('throws if version not supported', async () => {
@@ -374,6 +375,18 @@ describe('EIP-5792', () => {
       ).rejects.toThrow('EIP-7702 upgrade disabled by the user');
     });
 
+    it('does not throws if user enabled preference to dismiss option to upgrade account for single nested transaction', async () => {
+      getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(true);
+
+      const result = await processSendCalls(
+        sendCallsHooks,
+        messenger,
+        { ...SEND_CALLS_MOCK, calls: [{ to: '0x123' }] },
+        REQUEST_MOCK,
+      );
+      expect(result.id).toBeDefined();
+    });
+
     it('does not throw if user enabled preference to dismiss option to upgrade account if already upgraded', async () => {
       getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(true);
 
@@ -402,6 +415,25 @@ describe('EIP-5792', () => {
           messenger,
           {
             ...SEND_CALLS_MOCK,
+            capabilities: {
+              test: {},
+              test2: { optional: true },
+              test3: { optional: false },
+            },
+          },
+          REQUEST_MOCK,
+        ),
+      ).rejects.toThrow('Unsupported non-optional capabilities: test, test3');
+    });
+
+    it('throws if top-level capability is required for single nested transaction', async () => {
+      await expect(
+        processSendCalls(
+          sendCallsHooks,
+          messenger,
+          {
+            ...SEND_CALLS_MOCK,
+            calls: [{ to: '0x123' }],
             capabilities: {
               test: {},
               test2: { optional: true },

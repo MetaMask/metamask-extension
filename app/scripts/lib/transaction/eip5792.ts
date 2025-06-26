@@ -64,6 +64,7 @@ async function processSingleTransaction({
   networkClientId,
   origin,
   securityAlertId,
+  sendCalls,
   transactions,
   validateSecurity,
 }: {
@@ -73,12 +74,15 @@ async function processSingleTransaction({
   networkClientId: string;
   origin?: string;
   securityAlertId: string;
+  sendCalls: SendCalls;
   transactions: { params: BatchTransactionParams }[];
   validateSecurity: (
     securityRequest: ValidateSecurityRequest,
     chainId: Hex,
   ) => void;
 }) {
+  validateSingleSendCall(sendCalls, chainId);
+
   const txParams = {
     from,
     ...transactions[0].params,
@@ -101,6 +105,56 @@ async function processSingleTransaction({
     batchId,
   });
   return batchId;
+}
+
+async function processMultipleTransaction({
+  addTransactionBatch,
+  chainBatchSupport,
+  chainId,
+  from,
+  getDismissSmartAccountSuggestionEnabled,
+  keyringType,
+  networkClientId,
+  origin,
+  sendCalls,
+  securityAlertId,
+  transactions,
+  validateSecurity,
+}: {
+  addTransactionBatch: TransactionController['addTransactionBatch'];
+  chainBatchSupport: IsAtomicBatchSupportedResultEntry;
+  chainId: Hex;
+  from: Hex;
+  getDismissSmartAccountSuggestionEnabled: () => boolean;
+  keyringType: KeyringTypes;
+  networkClientId: string;
+  origin?: string;
+  sendCalls: SendCalls;
+  securityAlertId: string;
+  transactions: { params: BatchTransactionParams }[];
+  validateSecurity: (
+    securityRequest: ValidateSecurityRequest,
+    chainId: Hex,
+  ) => Promise<void>;
+}) {
+  const dismissSmartAccountSuggestionEnabled =
+    getDismissSmartAccountSuggestionEnabled();
+  validateSendCalls(
+    sendCalls,
+    chainId,
+    dismissSmartAccountSuggestionEnabled,
+    chainBatchSupport,
+    keyringType,
+  );
+  const result = await addTransactionBatch({
+    from,
+    networkClientId,
+    origin,
+    securityAlertId,
+    transactions,
+    validateSecurity,
+  });
+  return result.batchId;
 }
 
 export async function processSendCalls(
@@ -160,28 +214,25 @@ export async function processSendCalls(
       networkClientId,
       origin,
       securityAlertId,
+      sendCalls: params,
       transactions,
       validateSecurity,
     });
   } else {
-    const dismissSmartAccountSuggestionEnabled =
-      getDismissSmartAccountSuggestionEnabled();
-    validateSendCalls(
-      params,
-      dappChainId,
-      dismissSmartAccountSuggestionEnabled,
+    batchId = await processMultipleTransaction({
+      addTransactionBatch,
       chainBatchSupport,
-      keyringType,
-    );
-    const result = await addTransactionBatch({
+      chainId: dappChainId,
       from,
+      getDismissSmartAccountSuggestionEnabled,
+      keyringType,
       networkClientId,
       origin,
+      sendCalls: params,
       securityAlertId,
       transactions,
       validateSecurity,
     });
-    batchId = result.batchId;
   }
 
   return { id: batchId };
@@ -381,6 +432,12 @@ function generateBatchId(): Hex {
   return bytesToHex(idBytes);
 }
 
+function validateSingleSendCall(sendCalls: SendCalls, dappChainId: Hex) {
+  validateSendCallsVersion(sendCalls);
+  validateCapabilities(sendCalls);
+  validateDappChainId(sendCalls, dappChainId);
+}
+
 function validateSendCalls(
   sendCalls: SendCalls,
   dappChainId: Hex,
@@ -408,11 +465,7 @@ function validateSendCallsVersion(sendCalls: SendCalls) {
   }
 }
 
-function validateSendCallsChainId(
-  sendCalls: SendCalls,
-  dappChainId: Hex,
-  chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
-) {
+function validateDappChainId(sendCalls: SendCalls, dappChainId: Hex) {
   const { chainId: requestChainId } = sendCalls;
 
   if (
@@ -423,7 +476,14 @@ function validateSendCallsChainId(
       `Chain ID must match the dApp selected network: Got ${requestChainId}, expected ${dappChainId}`,
     );
   }
+}
 
+function validateSendCallsChainId(
+  sendCalls: SendCalls,
+  dappChainId: Hex,
+  chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
+) {
+  validateDappChainId(sendCalls, dappChainId);
   if (!chainBatchSupport) {
     throw new JsonRpcError(
       EIP5792ErrorCode.UnsupportedChainId,
