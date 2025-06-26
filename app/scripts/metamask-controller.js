@@ -3531,9 +3531,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.completeQrCodeScan.bind(appStateController),
       cancelQrCodeScan:
         appStateController.cancelQrCodeScan.bind(appStateController),
-      // TODO: Phase 2: Transaction and message signing
-      submitQRHardwareSignature: () => null,
-      cancelQRHardwareSignRequest: () => null,
 
       // vault management
       submitPassword: this.submitPassword.bind(this),

@@ -71,8 +71,7 @@ export type AppStateControllerState = {
   // prior to Migration 92.3 where we split out the setting to support
   // multiple networks.
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
-  qrHardware: Json;
-  activeQrCodeScanRequest?: QrScanRequest;
+  activeQrCodeScanRequest?: QrScanRequest | null;
   nftsDropdownState: Json;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
@@ -162,7 +161,6 @@ type PollingTokenType =
 type AppStateControllerInitState = Partial<
   Omit<
     AppStateControllerState,
-    | 'qrHardware'
     | 'nftsDropdownState'
     | 'signatureSecurityAlertResponses'
     | 'addressSecurityAlertResponses'
@@ -216,7 +214,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
 
 function getInitialStateOverrides() {
   return {
-    qrHardware: {},
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
     addressSecurityAlertResponses: {},
@@ -320,10 +317,6 @@ const controllerMetadata = {
   },
   hadAdvancedGasFeesSetPriorToMigration92_3: {
     persist: true,
-    anonymous: true,
-  },
-  qrHardware: {
-    persist: false,
     anonymous: true,
   },
   activeQrCodeScanRequest: {
@@ -1136,7 +1129,7 @@ export class AppStateController extends BaseController<
     }
 
     this.update((state) => {
-      delete state.activeQrCodeScanRequest;
+      state.activeQrCodeScanRequest = null;
     });
 
     this.#qrCodeScanPromise.resolve(scannedData);
@@ -1155,7 +1148,7 @@ export class AppStateController extends BaseController<
     }
 
     this.update((state) => {
-      delete state.activeQrCodeScanRequest;
+      state.activeQrCodeScanRequest = null;
     });
 
     this.#qrCodeScanPromise.reject(error || new Error('Scan cancelled'));

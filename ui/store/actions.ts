@@ -5746,10 +5746,12 @@ export function setUseTransactionSimulations(val: boolean): void {
 
 // QR Hardware Wallets
 
-export async function completeQrCodeScan(
+export function completeQrCodeScan(
   scanResult: SerializedUR,
-): Promise<void> {
-  await submitRequestToBackground('completeQrCodeScan', [scanResult]);
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('completeQrCodeScan', [scanResult]);
+  };
 }
 
 export function cancelQrCodeScan(): ThunkAction<
@@ -5758,8 +5760,7 @@ export function cancelQrCodeScan(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(hideLoadingIndication());
+  return async () => {
     await submitRequestToBackground('cancelQrCodeScan');
   };
 }
