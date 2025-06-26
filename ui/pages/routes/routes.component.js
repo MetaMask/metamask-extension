@@ -54,6 +54,7 @@ import {
   DEFI_ROUTE,
   DEEP_LINK_ROUTE,
   SMART_ACCOUNT_UPDATE,
+  WALLET_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -153,6 +154,9 @@ const RemoteModeSetupDailyAllowance = mmLazy(() =>
   import('../remote-mode/setup/setup-daily-allowance'),
 );
 const DeepLink = mmLazy(() => import('../deep-link/deep-link'));
+const WalletDetails = mmLazy(() =>
+  import('../multichain-accounts/wallet-details'),
+);
 // End Lazy Routes
 
 export default class Routes extends Component {
@@ -408,6 +412,11 @@ export default class Routes extends Component {
           <Authenticated
             path={REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE}
             component={RemoteModeSetupDailyAllowance}
+            exact
+          />
+          <Authenticated
+            path={WALLET_DETAILS_ROUTE}
+            component={WalletDetails}
             exact
           />
 
