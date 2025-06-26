@@ -53,14 +53,12 @@ const generateCodeVerifierAndChallengeSpy = jest.fn().mockResolvedValue({
   challenge: 'mocked-code-verifier-challenge',
 });
 const generateNonceSpy = jest.fn().mockReturnValue(MOCK_NONCE);
-const mockRequestIdentityPermission = jest.fn().mockResolvedValue(true);
 
 const mockWebAuthenticator: WebAuthenticator = {
   getRedirectURL: getRedirectUrlSpy,
   launchWebAuthFlow: launchWebAuthFlowSpy,
   generateCodeVerifierAndChallenge: generateCodeVerifierAndChallengeSpy,
   generateNonce: generateNonceSpy,
-  requestIdentityPermission: mockRequestIdentityPermission,
 };
 
 describe('OAuthService - startOAuthLogin', () => {

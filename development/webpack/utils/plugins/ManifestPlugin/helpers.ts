@@ -111,7 +111,7 @@ export function transformManifest(
   }
 
   return transforms.length
-    ? (browserManifest: chrome.runtime.Manifest) => {
+    ? (browserManifest: chrome.runtime.Manifest, _browser: string) => {
         const manifestClone = structuredClone(browserManifest);
         transforms.forEach((transform) => transform(manifestClone));
         return manifestClone;
