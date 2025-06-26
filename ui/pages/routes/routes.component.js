@@ -55,6 +55,7 @@ import {
   DEEP_LINK_ROUTE,
   SMART_ACCOUNT_UPDATE,
   WALLET_DETAILS_ROUTE,
+  ACCOUNT_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -419,6 +420,11 @@ export default class Routes extends Component {
             component={WalletDetails}
             exact
           />
+          <Authenticated
+            path={ACCOUNT_DETAILS_ROUTE}
+            component={MultichainAccountDetails}
+            exact
+          />
 
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
@@ -439,14 +445,10 @@ export default class Routes extends Component {
   renderAccountDetails() {
     const { accountDetailsAddress, isMultichainAccountsState1Enabled } =
       this.props;
-    if (!accountDetailsAddress) {
+    if (!accountDetailsAddress || isMultichainAccountsState1Enabled) {
       return null;
     }
-    return isMultichainAccountsState1Enabled ? (
-      <MultichainAccountDetails address={accountDetailsAddress} />
-    ) : (
-      <AccountDetails address={accountDetailsAddress} />
-    );
+    return <AccountDetails address={accountDetailsAddress} />;
   }
 
   render() {
@@ -488,6 +490,8 @@ export default class Routes extends Component {
       pendingConfirmations,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
+
+    console.log(location);
 
     const loadMessage =
       loadingMessage || isNetworkLoading
