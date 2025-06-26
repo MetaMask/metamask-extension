@@ -11,6 +11,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -65,10 +66,18 @@ export const OrdersContainer = () => {
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
-        gap={4}
         padding={4}
         backgroundColor={BackgroundColor.backgroundAlternative}
       >
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.center}
+          textAlign={TextAlign.Center}
+        >
+          <Text variant={TextVariant.headingMd}>Orders</Text>
+          <Text variant={TextVariant.bodySm}>Your current orders.</Text>
+        </Box>
         <PredictNavigation />
         <Box>
           {loading && (
@@ -83,7 +92,7 @@ export const OrdersContainer = () => {
                 variant={TextVariant.bodyMd}
                 color={TextColor.textAlternative}
               >
-                Loading positions...
+                Loading orders...
               </Text>
             </Box>
           )}
@@ -156,7 +165,7 @@ export const OrdersContainer = () => {
               );
             })
           ) : (
-            <Text>No markets found.</Text>
+            <Text>No orders found.</Text>
           )}
         </Box>
       </Box>

@@ -114,7 +114,7 @@ const PredictNavigation = () => {
             name={IconName.Setting}
             size={IconSize.Sm}
             color={
-              window.location.hash === '#predict-profit'
+              window.location.hash === '#predict-settings'
                 ? IconColor.warningDefault
                 : IconColor.iconDefault
             }

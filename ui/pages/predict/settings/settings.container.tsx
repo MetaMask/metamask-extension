@@ -1,11 +1,14 @@
 import React from 'react';
 
 import { Box, Button, Text } from '../../../components/component-library';
-import { Header, Page } from '../../../components/multichain/pages/page';
+import { Page } from '../../../components/multichain/pages/page';
 import {
   BackgroundColor,
   Display,
   TextVariant,
+  FlexDirection,
+  JustifyContent,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 
 import { usePolymarket } from '../usePolymarket';
@@ -21,35 +24,40 @@ const PredictContainer = () => {
       data-testid="predict-settings"
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
-      <PredictNavigation />
-      <Header
-        textProps={{
-          variant: TextVariant.headingSm,
-        }}
-        marginTop={0}
-        marginBottom={0}
-        paddingBottom={0}
-      >
-        <Text variant={TextVariant.headingMd}>Settings</Text>
-      </Header>
       <Box
-        display={Display.Grid}
-        style={{
-          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-        }}
-        gap={2}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        padding={4}
+        backgroundColor={BackgroundColor.backgroundAlternative}
       >
-        <Button onClick={createApiKey}>Create API Key</Button>
-        <Button onClick={deriveApiKey}>Derive API Key</Button>
-        <Button onClick={approveAllowances}>Approve Allowances</Button>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.center}
+          textAlign={TextAlign.Center}
+        >
+          <Text variant={TextVariant.headingMd}>Settings</Text>
+          <Text variant={TextVariant.bodySm}>Manage MetaMask Predict.</Text>
+        </Box>
+        <PredictNavigation />
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.center}
+          gap={2}
+        >
+          <Button onClick={createApiKey}>Create API Key</Button>
+          <Button onClick={deriveApiKey}>Derive API Key</Button>
+          <Button onClick={approveAllowances}>Approve Allowances</Button>
+        </Box>
+        {apiKey && (
+          <>
+            <Text>API Key: {apiKey?.key}</Text>
+            <Text>Secret: {apiKey?.secret}</Text>
+            <Text>Passphrase: {apiKey?.passphrase}</Text>
+          </>
+        )}
       </Box>
-      {apiKey && (
-        <>
-          <Text>API Key: {apiKey?.key}</Text>
-          <Text>Secret: {apiKey?.secret}</Text>
-          <Text>Passphrase: {apiKey?.passphrase}</Text>
-        </>
-      )}
     </Page>
   );
 };
