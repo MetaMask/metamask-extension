@@ -68,6 +68,7 @@ export function createTxVerificationMiddleware(
             metamask: {
               ...networkController.state,
               ...selectedNetworkController.state,
+              domains: selectedNetworkController.state.domains || {},
             },
           });
 
