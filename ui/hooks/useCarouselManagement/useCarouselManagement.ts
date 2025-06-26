@@ -31,8 +31,8 @@ import {
   BASIC_FUNCTIONALITY_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
-  DOWNLOAD_MOBILE_APP_SLIDE,
   ///: END:ONLY_INCLUDE_IF
+  DOWNLOAD_MOBILE_APP_SLIDE,
 } from './constants';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
