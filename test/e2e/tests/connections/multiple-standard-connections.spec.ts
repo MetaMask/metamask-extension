@@ -79,7 +79,7 @@ function getRequestPermissionsRequestObject(accounts: string[] = []): string {
 }
 
 describe('Multiple Standard Dapp Connections', function () {
-  it('should default to existing permitted account when wallet_requestPermissions is called again with no accounts specified', async function () {
+  it(' should default account selection to already permitted account(s) when `wallet_requestPermissions` is called with no accounts specified', async function () {
     await withFixtures(
       {
         dapp: true,
