@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { parseCaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -33,6 +33,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
+import { getIsMultichainAccountsState1Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 
 export const AddressQRCode = () => {
   const t = useI18nContext();
@@ -43,6 +44,9 @@ export const AddressQRCode = () => {
   );
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
+  );
+  const isMultichainAccountsState1Enabled = useSelector(
+    getIsMultichainAccountsState1Enabled,
   );
 
   const multichainNetwork = useMultichainSelector(
@@ -70,6 +74,12 @@ export const AddressQRCode = () => {
     });
     openBlockExplorer(addressLink, metricsLocation, trackEvent);
   }, [chainId, trackEvent, addressLink]);
+
+  useEffect(() => {
+    if (!address || isMultichainAccountsState1Enabled) {
+      history.push(ACCOUNT_DETAILS_ROUTE);
+    }
+  }, [address, history, isMultichainAccountsState1Enabled]);
 
   return (
     <Page>
