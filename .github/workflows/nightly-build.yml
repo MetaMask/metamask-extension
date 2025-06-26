@@ -9,7 +9,7 @@ on:
 
 env:
   # For scheduled runs, use the default branch
-  BRANCH: ${{ github.ref_name || 'develop' }}
+  BRANCH: ${{ github.ref_name || 'main' }}
   HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
 permissions:
   contents: write
