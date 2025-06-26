@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import {
@@ -18,7 +17,7 @@ import { SmartContractAccountToggle } from '../smart-contract-account-toggle';
 import Preloader from '../../ui/icon/preloader';
 
 type SmartContractAccountToggleSectionProps = {
-  address: Hex;
+  address: string;
 };
 
 export const SmartContractAccountToggleSection = ({
