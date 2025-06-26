@@ -24,6 +24,7 @@ import {
   SNAPS_VIEW_ROUTE,
   DEEP_LINK_ROUTE,
   WALLET_DETAILS_ROUTE,
+  ACCOUNT_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -221,6 +222,17 @@ export function hideAppHeader(props) {
   );
 
   if (isAssetsPage) {
+    return true;
+  }
+
+  const isMultichainAccountDetailsPage = Boolean(
+    matchPath(location.pathname, {
+      path: ACCOUNT_DETAILS_ROUTE,
+      exact: false,
+    }),
+  );
+
+  if (isMultichainAccountDetailsPage) {
     return true;
   }
 
