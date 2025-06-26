@@ -48,7 +48,6 @@
     "switchedNetworkNeverShowMessage": "boolean",
     "slides": "object",
     "throttledOrigins": "object",
-    "upgradeSplashPageAcknowledgedForAccounts": "object",
     "isUpdateAvailable": false,
     "updateModalLastDismissedAt": null,
     "lastUpdatedAt": null,
@@ -177,7 +176,7 @@
   "NetworkOrderController": {
     "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
     "enabledNetworkMap": {
-      "0x539": "boolean"
+      "eip155": "object"
     }
   },
   "NftController": {
@@ -249,7 +248,8 @@
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": { "0x539": "boolean" },
-      "smartTransactionsMigrationApplied": "boolean"
+      "smartTransactionsMigrationApplied": "boolean",
+      "smartAccountOptIn": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -359,6 +359,8 @@
     "isAccountSyncingEnabled": true,
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
     "isAccountSyncingReadyToBeDispatched": "boolean",
-    "isAccountSyncingInProgress": "boolean"
+    "isAccountSyncingInProgress": "boolean",
+    "isContactSyncingEnabled": true,
+    "isContactSyncingInProgress": "boolean"
   }
 }

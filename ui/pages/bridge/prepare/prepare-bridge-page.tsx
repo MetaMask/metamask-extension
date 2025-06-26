@@ -55,6 +55,7 @@ import {
   getIsSwap,
   BridgeAppState,
   isBridgeSolanaEnabled,
+  getTxAlerts,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -232,6 +233,7 @@ const PrepareBridgePage = () => {
     isInsufficientGasForQuote,
     isInsufficientBalance,
   } = useSelector(getValidationErrors);
+  const txAlert = useSelector(getTxAlerts);
   const { openBuyCryptoInPdapp } = useRamps();
 
   const nativeAsset = useMemo(
@@ -1068,6 +1070,16 @@ const PrepareBridgePage = () => {
                 </ul>
               </BannerAlert>
             )}
+          {txAlert && activeQuote && (
+            <BannerAlert
+              marginInline={4}
+              marginBottom={10}
+              severity={BannerAlertSeverity.Danger}
+              title={t(txAlert.titleId)}
+              description={`${txAlert.description} ${t(txAlert.descriptionId)}`}
+              textAlign={TextAlign.Left}
+            />
+          )}
           {isNoQuotesAvailable && !isQuoteExpired && (
             <BannerAlert
               marginInline={4}

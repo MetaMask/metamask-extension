@@ -13,6 +13,7 @@ import { tEn } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { getIsSecurityAlertsEnabled } from '../../../selectors';
 import { REVEAL_SRP_LIST_ROUTE } from '../../../helpers/constants/routes';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import SecurityTab from './security-tab.container';
 
 const mockOpenDeleteMetaMetricsDataModal = jest.fn();
@@ -102,6 +103,30 @@ describe('Security Tab', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should render success banner when SRP is backed up', () => {
+    const { getByTestId } = renderWithProviders(<SecurityTab />, mockStore);
+    const bannerAlert = getByTestId('backup-state-banner-alert');
+    expect(bannerAlert).toBeInTheDocument();
+    expect(bannerAlert).toHaveClass('mm-banner-alert--severity-success');
+  });
+
+  it('should render danger banner when SRP is not backed up', () => {
+    const { getByTestId } = renderWithProviders(
+      <SecurityTab />,
+      configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          seedPhraseBackedUp: false,
+          firstTimeFlowType: FirstTimeFlowType.create,
+        },
+      }),
+    );
+    const bannerAlert = getByTestId('backup-state-banner-alert');
+    expect(bannerAlert).toBeInTheDocument();
+    expect(bannerAlert).toHaveClass('mm-banner-alert--severity-danger');
+  });
+
   it('toggles Display NFT media enabled', async () => {
     expect(await toggleCheckbox('displayNftMedia', true)).toBe(true);
   });
@@ -154,27 +179,7 @@ describe('Security Tab', () => {
     ).toBe(true);
   });
 
-  it('toggles SRP Quiz if there is only one srp', async () => {
-    renderWithProviders(<SecurityTab />, mockStore);
-
-    expect(
-      screen.queryByTestId(`srp_stage_introduction`),
-    ).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByTestId('reveal-seed-words'));
-
-    expect(screen.getByTestId(`srp_stage_introduction`)).toBeInTheDocument();
-
-    const container = screen.getByTestId('srp-quiz-header');
-    const checkbox = queryByRole(container, 'button');
-    fireEvent.click(checkbox);
-
-    expect(
-      screen.queryByTestId(`srp_stage_introduction`),
-    ).not.toBeInTheDocument();
-  });
-
-  it('redirects to srp list if there are multiple srps', async () => {
+  it('redirects to srp list upon clicking "Reveal Secret Recovery Phrase"', async () => {
     const mockStoreWithMultipleSRPs = configureMockStore([thunk])({
       ...mockState,
       metamask: {
@@ -262,6 +267,10 @@ describe('Security Tab', () => {
     expect(
       await toggleCheckbox('ipfs-gateway-resolution-container', false),
     ).toBe(true);
+  });
+
+  it('toggles skipDeepLinkInterstitial', async () => {
+    expect(toggleCheckbox('skipDeepLinkInterstitial', false)).toBe(true);
   });
 
   it('clicks "Add Custom Network"', async () => {
