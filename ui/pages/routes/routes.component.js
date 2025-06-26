@@ -161,7 +161,6 @@ const WalletDetails = mmLazy(() =>
 export default class Routes extends Component {
   static propTypes = {
     currentCurrency: PropTypes.string,
-    activeTabOrigin: PropTypes.string,
     setCurrentCurrencyToUSD: PropTypes.func,
     isLoading: PropTypes.bool,
     loadingMessage: PropTypes.string,
@@ -206,9 +205,6 @@ export default class Routes extends Component {
       }),
     ]),
     switchedNetworkNeverShowMessage: PropTypes.bool,
-    networkToAutomaticallySwitchTo: PropTypes.object,
-    automaticallySwitchNetwork: PropTypes.func.isRequired,
-    totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
     oldestPendingApproval: PropTypes.object,
     pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -227,14 +223,7 @@ export default class Routes extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    const {
-      theme,
-      networkToAutomaticallySwitchTo,
-      activeTabOrigin,
-      totalUnapprovedConfirmationCount,
-      isUnlocked,
-      currentExtensionPopupId,
-    } = this.props;
+    const { theme, currentExtensionPopupId } = this.props;
     if (theme !== prevProps.theme) {
       setTheme(theme);
     }
@@ -243,17 +232,17 @@ export default class Routes extends Component {
     // no longer has unapproved transactions and they
     // should be on a different network for the
     // currently active tab's dapp
-    if (
-      networkToAutomaticallySwitchTo &&
-      totalUnapprovedConfirmationCount === 0 &&
-      (prevProps.totalUnapprovedConfirmationCount > 0 ||
-        (prevProps.isUnlocked === false && isUnlocked))
-    ) {
-      this.props.automaticallySwitchNetwork(
-        networkToAutomaticallySwitchTo,
-        activeTabOrigin,
-      );
-    }
+    // if (
+    //   networkToAutomaticallySwitchTo &&
+    //   totalUnapprovedConfirmationCount === 0 &&
+    //   (prevProps.totalUnapprovedConfirmationCount > 0 ||
+    //     (prevProps.isUnlocked === false && isUnlocked))
+    // ) {
+    //   this.props.automaticallySwitchNetwork(
+    //     networkToAutomaticallySwitchTo,
+    //     activeTabOrigin,
+    //   );
+    // }
 
     // Terminate the popup when another popup is opened
     // if the user is using RPC queueing

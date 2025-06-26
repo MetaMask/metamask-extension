@@ -9,6 +9,7 @@ import {
 } from '@metamask/utils';
 import { detectSIWE } from '@metamask/controller-utils';
 
+import { SelectedNetworkController } from '@metamask/selected-network-controller';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences-controller';
@@ -51,6 +52,7 @@ export type PPOMMiddlewareRequest<
  * @param appStateController
  * @param accountsController - Instance of AccountsController.
  * @param updateSecurityAlertResponse
+ * @param selectedNetworkController
  * @returns PPOMMiddleware function.
  */
 export function createPPOMMiddleware<
@@ -63,6 +65,7 @@ export function createPPOMMiddleware<
   appStateController: AppStateController,
   accountsController: AccountsController,
   updateSecurityAlertResponse: UpdateSecurityAlertResponse,
+  selectedNetworkController: SelectedNetworkController,
 ) {
   return async (
     req: PPOMMiddlewareRequest<Params>,
@@ -74,7 +77,10 @@ export function createPPOMMiddleware<
 
       const { chainId } =
         getProviderConfig({
-          metamask: networkController.state,
+          metamask: {
+            ...networkController.state,
+            ...selectedNetworkController.state,
+          },
         }) ?? {};
       if (!chainId) {
         return;

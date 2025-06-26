@@ -92,8 +92,11 @@ export type MultichainState = AccountsState &
   TransactionsState &
   NetworkState &
   AssetsRatesState &
-  AssetsState &
-  MultichainNetworkConfigState;
+  AssetsState & {
+    metamask: {
+      domains: Record<string, string>;
+    };
+  } & MultichainNetworkConfigState;
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
 export type ProviderConfigWithImageUrlAndExplorerUrl = {

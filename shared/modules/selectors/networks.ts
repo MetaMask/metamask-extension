@@ -3,15 +3,16 @@ import {
   type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration,
   NON_EVM_TESTNET_IDS,
 } from '@metamask/multichain-network-controller';
+import { createSelector } from 'reselect';
 import {
   RpcEndpointType,
   type NetworkState as InternalNetworkState,
   type NetworkConfiguration as InternalNetworkConfiguration,
   NetworkConfiguration,
 } from '@metamask/network-controller';
-import { createSelector } from 'reselect';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import type { CaipChainId } from '@metamask/utils';
+import { ORIGIN_METAMASK } from '../../constants/app';
 import {
   CAIP_FORMATTED_EVM_TEST_CHAINS,
   NetworkStatus,
@@ -43,7 +44,14 @@ export type NetworksMetadataState = {
 };
 
 export type ProviderConfigState = NetworkConfigurationsByChainIdState &
-  SelectedNetworkClientIdState;
+  SelectedNetworkClientIdState & {
+    activeTab?: {
+      origin: string;
+    };
+    metamask: {
+      domains: Record<string, string>;
+    };
+  };
 
 export type MultichainNetworkConfigurationsByChainIdState = {
   metamask: {
@@ -213,19 +221,30 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
  * @param state - Redux state object.
  * @throws `new Error('Provider configuration not found')` If the provider configuration is not found.
  */
-export const getProviderConfig = createSelector(
-  (state: ProviderConfigState) => getNetworkConfigurationsByChainId(state),
-  getSelectedNetworkClientId,
-  (networkConfigurationsByChainId, selectedNetworkClientId) => {
+export const getProviderConfig = createDeepEqualSelector(
+  (state: ProviderConfigState) => {
+    return {
+      networkConfigurationsByChainId: getNetworkConfigurationsByChainId(state),
+      selectedNetworkClientId: getSelectedNetworkClientId(state),
+      metamask: state.metamask,
+      activeTabOrigin: state.activeTab?.origin || ORIGIN_METAMASK,
+    };
+  },
+  ({
+    networkConfigurationsByChainId,
+    selectedNetworkClientId,
+    metamask,
+    activeTabOrigin,
+  }) => {
+    const networkClientId = metamask.domains[activeTabOrigin];
+    const networkClientIdToUse = networkClientId || selectedNetworkClientId;
     for (const network of Object.values(networkConfigurationsByChainId)) {
       for (const rpcEndpoint of network.rpcEndpoints) {
-        if (rpcEndpoint.networkClientId === selectedNetworkClientId) {
+        if (rpcEndpoint.networkClientId === networkClientIdToUse) {
           const blockExplorerUrl =
-            network.defaultBlockExplorerUrlIndex === undefined
-              ? undefined
-              : network.blockExplorerUrls?.[
-                  network.defaultBlockExplorerUrlIndex
-                ];
+            network.blockExplorerUrls?.[
+              network.defaultBlockExplorerUrlIndex ?? 0
+            ];
 
           return {
             chainId: network.chainId,
