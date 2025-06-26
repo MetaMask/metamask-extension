@@ -306,8 +306,9 @@ export default class SelectHardware extends Component {
                 </a>
                 {this.context.t('ledgerFirefoxNotSupportedDescription2')}
                 <br />
-               {this.context.t('ledgerFirefoxNotSupportedDescription3')}
-            </BannerAlert>
+                {this.context.t('ledgerFirefoxNotSupportedDescription3')}
+              </BannerAlert>
+            </Box>
           )}
 
         <Box
