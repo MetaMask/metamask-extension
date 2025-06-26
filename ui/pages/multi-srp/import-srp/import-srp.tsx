@@ -97,6 +97,8 @@ export const ImportSrp = () => {
 
       return { discoveredAccounts };
     }
+
+    return null;
   }
 
   const isValidSrp = useMemo(() => {
