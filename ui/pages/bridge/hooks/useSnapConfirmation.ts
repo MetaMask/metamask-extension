@@ -11,6 +11,7 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
 } from '../../../helpers/constants/routes';
+import { getShouldUseSnapConfirmation } from '../../../ducks/bridge/selectors';
 
 /**
  * This hook is used to redirect to the confirmation page if an unapproved confirmation exists
@@ -18,6 +19,7 @@ import {
  */
 export default function useSnapConfirmation() {
   const history = useHistory();
+  const shouldShowSnapConfirmation = useSelector(getShouldUseSnapConfirmation);
 
   // Find unapproved confirmations which the snap has initiated
   const unapprovedTemplatedConfirmations = useSelector(
@@ -29,6 +31,9 @@ export default function useSnapConfirmation() {
 
   // Redirect to the confirmation page if an unapproved confirmation exists
   useEffect(() => {
+    if (!shouldShowSnapConfirmation) {
+      return;
+    }
     const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
       (approval) => approval.origin === SOLANA_WALLET_SNAP_ID,
     );
@@ -40,5 +45,10 @@ export default function useSnapConfirmation() {
     } else if (snapApproval) {
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${snapApproval.id}`);
     }
-  }, [history, unapprovedTemplatedConfirmations, unapprovedConfirmations]);
+  }, [
+    history,
+    unapprovedTemplatedConfirmations,
+    unapprovedConfirmations,
+    shouldShowSnapConfirmation,
+  ]);
 }

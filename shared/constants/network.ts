@@ -192,6 +192,7 @@ export const CHAIN_IDS = {
   SOPHON: '0xc3b8',
   SOPHON_TESTNET: '0x1fa72e78',
   EDUCHAIN: '0xa3c3',
+  ABSTRACT: '0xab5',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -332,6 +333,7 @@ export const LENS_DISPLAY_NAME = 'Lens';
 export const PLUME_DISPLAY_NAME = 'Plume';
 export const MATCHAIN_DISPLAY_NAME = 'Matchain';
 export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
+export const SEI_DISPLAY_NAME = 'Sei Network';
 export const KATANA_DISPLAY_NAME = 'Katana';
 export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
 export const SOPHON_DISPLAY_NAME = 'Sophon';
@@ -339,7 +341,7 @@ export const SOPHON_TESTNET_DISPLAY_NAME = 'Sophon Testnet';
 export const EDUCHAIN_DISPLAY_NAME = 'EDU Chain';
 export const APECHAIN_DISPLAY_NAME = 'ApeChain';
 export const APECHAIN_TESTNET_DISPLAY_NAME = 'ApeChain Testnet';
-export const SEI_DISPLAY_NAME = 'Sei Network';
+export const ABSTRACT_DISPLAY_NAME = 'Abstract';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -400,12 +402,13 @@ export const CURRENCY_SYMBOLS = {
   LENS: 'GHO',
   PLUME: 'PLUME',
   FLOW: 'FLOW',
+  SEI: 'SEI',
   KATANA: 'ETH',
   SOPHON: 'SOPH',
   BERACHAIN: 'BERA',
   EDUCHAIN: 'EDU',
   APECHAIN: 'APE',
-  SEI: 'SEI',
+  ABSTRACT: 'ETH',
 } as const;
 
 // Non-EVM currency symbols
@@ -600,6 +603,7 @@ export const BERACHAIN_NATIVE_TOKEN_IMAGE_URL = './images/berachain-native.svg';
 export const EDUCHAIN_IMAGE_URL = './images/educhain.svg';
 export const APECHAIN_IMAGE_URL = './images/apechain.svg';
 export const APECHAIN_NATIVE_TOKEN_IMAGE_URL = './images/apechain-native.svg';
+export const ABSTRACT_IMAGE_URL = './images/abstract.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -745,6 +749,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.APECHAIN_MAINNET]: APECHAIN_DISPLAY_NAME,
   [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.SEI]: SEI_DISPLAY_NAME,
+  [CHAIN_IDS.ABSTRACT]: ABSTRACT_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -890,6 +895,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.APECHAIN_MAINNET]: CURRENCY_SYMBOLS.APECHAIN,
   [CHAIN_IDS.APECHAIN_TESTNET]: CURRENCY_SYMBOLS.APECHAIN,
   [CHAIN_IDS.SEI]: CURRENCY_SYMBOLS.SEI,
+  [CHAIN_IDS.ABSTRACT]: CURRENCY_SYMBOLS.ABSTRACT,
 } as const;
 
 /**
@@ -1043,6 +1049,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.EDUCHAIN]: EDUCHAIN_IMAGE_URL,
   [CHAIN_IDS.APECHAIN_MAINNET]: APECHAIN_IMAGE_URL,
   [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_IMAGE_URL,
+  [CHAIN_IDS.ABSTRACT]: ABSTRACT_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1109,6 +1116,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.EDUCHAIN]: EDUCHAIN_IMAGE_URL,
   [CHAIN_IDS.APECHAIN_MAINNET]: APECHAIN_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ABSTRACT]: ETH_TOKEN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_MAINNET]: ETH_TOKEN_IMAGE_URL,
 } as const;
 
 /**
@@ -1359,6 +1368,20 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     defaultBlockExplorerUrlIndex: 0,
   },
   {
+    chainId: CHAIN_IDS.SEI,
+    name: SEI_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.SEI,
+    rpcEndpoints: [
+      {
+        url: `https://sei-mainnet.infura.io/v3/${infuraProjectId}`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://seitrace.com/'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
     chainId: CHAIN_IDS.BASE,
     name: BASE_DISPLAY_NAME,
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
@@ -1430,6 +1453,8 @@ export const allowedInfuraHosts = [
   'opbnb-mainnet.infura.io',
   // Scroll
   'scroll-mainnet.infura.io',
+  // Sei
+  'sei-mainnet.infura.io',
 ];
 
 /**

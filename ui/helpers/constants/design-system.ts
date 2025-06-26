@@ -55,6 +55,8 @@ export enum BackgroundColor {
   backgroundDefault = 'background-default',
   backgroundAlternative = 'background-alternative',
   backgroundMuted = 'background-muted',
+  backgroundSection = 'background-section',
+  backgroundSubsection = 'background-subsection',
   backgroundAlternativeSoft = 'background-alternative-soft',
   backgroundHover = 'background-hover',
   backgroundPressed = 'background-pressed',
@@ -116,6 +118,10 @@ export enum TextColor {
   textAlternative = 'text-alternative',
   textAlternativeSoft = 'text-alternative-soft',
   textMuted = 'text-muted',
+  iconDefault = 'icon-default',
+  iconAlternative = 'icon-alternative',
+  iconMuted = 'icon-muted',
+  iconInverse = 'icon-inverse',
   overlayInverse = 'overlay-inverse',
   primaryDefault = 'primary-default',
   primaryInverse = 'primary-inverse',
@@ -147,6 +153,7 @@ export enum IconColor {
   iconAlternative = 'icon-alternative',
   iconAlternativeSoft = 'icon-alternative-soft',
   iconMuted = 'icon-muted',
+  iconInverse = 'icon-inverse',
   overlayInverse = 'overlay-inverse',
   primaryDefault = 'primary-default',
   primaryInverse = 'primary-inverse',
@@ -477,7 +484,7 @@ export enum FontWeight {
 }
 
 export enum FontFamily {
-  Default = 'default', // CentraNo1
+  Default = 'default', // Geist
   Accent = 'accent', // MMSans
   Hero = 'hero', // MMPoly
 }

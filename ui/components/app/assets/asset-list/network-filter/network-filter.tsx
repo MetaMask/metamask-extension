@@ -103,7 +103,7 @@ const NetworkFilter = ({
       handleFilterNetwork(chainFilters);
     } else {
       isGlobalNetworkSelectorRemoved
-        ? dispatch(setEnabledNetworks(Object.keys(chainFilters)))
+        ? dispatch(setEnabledNetworks(Object.keys(chainFilters), chainId))
         : dispatch(setTokenNetworkFilter(chainFilters));
     }
 

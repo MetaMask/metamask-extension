@@ -142,6 +142,7 @@ describe('Ducks - Bridge', () => {
         toTokenExchangeRate: null,
         fromTokenExchangeRate: null,
         wasTxDeclined: false,
+        txAlert: null,
         toTokenUsdExchangeRate: null,
       });
     });
@@ -218,6 +219,7 @@ describe('Ducks - Bridge', () => {
         sortOrder: 'cost_ascending',
         toChainId: null,
         toToken: null,
+        txAlert: null,
         toTokenExchangeRate: null,
         wasTxDeclined: false,
         toTokenUsdExchangeRate: null,

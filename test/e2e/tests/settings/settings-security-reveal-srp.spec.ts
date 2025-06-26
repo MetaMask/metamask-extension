@@ -62,9 +62,9 @@ describe('Reveal SRP through settings', function () {
         await privacySettings.check_srpTextIsDisplayed(E2E_SRP);
         await privacySettings.check_displayedSrpCanBeCopied();
 
-        // check that closing the reveal SRP dialog navigates user back to privacy settings page
+        // check that closing the reveal SRP dialog navigates user back to srp list page
         await privacySettings.closeRevealSrpDialog();
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.check_srpListIsLoaded();
       },
     );
   });
@@ -94,9 +94,9 @@ describe('Reveal SRP through settings', function () {
         await privacySettings.check_srpTextIsDisplayed(E2E_SRP);
         await privacySettings.check_srpQrCodeIsDisplayed();
 
-        // check that closing the reveal SRP dialog navigates user back to privacy settings page
+        // check that closing the reveal SRP dialog navigates user back to srp list page
         await privacySettings.closeRevealSrpDialog();
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.check_srpListIsLoaded();
       },
     );
   });
