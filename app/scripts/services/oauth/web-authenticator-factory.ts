@@ -71,7 +71,6 @@ async function requestIdentityPermission(): Promise<boolean> {
     // since, the 'identity' was requested as installation permission, we don't need to re-request it here.
     // However, we still need to check if the permission is granted, coz the existing extension users might not have the permission.
     const grantedPermissions = browser.permissions;
-    console.log('grantedPermissions', grantedPermissions);
     return grantedPermissions.contains({ permissions: ['identity'] });
   }
 
