@@ -25569,7 +25569,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/multichain-api-client
-0.6.2 <https://github.com/MetaMask/multichain-api-client>
+0.6.4 <https://github.com/MetaMask/multichain-api-client>
 ISC License
 
 Copyright (c) 2021 MetaMask
