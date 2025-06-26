@@ -11,6 +11,7 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import NFTDetailsPage from '../../page-objects/pages/nft-details-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { ACCOUNT_TYPE } from '../../constants';
+import NftListPage from '../../page-objects/pages/home/nft-list';
 
 describe('Change assets', function () {
   it('sends the correct asset when switching from native currency to NFT', async function () {
@@ -132,10 +133,11 @@ describe('Change assets', function () {
         const sendTokenPage = new SendTokenPage(driver);
         const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
         const activityListPage = new ActivityListPage(driver);
+        const nftListPage = new NftListPage(driver);
 
         await homePage.check_pageIsLoaded();
         await homePage.goToNftTab();
-        await homePage.clickNFTFromList();
+        await nftListPage.clickNFTFromList();
         await nftDetailsPage.check_pageIsLoaded();
         await nftDetailsPage.clickNFTSendButton();
         await sendTokenPage.check_pageIsLoaded();
@@ -191,6 +193,7 @@ describe('Change assets', function () {
         const sendTokenPage = new SendTokenPage(driver);
         const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
         const activityListPage = new ActivityListPage(driver);
+        const nftListPage = new NftListPage(driver);
 
         await homePage.check_pageIsLoaded();
         await headerNavbar.openAccountMenu();
@@ -211,7 +214,7 @@ describe('Change assets', function () {
 
         // Choose the nft
         await homePage.goToNftTab();
-        await homePage.clickNFTFromList();
+        await nftListPage.clickNFTFromList();
         await nftDetailsPage.check_pageIsLoaded();
         await nftDetailsPage.clickNFTSendButton();
 

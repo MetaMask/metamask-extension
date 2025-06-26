@@ -47,8 +47,6 @@ class HomePage {
     testId: 'account-overview__nfts-tab',
   };
 
-  private readonly nftListItem = '[data-testid="nft-wrapper"]';
-
   private readonly defiTab = {
     testId: 'account-overview__defi-tab',
   };
@@ -154,20 +152,6 @@ class HomePage {
 
   async togglePrivacyBalance(): Promise<void> {
     await this.driver.clickElement(this.privacyBalanceToggle);
-  }
-
-  async clickNFTFromList(index = 0, timeout = 10000): Promise<void> {
-    console.log(`Choosing NFT to send at index ${index}`);
-    const nfts = await this.driver.findElements(this.nftListItem);
-    if (nfts.length === 0) {
-      throw new Error('No NFTs found to select');
-    }
-
-    const element = nfts[index];
-    await element.click();
-    // @ts-expect-error - The waitForElementState method is not typed correctly in the driver.
-    await element.waitForElementState('hidden', timeout);
-    console.log(`NFT at index ${index} selected successfully`);
   }
 
   /**
