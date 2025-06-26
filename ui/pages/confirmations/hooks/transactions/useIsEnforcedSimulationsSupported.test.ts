@@ -39,6 +39,10 @@ function renderHook({
 }
 
 describe('useIsEnforcedSimulationsSupported', () => {
+  beforeEach(() => {
+    process.env.ENABLE_ENFORCED_SIMULATIONS = true as never;
+  });
+
   it('returns true if supported', () => {
     const { result } = renderHook();
     expect(result.current).toBe(true);
