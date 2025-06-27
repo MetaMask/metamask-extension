@@ -1,4 +1,6 @@
 import { Driver } from '../../webdriver/driver';
+import HomePage from '../../page-objects/pages/home/homepage';
+import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 
 export default class Petnames {
   private driver: Driver;
@@ -67,5 +69,14 @@ export default class Petnames {
         text: option[1],
       });
     }
+  }
+
+  async createWalletSendTransaction(recipientAddress: string): Promise<void> {
+    const homePage = new HomePage(this.driver);
+    await homePage.startSendFlow();
+    const sendToPage = new SendTokenPage(this.driver);
+    await sendToPage.check_pageIsLoaded();
+    await sendToPage.fillRecipient(recipientAddress);
+    await sendToPage.goToNextScreen();
   }
 }
