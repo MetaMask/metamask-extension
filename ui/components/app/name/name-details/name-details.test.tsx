@@ -52,6 +52,7 @@ const VARIATION_MOCK = CHAIN_ID_MOCK;
 const STATE_MOCK = {
   metamask: {
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+    domains: {},
     nameSources: {
       [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
     },

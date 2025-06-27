@@ -210,3 +210,37 @@ export function mockNetworkStateWithDomains(
     domains: {},
   };
 }
+
+/**
+ * Creates a mock metamask state that includes network state and domains.
+ * This is the recommended helper for tests that need a complete metamask state.
+ *
+ * @param networkOverrides - Optional network configuration overrides
+ * @param networkOverrides.id - Network ID override
+ * @param networkOverrides.chainId - Chain ID override
+ * @param networkOverrides.rpcUrl - RPC URL override
+ * @param networkOverrides.nickname - Network nickname override
+ * @param networkOverrides.ticker - Network ticker override
+ * @param networkOverrides.blockExplorerUrl - Block explorer URL override
+ * @param networkOverrides.metadata - Network metadata override
+ * @param additionalState - Additional metamask state properties to include
+ * @returns Metamask state with network configuration and domains
+ */
+export function createMockMetamaskState(
+  networkOverrides: {
+    id?: string;
+    chainId: `0x${string}`;
+    rpcUrl?: string;
+    nickname?: string;
+    ticker?: string;
+    blockExplorerUrl?: string;
+    metadata?: NetworkMetadata;
+  } = { chainId: '0x1' },
+  additionalState: Record<string, unknown> = {},
+) {
+  return {
+    ...mockNetworkState(networkOverrides),
+    domains: {},
+    ...additionalState,
+  };
+}

@@ -27,6 +27,7 @@ describe('custom-gas selectors', () => {
             low: '1',
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        domains: {},
         },
         gas: {
           customData: { price: '0x77359400' },
@@ -42,6 +43,7 @@ describe('custom-gas selectors', () => {
             low: '1',
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        domains: {},
         },
         gas: {
           customData: { price: null },
@@ -57,6 +59,7 @@ describe('custom-gas selectors', () => {
             low: '1',
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        domains: {},
         },
         gas: {
           customData: { price: undefined },
@@ -72,6 +75,7 @@ describe('custom-gas selectors', () => {
             low: undefined,
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        domains: {},
         },
         gas: {
           customData: { price: '0x77359400' },
@@ -90,6 +94,7 @@ describe('custom-gas selectors', () => {
             high: '150',
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        domains: {},
         },
         gas: {
           customData: { price: null },
@@ -105,6 +110,7 @@ describe('custom-gas selectors', () => {
             high: undefined,
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        domains: {},
         },
         gas: {
           customData: { price: '0x77359400' },
@@ -120,6 +126,7 @@ describe('custom-gas selectors', () => {
             high: '139',
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        domains: {},
         },
         gas: {
           customData: { price: '0x205d0bae00' },
@@ -135,6 +142,7 @@ describe('custom-gas selectors', () => {
             high: '139',
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        domains: {},
         },
         gas: {
           customData: { price: '0x1bf08eb000' },
@@ -150,6 +158,7 @@ describe('custom-gas selectors', () => {
             high: '139',
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        domains: {},
         },
         gas: {
           customData: { price: '0x28bed01600' },
@@ -165,6 +174,7 @@ describe('custom-gas selectors', () => {
             high: '139',
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        domains: {},
         },
         gas: {
           customData: { price: '0x30e4f9b400' },
@@ -180,6 +190,7 @@ describe('custom-gas selectors', () => {
             high: '139',
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        domains: {},
         },
         send: getInitialSendStateWithExistingTxState({
           gas: {
@@ -200,6 +211,7 @@ describe('custom-gas selectors', () => {
             high: '139',
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        domains: {},
         },
         send: getInitialSendStateWithExistingTxState({
           gas: {

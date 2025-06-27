@@ -74,6 +74,7 @@ const createMiddleware = (
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       ...mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET }),
       ...(chainId === null ? { providerConfig: {} } : undefined),
+      domains: {},
     },
   };
 

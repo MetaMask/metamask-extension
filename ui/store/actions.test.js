@@ -57,6 +57,7 @@ const defaultState = {
       },
     ],
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+    domains: {},
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
