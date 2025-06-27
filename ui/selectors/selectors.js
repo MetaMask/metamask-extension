@@ -148,7 +148,7 @@ import {
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
 
-export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
+export const isGlobalNetworkSelectorRemoved = true;
 
 /** `appState` slice selectors */
 

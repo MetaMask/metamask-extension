@@ -82,7 +82,7 @@ const NetworkManagerRouter = () => {
         history.push('/add');
       }
     },
-    [networkFormState],
+    [history, networkFormState],
   );
 
   const handleAddExplorerUrl = useCallback(
@@ -159,19 +159,6 @@ const NetworkManagerRouter = () => {
         </ModalHeader>
         <AddBlockExplorerModal
           onAdded={handleAddExplorerUrl(handleEditOnComplete)}
-        />
-      </Route>
-      <Route path="/add">
-        <ModalHeader
-          onClose={handleClose}
-          onBack={handleGoHome}
-          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
-        >
-          {t('addNetwork')}
-        </ModalHeader>
-        <AddNetwork
-          networkFormState={networkFormState}
-          network={editedNetwork as UpdateNetworkFields}
         />
       </Route>
       <Route path="/edit">

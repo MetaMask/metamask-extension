@@ -1,6 +1,6 @@
 import { CaipChainId, parseCaipChainId } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
@@ -41,19 +41,24 @@ import { useNetworkItemCallbacks } from '../../hooks/useNetworkItemCallbacks';
 import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { AdditionalNetworksInfo } from '../additional-networks-info';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
-import { getSelectedMultichainNetworkChainId } from '../../../../../selectors/multichain/networks';
+import {
+  getEnabledNetworksByNamespace,
+  getSelectedMultichainNetworkChainId,
+} from '../../../../../selectors/multichain/networks';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import {
+  getOrderedNetworksList,
+  getMultichainNetworkConfigurationsByChainId,
+} from '../../../../../selectors';
 
 const DefaultNetworks = memo(() => {
-  // Use the shared state hook
-  const {
-    t,
-    dispatch,
-    orderedNetworksList,
-    evmNetworks,
-    nonTestNetworks,
-    enabledNetworksByNamespace,
-    isNetworkInDefaultNetworkTab,
-  } = useNetworkManagerState({ skipNetworkFiltering: true });
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+  const orderedNetworksList = useSelector(getOrderedNetworksList);
+  const [, evmNetworks] = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   // Use the shared callbacks hook
   const { getItemCallbacks, hasMultiRpcOptions } = useNetworkItemCallbacks();
   const currentCaipChainId = useSelector(getSelectedMultichainNetworkChainId);
@@ -66,6 +71,10 @@ const DefaultNetworks = memo(() => {
   const { handleAdditionalNetworkClick } = useAdditionalNetworkHandlers();
 
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
+
+  // Use the shared state hook
+  const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
+    useNetworkManagerState({ showDefaultNetworks: true });
 
   // Memoize sorted networks to avoid expensive sorting on every render
   const orderedNetworks = useMemo(
@@ -168,7 +177,6 @@ const DefaultNetworks = memo(() => {
     isNetworkInDefaultNetworkTab,
     getItemCallbacks,
     enabledNetworksByNamespace,
-    namespace,
     hasMultiRpcOptions,
     evmNetworks,
     handleNetworkChangeCallback,
@@ -221,12 +229,7 @@ const DefaultNetworks = memo(() => {
         </Box>
       );
     });
-  }, [
-    featuredNetworksNotYetEnabled,
-    enabledNetworksByNamespace,
-    handleAdditionalNetworkClick,
-    t,
-  ]);
+  }, [featuredNetworksNotYetEnabled, handleAdditionalNetworkClick, t]);
 
   return (
     <>

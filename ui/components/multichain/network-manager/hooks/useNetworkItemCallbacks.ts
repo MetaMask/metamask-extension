@@ -2,6 +2,8 @@ import { useCallback } from 'react';
 import { EthScope } from '@metamask/keyring-api';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type Hex } from '@metamask/utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
   convertCaipToHexChainId,
@@ -9,19 +11,31 @@ import {
 } from '../../../../../shared/modules/network.utils';
 import { openWindow } from '../../../../helpers/utils/window';
 import { setEditedNetwork, showModal } from '../../../../store/actions';
-import { useNetworkManagerState } from './useNetworkManagerState';
+import {
+  getMultichainNetworkConfigurationsByChainId,
+  getNetworkDiscoverButtonEnabled,
+  getSelectedMultichainNetworkChainId,
+} from '../../../../selectors';
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../../../../ducks/metamask/metamask';
+import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/useAccountCreationOnNetworkChange';
 
 export const useNetworkItemCallbacks = () => {
-  const {
-    dispatch,
-    history,
-    isUnlocked,
-    currentChainId,
-    isNetworkDiscoverButtonEnabled,
-    evmNetworks,
-    completedOnboarding,
-    hasAnyAccountsInNetwork,
-  } = useNetworkManagerState();
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const isUnlocked = useSelector(getIsUnlocked);
+  const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
+  const isNetworkDiscoverButtonEnabled = useSelector(
+    getNetworkDiscoverButtonEnabled,
+  );
+  const [, evmNetworks] = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
+  const completedOnboarding = useSelector(getCompletedOnboarding);
+
+  const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   const isDiscoverBtnEnabled = useCallback(
     (hexChainId: Hex): boolean => {
