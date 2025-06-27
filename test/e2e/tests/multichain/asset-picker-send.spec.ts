@@ -10,7 +10,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import TokenList from '../../page-objects/pages/token-list';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import { AssetPicker } from '../../page-objects/pages/asset-picker';
 
 describe('AssetPickerSendFlow', function () {
   const chainId = CHAIN_IDS.MAINNET;
@@ -59,9 +59,9 @@ describe('AssetPickerSendFlow', function () {
         await tokenDetailsList.check_tokenMarketValue('25 ETH');
 
         // Search for CHZ and check that CHZ is disabled
-        const quotePage = new BridgeQuotePage(driver);
-        await quotePage.searchAssetAndVerifyCount('CHZ', 1);
-        await quotePage.check_tokenIsDisabled();
+        const assetPicker = new AssetPicker(driver);
+        await assetPicker.searchAssetAndVerifyCount('CHZ', 1);
+        await assetPicker.checkTokenIsDisabled();
       },
     );
   });
