@@ -1354,7 +1354,10 @@
         "origin": "tmashuang.github.io"
       }
     ],
-    "swapsState": {}
+    "swapsState": {},
+    "domains": {
+      "https://metamask.github.io": "goerli"
+    }
   },
   "ramps": {
     "buyableChains": [
