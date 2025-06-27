@@ -1096,15 +1096,13 @@ export default class MetamaskController extends EventEmitter {
       state: initState.OnboardingController,
     });
 
-    this.oauthService = getIsSeedlessOnboardingFeatureEnabled()
-      ? new OAuthService({
-          env: {
-            googleClientId: process.env.GOOGLE_CLIENT_ID,
-            appleClientId: process.env.APPLE_CLIENT_ID,
-          },
-          webAuthenticator: webAuthenticatorFactory(),
-        })
-      : null;
+    this.oauthService = new OAuthService({
+      env: {
+        googleClientId: process.env.GOOGLE_CLIENT_ID,
+        appleClientId: process.env.APPLE_CLIENT_ID,
+      },
+      webAuthenticator: webAuthenticatorFactory(),
+    });
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
@@ -1949,12 +1947,8 @@ export default class MetamaskController extends EventEmitter {
       DeFiPositionsController: DeFiPositionsControllerInit,
       DelegationController: DelegationControllerInit,
       AccountTreeController: AccountTreeControllerInit,
+      SeedlessOnboardingController: SeedlessOnboardingControllerInit,
     };
-
-    if (getIsSeedlessOnboardingFeatureEnabled()) {
-      controllerInitFunctions.SeedlessOnboardingController =
-        SeedlessOnboardingControllerInit;
-    }
 
     const {
       controllerApi,
@@ -2007,10 +2001,8 @@ export default class MetamaskController extends EventEmitter {
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
     this.accountWalletController = controllersByName.AccountTreeController;
 
-    if (getIsSeedlessOnboardingFeatureEnabled()) {
-      this.seedlessOnboardingController =
-        controllersByName.SeedlessOnboardingController;
-    }
+    this.seedlessOnboardingController =
+      controllersByName.SeedlessOnboardingController;
 
     this.notificationServicesController.init();
     this.snapController.init();
@@ -3401,7 +3393,7 @@ export default class MetamaskController extends EventEmitter {
       notificationServicesPushController,
     } = this;
 
-    let apis = {
+    return {
       // etc
       getState: this.getState.bind(this),
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
@@ -3783,6 +3775,12 @@ export default class MetamaskController extends EventEmitter {
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
+
+      // SeedlessOnboardingController
+      startOAuthLogin: this.startOAuthLogin.bind(this),
+      resetOAuthLoginState: this.resetOAuthLoginState.bind(this),
+      createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
+      fetchAllSecretData: this.fetchAllSecretData.bind(this),
 
       // KeyringController
       setLocked: this.setLocked.bind(this),
@@ -4343,18 +4341,6 @@ export default class MetamaskController extends EventEmitter {
       isRelaySupported,
       requestSafeReload: this.requestSafeReload.bind(this),
     };
-
-    if (getIsSeedlessOnboardingFeatureEnabled()) {
-      apis = {
-        ...apis,
-        startOAuthLogin: this.startOAuthLogin.bind(this),
-        resetOAuthLoginState: this.resetOAuthLoginState.bind(this),
-        createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
-        fetchAllSecretData: this.fetchAllSecretData.bind(this),
-      };
-    }
-
-    return apis;
   }
 
   rejectOriginPendingApprovals(origin) {

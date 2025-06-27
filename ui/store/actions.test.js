@@ -140,9 +140,7 @@ describe('Actions', () => {
     it('calls socialLogin in background', async () => {
       const store = mockStore();
 
-      const startOAuthLoginStub = background.startOAuthLogin.callsFake(
-        (_, cb) => cb(null, true),
-      );
+      const startOAuthLoginStub = background.startOAuthLogin.resolves();
 
       setBackgroundConnection(background);
 
@@ -163,7 +161,7 @@ describe('Actions', () => {
     it('throws an error if the social login fails', async () => {
       const store = mockStore();
 
-      background.startOAuthLogin.callsFake((_, cb) => cb(new Error('error')));
+      background.startOAuthLogin.rejects(new Error('error'));
 
       setBackgroundConnection(background);
 
@@ -194,15 +192,11 @@ describe('Actions', () => {
       );
 
       const createSeedPhraseBackupStub =
-        background.createSeedPhraseBackup.callsFake((_, __, ___, cb) =>
-          cb(null, undefined),
-        );
+        background.createSeedPhraseBackup.resolves();
       const createNewVaultAndKeychainStub =
-        background.createNewVaultAndKeychain.callsFake((_, cb) =>
-          cb(null, mockKeyrings[0]),
-        );
-      const getSeedPhraseStub = background.getSeedPhrase.callsFake(
-        (_, __, cb) => cb(null, mockEncodedSeedPhrase),
+        background.createNewVaultAndKeychain.resolves(mockKeyrings[0]);
+      const getSeedPhraseStub = background.getSeedPhrase.resolves(
+        mockEncodedSeedPhrase,
       );
 
       setBackgroundConnection(background);
@@ -240,13 +234,11 @@ describe('Actions', () => {
         Buffer.from(mockSeedPhrase).values(),
       );
 
-      const fetchAllSecretDataStub = background.fetchAllSecretData.callsFake(
-        (_, cb) => cb(null, [mockEncodedSeedPhrase]),
-      );
+      const fetchAllSecretDataStub = background.fetchAllSecretData.resolves([
+        mockEncodedSeedPhrase,
+      ]);
       const createNewVaultAndRestoreStub =
-        background.createNewVaultAndRestore.callsFake((_, __, cb) =>
-          cb(null, mockKeyrings),
-        );
+        background.createNewVaultAndRestore.resolves(mockKeyrings);
 
       setBackgroundConnection(background);
 
@@ -267,13 +259,9 @@ describe('Actions', () => {
     it('should not restore vault if no seed phrase is found', async () => {
       const store = mockStore();
 
-      const fetchAllSecretDataStub = background.fetchAllSecretData.callsFake(
-        (_, cb) => cb(null, []),
-      );
+      const fetchAllSecretDataStub = background.fetchAllSecretData.resolves([]);
       const createNewVaultAndRestoreStub =
-        background.createNewVaultAndRestore.callsFake((_, __, cb) =>
-          cb(null, undefined),
-        );
+        background.createNewVaultAndRestore.resolves();
 
       setBackgroundConnection(background);
 
@@ -296,9 +284,7 @@ describe('Actions', () => {
     it('errors when fetchAndRestoreSeedPhrase throws', async () => {
       const store = mockStore();
 
-      background.fetchAllSecretData.callsFake((_, cb) =>
-        cb(new Error('error')),
-      );
+      background.fetchAllSecretData.rejects(new Error('error'));
 
       setBackgroundConnection(background);
 
