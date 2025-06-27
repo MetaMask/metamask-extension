@@ -31,6 +31,8 @@ import { CLOB_ENDPOINT, DATA_API_ENDPOINT } from '../utils';
 const PredictContainer = () => {
   const [positions, setPositions] = useState<UserPosition[]>([]);
   const [loading, setLoading] = useState(true);
+  const [redeemingPosition, setRedeemingPosition] =
+    useState<UserPosition | null>(null);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const { placeOrder, redeemPosition } = usePolymarket();
 
@@ -80,6 +82,13 @@ const PredictContainer = () => {
       side: Side.SELL,
       negRisk: position.negativeRisk,
     });
+  };
+
+  const handleRedeem = async (position: UserPosition) => {
+    setRedeemingPosition(position);
+    await redeemPosition(position);
+    await getPositions();
+    setRedeemingPosition(null);
   };
 
   return (
@@ -222,7 +231,8 @@ const PredictContainer = () => {
                       <Button
                         variant={ButtonVariant.Primary}
                         style={{ marginLeft: 'auto' }}
-                        onClick={() => redeemPosition(position)}
+                        onClick={() => handleRedeem(position)}
+                        loading={redeemingPosition?.asset === position.asset}
                       >
                         Redeem
                       </Button>

@@ -22,7 +22,9 @@ import { Page } from '../../../components/multichain/pages/page';
 export const OrdersContainer = () => {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const { createL2Headers, cancelOrder } = usePolymarket();
+  const { createL2Headers, cancelOrder, getMarketTitle } = usePolymarket();
+  const [title, setTitle] = useState<string | null>(null);
+  const [cancelingOrder, setCancelingOrder] = useState<string | null>(null);
 
   const getOrders = async () => {
     try {
@@ -38,6 +40,9 @@ export const OrdersContainer = () => {
       const ordersData = await response.json();
       console.log('ordersData', ordersData);
       setOrders(ordersData.data);
+      const marketTitle = await getMarketTitle(ordersData.data[0].market);
+      setTitle(marketTitle);
+      console.log('marketTitle', marketTitle);
     } catch (error) {
       console.error('Error fetching trades:', error);
       setOrders([]);
@@ -57,10 +62,10 @@ export const OrdersContainer = () => {
 
   const handleCancelOrder = async (orderId: string) => {
     console.log('orderId', orderId);
-    setLoading(true);
+    setCancelingOrder(orderId);
     await cancelOrder(orderId);
     await getOrders();
-    setLoading(false);
+    setCancelingOrder(null);
   };
 
   useEffect(() => {
@@ -102,7 +107,8 @@ export const OrdersContainer = () => {
               </Text>
             </Box>
           )}
-          {orders && orders.length > 0 ? (
+          {orders &&
+            orders.length > 0 &&
             orders.map((order) => {
               return (
                 <Box
@@ -118,9 +124,17 @@ export const OrdersContainer = () => {
                     alignItems={AlignItems.center}
                     gap={3}
                   >
-                    <Box>
-                      <Text variant={TextVariant.headingSm}>
-                        {order.outcome}
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      gap={1}
+                    >
+                      <Text variant={TextVariant.headingSm}>{title}</Text>
+                      <Text variant={TextVariant.bodySm}>
+                        {order.outcome} -{' '}
+                        {order.expiration === '0'
+                          ? 'No expiration'
+                          : getDaysLeft(order.expiration)}
                       </Text>
                     </Box>
                   </Box>
@@ -132,13 +146,6 @@ export const OrdersContainer = () => {
                     gap={3}
                     marginTop={2}
                   >
-                    <Box>
-                      <Text variant={TextVariant.bodySm}>
-                        {order.expiration === '0'
-                          ? 'No expiration'
-                          : getDaysLeft(order.expiration)}
-                      </Text>
-                    </Box>
                     <Box>
                       <Text variant={TextVariant.bodySm}>${order.price}</Text>
                       <Text variant={TextVariant.bodySm}>
@@ -163,15 +170,15 @@ export const OrdersContainer = () => {
                       onClick={() => {
                         handleCancelOrder(order.id);
                       }}
-                      loading={loading}
+                      loading={cancelingOrder === order.id}
                     >
                       Cancel
                     </Button>
                   </Box>
                 </Box>
               );
-            })
-          ) : (
+            })}
+          {!loading && orders && orders.length === 0 && (
             <Text>No orders found.</Text>
           )}
         </Box>

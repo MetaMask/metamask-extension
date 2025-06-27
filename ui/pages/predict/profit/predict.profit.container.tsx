@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
 import { useSelector } from 'react-redux';
+import { Link } from '@material-ui/core';
 import { Box, Text } from '../../../components/component-library';
 
 import { Page } from '../../../components/multichain/pages/page';
 import {
   BackgroundColor,
   BorderRadius,
-  Color,
   Display,
   FlexDirection,
   JustifyContent,
@@ -15,11 +15,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import PredictNavigation from '../predict.navigation';
-import { CLOB_ENDPOINT, DATA_API_ENDPOINT } from '../utils';
 import { getSelectedAccount } from '../../../selectors';
+import PredictNavigation from '../predict.navigation';
 import { Activity } from '../types';
-import { Link } from '@material-ui/core';
+import { DATA_API_ENDPOINT } from '../utils';
 
 const PredictContainer = () => {
   const account = useSelector(getSelectedAccount);
@@ -107,6 +106,7 @@ const PredictContainer = () => {
                 display={Display.Flex}
                 flexDirection={FlexDirection.Column}
                 gap={1}
+                justifyContent={JustifyContent.center}
               >
                 <Text
                   variant={TextVariant.headingSm}
@@ -149,7 +149,7 @@ const PredictContainer = () => {
                 <Text
                   variant={TextVariant.headingSm}
                   color={
-                    pnl > 0 ? TextColor.successDefault : TextColor.errorDefault
+                    pnl >= 0 ? TextColor.successDefault : TextColor.errorDefault
                   }
                 >
                   Profit
@@ -157,10 +157,10 @@ const PredictContainer = () => {
                 <Text
                   variant={TextVariant.bodySm}
                   color={
-                    pnl > 0 ? TextColor.successDefault : TextColor.errorDefault
+                    pnl >= 0 ? TextColor.successDefault : TextColor.errorDefault
                   }
                 >
-                  {pnl > 0 ? '' : '-'}${Math.abs(pnl).toFixed(2)}
+                  {pnl >= 0 ? '' : '-'}${Math.abs(pnl).toFixed(2)}
                 </Text>
               </Box>
             </Box>
@@ -188,7 +188,7 @@ const PredictContainer = () => {
                         variant={TextVariant.bodyXs}
                         color={TextColor.textAlternative}
                       >
-                        {new Date(item.timestamp).toLocaleString()}
+                        {new Date(item.timestamp * 1000).toLocaleString()}
                       </Text>
                     </Box>
                     <Link

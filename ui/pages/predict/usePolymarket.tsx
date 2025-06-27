@@ -24,6 +24,8 @@ import {
   UserPosition,
 } from './types';
 
+const MARKET_CACHE_KEY = 'market_cache';
+
 const CLOB_ENDPOINT = 'https://clob.polymarket.com';
 
 const ClobAuthDomain = {
@@ -111,6 +113,29 @@ export const usePolymarket = () => {
     };
 
     return headers;
+  };
+
+  const setMarketTitle = async (marketId: string, title: string) => {
+    const marketData = localStorage.getItem(MARKET_CACHE_KEY);
+    if (marketData) {
+      const market = JSON.parse(marketData);
+      market[marketId] = title;
+    } else {
+      const market = {
+        [marketId]: title,
+      };
+      localStorage.setItem(MARKET_CACHE_KEY, JSON.stringify(market));
+    }
+  };
+
+  const getMarketTitle = async (marketId: string) => {
+    const marketData = localStorage.getItem(MARKET_CACHE_KEY);
+
+    if (marketData) {
+      const market = JSON.parse(marketData);
+      return market[marketId];
+    }
+    return null;
   };
 
   const createL2Headers = async (
@@ -472,6 +497,7 @@ export const usePolymarket = () => {
     });
     const responseData = await response.json();
     console.log(responseData);
+    return responseData;
   };
 
   const redeemPosition = async (position: UserPosition) => {
@@ -528,6 +554,8 @@ export const usePolymarket = () => {
     redeemPosition,
     createL2Headers,
     cancelOrder,
+    setMarketTitle,
+    getMarketTitle,
     apiKey,
   };
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { Side, TickSize, Token } from '@polymarket/clob-client';
 import {
@@ -33,7 +33,8 @@ const PredictContainer = () => {
   const { marketId } = useParams<{ marketId: string }>();
   const [market, setMarket] = useState<Market | null>(null);
   const [selectedAmount, setSelectedAmount] = useState<number>(10);
-  const { placeOrder } = usePolymarket();
+  const { placeOrder, setMarketTitle } = usePolymarket();
+  const history = useHistory();
 
   const getMarket = useCallback(async () => {
     if (!marketId) {
@@ -49,12 +50,13 @@ const PredictContainer = () => {
 
     const marketData = await response.json();
     console.log('marketData', marketData);
+    await setMarketTitle(marketId, marketData.question);
     setMarket(marketData);
-  }, [marketId]);
+  }, [marketId, setMarketTitle]);
 
   useEffect(() => {
     getMarket();
-  }, [getMarket, marketId]);
+  }, []);
 
   const getTimeRemaining = () => {
     if (!market?.end_date_iso) {
@@ -79,9 +81,9 @@ const PredictContainer = () => {
     return isYesToken(token) || isNoToken(token);
   };
 
-  const handleBuy = (token: Token) => {
+  const handleBuy = async (token: Token) => {
     console.log(market, token);
-    placeOrder({
+    const response = await placeOrder({
       tokenId: token.token_id,
       price: token.price,
       size: Number(market?.minimum_order_size),
@@ -89,6 +91,15 @@ const PredictContainer = () => {
       side: Side.BUY,
       negRisk: market?.neg_risk || false,
     });
+
+    console.log('response', response);
+
+    if (response.status === 'live') {
+      history.push(`/predict-orders`);
+    }
+    if (response.status === 'matched') {
+      history.push(`/predict-positions`);
+    }
   };
 
   const getTokenButtonBackgroundColor = (token: Token, index: number) => {
