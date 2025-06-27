@@ -16,7 +16,10 @@ describe('Welcome login', () => {
 
     fireEvent.click(importButton);
 
-    expect(mockOnLogin).toHaveBeenCalledWith(LOGIN_TYPE.SRP, LOGIN_OPTION.EXISTING);
+    expect(mockOnLogin).toHaveBeenCalledWith(
+      LOGIN_TYPE.SRP,
+      LOGIN_OPTION.EXISTING,
+    );
   });
 
   it('should display Login Options modal when seedless onboarding feature is enabled', () => {
@@ -34,6 +37,8 @@ describe('Welcome login', () => {
     fireEvent.click(importButton);
 
     expect(mockOnLogin).not.toHaveBeenCalled();
-    expect(getByTestId('onboarding-import-with-srp-button')).toBeInTheDocument();
+    expect(
+      getByTestId('onboarding-import-with-srp-button'),
+    ).toBeInTheDocument();
   });
 });

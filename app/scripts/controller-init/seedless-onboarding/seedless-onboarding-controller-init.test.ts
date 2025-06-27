@@ -9,6 +9,7 @@ import {
   SeedlessOnboardingControllerMessenger,
 } from '../messengers/seedless-onboarding';
 import { buildControllerInitRequestMock } from '../test/utils';
+import { ENVIRONMENT } from '../../../../development/build/constants';
 import { SeedlessOnboardingControllerInit } from './seedless-onboarding-controller-init';
 
 jest.mock('@metamask/seedless-onboarding-controller');
@@ -31,6 +32,10 @@ describe('SeedlessOnboardingControllerInit', () => {
   const SeedlessOnboardingControllerClassMock = jest.mocked(
     SeedlessOnboardingController,
   );
+
+  beforeAll(() => {
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
+  });
 
   beforeEach(() => {
     jest.resetAllMocks();
