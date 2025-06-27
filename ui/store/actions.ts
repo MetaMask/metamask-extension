@@ -79,6 +79,7 @@ import {
   getSelectedInternalAccount,
   getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
+  getIsSocialLoginFlow,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -327,11 +328,21 @@ export function changePassword(
   newPassword: string,
   oldPassword: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
+    const isSocialLoginFlow = getIsSocialLoginFlow(getState());
+    if (!isSocialLoginFlow) {
+      return;
+    }
     try {
-      await submitRequestToBackground<void>('changePassword', [
+      await submitRequestToBackground<void>('socialSyncChangePassword', [
         newPassword,
         oldPassword,
+      ]);
+      await submitRequestToBackground<void>('keyringChangePassword', [
+        newPassword,
       ]);
     } catch (error) {
       dispatch(displayWarning(error));

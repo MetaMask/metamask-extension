@@ -60,6 +60,7 @@ import {
 
 import { updateDataDeletionTaskStatus } from '../../../store/actions';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import MetametricsToggle from './metametrics-toggle';
 import DeleteMetametricsDataButton from './delete-metametrics-data-button';
 
@@ -1290,7 +1291,7 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('security')}
         </span>
         {this.renderSeedWords()}
-        {this.renderChangePassword()}
+        {getIsSeedlessOnboardingFeatureEnabled() && this.renderChangePassword()}
         {this.renderSecurityAlertsToggle()}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
