@@ -4,6 +4,7 @@
 ; This variable is required
 ; apikey=7b2ad717c11e40dfbc02d5e899a4f228
 ; https=https://mainnet.infura.io/v3/7b2ad717c11e40dfbc02d5e899a4f228
+; api_Key_Secret=ISCn8tj824cXb8rQQcbm1GwW/IJiQ0vD/p00khlKsrGFgibKQ/aCsw
 INFURA_PROJECT_ID=7b2ad717c11e40dfbc02d5e899a4f228
 
 ; This variable is not required but it's necessary for the storybook
