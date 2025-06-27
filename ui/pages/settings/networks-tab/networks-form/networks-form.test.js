@@ -33,6 +33,7 @@ const renderComponent = (props) => {
   const store = configureMockStore([thunk])({
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      domains: {},
       useSafeChainsListValidation: true,
       orderedNetworkList: {
         networkId: '0x1',
