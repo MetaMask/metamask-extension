@@ -1,20 +1,23 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Content,
   Footer,
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ButtonIconSize } from '../../../components/component-library/button-icon';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+} from '../../../components/component-library/button-icon';
 import {
   BackgroundColor,
   BlockSize,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { ButtonIcon } from '../../../components/component-library/button-icon';
 import {
   Box,
   Button,
@@ -25,13 +28,9 @@ import {
 } from '../../../components/component-library';
 import RecoveryPhraseChips from '../../onboarding-flow/recovery-phrase/recovery-phrase-chips';
 import ConfirmSrpModal from '../../onboarding-flow/recovery-phrase/confirm-srp-modal';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
-import { useSelector } from 'react-redux';
 import { getHDEntropyIndex } from '../../../selectors';
-import { useDispatch } from 'react-redux';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { ACCOUNT_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 
 type ConfirmSrpProps = {
@@ -76,8 +75,6 @@ export const ConfirmSrp = ({
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
-  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const splitSecretRecoveryPhrase = useMemo(
     () => (secretRecoveryPhrase ? secretRecoveryPhrase.split(' ') : []),
     [secretRecoveryPhrase],
@@ -118,17 +115,11 @@ export const ConfirmSrp = ({
 
   const handleConfirmedPhrase = useCallback(() => {
     dispatch(setSeedPhraseBackedUp(true));
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
-      properties: {
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    // TODO: create a new event for this
 
     onBackupComplete();
     history.push(ACCOUNT_DETAILS_ROUTE);
-  }, [dispatch, hdEntropyIndex, history, trackEvent, onBackupComplete]);
+  }, [dispatch, history, onBackupComplete]);
 
   return (
     <Page>

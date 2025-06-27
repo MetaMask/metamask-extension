@@ -38,7 +38,9 @@ export const AccountSecretsSection = ({
             SECRET_RECOVERY_PHRASE_NUMBER,
           ])}
           value={hasBackedUp ? t('backup') : ''}
-          valueColor={hasBackedUp ? TextColor.textDefault : TextColor.errorDefault}
+          valueColor={
+            hasBackedUp ? TextColor.textDefault : TextColor.errorDefault
+          }
           endAccessory={
             <ButtonIcon
               iconName={IconName.ArrowRight}

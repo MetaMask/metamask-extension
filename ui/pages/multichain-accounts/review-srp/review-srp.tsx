@@ -1,7 +1,5 @@
-import React, { useCallback, useContext, useState } from 'react';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   AlignItems,
   BackgroundColor,
@@ -12,9 +10,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useSelector } from 'react-redux';
-import { getHDEntropyIndex } from '../../../selectors';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -35,7 +30,7 @@ import {
 import { Box } from '../../../components/component-library/box';
 import SRPDetailsModal from '../../../components/app/srp-details-modal';
 import RecoveryPhraseChips from '../../onboarding-flow/recovery-phrase/recovery-phrase-chips';
-import { ACCOUNT_DETAILS_CONFIRM_SRP_ROUTE, ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
+import { ACCOUNT_DETAILS_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
 import {
   Footer,
   Content,
@@ -52,23 +47,14 @@ type ReviewSrpProps = {
 export const ReviewSrp = ({ secretRecoveryPhrase }: ReviewSrpProps) => {
   const history = useHistory();
   const t = useI18nContext();
-  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [phraseRevealed, setPhraseRevealed] = useState(false);
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
-  const trackEvent = useContext(MetaMetricsContext);
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
 
   const handleOnShowSrpDetailsModal = useCallback(() => {
     // TODO: create a new event for this
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.SrpDefinitionClicked,
-      properties: {
-        location: 'review_recovery_phrase',
-      },
-    });
     setShowSrpDetailsModal(true);
-  }, [trackEvent]);
+  }, []);
 
   const handleCopyToClipboard = useCallback(() => {
     handleCopy(secretRecoveryPhrase);
@@ -121,14 +107,7 @@ export const ReviewSrp = ({ secretRecoveryPhrase }: ReviewSrpProps) => {
           secretRecoveryPhrase={secretRecoveryPhrase.split(' ')}
           phraseRevealed={phraseRevealed}
           revealPhrase={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event:
-                MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
-              properties: {
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
+            // TODO: create a new event for this
             setPhraseRevealed(true);
           }}
         />
@@ -157,14 +136,6 @@ export const ReviewSrp = ({ secretRecoveryPhrase }: ReviewSrpProps) => {
           disabled={!phraseRevealed}
           onClick={() => {
             // TODO: create a new event for this
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event:
-                MetaMetricsEventName.OnboardingWalletSecurityPhraseWrittenDown,
-              properties: {
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
             history.push(ACCOUNT_DETAILS_CONFIRM_SRP_ROUTE);
           }}
         >

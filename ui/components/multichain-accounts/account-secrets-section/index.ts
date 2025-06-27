@@ -1,1 +1,1 @@
-import { AccountSecretsSection } from './account-secrets-section';
+export { AccountSecretsSection } from './account-secrets-section';
