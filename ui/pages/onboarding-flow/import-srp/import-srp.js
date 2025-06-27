@@ -125,7 +125,9 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             color={IconColor.iconDefault}
             size={ButtonIconSize.Md}
             data-testid="import-srp-back-button"
-            onClick={() => history.push(ONBOARDING_WELCOME_ROUTE)}
+            onClick={() => {
+              history.replace(ONBOARDING_WELCOME_ROUTE);
+            }}
             ariaLabel={t('back')}
           />
         </Box>

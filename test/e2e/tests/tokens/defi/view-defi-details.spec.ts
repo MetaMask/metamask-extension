@@ -61,6 +61,9 @@ describe('View DeFi details', function () {
         if (isGlobalNetworkSelectorRemoved) {
           await driver.clickElement('[data-testid="sort-by-networks"]');
           await driver.clickElement({
+            text: 'Default',
+          });
+          await driver.clickElement({
             text: 'Linea Mainnet',
             css: 'p',
           });

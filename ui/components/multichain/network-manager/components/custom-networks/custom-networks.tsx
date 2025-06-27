@@ -1,6 +1,7 @@
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
   getNetworkIcon,
@@ -29,18 +30,22 @@ import { useNetworkChangeHandlers } from '../../hooks/useNetworkChangeHandlers';
 import { useNetworkItemCallbacks } from '../../hooks/useNetworkItemCallbacks';
 import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
+import {
+  getMultichainNetworkConfigurationsByChainId,
+  getOrderedNetworksList,
+  getSelectedMultichainNetworkChainId,
+} from '../../../../../selectors';
 
 export const CustomNetworks = React.memo(() => {
   const t = useI18nContext();
-  // Use the shared state hook
-  const {
-    history,
-    orderedNetworksList,
-    evmNetworks,
-    currentChainId,
-    nonTestNetworks,
-    testNetworks,
-  } = useNetworkManagerState();
+  const history = useHistory();
+  const orderedNetworksList = useSelector(getOrderedNetworksList);
+  const [, evmNetworks] = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
+  const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
+
+  const { nonTestNetworks, testNetworks } = useNetworkManagerState();
 
   const { getItemCallbacks, hasMultiRpcOptions, isNetworkEnabled } =
     useNetworkItemCallbacks();

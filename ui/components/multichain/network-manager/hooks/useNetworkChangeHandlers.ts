@@ -1,5 +1,6 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { parseCaipChainId, type CaipChainId } from '@metamask/utils';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -20,7 +21,19 @@ import {
   updateCustomNonce,
 } from '../../../../store/actions';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../../shared/constants/network';
-import { useNetworkManagerState } from './useNetworkManagerState';
+import {
+  getAllChainsToPoll,
+  getAllDomains,
+  getEnabledNetworksByNamespace,
+  getMultichainNetworkConfigurationsByChainId,
+  getOriginOfCurrentTab,
+  getPermittedEVMAccountsForSelectedTab,
+  getPermittedEVMChainsForSelectedTab,
+  getPreferences,
+  getSelectedMultichainNetworkChainId,
+} from '../../../../selectors';
+import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/useAccountCreationOnNetworkChange';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
 export enum ACTION_MODE {
   // Displays the search box and network list
@@ -38,21 +51,26 @@ export enum ACTION_MODE {
 }
 
 export const useNetworkChangeHandlers = () => {
-  const {
-    dispatch,
-    trackEvent,
-    hasAnyAccountsInNetwork,
-    tokenNetworkFilter,
-    selectedTabOrigin,
-    domains,
-    multichainNetworks,
-    evmNetworks,
-    currentChainId,
-    permittedChainIds,
-    permittedAccountAddresses,
-    enabledNetworksByNamespace,
-    allChainIds,
-  } = useNetworkManagerState();
+  const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
+
+  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
+  const domains = useSelector(getAllDomains);
+  const [multichainNetworks, evmNetworks] = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
+  const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
+  const permittedChainIds = useSelector((state) =>
+    getPermittedEVMChainsForSelectedTab(state, selectedTabOrigin),
+  );
+  const permittedAccountAddresses = useSelector((state) =>
+    getPermittedEVMAccountsForSelectedTab(state, selectedTabOrigin),
+  );
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const allChainIds = useSelector(getAllChainsToPoll);
+
+  const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   // This value needs to be tracked in case the user changes to a Non EVM
   // network and there is no account created for that network. This will
