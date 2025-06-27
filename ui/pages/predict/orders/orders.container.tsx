@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 
 import { Box, Button, Text } from '../../../components/component-library';
 
@@ -23,8 +22,7 @@ import { Page } from '../../../components/multichain/pages/page';
 export const OrdersContainer = () => {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const history = useHistory();
-  const { createL2Headers } = usePolymarket();
+  const { createL2Headers, cancelOrder } = usePolymarket();
 
   const getOrders = async () => {
     try {
@@ -55,6 +53,14 @@ export const OrdersContainer = () => {
     const diff = endDate.getTime() - now.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     return `${days}D left`;
+  };
+
+  const handleCancelOrder = async (orderId: string) => {
+    console.log('orderId', orderId);
+    setLoading(true);
+    await cancelOrder(orderId);
+    await getOrders();
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -155,8 +161,9 @@ export const OrdersContainer = () => {
                         color: 'white',
                       }}
                       onClick={() => {
-                        history.push(`/predict-bet/${order.tokenID}`);
+                        handleCancelOrder(order.id);
                       }}
+                      loading={loading}
                     >
                       Cancel
                     </Button>

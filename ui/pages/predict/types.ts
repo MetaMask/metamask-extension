@@ -275,3 +275,27 @@ export type MarketGamma = {
   volume: string;
   negRisk: boolean;
 };
+
+export type Activity = {
+  proxyWallet: string;
+  timestamp: number;
+  conditionId: string;
+  type: string; // e.g., 'TRADE', 'REDEEM', could be an enum if there are fixed types
+  size: number;
+  usdcSize: number;
+  transactionHash: string;
+  price: number;
+  asset: string;
+  side: string; // e.g., 'BUY' or 'SELL', could be an enum if Side is imported
+  outcomeIndex: number;
+  title: string;
+  slug: string;
+  icon: string;
+  eventSlug: string;
+  outcome: string;
+  name: string;
+  pseudonym: string;
+  bio: string;
+  profileImage: string;
+  profileImageOptimized: string;
+};

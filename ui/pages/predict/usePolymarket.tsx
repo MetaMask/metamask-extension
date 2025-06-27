@@ -502,6 +502,24 @@ export const usePolymarket = () => {
     );
   };
 
+  const cancelOrder = async (orderId: string) => {
+    const body = JSON.stringify({
+      orderID: orderId,
+    });
+    const headers = await createL2Headers({
+      method: 'DELETE',
+      requestPath: `/order`,
+      body,
+    });
+    const response = await fetch(`${CLOB_ENDPOINT}/order`, {
+      method: 'DELETE',
+      headers,
+      body,
+    });
+    const responseData = await response.json();
+    console.log(responseData);
+  };
+
   return {
     createApiKey,
     deriveApiKey,
@@ -509,6 +527,7 @@ export const usePolymarket = () => {
     placeOrder,
     redeemPosition,
     createL2Headers,
+    cancelOrder,
     apiKey,
   };
 };
