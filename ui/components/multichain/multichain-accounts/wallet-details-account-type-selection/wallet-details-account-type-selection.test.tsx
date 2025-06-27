@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import { WalletDetailsAccountTypeSelection } from './wallet-details-account-type-selection';
 import { WalletClientType } from '../../../../hooks/accounts/useMultichainWalletSnapClient';
+import { WalletDetailsAccountTypeSelection } from './wallet-details-account-type-selection';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -12,15 +12,12 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
-jest.mock(
-  '../../../../hooks/accounts/useMultichainWalletSnapClient',
-  () => ({
-    WalletClientType: {
-      Bitcoin: 'bitcoin-wallet-snap',
-      Solana: 'solana-wallet-snap',
-    },
-  }),
-);
+jest.mock('../../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
+  WalletClientType: {
+    Bitcoin: 'bitcoin-wallet-snap',
+    Solana: 'solana-wallet-snap',
+  },
+}));
 
 describe('WalletDetailsAccountTypeSelection', () => {
   const onAccountTypeSelect = jest.fn();
@@ -80,8 +77,8 @@ describe('WalletDetailsAccountTypeSelection', () => {
   });
 
   it('does not render Solana button if not enabled', () => {
-    mockUseSelector.mockImplementation((selector) =>
-      selector.name !== 'getIsSolanaSupportEnabled',
+    mockUseSelector.mockImplementation(
+      (selector) => selector.name !== 'getIsSolanaSupportEnabled',
     );
     const { queryByTestId } = renderComponent();
     expect(
@@ -90,8 +87,8 @@ describe('WalletDetailsAccountTypeSelection', () => {
   });
 
   it('does not render Bitcoin button if not enabled', () => {
-    mockUseSelector.mockImplementation((selector) =>
-      selector.name !== 'getIsBitcoinSupportEnabled',
+    mockUseSelector.mockImplementation(
+      (selector) => selector.name !== 'getIsBitcoinSupportEnabled',
     );
     const { queryByTestId } = renderComponent();
     expect(
