@@ -42,6 +42,7 @@ const render = () => {
       keyrings: [...mockState.metamask.keyrings, mockSecondHdKeyring],
       firstTimeFlowType: FirstTimeFlowType.create,
       seedPhraseBackedUp: false,
+      domains: mockState.metamask.domains || {},
     },
   });
 
