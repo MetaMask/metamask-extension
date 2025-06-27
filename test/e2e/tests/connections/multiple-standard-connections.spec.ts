@@ -105,7 +105,7 @@ function getRestrictedNetworks(networks: string[]): string {
 }
 
 describe('Multiple Standard Dapp Connections', function () {
-  it('should default account selection to already permitted account(s) when `wallet_requestPermissions` is called with no accounts specified', async function () {
+  it('should default account selection to already permitted account(s) plus the selected account (if not already permissioned) when `wallet_requestPermissions` is called with no accounts specified', async function () {
     await withFixtures(
       {
         dapp: true,
