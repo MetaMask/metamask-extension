@@ -15,17 +15,19 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
 
 export default class InfoTab extends PureComponent {
   state = {
     version: process.env.METAMASK_VERSION,
-    isVisitSupportDataConsentModalOpen: false,
   };
 
   static contextTypes = {
     t: PropTypes.func,
     trackEvent: PropTypes.func,
+  };
+
+  static propTypes = {
+    setShowSupportDataConsentModal: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -45,13 +47,6 @@ export default class InfoTab extends PureComponent {
     const { t } = this.context;
     handleSettingsRefs(t, t('about'), this.settingsRefs);
   }
-
-  toggleVisitSupportDataConsentModal = () => {
-    this.setState((prevState) => ({
-      isVisitSupportDataConsentModalOpen:
-        !prevState.isVisitSupportDataConsentModalOpen,
-    }));
-  };
 
   renderInfoLinks() {
     const { t } = this.context;
@@ -117,7 +112,7 @@ export default class InfoTab extends PureComponent {
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"
-            onClick={this.toggleVisitSupportDataConsentModal}
+            onClick={() => this.props.setShowSupportDataConsentModal(true)}
           >
             {t('supportCenter')}
           </Button>
@@ -195,12 +190,6 @@ export default class InfoTab extends PureComponent {
             alt="MetaMask Logo"
           />
         </div>
-        {this.state.isVisitSupportDataConsentModalOpen && (
-          <VisitSupportDataConsentModal
-            isOpen={this.state.isVisitSupportDataConsentModalOpen}
-            onClose={this.toggleVisitSupportDataConsentModal}
-          />
-        )}
       </div>
     );
   }
