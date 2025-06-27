@@ -1,3 +1,6 @@
+/**
+ * This test suite is for testing connecting to a dapp with different wallet providers (EVM and Solana).
+ */
 import { SolScope } from '@metamask/keyring-api';
 import { connectToDapp, WINDOW_TITLES, withFixtures } from '../../helpers';
 import {
