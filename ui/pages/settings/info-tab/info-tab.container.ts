@@ -2,9 +2,11 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { setShowSupportDataConsentModal } from '../../../store/actions';
+import type { MetaMaskReduxDispatch } from '../../../store/store';
+import type { AppSliceState } from '../../../ducks/app/app';
 import InfoTab from './info-tab.component';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: AppSliceState) => {
   const {
     appState: { showSupportDataConsentModal },
   } = state;
@@ -14,9 +16,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
   return {
-    setShowSupportDataConsentModal: (show) =>
+    setShowSupportDataConsentModal: (show: boolean) =>
       dispatch(setShowSupportDataConsentModal(show)),
   };
 };
