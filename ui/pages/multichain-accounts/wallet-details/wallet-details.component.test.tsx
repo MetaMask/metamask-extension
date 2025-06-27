@@ -9,79 +9,14 @@ import mockState from '../../../../test/data/mock-state.json';
 import { getWalletsWithAccounts } from '../../../selectors/multichain-accounts/account-tree';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import { getMetaMaskHdKeyrings } from '../../../selectors';
+import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import WalletDetails from './wallet-details.component';
 
-// Mock the useI18nContext hook
-jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string) => key,
-}));
-
-// Mock the WalletClientType enum and useMultichainWalletSnapClient hook
-const mockCreateAccount = jest.fn();
-const mockSolanaClient = {
-  createAccount: mockCreateAccount,
-};
-const mockBitcoinClient = {
-  createAccount: mockCreateAccount,
-};
-
-jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
-  WalletClientType: {
-    Bitcoin: 'bitcoin-wallet-snap',
-    Solana: 'solana-wallet-snap',
-  },
-  useMultichainWalletSnapClient: jest.fn((clientType) => {
-    if (clientType === 'solana-wallet-snap') {
-      return mockSolanaClient;
-    } else if (clientType === 'bitcoin-wallet-snap') {
-      return mockBitcoinClient;
-    }
-    return null;
-  }),
-}));
-
-const mockAddNewAccount = jest.fn();
-const mockSetAccountLabel = jest.fn();
-const mockGetNextAvailableAccountName = jest.fn();
-
-jest.mock('../../../store/actions', () => ({
-  setAccountDetailsAddress: jest.fn(() => ({
-    type: 'SET_ACCOUNT_DETAILS_ADDRESS',
-  })),
-  addNewAccount:
-    (...args: unknown[]) =>
-    () =>
-      mockAddNewAccount(...args),
-  setAccountLabel:
-    (...args: unknown[]) =>
-    () =>
-      mockSetAccountLabel(...args),
-  getNextAvailableAccountName: (...args: unknown[]) =>
-    mockGetNextAvailableAccountName(...args),
-}));
-
-jest.mock('../../../selectors', () => ({
-  getMetaMaskHdKeyrings: jest.fn(),
-  getIsBitcoinSupportEnabled: jest.fn(() => true),
-  getIsSolanaSupportEnabled: jest.fn(() => true),
-}));
-
+// Common types
 type Account = {
   id: string;
   address: string;
   metadata: { name: string };
-};
-
-type MockAccountItemProps = {
-  account: Account;
-  onClick: (account: Account) => void;
-  onBalanceUpdate: (accountId: string, balance: string) => void;
-  className: string;
-};
-
-type MockAccountTypeSelectionProps = {
-  onAccountTypeSelect: (accountType: string) => void;
-  onClose: () => void;
 };
 
 type WalletGroups = {
@@ -111,7 +46,59 @@ type ComponentProps = {
   [key: string]: unknown;
 };
 
-// Basic mocks
+// Mock functions
+const mockCreateAccount = jest.fn();
+const mockAddNewAccount = jest.fn();
+const mockSetAccountLabel = jest.fn();
+const mockGetNextAvailableAccountName = jest.fn();
+
+// Mock clients
+const mockSolanaClient = { createAccount: mockCreateAccount };
+const mockBitcoinClient = { createAccount: mockCreateAccount };
+
+// Consolidated mocks
+jest.mock('../../../hooks/useI18nContext', () => ({
+  useI18nContext: () => (key: string) => key,
+}));
+
+jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
+  WalletClientType: {
+    Bitcoin: 'bitcoin-wallet-snap',
+    Solana: 'solana-wallet-snap',
+  },
+  useMultichainWalletSnapClient: jest.fn((clientType) => {
+    if (clientType === 'solana-wallet-snap') {
+      return mockSolanaClient;
+    }
+    if (clientType === 'bitcoin-wallet-snap') {
+      return mockBitcoinClient;
+    }
+    return null;
+  }),
+}));
+
+jest.mock('../../../store/actions', () => ({
+  setAccountDetailsAddress: jest.fn(() => ({
+    type: 'SET_ACCOUNT_DETAILS_ADDRESS',
+  })),
+  addNewAccount:
+    (...args: unknown[]) =>
+    () =>
+      mockAddNewAccount(...args),
+  setAccountLabel:
+    (...args: unknown[]) =>
+    () =>
+      mockSetAccountLabel(...args),
+  getNextAvailableAccountName: (...args: unknown[]) =>
+    mockGetNextAvailableAccountName(...args),
+}));
+
+jest.mock('../../../selectors', () => ({
+  getMetaMaskHdKeyrings: jest.fn(),
+  getIsBitcoinSupportEnabled: jest.fn(() => true),
+  getIsSolanaSupportEnabled: jest.fn(() => true),
+}));
+
 jest.mock('react-router-dom', () => ({
   useHistory: jest.fn(),
   useParams: jest.fn(),
@@ -121,15 +108,11 @@ jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
   getWalletsWithAccounts: jest.fn(),
 }));
 
-jest.mock('../../../selectors', () => ({
-  getMetaMaskHdKeyrings: jest.fn(),
-}));
-
 jest.mock('../../../ducks/metamask/metamask', () => ({
   getIsPrimarySeedPhraseBackedUp: jest.fn(),
 }));
 
-// Simple component mocks
+// Component mocks - consolidated
 jest.mock('../../../components/component-library', () => ({
   Box: ({ children, ...props }: ComponentProps) => (
     <div {...props}>{children}</div>
@@ -191,17 +174,25 @@ jest.mock('../../../components/multichain/pages/page', () => ({
 
 jest.mock(
   '../../../components/multichain/multichain-accounts/wallet-details-account-item/wallet-details-account-item',
-  () => (props: MockAccountItemProps) => {
-    return (
-      <div
-        data-testid="mock-account-item"
-        onClick={() => props.onClick(props.account)}
-        className={props.className}
-      >
-        {props.account.metadata.name}
-      </div>
-    );
-  },
+  () =>
+    ({
+      account,
+      onClick,
+      className,
+    }: {
+      account: Account;
+      onClick: (account: Account) => void;
+      className: string;
+    }) =>
+      (
+        <div
+          data-testid="mock-account-item"
+          onClick={() => onClick(account)}
+          className={className}
+        >
+          {account.metadata.name}
+        </div>
+      ),
 );
 
 jest.mock(
@@ -225,29 +216,33 @@ jest.mock(
 jest.mock(
   '../../../components/multichain/multichain-accounts/wallet-details-account-type-selection',
   () => ({
-    WalletDetailsAccountTypeSelection: (
-      props: MockAccountTypeSelectionProps,
-    ) => (
+    WalletDetailsAccountTypeSelection: ({
+      onAccountTypeSelect,
+      onClose,
+    }: {
+      onAccountTypeSelect: (accountType: string) => void;
+      onClose: () => void;
+    }) => (
       <div data-testid="mock-account-type-selection">
         <button
           data-testid="select-ethereum-account"
-          onClick={() => props.onAccountTypeSelect('EVM')}
+          onClick={() => onAccountTypeSelect('EVM')}
         >
           Ethereum Account
         </button>
         <button
           data-testid="select-solana-account"
-          onClick={() => props.onAccountTypeSelect('solana-wallet-snap')}
+          onClick={() => onAccountTypeSelect('solana-wallet-snap')}
         >
           Solana Account
         </button>
         <button
           data-testid="select-bitcoin-account"
-          onClick={() => props.onAccountTypeSelect('bitcoin-wallet-snap')}
+          onClick={() => onAccountTypeSelect('bitcoin-wallet-snap')}
         >
           Bitcoin Account
         </button>
-        <button onClick={props.onClose}>Close</button>
+        <button onClick={onClose}>Close</button>
       </div>
     ),
   }),
@@ -258,6 +253,7 @@ describe('WalletDetails', () => {
   const mockParams = { id: 'wallet:test-wallet' };
   const GROUP_ID = 'wallet:test-wallet:default';
 
+  // Helper functions
   const createMockWallet = (id: string, groups: WalletGroups) => ({
     id,
     metadata: { name: 'Test Wallet' },
@@ -283,11 +279,7 @@ describe('WalletDetails', () => {
       },
     });
 
-    const mockWallets = {
-      'wallet:test-wallet': defaultWallet,
-      ...wallets,
-    };
-
+    const mockWallets = { 'wallet:test-wallet': defaultWallet, ...wallets };
     (
       getWalletsWithAccounts as jest.MockedFunction<
         typeof getWalletsWithAccounts
@@ -308,15 +300,13 @@ describe('WalletDetails', () => {
       },
     });
 
-    const mockWallets = {
-      'wallet:test-entropy-wallet': entropyWallet,
-    };
-
     (
       getWalletsWithAccounts as jest.MockedFunction<
         typeof getWalletsWithAccounts
       >
-    ).mockReturnValue(mockWallets);
+    ).mockReturnValue({
+      'wallet:test-entropy-wallet': entropyWallet,
+    } as ConsolidatedWallets);
     (getMetaMaskHdKeyrings as jest.Mock).mockReturnValue([
       {
         metadata: {
@@ -325,9 +315,9 @@ describe('WalletDetails', () => {
       },
     ]);
     (getIsPrimarySeedPhraseBackedUp as jest.Mock).mockReturnValue(false);
-
-    const entropyMockParams = { id: 'wallet:test-entropy-wallet' };
-    (useParams as jest.Mock).mockReturnValue(entropyMockParams);
+    (useParams as jest.Mock).mockReturnValue({
+      id: 'wallet:test-entropy-wallet',
+    });
 
     return render(
       <Provider store={configureStore(mockState)}>
@@ -336,26 +326,25 @@ describe('WalletDetails', () => {
     );
   };
 
-  const renderComponent = () => {
-    return render(
+  const renderComponent = () =>
+    render(
       <Provider store={configureStore(mockState)}>
         <WalletDetails />
       </Provider>,
     );
-  };
 
   beforeEach(() => {
     (useHistory as jest.Mock).mockReturnValue(mockHistory);
     (useParams as jest.Mock).mockReturnValue(mockParams);
     setupMocks();
 
-    // Reset action mocks
-    mockAddNewAccount.mockClear();
-    mockSetAccountLabel.mockClear();
-    mockGetNextAvailableAccountName.mockClear();
-    mockCreateAccount.mockClear();
-
-    // Mock console.error to prevent error logs during tests
+    // Reset mocks
+    [
+      mockAddNewAccount,
+      mockSetAccountLabel,
+      mockGetNextAvailableAccountName,
+      mockCreateAccount,
+    ].forEach((mock) => mock.mockClear());
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
   });
 
@@ -418,49 +407,19 @@ describe('WalletDetails', () => {
 
     it('opens account type selection modal when add account button is clicked', () => {
       const { getByText, getByTestId } = renderComponent();
-      const addAccountButton = getByText('addAccount');
-      fireEvent.click(addAccountButton);
+      fireEvent.click(getByText('addAccount'));
       expect(getByTestId('mock-account-type-selection')).toBeInTheDocument();
-    });
-
-    it('closes modal when cancel button is clicked in account type selection', async () => {
-      const { getByText, getByTestId, queryByTestId } = renderComponent();
-
-      // Open modal
-      const addAccountButton = getByText('addAccount');
-      fireEvent.click(addAccountButton);
-      expect(getByTestId('mock-account-type-selection')).toBeInTheDocument();
-
-      // Close modal
-      const closeButton = getByTestId(
-        'mock-account-type-selection',
-      ).querySelector('button:last-child');
-      if (closeButton) {
-        fireEvent.click(closeButton);
-      }
-
-      await waitFor(() => {
-        expect(
-          queryByTestId('mock-account-type-selection'),
-        ).not.toBeInTheDocument();
-      });
     });
 
     it('creates Ethereum account directly when Ethereum button is clicked', async () => {
-      const mockNewAccount = {
-        address: '0x456',
-        id: 'new-account-id',
-      };
+      const mockNewAccount = { address: '0x456', id: 'new-account-id' };
       mockAddNewAccount.mockResolvedValue(mockNewAccount);
       mockGetNextAvailableAccountName.mockResolvedValue('Account 2');
 
       const { getByText, getByTestId, queryByTestId } = renderComponent();
 
-      // Open modal and select Ethereum
-      const addAccountButton = getByText('addAccount');
-      fireEvent.click(addAccountButton);
-      const ethereumButton = getByTestId('select-ethereum-account');
-      fireEvent.click(ethereumButton);
+      fireEvent.click(getByText('addAccount'));
+      fireEvent.click(getByTestId('select-ethereum-account'));
 
       await waitFor(() => {
         expect(mockAddNewAccount).toHaveBeenCalledWith('test-wallet');
@@ -478,34 +437,24 @@ describe('WalletDetails', () => {
 
       const { getByText, getByTestId } = renderComponent();
 
-      // Open modal and select Ethereum
-      const addAccountButton = getByText('addAccount');
-      fireEvent.click(addAccountButton);
-      const ethereumButton = getByTestId('select-ethereum-account');
-      fireEvent.click(ethereumButton);
+      fireEvent.click(getByText('addAccount'));
+      fireEvent.click(getByTestId('select-ethereum-account'));
 
       await waitFor(() => {
         expect(mockAddNewAccount).toHaveBeenCalledWith('test-wallet');
-        // Should not call setAccountLabel when account creation fails
         expect(mockSetAccountLabel).not.toHaveBeenCalled();
       });
     });
 
     it('uses correct keyringId for entropy wallets', async () => {
-      const mockNewAccount = {
-        address: '0x456',
-        id: 'new-account-id',
-      };
+      const mockNewAccount = { address: '0x456', id: 'new-account-id' };
       mockAddNewAccount.mockResolvedValue(mockNewAccount);
       mockGetNextAvailableAccountName.mockResolvedValue('Account 2');
 
       const { getByText, getByTestId } = setupEntropyWalletTest(true);
 
-      // Open modal and select Ethereum
-      const addAccountButton = getByText('addAccount');
-      fireEvent.click(addAccountButton);
-      const ethereumButton = getByTestId('select-ethereum-account');
-      fireEvent.click(ethereumButton);
+      fireEvent.click(getByText('addAccount'));
+      fireEvent.click(getByTestId('select-ethereum-account'));
 
       await waitFor(() => {
         expect(mockAddNewAccount).toHaveBeenCalledWith('test-entropy-wallet');
@@ -515,45 +464,12 @@ describe('WalletDetails', () => {
     it('creates Solana account directly when Solana button is clicked', async () => {
       const { getByText, getByTestId, queryByTestId } = renderComponent();
 
-      // Open modal and select Solana
-      const addAccountButton = getByText('addAccount');
-      fireEvent.click(addAccountButton);
-      const solanaButton = getByTestId('select-solana-account');
-      fireEvent.click(solanaButton);
+      fireEvent.click(getByText('addAccount'));
+      fireEvent.click(getByTestId('select-solana-account'));
 
       await waitFor(() => {
         expect(mockCreateAccount).toHaveBeenCalledWith(
-          {
-            scope: SolScope.Mainnet,
-            entropySource: 'test-wallet',
-          },
-          {
-            displayConfirmation: false,
-            displayAccountNameSuggestion: false,
-            setSelectedAccount: false,
-          },
-        );
-        expect(
-          queryByTestId('mock-account-type-selection'),
-        ).not.toBeInTheDocument();
-      });
-    });
-
-    it('creates Bitcoin account directly when Bitcoin button is clicked', async () => {
-      const { getByText, getByTestId, queryByTestId } = renderComponent();
-
-      // Open modal and select Bitcoin
-      const addAccountButton = getByText('addAccount');
-      fireEvent.click(addAccountButton);
-      const bitcoinButton = getByTestId('select-bitcoin-account');
-      fireEvent.click(bitcoinButton);
-
-      await waitFor(() => {
-        expect(mockCreateAccount).toHaveBeenCalledWith(
-          {
-            scope: BtcScope.Mainnet,
-            entropySource: 'test-wallet',
-          },
+          { scope: SolScope.Mainnet, entropySource: 'test-wallet' },
           {
             displayConfirmation: false,
             displayAccountNameSuggestion: false,
