@@ -84,7 +84,6 @@ const getStateTree = ({
 } = {}) => ({
   metamask: {
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        domains: {},
     domains: {},
     unapprovedTypedMessages,
     internalAccounts: {

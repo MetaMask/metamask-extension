@@ -244,7 +244,6 @@ describe('selectors', () => {
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
         domains: {},
-        domains: {},
         accounts: {
           '0x7250739de134d33ec7ab1ee592711e15098c9d2d': {
             address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',

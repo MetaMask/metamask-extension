@@ -54,7 +54,6 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-        domains: {},
           domains: {},
         },
       };
@@ -85,7 +84,6 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-        domains: {},
           domains: {},
         },
       };
@@ -123,7 +121,6 @@ describe('Transaction Selectors', () => {
       return {
         metamask: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        domains: {},
           domains: {},
           featureFlags: {},
           internalAccounts: {
@@ -350,7 +347,6 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        domains: {},
           domains: {},
           featureFlags: {},
           internalAccounts: {
@@ -406,7 +402,6 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        domains: {},
           domains: {},
           featureFlags: {},
           internalAccounts: {
@@ -495,8 +490,6 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        domains: {},
-          domains: {},
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -597,8 +590,6 @@ describe('Transaction Selectors', () => {
     const state = {
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        domains: {},
-        domains: {},
         internalAccounts: {
           accounts: {
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -685,7 +676,6 @@ describe('Transaction Selectors', () => {
     const mockedState = {
       metamask: {
         ...mockNetworkState({ chainId: mockChainId }),
-        domains: {},
         pendingApprovalCount: 2,
         pendingApprovals: {
           1: {
@@ -760,7 +750,6 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        domains: {},
 
           transactions: [
             {
@@ -805,7 +794,6 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        domains: {},
 
           transactions: [
             {
@@ -1106,7 +1094,6 @@ describe('Transaction Selectors', () => {
     it('returns an empty array if there are no transactions or smart transactions', () => {
       const state = {
         metamask: {
-          domains: {},
           transactions: [],
           internalAccounts: {
             accounts: {
@@ -1739,7 +1726,6 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        domains: {},
           domains: {},
           transactions: [
             {

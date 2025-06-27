@@ -1575,7 +1575,6 @@ describe('Send Slice', () => {
               },
             },
             ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-            domains: {},
             useTokenDetection: true,
             tokensChainsCache: {
               [CHAIN_IDS.GOERLI]: {
@@ -2114,7 +2113,7 @@ describe('Send Slice', () => {
             selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-            domains: {},
+          domains: {},
           accountsByChainId: {
             [CHAIN_IDS.GOERLI]: {
               [mockAddress1]: { balance: '0x0' },
@@ -2347,7 +2346,7 @@ describe('Send Slice', () => {
       const updateRecipientUserInputState = {
         metamask: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-            domains: {},
+          domains: {},
           tokens: [],
           useTokenDetection: true,
           tokensChainsCache: {
@@ -3023,7 +3022,7 @@ describe('Send Slice', () => {
           const tokenTransferTxState = {
             metamask: {
               ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-            domains: {},
+              domains: {},
 
               transactions: [
                 {
@@ -3154,7 +3153,7 @@ describe('Send Slice', () => {
           const swapAndSendState = {
             metamask: {
               ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-            domains: {},
+              domains: {},
 
               transactions: [
                 {
@@ -3711,7 +3710,7 @@ describe('Send Slice', () => {
             selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-            domains: {},
+          domains: {},
 
           tokens: [
             {
@@ -3935,7 +3934,7 @@ describe('Send Slice', () => {
             selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-            domains: {},
+          domains: {},
           tokens: [
             {
               address: '0xTokenAddress',
@@ -4167,7 +4166,7 @@ describe('Send Slice', () => {
             getGasInputMode({
               metamask: {
                 ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-            domains: {},
+                domains: {},
 
                 featureFlags: { advancedInlineGas: false },
               },
@@ -4182,7 +4181,7 @@ describe('Send Slice', () => {
             getGasInputMode({
               metamask: {
                 ...mockNetworkState({ chainId: '0x539' }),
-            domains: {},
+                domains: {},
                 featureFlags: { advancedInlineGas: false },
               },
               send: initialState,
@@ -4196,7 +4195,7 @@ describe('Send Slice', () => {
             getGasInputMode({
               metamask: {
                 ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-            domains: {},
+                domains: {},
 
                 featureFlags: { advancedInlineGas: true },
               },
@@ -4210,7 +4209,7 @@ describe('Send Slice', () => {
             getGasInputMode({
               metamask: {
                 ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-            domains: {},
+                domains: {},
 
                 featureFlags: { advancedInlineGas: false },
                 gasEstimateType: GasEstimateTypes.ethGasPrice,
@@ -4226,7 +4225,7 @@ describe('Send Slice', () => {
             getGasInputMode({
               metamask: {
                 ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-            domains: {},
+                domains: {},
 
                 featureFlags: { advancedInlineGas: false },
                 gasEstimateType: GasEstimateTypes.ethGasPrice,
@@ -4242,7 +4241,7 @@ describe('Send Slice', () => {
             getGasInputMode({
               metamask: {
                 ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-            domains: {},
+                domains: {},
 
                 featureFlags: { advancedInlineGas: true },
               },
@@ -4387,7 +4386,7 @@ describe('Send Slice', () => {
               },
               addressBook: {},
               ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-            domains: {},
+              domains: {},
             },
           }),
         ).toBe(undefined);
@@ -4404,7 +4403,7 @@ describe('Send Slice', () => {
                 selectedAccount: '',
               },
               ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-            domains: {},
+              domains: {},
             },
           }),
         ).toBe('0xb');
@@ -4422,7 +4421,7 @@ describe('Send Slice', () => {
               },
               addressBook: {},
               ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-            domains: {},
+              domains: {},
             },
           }),
         ).toBe('');
@@ -4439,7 +4438,7 @@ describe('Send Slice', () => {
                 selectedAccount: '',
               },
               ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-            domains: {},
+              domains: {},
             },
           }),
         ).toBe('0xb');
@@ -4489,7 +4488,7 @@ describe('Send Slice', () => {
               },
               addressBook: {},
               ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-            domains: {},
+              domains: {},
             },
           }),
         ).toMatchObject(
@@ -4622,7 +4621,7 @@ describe('Send Slice', () => {
           getIsSwapAndSendDisabledForNetwork({
             metamask: {
               ...mockNetworkState({ chainId: '0x123' }),
-            domains: {},
+              domains: {},
             },
             send: {
               ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
@@ -4635,7 +4634,7 @@ describe('Send Slice', () => {
           getIsSwapAndSendDisabledForNetwork({
             metamask: {
               ...mockNetworkState({ chainId: '0x123' }),
-            domains: {},
+              domains: {},
             },
             send: {
               ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
