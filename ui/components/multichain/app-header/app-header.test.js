@@ -137,6 +137,64 @@ describe('App Header', () => {
 
       expect(mockUseHistory).toHaveBeenCalled();
     });
+
+    describe('Global menu support button', () => {
+      beforeEach(() => {
+        const { container } = render();
+
+        const settingsButton = container.querySelector(
+          '[data-testid="account-options-menu-button"]',
+        );
+        fireEvent.click(settingsButton);
+
+        const settingsMenu = container.querySelector(
+          '[data-testid="global-menu"]',
+        );
+        fireEvent.click(settingsMenu);
+
+        const globalMenuSupportButton = container.querySelector(
+          '[data-testid="global-menu-support"]',
+        );
+        fireEvent.click(globalMenuSupportButton);
+      });
+
+      it('can open the visit support data consent modal', async () => {
+        await waitFor(() => {
+          const supportDataConsentModal = document.querySelector(
+            '[data-testid="visit-support-data-consent-modal"]',
+          );
+          expect(supportDataConsentModal).toBeInTheDocument();
+        });
+      });
+
+      it('opens the support site when "Confirm" button is clicked', async () => {
+        const spy = jest.spyOn(window, 'open');
+
+        const acceptButton = document.querySelector(
+          '[data-testid="visit-support-data-consent-modal-accept-button"]',
+        );
+        expect(acceptButton).toBeInTheDocument();
+        fireEvent.click(acceptButton);
+
+        await waitFor(() => {
+          expect(spy).toHaveBeenCalled();
+        });
+      });
+
+      it(`opens the support site when "Don't share" button is clicked`, async () => {
+        const spy = jest.spyOn(window, 'open');
+
+        const rejectButton = document.querySelector(
+          '[data-testid="visit-support-data-consent-modal-reject-button"]',
+        );
+        expect(rejectButton).toBeInTheDocument();
+        fireEvent.click(rejectButton);
+
+        await waitFor(() => {
+          expect(spy).toHaveBeenCalled();
+        });
+      });
+    });
   });
 
   describe('locked state', () => {
