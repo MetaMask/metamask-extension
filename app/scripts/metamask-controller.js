@@ -139,6 +139,7 @@ import {
   hexToBigInt,
   toCaipChainId,
   parseCaipAccountId,
+  KnownCaipNamespace,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -1030,10 +1031,98 @@ export default class MetamaskController extends EventEmitter {
       name: 'NetworkOrderController',
       allowedEvents: ['NetworkController:stateChange'],
     });
+
+    let initialNetworkOrderControllerState;
+
+    if (process.env.IN_TEST) {
+      initialNetworkOrderControllerState = {
+        orderedNetworkList: [],
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            [CHAIN_IDS.LOCALHOST]: true,
+          },
+        },
+      };
+    } else if (
+      process.env.METAMASK_DEBUG ||
+      process.env.METAMASK_ENVIRONMENT === 'test'
+    ) {
+      initialNetworkOrderControllerState = {
+        orderedNetworkList: [],
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            [CHAIN_IDS.SEPOLIA]: true,
+          },
+        },
+      };
+    } else {
+      initialNetworkOrderControllerState = initState.NetworkOrderController;
+    }
+
     this.networkOrderController = new NetworkOrderController({
       messenger: networkOrderMessenger,
-      state: initState.NetworkOrderController,
+      state: initialNetworkOrderControllerState,
     });
+
+    if (!initialNetworkOrderControllerState) {
+      initialNetworkControllerState = getDefaultNetworkControllerState(
+        additionalDefaultNetworks,
+      );
+
+      /** @type {import('@metamask/network-controller').NetworkState['networkConfigurationsByChainId']} */
+      const networks =
+        initialNetworkControllerState.networkConfigurationsByChainId;
+
+      // TODO: Consider changing `getDefaultNetworkControllerState` on the
+      // controller side to include some of these tweaks.
+
+      Object.values(networks).forEach((network) => {
+        const id = network.rpcEndpoints[0].networkClientId;
+        // Process only if the default network has a corresponding networkClientId in BlockExplorerUrl.
+        if (hasProperty(BlockExplorerUrl, id)) {
+          network.blockExplorerUrls = [BlockExplorerUrl[id]];
+        }
+        network.defaultBlockExplorerUrlIndex = 0;
+      });
+
+      // Add failovers for default Infura RPC endpoints
+      networks[CHAIN_IDS.MAINNET].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('ethereum-mainnet');
+      networks[CHAIN_IDS.LINEA_MAINNET].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('linea-mainnet');
+      networks[CHAIN_IDS.BASE].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('base-mainnet');
+
+      let network;
+      if (process.env.IN_TEST) {
+        network = {
+          chainId: CHAIN_IDS.LOCALHOST,
+          name: 'Localhost 8545',
+          nativeCurrency: 'ETH',
+          blockExplorerUrls: [],
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'networkConfigurationId',
+              url: 'http://localhost:8545',
+              type: 'custom',
+              failoverUrls: [],
+            },
+          ],
+        };
+        networks[CHAIN_IDS.LOCALHOST] = network;
+      } else if (
+        process.env.METAMASK_DEBUG ||
+        process.env.METAMASK_ENVIRONMENT === 'test'
+      ) {
+        network = networks[CHAIN_IDS.SEPOLIA];
+      } else {
+        network = networks[CHAIN_IDS.MAINNET];
+      }
+
+      initialNetworkControllerState.selectedNetworkClientId =
+        network.rpcEndpoints[network.defaultRpcEndpointIndex].networkClientId;
+    }
 
     const accountOrderMessenger = this.controllerMessenger.getRestricted({
       name: 'AccountOrderController',
