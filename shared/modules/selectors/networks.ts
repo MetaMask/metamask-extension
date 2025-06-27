@@ -224,14 +224,12 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
  * @throws `new Error('Provider configuration not found')` If the provider configuration is not found.
  */
 export const getProviderConfig = createDeepEqualSelector(
-  (state: ProviderConfigState) => {
-    return {
-      networkConfigurationsByChainId: getNetworkConfigurationsByChainId(state),
-      selectedNetworkClientId: getSelectedNetworkClientId(state),
-      metamask: state.metamask,
-      activeTabOrigin: state.activeTab?.origin || ORIGIN_METAMASK,
-    };
-  },
+  (state: ProviderConfigState) => ({
+    networkConfigurationsByChainId: getNetworkConfigurationsByChainId(state),
+    selectedNetworkClientId: getSelectedNetworkClientId(state),
+    metamask: state.metamask,
+    activeTabOrigin: state.activeTab?.origin || ORIGIN_METAMASK,
+  }),
   ({
     networkConfigurationsByChainId,
     selectedNetworkClientId,
