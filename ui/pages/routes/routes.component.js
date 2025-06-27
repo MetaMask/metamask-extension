@@ -53,6 +53,8 @@ import {
   IMPORT_SRP_ROUTE,
   DEFI_ROUTE,
   DEEP_LINK_ROUTE,
+  SMART_ACCOUNT_UPDATE,
+  WALLET_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -85,6 +87,7 @@ import {
   isCorrectSignatureApprovalType,
 } from '../../../shared/lib/confirmation.utils';
 import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
+import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -150,6 +153,9 @@ const RemoteModeSetupDailyAllowance = mmLazy(() =>
   import('../remote-mode/setup/setup-daily-allowance'),
 );
 const DeepLink = mmLazy(() => import('../deep-link/deep-link'));
+const WalletDetails = mmLazy(() =>
+  import('../multichain-accounts/wallet-details'),
+);
 // End Lazy Routes
 
 export default class Routes extends Component {
@@ -306,6 +312,10 @@ export default class Routes extends Component {
             exact
           />
           <Authenticated
+            path={SMART_ACCOUNT_UPDATE}
+            component={SmartAccountUpdate}
+          />
+          <Authenticated
             // `:keyringId` is optional here, if not provided, this will fallback
             // to the main seed phrase.
             path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
@@ -401,6 +411,11 @@ export default class Routes extends Component {
           <Authenticated
             path={REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE}
             component={RemoteModeSetupDailyAllowance}
+            exact
+          />
+          <Authenticated
+            path={WALLET_DETAILS_ROUTE}
+            component={WalletDetails}
             exact
           />
 

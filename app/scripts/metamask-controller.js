@@ -413,6 +413,8 @@ import {
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
+import OAuthService from './services/oauth/oauth-service';
+import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1091,6 +1093,16 @@ export default class MetamaskController extends EventEmitter {
       state: initState.OnboardingController,
     });
 
+    this.oauthService = process.env.SEEDLESS_ONBOARDING_ENABLED
+      ? new OAuthService({
+          env: {
+            googleClientId: process.env.GOOGLE_CLIENT_ID,
+            appleClientId: process.env.APPLE_CLIENT_ID,
+          },
+          webAuthenticator: webAuthenticatorFactory(),
+        })
+      : null;
+
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
     const keyringOverrides = this.opts.overrides?.keyrings;
@@ -1742,6 +1754,7 @@ export default class MetamaskController extends EventEmitter {
           deviceModel,
         };
       },
+      trace,
     });
 
     const isExternalNameSourcesEnabled = () =>
@@ -2090,10 +2103,10 @@ export default class MetamaskController extends EventEmitter {
       processSendCalls: processSendCalls.bind(
         null,
         {
-          addTransactionBatch: this.txController.addTransactionBatch.bind(
+          addTransaction: this.txController.addTransaction.bind(
             this.txController,
           ),
-          addTransaction: this.txController.addTransaction.bind(
+          addTransactionBatch: this.txController.addTransactionBatch.bind(
             this.txController,
           ),
           getDismissSmartAccountSuggestionEnabled: () =>
@@ -2362,7 +2375,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
-    this.#restartSmartTransactionPoller();
     this.tokenDetectionController.enable();
     this.getInfuraFeatureFlags();
   }
@@ -2700,7 +2712,6 @@ export default class MetamaskController extends EventEmitter {
       'PreferencesController:stateChange',
       previousValueComparator(async (prevState, currState) => {
         const { currentLocale } = currState;
-        this.#restartSmartTransactionPoller();
 
         await updateCurrentLocale(currentLocale);
         this.#checkTokenListPolling(currState, prevState);
@@ -2985,21 +2996,6 @@ export default class MetamaskController extends EventEmitter {
           hexToBigInt(chainId).toString(10),
         );
         this.removeAllScopePermissions(scopeString);
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      'NetworkController:networkDidChange',
-      async () => {
-        if (this.preferencesController.state.useExternalServices === true) {
-          this.txController.stopIncomingTransactionPolling();
-
-          await this.txController.updateIncomingTransactions({
-            tags: ['network-change'],
-          });
-
-          this.txController.startIncomingTransactionPolling();
-        }
       },
     );
 
@@ -7839,6 +7835,7 @@ export default class MetamaskController extends EventEmitter {
       this.tokenBalancesController.stopAllPolling();
       this.appStateController.clearPollingTokens();
       this.accountTrackerController.stopAllPolling();
+      this.deFiPositionsController.stopAllPolling();
     } catch (error) {
       console.error(error);
     }
@@ -8061,10 +8058,6 @@ export default class MetamaskController extends EventEmitter {
         this._notifyAccountsChange(origin, accounts);
       }
     }
-
-    await this.txController.updateIncomingTransactions({
-      tags: ['account-change'],
-    });
   }
 
   _notifyAccountsChange(origin, newAccounts) {
@@ -8574,21 +8567,6 @@ export default class MetamaskController extends EventEmitter {
     );
 
     return globalNetworkClient.configuration.chainId;
-  }
-
-  #getAllAddedNetworks() {
-    const networksConfig =
-      this.networkController.state.networkConfigurationsByChainId;
-    const chainIds = Object.keys(networksConfig);
-
-    return chainIds;
-  }
-
-  #restartSmartTransactionPoller() {
-    if (this.preferencesController.state.useExternalServices === true) {
-      this.txController.stopIncomingTransactionPolling();
-      this.txController.startIncomingTransactionPolling();
-    }
   }
 
   /**
