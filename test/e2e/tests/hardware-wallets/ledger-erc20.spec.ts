@@ -35,7 +35,10 @@ describe('Ledger Hardware', function (this: Suite) {
         const createContractModal = new CreateContractModal(driver);
         await createContractModal.check_pageIsLoaded();
         await createContractModal.clickConfirm();
-        await driver.delay(100000000);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDappPage.check_TokenAddressesValue(
+          '0xcB17707e0623251182A654BEdaE16429C78A7424',
+        );
       },
     );
   });

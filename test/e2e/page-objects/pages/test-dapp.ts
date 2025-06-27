@@ -557,6 +557,19 @@ class TestDapp {
   }
 
   /**
+   * Checks the value of a token address once created.
+   *
+   * @param value - The address to be checked
+   */
+  async check_TokenAddressesValue(value: string) {
+    console.log('Verify token address');
+    await this.driver.waitForSelector({
+      css: this.erc20TokenAddresses,
+      text: value,
+    });
+  }
+
+  /**
    * Checks the count of token addresses.
    *
    * @param expectedCount - The expected count of token addresses.
