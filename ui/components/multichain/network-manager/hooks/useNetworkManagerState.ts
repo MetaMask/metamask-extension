@@ -4,98 +4,24 @@ import {
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
 import { Hex } from '@metamask/utils';
-import { useCallback, useContext, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { convertCaipToHexChainId } from '../../../../../shared/modules/network.utils';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../../../ducks/metamask/metamask';
 import {
   FEATURED_RPCS,
   TEST_CHAINS,
 } from '../../../../../shared/constants/network';
-import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/useAccountCreationOnNetworkChange';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  getAllChainsToPoll,
-  getAllDomains,
-  getAllEnabledNetworks,
-  getEditedNetwork,
-  getIsAccessedFromDappConnectedSitePopover,
-  getIsAddingNewNetwork,
-  getIsMultiRpcOnboarding,
-  getMultichainNetworkConfigurationsByChainId,
-  getNetworkDiscoverButtonEnabled,
-  getOrderedNetworksList,
-  getOriginOfCurrentTab,
-  getPermittedEVMAccountsForSelectedTab,
-  getPermittedEVMChainsForSelectedTab,
-  getPreferences,
-  getShowTestNetworks,
-} from '../../../../selectors';
-import {
-  getEnabledNetworksByNamespace,
-  getSelectedMultichainNetworkChainId,
-} from '../../../../selectors/multichain/networks';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors';
 
 export const useNetworkManagerState = ({
-  skipNetworkFiltering = false,
+  showDefaultNetworks = false,
 }: {
-  skipNetworkFiltering?: boolean;
+  showDefaultNetworks?: boolean;
 } = {}) => {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
-  const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
-  const history = useHistory();
-
-  // Redux selectors
-  const { tokenNetworkFilter } = useSelector(getPreferences);
-
-  const showTestnets = useSelector(getShowTestNetworks);
-  const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
-  const isUnlocked = useSelector(getIsUnlocked);
-  const domains = useSelector(getAllDomains);
-  const orderedNetworksList = useSelector(getOrderedNetworksList);
-  const customNetworks = useSelector(getAllEnabledNetworks);
-  const isAddingNewNetwork = useSelector(getIsAddingNewNetwork);
-  const isMultiRpcOnboarding = useSelector(getIsMultiRpcOnboarding);
-  const isAccessedFromDappConnectedSitePopover = useSelector(
-    getIsAccessedFromDappConnectedSitePopover,
-  );
-  const completedOnboarding = useSelector(getCompletedOnboarding);
-  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
-  const isNetworkDiscoverButtonEnabled = useSelector(
-    getNetworkDiscoverButtonEnabled,
-  );
-  const [multichainNetworks, evmNetworks] = useSelector(
+  const [multichainNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
-  const { chainId: editingChainId, editCompleted } =
-    useSelector(getEditedNetwork) ?? {};
-
-  const permittedChainIds = useSelector((state) =>
-    getPermittedEVMChainsForSelectedTab(state, selectedTabOrigin),
-  );
-
-  const permittedAccountAddresses = useSelector((state) =>
-    getPermittedEVMAccountsForSelectedTab(state, selectedTabOrigin),
-  );
-
-  const allChainIds = useSelector(getAllChainsToPoll);
-
-  // Derived state
-  const canSelectNetwork: boolean =
-    !process.env.REMOVE_GNS ||
-    (Boolean(process.env.REMOVE_GNS) &&
-      Boolean(selectedTabOrigin) &&
-      Boolean(domains[selectedTabOrigin]) &&
-      isAccessedFromDappConnectedSitePopover);
 
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
@@ -112,7 +38,7 @@ export const useNetworkManagerState = ({
             isTest = NON_EVM_TESTNET_IDS.includes(network.chainId);
           }
 
-          if (skipNetworkFiltering) {
+          if (showDefaultNetworks) {
             (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
             return [nonTestnetsList, testnetsList];
           }
@@ -154,7 +80,7 @@ export const useNetworkManagerState = ({
           {} as Record<string, MultichainNetworkConfiguration>,
         ],
       ),
-    [multichainNetworks],
+    [multichainNetworks, showDefaultNetworks],
   );
 
   const isNetworkInDefaultNetworkTab = useCallback(
@@ -186,38 +112,8 @@ export const useNetworkManagerState = ({
   );
 
   return {
-    t,
-    dispatch,
-    trackEvent,
-    hasAnyAccountsInNetwork,
-    history,
-    isNetworkInDefaultNetworkTab,
-
-    // Selectors
-    tokenNetworkFilter,
-    showTestnets,
-    selectedTabOrigin,
-    isUnlocked,
-    domains,
-    orderedNetworksList,
-    customNetworks,
-    isAddingNewNetwork,
-    isMultiRpcOnboarding,
-    isAccessedFromDappConnectedSitePopover,
-    completedOnboarding,
-    isNetworkDiscoverButtonEnabled,
-    multichainNetworks,
-    evmNetworks,
-    currentChainId,
-    enabledNetworksByNamespace,
-    editingChainId,
-    editCompleted,
-    permittedChainIds,
-    permittedAccountAddresses,
-    allChainIds,
     nonTestNetworks,
     testNetworks,
-    // Derived state
-    canSelectNetwork,
+    isNetworkInDefaultNetworkTab,
   };
 };

@@ -17,6 +17,7 @@ import { useNetworkFormState } from '../../../pages/settings/networks-tab/networ
 import {
   getEditedNetwork,
   getMultichainNetworkConfigurationsByChainId,
+  getSelectedMultichainNetworkConfiguration,
 } from '../../../selectors';
 import { hideModal } from '../../../store/actions';
 import {
@@ -29,18 +30,26 @@ import AddBlockExplorerModal from '../network-list-menu/add-block-explorer-modal
 import AddRpcUrlModal from '../network-list-menu/add-rpc-url-modal/add-rpc-url-modal';
 import { AddNetwork } from './components/add-network';
 import { NetworkTabs } from './network-tabs';
+import { useNetworkManagerState } from './hooks/useNetworkManagerState';
 
 // Router content component
 const NetworkManagerRouter = () => {
   const t = useI18nContext();
   const history = useHistory();
   const location = useLocation();
+  const currentMultichainNetwork = useSelector(
+    getSelectedMultichainNetworkConfiguration,
+  );
+
+  const { isNetworkInDefaultNetworkTab } = useNetworkManagerState();
+
+  const isDefaultNetworkSelected = isNetworkInDefaultNetworkTab(
+    currentMultichainNetwork,
+  );
 
   const initialTab = useMemo(() => {
-    return location.search.includes('custom-networks')
-      ? 'custom-networks'
-      : 'networks';
-  }, [location.search]);
+    return isDefaultNetworkSelected ? 'networks' : 'custom-networks';
+  }, [isDefaultNetworkSelected]);
 
   const handleNewNetwork = () => {
     history.push('/add');
@@ -82,7 +91,7 @@ const NetworkManagerRouter = () => {
         history.push('/add');
       }
     },
-    [networkFormState],
+    [history, networkFormState],
   );
 
   const handleAddExplorerUrl = useCallback(
@@ -159,19 +168,6 @@ const NetworkManagerRouter = () => {
         </ModalHeader>
         <AddBlockExplorerModal
           onAdded={handleAddExplorerUrl(handleEditOnComplete)}
-        />
-      </Route>
-      <Route path="/add">
-        <ModalHeader
-          onClose={handleClose}
-          onBack={handleGoHome}
-          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
-        >
-          {t('addNetwork')}
-        </ModalHeader>
-        <AddNetwork
-          networkFormState={networkFormState}
-          network={editedNetwork as UpdateNetworkFields}
         />
       </Route>
       <Route path="/edit">
