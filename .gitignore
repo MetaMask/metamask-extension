@@ -91,5 +91,3 @@ html-report-multichain/
 
 # UI Integration tests
 test/integration/config/assets
-
-.manifest_overrides.json
