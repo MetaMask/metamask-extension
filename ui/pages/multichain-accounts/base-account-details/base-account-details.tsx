@@ -32,6 +32,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AccountDetailsRow } from '../../../components/multichain-accounts/account-details-row';
 import { EditAccountNameModal } from '../../../components/multichain-accounts/edit-account-name-modal';
 import { setAccountDetailsAddress } from '../../../store/actions';
+import {
+  getWalletIdAndNameByAccountAddress,
+  WalletMetadata,
+} from '../../../selectors/multichain-accounts/account-tree';
 
 type BaseAccountDetailsProps = {
   children?: React.ReactNode | React.ReactNode[];
@@ -73,6 +77,12 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
       history.push(DEFAULT_ROUTE);
     }
   }, [dispatch, address, history]);
+  // we can never have a scenario where an account is not associated with a wallet.
+  const { id: walletId, name: walletName } = useSelector((state) =>
+    getWalletIdAndNameByAccountAddress(state, address),
+  ) as WalletMetadata;
+
+  const walletRoute = `/wallet-details/${walletId}`;
 
   return (
     <Page backgroundColor={BackgroundColor.backgroundDefault}>
@@ -130,6 +140,25 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
                 size={ButtonIconSize.Md}
                 ariaLabel={t('next')}
                 onClick={handleShowAddress}
+                marginLeft={2}
+              />
+            }
+            style={{
+              marginBottom: '1px',
+            }}
+          />
+          <AccountDetailsRow
+            label={t('wallet')}
+            value={walletName}
+            endAccessory={
+              <ButtonIcon
+                iconName={IconName.ArrowRight}
+                color={IconColor.iconAlternative}
+                size={ButtonIconSize.Md}
+                ariaLabel={t('next')}
+                onClick={() => {
+                  history.push(walletRoute);
+                }}
                 marginLeft={2}
               />
             }

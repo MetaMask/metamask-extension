@@ -37,7 +37,7 @@ export const AccountSecretsSection = ({
           label={t('secretRecoveryPhrasePlusNumber', [
             SECRET_RECOVERY_PHRASE_NUMBER,
           ])}
-          value={hasBackedUp ? t('backUp') : ''}
+          value={hasBackedUp ? t('backup') : ''}
           valueColor={hasBackedUp ? TextColor.textDefault : TextColor.errorDefault}
           endAccessory={
             <ButtonIcon
