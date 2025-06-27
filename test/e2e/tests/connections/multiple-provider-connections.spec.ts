@@ -22,6 +22,8 @@ import {
   account1 as SOLANA_ADDRESS_ONE,
 } from '../../flask/solana-wallet-standard/testHelpers';
 import { Driver } from '../../webdriver/driver';
+import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
+import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
 
 const EVM_ADDRESS_TWO = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 
@@ -45,7 +47,10 @@ const SOLANA_PERMISSIONS = {
  * @param hostname - The hostname to get the permissions page for.
  * @returns The permissions page for the given host.
  */
-async function getPermissionsPageForHost(driver: Driver, hostname: string) {
+async function getPermissionsPageForHost(
+  driver: Driver,
+  hostname: string,
+): Promise<SitePermissionPage> {
   const homepage = new Homepage(driver);
   await homepage.headerNavbar.openPermissionsPage();
   const permissionListPage = new PermissionListPage(driver);
@@ -54,6 +59,35 @@ async function getPermissionsPageForHost(driver: Driver, hostname: string) {
   const sitePermissionPage = new SitePermissionPage(driver);
   await sitePermissionPage.check_pageIsLoaded(hostname);
   return sitePermissionPage;
+}
+
+async function checkAccountsAndNetworksDisplayed(
+  driver: Driver,
+  sitePermissionPage: SitePermissionPage,
+  networks: string[],
+  accounts: string[],
+) {
+  await sitePermissionPage.check_pageIsLoaded(DAPP_HOST_ADDRESS);
+  await sitePermissionPage.openNetworkPermissionsModal();
+
+  const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
+
+  await networkPermissionSelectModal.check_pageIsLoaded();
+  await networkPermissionSelectModal.check_networkStatus(networks);
+
+  await networkPermissionSelectModal.clickConfirmEditButton();
+
+  await sitePermissionPage.openAccountPermissionsModal();
+
+  const accountPermissionSelectModal = new EditConnectedAccountsModal(driver);
+
+  await accountPermissionSelectModal.check_pageIsLoaded();
+
+  for (const account of accounts) {
+    await accountPermissionSelectModal.check_isAccountDisplayed(account, {
+      isCaseSensitive: !account.startsWith('0x'),
+    });
+  }
 }
 
 /**
@@ -246,6 +280,13 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await sitePermissionPage.check_connectedAccountsNumber(3);
         await sitePermissionPage.check_connectedNetworksNumber(2);
+
+        await checkAccountsAndNetworksDisplayed(
+          driver,
+          sitePermissionPage,
+          ['Solana', 'Localhost 8545'],
+          [EVM_ADDRESS_ONE, EVM_ADDRESS_TWO, SOLANA_ADDRESS_ONE],
+        );
       },
     );
   });
@@ -280,6 +321,13 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await sitePermissionPage.check_connectedAccountsNumber(2);
         await sitePermissionPage.check_connectedNetworksNumber(4);
+
+        await checkAccountsAndNetworksDisplayed(
+          driver,
+          sitePermissionPage,
+          ['Ethereum Mainnet', 'Linea Mainnet', 'Base Mainnet', 'Solana'],
+          [EVM_ADDRESS_ONE, SOLANA_ADDRESS_ONE],
+        );
       },
     );
   });
@@ -342,6 +390,13 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await sitePermissionPage.check_connectedAccountsNumber(2);
         await sitePermissionPage.check_connectedNetworksNumber(4);
+
+        await checkAccountsAndNetworksDisplayed(
+          driver,
+          sitePermissionPage,
+          ['Ethereum Mainnet', 'Linea Mainnet', 'Base Mainnet', 'Solana'],
+          [EVM_ADDRESS_TWO, SOLANA_ADDRESS_ONE],
+        );
       },
     );
   });
@@ -389,6 +444,13 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await sitePermissionPage.check_connectedAccountsNumber(2);
         await sitePermissionPage.check_connectedNetworksNumber(2);
+
+        await checkAccountsAndNetworksDisplayed(
+          driver,
+          sitePermissionPage,
+          ['Ethereum Mainnet', 'Solana'],
+          [EVM_ADDRESS_ONE, SOLANA_ADDRESS_ONE],
+        );
       },
     );
   });
