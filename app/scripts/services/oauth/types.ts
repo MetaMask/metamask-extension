@@ -59,15 +59,6 @@ export type WebAuthenticator = {
    * @returns The nonce string.
    */
   generateNonce: () => string;
-
-  /**
-   * Request the identity permission from the user.
-   *
-   * OAuth2 authentication requires the identity permission to be granted.
-   *
-   * @returns Whether the identity permission is granted.
-   */
-  requestIdentityPermission: () => Promise<boolean>;
 };
 
 export type LoginHandlerOptions = {
