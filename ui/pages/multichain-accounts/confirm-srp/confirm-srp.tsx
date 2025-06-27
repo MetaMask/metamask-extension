@@ -153,6 +153,7 @@ export const ConfirmSrp = ({
         {splitSecretRecoveryPhrase.length > 0 && (
           <RecoveryPhraseChips
             secretRecoveryPhrase={splitSecretRecoveryPhrase}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- since TS infers the type to be never we need to cast it as any
             quizWords={quizWords as any}
             confirmPhase
             setInputValue={handleQuizInput}
