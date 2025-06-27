@@ -170,7 +170,12 @@ export async function setupInitialStore(
     metamaskState.unapprovedEncryptionPublicKeyMsgs,
     metamaskState.unapprovedTypedMessages,
     metamaskState.networkId,
-    getCurrentChainId({ metamask: metamaskState }),
+    getCurrentChainId({
+      metamask: {
+        ...metamaskState,
+        domains: metamaskState.domains || {},
+      },
+    }),
   );
   const numberOfUnapprovedTx = unapprovedTxsAll.length;
   if (numberOfUnapprovedTx > 0) {
