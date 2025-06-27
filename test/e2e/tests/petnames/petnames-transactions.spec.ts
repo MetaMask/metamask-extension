@@ -35,7 +35,10 @@ describe('Petnames - Transactions', function () {
           CUSTOM_NAME_MOCK,
           undefined,
         );
-        await driver.clickElement({ tag: 'button', text: 'Cancel' });
+        await driver.clickElementAndWaitForWindowToClose({
+          tag: 'button',
+          text: 'Cancel',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

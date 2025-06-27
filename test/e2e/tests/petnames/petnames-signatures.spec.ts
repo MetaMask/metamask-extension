@@ -26,7 +26,10 @@ describe('Petnames - Signatures', function (this: Suite) {
         await petnames.saveName('0xbBbBB...bBBbB', undefined, 'test2.lens');
         await petnames.expectName('0xCcCCc...ccccC', false);
         await petnames.saveName('0xCcCCc...ccccC', 'Custom Name');
-        await driver.clickElement({ tag: 'button', text: 'Cancel' });
+        await driver.clickElementAndWaitForWindowToClose({
+          tag: 'button',
+          text: 'Cancel',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav3();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -56,7 +59,10 @@ describe('Petnames - Signatures', function (this: Suite) {
         await petnames.saveName('0xB0Bda...bEa57', undefined, 'Test Token 2');
         await petnames.expectName('0xCcCCc...ccccC', false);
         await petnames.saveName('0xCcCCc...ccccC', 'Custom Name');
-        await driver.clickElement({ tag: 'button', text: 'Cancel' });
+        await driver.clickElementAndWaitForWindowToClose({
+          tag: 'button',
+          text: 'Cancel',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav4();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
