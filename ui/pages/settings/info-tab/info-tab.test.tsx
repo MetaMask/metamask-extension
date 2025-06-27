@@ -13,6 +13,7 @@ describe('InfoTab', () => {
     let getByTestId: (testId: string) => HTMLElement;
 
     beforeEach(() => {
+      // @ts-expect-error TODO: Remove this line once `InfoTab` has been converted to a functional component
       const renderResult = renderWithProvider(<InfoTab />, mockStore);
       getByText = renderResult.getByText;
       getByTestId = renderResult.getByTestId;

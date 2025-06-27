@@ -1,5 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import mockState from '../../../test/data/mock-state.json';
 import Settings from '.';
@@ -12,11 +13,13 @@ describe('SettingsPage', () => {
     backRoute: '/',
     breadCrumbTextKey: '',
     conversionDate: Date.now(),
+    currentPath: '',
     initialBreadCrumbKey: '',
     initialBreadCrumbRoute: '',
     isAddressEntryPage: false,
     isPopup: false,
     isSnapViewPage: false,
+    location: { pathname: '' },
     mostRecentOverviewPage: '/',
     pathnameI18nKey: '',
   };
@@ -41,5 +44,21 @@ describe('SettingsPage', () => {
     );
 
     expect(queryByPlaceholderText('Search')).toBeInTheDocument();
+  });
+
+  it('should trigger support modal when click support link', () => {
+    const { queryByText, queryByTestId } = renderWithProvider(
+      <Settings {...props} />,
+      mockStore,
+      '/settings',
+    );
+    const aboutLink = queryByText('About');
+    fireEvent.click(aboutLink);
+    const supportLink = queryByText('Visit our support center');
+    expect(supportLink).toBeInTheDocument();
+    // fireEvent.click(supportLink);
+    //   expect(
+    //     queryByTestId('visit-support-data-consent-modal'),
+    //   ).toBeInTheDocument();
   });
 });

@@ -49,6 +49,7 @@ import MetafoxLogo from '../../components/ui/metafox-logo';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { SnapIcon } from '../../components/app/snaps/snap-icon';
+import VisitSupportDataConsentModal from '../../components/app/modals/visit-support-data-consent-modal';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
@@ -77,7 +78,9 @@ class SettingsPage extends PureComponent {
     isPopup: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
+    setShowSupportDataConsentModal: PropTypes.func,
     settingsPageSnaps: PropTypes.array,
+    showSupportDataConsentModal: PropTypes.bool,
     snapSettingsTitle: PropTypes.string,
     toggleNetworkMenu: PropTypes.func.isRequired,
     useExternalServices: PropTypes.bool,
@@ -482,6 +485,10 @@ class SettingsPage extends PureComponent {
               lastFetchedConversionDate={this.state.lastFetchedConversionDate}
             />
           )}
+        />
+        <VisitSupportDataConsentModal
+          isOpen={this.props.showSupportDataConsentModal}
+          onClose={() => this.props.setShowSupportDataConsentModal(false)}
         />
       </Switch>
     );
