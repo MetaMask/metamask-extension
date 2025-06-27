@@ -56,8 +56,13 @@ const NativeSendHeading = () => {
       .times(nativeAssetTransferValue, 10)
       .toNumber();
   const fiatFormatter = useFiatFormatter();
-  const fiatDisplayValue =
-    fiatValue && fiatFormatter(fiatValue, { shorten: true });
+  const isNonZeroSmallValue =
+    fiatValue &&
+    new BigNumber(String(fiatValue)).lt(new BigNumber(0.01)) &&
+    new BigNumber(String(fiatValue)).greaterThan(new BigNumber(0));
+  const fiatDisplayValue = isNonZeroSmallValue
+    ? `< ${fiatFormatter(0.01, { shorten: true })}`
+    : fiatValue && fiatFormatter(fiatValue, { shorten: true });
 
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
