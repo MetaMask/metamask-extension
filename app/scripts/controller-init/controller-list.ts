@@ -43,6 +43,7 @@ import { DelegationController } from '@metamask/delegation-controller';
 
 import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-controller';
 import { AccountTreeController } from '@metamask/account-tree-controller';
+import { BridgeStatusController } from '@metamask/bridge-status-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -53,6 +54,7 @@ import { InstitutionalSnapController } from '../controllers/institutional-snap/I
  */
 export type Controller =
   | AuthenticationController
+  | BridgeStatusController
   | CronjobController
   | DelegationController
   | DeFiPositionsController

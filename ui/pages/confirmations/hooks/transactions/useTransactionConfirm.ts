@@ -1,7 +1,11 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  BatchTransactionParams,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
+import { QuoteResponse } from '@metamask/bridge-controller';
 import {
   getCustomNonceValue,
   selectIntentQuoteForTransaction,
@@ -29,7 +33,7 @@ export function useTransactionConfirm() {
 
   const intentQuote = useSelector((state: ConfirmMetamaskState) =>
     selectIntentQuoteForTransaction(state, transactionMeta?.id),
-  );
+  ) as QuoteResponse | undefined;
 
   const newTransactionMeta = useMemo(
     () => cloneDeep(transactionMeta),
@@ -61,15 +65,24 @@ export function useTransactionConfirm() {
       return;
     }
 
-    const { approval, trade } = intentQuote as never;
+    const { approval, trade } = intentQuote;
+
+    const isSwap =
+      intentQuote.quote.srcChainId === intentQuote.quote.destChainId;
+
+    if (!isSwap) {
+      return;
+    }
 
     newTransactionMeta.batchTransactions = [];
 
     if (approval) {
-      newTransactionMeta.batchTransactions.push(approval);
+      newTransactionMeta.batchTransactions.push(
+        approval as BatchTransactionParams,
+      );
     }
 
-    newTransactionMeta.batchTransactions.push(trade);
+    newTransactionMeta.batchTransactions.push(trade as BatchTransactionParams);
   }, [intentQuote, newTransactionMeta]);
 
   const onTransactionConfirm = useCallback(async () => {

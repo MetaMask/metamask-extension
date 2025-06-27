@@ -1906,6 +1906,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     const existingControllers = [
+      this.bridgeStatusController,
       this.networkController,
       this.preferencesController,
       this.gasFeeController,

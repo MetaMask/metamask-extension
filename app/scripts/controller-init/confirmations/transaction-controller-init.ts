@@ -8,6 +8,7 @@ import {
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import { Hex } from '@metamask/utils';
+import { BridgeStatusController } from '@metamask/bridge-status-controller';
 import {
   getChainSupportsSmartTransactions,
   getFeatureFlagsByChainId,
@@ -44,6 +45,7 @@ import { TransactionMetricsRequest } from '../../../../shared/types/metametrics'
 import { Delegation7702PublishHook } from '../../lib/transaction/hooks/delegation-7702-publish';
 import { updateRemoteModeTransaction } from '../../lib/remote-mode';
 import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation-hook';
+import { IntentsHook } from '../../lib/transaction/hooks/intents-hook';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -62,6 +64,7 @@ export const TransactionControllerInit: ControllerInitFunction<
   } = request;
 
   const {
+    bridgeStatusController,
     gasFeeController,
     keyringController,
     networkController,
@@ -156,6 +159,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       // @ts-expect-error Controller type does not support undefined return value
       publish: (transactionMeta, signedTx) =>
         publishHook({
+          bridgeStatusController: bridgeStatusController(),
           flatState: getFlatState(),
           initMessenger,
           signedTx,
@@ -224,6 +228,8 @@ function getControllers(
   >,
 ) {
   return {
+    bridgeStatusController: () =>
+      request.getController('BridgeStatusController'),
     gasFeeController: () => request.getController('GasFeeController'),
     keyringController: () => request.getController('KeyringController'),
     networkController: () => request.getController('NetworkController'),
@@ -260,6 +266,7 @@ function getSmartTransactionCommonParams(
 }
 
 async function publishHook({
+  bridgeStatusController,
   flatState,
   initMessenger,
   signedTx,
@@ -267,6 +274,7 @@ async function publishHook({
   transactionController,
   transactionMeta,
 }: {
+  bridgeStatusController: BridgeStatusController;
   flatState: ControllerFlatState;
   initMessenger: TransactionControllerInitMessenger;
   signedTx: string;
@@ -274,6 +282,15 @@ async function publishHook({
   transactionController: TransactionController;
   transactionMeta: TransactionMeta;
 }) {
+  const intentResult = await new IntentsHook({
+    bridgeStatusController,
+    messenger: initMessenger,
+  }).getHook()(transactionMeta, signedTx);
+
+  if (intentResult?.transactionHash) {
+    return intentResult;
+  }
+
   const result = await publishSmartTransactionHook(
     transactionController,
     smartTransactionsController,

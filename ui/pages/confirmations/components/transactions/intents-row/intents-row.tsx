@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
 import {
   ConfirmInfoRow,
@@ -20,7 +20,18 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../../../components/component-library';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  AvatarTokenSize,
+  BadgeWrapper,
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../../../components/component-library';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { TabName } from '../../../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { useSelector } from 'react-redux';
@@ -30,71 +41,184 @@ import { useConfirmContext } from '../../../context/confirm';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { AssetType } from '@metamask/bridge-controller';
 import { Hex } from '@metamask/utils';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
+
+type SelectedToken = {
+  address?: Hex;
+  chainId: Hex;
+};
 
 export function IntentsRow() {
+  const isAdvanced = useSelector(selectConfirmationAdvancedDetailsOpen);
+
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const transactionNetwork = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, transactionMeta.chainId),
-  );
+  const {chainId: targetChainId} = transactionMeta;
 
+  const [token, setToken] = useState<SelectedToken>({
+    chainId: targetChainId,
+  });
+
+  const { sourceTokenAmountFormatted, networkFeeFiatFormatted } =
+    useIntentsData({
+      srcChainId: token.chainId,
+      tokenAddress: token.address,
+    });
+
+  return (
+    <ConfirmInfoSection>
+      <IntentAssetRow
+        sourceTokenAmount={sourceTokenAmountFormatted}
+        targetChainId={targetChainId}
+        onChange={setToken}
+      />
+      {isAdvanced && networkFeeFiatFormatted && (
+        <ConfirmInfoRow label="Network Fee">
+          <ConfirmInfoRowText text={networkFeeFiatFormatted} />
+        </ConfirmInfoRow>
+      )}
+    </ConfirmInfoSection>
+  );
+}
+
+function IntentAssetRow({
+  onChange,
+  sourceTokenAmount,
+  targetChainId,
+}: {
+  onChange?: (token: SelectedToken) => void;
+  sourceTokenAmount?: string;
+  targetChainId: Hex;
+}) {
   const [asset, setAsset] = useState<
     AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
   >({
-    chainId: transactionMeta.chainId,
+    chainId: targetChainId,
     image: './images/eth_logo.svg',
     type: AssetType.native,
     symbol: 'ETH',
   } as never);
 
-  const [network, setNetwork] =
-    useState<NetworkConfiguration>(transactionNetwork);
+  const defaultNetwork = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, targetChainId),
+  );
 
-  const supportedChains = useSelector(getFromChains);
+  const [network, setNetwork] = useState<NetworkConfiguration>(defaultNetwork);
 
-  const { sourceTokenAmountFormatted, networkFeeFiatFormatted } =
-    useIntentsData({ tokenAddress: asset.address as Hex });
-
-  const text = `${sourceTokenAmountFormatted} USDC + ${networkFeeFiatFormatted} Gas`;
+  useEffect(() => {
+    onChange?.({
+      address: asset.address as Hex,
+      chainId: network.chainId
+    });
+  }, [asset.address, network.chainId, onChange]);
 
   return (
-    <ConfirmInfoSection>
-      <ConfirmInfoRow label="Pay">
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.flexEnd}
-          alignItems={AlignItems.center}
-          gap={2}
-        >
-          <Text variant={TextVariant.bodyMd}>{sourceTokenAmountFormatted}</Text>
-          <Box
-            borderRadius={BorderRadius.pill}
-            borderColor={BorderColor.borderMuted}
-            padding={2}
-          >
-            <AssetPicker
-              asset={asset}
-              header="Select token"
-              isMultiselectEnabled={true}
-              visibleTabs={[TabName.TOKENS]}
-              onAssetChange={setAsset}
-              networkProps={{
-                network,
-                networks: supportedChains,
-                onNetworkChange: (network) =>
-                  setNetwork(network as NetworkConfiguration),
-              }}
-            />
-          </Box>
-        </Box>
-      </ConfirmInfoRow>
-      {networkFeeFiatFormatted && (
-        <ConfirmInfoRow label="Pay Gas Cost">
-          <ConfirmInfoRowText text={networkFeeFiatFormatted} />
-        </ConfirmInfoRow>
+    <ConfirmInfoRow label="Pay">
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.flexEnd}
+        alignItems={AlignItems.center}
+        gap={2}
+      >
+        <Text variant={TextVariant.bodyMd}>{sourceTokenAmount}</Text>
+        <AssetPickerWrapper
+          asset={asset}
+          network={network}
+          onAssetChange={(newAsset) => setAsset(newAsset)}
+          onNetworkChange={(newNetwork) => setNetwork(newNetwork)}
+        />
+      </Box>
+    </ConfirmInfoRow>
+  );
+}
+
+function AssetPickerWrapper({
+  asset,
+  network,
+  onAssetChange,
+  onNetworkChange,
+}: {
+  asset: AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>;
+  network: NetworkConfiguration;
+  onAssetChange: (
+    asset: AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>,
+  ) => void;
+  onNetworkChange: (network: NetworkConfiguration) => void;
+}) {
+  const supportedChains = useSelector(getFromChains);
+
+  return (
+    <AssetPicker
+      asset={asset}
+      header="Select token"
+      isMultiselectEnabled={true}
+      visibleTabs={[TabName.TOKENS]}
+      onAssetChange={onAssetChange}
+      networkProps={{
+        network,
+        networks: supportedChains,
+        onNetworkChange: (network) =>
+          onNetworkChange(network as NetworkConfiguration),
+      }}
+    >
+      {(onClickHandler, networkImageSrc) => (
+        <AssetPickerOverride
+          asset={asset}
+          network={network}
+          networkImageSrc={networkImageSrc}
+          onClick={onClickHandler}
+        />
       )}
-    </ConfirmInfoSection>
+    </AssetPicker>
+  );
+}
+
+function AssetPickerOverride({
+  asset,
+  network,
+  networkImageSrc,
+  onClick,
+}: {
+  asset: AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>;
+  network: NetworkConfiguration;
+  networkImageSrc?: string;
+  onClick?: () => void;
+}) {
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      borderRadius={BorderRadius.pill}
+      borderColor={BorderColor.borderMuted}
+      alignItems={AlignItems.center}
+      gap={2}
+      paddingInline={2}
+      onClick={onClick}
+      style={{
+        cursor: 'pointer',
+      }}
+    >
+      <BadgeWrapper
+        className="intents-network-icon-wrapper"
+        badge={
+          <AvatarNetwork
+            className="intents-network-icon"
+            size={AvatarNetworkSize.Xs}
+            src={networkImageSrc}
+            name={network.name}
+          />
+        }
+      >
+        <AvatarToken
+          borderRadius={BorderRadius.full}
+          src={asset.image}
+          size={AvatarTokenSize.Xs}
+        />
+      </BadgeWrapper>
+      <Text>{asset.symbol}</Text>
+      <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
+    </Box>
   );
 }
