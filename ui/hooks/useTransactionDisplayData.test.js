@@ -221,7 +221,7 @@ const renderHookWithRouter = (cb, tokenAddress) => {
       ...mockState.metamask,
       completeOnboarding: true,
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        domains: {},
+      domains: {},
       currentCurrency: 'ETH',
       useCurrencyRateCheck: false, // to force getShouldShowFiat to return false
       preferences: {

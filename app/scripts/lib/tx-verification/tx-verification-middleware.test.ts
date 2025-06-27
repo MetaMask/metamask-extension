@@ -48,7 +48,6 @@ describe('tx verification middleware', () => {
   it('ignores methods other than eth_sendTransaction', () => {
     const middleware = createTxVerificationMiddleware(
       getMockNetworkController(),
-        getMockSelectedNetworkController(),
       getMockSelectedNetworkController(),
       mockTrustedSigners,
     );
@@ -146,7 +145,7 @@ describe('tx verification middleware', () => {
   it('calls next() if reverse address mapping look up is undefined', () => {
     const middleware = createTxVerificationMiddleware(
       getMockNetworkController(),
-        getMockSelectedNetworkController(),
+      getMockSelectedNetworkController(),
       mockTrustedSigners,
     );
 
@@ -163,7 +162,7 @@ describe('tx verification middleware', () => {
   it('calls next() if chainId for `to` address does not match', () => {
     const middleware = createTxVerificationMiddleware(
       getMockNetworkController(),
-        getMockSelectedNetworkController(),
+      getMockSelectedNetworkController(),
       mockTrustedSigners,
     );
 
@@ -180,7 +179,7 @@ describe('tx verification middleware', () => {
   it('calls next() if experience type for `to` address is not an experience to verify', () => {
     const middleware = createTxVerificationMiddleware(
       getMockNetworkController(),
-        getMockSelectedNetworkController(),
+      getMockSelectedNetworkController(),
       mockTrustedSigners,
     );
 
@@ -197,7 +196,7 @@ describe('tx verification middleware', () => {
   it('passes through a valid bridge transaction', () => {
     const middleware = createTxVerificationMiddleware(
       getMockNetworkController(),
-        getMockSelectedNetworkController(),
+      getMockSelectedNetworkController(),
       mockTrustedSigners,
     );
 
@@ -214,7 +213,7 @@ describe('tx verification middleware', () => {
   it('rejects modified bridge transactions', () => {
     const middleware = createTxVerificationMiddleware(
       getMockNetworkController(),
-        getMockSelectedNetworkController(),
+      getMockSelectedNetworkController(),
       mockTrustedSigners,
     );
 

@@ -67,7 +67,8 @@ export function createTxVerificationMiddleware(
         : getCurrentChainId({
             metamask: {
               ...networkController.state,
-              ...selectedNetworkController.state,
+              ...(selectedNetworkController.state || {}),
+              domains: selectedNetworkController.state?.domains || {},
             },
           });
 
