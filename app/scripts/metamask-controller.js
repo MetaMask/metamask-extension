@@ -1757,6 +1757,7 @@ export default class MetamaskController extends EventEmitter {
           deviceModel,
         };
       },
+      trace,
     });
 
     const isExternalNameSourcesEnabled = () =>
@@ -1922,10 +1923,10 @@ export default class MetamaskController extends EventEmitter {
       InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
       SnapsRegistry: SnapsRegistryInit,
+      CronjobController: CronjobControllerInit,
       SnapController: SnapControllerInit,
       SnapInsightsController: SnapInsightsControllerInit,
       SnapInterfaceController: SnapInterfaceControllerInit,
-      CronjobController: CronjobControllerInit,
       WebSocketService: WebSocketServiceInit,
       PPOMController: PPOMControllerInit,
       TransactionController: TransactionControllerInit,
@@ -2013,6 +2014,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.notificationServicesController.init();
     this.snapController.init();
+    this.cronjobController.init();
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
