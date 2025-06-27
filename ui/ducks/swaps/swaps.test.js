@@ -60,6 +60,7 @@ describe('Ducks - Swaps', () => {
       return () => ({
         metamask: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          domains: {},
           from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
           internalAccounts: {
             accounts: {

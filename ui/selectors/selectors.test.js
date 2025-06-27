@@ -631,6 +631,7 @@ describe('Selectors', () => {
         selectors.getRpcPrefsForCurrentProvider({
           metamask: {
             ...mockNetworkState({
+        domains: {},
               chainId: '0x1',
               blockExplorerUrl: 'https://test-block-explorer',
             }),
@@ -669,6 +670,7 @@ describe('Selectors', () => {
           selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
           blockExplorerUrls: [],
           ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA, id: 'sepolia' }),
+        domains: {},
         },
       };
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
@@ -696,6 +698,7 @@ describe('Selectors', () => {
         metamask: {
           ...mockState.metamask,
           ...mockNetworkState({
+        domains: {},
             rpcUrl: 'https://mock-rpc-endpoint.test',
             chainId: '0x9999',
             ticker: 'TST',
@@ -758,6 +761,7 @@ describe('Selectors', () => {
         metamask: {
           ...mockState.metamask,
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        domains: {},
         },
       };
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
@@ -1035,6 +1039,7 @@ describe('Selectors', () => {
         metamask: {
           ...mockState.metamask,
           ...mockNetworkState({
+        domains: {},
             chainId: CHAIN_IDS.GOERLI,
             metadata: { EIPS: { 1559: true } },
           }),
@@ -1059,6 +1064,7 @@ describe('Selectors', () => {
         metamask: {
           ...mockState.metamask,
           ...mockNetworkState({
+        domains: {},
             chainId: CHAIN_IDS.GOERLI,
             metadata: { EIPS: { 1559: false } },
           }),
@@ -1212,6 +1218,7 @@ describe('Selectors', () => {
     const isOptimismSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
+        domains: {},
         internalAccounts: {
           selectedAccount: '0xabc',
           accounts: { '0xabc': { metadata: { keyring: {} } } },
@@ -1223,6 +1230,7 @@ describe('Selectors', () => {
     const isFantomSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.FANTOM }),
+        domains: {},
         internalAccounts: {
           selectedAccount: '0xabc',
           accounts: { '0xabc': { metadata: { keyring: {} } } },

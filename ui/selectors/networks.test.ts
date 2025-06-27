@@ -120,6 +120,7 @@ describe('Network Selectors', () => {
             chainId: CHAIN_IDS.GOERLI,
             metadata: { status: NetworkStatus.Blocked, EIPS: {} },
           }),
+          domains: {},
         },
       };
       isInfuraBlocked = networks.getInfuraBlocked(modifiedMockState);

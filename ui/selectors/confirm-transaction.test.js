@@ -20,6 +20,7 @@ describe('Confirm Transaction Selector', () => {
             },
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          domains: {},
         },
       };
       expect(conversionRateSelector(state)).toStrictEqual(556.12);
@@ -60,6 +61,7 @@ describe('Confirm Transaction Selector', () => {
               txParams: { to: '0xSelectedAddress' },
             },
           ],
+          domains: {},
         },
       };
       expect(unconfirmedTransactionsHashSelector(state)).toStrictEqual({

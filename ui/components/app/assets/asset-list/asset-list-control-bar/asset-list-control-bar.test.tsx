@@ -51,6 +51,7 @@ describe('AssetListControlBar', () => {
           AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
         selectedMultichainNetworkChainId: 'eip155:1',
         isEvmSelected: true,
+        domains: {},
         internalAccounts: {
           selectedAccount: 'selectedAccount',
           accounts: {
@@ -114,6 +115,7 @@ describe('NFTs options', () => {
             ],
           },
         },
+        domains: mockState.metamask.domains,
         internalAccounts: {
           selectedAccount: 'selectedAccount',
           accounts: {
@@ -166,6 +168,7 @@ describe('NFTs options', () => {
             ],
           },
         },
+        domains: mockState.metamask.domains,
         internalAccounts: {
           selectedAccount: 'selectedAccount',
           accounts: {
@@ -218,6 +221,7 @@ describe('NFTs options', () => {
             ],
           },
         },
+        domains: mockState.metamask.domains,
         internalAccounts: {
           selectedAccount: 'selectedAccount',
           accounts: {

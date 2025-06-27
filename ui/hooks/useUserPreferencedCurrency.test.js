@@ -18,6 +18,7 @@ const renderUseUserPreferencedCurrency = (state, value, restProps) => {
         chainId: state.showFiat ? CHAIN_IDS.MAINNET : CHAIN_IDS.SEPOLIA,
         ticker: state?.nativeCurrency,
       }),
+      domains: {},
       currentCurrency: state.currentCurrency,
       currencyRates: { ETH: { conversionRate: 280.45 } },
       preferences: {

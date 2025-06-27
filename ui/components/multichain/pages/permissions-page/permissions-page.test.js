@@ -103,6 +103,7 @@ let store = configureStore({
   metamask: {
     ...mockState.metamask,
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, id: 'mainnet' }),
+    domains: mockState.metamask.domains,
   },
 });
 
@@ -122,7 +123,14 @@ describe('All Connections', () => {
       mockState.metamask.snaps = {};
       mockState.metamask.subjectMetadata = {};
       mockState.metamask.subjects = {};
-      store = configureStore(mockState);
+      store = configureStore({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, id: 'mainnet' }),
+          domains: mockState.metamask.domains,
+        },
+      });
       const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
       expect(getByTestId('no-connections')).toBeInTheDocument();
     });
