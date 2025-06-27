@@ -72,6 +72,7 @@ describe('useAccountTrackerPolling', () => {
           AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
         selectedMultichainNetworkChainId: 'eip155:1',
         isEvmSelected: true,
+        domains: {},
       },
     };
 
@@ -110,6 +111,7 @@ describe('useAccountTrackerPolling', () => {
           AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
         selectedMultichainNetworkChainId: 'eip155:1',
         isEvmSelected: true,
+        domains: {},
       },
     };
 
@@ -132,6 +134,7 @@ describe('useAccountTrackerPolling', () => {
           AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
         selectedMultichainNetworkChainId: 'eip155:1',
         isEvmSelected: true,
+        domains: {},
       },
     };
 
@@ -154,6 +157,7 @@ describe('useAccountTrackerPolling', () => {
           AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
         selectedMultichainNetworkChainId: 'eip155:1',
         isEvmSelected: true,
+        domains: {},
       },
     };
 

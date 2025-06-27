@@ -706,6 +706,7 @@ export const createSwapsMockStore = () => {
         },
       },
       balances: {},
+      domains: {},
     },
     appState: {
       modal: {

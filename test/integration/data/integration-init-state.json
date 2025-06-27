@@ -802,6 +802,7 @@
   "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
   "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
+  "domains": {},
   "showAccountBanner": false,
   "showBetaHeader": false,
   "showNetworkBanner": true,

@@ -109,6 +109,7 @@ const renderComponent = (tokens = []) => {
         },
       },
       selectedNetworkClientId: 'goerli',
+      domains: {},
     },
 
     history: {
