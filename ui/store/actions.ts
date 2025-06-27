@@ -181,9 +181,15 @@ export function startOAuthLogin(
     dispatch(showLoadingIndication());
 
     try {
-      const isNewUser = await submitRequestToBackground('startOAuthLogin', [
-        authConnection,
+      const oauth2LoginResult = await submitRequestToBackground(
+        'startOAuthLogin',
+        [authConnection],
+      );
+
+      const { isNewUser } = await submitRequestToBackground('authenticate', [
+        oauth2LoginResult,
       ]);
+
       return isNewUser;
     } catch (error) {
       dispatch(displayWarning(error));
@@ -487,7 +493,6 @@ export function createNewVaultAndGetSeedPhrase(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-    console.log('createNewVaultAndGetSeedPhrase', password);
     try {
       await createNewVault(password);
       const seedPhrase = await getSeedPhrase(password);
@@ -4690,14 +4695,19 @@ export function updateAccountsList(
  * This method updates the enabledNetworkMap to mark specified networks as enabled.
  * It can handle both a single chain ID or an array of chain IDs.
  *
- * @param chainIds - A single CAIP-2 chain ID (e.g. 'eip155:1') or an array of chain IDs
+ * @param chainIds - A single chainId (e.g. 'eip155:1') or an array of chain IDs
  * to be enabled. All other networks will be implicitly disabled.
+ * @param networkId - The CAIP-2 chain ID of the currently selected network
  */
 export function setEnabledNetworks(
   chainIds: string[],
+  networkId: CaipNamespace,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('setEnabledNetworks', [chainIds]);
+    await submitRequestToBackground('setEnabledNetworks', [
+      chainIds,
+      networkId,
+    ]);
   };
 }
 

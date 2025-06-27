@@ -61,9 +61,12 @@ export abstract class BaseLoginHandler {
   /**
    * Validate the state value from the OAuth login redirect URL.
    *
-   * @param state - The state value from the OAuth login redirect URL.
+   * @param url - The OAuth login redirect URL.
    */
-  validateState(state: unknown): void {
+  validateState(url: string): void {
+    const urlObj = new URL(url);
+    const state = urlObj.searchParams.get('state');
+
     if (typeof state !== 'string') {
       throw new Error(OAuthErrorMessages.INVALID_OAUTH_STATE_ERROR);
     }

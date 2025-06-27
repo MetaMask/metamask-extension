@@ -89,7 +89,7 @@ describe('Account Not Found Seedless Onboarding View', () => {
     expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE);
   });
 
-  it('should reste login state and navigate to the welcome page when the button is clicked', async () => {
+  it('should reset login state and navigate to the welcome page when the button is clicked', async () => {
     const resetOAuthLoginStateSpy = jest
       .spyOn(Actions, 'resetOAuthLoginState')
       .mockReturnValue(jest.fn().mockResolvedValueOnce(null));

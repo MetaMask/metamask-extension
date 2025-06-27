@@ -70,7 +70,7 @@ export default function OnboardingWelcome({
   const onCreateClick = useCallback(async () => {
     setIsLoggingIn(true);
     setNewAccountCreationInProgress(true);
-    dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
+    await dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletSetupStarted,
@@ -164,12 +164,6 @@ export default function OnboardingWelcome({
 
   const handleLogin = useCallback(
     async (loginType, loginOption) => {
-      console.log('loginType', loginType);
-      console.log('loginOption', loginOption);
-      console.log(
-        'isSeedlessOnboardingFeatureEnabled',
-        isSeedlessOnboardingFeatureEnabled,
-      );
       if (loginOption === LOGIN_OPTION.NEW && loginType === LOGIN_TYPE.SRP) {
         onCreateClick();
       } else if (

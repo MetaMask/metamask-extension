@@ -7,7 +7,8 @@ import {
   MOCK_AUTH_CONNECTION_ID,
   MOCK_GROUPED_AUTH_CONNECTION_ID,
 } from '../../../../test/e2e/constants';
-import { getIsDevOrTestEnv } from '../../../../shared/modules/environment';
+import { isProduction } from '../../../../shared/modules/environment';
+import { ENVIRONMENT } from '../../../../development/build/constants';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import type {
@@ -41,14 +42,6 @@ export default class OAuthService {
   async startOAuthLogin(
     authConnection: AuthConnection,
   ): Promise<OAuthLoginResult> {
-    // request the identity permission from the user
-    // 'identity' permission is required for the OAuth login
-    const permissionGranted =
-      await this.#webAuthenticator.requestIdentityPermission();
-    if (!permissionGranted) {
-      throw new Error(OAuthErrorMessages.PERMISSION_NOT_GRANTED_ERROR);
-    }
-
     // create the login handler for the given social login type
     // this is to get the Jwt Token in the exchange for the Authorization Code
     const loginHandler = createLoginHandler(
@@ -121,18 +114,14 @@ export default class OAuthService {
   }
 
   #loadConfig(): OAuthConfig {
-    const { METAMASK_BUILD_TYPE } = process.env;
-    const buildType = METAMASK_BUILD_TYPE || 'development';
-    const isDevOrTestEnv = getIsDevOrTestEnv();
-
-    let config: Record<string, string> = {};
-    if (isDevOrTestEnv) {
-      config = OAUTH_CONFIG.development;
-    } else {
-      // if the build type is not found, use the main config
-      config = OAUTH_CONFIG[buildType] || OAUTH_CONFIG.main;
+    let configKey = 'development';
+    if (process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.OTHER) {
+      configKey = 'development';
+    } else if (isProduction()) {
+      configKey = process.env.METAMASK_BUILD_TYPE || 'main';
     }
 
+    const config = OAUTH_CONFIG[configKey] || OAUTH_CONFIG.main;
     return {
       authServerUrl: config.AUTH_SERVER_URL,
       web3AuthNetwork: config.WEB3AUTH_NETWORK as Web3AuthNetwork,
@@ -169,7 +158,12 @@ export default class OAuthService {
           (responseUrl) => {
             try {
               if (responseUrl) {
-                resolve(responseUrl);
+                try {
+                  loginHandler.validateState(responseUrl);
+                  resolve(responseUrl);
+                } catch (error) {
+                  reject(error);
+                }
               } else {
                 reject(
                   new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR),
