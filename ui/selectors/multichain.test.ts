@@ -70,6 +70,7 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
         showFiatInTestnets: false,
       },
       ...mockNetworkState({ chainId }),
+      domains: {},
       currentCurrency: 'ETH',
       currencyRates: {
         ETH: {

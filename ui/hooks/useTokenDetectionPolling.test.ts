@@ -41,6 +41,7 @@ describe('useTokenDetectionPolling', () => {
         completedOnboarding: true,
         useTokenDetection: true,
         selectedNetworkClientId: 'selectedNetworkClientId',
+        domains: {},
         enabledNetworkMap: {
           eip155: {
             '0x1': true,
@@ -96,8 +97,12 @@ describe('useTokenDetectionPolling', () => {
         isUnlocked: true,
         completedOnboarding: false,
         useTokenDetection: true,
+        domains: {},
         networkConfigurationsByChainId: {
-          '0x1': {},
+          '0x1': {
+            chainId: '0x1',
+            rpcEndpoints: [],
+          },
         },
       },
     };
@@ -115,8 +120,12 @@ describe('useTokenDetectionPolling', () => {
         isUnlocked: false,
         completedOnboarding: true,
         useTokenDetection: true,
+        domains: {},
         networkConfigurationsByChainId: {
-          '0x1': {},
+          '0x1': {
+            chainId: '0x1',
+            rpcEndpoints: [],
+          },
         },
       },
     };
@@ -134,8 +143,12 @@ describe('useTokenDetectionPolling', () => {
         isUnlocked: true,
         completedOnboarding: true,
         useTokenDetection: false,
+        domains: {},
         networkConfigurationsByChainId: {
-          '0x1': {},
+          '0x1': {
+            chainId: '0x1',
+            rpcEndpoints: [],
+          },
         },
       },
     };
@@ -153,8 +166,12 @@ describe('useTokenDetectionPolling', () => {
         isUnlocked: true,
         completedOnboarding: true,
         useTokenDetection: true,
+        domains: {},
         networkConfigurationsByChainId: {
-          '0x1': {},
+          '0x1': {
+            chainId: '0x1',
+            rpcEndpoints: [],
+          },
         },
       },
     };

@@ -320,7 +320,6 @@ describe('Selectors', () => {
     });
   });
 
-
   describe('#getSuggestedTokens', () => {
     it('returns an empty array if pendingApprovals is undefined', () => {
       expect(selectors.getSuggestedTokens({ metamask: {} })).toStrictEqual([]);
@@ -601,7 +600,7 @@ describe('Selectors', () => {
         metamask: {
           ...mockState.metamask,
           ...mockNetworkState({
-        domains: {},
+            domains: {},
             rpcUrl: 'https://mock-rpc-endpoint.test',
             chainId: '0x9999',
             ticker: 'TST',
@@ -944,7 +943,7 @@ describe('Selectors', () => {
         metamask: {
           ...mockState.metamask,
           ...mockNetworkState({
-        domains: {},
+            domains: {},
             chainId: CHAIN_IDS.GOERLI,
             metadata: { EIPS: { 1559: true } },
           }),
@@ -969,7 +968,7 @@ describe('Selectors', () => {
         metamask: {
           ...mockState.metamask,
           ...mockNetworkState({
-        domains: {},
+            domains: {},
             chainId: CHAIN_IDS.GOERLI,
             metadata: { EIPS: { 1559: false } },
           }),
@@ -1123,7 +1122,6 @@ describe('Selectors', () => {
     const isOptimismSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
-      domains: {},
         domains: {},
         internalAccounts: {
           selectedAccount: '0xabc',
@@ -1136,7 +1134,6 @@ describe('Selectors', () => {
     const isFantomSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.FANTOM }),
-      domains: {},
         domains: {},
         internalAccounts: {
           selectedAccount: '0xabc',
@@ -1149,7 +1146,7 @@ describe('Selectors', () => {
     const isSolanaSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: MultichainNetworks.SOLANA }),
-      domains: {},
+        domains: {},
         internalAccounts: {
           selectedAccount: '0xabc',
           accounts: {
@@ -2149,7 +2146,8 @@ describe('#getConnectedSitesList', () => {
             },
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
-          domains: {},          networkConfigurationsByChainId: {
+          domains: {},
+          networkConfigurationsByChainId: {
             '0x1': {
               chainId: '0x1',
               rpcEndpoints: [
@@ -2178,7 +2176,8 @@ describe('#getConnectedSitesList', () => {
             },
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
-          domains: {},          networkConfigurationsByChainId: {
+          domains: {},
+          networkConfigurationsByChainId: {
             '0x1': {
               chainId: '0x1',
               rpcEndpoints: [
@@ -2218,7 +2217,8 @@ describe('#getConnectedSitesList', () => {
             },
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
-          domains: {},          networkConfigurationsByChainId: {
+          domains: {},
+          networkConfigurationsByChainId: {
             [CHAIN_IDS.MAINNET]: {
               chainId: CHAIN_IDS.MAINNET,
               rpcEndpoints: [
@@ -2249,7 +2249,8 @@ describe('#getConnectedSitesList', () => {
             },
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
-          domains: {},          networkConfigurationsByChainId: {
+          domains: {},
+          networkConfigurationsByChainId: {
             '0xNotPopularNetwork': {
               chainId: '0xNotPopularNetwork',
               rpcEndpoints: [
@@ -2288,7 +2289,8 @@ describe('#getConnectedSitesList', () => {
             },
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
-          domains: {},          networkConfigurationsByChainId: {
+          domains: {},
+          networkConfigurationsByChainId: {
             [CHAIN_IDS.MAINNET]: {
               chainId: CHAIN_IDS.MAINNET,
               rpcEndpoints: [
@@ -2348,7 +2350,8 @@ describe('#getConnectedSitesList', () => {
             },
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
-          domains: {},          networkConfigurationsByChainId: {
+          domains: {},
+          networkConfigurationsByChainId: {
             [CHAIN_IDS.MAINNET]: {
               chainId: CHAIN_IDS.MAINNET,
               rpcEndpoints: [

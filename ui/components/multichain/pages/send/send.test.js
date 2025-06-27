@@ -165,6 +165,7 @@ const baseStore = {
       chainId: CHAIN_IDS.GOERLI,
       ticker: 'ETH',
     }),
+    domains: {},
     tokens: [],
     preferences: {
       showFiatInTestnets: true,
@@ -437,6 +438,7 @@ describe('SendPage', () => {
           ...mockSendState.metamask,
           gasEstimateType: 'none',
           ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
+          domains: {},
         },
       };
 

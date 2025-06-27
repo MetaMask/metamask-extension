@@ -25,6 +25,7 @@ describe('TransactionBreakdown', () => {
       currencyRates: {},
       preferences: {},
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      domains: {},
 
       internalAccounts: mockState.metamask.internalAccounts,
       completedOnboarding: true,
