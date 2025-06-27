@@ -180,7 +180,8 @@ const Footer = () => {
 
   const hasSimulationFinished =
     canSkipSimulationChecks ||
-    (Boolean(simulationData) && !hasInsufficientNative);
+    !hasInsufficientNative ||
+    Boolean(simulationData);
 
   const { from } = getConfirmationSender(currentConfirmation);
   const { shouldThrottleOrigin } = useOriginThrottling();
