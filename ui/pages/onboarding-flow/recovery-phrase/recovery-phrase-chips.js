@@ -25,6 +25,7 @@ import {
   JustifyContent,
   AlignItems,
   BackgroundColor,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 
 export default function RecoveryPhraseChips({
@@ -142,7 +143,7 @@ export default function RecoveryPhraseChips({
             const wordToDisplay = isQuizWord
               ? quizAnswers.find((answer) => answer.index === index)?.word || ''
               : word;
-            return (
+            return confirmPhase ? (
               <TextField
                 testId={
                   confirmPhase && isQuizWord
@@ -164,7 +165,6 @@ export default function RecoveryPhraseChips({
                   </Text>
                 }
                 type={confirmPhase && !isQuizWord ? 'password' : 'text'}
-                readOnly
                 disabled={
                   (confirmPhase && !isQuizWord) ||
                   (!confirmPhase && !phraseRevealed)
@@ -180,6 +180,27 @@ export default function RecoveryPhraseChips({
                   }
                 }}
               />
+            ) : (
+              <Box
+                className="recovery-phrase__text"
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                backgroundColor={BackgroundColor.backgroundDefault}
+                borderColor={BorderColor.borderMuted}
+                borderRadius={BorderRadius.XL}
+                paddingInline={2}
+                paddingTop={1}
+                paddingBottom={1}
+                gap={1}
+              >
+                <Text
+                  color={TextColor.textAlternative}
+                  className="recovery-phrase__word-index"
+                >
+                  {index + 1}.
+                </Text>
+                <Text>{word}</Text>
+              </Box>
             );
           })}
         </Box>
