@@ -75,6 +75,39 @@ export const MOCK_ACCOUNT_HARDWARE: InternalAccount = {
   },
 };
 
+export const MOCK_ACCOUNT_INSTITUTIONAL: InternalAccount = {
+  id: 'c0949edb-b843-4d20-be0b-80f2a8ef6552',
+  options: {
+    custodian: {
+      environmentName: 'neptune-prod',
+      displayName: 'Neptune',
+      deferPublication: false,
+      importOrigin: 'https://neptune-custody-ui.metamask-institutional.io',
+    },
+    accountName: 'Custody Account A',
+  },
+  address: '0xc073fd7d1522c4103e0d8e407fa763d3ac8417e6',
+  methods: [
+    'eth_signTransaction',
+    'personal_sign',
+    'eth_signTypedData_v3',
+    'eth_signTypedData_v4',
+  ],
+  type: 'eip155:eoa',
+  scopes: ['eip155:0'],
+  metadata: {
+    name: 'Custody Account A',
+    importTime: 1751048625733,
+    keyring: { type: KeyringTypes.snap },
+    snap: {
+      id: 'npm:@metamask/institutional-wallet-snap',
+      name: 'Institutional Wallet',
+      enabled: true,
+    },
+    lastSelected: 1751048625755,
+  },
+};
+
 export const MOCK_ACCOUNT_ERC4337: InternalAccount = {
   id: '4d5921f2-2022-44ce-a84f-9f6a0f142a5c',
   address: '0x123',

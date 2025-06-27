@@ -3,6 +3,7 @@ import {
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_ERC4337,
   MOCK_ACCOUNT_HARDWARE,
+  MOCK_ACCOUNT_INSTITUTIONAL,
   MOCK_ACCOUNT_PRIVATE_KEY,
   MOCK_ACCOUNT_SOLANA_MAINNET,
 } from '../../../../test/data/mock-accounts';
@@ -98,7 +99,10 @@ describe('Account Type Utils', () => {
   });
 
   describe('isInstitutionalEVMAccount', () => {
-    // TODO: Add tests for institutional EVM accounts
+    it('should return true for institutional EVM accounts', () => {
+      expect(isInstitutionalEVMAccount(MOCK_ACCOUNT_INSTITUTIONAL)).toBe(true);
+    });
+
     it('should return false for regular EOA accounts', () => {
       expect(isInstitutionalEVMAccount(MOCK_ACCOUNT_EOA)).toBe(false);
     });
