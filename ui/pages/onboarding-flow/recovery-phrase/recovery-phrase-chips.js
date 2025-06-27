@@ -182,6 +182,7 @@ export default function RecoveryPhraseChips({
               />
             ) : (
               <Box
+                data-testid={`recovery-phrase-chip-${index}`}
                 className="recovery-phrase__text"
                 display={Display.Flex}
                 alignItems={AlignItems.center}
