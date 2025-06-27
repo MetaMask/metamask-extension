@@ -278,7 +278,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     requestedNamespacesWithoutWallet,
     supportedRequestedAccounts,
     supportedAccountsForRequestedNamespaces,
-    requestedCaipAccountIds,
   );
 
   const defaultCaipAccountAddresses = defaultAccounts.map(
