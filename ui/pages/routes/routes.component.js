@@ -91,6 +91,7 @@ import {
 import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
 import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
 import { MultichainAccountDetails } from '../multichain-accounts/account-details';
+import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -98,7 +99,6 @@ import {
   setTheme,
   showAppHeader,
 } from './utils';
-import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() =>
