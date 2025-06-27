@@ -7,7 +7,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 169;
+export const version = 171;
 
 /**
  * This migration migrates tokenNetworkFilter from preferences to enabledNetworkMap.

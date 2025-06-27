@@ -1,8 +1,8 @@
-import { migrate, version } from './169';
+import { migrate, version } from './170';
 
-const oldVersion = 168;
+const oldVersion = 170;
 
-describe('migration #169', () => {
+describe('migration #171', () => {
   beforeEach(() => {
     // Mock global.sentry for tests
     global.sentry = {
