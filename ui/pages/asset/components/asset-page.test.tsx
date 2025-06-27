@@ -65,6 +65,7 @@ describe('AssetPage', () => {
     },
     metamask: {
       ...mockMultichainNetworkState(),
+      domains: {},
       remoteFeatureFlags: {
         bridgeConfig: {
           support: true,

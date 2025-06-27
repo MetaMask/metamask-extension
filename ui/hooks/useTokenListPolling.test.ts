@@ -32,6 +32,7 @@ describe('useTokenListPolling', () => {
         useExternalServices: true,
         useTokenDetection: true,
         selectedNetworkClientId: 'selectedNetworkClientId',
+        domains: {},
         enabledNetworkMap: {
           eip155: {
             '0x1': true,
@@ -79,6 +80,7 @@ describe('useTokenListPolling', () => {
         completedOnboarding: false,
         useExternalServices: true,
         useTokenDetection: true,
+        domains: {},
         networkConfigurationsByChainId: {
           '0x1': {},
           '0x89': {},
@@ -104,6 +106,7 @@ describe('useTokenListPolling', () => {
         completedOnboarding: true,
         useExternalServices: true,
         useTokenDetection: true,
+        domains: {},
         networkConfigurationsByChainId: {
           '0x1': {},
           '0x89': {},
@@ -131,6 +134,7 @@ describe('useTokenListPolling', () => {
         useExternalServices: true,
         useTokenDetection: false,
         useTransactionSimulations: false,
+        domains: {},
         preferences: {
           petnamesEnabled: false,
         },
