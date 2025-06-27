@@ -5,6 +5,7 @@ import {
   getAllNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
+  isCaipAccountIdInPermittedAccountIds,
 } from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
@@ -265,40 +266,20 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     },
   );
 
-  // all requested accounts that are found in the wallet
-  const supportedRequestedAccounts = requestedCaipAccountIds.reduce(
-    (acc, account) => {
-      const supportedRequestedAccount =
-        supportedAccountsForRequestedNamespaces.find(({ caipAccountId }) => {
-          const {
-            chain: { namespace },
-          } = parseCaipAccountId(caipAccountId);
-          // EIP155 (EVM) addresses are not case sensitive
-          if (namespace === KnownCaipNamespace.Eip155) {
-            return isEqualCaseInsensitive(caipAccountId, account);
-          }
-          return caipAccountId === account;
-        });
-      if (supportedRequestedAccount) {
-        acc.push(supportedRequestedAccount);
-      }
-      return acc;
-    },
-    [] as MergedInternalAccountWithCaipAccountId[],
-  );
-
-  const evmAccountsRequested = getCaipAccountIdsFromCaip25CaveatValue(
-    requestedCaip25CaveatValue,
-  ).filter((acc) => acc.includes(KnownCaipNamespace.Eip155));
-
-  const isRequestingSpecificEvmAccounts = evmAccountsRequested.length > 0;
+  // All requested accounts that are found in the wallet
+  const supportedRequestedAccounts =
+    supportedAccountsForRequestedNamespaces.filter((account) =>
+      isCaipAccountIdInPermittedAccountIds(
+        account.caipAccountId,
+        requestedCaipAccountIds,
+      ),
+    );
 
   const defaultAccounts = getDefaultAccounts(
     requestedNamespacesWithoutWallet,
     supportedRequestedAccounts,
     supportedAccountsForRequestedNamespaces,
     requestedCaipAccountIds,
-    isRequestingSpecificEvmAccounts,
   );
 
   const defaultCaipAccountAddresses = defaultAccounts.map(

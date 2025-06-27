@@ -89,14 +89,12 @@ export function getCaip25PermissionsResponse(
  * @param supportedRequestedAccounts - The supported requested accounts.
  * @param allAccounts - All available accounts.
  * @param existingPermittedCaipAccountIds - The CAIP account IDs that are already permitted.
- * @param isRequestingSpecificEvmAccounts - Whether the user is requesting specific EVM accounts.
  */
 export function getDefaultAccounts(
   requestedNamespaces: CaipNamespace[],
   supportedRequestedAccounts: MergedInternalAccountWithCaipAccountId[],
   allAccounts: MergedInternalAccountWithCaipAccountId[],
   existingPermittedCaipAccountIds?: CaipAccountId[],
-  isRequestingSpecificEvmAccounts?: boolean,
 ): MergedInternalAccountWithCaipAccountId[] {
   const defaultAccounts: MergedInternalAccountWithCaipAccountId[] = [];
   const satisfiedNamespaces = new Set<CaipNamespace>();
@@ -129,7 +127,7 @@ export function getDefaultAccounts(
     (namespace) => !satisfiedNamespaces.has(namespace),
   );
 
-  if (unsatisfiedNamespaces.length > 0 && !isRequestingSpecificEvmAccounts) {
+  if (unsatisfiedNamespaces.length > 0) {
     const allAccountsSortedByLastSelected =
       sortSelectedInternalAccounts(allAccounts);
 
