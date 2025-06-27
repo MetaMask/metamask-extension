@@ -183,7 +183,7 @@ describe('useFirstTimeInteractionAlert', () => {
     ).toEqual([]);
   });
 
-  it('returns no alerts if token transfer recipient is verified with different case', () => {
+  it('returns no alerts if token transfer recipient is verified', () => {
     (useTrustSignal as jest.Mock).mockReturnValue({
       state: TrustSignalDisplayState.Verified,
     });
