@@ -61,8 +61,15 @@ export function useTransactionConfirm() {
       return;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    newTransactionMeta.batchTransactions = [(intentQuote as any).trade];
+    const { approval, trade } = intentQuote as never;
+
+    newTransactionMeta.batchTransactions = [];
+
+    if (approval) {
+      newTransactionMeta.batchTransactions.push(approval);
+    }
+
+    newTransactionMeta.batchTransactions.push(trade);
   }, [intentQuote, newTransactionMeta]);
 
   const onTransactionConfirm = useCallback(async () => {
