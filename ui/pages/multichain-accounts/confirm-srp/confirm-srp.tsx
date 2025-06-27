@@ -1,6 +1,6 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   Content,
   Footer,
@@ -29,8 +29,6 @@ import {
 import RecoveryPhraseChips from '../../onboarding-flow/recovery-phrase/recovery-phrase-chips';
 import ConfirmSrpModal from '../../onboarding-flow/recovery-phrase/confirm-srp-modal';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
-import { getHDEntropyIndex } from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ACCOUNT_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 
 type ConfirmSrpProps = {
