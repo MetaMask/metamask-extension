@@ -10,7 +10,7 @@ export const OAUTH_CONFIG: Record<string, Record<string, string>> = {
   main: {
     GOOGLE_AUTH_CONNECTION_ID: 'mm-google-main-extension',
     APPLE_AUTH_CONNECTION_ID: 'mm-apple-main-extension',
-    GOOGLE_GROUPED_AUTH_CONNECTION_ID: 'mm-google-mainx`',
+    GOOGLE_GROUPED_AUTH_CONNECTION_ID: 'mm-google-main',
     APPLE_GROUPED_AUTH_CONNECTION_ID: 'mm-apple-main',
     AUTH_SERVER_URL: 'https://auth-service.api.cx.metamask.io',
     WEB3AUTH_NETWORK: 'sapphire_mainnet',
@@ -18,7 +18,7 @@ export const OAUTH_CONFIG: Record<string, Record<string, string>> = {
   beta: {
     GOOGLE_AUTH_CONNECTION_ID: 'mm-google-main-extension',
     APPLE_AUTH_CONNECTION_ID: 'mm-apple-main-extension',
-    GOOGLE_GROUPED_AUTH_CONNECTION_ID: 'mm-google-mainx`',
+    GOOGLE_GROUPED_AUTH_CONNECTION_ID: 'mm-google-main',
     APPLE_GROUPED_AUTH_CONNECTION_ID: 'mm-apple-main',
     AUTH_SERVER_URL: 'https://auth-service.api.cx.metamask.io',
     WEB3AUTH_NETWORK: 'sapphire_mainnet',

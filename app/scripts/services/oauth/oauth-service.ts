@@ -114,7 +114,7 @@ export default class OAuthService {
 
   #loadConfig(): OAuthConfig {
     const { METAMASK_BUILD_TYPE } = process.env;
-    const buildType = METAMASK_BUILD_TYPE || 'development';
+    const buildType = METAMASK_BUILD_TYPE || 'main';
     const isDevOrTestEnv = getIsDevOrTestEnv();
 
     let config: Record<string, string> = {};
@@ -148,6 +148,7 @@ export default class OAuthService {
    */
   async #handleOAuthLogin(loginHandler: BaseLoginHandler) {
     const authUrl = await loginHandler.getAuthUrl();
+    console.log('authUrl', authUrl);
 
     // launch the web auth flow to get the Authorization Code from the social login provider
     const redirectUrlFromOAuth = await new Promise<string>(
