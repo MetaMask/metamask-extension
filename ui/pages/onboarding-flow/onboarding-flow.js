@@ -314,7 +314,7 @@ export default function OnboardingFlow() {
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
       </Box>
-      {pathname === ONBOARDING_COMPLETION_ROUTE && (
+      {/* {pathname === ONBOARDING_COMPLETION_ROUTE && (
         <Button
           className="onboarding-flow__twitter-button"
           type="link"
@@ -336,7 +336,7 @@ export default function OnboardingFlow() {
           <span>{t('followUsOnTwitter')}</span>
           <i className="fab fa-twitter onboarding-flow__twitter-button__icon" />
         </Button>
-      )}
+      )} */}
     </Box>
   );
 }
