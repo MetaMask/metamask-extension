@@ -911,9 +911,6 @@
   "bridgeTo": {
     "message": "Şuraya köprü:"
   },
-  "bridgeToChain": {
-    "message": "Şuraya köprü: $1"
-  },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Bu token'ı manuel olarak eklediyseniz köprü yapmadan önce paranıza gelebilecek risklerin farkında olduğunuzdan emin olun."
   },
@@ -4413,18 +4410,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Anladım"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Gizli Kurtarma İfadenizi her zaman güvende ve gizli bir yerde tutun"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Gizli Kurtarma İfadenizi yeniden yedeklemeniz mi gerekiyor?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Gizli Kurtarma İfadenizi asla başkasıyla paylaşmayın"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMask ekibi sizden asla Gizli Kurtarma İfadenizi istemeyecektir"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Gizli Kurtarma İfadeniz tüm hesaplarınızı kontrol eder."
   },
@@ -4795,16 +4780,8 @@
   "sendSelectSendAsset": {
     "message": "Gönderilecek varlıkları seçin"
   },
-  "sendSpecifiedTokens": {
-    "message": "$1 Gönder",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Bu düğmeye tıklandığında swap işleminiz anında başlatılır. İlerlemeden önce lütfen işlem ayrıntılarınızı inceleyin."
-  },
-  "sendTokenAsToken": {
-    "message": "$2 olarak $1 gönder",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "$1 gönderiliyor"
