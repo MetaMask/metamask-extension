@@ -285,54 +285,57 @@ export const BridgeInputGroup = ({
             {amountInFiat && formatCurrencyAmount(amountInFiat, currency, 2)}
           </Text>
         </Row>
-        <Text
-          display={Display.Flex}
-          gap={1}
-          variant={TextVariant.bodyMd}
-          color={
-            !isAmountReadOnly && isInsufficientBalance(balanceAmount)
-              ? TextColor.errorDefault
-              : TextColor.textAlternativeSoft
-          }
-          onClick={() => {
-            if (isAmountReadOnly && token && selectedChainId) {
-              handleAddressClick();
-            } else if (token && selectedChainId) {
-              handleCopy(token.address);
+        {!isAmountReadOnly && balanceAmount && token && (
+          <Text
+            display={Display.Flex}
+            gap={1}
+            variant={TextVariant.bodyMd}
+            color={
+              isInsufficientBalance(balanceAmount)
+                ? TextColor.errorDefault
+                : TextColor.textAlternativeSoft
             }
-          }}
-          as={isAmountReadOnly ? 'a' : 'p'}
-          style={{
-            cursor: isAmountReadOnly ? 'pointer' : 'default',
-            textDecoration: isAmountReadOnly ? 'underline' : 'none',
-          }}
-        >
-          {isAmountReadOnly &&
-            token &&
-            selectedChainId &&
-            (isNativeAddress(token.address)
+            style={{
+              cursor: 'default',
+              textDecoration: 'none',
+            }}
+          >
+            {formatTokenAmount(locale, balanceAmount.toString(), token.symbol)}
+            {onMaxButtonClick && !isNativeAddress(token.address) && (
+              <ButtonLink
+                variant={TextVariant.bodyMd}
+                onClick={() => onMaxButtonClick(balanceAmount.toFixed())}
+              >
+                {t('max')}
+              </ButtonLink>
+            )}
+          </Text>
+        )}
+        {isAmountReadOnly && token && selectedChainId && (
+          <Text
+            display={Display.Flex}
+            gap={1}
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternativeSoft}
+            onClick={() => {
+              handleAddressClick();
+            }}
+            as={'a'}
+            style={{
+              cursor: isAmountReadOnly ? 'pointer' : 'default',
+              textDecoration: isAmountReadOnly ? 'underline' : 'none',
+            }}
+          >
+            {isNativeAddress(token.address)
               ? undefined
               : shortenString(token.address, {
                   truncatedCharLimit: 11,
                   truncatedStartChars: 4,
                   truncatedEndChars: 4,
                   skipCharacterInEnd: false,
-                }))}
-          {!isAmountReadOnly && balanceAmount
-            ? formatTokenAmount(locale, balanceAmount.toString(), token?.symbol)
-            : undefined}
-          {onMaxButtonClick &&
-            token &&
-            !isNativeAddress(token.address) &&
-            balanceAmount && (
-              <ButtonLink
-                variant={TextVariant.bodyMd}
-                onClick={() => onMaxButtonClick(balanceAmount?.toFixed())}
-              >
-                {t('max')}
-              </ButtonLink>
-            )}
-        </Text>
+                })}
+          </Text>
+        )}
       </Row>
     </Column>
   );
