@@ -6941,6 +6941,9 @@
   "viewPrivateKey": {
     "message": "View private key"
   },
+  "viewSecretRecoveryPhrase": {
+    "message": "View Secret Recovery Phrase"
+  },
   "viewSolanaAccount": {
     "message": "View Solana account"
   },
@@ -6950,9 +6953,6 @@
   "viewinExplorer": {
     "message": "View $1 in explorer",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
-  },
-  "viewSecretRecoveryPhrase": {
-    "message": "View Secret Recovery Phrase"
   },
   "visitSite": {
     "message": "Visit site"
