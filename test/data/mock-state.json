@@ -2287,6 +2287,7 @@
     },
     "txHistory": {},
     "throttledOrigins": {},
+    "domains": {},
     "delegations": {}
   },
   "ramps": {

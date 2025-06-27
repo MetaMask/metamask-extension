@@ -78,13 +78,16 @@ export const SendDestStory = () => {
 
 function store() {
   const defaultMockState = { ...mockState };
+  const networkState = mockNetworkState(
+    { chainId: CHAIN_IDS.MAINNET },
+    { chainId: CHAIN_IDS.LINEA_MAINNET },
+    { chainId: CHAIN_IDS.GOERLI },
+  ) as any;
+
   defaultMockState.metamask = {
     ...defaultMockState.metamask,
-    ...(mockNetworkState(
-      { chainId: CHAIN_IDS.MAINNET },
-      { chainId: CHAIN_IDS.LINEA_MAINNET },
-      { chainId: CHAIN_IDS.GOERLI },
-    ) as any),
+    ...networkState,
+    domains: (defaultMockState.metamask as any).domains || {},
   };
   return configureStore(defaultMockState);
 }
