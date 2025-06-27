@@ -120,7 +120,7 @@ describe('AccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <MultichainAccountDetails address={MOCK_ACCOUNT_EOA.address} />
+          <MultichainAccountDetails />
         </MemoryRouter>,
         store,
       );
@@ -139,7 +139,7 @@ describe('AccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <MultichainAccountDetails address={MOCK_ACCOUNT_ERC4337.address} />
+          <MultichainAccountDetails />
         </MemoryRouter>,
         store,
       );
@@ -158,9 +158,7 @@ describe('AccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <MultichainAccountDetails
-            address={MOCK_ACCOUNT_SOLANA_MAINNET.address}
-          />
+          <MultichainAccountDetails />
         </MemoryRouter>,
         store,
       );
@@ -176,7 +174,7 @@ describe('AccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <MultichainAccountDetails address={''} />
+          <MultichainAccountDetails />
         </MemoryRouter>,
         store,
       );

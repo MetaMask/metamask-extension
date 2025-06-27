@@ -498,8 +498,6 @@ export default class Routes extends Component {
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
-    console.log(location);
-
     const loadMessage =
       loadingMessage || isNetworkLoading
         ? getConnectingLabel(loadingMessage, this.props, this.context)

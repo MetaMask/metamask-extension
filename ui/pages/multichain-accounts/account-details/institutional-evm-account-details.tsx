@@ -1,16 +1,15 @@
 import React from 'react';
-import { BaseAccountDetails } from '../base-account-details/base-account-details';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { SmartContractAccountToggleSection } from '../../../components/multichain-accounts/smart-contract-account-toggle-section';
+import { BaseAccountDetails } from '../base-account-details/base-account-details';
 
 type InstitutionalEVMAccountDetailsProps = {
   address: string;
   account: InternalAccount;
 };
 
-export const InstitutionalEVMAccountDetails = ({ address, account }: InstitutionalEVMAccountDetailsProps) => {
-
-  return (
-    <BaseAccountDetails address={address} account={account} />
-  );
+export const InstitutionalEVMAccountDetails = ({
+  address,
+  account,
+}: InstitutionalEVMAccountDetailsProps) => {
+  return <BaseAccountDetails address={address} account={account} />;
 };

@@ -12,11 +12,15 @@ export type AccountTypeCategory =
 
 /**
  * Determines the account type category based on the account's type and keyring information
+ *
+ * @param account
  */
 export const getAccountTypeCategory = (
   account: InternalAccount,
 ): AccountTypeCategory => {
-  if (!account) return 'unknown';
+  if (!account) {
+    return 'unknown';
+  }
 
   const { type, metadata } = account;
   const keyringType = metadata?.keyring?.type as KeyringTypes;
@@ -64,6 +68,8 @@ export const getAccountTypeCategory = (
 
 /**
  * Checks if an account is an EVM account (EOA or ERC-4337)
+ *
+ * @param account
  */
 export const isEVMAccount = (account: InternalAccount): boolean => {
   return getAccountTypeCategory(account) === 'evm';
@@ -71,6 +77,8 @@ export const isEVMAccount = (account: InternalAccount): boolean => {
 
 /**
  * Checks if an account is a Solana account
+ *
+ * @param account
  */
 export const isSolanaAccount = (account: InternalAccount): boolean => {
   return getAccountTypeCategory(account) === 'solana';
@@ -78,6 +86,8 @@ export const isSolanaAccount = (account: InternalAccount): boolean => {
 
 /**
  * Checks if an account is a hardware wallet account
+ *
+ * @param account
  */
 export const isHardwareAccount = (account: InternalAccount): boolean => {
   return getAccountTypeCategory(account) === 'hardware';
@@ -85,6 +95,8 @@ export const isHardwareAccount = (account: InternalAccount): boolean => {
 
 /**
  * Checks if an account is a private key account
+ *
+ * @param account
  */
 export const isPrivateKeyAccount = (account: InternalAccount): boolean => {
   return getAccountTypeCategory(account) === 'private-key';
@@ -92,6 +104,8 @@ export const isPrivateKeyAccount = (account: InternalAccount): boolean => {
 
 /**
  * Checks if an account is an institutional EVM account
+ *
+ * @param account
  */
 export const isInstitutionalEVMAccount = (
   account: InternalAccount,

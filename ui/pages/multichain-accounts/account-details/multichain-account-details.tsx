@@ -34,7 +34,9 @@ export const MultichainAccountDetails = () => {
         return <PrivateKeyAccountDetails address={address} account={account} />;
 
       case 'institutional-evm':
-        return <InstitutionalEVMAccountDetails address={address} account={account} />;
+        return (
+          <InstitutionalEVMAccountDetails address={address} account={account} />
+        );
 
       default:
         return null;
