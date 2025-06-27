@@ -167,7 +167,7 @@ const Footer = () => {
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
 
-  const { simulationData } = currentConfirmation;
+  const simulationData = currentConfirmation?.simulationData;
 
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);

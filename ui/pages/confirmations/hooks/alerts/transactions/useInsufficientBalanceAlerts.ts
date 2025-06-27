@@ -70,7 +70,7 @@ export function useInsufficientBalanceAlerts({
     balance,
   });
 
-  const hasSimulationFinished = isSimulationEnabled && Boolean(simulationData);
+  const hasSimulationFinished = !isSimulationEnabled || Boolean(simulationData);
 
   const showAlert =
     insufficientBalance &&
