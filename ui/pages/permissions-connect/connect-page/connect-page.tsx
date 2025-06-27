@@ -287,11 +287,18 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     [] as MergedInternalAccountWithCaipAccountId[],
   );
 
+  const evmAccountsRequested = getCaipAccountIdsFromCaip25CaveatValue(
+    requestedCaip25CaveatValue,
+  ).filter((acc) => acc.includes(KnownCaipNamespace.Eip155));
+
+  const isRequestingSpecificEvmAccounts = evmAccountsRequested.length > 0;
+
   const defaultAccounts = getDefaultAccounts(
     requestedNamespacesWithoutWallet,
     supportedRequestedAccounts,
     supportedAccountsForRequestedNamespaces,
     requestedCaipAccountIds,
+    isRequestingSpecificEvmAccounts,
   );
 
   const defaultCaipAccountAddresses = defaultAccounts.map(
