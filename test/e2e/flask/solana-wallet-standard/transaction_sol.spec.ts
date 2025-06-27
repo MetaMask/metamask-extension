@@ -129,7 +129,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
             await driver.clickElement({ text: 'Connect', tag: 'button' });
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            // Look for the target chainto be set to Devnet
+            // Look for the target chain to be set to Devnet
             const permission = await driver.findElement(
               By.xpath("//p[contains(text(), 'Solana Devnet')]"),
             );
