@@ -9,7 +9,7 @@ import {
   type NetworkConfiguration as InternalNetworkConfiguration,
   NetworkConfiguration,
 } from '@metamask/network-controller';
-<<<<<<< HEAD
+
 import { createSelector } from 'reselect';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import type { CaipChainId } from '@metamask/utils';
@@ -19,14 +19,8 @@ import {
 } from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
 import { SOLANA_TEST_CHAINS } from '../../constants/multichain/networks';
-=======
-import { NetworkStatus } from '../../constants/network';
-<<<<<<< HEAD
->>>>>>> 6fbb51cfef (Switch to using dapp-selected-chain for global network picker when available)
-import { createDeepEqualSelector } from './util';
-=======
->>>>>>> 7e99405b04 (lint fix)
 import { ORIGIN_METAMASK } from '../../constants/app';
+
 import { createDeepEqualSelector } from './util';
 
 export type NetworkState = {
