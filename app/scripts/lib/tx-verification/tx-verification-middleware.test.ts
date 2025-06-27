@@ -1,4 +1,5 @@
 import { NetworkController } from '@metamask/network-controller';
+import { SelectedNetworkController } from '@metamask/selected-network-controller';
 import { JsonRpcParams, jsonrpc2, Hex } from '@metamask/utils';
 import {
   EXPERIENCES_TYPE,
@@ -12,6 +13,9 @@ import {
 
 const getMockNetworkController = (chainId: `0x${string}` = '0x1') =>
   ({ state: mockNetworkState({ chainId }) } as NetworkController);
+
+const getMockSelectedNetworkController = () =>
+  ({ state: { domains: {} } } as SelectedNetworkController);
 
 const mockTrustedSigners: Partial<Record<EXPERIENCES_TYPE, Hex>> = {
   [EXPERIENCES_TYPE.METAMASK_BRIDGE]:
@@ -44,6 +48,8 @@ describe('tx verification middleware', () => {
   it('ignores methods other than eth_sendTransaction', () => {
     const middleware = createTxVerificationMiddleware(
       getMockNetworkController(),
+        getMockSelectedNetworkController(),
+      getMockSelectedNetworkController(),
       mockTrustedSigners,
     );
     const { req, res, next, end } = getMiddlewareParams('foo');
@@ -80,6 +86,7 @@ describe('tx verification middleware', () => {
     (_: string, invalidParams: JsonRpcParams) => {
       const middleware = createTxVerificationMiddleware(
         getMockNetworkController(),
+        getMockSelectedNetworkController(),
         mockTrustedSigners,
       );
 
@@ -100,6 +107,7 @@ describe('tx verification middleware', () => {
     (chainId: `0x${string}`) => {
       const middleware = createTxVerificationMiddleware(
         getMockNetworkController(),
+        getMockSelectedNetworkController(),
         mockTrustedSigners,
       );
 
@@ -120,6 +128,7 @@ describe('tx verification middleware', () => {
     (chainId: `0x${string}`) => {
       const middleware = createTxVerificationMiddleware(
         getMockNetworkController(),
+        getMockSelectedNetworkController(),
         mockTrustedSigners,
       );
 
@@ -137,6 +146,7 @@ describe('tx verification middleware', () => {
   it('calls next() if reverse address mapping look up is undefined', () => {
     const middleware = createTxVerificationMiddleware(
       getMockNetworkController(),
+        getMockSelectedNetworkController(),
       mockTrustedSigners,
     );
 
@@ -153,6 +163,7 @@ describe('tx verification middleware', () => {
   it('calls next() if chainId for `to` address does not match', () => {
     const middleware = createTxVerificationMiddleware(
       getMockNetworkController(),
+        getMockSelectedNetworkController(),
       mockTrustedSigners,
     );
 
@@ -169,6 +180,7 @@ describe('tx verification middleware', () => {
   it('calls next() if experience type for `to` address is not an experience to verify', () => {
     const middleware = createTxVerificationMiddleware(
       getMockNetworkController(),
+        getMockSelectedNetworkController(),
       mockTrustedSigners,
     );
 
@@ -185,6 +197,7 @@ describe('tx verification middleware', () => {
   it('passes through a valid bridge transaction', () => {
     const middleware = createTxVerificationMiddleware(
       getMockNetworkController(),
+        getMockSelectedNetworkController(),
       mockTrustedSigners,
     );
 
@@ -201,6 +214,7 @@ describe('tx verification middleware', () => {
   it('rejects modified bridge transactions', () => {
     const middleware = createTxVerificationMiddleware(
       getMockNetworkController(),
+        getMockSelectedNetworkController(),
       mockTrustedSigners,
     );
 

@@ -67,6 +67,7 @@ const mockProps = {
 const mockState = {
   metamask: {
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+    domains: {},
     internalAccounts: {
       accounts: {
         accountId: {

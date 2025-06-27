@@ -10,6 +10,7 @@ describe('CancelTransactionGasFee Component', () => {
   const defaultState = {
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      domains: {},
       currencyRates: {},
       preferences: {},
       completedOnboarding: true,
