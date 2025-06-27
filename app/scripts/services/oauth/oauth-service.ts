@@ -7,7 +7,8 @@ import {
   MOCK_AUTH_CONNECTION_ID,
   MOCK_GROUPED_AUTH_CONNECTION_ID,
 } from '../../../../test/e2e/constants';
-import { getIsDevOrTestEnv } from '../../../../shared/modules/environment';
+import { isProduction } from '../../../../shared/modules/environment';
+import { ENVIRONMENT } from '../../../../development/build/constants';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import type {
@@ -113,18 +114,14 @@ export default class OAuthService {
   }
 
   #loadConfig(): OAuthConfig {
-    const { METAMASK_BUILD_TYPE } = process.env;
-    const buildType = METAMASK_BUILD_TYPE || 'main';
-    const isDevOrTestEnv = getIsDevOrTestEnv();
-
-    let config: Record<string, string> = {};
-    if (isDevOrTestEnv) {
-      config = OAUTH_CONFIG.development;
-    } else {
-      // if the build type is not found, use the main config
-      config = OAUTH_CONFIG[buildType] || OAUTH_CONFIG.main;
+    let configKey = 'development';
+    if (process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.OTHER) {
+      configKey = 'development';
+    } else if (isProduction()) {
+      configKey = process.env.METAMASK_BUILD_TYPE || 'main';
     }
 
+    const config = OAUTH_CONFIG[configKey] || OAUTH_CONFIG.main;
     return {
       authServerUrl: config.AUTH_SERVER_URL,
       web3AuthNetwork: config.WEB3AUTH_NETWORK as Web3AuthNetwork,
@@ -148,7 +145,6 @@ export default class OAuthService {
    */
   async #handleOAuthLogin(loginHandler: BaseLoginHandler) {
     const authUrl = await loginHandler.getAuthUrl();
-    console.log('authUrl', authUrl);
 
     // launch the web auth flow to get the Authorization Code from the social login provider
     const redirectUrlFromOAuth = await new Promise<string>(
