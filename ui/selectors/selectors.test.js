@@ -42,6 +42,22 @@ jest.mock('../../shared/modules/network.utils', () => {
   };
 });
 
+jest.mock('./multichain/networks', () => ({
+  ...jest.requireActual('./multichain/networks'),
+  getIsEvmMultichainNetworkSelected: jest.fn(
+    (state) => state.metamask.isEvmSelected,
+  ),
+  getSelectedMultichainNetworkChainId: jest.fn((state) => {
+    if (state.metamask.isEvmSelected) {
+      const chainId = state.metamask.networkConfigurationsByChainId
+        ? Object.keys(state.metamask.networkConfigurationsByChainId)[0]
+        : '0x1';
+      return `eip155:${parseInt(chainId, 16)}`;
+    }
+    return state.metamask.selectedMultichainNetworkChainId;
+  }),
+}));
+
 const modifyStateWithHWKeyring = (keyring) => {
   const modifiedState = deepClone(mockState);
   modifiedState.metamask.internalAccounts.accounts[
