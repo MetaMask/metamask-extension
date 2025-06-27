@@ -37,7 +37,10 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { toggleAccountMenu } from '../../../store/actions';
+import {
+  setShowSupportDataConsentModal,
+  toggleAccountMenu,
+} from '../../../store/actions';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenu } from '../global-menu';
@@ -63,6 +66,7 @@ import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 import { TraceName, trace } from '../../../../shared/lib/trace';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
+import { getShowSupportDataConsentModal } from '../../../ducks/app/app';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
@@ -106,8 +110,9 @@ export const AppHeaderUnlockedContent = ({
     expireClipboard: false,
   });
 
-  const [isSupportDataConsentModalOpen, setIsSupportDataConsentModalOpen] =
-    useState(false);
+  const showSupportDataConsentModal = useSelector(
+    getShowSupportDataConsentModal,
+  );
 
   // Reset copy state when a switching accounts
   useEffect(() => {
@@ -357,14 +362,11 @@ export const AppHeaderUnlockedContent = ({
           anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
           closeMenu={() => setAccountOptionsMenuOpen(false)}
-          setIsSupportDataConsentModalOpen={setIsSupportDataConsentModalOpen}
         />
-        {isSupportDataConsentModalOpen && (
-          <VisitSupportDataConsentModal
-            isOpen={isSupportDataConsentModalOpen}
-            onClose={() => setIsSupportDataConsentModalOpen(false)}
-          />
-        )}
+        <VisitSupportDataConsentModal
+          isOpen={showSupportDataConsentModal}
+          onClose={() => dispatch(setShowSupportDataConsentModal(false))}
+        />
       </Box>
     </>
   );

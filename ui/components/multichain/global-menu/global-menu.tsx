@@ -16,6 +16,7 @@ import {
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
+  setShowSupportDataConsentModal,
   showConfirmTurnOnMetamaskNotifications,
   toggleNetworkMenu,
 } from '../../../store/actions';
@@ -73,16 +74,12 @@ type GlobalMenuProps = {
   closeMenu: () => void;
   anchorElement: HTMLElement | null;
   isOpen: boolean;
-  setIsSupportDataConsentModalOpen: React.Dispatch<
-    React.SetStateAction<boolean>
-  >;
 };
 
 export const GlobalMenu = ({
   closeMenu,
   anchorElement,
   isOpen,
-  setIsSupportDataConsentModalOpen,
 }: GlobalMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -315,7 +312,7 @@ export const GlobalMenu = ({
       <MenuItem
         iconName={IconName.MessageQuestion}
         onClick={() => {
-          setIsSupportDataConsentModalOpen(true);
+          dispatch(setShowSupportDataConsentModal(true));
           trackEvent(
             {
               category: MetaMetricsEventCategory.Home,
