@@ -231,6 +231,7 @@ class ActivityListPage {
     expectedAmount: string = '-1 ETH',
     expectedNumber: number = 1,
   ): Promise<void> {
+    await this.driver.waitForSelector(this.transactionAmountsInActivity);
     const transactionAmounts = await this.driver.findElements(
       this.transactionAmountsInActivity,
     );
@@ -314,6 +315,20 @@ class ActivityListPage {
   async check_waitForTransactionStatus(status: 'confirmed' | 'cancelled') {
     await this.driver.waitForSelector(`.transaction-status-label--${status}`, {
       timeout: 5000,
+    });
+  }
+
+  /**
+   * Checks for the presence of a transaction activity item in the activity list by matching the provided text.
+   *
+   * @param txnText - The text to search for within the transaction activity list. (e.g., "Swap SOL to USDC")
+   * @returns A promise that resolves when the transaction activity with the specified text is found.
+   */
+  async check_transactionActivityByText(txnText: string): Promise<void> {
+    console.log(`Check transaction activity with text: ${txnText}`);
+    await this.driver.waitForSelector({
+      text: txnText,
+      css: this.activityListAction,
     });
   }
 }

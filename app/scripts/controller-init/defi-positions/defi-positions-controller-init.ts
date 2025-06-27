@@ -9,7 +9,7 @@ export const DeFiPositionsControllerInit: ControllerInitFunction<
   DeFiPositionsController,
   DeFiPositionsControllerMessenger,
   DeFiPositionsControllerInitMessenger
-> = ({ initMessenger, controllerMessenger, getController }) => {
+> = ({ initMessenger, controllerMessenger, getController, trackEvent }) => {
   const getPreferencesController = () => getController('PreferencesController');
 
   const controller = new DeFiPositionsController({
@@ -26,6 +26,7 @@ export const DeFiPositionsControllerInit: ControllerInitFunction<
 
       return useExternalServices && featureFlagForDeFi;
     },
+    trackEvent,
   });
 
   return {

@@ -71,6 +71,7 @@ import { getAccountLabels } from '../../../helpers/utils/accounts';
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 
 import { AccountNetworkIndicator } from '../account-network-indicator';
+import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../../../shared/constants/multichain/assets';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -93,6 +94,8 @@ const AccountListItem = ({
   shouldScrollToWhenSelected = true,
   showConnectedStatus = true,
   privacyMode = false,
+  showAccountLabels = true,
+  showSelectionIndicator = true,
 }) => {
   const t = useI18nContext();
 
@@ -100,9 +103,9 @@ const AccountListItem = ({
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
-
   const snapMetadata = useSelector(getSnapsMetadata);
   const keyrings = useSelector(getMetaMaskKeyrings);
+
   const accountLabels = useMemo(
     () =>
       getAccountLabels(
@@ -142,7 +145,9 @@ const AccountListItem = ({
   const multichainBalances = useSelector(getMultichainBalances);
   const accountMultichainBalances = multichainBalances?.[account.id];
   const accountMultichainNativeBalance =
-    accountMultichainBalances?.[`${multichainChainId}/slip44:501`]?.amount;
+    accountMultichainBalances?.[
+      `${MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainChainId]}`
+    ]?.amount;
   // cross chain agg balance
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -224,11 +229,12 @@ const AccountListItem = ({
           {startAccessory}
         </Box>
       ) : null}
-      {selected && (
+      {selected && showSelectionIndicator && (
         <Box
           className="multichain-account-list-item__selected-indicator"
           borderRadius={BorderRadius.pill}
           backgroundColor={Color.primaryDefault}
+          data-testid="account-list-item-selected-indicator"
         />
       )}
 
@@ -361,7 +367,7 @@ const AccountListItem = ({
             <AccountNetworkIndicator scopes={account.scopes} />
           </Box>
         </Box>
-        {accountLabels.length > 0 ? (
+        {showAccountLabels && accountLabels.length > 0 ? (
           <Box flexDirection={FlexDirection.Row}>
             {accountLabels.map(({ label, icon }) => {
               return (
@@ -522,6 +528,14 @@ AccountListItem.propTypes = {
    * Determines if the connected status should be shown
    */
   showConnectedStatus: PropTypes.bool,
+  /**
+   * Determines if account labels should be shown
+   */
+  showAccountLabels: PropTypes.bool,
+  /**
+   * Determines if left dark blue selection indicator is displayed or not
+   */
+  showSelectionIndicator: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

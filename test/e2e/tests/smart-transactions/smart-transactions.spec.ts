@@ -27,12 +27,17 @@ async function withFixturesForSmartTransactions(
     {
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
-        .withPreferencesControllerSmartTransactionsOptedIn()
         .withNetworkControllerOnMainnet()
+        .withEnabledNetworks({
+          eip155: {
+            '0x1': true,
+          },
+        })
         .build(),
       title,
       localNodeOptions: {
         hardfork: 'london',
+        chainId: '1',
       },
       testSpecificMock,
       dapp: true,

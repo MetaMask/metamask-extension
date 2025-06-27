@@ -19,10 +19,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
-import { getSelectedAccount } from '../../../selectors';
+import { getSelectedAccount, getUseExternalServices } from '../../../selectors';
 ///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  BASIC_FUNCTIONALITY_SLIDE,
   getSweepstakesCampaignActive,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
@@ -51,6 +52,7 @@ export const Carousel = React.forwardRef(
     const [selectedIndex, setSelectedIndex] = useState(0);
     const t = useI18nContext();
     const trackEvent = useContext(MetaMetricsContext);
+    const useExternalServices = useSelector(getUseExternalServices);
 
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     const selectedAccount = useSelector(getSelectedAccount);
@@ -66,10 +68,28 @@ export const Carousel = React.forwardRef(
           return false;
         }
         ///: END:ONLY_INCLUDE_IF
-
+        if (slide.id === BASIC_FUNCTIONALITY_SLIDE.id && useExternalServices) {
+          return false;
+        }
         return !slide.dismissed || slide.undismissable;
       })
       .sort((a, b) => {
+        // Prioritize Contentful Priority slides
+        if (a.priorityPlacement === true) {
+          return -1;
+        }
+        if (b.priorityPlacement === true) {
+          return 1;
+        }
+
+        if (!useExternalServices) {
+          if (a.id === BASIC_FUNCTIONALITY_SLIDE.id) {
+            return -1;
+          }
+          if (b.id === BASIC_FUNCTIONALITY_SLIDE.id) {
+            return 1;
+          }
+        }
         ///: BEGIN:ONLY_INCLUDE_IF(solana)
         // prioritize Solana slide
         if (a.id === SOLANA_SLIDE.id) {

@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const { Browser } = require('selenium-webdriver');
 const { toEvmCaipChainId } = require('@metamask/multichain-network-controller');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
-const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -116,17 +115,10 @@ async function switchToDialogPopoverValidateDetailsRedesign(
 }
 
 async function rejectTransactionRedesign(driver) {
-  if (isManifestV3) {
-    await driver.clickElement({
-      tag: 'button',
-      text: 'Cancel',
-    });
-  } else {
-    await driver.clickElementAndWaitForWindowToClose({
-      tag: 'button',
-      text: 'Cancel',
-    });
-  }
+  await driver.clickElementAndWaitForWindowToClose({
+    tag: 'button',
+    text: 'Cancel',
+  });
 }
 
 async function confirmTransaction(driver) {
@@ -155,14 +147,14 @@ async function validateBalanceAndActivity(
     text: expectedBalance,
   });
 
-  // Ensure there's an activity entry of "Send" and "Confirmed"
+  // Ensure there's an activity entry of "Sent" and "Confirmed"
   if (expectedActivityEntries) {
     await driver.clickElement('[data-testid="account-overview__activity-tab"]');
     assert.equal(
       (
         await driver.findElements({
           css: '[data-testid="activity-list-item-action"]',
-          text: 'Send',
+          text: 'Sent',
         })
       ).length,
       expectedActivityEntries,

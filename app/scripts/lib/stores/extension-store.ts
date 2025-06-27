@@ -48,4 +48,18 @@ export default class ExtensionStore implements BaseStore {
     const { local } = browser.storage;
     return await local.set({ data, meta });
   }
+
+  /**
+   * Removes 'data' and 'meta' keys and values from  `local` extension storage
+   * area.
+   */
+  async reset(): Promise<void> {
+    if (!this.isSupported) {
+      throw new Error(
+        'Metamask- cannot persist state to local store as this browser does not support this action',
+      );
+    }
+    const { local } = browser.storage;
+    return await local.remove(['data', 'meta']);
+  }
 }

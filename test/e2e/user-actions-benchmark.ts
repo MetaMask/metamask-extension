@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { Mockttp } from 'mockttp';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { exitWithError } from '../../development/lib/exit-with-error';
@@ -8,13 +9,27 @@ import { Driver } from './webdriver/driver';
 import FixtureBuilder from './fixture-builder';
 import HomePage from './page-objects/pages/home/homepage';
 import BridgeQuotePage from './page-objects/pages/bridge/quote-page';
-import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './tests/bridge/constants';
+import {
+  DEFAULT_BRIDGE_FEATURE_FLAGS,
+  MOCK_TOKENS_ETHEREUM,
+} from './tests/bridge/constants';
 import {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   unlockWallet,
   withFixtures,
 } from './helpers';
+
+async function mockTokensEthereum(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(`https://token.api.cx.metamask.io/tokens/1`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_TOKENS_ETHEREUM,
+      };
+    });
+}
 
 async function loadNewAccount(): Promise<number> {
   let loadingTimes: number = 0;
@@ -109,12 +124,15 @@ async function bridgeUserActions(): Promise<{
   let loadAssetPicker: number = 0;
   let searchToken: number = 0;
 
-  const fixtureBuilder = new FixtureBuilder().withNetworkControllerOnMainnet();
+  const fixtureBuilder = new FixtureBuilder()
+    .withNetworkControllerOnMainnet()
+    .withEnabledNetworks({ eip155: { '0x1': true } });
 
   await withFixtures(
     {
       fixtures: fixtureBuilder.build(),
       disableServerMochaToBackground: true,
+      testSpecificMock: mockTokensEthereum,
       title: 'benchmark-userActions-bridgeUserActions',
       manifestFlags: {
         remoteFeatureFlags: {

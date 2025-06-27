@@ -48,6 +48,7 @@ import {
   ModalOverlay,
 } from '../../components/component-library';
 import MultiRpcEditModal from '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal';
+import UpdateModal from '../../components/app/update-modal/update-modal';
 import {
   RESTORE_VAULT_ROUTE,
   CONNECTED_ROUTE,
@@ -104,16 +105,6 @@ export default class Home extends PureComponent {
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     showTermsOfUsePopup: PropTypes.bool.isRequired,
-    seedPhraseBackedUp: (props) => {
-      if (
-        props.seedPhraseBackedUp !== null &&
-        typeof props.seedPhraseBackedUp !== 'boolean'
-      ) {
-        throw new Error(
-          `seedPhraseBackedUp is required to be null or boolean. Received ${props.seedPhraseBackedUp}`,
-        );
-      }
-    },
     firstTimeFlowType: PropTypes.string,
     completedOnboarding: PropTypes.bool,
     showWhatsNewPopup: PropTypes.bool.isRequired,
@@ -121,6 +112,7 @@ export default class Home extends PureComponent {
     announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
     showMultiRpcModal: PropTypes.bool.isRequired,
+    showUpdateModal: PropTypes.bool.isRequired,
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
     // This prop is used in the `shouldCloseNotificationPopup` function
@@ -782,7 +774,6 @@ export default class Home extends PureComponent {
       dataCollectionForMarketing,
       connectedStatusPopoverHasBeenShown,
       isPopup,
-      seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       showTermsOfUsePopup,
       showWhatsNewPopup,
@@ -793,6 +784,7 @@ export default class Home extends PureComponent {
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
       showMultiRpcModal,
+      showUpdateModal,
     } = this.props;
 
     if (forgottenPassword) {
@@ -805,14 +797,25 @@ export default class Home extends PureComponent {
       completedOnboarding &&
       (!onboardedInThisUISession ||
         firstTimeFlowType === FirstTimeFlowType.import) &&
-      !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
 
     const showWhatsNew =
-      canSeeModals && announcementsToShow && showWhatsNewPopup;
+      canSeeModals &&
+      announcementsToShow &&
+      showWhatsNewPopup &&
+      !process.env.IN_TEST;
 
     const showMultiRpcEditModal =
-      canSeeModals && showMultiRpcModal && !showWhatsNew;
+      canSeeModals &&
+      showMultiRpcModal &&
+      !showWhatsNew &&
+      !process.env.IN_TEST;
+
+    const displayUpdateModal =
+      canSeeModals &&
+      showUpdateModal &&
+      !showWhatsNew &&
+      !showMultiRpcEditModal;
 
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
@@ -831,10 +834,10 @@ export default class Home extends PureComponent {
             ? this.renderOnboardingPopover()
             : null}
           {showMultiRpcEditModal && <MultiRpcEditModal />}
+          {displayUpdateModal && <UpdateModal />}
           {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
-              hasBackedUp={seedPhraseBackedUp}
               onConfirm={this.onRecoveryPhraseReminderClose}
             />
           ) : null}

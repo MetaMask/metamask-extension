@@ -5,6 +5,7 @@ import {
   FlexDirection,
   FlexWrap,
   IconColor,
+  TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
@@ -27,12 +28,14 @@ import { IndividualFiatDisplay } from './fiat-display';
  * @param props.label
  * @param props.showFiat
  * @param props.balanceChange
+ * @param props.labelColor
  */
 export const BalanceChangeRow: React.FC<{
   label?: string;
   showFiat?: boolean;
   balanceChange: BalanceChange;
-}> = ({ label, showFiat, balanceChange }) => {
+  labelColor?: TextColor;
+}> = ({ label, showFiat, balanceChange, labelColor }) => {
   const t = useI18nContext();
 
   const {
@@ -55,7 +58,11 @@ export const BalanceChangeRow: React.FC<{
       flexWrap={FlexWrap.Wrap}
     >
       {label && (
-        <Text style={{ whiteSpace: 'nowrap' }} variant={TextVariant.bodyMd}>
+        <Text
+          style={{ whiteSpace: 'nowrap' }}
+          color={labelColor}
+          variant={TextVariant.bodyMd}
+        >
           {label}
         </Text>
       )}

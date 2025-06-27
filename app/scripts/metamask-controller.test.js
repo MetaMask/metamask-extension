@@ -16,6 +16,7 @@ import {
 import {
   BtcAccountType,
   BtcMethod,
+  BtcScope,
   EthAccountType,
   SolScope,
 } from '@metamask/keyring-api';
@@ -58,7 +59,7 @@ import {
   EndowmentTypes,
   RestrictedEthMethods,
 } from '../../shared/constants/permissions';
-import { deferredPromise } from './lib/util';
+import * as NetworkConstantsModule from '../../shared/constants/network';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import MetaMaskController from './metamask-controller';
 import { PermissionNames } from './controllers/permissions';
@@ -236,20 +237,6 @@ const TEST_ADDRESS_3 = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
 const TEST_SEED_ALT =
   'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
-const TEST_INTERNAL_ACCOUNT = {
-  id: '2d47e693-26c2-47cb-b374-6151199bbe3f',
-  address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-  metadata: {
-    name: 'Account 1',
-    keyring: {
-      type: 'HD Key Tree',
-    },
-    lastSelected: 0,
-  },
-  options: {},
-  methods: ETH_EOA_METHODS,
-  type: EthAccountType.Eoa,
-};
 
 const ALT_MAINNET_RPC_URL = 'http://localhost:8545';
 const POLYGON_RPC_URL = 'https://polygon.llamarpc.com';
@@ -388,10 +375,6 @@ describe('MetaMaskController', () => {
 
     beforeEach(() => {
       jest.spyOn(MetaMaskController.prototype, 'resetStates');
-
-      jest
-        .spyOn(TransactionController.prototype, 'updateIncomingTransactions')
-        .mockReturnValue();
 
       jest
         .spyOn(
@@ -2331,9 +2314,9 @@ describe('MetaMaskController', () => {
           data: { id: 2, method: 'backToSafetyPhishingWarning', params: [] },
         };
 
-        const { promise, resolve } = deferredPromise();
+        const { promise, resolve } = Promise.withResolvers();
         const { promise: promiseStream, resolve: resolveStream } =
-          deferredPromise();
+          Promise.withResolvers();
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== 'metamask-phishing-safelist') {
             cb();
@@ -2403,9 +2386,9 @@ describe('MetaMaskController', () => {
           },
         };
 
-        const { promise, resolve } = deferredPromise();
+        const { promise, resolve } = Promise.withResolvers();
         const { promise: promiseStream, resolve: resolveStream } =
-          deferredPromise();
+          Promise.withResolvers();
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== METAMASK_COOKIE_HANDLER) {
             cb();
@@ -2454,7 +2437,7 @@ describe('MetaMaskController', () => {
           tab: {},
         };
 
-        const { promise, resolve } = deferredPromise();
+        const { promise, resolve } = Promise.withResolvers();
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== 'phishing') {
             cb();
@@ -2490,7 +2473,7 @@ describe('MetaMaskController', () => {
           tab: {},
         };
 
-        const { resolve } = deferredPromise();
+        const { resolve } = Promise.withResolvers();
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== 'phishing') {
             cb();
@@ -2814,7 +2797,7 @@ describe('MetaMaskController', () => {
           url: 'http://mycrypto.com',
           tab: {},
         };
-        const { promise, resolve } = deferredPromise();
+        const { promise, resolve } = Promise.withResolvers();
         const streamTest = createThroughStream((chunk, _, cb) => {
           expect(chunk.name).toStrictEqual('controller');
           resolve();
@@ -2851,9 +2834,9 @@ describe('MetaMaskController', () => {
         const {
           promise: onFinishedCallbackPromise,
           resolve: onFinishedCallbackResolve,
-        } = deferredPromise();
+        } = Promise.withResolvers();
         const { promise: onStreamEndPromise, resolve: onStreamEndResolve } =
-          deferredPromise();
+          Promise.withResolvers();
         const testStream = createThroughStream((chunk, _, cb) => {
           expect(chunk.name).toStrictEqual('controller');
           onStreamEndResolve();
@@ -3587,65 +3570,6 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('incoming transactions', () => {
-      it('starts incoming transaction polling if useExternalServices is enabled for that chainId', async () => {
-        expect(
-          TransactionController.prototype.startIncomingTransactionPolling,
-        ).not.toHaveBeenCalled();
-
-        await simulatePreferencesChange({
-          useExternalServices: true,
-        });
-
-        expect(
-          TransactionController.prototype.startIncomingTransactionPolling,
-        ).toHaveBeenCalledTimes(1);
-      });
-
-      it('stops incoming transaction polling if useExternalServices is disabled for that chainId', async () => {
-        expect(
-          TransactionController.prototype.stopIncomingTransactionPolling,
-        ).not.toHaveBeenCalled();
-
-        await simulatePreferencesChange({
-          useExternalServices: false,
-        });
-
-        expect(
-          TransactionController.prototype.stopIncomingTransactionPolling,
-        ).toHaveBeenCalledTimes(1);
-      });
-
-      it('updates incoming transactions when changing account', async () => {
-        expect(
-          TransactionController.prototype.updateIncomingTransactions,
-        ).not.toHaveBeenCalled();
-
-        metamaskController.controllerMessenger.publish(
-          'AccountsController:selectedAccountChange',
-          TEST_INTERNAL_ACCOUNT,
-        );
-
-        expect(
-          TransactionController.prototype.updateIncomingTransactions,
-        ).toHaveBeenCalledTimes(1);
-      });
-
-      it('updates incoming transactions when changing network', async () => {
-        expect(
-          TransactionController.prototype.updateIncomingTransactions,
-        ).not.toHaveBeenCalled();
-
-        await Messenger.prototype.subscribe.mock.calls
-          .filter((args) => args[0] === 'NetworkController:networkDidChange')
-          .slice(-1)[0][1]();
-
-        expect(
-          TransactionController.prototype.updateIncomingTransactions,
-        ).toHaveBeenCalledTimes(1);
-      });
-    });
-
     describe('MultichainRatesController start/stop', () => {
       const mockEvmAccount = createMockInternalAccount();
       const mockNonEvmAccount = {
@@ -4024,6 +3948,7 @@ describe('MetaMaskController', () => {
 
         const mockDiscoverAccounts = jest
           .fn()
+          .mockResolvedValueOnce([]) // Nothing discovered for Bitcoin
           .mockResolvedValueOnce([{ derivationPath: "m/44'/501'/0'/0'" }])
           .mockResolvedValueOnce([{ derivationPath: "m/44'/501'/1'/0'" }])
           .mockResolvedValueOnce([]); // Return empty array on third call to stop the discovery loop
@@ -4040,18 +3965,92 @@ describe('MetaMaskController', () => {
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
 
-        // Assert that discoverAccounts was called correctly
-        // Should be called 3 times (twice with discovered accounts, once with empty array)
-        expect(mockDiscoverAccounts).toHaveBeenCalledTimes(3);
+        // Assert that discoverAccounts was called correctly:
+        // - 1 time for Bitcoin
+        // - 3 times for Solana (twice with discovered accounts, once with empty array)
+        expect(mockDiscoverAccounts).toHaveBeenCalledTimes(1 + 3);
 
         // All calls should include the solana scopes
-        expect(mockDiscoverAccounts.mock.calls[0][0]).toStrictEqual(
-          expect.arrayContaining([
-            SolScope.Mainnet,
-            SolScope.Testnet,
-            SolScope.Devnet,
-          ]),
+        expect(mockDiscoverAccounts.mock.calls[1][0]).toStrictEqual([
+          SolScope.Mainnet,
+        ]);
+
+        // First call should be for index 0
+        expect(mockDiscoverAccounts.mock.calls[1][2]).toBe(0);
+        // Second call should be for index 1
+        expect(mockDiscoverAccounts.mock.calls[2][2]).toBe(1);
+        // Third call should be for index 2
+        expect(mockDiscoverAccounts.mock.calls[3][2]).toBe(2);
+
+        // Assert that createAccount was called correctly for each discovered account:
+        // - 1 Bitcoin default account
+        // - 2 discovered Solana accounts
+        expect(mockCreateAccount).toHaveBeenCalledTimes(1 + 2);
+
+        // All calls should use the solana snap ID
+        expect(mockCreateAccount.mock.calls[1][0]).toStrictEqual(
+          expect.stringContaining('solana-wallet'),
         );
+        // First call should use derivation path on index 0
+        expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
+          accountNameSuggestion: expect.stringContaining('Solana Account'),
+          derivationPath: "m/44'/501'/0'/0'",
+          entropySource: expect.any(String),
+          scope: SolScope.Mainnet,
+          synchronize: true,
+        });
+        // All calls should use the same internal options
+        expect(mockCreateAccount.mock.calls[1][2]).toStrictEqual({
+          displayConfirmation: false,
+          displayAccountNameSuggestion: false,
+          setSelectedAccount: false,
+        });
+
+        // Second call should use derivation path on index 1
+        expect(mockCreateAccount.mock.calls[2][1]).toStrictEqual({
+          accountNameSuggestion: expect.stringContaining('Solana Account'),
+          derivationPath: "m/44'/501'/1'/0'",
+          entropySource: expect.any(String),
+          scope: SolScope.Mainnet,
+          synchronize: true,
+        });
+      });
+
+      it('discovers and creates Bitcoin accounts through KeyringInternalSnapClient when importing a mnemonic', async () => {
+        const password = 'what-what-what';
+        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+
+        const mockDiscoverAccounts = jest
+          .fn()
+          .mockResolvedValueOnce([
+            { derivationPath: "m/84'/0'/0'" },
+            { derivationPath: "m/86'/0'/0'" },
+          ])
+          .mockResolvedValueOnce([{ derivationPath: "m/84'/0'/1'" }])
+          .mockResolvedValueOnce([]) // Return empty array on third call to stop the discovery loop
+          .mockResolvedValueOnce([]); // Nothing discovered for Solana
+
+        jest
+          .spyOn(KeyringInternalSnapClient.prototype, 'discoverAccounts')
+          .mockImplementation(mockDiscoverAccounts);
+
+        const mockCreateAccount = jest.fn().mockResolvedValue(undefined);
+        jest
+          .spyOn(metamaskController, 'getSnapKeyring')
+          .mockResolvedValue({ createAccount: mockCreateAccount });
+
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
+
+        // Assert that discoverAccounts was called correctly:
+        // - 3 times for Bitcoin (twice with discovered accounts, once with empty array)
+        // - 1 time for Solana
+        expect(mockDiscoverAccounts).toHaveBeenCalledTimes(3 + 1);
+
+        // All calls should include the solana scopes
+        expect(mockDiscoverAccounts.mock.calls[0][0]).toStrictEqual([
+          BtcScope.Mainnet,
+        ]);
 
         // First call should be for index 0
         expect(mockDiscoverAccounts.mock.calls[0][2]).toBe(0);
@@ -4060,31 +4059,44 @@ describe('MetaMaskController', () => {
         // Third call should be for index 2
         expect(mockDiscoverAccounts.mock.calls[2][2]).toBe(2);
 
-        // Assert that createAccount was called correctly for each discovered account
-        expect(mockCreateAccount).toHaveBeenCalledTimes(2);
+        // Assert that createAccount was called correctly for each discovered account:
+        // - 3 discovered Bitcoin accounts
+        // - 1 Solana default account
+        expect(mockCreateAccount).toHaveBeenCalledTimes(3 + 1);
 
-        // All calls should use the solana snap ID
+        // All calls should use the bitcoin snap ID
         expect(mockCreateAccount.mock.calls[0][0]).toStrictEqual(
-          expect.stringContaining('solana-wallet'),
+          expect.stringContaining('bitcoin-wallet'),
         );
         // First call should use derivation path on index 0
         expect(mockCreateAccount.mock.calls[0][1]).toStrictEqual({
-          accountNameSuggestion: expect.stringContaining('Solana Account'),
-          derivationPath: "m/44'/501'/0'/0'",
+          accountNameSuggestion: expect.stringContaining('Bitcoin Account'),
+          derivationPath: "m/84'/0'/0'",
           entropySource: expect.any(String),
+          scope: BtcScope.Mainnet,
+          synchronize: true,
+        });
+        // Second call should use derivation path on index 0 and Taproot account
+        expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
+          accountNameSuggestion: expect.stringContaining('Bitcoin Account'),
+          derivationPath: "m/86'/0'/0'",
+          entropySource: expect.any(String),
+          scope: BtcScope.Mainnet,
+          synchronize: true,
+        });
+        // Third call should use derivation path on index 1
+        expect(mockCreateAccount.mock.calls[2][1]).toStrictEqual({
+          accountNameSuggestion: expect.stringContaining('Bitcoin Account'),
+          derivationPath: "m/84'/0'/1'",
+          entropySource: expect.any(String),
+          scope: BtcScope.Mainnet,
+          synchronize: true,
         });
         // All calls should use the same internal options
         expect(mockCreateAccount.mock.calls[0][2]).toStrictEqual({
           displayConfirmation: false,
           displayAccountNameSuggestion: false,
           setSelectedAccount: false,
-        });
-
-        // Second call should use derivation path on index 1
-        expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
-          accountNameSuggestion: expect.stringContaining('Solana Account'),
-          derivationPath: "m/44'/501'/1'/0'",
-          entropySource: expect.any(String),
         });
       });
     });
@@ -4118,6 +4130,74 @@ describe('MetaMaskController', () => {
             .networkConfigurationsByChainId[CHAIN_IDS.MAINNET].rpcEndpoints[0]
             .networkClientId,
         );
+      });
+
+      it('ensures initial network state networks contain failover RPCs', () => {
+        jest
+          .spyOn(NetworkConstantsModule, 'getFailoverUrlsForInfuraNetwork')
+          .mockReturnValue(['https://mock_rpc']);
+
+        const initState = cloneDeep(firstTimeState);
+        delete initState.NetworkController;
+        metamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState,
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+
+        const networkState = metamaskController.networkController.state;
+        const networksWithFailoverUrls = [
+          CHAIN_IDS.MAINNET,
+          CHAIN_IDS.LINEA_MAINNET,
+          CHAIN_IDS.BASE,
+        ];
+        const networksWithoutFailoverUrls = [
+          CHAIN_IDS.SEPOLIA,
+          CHAIN_IDS.LINEA_SEPOLIA,
+          CHAIN_IDS.MEGAETH_TESTNET,
+          '0x279f', // Monad Testnet
+          '0x539', // Localhost
+        ];
+
+        // Assert - ensure networks with failovers have failovers, and other networks do not have failovers
+        // NOTE - if a network enabled by default is missing a failover, double check if it needs to be inserted
+        Object.keys(networkState.networkConfigurationsByChainId).forEach(
+          (
+            /** @type {import('@metamask/utils').Hex} */
+            chainId,
+          ) => {
+            // Assert ensure we are checking all known networks
+            // NOTE - if network is missing, append it to either with failover or wthout failovers
+            expect([
+              ...networksWithFailoverUrls,
+              ...networksWithoutFailoverUrls,
+            ]).toContain(chainId);
+          },
+        );
+
+        // Assert - networks have failovers
+        networksWithFailoverUrls.forEach((chainId) => {
+          expect(
+            networkState.networkConfigurationsByChainId[chainId].rpcEndpoints[0]
+              .failoverUrls,
+          ).toHaveLength(1);
+        });
+
+        // Assert - networks without failovers
+        networksWithoutFailoverUrls.forEach((chainId) => {
+          expect(
+            networkState.networkConfigurationsByChainId[chainId].rpcEndpoints[0]
+              .failoverUrls,
+          ).toHaveLength(0);
+        });
       });
     });
   });

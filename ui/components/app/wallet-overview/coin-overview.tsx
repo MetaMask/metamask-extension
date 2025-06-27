@@ -328,7 +328,6 @@ export const CoinOverview = ({
             isBuyableChain,
             defaultSwapsToken,
             classPrefix,
-            iconButtonClassName: `${classPrefix}-overview__icon-button`,
           }}
         />
       }
