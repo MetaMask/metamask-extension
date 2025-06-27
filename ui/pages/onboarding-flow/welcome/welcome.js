@@ -63,7 +63,7 @@ export default function OnboardingWelcome({
   const onCreateClick = useCallback(async () => {
     setIsLoggingIn(true);
     setNewAccountCreationInProgress(true);
-    dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
+    await dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletSetupStarted,
