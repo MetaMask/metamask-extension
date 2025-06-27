@@ -1,3 +1,4 @@
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_ERC4337,
@@ -31,8 +32,12 @@ describe('Account Type Utils', () => {
     });
 
     it('should return "unknown" for null/undefined accounts', () => {
-      expect(getAccountTypeCategory(null as any)).toBe('unknown');
-      expect(getAccountTypeCategory(undefined as any)).toBe('unknown');
+      expect(getAccountTypeCategory(null as unknown as InternalAccount)).toBe(
+        'unknown',
+      );
+      expect(
+        getAccountTypeCategory(undefined as unknown as InternalAccount),
+      ).toBe('unknown');
     });
   });
 
