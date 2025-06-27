@@ -31,10 +31,13 @@ import {
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import { BridgeStatusControllerActions } from '@metamask/bridge-status-controller';
+import { BridgeControllerActions } from '@metamask/bridge-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
 } from '../../controllers/swaps/swaps.types';
+import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import {
   InstitutionalSnapControllerPublishHookAction,
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
@@ -44,6 +47,9 @@ type MessengerActions =
   | ApprovalControllerActions
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
+  | AppStateControllerGetStateAction
+  | BridgeControllerActions
+  | BridgeStatusControllerActions
   | DelegationControllerSignDelegationAction
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
@@ -117,6 +123,10 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:endFlow',
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
+      'AppStateController:getState',
+      'BridgeController:updateBridgeQuoteRequestParams',
+      'BridgeStatusController:getState',
+      'BridgeStatusController:submitTx',
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',

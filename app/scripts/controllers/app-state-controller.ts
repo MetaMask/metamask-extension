@@ -88,6 +88,7 @@ export type AppStateControllerState = {
   isUpdateAvailable: boolean;
   updateModalLastDismissedAt: number | null;
   lastUpdatedAt: number | null;
+  intentQuoteByTransaction?: Record<string, Json>;
 };
 
 const controllerName = 'AppStateController';
@@ -378,6 +379,10 @@ const controllerMetadata = {
   },
   lastUpdatedAt: {
     persist: true,
+    anonymous: true,
+  },
+  intentQuoteByTransaction: {
+    persist: false,
     anonymous: true,
   },
 };
@@ -1113,6 +1118,16 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.throttledOrigins[origin] = throttledOriginState;
+    });
+  }
+
+  setIntentQuoteForTransaction(transactionId: string, quote: Json): void {
+    this.update((state) => {
+      if (!state.intentQuoteByTransaction) {
+        state.intentQuoteByTransaction = {};
+      }
+
+      state.intentQuoteByTransaction[transactionId] = quote;
     });
   }
 }

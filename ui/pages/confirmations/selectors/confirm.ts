@@ -36,3 +36,10 @@ export const oldestPendingConfirmationSelector = createDeepEqualSelector(
   firstPendingConfirmationSelector,
   (firstPendingConfirmation) => firstPendingConfirmation,
 );
+
+export function selectIntentQuoteForTransaction(
+  state: ConfirmMetamaskState,
+  transactionId: string,
+) {
+  return state.metamask.intentQuoteByTransaction?.[transactionId];
+}

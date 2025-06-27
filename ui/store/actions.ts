@@ -6690,3 +6690,17 @@ export function setSkipDeepLinkInterstitial(value: boolean) {
 export async function requestSafeReload() {
   return await submitRequestToBackground('requestSafeReload');
 }
+
+export async function setIntentQuoteForTransaction(
+  transactionid: string,
+  quote: Json,
+) {
+  try {
+    await submitRequestToBackground('setIntentQuoteForTransaction', [
+      transactionid,
+      quote,
+    ]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}

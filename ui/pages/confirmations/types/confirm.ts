@@ -7,6 +7,7 @@ import {
 } from '@metamask/transaction-controller';
 
 import { SecurityAlertSource } from '../../../../shared/constants/security-provider';
+import { Json } from '@metamask/utils';
 
 export type TypedSignDataV1Type = {
   name: string;
@@ -49,5 +50,6 @@ export type ConfirmMetamaskState = {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
     signatureSecurityAlertResponses?: Record<string, SecurityAlertResponse>;
+    intentQuoteByTransaction?: Record<string, Json>;
   };
 };
