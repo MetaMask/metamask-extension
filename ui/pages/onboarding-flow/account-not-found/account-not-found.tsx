@@ -133,6 +133,7 @@ export default function AccountNotFound() {
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         width={BlockSize.Full}
+        gap={4}
       >
         <Button
           data-testid="onboarding-complete-done"
