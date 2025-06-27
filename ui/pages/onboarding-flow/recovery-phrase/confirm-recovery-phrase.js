@@ -103,7 +103,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
 
   useEffect(() => {
     if (!secretRecoveryPhrase) {
-      history.push(
+      history.replace(
         `${ONBOARDING_REVIEW_SRP_ROUTE}${
           nextRouteQueryString ? `?${nextRouteQueryString}` : ''
         }`,
@@ -153,7 +153,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         ? ONBOARDING_COMPLETION_ROUTE
         : ONBOARDING_METAMETRICS;
 
-    history.push(
+    history.replace(
       `${nextRoute}${nextRouteQueryString ? `?${nextRouteQueryString}` : ''}`,
     );
   }, [
