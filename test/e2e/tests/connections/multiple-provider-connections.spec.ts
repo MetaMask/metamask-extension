@@ -69,7 +69,7 @@ async function getPermissionsPageForHost(
  * @param driver - The test driver
  * @param account - The account to check
  */
-export async function check_isAccountDisplayed(
+async function checkIsAccountDisplayed(
   driver: Driver,
   account: string,
 ): Promise<void> {
@@ -83,6 +83,7 @@ export async function check_isAccountDisplayed(
  * Helper to check if the accounts and networks are displayed in the site permission page.
  *
  * @param driver - The test driver
+ * @param sitePermissionPage - The site permission page to use.
  * @param networks - The networks to check.
  * @param accounts - The accounts to check.
  */
@@ -105,7 +106,7 @@ async function checkAccountsAndNetworksDisplayed(
   await accountPermissionSelectModal.check_pageIsLoaded();
 
   for (const account of accounts) {
-    await check_isAccountDisplayed(driver, account);
+    await checkIsAccountDisplayed(driver, account);
   }
 }
 
@@ -201,7 +202,7 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await connectAccountConfirmation.check_pageIsLoaded();
 
-        await check_isAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
+        await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
 
         await connectAccountConfirmation.confirmConnect();
 
@@ -249,9 +250,9 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await connectAccountConfirmation.check_pageIsLoaded();
 
-        await check_isAccountDisplayed(driver, EVM_ACCOUNT_LABEL_ONE);
+        await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_ONE);
 
-        await check_isAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
+        await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
 
         await await connectAccountConfirmation.confirmConnect();
 
@@ -385,9 +386,9 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await connectAccountConfirmation.check_pageIsLoaded();
 
-        await check_isAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
+        await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
 
-        await check_isAccountDisplayed(driver, SOLANA_ACCOUNT_LABEL_ONE);
+        await checkIsAccountDisplayed(driver, SOLANA_ACCOUNT_LABEL_ONE);
 
         await connectAccountConfirmation.confirmConnect();
 
