@@ -95,7 +95,7 @@ export default function RecoveryPhraseChips({
       };
 
       setQuizAnswers(newQuizAnswers);
-      setIndexToFocus(setNextTargetIndex(newQuizAnswers));
+      setIndexToFocus(newQuizAnswers[targetIndex].index);
     },
     [quizAnswers],
   );
