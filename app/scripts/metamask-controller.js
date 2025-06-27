@@ -3776,9 +3776,18 @@ export default class MetamaskController extends EventEmitter {
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
 
+      // OAuthService
+      startOAuthLogin: this.oauthService.startOAuthLogin.bind(
+        this.oauthService,
+      ),
+
       // SeedlessOnboardingController
-      startOAuthLogin: this.startOAuthLogin.bind(this),
-      resetOAuthLoginState: this.resetOAuthLoginState.bind(this),
+      authenticate: this.seedlessOnboardingController.authenticate.bind(
+        this.seedlessOnboardingController,
+      ),
+      resetOAuthLoginState: this.seedlessOnboardingController.clearState.bind(
+        this.seedlessOnboardingController,
+      ),
       createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
       fetchAllSecretData: this.fetchAllSecretData.bind(this),
 
@@ -4626,40 +4635,6 @@ export default class MetamaskController extends EventEmitter {
       return details?.symbol;
     } catch (e) {
       return null;
-    }
-  }
-
-  /**
-   * Login with social login provider and get User Onboarding details.
-   *
-   * AuthenticationResult is an object that contains the temporary Auth token for next step of onboarding flow
-   * and user's onboarding status to indicate whether the user has already completed the seedless onboarding flow.
-   *
-   * @param {AuthConnection} authConnection - social login provider, `google` | `apple`
-   * @returns {Promise<boolean>} true if user has not completed the seedless onboarding flow, false otherwise
-   */
-  async startOAuthLogin(authConnection) {
-    const oauth2LoginResult = await this.oauthService.startOAuthLogin(
-      authConnection,
-    );
-
-    const { isNewUser } = await this.seedlessOnboardingController.authenticate(
-      oauth2LoginResult,
-    );
-
-    return isNewUser;
-  }
-
-  /**
-   * Resets the social login state and onboarding state.
-   */
-  resetOAuthLoginState() {
-    try {
-      this.seedlessOnboardingController.clearState();
-      this.onboardingController.setFirstTimeFlowType(null);
-    } catch (error) {
-      log.error('Error while resetting social login state', error);
-      throw error;
     }
   }
 
