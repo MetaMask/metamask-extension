@@ -95,7 +95,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
 
   useEffect(() => {
     if (!secretRecoveryPhrase) {
-      history.push(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
+      history.replace(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
     }
   }, [history, secretRecoveryPhrase, isFromReminderParam]);
 
@@ -141,7 +141,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         ? ONBOARDING_COMPLETION_ROUTE
         : ONBOARDING_METAMETRICS;
 
-    history.push(`${nextRoute}${isFromReminderParam}`);
+    history.replace(`${nextRoute}${isFromReminderParam}`);
   }, [dispatch, hdEntropyIndex, history, trackEvent, isFromReminderParam]);
 
   return (
