@@ -147,14 +147,14 @@ async function validateBalanceAndActivity(
     text: expectedBalance,
   });
 
-  // Ensure there's an activity entry of "Send" and "Confirmed"
+  // Ensure there's an activity entry of "Sent" and "Confirmed"
   if (expectedActivityEntries) {
     await driver.clickElement('[data-testid="account-overview__activity-tab"]');
     assert.equal(
       (
         await driver.findElements({
           css: '[data-testid="activity-list-item-action"]',
-          text: 'Send',
+          text: 'Sent',
         })
       ).length,
       expectedActivityEntries,
