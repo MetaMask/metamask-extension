@@ -61,6 +61,14 @@ async function getPermissionsPageForHost(
   return sitePermissionPage;
 }
 
+/**
+ * Helper to check if the accounts and networks are displayed in the site permission page.
+ *
+ * @param driver - The driver to use.
+ * @param sitePermissionPage - The site permission page to use.
+ * @param networks - The networks to check.
+ * @param accounts - The accounts to check.
+ */
 async function checkAccountsAndNetworksDisplayed(
   driver: Driver,
   sitePermissionPage: SitePermissionPage,
