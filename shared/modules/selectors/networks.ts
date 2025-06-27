@@ -21,9 +21,13 @@ import { hexToDecimal } from '../conversion.utils';
 import { SOLANA_TEST_CHAINS } from '../../constants/multichain/networks';
 =======
 import { NetworkStatus } from '../../constants/network';
+<<<<<<< HEAD
 >>>>>>> 6fbb51cfef (Switch to using dapp-selected-chain for global network picker when available)
 import { createDeepEqualSelector } from './util';
+=======
+>>>>>>> 7e99405b04 (lint fix)
 import { ORIGIN_METAMASK } from '../../constants/app';
+import { createDeepEqualSelector } from './util';
 
 export type NetworkState = {
   metamask: InternalNetworkState;
