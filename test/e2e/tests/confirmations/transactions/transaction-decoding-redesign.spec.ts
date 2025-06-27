@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import {
   createDappTransaction,
   DAPP_URL,
@@ -123,6 +124,9 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            [CHAIN_IDS.MAINNET]: true,
+          })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         testSpecificMock: mockInfura,

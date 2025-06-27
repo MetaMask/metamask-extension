@@ -1,16 +1,21 @@
+// @ts-check
 import { createSelector } from 'reselect';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
+import {
+  NotificationServicesControllerState,
+  INotification as Notification,
+  TRIGGER_TYPES,
+  defaultState,
+} from '@metamask/notification-services-controller/notification-services';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 
-const { TRIGGER_TYPES } = NotificationServicesController.Constants;
-
-type Notification = NotificationServicesController.Types.INotification;
-
 type AppState = {
-  metamask: NotificationServicesController.NotificationServicesControllerState;
+  metamask: Partial<NotificationServicesControllerState>;
 };
 
-const getMetamask = (state: AppState) => state.metamask;
+const getMetamask = (state: AppState) => ({
+  ...defaultState,
+  ...state.metamask,
+});
 
 /**
  * Selector to get the list of MetaMask notifications.
@@ -20,7 +25,7 @@ const getMetamask = (state: AppState) => state.metamask;
  */
 export const getMetamaskNotifications = createSelector(
   [getMetamask],
-  (metamask) => metamask.metamaskNotificationsList,
+  (metamask): Notification[] => metamask.metamaskNotificationsList,
 );
 
 /**
@@ -44,11 +49,11 @@ export const getMetamaskNotificationById = (id: string) => {
  * Selector to get the list of read MetaMask notifications.
  *
  * @param {AppState} state - The current state of the Redux store.
- * @returns {Notification[]} An array of notifications that have been read.
+ * @returns {string[]} An array of notifications that have been read.
  */
 export const getMetamaskNotificationsReadList = createSelector(
   [getMetamask],
-  (metamask) => metamask.metamaskNotificationsReadList,
+  (metamask): string[] => metamask.metamaskNotificationsReadList,
 );
 
 /**
@@ -59,7 +64,7 @@ export const getMetamaskNotificationsReadList = createSelector(
  */
 export const getMetamaskNotificationsUnreadCount = createSelector(
   [getMetamaskNotifications],
-  (notifications: Notification[]) => {
+  (notifications: Notification[]): number => {
     return notifications
       ? notifications.filter((notification) => !notification.isRead).length
       : 0;
@@ -74,7 +79,7 @@ export const getMetamaskNotificationsUnreadCount = createSelector(
  */
 export const getFeatureAnnouncementsUnreadCount = createSelector(
   [getMetamaskNotifications],
-  (notifications: Notification[]) => {
+  (notifications: Notification[]): number => {
     return notifications
       ? notifications.filter(
           (notification) =>
@@ -112,7 +117,7 @@ export const getFeatureAnnouncementsReadCount = createSelector(
  */
 export const getSnapNotificationsUnreadCount = createSelector(
   [getMetamaskNotifications],
-  (notifications: Notification[]) => {
+  (notifications: Notification[]): number => {
     return notifications
       ? notifications.filter(
           (notification) =>
@@ -148,7 +153,7 @@ export const getSnapNotificationsReadCount = createSelector(
  */
 export const getOnChainMetamaskNotificationsUnreadCount = createSelector(
   [getMetamaskNotifications],
-  (notifications: Notification[]) => {
+  (notifications: Notification[]): number => {
     return notifications
       ? notifications.filter(
           (notification) =>
@@ -168,7 +173,7 @@ export const getOnChainMetamaskNotificationsUnreadCount = createSelector(
  */
 export const getOnChainMetamaskNotificationsReadCount = createSelector(
   [getMetamaskNotifications],
-  (notifications: Notification[]) => {
+  (notifications: Notification[]): number => {
     return notifications
       ? notifications.filter(
           (notification) =>
@@ -199,7 +204,7 @@ export const selectIsMetamaskNotificationsFeatureSeen = createSelector(
  */
 export const selectIsMetamaskNotificationsEnabled = createSelector(
   [getMetamask],
-  (metamask) => metamask.isNotificationServicesEnabled,
+  (metamask): boolean => metamask.isNotificationServicesEnabled,
 );
 
 /**
@@ -210,7 +215,7 @@ export const selectIsMetamaskNotificationsEnabled = createSelector(
  */
 export const selectIsFeatureAnnouncementsEnabled = createSelector(
   [getMetamask],
-  (metamask) => metamask.isFeatureAnnouncementsEnabled,
+  (metamask): boolean => metamask.isFeatureAnnouncementsEnabled,
 );
 
 /**
@@ -224,7 +229,7 @@ export const selectIsFeatureAnnouncementsEnabled = createSelector(
  */
 export const getIsUpdatingMetamaskNotifications = createSelector(
   [getMetamask],
-  (metamask) => metamask.isUpdatingMetamaskNotifications,
+  (metamask): boolean => metamask.isUpdatingMetamaskNotifications,
 );
 
 /**
@@ -238,7 +243,7 @@ export const getIsUpdatingMetamaskNotifications = createSelector(
  */
 export const isFetchingMetamaskNotifications = createSelector(
   [getMetamask],
-  (metamask) => metamask.isFetchingMetamaskNotifications,
+  (metamask): boolean => metamask.isFetchingMetamaskNotifications,
 );
 
 /**
@@ -248,11 +253,11 @@ export const isFetchingMetamaskNotifications = createSelector(
  * It uses the `createSelector` function from 'reselect' for memoization, improving performance by avoiding unnecessary recalculations.
  *
  * @param {AppState} state - The current state of the Redux store.
- * @returns {boolean} Returns true if the MetaMask notifications account is being updated, false otherwise.
+ * @returns {string[]} Returns list of accounts that are currently being updated.
  */
 export const getIsUpdatingMetamaskNotificationsAccount = createSelector(
   [getMetamask],
-  (metamask) => {
+  (metamask): string[] => {
     return metamask.isUpdatingMetamaskNotificationsAccount;
   },
 );
@@ -268,10 +273,10 @@ export const getIsUpdatingMetamaskNotificationsAccount = createSelector(
  */
 export const getIsCheckingAccountsPresence = createSelector(
   [getMetamask],
-  (metamask) => metamask.isCheckingAccountsPresence,
+  (metamask): boolean => metamask.isCheckingAccountsPresence,
 );
 
 export const getValidNotificationAccounts = createSelector(
   [getMetamask],
-  (metamask) => metamask.subscriptionAccountsSeen,
+  (metamask): string[] => metamask.subscriptionAccountsSeen,
 );

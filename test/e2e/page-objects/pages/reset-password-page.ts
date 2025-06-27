@@ -48,6 +48,19 @@ class ResetPasswordPage {
     await this.driver.fill(this.confirmPasswordInput, newPassword);
     await this.driver.clickElement(this.restoreButton);
   }
+
+  /**
+   * Waits until the seed phrase input is no longer visible on the page.
+   * This is useful for verifying that the reset password process has completed
+   * and the user has been redirected away from the reset password page.
+   */
+  async waitForSeedPhraseInputToNotBeVisible(): Promise<void> {
+    console.log('Waiting for seed phrase input to not be visible');
+    await this.driver.waitForSelector(this.seedPhraseInput, {
+      state: 'detached',
+      timeout: 30000,
+    });
+  }
 }
 
 export default ResetPasswordPage;

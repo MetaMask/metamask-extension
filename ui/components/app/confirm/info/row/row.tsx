@@ -33,17 +33,19 @@ export enum ConfirmInfoRowVariant {
 }
 
 export type ConfirmInfoRowProps = {
-  label: string;
   children?: React.ReactNode | string;
-  tooltip?: string;
-  variant?: ConfirmInfoRowVariant;
-  style?: React.CSSProperties;
-  labelChildren?: React.ReactNode;
+  collapsed?: boolean;
   color?: TextColor;
   copyEnabled?: boolean;
   copyText?: string;
   'data-testid'?: string;
-  collapsed?: boolean;
+  label: string;
+  labelChildren?: React.ReactNode;
+  style?: React.CSSProperties;
+  tooltip?: string;
+  tooltipIcon?: IconName;
+  tooltipIconColor?: IconColor;
+  variant?: ConfirmInfoRowVariant;
 };
 
 const BACKGROUND_COLORS = {
@@ -86,6 +88,8 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   copyText,
   'data-testid': dataTestId,
   collapsed,
+  tooltipIcon,
+  tooltipIconColor,
 }) => {
   const [expanded, setExpanded] = useState(!collapsed);
 
@@ -160,9 +164,12 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
                 style={{ display: 'flex' }}
               >
                 <Icon
-                  name={TOOLTIP_ICONS[variant]}
+                  name={tooltipIcon ?? TOOLTIP_ICONS[variant]}
                   marginLeft={1}
-                  color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
+                  color={
+                    tooltipIconColor ??
+                    (TOOLTIP_ICON_COLORS[variant] as unknown as IconColor)
+                  }
                   size={IconSize.Sm}
                   {...(dataTestId
                     ? { 'data-testid': `${dataTestId}-tooltip` }

@@ -1,8 +1,6 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
+import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
 import { IconName } from '../../components/component-library';
 import {
   ADVANCED_ROUTE,
@@ -160,7 +158,7 @@ const SETTINGS_CONSTANTS = [
       t('overrideContentSecurityPolicyHeaderDescription'),
     route: `${ADVANCED_ROUTE}#override-content-security-policy-header`,
     icon: 'fas fa-sliders-h',
-    hidden: getPlatform() !== PLATFORM_FIREFOX,
+    hidden: getBrowserName() !== PLATFORM_FIREFOX,
   },
   {
     tabMessage: (t) => t('backupAndSync'),
@@ -174,6 +172,13 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('backupAndSyncFeatureAccounts'),
     descriptionMessage: (t) => t('backupAndSyncFeatureAccounts'),
     route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-features-toggles-account-syncing`,
+    iconName: IconName.SecurityTime,
+  },
+  {
+    tabMessage: (t) => t('backupAndSync'),
+    sectionMessage: (t) => t('backupAndSyncFeatureContacts'),
+    descriptionMessage: (t) => t('backupAndSyncFeatureContacts'),
+    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-features-toggles-contact-syncing`,
     iconName: IconName.SecurityTime,
   },
   {
@@ -199,12 +204,20 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#reveal-secretrecovery`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[3]
+  // securityAndPrivacy settingsRefs[2]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('usePhishingDetection'),
     descriptionMessage: (t) => t('usePhishingDetectionDescription'),
     route: `${SECURITY_ROUTE}#phishing-detection`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[3]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('skipDeepLinkInterstitial'),
+    descriptionMessage: (t) => t('skipDeepLinkInterstitialDescription'),
+    route: `${SECURITY_ROUTE}#skip-deep-link-interstitial`,
     icon: 'fa fa-lock',
   },
   // securityAndPrivacy settingsRefs[4]

@@ -7,5 +7,5 @@
     "matches": ["http://*/*", "https://*/*"],
     "ids": ["*"]
   },
-  "minimum_chrome_version": "109"
+  "minimum_chrome_version": "115"
 }

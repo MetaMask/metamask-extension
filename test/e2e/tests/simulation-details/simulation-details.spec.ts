@@ -6,10 +6,10 @@ import FixtureBuilder from '../../fixture-builder';
 import {
   createDappTransaction,
   Fixtures,
-  unlockWallet,
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import {
   BUY_ERC1155_REQUEST_1_MOCK,
@@ -72,7 +72,7 @@ async function withFixturesForSimulationDetails(
       },
     },
     async ({ driver, mockServer }) => {
-      await unlockWallet(driver);
+      await loginWithBalanceValidation(driver);
       await runTestWithFixtures({ driver, mockServer });
     },
   );

@@ -24,6 +24,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   EIP5792ErrorCode,
+  NATIVE_TOKEN_ADDRESS,
   TokenStandard,
   TransactionApprovalAmountType,
   TransactionMetaMetricsEvent,
@@ -433,32 +434,6 @@ export const handlePostTransactionBalanceUpdate = async (
     }
   }
 };
-
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-/**
- * This function is called when a transaction metadata updated in the MMI controller.
- *
- * @param transactionMetricsRequest - Contains controller actions needed to create/update/finalize event fragments
- * @param transactionEventPayload - The event payload
- * @param transactionEventPayload.transactionMeta - The transaction meta object
- * @param eventName - The event name
- */
-export const handleMMITransactionUpdate = async (
-  transactionMetricsRequest: TransactionMetricsRequest,
-  transactionEventPayload: TransactionEventPayload,
-  eventName: TransactionMetaMetricsEvent,
-) => {
-  if (!transactionEventPayload.transactionMeta) {
-    return;
-  }
-
-  await createUpdateFinalizeTransactionEventFragment({
-    eventName,
-    transactionEventPayload,
-    transactionMetricsRequest,
-  });
-};
-///: END:ONLY_INCLUDE_IF
 
 function calculateTransactionsCost(
   transactionMeta: TransactionMeta,
@@ -1283,6 +1258,10 @@ function addGaslessProperties(
     (token) =>
       token.tokenAddress.toLowerCase() === selectedGasFeeToken?.toLowerCase(),
   )?.symbol;
+
+  if (selectedGasFeeToken?.toLowerCase() === NATIVE_TOKEN_ADDRESS) {
+    properties.gas_paid_with = 'pre-funded_ETH';
+  }
 
   properties.gas_insufficient_native_asset = isInsufficientNativeBalance(
     transactionMeta,

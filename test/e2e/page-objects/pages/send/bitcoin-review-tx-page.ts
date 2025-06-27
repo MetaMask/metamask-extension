@@ -37,6 +37,46 @@ class BitcoinReviewTxPage {
     console.log('Click send button on bitcoin review tx page');
     await this.driver.clickElementAndWaitToDisappear(this.sendButton);
   }
+
+  async check_feeRateIsDisplayed(feeRate: string): Promise<void> {
+    console.log(
+      `Check if fee rate ${feeRate} is displayed on bitcoin review tx page`,
+    );
+    await this.driver.waitForSelector({
+      text: `${feeRate} sat/vB`,
+      tag: 'p',
+    });
+  }
+
+  async check_networkFeeIsDisplayed(fee: string): Promise<void> {
+    console.log(
+      `Check if network fee ${fee} is displayed on bitcoin review tx page`,
+    );
+    await this.driver.waitForSelector({
+      text: `${fee} sats`,
+      tag: 'p',
+    });
+  }
+
+  async check_sendAmountIsDisplayed(amount: string): Promise<void> {
+    console.log(
+      `Check if send amount ${amount} is displayed on bitcoin review tx page`,
+    );
+    await this.driver.waitForSelector({
+      text: `${amount} BTC`,
+      tag: 'h2',
+    });
+  }
+
+  async check_totalAmountIsDisplayed(total: string): Promise<void> {
+    console.log(
+      `Check if total amount ${total} is displayed on bitcoin review tx page`,
+    );
+    await this.driver.waitForSelector({
+      text: `${total} BTC`,
+      tag: 'p',
+    });
+  }
 }
 
 export default BitcoinReviewTxPage;

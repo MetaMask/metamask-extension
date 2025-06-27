@@ -1,11 +1,12 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
 import { useConfirmContext } from '../context/confirm';
-import { NATIVE_TOKEN_ADDRESS } from '../components/confirm/info/hooks/useGasFeeToken';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useIsGaslessSupported } from './gas/useIsGaslessSupported';
 

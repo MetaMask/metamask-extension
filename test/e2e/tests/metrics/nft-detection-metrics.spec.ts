@@ -20,7 +20,7 @@ async function mockSegment(mockServer: Mockttp) {
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Wallet Setup Selected' }],
+        batch: [{ type: 'track', event: 'Wallet Setup Started' }],
       })
       .thenCallback(() => {
         return {

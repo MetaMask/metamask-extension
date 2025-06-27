@@ -55,6 +55,9 @@ const render = (
     metamask: {
       ...mockState.metamask,
       allDeFiPositions,
+      enabledNetworkMap: {
+        '0x5': true,
+      },
     },
   };
   const store = configureMockStore([thunk])(mockStore);

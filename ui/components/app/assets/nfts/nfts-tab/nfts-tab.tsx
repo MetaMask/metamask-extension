@@ -39,9 +39,7 @@ import { useNfts } from '../../../../../hooks/useNfts';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import NftGrid from '../nft-grid/nft-grid';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
-///: END:ONLY_INCLUDE_IF
 import { sortAssets } from '../../util/sort';
 import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 import PulseLoader from '../../../../ui/pulse-loader';
@@ -170,7 +168,6 @@ export default function NftsTab() {
                   {t('noNFTs')}
                 </Text>
                 {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
                   <ButtonLink
                     size={ButtonLinkSize.Md}
                     href={ZENDESK_URLS.NFT_TOKENS}
@@ -178,7 +175,6 @@ export default function NftsTab() {
                   >
                     {t('learnMoreUpperCase')}
                   </ButtonLink>
-                  ///: END:ONLY_INCLUDE_IF
                 }
               </Box>
             </Box>

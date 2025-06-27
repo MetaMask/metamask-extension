@@ -35,11 +35,7 @@ export default function NFTsDetectionNoticeNFTsTab() {
         dispatch(detectNfts(allChainIds));
       }}
     >
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        t('newNFTDetectedInNFTsTabMessage')
-        ///: END:ONLY_INCLUDE_IF
-      }
+      {t('newNFTDetectedInNFTsTabMessage')}
     </BannerAlert>
   );
 }

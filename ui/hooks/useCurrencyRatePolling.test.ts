@@ -44,6 +44,10 @@ describe('useCurrencyRatePolling', () => {
       useCurrencyRateCheck: true,
       useSafeChainsListValidation: true,
       selectedNetworkClientId: 'selectedNetworkClientId',
+      enabledNetworkMap: {
+        '0x1': true,
+        '0x38': true,
+      },
       networkConfigurationsByChainId: {
         '0x1': arrangeNetworkConfiguration({
           chainId: '0x1',

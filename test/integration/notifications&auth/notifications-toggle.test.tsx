@@ -92,7 +92,11 @@ describe('Notifications Toggle', () => {
     const mockedState = getMockedNotificationsState();
     await act(async () => {
       await integrationTestRender({
-        preloadedState: { ...mockedState },
+        preloadedState: {
+          ...mockedState,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
+        },
         backgroundConnection: backgroundConnectionMocked,
       });
 
@@ -147,6 +151,8 @@ describe('Notifications Toggle', () => {
           isNotificationServicesEnabled: true,
           isFeatureAnnouncementsEnabled: false,
           isMetamaskNotificationsFeatureSeen: true,
+          dataCollectionForMarketing: false,
+          participateInMetaMetrics: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });

@@ -61,7 +61,7 @@ import {
   SwapAllowance,
   TokenSymbol,
   ToTokenOption,
-} from '../../remote.types';
+} from '../../../../../shared/lib/remote-mode';
 
 import {
   RemoteModeHardwareWalletConfirm,

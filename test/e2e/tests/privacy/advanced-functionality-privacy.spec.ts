@@ -101,6 +101,7 @@ describe('MetaMask onboarding ', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({ '0x1': true })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockApis,

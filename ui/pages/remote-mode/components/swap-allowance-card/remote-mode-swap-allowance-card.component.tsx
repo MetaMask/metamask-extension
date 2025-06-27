@@ -20,7 +20,11 @@ import {
   AlignItems,
 } from '../../../../helpers/constants/design-system';
 
-import { SwapAllowance, TokenInfo, TOKEN_DETAILS } from '../../remote.types';
+import {
+  SwapAllowance,
+  TokenInfo,
+  TOKEN_DETAILS,
+} from '../../../../../shared/lib/remote-mode';
 import { getChainNamesForDisplayByIds } from '../../../../helpers/utils/remote-mode';
 import { SUPPORTED_CHAINS_IDS } from '../../remote.constants';
 

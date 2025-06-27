@@ -1,9 +1,11 @@
 import {
   SimulationError,
   SimulationErrorCode,
+  TransactionContainerType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import InlineAlert from '../../../../components/app/alert-system/inline-alert';
 import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
@@ -35,6 +37,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { selectTransactionMetadata } from '../../../../selectors';
 import { BalanceChangeList } from './balance-change-list';
 import { BalanceChange } from './types';
 import { useBalanceChanges } from './useBalanceChanges';
@@ -115,12 +118,30 @@ const EmptyContent: React.FC = () => {
 const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
   const t = useI18nContext();
 
+  const transactionMetadata = useSelector((state) =>
+    selectTransactionMetadata(state, transactionId),
+  );
+
+  const isEnforced = transactionMetadata?.containerTypes?.includes(
+    TransactionContainerType.EnforcedSimulations,
+  );
+
+  const label = isEnforced
+    ? t('simulationDetailsTitleEnforced')
+    : t('simulationDetailsTitle');
+
+  const tooltip = isEnforced
+    ? t('simulationDetailsTitleTooltipEnforced')
+    : t('simulationDetailsTitleTooltip');
+
   return (
     <ConfirmInfoAlertRow
       alertKey={RowAlertKey.Resimulation}
-      label={t('simulationDetailsTitle')}
+      label={label}
       ownerId={transactionId}
-      tooltip={t('simulationDetailsTitleTooltip')}
+      tooltip={tooltip}
+      tooltipIcon={isEnforced && IconName.SecurityTick}
+      tooltipIconColor={isEnforced && IconColor.infoDefault}
       style={{
         paddingLeft: 0,
         paddingRight: 0,

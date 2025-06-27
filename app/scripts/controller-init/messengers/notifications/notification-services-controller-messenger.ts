@@ -14,21 +14,15 @@ export function getNotificationServicesControllerMessenger(
     name: 'NotificationServicesController',
     allowedActions: [
       // Keyring Actions
-      'KeyringController:withKeyring',
       'KeyringController:getState',
       // Auth Actions
       'AuthenticationController:getBearerToken',
       'AuthenticationController:isSignedIn',
       'AuthenticationController:performSignIn',
-      // Storage Actions
-      'UserStorageController:getStorageKey',
-      'UserStorageController:performGetStorage',
-      'UserStorageController:performSetStorage',
       // Push Actions
       'NotificationServicesPushController:enablePushNotifications',
       'NotificationServicesPushController:disablePushNotifications',
       'NotificationServicesPushController:subscribeToPushNotifications',
-      'NotificationServicesPushController:updateTriggerPushNotifications',
     ],
     allowedEvents: [
       // Keyring Events

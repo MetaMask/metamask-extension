@@ -7,21 +7,28 @@ import {
   setAccountLabel,
   getNextAvailableAccountName as getNextAvailableAccountNameFromController,
 } from '../../../store/actions';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { CreateAccount } from '../create-account';
 
 export const CreateEthAccount = ({
   onActionComplete,
   onSelectSrp,
   selectedKeyringId,
+  redirectToOverview,
 }) => {
   const dispatch = useDispatch();
 
   const onCreateAccount = async (name) => {
-    const newAccountAddress = await dispatch(addNewAccount(selectedKeyringId));
-    if (name) {
-      dispatch(setAccountLabel(newAccountAddress, name));
+    trace({ name: TraceName.AddAccount });
+    try {
+      const newAccount = await dispatch(addNewAccount(selectedKeyringId));
+      if (name) {
+        dispatch(setAccountLabel(newAccount.address, name));
+      }
+      onActionComplete(true, newAccount);
+    } finally {
+      endTrace({ name: TraceName.AddAccount });
     }
-    onActionComplete(true);
   };
 
   const getNextAvailableAccountName = async () => {
@@ -35,6 +42,7 @@ export const CreateEthAccount = ({
       getNextAvailableAccountName={getNextAvailableAccountName}
       onSelectSrp={onSelectSrp}
       selectedKeyringId={selectedKeyringId}
+      redirectToOverview={redirectToOverview}
     ></CreateAccount>
   );
 };
@@ -52,4 +60,8 @@ CreateEthAccount.propTypes = {
    * Currently selected HD keyring
    */
   selectedKeyringId: PropTypes.string,
+  /**
+   * Whether to redirect to the overview page after creating the account
+   */
+  redirectToOverview: PropTypes.bool,
 };

@@ -59,10 +59,12 @@
   }
 }
 
-.asset-chart__empty-state-container {
-  aspect-ratio: 2.9;
-  margin-top: 22px;
-  margin-bottom: 22px;
+.asset-chart__empty-or-loading-state-container {
+  aspect-ratio: 2.6;
+  margin-top: 28px;
+  margin-bottom: 28px;
+  padding-right: 1rem;
+  padding-left: 1rem;
 }
 
 .asset-chart__empty-state-content {
@@ -74,8 +76,6 @@
   line-height: 20px;
   border-radius: 1rem;
   background: linear-gradient(101.63deg, #e7f2f8 39.39%, #e9f2f9 44.98%, #ebf2fa 50.57%, #edf2fb 56.16%, #eff2fc 61.75%, #f0f2fd 67.35%, #f1f2fd 72.94%, #f2f2fe 78.53%, #f2f2fe 84.12%, #f3f2fe 89.71%, #f3f2ff 95.3%, #f4f2ff 100.89%, #f4f2ff 106.49%, #f4f2ff 112.08%, #f4f2ff 117.67%, #f4f2ff 123.26%, #f4f2ff 128.85%), linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2));
-  margin-right: 1rem;
-  margin-left: 1rem;
   height: 100%;
 }
 
@@ -86,14 +86,8 @@
   height: 47%;
 }
 
-.asset-chart__skeleton-container {
-  aspect-ratio: 2.9;
-  margin-top: 22px;
-  margin-bottom: 22px;
-}
-
 .asset-chart__skeleton {
-  aspect-ratio: 2.9;
-  margin-right: 1rem;
-  margin-left: 1rem;
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
 }

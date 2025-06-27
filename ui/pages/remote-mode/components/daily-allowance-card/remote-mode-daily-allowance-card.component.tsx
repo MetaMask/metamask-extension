@@ -19,7 +19,10 @@ import {
   BorderRadius,
   AlignItems,
 } from '../../../../helpers/constants/design-system';
-import { DailyAllowance, TOKEN_DETAILS } from '../../remote.types';
+import {
+  DailyAllowance,
+  TOKEN_DETAILS,
+} from '../../../../../shared/lib/remote-mode';
 
 /**
  * A card component that displays and manages a single daily allowance entry in remote mode.

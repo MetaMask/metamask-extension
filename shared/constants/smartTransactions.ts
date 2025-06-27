@@ -37,3 +37,6 @@ export const CANCEL_GAS_LIMIT_DEC = 21000;
 
 export const SMART_TRANSACTIONS_LEARN_MORE_URL =
   'https://support.metamask.io/transactions-and-gas/transactions/smart-transactions/';
+
+export const SMART_ACCOUNT_LEARN_MORE_URL =
+  'https://support.metamask.io/configure/accounts/what-is-a-smart-account/#what-are-metamask-smart-accounts';
