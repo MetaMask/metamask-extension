@@ -43,6 +43,7 @@ import {
 import {
   KeyringTypes,
   SignTypedDataVersion,
+  TypedMessageParams,
 } from '@metamask/keyring-controller';
 import {
   TransactionMeta,
@@ -6711,4 +6712,11 @@ export async function newUnsignedTypedMessage({
     version,
     signingOptions,
   ]);
+}
+
+export async function signTypedMessage(
+  data: TypedMessageParams,
+  version: SignTypedDataVersion,
+) {
+  return await submitRequestToBackground('signTypedMessage', [data, version]);
 }

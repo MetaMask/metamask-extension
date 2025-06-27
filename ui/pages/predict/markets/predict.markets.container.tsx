@@ -20,6 +20,7 @@ import PredictNavigation from '../predict.navigation';
 import { GAMMA_API_ENDPOINT } from '../utils';
 
 const PredictMarketsContainer = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [marketData, setMarketData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const history = useHistory();
@@ -55,7 +56,9 @@ const PredictMarketsContainer = () => {
   };
 
   const getDaysLeft = (endDateString: string) => {
-    if (!endDateString) return '';
+    if (!endDateString) {
+      return '';
+    }
     const endDate = new Date(endDateString);
     const now = new Date();
     const diff = endDate.getTime() - now.getTime();
@@ -71,7 +74,7 @@ const PredictMarketsContainer = () => {
     <>
       <PredictNavigation />
       <Box>
-        {loading ? (
+        {loading && (
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
@@ -86,7 +89,9 @@ const PredictMarketsContainer = () => {
               Loading positions...
             </Text>
           </Box>
-        ) : marketData && marketData.length > 0 ? (
+        )}
+        {marketData &&
+          marketData.length > 0 &&
           marketData.map((market: MarketGamma) => {
             return (
               <Box
@@ -167,8 +172,8 @@ const PredictMarketsContainer = () => {
                 </Box>
               </Box>
             );
-          })
-        ) : (
+          })}
+        {!loading && marketData && marketData.length === 0 && (
           <Text>No markets found.</Text>
         )}
       </Box>

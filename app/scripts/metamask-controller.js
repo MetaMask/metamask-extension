@@ -3696,6 +3696,8 @@ export default class MetamaskController extends EventEmitter {
       // SignatureController
       newUnsignedTypedMessage:
         signatureController.newUnsignedTypedMessage.bind(signatureController),
+      signTypedMessage:
+        keyringController.signTypedMessage.bind(keyringController),
 
       // AppStateController
       setLastActiveTime:

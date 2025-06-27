@@ -20,10 +20,11 @@ import { CLOB_ENDPOINT } from '../utils';
 import { Page } from '../../../components/multichain/pages/page';
 
 export const OrdersContainer = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const { createL2Headers, cancelOrder, getMarketTitle } = usePolymarket();
-  const [title, setTitle] = useState<string | null>(null);
+  const { createL2Headers, cancelOrder, getMarketTitles } = usePolymarket();
+  const [titles, setTitles] = useState<Record<string, string>>({});
   const [cancelingOrder, setCancelingOrder] = useState<string | null>(null);
 
   const getOrders = async () => {
@@ -40,9 +41,11 @@ export const OrdersContainer = () => {
       const ordersData = await response.json();
       console.log('ordersData', ordersData);
       setOrders(ordersData.data);
-      const marketTitle = await getMarketTitle(ordersData.data[0].market);
-      setTitle(marketTitle);
-      console.log('marketTitle', marketTitle);
+      if (ordersData.data.length > 0) {
+        const marketTitles = await getMarketTitles();
+        setTitles(marketTitles);
+        console.log('marketTitles', marketTitles);
+      }
     } catch (error) {
       console.error('Error fetching trades:', error);
       setOrders([]);
@@ -52,7 +55,9 @@ export const OrdersContainer = () => {
   };
 
   const getDaysLeft = (endDateString: string) => {
-    if (!endDateString) return '';
+    if (!endDateString) {
+      return '';
+    }
     const endDate = new Date(endDateString);
     const now = new Date();
     const diff = endDate.getTime() - now.getTime();
@@ -129,7 +134,9 @@ export const OrdersContainer = () => {
                       flexDirection={FlexDirection.Column}
                       gap={1}
                     >
-                      <Text variant={TextVariant.headingSm}>{title}</Text>
+                      <Text variant={TextVariant.headingSm}>
+                        {titles[order.market] || 'Market'}
+                      </Text>
                       <Text variant={TextVariant.bodySm}>
                         {order.outcome} -{' '}
                         {order.expiration === '0'

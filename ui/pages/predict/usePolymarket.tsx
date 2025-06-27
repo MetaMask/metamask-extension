@@ -8,7 +8,7 @@ import {
   getSelectedAccount,
   getSelectedNetwork,
 } from '../../selectors/selectors';
-import { addTransaction, newUnsignedTypedMessage } from '../../store/actions';
+import { addTransaction, signTypedMessage } from '../../store/actions';
 import {
   buildOrderCreationArgs,
   buildPolyHmacSignature,
@@ -88,7 +88,20 @@ export const usePolymarket = () => {
       message: MSG_TO_SIGN,
     };
 
-    const signature = await newUnsignedTypedMessage({
+    const signature = await signTypedMessage(
+      {
+        data: {
+          domain,
+          types,
+          message,
+          primaryType: 'ClobAuth',
+        },
+        from: account.address,
+      },
+      SignTypedDataVersion.V4,
+    );
+
+    /* const signature = await newUnsignedTypedMessage({
       messageParams: {
         data: {
           domain,
@@ -103,7 +116,7 @@ export const usePolymarket = () => {
         networkClientId: selectedNetwork.clientId,
       },
       version: SignTypedDataVersion.V4,
-    });
+    }); */
 
     const headers = {
       POLY_ADDRESS: account.address,
@@ -120,6 +133,7 @@ export const usePolymarket = () => {
     if (marketData) {
       const market = JSON.parse(marketData);
       market[marketId] = title;
+      localStorage.setItem(MARKET_CACHE_KEY, JSON.stringify(market));
     } else {
       const market = {
         [marketId]: title,
@@ -128,12 +142,12 @@ export const usePolymarket = () => {
     }
   };
 
-  const getMarketTitle = async (marketId: string) => {
+  const getMarketTitles = async () => {
     const marketData = localStorage.getItem(MARKET_CACHE_KEY);
 
     if (marketData) {
       const market = JSON.parse(marketData);
-      return market[marketId];
+      return market;
     }
     return null;
   };
@@ -455,7 +469,12 @@ export const usePolymarket = () => {
 
     console.log(typedData);
 
-    const signature = await newUnsignedTypedMessage({
+    const signature = await signTypedMessage(
+      { data: typedData, from: account.address },
+      SignTypedDataVersion.V4,
+    );
+
+    /* const signature = await newUnsignedTypedMessage({
       messageParams: {
         data: typedData,
         from: account.address,
@@ -465,7 +484,7 @@ export const usePolymarket = () => {
         networkClientId: selectedNetwork.clientId,
       },
       version: SignTypedDataVersion.V4,
-    });
+    }); */
 
     const signedOrder = {
       ...order,
@@ -555,7 +574,7 @@ export const usePolymarket = () => {
     createL2Headers,
     cancelOrder,
     setMarketTitle,
-    getMarketTitle,
+    getMarketTitles,
     apiKey,
   };
 };
