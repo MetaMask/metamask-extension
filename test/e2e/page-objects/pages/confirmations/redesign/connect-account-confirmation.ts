@@ -1,5 +1,4 @@
 import { Driver } from '../../../../webdriver/driver';
-import { isAccountDisplayed } from '../../../common';
 
 class ConnectAccountConfirmation {
   driver: Driver;
@@ -95,23 +94,6 @@ class ConnectAccountConfirmation {
     }
     console.log('Confirm button is enabled');
     return true;
-  }
-
-  /**
-   * Checks if an account is displayed
-   *
-   * @param account - The account to check
-   * @param options - Options for the check
-   * @param options.isCaseSensitive - Whether to check the account name in a case-sensitive manner. Defaults to false.
-   * @returns void
-   */
-  async check_isAccountDisplayed(
-    account: string,
-    options = {
-      isCaseSensitive: false,
-    },
-  ): Promise<void> {
-    return isAccountDisplayed(this.driver, account, options);
   }
 }
 

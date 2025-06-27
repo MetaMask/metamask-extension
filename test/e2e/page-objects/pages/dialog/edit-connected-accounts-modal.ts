@@ -1,5 +1,4 @@
 import { Driver } from '../../../webdriver/driver';
-import { isAccountDisplayed } from '../../common';
 
 class EditConnectedAccountsModal {
   driver: Driver;
@@ -97,22 +96,6 @@ class EditConnectedAccountsModal {
     const checkboxes = await this.driver.findElements(this.accountCheckbox);
     const accountCheckbox = checkboxes[accountIndex];
     return await accountCheckbox.isSelected();
-  }
-
-  /**
-   * Checks if an account is displayed
-   *
-   * @param account - The account to check
-   * @param options - Options for the check
-   * @returns void
-   */
-  async check_isAccountDisplayed(
-    account: string,
-    options = {
-      isCaseSensitive: false,
-    },
-  ): Promise<void> {
-    return isAccountDisplayed(this.driver, account, options);
   }
 }
 
