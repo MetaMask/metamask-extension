@@ -70,7 +70,9 @@ export function useInsufficientBalanceAlerts({
     balance,
   });
 
-  const hasSimulationFinished = !isSimulationEnabled || Boolean(simulationData);
+  const canSkipSimulationChecks = ignoreGasFeeToken || !isSimulationEnabled;
+  const hasSimulationFinished =
+    canSkipSimulationChecks || Boolean(simulationData);
 
   const showAlert =
     insufficientBalance &&
