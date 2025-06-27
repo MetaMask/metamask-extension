@@ -50,14 +50,4 @@ export default class ChangePasswordPage {
     await this.driver.fill(this.confirmNewPasswordInput, newPassword);
     await this.driver.clickElement(this.saveButton);
   }
-
-  async check_passwordChangedWarning(): Promise<void> {
-    console.log('Check password changed warning');
-    await this.driver.waitForSelector(this.passwordChangedWarning);
-  }
-
-  async confirmChangePasswordWarning(): Promise<void> {
-    console.log('Confirm change password warning');
-    await this.driver.clickElement(this.confirmWarningButton);
-  }
 }

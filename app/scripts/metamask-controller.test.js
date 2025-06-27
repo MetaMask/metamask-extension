@@ -4393,8 +4393,6 @@ describe('MetaMaskController', () => {
 
     it('in mv3, it should not reset states if isFirstMetaMaskControllerSetup is false', () => {
       browserPolyfillMock.storage.session.set.mockReset();
-      console.log('METAMASK_ENVIRONMENT', process.env.METAMASK_ENVIRONMENT);
-      console.log('METAMASK_BUILD_TYPE', process.env.METAMASK_BUILD_TYPE);
 
       const metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
