@@ -178,3 +178,35 @@ export const mockNetworkState = (
     networksMetadata,
   };
 };
+
+/**
+ * Creates a mock network state with domains property for tests that need it.
+ * This is a helper for tests that spread mockNetworkState into their metamask state
+ * and need the domains property to be present.
+ *
+ * @param overrides - Optional overrides for the network configuration
+ * @param overrides.id - Network ID override
+ * @param overrides.chainId - Chain ID override (required if provided)
+ * @param overrides.rpcUrl - RPC URL override
+ * @param overrides.nickname - Network nickname override
+ * @param overrides.ticker - Network ticker override
+ * @param overrides.blockExplorerUrl - Block explorer URL override
+ * @param overrides.metadata - Network metadata override
+ * @returns Network state with domains property
+ */
+export function mockNetworkStateWithDomains(
+  overrides: {
+    id?: string;
+    chainId: `0x${string}`;
+    rpcUrl?: string;
+    nickname?: string;
+    ticker?: string;
+    blockExplorerUrl?: string;
+    metadata?: NetworkMetadata;
+  } = { chainId: '0x1' },
+): NetworkState & { domains: Record<string, string> } {
+  return {
+    ...mockNetworkState(overrides),
+    domains: {},
+  };
+}
