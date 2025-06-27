@@ -63,6 +63,7 @@ jobs:
       GOOGLE_BETA_CLIENT_ID: ${{ secrets.GOOGLE_BETA_CLIENT_ID }}
       APPLE_BETA_CLIENT_ID: ${{ secrets.APPLE_BETA_CLIENT_ID }}
       ENABLE_MV3: ${{ inputs.enable-mv3 }}
+      SEEDLESS_ONBOARDING_ENABLED: 'true'
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
