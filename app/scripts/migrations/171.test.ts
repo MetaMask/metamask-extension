@@ -1,8 +1,9 @@
 import { migrate, version } from './171';
 
 const oldVersion = 170;
+const newVersion = 171;
 
-describe('migration #171', () => {
+describe(`migration #${newVersion}`, () => {
   beforeEach(() => {
     // Mock global.sentry for tests
     global.sentry = {
@@ -169,7 +170,7 @@ describe('migration #171', () => {
 
       expect(sentrySpy).toHaveBeenCalledWith(
         new Error(
-          'Migration 169: tokenNetworkFilter is empty, expected at least one network configuration.',
+          `Migration ${newVersion}: tokenNetworkFilter is empty, expected at least one network configuration.`,
         ),
       );
       expect(newState.data).toStrictEqual(oldState.data);
@@ -278,7 +279,7 @@ describe('migration #171', () => {
 
       expect(sentrySpy).toHaveBeenCalledWith(
         new Error(
-          "Migration 169: NetworkOrderController is type 'string', expected object in state.",
+          `Migration ${newVersion}: NetworkOrderController is type 'string', expected object in state.`,
         ),
       );
       expect(newState.data).toStrictEqual(oldState.data);
@@ -311,7 +312,7 @@ describe('migration #171', () => {
 
       expect(sentrySpy).toHaveBeenCalledWith(
         new Error(
-          "Migration 169: PreferencesController is type 'string', expected object in state.",
+          `Migration ${newVersion}: PreferencesController is type 'string', expected object in state.`,
         ),
       );
       expect(newState.data).toStrictEqual(oldState.data);
@@ -346,7 +347,7 @@ describe('migration #171', () => {
 
       expect(sentrySpy).toHaveBeenCalledWith(
         new Error(
-          "Migration 169: preferences is type 'string', expected object in PreferencesController.",
+          `Migration ${newVersion}: preferences is type 'string', expected object in PreferencesController.`,
         ),
       );
       expect(newState.data).toStrictEqual(oldState.data);
@@ -383,7 +384,7 @@ describe('migration #171', () => {
 
       expect(sentrySpy).toHaveBeenCalledWith(
         new Error(
-          "Migration 169: tokenNetworkFilter is type 'string', expected object.",
+          `Migration ${newVersion}: tokenNetworkFilter is type 'string', expected object.`,
         ),
       );
       expect(newState.data).toStrictEqual(oldState.data);
@@ -484,7 +485,7 @@ describe('migration #171', () => {
 
       expect(sentrySpy).toHaveBeenCalledWith(
         new Error(
-          "Migration 169: selectedMultichainNetworkChainId is type 'undefined', expected string.",
+          `Migration ${newVersion}: selectedMultichainNetworkChainId is type 'undefined', expected string.`,
         ),
       );
       expect(newState.data).toStrictEqual(oldState.data);
@@ -521,7 +522,7 @@ describe('migration #171', () => {
 
       expect(sentrySpy).toHaveBeenCalledWith(
         new Error(
-          "Migration 169: selectedMultichainNetworkChainId is type 'number', expected string.",
+          `Migration ${newVersion}: selectedMultichainNetworkChainId is type 'number', expected string.`,
         ),
       );
       expect(newState.data).toStrictEqual(oldState.data);
