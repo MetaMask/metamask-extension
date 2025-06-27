@@ -8,8 +8,6 @@ import {
 import {
   getCrossChainTokenExchangeRates,
   getCrossChainMetaMaskCachedBalances,
-  getEnabledChainIds,
-  getEnabledNetworks,
   getEnabledNetworksByNamespace,
 } from '../selectors';
 import {
