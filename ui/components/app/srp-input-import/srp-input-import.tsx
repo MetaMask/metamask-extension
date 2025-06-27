@@ -48,7 +48,6 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
   const t = useI18nContext();
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
   const [firstWord, setFirstWord] = useState('');
-  const [showAll, setShowAll] = useState(false);
   const [misSpelledWords, setMisSpelledWords] = useState<string[]>([]);
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
@@ -64,7 +63,12 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
   const onSrpPaste = (rawSrp: string) => {
     const parsedSrp = parseSecretRecoveryPhrase(rawSrp);
     const splittedSrp = parsedSrp.split(' ');
-    const newDraftSrp: DraftSrp[] = splittedSrp.map((word: string) => ({
+    const finalSplittedSrp =
+      splittedSrp.length > MAX_SRP_LENGTH
+        ? splittedSrp.slice(0, MAX_SRP_LENGTH)
+        : splittedSrp;
+
+    const newDraftSrp: DraftSrp[] = finalSplittedSrp.map((word: string) => ({
       word,
       id: uuidv4(),
       active: false,
@@ -252,7 +256,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
-        backgroundColor={BackgroundColor.backgroundMuted}
+        backgroundColor={BackgroundColor.backgroundSection}
         borderRadius={BorderRadius.SM}
         className="srp-input-import__container"
       >
@@ -277,9 +281,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
                   error={misSpelledWords.includes(word.word)}
                   value={word.word}
                   type={
-                    word.active ||
-                    showAll ||
-                    misSpelledWords.includes(word.word)
+                    word.active || misSpelledWords.includes(word.word)
                       ? TextFieldType.Text
                       : TextFieldType.Password
                   }
@@ -345,19 +347,11 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
           gap={0}
           className="srp-input-import__actions"
         >
-          <Button
-            variant={ButtonVariant.Link}
-            onClick={() => setShowAll(!showAll)}
-          >
-            {showAll
-              ? t('onboardingSrpInputHideAll')
-              : t('onboardingSrpInputShowAll')}
-          </Button>
           {draftSrp.length > 0 ? (
             <Button
               variant={ButtonVariant.Link}
+              block
               onClick={async () => {
-                setShowAll(false);
                 setDraftSrp([]);
               }}
             >
@@ -367,6 +361,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
             <Button
               data-testid="srp-input-import__paste-button"
               variant={ButtonVariant.Link}
+              block
               onClick={onTriggerPaste}
             >
               {t('paste')}

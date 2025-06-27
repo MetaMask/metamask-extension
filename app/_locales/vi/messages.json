@@ -911,9 +911,6 @@
   "bridgeTo": {
     "message": "Cầu nối đến"
   },
-  "bridgeToChain": {
-    "message": "Cầu nối đến $1"
-  },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Nếu bạn đã thêm token này theo cách thủ công, hãy đảm bảo rằng bạn nhận thức được các rủi ro đối với tiền của mình trước khi thực hiện cầu nối."
   },
@@ -4413,18 +4410,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Đã hiểu"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Luôn lưu giữ Cụm từ khôi phục bí mật ở nơi an toàn và bí mật"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Bạn cần sao lưu lại Cụm từ khôi phục bí mật?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Tuyệt đối không cho ai biết Cụm từ khôi phục bí mật"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Nhóm MetaMask sẽ không bao giờ hỏi Cụm từ khôi phục bí mật của bạn"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Cụm từ khôi phục bí mật sẽ kiểm soát mọi thứ trong tài khoản của bạn."
   },
@@ -4795,16 +4780,8 @@
   "sendSelectSendAsset": {
     "message": "Chọn tài sản để gửi"
   },
-  "sendSpecifiedTokens": {
-    "message": "Gửi $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Bằng cách nhấp vào nút này, giao dịch hoán đổi của bạn sẽ ngay lập tức bắt đầu. Vui lòng xem lại chi tiết giao dịch của bạn trước khi tiếp tục."
-  },
-  "sendTokenAsToken": {
-    "message": "Gửi $1 dưới dạng $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Đang gửi $1"

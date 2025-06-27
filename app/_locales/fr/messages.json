@@ -911,9 +911,6 @@
   "bridgeTo": {
     "message": "Passerelle vers"
   },
-  "bridgeToChain": {
-    "message": "Passerelle vers $1"
-  },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Si vous avez ajouté ce jeton manuellement, assurez-vous de bien comprendre les risques que cela peut représenter pour vos fonds avant d’établir une passerelle."
   },
@@ -4413,18 +4410,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "C’est compris !"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Conservez toujours votre phrase secrète de récupération dans un endroit sûr et secret"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Vous avez besoin de sauvegarder à nouveau votre phrase secrète de récupération ?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Ne partagez jamais votre phrase secrète de récupération avec qui que ce soit"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "L’équipe MetaMask ne vous demandera jamais votre phrase secrète de récupération"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Votre phrase secrète de récupération contrôle tous vos comptes."
   },
@@ -4795,16 +4780,8 @@
   "sendSelectSendAsset": {
     "message": "Sélectionnez l’actif que vous voulez envoyer"
   },
-  "sendSpecifiedTokens": {
-    "message": "Envoyer $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "En cliquant sur ce bouton, vous entamez immédiatement l’opération d’échange. Veuillez vérifier les détails de votre transaction avant de continuer."
-  },
-  "sendTokenAsToken": {
-    "message": "Échanger des $1 contre des $2 et les envoyer",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Envoi de $1"

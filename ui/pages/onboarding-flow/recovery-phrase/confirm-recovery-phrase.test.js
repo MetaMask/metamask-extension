@@ -1,4 +1,4 @@
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -17,17 +17,39 @@ jest.mock('../../../store/actions.ts', () => ({
   setSeedPhraseBackedUp: jest.fn().mockReturnValue(jest.fn()),
 }));
 
-const mockHistoryPush = jest.fn();
+const mockHistoryReplace = jest.fn();
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
-    push: mockHistoryPush,
+    replace: mockHistoryReplace,
   }),
 }));
 
+// click and answer the srp quiz
+const clickAndAnswerSrpQuiz = (quizUnansweredChips) => {
+  // sort the unanswered chips by testId
+  const sortedQuizWords = quizUnansweredChips
+    .map((chipElm) => {
+      // extract the testId number from the data-testid attribute, sample testId -> recovery-phrase-quiz-unanswered-[number]
+      const testIdNumber = chipElm.getAttribute('data-testid').split('-')[4];
+      return {
+        id: testIdNumber,
+        elm: chipElm,
+      };
+    })
+    .sort((a, b) => a.id - b.id);
+
+  sortedQuizWords.forEach((word) => {
+    // assert the unanswered chip is in the document
+    expect(word.elm).toBeInTheDocument();
+    fireEvent.click(word.elm);
+  });
+};
+
 describe('Confirm Recovery Phrase Component', () => {
   const TEST_SEED =
-    'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
+    'debris dizzy just just just float just just just just speak just';
 
   const props = {
     secretRecoveryPhrase: TEST_SEED,
@@ -141,46 +163,37 @@ describe('Confirm Recovery Phrase Component', () => {
     expect(confirmRecoveryPhraseButton).toBeDisabled();
   });
 
-  it('should enable confirm recovery phrase with correct word inputs', async () => {
+  it('should enable confirm recovery phrase with correct word inputs', () => {
     const { queryByTestId, queryAllByTestId, getByText } = renderWithProvider(
       <ConfirmRecoveryPhrase {...props} />,
       mockStore,
     );
 
-    const recoveryPhraseChips = queryAllByTestId(
+    const quizUnansweredChips = queryAllByTestId(
       /recovery-phrase-quiz-unanswered-/u,
     );
-    const quizWord1 = recoveryPhraseChips[0].textContent;
-    const quizWord2 = recoveryPhraseChips[1].textContent;
-    const quizWord3 = recoveryPhraseChips[2].textContent;
 
-    // sort the quiz words by index, and then click the chip in correct order
-    const seedArray = TEST_SEED.split(' ');
-    const quizWords = [
-      { index: seedArray.indexOf(quizWord1), elm: recoveryPhraseChips[0] },
-      { index: seedArray.indexOf(quizWord2), elm: recoveryPhraseChips[1] },
-      { index: seedArray.indexOf(quizWord3), elm: recoveryPhraseChips[2] },
-    ];
-    const sortedQuizWords = quizWords.sort((a, b) => a.index - b.index);
+    // click and answer the srp quiz
+    clickAndAnswerSrpQuiz(quizUnansweredChips);
 
-    sortedQuizWords.forEach((word) => {
-      fireEvent.click(word.elm);
-    });
+    // assert the unanswered chips are not in the document
+    const quizAnsweredChips = queryAllByTestId(
+      /recovery-phrase-quiz-answered-/u,
+    );
+    expect(quizAnsweredChips).toHaveLength(3);
 
-    await waitFor(() => {
-      const confirmRecoveryPhraseButton = queryByTestId(
-        'recovery-phrase-confirm',
-      );
-      expect(confirmRecoveryPhraseButton).not.toBeDisabled();
-      fireEvent.click(confirmRecoveryPhraseButton);
+    const confirmRecoveryPhraseButton = queryByTestId(
+      'recovery-phrase-confirm',
+    );
+    expect(confirmRecoveryPhraseButton).not.toBeDisabled();
+    fireEvent.click(confirmRecoveryPhraseButton);
 
-      const gotItButton = getByText('Got it');
-      expect(gotItButton).toBeInTheDocument();
-      fireEvent.click(gotItButton);
+    const gotItButton = getByText('Got it');
+    expect(gotItButton).toBeInTheDocument();
+    fireEvent.click(gotItButton);
 
-      expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
-      expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
-    });
+    expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
+    expect(mockHistoryReplace).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
   });
 
   it('should go to Onboarding Completion page as a next step in firefox', async () => {
@@ -193,36 +206,30 @@ describe('Confirm Recovery Phrase Component', () => {
       mockStore,
     );
 
-    const recoveryPhraseChips = queryAllByTestId(
+    const quizUnansweredChips = queryAllByTestId(
       /recovery-phrase-quiz-unanswered-/u,
     );
-    const quizWord1 = recoveryPhraseChips[0].textContent;
-    const quizWord2 = recoveryPhraseChips[1].textContent;
-    const quizWord3 = recoveryPhraseChips[2].textContent;
 
-    // sort the quiz words by index, and then click the chip in correct order
-    const seedArray = TEST_SEED.split(' ');
-    const quizWords = [
-      { index: seedArray.indexOf(quizWord1), elm: recoveryPhraseChips[0] },
-      { index: seedArray.indexOf(quizWord2), elm: recoveryPhraseChips[1] },
-      { index: seedArray.indexOf(quizWord3), elm: recoveryPhraseChips[2] },
-    ];
-    const sortedQuizWords = quizWords.sort((a, b) => a.index - b.index);
+    // click and answer the srp quiz
+    clickAndAnswerSrpQuiz(quizUnansweredChips);
 
-    sortedQuizWords.forEach((word) => {
-      fireEvent.click(word.elm);
-    });
+    console.log('quizUnansweredChips', quizUnansweredChips);
+
+    const quizAnsweredChips = queryAllByTestId(
+      /recovery-phrase-quiz-answered-/u,
+    );
+    expect(quizAnsweredChips).toHaveLength(3);
 
     const confirmRecoveryPhraseButton = queryByTestId(
       'recovery-phrase-confirm',
     );
 
-    await waitFor(() => {
-      fireEvent.click(confirmRecoveryPhraseButton);
-      fireEvent.click(getByText('Got it'));
+    fireEvent.click(confirmRecoveryPhraseButton);
+    fireEvent.click(getByText('Got it'));
 
-      expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
-      expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
-    });
+    expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
+    expect(mockHistoryReplace).toHaveBeenCalledWith(
+      ONBOARDING_COMPLETION_ROUTE,
+    );
   });
 });

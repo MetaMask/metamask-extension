@@ -390,6 +390,9 @@
   "alertMessageAddressMismatchWarning": {
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
+  "alertMessageAddressTrustSignal": {
+    "message": "If you confirm this request, you will probably lose your assets to a scammer."
+  },
   "alertMessageChangeInSimulationResults": {
     "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
   },
@@ -611,6 +614,9 @@
   },
   "back": {
     "message": "Back"
+  },
+  "backup": {
+    "message": "Backup"
   },
   "backupAndSync": {
     "message": "Backup and sync"
@@ -890,6 +896,9 @@
   "bridgeSelectDestinationAccount": {
     "message": "Select destination account"
   },
+  "bridgeSelectDifferentQuote": {
+    "message": "Please select a different quote."
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
   },
@@ -940,9 +949,6 @@
   "bridgeTo": {
     "message": "Bridge to"
   },
-  "bridgeToChain": {
-    "message": "Bridge to $1"
-  },
   "bridgeTokenCannotVerifyDescription": {
     "message": "If you added this token manually, make sure you are aware of the risks to your funds before you bridge."
   },
@@ -951,6 +957,9 @@
   },
   "bridgeTransactionProgress": {
     "message": "Transaction $1 of 2"
+  },
+  "bridgeTxDetailsBridged": {
+    "message": "Bridged"
   },
   "bridgeTxDetailsBridging": {
     "message": "Bridging"
@@ -969,6 +978,12 @@
   },
   "bridgeTxDetailsStatus": {
     "message": "Status"
+  },
+  "bridgeTxDetailsSwapped": {
+    "message": "Swapped"
+  },
+  "bridgeTxDetailsSwapping": {
+    "message": "Swapping"
   },
   "bridgeTxDetailsTimestamp": {
     "message": "Time stamp"
@@ -995,6 +1010,12 @@
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "More $1 needed for gas"
+  },
+  "bridged": {
+    "message": "Bridged"
+  },
+  "bridgedToChain": {
+    "message": "Bridged to $1"
   },
   "bridging": {
     "message": "Bridging"
@@ -1562,6 +1583,9 @@
     "message": "Use $1 to customize the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
+  "customNetworks": {
+    "message": "Custom networks"
+  },
   "customSlippage": {
     "message": "Custom"
   },
@@ -1665,6 +1689,56 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
+  "deepLink_Caution": {
+    "message": "Proceed with caution"
+  },
+  "deepLink_Continue": {
+    "message": "Continue"
+  },
+  "deepLink_ContinueDescription": {
+    "message": "You'll open $1 if you continue.",
+    "description": "$1 is the name of the page they'll be redirected to if they click the Continue button. Examples of $1: 'the home page'; 'the buy page'; 'the swaps page'; 'the notifications page'"
+  },
+  "deepLink_DontRemindMeAgain": {
+    "message": "Don't remind me again"
+  },
+  "deepLink_Error404Description": {
+    "message": "We can't find the page you are looking for."
+  },
+  "deepLink_Error404Title": {
+    "message": "This page doesn't exist"
+  },
+  "deepLink_ErrorMissingUrl": {
+    "message": "No url to navigate to was provided."
+  },
+  "deepLink_ErrorOtherDescription": {
+    "message": "This is a bug and should be reported to MetaMask."
+  },
+  "deepLink_ErrorOtherTitle": {
+    "message": "An error occurred while processing the deep link"
+  },
+  "deepLink_GoToTheHomePageButton": {
+    "message": "Go to the home page"
+  },
+  "deepLink_RedirectingToMetaMask": {
+    "message": "Redirecting to MetaMask"
+  },
+  "deepLink_ThirdPartyDescription": {
+    "message": "You were sent here by a third party, not MetaMask. $1",
+    "description": "$1 is the message 'deepLink_ContinueDescription'"
+  },
+  "deepLink_theBuyPage": {
+    "message": "the buy page"
+  },
+  "deepLink_theHomePage": {
+    "message": "the home page"
+  },
+  "deepLink_theNotificationsPage": {
+    "message": "the notifications page"
+  },
+  "deepLink_theSwapsPage": {
+    "message": "the swaps page"
+  },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
   },
@@ -1740,6 +1814,9 @@
   "descriptionFromSnap": {
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
+  },
+  "deselectAll": {
+    "message": "Deselect all"
   },
   "destinationAccountPickerNoEligible": {
     "message": "No eligible accounts found"
@@ -1992,6 +2069,9 @@
   "editInPortfolio": {
     "message": "Edit in Portfolio"
   },
+  "editNetwork": {
+    "message": "Edit network"
+  },
   "editNetworkLink": {
     "message": "edit the original network"
   },
@@ -2036,6 +2116,12 @@
   },
   "enableIt": {
     "message": " Enable it"
+  },
+  "enableSmartContractAccount": {
+    "message": "Enable smart contract account"
+  },
+  "enableSmartContractAccountDescription": {
+    "message": "You can enable smart account features on supported networks."
   },
   "enableSnap": {
     "message": "Enable"
@@ -2096,9 +2182,6 @@
   },
   "enterOptionalPassword": {
     "message": "Enter optional password"
-  },
-  "enterPassword": {
-    "message": "Enter password"
   },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
@@ -3208,6 +3291,14 @@
   "nameAlreadyInUse": {
     "message": "Name is already in use"
   },
+  "nameFooterTrustWarning": {
+    "message": "Only save addresses you trust.",
+    "description": "Footer warning text shown in name modal for malicious and warning addresses."
+  },
+  "nameInstructionsMalicious": {
+    "message": "This has been identified as malicious. We recommend not interacting with this address.",
+    "description": "Instruction text in name component modal when address is malicious."
+  },
   "nameInstructionsNew": {
     "message": "If you know this address, give it a nickname to recognize it in the future.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -3220,6 +3311,10 @@
     "message": "You've added a nickname for this address before. You can edit or view other suggested nicknames.",
     "description": "Instruction text in name component modal when value is saved."
   },
+  "nameInstructionsWarning": {
+    "message": "This has been identified as suspicious. If you trust this author, set a personal display name to identify it going forward.",
+    "description": "Instruction text in name component modal when address has warning signals."
+  },
   "nameLabel": {
     "message": "Nickname",
     "description": "Label above name input field in name component modal."
@@ -3227,6 +3322,10 @@
   "nameModalMaybeProposedName": {
     "message": "Maybe: $1",
     "description": "$1 is the proposed name"
+  },
+  "nameModalTitleMalicious": {
+    "message": "Malicious address",
+    "description": "Title of the modal created by the name component when address is identified as malicious."
   },
   "nameModalTitleNew": {
     "message": "Unknown address",
@@ -3239,6 +3338,14 @@
   "nameModalTitleSaved": {
     "message": "Saved address",
     "description": "Title of the modal created by the name component when value is saved."
+  },
+  "nameModalTitleVerified": {
+    "message": "Verified address",
+    "description": "Title of the modal created by the name component when address is verified."
+  },
+  "nameModalTitleWarning": {
+    "message": "Suspicious address",
+    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Proposed by $1",
@@ -3259,6 +3366,10 @@
   "nameSetPlaceholder": {
     "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
+  },
+  "nameSetPlaceholderSuggested": {
+    "message": "Suggested: $1",
+    "description": "$1 is the proposed name"
   },
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 is asking for your approval to:",
@@ -3552,6 +3663,9 @@
   },
   "noNetworksFound": {
     "message": "No networks found for the given search query"
+  },
+  "noNetworksSelected": {
+    "message": "No networks selected"
   },
   "noOptionsAvailableMessage": {
     "message": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
@@ -3906,14 +4020,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Clear all"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Hide all"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Add a space between each word and make sure no one is watching."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Show all"
   },
   "onekey": {
     "message": "OneKey"
@@ -3993,7 +4101,7 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
-    "message": "If I forget this password, I’ll lose access to my wallet permanently. MetaMask can’t reset it for me."
+    "message": "If I forget this password, MetaMask can't recover it for me."
   },
   "passwordToggleHide": {
     "message": "Hide Password"
@@ -4517,6 +4625,9 @@
   "receiveCrypto": {
     "message": "Receive crypto"
   },
+  "received": {
+    "message": "Received"
+  },
   "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"
   },
@@ -4524,28 +4635,16 @@
     "message": "Recommended"
   },
   "recoveryPhraseReminderBackupStart": {
-    "message": "Start here"
+    "message": "Back up now"
   },
   "recoveryPhraseReminderConfirm": {
-    "message": "Got it"
-  },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Always keep your Secret Recovery Phrase in a secure and secret place"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Need to backup your Secret Recovery Phrase again?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Never share your Secret Recovery Phrase with anyone"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "The MetaMask team will never ask for your Secret Recovery Phrase"
+    "message": "Remind me later"
   },
   "recoveryPhraseReminderSubText": {
-    "message": "Your Secret Recovery Phrase controls all of your accounts."
+    "message": "If you don’t back up your wallet, you’ll lose access to your funds if you get locked out of the app or get a new device."
   },
   "recoveryPhraseReminderTitle": {
-    "message": "Protect your funds"
+    "message": "Protect your wallet"
   },
   "redeposit": {
     "message": "Redeposit"
@@ -4582,6 +4681,14 @@
   },
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
+  },
+  "removeAccountModalBannerDescription": {
+    "message": "Make sure you have the Secret Recovery Phrase or private key for this account before removing.",
+    "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
+  },
+  "removeAccountModalBannerTitle": {
+    "message": "This account will be removed from MetaMask.",
+    "description": "Title of a banner alert used on account remove modal."
   },
   "removeKeyringSnap": {
     "message": "Removing this Snap removes these accounts from MetaMask:"
@@ -4946,16 +5053,8 @@
   "sendSelectSendAsset": {
     "message": "Select asset to send"
   },
-  "sendSpecifiedTokens": {
-    "message": "Send $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Clicking this button will immediately initiate your swap transaction. Please review your transaction details before proceeding."
-  },
-  "sendTokenAsToken": {
-    "message": "Send $1 as $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Sending $1"
@@ -4970,6 +5069,17 @@
   "sendingToTokenContractWarning": {
     "message": "Warning: you are about to send to a token contract which could result in a loss of funds. $1",
     "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
+  },
+  "sent": {
+    "message": "Sent"
+  },
+  "sentSpecifiedTokens": {
+    "message": "Sent $1",
+    "description": "Symbol of the specified token"
+  },
+  "sentTokenAsToken": {
+    "message": "Sent $1 as $2",
+    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sepolia": {
     "message": "Sepolia test network"
@@ -5104,8 +5214,14 @@
   "simulationDetailsTitle": {
     "message": "Estimated changes"
   },
+  "simulationDetailsTitleEnforced": {
+    "message": "Balance changes"
+  },
   "simulationDetailsTitleTooltip": {
     "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+  },
+  "simulationDetailsTitleTooltipEnforced": {
+    "message": "Balance changes are guaranteed. If this outcome isn't possible, the transaction will be stopped."
   },
   "simulationDetailsTotalFiat": {
     "message": "Total = $1",
@@ -5225,6 +5341,9 @@
   "smartAccountBetterTransactionDescription": {
     "message": "Save time and money by processing transactions together."
   },
+  "smartAccountEditAccounts": {
+    "message": "Edit accounts"
+  },
   "smartAccountFeaturesDescription": {
     "message": "Keep the same account address, and you can switch back anytime."
   },
@@ -5246,8 +5365,17 @@
   "smartAccountSameAccount": {
     "message": "Same account, smarter features."
   },
+  "smartAccountSplashInfo": {
+    "message": "Why use a smart account?"
+  },
   "smartAccountSplashTitle": {
     "message": "Use smart account?"
+  },
+  "smartAccountUpdateSuccessMessage": {
+    "message": "Your account will be updated to smart account with your next transaction."
+  },
+  "smartAccountUpdateSuccessTitle": {
+    "message": "Successful!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."
@@ -5957,6 +6085,10 @@
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
   },
+  "swapDetailsTitle": {
+    "message": "Swap details",
+    "description": "Title for the modal showing details about a swap transaction."
+  },
   "swapDirectContract": {
     "message": "Direct contract"
   },
@@ -6635,6 +6767,9 @@
   "twelveHrTitle": {
     "message": "12hr:"
   },
+  "txAlertTitle": {
+    "message": "This transaction will be reverted"
+  },
   "typeYourSRP": {
     "message": "Enter your Secret Recovery Phrase"
   },
@@ -6776,6 +6911,9 @@
   "userOpContractDeployError": {
     "message": "Contract deployment from a smart contract account is not supported"
   },
+  "value": {
+    "message": "Value"
+  },
   "version": {
     "message": "Version"
   },
@@ -6847,6 +6985,19 @@
   },
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
+  },
+  "walletDetails": {
+    "message": "Wallet details"
+  },
+  "walletName": {
+    "message": "Wallet name"
+  },
+  "walletNotFoundDescription": {
+    "message": "The wallet with ID $1 was not found.",
+    "description": "$1 is the wallet ID"
+  },
+  "walletNotFoundTitle": {
+    "message": "Wallet not found"
   },
   "walletReadyLearn": {
     "message": "$1 you can keep this phrase safe so you never lose access to your money.",

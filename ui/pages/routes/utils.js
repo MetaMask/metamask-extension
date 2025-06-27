@@ -22,6 +22,8 @@ import {
   REVIEW_PERMISSIONS,
   SEND_ROUTE,
   SNAPS_VIEW_ROUTE,
+  DEEP_LINK_ROUTE,
+  WALLET_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -99,6 +101,17 @@ export function hideAppHeader(props) {
     return true;
   }
 
+  const isDeepLinksPage = Boolean(
+    matchPath(location.pathname, {
+      path: DEEP_LINK_ROUTE,
+      exact: false,
+    }),
+  );
+
+  if (isDeepLinksPage) {
+    return true;
+  }
+
   const isInitializing = Boolean(
     matchPath(location.pathname, {
       path: ONBOARDING_ROUTE,
@@ -167,6 +180,16 @@ export function hideAppHeader(props) {
     }),
   );
   if (isMultichainSend) {
+    return true;
+  }
+
+  const isWalletDetailsPage = Boolean(
+    matchPath(location.pathname, {
+      path: WALLET_DETAILS_ROUTE,
+      exact: false,
+    }),
+  );
+  if (isWalletDetailsPage) {
     return true;
   }
 

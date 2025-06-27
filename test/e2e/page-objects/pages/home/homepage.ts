@@ -43,6 +43,10 @@ class HomePage {
     testId: 'asset-list-control-bar-action-button',
   };
 
+  private readonly loadingOverlay = {
+    text: 'Connecting to Localhost 8545',
+  };
+
   private readonly nftTab = {
     testId: 'account-overview__nfts-tab',
   };
@@ -152,6 +156,14 @@ class HomePage {
 
   async togglePrivacyBalance(): Promise<void> {
     await this.driver.clickElement(this.privacyBalanceToggle);
+  }
+
+  async waitForLoadingOverlayToDisappear(): Promise<void> {
+    console.log(`Wait for loading overlay to disappear`);
+    await this.driver.assertElementNotPresent(this.loadingOverlay, {
+      waitAtLeastGuard: 1000,
+      timeout: 10000,
+    });
   }
 
   /**

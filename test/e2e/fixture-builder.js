@@ -53,7 +53,9 @@ function onboardingFixture() {
       },
       NetworkOrderController: {
         enabledNetworkMap: {
-          '0x539': true,
+          eip155: {
+            [CHAIN_IDS.LOCALHOST]: true,
+          },
         },
       },
       NotificationServicesController: {},
@@ -198,8 +200,9 @@ class FixtureBuilder {
   withEnabledNetworks(data) {
     merge(this.fixture.data.NetworkOrderController, {
       networkOrder: this.fixture.data.NetworkOrderController?.networkOrder,
-      enabledNetworkMap: data,
     });
+    // Replace instead of merge for enabledNetworkMap
+    this.fixture.data.NetworkOrderController.enabledNetworkMap = data;
     return this;
   }
 
