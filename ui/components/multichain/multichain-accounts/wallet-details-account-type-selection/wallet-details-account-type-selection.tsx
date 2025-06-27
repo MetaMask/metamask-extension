@@ -21,10 +21,12 @@ import {
   Box,
 } from '../../../component-library';
 import { WalletClientType } from '../../../../hooks/accounts/useMultichainWalletSnapClient';
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-import { getIsBitcoinSupportEnabled } from '../../../../selectors';
-///: END:ONLY_INCLUDE_IF
-import { getIsSolanaSupportEnabled } from '../../../../selectors';
+import {
+  getIsSolanaSupportEnabled,
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  getIsBitcoinSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../../selectors';
 
 type WalletDetailsAccountTypeSelectionProps = {
   onAccountTypeSelect: (accountType: WalletClientType | 'EVM') => void;
@@ -81,20 +83,18 @@ export const WalletDetailsAccountTypeSelection: React.FC<
           >
             {t('addNewEthereumAccountLabel')}
           </ButtonLink>
-          {
-            solanaSupportEnabled && (
-              <ButtonLink
-                marginBottom={2}
-                size={ButtonLinkSize.Sm}
-                startIconName={IconName.Add}
-                startIconProps={{ size: IconSize.Md }}
-                onClick={() => onAccountTypeSelect(WalletClientType.Solana)}
-                data-testid="wallet-details-add-solana-account"
-              >
-                {t('addNewSolanaAccountLabel')}
-              </ButtonLink>
-            )
-          }
+          {solanaSupportEnabled && (
+            <ButtonLink
+              marginBottom={2}
+              size={ButtonLinkSize.Sm}
+              startIconName={IconName.Add}
+              startIconProps={{ size: IconSize.Md }}
+              onClick={() => onAccountTypeSelect(WalletClientType.Solana)}
+              data-testid="wallet-details-add-solana-account"
+            >
+              {t('addNewSolanaAccountLabel')}
+            </ButtonLink>
+          )}
           {
             ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
             bitcoinSupportEnabled && (

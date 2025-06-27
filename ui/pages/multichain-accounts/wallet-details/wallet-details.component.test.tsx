@@ -3,7 +3,7 @@ import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { SolScope, BtcScope } from '@metamask/keyring-api';
+import { SolScope } from '@metamask/keyring-api';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { getWalletsWithAccounts } from '../../../selectors/multichain-accounts/account-tree';
