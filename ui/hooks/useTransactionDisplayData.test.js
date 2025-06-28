@@ -198,7 +198,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Send ABC',
+    title: 'Sent ABC',
     category: TransactionGroupCategory.send,
     subtitle: 'To: ',
     subtitleContainsOrigin: true,
