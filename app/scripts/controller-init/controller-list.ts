@@ -1,6 +1,7 @@
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import { NetworkController } from '@metamask/network-controller';
+import { SelectedNetworkController } from '@metamask/selected-network-controller';
 import {
   CaveatSpecificationConstraint,
   PermissionController,
@@ -130,4 +131,5 @@ export type ControllerFlatState = AccountsController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
-  RemoteFeatureFlagController['state'];
+  RemoteFeatureFlagController['state'] &
+  SelectedNetworkController['state'];
