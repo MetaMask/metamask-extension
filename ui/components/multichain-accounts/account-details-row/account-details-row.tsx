@@ -10,14 +10,16 @@ import {
 
 type AccountDetailsRowProps = {
   label: string;
-  value: string;
+  value?: string;
   endAccessory: React.ReactNode;
   style?: React.CSSProperties;
+  valueColor?: TextColor;
 };
 
 export const AccountDetailsRow = ({
   label,
   value,
+  valueColor = TextColor.textAlternative,
   endAccessory,
   style,
 }: AccountDetailsRowProps) => {
@@ -33,7 +35,7 @@ export const AccountDetailsRow = ({
     >
       <Text color={TextColor.textDefault}>{label}</Text>
       <Box display={Display.Flex} alignItems={AlignItems.center}>
-        <Text color={TextColor.textAlternative}>{value}</Text>
+        <Text color={valueColor}>{value}</Text>
         {endAccessory}
       </Box>
     </Box>

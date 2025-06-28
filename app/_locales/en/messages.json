@@ -616,7 +616,7 @@
     "message": "Back"
   },
   "backup": {
-    "message": "Backup"
+    "message": "Back up"
   },
   "backupAndSync": {
     "message": "Backup and sync"
@@ -674,6 +674,9 @@
   },
   "backupNow": {
     "message": "Back up now"
+  },
+  "backupSecretRecoveryPhrase": {
+    "message": "Back up your Secret Recovery Phrase"
   },
   "balance": {
     "message": "Balance"
@@ -4875,6 +4878,9 @@
   "save": {
     "message": "Save"
   },
+  "saveSrp": {
+    "message": "Save Secret Recovery Phrase"
+  },
   "scanInstructions": {
     "message": "Place the QR code in front of your camera"
   },
@@ -6951,6 +6957,12 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
+  },
+  "viewPrivateKey": {
+    "message": "View private key"
+  },
+  "viewSecretRecoveryPhrase": {
+    "message": "View Secret Recovery Phrase"
   },
   "viewSolanaAccount": {
     "message": "View Solana account"

@@ -265,7 +265,7 @@ describe('WalletDetails', () => {
       );
     });
     // does not show backup reminder when seed phrase is backed up
-    expect(queryByText('Backup')).not.toBeInTheDocument();
+    expect(queryByText('Back up')).not.toBeInTheDocument();
   });
 
   it('shows backup reminder for first HD keyring when not backed up', () => {
@@ -278,7 +278,7 @@ describe('WalletDetails', () => {
     };
     setupMocks({ 'entropy:test-entropy-wallet': mockEntropyWallet }, false);
     const { getByText } = renderComponent(customState);
-    expect(getByText('backup')).toBeInTheDocument();
+    expect(getByText('Back up')).toBeInTheDocument();
   });
 
   it('navigates to backup route when SRP button is clicked and backup reminder is shown', () => {
