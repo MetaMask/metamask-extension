@@ -67,6 +67,7 @@ export async function getMethodDataAsync(
   try {
     let fourByteSig = null;
     if (allow4ByteRequests) {
+      // TODO: not fixed here
       fourByteSig = await getMethodFrom4Byte(fourBytePrefix).catch((e) => {
         console.error(e);
         return null;
