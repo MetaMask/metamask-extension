@@ -65,6 +65,10 @@ const mockEncryptor = {
     return null;
   },
 
+  async exportKey(key) {
+    return JSON.stringify(key);
+  },
+
   async updateVault(_vault, _password) {
     return _vault;
   },
