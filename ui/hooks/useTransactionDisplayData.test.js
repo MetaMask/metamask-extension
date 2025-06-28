@@ -197,6 +197,19 @@ const expectedResults = [
     isPending: false,
     displayedStatusKey: TransactionStatus.confirmed,
   },
+  {
+    title: 'Sent ABC',
+    category: TransactionGroupCategory.send,
+    subtitle: 'To: ',
+    subtitleContainsOrigin: true,
+    date: formatDateWithYearContext(1585088013000),
+    primaryCurrency: '-1.234 ABC',
+    senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+    recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
+    secondaryCurrency: undefined,
+    isPending: false,
+    displayedStatusKey: TransactionStatus.confirmed,
+  },
 ];
 
 let useI18nContext, useTokenFiatAmount;
@@ -302,6 +315,7 @@ describe('useTransactionDisplayData', () => {
       const expected = expectedResults[idx];
       const tokenAddress =
         transactionGroup.primaryTransaction?.destinationTokenAddress;
+
       it(`should return a title of ${expected.title}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
@@ -309,6 +323,7 @@ describe('useTransactionDisplayData', () => {
         );
         expect(result.current.title).toStrictEqual(expected.title);
       });
+
       it(`should return a subtitle of ${expected.subtitle}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
@@ -316,6 +331,7 @@ describe('useTransactionDisplayData', () => {
         );
         expect(result.current.subtitle).toStrictEqual(expected.subtitle);
       });
+
       it(`should return a category of ${expected.category}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
@@ -323,6 +339,7 @@ describe('useTransactionDisplayData', () => {
         );
         expect(result.current.category).toStrictEqual(expected.category);
       });
+
       it(`should return a primaryCurrency of ${expected.primaryCurrency}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
@@ -332,6 +349,7 @@ describe('useTransactionDisplayData', () => {
           expected.primaryCurrency,
         );
       });
+
       it(`should return a secondaryCurrency of ${expected.secondaryCurrency}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
@@ -341,6 +359,7 @@ describe('useTransactionDisplayData', () => {
           expected.secondaryCurrency,
         );
       });
+
       it(`should return a displayedStatusKey of ${expected.displayedStatusKey}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
@@ -350,6 +369,7 @@ describe('useTransactionDisplayData', () => {
           expected.displayedStatusKey,
         );
       });
+
       it(`should return a recipientAddress of ${expected.recipientAddress}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
@@ -359,6 +379,7 @@ describe('useTransactionDisplayData', () => {
           expected.recipientAddress,
         );
       });
+
       it(`should return a senderAddress of ${expected.senderAddress}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
@@ -370,6 +391,7 @@ describe('useTransactionDisplayData', () => {
       });
     });
   });
+
   it('should return an appropriate object', () => {
     const { result } = renderHookWithRouter(() =>
       useTransactionDisplayData(transactions[0]),
