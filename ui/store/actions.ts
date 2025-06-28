@@ -2157,6 +2157,12 @@ export function showConfTxPage({ id }: Partial<TransactionMeta> = {}) {
   };
 }
 
+export function setShowSupportDataConsentModal(show: boolean) {
+  return {
+    type: actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL,
+    payload: show,
+  };
+}
 export function addToken(
   {
     address,
