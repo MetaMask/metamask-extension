@@ -658,7 +658,6 @@ describe('Request-queue UI changes', function () {
         // Reject the confirmation
         await driver.clickElement({ css: 'button', text: 'Cancel' });
 
-<<<<<<< HEAD
         if (!isGlobalNetworkSelectorRemoved) {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
@@ -674,12 +673,6 @@ describe('Request-queue UI changes', function () {
         await driver.waitForSelector({
           css: '.toast-text',
           text: 'Localhost 8545 is now active on 127.0.0.1:8080',
-=======
-        // Wait for network to automatically change to localhost
-        await driver.waitForSelector({
-          css: '.multichain-app-header__contents--avatar-network .mm-text',
-          text: 'Localhost 8545',
->>>>>>> 5df10e62f8 (remove toast test)
         });
       },
     );
