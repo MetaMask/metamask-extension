@@ -44,6 +44,7 @@ import {
 } from '../../shared/constants/offscreen-communication';
 import {
   FakeLedgerBridge,
+  FakeQrBridge,
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
@@ -597,6 +598,7 @@ async function initialize(backup) {
         keyrings: {
           trezorBridge: FakeTrezorBridge,
           ledgerBridge: FakeLedgerBridge,
+          qrBridge: FakeQrBridge,
         },
       }
     : {};

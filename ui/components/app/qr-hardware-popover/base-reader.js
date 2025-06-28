@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import log from 'loglevel';
-import { URDecoder } from '@ngraveio/bc-ur';
+import { UR, URDecoder } from '@ngraveio/bc-ur';
 import PropTypes from 'prop-types';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -86,7 +86,7 @@ const BaseReader = ({
 
   const handleScan = (data) => {
     try {
-      if (!data) {
+      if (!data || urDecoder.isComplete()) {
         return;
       }
       urDecoder.receivePart(data);

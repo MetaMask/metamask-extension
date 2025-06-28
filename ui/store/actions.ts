@@ -151,6 +151,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { QrScanResponse, SerializedUR } from '@metamask/eth-qr-keyring';
 
 type CustomGasSettings = {
   gas?: string;
@@ -5744,46 +5745,23 @@ export function setUseTransactionSimulations(val: boolean): void {
 }
 
 // QR Hardware Wallets
-export async function submitQRHardwareCryptoHDKey(cbor: Hex) {
-  await submitRequestToBackground('submitQRHardwareCryptoHDKey', [cbor]);
-}
 
-export async function submitQRHardwareCryptoAccount(cbor: Hex) {
-  await submitRequestToBackground('submitQRHardwareCryptoAccount', [cbor]);
-}
-
-export function cancelSyncQRHardware(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(hideLoadingIndication());
-    await submitRequestToBackground('cancelSyncQRHardware');
+export function completeQrCodeScan(
+  scanResult: SerializedUR,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('completeQrCodeScan', [scanResult]);
   };
 }
 
-export async function submitQRHardwareSignature(requestId: string, cbor: Hex) {
-  await submitRequestToBackground('submitQRHardwareSignature', [
-    requestId,
-    cbor,
-  ]);
-}
-
-export function cancelQRHardwareSignRequest(): ThunkAction<
+export function cancelQrCodeScan(): ThunkAction<
   void,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(hideLoadingIndication());
-    await submitRequestToBackground('cancelQRHardwareSignRequest');
+  return async () => {
+    await submitRequestToBackground('cancelQrCodeScan');
   };
 }
 

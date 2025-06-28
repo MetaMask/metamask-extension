@@ -36,7 +36,7 @@ import {
 } from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
-import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
+import { QrKeyring, QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import { nanoid } from 'nanoid';
 import { captureException } from '@sentry/browser';
 import { AddressBookController } from '@metamask/address-book-controller';
@@ -413,6 +413,7 @@ import {
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
+import { qrKeyringBuilderFactory } from './lib/qr-keyring-builder-factory';
 import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 
@@ -938,23 +939,21 @@ export default class MetamaskController extends EventEmitter {
       getChainId: () => this.#getGlobalChainId(),
     });
 
+    const appStateControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'AppStateController',
+      allowedActions: [
+        `${this.approvalController.name}:addRequest`,
+        `${this.approvalController.name}:acceptRequest`,
+        `PreferencesController:getState`,
+      ],
+      allowedEvents: ['PreferencesController:stateChange'],
+    });
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
       isUnlocked: this.isUnlocked.bind(this),
       state: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'AppStateController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `PreferencesController:getState`,
-        ],
-        allowedEvents: [
-          `KeyringController:qrKeyringStateChange`,
-          'PreferencesController:stateChange',
-        ],
-      }),
+      messenger: appStateControllerMessenger,
       extension: this.extension,
     });
 
@@ -1103,14 +1102,26 @@ export default class MetamaskController extends EventEmitter {
         })
       : null;
 
-    let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
-
     const keyringOverrides = this.opts.overrides?.keyrings;
+
+    let additionalKeyrings = [
+      qrKeyringBuilderFactory(
+        keyringOverrides?.qr || QrKeyring,
+        keyringOverrides?.qrBridge || QrKeyringScannerBridge,
+        {
+          requestScan: async (request) =>
+            appStateControllerMessenger.call(
+              'AppStateController:requestQrCodeScan',
+              request,
+            ),
+        },
+      ),
+    ];
 
     if (isManifestV3 === false) {
       const additionalKeyringTypes = [
         keyringOverrides?.lattice || LatticeKeyring,
-        QRHardwareKeyring,
+        QrKeyring,
       ];
 
       const additionalBridgedKeyringTypes = [
@@ -3357,7 +3368,6 @@ export default class MetamaskController extends EventEmitter {
       addressBookController,
       alertController,
       appStateController,
-      keyringController,
       nftController,
       nftDetectionController,
       currencyRateController,
@@ -3519,16 +3529,10 @@ export default class MetamaskController extends EventEmitter {
         this.attemptLedgerTransportCreation.bind(this),
 
       // qr hardware devices
-      submitQRHardwareCryptoHDKey:
-        keyringController.submitQRCryptoHDKey.bind(keyringController),
-      submitQRHardwareCryptoAccount:
-        keyringController.submitQRCryptoAccount.bind(keyringController),
-      cancelSyncQRHardware:
-        keyringController.cancelQRSynchronization.bind(keyringController),
-      submitQRHardwareSignature:
-        keyringController.submitQRSignature.bind(keyringController),
-      cancelQRHardwareSignRequest:
-        keyringController.cancelQRSignRequest.bind(keyringController),
+      completeQrCodeScan:
+        appStateController.completeQrCodeScan.bind(appStateController),
+      cancelQrCodeScan:
+        appStateController.cancelQrCodeScan.bind(appStateController),
 
       // vault management
       submitPassword: this.submitPassword.bind(this),
@@ -5241,7 +5245,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async forgetDevice(deviceName) {
     return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
-      for (const address of keyring.accounts) {
+      for (const address of await keyring.getAccounts()) {
         this._onAccountRemoved(address);
       }
 
@@ -8493,7 +8497,7 @@ export default class MetamaskController extends EventEmitter {
         keyringType = keyringOverrides?.ledger?.type || LedgerKeyring.type;
         break;
       case HardwareDeviceNames.qr:
-        keyringType = QRHardwareKeyring.type;
+        keyringType = QrKeyring.type;
         break;
       case HardwareDeviceNames.lattice:
         keyringType = keyringOverrides?.lattice?.type || LatticeKeyring.type;
