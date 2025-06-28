@@ -3,7 +3,7 @@ import {
   TransactionContainerType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -37,14 +37,8 @@ import { ConfirmMetamaskState } from '../../../types/confirm';
 
 export function SimulationSettingsModal({ onClose }: { onClose?: () => void }) {
   const t = useI18nContext();
-  const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-
-  const {
-    containerTypes,
-    id: transactionId,
-    txParamsOriginal,
-  } = currentConfirmation || {};
+  const { containerTypes, id: transactionId } = currentConfirmation || {};
 
   const isEnforcedSimulationsEnabled = useSelector(
     (state: ConfirmMetamaskState) =>
@@ -84,11 +78,11 @@ export function SimulationSettingsModal({ onClose }: { onClose?: () => void }) {
 
     onClose?.();
   }, [
-    dispatch,
+    containerTypes,
     enabled,
     isEnforcedSimulationApplied,
+    onClose,
     transactionId,
-    txParamsOriginal,
   ]);
 
   return (
@@ -105,7 +99,9 @@ export function SimulationSettingsModal({ onClose }: { onClose?: () => void }) {
     >
       <ModalOverlay data-testid="modal-overlay" />
       <ModalContent size={ModalContentSize.Md}>
-        <ModalHeader onClose={onClose}>Transaction settings</ModalHeader>
+        <ModalHeader onClose={onClose}>
+          {t('simulationSettingsModalTitle')}
+        </ModalHeader>
         <ModalBody
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -120,7 +116,7 @@ export function SimulationSettingsModal({ onClose }: { onClose?: () => void }) {
               style={{ marginRight: '-12px' }}
             >
               <Text variant={TextVariant.bodyMdMedium}>
-                Enforce balance changes
+                {t('simulationSettingsModalEnforceToggle')}
               </Text>
               <ToggleButton
                 dataTestId="simulation-settings-modal-enable-enforced"
@@ -132,8 +128,7 @@ export function SimulationSettingsModal({ onClose }: { onClose?: () => void }) {
               variant={TextVariant.bodyMd}
               color={TextColor.textAlternativeSoft}
             >
-              To protect your funds, this transaction will fail if the displayed
-              balance changes and slippage tolerance are not fulfilled.
+              {t('simulationSettingsModalEnforceToggleDescription')}
             </Text>
           </Section>
           <ButtonPrimary
