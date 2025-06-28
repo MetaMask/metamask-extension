@@ -22,6 +22,11 @@ class SendTokenPage {
     tag: 'button',
   };
 
+  private readonly confirmButton = {
+    text: 'Confirm',
+    tag: 'button',
+  };
+
   private readonly cancelButton = {
     text: 'Cancel',
     tag: 'button',
@@ -69,6 +74,15 @@ class SendTokenPage {
   private readonly gasFeeField = '[data-testid="first-gas-field"]';
 
   private readonly fiatFeeField = '[data-testid="native-currency"]';
+
+  private readonly tokenGasFeeDropdown =
+    '[data-testid="selected-gas-fee-token-arrow"]';
+
+  private readonly tokenGasFeeSymbol =
+    '[data-testid="gas-fee-token-list-item-symbol"]';
+
+  private readonly viewActivityButton =
+    '[data-testid="smart-transaction-status-page-footer-close-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -142,6 +156,14 @@ class SendTokenPage {
     console.log('Continue button clicked successfully');
   }
 
+  async clickConfirmButton(): Promise<void> {
+    await this.driver.clickElement(this.confirmButton);
+  }
+
+  async clickViewActivity(): Promise<void> {
+    await this.driver.clickElement(this.viewActivityButton);
+  }
+
   async fillAmount(amount: string): Promise<void> {
     console.log(`Fill amount input with ${amount} on send token screen`);
     const inputAmount = await this.driver.waitForSelector(this.inputAmount);
@@ -154,6 +176,15 @@ class SendTokenPage {
       amount,
       `Error when filling amount field on send token screen: the value entered is ${inputValue} instead of expected ${amount}.`,
     );
+  }
+
+  async selectTokenFee(tokenSymbol: string): Promise<void> {
+    console.log(`Select token ${tokenSymbol} to pay for the fees`);
+    await this.driver.clickElement(this.tokenGasFeeDropdown);
+    await this.driver.clickElement({
+      css: this.tokenGasFeeSymbol,
+      text: tokenSymbol,
+    });
   }
 
   async check_networkChange(networkName: string): Promise<void> {
