@@ -70,7 +70,6 @@ describe('useTokenRatesPolling', () => {
         selectedMultichainNetworkChainId: BtcScope.Mainnet,
         isEvmSelected: true,
         domains: {},
-        domains: {},
       },
     };
 

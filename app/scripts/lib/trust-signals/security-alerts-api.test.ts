@@ -106,6 +106,9 @@ describe('Security Alerts API', () => {
     let mockAppStateController: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     let mockNetworkController: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     const mockedGetChainId = jest.mocked(trustSignalsUtil.getChainId);
+    const mockSelectedNetworkController = {
+      domains: {},
+    } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     beforeEach(() => {
       mockAppStateController = {
@@ -138,6 +141,7 @@ describe('Security Alerts API', () => {
         TEST_ADDRESS,
         mockAppStateController,
         mockNetworkController,
+        mockSelectedNetworkController,
       );
 
       expect(result).toEqual(cachedResponse);
@@ -166,6 +170,7 @@ describe('Security Alerts API', () => {
         TEST_ADDRESS,
         mockAppStateController,
         mockNetworkController,
+        mockSelectedNetworkController,
       );
 
       expect(result).toEqual(RESPONSE_MOCK);
@@ -196,6 +201,7 @@ describe('Security Alerts API', () => {
         TEST_ADDRESS,
         mockAppStateController,
         mockNetworkController,
+        mockSelectedNetworkController,
       );
 
       expect(result).toEqual(RESPONSE_MOCK);
@@ -219,6 +225,7 @@ describe('Security Alerts API', () => {
           TEST_ADDRESS,
           mockAppStateController,
           mockNetworkController,
+          mockSelectedNetworkController,
         ),
       ).rejects.toThrow('Chain ID not found');
 
@@ -243,6 +250,7 @@ describe('Security Alerts API', () => {
           TEST_ADDRESS,
           mockAppStateController,
           mockNetworkController,
+          mockSelectedNetworkController,
         ),
       ).rejects.toThrow('Network error');
 
