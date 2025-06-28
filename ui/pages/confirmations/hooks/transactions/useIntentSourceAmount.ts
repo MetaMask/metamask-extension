@@ -18,17 +18,25 @@ export function useIntentSourceAmount({
 
   const tokenFiatRate = useTokenFiatRate(tokenAddress ?? '0x123', chainId);
 
-  const { value: decimals } = useTokenDecimals({
+  const { pending: loading, value: decimals } = useTokenDecimals({
     chainId,
     tokenAddress,
   });
+
+  if (loading) {
+    return {
+      loading: true,
+    };
+  }
 
   if (
     decimals === undefined ||
     tokenFiatRate === undefined ||
     tokenAddress === undefined
   ) {
-    return undefined;
+    return {
+      loading: false,
+    };
   }
 
   const targetFiat = new BigNumber(nativeValue, 16)
@@ -42,6 +50,7 @@ export function useIntentSourceAmount({
     .toFixed(0);
 
   return {
+    loading: false,
     sourceTokenAmountFormatted,
     sourceTokenAmountRaw,
   };

@@ -4,7 +4,7 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
 } from '../../../../../components/app/confirm/info/row';
-import { useIntentsData } from '../../../hooks/transactions/useIntentsData';
+import { useIntentsQuote } from '../../../hooks/transactions/useIntentsQuote';
 import { AssetPicker } from '../../../../../components/multichain/asset-picker-amount/asset-picker';
 import {
   AssetWithDisplayData,
@@ -42,26 +42,27 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { AssetType } from '@metamask/bridge-controller';
 import { Hex } from '@metamask/utils';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
+import Preloader from '../../../../../components/ui/icon/preloader';
 
 type SelectedToken = {
   address?: Hex;
   chainId: Hex;
 };
 
-export function IntentsRow() {
+export function IntentsSection() {
   const isAdvanced = useSelector(selectConfirmationAdvancedDetailsOpen);
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const {chainId: targetChainId} = transactionMeta;
+  const { chainId: targetChainId } = transactionMeta;
 
   const [token, setToken] = useState<SelectedToken>({
     chainId: targetChainId,
   });
 
-  const { sourceTokenAmountFormatted, networkFeeFiatFormatted } =
-    useIntentsData({
+  const { loading, sourceTokenAmountFormatted, networkFeeFiatFormatted } =
+    useIntentsQuote({
       srcChainId: token.chainId,
       tokenAddress: token.address,
     });
@@ -69,11 +70,12 @@ export function IntentsRow() {
   return (
     <ConfirmInfoSection>
       <IntentAssetRow
+        loading={loading}
+        onChange={setToken}
         sourceTokenAmount={sourceTokenAmountFormatted}
         targetChainId={targetChainId}
-        onChange={setToken}
       />
-      {isAdvanced && networkFeeFiatFormatted && (
+      {!loading && isAdvanced && networkFeeFiatFormatted && (
         <ConfirmInfoRow label="Network Fee">
           <ConfirmInfoRowText text={networkFeeFiatFormatted} />
         </ConfirmInfoRow>
@@ -83,10 +85,12 @@ export function IntentsRow() {
 }
 
 function IntentAssetRow({
+  loading,
   onChange,
   sourceTokenAmount,
   targetChainId,
 }: {
+  loading?: boolean;
   onChange?: (token: SelectedToken) => void;
   sourceTokenAmount?: string;
   targetChainId: Hex;
@@ -109,7 +113,7 @@ function IntentAssetRow({
   useEffect(() => {
     onChange?.({
       address: asset.address as Hex,
-      chainId: network.chainId
+      chainId: network.chainId,
     });
   }, [asset.address, network.chainId, onChange]);
 
@@ -122,7 +126,14 @@ function IntentAssetRow({
         alignItems={AlignItems.center}
         gap={2}
       >
-        <Text variant={TextVariant.bodyMd}>{sourceTokenAmount}</Text>
+        {loading && (
+          <div role="progressbar">
+            <Preloader size={20} />
+          </div>
+        )}
+        {!loading && (
+          <Text variant={TextVariant.bodyMd}>{sourceTokenAmount}</Text>
+        )}
         <AssetPickerWrapper
           asset={asset}
           network={network}

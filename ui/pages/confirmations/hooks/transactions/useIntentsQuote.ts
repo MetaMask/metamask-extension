@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   resetBridgeState,
   updateQuoteRequestParams,
@@ -8,33 +8,14 @@ import { useConfirmContext } from '../../context/confirm';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { getBridgeQuotes } from '../../../../ducks/bridge/selectors';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
-import {
-  getConversionRate,
-  getCurrentCurrency,
-} from '../../../../ducks/metamask/metamask';
-import BigNumber from 'bignumber.js';
-import { Hex, Json, createProjectLogger } from '@metamask/utils';
-import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
-import { useAsyncResult } from '../../../../hooks/useAsync';
-import {
-  getTokenStandardAndDetailsByChain,
-  setIntentQuoteForTransaction,
-} from '../../../../store/actions';
-import { fetchErc20Decimals } from '../../utils/token';
-import {
-  getConfirmationExchangeRates,
-  getCurrencyRates,
-  getMarketData,
-  getTokenExchangeRates,
-} from '../../../../selectors';
-import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { Hex } from '@metamask/utils';
+import { setIntentQuoteForTransaction } from '../../../../store/actions';
 import { useIntentSourceAmount } from './useIntentSourceAmount';
 
-const log = createProjectLogger('intents-data');
+const QUOTE_LOADING_TIMEOUT = 5000;
 
-export function useIntentsData({
+export function useIntentsQuote({
   srcChainId,
   tokenAddress,
 }: {
@@ -43,6 +24,7 @@ export function useIntentsData({
 }) {
   const dispatch = useDispatch();
   const currency = useSelector(getCurrentCurrency);
+  const [quoteStart, setQuoteStart] = useState<number>(0);
 
   const { currentConfirmation: transasctionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -53,12 +35,15 @@ export function useIntentsData({
     txParams: { from, value },
   } = transasctionMeta;
 
-  const { sourceTokenAmountRaw, sourceTokenAmountFormatted } =
-    useIntentSourceAmount({
-      chainId: srcChainId,
-      nativeValue: (value as Hex) ?? '0x0',
-      tokenAddress,
-    }) ?? {};
+  const {
+    loading: sourceAmountLoading,
+    sourceTokenAmountRaw,
+    sourceTokenAmountFormatted,
+  } = useIntentSourceAmount({
+    chainId: srcChainId,
+    nativeValue: (value as Hex) ?? '0x0',
+    tokenAddress,
+  }) ?? {};
 
   useEffect(() => {
     if (!sourceTokenAmountRaw) {
@@ -86,6 +71,8 @@ export function useIntentsData({
         },
       ),
     );
+
+    setQuoteStart(Date.now());
   }, [
     destChainId,
     dispatch,
@@ -104,18 +91,33 @@ export function useIntentsData({
   const quoteData = useSelector(getBridgeQuotes);
   const activeQuote = quoteData.activeQuote;
 
-  log('Active Quote', activeQuote);
+  const isQuoteLoading =
+    !activeQuote && Date.now() - quoteStart < QUOTE_LOADING_TIMEOUT;
 
   const networkFeeFiat =
-    quoteData.activeQuote?.totalNetworkFee?.valueInCurrency ?? '0';
+    quoteData.activeQuote?.totalNetworkFee?.valueInCurrency;
 
-  const networkFeeFiatFormatted = formatCurrency(networkFeeFiat, currency, 2);
+  const networkFeeFiatFormatted = networkFeeFiat
+    ? formatCurrency(networkFeeFiat, currency, 2)
+    : undefined;
 
   useEffect(() => {
     setIntentQuoteForTransaction(transactionId, activeQuote);
   }, [transactionId, activeQuote]);
 
+  const loading = sourceAmountLoading || isQuoteLoading;
+
+  if (
+    sourceTokenAmountFormatted === undefined ||
+    networkFeeFiatFormatted === undefined
+  ) {
+    return {
+      loading,
+    };
+  }
+
   return {
+    loading,
     sourceTokenAmountFormatted,
     networkFeeFiatFormatted,
   };

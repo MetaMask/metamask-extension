@@ -118,11 +118,22 @@ export function useAsyncResult<T>(
   asyncFn: () => Promise<T>,
   deps: DependencyList = [],
 ): AsyncResultNoIdle<T> {
+  const previousDeps = useRef<DependencyList>();
   const [execute, result] = useAsyncCallback(asyncFn, deps);
+
+  const isNewDeps = deps.some(
+    (dep, index) => previousDeps.current?.[index] !== dep,
+  );
 
   useEffect(() => {
     execute();
   }, [execute]);
+
+  previousDeps.current = deps;
+
+  if (isNewDeps) {
+    return RESULT_PENDING;
+  }
 
   // When the result is in the idle state, return pending state instead
   // This is because we execute the asyncFn immediately on mount, so the component
