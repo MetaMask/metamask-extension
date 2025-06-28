@@ -20,6 +20,7 @@ import {
   ImportTokensModal,
 } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
+import OneKeyErrors from '../onekey-errors';
 
 import {
   ASSET_ROUTE,
@@ -55,6 +56,7 @@ import {
   DEEP_LINK_ROUTE,
   SMART_ACCOUNT_UPDATE,
   WALLET_DETAILS_ROUTE,
+  HARDWARE_ONEKEY_ERRORS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -418,7 +420,10 @@ export default class Routes extends Component {
             component={WalletDetails}
             exact
           />
-
+          <Authenticated
+            path={`${HARDWARE_ONEKEY_ERRORS_ROUTE}/:error`}
+            component={OneKeyErrors}
+          />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>
