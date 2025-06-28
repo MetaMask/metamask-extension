@@ -317,6 +317,7 @@ describe('ConnectPage', () => {
             },
           },
           metadata: {
+            origin: mockTargetSubjectMetadata.origin,
             promptToCreateSolanaAccount: true,
           },
         },
@@ -360,6 +361,7 @@ describe('ConnectPage', () => {
             },
           },
           metadata: {
+            origin: mockTargetSubjectMetadata.origin,
             promptToCreateSolanaAccount: false,
           },
         },
@@ -403,6 +405,7 @@ describe('ConnectPage', () => {
             },
           },
           metadata: {
+            origin: mockTargetSubjectMetadata.origin,
             promptToCreateSolanaAccount: true,
           },
         },
@@ -446,6 +449,7 @@ describe('ConnectPage', () => {
             },
           },
           metadata: {
+            origin: mockTargetSubjectMetadata.origin,
             promptToCreateSolanaAccount: true,
           },
         },
