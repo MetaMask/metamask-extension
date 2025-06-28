@@ -103,7 +103,6 @@ describe('Carousel component e2e tests', function () {
         const initialSlides = await driver.findElements('.mm-carousel-slide');
         assert.equal(initialSlides.length, visibleSlideCount);
         for (let i = 0; i < SLIDE_IDS.length; i++) {
-          await driver.delay(tinyDelayMs);
           const currentSlides = await driver.findElements('.mm-carousel-slide');
           const remainingSlides = Math.min(
             totalSlidesCount - i,
@@ -115,7 +114,6 @@ describe('Carousel component e2e tests', function () {
             remainingSlides,
             `Expected ${remainingSlides} slides remaining`,
           );
-          await driver.delay(tinyDelayMs);
           const dismissButton = await driver.waitForSelector(
             `[data-testid="slide-${SLIDE_IDS[i]}"] button`,
           );
