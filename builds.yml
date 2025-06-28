@@ -78,6 +78,10 @@ buildTypes:
     manifestOverrides: ./app/build-types/beta/manifest/
     buildNameOverride: MetaMask Beta
 
+  experimental:
+    id: 12
+    extends: main
+
   flask:
     id: 15
     # Code surrounded using code fences for that feature
