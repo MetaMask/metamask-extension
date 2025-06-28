@@ -114,6 +114,12 @@
     margin-bottom: 15px;
   }
 
+  &__href-link {
+    text-align: center;
+    color: var(--color-primary-default);
+    background: unset;
+  }
+
   &__msg {
     &-link {
       @include design-system.H6;
