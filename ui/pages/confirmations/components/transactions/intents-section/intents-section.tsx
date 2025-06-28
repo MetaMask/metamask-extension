@@ -61,7 +61,7 @@ export function IntentsSection() {
     chainId: targetChainId,
   });
 
-  const { loading, sourceTokenAmountFormatted, networkFeeFiatFormatted } =
+  const { gasFeeFormatted, loading, sourceTokenAmountFormatted } =
     useIntentsQuote({
       srcChainId: token.chainId,
       tokenAddress: token.address,
@@ -75,10 +75,12 @@ export function IntentsSection() {
         sourceTokenAmount={sourceTokenAmountFormatted}
         targetChainId={targetChainId}
       />
-      {!loading && isAdvanced && networkFeeFiatFormatted && (
-        <ConfirmInfoRow label="Network Fee">
-          <ConfirmInfoRowText text={networkFeeFiatFormatted} />
-        </ConfirmInfoRow>
+      {!loading && isAdvanced && gasFeeFormatted && (
+        <>
+          <ConfirmInfoRow label="Network Fee">
+            <ConfirmInfoRowText text={gasFeeFormatted ?? ''} />
+          </ConfirmInfoRow>
+        </>
       )}
     </ConfirmInfoSection>
   );

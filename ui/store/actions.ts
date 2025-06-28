@@ -36,6 +36,7 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
+  TransactionController,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -6702,5 +6703,18 @@ export async function setIntentQuoteForTransaction(
     ]);
   } catch (error) {
     logErrorWithMessage(error);
+  }
+}
+
+export async function estimateGasFee(
+  ...args: Params<TransactionController['estimateGasFee']>
+) {
+  try {
+    return await submitRequestToBackground<
+      ReturnType<TransactionController['estimateGasFee']>
+    >('estimateGasFee', args);
+  } catch (error) {
+    logErrorWithMessage(error);
+    throw error;
   }
 }
