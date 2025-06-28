@@ -1,4 +1,5 @@
 import { NetworkController } from '@metamask/network-controller';
+import { SelectedNetworkController } from '@metamask/selected-network-controller';
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { SECOND } from '../../../../shared/constants/time';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
@@ -41,6 +42,7 @@ export async function scanAddressAndAddToCache(
   address: string,
   appStateController: AppStateController,
   networkController: NetworkController,
+  selectedNetworkController: SelectedNetworkController,
 ): Promise<ScanAddressResponse> {
   const cachedResponse =
     appStateController.getAddressSecurityAlertResponse(address);
@@ -48,7 +50,7 @@ export async function scanAddressAndAddToCache(
     return cachedResponse;
   }
 
-  const chainId = getChainId(networkController);
+  const chainId = getChainId(networkController, selectedNetworkController);
   const result = await scanAddress(chainId, address);
   appStateController.addAddressSecurityAlertResponse(address, result);
   return result;

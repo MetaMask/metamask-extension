@@ -1,6 +1,7 @@
 import { JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
 import { NetworkController } from '@metamask/network-controller';
 import { PhishingController } from '@metamask/phishing-controller';
+import { SelectedNetworkController } from '@metamask/selected-network-controller';
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
@@ -21,6 +22,7 @@ export function createTrustSignalsMiddleware(
   appStateController: AppStateController,
   phishingController: PhishingController,
   preferencesController: PreferencesController,
+  selectedNetworkController: SelectedNetworkController,
 ) {
   return async (
     req: JsonRpcRequest & { mainFrameOrigin?: string },
@@ -40,12 +42,14 @@ export function createTrustSignalsMiddleware(
           req,
           appStateController,
           networkController,
+          selectedNetworkController,
         );
       } else if (isEthSignTypedData(req)) {
         await handleEthSignTypedData(
           req,
           appStateController,
           networkController,
+          selectedNetworkController,
         );
       } else if (isEthAccounts(req) && isProdEnabled()) {
         handleEthAccounts(req, phishingController);
@@ -62,19 +66,26 @@ async function handleEthSendTransaction(
   req: JsonRpcRequest,
   appStateController: AppStateController,
   networkController: NetworkController,
+  selectedNetworkController: SelectedNetworkController,
 ) {
   if (!hasValidTransactionParams(req)) {
     return;
   }
 
   const { to } = req.params[0];
-  await scanAddressAndAddToCache(to, appStateController, networkController);
+  await scanAddressAndAddToCache(
+    to,
+    appStateController,
+    networkController,
+    selectedNetworkController,
+  );
 }
 
 async function handleEthSignTypedData(
   req: JsonRpcRequest,
   appStateController: AppStateController,
   networkController: NetworkController,
+  selectedNetworkController: SelectedNetworkController,
 ) {
   if (!hasValidTypedDataParams(req)) {
     return;
@@ -94,6 +105,7 @@ async function handleEthSignTypedData(
     verifyingContract,
     appStateController,
     networkController,
+    selectedNetworkController,
   );
 }
 
