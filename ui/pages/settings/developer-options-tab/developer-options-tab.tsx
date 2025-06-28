@@ -39,6 +39,7 @@ import { getRemoteFeatureFlags } from '../../../selectors';
 import ToggleRow from './developer-options-toggle-row-component';
 import SentryTest from './sentry-test';
 import { BackupAndSyncDevSettings } from './backup-and-sync';
+import { HyperliquidTest } from './hyperliquid-test';
 
 /**
  * Settings Page for Developer Options (internal-only)
@@ -277,6 +278,7 @@ const DeveloperOptionsTab = () => {
 
       <BackupAndSyncDevSettings />
       <SentryTest />
+      <HyperliquidTest />
     </div>
   );
 };

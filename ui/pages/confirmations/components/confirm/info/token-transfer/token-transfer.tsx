@@ -5,6 +5,7 @@ import { SimulationDetails } from '../../../simulation-details';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import SendHeading from '../shared/send-heading/send-heading';
+import { IntentsSection } from '../../../transactions/intents-section';
 import { TokenDetailsSection } from './token-details-section';
 import { TransactionFlowSection } from './transaction-flow-section';
 
@@ -25,6 +26,7 @@ const TokenTransferInfo = () => {
         metricsOnly={isWalletInitiated}
       />
       <TokenDetailsSection />
+      <IntentsSection />
       <GasFeesSection />
       <AdvancedDetails />
     </>
