@@ -47,6 +47,10 @@ const createMockResponse = (): JsonRpcResponse => ({
   result: null,
 });
 
+const selectedNetworkController = {
+  domains: {},
+} as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+
 const createTransactionParams = (
   overrides: Partial<Record<string, unknown>> = {},
 ) => ({
@@ -93,11 +97,13 @@ const createMiddleware = (
       appStateController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       phishingController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       preferencesController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+      selectedNetworkController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
     ),
     appStateController,
     networkController,
     phishingController,
     preferencesController,
+    selectedNetworkController,
   };
 };
 
@@ -164,6 +170,7 @@ describe('TrustSignalsMiddleware', () => {
         TEST_ADDRESSES.TO,
         appStateController,
         networkController,
+        selectedNetworkController,
       );
       expect(next).toHaveBeenCalled();
     });
@@ -190,6 +197,7 @@ describe('TrustSignalsMiddleware', () => {
         TEST_ADDRESSES.TO,
         appStateController,
         networkController,
+        selectedNetworkController,
       );
       expect(next).toHaveBeenCalled();
     });
@@ -215,6 +223,7 @@ describe('TrustSignalsMiddleware', () => {
         TEST_ADDRESSES.TO,
         appStateController,
         networkController,
+        selectedNetworkController,
       );
       expect(next).toHaveBeenCalled();
       expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -247,6 +256,7 @@ describe('TrustSignalsMiddleware', () => {
         TEST_ADDRESSES.TO,
         appStateController,
         networkController,
+        selectedNetworkController,
       );
       expect(next).toHaveBeenCalled();
     });
@@ -275,6 +285,7 @@ describe('TrustSignalsMiddleware', () => {
         TEST_ADDRESSES.TO,
         appStateController,
         networkController,
+        selectedNetworkController,
       );
     });
 
@@ -348,6 +359,7 @@ describe('TrustSignalsMiddleware', () => {
           TEST_ADDRESSES.TO,
           appStateController,
           networkController,
+          selectedNetworkController,
         );
         expect(next).toHaveBeenCalled();
       });
@@ -390,6 +402,7 @@ describe('TrustSignalsMiddleware', () => {
         TEST_ADDRESSES.TO,
         appStateController,
         networkController,
+        selectedNetworkController,
       );
       expect(next).toHaveBeenCalled();
     });
@@ -426,6 +439,7 @@ describe('TrustSignalsMiddleware', () => {
         TEST_ADDRESSES.TO,
         appStateController,
         networkController,
+        selectedNetworkController,
       );
       expect(next).toHaveBeenCalled();
     });
@@ -474,6 +488,7 @@ describe('TrustSignalsMiddleware', () => {
           TEST_ADDRESSES.TO,
           appStateController,
           networkController,
+          selectedNetworkController,
         );
         expect(next).toHaveBeenCalled();
       }

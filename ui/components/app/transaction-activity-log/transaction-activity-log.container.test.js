@@ -28,6 +28,7 @@ describe('TransactionActivityLog container', () => {
             chainId: CHAIN_IDS.MAINNET,
             blockExplorerUrl: undefined,
           }),
+          domains: {},
         },
       };
 
@@ -51,6 +52,7 @@ describe('TransactionActivityLog container', () => {
             rpcUrl: 'https://customnetwork.com/',
             blockExplorerUrl: 'https://customblockexplorer.com/',
           }),
+          domains: {},
         },
       };
 

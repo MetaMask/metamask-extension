@@ -46,6 +46,7 @@ const store = (
         chainId,
         ticker: nativeTicker,
       }),
+      domains: {},
       useTokenDetection: true,
       tokenList,
     },

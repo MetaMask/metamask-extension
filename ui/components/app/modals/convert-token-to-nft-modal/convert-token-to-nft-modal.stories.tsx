@@ -61,6 +61,7 @@ const storeMock = configureStore({
         },
       },
     },
+    domains: {},
   },
 });
 

@@ -65,6 +65,7 @@ describe('Selectors', () => {
           chainId: CHAIN_IDS.MAINNET,
           rpcUrl: 'https://mainnet.infura.io/v3/',
         }),
+        domains: {},
       },
     };
   };
@@ -142,6 +143,7 @@ describe('Selectors', () => {
           metamask: {
             ...state.metamask,
             ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+            domains: {},
           },
         };
         const result = getChainSupportsSmartTransactions(newState);
@@ -163,6 +165,7 @@ describe('Selectors', () => {
           metamask: {
             ...state.metamask,
             ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+            domains: {},
           },
         };
         // Should be true for allowed chain ID regardless of state
@@ -240,6 +243,7 @@ describe('Selectors', () => {
           metamask: {
             ...state.metamask,
             ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+            domains: {},
           },
         };
         expect(getSmartTransactionsEnabled(newState)).toBe(false);

@@ -65,6 +65,7 @@ const render = async ({ txProps, contextProps } = {}) => {
     metamask: {
       currencyRates: {},
       ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI, ticker: 'ETH' }),
+      domains: {},
       accountsByChainId: {
         [CHAIN_IDS.GOERLI]: {
           '0xAddress': { address: '0xAddress', balance: '0x1F4' },

@@ -12,7 +12,7 @@ import {
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { isProduction } from '../environment';
 import { getFeatureFlagsByChainId } from './feature-flags';
-import { getCurrentChainId, NetworkState } from './networks';
+import { getCurrentChainId, ProviderConfigState } from './networks';
 
 export type SmartTransactionsMetaMaskState = {
   metamask: {
@@ -56,7 +56,7 @@ export type SmartTransactionsMetaMaskState = {
 };
 
 export type SmartTransactionsState = SmartTransactionsMetaMaskState &
-  NetworkState;
+  ProviderConfigState;
 
 /**
  * Returns the user's explicit opt-in status for the smart transactions feature.
@@ -133,7 +133,7 @@ export const getSmartTransactionsPreferenceEnabled = createSelector(
 );
 
 export const getChainSupportsSmartTransactions = (
-  state: NetworkState,
+  state: ProviderConfigState,
   chainId?: string,
 ): boolean => {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -143,7 +143,7 @@ export const getChainSupportsSmartTransactions = (
 };
 
 const getIsAllowedRpcUrlForSmartTransactions = (
-  state: NetworkState,
+  state: ProviderConfigState,
   chainId?: string,
 ) => {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880

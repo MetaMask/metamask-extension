@@ -76,6 +76,7 @@ const render = async (componentProps) => {
         },
       },
       featureFlags: { advancedInlineGas: true },
+      domains: {},
     },
   };
 

@@ -33,6 +33,7 @@ type MockState = ProviderConfigState & {
     swapsState: {
       swapsFeatureFlags: SwapsFeatureFlags;
     };
+    domains: Record<string, string>;
   };
 };
 
@@ -91,6 +92,7 @@ describe('Feature Flags Selectors', () => {
             },
           } as SwapsFeatureFlags,
         },
+        domains: {},
       },
     };
   };

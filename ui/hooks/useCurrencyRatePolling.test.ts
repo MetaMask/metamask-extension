@@ -67,6 +67,7 @@ describe('useCurrencyRatePolling', () => {
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
       isEvmSelected: true,
+      domains: {},
     },
   });
 

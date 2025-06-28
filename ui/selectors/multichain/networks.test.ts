@@ -7,7 +7,10 @@ import {
 import type { Hex, CaipChainId } from '@metamask/utils';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 
-import { type NetworkState } from '../../../shared/modules/selectors/networks';
+import {
+  type NetworkState,
+  type ProviderConfigState,
+} from '../../../shared/modules/selectors/networks';
 import type { AccountsState } from '../accounts';
 import {
   MOCK_ACCOUNT_EOA,
@@ -41,6 +44,7 @@ jest.mock('../selectors', () => ({
 type TestState = AccountsState &
   MultichainNetworkControllerState &
   NetworkState &
+  ProviderConfigState &
   RemoteFeatureFlagsState;
 
 const mockNonEvmNetworks: Record<CaipChainId, MultichainNetworkConfiguration> =
@@ -160,6 +164,7 @@ const mockState: TestState = {
       },
     },
     networksWithTransactionActivity: {},
+    domains: {},
     internalAccounts: {
       selectedAccount: MOCK_ACCOUNT_EOA.id,
       accounts: {

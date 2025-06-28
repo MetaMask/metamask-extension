@@ -75,6 +75,7 @@ describe('useHistoricalPrices', () => {
         },
         selectedAccount: '', // To be set in each test
       },
+      domains: {},
     },
   };
 

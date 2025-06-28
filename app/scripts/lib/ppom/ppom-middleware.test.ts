@@ -74,6 +74,7 @@ const createMiddleware = (
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       ...mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET }),
       ...(chainId === null ? { providerConfig: {} } : undefined),
+      domains: {},
     },
   };
 
@@ -84,6 +85,8 @@ const createMiddleware = (
   const accountsController = {
     listAccounts: () => [{ address: INTERNAL_ACCOUNT_ADDRESS }],
   };
+
+  const selectedNetworkController = {};
 
   return createPPOMMiddleware(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -99,6 +102,8 @@ const createMiddleware = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     appStateController as any,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    selectedNetworkController as any,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     accountsController as any,
     updateSecurityAlertResponse,

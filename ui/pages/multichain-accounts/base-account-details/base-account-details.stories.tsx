@@ -147,6 +147,7 @@ const createBaseMockStore = (account, address, walletName = 'Mock Wallet') => ({
     pinnedAccountsList: [],
     hiddenAccountsList: [],
     connectedAccounts: [],
+    domains: {},
   },
 });
 

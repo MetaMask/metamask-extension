@@ -175,6 +175,7 @@ const render = ({
         },
       },
       ...mockNetworkState({ chainId }),
+      domains: {},
       currencyRates: {},
       accounts: {
         [selectedAddress]: {

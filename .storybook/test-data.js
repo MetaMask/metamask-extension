@@ -44,6 +44,7 @@ const state = {
         date: null,
       },
     },
+    domains: {},
     orderedNetworkList: [],
     enabledNetworkMap: {
       eip155: {

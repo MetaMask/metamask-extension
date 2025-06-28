@@ -130,6 +130,7 @@ describe('MetaMask Reducers', () => {
         },
         currentCurrency: 'usd',
         ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
+        domains: {},
         accounts: {
           '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
             code: '0x',

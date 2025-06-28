@@ -69,6 +69,7 @@ describe('useTokenRatesPolling', () => {
           AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
         selectedMultichainNetworkChainId: BtcScope.Mainnet,
         isEvmSelected: true,
+        domains: {},
       },
     };
 
@@ -103,6 +104,7 @@ describe('useTokenRatesPolling', () => {
           AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
         selectedMultichainNetworkChainId: BtcScope.Mainnet,
         isEvmSelected: true,
+        domains: {},
       },
     };
 
@@ -127,6 +129,7 @@ describe('useTokenRatesPolling', () => {
           AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
         selectedMultichainNetworkChainId: BtcScope.Mainnet,
         isEvmSelected: true,
+        domains: {},
       },
     };
 
@@ -151,6 +154,7 @@ describe('useTokenRatesPolling', () => {
           AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
         selectedMultichainNetworkChainId: BtcScope.Mainnet,
         isEvmSelected: true,
+        domains: {},
       },
     };
 
@@ -172,6 +176,7 @@ describe('useTokenRatesPolling', () => {
           AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
         selectedMultichainNetworkChainId: BtcScope.Mainnet,
         isEvmSelected: true,
+        domains: {},
       },
     };
 
