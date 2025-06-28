@@ -12,13 +12,15 @@ import {
 } from '../../../helpers/constants/design-system';
 import { EIP7702NetworkConfiguration } from '../../../pages/confirmations/hooks/useEIP7702Networks';
 
+type SmartContractAccountToggleProps = {
+  networkConfig: EIP7702NetworkConfiguration;
+  address: string;
+};
+
 export const SmartContractAccountToggle = ({
   networkConfig,
   address,
-}: {
-  networkConfig: EIP7702NetworkConfiguration;
-  address: Hex;
-}) => {
+}: SmartContractAccountToggleProps) => {
   const { name, isSupported, upgradeContractAddress, chainIdHex } =
     networkConfig;
   const { downgradeAccount, upgradeAccount, isUpgraded } = useEIP7702Account({
@@ -30,7 +32,7 @@ export const SmartContractAccountToggle = ({
 
   const prevHasPendingRequests = useRef<boolean>();
   const { hasPendingRequests } = useBatchAuthorizationRequests(
-    address,
+    address as Hex,
     chainIdHex,
   );
 
@@ -38,7 +40,7 @@ export const SmartContractAccountToggle = ({
   useEffect(() => {
     const checkUpgradeStatus = async () => {
       try {
-        const upgraded = await isUpgraded(address);
+        const upgraded = await isUpgraded(address as Hex);
         setAddressSupportSmartAccount(upgraded);
       } catch (error) {
         // Fall back to isSupported if we can't determine upgrade status
@@ -64,9 +66,9 @@ export const SmartContractAccountToggle = ({
 
     // Dispatch the transaction
     if (addressSupportSmartAccount) {
-      await downgradeAccount(address);
+      await downgradeAccount(address as Hex);
     } else if (upgradeContractAddress) {
-      await upgradeAccount(address, upgradeContractAddress);
+      await upgradeAccount(address as Hex, upgradeContractAddress);
     }
   }, [
     address,

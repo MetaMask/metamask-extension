@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { AppSliceState } from '../../../ducks/app/app';
-import { getInternalAccountByAddress, getUseBlockie } from '../../../selectors';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import {
+  getIsMultichainAccountsState1Enabled,
+  getUseBlockie,
+} from '../../../selectors';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -31,6 +34,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AccountDetailsRow } from '../../../components/multichain-accounts/account-details-row';
 import { EditAccountNameModal } from '../../../components/multichain-accounts/edit-account-name-modal';
+import { setAccountDetailsAddress } from '../../../store/actions';
 import {
   getWalletIdAndNameByAccountAddress,
   WalletMetadata,
@@ -38,17 +42,21 @@ import {
 
 type BaseAccountDetailsProps = {
   children?: React.ReactNode | React.ReactNode[];
+  address: string;
+  account: InternalAccount;
 };
 
-export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
-  const address = useSelector(
-    (state: AppSliceState) => state.appState.accountDetailsAddress,
-  );
+export const BaseAccountDetails = ({
+  children,
+  address,
+  account,
+}: BaseAccountDetailsProps) => {
   const useBlockie = useSelector(getUseBlockie);
   const history = useHistory();
+  const dispatch = useDispatch();
   const t = useI18nContext();
-  const account = useSelector((state) =>
-    getInternalAccountByAddress(state, address),
+  const isMultichainAccountsState1Enabled = useSelector(
+    getIsMultichainAccountsState1Enabled,
   );
   const {
     metadata: { name },
@@ -64,6 +72,17 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
   const handleShowAddress = () => {
     history.push(ACCOUNT_DETAILS_QR_CODE_ROUTE);
   };
+
+  const handleNavigation = useCallback(() => {
+    dispatch(setAccountDetailsAddress(''));
+    history.push(DEFAULT_ROUTE);
+  }, [history, dispatch]);
+
+  useEffect(() => {
+    if (!address || !isMultichainAccountsState1Enabled) {
+      history.push(DEFAULT_ROUTE);
+    }
+  }, [dispatch, address, history, isMultichainAccountsState1Enabled]);
 
   // we can never have a scenario where an account is not associated with a wallet.
   const { id: walletId, name: walletName } = useSelector((state) =>
@@ -81,13 +100,13 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            onClick={handleNavigation}
           />
         }
       >
         {name}
       </Header>
-      <Content paddingTop={3}>
+      <Content paddingTop={3} gap={4}>
         <AvatarAccount
           address={address}
           variant={
