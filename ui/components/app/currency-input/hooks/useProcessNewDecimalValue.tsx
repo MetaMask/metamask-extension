@@ -55,6 +55,6 @@ export default function useProcessNewDecimalValue(
 
       return { newFiatDecimalValue, newTokenDecimalValue };
     },
-    [tokenToFiatConversionRate?.toString(), isTokenPrimary, assetDecimals],
+    [tokenToFiatConversionRate, isTokenPrimary, assetDecimals],
   );
 }

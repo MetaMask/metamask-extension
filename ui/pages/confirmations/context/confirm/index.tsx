@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 
 import { setAccountDetailsAddress } from '../../../../store/actions';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
-import syncConfirmPath from '../../hooks/syncConfirmPath';
+import useSyncConfirmPath from '../../hooks/syncConfirmPath';
 import { Confirmation } from '../../types/confirm';
 
 type ConfirmContextType = {
@@ -30,7 +30,7 @@ export const ConfirmContextProvider: React.FC<{
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
   const { currentConfirmation } = useCurrentConfirmation();
-  syncConfirmPath(currentConfirmation);
+  useSyncConfirmPath(currentConfirmation);
   const dispatch = useDispatch();
 
   const value = useMemo(
