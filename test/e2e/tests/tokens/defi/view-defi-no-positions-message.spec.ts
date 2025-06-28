@@ -11,7 +11,7 @@ import { mockNoDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
+const isGlobalNetworkSelectorRemoved = 'true';
 
 describe('Check DeFi empty state when no defi positions', function () {
   it('user should be able to view empty', async function () {
