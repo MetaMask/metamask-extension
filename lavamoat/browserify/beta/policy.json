@@ -832,7 +832,7 @@
         "axios": true
       }
     },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/errors": {
+    "@ledgerhq/errors": {
       "globals": {
         "console.warn": true
       }
@@ -857,13 +857,26 @@
         "ethers>@ethersproject/transactions": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/domain-service": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/errors": true,
+        "@ledgerhq/errors": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
         "axios": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>bignumber.js": true,
         "browserify>buffer": true,
         "semver": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": {
+      "globals": {
+        "clearTimeout": true,
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ledgerhq/errors": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "browserify>buffer": true,
+        "webpack>events": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": {
@@ -1365,6 +1378,7 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": true,
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
