@@ -86,7 +86,7 @@ export enum NetworkCongestionThresholds {
 }
 
 export type TxGasFees = {
-  /** Maxmimum number of units of gas to use for this transaction. */
+  /** Maximum number of units of gas to use for this transaction. */
   gasLimit: string;
   /** Price per gas for legacy txs */
   gasPrice: string;
