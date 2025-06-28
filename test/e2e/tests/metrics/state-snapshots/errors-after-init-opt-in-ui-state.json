@@ -368,7 +368,9 @@
     "accountTree": "object",
     "encryptionKey": "string",
     "encryptionSalt": "string",
-    "srpSessionData": "object"
+    "srpSessionData": "object",
+    "enableEnforcedSimulations": true,
+    "enableEnforcedSimulationsForTransactions": "object"
   },
   "ramps": "object",
   "send": "object",

@@ -49,5 +49,7 @@ export type ConfirmMetamaskState = {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
     signatureSecurityAlertResponses?: Record<string, SecurityAlertResponse>;
+    enableEnforcedSimulations: boolean;
+    enableEnforcedSimulationsForTransactions: Record<string, boolean>;
   };
 };

@@ -88,6 +88,8 @@ export type AppStateControllerState = {
   isUpdateAvailable: boolean;
   updateModalLastDismissedAt: number | null;
   lastUpdatedAt: number | null;
+  enableEnforcedSimulations: boolean;
+  enableEnforcedSimulationsForTransactions: Record<string, boolean>;
 };
 
 const controllerName = 'AppStateController';
@@ -205,6 +207,8 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   isUpdateAvailable: false,
   updateModalLastDismissedAt: null,
   lastUpdatedAt: null,
+  enableEnforcedSimulations: true,
+  enableEnforcedSimulationsForTransactions: {},
   ...getInitialStateOverrides(),
 });
 
@@ -378,6 +382,14 @@ const controllerMetadata = {
   },
   lastUpdatedAt: {
     persist: true,
+    anonymous: true,
+  },
+  enableEnforcedSimulations: {
+    persist: true,
+    anonymous: true,
+  },
+  enableEnforcedSimulationsForTransactions: {
+    persist: false,
     anonymous: true,
   },
 };
@@ -1113,6 +1125,21 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.throttledOrigins[origin] = throttledOriginState;
+    });
+  }
+
+  setEnableEnforcedSimulations(enabled: boolean): void {
+    this.update((state) => {
+      state.enableEnforcedSimulations = enabled;
+    });
+  }
+
+  setEnableEnforcedSimulationsForTransaction(
+    transactionId: string,
+    enabled: boolean,
+  ): void {
+    this.update((state) => {
+      state.enableEnforcedSimulationsForTransactions[transactionId] = enabled;
     });
   }
 }
