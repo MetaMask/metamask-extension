@@ -225,6 +225,7 @@ function Slippage({
   onChange?: (slippage: number | undefined) => void;
   transactionId: string;
 }) {
+  const t = useI18nContext();
   const defaultSlippage = useSelector(selectEnforcedSimulationsDefaultSlippage);
 
   const savedSlippage = useSelector((state: ConfirmMetamaskState) =>
@@ -263,7 +264,9 @@ function Slippage({
 
   return (
     <Section>
-      <Text variant={TextVariant.bodyMdMedium}>Slippage tolerance</Text>
+      <Text variant={TextVariant.bodyMdMedium}>
+        {t('simulationSettingsModalEnforceSlippage')}
+      </Text>
       <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={2}>
         <Pill
           text={`${defaultSlippage}%`}
@@ -271,7 +274,7 @@ function Slippage({
           onClick={handleDefaultSlippageClick}
         />
         <Pill
-          text="Custom"
+          text={t('simulationSettingsModalEnforceSlippageCustom')}
           isSelected={isCustomSlippage}
           onClick={handleCustomSlippageClick}
         />
@@ -285,8 +288,7 @@ function Slippage({
         />
       )}
       <Text variant={TextVariant.bodyMd} color={TextColor.textAlternativeSoft}>
-        Set the percentage difference you're comfortable with for the displayed
-        balance changes.
+        {t('simulationSettingsModalEnforceSlippageDescription')}
       </Text>
     </Section>
   );
