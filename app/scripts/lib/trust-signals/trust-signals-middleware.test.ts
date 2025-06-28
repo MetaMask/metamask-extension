@@ -77,6 +77,10 @@ const createMiddleware = (
     getAddressSecurityAlertResponse: jest.fn(),
   };
 
+  const selectedNetworkController = {
+    domains: {},
+  } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+
   const phishingController = {
     scanUrl: jest.fn(),
   };
@@ -93,6 +97,7 @@ const createMiddleware = (
       appStateController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       phishingController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       preferencesController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+      selectedNetworkController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
     ),
     appStateController,
     networkController,
