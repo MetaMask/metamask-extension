@@ -7020,9 +7020,12 @@
   "welcomeBack": {
     "message": "Welcome back"
   },
+<<<<<<< HEAD
   "welcomeGetStarted": {
     "message": "Get started"
   },
+=======
+>>>>>>> 90529cc5ec18d9f76b0397c6079e469268416fe1
   "welcomeToMetaMask": {
     "message": "Let's get started"
   },
@@ -7094,13 +7097,36 @@
   "yourWalletIsReadyRemind": {
     "message": "We’ll remind you later"
   },
-  "welcomeTitle":{
-    "message":"Welcome to CryptoBridge"
+  "welcomeDescription": {
+    "message": "Seamless Access to Crypto & Fiat in One Platform"
   },
+<<<<<<< HEAD
   "welcomeDescription":{
     "message":"Seamless Access to Crypto & Fiat in One Platform"
   },
   "totalBalance":{
     "message":"Total balance"
+=======
+  "footerAgreementDesc":{
+    "message":"By using this service, you agree to our"
+  },
+  "termsConditions": {
+    "message":"Terms and Conditions"
+  },
+  "privacyPolicy": {
+    "message": "Privacy Policy."
+  },
+  "referralCode":{
+    "message":"Referral Code (Optional)"
+  },
+  "referralCodeInputPlace":{
+    "message":"Enter your referral code"
+  },
+  "welcomeGetStarted": {
+    "message": "Get started"
+  },
+  "welcomeTitle": {
+    "message": "Welcome to CryptBridge"
+>>>>>>> 90529cc5ec18d9f76b0397c6079e469268416fe1
   }
 }

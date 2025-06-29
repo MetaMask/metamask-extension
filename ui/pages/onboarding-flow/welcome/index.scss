@@ -41,16 +41,23 @@
   box-shadow: var(--shadow-size-md) var(--color-shadow-default);
 
   &__content {
-    flex: 1;
+    // flex: 1;
   }
 
   &__title {
-    font-family: var(--font-family-accent);
-    font-size: 40px;
+    // font-family: var(--font-family-accent);
+    font-size: 24px;
     color: var(--color-accent02-dark);
     line-height: 1em;
+    font-weight: 600;
   }
 
+  &__description{
+    font-size: 16px;
+    color: var(--color-accent02-dark);
+    line-height: 1.5em;
+    margin-top: 10px;
+  }
   &__mascot {
     &--image {
       margin-bottom: 60px;
@@ -97,6 +104,18 @@
 
     &:active {
       background-color: var(--color-background-pressed);
+    }
+  }
+  &__footer{
+
+    &__text{
+       font-size: var(--font-size-2);
+       color: var(--brand-colors-grey-grey100);
+       margin-right: 3px;
+    }
+    &__link{
+      font-size: var(--font-size-2);
+      color:var(--brand-colors-grey-grey200);
     }
   }
 }

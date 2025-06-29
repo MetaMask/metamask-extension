@@ -1,7 +1,7 @@
-import EventEmitter from 'events';
-import React, { useState } from 'react';
+// import EventEmitter from 'events';
+import React from 'react';
 import classnames from 'classnames';
-import Mascot from '../../../components/ui/mascot';
+// import Mascot from '../../../components/ui/mascot';
 import {
   Box,
   ButtonBase,
@@ -19,6 +19,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
+import ExpandableInputButton from '../../../components/ui/expandable-input-button';
 
 type WelcomeLoginProps = {
   onCreate: () => void;
@@ -30,23 +31,6 @@ export default function WelcomeLogin({
   onImport,
 }: WelcomeLoginProps) {
   const t = useI18nContext();
-  const [eventEmitter] = useState(new EventEmitter());
-
-  const renderMascot = () => {
-    if (isFlask()) {
-      return (
-        <img src="./images/logo/metamask-fox.svg" width="178" height="178" />
-      );
-    }
-    if (isBeta()) {
-      return (
-        <img src="./images/logo/metamask-fox.svg" width="178" height="178" />
-      );
-    }
-    return (
-      <Mascot animationEventEmitter={eventEmitter} width="268" height="268" />
-    );
-  };
   return (
     <Box
       display={Display.Flex}
@@ -78,7 +62,6 @@ export default function WelcomeLogin({
             height="240"
           />
         </Box>
-
         <Text
           marginInline={5}
           textAlign={TextAlign.Center}
@@ -86,8 +69,17 @@ export default function WelcomeLogin({
           className="welcome-login__title"
           data-testid="onboarding-welcome"
         >
-          {t('welcomeToMetaMask')}!
+          {t('welcomeTitle')}!
         </Text>
+        <Text
+          marginInline={5}
+          textAlign={TextAlign.Center}
+          as="h3"
+          className="welcome-login__description"
+          data-testid="onboarding-desc"
+        >
+          {t('welcomeDescription')}!
+        </Text>{' '}
       </Box>
 
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
@@ -110,6 +102,37 @@ export default function WelcomeLogin({
         >
           {t('onboardingImportWallet')}
         </ButtonBase>
+      </Box>
+
+      <ExpandableInputButton
+        buttonText={t('referralCode')}
+        inputPlaceholder={t('referralCodeInputPlace')}
+        onInputChange={(value: string) => console.log(value)}
+        onButtonClick={() => console.log('Button clicked')}
+      />
+
+      <Box className="welcome-login__footer">
+        <Box className="welcome-login__footer__text" as="span">
+          {t('footerAgreementDesc')}
+        </Box>
+        <Box
+          type="link"
+          as="a"
+          href="https://www.crypto-bridge.co/wp-content/uploads/2025/06/ENJP-CryptoBridge-Terms-Conditions-2025-06-12.pdf"
+          target="_blank"
+          className="welcome-login__footer__link"
+        >
+          {`${t('termsConditions')} & `}
+        </Box>
+        <Box
+          type="link"
+          as="a"
+          href="https://www.crypto-bridge.co/wp-content/uploads/2025/06/ENJP-CryptoBridge-Privacy-Policy-2025-06-12.pdf"
+          target="_blank"
+          className="welcome-login__footer__link"
+        >
+          {t('privacyPolicy')}
+        </Box>
       </Box>
     </Box>
   );
