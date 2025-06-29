@@ -8,6 +8,7 @@ import {
 import {
   getCrossChainTokenExchangeRates,
   getCrossChainMetaMaskCachedBalances,
+  getEnabledNetworksByNamespace,
 } from '../selectors';
 import {
   getValueFromWeiHex,
@@ -36,6 +37,9 @@ export const useAccountTotalCrossChainFiatBalance = (
   formattedTokensWithBalancesPerChain: FormattedTokensWithBalances[],
 ) => {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+
   const currencyRates = useSelector(getCurrencyRates);
   const currentCurrency = useSelector(getCurrentCurrency);
 
@@ -53,9 +57,26 @@ export const useAccountTotalCrossChainFiatBalance = (
     [crossChainContractRates],
   );
 
+  const filteredBalances = useMemo(() => {
+    return formattedTokensWithBalancesPerChain
+      .map((balances) => {
+        if (
+          Object.keys(enabledNetworksByNamespace).includes(
+            balances.chainId.toString(),
+          )
+        ) {
+          return balances;
+        }
+        return null;
+      })
+      .filter(
+        (balance): balance is FormattedTokensWithBalances => balance !== null,
+      );
+  }, [formattedTokensWithBalancesPerChain, enabledNetworksByNamespace]);
+
   const tokenFiatBalancesCrossChains = useMemo(
     () =>
-      formattedTokensWithBalancesPerChain.map((singleChainTokenBalances) => {
+      filteredBalances.map((singleChainTokenBalances) => {
         const { tokensWithBalances } = singleChainTokenBalances;
         // Attempt to use known currency symbols in map
         // Otherwise fallback to user defined currency
@@ -67,23 +88,25 @@ export const useAccountTotalCrossChainFiatBalance = (
             .nativeCurrency;
         const conversionRate =
           currencyRates?.[matchedChainSymbol]?.conversionRate;
-        const tokenFiatBalances = tokensWithBalances.map((token) => {
-          const tokenExchangeRate =
-            mergedCrossChainRates?.[singleChainTokenBalances.chainId]?.[
-              toChecksumAddress(token.address)
-            ];
-          const totalFiatValue = getTokenFiatAmount(
-            tokenExchangeRate,
-            conversionRate,
-            currentCurrency,
-            token.string,
-            token.symbol,
-            false,
-            false,
-          );
+        const tokenFiatBalances = tokensWithBalances.map(
+          (token: TokenWithBalance) => {
+            const tokenExchangeRate =
+              mergedCrossChainRates?.[singleChainTokenBalances.chainId]?.[
+                toChecksumAddress(token.address)
+              ];
+            const totalFiatValue = getTokenFiatAmount(
+              tokenExchangeRate,
+              conversionRate,
+              currentCurrency,
+              token.string,
+              token.symbol,
+              false,
+              false,
+            );
 
-          return totalFiatValue;
-        });
+            return totalFiatValue;
+          },
+        );
 
         const balanceCached =
           crossChainCachedBalances?.[singleChainTokenBalances.chainId]?.[
@@ -102,7 +125,7 @@ export const useAccountTotalCrossChainFiatBalance = (
         };
       }),
     [
-      formattedTokensWithBalancesPerChain,
+      filteredBalances,
       allNetworks,
       currencyRates,
       mergedCrossChainRates,
@@ -117,7 +140,7 @@ export const useAccountTotalCrossChainFiatBalance = (
       tokenFiatBalancesCrossChains.reduce((accumulator, currentValue) => {
         const tmpCurrentValueFiatBalances: string[] =
           currentValue.tokenFiatBalances.filter(
-            (value): value is string => value !== undefined,
+            (value: string | undefined): value is string => value !== undefined,
           );
         const totalFiatBalance = sumDecimals(
           currentValue.nativeFiatValue,
