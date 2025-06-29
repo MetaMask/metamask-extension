@@ -105,9 +105,6 @@ export default function OnboardingFlow() {
   );
 
   useEffect(() => {
-    console.log(welcomePageState, '/welcomePageStates');
-  }, [welcomePageState]);
-  useEffect(() => {
     setOnboardingDate();
   }, []);
 
