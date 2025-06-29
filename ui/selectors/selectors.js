@@ -2996,8 +2996,15 @@ export function getUrlScanCacheResult(state, origin) {
   if (!origin) {
     return undefined;
   }
-  const domain = new URL(origin).hostname;
-  return state.metamask.urlScanCache?.[domain] || undefined;
+
+  let url;
+  try {
+    url = new URL(origin);
+  } catch (e) {
+    return undefined;
+  }
+
+  return state.metamask.urlScanCache?.[url.hostname];
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

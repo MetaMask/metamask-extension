@@ -3023,3 +3023,42 @@ describe('getInternalAccountsSortedByKeyring', () => {
     ]);
   });
 });
+
+describe('getUrlScanCacheResult', () => {
+  it('returns undefined for empty origin', () => {
+    const result = selectors.getUrlScanCacheResult(mockState, '');
+    expect(result).toBeUndefined();
+  });
+
+  it('returns undefined for invalid URL origin', () => {
+    const result = selectors.getUrlScanCacheResult(
+      mockState,
+      'not-a-valid-url',
+    );
+    expect(result).toBeUndefined();
+  });
+
+  it('returns the cached url scan result for a given origin', () => {
+    mockState.metamask.urlScanCache = {
+      'example.com': {
+        result: {
+          domainName: 'example.com',
+          recommendedAction: 'BLOCK',
+        },
+        timestamp: 1234567890,
+      },
+    };
+
+    const result = selectors.getUrlScanCacheResult(
+      mockState,
+      'https://example.com',
+    );
+    expect(result).toStrictEqual({
+      result: {
+        domainName: 'example.com',
+        recommendedAction: 'BLOCK',
+      },
+      timestamp: 1234567890,
+    });
+  });
+});
