@@ -8,6 +8,7 @@ import {
 import {
   getCrossChainTokenExchangeRates,
   getCrossChainMetaMaskCachedBalances,
+  getEnabledNetworksByNamespace,
 } from '../selectors';
 import {
   getValueFromWeiHex,
@@ -36,6 +37,9 @@ export const useAccountTotalCrossChainFiatBalance = (
   formattedTokensWithBalancesPerChain: FormattedTokensWithBalances[],
 ) => {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+
   const currencyRates = useSelector(getCurrencyRates);
   const currentCurrency = useSelector(getCurrentCurrency);
 
@@ -53,9 +57,24 @@ export const useAccountTotalCrossChainFiatBalance = (
     [crossChainContractRates],
   );
 
+  const filteredBalances = useMemo(() => {
+    return formattedTokensWithBalancesPerChain
+      .map((balances) => {
+        if (
+          Object.keys(enabledNetworksByNamespace).includes(
+            balances.chainId.toString(),
+          )
+        ) {
+          return balances;
+        }
+        return null;
+      })
+      .filter((balance) => balance !== null);
+  }, [formattedTokensWithBalancesPerChain, enabledNetworksByNamespace]);
+
   const tokenFiatBalancesCrossChains = useMemo(
     () =>
-      formattedTokensWithBalancesPerChain.map((singleChainTokenBalances) => {
+      filteredBalances.map((singleChainTokenBalances) => {
         const { tokensWithBalances } = singleChainTokenBalances;
         // Attempt to use known currency symbols in map
         // Otherwise fallback to user defined currency
