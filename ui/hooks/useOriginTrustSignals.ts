@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 import { RecommendedAction } from '@metamask/phishing-controller';
 import { TrustSignalDisplayState, TrustSignalResult } from './useTrustSignals';
+import { getUrlScanCacheResult } from '../selectors/selectors';
 
 type UrlScanCacheResult = {
   result: {
@@ -33,20 +34,11 @@ function getTrustState(
 }
 
 export function useOriginTrustSignals(origin: string): TrustSignalResult {
-  const urlScanCache = useSelector((state: any) => state.metamask.urlScanCache);
+  const urlScanCacheResult = useSelector((state) =>
+    getUrlScanCacheResult(state, origin),
+  );
 
-  let cachedResult: UrlScanCacheResult | undefined;
-
-  if (origin && urlScanCache) {
-    try {
-      const domain = new URL(origin).hostname;
-      cachedResult = urlScanCache[domain] as UrlScanCacheResult | undefined;
-    } catch (e) {
-      // Invalid origin URL.
-    }
-  }
-
-  let state = getTrustState(cachedResult);
+  const state = getTrustState(urlScanCacheResult);
 
   return {
     state,

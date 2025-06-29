@@ -2985,6 +2985,21 @@ export function getAddressSecurityAlertResponse(state, address) {
   return state.metamask.addressSecurityAlertResponses?.[address.toLowerCase()];
 }
 
+/**
+ * Gets the cached url scan result for a given origin
+ *
+ * @param {*} state
+ * @param {string} origin - The origin to get the url scan result for
+ * @returns the cached url scan result for the given origin
+ */
+export function getUrlScanCacheResult(state, origin) {
+  if (!origin) {
+    return undefined;
+  }
+  const domain = new URL(origin).hostname;
+  return state.metamask.urlScanCache?.[domain] || undefined;
+}
+
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 /**
  * Get the state of the `addSnapAccountEnabled` flag.
