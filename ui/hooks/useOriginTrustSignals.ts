@@ -38,10 +38,7 @@ export function useOriginTrustSignals(origin: string): TrustSignalResult {
     getUrlScanCacheResult(state, origin),
   );
 
-  // TODO: uncomment this when done testing
-  // const state = getTrustState(urlScanCacheResult);
-
-  const state = TrustSignalDisplayState.Malicious;
+  const state = getTrustState(urlScanCacheResult);
 
   return {
     state,
