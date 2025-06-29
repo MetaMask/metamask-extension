@@ -1,4 +1,8 @@
-import { CaipChainId, parseCaipChainId } from '@metamask/utils';
+import {
+  CaipChainId,
+  KnownCaipNamespace,
+  parseCaipChainId,
+} from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -50,6 +54,7 @@ import {
   getOrderedNetworksList,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../../../selectors';
+import { toHex } from '@metamask/controller-utils';
 
 const DefaultNetworks = memo(() => {
   const t = useI18nContext();
@@ -112,12 +117,30 @@ const DefaultNetworks = memo(() => {
     dispatch(setEnabledNetworks([], namespace));
   }, [dispatch, namespace]);
 
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+
   // Memoize the network change handler to avoid recreation
   const handleNetworkChangeCallback = useCallback(
     async (chainId: CaipChainId) => {
+      const chainIdToUse = Object.keys(enabledNetworks)[0];
+      const haveOneSelectedNetwork = Object.keys(enabledNetworks).length === 1;
+
+      const { namespace: selectedNamespace, reference: selectedReference } =
+        parseCaipChainId(chainId);
+
+      if (
+        haveOneSelectedNetwork &&
+        selectedNamespace === KnownCaipNamespace.Eip155 &&
+        toHex(selectedReference) === chainIdToUse
+      ) {
+        return;
+      } else if (haveOneSelectedNetwork && chainId === chainIdToUse) {
+        return;
+      }
+
       await handleNetworkChange(chainId);
     },
-    [handleNetworkChange],
+    [handleNetworkChange, enabledNetworks],
   );
 
   // Memoize the network list items to avoid recreation on every render
