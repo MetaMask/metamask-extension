@@ -290,6 +290,7 @@ export const CoinOverview = ({
           disabled={!balanceIsCached}
         >
           <div className={`${classPrefix}-overview__balance`}>
+            <div className={`${classPrefix}-overview__total-title`}>{t('totalBalance')}</div>
             <div className={`${classPrefix}-overview__primary-container`}>
               {isEvm ? (
                 <LegacyAggregatedBalance
@@ -312,7 +313,7 @@ export const CoinOverview = ({
                 </span>
               )}
             </div>
-            {renderPercentageAndAmountChange()}
+            {/* {renderPercentageAndAmountChange()} */}
           </div>
         </Tooltip>
       }

@@ -7,6 +7,21 @@
     justify-content: flex-start;
     align-items: center;
     flex: 0 0 auto;
+    background: linear-gradient(0deg, rgba(254, 254, 254, 0.00) 0%, #CBF2BB 100%);
+  }
+
+  &__network-picker {
+    border-radius: 8px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
   }
 
   // TODO: fix style import order so this isn't required to override specificity of `tab` class

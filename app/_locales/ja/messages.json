@@ -128,7 +128,7 @@
     "message": "アクティブ"
   },
   "activity": {
-    "message": "アクティビティ"
+    "message": "法定通貨<>暗号履歴"
   },
   "activityLog": {
     "message": "アクティビティのログ"
@@ -792,7 +792,7 @@
     "message": "購入価格"
   },
   "bridge": {
-    "message": "ブリッジ"
+    "message": "スワップ"
   },
   "bridgeAllowSwappingOf": {
     "message": "ブリッジ用に$3の$1 $2への正確なアクセスを許可する",
@@ -986,7 +986,7 @@
     "message": "ビジー状態"
   },
   "buyAndSell": {
-    "message": "購入・売却"
+    "message": "法定通貨で暗号を購入"
   },
   "buyMoreAsset": {
     "message": "$1を追加購入",
@@ -3429,7 +3429,7 @@
     "message": "慎重に進めてください。"
   },
   "nfts": {
-    "message": "NFT"
+    "message": "暗号<>暗号履歴"
   },
   "nftsPreviouslyOwned": {
     "message": "以前保有"
@@ -5668,7 +5668,7 @@
     "message": "MetaMaskの未来を形作りましょう"
   },
   "swap": {
-    "message": "スワップ"
+    "message": "暗号をカード残高に売却"
   },
   "swapAdjustSlippage": {
     "message": "スリッページの調整"
@@ -6134,6 +6134,9 @@
   "tipsForUsingAWalletDescription": {
     "message": "トークンを追加すると、Web3の使用方法が増えます。"
   },
+  "tipsHome": {
+    "message": "将来のアップデートでウォレットを再インポートする必要がある場合に備えて、秘密のリカバリーフレーズを安全に保存してください。"
+  },
   "to": {
     "message": "移動先"
   },
@@ -6190,7 +6193,7 @@
     "message": "トークンシンボル"
   },
   "tokens": {
-    "message": "トークン"
+    "message": "ウォレット残高"
   },
   "tokensFoundTitle": {
     "message": "$1種類の新しいトークンが見つかりました",
@@ -6691,5 +6694,8 @@
   },
   "yourWalletIsReady": {
     "message": "ウォレットの準備ができました"
+  },
+  "totalBalance":{
+    "message":"合計残高"
   }
 }

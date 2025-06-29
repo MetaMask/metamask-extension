@@ -40,13 +40,13 @@
     &-layout-old-grid {
       padding: 16px;
       display: grid;
-      grid-template-columns: 1fr 2fr 1fr;
+      grid-template-columns: 1fr 1fr;
 
       @include design-system.screen-sm-max {
         height: $height-screen-sm-max;
 
         /* Ensures network picker column and icons column are always the same size */
-        grid-template-columns: 64px 2fr 64px;
+        grid-template-columns: 1fr 1fr;
       }
     }
 

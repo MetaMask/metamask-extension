@@ -15,7 +15,7 @@ import { getAllChainsToPoll } from '../../../selectors';
 import { detectNfts } from '../../../store/actions';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import AssetList from '../../app/assets/asset-list';
-import DeFiTab from '../../app/assets/defi-list/defi-tab';
+// import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import { useAssetListTokenDetection } from '../../app/assets/hooks';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
 import TransactionList from '../../app/transaction-list';
@@ -109,7 +109,7 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__asset-tab"
             {...tabProps}
           >
-            <Box marginTop={2} marginBottom={2}>
+            <Box marginBottom={2}>
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
@@ -118,7 +118,7 @@ export const AccountOverviewTabs = ({
             </Box>
           </Tab>
         )}
-        {showDefi && (
+        {/* {showDefi && (
           <Tab
             name={t('defi')}
             tabKey="defi"
@@ -133,7 +133,7 @@ export const AccountOverviewTabs = ({
               />
             </Box>
           </Tab>
-        )}
+        )} */}
 
         {showNfts && (
           <Tab

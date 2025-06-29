@@ -189,7 +189,7 @@ export const AppHeaderUnlockedContent = ({
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
             alignItems={
-              process.env.REMOVE_GNS ? AlignItems.flexStart : AlignItems.center
+              process.env.REMOVE_GNS ? AlignItems.flexStart : AlignItems.flexStart
             }
             ellipsis
           >
@@ -240,7 +240,8 @@ export const AppHeaderUnlockedContent = ({
 
   return (
     <>
-      {process.env.REMOVE_GNS ? null : (
+      {/* 注释掉header中的网络选择器，因为已经移到home页面 */}
+      {/* {process.env.REMOVE_GNS ? null : (
         <>
           {popupStatus ? (
             <Box className="multichain-app-header__contents__container">
@@ -297,7 +298,7 @@ export const AppHeaderUnlockedContent = ({
             </div>
           )}
         </>
-      )}
+      )} */}
       {process.env.REMOVE_GNS ? (
         <Box
           display={Display.Flex}

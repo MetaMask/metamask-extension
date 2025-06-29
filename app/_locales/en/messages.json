@@ -148,7 +148,7 @@
     "message": "Active"
   },
   "activity": {
-    "message": "Activity"
+    "message": "Fiat<>Crypto History"
   },
   "activityLog": {
     "message": "Activity log"
@@ -824,7 +824,7 @@
     "message": "Bought for"
   },
   "bridge": {
-    "message": "Bridge"
+    "message": "Swap"
   },
   "bridgeAllowSwappingOf": {
     "message": "Allow exact access to $1 $2 on $3 for bridging",
@@ -1021,7 +1021,7 @@
     "message": "Busy"
   },
   "buyAndSell": {
-    "message": "Buy/Sell"
+    "message": "Buy Crypto with Fiat"
   },
   "buyMoreAsset": {
     "message": "Buy more $1",
@@ -3605,7 +3605,7 @@
     "message": "Proceed with caution."
   },
   "nfts": {
-    "message": "NFTs"
+    "message": "Crypto<>Crypto History"
   },
   "nftsPreviouslyOwned": {
     "message": "Previously Owned"
@@ -6003,7 +6003,7 @@
     "message": "Shape the future of MetaMask"
   },
   "swap": {
-    "message": "Swap"
+    "message": "Sell Crypto to Card Balance"
   },
   "swapAdjustSlippage": {
     "message": "Adjust slippage"
@@ -6543,7 +6543,7 @@
     "message": "Token symbol"
   },
   "tokens": {
-    "message": "Tokens"
+    "message": "Wallet Balance"
   },
   "tokensFoundTitle": {
     "message": "$1 new tokens found",
@@ -7020,14 +7020,8 @@
   "welcomeBack": {
     "message": "Welcome back"
   },
-  "welcomeDescription": {
-    "message": "Trusted by millions, CryptoBridge is a secure wallet making the world of web3 accessible to all."
-  },
   "welcomeGetStarted": {
     "message": "Get started"
-  },
-  "welcomeTitle": {
-    "message": "Welcome to CryptBridge"
   },
   "welcomeToMetaMask": {
     "message": "Let's get started"
@@ -7105,5 +7099,8 @@
   },
   "welcomeDescription":{
     "message":"Seamless Access to Crypto & Fiat in One Platform"
+  },
+  "totalBalance":{
+    "message":"Total balance"
   }
 }

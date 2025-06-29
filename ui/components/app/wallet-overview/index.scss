@@ -73,9 +73,16 @@
     min-width: 0;
     position: relative;
     align-items: start;
-    margin: 16px 0;
     padding: 0 16px;
     max-width: 326px;
+  }
+
+  &__total-title{
+    color:#6F6F6F;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 400;
+    width: 100%;
   }
 
   &__primary-container {

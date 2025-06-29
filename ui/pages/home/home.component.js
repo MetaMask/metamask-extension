@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
@@ -46,6 +47,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  PickerNetwork,
 } from '../../components/component-library';
 import MultiRpcEditModal from '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal';
 import UpdateModal from '../../components/app/update-modal/update-modal';
@@ -66,9 +68,12 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain/account-overview';
-import { setEditedNetwork } from '../../store/actions';
+import { setEditedNetwork, toggleNetworkMenu } from '../../store/actions';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 import TipsHome from './tips/tips-home.component';
+import { getSelectedMultichainNetworkConfiguration } from '../../selectors/multichain/networks';
+import { getNetworkIcon } from '../../../shared/modules/network.utils';
+import { useI18nContext } from '../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF

@@ -26,7 +26,8 @@ export const AppHeaderLockedContent = ({
 
   return (
     <>
-      <div>
+      {/* 注释掉header中的网络选择器，因为已经移到home页面 */}
+      {/* <div>
         <PickerNetwork
           avatarNetworkProps={{
             backgroundColor: testNetworkBackgroundColor,
@@ -44,7 +45,7 @@ export const AppHeaderLockedContent = ({
           className="multichain-app-header__contents__network-picker"
           data-testid="network-display"
         />
-      </div>
+      </div> */}
       <div></div>
       <MetafoxLogo
         unsetIconHeight
