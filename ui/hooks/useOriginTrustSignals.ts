@@ -1,7 +1,7 @@
-import { useSelector } from 'react-redux';
 import { RecommendedAction } from '@metamask/phishing-controller';
-import { TrustSignalDisplayState, TrustSignalResult } from './useTrustSignals';
+import { useSelector } from 'react-redux';
 import { getUrlScanCacheResult } from '../selectors/selectors';
+import { TrustSignalDisplayState, TrustSignalResult } from './useTrustSignals';
 
 type UrlScanCacheResult = {
   result: {

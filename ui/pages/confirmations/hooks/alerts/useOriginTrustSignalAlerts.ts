@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
-import { useOriginTrustSignals } from '../../../../hooks/useOriginTrustSignals';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
+import { useOriginTrustSignals } from '../../../../hooks/useOriginTrustSignals';
 import { SignatureRequestType } from '../../types/confirm';
-import { TransactionMeta } from '@metamask/transaction-controller';
 
 export function useOriginTrustSignalAlerts(): Alert[] {
   const t = useI18nContext();
