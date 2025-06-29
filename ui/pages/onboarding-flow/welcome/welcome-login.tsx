@@ -71,7 +71,12 @@ export default function WelcomeLogin({
             'welcome-login__mascot--image': isFlask() || isBeta(),
           })}
         >
-          {renderMascot()}
+          {/* {renderMascot()} */}
+          <img
+            src="./images/cryptobridge/logo-3d.png"
+            width="308"
+            height="240"
+          />
         </Box>
 
         <Text

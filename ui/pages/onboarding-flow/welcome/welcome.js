@@ -89,6 +89,9 @@ export default function OnboardingWelcome({
     history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
   }, [dispatch, history, trackEvent]);
 
+  useEffect(() => {
+    console.log(pageState, '/pageState');
+  }, [pageState]);
   return (
     <>
       {pageState === WelcomePageState.Banner && (

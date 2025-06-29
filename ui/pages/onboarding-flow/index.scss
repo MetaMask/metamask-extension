@@ -19,7 +19,8 @@
   }
 
   &--welcome-login {
-    background: url('/images/welcome-page.png') no-repeat center top;
-    background-color: var(--color-accent02-dark);
+    background: url('/images/cryptobridge/gradient-bg.jpg') no-repeat center center;
+    background-size: cover;
+    background-color: var(--color-white);
   }
 }

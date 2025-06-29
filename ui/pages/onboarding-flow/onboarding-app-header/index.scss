@@ -78,6 +78,11 @@
     @include design-system.screen-sm-max {
       height: 100%;
     }
+    &__logo{
+      width: 180px;
+      height: 30px;
+      object-fit: cover;
+    }
   }
 
   &__logo-container {

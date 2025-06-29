@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import classnames from 'classnames';
-import MetaFoxLogo from '../../../components/ui/metafox-logo';
+// import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import Dropdown from '../../../components/ui/dropdown';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { updateCurrentLocale } from '../../../store/actions';
@@ -20,7 +20,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { WelcomePageState } from '../welcome/types';
-import { ThemeType } from '../../../../shared/constants/preferences';
+// import { ThemeType } from '../../../../shared/constants/preferences';
 
 export default function OnboardingAppHeader({ pageState }) {
   const dispatch = useDispatch();
@@ -50,13 +50,21 @@ export default function OnboardingAppHeader({ pageState }) {
         justifyContent={JustifyContent.spaceBetween}
         className="onboarding-app-header__contents"
       >
-        <MetaFoxLogo
+        {/* <MetaFoxLogo
           theme={
             pathname === ONBOARDING_WELCOME_ROUTE ? ThemeType.light : undefined
           }
           unsetIconHeight
           isOnboarding
-        />
+          src="./images/cryptobridge/logo.svg" // Use your custom logo here
+        /> */}
+        <Box>
+          <img
+            src="./images/cryptobridge/logo.svg"
+            className="onboarding-app-header__contents__logo"
+          />
+        </Box>
+
         <Dropdown
           data-testid="select-locale"
           className={classnames('onboarding-app-header__dropdown', {

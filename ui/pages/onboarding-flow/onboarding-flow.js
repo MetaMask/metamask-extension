@@ -101,9 +101,12 @@ export default function OnboardingFlow() {
   // If the user has not agreed to the terms of use, we show the banner
   // Otherwise, we show the login page
   const [welcomePageState, setWelcomePageState] = useState(
-    WelcomePageState.Banner,
+    WelcomePageState.Login,
   );
 
+  useEffect(() => {
+    console.log(welcomePageState, '/welcomePageStates');
+  }, [welcomePageState]);
   useEffect(() => {
     setOnboardingDate();
   }, []);
@@ -127,9 +130,8 @@ export default function OnboardingFlow() {
       }
     }
     if (pathname === ONBOARDING_WELCOME_ROUTE) {
-      setWelcomePageState(
-        showTermsOfUse ? WelcomePageState.Banner : WelcomePageState.Login,
-      );
+      setWelcomePageState(WelcomePageState.Login);
+      // showTermsOfUse ? WelcomePageState.Banner :
     } else {
       setWelcomePageState(null);
     }

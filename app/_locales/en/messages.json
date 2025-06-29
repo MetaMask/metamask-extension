@@ -7099,5 +7099,11 @@
   },
   "yourWalletIsReadyRemind": {
     "message": "We’ll remind you later"
+  },
+  "welcomeTitle":{
+    "message":"Welcome to CryptoBridge"
+  },
+  "welcomeDescription":{
+    "message":"Seamless Access to Crypto & Fiat in One Platform"
   }
 }
