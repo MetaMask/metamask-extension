@@ -1,24 +1,19 @@
 import browser from 'webextension-polyfill';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import allLocales from '../../app/_locales/index.json';
 
-// ensure that we default users with browser language code 'zh' to the supported 'zh_CN' language code
-const existingLocaleCodes = { zh: 'zh_CN' };
-
-// mapping some browsers return hyphen instead underscore in locale codes (e.g. zh_TW -> zh-tw)
-allLocales.forEach((locale) => {
-  if (locale && locale.code) {
-    existingLocaleCodes[locale.code.toLowerCase().replace('_', '-')] =
-      locale.code;
-  }
-});
+// 只支持英文和日文
+const supportedLocales = {
+  'en': 'en',
+  'en-us': 'en',
+  'en-gb': 'en',
+  'ja': 'ja',
+  'ja-jp': 'ja'
+};
 
 /**
- * Returns a preferred language code, based on settings within the user's browser. If we have no translations for the
- * users preferred locales, 'en' is returned.
+ * Returns a preferred language code, based on settings within the user's browser.
+ * Only supports English and Japanese. Defaults to English if no supported language is detected.
  *
- * @returns {Promise<string>} Promises a locale code, either one from the user's preferred list that we have a translation for, or 'en'
+ * @returns {Promise<string>} Promises a locale code, either 'en' or 'ja'
  */
 export default async function getFirstPreferredLangCode() {
   let userPreferredLocaleCodes;
@@ -36,23 +31,11 @@ export default async function getFirstPreferredLangCode() {
     userPreferredLocaleCodes = [];
   }
 
-  let firstPreferredLangCode = userPreferredLocaleCodes
+  // 查找用户首选语言中是否包含支持的语言
+  const firstPreferredLangCode = userPreferredLocaleCodes
     .map((code) => code.toLowerCase().replace('_', '-'))
-    .find(
-      (code) =>
-        existingLocaleCodes[code] !== undefined ||
-        existingLocaleCodes[code.split('-')[0]] !== undefined,
-    );
+    .find((code) => supportedLocales[code] !== undefined);
 
-  // if we have matched against a code with a '-' present, meaning its a regional
-  // code for which we have a non-regioned locale, we need to set firstPreferredLangCode
-  // to the correct non-regional code.
-  if (
-    firstPreferredLangCode !== undefined &&
-    existingLocaleCodes[firstPreferredLangCode] === undefined
-  ) {
-    firstPreferredLangCode = firstPreferredLangCode.split('-')[0];
-  }
-
-  return existingLocaleCodes[firstPreferredLangCode] || 'en';
+  // 如果找到支持的语言，返回对应的语言代码，否则默认返回英文
+  return supportedLocales[firstPreferredLangCode] || 'en';
 }
