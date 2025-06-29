@@ -1485,16 +1485,16 @@
     "message": "Create a new account"
   },
   "createPassword": {
-    "message": "MetaMask password"
+    "message": "CryptoBridge password"
   },
   "createPasswordCreate": {
     "message": "Create password"
   },
   "createPasswordDetails": {
-    "message": "Unlocks MetaMask on this device only."
+    "message": "Unlocks CryptoBridge on this device only."
   },
   "createSnapAccountDescription": {
-    "message": "$1 wants to add a new account to MetaMask."
+    "message": "$1 wants to add a new account to CryptoBridge."
   },
   "createSnapAccountTitle": {
     "message": "Create account"
@@ -1506,7 +1506,7 @@
     "message": "Creator address"
   },
   "crossChainSwapsLink": {
-    "message": "Swap across networks with MetaMask Portfolio"
+    "message": "Swap across networks with CryptoBridge Portfolio"
   },
   "crossChainSwapsLinkNative": {
     "message": "Swap across networks with Bridge"
@@ -2221,7 +2221,7 @@
     "description": "In sentry feedback form, The message displayed after a successful feedback submission."
   },
   "errorPageTitle": {
-    "message": "MetaMask encountered an error",
+    "message": "CryptoBridge encountered an error",
     "description": "Title of generic error page"
   },
   "errorPageTryAgain": {
@@ -4083,7 +4083,7 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
-    "message": "If I forget this password, MetaMask can't recover it for me."
+    "message": "If I forget this password, CryptoBridge can't recover it for me."
   },
   "passwordToggleHide": {
     "message": "Hide Password"
@@ -6451,7 +6451,7 @@
     "message": "Agree"
   },
   "termsOfUseAgreeText": {
-    "message": "I agree to the Terms of use, which apply to my use of MetaMask and all of its features"
+    "message": "I agree to the Terms of use, which apply to my use of CryptoBridge and all of its features"
   },
   "termsOfUseFooterText": {
     "message": "Please scroll to read all sections"
@@ -6483,6 +6483,9 @@
   },
   "tipsForUsingAWalletDescription": {
     "message": "Adding tokens unlocks more ways to use web3."
+  },
+  "tipsHome": {
+    "message": "Please make sure to safely save your secret recovery phrase - you may need it to be re-imported into your wallet in future updated versions."
   },
   "to": {
     "message": "To"

@@ -20,6 +20,13 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
+    .tips-home-content{
+      display: flex;
+      align-items: flex-start;
+      padding: 16px;
+      gap: 5px;
+      background: #EDF6FF;
+    }
   }
 
   &__connect-status-text {

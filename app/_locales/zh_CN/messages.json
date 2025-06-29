@@ -1434,6 +1434,9 @@
   "createPassword": {
     "message": "创建密码"
   },
+  "createPasswordDetails": {
+    "message": "仅在此设备上解锁CryptoBridge。"
+  },
   "createSnapAccountDescription": {
     "message": "$1 想在 MetaMask 添加一个新账户。"
   },
@@ -2097,7 +2100,7 @@
     "description": "In sentry feedback form, The message displayed after a successful feedback submission."
   },
   "errorPageTitle": {
-    "message": "MetaMask 遇到了一个错误",
+    "message": "CryptoBridge 遇到了一个错误",
     "description": "Title of generic error page"
   },
   "errorPageTryAgain": {
@@ -3376,6 +3379,9 @@
   "newPassword": {
     "message": "新密码（至少 8 个字符）"
   },
+  "newPasswordCreate": {
+    "message": "创建新密码"
+  },
   "newPrivacyPolicyActionButton": {
     "message": "了解更多"
   },
@@ -3886,7 +3892,7 @@
     "message": "强密码可以提高钱包的安全性，以防设备被盗或被入侵。"
   },
   "passwordTermsWarning": {
-    "message": "我明白 MetaMask 无法为我恢复此密码。$1"
+    "message": "我明白 CryptoBridge 无法为我恢复此密码。$1"
   },
   "passwordsDontMatch": {
     "message": "密码不匹配"
@@ -6100,8 +6106,11 @@
   "termsOfService": {
     "message": "服务条款"
   },
+  "termsOfUseAgree": {
+    "message": "同意"
+  },
   "termsOfUseAgreeText": {
-    "message": "我同意适用于我使用MetaMask及其所有功能的使用条款"
+    "message": "我同意适用于我使用CryptoBridge及其所有功能的使用条款"
   },
   "termsOfUseFooterText": {
     "message": "请滚动以阅读所有章节"
@@ -6629,6 +6638,15 @@
   },
   "welcomeBack": {
     "message": "欢迎回来"
+  },
+  "welcomeDescription": {
+    "message": "受到数百万人的信任，CryptoBridge是一个安全的钱包，使所有人都可以访问web3的世界。"
+  },
+  "welcomeGetStarted": {
+    "message": "开始"
+  },
+  "welcomeTitle": {
+    "message": "欢迎来到 CryptBridge"
   },
   "welcomeToMetaMask": {
     "message": "让我们开始吧"

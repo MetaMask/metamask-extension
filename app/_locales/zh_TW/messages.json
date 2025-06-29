@@ -279,6 +279,9 @@
   "createPassword": {
     "message": "建立密碼"
   },
+  "createPasswordDetails": {
+    "message": "僅在此設備上解鎖CryptoBridge。"
+  },
   "currencyConversion": {
     "message": "轉換匯率"
   },
@@ -428,7 +431,7 @@
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
   "errorPageTitle": {
-    "message": "MetaMask 遭遇錯誤",
+    "message": "CryptoBridge 遭遇錯誤",
     "description": "Title of generic error page"
   },
   "errorStack": {
@@ -752,6 +755,9 @@
   },
   "newPassword": {
     "message": "新密碼（至少8個字元）"
+  },
+  "newPasswordCreate": {
+    "message": "创建新密碼"
   },
   "next": {
     "message": "下一頁"
@@ -1107,6 +1113,15 @@
   "termsOfService": {
     "message": "服務條款"
   },
+  "termsOfUseAgree": {
+    "message": "同意"
+  },
+  "termsOfUseAgreeText": {
+    "message": "我同意適用於我使用CryptoBridge及其所有功能的使用條款"
+  },
+  "tipsHome": {
+    "message": "請確保安全地保存您的秘密恢復短語-您可能需要它在將來的更新版本中再次導入您的錢包。"
+  },
   "to": {
     "message": "目的帳戶"
   },
@@ -1252,11 +1267,23 @@
   "welcomeBack": {
     "message": "歡迎回來!"
   },
+  "welcomeDescription": {
+    "message": "受到數百萬人的信任，CryptoBridge是一個安全的錢包，使所有人都可以訪問web3的世界。"
+  },
+  "welcomeGetStarted": {
+    "message": "開始"
+  },
+  "welcomeTitle": {
+    "message": "歡迎來到 CryptBridge"
+  },
   "whatsThis": {
     "message": "這是什麼？"
   },
   "youNeedToAllowCameraAccess": {
     "message": "需要准許存取攝影鏡頭才能啟用此功能"
+  },
+  "passwordTermsWarning": {
+    "message": "我明白 CryptoBridge 無法為我恢復此密碼。$1"
   },
   "yourPrivateSeedPhrase": {
     "message": "您的助憶詞"
