@@ -87,7 +87,7 @@ const PopularNetworkList = ({
             {t('additionalNetworks')}
           </Text>
 
-          <Box onMouseEnter={handleMouseEnter} marginTop={1}>
+          <Box onMouseEnter={handleMouseEnter} marginTop={1} ref={setBoxRef}>
             <Icon
               className="add-network__warning-icon"
               name={IconName.Info}
@@ -97,7 +97,7 @@ const PopularNetworkList = ({
             />
             <Popover
               referenceElement={referenceElement}
-              position={PopoverPosition.TopStart}
+              position={PopoverPosition.Top}
               paddingTop={3}
               paddingBottom={3}
               offset={[16, 12]}
@@ -140,7 +140,7 @@ const PopularNetworkList = ({
         marginBottom={1}
         paddingLeft={4}
         paddingRight={4}
-        ref={setBoxRef}
+        // ref={setBoxRef}
       >
         {popoverContent}
         {searchAddNetworkResults.map((network) => (
