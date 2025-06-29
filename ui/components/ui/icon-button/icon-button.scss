@@ -29,7 +29,7 @@
 
   @include design-system.H7;
 
-  font-size: 10px;
+  font-size: 12px !important;
   cursor: pointer;
 
 
@@ -61,9 +61,6 @@
 
   &__label-large {
     width: 66px; //for ellipsis keeping the width same as icon-button used here
-  }
-
-  p{
     font-size: 0.625rem !important;
     line-height: 0.875rem !important;
     display: -webkit-box;
@@ -72,7 +69,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 1.2;
-    max-height: 2.4em;
+    max-height: 3em;
     white-space: pre-wrap;
   }
 }

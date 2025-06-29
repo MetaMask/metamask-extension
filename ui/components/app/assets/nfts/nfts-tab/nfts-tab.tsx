@@ -41,7 +41,6 @@ import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import NftGrid from '../nft-grid/nft-grid';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import { sortAssets } from '../../util/sort';
-import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 import PulseLoader from '../../../../ui/pulse-loader';
 
 export default function NftsTab() {
@@ -124,7 +123,7 @@ export default function NftsTab() {
   return (
     <>
       <Box marginTop={2}>
-        <AssetListControlBar />
+        {/* <AssetListControlBar /> */}
       </Box>
 
       <Box className="nfts-tab">

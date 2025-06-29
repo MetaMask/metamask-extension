@@ -54,7 +54,7 @@ export default function IconButton(props) {
             <Text
               className="icon-button-round_label"
               ellipsis
-              variant={TextVariant.bodySmMedium}
+              style={{ fontSize: '12px' }}
             >
               {label}
             </Text>

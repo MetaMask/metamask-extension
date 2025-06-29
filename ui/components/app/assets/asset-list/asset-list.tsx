@@ -11,7 +11,7 @@ import DetectedToken from '../../detected-token/detected-token';
 import { usePrimaryCurrencyProperties } from '../hooks';
 import TokenList from '../token-list';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
-import AssetListControlBar from './asset-list-control-bar';
+// import AssetListControlBar from './asset-list-control-bar';
 import AssetListFundingModals from './asset-list-funding-modals';
 
 export type AssetListProps = {
@@ -61,7 +61,7 @@ const AssetList = ({
 
   return (
     <>
-      <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
+      {/* <AssetListControlBar showTokensLinks={shouldShowTokensLinks} /> */}
       <TokenListContainer onClickAsset={onClickAsset} safeChains={safeChains} />
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
