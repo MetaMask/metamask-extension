@@ -7020,12 +7020,6 @@
   "welcomeBack": {
     "message": "Welcome back"
   },
-<<<<<<< HEAD
-  "welcomeGetStarted": {
-    "message": "Get started"
-  },
-=======
->>>>>>> 90529cc5ec18d9f76b0397c6079e469268416fe1
   "welcomeToMetaMask": {
     "message": "Let's get started"
   },
@@ -7100,13 +7094,9 @@
   "welcomeDescription": {
     "message": "Seamless Access to Crypto & Fiat in One Platform"
   },
-<<<<<<< HEAD
-  "welcomeDescription":{
-    "message":"Seamless Access to Crypto & Fiat in One Platform"
-  },
   "totalBalance":{
     "message":"Total balance"
-=======
+  },
   "footerAgreementDesc":{
     "message":"By using this service, you agree to our"
   },
@@ -7127,6 +7117,5 @@
   },
   "welcomeTitle": {
     "message": "Welcome to CryptBridge"
->>>>>>> 90529cc5ec18d9f76b0397c6079e469268416fe1
   }
 }
