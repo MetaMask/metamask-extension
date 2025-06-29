@@ -2164,6 +2164,7 @@ export default class MetamaskController extends EventEmitter {
       BridgeStatusController: this.bridgeStatusController,
       EnsController: this.ensController,
       ApprovalController: this.approvalController,
+      PhishingController: this.phishingController,
     };
 
     this.store.updateStructure({

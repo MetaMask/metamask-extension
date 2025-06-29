@@ -19,6 +19,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import SnapAuthorshipPill from '../../../snaps/snap-authorship-pill';
 import { SnapMetadataModal } from '../../../snaps/snap-metadata-modal';
+import { useOriginTrustSignals } from '../../../../../hooks/useOriginTrustSignals';
 
 export type ConfirmInfoRowUrlProps = {
   url: string;
@@ -35,6 +36,10 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
     () => setIsModalOpen(false),
     [setIsModalOpen],
   );
+
+  const originTrustSignals = useOriginTrustSignals(url);
+
+  console.log('originTrustSignals', originTrustSignals);
 
   if (isSnapId(url)) {
     return (
