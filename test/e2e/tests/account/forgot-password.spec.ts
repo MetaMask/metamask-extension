@@ -55,7 +55,7 @@ describe('Forgot password', function () {
         );
         const homePage = new HomePage(driver);
         await homePage.headerNavbar.check_pageIsLoaded();
-        await homePage.headerNavbar.lockMetaMask();
+        await homePage.headerNavbar.lockCryptoBridge();
 
         // Click forgot password button and reset password
         await new LoginPage(driver).gotoResetPasswordPage();
@@ -68,7 +68,7 @@ describe('Forgot password', function () {
         await homePage.headerNavbar.check_pageIsLoaded();
 
         // Lock wallet again
-        await homePage.headerNavbar.lockMetaMask();
+        await homePage.headerNavbar.lockCryptoBridge();
 
         // Check user can log in with new password
         await loginWithBalanceValidation(driver, localNodes[0], newPassword);

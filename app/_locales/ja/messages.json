@@ -2927,8 +2927,8 @@
   "lock": {
     "message": "ロック"
   },
-  "lockMetaMask": {
-    "message": "MetaMaskをロック"
+  "lockCryptoBridge": {
+    "message": "CryptoBridgeをロック"
   },
   "lockTimeInvalid": {
     "message": "ロック時間は0～10080の間の数字で設定する必要があります"
@@ -3790,23 +3790,23 @@
     "message": "任意:"
   },
   "onboardingMetametricsTitle": {
-    "message": "MetaMaskの改善にご協力ください"
+    "message": "CryptoBridgeの改善にご協力ください"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "このデータは、ユーザーによる当社のマーケティングコミュニケーションとのインタラクションを把握するために使用されます。また、関連ニュースをお伝えする場合もあります (製品の機能など)。"
   },
   "onboardingPinExtensionDescription": {
-    "message": "MetaMaskをブラウザにピン留めすることで、アクセスしやすくなり、トランザクションの承認を簡単に表示できるようになります。"
+    "message": "CryptoBridgeをブラウザにピン留めすることで、アクセスしやすくなり、トランザクションの承認を簡単に表示できるようになります。"
   },
   "onboardingPinExtensionDescription2": {
-    "message": "拡張機能をクリックしてMetaMaskを開き、ワンクリックでウォレットにアクセスできます。"
+    "message": "拡張機能をクリックしてCryptoBridgeを開き、ワンクリックでウォレットにアクセスできます。"
   },
   "onboardingPinExtensionDescription3": {
     "message": "ブラウザの拡張機能アイコンをクリックすると、すぐにアクセスできます",
     "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
-    "message": "MetaMaskのインストールが完了しました！"
+    "message": "CryptoBridgeのインストールが完了しました！"
   },
   "onekey": {
     "message": "OneKey"
@@ -3820,7 +3820,7 @@
   },
   "openFullScreenForLedgerWebHid": {
     "message": "全画面モードにしてLedgerを接続します。",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+    "description": "Shown to the user on the confirm screen when they are viewing CryptoBridge in a popup window but need to connect their ledger via webhid."
   },
   "openInBlockExplorer": {
     "message": "ブロックエクスプローラーで開く"
@@ -5314,8 +5314,8 @@
   "solanaMoreFeaturesComingSoonDescription": {
     "message": "NFT、ハードウェアウォレットのサポート、その他機能も近日追加予定。"
   },
-  "solanaOnMetaMask": {
-    "message": "MetaMaskでSolana"
+  "solanaOnCryptoBridge": {
+    "message": "CryptoBridgeでSolana"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "トークンの送金、受取、スワップ"

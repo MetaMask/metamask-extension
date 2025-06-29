@@ -45,7 +45,7 @@ describe('Lock and unlock', function (this: Suite) {
           { interval: 200, timeout: 10000 },
         );
         const homePage = new HomePage(driver);
-        await homePage.headerNavbar.lockMetaMask();
+        await homePage.headerNavbar.lockCryptoBridge();
         await loginWithBalanceValidation(driver);
       },
     );

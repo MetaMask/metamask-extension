@@ -2927,8 +2927,8 @@
   "lock": {
     "message": "Sperren"
   },
-  "lockMetaMask": {
-    "message": "MetaMask sperren"
+  "lockCryptoBridge": {
+    "message": "CryptoBridge sperren"
   },
   "lockTimeInvalid": {
     "message": "Sperrzeit muss eine Zahl zwischen 0 und 10080 sein"
@@ -3790,23 +3790,23 @@
     "message": "Optional:"
   },
   "onboardingMetametricsTitle": {
-    "message": "Helfen Sie uns, MetaMask zu verbessern."
+    "message": "Helfen Sie uns, CryptoBridge zu verbessern."
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Wir verwenden diese Daten, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen. Wir können relevante Neuigkeiten (wie Produktmerkmale) teilen."
   },
   "onboardingPinExtensionDescription": {
-    "message": "Heften Sie MetaMask in Ihrem Browser ab, damit Sie auf die Transaktionsbestätigungen zugreifen und sie leicht einsehen können."
+    "message": "Heften Sie CryptoBridge in Ihrem Browser ab, damit Sie auf die Transaktionsbestätigungen zugreifen und sie leicht einsehen können."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Sie können MetaMask öffnen, indem Sie auf die Erweiterung klicken, und mit nur einem Klick auf Ihre Wallet zugreifen."
+    "message": "Sie können CryptoBridge öffnen, indem Sie auf die Erweiterung klicken, und mit nur einem Klick auf Ihre Wallet zugreifen."
   },
   "onboardingPinExtensionDescription3": {
     "message": "Klicken Sie auf das Symbol der Browser-Erweiterung, um sofort darauf zuzugreifen.",
     "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Ihre MetaMask Installation ist abgeschlossen!"
+    "message": "Ihre CryptoBridge Installation ist abgeschlossen!"
   },
   "onekey": {
     "message": "OneKey"
@@ -5314,8 +5314,8 @@
   "solanaMoreFeaturesComingSoonDescription": {
     "message": "NFTs, Unterstützung für Hardware-Wallets und bald noch viel mehr."
   },
-  "solanaOnMetaMask": {
-    "message": "Solana auf MetaMask"
+  "solanaOnCryptoBridge": {
+    "message": "Solana auf CryptoBridge"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "Token senden, empfangen und swappen"

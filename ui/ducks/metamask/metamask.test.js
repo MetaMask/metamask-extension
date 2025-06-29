@@ -230,14 +230,14 @@ describe('MetaMask Reducers', () => {
   });
 
   it('locks MetaMask', () => {
-    const unlockMetaMaskState = {
+    const unlockCryptoBridgeState = {
       isUnlocked: true,
     };
-    const lockMetaMask = reduceMetamask(unlockMetaMaskState, {
+    const lockCryptoBridge = reduceMetamask(unlockCryptoBridgeState, {
       type: actionConstants.LOCK_METAMASK,
     });
 
-    expect(lockMetaMask.isUnlocked).toStrictEqual(false);
+    expect(lockCryptoBridge.isUnlocked).toStrictEqual(false);
   });
 
   it('sets account label', () => {

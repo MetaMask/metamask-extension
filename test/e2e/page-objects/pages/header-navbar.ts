@@ -17,7 +17,7 @@ class HeaderNavbar {
 
   private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
 
-  private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
+  private readonly lockCryptoBridgeButton = '[data-testid="global-menu-lock"]';
 
   private readonly openAccountDetailsButton =
     '[data-testid="account-list-menu-details"]';
@@ -60,9 +60,9 @@ class HeaderNavbar {
     await this.driver.clickElement(this.copyAddressButton);
   }
 
-  async lockMetaMask(): Promise<void> {
+  async lockCryptoBridge(): Promise<void> {
     await this.openThreeDotMenu();
-    await this.driver.clickElement(this.lockMetaMaskButton);
+    await this.driver.clickElement(this.lockCryptoBridgeButton);
   }
 
   async openAccountMenu(): Promise<void> {

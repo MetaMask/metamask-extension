@@ -2927,8 +2927,8 @@
   "lock": {
     "message": "लॉक"
   },
-  "lockMetaMask": {
-    "message": "MetaMask लॉक करें"
+  "lockCryptoBridge": {
+    "message": "CryptoBridge लॉक करें"
   },
   "lockTimeInvalid": {
     "message": "लॉक का समय 0 और 10080 के बीच की कोई संख्या होनी चाहिए"
@@ -3790,23 +3790,23 @@
     "message": "वैकल्पिक:"
   },
   "onboardingMetametricsTitle": {
-    "message": "MetaMask को बेहतर बनाने में हमारी मदद करें"
+    "message": "CryptoBridge को बेहतर बनाने में हमारी मदद करें"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "हम इस डेटा का उपयोग यह जानने के लिए करेंगे कि आप हमारे मार्केटिंग कम्यूनिकेशन्स के साथ कैसे इंटरैक्ट करते हैं। हम प्रासंगिक समाचार (जैसे प्रॉडक्ट फीचर्स) साझा कर सकते हैं।"
   },
   "onboardingPinExtensionDescription": {
-    "message": "अपने ब्राउज़र पर MetaMask को पिन करें ताकि यह सुलभ हो और ट्रांसेक्शन के कन्फर्मेशन को देखना आसान हो सके।"
+    "message": "अपने ब्राउज़र पर CryptoBridge को पिन करें ताकि यह सुलभ हो और ट्रांसेक्शन के कन्फर्मेशन को देखना आसान हो सके।"
   },
   "onboardingPinExtensionDescription2": {
-    "message": "आप एक्सटेंशन पर क्लिक करके MetaMask खोल सकते हैं और 1 क्लिक से अपने वॉलेट तक पहुंच सकते हैं।"
+    "message": "आप एक्सटेंशन पर क्लिक करके CryptoBridge खोल सकते हैं और 1 क्लिक से अपने वॉलेट तक पहुंच सकते हैं।"
   },
   "onboardingPinExtensionDescription3": {
     "message": "ब्राउज़र एक्सटेंशन आइकन पर क्लिक करें ताकि इस तक तुरंत पहुंच सकें",
     "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
-    "message": "आपका MetaMask इंस्टॉल पूरा हो गया है!"
+    "message": "आपका CryptoBridge इंस्टॉल पूरा हो गया है!"
   },
   "onekey": {
     "message": "OneKey"
@@ -5314,8 +5314,8 @@
   "solanaMoreFeaturesComingSoonDescription": {
     "message": "NFTs, हार्डवेयर वॉलेट सपोर्ट और बहुत कुछ जल्द ही आ रहा है।"
   },
-  "solanaOnMetaMask": {
-    "message": "MetaMask पर Solana"
+  "solanaOnCryptoBridge": {
+    "message": "CryptoBridge पर Solana"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "टोकन भेजें, प्राप्त करें और स्वैप करें"

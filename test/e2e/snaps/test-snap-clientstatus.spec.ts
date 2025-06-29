@@ -36,7 +36,7 @@ describe('Test Snap Client Status', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.lockMetaMask();
+        await headerNavbar.lockCryptoBridge();
 
         // Click submit client status on test snap page
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);

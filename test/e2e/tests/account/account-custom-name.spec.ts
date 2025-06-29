@@ -52,7 +52,7 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         await accountListPage.switchToAccount(newAccountLabel);
 
         // Lock and unlock wallet
-        await headerNavbar.lockMetaMask();
+        await headerNavbar.lockCryptoBridge();
         await loginWithBalanceValidation(driver);
 
         // Verify both account labels persist after unlock

@@ -2927,8 +2927,8 @@
   "lock": {
     "message": "注销"
   },
-  "lockMetaMask": {
-    "message": "锁定 MetaMask"
+  "lockCryptoBridge": {
+    "message": "锁定 CryptoBridge"
   },
   "lockTimeInvalid": {
     "message": "锁定时间必须是 0 到 10080 之间的数字"
@@ -3790,23 +3790,23 @@
     "message": "可选："
   },
   "onboardingMetametricsTitle": {
-    "message": "请帮助我们改进 MetaMask"
+    "message": "请帮助我们改进 CryptoBridge"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "我们将使用此数据来了解您如何与我们的营销通信交互。我们可能会分享相关资讯（例如产品特点）。"
   },
   "onboardingPinExtensionDescription": {
-    "message": "在您的浏览器上固定 MetaMask，以便访问并轻松查看交易确认。"
+    "message": "在您的浏览器上固定 CryptoBridge，以便访问并轻松查看交易确认。"
   },
   "onboardingPinExtensionDescription2": {
-    "message": "您可以通过点击扩展程序打开 MetaMask，并一键访问您的钱包。"
+    "message": "您可以通过点击扩展程序打开 CryptoBridge，并一键访问您的钱包。"
   },
   "onboardingPinExtensionDescription3": {
     "message": "点击浏览器扩展程序图标即可即时访问它",
     "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
-    "message": "您的 MetaMask 安装完成！"
+    "message": "您的 CryptoBridge 安装完成！"
   },
   "onekey": {
     "message": "OneKey"
@@ -3820,7 +3820,7 @@
   },
   "openFullScreenForLedgerWebHid": {
     "message": "全屏打开以连接您的 Ledger。",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+    "description": "Shown to the user on the confirm screen when they are viewing CryptoBridge in a popup window but need to connect their ledger via webhid."
   },
   "openInBlockExplorer": {
     "message": "在区块浏览器上打开"
@@ -5314,8 +5314,8 @@
   "solanaMoreFeaturesComingSoonDescription": {
     "message": "NFT、硬件钱包支持等功能即将上线。"
   },
-  "solanaOnMetaMask": {
-    "message": "MetaMask 支持 Solana"
+  "solanaOnCryptoBridge": {
+    "message": "CryptoBridge 支持 Solana"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "发送、接收和兑换代币"
@@ -6133,6 +6133,9 @@
   },
   "tipsForUsingAWalletDescription": {
     "message": "添加代币可解锁使用 Web3 的更多方法。"
+  },
+  "tipsHome": {
+    "message": "请确保安全地保存您的秘密恢复短语-您可能需要它在将来的更新版本中再次导入您的钱包。"
   },
   "to": {
     "message": "至"

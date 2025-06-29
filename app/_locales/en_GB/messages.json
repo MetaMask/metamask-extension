@@ -3072,8 +3072,8 @@
   "lock": {
     "message": "Lock"
   },
-  "lockMetaMask": {
-    "message": "Lock MetaMask"
+  "lockCryptoBridge": {
+    "message": "Lock CryptoBridge"
   },
   "lockTimeInvalid": {
     "message": "Lock time must be a number between 0 and 10080"
@@ -3966,7 +3966,7 @@
     "message": "Optional:"
   },
   "onboardingMetametricsTitle": {
-    "message": "Help us improve MetaMask"
+    "message": "Help us improve CryptoBridge"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
@@ -3978,10 +3978,10 @@
     "message": "Pin extension"
   },
   "onboardingPinExtensionDescription": {
-    "message": "Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations."
+    "message": "Pin CryptoBridge on your browser so it’s accessible and easy to view transaction confirmations."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Access your MetaMask wallet with 1 click by clicking on the extension."
+    "message": "Access your CryptoBridge wallet with 1 click by clicking on the extension."
   },
   "onboardingPinExtensionDescription3": {
     "message": "Click $1 extension icon to access it instantly",
@@ -5579,8 +5579,8 @@
   "solanaMoreFeaturesComingSoonDescription": {
     "message": "NFTs, hardware wallet support, and more coming soon."
   },
-  "solanaOnMetaMask": {
-    "message": "Solana on MetaMask"
+  "solanaOnCryptoBridge": {
+    "message": "Solana on CryptoBridge"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "Send, receive, and swap tokens"
@@ -7018,13 +7018,13 @@
     "message": "Welcome back"
   },
   "welcomeDescription": {
-    "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
+    "message": "Trusted by millions, CryptoBridge is a secure wallet making the world of web3 accessible to all."
   },
   "welcomeGetStarted": {
     "message": "Get started"
   },
   "welcomeTitle": {
-    "message": "Welcome to MetaMask"
+    "message": "Welcome to CryptBridge"
   },
   "welcomeToMetaMask": {
     "message": "Let's get started"

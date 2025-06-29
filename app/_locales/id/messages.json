@@ -2927,8 +2927,8 @@
   "lock": {
     "message": "Kunci"
   },
-  "lockMetaMask": {
-    "message": "Kunci MetaMask"
+  "lockCryptoBridge": {
+    "message": "Kunci CryptoBridge"
   },
   "lockTimeInvalid": {
     "message": "Waktu kunci harus berupa angka antara 0 dan 10080"
@@ -3790,23 +3790,23 @@
     "message": "Opsional:"
   },
   "onboardingMetametricsTitle": {
-    "message": "Bantu kami meningkatkan MetaMask"
+    "message": "Bantu kami meningkatkan CryptoBridge"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Kami akan menggunakan data ini untuk mempelajari cara Anda berinteraksi dengan komunikasi pemasaran. Kami mungkin akan membagikan berita yang relevan (seperti fitur produk)."
   },
   "onboardingPinExtensionDescription": {
-    "message": "Sematkan MetaMask pada browser Anda agar dapat diakses dan memudahkan dalam melihat konfirmasi transaksi."
+    "message": "Sematkan CryptoBridge pada browser Anda agar dapat diakses dan memudahkan dalam melihat konfirmasi transaksi."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Anda dapat membuka MetaMask dengan mengeklik ekstensi dan mengakses dompet Anda dalam 1 klik."
+    "message": "Anda dapat membuka CryptoBridge dengan mengeklik ekstensi dan mengakses dompet Anda dalam 1 klik."
   },
   "onboardingPinExtensionDescription3": {
     "message": "Klik ikon ekstensi browser untuk mengaksesnya secara langsung",
     "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Pemasangan MetaMask Anda selesai!"
+    "message": "Pemasangan CryptoBridge Anda selesai!"
   },
   "onekey": {
     "message": "OneKey"
@@ -5314,8 +5314,8 @@
   "solanaMoreFeaturesComingSoonDescription": {
     "message": "NFT, dukungan dompet perangkat keras, dan yang lainnya akan segera hadir."
   },
-  "solanaOnMetaMask": {
-    "message": "Solana di MetaMask"
+  "solanaOnCryptoBridge": {
+    "message": "Solana di CryptoBridge"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "Kirim, terima, dan tukar token"

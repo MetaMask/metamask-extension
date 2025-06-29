@@ -2927,8 +2927,8 @@
   "lock": {
     "message": "Déconnexion"
   },
-  "lockMetaMask": {
-    "message": "Verrouiller MetaMask"
+  "lockCryptoBridge": {
+    "message": "Verrouiller CryptoBridge"
   },
   "lockTimeInvalid": {
     "message": "Le temps de verrouillage doit être un nombre compris entre 0 et 10 080"
@@ -3790,23 +3790,23 @@
     "message": "Facultatif :"
   },
   "onboardingMetametricsTitle": {
-    "message": "Aidez-nous à améliorer MetaMask"
+    "message": "Aidez-nous à améliorer CryptoBridge"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Nous utiliserons ces données pour savoir comment vous interagissez avec nos communications commerciales et pour partager avec vous des informations pertinentes (comme les caractéristiques des produits)."
   },
   "onboardingPinExtensionDescription": {
-    "message": "Épinglez MetaMask dans votre navigateur pour qu’il soit accessible et qu’il soit facile de voir les confirmations de transaction."
+    "message": "Épinglez CryptoBridge dans votre navigateur pour qu’il soit accessible et qu’il soit facile de voir les confirmations de transaction."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Vous pouvez ouvrir MetaMask en cliquant sur l’extension pour accéder à votre portefeuille en un seul clic."
+    "message": "Vous pouvez ouvrir CryptoBridge en cliquant sur l’extension pour accéder à votre portefeuille en un seul clic."
   },
   "onboardingPinExtensionDescription3": {
     "message": "Cliquez sur l’icône d’extension du navigateur pour y accéder instantanément",
     "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Votre installation de MetaMask est terminée !"
+    "message": "Votre installation de CryptoBridge est terminée !"
   },
   "onekey": {
     "message": "OneKey"
@@ -5314,8 +5314,8 @@
   "solanaMoreFeaturesComingSoonDescription": {
     "message": "Les NFT, la prise en charge des portefeuilles matériels, etc., seront bientôt disponibles."
   },
-  "solanaOnMetaMask": {
-    "message": "Solana sur MetaMask"
+  "solanaOnCryptoBridge": {
+    "message": "Solana sur CryptoBridge"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "Envoyez, recevez et échangez des jetons"

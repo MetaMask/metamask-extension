@@ -2927,8 +2927,8 @@
   "lock": {
     "message": "Заблокировать"
   },
-  "lockMetaMask": {
-    "message": "Заблокировать MetaMask"
+  "lockCryptoBridge": {
+    "message": "Заблокировать CryptoBridge"
   },
   "lockTimeInvalid": {
     "message": "Время блокировки будет числом от 0 до 10080"
@@ -3790,23 +3790,23 @@
     "message": "Необязательными:"
   },
   "onboardingMetametricsTitle": {
-    "message": "Помогите нам улучшить MetaMask"
+    "message": "Помогите нам улучшить CryptoBridge"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Мы будем использовать эти данные, чтобы узнать, как вы взаимодействуете с нашими маркетинговыми сообщениями. Мы можем отправлять соответствующие новости (например, об особенностях продукта)."
   },
   "onboardingPinExtensionDescription": {
-    "message": "Закрепите расширение MetaMask в браузере для его постоянной доступности и легкого просмотра подтверждений транзакций."
+    "message": "Закрепите расширение CryptoBridge в браузере для его постоянной доступности и легкого просмотра подтверждений транзакций."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Вы можете открыть MetaMask, нажав на расширение, и получить доступ к своему кошельку одним щелчком мыши."
+    "message": "Вы можете открыть CryptoBridge, нажав на расширение, и получить доступ к своему кошельку одним щелчком мыши."
   },
   "onboardingPinExtensionDescription3": {
     "message": "Нажмите на значок расширения браузера для мгновенного перехода к нему",
     "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Установка MetaMask завершена!"
+    "message": "Установка CryptoBridge завершена!"
   },
   "onekey": {
     "message": "OneKey"
@@ -5314,8 +5314,8 @@
   "solanaMoreFeaturesComingSoonDescription": {
     "message": "Скоро появятся dapps Solana, NFT, поддержка аппаратного кошелька и многое другое."
   },
-  "solanaOnMetaMask": {
-    "message": "Solana в MetaMask"
+  "solanaOnCryptoBridge": {
+    "message": "Solana в CryptoBridge"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "Отправляйте, получайте и обменивайте токены"

@@ -2927,8 +2927,8 @@
   "lock": {
     "message": "Bloquear"
   },
-  "lockMetaMask": {
-    "message": "Cerrar MetaMask"
+  "lockCryptoBridge": {
+    "message": "Cerrar CryptoBridge"
   },
   "lockTimeInvalid": {
     "message": "El tiempo de bloqueo debe ser un número entre 0 y 10080"
@@ -3790,23 +3790,23 @@
     "message": "Opcionales:"
   },
   "onboardingMetametricsTitle": {
-    "message": "Ayúdenos a mejorar MetaMask"
+    "message": "Ayúdenos a mejorar CryptoBridge"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Utilizaremos estos datos para saber cómo interactúa con nuestras comunicaciones de marketing. Es posible que compartamos noticias relevantes (como características del producto)."
   },
   "onboardingPinExtensionDescription": {
-    "message": "Ancle MetaMask en su navegador para que sea accesible y las confirmaciones de las transacciones se vean fácilmente."
+    "message": "Ancle CryptoBridge en su navegador para que sea accesible y las confirmaciones de las transacciones se vean fácilmente."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Para abrir MetaMask haga clic en la extensión y acceda a su monedero con 1 clic."
+    "message": "Para abrir CryptoBridge haga clic en la extensión y acceda a su monedero con 1 clic."
   },
   "onboardingPinExtensionDescription3": {
     "message": "Haga clic en el icono de la extensión del navegador para tener acceso instantáneo",
     "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
-    "message": "¡Su instalación de MetaMask ha finalizado!"
+    "message": "¡Su instalación de CryptoBridge ha finalizado!"
   },
   "onekey": {
     "message": "OneKey"
@@ -5314,8 +5314,8 @@
   "solanaMoreFeaturesComingSoonDescription": {
     "message": "Próximamente, compatibilidad con NFT, monederos físicos y más."
   },
-  "solanaOnMetaMask": {
-    "message": "Solana en MetaMask"
+  "solanaOnCryptoBridge": {
+    "message": "Solana en CryptoBridge"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "Envíe, reciba e intercambie tokens"

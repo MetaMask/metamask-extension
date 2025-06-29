@@ -24,7 +24,7 @@ describe('Unlock wallet - ', function () {
         await loginWithBalanceValidation(driver, localNodes[0]);
         // Lock Wallet
         const homePage = new HomePage(driver);
-        await homePage.headerNavbar.lockMetaMask();
+        await homePage.headerNavbar.lockCryptoBridge();
         const loginPage = new LoginPage(driver);
         await loginPage.loginToHomepage('123456');
         await loginPage.check_incorrectPasswordMessageIsDisplayed();

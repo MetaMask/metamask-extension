@@ -360,7 +360,7 @@ export const GlobalMenu = ({
         }}
         data-testid="global-menu-lock"
       >
-        {t('lockMetaMask')}
+        {t('lockCryptoBridge')}
       </MenuItem>
     </Popover>
   );

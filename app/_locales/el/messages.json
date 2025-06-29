@@ -2927,8 +2927,8 @@
   "lock": {
     "message": "Κλείδωμα"
   },
-  "lockMetaMask": {
-    "message": "Κλείδωμα του MetaMask"
+  "lockCryptoBridge": {
+    "message": "Κλείδωμα του CryptoBridge"
   },
   "lockTimeInvalid": {
     "message": "Ο χρόνος κλειδώματος πρέπει να είναι ένας αριθμός μεταξύ 0 και 10080"
@@ -3790,23 +3790,23 @@
     "message": "Προαιρετικές:"
   },
   "onboardingMetametricsTitle": {
-    "message": "Βοηθήστε μας να βελτιώσουμε το MetaMask"
+    "message": "Βοηθήστε μας να βελτιώσουμε το CryptoBridge"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Θα χρησιμοποιήσουμε αυτά τα δεδομένα για να μάθουμε πώς αλληλεπιδράτε με τις επικοινωνίες μάρκετινγκ. Ενδέχεται να κοινοποιήσουμε σχετικές πληροφορίες (όπως χαρακτηριστικά προϊόντων)."
   },
   "onboardingPinExtensionDescription": {
-    "message": "Προσκολλήστε το MetaMask στο πρόγραμμα περιήγησής σας, ώστε να είναι προσβάσιμο και εύκολο να δείτε τις επιβεβαιώσεις συναλλαγών."
+    "message": "Προσκολλήστε το CryptoBridge στο πρόγραμμα περιήγησής σας, ώστε να είναι προσβάσιμο και εύκολο να δείτε τις επιβεβαιώσεις συναλλαγών."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Μπορείτε να ανοίξετε το MetaMask κάνοντας κλικ στην επέκταση και να αποκτήσετε πρόσβαση στο πορτοφόλι σας με 1 κλικ."
+    "message": "Μπορείτε να ανοίξετε το CryptoBridge κάνοντας κλικ στην επέκταση και να αποκτήσετε πρόσβαση στο πορτοφόλι σας με 1 κλικ."
   },
   "onboardingPinExtensionDescription3": {
     "message": "Κάντε κλικ στο εικονίδιο της επέκτασης του προγράμματος περιήγησης για άμεση πρόσβαση",
     "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Η εγκατάσταση του MetaMask ολοκληρώθηκε!"
+    "message": "Η εγκατάσταση του CryptoBridge ολοκληρώθηκε!"
   },
   "onekey": {
     "message": "OneKey"
@@ -5314,8 +5314,8 @@
   "solanaMoreFeaturesComingSoonDescription": {
     "message": "NFT, υποστήριξη πορτοφολιού υλικού και πολλά άλλα σύντομα."
   },
-  "solanaOnMetaMask": {
-    "message": "Το Solana στο MetaMask"
+  "solanaOnCryptoBridge": {
+    "message": "Το Solana στο CryptoBridge"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "Αποστολή, λήψη και ανταλλαγή tokens"

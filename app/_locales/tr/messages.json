@@ -2927,8 +2927,8 @@
   "lock": {
     "message": "Kilitle"
   },
-  "lockMetaMask": {
-    "message": "MetaMask'i kilitle"
+  "lockCryptoBridge": {
+    "message": "CryptoBridge'i kilitle"
   },
   "lockTimeInvalid": {
     "message": "Kilit süresi 0 ile 10080 arasında olmalıdır"
@@ -3790,23 +3790,23 @@
     "message": "İsteğe bağlı:"
   },
   "onboardingMetametricsTitle": {
-    "message": "MetaMask'i iyileştirmemize yardımcı olun"
+    "message": "CryptoBridge'i iyileştirmemize yardımcı olun"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Bu verileri, pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek için kullanacağız. İlgili haberleri (ürün özellikleri gibi) paylaşabiliriz."
   },
   "onboardingPinExtensionDescription": {
-    "message": "İşlem onaylarını erişilebilir ve kolay görüntülenebilir hale getirmek için MetaMask'i tarayıcınıza sabitleyin."
+    "message": "İşlem onaylarını erişilebilir ve kolay görüntülenebilir hale getirmek için CryptoBridge'i tarayıcınıza sabitleyin."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Uzantıya tıklayarak MetaMask'i açabilir ve 1 tık ile cüzdanınıza erişim sağlayabilirsiniz."
+    "message": "Uzantıya tıklayarak CryptoBridge'i açabilir ve 1 tık ile cüzdanınıza erişim sağlayabilirsiniz."
   },
   "onboardingPinExtensionDescription3": {
     "message": "Hemen erişim sağlamak için tarayıcı uzantısı simgesine tıklayın",
     "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
-    "message": "MetaMask kurulumunuz tamamlandı!"
+    "message": "CryptoBridge kurulumunuz tamamlandı!"
   },
   "onekey": {
     "message": "OneKey"
@@ -3820,7 +3820,7 @@
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Ledger'ınızı bağlamak için tam ekrana gidin.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+    "description": "Shown to the user on the confirm screen when they are viewing CryptoBridge in a popup window but need to connect their ledger via webhid."
   },
   "openInBlockExplorer": {
     "message": "Blok gezgininde aç"
@@ -5314,8 +5314,8 @@
   "solanaMoreFeaturesComingSoonDescription": {
     "message": "NFT'ler, donanım cüzdanı desteği ve daha fazlası çok yakında."
   },
-  "solanaOnMetaMask": {
-    "message": "Solana MetaMask'te"
+  "solanaOnCryptoBridge": {
+    "message": "Solana CryptoBridge'te"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "Token gönder, al ve swap yap"

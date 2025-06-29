@@ -2927,8 +2927,8 @@
   "lock": {
     "message": "I-lock"
   },
-  "lockMetaMask": {
-    "message": "I-lock ang MetaMask"
+  "lockCryptoBridge": {
+    "message": "I-lock ang CryptoBridge"
   },
   "lockTimeInvalid": {
     "message": "Ang lock time ay dapat na isang numero sa pagitan ng 0 at 10080"
@@ -3790,23 +3790,23 @@
     "message": "Opsyonal:"
   },
   "onboardingMetametricsTitle": {
-    "message": "Tulungan kaming mapahusay ang MetaMask"
+    "message": "Tulungan kaming mapahusay ang CryptoBridge"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Gagamitin namin ang data na ito upang matutunan kung paano ka nakikipag-ugnayan sa aming mga komunikasyon sa marketing. Maaari kaming magbahagi ng kaugnay na balita (tulad ng mga tampok ng produkto)."
   },
   "onboardingPinExtensionDescription": {
-    "message": "I-pin ang MetaMask sa iyong browser para madali itong ma-access at madaling makita ang mga kumpirmasyon ng transaksyon."
+    "message": "I-pin ang CryptoBridge sa iyong browser para madali itong ma-access at madaling makita ang mga kumpirmasyon ng transaksyon."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Maaari mong buksan ang MetaMask sa pamamagitan ng pag-click sa extension at pag-accesss sa wallet mo sa 1 click lang."
+    "message": "Maaari mong buksan ang CryptoBridge sa pamamagitan ng pag-click sa extension at pag-accesss sa wallet mo sa 1 click lang."
   },
   "onboardingPinExtensionDescription3": {
     "message": "Mag-click sa icon ng browser extension para agad itong ma-access",
     "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Ang pag-install ng iyong MetaMask ay kumpleto na!"
+    "message": "Ang pag-install ng iyong CryptoBridge ay kumpleto na!"
   },
   "onekey": {
     "message": "OneKey"
@@ -3820,7 +3820,7 @@
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Pumunta sa full screen para ikonekta ang iyong Ledger.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+    "description": "Shown to the user on the confirm screen when they are viewing CryptoBridge in a popup window but need to connect their ledger via webhid."
   },
   "openInBlockExplorer": {
     "message": "Buksan sa block explorer"
@@ -5314,8 +5314,8 @@
   "solanaMoreFeaturesComingSoonDescription": {
     "message": "Parating na ang mga NFT, suporta sa hardware wallet, at iba pa."
   },
-  "solanaOnMetaMask": {
-    "message": "Solana sa MetaMask"
+  "solanaOnCryptoBridge": {
+    "message": "Solana sa CryptoBridge"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "Magpadala, tumanggap, at mag-swap ng mga token"

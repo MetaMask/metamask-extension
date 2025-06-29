@@ -127,7 +127,7 @@ describe('Dapp interactions', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const homepage = new Homepage(driver);
-        await homepage.headerNavbar.lockMetaMask();
+        await homepage.headerNavbar.lockCryptoBridge();
 
         // Attempt interaction with DApp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

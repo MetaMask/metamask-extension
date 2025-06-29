@@ -132,7 +132,7 @@ describe('Create BTC Account', function (this: Suite) {
       const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
 
       // lock metamask and reset wallet by clicking forgot password button
-      await headerNavbar.lockMetaMask();
+      await headerNavbar.lockCryptoBridge();
       await new LoginPage(driver).gotoResetPasswordPage();
       const resetPasswordPage = new ResetPasswordPage(driver);
       await resetPasswordPage.check_pageIsLoaded();

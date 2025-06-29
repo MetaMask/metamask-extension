@@ -136,7 +136,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    lockMetaMask: () => dispatch(lockMetamask(false)),
+    lockCryptoBridge: () => dispatch(lockMetamask(false)),
     setCurrentCurrencyToUSD: () => dispatch(setCurrentCurrency('usd')),
     setLastActiveTime: () => dispatch(setLastActiveTime()),
     pageChanged: (path) => dispatch(pageChanged(path)),

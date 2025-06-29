@@ -70,6 +70,8 @@ import { setEditedNetwork } from '../../store/actions';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
+import { TipsHome } from './tips/tips-home.component';
+
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
@@ -860,6 +862,7 @@ export default class Home extends PureComponent {
             ? this.renderPopover()
             : null}
           <div className="home__main-view">
+            <TipsHome />
             <AccountOverview
               onTabClick={onTabClick}
               ///: BEGIN:ONLY_INCLUDE_IF(build-main)

@@ -70,7 +70,7 @@ describe('Add account', function () {
         await activityList.check_txAmountInActivity('-2.8 ETH');
 
         // Lock wallet and recover via SRP in "forget password" option
-        await headerNavbar.lockMetaMask();
+        await headerNavbar.lockCryptoBridge();
         await new LoginPage(driver).gotoResetPasswordPage();
         const resetPasswordPage = new ResetPasswordPage(driver);
         await resetPasswordPage.check_pageIsLoaded();

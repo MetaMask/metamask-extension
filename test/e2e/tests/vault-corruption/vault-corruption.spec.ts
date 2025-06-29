@@ -156,7 +156,7 @@ describe('Vault Corruption', function () {
 
     const headerNavbar = new HeaderNavbar(driver);
     const firstAddress = await getFirstAddress(driver, headerNavbar);
-    await headerNavbar.lockMetaMask();
+    await headerNavbar.lockCryptoBridge();
 
     // use the home page to destroy the vault
     await driver.executeAsyncScript(script);

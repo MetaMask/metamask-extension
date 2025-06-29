@@ -16,7 +16,7 @@ export const getTranslatedUINotifications = (
   return {
     [NOTIFICATION_SOLANA_ON_METAMASK]: {
       ...UI_NOTIFICATIONS[NOTIFICATION_SOLANA_ON_METAMASK],
-      title: t('solanaOnMetaMask'),
+      title: t('solanaOnCryptoBridge'),
       description: '',
       image: {
         src: 'images/solana-logo-transparent.svg',

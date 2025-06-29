@@ -2927,8 +2927,8 @@
   "lock": {
     "message": "Khóa"
   },
-  "lockMetaMask": {
-    "message": "Khóa MetaMask"
+  "lockCryptoBridge": {
+    "message": "Khóa CryptoBridge"
   },
   "lockTimeInvalid": {
     "message": "Thời gian khóa phải là một số từ 0 đến 10080"
@@ -3790,23 +3790,23 @@
     "message": "Không bắt buộc:"
   },
   "onboardingMetametricsTitle": {
-    "message": "Giúp chúng tôi cải thiện MetaMask"
+    "message": "Giúp chúng tôi cải thiện CryptoBridge"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Chúng tôi sẽ sử dụng dữ liệu này để tìm hiểu cách bạn tương tác với các thông tin tiếp thị. Chúng tôi có thể chia sẻ tin tức liên quan (chẳng hạn như tính năng sản phẩm)."
   },
   "onboardingPinExtensionDescription": {
-    "message": "Ghim MetaMask trên trình duyệt để bạn có thể truy cập và dễ dàng xem các xác nhận giao dịch."
+    "message": "Ghim CryptoBridge trên trình duyệt để bạn có thể truy cập và dễ dàng xem các xác nhận giao dịch."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Bạn có thể mở MetaMask bằng cách nhấp vào tiện ích và truy cập ví của mình chỉ với 1 cú nhấp chuột."
+    "message": "Bạn có thể mở CryptoBridge bằng cách nhấp vào tiện ích và truy cập ví của mình chỉ với 1 cú nhấp chuột."
   },
   "onboardingPinExtensionDescription3": {
     "message": "Nhấp vào biểu tượng tiện ích trên trình duyệt để truy cập tức thì",
     "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Quá trình cài đặt MetaMask đã hoàn tất!"
+    "message": "Quá trình cài đặt CryptoBridge đã hoàn tất!"
   },
   "onekey": {
     "message": "OneKey"
@@ -3820,7 +3820,7 @@
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Bật toàn màn hình để kết nối với thiết bị Ledger của bạn.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+    "description": "Shown to the user on the confirm screen when they are viewing CryptoBridge in a popup window but need to connect their ledger via webhid."
   },
   "openInBlockExplorer": {
     "message": "Mở trên trình khám phá khối"
@@ -5314,8 +5314,8 @@
   "solanaMoreFeaturesComingSoonDescription": {
     "message": "NFT, hỗ trợ ví cứng, v.v. sẽ sớm ra mắt."
   },
-  "solanaOnMetaMask": {
-    "message": "Solana trên MetaMask"
+  "solanaOnCryptoBridge": {
+    "message": "Solana trên CryptoBridge"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "Gửi, nhận và hoán đổi token"
