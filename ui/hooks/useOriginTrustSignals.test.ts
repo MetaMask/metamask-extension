@@ -131,7 +131,7 @@ describe('useOriginTrustSignals', () => {
     getUrlScanCacheResultMock.mockReturnValue({
       result: {
         domainName: DOMAIN_NAME_MOCK,
-        recommendedAction: 'UNKNOWN_ACTION' as any,
+        recommendedAction: 'UNKNOWN_ACTION',
       },
       timestamp: TIMESTAMP_MOCK,
     });

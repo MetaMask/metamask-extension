@@ -10,8 +10,8 @@ import { SignatureRequestType } from '../../types/confirm';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
-import { useOriginTrustSignalAlerts } from './useOriginTrustSignalAlerts';
 import { useOriginTrustSignals } from '../../../../hooks/useOriginTrustSignals';
+import { useOriginTrustSignalAlerts } from './useOriginTrustSignalAlerts';
 
 jest.mock('../../../../hooks/useOriginTrustSignals', () => ({
   useOriginTrustSignals: jest.fn(),
