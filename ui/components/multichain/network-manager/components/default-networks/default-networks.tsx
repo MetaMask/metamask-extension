@@ -1,6 +1,11 @@
-import { CaipChainId, parseCaipChainId } from '@metamask/utils';
+import {
+  CaipChainId,
+  KnownCaipNamespace,
+  parseCaipChainId,
+} from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { toHex } from '@metamask/controller-utils';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
@@ -45,24 +50,24 @@ import {
   getEnabledNetworksByNamespace,
   getSelectedMultichainNetworkChainId,
 } from '../../../../../selectors/multichain/networks';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  getOrderedNetworksList,
-  getMultichainNetworkConfigurationsByChainId,
-} from '../../../../../selectors';
 
 const DefaultNetworks = memo(() => {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-  const orderedNetworksList = useSelector(getOrderedNetworksList);
-  const [, evmNetworks] = useSelector(
-    getMultichainNetworkConfigurationsByChainId,
-  );
-  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  // Use the shared state hook
+  const {
+    t,
+    dispatch,
+    orderedNetworksList,
+    evmNetworks,
+    nonTestNetworks,
+    enabledNetworksByNamespace,
+    isNetworkInDefaultNetworkTab,
+  } = useNetworkManagerState({ skipNetworkFiltering: true });
   // Use the shared callbacks hook
   const { getItemCallbacks, hasMultiRpcOptions } = useNetworkItemCallbacks();
   const currentCaipChainId = useSelector(getSelectedMultichainNetworkChainId);
   const { namespace } = parseCaipChainId(currentCaipChainId);
+
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
 
   // Use the shared network change handlers hook
   const { handleNetworkChange } = useNetworkChangeHandlers();
@@ -71,10 +76,6 @@ const DefaultNetworks = memo(() => {
   const { handleAdditionalNetworkClick } = useAdditionalNetworkHandlers();
 
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
-
-  // Use the shared state hook
-  const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
-    useNetworkManagerState({ showDefaultNetworks: true });
 
   // Memoize sorted networks to avoid expensive sorting on every render
   const orderedNetworks = useMemo(
@@ -115,9 +116,25 @@ const DefaultNetworks = memo(() => {
   // Memoize the network change handler to avoid recreation
   const handleNetworkChangeCallback = useCallback(
     async (chainId: CaipChainId) => {
+      const chainIdToUse = Object.keys(enabledNetworks)[0];
+      const haveOneSelectedNetwork = Object.keys(enabledNetworks).length === 1;
+
+      const { namespace: selectedNamespace, reference: selectedReference } =
+        parseCaipChainId(chainId);
+
+      if (
+        haveOneSelectedNetwork &&
+        selectedNamespace === KnownCaipNamespace.Eip155 &&
+        toHex(selectedReference) === chainIdToUse
+      ) {
+        return;
+      } else if (haveOneSelectedNetwork && chainId === chainIdToUse) {
+        return;
+      }
+
       await handleNetworkChange(chainId);
     },
-    [handleNetworkChange],
+    [handleNetworkChange, enabledNetworks],
   );
 
   // Memoize the network list items to avoid recreation on every render
@@ -177,6 +194,7 @@ const DefaultNetworks = memo(() => {
     isNetworkInDefaultNetworkTab,
     getItemCallbacks,
     enabledNetworksByNamespace,
+    namespace,
     hasMultiRpcOptions,
     evmNetworks,
     handleNetworkChangeCallback,
@@ -229,7 +247,12 @@ const DefaultNetworks = memo(() => {
         </Box>
       );
     });
-  }, [featuredNetworksNotYetEnabled, handleAdditionalNetworkClick, t]);
+  }, [
+    featuredNetworksNotYetEnabled,
+    enabledNetworksByNamespace,
+    handleAdditionalNetworkClick,
+    t,
+  ]);
 
   return (
     <>
