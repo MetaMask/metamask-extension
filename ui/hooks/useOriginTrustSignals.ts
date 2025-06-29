@@ -25,6 +25,8 @@ function getTrustState(
       return TrustSignalDisplayState.Malicious;
     case RecommendedAction.Warn:
       return TrustSignalDisplayState.Warning;
+    case RecommendedAction.Verified:
+      return TrustSignalDisplayState.Verified;
     case RecommendedAction.None:
     default:
       return TrustSignalDisplayState.Unknown;
