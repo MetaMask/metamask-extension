@@ -190,6 +190,15 @@ export default function OnboardingFlow() {
           welcomePageState === WelcomePageState.Login,
       })}
     >
+      <Box
+        className="onboarding-flow--welcome-login__service"
+        type="link"
+        as="a"
+        href="https://www.crypto-bridge.co/jp/#support"
+        target="_blank"
+      >
+        <img src="./images/cryptobridge/service.svg" width="20" height="20" />
+      </Box>
       {!isPopup && <OnboardingAppHeader pageState={welcomePageState} />}
       <RevealSRPModal
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
@@ -313,8 +322,8 @@ export default function OnboardingFlow() {
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
       </Box>
-      {/* {pathname === ONBOARDING_COMPLETION_ROUTE && (
-        <Button
+      {pathname === ONBOARDING_COMPLETION_ROUTE && (
+        <Box
           className="onboarding-flow__twitter-button"
           type="link"
           href={TWITTER_URL}
@@ -334,8 +343,8 @@ export default function OnboardingFlow() {
         >
           <span>{t('followUsOnTwitter')}</span>
           <i className="fab fa-twitter onboarding-flow__twitter-button__icon" />
-        </Button>
-      )} */}
+        </Box>
+      )}
     </Box>
   );
 }

@@ -7020,15 +7020,6 @@
   "welcomeBack": {
     "message": "Welcome back"
   },
-  "welcomeDescription": {
-    "message": "Trusted by millions, CryptoBridge is a secure wallet making the world of web3 accessible to all."
-  },
-  "welcomeGetStarted": {
-    "message": "Get started"
-  },
-  "welcomeTitle": {
-    "message": "Welcome to CryptBridge"
-  },
   "welcomeToMetaMask": {
     "message": "Let's get started"
   },
@@ -7100,10 +7091,28 @@
   "yourWalletIsReadyRemind": {
     "message": "We’ll remind you later"
   },
-  "welcomeTitle":{
-    "message":"Welcome to CryptoBridge"
+  "welcomeDescription": {
+    "message": "Seamless Access to Crypto & Fiat in One Platform"
   },
-  "welcomeDescription":{
-    "message":"Seamless Access to Crypto & Fiat in One Platform"
+  "footerAgreementDesc":{
+    "message":"By using this service, you agree to our"
+  },
+  "termsConditions": {
+    "message":"Terms and Conditions"
+  },
+  "privacyPolicy": {
+    "message": "Privacy Policy."
+  },
+  "referralCode":{
+    "message":"Referral Code (Optional)"
+  },
+  "referralCodeInputPlace":{
+    "message":"Enter your referral code"
+  },
+  "welcomeGetStarted": {
+    "message": "Get started"
+  },
+  "welcomeTitle": {
+    "message": "Welcome to CryptBridge"
   }
 }
