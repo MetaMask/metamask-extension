@@ -14,6 +14,10 @@ export function useTokenDecimals({
       return undefined;
     }
 
+    if (tokenAddress === '0x0000000000000000000000000000000000000000') {
+      return 18;
+    }
+
     const details = await getTokenStandardAndDetailsByChain(
       tokenAddress,
       undefined,

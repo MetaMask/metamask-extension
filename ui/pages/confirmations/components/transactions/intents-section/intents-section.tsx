@@ -43,6 +43,10 @@ import { AssetType } from '@metamask/bridge-controller';
 import { Hex } from '@metamask/utils';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
 import Preloader from '../../../../../components/ui/icon/preloader';
+import Name from '../../../../../components/app/name';
+import { NameType } from '@metamask/name-controller';
+import { useIntentsTarget } from '../../../hooks/transactions/useIntentsTarget';
+import { useIntentSourceAmount } from '../../../hooks/transactions/useIntentSourceAmount';
 
 type SelectedToken = {
   address?: Hex;
@@ -57,36 +61,102 @@ export function IntentsSection() {
 
   const { chainId: targetChainId } = transactionMeta;
 
-  const [token, setToken] = useState<SelectedToken>({
+  const [sourceToken, setSourceToken] = useState<SelectedToken>({
     chainId: targetChainId,
   });
 
-  const { gasFeeFormatted, loading, sourceTokenAmountFormatted } =
-    useIntentsQuote({
-      srcChainId: token.chainId,
-      tokenAddress: token.address,
-    });
+  const { targetTokenAddress, targetAmount } = useIntentsTarget();
+
+  const {
+    loading: sourceAmountLoading,
+    sourceTokenAmountFormatted,
+    sourceTokenAmountRaw,
+    targetAmountFormatted,
+  } = useIntentSourceAmount({
+    sourceChainId: sourceToken.chainId,
+    sourceTokenAddress: sourceToken.address as Hex,
+    targetTokenAddress,
+    targetChainId,
+    targetAmount,
+  });
+
+  const { gasFeeFormatted, loading: quoteLoading } = useIntentsQuote({
+    sourceChainId: sourceToken.chainId,
+    sourceTokenAddress: sourceToken.address as Hex,
+    targetTokenAddress,
+    sourceTokenAmount: sourceTokenAmountRaw,
+  });
+
+  const loading = sourceAmountLoading || quoteLoading;
 
   return (
     <ConfirmInfoSection>
-      <IntentAssetRow
+      <IntentsSourceRow
         loading={loading}
-        onChange={setToken}
+        onChange={setSourceToken}
         sourceTokenAmount={sourceTokenAmountFormatted}
         targetChainId={targetChainId}
       />
-      {!loading && isAdvanced && gasFeeFormatted && (
-        <>
-          <ConfirmInfoRow label="Network Fee">
-            <ConfirmInfoRowText text={gasFeeFormatted ?? ''} />
-          </ConfirmInfoRow>
-        </>
+      {isAdvanced && (
+        <IntentsTargetRow
+          targetAmount={targetAmountFormatted}
+          targetTokenAddress={targetTokenAddress}
+          targetChainId={targetChainId}
+        />
+      )}
+      {!loading && isAdvanced && (
+        <IntentsNetworkFeeRow gasFeeFormatted={gasFeeFormatted} />
       )}
     </ConfirmInfoSection>
   );
 }
 
-function IntentAssetRow({
+function IntentsNetworkFeeRow({
+  gasFeeFormatted,
+}: {
+  gasFeeFormatted?: string;
+}) {
+  if (!gasFeeFormatted) {
+    return null;
+  }
+
+  return (
+    <ConfirmInfoRow label="Network Fee">
+      <ConfirmInfoRowText text={gasFeeFormatted} />
+    </ConfirmInfoRow>
+  );
+}
+
+function IntentsTargetRow({
+  targetAmount,
+  targetTokenAddress,
+  targetChainId,
+}: {
+  targetAmount?: string;
+  targetTokenAddress: Hex;
+  targetChainId: Hex;
+}) {
+  return (
+    <ConfirmInfoRow label="Target">
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.flexEnd}
+        alignItems={AlignItems.center}
+        gap={2}
+      >
+        <Text>{targetAmount}</Text>
+        <Name
+          type={NameType.ETHEREUM_ADDRESS}
+          value={targetTokenAddress}
+          variation={targetChainId}
+        />
+      </Box>
+    </ConfirmInfoRow>
+  );
+}
+
+function IntentsSourceRow({
   loading,
   onChange,
   sourceTokenAmount,
@@ -114,7 +184,9 @@ function IntentAssetRow({
 
   useEffect(() => {
     onChange?.({
-      address: asset.address as Hex,
+      address:
+        (asset.address as Hex) ||
+        ('0x0000000000000000000000000000000000000000' as Hex),
       chainId: network.chainId,
     });
   }, [asset.address, network.chainId, onChange]);
@@ -133,9 +205,7 @@ function IntentAssetRow({
             <Preloader size={20} />
           </div>
         )}
-        {!loading && (
-          <Text variant={TextVariant.bodyMd}>{sourceTokenAmount}</Text>
-        )}
+        <Text variant={TextVariant.bodyMd}>{sourceTokenAmount}</Text>
         <AssetPickerWrapper
           asset={asset}
           network={network}
@@ -216,12 +286,14 @@ function AssetPickerOverride({
       <BadgeWrapper
         className="intents-network-icon-wrapper"
         badge={
-          <AvatarNetwork
-            className="intents-network-icon"
-            size={AvatarNetworkSize.Xs}
-            src={networkImageSrc}
-            name={network.name}
-          />
+          networkImageSrc ? (
+            <AvatarNetwork
+              className="intents-network-icon"
+              size={AvatarNetworkSize.Xs}
+              src={networkImageSrc}
+              name={network.name}
+            />
+          ) : undefined
         }
       >
         <AvatarToken

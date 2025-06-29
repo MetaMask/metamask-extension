@@ -11,26 +11,14 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { getBridgeQuotes } from '../../../../ducks/bridge/selectors';
-import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
-import {
-  getConversionRate,
-  getCurrentCurrency,
-} from '../../../../ducks/metamask/metamask';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { Hex, add0x } from '@metamask/utils';
 import {
   estimateGasFee,
   setIntentQuoteForTransaction,
 } from '../../../../store/actions';
-import { useIntentSourceAmount } from './useIntentSourceAmount';
-import { QuoteRequest } from '../../../../../app/scripts/controllers/swaps/swaps.types';
 import BigNumber from 'bignumber.js';
-import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
-import {
-  selectDefaultRpcEndpointByChainId,
-  selectNetworkConfigurationByChainId,
-} from '../../../../selectors';
 import { QuoteResponse } from '@metamask/bridge-controller';
-import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { toHex } from '@metamask/controller-utils';
 import { useAsyncResult } from '../../../../hooks/useAsync';
@@ -38,11 +26,15 @@ import { useAsyncResult } from '../../../../hooks/useAsync';
 const QUOTE_LOADING_TIMEOUT = 5000;
 
 export function useIntentsQuote({
-  srcChainId,
-  tokenAddress,
+  sourceChainId,
+  sourceTokenAddress,
+  sourceTokenAmount,
+  targetTokenAddress,
 }: {
-  srcChainId: Hex;
-  tokenAddress?: Hex;
+  sourceChainId: Hex;
+  sourceTokenAmount?: string;
+  sourceTokenAddress: Hex;
+  targetTokenAddress: Hex;
 }) {
   const dispatch = useDispatch();
   const currency = useSelector(getCurrentCurrency);
@@ -54,31 +46,21 @@ export function useIntentsQuote({
   const {
     id: transactionId,
     chainId: destChainId,
-    txParams: { from, value },
+    txParams: { from },
   } = transasctionMeta;
 
-  const {
-    loading: sourceAmountLoading,
-    sourceTokenAmountRaw,
-    sourceTokenAmountFormatted,
-  } = useIntentSourceAmount({
-    chainId: srcChainId,
-    nativeValue: (value as Hex) ?? '0x0',
-    tokenAddress,
-  }) ?? {};
-
   useEffect(() => {
-    if (!sourceTokenAmountRaw) {
+    if (!sourceTokenAmount) {
       return;
     }
 
     dispatch(
       updateQuoteRequestParams(
         {
-          srcTokenAddress: tokenAddress,
-          destTokenAddress: '0x0000000000000000000000000000000000000000',
-          srcTokenAmount: sourceTokenAmountRaw,
-          srcChainId,
+          srcTokenAddress: sourceTokenAddress,
+          destTokenAddress: targetTokenAddress,
+          srcTokenAmount: sourceTokenAmount,
+          srcChainId: sourceChainId,
           destChainId,
           insufficientBal: true,
           walletAddress: from,
@@ -99,9 +81,10 @@ export function useIntentsQuote({
     destChainId,
     dispatch,
     from,
-    sourceTokenAmountRaw,
-    srcChainId,
-    tokenAddress,
+    sourceTokenAmount,
+    sourceChainId,
+    sourceTokenAddress,
+    targetTokenAddress,
   ]);
 
   useEffect(() => {
@@ -125,28 +108,19 @@ export function useIntentsQuote({
       currency,
       hideLabel: true,
     },
-    toHex(srcChainId),
+    toHex(sourceChainId),
   );
 
   useEffect(() => {
     setIntentQuoteForTransaction(transactionId, activeQuote);
   }, [transactionId, activeQuote]);
 
-  const loading = sourceAmountLoading || gasFeeLoading || isQuoteLoading;
-
-  if (
-    sourceTokenAmountFormatted === undefined ||
-    gasFeeFormatted === undefined
-  ) {
-    return {
-      loading,
-    };
-  }
+  const loading = gasFeeLoading || isQuoteLoading;
 
   return {
-    gasFeeFormatted,
+    gasFeeFormatted: activeQuote ? gasFeeFormatted : undefined,
     loading,
-    sourceTokenAmountFormatted,
+    sourceTokenAmount,
   };
 }
 

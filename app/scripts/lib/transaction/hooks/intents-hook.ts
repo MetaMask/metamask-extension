@@ -109,17 +109,19 @@ export class IntentsHook {
     return new Promise((resolve, reject) => {
       const intervalId = setInterval(async () => {
         try {
-          const bridgeStatus =
+          const bridgeHistory =
             this.#bridgeStatusController.state.txHistory[transactionId];
 
-          log('Checking bridge status', bridgeStatus?.status?.status);
+          const status = bridgeHistory?.status?.status;
 
-          if (bridgeStatus.status.status === StatusTypes.COMPLETE) {
+          log('Checking bridge status', status);
+
+          if (status === StatusTypes.COMPLETE) {
             clearInterval(intervalId);
             resolve();
           }
 
-          if (bridgeStatus.status.status === StatusTypes.FAILED) {
+          if (status === StatusTypes.FAILED) {
             clearInterval(intervalId);
             reject(new Error('Bridge transaction failed'));
           }

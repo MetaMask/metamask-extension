@@ -1,10 +1,15 @@
-import { shallowEqual, useSelector } from "react-redux";
-import { getConfirmationExchangeRates, getCurrencyRates, getMarketData, getTokenExchangeRates } from "../../../../selectors";
-import { Hex, Json } from "@metamask/utils";
-import { getConversionRate } from "../../../../ducks/metamask/metamask";
-import { getNetworkConfigurationsByChainId } from "../../../../../shared/modules/selectors/networks";
-import { isEqualCaseInsensitive } from "../../../../../shared/modules/string-utils";
-import BigNumber from "bignumber.js";
+import { shallowEqual, useSelector } from 'react-redux';
+import {
+  getConfirmationExchangeRates,
+  getCurrencyRates,
+  getMarketData,
+  getTokenExchangeRates,
+} from '../../../../selectors';
+import { Hex, Json } from '@metamask/utils';
+import { getConversionRate } from '../../../../ducks/metamask/metamask';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import BigNumber from 'bignumber.js';
 
 export function useTokenFiatRate(tokenAddress: Hex, chainId: Hex) {
   const allMarketData = useSelector(getMarketData);
@@ -51,6 +56,10 @@ export function useTokenFiatRate(tokenAddress: Hex, chainId: Hex) {
 
   const tokenExchangeRate =
     contractExchangeTokenKey && mergedRates[contractExchangeTokenKey];
+
+  if (tokenAddress === '0x0000000000000000000000000000000000000000') {
+    return new BigNumber(tokenConversionRate);
+  }
 
   if (!tokenExchangeRate || !tokenConversionRate) {
     return undefined;

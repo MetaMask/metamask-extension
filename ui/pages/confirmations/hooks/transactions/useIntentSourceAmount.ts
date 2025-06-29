@@ -1,57 +1,104 @@
-import { Hex } from '@metamask/utils';
+import { Hex, createProjectLogger } from '@metamask/utils';
 import BigNumber from 'bignumber.js';
-import { useSelector } from 'react-redux';
-import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { useTokenFiatRate } from './useTokenFiatRate';
 import { useTokenDecimals } from './useTokenDecimals';
 
+const log = createProjectLogger('intents');
+
 export function useIntentSourceAmount({
-  chainId,
-  nativeValue,
-  tokenAddress,
+  sourceChainId,
+  sourceTokenAddress,
+  targetChainId,
+  targetTokenAddress,
+  targetAmount,
 }: {
-  chainId: Hex;
-  nativeValue: Hex;
-  tokenAddress?: Hex;
+  sourceChainId: Hex;
+  sourceTokenAddress: Hex;
+  targetChainId: Hex;
+  targetTokenAddress: Hex;
+  targetAmount: Hex;
 }) {
-  const nativeConversionRate = useSelector(getConversionRate);
+  const sourceTokenFiatRate = useTokenFiatRate(
+    sourceTokenAddress,
+    sourceChainId,
+  );
 
-  const tokenFiatRate = useTokenFiatRate(tokenAddress ?? '0x123', chainId);
+  log('Source token fiat rate', sourceTokenFiatRate?.toString());
 
-  const { pending: loading, value: decimals } = useTokenDecimals({
-    chainId,
-    tokenAddress,
-  });
+  const targetTokenFiatRate = useTokenFiatRate(
+    targetTokenAddress,
+    targetChainId,
+  );
 
-  if (loading) {
+  log('Target token fiat rate', targetTokenFiatRate?.toString());
+
+  const { pending: sourceDecimalsLoading, value: sourceDecimals } =
+    useTokenDecimals({
+      chainId: sourceChainId,
+      tokenAddress: sourceTokenAddress,
+    });
+
+  log('Source token decimals', sourceDecimals);
+
+  const { pending: targetDecimalsLoading, value: targetDecimals } =
+    useTokenDecimals({
+      chainId: targetChainId,
+      tokenAddress: targetTokenAddress,
+    });
+
+  log('Target token decimals', targetDecimals);
+
+  if (sourceDecimalsLoading || targetDecimalsLoading) {
     return {
       loading: true,
     };
   }
 
   if (
-    decimals === undefined ||
-    tokenFiatRate === undefined ||
-    tokenAddress === undefined
+    sourceDecimals === undefined ||
+    targetDecimals === undefined ||
+    sourceTokenFiatRate === undefined ||
+    targetTokenFiatRate === undefined
   ) {
     return {
       loading: false,
     };
   }
 
-  const targetFiat = new BigNumber(nativeValue, 16)
-    .shift(-18)
-    .mul(nativeConversionRate);
+  const targetAmountDecimals = new BigNumber(targetAmount, 16).shift(
+    -targetDecimals,
+  );
 
-  const sourceTokenAmountDecimals = targetFiat.div(tokenFiatRate);
-  const sourceTokenAmountFormatted = sourceTokenAmountDecimals.toFixed(2);
+  const targetAmountFiat = targetAmountDecimals.mul(targetTokenFiatRate);
+  const targetAmountFormatted = targetAmountDecimals.round(6).toString();
+
+  log(
+    'Target token amount',
+    targetAmountDecimals.toString(),
+    targetAmountFormatted,
+    targetAmountFiat.toString(),
+  );
+
+  const sourceTokenAmountDecimals = targetAmountFiat.div(sourceTokenFiatRate);
+  const sourceTokenAmountFormatted = sourceTokenAmountDecimals
+    .round(6)
+    .toString();
+
   const sourceTokenAmountRaw = new BigNumber(sourceTokenAmountDecimals)
-    .shift(decimals)
+    .shift(sourceDecimals)
     .toFixed(0);
+
+  log(
+    'Source token amount',
+    sourceTokenAmountRaw,
+    sourceTokenAmountDecimals.toString(),
+    sourceTokenAmountFormatted,
+  );
 
   return {
     loading: false,
     sourceTokenAmountFormatted,
     sourceTokenAmountRaw,
+    targetAmountFormatted,
   };
 }
