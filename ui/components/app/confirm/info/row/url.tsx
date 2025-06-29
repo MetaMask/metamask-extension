@@ -20,10 +20,32 @@ import {
 import SnapAuthorshipPill from '../../../snaps/snap-authorship-pill';
 import { SnapMetadataModal } from '../../../snaps/snap-metadata-modal';
 import { useOriginTrustSignals } from '../../../../../hooks/useOriginTrustSignals';
+import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 
 export type ConfirmInfoRowUrlProps = {
   url: string;
 };
+
+const HttpWarning = () => (
+  <Text
+    variant={TextVariant.bodySm}
+    display={Display.Flex}
+    alignItems={AlignItems.center}
+    borderRadius={BorderRadius.SM}
+    backgroundColor={BackgroundColor.warningMuted}
+    paddingLeft={1}
+    paddingRight={1}
+    color={TextColor.warningDefault}
+  >
+    <Icon
+      name={IconName.Danger}
+      color={IconColor.warningDefault}
+      size={IconSize.Sm}
+      marginInlineEnd={1}
+    />
+    HTTP
+  </Text>
+);
 
 export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
   let urlObject;
@@ -39,6 +61,15 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
 
   const originTrustSignals = useOriginTrustSignals(url);
 
+  try {
+    urlObject = new URL(url);
+  } catch (e) {
+    console.log(`ConfirmInfoRowUrl: new URL(url) cannot parse ${url}`);
+  }
+
+  const isHTTP = urlObject?.protocol === 'http:';
+  const urlWithoutProtocol = url?.replace(/https?:\/\//u, '');
+
   if (isSnapId(url)) {
     return (
       <>
@@ -52,22 +83,48 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
     );
   }
 
-  try {
-    urlObject = new URL(url);
-  } catch (e) {
-    console.log(`ConfirmInfoRowUrl: new URL(url) cannot parse ${url}`);
-  }
+  const renderIcon = () => {
+    // Priority 1: Malicious
+    if (originTrustSignals.state === TrustSignalDisplayState.Malicious) {
+      return (
+        <Icon
+          name={IconName.Danger}
+          color={IconColor.errorDefault}
+          size={IconSize.Sm}
+        />
+      );
+    }
 
-  const isHTTP = urlObject?.protocol === 'http:';
+    // Priority 2: HTTP Warning
+    if (isHTTP) {
+      return <HttpWarning />;
+    }
 
-  const urlWithoutProtocol = url?.replace(/https?:\/\//u, '');
+    // Priority 3: Warning
+    if (originTrustSignals.state === TrustSignalDisplayState.Warning) {
+      return (
+        <Icon
+          name={IconName.Danger}
+          color={IconColor.warningDefault}
+          size={IconSize.Sm}
+        />
+      );
+    }
 
-  // TODO: add originTrustSignals to the UI
-  // - if originTrustSignals.state is Malicious, show a red warning icon
-  // - if originTrustSignals.state is Warning, show a yellow warning icon
-  // - if originTrustSignals.state is Verified, show a verified icon (blue)
-  // - if originTrustSignals.state is Unknown, show the url without protocol like current implementation
-  // - if isHTTP and warning show current implementation (yellow)
+    // Priority 4: Verified
+    if (originTrustSignals.state === TrustSignalDisplayState.Verified) {
+      return (
+        <Icon
+          name={IconName.VerifiedFilled}
+          color={IconColor.infoDefault}
+          size={IconSize.Sm}
+        />
+      );
+    }
+
+    // Priority 5: No icon (Unknown state)
+    return null;
+  };
 
   return (
     <Box
@@ -76,34 +133,7 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
       flexWrap={FlexWrap.Wrap}
       gap={2}
     >
-      {isHTTP ? (
-        <Text
-          variant={TextVariant.bodySm}
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          borderRadius={BorderRadius.SM}
-          backgroundColor={BackgroundColor.warningMuted}
-          paddingLeft={1}
-          paddingRight={1}
-          color={TextColor.warningDefault}
-        >
-          <Icon
-            name={IconName.Danger}
-            color={IconColor.warningDefault}
-            size={IconSize.Sm}
-            marginInlineEnd={1}
-          />
-          HTTP
-        </Text>
-      ) : (
-        originTrustSignals.icon && (
-          <Icon
-            name={originTrustSignals.icon.name}
-            color={originTrustSignals.icon.color}
-            size={IconSize.Sm}
-          />
-        )
-      )}
+      {renderIcon()}
       <Text color={TextColor.inherit}>{urlWithoutProtocol}</Text>
     </Box>
   );

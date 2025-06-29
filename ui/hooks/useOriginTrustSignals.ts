@@ -1,26 +1,13 @@
 import { useSelector } from 'react-redux';
 import { RecommendedAction } from '@metamask/phishing-controller';
 import { TrustSignalDisplayState, TrustSignalResult } from './useTrustSignals';
-import {
-  getTrustSignalIconForUrl,
-  IconProps,
-} from '../helpers/utils/trust-signals';
-import { IconColor } from '../helpers/constants/design-system';
-import { IconName } from '../components/component-library';
 
-// Based on console log screenshot
 type UrlScanCacheResult = {
   result: {
     domainName: string;
     recommendedAction: string; // 'NONE', 'WARN', 'BLOCK'
   };
   timestamp: number;
-};
-
-export type OriginTrustSignalResult = {
-  state: TrustSignalDisplayState;
-  icon: IconProps | null;
-  label: string | null;
 };
 
 function getTrustState(
@@ -45,7 +32,7 @@ function getTrustState(
   }
 }
 
-export function useOriginTrustSignals(origin: string): OriginTrustSignalResult {
+export function useOriginTrustSignals(origin: string): TrustSignalResult {
   const urlScanCache = useSelector((state: any) => state.metamask.urlScanCache);
 
   let cachedResult: UrlScanCacheResult | undefined;
@@ -61,13 +48,8 @@ export function useOriginTrustSignals(origin: string): OriginTrustSignalResult {
 
   let state = getTrustState(cachedResult);
 
-  state = TrustSignalDisplayState.Verified; // TODO: remove this
-
-  let trustSignalIcon = getTrustSignalIconForUrl(state);
-
   return {
     state,
     label: null, // No label for urls
-    icon: trustSignalIcon,
   };
 }

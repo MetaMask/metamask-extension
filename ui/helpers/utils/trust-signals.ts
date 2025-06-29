@@ -50,23 +50,3 @@ export function getTrustSignalIcon(
       };
   }
 }
-
-export function getTrustSignalIconForUrl(
-  state: TrustSignalDisplayState,
-): IconProps | null {
-  if (!state) {
-    return null;
-  }
-
-  switch (state) {
-    case TrustSignalDisplayState.Malicious:
-      return { name: IconName.Danger, color: IconColor.errorDefault };
-    case TrustSignalDisplayState.Warning:
-      return { name: IconName.Danger, color: IconColor.warningDefault };
-    case TrustSignalDisplayState.Verified:
-      return { name: IconName.VerifiedFilled, color: IconColor.infoDefault };
-    case TrustSignalDisplayState.Unknown:
-    default:
-      return null;
-  }
-}
