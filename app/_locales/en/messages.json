@@ -3926,10 +3926,10 @@
     "message": "Choose your network"
   },
   "onboardingCreateWallet": {
-    "message": "Create a new wallet"
+    "message": "Create new wallet"
   },
   "onboardingImportWallet": {
-    "message": "Import using Secret Recovery Phrase"
+    "message": "Import wallet"
   },
   "onboardingMetametricsAgree": {
     "message": "I agree"
