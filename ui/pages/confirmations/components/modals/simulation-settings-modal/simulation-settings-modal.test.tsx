@@ -6,12 +6,13 @@ import {
   TransactionContainerType,
   TransactionParams,
 } from '@metamask/transaction-controller';
+import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../../../store/store';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import {
   applyTransactionContainersExisting,
   setEnableEnforcedSimulationsForTransaction,
-  updateEditableParams,
+  setEnforcedSimulationsSlippageForTransaction,
 } from '../../../../../store/actions';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
@@ -50,15 +51,16 @@ describe('SimulationSettingsModal', () => {
     setEnableEnforcedSimulationsForTransaction,
   );
 
+  const setEnforcedSimulationsSlippageForTransactionMock = jest.mocked(
+    setEnforcedSimulationsSlippageForTransaction,
+  );
+
   const applyTransactionContainersExistingMock = jest.mocked(
     applyTransactionContainersExisting,
   );
 
-  const updateEditableParamsMock = jest.mocked(updateEditableParams);
-
   beforeEach(() => {
     jest.resetAllMocks();
-    updateEditableParamsMock.mockReturnValue(async () => ({} as never));
   });
 
   describe('renders', () => {
@@ -127,7 +129,7 @@ describe('SimulationSettingsModal', () => {
     it('sets enforced simulations enabled', async () => {
       const { getByTestId } = render({
         metamaskState: {
-          enableEnforcedSimulations: true,
+          enableEnforcedSimulations: false,
           enableEnforcedSimulationsForTransactions: {},
         },
       });
@@ -142,7 +144,7 @@ describe('SimulationSettingsModal', () => {
 
       expect(
         setEnableEnforcedSimulationsForTransactionMock,
-      ).toHaveBeenCalledWith(TRANSACTION_ID_MOCK, false);
+      ).toHaveBeenCalledWith(TRANSACTION_ID_MOCK, true);
     });
 
     it('applies enforced simulations if enabled and not already applied', async () => {
@@ -193,6 +195,61 @@ describe('SimulationSettingsModal', () => {
         TRANSACTION_ID_MOCK,
         [],
       );
+    });
+
+    it('updates slippage if custom', async () => {
+      const { getByTestId } = render({
+        metamaskState: {
+          enableEnforcedSimulations: true,
+          enableEnforcedSimulationsForTransactions: {},
+          enforcedSimulationsSlippage: 10,
+        },
+      });
+
+      await act(async () => {
+        getByTestId('simulation-settings-modal-slippage-custom').click();
+      });
+
+      await act(async () => {
+        const input = getByTestId(
+          'simulation-settings-modal-slippage-custom-input',
+        ).querySelector('input') as HTMLInputElement;
+
+        fireEvent.change(input, { target: { value: '20' } });
+      });
+
+      await act(async () => {
+        getByTestId('simulation-settings-modal-update').click();
+      });
+
+      expect(
+        setEnforcedSimulationsSlippageForTransactionMock,
+      ).toHaveBeenCalledWith(TRANSACTION_ID_MOCK, 20);
+    });
+
+    it('updates slippage if default', async () => {
+      const { getByTestId } = render({
+        metamaskState: {
+          enableEnforcedSimulations: true,
+          enableEnforcedSimulationsForTransactions: {},
+          enforcedSimulationsSlippage: 15,
+          enforcedSimulationsSlippageForTransactions: {
+            [TRANSACTION_ID_MOCK]: 20,
+          },
+        },
+      });
+
+      await act(async () => {
+        getByTestId('simulation-settings-modal-slippage-default').click();
+      });
+
+      await act(async () => {
+        getByTestId('simulation-settings-modal-update').click();
+      });
+
+      expect(
+        setEnforcedSimulationsSlippageForTransactionMock,
+      ).toHaveBeenCalledWith(TRANSACTION_ID_MOCK, 15);
     });
   });
 });

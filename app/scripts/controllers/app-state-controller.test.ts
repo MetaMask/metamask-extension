@@ -652,6 +652,32 @@ describe('AppStateController', () => {
       });
     });
   });
+
+  describe('setEnforcedSimulationsSlippage', () => {
+    it('updates the enforcedSimulationsSlippage state', async () => {
+      await withController(({ controller }) => {
+        controller.setEnforcedSimulationsSlippage(23);
+        expect(controller.state.enforcedSimulationsSlippage).toBe(23);
+      });
+    });
+  });
+
+  describe('setEnforcedSimulationsSlippageForTransaction', () => {
+    it('updates the enforcedSimulationsSlippageForTransactions state', async () => {
+      await withController(({ controller }) => {
+        controller.setEnforcedSimulationsSlippageForTransaction(
+          TRANSACTION_ID_MOCK,
+          25,
+        );
+
+        expect(
+          controller.state.enforcedSimulationsSlippageForTransactions,
+        ).toStrictEqual({
+          [TRANSACTION_ID_MOCK]: 25,
+        });
+      });
+    });
+  });
 });
 
 type WithControllerOptions = {

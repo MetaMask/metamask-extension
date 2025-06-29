@@ -60,7 +60,9 @@
     "termsOfUseLastAgreed": "number",
     "snapsInstallPrivacyWarningShown": true,
     "enableEnforcedSimulations": true,
-    "enableEnforcedSimulationsForTransactions": "object"
+    "enableEnforcedSimulationsForTransactions": "object",
+    "enforcedSimulationsSlippage": "number",
+    "enforcedSimulationsSlippageForTransactions": "object"
   },
   "ApprovalController": {
     "pendingApprovals": "object",

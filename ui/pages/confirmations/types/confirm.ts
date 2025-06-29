@@ -51,5 +51,7 @@ export type ConfirmMetamaskState = {
     signatureSecurityAlertResponses?: Record<string, SecurityAlertResponse>;
     enableEnforcedSimulations: boolean;
     enableEnforcedSimulationsForTransactions: Record<string, boolean>;
+    enforcedSimulationsSlippage: number;
+    enforcedSimulationsSlippageForTransactions: Record<string, number>;
   };
 };
