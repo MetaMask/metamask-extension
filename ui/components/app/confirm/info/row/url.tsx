@@ -39,8 +39,6 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
 
   const originTrustSignals = useOriginTrustSignals(url);
 
-  console.log('originTrustSignals', originTrustSignals);
-
   if (isSnapId(url)) {
     return (
       <>
@@ -64,6 +62,13 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
 
   const urlWithoutProtocol = url?.replace(/https?:\/\//u, '');
 
+  // TODO: add originTrustSignals to the UI
+  // - if originTrustSignals.state is Malicious, show a red warning icon
+  // - if originTrustSignals.state is Warning, show a yellow warning icon
+  // - if originTrustSignals.state is Verified, show a verified icon (blue)
+  // - if originTrustSignals.state is Unknown, show the url without protocol like current implementation
+  // - if isHTTP and warning show current implementation (yellow)
+
   return (
     <Box
       display={Display.Flex}
@@ -71,7 +76,7 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
       flexWrap={FlexWrap.Wrap}
       gap={2}
     >
-      {isHTTP && (
+      {isHTTP ? (
         <Text
           variant={TextVariant.bodySm}
           display={Display.Flex}
@@ -90,6 +95,14 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
           />
           HTTP
         </Text>
+      ) : (
+        originTrustSignals.icon && (
+          <Icon
+            name={originTrustSignals.icon.name}
+            color={originTrustSignals.icon.color}
+            size={IconSize.Sm}
+          />
+        )
       )}
       <Text color={TextColor.inherit}>{urlWithoutProtocol}</Text>
     </Box>
