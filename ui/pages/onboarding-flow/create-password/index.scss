@@ -1,6 +1,12 @@
 @use "design-system";
 
 .create-password {
+  &__container {
+    display: flex;
+    flex-flow: column;
+    gap: 40px;
+  }
+
   &__weak {
     color: var(--color-error-default);
   }
@@ -24,4 +30,7 @@
     top: -9999px;
     left: -9999px;
   }
+}
+.create-password__submit-text {
+ color: var(--color-text-unvisited);
 }

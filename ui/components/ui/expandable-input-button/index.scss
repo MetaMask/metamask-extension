@@ -1,0 +1,55 @@
+.expandable-input-button {
+  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  font-size: 14px;
+  width: 100%;
+  color: #171717;
+  line-height: 20px;
+  font-weight: 400;
+  background: none;
+  &:hover{
+    background: rgb(234 194 255 / 45%);
+  }
+  &__text {
+    flex: 1;
+    color: #171717;
+    text-align: left;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+  }
+  &__icon {
+    transition: transform 0.2s;
+    margin-left: 8px;
+    color: #171717;
+    width: 12px;
+    height: 12px;
+    font-size: 12px;
+
+
+    // 当 expanded 为 true 时，旋转图标
+    &--expanded {
+      transform: rotate(180deg);
+    }
+    &--default {
+      transform: rotate(0deg);
+    }
+  }
+
+  // &__input {
+  //   width: 100%;
+  //   margin-bottom: 16px;
+  // }
+
+  // &__button {
+  //   width: 100%;
+  //   background-color: var(--color-primary);
+  //   color: var(--color-white);
+  //   font-size: 14px;
+  //   padding: 12px;
+  //   border-radius: 8px;
+  //   cursor: pointer;
+  // }
+}

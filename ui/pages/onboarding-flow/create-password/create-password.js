@@ -219,9 +219,12 @@ export default function CreatePassword({
       data-testid="create-password"
       onSubmit={handleCreatePassword}
     >
-      <Box>
+      <Box className="create-password__container">
         <Box
-          justifyContent={JustifyContent.flexStart}
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.center}
           marginBottom={4}
           width={BlockSize.Full}
         >
@@ -234,51 +237,58 @@ export default function CreatePassword({
             onClick={() => history.goBack()}
             ariaLabel={t('back')}
           />
-        </Box>
-        <Box
-          justifyContent={JustifyContent.flexStart}
-          marginBottom={4}
-          width={BlockSize.Full}
-        >
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+          <Text
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            as="span"
+          >
             {t('stepOf', [
               firstTimeFlowType === FirstTimeFlowType.import ? 2 : 1,
               firstTimeFlowType === FirstTimeFlowType.import ? 2 : 3,
             ])}
           </Text>
-          <Text variant={TextVariant.headingLg} as="h2">
-            {t('createPassword')}
-          </Text>
-          <Text
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
-            as="h2"
-          >
-            {t('createPasswordDetails')}
-          </Text>
         </Box>
-        <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
-        <Box
-          className="create-password__terms-container"
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.spaceBetween}
-          marginTop={6}
-        >
-          <Checkbox
-            inputProps={{ 'data-testid': 'create-password-terms' }}
-            alignItems={AlignItems.flexStart}
-            isChecked={termsChecked}
-            onChange={() => {
-              setTermsChecked(!termsChecked);
-            }}
-            label={
-              <>
-                {t('passwordTermsWarning')}
-                &nbsp;
-                {createPasswordLink}
-              </>
-            }
-          />
+        <Box className="create-password__form">
+          <Box
+            justifyContent={JustifyContent.flexStart}
+            marginBottom={4}
+            width={BlockSize.Full}
+            marginTop={50}
+          >
+            <Text variant={TextVariant.headingLg} as="h2">
+              {t('createPassword')}
+            </Text>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+              as="h2"
+            >
+              {t('createPasswordDetails')}
+            </Text>
+          </Box>
+          <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
+          <Box
+            className="create-password__terms-container"
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.spaceBetween}
+            marginTop={6}
+          >
+            <Checkbox
+              inputProps={{ 'data-testid': 'create-password-terms' }}
+              alignItems={AlignItems.flexStart}
+              isChecked={termsChecked}
+              onChange={() => {
+                setTermsChecked(!termsChecked);
+              }}
+              label={
+                <>
+                  {t('passwordTermsWarning')}
+                  &nbsp;
+                  {createPasswordLink}
+                </>
+              }
+            />
+          </Box>
         </Box>
       </Box>
       <Box>
@@ -290,7 +300,9 @@ export default function CreatePassword({
           className="create-password__form--submit-button"
           disabled={!password || !termsChecked}
         >
-          {t('createPasswordCreate')}
+          <Text className="create-password__submit-text">
+            {t('createPasswordCreate')}
+          </Text>
         </Button>
       </Box>
       {shouldInjectMetametricsIframe ? (

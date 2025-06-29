@@ -33,12 +33,31 @@
 }
 
 .welcome-login {
-  height: calc(100% - 16px);
+  min-height: calc(100% - 16px);
   max-height: 728px;
   width: 400px;
   background-color: var(--brand-colors-white);
-  border-radius: 24px;
-  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+  border-radius: 12px;
+  // margin-top: 0;
+
+  // box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+  transition: all 0.3s ease;
+  &__footer{
+    text-align: center;
+    &__text{
+       font-size: 14px;
+       line-height: 20px;
+       color:#6F6F6F;
+       margin-right: 3px;
+       font-weight: 400;
+    }
+    &__link{
+      font-size: 14px;
+      color:#171717;
+      font-family: 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"';
+
+    }
+  }
 
   &__content {
     // flex: 1;
@@ -47,16 +66,17 @@
   &__title {
     // font-family: var(--font-family-accent);
     font-size: 24px;
-    color: var(--color-accent02-dark);
+    color: #171717;
     line-height: 1em;
     font-weight: 600;
   }
 
   &__description{
     font-size: 16px;
-    color: var(--color-accent02-dark);
+    color: #171717;
     line-height: 1.5em;
     margin-top: 10px;
+    padding:0 48px;
   }
   &__mascot {
     &--image {
@@ -65,13 +85,15 @@
   }
 
   &__create-button {
-    background-color: var(--brand-colors-black);
+    // background-color: var(--brand-colors-black);
+    background-image: linear-gradient(90deg, rgb(104, 71, 202) 0%, rgb(183, 113, 229) 100%);
     color: var(--brand-colors-white);
   }
 
   &__import-button {
-    border: 1px solid var(--brand-colors-black);
-    color: var(--brand-colors-black);
+    // border: 1px solid var(--brand-colors-black);
+    color: #171717;
+    background:#0000000f
   }
 }
 
@@ -106,16 +128,5 @@
       background-color: var(--color-background-pressed);
     }
   }
-  &__footer{
 
-    &__text{
-       font-size: var(--font-size-2);
-       color: var(--brand-colors-grey-grey100);
-       margin-right: 3px;
-    }
-    &__link{
-      font-size: var(--font-size-2);
-      color:var(--brand-colors-grey-grey200);
-    }
-  }
 }

@@ -97,7 +97,7 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
                 : BorderColor.borderDefault
             }
             borderRadius={BorderRadius.SM}
-            borderWidth={2}
+            borderWidth={1}
             display={Display.Flex}
             ref={inputRef}
             {...inputProps}

@@ -7,7 +7,7 @@
   flex: 0 0 auto;
 
   &--welcome {
-    background-color: transparent;
+    // background-color: transparent;
   }
 
   @include design-system.screen-sm-max {
@@ -15,7 +15,7 @@
   }
 
   @include design-system.screen-sm-min {
-    height: 75px;
+    height: 56px;
     justify-content: center;
   }
 
@@ -39,9 +39,11 @@
 
   &__dropdown {
     cursor: pointer;
+    height: auto !important;
 
     .dropdown__select {
       cursor: pointer;
+      border: 0;
     }
   }
 
@@ -49,7 +51,8 @@
   &__dropdown--welcome--banner {
     .dropdown__select {
       border: 0;
-      background-color: var(--color-accent03-dark);
+      background: transparent;
+      // background-color: var(--color-accent03-dark);
       color: var(--color-accent03-light);
     }
 
@@ -62,21 +65,31 @@
   &__dropdown--welcome--login {
     .dropdown__select {
       border: 0;
-      background-color: var(--color-accent02-light);
+      // background-color: var(--color-accent02-light);
+      background: transparent;
       color: var(--color-accent02-dark);
+      padding: 6px 30px 6px 6px;
     }
 
     .dropdown__icon-caret-down {
       color: var(--color-accent02-dark);
+      width: 12px;
     }
   }
 
   &__contents {
     flex-flow: row nowrap;
-    max-width: 1280px;
+    // max-width: 1280px;
 
     @include design-system.screen-sm-max {
       height: 100%;
+    }
+    &__logo-container{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
     }
     &__logo{
       width: 180px;

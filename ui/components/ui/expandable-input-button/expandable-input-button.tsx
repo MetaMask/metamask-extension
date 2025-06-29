@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, ButtonBase, TextField } from '../../../components/component-library';
 import { Display, FlexDirection, AlignItems, BlockSize } from '../../../helpers/constants/design-system';
 import { Icon, IconName, IconSize } from '../../../components/component-library/icon';
-
+import classnames from 'classnames';
 export type ExpandableInputButtonProps = {
   buttonText: string;
   inputPlaceholder?: string;
@@ -39,17 +39,16 @@ export default function ExpandableInputButton({
         width={BlockSize.Full}
         onClick={handleButtonClick}
         disabled={disabled}
-        style={{ justifyContent: 'space-between', alignItems: 'center', display: 'flex' }}
+        className='expandable-input-button'
       >
-        <span>{buttonText}</span>
+        <span className='expandable-input-button__text'>{buttonText}</span>
         <Icon
           name={IconName.ArrowDown}
-          size={IconSize.Sm}
-          style={{
-            transition: 'transform 0.2s',
-            transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
-            marginLeft: 8,
-          }}
+          size={IconSize.Xs}
+          className={classnames({'expandable-input-button__icon':true,
+            "expandable-input-button__icon--expanded": expanded,
+            "expandable-input-button__icon--default": !expanded,
+           })}
         />
       </ButtonBase>
       {expanded && (

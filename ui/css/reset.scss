@@ -158,5 +158,7 @@ button {
     border: none;
   }
 }
-
 /* stylelint-enable */
+.mm-box--color-primary-inverse {
+  color: var(--color-text-inverse);
+}

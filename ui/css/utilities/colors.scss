@@ -11,8 +11,8 @@ Before adding a color here make sure that there isn't a design token available.
   --qr-code-white-background: #fff;
   // DEPRECATED
   // These third party network colors have been deprecated and should be removed once they are no longer in use. We should be using images to represent these networks instead.
-  --color-network-goerli-default: #1098fc;
-  --color-network-sepolia-default: #c65cf2;
+  --color-network-goerli-default: var(--brand-colors-purple500);
+  --color-network-sepolia-default: var(--brand-colors-purple500);
   --color-network-goerli-inverse: #fcfcfc;
   --color-network-sepolia-inverse: #fcfcfc;
   --color-network-localhost-default: #bbc0c5;
@@ -23,4 +23,5 @@ Before adding a color here make sure that there isn't a design token available.
   --color-network-linea-sepolia-inverse: #fcfcfc;
   --color-network-linea-mainnet-default: #121212;
   --color-network-linea-mainnet-inverse: #fcfcfc;
+
 }

@@ -69,7 +69,7 @@ export default function WelcomeLogin({
           className="welcome-login__title"
           data-testid="onboarding-welcome"
         >
-          {t('welcomeTitle')}!
+          {t('welcomeTitle')}
         </Text>
         <Text
           marginInline={5}
@@ -78,8 +78,8 @@ export default function WelcomeLogin({
           className="welcome-login__description"
           data-testid="onboarding-desc"
         >
-          {t('welcomeDescription')}!
-        </Text>{' '}
+          {t('welcomeDescription')}
+        </Text>
       </Box>
 
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>

@@ -58,7 +58,7 @@ export default function OnboardingAppHeader({ pageState }) {
           isOnboarding
           src="./images/cryptobridge/logo.svg" // Use your custom logo here
         /> */}
-        <Box>
+        <Box className="onboarding-app-header__contents__logo-container">
           <img
             src="./images/cryptobridge/logo.svg"
             className="onboarding-app-header__contents__logo"
