@@ -20,6 +20,7 @@ import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOriginSwitchingAlerts';
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
 import { useTrustSignalAlerts } from './alerts/useTrustSignalAlerts';
+import { useOriginTrustSignalAlerts } from './alerts/useOriginTrustSignalAlerts';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -46,6 +47,7 @@ function useTransactionAlerts(): Alert[] {
   const resimulationAlert = useResimulationAlert();
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
   const trustSignalAlerts = useTrustSignalAlerts();
+  const originTrustSignalAlerts = useOriginTrustSignalAlerts();
 
   return useMemo(
     () => [
@@ -63,6 +65,7 @@ function useTransactionAlerts(): Alert[] {
       ...resimulationAlert,
       ...signingOrSubmittingAlerts,
       ...trustSignalAlerts,
+      ...originTrustSignalAlerts,
     ],
     [
       accountTypeUpgradeAlerts,
@@ -79,6 +82,7 @@ function useTransactionAlerts(): Alert[] {
       resimulationAlert,
       signingOrSubmittingAlerts,
       trustSignalAlerts,
+      originTrustSignalAlerts,
     ],
   );
 }

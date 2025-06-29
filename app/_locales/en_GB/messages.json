@@ -417,6 +417,12 @@
   "alertMessageNoGasPrice": {
     "message": "We can’t move forward with this transaction until you manually update the fee."
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "This has been identified as malicious. We recommend not interacting with this site."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "This has been identified as suspicious. We recommend not interacting with this site."
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
   },
@@ -458,6 +464,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "Fee estimate unavailable"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "Malicious site"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Suspicious site"
   },
   "alertReasonPendingTransactions": {
     "message": "Pending transaction"
