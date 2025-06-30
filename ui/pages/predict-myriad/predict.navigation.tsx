@@ -33,7 +33,7 @@ const PredictNavigation = () => {
           <Icon
             name={IconName.Storefront}
             color={
-              window.location.hash === '#predict'
+              window.location.hash === '#myriad/predict'
                 ? IconColor.warningDefault
                 : IconColor.iconDefault
             }
@@ -42,7 +42,7 @@ const PredictNavigation = () => {
         }
         label={'Markets'}
         onClick={() => {
-          window.location.hash = 'predict';
+          window.location.hash = 'myriad/predict';
         }}
         width={BlockSize.Full}
         round={true}
@@ -54,7 +54,7 @@ const PredictNavigation = () => {
             name={IconName.Bank}
             size={IconSize.Sm}
             color={
-              window.location.hash === '#predict-orders'
+              window.location.hash === '#myriad/predict-orders'
                 ? IconColor.warningDefault
                 : IconColor.iconDefault
             }
@@ -62,7 +62,7 @@ const PredictNavigation = () => {
         }
         label={'Orders'}
         onClick={() => {
-          window.location.hash = 'predict-orders';
+          window.location.hash = 'myriad/predict-orders';
         }}
         width={BlockSize.Full}
         round={true}
@@ -73,7 +73,7 @@ const PredictNavigation = () => {
           <Icon
             name={IconName.Chart}
             color={
-              window.location.hash === '#predict-positions'
+              window.location.hash === '#myriad/predict-positions'
                 ? IconColor.warningDefault
                 : IconColor.iconDefault
             }
@@ -82,7 +82,7 @@ const PredictNavigation = () => {
         }
         label={'Positions'}
         onClick={() => {
-          window.location.hash = 'predict-positions';
+          window.location.hash = 'myriad/predict-positions';
         }}
         width={BlockSize.Full}
         round={true}
@@ -93,7 +93,7 @@ const PredictNavigation = () => {
           <Icon
             name={IconName.Money}
             color={
-              window.location.hash === '#predict-profit'
+              window.location.hash === '#myriad/predict-profit'
                 ? IconColor.warningDefault
                 : IconColor.iconDefault
             }
@@ -102,7 +102,7 @@ const PredictNavigation = () => {
         }
         label={'Profit'}
         onClick={() => {
-          window.location.hash = 'predict-profit';
+          window.location.hash = 'myriad/predict-profit';
         }}
         width={BlockSize.Full}
         round={true}
@@ -114,7 +114,7 @@ const PredictNavigation = () => {
             name={IconName.Setting}
             size={IconSize.Sm}
             color={
-              window.location.hash === '#predict-settings'
+              window.location.hash === '#myriad/predict-settings'
                 ? IconColor.warningDefault
                 : IconColor.iconDefault
             }
@@ -122,7 +122,7 @@ const PredictNavigation = () => {
         }
         label={'Settings'}
         onClick={() => {
-          window.location.hash = 'predict-settings';
+          window.location.hash = 'myriad/predict-settings';
         }}
         width={BlockSize.Full}
         round={true}

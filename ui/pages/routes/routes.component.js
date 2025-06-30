@@ -59,6 +59,12 @@ import {
   PREDICT_ROUTE_PROFIT,
   PREDICT_ROUTE_SETTINGS,
   PREDICT_ROUTE_ORDERS,
+  PREDICT_MYRIAD_ROUTE,
+  PREDICT_MYRIAD_ROUTE_BET,
+  PREDICT_MYRIAD_ROUTE_POSITIONS,
+  PREDICT_MYRIAD_ROUTE_PROFIT,
+  PREDICT_MYRIAD_ROUTE_SETTINGS,
+  PREDICT_MYRIAD_ROUTE_ORDERS,
 } from '../../helpers/constants/routes';
 
 import {
@@ -161,6 +167,13 @@ const PredictPositions = mmLazy(() => import('../predict/positions'));
 const PredictProfit = mmLazy(() => import('../predict/profit'));
 const PredictSettings = mmLazy(() => import('../predict/settings'));
 const PredictOrders = mmLazy(() => import('../predict/orders'));
+
+const PredictMyriad = mmLazy(() => import('../predict-myriad'));
+const PredictMyriadBet = mmLazy(() => import('../predict-myriad/bet'));
+const PredictMyriadPositions = mmLazy(() => import('../predict-myriad/positions'));
+const PredictMyriadProfit = mmLazy(() => import('../predict-myriad/profit'));
+const PredictMyriadSettings = mmLazy(() => import('../predict-myriad/settings'));
+const PredictMyriadOrders = mmLazy(() => import('../predict-myriad/orders'));
 // End Lazy Routes
 
 export default class Routes extends Component {
@@ -431,6 +444,26 @@ export default class Routes extends Component {
             path={PREDICT_ROUTE_ORDERS}
             component={PredictOrders}
           />
+
+          <Authenticated path={PREDICT_MYRIAD_ROUTE} component={PredictMyriad} />
+          <Authenticated path={PREDICT_MYRIAD_ROUTE_BET} component={PredictMyriadBet} />
+          <Authenticated
+            path={PREDICT_MYRIAD_ROUTE_POSITIONS}
+            component={PredictMyriadPositions}
+          />
+          <Authenticated
+            path={PREDICT_MYRIAD_ROUTE_PROFIT}
+            component={PredictMyriadProfit}
+          />
+          <Authenticated
+            path={PREDICT_MYRIAD_ROUTE_SETTINGS}
+            component={PredictMyriadSettings}
+          />
+          <Authenticated
+            path={PREDICT_MYRIAD_ROUTE_ORDERS}
+            component={PredictMyriadOrders}
+          />
+
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>
