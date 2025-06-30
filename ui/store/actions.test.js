@@ -2922,9 +2922,7 @@ describe('Actions', () => {
         discoveredAccounts: { bitcoin: 2, solana: 1 },
       };
 
-      const importMnemonicToVaultStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb(null, mockResult));
+      const importMnemonicToVaultStub = sinon.stub().resolves(mockResult);
 
       background.getApi.returns({
         importMnemonicToVault: importMnemonicToVaultStub,
