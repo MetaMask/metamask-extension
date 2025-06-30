@@ -5,11 +5,10 @@ import {
   Text,
   FormTextField,
   Box,
-  ButtonLink,
   Button,
   ButtonSize,
   ButtonVariant,
-  InputType,
+  TextFieldType,
   FormTextFieldSize,
 } from '../../components/component-library';
 import {
@@ -23,6 +22,8 @@ import {
   FlexDirection,
   TextAlign,
   BackgroundColor,
+  TextTransform,
+  FontWeight,
 } from '../../helpers/constants/design-system';
 import Mascot from '../../components/ui/mascot';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -227,14 +228,11 @@ export default class UnlockPage extends Component {
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
         backgroundColor={BackgroundColor.backgroundDefault}
         width={BlockSize.Full}
-        height={BlockSize.Full}
-        marginTop={0}
-        marginBottom="auto"
-        marginInline={0}
-        className="unlock-page__container"
+        paddingBottom={12} // offset header to center content
       >
         {showResetPasswordModal && (
           <ResetPasswordModal
@@ -246,14 +244,10 @@ export default class UnlockPage extends Component {
           as="form"
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.spaceBetween}
+          justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
-          margin="auto"
-          padding={6}
+          padding={4}
           width={BlockSize.Full}
-          height={BlockSize.Full}
-          borderRadius={BorderRadius.LG}
-          gap={6}
           className="unlock-page"
           data-testid="unlock-page"
           onSubmit={this.handleSubmit}
@@ -265,94 +259,80 @@ export default class UnlockPage extends Component {
             alignItems={AlignItems.center}
           >
             <Box
-              marginTop={6}
-              marginBottom={isBeta() || isFlask() ? 6 : 0}
               className="unlock-page__mascot-container"
+              marginBottom={isBeta() || isFlask() ? 6 : 0}
             >
               {this.renderMascot()}
               {isBeta() ? (
-                <Box className="unlock-page__mascot-container__beta">
+                <Text
+                  className="unlock-page__mascot-container__beta"
+                  backgroundColor={BackgroundColor.primaryDefault}
+                  color={TextColor.primaryInverse}
+                  padding={1}
+                  borderRadius={BorderRadius.LG}
+                  textTransform={TextTransform.Uppercase}
+                  fontWeight={FontWeight.Medium}
+                >
                   {t('beta')}
-                </Box>
+                </Text>
               ) : null}
             </Box>
             <Text
               data-testid="unlock-page-title"
               as="h1"
-              variant={TextVariant.headingLg}
-              marginTop={1}
-              marginBottom={2}
+              variant={TextVariant.displayMd}
+              marginBottom={12}
+              fontWeight={FontWeight.Medium}
               color={TextColor.textDefault}
+              textAlign={TextAlign.Center}
             >
               {t('welcomeBack')}
             </Text>
             <FormTextField
               id="password"
-              label={
-                <Box
-                  display={Display.Flex}
-                  width={BlockSize.Full}
-                  justifyContent={JustifyContent.spaceBetween}
-                  alignItems={AlignItems.center}
-                >
-                  <Text variant={TextVariant.bodyMdMedium}>
-                    {t('password')}
-                  </Text>
-                </Box>
-              }
-              placeholder={t('enterPassword')}
+              placeholder={t('enterYourPassword')}
               size={FormTextFieldSize.Lg}
               inputProps={{
                 'data-testid': 'unlock-password',
-                type: InputType.Password,
+                'aria-label': t('password'),
               }}
               onChange={(event) => this.handleInputChange(event)}
+              type={TextFieldType.Password}
+              value={password}
               error={Boolean(error)}
               helpText={this.renderHelpText()}
               autoComplete
               autoFocus
               disabled={isLocked}
               width={BlockSize.Full}
-              textFieldProps={{
-                borderRadius: BorderRadius.LG,
-              }}
+              marginBottom={4}
             />
-          </Box>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            width={BlockSize.Full}
-            alignItems={AlignItems.center}
-          >
-            <Box
-              className="unlock-page__buttons"
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              width={BlockSize.Full}
-              gap={4}
+            <Button
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              block
+              type="submit"
+              data-testid="unlock-submit"
+              disabled={!password || isLocked}
+              marginBottom={6}
             >
-              <Button
-                variant={ButtonVariant.Primary}
-                size={ButtonSize.Lg}
-                block
-                type="submit"
-                data-testid="unlock-submit"
-                disabled={!password || isLocked}
-              >
-                {this.context.t('unlock')}
-              </Button>
-              <ButtonLink
-                data-testid="unlock-forgot-password-button"
-                key="import-account"
-                type="button"
-                onClick={() => this.onForgotPassword()}
-              >
-                {t('forgotPassword')}
-              </ButtonLink>
-            </Box>
-            <Box marginTop={6} className="unlock-page__support">
+              {this.context.t('unlock')}
+            </Button>
+
+            <Button
+              variant={ButtonVariant.Link}
+              data-testid="unlock-forgot-password-button"
+              key="import-account"
+              onClick={() => this.onForgotPassword()}
+              marginBottom={6}
+            >
+              {t('forgotPassword')}
+            </Button>
+
+            <Text>
               {t('needHelp', [
-                <a
+                <Button
+                  variant={ButtonVariant.Link}
                   href={SUPPORT_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -375,9 +355,9 @@ export default class UnlockPage extends Component {
                   }}
                 >
                   {needHelpText}
-                </a>,
+                </Button>,
               ])}
-            </Box>
+            </Text>
           </Box>
         </Box>
       </Box>
