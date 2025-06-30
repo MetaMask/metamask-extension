@@ -82,10 +82,9 @@ import {
 } from './utils';
 
 export type ConnectPageRequest = {
-  id: string;
-  origin: string;
   permissions?: PermissionsRequest;
   metadata?: {
+    id: string;
     origin: string;
     isEip1193Request?: boolean;
     promptToCreateSolanaAccount?: boolean;
