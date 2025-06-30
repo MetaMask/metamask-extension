@@ -2192,6 +2192,9 @@
   "enterYourPassword": {
     "message": "Enter your password"
   },
+  "enterYourPasswordSocialLoginFlow": {
+    "message": "Enter Metamask Password"
+  },
   "errorCode": {
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
@@ -4032,8 +4035,14 @@
   "onboardingSrpInputClearAll": {
     "message": "Clear all"
   },
+  "onboardingSrpInputHideAll": {
+    "message": "Hide all"
+  },
   "onboardingSrpInputPlaceholder": {
     "message": "Add a space between each word and make sure no one is watching."
+  },
+  "onboardingSrpInputShowAll": {
+    "message": "Show all"
   },
   "onekey": {
     "message": "OneKey"

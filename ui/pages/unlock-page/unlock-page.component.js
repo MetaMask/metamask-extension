@@ -70,6 +70,10 @@ export default class UnlockPage extends Component {
      * Force update metamask data state
      */
     forceUpdateMetamaskState: PropTypes.func,
+    /**
+     * isSocialLoginFlow. True if the user is on a social login flow
+     */
+    isSocialLoginFlow: PropTypes.bool,
   };
 
   state = {
@@ -332,7 +336,11 @@ export default class UnlockPage extends Component {
             </Text>
             <FormTextField
               id="password"
-              placeholder={t('enterYourPassword')}
+              placeholder={
+                this.props.isSocialLoginFlow
+                  ? t('enterYourPasswordSocialLoginFlow')
+                  : t('enterYourPassword')
+              }
               size={FormTextFieldSize.Lg}
               inputProps={{
                 'data-testid': 'unlock-password',
