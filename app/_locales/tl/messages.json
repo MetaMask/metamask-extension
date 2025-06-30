@@ -361,6 +361,9 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "I-update ang mga opsyon sa gas"
   },
+  "alertContentMultipleApprovals": {
+    "message": "Nagbibigay ka sa ibang tao ng pahintulot na i-withdraw ang mga token mo, kahit na hindi ito kinakailangan para sa transaksyong ito."
+  },
   "alertDisableTooltip": {
     "message": "Puwede itong baguhin sa \"Mga Setting > Mga Alerto\""
   },
@@ -423,6 +426,9 @@
   },
   "alertReasonInsufficientBalance": {
     "message": "Hindi sapat ang pondo"
+  },
+  "alertReasonMultipleApprovals": {
+    "message": "Hindi kinakailangang pahintulot"
   },
   "alertReasonNetworkBusy": {
     "message": "Busy ang network"
@@ -585,6 +591,9 @@
   },
   "back": {
     "message": "Bumalik"
+  },
+  "backup": {
+    "message": "I-backup"
   },
   "backupAndSync": {
     "message": "I-back up at i-sync"
@@ -1428,9 +1437,6 @@
   "createNewAccountHeader": {
     "message": "Gumawa ng bagong account"
   },
-  "createPassword": {
-    "message": "Gumawa ng password"
-  },
   "createSnapAccountDescription": {
     "message": "Ang $1 ay nais na magdagdag ng bagong account sa MetaMask."
   },
@@ -1505,6 +1511,9 @@
   "customGasSettingToolTipMessage": {
     "message": "Gamitin ang $1 para i-customize ang presyo ng gas. Ito ay maaaring nakakalito kung hindi ka pamilyar. Harapin ang sarili mong panganib.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
+  },
+  "customNetworks": {
+    "message": "Custom na mga network"
   },
   "customSlippage": {
     "message": "Custom"
@@ -2964,7 +2973,7 @@
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manageDefaultSettings": {
-    "message": "Pamahalaan ang mga default na setting sa pagkapribado"
+    "message": "Pamahalaan ang mga default na setting"
   },
   "manageInstitutionalWallets": {
     "message": "Pamahalaan ang mga Institutional Wallet"
@@ -3371,7 +3380,7 @@
     "message": "Matagumpay na naidagdag ang NFT!"
   },
   "newPassword": {
-    "message": "Bagong password (min na 8 char)"
+    "message": "Bagong password"
   },
   "newPrivacyPolicyActionButton": {
     "message": "Magbasa pa"
@@ -3749,39 +3758,24 @@
   "onboardingCreateWallet": {
     "message": "Gumawa ng bagong wallet"
   },
-  "onboardingImportWallet": {
-    "message": "Mag-import ng umiiral na wallet"
-  },
   "onboardingMetametricsAgree": {
     "message": "Sumasang-ayon ako"
   },
   "onboardingMetametricsDescription": {
-    "message": "Nais naming mangalap ng data para sa batayang paggamit upang mapahusay ang MetaMask. Dapat mong malaman na hindi namin ibebenta ang data na iyong ibibigay rito."
-  },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Ipapaalam namin sa iyo kung magdesisyon kaming gamitin ang data na ito para sa ibang layunin. Maaari mong suriin ang aming $1 para sa karagdagang impormasyon. Tandaan, maaari kang magpunta sa mga setting at mag-opt out anumang oras.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
+    "message": "Gusto naming mangalap ng datos sa pangunahing paggamit at diagnostics para pahusayin ang MetaMask. Iyon ay palaging:"
   },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Patakaran sa Pagkapribado"
   },
   "onboardingMetametricsNeverCollect": {
-    "message": "$1 mga click at view sa app ay nakaimbak, ngunit ang ibang detalye (tulad ng iyong address) ay hindi.",
+    "message": "Ini-store ang $1 na click at view sa app, ngunit hindi ang ibang detalye (tulad ng iyong address).",
     "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
   },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "Pribado:"
   },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 pansamantala naming ginamit ang iyong IP address upang malaman ang pangkalahatang lokasyon (tulad ng iyong bansa o rehiyon), ngunit hindi ito iniimbak.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Pangkalahatan:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 ikaw ang magdedesisyon kung nais mong ibahagi o burahin ang iyong data sa paggamit sa pamamagitan ng mga setting anumang oras.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opsyonal:"
@@ -3796,14 +3790,10 @@
     "message": "I-pin ang MetaMask sa iyong browser para madali itong ma-access at madaling makita ang mga kumpirmasyon ng transaksyon."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Maaari mong buksan ang MetaMask sa pamamagitan ng pag-click sa extension at pag-accesss sa wallet mo sa 1 click lang."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Mag-click sa icon ng browser extension para agad itong ma-access",
-    "description": "$1 is the browser name"
+    "message": "I-access ang iyong MetaMask wallet sa 1 click sa pamamagitan ng pag-click sa extension."
   },
   "onboardingPinExtensionTitle": {
-    "message": "Ang pag-install ng iyong MetaMask ay kumpleto na!"
+    "message": "Tapos na ang pag-install!"
   },
   "onekey": {
     "message": "OneKey"
@@ -3872,18 +3862,12 @@
   "password": {
     "message": "Password"
   },
-  "passwordNotLongEnough": {
-    "message": "Hindi sapat ang haba ng password"
-  },
   "passwordStrength": {
     "message": "Tibay ng password: $1",
     "description": "Return password strength to the user when user wants to create password."
   },
   "passwordStrengthDescription": {
     "message": "Mapapabuti ng matibay na password ang seguridad ng iyong wallet kung sakaling manakaw o makompromiso ang iyong device."
-  },
-  "passwordTermsWarning": {
-    "message": "Nauunawaan ko na hindi matatakpan ng MetaMask ang password na ito para sa akin. $1"
   },
   "passwordsDontMatch": {
     "message": "Hindi Magkatugma ang Mga Password"
@@ -4403,18 +4387,6 @@
   },
   "recommendedGasLabel": {
     "message": "Nirekomenda"
-  },
-  "recoveryPhraseReminderBackupStart": {
-    "message": "Magsimula rito"
-  },
-  "recoveryPhraseReminderConfirm": {
-    "message": "Nakuha ko"
-  },
-  "recoveryPhraseReminderSubText": {
-    "message": "Kinokontrol ng iyong Lihim na Parirala sa Pagbawi ang lahat ng iyong account."
-  },
-  "recoveryPhraseReminderTitle": {
-    "message": "Protektahan ang iyong pondo"
   },
   "redeposit": {
     "message": "Muling magdeposito"
@@ -4974,7 +4946,7 @@
     "message": "Laktawan ang Account Security?"
   },
   "skipAccountSecurityDetails": {
-    "message": "Nauunawaan ko na hanggang sa i-back up ko ang aking Lihim na Parirala sa Pagbawi, maaaring mawala sa akin ang mga account ko at lahat ng asset ng mga ito."
+    "message": "Kung mawawala mo ang Lihim na Parirala sa Pagbawi na ito, hindi mo na maa-access ang wallet na ito."
   },
   "slideBridgeDescription": {
     "message": "Magpalipat-lipat sa 9 na chain, lahat sa loob ng iyong wallet"
@@ -5504,6 +5476,45 @@
   "startEarning": {
     "message": "Simulang kumita"
   },
+  "stateCorruptionAreYouSure": {
+    "message": "Sigurado ka bang gusto mong magpatuloy?"
+  },
+  "stateCorruptionCopyAndRestoreBeforeRecovery": {
+    "message": "Puwede mong subukang kopyahin at ibalik ang iyong file ng estado nang manu-mano bago ka magpasyang ibalik ang iyong vault sa pamamagitan ng pagsunod sa $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "Puwede mong subukang kopyahin at ibalik ang iyong file ng estado nang manu-mano bago ka magpasyang i-reset ang MetaMask sa pamamagitan ng pagsunod sa $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionDetectedNoBackup": {
+    "message": "Hindi awtomatikong mababawi ang iyong vault."
+  },
+  "stateCorruptionDetectedWithBackup": {
+    "message": "Puwedeng mabawi ang iyong vault mula sa isang naka-automate na backup. Tatanggalin ng awtomatikong pagbawi ang iyong mga kasalukuyang setting at kagustuhan, at ibabalik lang ang vault mo."
+  },
+  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
+    "message": "Panloob na Error: Hindi ma-access ang database"
+  },
+  "stateCorruptionResetMetaMaskState": {
+    "message": "I-reset ang Estado ng MetaMask"
+  },
+  "stateCorruptionResettingDatabase": {
+    "message": "Nire-reset ang database…"
+  },
+  "stateCorruptionRestoreAccountsFromBackup": {
+    "message": "Ibalik ang mga Account"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Ibinabalik ang database…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "ang mga tagubiling ito",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "Paano makuha ulit ang iyong Lihim na Parirala sa Pagbawi"
+  },
   "stateLogError": {
     "message": "Error sa pagkuha ng mga log ng estado."
   },
@@ -5904,6 +5915,9 @@
   "swapShowLatestQuotes": {
     "message": "Ipakita ang mga pinakabagong quote"
   },
+  "swapSlippageAutoDescription": {
+    "message": "Auto"
+  },
   "swapSlippageHighDescription": {
     "message": "Ang slippage na inilagay ($1%) ay itinuturing na napakataas at maaaring magresulta sa isang masamang rate",
     "description": "$1 is the amount of % for slippage"
@@ -6077,14 +6091,17 @@
   "termsOfService": {
     "message": "Mga Tuntunin ng Serbisyo"
   },
+  "termsOfUseAgree": {
+    "message": "Sumang-ayon"
+  },
   "termsOfUseAgreeText": {
-    "message": " Sumasang-ayon ako sa Mga Tuntunin sa Paggamit, na nalalapat sa aking paggamit ng MetaMask at lahat ng feature nito"
+    "message": "Sumasang-ayon ako sa Mga tuntunin ng paggamit, na may kinalaman sa paggamit ko ng MetaMask at lahat ng feature nito"
   },
   "termsOfUseFooterText": {
     "message": "Mag-scroll upang basahin ang lahat ng seksyon"
   },
   "termsOfUseTitle": {
-    "message": "Na-update ang aming Mga Tuntunin sa Paggamit"
+    "message": "Suriin ang aming Mga Tuntunin ng Paggamit"
   },
   "testNetworks": {
     "message": "Suriin ang mga network"
@@ -6372,7 +6389,7 @@
     "message": "Hindi inaprubahan"
   },
   "unexpectedBehavior": {
-    "message": "Hindi inaasahan ang nangyaring ito at dapat itong iulat bilang bug, kahit na na-restore nang maayos ang mga account mo. Gamitin ang link sa ibaba para magpadala sa MetaMask ng ulat sa bug."
+    "message": "Hindi inaasahan ang pangyayaring ito at dapat itong iulat bilang bug, kahit na maibalik ang iyong mga account."
   },
   "units": {
     "message": "mga unit"
@@ -6667,6 +6684,6 @@
     "message": "Hindi namin makansela ang iyong transaksyon bago ito nakumpirma sa blockchain."
   },
   "yourWalletIsReady": {
-    "message": "Handa na ang iyong wallet"
+    "message": "Handa na ang iyong wallet!"
   }
 }
