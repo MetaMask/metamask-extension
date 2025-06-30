@@ -1018,6 +1018,19 @@ class TestDapp {
       this.confirmSignatureButtonRedesign,
     );
   }
+
+  /**
+   * Check if the test dapp is connected to the specified network.
+   *
+   * @param networkId - The network id to check if the test dapp is connected to.
+   */
+  async check_networkIsConnected(networkId: string) {
+    console.log(`Check testdapp is connected to network ${networkId}`);
+    await this.driver.waitForSelector({
+      css: '#chainId',
+      text: networkId,
+    });
+  }
 }
 
 export default TestDapp;
