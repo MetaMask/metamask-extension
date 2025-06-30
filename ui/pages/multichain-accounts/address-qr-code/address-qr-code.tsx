@@ -75,12 +75,6 @@ export const AddressQRCode = () => {
     openBlockExplorer(addressLink, metricsLocation, trackEvent);
   }, [chainId, trackEvent, addressLink]);
 
-  useEffect(() => {
-    if (!address || !isMultichainAccountsState1Enabled) {
-      history.push(ACCOUNT_DETAILS_ROUTE);
-    }
-  }, [address, history, isMultichainAccountsState1Enabled]);
-
   return (
     <Page>
       <Header
