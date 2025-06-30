@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -14,7 +14,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_METAMETRICS,
+  ONBOARDING_REVIEW_SRP_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -28,9 +32,14 @@ import {
   ButtonLink,
   ButtonLinkSize,
 } from '../../../components/component-library';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex, getIsSocialLoginFlow } from '../../../selectors';
 import SRPDetailsModal from '../../../components/app/srp-details-modal';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import SkipSRPBackup from './skip-srp-backup-popover';
+
+const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 export default function SecureYourWallet() {
   const history = useHistory();
@@ -44,6 +53,8 @@ export default function SecureYourWallet() {
   const isFromReminderParam = searchParams.get('isFromReminder')
     ? '/?isFromReminder=true'
     : '';
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const onboardingCompleted = useSelector(getCompletedOnboarding);
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -79,6 +90,18 @@ export default function SecureYourWallet() {
     });
     setShowSkipSRPBackupPopover(true);
   };
+
+  useEffect(() => {
+    // During the onboarding flow, this page does not belong to the social login flow,
+    // so we need to redirect to the other pages (based on the browser)
+    if (!onboardingCompleted && isSocialLoginFlow) {
+      if (isFirefox) {
+        history.replace(ONBOARDING_COMPLETION_ROUTE);
+      } else {
+        history.replace(ONBOARDING_METAMETRICS);
+      }
+    }
+  }, [onboardingCompleted, history, isSocialLoginFlow]);
 
   return (
     <Box
