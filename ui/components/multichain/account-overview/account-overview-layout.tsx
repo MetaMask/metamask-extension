@@ -14,6 +14,7 @@ import {
 import {
   getAppIsLoading,
   getSelectedAccount,
+  getSelectedInternalAccount,
   getSwapsDefaultToken,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   hasCreatedSolanaAccount,
@@ -53,6 +54,8 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { shortenAddress } from '../../../helpers/utils/util';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
@@ -189,6 +192,10 @@ const AccountOverviewNetworkPicker = () => {
   const dispatch = useDispatch();
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const networkIconSrc = getNetworkIcon(currentNetwork);
+  const internalAccount = useSelector(getSelectedInternalAccount);
+  const shortenedAddress =
+    internalAccount &&
+    shortenAddress(normalizeSafeAddress(internalAccount.address));
 
   const handleNetworkClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -197,20 +204,30 @@ const AccountOverviewNetworkPicker = () => {
   };
 
   return (
-    <PickerNetwork
-      avatarNetworkProps={{
-        role: 'img',
-        name: currentNetwork?.name || 'Unknown Network',
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '5px',
       }}
-      aria-label={`${t('networkMenu')} ${
-        currentNetwork?.name || 'Unknown Network'
-      }`}
-      label={currentNetwork?.name || 'Unknown Network'}
-      src={networkIconSrc}
-      onClick={handleNetworkClick}
-      className="account-overview__network-picker"
-      data-testid="account-overview-network-picker"
-      style={{ backgroundColor: 'transparent' }}
-    />
+    >
+      <PickerNetwork
+        avatarNetworkProps={{
+          role: 'img',
+          name: currentNetwork?.name || 'Unknown Network',
+        }}
+        aria-label={`${t('networkMenu')} ${
+          currentNetwork?.name || 'Unknown Network'
+        }`}
+        label={currentNetwork?.name || 'Unknown Network'}
+        src={networkIconSrc}
+        onClick={handleNetworkClick}
+        className="account-overview__network-picker"
+        data-testid="account-overview-network-picker"
+        style={{ backgroundColor: 'transparent' }}
+      />
+      <div style={{ fontSize: '14px' }}>{shortenedAddress}</div>
+    </div>
   );
 };

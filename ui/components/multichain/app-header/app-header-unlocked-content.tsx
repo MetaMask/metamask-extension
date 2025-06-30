@@ -201,22 +201,22 @@ export const AppHeaderUnlockedContent = ({
               address={internalAccount.address}
               name={internalAccount.metadata.name}
               onClick={() => {
-                dispatch(toggleAccountMenu());
+                // dispatch(toggleAccountMenu());
 
-                trackEvent({
-                  event: MetaMetricsEventName.NavAccountMenuOpened,
-                  category: MetaMetricsEventCategory.Navigation,
-                  properties: {
-                    location: 'Home',
-                  },
-                });
+                // trackEvent({
+                //   event: MetaMetricsEventName.NavAccountMenuOpened,
+                //   category: MetaMetricsEventCategory.Navigation,
+                //   properties: {
+                //     location: 'Home',
+                //   },
+                // });
               }}
               disabled={disableAccountPicker}
               labelProps={{ fontWeight: FontWeight.Bold }}
               paddingLeft={0}
               paddingRight={0}
             />
-            {process.env.REMOVE_GNS ? (
+            {/* {process.env.REMOVE_GNS ? (
               <>{CopyButton}</>
             ) : (
               <Tooltip
@@ -225,7 +225,7 @@ export const AppHeaderUnlockedContent = ({
               >
                 {CopyButton}
               </Tooltip>
-            )}
+            )} */}
           </Text>
         )}
       </>

@@ -398,7 +398,7 @@ const CoinButtons = ({
         }
         round={!displayNewIconButtons}
       />
-      {process.env.REMOVE_GNS ? null : (
+      {/* {process.env.REMOVE_GNS ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
           disabled={
@@ -430,7 +430,7 @@ const CoinButtons = ({
           }
           round={!displayNewIconButtons}
         />
-      )}
+      )} */}
       <IconButton
         className={`${classPrefix}-overview__button`}
         data-testid={`${classPrefix}-overview-send`}
