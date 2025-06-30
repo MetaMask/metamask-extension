@@ -1,125 +1,125 @@
 {
-    "count": 13,
-    "balances": [
-        {
-            "object": "token",
-            "address": "0x514910771af9ca656af840dff83e8264ecf986ca",
-            "name": "ChainLink Token",
-            "symbol": "LINK",
-            "decimals": 18,
-            "balance": "0.000006366320378239",
-            "chainId": 1
-        },
-        {
-            "object": "token",
-            "address": "0x6982508145454ce325ddbe47a25d4ec3d2311933",
-            "name": "Pepe",
-            "symbol": "PEPE",
-            "decimals": 18,
-            "balance": "5346.594279164043774891",
-            "chainId": 1
-        },
-        {
-            "object": "token",
-            "address": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
-            "name": "SushiToken",
-            "symbol": "SUSHI",
-            "decimals": 18,
-            "balance": "1.852437508651056525",
-            "chainId": 1
-        },
-        {
-            "object": "token",
-            "address": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce",
-            "name": "SHIBA INU",
-            "symbol": "SHIB",
-            "decimals": 18,
-            "balance": "3358.075322246609782535",
-            "chainId": 1
-        },
-        {
-            "object": "token",
-            "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-            "name": "USD Coin",
-            "symbol": "USDC",
-            "decimals": 6,
-            "balance": "0.938383",
-            "chainId": 1
-        },
-        {
-            "object": "token",
-            "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
-            "name": "Tether USD",
-            "symbol": "USDT",
-            "decimals": 6,
-            "balance": "0.454108",
-            "chainId": 1
-        },
-        {
-            "object": "token",
-            "address": "0x0022228a2cc5e7ef0274a7baa600d44da5ab5776",
-            "name": "Staked USDA",
-            "symbol": "stUSD",
-            "decimals": 18,
-            "balance": "0.000000892639927456",
-            "chainId": 1
-        },
-        {
-            "object": "token",
-            "address": "0x0d8775f648430679a709e98d2b0cb6250d2887ef",
-            "name": "Basic Attention Token",
-            "symbol": "BAT",
-            "decimals": 18,
-            "balance": "1.000000000000000000",
-            "chainId": 1
-        },
-        {
-            "object": "token",
-            "address": "0x6c3ea9036406852006290770bedfcaba0e23a0e8",
-            "name": "PayPal USD",
-            "symbol": "PYUSD",
-            "decimals": 6,
-            "balance": "0.000010",
-            "chainId": 1
-        },
-        {
-            "object": "token",
-            "address": "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
-            "name": "Matic Token",
-            "symbol": "MATIC",
-            "decimals": 18,
-            "balance": "0.410317299834446241",
-            "chainId": 1
-        },
-        {
-            "object": "token",
-            "address": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
-            "name": "Liquid staked Ether 2.0",
-            "symbol": "stETH",
-            "decimals": 18,
-            "balance": "0.000100198152201432",
-            "chainId": 1
-        },
-        {
-            "object": "token",
-            "address": "0xfa2b947eec368f42195f24f36d2af29f7c24cec2",
-            "name": "Falcon USD",
-            "symbol": "USDf",
-            "decimals": 18,
-            "balance": "0.010000000000000000",
-            "chainId": 1
-        },
-        {
-            "object": "token",
-            "address": "0x0000000000000000000000000000000000000000",
-            "symbol": "ETH",
-            "name": "Ether",
-            "type": "native",
-            "timestamp": "2015-07-30T15:26:13.000Z",
-            "decimals": 18,
-            "chainId": 1,
-            "balance": "26"
-        }
-    ],
-    "unprocessedNetworks": []
+  "balances": [
+    {
+      "object": "token",
+      "address": "0x514910771af9ca656af840dff83e8264ecf986ca",
+      "name": "ChainLink Token",
+      "symbol": "LINK",
+      "decimals": 18,
+      "balance": "0.000006366320378239",
+      "chainId": 1
+    },
+    {
+      "object": "token",
+      "address": "0x6982508145454ce325ddbe47a25d4ec3d2311933",
+      "name": "Pepe",
+      "symbol": "PEPE",
+      "decimals": 18,
+      "balance": "5346.594279164043774891",
+      "chainId": 1
+    },
+    {
+      "object": "token",
+      "address": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
+      "name": "SushiToken",
+      "symbol": "SUSHI",
+      "decimals": 18,
+      "balance": "1.852437508651056525",
+      "chainId": 1
+    },
+    {
+      "object": "token",
+      "address": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce",
+      "name": "SHIBA INU",
+      "symbol": "SHIB",
+      "decimals": 18,
+      "balance": "3358.075322246609782535",
+      "chainId": 1
+    },
+    {
+      "object": "token",
+      "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "name": "USD Coin",
+      "symbol": "USDC",
+      "decimals": 6,
+      "balance": "0.938383",
+      "chainId": 1
+    },
+    {
+      "object": "token",
+      "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+      "name": "Tether USD",
+      "symbol": "USDT",
+      "decimals": 6,
+      "balance": "0.454108",
+      "chainId": 1
+    },
+    {
+      "object": "token",
+      "address": "0x0022228a2cc5e7ef0274a7baa600d44da5ab5776",
+      "name": "Staked USDA",
+      "symbol": "stUSD",
+      "decimals": 18,
+      "balance": "0.000000892639927456",
+      "chainId": 1
+    },
+    {
+      "object": "token",
+      "address": "0x0d8775f648430679a709e98d2b0cb6250d2887ef",
+      "name": "Basic Attention Token",
+      "symbol": "BAT",
+      "decimals": 18,
+      "balance": "1.000000000000000000",
+      "chainId": 1
+    },
+    {
+      "object": "token",
+      "address": "0x6c3ea9036406852006290770bedfcaba0e23a0e8",
+      "name": "PayPal USD",
+      "symbol": "PYUSD",
+      "decimals": 6,
+      "balance": "0.000010",
+      "chainId": 1
+    },
+    {
+      "object": "token",
+      "address": "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
+      "name": "Matic Token",
+      "symbol": "MATIC",
+      "decimals": 18,
+      "balance": "0.410317299834446241",
+      "chainId": 1
+    },
+    {
+      "object": "token",
+      "address": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+      "name": "Liquid staked Ether 2.0",
+      "symbol": "stETH",
+      "decimals": 18,
+      "balance": "0.000100198152201432",
+      "chainId": 1
+    },
+    {
+      "object": "token",
+      "address": "0xfa2b947eec368f42195f24f36d2af29f7c24cec2",
+      "name": "Falcon USD",
+      "symbol": "USDf",
+      "decimals": 18,
+      "balance": "0.010000000000000000",
+      "chainId": 1
+    },
+    {
+      "object": "token",
+      "address": "0x0000000000000000000000000000000000000000",
+      "symbol": "ETH",
+      "name": "Ether",
+      "type": "native",
+      "timestamp": "2015-07-30T15:26:13.000Z",
+      "decimals": 18,
+      "chainId": 1,
+      "balance": "26"
+    }
+  ],
+  "count": 13,
+  "unprocessedNetworks": []
 }

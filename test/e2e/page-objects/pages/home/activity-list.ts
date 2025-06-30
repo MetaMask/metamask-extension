@@ -312,7 +312,9 @@ class ActivityListPage {
     );
   }
 
-  async check_waitForTransactionStatus(status: 'confirmed' | 'cancelled' | 'pending') {
+  async check_waitForTransactionStatus(
+    status: 'confirmed' | 'cancelled' | 'pending',
+  ) {
     await this.driver.waitForSelector(`.transaction-status-label--${status}`, {
       timeout: 15000,
     });

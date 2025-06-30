@@ -23,15 +23,15 @@ describe('Swap on Solana', function () {
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         const quote = {
-          swapFromAmount: "1",
-          swapToAmount: "167.7",
+          swapFromAmount: '1',
+          swapToAmount: '167.7',
           swapToConversionRate: '167.7',
           tokenTo: 'USDC',
           tokenFrom: 'SOL',
           fromChain: 'Solana',
           toChain: 'Solana',
           skipCounter: true,
-        }
+        };
 
         await swapPage.createSwap(quote);
 
@@ -81,15 +81,15 @@ describe('Swap on Solana', function () {
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         const quote = {
-          swapFromAmount: "1",
-          swapToAmount: "0.00589",
+          swapFromAmount: '1',
+          swapToAmount: '0.00589',
           swapToConversionRate: '0.00589',
           tokenTo: 'SOL',
           tokenFrom: 'USDC',
           fromChain: 'Solana',
           toChain: 'Solana',
           skipCounter: true,
-        }
+        };
         await swapPage.createSwap(quote);
         await swapPage.reviewSolanaQuote(quote);
 
@@ -121,14 +121,14 @@ describe('Swap on Solana', function () {
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         const quote = {
-          swapFromAmount: "1",
-          swapToAmount: "167.7",
+          swapFromAmount: '1',
+          swapToAmount: '167.7',
           tokenTo: 'USDC',
           tokenFrom: 'SOL',
           fromChain: 'Solana',
           toChain: 'Solana',
           skipCounter: true,
-        }
+        };
         await swapPage.createSwap(quote);
         await swapPage.checkNoQuotesAvailable();
       },

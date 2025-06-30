@@ -1,446 +1,434 @@
 [
   {
-      "quote": {
-          "bridgeId": "lifi",
-          "requestId": "0xdbee4dda98c4fc937e77b20002a555fb7888d15cd8d4a58f1cbdbca05230e021",
-          "aggregator": "lifi",
-          "srcChainId": 1,
-          "srcTokenAmount": "991250000000000",
-          "srcAsset": {
-              "address": "0x0000000000000000000000000000000000000000",
-              "chainId": 1,
-              "assetId": "eip155:1/slip44:60",
-              "symbol": "ETH",
-              "decimals": 18,
-              "name": "Ethereum",
-              "coingeckoId": "ethereum",
-              "aggregators": [],
-              "occurrences": 100,
-              "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
-              "metadata": {
-                  "honeypotStatus": {},
-                  "isContractVerified": false,
-                  "erc20Permit": false,
-                  "description": {
-                      "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
-                      "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
-                      "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
-                      "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
-                  },
-                  "createdAt": "2023-10-31T22:41:58.553Z"
+    "quote": {
+      "bridgeId": "lifi",
+      "requestId": "0xdbee4dda98c4fc937e77b20002a555fb7888d15cd8d4a58f1cbdbca05230e021",
+      "aggregator": "lifi",
+      "srcChainId": 1,
+      "srcTokenAmount": "991250000000000",
+      "srcAsset": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "chainId": 1,
+        "assetId": "eip155:1/slip44:60",
+        "symbol": "ETH",
+        "decimals": 18,
+        "name": "Ethereum",
+        "coingeckoId": "ethereum",
+        "aggregators": [],
+        "occurrences": 100,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "metadata": {
+          "honeypotStatus": {},
+          "isContractVerified": false,
+          "erc20Permit": false,
+          "description": {
+            "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
+            "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
+            "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
+            "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
+          },
+          "createdAt": "2023-10-31T22:41:58.553Z"
+        },
+        "price": "2563.77"
+      },
+      "destChainId": 1151111081099710,
+      "destTokenAmount": "16557000",
+      "destAsset": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "chainId": 1151111081099710,
+        "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+        "symbol": "SOL",
+        "decimals": 9,
+        "name": "SOL",
+        "aggregators": [],
+        "occurrences": 100,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+        "metadata": {},
+        "price": "151.21"
+      },
+      "feeData": {
+        "metabridge": {
+          "amount": "8750000000000",
+          "asset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 1,
+            "assetId": "eip155:1/slip44:60",
+            "symbol": "ETH",
+            "decimals": 18,
+            "name": "Ethereum",
+            "coingeckoId": "ethereum",
+            "aggregators": [],
+            "occurrences": 100,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+            "metadata": {
+              "honeypotStatus": {},
+              "isContractVerified": false,
+              "erc20Permit": false,
+              "description": {
+                "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
+                "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
+                "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
+                "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
               },
-              "price": "2563.77"
-          },
-          "destChainId": 1151111081099710,
-          "destTokenAmount": "16557000",
-          "destAsset": {
-              "address": "0x0000000000000000000000000000000000000000",
-              "chainId": 1151111081099710,
-              "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
-              "symbol": "SOL",
-              "decimals": 9,
-              "name": "SOL",
-              "aggregators": [],
-              "occurrences": 100,
-              "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
-              "metadata": {},
-              "price": "151.21"
-          },
-          "feeData": {
-              "metabridge": {
-                  "amount": "8750000000000",
-                  "asset": {
-                      "address": "0x0000000000000000000000000000000000000000",
-                      "chainId": 1,
-                      "assetId": "eip155:1/slip44:60",
-                      "symbol": "ETH",
-                      "decimals": 18,
-                      "name": "Ethereum",
-                      "coingeckoId": "ethereum",
-                      "aggregators": [],
-                      "occurrences": 100,
-                      "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
-                      "metadata": {
-                          "honeypotStatus": {},
-                          "isContractVerified": false,
-                          "erc20Permit": false,
-                          "description": {
-                              "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
-                              "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
-                              "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
-                              "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
-                          },
-                          "createdAt": "2023-10-31T22:41:58.553Z"
-                      },
-                      "price": "2563.77"
-                  }
-              }
-          },
-          "bridges": [
-              "relay (via LiFi)"
-          ],
-          "protocols": [
-              "relay (via LiFi)"
-          ],
-          "steps": [
-              {
-                  "action": "bridge",
-                  "srcChainId": 1,
-                  "destChainId": 1151111081099710,
-                  "protocol": {
-                      "name": "relay",
-                      "displayName": "Relay",
-                      "icon": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/relay.svg"
-                  },
-                  "srcAsset": {
-                      "address": "0x0000000000000000000000000000000000000000",
-                      "chainId": 1,
-                      "assetId": "eip155:1/slip44:60",
-                      "symbol": "ETH",
-                      "decimals": 18,
-                      "name": "Ethereum",
-                      "coingeckoId": "ethereum",
-                      "aggregators": [],
-                      "occurrences": 100,
-                      "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
-                      "metadata": {
-                          "honeypotStatus": {},
-                          "isContractVerified": false,
-                          "erc20Permit": false,
-                          "description": {
-                              "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
-                              "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
-                              "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
-                              "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
-                          },
-                          "createdAt": "2023-10-31T22:41:58.553Z"
-                      }
-                  },
-                  "destAsset": {
-                      "address": "0x0000000000000000000000000000000000000000",
-                      "chainId": 1151111081099710,
-                      "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
-                      "symbol": "SOL",
-                      "decimals": 9,
-                      "name": "SOL",
-                      "aggregators": [],
-                      "occurrences": 100,
-                      "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
-                      "metadata": {}
-                  },
-                  "srcAmount": "991250000000000",
-                  "destAmount": "16557000"
-              }
-          ],
-          "priceData": {
-              "totalFromAmountUsd": "2.5662399999999996",
-              "totalToAmountUsd": "2.5080543599999996",
-              "priceImpact": "0.022673498971257578"
+              "createdAt": "2023-10-31T22:41:58.553Z"
+            },
+            "price": "2563.77"
           }
+        }
       },
-      "trade": {
-          "chainId": 1,
-          "to": "0x0439e60F02a8900a951603950d8D4527f400C3f1",
-          "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
-          "value": "0x38d7ea4c68000",
-          "data": "0x3ce33bff0000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000038d7ea4c6800000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000d6c6966694164617074657256320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004600000000000000000000000001231deb6f5749ef6ce6943a275a1d3e7486f4eae0000000000000000000000001231deb6f5749ef6ce6943a275a1d3e7486f4eae000000000000000000000000000000000000000000000000000416edef1601be00000000000000000000000000000000000000000000000000000000000000000000000000000000000000002530b0726c0e1010a959bd8b871a6a5d6337144a00000000000000000000000000000000000000000000000000038589602234000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000007f544a44c00000000000000000000000000e6b738da243e8fa2a0ed5915645789add5de51520000000000000000000000000000000000000000000000000000000000000304ae32859000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000200d5be449db76561668bcdebae06af544100878f4a7c837d5005376b2130970ffe000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011f111f111f111f111f111f111f111f111f111f10000000000000000000000000000000000000000000000000003858960223400000000000000000000000000000000000000000000000000000416edef1601be00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000572656c6179000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f6d6574616d61736b2d6272696467650000000000000000000000000000000000c45d371dd67d649fd267884cbce215e86bd1e238762272233e1115434d4b81212bec26146dba6152a06660b05709afa0cd620b81d9523ef185f77029e77d409f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000041c0c872c4ec6e813064b02935cffa5fcb830830e2e5477d0c3acf191e61d350dd1dfbb9bf2d42c7ea7dc33cebbc4f987cee7e40c8e1c3be0bbf616033086b97591b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e5674b4172b155f9b57384a01825ca73236e148696553d6b54dce697b2c5abd10653f12d2032aea201bbf007b0dfbd66079fc4c539ca363fb1f0446083f72c6f1c",
-          "gasLimit": 212469
-      },
-      "estimatedProcessingTimeInSeconds": 3
+      "bridges": ["relay (via LiFi)"],
+      "protocols": ["relay (via LiFi)"],
+      "steps": [
+        {
+          "action": "bridge",
+          "srcChainId": 1,
+          "destChainId": 1151111081099710,
+          "protocol": {
+            "name": "relay",
+            "displayName": "Relay",
+            "icon": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/relay.svg"
+          },
+          "srcAsset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 1,
+            "assetId": "eip155:1/slip44:60",
+            "symbol": "ETH",
+            "decimals": 18,
+            "name": "Ethereum",
+            "coingeckoId": "ethereum",
+            "aggregators": [],
+            "occurrences": 100,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+            "metadata": {
+              "honeypotStatus": {},
+              "isContractVerified": false,
+              "erc20Permit": false,
+              "description": {
+                "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
+                "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
+                "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
+                "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
+              },
+              "createdAt": "2023-10-31T22:41:58.553Z"
+            }
+          },
+          "destAsset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 1151111081099710,
+            "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+            "symbol": "SOL",
+            "decimals": 9,
+            "name": "SOL",
+            "aggregators": [],
+            "occurrences": 100,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+            "metadata": {}
+          },
+          "srcAmount": "991250000000000",
+          "destAmount": "16557000"
+        }
+      ],
+      "priceData": {
+        "totalFromAmountUsd": "2.5662399999999996",
+        "totalToAmountUsd": "2.5080543599999996",
+        "priceImpact": "0.022673498971257578"
+      }
+    },
+    "trade": {
+      "chainId": 1,
+      "to": "0x0439e60F02a8900a951603950d8D4527f400C3f1",
+      "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+      "value": "0x38d7ea4c68000",
+      "data": "0x3ce33bff0000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000038d7ea4c6800000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000d6c6966694164617074657256320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004600000000000000000000000001231deb6f5749ef6ce6943a275a1d3e7486f4eae0000000000000000000000001231deb6f5749ef6ce6943a275a1d3e7486f4eae000000000000000000000000000000000000000000000000000416edef1601be00000000000000000000000000000000000000000000000000000000000000000000000000000000000000002530b0726c0e1010a959bd8b871a6a5d6337144a00000000000000000000000000000000000000000000000000038589602234000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000007f544a44c00000000000000000000000000e6b738da243e8fa2a0ed5915645789add5de51520000000000000000000000000000000000000000000000000000000000000304ae32859000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000200d5be449db76561668bcdebae06af544100878f4a7c837d5005376b2130970ffe000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011f111f111f111f111f111f111f111f111f111f10000000000000000000000000000000000000000000000000003858960223400000000000000000000000000000000000000000000000000000416edef1601be00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000572656c6179000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f6d6574616d61736b2d6272696467650000000000000000000000000000000000c45d371dd67d649fd267884cbce215e86bd1e238762272233e1115434d4b81212bec26146dba6152a06660b05709afa0cd620b81d9523ef185f77029e77d409f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000041c0c872c4ec6e813064b02935cffa5fcb830830e2e5477d0c3acf191e61d350dd1dfbb9bf2d42c7ea7dc33cebbc4f987cee7e40c8e1c3be0bbf616033086b97591b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e5674b4172b155f9b57384a01825ca73236e148696553d6b54dce697b2c5abd10653f12d2032aea201bbf007b0dfbd66079fc4c539ca363fb1f0446083f72c6f1c",
+      "gasLimit": 212469
+    },
+    "estimatedProcessingTimeInSeconds": 3
   },
   {
-      "quote": {
-          "bridgeId": "lifi",
-          "requestId": "0x66b6f31e9a617cdfd0c77f510e489dbcfab41cf94bc546ea97876dc8cf9e8543",
-          "aggregator": "lifi",
-          "srcChainId": 1,
-          "srcTokenAmount": "991250000000000",
-          "srcAsset": {
-              "address": "0x0000000000000000000000000000000000000000",
-              "chainId": 1,
-              "assetId": "eip155:1/slip44:60",
-              "symbol": "ETH",
-              "decimals": 18,
-              "name": "Ethereum",
-              "coingeckoId": "ethereum",
-              "aggregators": [],
-              "occurrences": 100,
-              "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
-              "metadata": {
-                  "honeypotStatus": {},
-                  "isContractVerified": false,
-                  "erc20Permit": false,
-                  "description": {
-                      "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
-                      "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
-                      "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
-                      "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
-                  },
-                  "createdAt": "2023-10-31T22:41:58.553Z"
+    "quote": {
+      "bridgeId": "lifi",
+      "requestId": "0x66b6f31e9a617cdfd0c77f510e489dbcfab41cf94bc546ea97876dc8cf9e8543",
+      "aggregator": "lifi",
+      "srcChainId": 1,
+      "srcTokenAmount": "991250000000000",
+      "srcAsset": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "chainId": 1,
+        "assetId": "eip155:1/slip44:60",
+        "symbol": "ETH",
+        "decimals": 18,
+        "name": "Ethereum",
+        "coingeckoId": "ethereum",
+        "aggregators": [],
+        "occurrences": 100,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "metadata": {
+          "honeypotStatus": {},
+          "isContractVerified": false,
+          "erc20Permit": false,
+          "description": {
+            "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
+            "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
+            "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
+            "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
+          },
+          "createdAt": "2023-10-31T22:41:58.553Z"
+        },
+        "price": "2563.77"
+      },
+      "destChainId": 1151111081099710,
+      "destTokenAmount": "12252264",
+      "destAsset": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "chainId": 1151111081099710,
+        "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+        "symbol": "SOL",
+        "decimals": 9,
+        "name": "SOL",
+        "aggregators": [],
+        "occurrences": 100,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+        "metadata": {},
+        "price": "151.21"
+      },
+      "feeData": {
+        "metabridge": {
+          "amount": "8750000000000",
+          "asset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 1,
+            "assetId": "eip155:1/slip44:60",
+            "symbol": "ETH",
+            "decimals": 18,
+            "name": "Ethereum",
+            "coingeckoId": "ethereum",
+            "aggregators": [],
+            "occurrences": 100,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+            "metadata": {
+              "honeypotStatus": {},
+              "isContractVerified": false,
+              "erc20Permit": false,
+              "description": {
+                "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
+                "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
+                "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
+                "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
               },
-              "price": "2563.77"
-          },
-          "destChainId": 1151111081099710,
-          "destTokenAmount": "12252264",
-          "destAsset": {
-              "address": "0x0000000000000000000000000000000000000000",
-              "chainId": 1151111081099710,
-              "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
-              "symbol": "SOL",
-              "decimals": 9,
-              "name": "SOL",
-              "aggregators": [],
-              "occurrences": 100,
-              "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
-              "metadata": {},
-              "price": "151.21"
-          },
-          "feeData": {
-              "metabridge": {
-                  "amount": "8750000000000",
-                  "asset": {
-                      "address": "0x0000000000000000000000000000000000000000",
-                      "chainId": 1,
-                      "assetId": "eip155:1/slip44:60",
-                      "symbol": "ETH",
-                      "decimals": 18,
-                      "name": "Ethereum",
-                      "coingeckoId": "ethereum",
-                      "aggregators": [],
-                      "occurrences": 100,
-                      "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
-                      "metadata": {
-                          "honeypotStatus": {},
-                          "isContractVerified": false,
-                          "erc20Permit": false,
-                          "description": {
-                              "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
-                              "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
-                              "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
-                              "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
-                          },
-                          "createdAt": "2023-10-31T22:41:58.553Z"
-                      },
-                      "price": "2563.77"
-                  }
-              }
-          },
-          "bridges": [
-              "mayan (via LiFi)"
-          ],
-          "protocols": [
-              "mayan (via LiFi)"
-          ],
-          "steps": [
-              {
-                  "action": "bridge",
-                  "srcChainId": 1,
-                  "destChainId": 1151111081099710,
-                  "protocol": {
-                      "name": "mayan",
-                      "displayName": "Mayan (Swift)",
-                      "icon": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/mayan.svg"
-                  },
-                  "srcAsset": {
-                      "address": "0x0000000000000000000000000000000000000000",
-                      "chainId": 1,
-                      "assetId": "eip155:1/slip44:60",
-                      "symbol": "ETH",
-                      "decimals": 18,
-                      "name": "Ethereum",
-                      "coingeckoId": "ethereum",
-                      "aggregators": [],
-                      "occurrences": 100,
-                      "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
-                      "metadata": {
-                          "honeypotStatus": {},
-                          "isContractVerified": false,
-                          "erc20Permit": false,
-                          "description": {
-                              "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
-                              "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
-                              "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
-                              "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
-                          },
-                          "createdAt": "2023-10-31T22:41:58.553Z"
-                      }
-                  },
-                  "destAsset": {
-                      "address": "0x0000000000000000000000000000000000000000",
-                      "chainId": 1151111081099710,
-                      "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
-                      "symbol": "SOL",
-                      "decimals": 9,
-                      "name": "SOL",
-                      "aggregators": [],
-                      "occurrences": 100,
-                      "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
-                      "metadata": {}
-                  },
-                  "srcAmount": "991250000000000",
-                  "destAmount": "12252264"
-              }
-          ],
-          "priceData": {
-              "totalFromAmountUsd": "2.5662399999999996",
-              "totalToAmountUsd": "1.85597295072",
-              "priceImpact": "0.2767734308872123"
+              "createdAt": "2023-10-31T22:41:58.553Z"
+            },
+            "price": "2563.77"
           }
+        }
       },
-      "trade": {
-          "chainId": 1,
-          "to": "0x0439e60F02a8900a951603950d8D4527f400C3f1",
-          "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
-          "value": "0x38d7ea4c68000",
-          "data": "0x3ce33bff0000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000038d7ea4c6800000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000d6c6966694164617074657256320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005a00000000000000000000000001231deb6f5749ef6ce6943a275a1d3e7486f4eae0000000000000000000000001231deb6f5749ef6ce6943a275a1d3e7486f4eae000000000000000000000000000000000000000000000000000416edef1601be00000000000000000000000000000000000000000000000000000000000000000000000000000000000000002530b0726c0e1010a959bd8b871a6a5d6337144a00000000000000000000000000000000000000000000000000038589602234000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000007f544a44c00000000000000000000000000e6b738da243e8fa2a0ed5915645789add5de51520000000000000000000000000000000000000000000000000000000000000444b621b03200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000200215018b1655629eab88335e602c3c23d931792cb8a716c0eabdd9b480fe7798b000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011f111f111f111f111f111f111f111f111f111f10000000000000000000000000000000000000000000000000003858960223400000000000000000000000000000000000000000000000000000416edef1601be0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000056d6179616e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f6d6574616d61736b2d62726964676500000000000000000000000000000000002bec26146dba6152a06660b05709afa0cd620b81d9523ef185f77029e77d409f000000000000000000000000c38e4e6a15593f908255214653d3d947ca1c2338000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000001a4b866e17300000000000000000000000027ffa2cc5417dda8653147ab989953e84debd5a60000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000012949b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005b0f00000000000000000000000000000000000000000000000000000000000083c000000000000000000000000000000000000000000000000000000000685166e72bec26146dba6152a06660b05709afa0cd620b81d9523ef185f77029e77d409f00000000000000000000000000000000000000000000000000000000000000011e8c4fab8994494c8f1e5c1287445b2917d60c43c79aa959162f5d6000598d32000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000029bff0407e6370c70b75b798958aefa17734613ea184116f86afbb97178dceecc000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000023d16dc25ea0b9fdc1b9679d213a0b3da0114770bb33aca3b79098fb9aaa9203548e221b8abb4ddf487092b3291ab4383386626e99baf994f763b019d07894511c",
-          "gasLimit": 256636
-      },
-      "estimatedProcessingTimeInSeconds": 10
+      "bridges": ["mayan (via LiFi)"],
+      "protocols": ["mayan (via LiFi)"],
+      "steps": [
+        {
+          "action": "bridge",
+          "srcChainId": 1,
+          "destChainId": 1151111081099710,
+          "protocol": {
+            "name": "mayan",
+            "displayName": "Mayan (Swift)",
+            "icon": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/mayan.svg"
+          },
+          "srcAsset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 1,
+            "assetId": "eip155:1/slip44:60",
+            "symbol": "ETH",
+            "decimals": 18,
+            "name": "Ethereum",
+            "coingeckoId": "ethereum",
+            "aggregators": [],
+            "occurrences": 100,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+            "metadata": {
+              "honeypotStatus": {},
+              "isContractVerified": false,
+              "erc20Permit": false,
+              "description": {
+                "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
+                "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
+                "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
+                "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
+              },
+              "createdAt": "2023-10-31T22:41:58.553Z"
+            }
+          },
+          "destAsset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 1151111081099710,
+            "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+            "symbol": "SOL",
+            "decimals": 9,
+            "name": "SOL",
+            "aggregators": [],
+            "occurrences": 100,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+            "metadata": {}
+          },
+          "srcAmount": "991250000000000",
+          "destAmount": "12252264"
+        }
+      ],
+      "priceData": {
+        "totalFromAmountUsd": "2.5662399999999996",
+        "totalToAmountUsd": "1.85597295072",
+        "priceImpact": "0.2767734308872123"
+      }
+    },
+    "trade": {
+      "chainId": 1,
+      "to": "0x0439e60F02a8900a951603950d8D4527f400C3f1",
+      "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+      "value": "0x38d7ea4c68000",
+      "data": "0x3ce33bff0000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000038d7ea4c6800000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000d6c6966694164617074657256320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005a00000000000000000000000001231deb6f5749ef6ce6943a275a1d3e7486f4eae0000000000000000000000001231deb6f5749ef6ce6943a275a1d3e7486f4eae000000000000000000000000000000000000000000000000000416edef1601be00000000000000000000000000000000000000000000000000000000000000000000000000000000000000002530b0726c0e1010a959bd8b871a6a5d6337144a00000000000000000000000000000000000000000000000000038589602234000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000007f544a44c00000000000000000000000000e6b738da243e8fa2a0ed5915645789add5de51520000000000000000000000000000000000000000000000000000000000000444b621b03200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000200215018b1655629eab88335e602c3c23d931792cb8a716c0eabdd9b480fe7798b000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011f111f111f111f111f111f111f111f111f111f10000000000000000000000000000000000000000000000000003858960223400000000000000000000000000000000000000000000000000000416edef1601be0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000056d6179616e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f6d6574616d61736b2d62726964676500000000000000000000000000000000002bec26146dba6152a06660b05709afa0cd620b81d9523ef185f77029e77d409f000000000000000000000000c38e4e6a15593f908255214653d3d947ca1c2338000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000001a4b866e17300000000000000000000000027ffa2cc5417dda8653147ab989953e84debd5a60000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000012949b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005b0f00000000000000000000000000000000000000000000000000000000000083c000000000000000000000000000000000000000000000000000000000685166e72bec26146dba6152a06660b05709afa0cd620b81d9523ef185f77029e77d409f00000000000000000000000000000000000000000000000000000000000000011e8c4fab8994494c8f1e5c1287445b2917d60c43c79aa959162f5d6000598d32000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000029bff0407e6370c70b75b798958aefa17734613ea184116f86afbb97178dceecc000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000023d16dc25ea0b9fdc1b9679d213a0b3da0114770bb33aca3b79098fb9aaa9203548e221b8abb4ddf487092b3291ab4383386626e99baf994f763b019d07894511c",
+      "gasLimit": 256636
+    },
+    "estimatedProcessingTimeInSeconds": 10
   },
   {
-      "quote": {
-          "bridgeId": "rango",
-          "requestId": "8ff43c40-7e5a-4494-b066-7f7f080bbf5b",
-          "aggregator": "rango",
-          "srcChainId": 1,
-          "srcTokenAmount": "1000000000000000",
-          "srcAsset": {
-              "address": "0x0000000000000000000000000000000000000000",
-              "chainId": "1",
-              "assetId": "eip155:1/slip44:60",
-              "symbol": "ETH",
-              "decimals": 18,
-              "name": "Ethereum",
-              "coingeckoId": "ethereum",
-              "aggregators": [],
-              "occurrences": 100,
-              "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
-              "metadata": {
-                  "honeypotStatus": {},
-                  "isContractVerified": false,
-                  "erc20Permit": false,
-                  "description": {
-                      "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
-                      "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
-                      "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
-                      "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
-                  },
-                  "createdAt": "2023-10-31T22:41:58.553Z"
-              }
+    "quote": {
+      "bridgeId": "rango",
+      "requestId": "8ff43c40-7e5a-4494-b066-7f7f080bbf5b",
+      "aggregator": "rango",
+      "srcChainId": 1,
+      "srcTokenAmount": "1000000000000000",
+      "srcAsset": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "chainId": "1",
+        "assetId": "eip155:1/slip44:60",
+        "symbol": "ETH",
+        "decimals": 18,
+        "name": "Ethereum",
+        "coingeckoId": "ethereum",
+        "aggregators": [],
+        "occurrences": 100,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "metadata": {
+          "honeypotStatus": {},
+          "isContractVerified": false,
+          "erc20Permit": false,
+          "description": {
+            "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
+            "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
+            "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
+            "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
           },
-          "destChainId": 1151111081099710,
-          "destTokenAmount": "16531802",
-          "destAsset": {
-              "address": "0x0000000000000000000000000000000000000000",
-              "chainId": "1151111081099710",
-              "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
-              "symbol": "SOL",
-              "decimals": 9,
-              "name": "SOL",
-              "aggregators": [],
-              "occurrences": 100,
-              "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
-              "metadata": {}
-          },
-          "feeData": {
-              "metabridge": {
-                  "amount": "8750000000000",
-                  "asset": {
-                      "address": "0x0000000000000000000000000000000000000000",
-                      "chainId": "1",
-                      "assetId": "eip155:1/slip44:60",
-                      "symbol": "ETH",
-                      "decimals": 18,
-                      "name": "Ethereum",
-                      "coingeckoId": "ethereum",
-                      "aggregators": [],
-                      "occurrences": 100,
-                      "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
-                      "metadata": {
-                          "honeypotStatus": {},
-                          "isContractVerified": false,
-                          "erc20Permit": false,
-                          "description": {
-                              "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
-                              "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
-                              "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
-                              "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
-                          },
-                          "createdAt": "2023-10-31T22:41:58.553Z"
-                      }
-                  }
-              }
-          },
-          "bridges": [
-              "relay"
-          ],
-          "protocols": [
-              "relay"
-          ],
-          "steps": [
-              {
-                  "srcAsset": {
-                      "address": "0x0000000000000000000000000000000000000000",
-                      "chainId": "1",
-                      "assetId": "eip155:1/slip44:60",
-                      "symbol": "ETH",
-                      "decimals": 18,
-                      "name": "Ethereum",
-                      "coingeckoId": "ethereum",
-                      "aggregators": [],
-                      "occurrences": 100,
-                      "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
-                      "metadata": {
-                          "honeypotStatus": {},
-                          "isContractVerified": false,
-                          "erc20Permit": false,
-                          "description": {
-                              "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
-                              "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
-                              "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
-                              "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
-                          },
-                          "createdAt": "2023-10-31T22:41:58.553Z"
-                      }
-                  },
-                  "destAsset": {
-                      "address": "0x0000000000000000000000000000000000000000",
-                      "chainId": "1151111081099710",
-                      "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
-                      "symbol": "SOL",
-                      "decimals": 9,
-                      "name": "SOL",
-                      "aggregators": [],
-                      "occurrences": 100,
-                      "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
-                      "metadata": {}
-                  },
-                  "action": "bridge",
-                  "srcChainId": 1,
-                  "destChainId": 1151111081099710,
-                  "protocol": {
-                      "name": "",
-                      "displayName": "",
-                      "icon": ""
-                  },
-                  "srcAmount": "991250000000000",
-                  "destAmount": "16531802"
-              }
-          ],
-          "priceData": {
-              "totalFromAmountUsd": "2.5662399999999996",
-              "totalToAmountUsd": "2.50423736696",
-              "priceImpact": "0.02416088637072123"
+          "createdAt": "2023-10-31T22:41:58.553Z"
+        }
+      },
+      "destChainId": 1151111081099710,
+      "destTokenAmount": "16531802",
+      "destAsset": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "chainId": "1151111081099710",
+        "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+        "symbol": "SOL",
+        "decimals": 9,
+        "name": "SOL",
+        "aggregators": [],
+        "occurrences": 100,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+        "metadata": {}
+      },
+      "feeData": {
+        "metabridge": {
+          "amount": "8750000000000",
+          "asset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": "1",
+            "assetId": "eip155:1/slip44:60",
+            "symbol": "ETH",
+            "decimals": 18,
+            "name": "Ethereum",
+            "coingeckoId": "ethereum",
+            "aggregators": [],
+            "occurrences": 100,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+            "metadata": {
+              "honeypotStatus": {},
+              "isContractVerified": false,
+              "erc20Permit": false,
+              "description": {
+                "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
+                "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
+                "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
+                "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
+              },
+              "createdAt": "2023-10-31T22:41:58.553Z"
+            }
           }
+        }
       },
-      "trade": {
-          "chainId": 1,
-          "to": "0x0439e60F02a8900a951603950d8D4527f400C3f1",
-          "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
-          "value": "0x38d7ea4c68000",
-          "data": "0x3ce33bff0000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000038d7ea4c6800000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000c72616e676f416461707465720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000050000000000000000000000000069460570c93f9de5e2edbc3052bf10125f0ca22d00000000000000000000000069460570c93f9de5e2edbc3052bf10125f0ca22d000000000000000000000000000000000000000000000000000416edef1601be00000000000000000000000000000000000000000000000000000000000000000000000000000000000000002530b0726c0e1010a959bd8b871a6a5d6337144a00000000000000000000000000000000000000000000000000038589602234000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000007f544a44c00000000000000000000000000e6b738da243e8fa2a0ed5915645789add5de515200000000000000000000000000000000000000000000000000000000000003a414d08fca0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000022000000000000000000000000027ffa2cc5417dda8653147ab989953e84debd5a6000000000000000000000000000000008ff43c407e5a4494b0667f7f080bbf5b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000003842f2f7a37400000000000000000000000000000000000000000000000000000015a30a7fcc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000003e9000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000084d6574614d61736b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000a5f565650890fba1824ee0f21ebbbf660a179934000000000000000000000000a5f565650890fba1824ee0f21ebbbf660a1799340000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003842f2f7a374000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000002400000000ecbb0b0994407a21e4d3ec7a389ec3eb84be85e069468d429e16b5b1af56c654000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007b7d79602baf98213b3bc7d39f6a71fe05cfc72ff00a80538dda519b896fcac10cf5894cf52cc189730e59090f895f9c15bbcbb34a5cf6265a880279981d7521b",
-          "gasLimit": 225518
-      },
-      "estimatedProcessingTimeInSeconds": 135
+      "bridges": ["relay"],
+      "protocols": ["relay"],
+      "steps": [
+        {
+          "srcAsset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": "1",
+            "assetId": "eip155:1/slip44:60",
+            "symbol": "ETH",
+            "decimals": 18,
+            "name": "Ethereum",
+            "coingeckoId": "ethereum",
+            "aggregators": [],
+            "occurrences": 100,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+            "metadata": {
+              "honeypotStatus": {},
+              "isContractVerified": false,
+              "erc20Permit": false,
+              "description": {
+                "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
+                "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
+                "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
+                "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
+              },
+              "createdAt": "2023-10-31T22:41:58.553Z"
+            }
+          },
+          "destAsset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": "1151111081099710",
+            "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+            "symbol": "SOL",
+            "decimals": 9,
+            "name": "SOL",
+            "aggregators": [],
+            "occurrences": 100,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+            "metadata": {}
+          },
+          "action": "bridge",
+          "srcChainId": 1,
+          "destChainId": 1151111081099710,
+          "protocol": {
+            "name": "",
+            "displayName": "",
+            "icon": ""
+          },
+          "srcAmount": "991250000000000",
+          "destAmount": "16531802"
+        }
+      ],
+      "priceData": {
+        "totalFromAmountUsd": "2.5662399999999996",
+        "totalToAmountUsd": "2.50423736696",
+        "priceImpact": "0.02416088637072123"
+      }
+    },
+    "trade": {
+      "chainId": 1,
+      "to": "0x0439e60F02a8900a951603950d8D4527f400C3f1",
+      "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+      "value": "0x38d7ea4c68000",
+      "data": "0x3ce33bff0000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000038d7ea4c6800000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000c72616e676f416461707465720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000050000000000000000000000000069460570c93f9de5e2edbc3052bf10125f0ca22d00000000000000000000000069460570c93f9de5e2edbc3052bf10125f0ca22d000000000000000000000000000000000000000000000000000416edef1601be00000000000000000000000000000000000000000000000000000000000000000000000000000000000000002530b0726c0e1010a959bd8b871a6a5d6337144a00000000000000000000000000000000000000000000000000038589602234000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000007f544a44c00000000000000000000000000e6b738da243e8fa2a0ed5915645789add5de515200000000000000000000000000000000000000000000000000000000000003a414d08fca0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000022000000000000000000000000027ffa2cc5417dda8653147ab989953e84debd5a6000000000000000000000000000000008ff43c407e5a4494b0667f7f080bbf5b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000003842f2f7a37400000000000000000000000000000000000000000000000000000015a30a7fcc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000003e9000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000084d6574614d61736b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000a5f565650890fba1824ee0f21ebbbf660a179934000000000000000000000000a5f565650890fba1824ee0f21ebbbf660a1799340000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003842f2f7a374000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000002400000000ecbb0b0994407a21e4d3ec7a389ec3eb84be85e069468d429e16b5b1af56c654000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007b7d79602baf98213b3bc7d39f6a71fe05cfc72ff00a80538dda519b896fcac10cf5894cf52cc189730e59090f895f9c15bbcbb34a5cf6265a880279981d7521b",
+      "gasLimit": 225518
+    },
+    "estimatedProcessingTimeInSeconds": 135
   }
 ]

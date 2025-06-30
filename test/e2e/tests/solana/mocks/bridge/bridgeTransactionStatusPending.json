@@ -1,11 +1,11 @@
 {
-  "status": "PENDING",
   "bridge": "relay",
-  "srcChain": {
-      "chainId": 1151111081099710,
-      "txHash": "3MW8Djt8vVHTzkSpYTXRyf94LKaFcZRxoJ6RkvZoGq36izg3TeagJJ4YoEecjiLjuZEsmH5sB2voZUC1pvRgQwMZ"
-  },
   "destChain": {
-      "chainId": 1
-  }
+    "chainId": 1
+  },
+  "srcChain": {
+    "chainId": 1151111081099710,
+    "txHash": "3MW8Djt8vVHTzkSpYTXRyf94LKaFcZRxoJ6RkvZoGq36izg3TeagJJ4YoEecjiLjuZEsmH5sB2voZUC1pvRgQwMZ"
+  },
+  "status": "PENDING"
 }

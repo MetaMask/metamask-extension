@@ -9,10 +9,10 @@ export type SwapOptions = {
 };
 
 export type UnifiedSwapAndBridgeReviewOptions = {
-  fromChain: string,
-  toChain: string,
-  tokenFrom: string,
-  tokenTo: string,
+  fromChain: string;
+  toChain: string;
+  tokenFrom: string;
+  tokenTo: string;
   swapToAmount: string;
   swapFromAmount: string;
   swapToConversionRate?: string;
@@ -183,27 +183,31 @@ class SwapPage {
   }
 
   async createSwap(options: UnifiedSwapAndBridgeReviewOptions) {
-      await this.driver.clickElement(this.bridgeSourceButton);
-      await this.driver.clickElement({
-        text: options.tokenFrom,
-        css: this.fromToText,
-      });
-      await this.driver.clickElement(this.bridgeDestinationButton);
-      if (options.fromChain !== options.toChain) {
-        await this.driver.waitForSelector(this.bridgeTo(options.toChain));
-        await this.driver.clickElement(this.bridgeTo(options.toChain));
-      }
-      await this.driver.clickElement({
-        text: options.tokenTo,
-        css: this.fromToText,
-      });
-      await this.driver.waitForSelector(this.reviewFromAmount);
-    //}
-      await this.driver.fill(this.reviewFromAmount, options.swapFromAmount.toString());
+    await this.driver.clickElement(this.bridgeSourceButton);
+    await this.driver.clickElement({
+      text: options.tokenFrom,
+      css: this.fromToText,
+    });
+    await this.driver.clickElement(this.bridgeDestinationButton);
+    if (options.fromChain !== options.toChain) {
+      await this.driver.waitForSelector(this.bridgeTo(options.toChain));
+      await this.driver.clickElement(this.bridgeTo(options.toChain));
+    }
+    await this.driver.clickElement({
+      text: options.tokenTo,
+      css: this.fromToText,
+    });
+    await this.driver.waitForSelector(this.reviewFromAmount);
+    // }
+    await this.driver.fill(
+      this.reviewFromAmount,
+      options.swapFromAmount.toString(),
+    );
   }
 
   async reviewSolanaQuote(options: UnifiedSwapAndBridgeReviewOptions) {
-    if ( options.fromChain !== options.toChain) { // Cross chain swap
+    if (options.fromChain !== options.toChain) {
+      // Cross chain swap
       await this.driver.waitForSelector({
         text: options.fromChain,
         tag: 'p',
@@ -213,12 +217,16 @@ class SwapPage {
         tag: 'p',
       });
     }
+
     await this.driver.waitForSelector(this.submitSwapButton);
     const fromAmount = await this.driver.findElement(this.reviewFromAmount);
     const fromAmountText = await fromAmount.getAttribute('value');
+
     assert.equal(fromAmountText, options.swapFromAmount);
     const toAmount = await this.driver.findElement(this.reviewToAmount);
     const toAmountText = await toAmount.getAttribute('value');
+    console.log('toAmount', options.swapToAmount);
+    console.log('toAmountText', toAmountText);
     assert.equal(toAmountText, options.swapToAmount);
     await this.driver.waitForSelector({
       text: `1 ${options.tokenFrom} = ${options.swapToConversionRate} ${options.tokenTo}`,

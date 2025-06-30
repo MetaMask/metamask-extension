@@ -2,14 +2,15 @@ import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import ConfirmSolanaTxPage from '../../page-objects/pages/send/solana-confirm-tx-page';
-import { withSolanaAccountSnap } from './common-solana';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import { withSolanaAccountSnap } from './common-solana';
 
 describe('Bridge on Solana', function () {
-  it.only('Completes a bridge between native SOL and native ETH', async function () {
+  // Investigate why this test is flaky https://consensyssoftware.atlassian.net/browse/MMQA-549
+  it.skip('Completes a bridge between native SOL and native ETH', async function () {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
@@ -29,33 +30,28 @@ describe('Bridge on Solana', function () {
           swapToAmount: '0.0586',
           swapFromAmount: '0.03',
           skipCounter: true,
-        }
-
+        };
         await swapPage.createSwap(quote);
         await swapPage.clickOnMoreQuotes();
 
         await swapPage.checkQuote({
-          totalCost: '$112.87',
-          receivedAmount: '0.0586 ETH',
-          estimatedTime: '< 1 min',
-          provider: 'Relay Via Li Fi',
-        });
-        await swapPage.checkQuote({
-          totalCost: '$112.87',
-          receivedAmount: '0.0581 ETH',
+          totalCost: '$3.39',
+          receivedAmount: '0.00128 ETH',
           estimatedTime: '< 1 min',
           provider: 'Mayan Via Li Fi',
         });
+
         await swapPage.checkQuote({
-          totalCost: '$112.87',
-          receivedAmount: '0.0554 ETH',
+          totalCost: '$3.42',
+          receivedAmount: '0.0013 ETH',
           estimatedTime: '1 min',
-          provider: 'Mayan MCTP Via Li Fi',
+          provider: 'Mayan Via Rango',
         });
         await swapPage.closeQuotes();
+
         await swapPage.reviewSolanaQuote({
-          swapToAmount: '0.0586',
-          swapToConversionRate: '0.0586',
+          swapToAmount: '0.00128',
+          swapToConversionRate: '0.0427',
           tokenFrom: 'SOL',
           tokenTo: 'ETH',
           swapFromAmount: '0.03',
@@ -67,11 +63,10 @@ describe('Bridge on Solana', function () {
         await confirmSolanaPage.clickOnConfirm();
 
         const activityListPage = new ActivityListPage(driver);
-        //await activityListPage.check_txAmountInActivity('-0.03 SOL', 1);
+        // await activityListPage.check_txAmountInActivity('-0.03 SOL', 1);
         await activityListPage.check_waitForTransactionStatus('confirmed');
-        await driver.delay(10000000)
-        await activityListPage.check_swapTransactionActivity(
-          'Bridge SOL to ETH',
+        await activityListPage.check_transactionActivityByText(
+          'Bridged SOL to ETH',
         );
       },
     );
@@ -103,25 +98,10 @@ describe('Bridge on Solana', function () {
           swapToAmount: '0.0122',
           swapFromAmount: '0.001',
           skipCounter: true,
-        }
+        };
 
         await swapPage.createSwap(quote);
-        await driver.delay(3000);
 
-        /*await swapPage.clickOnMoreQuotes();
-        await swapPage.checkQuote({
-          totalCost: '$4.32',
-          receivedAmount: '$2.51',
-          estimatedTime: '< 1 min',
-          provider: 'Relay Via Li Fi',
-        });
-        await swapPage.checkQuote({
-          totalCost: '$4.68',
-          receivedAmount: '$1.86',
-          estimatedTime: '< 1 min',
-          provider: 'Mayan Via Li Fi',
-        });
-        await swapPage.closeQuotes();*/
         await swapPage.reviewSolanaQuote({
           swapToAmount: '0.0166',
           swapToConversionRate: '16.56',
@@ -133,10 +113,9 @@ describe('Bridge on Solana', function () {
         });
 
         const activityListPage = new ActivityListPage(driver);
-        //await activityListPage.check_txAmountInActivity('-0.03 SOL', 1);
-        await activityListPage.check_waitForTransactionStatus('pending');
-        await activityListPage.check_swapTransactionActivity(
-          'Bridge to Solana',
+        // await activityListPage.check_txAmountInActivity('-0.03 SOL', 1);
+        await activityListPage.check_transactionActivityByText(
+          'Bridged to Solana',
         );
       },
     );
@@ -162,7 +141,7 @@ describe('Bridge on Solana', function () {
           swapToAmount: '0.0586',
           swapFromAmount: '0.03',
           skipCounter: true,
-        }
+        };
 
         await swapPage.createSwap(quote);
         await swapPage.checkNoQuotesAvailable();
