@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import {
   AlignItems,
@@ -11,17 +13,15 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { AppSliceState } from '../../../ducks/app/app';
 import { useEIP7702Networks } from '../../../pages/confirmations/hooks/useEIP7702Networks';
 import { SmartContractAccountToggle } from '../smart-contract-account-toggle';
 import Preloader from '../../ui/icon/preloader';
 
-type SmartContractAccountToggleSectionProps = {
-  address: string;
-};
-
-export const SmartContractAccountToggleSection = ({
-  address,
-}: SmartContractAccountToggleSectionProps) => {
+export const SmartContractAccountToggleSection = () => {
+  const address = useSelector(
+    (state: AppSliceState) => state.appState.accountDetailsAddress,
+  );
   const t = useI18nContext();
   const { network7702List, pending } = useEIP7702Networks(address);
 
@@ -45,7 +45,7 @@ export const SmartContractAccountToggleSection = ({
               <SmartContractAccountToggle
                 key={network.chainIdHex}
                 networkConfig={network}
-                address={address}
+                address={address as Hex}
               />
             ))}
           </Box>

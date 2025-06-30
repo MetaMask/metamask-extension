@@ -79,10 +79,7 @@ const render = (stateOverride = {}) => {
     ...mockState,
     ...stateOverride,
   });
-  return renderWithProvider(
-    <SmartContractAccountToggleSection address={mockAddress} />,
-    store,
-  );
+  return renderWithProvider(<SmartContractAccountToggleSection />, store);
 };
 
 describe('SmartContractAccountToggleSection', () => {
