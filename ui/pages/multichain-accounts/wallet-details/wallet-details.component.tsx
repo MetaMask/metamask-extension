@@ -8,7 +8,12 @@ import {
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { CaipChainId } from '@metamask/utils';
-import { BtcScope, SolScope } from '@metamask/keyring-api';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  BtcScope,
+  ///: END:ONLY_INCLUDE_IF
+  SolScope,
+} from '@metamask/keyring-api';
 import {
   Box,
   ButtonIcon,
