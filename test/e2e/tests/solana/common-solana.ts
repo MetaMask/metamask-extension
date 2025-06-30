@@ -1927,57 +1927,13 @@ export async function mockTokenApiEth(mockServer: Mockttp) {
 
 export async function mockGetTransactionsAccountApi(mockServer: Mockttp) {
   console.log('mockGetTransactionsAccountApi');
-  const resp = {
-    data: [
-      {
-        hash: '0xc0937be9c13eabd55cf89e4bc615a62e3cce9d381b09ebee041eef1621a60b23',
-        timestamp: '2025-06-30T08:56:35.000Z',
-        chainId: 1,
-        accountId: 'eip155:1:0x7c4a5305289c662dae15def3ee7843ff17037c03',
-        blockNumber: 22816179,
-        blockHash:
-          '0xe7920e4474556d05dabe2db5f563fc5a6c55d22de098b139ff6d47f335539f8c',
-        gas: 354935,
-        gasUsed: 268130,
-        gasPrice: '822431507',
-        effectiveGasPrice: '822431507',
-        nonce: 34966,
-        cumulativeGasUsed: 8184667,
-        methodId: '0x488c3591',
-        value: '1356226702007423',
-        to: '0xc38e4e6a15593f908255214653d3d947ca1c2338',
-        from: '0x7c825c6e7e4e1f618ca67e4943cdb41ca00b7f6b',
-        isError: false,
-        valueTransfers: [
-          {
-            from: '0xc38e4e6a15593f908255214653d3d947ca1c2338',
-            to: '0x7c4a5305289c662dae15def3ee7843ff17037c03',
-            amount: '1355819833996821',
-            decimal: 18,
-            transferType: 'internal',
-          },
-        ],
-        logs: [],
-        transactionType: 'GENERIC_CONTRACT_CALL',
-        transactionCategory: 'CONTRACT_CALL',
-        readable: 'Unidentified Transaction',
-      },
-    ],
-    unprocessedNetworks: [],
-    pageInfo: {
-      hasNextPage: true,
-      cursor:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlaXAxNTU6MToweDdjNGE1MzA1Mjg5YzY2MmRhZTE1ZGVmM2VlNzg0M2ZmMTcwMzdjMDMiOnsibGFzdFRpbWVzdGFtcCI6IjIwMjUtMDYtMjBUMTA6NDk6NDcuMDAwWiIsImhhc05leHRQYWdlIjp0cnVlfSwiZWlwMTU1OjEwOjB4N2M0YTUzMDUyODljNjYyZGFlMTVkZWYzZWU3ODQzZmYxNzAzN2MwMyI6eyJsYXN0VGltZXN0YW1wIjoiMjAyNS0wNi0yMFQxMDo0OTo0Ny4wMDBaIiwiaGFzTmV4dFBhZ2UiOnRydWV9LCJlaXAxNTU6MTM3OjB4N2M0YTUzMDUyODljNjYyZGFlMTVkZWYzZWU3ODQzZmYxNzAzN2MwMyI6eyJsYXN0VGltZXN0YW1wIjoiMjAyNS0wNi0yMFQxMDo0OTo0Ny4wMDBaIiwiaGFzTmV4dFBhZ2UiOnRydWV9LCJlaXAxNTU6NDIxNjE6MHg3YzRhNTMwNTI4OWM2NjJkYWUxNWRlZjNlZTc4NDNmZjE3MDM3YzAzIjp7Imxhc3RUaW1lc3RhbXAiOiIyMDI1LTA2LTIwVDEwOjQ5OjQ3LjAwMFoiLCJoYXNOZXh0UGFnZSI6dHJ1ZX0sImVpcDE1NTo1NjoweDdjNGE1MzA1Mjg5YzY2MmRhZTE1ZGVmM2VlNzg0M2ZmMTcwMzdjMDMiOnsibGFzdFRpbWVzdGFtcCI6IjIwMjUtMDYtMjBUMTA6NDk6NDcuMDAwWiIsImhhc05leHRQYWdlIjp0cnVlfSwiZWlwMTU1OjU5MTQ0OjB4N2M0YTUzMDUyODljNjYyZGFlMTVkZWYzZWU3ODQzZmYxNzAzN2MwMyI6eyJsYXN0VGltZXN0YW1wIjoiMjAyNS0wNi0yMFQxMDo0OTo0Ny4wMDBaIiwiaGFzTmV4dFBhZ2UiOnRydWV9LCJlaXAxNTU6ODQ1MzoweDdjNGE1MzA1Mjg5YzY2MmRhZTE1ZGVmM2VlNzg0M2ZmMTcwMzdjMDMiOnsibGFzdFRpbWVzdGFtcCI6IjIwMjUtMDYtMjBUMTA6NDk6NDcuMDAwWiIsImhhc05leHRQYWdlIjp0cnVlfSwiaWF0IjoxNzUxMjczODE1fQ.FBIajcsSqK28abGE5K793Gp7j0566h4GPqbqh2hEmiQ',
-      count: 50,
-    },
-  };
   const response = await readResponseJsonFile(
     'bridge/transactionsAccountApi.json',
   );
   return await mockServer.forGet(/\/transactions/u).thenCallback(() => {
     return {
       statusCode: 200,
-      json: resp,
+      json: response,
     };
   });
 }

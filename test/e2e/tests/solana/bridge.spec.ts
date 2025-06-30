@@ -10,6 +10,7 @@ import { withSolanaAccountSnap } from './common-solana';
 
 describe('Bridge on Solana', function () {
   // Investigate why this test is flaky https://consensyssoftware.atlassian.net/browse/MMQA-549
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('Completes a bridge between native SOL and native ETH', async function () {
     await withSolanaAccountSnap(
       {
