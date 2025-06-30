@@ -4020,8 +4020,14 @@
   "onboardingSrpInputClearAll": {
     "message": "Clear all"
   },
+  "onboardingSrpInputHideAll": {
+    "message": "Hide all"
+  },
   "onboardingSrpInputPlaceholder": {
     "message": "Add a space between each word and make sure no one is watching."
+  },
+  "onboardingSrpInputShowAll": {
+    "message": "Show all"
   },
   "onekey": {
     "message": "OneKey"
