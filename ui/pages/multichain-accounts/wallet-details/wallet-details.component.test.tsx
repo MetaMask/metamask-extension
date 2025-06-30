@@ -99,7 +99,21 @@ jest.mock('../../../ducks/metamask/metamask', () => ({
 // Consolidated component mocks
 jest.mock('../../../components/component-library', () => ({
   Box: createComponentMock('div'),
-  ButtonIcon: createComponentMock('button'),
+  ButtonIcon: ({
+    children,
+    ariaLabel,
+    ...props
+  }: {
+    children?: React.ReactNode;
+    ariaLabel?: string;
+    [key: string]: unknown;
+  }) => {
+    const buttonProps = { ...props };
+    if (ariaLabel) {
+      buttonProps['aria-label'] = ariaLabel;
+    }
+    return createComponentMock('button')({ children, ...buttonProps });
+  },
   ButtonIconSize: { Sm: 'sm' },
   Icon: createComponentMock('span'),
   IconName: { ArrowLeft: 'arrow-left', ArrowRight: 'arrow-right', Add: 'add' },
