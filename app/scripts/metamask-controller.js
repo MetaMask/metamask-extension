@@ -338,7 +338,11 @@ import { LedgerOffscreenBridge } from './lib/offscreen-bridge/ledger-offscreen-b
 import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
 import { encryptorFactory } from './lib/encryptor-factory';
-import { addDappTransaction, addTransaction } from './lib/transaction/util';
+import {
+  addDappTransaction,
+  addTransaction,
+  addTransactionBatch,
+} from './lib/transaction/util';
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
@@ -3793,6 +3797,14 @@ export default class MetamaskController extends EventEmitter {
         addTransaction(
           this.getAddTransactionRequest({
             transactionParams,
+            transactionOptions,
+            waitForSubmit: false,
+          }),
+        ),
+      addTransactionBatch: (transactionOptions) =>
+        addTransactionBatch(
+          this.getAddTransactionRequest({
+            transactionParams: transactionOptions.transactions[0],
             transactionOptions,
             waitForSubmit: false,
           }),

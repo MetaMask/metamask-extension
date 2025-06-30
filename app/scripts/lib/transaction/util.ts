@@ -1,6 +1,7 @@
 import { EthAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
+  TransactionBatchRequest,
   TransactionController,
   TransactionMeta,
   TransactionParams,
@@ -48,6 +49,10 @@ type BaseAddTransactionRequest = {
 
 type FinalAddTransactionRequest = BaseAddTransactionRequest & {
   transactionOptions: Partial<AddTransactionOptions>;
+};
+
+type addTransactionBatchRequest = BaseAddTransactionRequest & {
+  transactionBatchOptions: TransactionBatchRequest;
 };
 
 export type AddTransactionRequest = FinalAddTransactionRequest & {
@@ -120,6 +125,40 @@ export async function addTransaction(
   return finalTransactionMeta as TransactionMeta;
 }
 
+export async function addTransactionBatch(
+  request: addTransactionBatchRequest,
+): Promise<string> {
+  // await validateSecurity(request);
+
+  const { batchId } = await addTransactionBatchWithController(request);
+
+  // if (!request.waitForSubmit) {
+  //   waitForHash().catch(() => {
+  //     // Not concerned with result.
+  //   });
+
+  //   return transactionMeta as TransactionMeta;
+  // }
+
+  // const transactionHash = await waitForHash();
+
+  const transactionBatch = getTransactionByBatchId(
+    batchId,
+    request.transactionController,
+  );
+
+  console.log('>>>>> transactionBatch', transactionBatch);
+
+  const finalTransactionMeta = getTransactionByHash(
+    transactionBatch?.hash as string,
+    request.transactionController,
+  );
+
+  console.log('>>>>> finalTransactionMeta', finalTransactionMeta);
+
+  return batchId;
+}
+
 async function addTransactionOrUserOperation(
   request: FinalAddTransactionRequest,
 ) {
@@ -154,6 +193,21 @@ async function addTransactionWithController(
   return {
     transactionMeta,
     waitForHash: () => result,
+  };
+}
+
+async function addTransactionBatchWithController(
+  request: addTransactionBatchRequest,
+) {
+  const { transactionController, transactionBatchOptions } = request;
+
+  const { batchId } = await transactionController.addTransactionBatch({
+    ...transactionBatchOptions,
+  });
+
+  return {
+    batchId,
+    // waitForHash: () => result,
   };
 }
 
@@ -215,6 +269,15 @@ export function getTransactionById(
 ) {
   return transactionController.state.transactions.find(
     (tx) => tx.id === transactionId,
+  );
+}
+
+export function getTransactionByBatchId(
+  batchId: string,
+  transactionController: TransactionController,
+) {
+  return transactionController.state.transactions.find(
+    (tx) => tx.batchId === batchId,
   );
 }
 

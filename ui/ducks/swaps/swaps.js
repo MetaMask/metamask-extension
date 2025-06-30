@@ -30,6 +30,7 @@ import {
   fetchSmartTransactionFees,
   cancelSmartTransaction,
   getTransactions,
+  addTransactionBatch,
 } from '../../store/actions';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -1329,40 +1330,66 @@ export const signAndSendTransactions = (
       }
 
       debugLog('Creating approve transaction', approveTxParams);
+      console.log('Creating approve transaction', approveTxParams);
 
       try {
-        finalApproveTxMeta = await addTransactionAndWaitForPublish(
-          { ...approveTxParams, amount: '0x0' },
+        finalApproveTxMeta = await addTransactionBatch(
+          [
+            {
+              params: { ...approveTxParams, value: '0x0' },
+              type: TransactionType.swapApproval,
+            },
+            { params: usedTradeTxParams, type: TransactionType.swap },
+          ],
           {
             networkClientId: globalNetworkClientId,
             requireApproval: false,
-            type: TransactionType.swapApproval,
-            swaps: {
-              hasApproveTx: true,
-              meta: {
-                type: TransactionType.swapApproval,
-                sourceTokenSymbol: sourceTokenInfo.symbol,
-              },
-            },
+            // type: TransactionType.swapApproval,
+            // swaps: {
+            //   hasApproveTx: true,
+            //   meta: {
+            //     type: TransactionType.swapApproval,
+            //     sourceTokenSymbol: sourceTokenInfo.symbol,
+            //   },
+            // },
           },
         );
-        if (
-          [
-            CHAIN_IDS.LINEA_MAINNET,
-            CHAIN_IDS.LINEA_GOERLI,
-            CHAIN_IDS.LINEA_SEPOLIA,
-          ].includes(chainId)
-        ) {
-          debugLog(
-            'Delaying submitting trade tx to make Linea confirmation more likely',
-          );
-          const waitPromise = new Promise((resolve) =>
-            setTimeout(resolve, 5000),
-          );
-          await waitPromise;
-        }
+
+        console.log('batch transaction created', finalApproveTxMeta);
+
+        // finalApproveTxMeta = await addTransactionAndWaitForPublish(
+        //   { ...approveTxParams, amount: '0x0' },
+        //   {
+        //     networkClientId: globalNetworkClientId,
+        //     requireApproval: false,
+        //     type: TransactionType.swapApproval,
+        //     swaps: {
+        //       hasApproveTx: true,
+        //       meta: {
+        //         type: TransactionType.swapApproval,
+        //         sourceTokenSymbol: sourceTokenInfo.symbol,
+        //       },
+        //     },
+        //   },
+        // );
+        // if (
+        //   [
+        //     CHAIN_IDS.LINEA_MAINNET,
+        //     CHAIN_IDS.LINEA_GOERLI,
+        //     CHAIN_IDS.LINEA_SEPOLIA,
+        //   ].includes(chainId)
+        // ) {
+        //   debugLog(
+        //     'Delaying submitting trade tx to make Linea confirmation more likely',
+        //   );
+        //   const waitPromise = new Promise((resolve) =>
+        //     setTimeout(resolve, 5000),
+        //   );
+        //   await waitPromise;
+        // }
       } catch (e) {
         debugLog('Approve transaction failed', e);
+        console.log('Approve transaction failed', e);
         await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
         history.push(SWAPS_ERROR_ROUTE);
         return;
@@ -1370,6 +1397,7 @@ export const signAndSendTransactions = (
     }
 
     debugLog('Creating trade transaction', usedTradeTxParams);
+    console.log('Creating trade transaction', usedTradeTxParams);
 
     try {
       await addTransactionAndWaitForPublish(usedTradeTxParams, {
@@ -1396,6 +1424,7 @@ export const signAndSendTransactions = (
         ? CONTRACT_DATA_DISABLED_ERROR
         : SWAP_FAILED_ERROR;
       debugLog('Trade transaction failed', e);
+      console.log('Trade transaction failed', e);
       await dispatch(setSwapsErrorKey(errorKey));
       history.push(SWAPS_ERROR_ROUTE);
       return;

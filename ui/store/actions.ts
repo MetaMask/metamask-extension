@@ -36,6 +36,7 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
+  TransactionBatchMeta,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -1182,6 +1183,33 @@ export async function addTransactionAndWaitForPublish(
 
   return await submitRequestToBackground<TransactionMeta>(
     'addTransactionAndWaitForPublish',
+    [
+      txParams,
+      {
+        ...options,
+        origin: ORIGIN_METAMASK,
+        actionId,
+      },
+    ],
+  );
+}
+
+export async function addTransactionBatch(
+  txParams: TransactionParams[],
+  options: {
+    method?: string;
+    networkClientId: NetworkClientId;
+    requireApproval?: boolean;
+    swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
+    type?: TransactionType;
+  },
+): Promise<TransactionMeta> {
+  log.debug('background.addTransactionBatch');
+
+  const actionId = generateActionId();
+
+  return await submitRequestToBackground<TransactionBatchMeta>(
+    'addTransactionBatch',
     [
       txParams,
       {
