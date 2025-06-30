@@ -413,6 +413,8 @@ import {
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
+import OAuthService from './services/oauth/oauth-service';
+import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1091,6 +1093,16 @@ export default class MetamaskController extends EventEmitter {
       state: initState.OnboardingController,
     });
 
+    this.oauthService = process.env.SEEDLESS_ONBOARDING_ENABLED
+      ? new OAuthService({
+          env: {
+            googleClientId: process.env.GOOGLE_CLIENT_ID,
+            appleClientId: process.env.APPLE_CLIENT_ID,
+          },
+          webAuthenticator: webAuthenticatorFactory(),
+        })
+      : null;
+
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
     const keyringOverrides = this.opts.overrides?.keyrings;
@@ -1742,6 +1754,7 @@ export default class MetamaskController extends EventEmitter {
           deviceModel,
         };
       },
+      trace,
     });
 
     const isExternalNameSourcesEnabled = () =>
@@ -1907,10 +1920,10 @@ export default class MetamaskController extends EventEmitter {
       InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
       SnapsRegistry: SnapsRegistryInit,
+      CronjobController: CronjobControllerInit,
       SnapController: SnapControllerInit,
       SnapInsightsController: SnapInsightsControllerInit,
       SnapInterfaceController: SnapInterfaceControllerInit,
-      CronjobController: CronjobControllerInit,
       WebSocketService: WebSocketServiceInit,
       PPOMController: PPOMControllerInit,
       TransactionController: TransactionControllerInit,
@@ -1988,6 +2001,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.notificationServicesController.init();
     this.snapController.init();
+    this.cronjobController.init();
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
@@ -6641,8 +6655,8 @@ export default class MetamaskController extends EventEmitter {
           });
         }
       },
-      setEnabledNetworks: (chainIds) => {
-        this.networkOrderController.setEnabledNetworks(chainIds);
+      setEnabledNetworks: (chainIds, namespace) => {
+        this.networkOrderController.setEnabledNetworks(chainIds, namespace);
       },
       getCurrentChainIdForDomain: (domain) => {
         const networkClientId =
@@ -7822,6 +7836,7 @@ export default class MetamaskController extends EventEmitter {
       this.tokenBalancesController.stopAllPolling();
       this.appStateController.clearPollingTokens();
       this.accountTrackerController.stopAllPolling();
+      this.deFiPositionsController.stopAllPolling();
     } catch (error) {
       console.error(error);
     }
@@ -7950,9 +7965,9 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  setEnabledNetworks = (chainIds) => {
+  setEnabledNetworks = (chainIds, networkId) => {
     try {
-      this.networkOrderController.setEnabledNetworks(chainIds);
+      this.networkOrderController.setEnabledNetworks(chainIds, networkId);
     } catch (err) {
       log.error(err.message);
       throw err;

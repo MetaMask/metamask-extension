@@ -389,6 +389,9 @@ class AccountListPage {
     );
     await fileInput.sendKeys(jsonFilePath);
     await this.driver.fill(this.importAccountJsonPasswordInput, password);
+    // needed to mitigate a race condition with the state update
+    // there is no condition we can wait for in the UI
+    await this.driver.delay(largeDelayMs);
     await this.driver.clickElementAndWaitToDisappear(
       this.importAccountConfirmButton,
     );
@@ -775,10 +778,12 @@ class AccountListPage {
   }
 
   async selectAccount(accountLabel: string): Promise<void> {
+    console.log(`Select account with label ${accountLabel} in account list`);
     await this.driver.clickElement({
       css: this.selectAccountSelector,
       text: accountLabel,
     });
+    console.log(`Account with label ${accountLabel} selected`);
   }
 
   async startImportSecretPhrase(srp: string): Promise<void> {
