@@ -178,7 +178,7 @@ export default function OnboardingFlow() {
       newSecretRecoveryPhrase = await dispatch(
         createNewVaultAndSyncWithSocial(password),
       );
-    } else if (firstTimeFlowType === FirstTimeFlowType.create) {
+    } else {
       newSecretRecoveryPhrase = await dispatch(
         createNewVaultAndGetSeedPhrase(password),
       );
@@ -197,7 +197,7 @@ export default function OnboardingFlow() {
       retrievedSecretRecoveryPhrase = await dispatch(
         restoreSocialBackupAndGetSeedPhrase(password),
       );
-    } else if (firstTimeFlowType === FirstTimeFlowType.import) {
+    } else {
       retrievedSecretRecoveryPhrase = await dispatch(
         unlockAndGetSeedPhrase(password),
       );
