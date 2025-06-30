@@ -1,6 +1,8 @@
 import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../../webdriver/driver';
 import { RawLocator } from '../../../common';
+import HomePage from '../../home/homepage';
+import SendTokenPage from '../../send/send-token-page';
 
 class Confirmation {
   protected driver: Driver;
@@ -29,6 +31,20 @@ class Confirmation {
   private rejectAllButton: RawLocator;
 
   private confirmationHeadingTitle: RawLocator;
+
+  private nameSelector = '.name';
+
+  private formComboFieldSelector = '.form-combo-field';
+
+  private formComboFieldInputSelector = '.form-combo-field input';
+
+  private formComboFieldOptionPrimarySelector =
+    '.form-combo-field__option-primary';
+
+  private formComboFieldOptionSecondarySelector =
+    '.form-combo-field__option-secondary';
+
+  private saveButtonSelector = { text: 'Save', tag: 'button' };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -132,6 +148,77 @@ class Confirmation {
       timeout: 5000,
     });
   }
-}
 
+  async expectName(expectedValue: string, isSaved: boolean): Promise<void> {
+    const containerClass = isSaved ? 'name__saved' : 'name__missing';
+    const valueClass = isSaved ? 'name__name' : 'name__value';
+
+    await this.driver.findElement({
+      css: `.${containerClass} .${valueClass}`,
+      text: expectedValue,
+    });
+  }
+
+  async clickName(value: string): Promise<void> {
+    await this.driver.clickElement({
+      css: this.nameSelector,
+      text: value,
+    });
+  }
+
+  async saveName(
+    value: string,
+    name?: string,
+    proposedName?: string,
+  ): Promise<void> {
+    await this.clickName(value);
+    await this.driver.clickElement(this.formComboFieldSelector);
+
+    if (proposedName) {
+      await this.driver.clickElement({
+        css: this.formComboFieldOptionPrimarySelector,
+        text: proposedName,
+      });
+    }
+
+    if (name) {
+      const input = await this.driver.findElement(
+        this.formComboFieldInputSelector,
+      );
+      await input.sendKeys(name);
+      await input.sendKeys(this.driver.Key.ENTER); // Press Enter to close dropdown
+    }
+
+    await this.driver.clickElement(this.saveButtonSelector);
+  }
+
+  async expectProposedNames(
+    value: string,
+    options: [string, string][],
+  ): Promise<void> {
+    await this.clickName(value);
+    await this.driver.clickElement(this.formComboFieldSelector);
+
+    for (const option of options) {
+      await this.driver.findElement({
+        css: this.formComboFieldOptionPrimarySelector,
+        text: option[0],
+      });
+
+      await this.driver.findElement({
+        css: this.formComboFieldOptionSecondarySelector,
+        text: option[1],
+      });
+    }
+  }
+
+  async createWalletSendTransaction(recipientAddress: string): Promise<void> {
+    const homePage = new HomePage(this.driver);
+    await homePage.startSendFlow();
+    const sendToPage = new SendTokenPage(this.driver);
+    await sendToPage.check_pageIsLoaded();
+    await sendToPage.fillRecipient(recipientAddress);
+    await sendToPage.goToNextScreen();
+  }
+}
 export default Confirmation;

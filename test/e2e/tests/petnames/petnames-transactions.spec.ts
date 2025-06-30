@@ -2,7 +2,7 @@ import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import Petnames from './petnames-helpers';
+import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 
 const ADDRESS_MOCK = '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb';
 const ABBREVIATED_ADDRESS_MOCK = '0x0c54F...7AaFb';
@@ -18,43 +18,42 @@ describe('Petnames - Transactions', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        title: this.test?.fullTitle() ?? 'Default Title',
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         const testDapp = new TestDapp(driver);
-        const petnames = new Petnames(driver);
+        const confirmation = new Confirmation(driver);
         await loginWithBalanceValidation(driver);
         await testDapp.openTestDappPage();
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await petnames.expectName(ABBREVIATED_ADDRESS_MOCK, false);
+        await confirmation.expectName(ABBREVIATED_ADDRESS_MOCK, false);
 
         // Test custom name.
-        await petnames.saveName(
+        await confirmation.saveName(
           ABBREVIATED_ADDRESS_MOCK,
           CUSTOM_NAME_MOCK,
           undefined,
         );
-        await driver.clickElementAndWaitForWindowToClose({
-          tag: 'button',
-          text: 'Cancel',
-        });
+        await confirmation.check_pageIsLoaded();
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await petnames.expectName(CUSTOM_NAME_MOCK, true);
+        await confirmation.expectName(CUSTOM_NAME_MOCK, true);
 
         // Test proposed name.
-        await petnames.saveName(
+        await confirmation.saveName(
           CUSTOM_NAME_MOCK,
           undefined,
           PROPOSED_NAME_MOCK,
         );
-        await driver.clickElement({ tag: 'button', text: 'Cancel' });
+        await confirmation.check_pageIsLoaded();
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await petnames.expectName(PROPOSED_NAME_MOCK, true);
+        await confirmation.expectName(PROPOSED_NAME_MOCK, true);
       },
     );
   });
@@ -70,33 +69,36 @@ describe('Petnames - Transactions', function () {
           })
           .withNoNames()
           .build(),
-        title: this.test?.fullTitle() ?? 'Default Title',
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        const petnames = new Petnames(driver);
+        const confirmation = new Confirmation(driver);
         await loginWithBalanceValidation(driver);
-        await petnames.createWalletSendTransaction(ADDRESS_MOCK);
-        await petnames.expectName(ABBREVIATED_ADDRESS_MOCK, false);
+        await confirmation.createWalletSendTransaction(ADDRESS_MOCK);
+        await confirmation.expectName(ABBREVIATED_ADDRESS_MOCK, false);
 
         // Test custom name.
-        await petnames.saveName(
+        await confirmation.saveName(
           ABBREVIATED_ADDRESS_MOCK,
           CUSTOM_NAME_MOCK,
           undefined,
         );
-        await driver.clickElement({ tag: 'button', text: 'Cancel' });
-        await petnames.createWalletSendTransaction(ADDRESS_MOCK);
-        await petnames.expectName(CUSTOM_NAME_MOCK, true);
+
+        await confirmation.check_pageIsLoaded();
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.createWalletSendTransaction(ADDRESS_MOCK);
+        await confirmation.expectName(CUSTOM_NAME_MOCK, true);
 
         // Test proposed name.
-        await petnames.saveName(
+        await confirmation.saveName(
           CUSTOM_NAME_MOCK,
           undefined,
           PROPOSED_NAME_MOCK,
         );
-        await driver.clickElement({ tag: 'button', text: 'Cancel' });
-        await petnames.createWalletSendTransaction(ADDRESS_MOCK);
-        await petnames.expectName(PROPOSED_NAME_MOCK, true);
+        await confirmation.check_pageIsLoaded();
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.createWalletSendTransaction(ADDRESS_MOCK);
+        await confirmation.expectName(PROPOSED_NAME_MOCK, true);
       },
     );
   });

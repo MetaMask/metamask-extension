@@ -7,7 +7,7 @@ import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/inst
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
-import Petnames from './petnames-helpers';
+import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 
 describe('Petnames - Signatures', function (this: Suite) {
   it('can save names for addresses in type 3 signatures', async function () {
@@ -15,27 +15,25 @@ describe('Petnames - Signatures', function (this: Suite) {
       this.test?.fullTitle(),
       async ({ driver }: TestSuiteArguments) => {
         const testDapp = new TestDapp(driver);
-        const petnames = new Petnames(driver);
+        const confirmation = new Confirmation(driver);
         await loginWithBalanceValidation(driver);
         await testDapp.openTestDappPage();
         await testDapp.clickSignTypedDatav3();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await petnames.expectName('0xCD2a3...DD826', false);
-        await petnames.expectName('0xbBbBB...bBBbB', false);
-        await petnames.saveName('0xCD2a3...DD826', undefined, 'test.lens');
-        await petnames.saveName('0xbBbBB...bBBbB', undefined, 'test2.lens');
-        await petnames.expectName('0xCcCCc...ccccC', false);
-        await petnames.saveName('0xCcCCc...ccccC', 'Custom Name');
-        await driver.clickElementAndWaitForWindowToClose({
-          tag: 'button',
-          text: 'Cancel',
-        });
+        await confirmation.expectName('0xCD2a3...DD826', false);
+        await confirmation.expectName('0xbBbBB...bBBbB', false);
+        await confirmation.saveName('0xCD2a3...DD826', undefined, 'test.lens');
+        await confirmation.saveName('0xbBbBB...bBBbB', undefined, 'test2.lens');
+        await confirmation.expectName('0xCcCCc...ccccC', false);
+        await confirmation.saveName('0xCcCCc...ccccC', 'Custom Name');
+        await confirmation.check_pageIsLoaded();
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav3();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await petnames.expectName('test.lens', true);
-        await petnames.expectName('test2.lens', true);
-        await petnames.expectName('Custom Name', true);
+        await confirmation.expectName('test.lens', true);
+        await confirmation.expectName('test2.lens', true);
+        await confirmation.expectName('Custom Name', true);
       },
     );
   });
@@ -45,30 +43,32 @@ describe('Petnames - Signatures', function (this: Suite) {
       this.test?.fullTitle(),
       async ({ driver }: TestSuiteArguments) => {
         const testDapp = new TestDapp(driver);
-        const petnames = new Petnames(driver);
+        const confirmation = new Confirmation(driver);
         await loginWithBalanceValidation(driver);
         await testDapp.openTestDappPage();
         await testDapp.clickSignTypedDatav4();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await petnames.expectName('0xCD2a3...DD826', false);
-        await petnames.expectName('0xDeaDb...DbeeF', false);
-        await petnames.expectName('0xbBbBB...bBBbB', false);
-        await petnames.expectName('0xB0Bda...bEa57', false);
-        await petnames.expectName('0xB0B0b...00000', false);
-        await petnames.saveName('0xCD2a3...DD826', undefined, 'test.lens');
-        await petnames.saveName('0xB0Bda...bEa57', undefined, 'Test Token 2');
-        await petnames.expectName('0xCcCCc...ccccC', false);
-        await petnames.saveName('0xCcCCc...ccccC', 'Custom Name');
-        await driver.clickElementAndWaitForWindowToClose({
-          tag: 'button',
-          text: 'Cancel',
-        });
+        await confirmation.expectName('0xCD2a3...DD826', false);
+        await confirmation.expectName('0xDeaDb...DbeeF', false);
+        await confirmation.expectName('0xbBbBB...bBBbB', false);
+        await confirmation.expectName('0xB0Bda...bEa57', false);
+        await confirmation.expectName('0xB0B0b...00000', false);
+        await confirmation.saveName('0xCD2a3...DD826', undefined, 'test.lens');
+        await confirmation.saveName(
+          '0xB0Bda...bEa57',
+          undefined,
+          'Test Token 2',
+        );
+        await confirmation.expectName('0xCcCCc...ccccC', false);
+        await confirmation.saveName('0xCcCCc...ccccC', 'Custom Name');
+        await confirmation.check_pageIsLoaded();
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav4();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await petnames.expectName('test.lens', true);
-        await petnames.expectName('Test Toke...', true);
-        await petnames.expectName('Custom Name', true);
+        await confirmation.expectName('test.lens', true);
+        await confirmation.expectName('Test Toke...', true);
+        await confirmation.expectName('Custom Name', true);
       },
     );
   });
@@ -82,11 +82,11 @@ describe('Petnames - Signatures', function (this: Suite) {
           .withNoNames()
           .build(),
         testSpecificMock: mockLookupSnap,
-        title: this.test ? this.test.fullTitle() : 'Default Title',
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         const testDapp = new TestDapp(driver);
-        const petnames = new Petnames(driver);
+        const confirmation = new Confirmation(driver);
         await loginWithBalanceValidation(driver);
         await testDapp.openTestDappPage();
         await openTestSnapClickButtonAndInstall(
@@ -96,7 +96,7 @@ describe('Petnames - Signatures', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav4();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await petnames.expectProposedNames('0xCD2a3...DD826', [
+        await confirmation.expectProposedNames('0xCD2a3...DD826', [
           ['test.lens', 'Lens Protocol'],
           ['cd2.1337.test.domain', 'Name Lookup Example Snap'],
         ]);
