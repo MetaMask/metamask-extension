@@ -9,10 +9,10 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { CaipChainId } from '@metamask/utils';
 import {
+  SolScope,
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcScope,
   ///: END:ONLY_INCLUDE_IF
-  SolScope,
 } from '@metamask/keyring-api';
 import {
   Box,
@@ -195,14 +195,22 @@ const WalletDetails = () => {
     chainId: CaipChainId,
   ) => {
     let client;
+
     if (clientType === WalletClientType.Solana) {
       client = solanaClient;
-    } else if (clientType === WalletClientType.Bitcoin) {
-      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+    }
+    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+    else if (clientType === WalletClientType.Bitcoin) {
       client = bitcoinClient;
-      ///: END:ONLY_INCLUDE_IF
-    } else {
+    }
+    ///: END:ONLY_INCLUDE_IF
+    else {
       console.error(`Unsupported client type: ${clientType}`);
+      return;
+    }
+
+    if (!client) {
+      console.error(`Client not available for type: ${clientType}`);
       return;
     }
 
@@ -233,14 +241,15 @@ const WalletDetails = () => {
         WalletClientType.Solana,
         SolScope.Mainnet as CaipChainId,
       );
-    } else if (accountType === WalletClientType.Bitcoin) {
-      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+    }
+    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+    else if (accountType === WalletClientType.Bitcoin) {
       await handleCreateSnapAccount(
         WalletClientType.Bitcoin,
         BtcScope.Mainnet as CaipChainId,
       );
-      ///: END:ONLY_INCLUDE_IF
     }
+    ///: END:ONLY_INCLUDE_IF
     handleCloseModal();
   };
 
