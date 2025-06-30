@@ -135,18 +135,6 @@ PATH_NAME_MAP.set(
   'Account Details QR Code Page',
 );
 
-export const ACCOUNT_DETAILS_REVIEW_SRP_ROUTE = '/account-details/review-srp';
-PATH_NAME_MAP.set(
-  ACCOUNT_DETAILS_REVIEW_SRP_ROUTE,
-  'Account Details Review Secret Recovery Phrase Page',
-);
-
-export const ACCOUNT_DETAILS_CONFIRM_SRP_ROUTE = '/account-details/confirm-srp';
-PATH_NAME_MAP.set(
-  ACCOUNT_DETAILS_CONFIRM_SRP_ROUTE,
-  'Account Details Confirm Secret Recovery Phrase Page',
-);
-
 export const CONFIRM_ADD_SUGGESTED_NFT_ROUTE = '/confirm-add-suggested-nft';
 PATH_NAME_MAP.set(
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
