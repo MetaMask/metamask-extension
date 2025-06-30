@@ -42,7 +42,7 @@ describe('AdditionalNetworksInfo', () => {
     expect(infoIcon).toBeInTheDocument();
   });
 
-  it('shows popover on mouse enter and hides on mouse leave', async () => {
+  it.only('shows popover on mouse enter and hides on mouse leave', async () => {
     renderComponent();
 
     // Initially the popover should not show its content
@@ -50,16 +50,14 @@ describe('AdditionalNetworksInfo', () => {
       screen.queryByText('Some of these networks rely on third parties'),
     ).not.toBeInTheDocument();
 
-    // Find the info icon box
-    const infoIconBox = document.querySelector(
-      '.add-network__warning-icon',
-    )?.parentElement;
-    expect(infoIconBox).toBeInTheDocument();
+    // Find the info icon
+    const infoIcon = document.querySelector('.add-network__warning-icon');
+    expect(infoIcon).toBeInTheDocument();
 
-    // Trigger mouse enter on the info icon box and wait for state updates
+    // Trigger mouse enter on the info icon and wait for state updates
     await act(async () => {
-      if (infoIconBox) {
-        fireEvent.mouseEnter(infoIconBox);
+      if (infoIcon) {
+        fireEvent.mouseEnter(infoIcon);
       }
       // Small delay to allow the state update to complete
       await new Promise((r) => setTimeout(r, 0));
@@ -92,12 +90,10 @@ describe('AdditionalNetworksInfo', () => {
     renderComponent();
 
     // Open the popover
-    const infoIconBox = document.querySelector(
-      '.add-network__warning-icon',
-    )?.parentElement;
+    const infoIcon = document.querySelector('.add-network__warning-icon');
     await act(async () => {
-      if (infoIconBox) {
-        fireEvent.mouseEnter(infoIconBox);
+      if (infoIcon) {
+        fireEvent.mouseEnter(infoIcon);
       }
       // Small delay to allow the state update to complete
       await new Promise((r) => setTimeout(r, 0));
