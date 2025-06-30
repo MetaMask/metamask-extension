@@ -75,7 +75,7 @@ import {
   getSelectedMultichainNetworkChainId,
   getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
-  getEnabledNetworks,
+  getEnabledNetworksByNamespace,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -155,7 +155,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
-  const enabledNetworks = useSelector(getEnabledNetworks);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const showTestnets = useSelector(getShowTestNetworks);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const isUnlocked = useSelector(getIsUnlocked);
@@ -367,7 +367,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
     const { namespace } = parseCaipChainId(currentChainId);
 
-    if (Object.keys(enabledNetworks).length === 1) {
+    if (Object.keys(enabledNetworksByNamespace).length === 1) {
       dispatch(setEnabledNetworks([hexChainId], namespace));
     } else {
       dispatch(setEnabledNetworks(Object.keys(evmNetworks), namespace));

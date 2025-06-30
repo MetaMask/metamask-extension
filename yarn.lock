@@ -6508,10 +6508,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-api-client@npm:^0.6.2":
-  version: 0.6.2
-  resolution: "@metamask/multichain-api-client@npm:0.6.2"
-  checksum: 10/7b870f6ce095bac63b5159f5918f956d0194cacb8cbce243583ed52227a52df7e7bc58ef418f60902800f4c30bc56e37b5434831bc30edee6336735f21895f2e
+"@metamask/multichain-api-client@npm:^0.6.4":
+  version: 0.6.4
+  resolution: "@metamask/multichain-api-client@npm:0.6.4"
+  checksum: 10/fb43965c0f994047006364555bb07777135a3baf0865948ff2982120ef62cc006d058594fe7c6320a2a29b185998de35b5c40e109388a0edef236371ed01c067
   languageName: node
   linkType: hard
 
@@ -7095,9 +7095,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^16.3.1":
-  version: 16.3.1
-  resolution: "@metamask/smart-transactions-controller@npm:16.3.1"
+"@metamask/smart-transactions-controller@npm:^16.4.0":
+  version: 16.4.0
+  resolution: "@metamask/smart-transactions-controller@npm:16.4.0"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
@@ -7119,11 +7119,11 @@ __metadata:
       optional: true
     "@metamask/approval-controller":
       optional: true
-  checksum: 10/d94c33b735aecc7bf3d0e73c83e65c08fa5c21cb15199cf169953fd846fff19aa06f2c0c379d508e1ff4bf0634066e2710e6b82ae0f5ba51092245a284d011b3
+  checksum: 10/3826ab830c1dc8e15bea4850a6e93a0308ce279dd7e91adbc0a7453ba7ef5e014edee261ed024b3e68ee114086cd95655de18209b275dc83c6477afa5e961f46
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^13.1.1":
+"@metamask/snaps-controllers@npm:13.1.1":
   version: 13.1.1
   resolution: "@metamask/snaps-controllers@npm:13.1.1"
   dependencies:
@@ -7161,6 +7161,47 @@ __metadata:
     "@metamask/snaps-execution-environments":
       optional: true
   checksum: 10/baee4268e5dcdfddfa9f2a5230ec7a8a7328706c453717976ad0d41d6e3e6ebc00c988650b01759673b456aa233306e1266017d15a9719739fb334361289d6ff
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-controllers@patch:@metamask/snaps-controllers@npm%3A13.1.1#~/.yarn/patches/@metamask-snaps-controllers-npm-13.1.1-02f9bdb989.patch":
+  version: 13.1.1
+  resolution: "@metamask/snaps-controllers@patch:@metamask/snaps-controllers@npm%3A13.1.1#~/.yarn/patches/@metamask-snaps-controllers-npm-13.1.1-02f9bdb989.patch::version=13.1.1&hash=139d08"
+  dependencies:
+    "@metamask/approval-controller": "npm:^7.1.3"
+    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/json-rpc-engine": "npm:^10.0.2"
+    "@metamask/json-rpc-middleware-stream": "npm:^8.0.7"
+    "@metamask/key-tree": "npm:^10.1.1"
+    "@metamask/object-multiplex": "npm:^2.1.0"
+    "@metamask/permission-controller": "npm:^11.0.6"
+    "@metamask/phishing-controller": "npm:^12.6.0"
+    "@metamask/post-message-stream": "npm:^10.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/snaps-registry": "npm:^3.2.3"
+    "@metamask/snaps-rpc-methods": "npm:^13.1.0"
+    "@metamask/snaps-sdk": "npm:^8.1.0"
+    "@metamask/snaps-utils": "npm:^10.1.0"
+    "@metamask/utils": "npm:^11.4.0"
+    "@xstate/fsm": "npm:^2.0.0"
+    async-mutex: "npm:^0.5.0"
+    concat-stream: "npm:^2.0.0"
+    cron-parser: "npm:^4.5.0"
+    fast-deep-equal: "npm:^3.1.3"
+    get-npm-tarball-url: "npm:^2.0.3"
+    immer: "npm:^9.0.6"
+    luxon: "npm:^3.5.0"
+    nanoid: "npm:^3.3.10"
+    readable-stream: "npm:^3.6.2"
+    readable-web-to-node-stream: "npm:^3.0.2"
+    semver: "npm:^7.5.4"
+    tar-stream: "npm:^3.1.7"
+  peerDependencies:
+    "@metamask/snaps-execution-environments": ^9.1.0
+  peerDependenciesMeta:
+    "@metamask/snaps-execution-environments":
+      optional: true
+  checksum: 10/752369b384dbaae8c44ca90855b2bfc6d96eb299d9a51e69353a06ec02fe5851477b12dc4e872773e44b92c1b1f4f4a35f4b2856aeeeb236361397c06c097e6c
   languageName: node
   linkType: hard
 
@@ -31584,7 +31625,7 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.1"
     "@metamask/message-signing-snap": "npm:1.1.2"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-api-client": "npm:^0.6.2"
+    "@metamask/multichain-api-client": "npm:^0.6.4"
     "@metamask/multichain-api-middleware": "npm:0.4.0"
     "@metamask/multichain-network-controller": "npm:^0.8.0"
     "@metamask/multichain-transactions-controller": "npm:^0.9.0"
@@ -31611,8 +31652,8 @@ __metadata:
     "@metamask/seedless-onboarding-controller": "npm:^1.0.0"
     "@metamask/selected-network-controller": "npm:^22.1.0"
     "@metamask/signature-controller": "npm:^30.0.0"
-    "@metamask/smart-transactions-controller": "npm:^16.3.1"
-    "@metamask/snaps-controllers": "npm:^13.1.1"
+    "@metamask/smart-transactions-controller": "npm:^16.4.0"
+    "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@npm%3A13.1.1#~/.yarn/patches/@metamask-snaps-controllers-npm-13.1.1-02f9bdb989.patch"
     "@metamask/snaps-execution-environments": "npm:^9.1.0"
     "@metamask/snaps-rpc-methods": "npm:^13.1.0"
     "@metamask/snaps-sdk": "npm:^8.1.0"
