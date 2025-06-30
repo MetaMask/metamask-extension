@@ -138,7 +138,7 @@ export const OrdersContainer = () => {
                         {titles[order.market] || 'Market'}
                       </Text>
                       <Text variant={TextVariant.bodySm}>
-                        {order.outcome} -{' '}
+                        {order.side} - {order.outcome} -{' '}
                         {order.expiration === '0'
                           ? 'No expiration'
                           : getDaysLeft(order.expiration)}

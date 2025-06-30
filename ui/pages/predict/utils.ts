@@ -18,6 +18,9 @@ export enum UtilsSide {
   SELL,
 }
 
+export const MSG_TO_SIGN =
+  'This message attests that I control the given wallet';
+
 export const GAMMA_API_ENDPOINT = 'https://gamma-api.polymarket.com';
 export const CLOB_ENDPOINT = 'https://clob.polymarket.com';
 export const DATA_API_ENDPOINT = 'https://data-api.polymarket.com';

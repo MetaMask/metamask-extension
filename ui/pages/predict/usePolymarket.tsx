@@ -3,7 +3,13 @@ import { hexToNumber } from '@metamask/utils';
 import { SignTypedDataVersion } from '@metamask/keyring-controller';
 import { useMemo, useState } from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { getContractConfig, Side } from '@polymarket/clob-client';
+import {
+  getContractConfig,
+  Side,
+  ApiKeyRaw,
+  L2HeaderArgs,
+  ApiKeyCreds,
+} from '@polymarket/clob-client';
 import {
   getSelectedAccount,
   getSelectedNetwork,
@@ -12,10 +18,12 @@ import { addTransaction, signTypedMessage } from '../../store/actions';
 import {
   buildOrderCreationArgs,
   buildPolyHmacSignature,
+  CLOB_ENDPOINT,
   encodeApprove,
   encodeErc1155Approve,
   encodeRedeemPositions,
   generateSalt,
+  MSG_TO_SIGN,
 } from './utils';
 import {
   ROUNDING_CONFIG,
@@ -24,9 +32,8 @@ import {
   UserPosition,
 } from './types';
 
+const API_KEY_STORAGE_KEY = 'api_key_storage';
 const MARKET_CACHE_KEY = 'market_cache';
-
-const CLOB_ENDPOINT = 'https://clob.polymarket.com';
 
 const ClobAuthDomain = {
   ClobAuth: [
@@ -42,29 +49,25 @@ const EIP712Domain = [
   { name: 'chainId', type: 'uint256' },
 ];
 
-export type L2HeaderArgs = {
-  method: string;
-  requestPath: string;
-  body?: string;
-};
-
-const MSG_TO_SIGN = 'This message attests that I control the given wallet';
-
-type ApiKeyCreds = {
-  key: string;
-  secret: string;
-  passphrase: string;
-};
-
 export const usePolymarket = () => {
   const account = useSelector(getSelectedAccount);
   const selectedNetwork = useSelector(getSelectedNetwork);
   const { chainId } = selectedNetwork.configuration;
-  const [apiKey, setApiKey] = useState<ApiKeyCreds | null>(
-    localStorage.getItem('apiKey')
-      ? JSON.parse(localStorage.getItem('apiKey') || '{}')
+  const [apiKeyStorage, setApiKeyStorage] = useState<Record<
+    string,
+    ApiKeyCreds
+  > | null>(
+    localStorage.getItem(API_KEY_STORAGE_KEY)
+      ? JSON.parse(localStorage.getItem(API_KEY_STORAGE_KEY) || '{}')
       : null,
   );
+  const apiKey = useMemo(() => {
+    if (apiKeyStorage) {
+      return apiKeyStorage[account.address];
+    }
+    return null;
+  }, [apiKeyStorage, account.address]);
+
   const contractConfig = useMemo(() => {
     return getContractConfig(hexToNumber(chainId));
   }, [chainId]);
@@ -152,6 +155,63 @@ export const usePolymarket = () => {
     return null;
   };
 
+  const storeApiKey = (apiKeyRaw: ApiKeyRaw) => {
+    const newApiKey = {
+      key: apiKeyRaw.apiKey,
+      secret: apiKeyRaw.secret,
+      passphrase: apiKeyRaw.passphrase,
+    };
+    const currentApiKeyStorage = localStorage.getItem(API_KEY_STORAGE_KEY);
+    if (currentApiKeyStorage) {
+      const currentApiKeyStorageObject = JSON.parse(currentApiKeyStorage);
+      currentApiKeyStorageObject[account.address] = newApiKey;
+      localStorage.setItem(
+        API_KEY_STORAGE_KEY,
+        JSON.stringify(currentApiKeyStorageObject),
+      );
+    } else {
+      localStorage.setItem(
+        API_KEY_STORAGE_KEY,
+        JSON.stringify({ [account.address]: newApiKey }),
+      );
+    }
+
+    setApiKeyStorage(
+      localStorage.getItem(API_KEY_STORAGE_KEY)
+        ? JSON.parse(localStorage.getItem(API_KEY_STORAGE_KEY) || '{}')
+        : null,
+    );
+
+    return newApiKey;
+  };
+
+  const deriveApiKey = async () => {
+    const headers = await getL1Headers();
+    const response = await fetch(`${CLOB_ENDPOINT}/auth/derive-api-key`, {
+      method: 'GET',
+      headers,
+    });
+    const apiKeyRaw = await response.json();
+    return storeApiKey(apiKeyRaw);
+  };
+
+  const createApiKey = async () => {
+    const headers = await getL1Headers();
+    const response = await fetch(`${CLOB_ENDPOINT}/auth/api-key`, {
+      method: 'POST',
+      headers,
+      body: '',
+    });
+
+    if (response.status === 400) {
+      return await deriveApiKey();
+    }
+    const apiKeyRaw = await response.json();
+    console.log('apiKeyRaw', apiKeyRaw);
+    storeApiKey(apiKeyRaw);
+    return apiKeyRaw;
+  };
+
   const createL2Headers = async (
     l2HeaderArgs: L2HeaderArgs,
     timestamp?: number,
@@ -179,41 +239,6 @@ export const usePolymarket = () => {
     };
 
     return headers;
-  };
-
-  const createApiKey = async () => {
-    const headers = await getL1Headers();
-    const response = await fetch(`${CLOB_ENDPOINT}/auth/api-key`, {
-      method: 'POST',
-      headers,
-      body: '',
-    });
-
-    const apiKeyRaw = await response.json();
-    const newApiKey = {
-      key: apiKeyRaw.apiKey,
-      secret: apiKeyRaw.secret,
-      passphrase: apiKeyRaw.passphrase,
-    };
-    setApiKey(newApiKey);
-    localStorage.setItem('apiKey', JSON.stringify(newApiKey));
-  };
-
-  const deriveApiKey = async () => {
-    const headers = await getL1Headers();
-    const response = await fetch(`${CLOB_ENDPOINT}/auth/derive-api-key`, {
-      method: 'GET',
-      headers,
-    });
-    const apiKeys = await response.json();
-    console.log(apiKeys);
-    const newApiKey = {
-      key: apiKeys.apiKey,
-      secret: apiKeys.secret,
-      passphrase: apiKeys.passphrase,
-    };
-    setApiKey(newApiKey);
-    localStorage.setItem('apiKey', JSON.stringify(newApiKey));
   };
 
   const approveCollateralExchange = async () => {

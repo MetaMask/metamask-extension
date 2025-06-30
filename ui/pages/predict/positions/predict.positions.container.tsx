@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Side } from '@polymarket/clob-client';
+import { useHistory } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -35,6 +36,7 @@ const PredictContainer = () => {
     useState<UserPosition | null>(null);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const { placeOrder, redeemPosition } = usePolymarket();
+  const history = useHistory();
 
   const getPositions = async () => {
     try {
@@ -74,7 +76,7 @@ const PredictContainer = () => {
       console.error('No tick size found');
       return;
     }
-    placeOrder({
+    await placeOrder({
       tokenId: position.asset,
       price: position.curPrice,
       size: position.size,
@@ -82,13 +84,17 @@ const PredictContainer = () => {
       side: Side.SELL,
       negRisk: position.negativeRisk,
     });
+
+    history.push('/predict-orders');
   };
 
   const handleRedeem = async (position: UserPosition) => {
     setRedeemingPosition(position);
     await redeemPosition(position);
-    await getPositions();
-    setRedeemingPosition(null);
+    setTimeout(async () => {
+      setRedeemingPosition(null);
+      history.push('/predict-profit');
+    }, 5000);
   };
 
   return (
