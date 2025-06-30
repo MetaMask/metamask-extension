@@ -227,10 +227,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     // If the request is for EVM and no specific chains are requested,
     // we merge the default chains with existing permitted chains
     if (!isRequestingSpecificEvmChains && existingCaip25CaveatValue) {
-      supportedRequestedCaipChainIds = [
-        ...defaultSelectedNetworkList,
-        ...supportedRequestedCaipChainIds,
-      ];
+      supportedRequestedCaipChainIds = Array.from(
+        new Set([
+          ...defaultSelectedNetworkList,
+          ...supportedRequestedCaipChainIds,
+        ]),
+      );
     }
   }
 
@@ -319,10 +321,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             }
           });
 
-          updatedSelectedChains = [
-            ...updatedSelectedChains,
-            ...chainIdsForNamespace,
-          ];
+          updatedSelectedChains = Array.from(
+            new Set([...updatedSelectedChains, ...chainIdsForNamespace]),
+          );
         }
       });
 
