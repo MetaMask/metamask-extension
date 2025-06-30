@@ -26,22 +26,23 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 import { usePolymarket } from '../usePolymarket';
-import { Market } from '../types';
-import { CLOB_ENDPOINT } from '../utils';
+import { MarketMyriad } from '../types';
+import { STAGING_API_ENDPOINT } from '../utils';
 
 const PredictContainer = () => {
-  const { marketId } = useParams<{ marketId: string }>();
-  const [market, setMarket] = useState<Market | null>(null);
+  const { marketSlug } = useParams<{ marketSlug: string }>();
+  const [market, setMarket] = useState<MarketMyriad | null>(null);
   const [selectedAmount, setSelectedAmount] = useState<number>(10);
   const { placeOrder, setMarketTitle } = usePolymarket();
   const history = useHistory();
 
+
   const getMarket = useCallback(async () => {
-    if (!marketId) {
+    if (!marketSlug) {
       return;
     }
 
-    const response = await fetch(`${CLOB_ENDPOINT}/markets/${marketId}`, {
+    const response = await fetch(`${STAGING_API_ENDPOINT}/markets/${marketSlug}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -50,19 +51,19 @@ const PredictContainer = () => {
 
     const marketData = await response.json();
     console.log('marketData', marketData);
-    await setMarketTitle(marketId, marketData.question);
+    await setMarketTitle(marketSlug, marketData.question);
     setMarket(marketData);
-  }, [marketId, setMarketTitle]);
+  }, [marketSlug, setMarketTitle]);
 
   useEffect(() => {
     getMarket();
   }, []);
 
   const getTimeRemaining = () => {
-    if (!market?.end_date_iso) {
+    if (!market?.expires_at) {
       return '';
     }
-    const endDate = new Date(market.end_date_iso);
+    const endDate = new Date(market.expires_at);
     const now = new Date();
     const diff = endDate.getTime() - now.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -83,26 +84,27 @@ const PredictContainer = () => {
 
   const handleBuy = async (token: Token) => {
     console.log(market, token);
-    const response = await placeOrder({
-      tokenId: token.token_id,
-      price: token.price,
-      size: Number(market?.minimum_order_size),
-      tickSize: market?.minimum_tick_size as TickSize,
-      side: Side.BUY,
-      negRisk: market?.neg_risk || false,
-    });
+    // todo: implement this
+    // const response = await placeOrder({
+    //   tokenId: token.token_id,
+    //   price: token.price,
+    //   size: Number(market?.minimum_order_size),
+    //   tickSize: market?.minimum_tick_size as TickSize,
+    //   side: Side.BUY,
+    //   negRisk: market?.neg_risk || false,
+    // });
 
-    console.log('response', response);
+    // console.log('response', response);
 
-    if (response.status === 'live') {
-      history.push(`/predict-orders`);
-    }
-    if (response.status === 'matched') {
-      history.push(`/predict-positions`);
-    }
+    // if (response.status === 'live') {
+    //   history.push(`/predict-orders`);
+    // }
+    // if (response.status === 'matched') {
+    //   history.push(`/predict-positions`);
+    // }
   };
 
-  const getTokenButtonBackgroundColor = (token: Token, index: number) => {
+  const getTokenButtonBackgroundColor = (token: any, index: number) => {
     if (isYesNoToken(token)) {
       return isYesToken(token) ? '#A5FFB0' : '#FFB0B0';
     }
@@ -149,13 +151,13 @@ const PredictContainer = () => {
             marginBottom={2}
           >
             <img
-              src={market?.icon || './images/logo/metamask-fox.svg'}
+              src={market?.image_url?.replace(/\s+/g, '') || './images/logo/metamask-fox.svg'}
               alt="Market"
               style={{ width: 40, height: 40, borderRadius: '50%' }}
             />
             <Box>
               <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Bold}>
-                {market?.question || 'Loading...'}
+                {market?.title || 'Loading...'}
               </Text>
               <Text
                 variant={TextVariant.bodySm}
@@ -180,14 +182,15 @@ const PredictContainer = () => {
             justifyContent={JustifyContent.spaceBetween}
             marginTop={1}
           >
-            {market?.tokens.map((token: Token, index: number) => {
+            {/* // market.outcomes[0].market_id}/${market.outcomes[0].id */}
+            {market?.outcomes.map((token: any, index: number) => {
               return (
                 <Text
-                  key={token.token_id}
+                  key={token.id}
                   color={getTokenTextColor(token, index)}
                   fontWeight={FontWeight.Bold}
                 >
-                  {`${((token.price || 0) * 100).toFixed(1)}% ${token.outcome}`}
+                  {`${((token.price || 0) * 100).toFixed(1)}% ${token.title}`}
                 </Text>
               );
             })}
@@ -283,18 +286,18 @@ const PredictContainer = () => {
           </Button>
         </Box>
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={2}>
-          {market?.tokens.map((token: Token, index: number) => {
+          {market?.outcomes.map((outcome: any, index: number) => {
             return (
               <Button
-                key={token.token_id}
+                key={outcome.id}
                 style={{
-                  backgroundColor: getTokenButtonBackgroundColor(token, index),
+                  backgroundColor: getTokenButtonBackgroundColor(outcome, index),
                   flex: 1,
                 }}
-                onClick={() => handleBuy(token)}
+                onClick={() => handleBuy(outcome)}
                 color={TextColor.textDefault}
               >
-                {`Buy ${token.outcome} (${token.price}¢)`}
+                {`Buy ${outcome.title} ($${outcome.price.toFixed(2)})`}
               </Button>
             );
           })}

@@ -151,7 +151,7 @@ const PredictMarketsContainer = () => {
                       color: 'white',
                     }}
                     onClick={() => {
-                      history.push(`/myriad/predict-bet/${market.outcomes[1].market_id}/${market.outcomes[1].id}`);
+                      history.push(`/myriad/predict-bet/${market.slug}`);
                     }}
                   >
                     Buy No ($10)
@@ -164,7 +164,7 @@ const PredictMarketsContainer = () => {
                       color: 'white',
                     }}
                     onClick={() => {
-                      history.push(`/myriad/predict-bet/${market.outcomes[0].market_id}/${market.outcomes[0].id}`);
+                      history.push(`/myriad/predict-bet/${market.slug}`);
                     }}
                   >
                     Buy Yes ($10)

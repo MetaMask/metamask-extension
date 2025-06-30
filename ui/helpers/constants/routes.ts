@@ -378,7 +378,7 @@ PATH_NAME_MAP.set(PREDICT_ROUTE_ORDERS, 'Predict Orders');
 export const PREDICT_MYRIAD_ROUTE = '/myriad/predict';
 PATH_NAME_MAP.set(PREDICT_MYRIAD_ROUTE, 'Predict Page');
 
-export const PREDICT_MYRIAD_ROUTE_BET = '/myriad/predict-bet/:marketId';
+export const PREDICT_MYRIAD_ROUTE_BET = '/myriad/predict-bet/:marketSlug';
 PATH_NAME_MAP.set(PREDICT_MYRIAD_ROUTE_BET, 'Place bet');
 
 export const PREDICT_MYRIAD_ROUTE_POSITIONS = '/myriad/predict-positions';

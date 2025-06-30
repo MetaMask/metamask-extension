@@ -286,6 +286,7 @@ export type MarketMyriad = {
     market_id: number;
   }[];
   volume: number;
+  slug: string;
 };
 
 export type Activity = {
