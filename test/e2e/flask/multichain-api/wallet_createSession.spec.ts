@@ -30,6 +30,11 @@ describe('Multichain API', function () {
           title: this.test?.fullTitle(),
           fixtures: new FixtureBuilder()
             .withNetworkControllerOnMainnet()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true,
+              },
+            })
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
@@ -297,6 +302,11 @@ describe('Multichain API', function () {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
               .withNetworkControllerTripleNode()
+              .withEnabledNetworks({
+                eip155: {
+                  '0x539': true,
+                },
+              })
               .withPreferencesControllerAdditionalAccountIdentities()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -347,7 +357,13 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder().build(),
+            fixtures: new FixtureBuilder()
+              .withEnabledNetworks({
+                eip155: {
+                  '0x539': true,
+                },
+              })
+              .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
