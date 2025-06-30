@@ -69,6 +69,7 @@ jobs:
       build-artifact: build-test-browserify
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:rpc
+      test-timeout-minutes: 35 # Set timeout specifically for this job as it takes longer than the default job timeout
     secrets:
       DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
       DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
