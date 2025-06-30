@@ -32,13 +32,13 @@ const TRANSACTION_META_MOCK = {
   time: new Date().getTime() - 10000,
 } as TransactionMeta;
 
-jest.mock('../../../../../hooks/useTrustSignals', () => ({
-  useTrustSignal: jest.fn(),
-  TrustSignalDisplayState: {
-    Unknown: 'Unknown',
-    Verified: 'Verified',
-  },
-}));
+jest.mock('../../../../../hooks/useTrustSignals', () => {
+  const actual = jest.requireActual('../../../../../hooks/useTrustSignals');
+  return {
+    ...actual,
+    useTrustSignal: jest.fn(),
+  };
+});
 
 function runHook({
   currentConfirmation,
