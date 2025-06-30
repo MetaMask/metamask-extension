@@ -1033,19 +1033,10 @@ export default class MetamaskController extends EventEmitter {
     });
 
     let initialNetworkOrderControllerState;
-
-    if (process.env.IN_TEST) {
-      initialNetworkOrderControllerState = {
-        orderedNetworkList: [],
-        enabledNetworkMap: {
-          [KnownCaipNamespace.Eip155]: {
-            [CHAIN_IDS.LOCALHOST]: true,
-          },
-        },
-      };
-    } else if (
+    if (
       process.env.METAMASK_DEBUG &&
-      process.env.METAMASK_ENVIRONMENT === 'development'
+      process.env.METAMASK_ENVIRONMENT === 'development' &&
+      !process.env.IN_TEST
     ) {
       initialNetworkOrderControllerState = {
         orderedNetworkList: [],
