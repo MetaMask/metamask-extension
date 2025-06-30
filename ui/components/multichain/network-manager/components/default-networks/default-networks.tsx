@@ -5,6 +5,7 @@ import {
 } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toHex } from '@metamask/controller-utils';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
@@ -54,7 +55,6 @@ import {
   getOrderedNetworksList,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../../../selectors';
-import { toHex } from '@metamask/controller-utils';
 
 const DefaultNetworks = memo(() => {
   const t = useI18nContext();
