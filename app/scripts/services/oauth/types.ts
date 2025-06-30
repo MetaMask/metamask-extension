@@ -121,7 +121,7 @@ export type AuthTokenResponse = {
 
   /**
    * The refresh token issued from the Web3Auth Authentication Server.
-   * This is used to refresh the JWT Token.
+   * This is used to revoke the JWT Token.
    */
   revoke_token: string;
   indexes: number[];
