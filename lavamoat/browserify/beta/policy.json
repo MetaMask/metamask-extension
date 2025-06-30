@@ -2937,10 +2937,10 @@
         "crypto.subtle.exportKey": true
       },
       "packages": {
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/assertions": true,
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": true,
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings": true,
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
+        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses>@solana/assertions": true,
+        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": true,
+        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings": true,
+        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
       }
     },
     "@solana/addresses>@solana/assertions": {
@@ -2961,6 +2961,15 @@
         "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
       }
     },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses>@solana/assertions": {
+      "globals": {
+        "crypto": true,
+        "isSecureContext": true
+      },
+      "packages": {
+        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
+      }
+    },
     "@solana/addresses>@solana/codecs-core": {
       "packages": {
         "@solana/addresses>@solana/errors": true
@@ -2969,6 +2978,11 @@
     "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": {
       "packages": {
         "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": {
+      "packages": {
+        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
       }
     },
     "@solana/addresses>@solana/codecs-strings": {
@@ -2995,12 +3009,29 @@
         "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
       }
     },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "atob": true,
+        "btoa": true
+      },
+      "packages": {
+        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": true,
+        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
+      }
+    },
     "@solana/addresses>@solana/errors": {
       "globals": {
         "btoa": true
       }
     },
     "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": {
+      "globals": {
+        "btoa": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses>@solana/errors": {
       "globals": {
         "btoa": true
       }
@@ -3115,21 +3146,19 @@
     "@trezor/connect-web": {
       "globals": {
         "URLSearchParams": true,
-        "WebSocket": true,
         "__TREZOR_CONNECT_SRC": true,
         "addEventListener": true,
         "btoa": true,
         "chrome": true,
         "clearInterval": true,
         "clearTimeout": true,
-        "console.error": true,
         "console.warn": true,
         "document.body": true,
         "document.createElement": true,
         "document.createTextNode": true,
         "document.getElementById": true,
         "document.querySelectorAll": true,
-        "location": true,
+        "location.origin": true,
         "navigator": true,
         "open": true,
         "origin": true,
@@ -3141,16 +3170,23 @@
         "@trezor/connect-web>@trezor/connect-common": true,
         "@trezor/connect-web>@trezor/connect": true,
         "@trezor/connect-web>@trezor/utils": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@trezor/websocket-client": true,
         "webpack>events": true,
         "tslib": true
       }
     },
     "@trezor/connect-web>@trezor/connect": {
       "packages": {
+        "@trezor/connect-web>@trezor/connect>@trezor/device-utils": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf": true,
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "@trezor/connect-web>@trezor/connect>@trezor/transport": true,
         "@trezor/connect-web>@trezor/utils": true,
+        "tslib": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/device-utils": {
+      "packages": {
         "tslib": true
       }
     },
@@ -3168,7 +3204,6 @@
       },
       "packages": {
         "process": true,
-        "tslib": true,
         "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": true
       }
     },
@@ -3176,6 +3211,7 @@
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "browserify>buffer": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": true,
         "tslib": true
       }
@@ -3193,7 +3229,9 @@
     "@trezor/connect-web>@trezor/utils": {
       "globals": {
         "AbortController": true,
+        "Blob": true,
         "Intl.NumberFormat": true,
+        "TextEncoder": true,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
@@ -3208,6 +3246,18 @@
         "@trezor/connect-web>@trezor/utils>bignumber.js": true,
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
+        "webpack>events": true,
+        "tslib": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@trezor/websocket-client": {
+      "globals": {
+        "WebSocket": true,
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/utils": true,
         "webpack>events": true,
         "tslib": true
       }
@@ -4617,6 +4667,13 @@
         "localStorage": true,
         "log": "write",
         "navigator": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": {
+      "globals": {
+        "WebAssembly.Instance": true,
+        "WebAssembly.Module": true,
+        "define": true
       }
     },
     "lottie-web": {
