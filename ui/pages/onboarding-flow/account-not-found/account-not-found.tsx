@@ -46,18 +46,18 @@ export default function AccountNotFound() {
     // clear the social login state
     await dispatch(resetOAuthLoginState());
     await dispatch(setFirstTimeFlowType(null));
-    history.push(ONBOARDING_WELCOME_ROUTE);
+    history.replace(ONBOARDING_WELCOME_ROUTE);
   };
 
   const onCreateNewAccount = () => {
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
-    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+    history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
   };
 
   useEffect(() => {
     if (firstTimeFlowType !== FirstTimeFlowType.socialImport) {
       // if the onboarding flow is not social import, redirect to the welcome page
-      history.push(ONBOARDING_WELCOME_ROUTE);
+      history.replace(ONBOARDING_WELCOME_ROUTE);
     }
   }, [firstTimeFlowType, history]);
 

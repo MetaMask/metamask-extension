@@ -123,7 +123,7 @@ export default function OnboardingWelcome({
     async (socialConnectionType) => {
       setIsLoggingIn(true);
       setNewAccountCreationInProgress(true);
-      dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
+      await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
 
       try {
         const isNewUser = await handleSocialLogin(socialConnectionType);
@@ -135,9 +135,9 @@ export default function OnboardingWelcome({
           },
         });
         if (isNewUser) {
-          history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+          history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
         } else {
-          history.push(ONBOARDING_ACCOUNT_EXIST);
+          history.replace(ONBOARDING_ACCOUNT_EXIST);
         }
       } catch (error) {
         log.error('onSocialLoginCreateClick::error', error);

@@ -46,17 +46,17 @@ export default function AccountExist() {
     await dispatch(resetOAuthLoginState());
     // reset the first time flow type
     await dispatch(setFirstTimeFlowType(null));
-    history.push(ONBOARDING_WELCOME_ROUTE);
+    history.replace(ONBOARDING_WELCOME_ROUTE);
   };
 
   const onDone = async () => {
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
-    history.push(ONBOARDING_UNLOCK_ROUTE);
+    history.replace(ONBOARDING_UNLOCK_ROUTE);
   };
 
   useEffect(() => {
     if (firstTimeFlowType !== FirstTimeFlowType.socialCreate) {
-      history.push(ONBOARDING_WELCOME_ROUTE);
+      history.replace(ONBOARDING_WELCOME_ROUTE);
     }
   }, [firstTimeFlowType, history]);
 
