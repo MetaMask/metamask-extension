@@ -412,6 +412,7 @@ export const CURRENCY_SYMBOLS = {
   EDUCHAIN: 'EDU',
   APECHAIN: 'APE',
   ABSTRACT: 'ETH',
+  XRPLEVM: 'XRP',
 } as const;
 
 // Non-EVM currency symbols
