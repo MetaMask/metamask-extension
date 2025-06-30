@@ -333,14 +333,13 @@ export function changePassword(
     getState: () => MetaMaskReduxState,
   ) => {
     const isSocialLoginFlow = getIsSocialLoginFlow(getState());
-    if (!isSocialLoginFlow) {
-      return;
-    }
     try {
-      await submitRequestToBackground<void>('socialSyncChangePassword', [
-        newPassword,
-        oldPassword,
-      ]);
+      if (isSocialLoginFlow) {
+        await submitRequestToBackground<void>('socialSyncChangePassword', [
+          newPassword,
+          oldPassword,
+        ]);
+      }
       await submitRequestToBackground<void>('keyringChangePassword', [
         newPassword,
       ]);

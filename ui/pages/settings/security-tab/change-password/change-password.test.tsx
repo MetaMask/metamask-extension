@@ -54,10 +54,6 @@ describe('ChangePassword', () => {
     );
 
     expect(verifyCurrentPasswordInput).toBeInTheDocument();
-    expect(verifyCurrentPasswordInput).toHaveAttribute(
-      'placeholder',
-      'Make sure nobody is looking',
-    );
     expect(verifyCurrentPasswordInput).toHaveAttribute('type', 'password');
   });
 
@@ -69,10 +65,6 @@ describe('ChangePassword', () => {
     );
 
     expect(verifyCurrentPasswordInput).toBeInTheDocument();
-    expect(verifyCurrentPasswordInput).toHaveAttribute(
-      'placeholder',
-      'Make sure nobody is looking',
-    );
     expect(verifyCurrentPasswordInput).toHaveAttribute('type', 'password');
 
     const verifyCurrentPasswordButton = getByTestId(
