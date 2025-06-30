@@ -15,8 +15,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
@@ -96,12 +98,18 @@ export default function CreatePassword({
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
+    } else if (
+      firstTimeFlowType === FirstTimeFlowType.import &&
+      !secretRecoveryPhrase
+    ) {
+      history.replace(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
     }
   }, [
     currentKeyring,
     history,
     firstTimeFlowType,
     newAccountCreationInProgress,
+    secretRecoveryPhrase,
   ]);
 
   const handleLearnMoreClick = (event) => {
@@ -144,9 +152,9 @@ export default function CreatePassword({
     });
 
     if (isFirefox) {
-      history.push(ONBOARDING_COMPLETION_ROUTE);
+      history.replace(ONBOARDING_COMPLETION_ROUTE);
     } else {
-      history.push(ONBOARDING_METAMETRICS);
+      history.replace(ONBOARDING_METAMETRICS);
     }
   };
 
@@ -176,12 +184,12 @@ export default function CreatePassword({
 
     if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
       if (isFirefox) {
-        history.push(ONBOARDING_COMPLETION_ROUTE);
+        history.replace(ONBOARDING_COMPLETION_ROUTE);
       } else {
-        history.push(ONBOARDING_METAMETRICS);
+        history.replace(ONBOARDING_METAMETRICS);
       }
     } else {
-      history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+      history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
     }
   };
 
@@ -249,7 +257,11 @@ export default function CreatePassword({
             size={ButtonIconSize.Md}
             data-testid="create-password-back-button"
             type="button"
-            onClick={() => history.goBack()}
+            onClick={() =>
+              firstTimeFlowType === FirstTimeFlowType.import
+                ? history.replace(ONBOARDING_IMPORT_WITH_SRP_ROUTE)
+                : history.replace(ONBOARDING_WELCOME_ROUTE)
+            }
             ariaLabel={t('back')}
           />
         </Box>

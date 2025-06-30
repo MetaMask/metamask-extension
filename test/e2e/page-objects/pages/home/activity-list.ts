@@ -318,10 +318,17 @@ class ActivityListPage {
     });
   }
 
-  async check_swapTransactionActivity(swapText: string): Promise<void> {
+  /**
+   * Checks for the presence of a transaction activity item in the activity list by matching the provided text.
+   *
+   * @param txnText - The text to search for within the transaction activity list. (e.g., "Swap SOL to USDC")
+   * @returns A promise that resolves when the transaction activity with the specified text is found.
+   */
+  async check_transactionActivityByText(txnText: string): Promise<void> {
+    console.log(`Check transaction activity with text: ${txnText}`);
     await this.driver.waitForSelector({
-      text: swapText,
-      tag: 'p',
+      text: txnText,
+      css: this.activityListAction,
     });
   }
 }

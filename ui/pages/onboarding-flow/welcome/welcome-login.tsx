@@ -19,8 +19,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import LoginOptions from './login-options';
-import { LOGIN_OPTION, LoginOptionType, LoginType } from './types';
+import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 
 export default function WelcomeLogin({
   onLogin,
@@ -31,6 +32,8 @@ export default function WelcomeLogin({
   const [eventEmitter] = useState(new EventEmitter());
   const [showLoginOptions, setShowLoginOptions] = useState(false);
   const [loginOption, setLoginOption] = useState<LoginOptionType | null>(null);
+  const isSeedlessOnboardingFeatureEnabled =
+    getIsSeedlessOnboardingFeatureEnabled();
 
   const renderMascot = () => {
     if (isFlask()) {
@@ -103,9 +106,12 @@ export default function WelcomeLogin({
           width={BlockSize.Full}
           size={ButtonBaseSize.Lg}
           className="welcome-login__create-button"
-          onClick={() => {
+          onClick={async () => {
             setShowLoginOptions(true);
             setLoginOption(LOGIN_OPTION.NEW);
+            if (!isSeedlessOnboardingFeatureEnabled) {
+              await onLogin(LOGIN_TYPE.SRP, LOGIN_OPTION.NEW);
+            }
           }}
         >
           {t('onboardingCreateWallet')}
@@ -116,23 +122,30 @@ export default function WelcomeLogin({
           size={ButtonBaseSize.Lg}
           backgroundColor={BackgroundColor.transparent}
           className="welcome-login__import-button"
-          onClick={() => {
+          onClick={async () => {
             setShowLoginOptions(true);
             setLoginOption(LOGIN_OPTION.EXISTING);
+            if (!isSeedlessOnboardingFeatureEnabled) {
+              await onLogin(LOGIN_TYPE.SRP, LOGIN_OPTION.EXISTING);
+            }
           }}
         >
-          {t('onboardingImportWallet')}
+          {isSeedlessOnboardingFeatureEnabled
+            ? t('onboardingImportWallet')
+            : t('onboardingSrpImport')}
         </ButtonBase>
       </Box>
-      {showLoginOptions && loginOption && (
-        <LoginOptions
-          loginOption={loginOption}
-          onClose={() => {
-            setLoginOption(null);
-          }}
-          handleLogin={handleLogin}
-        />
-      )}
+      {isSeedlessOnboardingFeatureEnabled &&
+        showLoginOptions &&
+        loginOption && (
+          <LoginOptions
+            loginOption={loginOption}
+            onClose={() => {
+              setLoginOption(null);
+            }}
+            handleLogin={handleLogin}
+          />
+        )}
     </Box>
   );
 }

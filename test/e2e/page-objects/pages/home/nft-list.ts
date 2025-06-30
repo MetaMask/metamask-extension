@@ -48,6 +48,8 @@ class NftListPage {
   private readonly nftFilterByCurrentNetwork =
     '[data-testid="network-filter-current"]';
 
+  private readonly nftListItem = '[data-testid="nft-wrapper"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -167,6 +169,20 @@ class NftListPage {
         `Invalid network name selected for filtering NFTs: ${networkName}`,
       );
     }
+  }
+
+  async clickNFTFromList(index = 0, timeout = 10000): Promise<void> {
+    console.log(`Clicking NFT at index ${index}`);
+    const nfts = await this.driver.findElements(this.nftListItem);
+    if (nfts.length === 0) {
+      throw new Error('No NFTs found to select');
+    }
+
+    const element = nfts[index];
+    await element.click();
+    // @ts-expect-error - The waitForElementState method is not typed correctly in the driver.
+    await element.waitForElementState('hidden', timeout);
+    console.log(`NFT at index ${index} selected successfully`);
   }
 }
 

@@ -2,7 +2,7 @@ import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { largeDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
 import {
-  acccount1,
+  account1,
   assertSignedMessageIsValid,
   clickConfirmButton,
   connectSolanaTestDapp,
@@ -41,7 +41,7 @@ describe('Solana Wallet Standard - Sign Message', function () {
           assertSignedMessageIsValid({
             signedMessageBase64: signedMessage[0],
             originalMessageString: messageToSign,
-            publicKeyBase58: acccount1,
+            publicKeyBase58: account1,
           });
         },
       );

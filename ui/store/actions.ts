@@ -181,9 +181,15 @@ export function startOAuthLogin(
     dispatch(showLoadingIndication());
 
     try {
-      const isNewUser = await submitRequestToBackground('startOAuthLogin', [
-        authConnection,
+      const oauth2LoginResult = await submitRequestToBackground(
+        'startOAuthLogin',
+        [authConnection],
+      );
+
+      const { isNewUser } = await submitRequestToBackground('authenticate', [
+        oauth2LoginResult,
       ]);
+
       return isNewUser;
     } catch (error) {
       dispatch(displayWarning(error));

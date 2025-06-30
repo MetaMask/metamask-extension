@@ -14,15 +14,16 @@ import {
   markPasswordForgotten,
   forceUpdateMetamaskState,
 } from '../../store/actions';
+import { getIsSocialLoginFlow } from '../../selectors';
 import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
   const {
-    metamask: { isUnlocked, firstTimeFlow },
+    metamask: { isUnlocked },
   } = state;
   return {
     isUnlocked,
-    firstTimeFlow,
+    isSocialLoginFlow: getIsSocialLoginFlow(state),
   };
 };
 

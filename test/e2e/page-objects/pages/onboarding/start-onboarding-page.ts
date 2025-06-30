@@ -97,9 +97,11 @@ class StartOnboardingPage {
     console.log('Get started page is loaded');
   }
 
-  async createWalletWithSrp(): Promise<void> {
+  async createWalletWithSrp(socialLoginEnabled = true): Promise<void> {
     await this.driver.clickElement(this.createWalletButton);
-    await this.driver.clickElement(this.onboardingCreateWithSrpButton);
+    if (socialLoginEnabled) {
+      await this.driver.clickElement(this.onboardingCreateWithSrpButton);
+    }
   }
 
   async importWallet(): Promise<void> {

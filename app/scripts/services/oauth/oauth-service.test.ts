@@ -3,6 +3,7 @@ import {
   Web3AuthNetwork,
 } from '@metamask/seedless-onboarding-controller';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import { ENVIRONMENT } from '../../../../development/build/constants';
 import { OAuthConfig, WebAuthenticator } from './types';
 import OAuthService from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
@@ -62,6 +63,10 @@ const mockWebAuthenticator: WebAuthenticator = {
 };
 
 describe('OAuthService - startOAuthLogin', () => {
+  beforeAll(() => {
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
+  });
+
   beforeEach(() => {
     // mock the fetch call to auth-server
     jest.spyOn(global, 'fetch').mockImplementation(
