@@ -1754,6 +1754,7 @@ export default class MetamaskController extends EventEmitter {
           deviceModel,
         };
       },
+      trace,
     });
 
     const isExternalNameSourcesEnabled = () =>
@@ -1919,10 +1920,10 @@ export default class MetamaskController extends EventEmitter {
       InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
       SnapsRegistry: SnapsRegistryInit,
+      CronjobController: CronjobControllerInit,
       SnapController: SnapControllerInit,
       SnapInsightsController: SnapInsightsControllerInit,
       SnapInterfaceController: SnapInterfaceControllerInit,
-      CronjobController: CronjobControllerInit,
       WebSocketService: WebSocketServiceInit,
       PPOMController: PPOMControllerInit,
       TransactionController: TransactionControllerInit,
@@ -2000,6 +2001,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.notificationServicesController.init();
     this.snapController.init();
+    this.cronjobController.init();
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
@@ -6653,8 +6655,8 @@ export default class MetamaskController extends EventEmitter {
           });
         }
       },
-      setEnabledNetworks: (chainIds) => {
-        this.networkOrderController.setEnabledNetworks(chainIds);
+      setEnabledNetworks: (chainIds, namespace) => {
+        this.networkOrderController.setEnabledNetworks(chainIds, namespace);
       },
       getCurrentChainIdForDomain: (domain) => {
         const networkClientId =
@@ -7963,9 +7965,9 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  setEnabledNetworks = (chainIds) => {
+  setEnabledNetworks = (chainIds, networkId) => {
     try {
-      this.networkOrderController.setEnabledNetworks(chainIds);
+      this.networkOrderController.setEnabledNetworks(chainIds, networkId);
     } catch (err) {
       log.error(err.message);
       throw err;
