@@ -107,8 +107,9 @@ jest.mock(
 
 jest.mock(
   '../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component',
-  () => (props: MockCurrencyDisplayProps) =>
-    <div data-testid="mock-currency-display">{props.value}</div>,
+  () => (props: MockCurrencyDisplayProps) => (
+    <div data-testid="mock-currency-display">{props.value}</div>
+  ),
 );
 
 jest.mock(
