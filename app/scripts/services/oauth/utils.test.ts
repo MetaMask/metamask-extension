@@ -7,16 +7,18 @@ import {
 
 describe('OAuthService - utils', () => {
   it('should be able to pad base64 string', () => {
-    const string = 'Hello';
-    const paddedBase64String = padBase64String(btoa(string));
+    // here to replicate the base64 string without proper padding
+    // `=` is replaced with empty string
+    const input = btoa('hello').replace(/[=]/gu, '');
+    const paddedBase64String = padBase64String(input);
 
     // base64 string length should be a multiple of 4
-    const expectedNumOfPaddings = string.length % 4;
+    const base64Length = 4;
+    const expectedNumOfPaddings = base64Length - (input.length % base64Length);
     const paddingAssertionRgx = new RegExp(
       `^[A-Za-z0-9_-]+[=]{${expectedNumOfPaddings}}$`,
       'u',
     );
-
     expect(paddedBase64String).toBeDefined();
     expect(paddedBase64String).toMatch(paddingAssertionRgx);
   });

@@ -2,6 +2,8 @@ import {
   AuthConnection,
   Web3AuthNetwork,
 } from '@metamask/seedless-onboarding-controller';
+import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import { ENVIRONMENT } from '../../../../development/build/constants';
 import { OAuthConfig, WebAuthenticator } from './types';
 import OAuthService from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
@@ -31,7 +33,7 @@ function getOAuthLoginEnvs(): {
 }
 
 function getOAuthConfig(): OAuthConfig {
-  const config = OAUTH_CONFIG.main;
+  const config = OAUTH_CONFIG.development;
 
   return {
     authServerUrl: config.AUTH_SERVER_URL,
@@ -52,17 +54,19 @@ const generateCodeVerifierAndChallengeSpy = jest.fn().mockResolvedValue({
   challenge: 'mocked-code-verifier-challenge',
 });
 const generateNonceSpy = jest.fn().mockReturnValue(MOCK_NONCE);
-const mockRequestIdentityPermission = jest.fn().mockResolvedValue(true);
 
 const mockWebAuthenticator: WebAuthenticator = {
   getRedirectURL: getRedirectUrlSpy,
   launchWebAuthFlow: launchWebAuthFlowSpy,
   generateCodeVerifierAndChallenge: generateCodeVerifierAndChallengeSpy,
   generateNonce: generateNonceSpy,
-  requestIdentityPermission: mockRequestIdentityPermission,
 };
 
 describe('OAuthService - startOAuthLogin', () => {
+  beforeAll(() => {
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
+  });
+
   beforeEach(() => {
     // mock the fetch call to auth-server
     jest.spyOn(global, 'fetch').mockImplementation(
@@ -135,6 +139,22 @@ describe('OAuthService - startOAuthLogin', () => {
       },
       expect.any(Function),
     );
+  });
+
+  it('should throw an error if the state validation fails - google', async () => {
+    const oauthEnv = getOAuthLoginEnvs();
+
+    const oauthService = new OAuthService({
+      env: oauthEnv,
+      webAuthenticator: {
+        ...mockWebAuthenticator,
+        generateNonce: jest.fn().mockReturnValue(Math.random().toString()),
+      },
+    });
+
+    await expect(
+      oauthService.startOAuthLogin(AuthConnection.Google),
+    ).rejects.toThrow(OAuthErrorMessages.INVALID_OAUTH_STATE_ERROR);
   });
 });
 

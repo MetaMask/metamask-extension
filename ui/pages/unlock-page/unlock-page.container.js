@@ -14,6 +14,7 @@ import {
   markPasswordForgotten,
   forceUpdateMetamaskState,
 } from '../../store/actions';
+import { getIsSocialLoginFlow } from '../../selectors';
 import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
@@ -22,6 +23,7 @@ const mapStateToProps = (state) => {
   } = state;
   return {
     isUnlocked,
+    isSocialLoginFlow: getIsSocialLoginFlow(state),
   };
 };
 
