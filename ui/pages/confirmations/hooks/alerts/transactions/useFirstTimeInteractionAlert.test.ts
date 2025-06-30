@@ -71,10 +71,12 @@ function runHook({
 }
 
 describe('useFirstTimeInteractionAlert', () => {
+  const mockUseTrustSignal = jest.mocked(useTrustSignal);
   beforeEach(() => {
     jest.resetAllMocks();
-    (useTrustSignal as jest.Mock).mockReturnValue({
+    mockUseTrustSignal.mockReturnValue({
       state: TrustSignalDisplayState.Unknown,
+      label: null,
     });
   });
 
@@ -162,8 +164,9 @@ describe('useFirstTimeInteractionAlert', () => {
   });
 
   it('returns no alerts if transaction destination is verified', () => {
-    (useTrustSignal as jest.Mock).mockReturnValue({
+    mockUseTrustSignal.mockReturnValue({
       state: TrustSignalDisplayState.Verified,
+      label: null,
     });
 
     const firstTimeConfirmation = {
@@ -184,8 +187,9 @@ describe('useFirstTimeInteractionAlert', () => {
   });
 
   it('returns no alerts if token transfer recipient is verified', () => {
-    (useTrustSignal as jest.Mock).mockReturnValue({
+    mockUseTrustSignal.mockReturnValue({
       state: TrustSignalDisplayState.Verified,
+      label: null,
     });
 
     const firstTimeConfirmation = {
@@ -207,10 +211,6 @@ describe('useFirstTimeInteractionAlert', () => {
   });
 
   it('returns alert if isFirstTimeInteraction is true', () => {
-    (useTrustSignal as jest.Mock).mockReturnValue({
-      state: TrustSignalDisplayState.Unknown,
-    });
-
     const firstTimeConfirmation = {
       ...TRANSACTION_META_MOCK,
       isFirstTimeInteraction: true,
