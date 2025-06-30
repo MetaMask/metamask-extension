@@ -26,9 +26,13 @@ export function useFirstTimeInteractionAlert(): Alert[] {
     (account) => account.address?.toLowerCase() === to?.toLowerCase(),
   );
 
-  const { state } = useTrustSignal(to || '', NameType.ETHEREUM_ADDRESS);
+  const { state: trustSignalDisplayState } = useTrustSignal(
+    to || '',
+    NameType.ETHEREUM_ADDRESS,
+  );
 
-  const isVerifiedAddress = state === TrustSignalDisplayState.Verified;
+  const isVerifiedAddress =
+    trustSignalDisplayState === TrustSignalDisplayState.Verified;
 
   const showAlert =
     !isInternalAccount && isFirstTimeInteraction && !isVerifiedAddress;
