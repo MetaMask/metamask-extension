@@ -1,64 +1,30 @@
 import { Hex, createProjectLogger } from '@metamask/utils';
 import BigNumber from 'bignumber.js';
-import { useTokenFiatRate } from './useTokenFiatRate';
-import { useTokenDecimals } from './useTokenDecimals';
+import {
+  INTENTS_FEE,
+  INTENTS_SLIPPAGE,
+} from '../../../../helpers/constants/intents';
 
 const log = createProjectLogger('intents');
 
 export function useIntentSourceAmount({
-  sourceChainId,
-  sourceTokenAddress,
-  targetChainId,
-  targetTokenAddress,
+  sourceDecimals,
+  sourceFiatRate,
+  targetDecimals,
+  targetFiatRate,
   targetAmount,
 }: {
-  sourceChainId: Hex;
-  sourceTokenAddress: Hex;
-  targetChainId: Hex;
-  targetTokenAddress: Hex;
+  sourceDecimals?: number;
+  sourceFiatRate?: BigNumber;
+  targetDecimals?: number;
+  targetFiatRate?: BigNumber;
   targetAmount: Hex;
 }) {
-  const sourceTokenFiatRate = useTokenFiatRate(
-    sourceTokenAddress,
-    sourceChainId,
-  );
-
-  log('Source token fiat rate', sourceTokenFiatRate?.toString());
-
-  const targetTokenFiatRate = useTokenFiatRate(
-    targetTokenAddress,
-    targetChainId,
-  );
-
-  log('Target token fiat rate', targetTokenFiatRate?.toString());
-
-  const { pending: sourceDecimalsLoading, value: sourceDecimals } =
-    useTokenDecimals({
-      chainId: sourceChainId,
-      tokenAddress: sourceTokenAddress,
-    });
-
-  log('Source token decimals', sourceDecimals);
-
-  const { pending: targetDecimalsLoading, value: targetDecimals } =
-    useTokenDecimals({
-      chainId: targetChainId,
-      tokenAddress: targetTokenAddress,
-    });
-
-  log('Target token decimals', targetDecimals);
-
-  if (sourceDecimalsLoading || targetDecimalsLoading) {
-    return {
-      loading: true,
-    };
-  }
-
   if (
     sourceDecimals === undefined ||
     targetDecimals === undefined ||
-    sourceTokenFiatRate === undefined ||
-    targetTokenFiatRate === undefined
+    sourceFiatRate === undefined ||
+    targetFiatRate === undefined
   ) {
     return {
       loading: false,
@@ -69,7 +35,10 @@ export function useIntentSourceAmount({
     -targetDecimals,
   );
 
-  const targetAmountFiat = targetAmountDecimals.mul(targetTokenFiatRate);
+  const targetAmountFiat = targetAmountDecimals
+    .mul(targetFiatRate)
+    .mul((1 + INTENTS_SLIPPAGE + INTENTS_FEE).toString());
+
   const targetAmountFormatted = targetAmountDecimals.round(6).toString();
 
   log(
@@ -79,7 +48,7 @@ export function useIntentSourceAmount({
     targetAmountFiat.toString(),
   );
 
-  const sourceTokenAmountDecimals = targetAmountFiat.div(sourceTokenFiatRate);
+  const sourceTokenAmountDecimals = targetAmountFiat.div(sourceFiatRate);
   const sourceTokenAmountFormatted = sourceTokenAmountDecimals
     .round(6)
     .toString();

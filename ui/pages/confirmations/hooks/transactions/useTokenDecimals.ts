@@ -1,6 +1,7 @@
 import { Hex } from '@metamask/utils';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { getTokenStandardAndDetailsByChain } from '../../../../store/actions';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../helpers/constants/intents';
 
 export function useTokenDecimals({
   chainId,
@@ -14,7 +15,7 @@ export function useTokenDecimals({
       return undefined;
     }
 
-    if (tokenAddress === '0x0000000000000000000000000000000000000000') {
+    if (tokenAddress === NATIVE_TOKEN_ADDRESS) {
       return 18;
     }
 

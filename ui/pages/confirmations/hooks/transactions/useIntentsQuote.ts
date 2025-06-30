@@ -12,7 +12,7 @@ import {
 } from '@metamask/transaction-controller';
 import { getBridgeQuotes } from '../../../../ducks/bridge/selectors';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { Hex, add0x } from '@metamask/utils';
+import { Hex, add0x, createProjectLogger } from '@metamask/utils';
 import {
   estimateGasFee,
   setIntentQuoteForTransaction,
@@ -22,6 +22,9 @@ import { QuoteResponse } from '@metamask/bridge-controller';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { toHex } from '@metamask/controller-utils';
 import { useAsyncResult } from '../../../../hooks/useAsync';
+import { useIntentsNetworkFee } from './useIntentsNetworkFee';
+
+const log = createProjectLogger('intents');
 
 const QUOTE_LOADING_TIMEOUT = 5000;
 
@@ -96,6 +99,8 @@ export function useIntentsQuote({
   const quoteData = useSelector(getBridgeQuotes);
   const activeQuote = quoteData.activeQuote;
 
+  log('Active quote', activeQuote);
+
   const isQuoteLoading =
     !activeQuote && Date.now() - quoteStart < QUOTE_LOADING_TIMEOUT;
 
@@ -111,6 +116,14 @@ export function useIntentsQuote({
     toHex(sourceChainId),
   );
 
+  const feeRaw = activeQuote?.quote?.feeData?.metabridge?.amount;
+  const sourceDecimals = activeQuote?.quote?.srcAsset?.decimals;
+
+  const feeFormatted =
+    feeRaw &&
+    sourceDecimals &&
+    new BigNumber(feeRaw).shift(-sourceDecimals).toFixed(6);
+
   useEffect(() => {
     setIntentQuoteForTransaction(transactionId, activeQuote);
   }, [transactionId, activeQuote]);
@@ -118,44 +131,9 @@ export function useIntentsQuote({
   const loading = gasFeeLoading || isQuoteLoading;
 
   return {
+    feeFormatted,
     gasFeeFormatted: activeQuote ? gasFeeFormatted : undefined,
     loading,
     sourceTokenAmount,
-  };
-}
-
-function useIntentsNetworkFee(intentQuote?: QuoteResponse | null) {
-  const chainId = toHex(intentQuote?.quote?.srcChainId ?? '0x1');
-  const trade = intentQuote?.trade;
-
-  const { pending: loading, value: gasFee } = useAsyncResult(async () => {
-    if (!trade) {
-      return undefined;
-    }
-
-    return estimateGasFee({
-      transactionParams: trade,
-      chainId,
-    });
-  }, [chainId, trade]);
-
-  const tradeMediumFee =
-    (gasFee?.estimates as FeeMarketGasFeeEstimates)?.[
-      GasFeeEstimateLevel.Medium
-    ]?.maxFeePerGas ?? '0x0';
-
-  const tradeGasLimit = intentQuote?.trade.gasLimit ?? 0;
-  const approvalGasLimit = intentQuote?.approval?.gasLimit ?? 0;
-  const totalGasLimit = tradeGasLimit + approvalGasLimit;
-
-  const totalCostNative = add0x(
-    new BigNumber(totalGasLimit).mul(tradeMediumFee, 16).toString(16),
-  );
-
-  const value = intentQuote ? totalCostNative : undefined;
-
-  return {
-    loading,
-    value,
   };
 }

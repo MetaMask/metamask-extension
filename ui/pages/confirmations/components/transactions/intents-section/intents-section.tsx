@@ -47,9 +47,13 @@ import Name from '../../../../../components/app/name';
 import { NameType } from '@metamask/name-controller';
 import { useIntentsTarget } from '../../../hooks/transactions/useIntentsTarget';
 import { useIntentSourceAmount } from '../../../hooks/transactions/useIntentSourceAmount';
+import { useIntentsAsset } from '../../../hooks/transactions/useIntentsAsset';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../helpers/constants/intents';
+import BigNumber from 'bignumber.js';
+import { useTokenFiatAmount } from '../../../../../hooks/useTokenFiatAmount';
 
 type SelectedToken = {
-  address?: Hex;
+  address: Hex;
   chainId: Hex;
 };
 
@@ -62,23 +66,38 @@ export function IntentsSection() {
   const { chainId: targetChainId } = transactionMeta;
 
   const [sourceToken, setSourceToken] = useState<SelectedToken>({
+    address: NATIVE_TOKEN_ADDRESS,
     chainId: targetChainId,
   });
 
   const { targetTokenAddress, targetAmount } = useIntentsTarget();
 
   const {
-    loading: sourceAmountLoading,
-    sourceTokenAmountFormatted,
-    sourceTokenAmountRaw,
-    targetAmountFormatted,
-  } = useIntentSourceAmount({
-    sourceChainId: sourceToken.chainId,
-    sourceTokenAddress: sourceToken.address as Hex,
-    targetTokenAddress,
-    targetChainId,
-    targetAmount,
+    decimals: sourceDecimals,
+    fiatRate: sourceFiatRate,
+    loading: sourceAssetLoading,
+  } = useIntentsAsset({
+    chainId: sourceToken.chainId,
+    tokenAddress: sourceToken.address,
   });
+
+  const {
+    decimals: targetDecimals,
+    fiatRate: targetFiatRate,
+    loading: targetAssetLoading,
+  } = useIntentsAsset({
+    chainId: targetChainId,
+    tokenAddress: targetTokenAddress,
+  });
+
+  const { sourceTokenAmountFormatted, sourceTokenAmountRaw } =
+    useIntentSourceAmount({
+      sourceDecimals,
+      sourceFiatRate,
+      targetDecimals,
+      targetFiatRate,
+      targetAmount,
+    });
 
   const { gasFeeFormatted, loading: quoteLoading } = useIntentsQuote({
     sourceChainId: sourceToken.chainId,
@@ -87,7 +106,7 @@ export function IntentsSection() {
     sourceTokenAmount: sourceTokenAmountRaw,
   });
 
-  const loading = sourceAmountLoading || quoteLoading;
+  const loading = sourceAssetLoading || targetAssetLoading || quoteLoading;
 
   return (
     <ConfirmInfoSection>
@@ -95,13 +114,16 @@ export function IntentsSection() {
         loading={loading}
         onChange={setSourceToken}
         sourceTokenAmount={sourceTokenAmountFormatted}
+        sourceTokenChainId={sourceToken.chainId}
+        sourceTokenAddress={sourceToken.address}
         targetChainId={targetChainId}
       />
       {isAdvanced && (
         <IntentsTargetRow
-          targetAmount={targetAmountFormatted}
-          targetTokenAddress={targetTokenAddress}
+          targetAmount={targetAmount}
           targetChainId={targetChainId}
+          targetDecimals={targetDecimals}
+          targetTokenAddress={targetTokenAddress}
         />
       )}
       {!loading && isAdvanced && (
@@ -129,13 +151,29 @@ function IntentsNetworkFeeRow({
 
 function IntentsTargetRow({
   targetAmount,
-  targetTokenAddress,
   targetChainId,
+  targetDecimals,
+  targetTokenAddress,
 }: {
   targetAmount?: string;
-  targetTokenAddress: Hex;
   targetChainId: Hex;
+  targetDecimals?: number;
+  targetTokenAddress: Hex;
 }) {
+  const targetAmountFormatted =
+    targetAmount && targetDecimals
+      ? new BigNumber(targetAmount).shift(-targetDecimals).round(6).toString()
+      : undefined;
+
+  const targetAmountFiat = useTokenFiatAmount(
+    targetTokenAddress,
+    targetAmountFormatted,
+    undefined,
+    {},
+    true,
+    targetChainId,
+  );
+
   return (
     <ConfirmInfoRow label="Target">
       <Box
@@ -145,7 +183,8 @@ function IntentsTargetRow({
         alignItems={AlignItems.center}
         gap={2}
       >
-        <Text>{targetAmount}</Text>
+        <Text>{targetAmountFiat}</Text>
+        <Text>{targetAmountFormatted}</Text>
         <Name
           type={NameType.ETHEREUM_ADDRESS}
           value={targetTokenAddress}
@@ -160,11 +199,15 @@ function IntentsSourceRow({
   loading,
   onChange,
   sourceTokenAmount,
+  sourceTokenChainId,
+  sourceTokenAddress,
   targetChainId,
 }: {
   loading?: boolean;
   onChange?: (token: SelectedToken) => void;
   sourceTokenAmount?: string;
+  sourceTokenChainId: Hex;
+  sourceTokenAddress: Hex;
   targetChainId: Hex;
 }) {
   const [asset, setAsset] = useState<
@@ -184,12 +227,19 @@ function IntentsSourceRow({
 
   useEffect(() => {
     onChange?.({
-      address:
-        (asset.address as Hex) ||
-        ('0x0000000000000000000000000000000000000000' as Hex),
+      address: (asset.address as Hex) || NATIVE_TOKEN_ADDRESS,
       chainId: network.chainId,
     });
   }, [asset.address, network.chainId, onChange]);
+
+  const sourceTokenFiat = useTokenFiatAmount(
+    sourceTokenAddress,
+    sourceTokenAmount,
+    undefined,
+    {},
+    true,
+    sourceTokenChainId,
+  );
 
   return (
     <ConfirmInfoRow label="Pay">
@@ -205,7 +255,8 @@ function IntentsSourceRow({
             <Preloader size={20} />
           </div>
         )}
-        <Text variant={TextVariant.bodyMd}>{sourceTokenAmount}</Text>
+        <Text>{sourceTokenFiat}</Text>
+        <Text>{sourceTokenAmount}</Text>
         <AssetPickerWrapper
           asset={asset}
           network={network}

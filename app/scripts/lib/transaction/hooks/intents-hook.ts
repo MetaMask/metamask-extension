@@ -102,6 +102,10 @@ export class IntentsHook {
 
     await this.waitForBridgeCompletion(bridgeTransactionId);
 
+    log('Safe delay');
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
     return EMPTY_RESULT;
   }
 
