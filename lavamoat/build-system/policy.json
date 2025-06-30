@@ -360,7 +360,7 @@
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
         "depcheck>@babel/traverse": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>globals": true
+        "depcheck>@babel/traverse>globals": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-computed-properties": {
@@ -881,7 +881,7 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>globals": true,
+        "eslint>@eslint/eslintrc>globals": true,
         "eslint>ignore": true,
         "eslint>minimatch": true,
         "mocha>strip-json-comments": true
@@ -3764,6 +3764,11 @@
       }
     },
     "gulp-livereload>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
+      }
+    },
+    "mocha>supports-color>has-flag": {
       "globals": {
         "process.argv": true
       }
@@ -7059,7 +7064,7 @@
         "micromatch>picomatch": true
       }
     },
-    "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>regexpu-core>regenerate": {
+    "polkamarkets-js>babel-preset-env>babel-plugin-transform-es2015-unicode-regex>regexpu-core>regenerate": {
       "globals": {
         "define": true
       }
@@ -7099,7 +7104,7 @@
         "characterClassItem.kind": true
       },
       "packages": {
-        "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>regexpu-core>regenerate": true,
+        "polkamarkets-js>babel-preset-env>babel-plugin-transform-es2015-unicode-regex>regexpu-core>regenerate": true,
         "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>regexpu-core>regjsgen": true,
         "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>regexpu-core>regjsparser": true,
         "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>regexpu-core>unicode-match-property-ecmascript": true,
@@ -8306,7 +8311,7 @@
         "process.platform": true
       },
       "packages": {
-        "chalk>supports-color>has-flag": true
+        "mocha>supports-color>has-flag": true
       }
     },
     "postcss-discard-font-face>postcss>supports-color": {

@@ -387,6 +387,7 @@
     "luxon": "^3.2.1",
     "nanoid": "^3.3.8",
     "pify": "^5.0.0",
+    "polkamarkets-js": "^3.1.11",
     "prop-types": "^15.6.1",
     "punycode": "^2.1.1",
     "qrcode-generator": "1.4.4",
@@ -772,7 +773,15 @@
       "@metamask/kernel-browser-runtime>@metamask/streams": false,
       "@metamask/kernel-browser-runtime>@metamask/kernel-store>better-sqlite3": false,
       "@metamask/logger>@metamask/streams": false,
-      "@metamask/streams": false
+      "@metamask/streams": false,
+      "polkamarkets-js": false,
+      "polkamarkets-js>@openzeppelin/truffle-upgrades>@truffle/contract>web3": false,
+      "polkamarkets-js>@openzeppelin/truffle-upgrades>@truffle/contract>web3>web3-bzz": false,
+      "polkamarkets-js>@openzeppelin/truffle-upgrades>@truffle/contract>web3>web3-shh": false,
+      "polkamarkets-js>babel-cli>babel-runtime>core-js": false,
+      "polkamarkets-js>web3": false,
+      "polkamarkets-js>web3>web3-bzz": false,
+      "polkamarkets-js>web3>web3-shh": false
     }
   },
   "packageManager": "yarn@4.9.1",

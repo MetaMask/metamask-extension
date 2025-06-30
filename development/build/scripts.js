@@ -917,6 +917,20 @@ function setupBundlerDefaults(
   },
 ) {
   const { bundlerOpts } = buildConfiguration;
+  bundlerOpts.manualIgnore.push('**/web3.min.js');
+  bundlerOpts.manualIgnore.push(
+    './**/node_modules/polkamarkets-js/node_modules/web3/dist/web3.min.js',
+  );
+  bundlerOpts.manualExclude = (bundlerOpts.manualExclude || []).concat([
+    '**/web3.min.js',
+    './**/node_modules/polkamarkets-js/node_modules/web3/dist/web3.min.js',
+  ]);
+  bundlerOpts.noParse = (bundlerOpts.noParse || []).concat([
+    path.resolve(
+      __dirname,
+      '../../node_modules/polkamarkets-js/node_modules/web3/dist/web3.min.js',
+    ),
+  ]);
   const extensions = ['.js', '.ts', '.tsx'];
 
   Object.assign(bundlerOpts, {
@@ -930,6 +944,7 @@ function setupBundlerDefaults(
         // Run TypeScript files through Babel
         {
           extensions,
+          ignore: ['**/web3.min.js', './**/node_modules/polkamarkets-js'],
         },
       ],
       // Transpile dependencies that are either:
@@ -944,6 +959,7 @@ function setupBundlerDefaults(
             './**/node_modules/marked',
             './**/node_modules/@solana',
             './**/node_modules/axios',
+            './**/node_modules/polkamarkets-js/src',
             // Ocap Kernel
             './**/node_modules/@endo',
             './**/node_modules/@agoric',

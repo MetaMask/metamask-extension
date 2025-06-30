@@ -52,6 +52,8 @@ import {
 } from '@metamask/transaction-controller';
 import {
   AddNetworkFields,
+  AutoManagedNetworkClient,
+  CustomNetworkClientConfiguration,
   NetworkClientId,
   NetworkConfiguration,
 } from '@metamask/network-controller';
@@ -6719,4 +6721,10 @@ export async function signTypedMessage(
   version: SignTypedDataVersion,
 ) {
   return await submitRequestToBackground('signTypedMessage', [data, version]);
+}
+
+export async function getNetworkClientById(clientId: NetworkClientId) {
+  return await submitRequestToBackground<
+    AutoManagedNetworkClient<CustomNetworkClientConfiguration>
+  >('getNetworkClientById', [clientId]);
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Box, Button, Text } from '../../components/component-library';
 import { Header, Page } from '../../components/multichain/pages/page';
@@ -13,9 +13,11 @@ import {
 
 import PredictMarketsContainer from './markets/predict.markets.container';
 import { usePolymarket } from './usePolymarket';
+import { useMyriad } from './useMyriad';
 
 const PredictContainer = () => {
   const { apiKey, createApiKey, approveAllowances } = usePolymarket();
+  const { polymarketsClient } = useMyriad();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleEnablePredict = async () => {
@@ -24,6 +26,15 @@ const PredictContainer = () => {
     await approveAllowances();
     setIsLoading(false);
   };
+
+  const getAddress = async () => {
+    const userAddress = await polymarketsClient.getAddress();
+    console.log('userAddress', userAddress);
+  };
+
+  useEffect(() => {
+    getAddress();
+  }, [polymarketsClient]);
 
   if (!apiKey) {
     return (

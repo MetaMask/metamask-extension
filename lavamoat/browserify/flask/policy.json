@@ -236,6 +236,19 @@
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
       }
     },
+    "@polymarket/clob-client>@polymarket/order-utils>@metamask/eth-sig-util>@ethereumjs/util": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "browserify>buffer": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "webpack>events": true,
+        "browserify>insert-module-globals>is-buffer": true,
+        "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
+      }
+    },
     "eth-lattice-keyring>@ethereumjs/util": {
       "globals": {
         "console.warn": true
@@ -310,9 +323,21 @@
         "bn.js": true
       }
     },
+    "@polymarket/clob-client>ethers>@ethersproject/bignumber": {
+      "packages": {
+        "@polymarket/clob-client>ethers>@ethersproject/bytes": true,
+        "@polymarket/clob-client>ethers>@ethersproject/logger": true,
+        "bn.js": true
+      }
+    },
     "@ethersproject/bytes": {
       "packages": {
         "ethers>@ethersproject/logger": true
+      }
+    },
+    "@polymarket/clob-client>ethers>@ethersproject/bytes": {
+      "packages": {
+        "@polymarket/clob-client>ethers>@ethersproject/logger": true
       }
     },
     "ethers>@ethersproject/constants": {
@@ -386,6 +411,11 @@
       }
     },
     "ethers>@ethersproject/logger": {
+      "globals": {
+        "console": true
+      }
+    },
+    "@polymarket/clob-client>ethers>@ethersproject/logger": {
       "globals": {
         "console": true
       }
@@ -539,6 +569,12 @@
       "packages": {
         "@ethersproject/bignumber": true,
         "ethers>@ethersproject/logger": true
+      }
+    },
+    "@polymarket/clob-client>ethers>@ethersproject/units": {
+      "packages": {
+        "@polymarket/clob-client>ethers>@ethersproject/bignumber": true,
+        "@polymarket/clob-client>ethers>@ethersproject/logger": true
       }
     },
     "@ethersproject/wallet": {
@@ -1468,6 +1504,17 @@
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "tweetnacl": true
+      }
+    },
+    "@polymarket/clob-client>@polymarket/order-utils>@metamask/eth-sig-util": {
+      "packages": {
+        "@polymarket/clob-client>@polymarket/order-utils>@metamask/eth-sig-util>@ethereumjs/util": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@polymarket/clob-client>@polymarket/order-utils>@metamask/eth-sig-util>ethjs-util": true,
+        "tweetnacl": true,
+        "@polymarket/clob-client>@polymarket/order-utils>@metamask/eth-sig-util>tweetnacl-util": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-simple-keyring": {
@@ -2515,6 +2562,26 @@
         "@open-rpc/schema-utils-js>is-url": true
       }
     },
+    "@polymarket/clob-client": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@polymarket/clob-client>ethers>@ethersproject/units": true,
+        "@polymarket/clob-client>@polymarket/order-utils": true,
+        "@polymarket/clob-client>axios": true,
+        "@polymarket/clob-client>browser-or-node": true,
+        "browserify>buffer": true,
+        "crypto-browserify": true,
+        "tslib": true
+      }
+    },
+    "@polymarket/clob-client>@polymarket/order-utils": {
+      "packages": {
+        "@polymarket/clob-client>@polymarket/order-utils>@metamask/eth-sig-util": true,
+        "tslib": true
+      }
+    },
     "@popperjs/core": {
       "globals": {
         "Element": true,
@@ -3264,6 +3331,23 @@
         "browserify>timers-browserify": true
       }
     },
+    "@polymarket/clob-client>axios": {
+      "globals": {
+        "Blob": true,
+        "FormData": true,
+        "XMLHttpRequest": true,
+        "btoa": true,
+        "console.warn": true,
+        "document": true,
+        "location.href": true,
+        "navigator": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "process": true
+      }
+    },
     "@metamask/snaps-controllers>tar-stream>b4a": {
       "globals": {
         "TextDecoder": true,
@@ -3381,6 +3465,17 @@
       },
       "packages": {
         "browserify>browser-resolve": true
+      }
+    },
+    "@polymarket/clob-client>browser-or-node": {
+      "globals": {
+        "Deno": true,
+        "document": true,
+        "name": true,
+        "navigator": true
+      },
+      "packages": {
+        "process": true
       }
     },
     "ethereumjs-util>ethereum-cryptography>browserify-aes": {
@@ -3939,7 +4034,7 @@
         "ethereumjs-util>create-hash": true,
         "@metamask/keyring-controller>ethereumjs-wallet>ethereum-cryptography": true,
         "browserify>insert-module-globals>is-buffer": true,
-        "@metamask/keyring-controller>ethereumjs-wallet>ethereumjs-util>rlp": true
+        "ethereumjs-util>rlp": true
       }
     },
     "@metamask/keyring-controller>ethereumjs-wallet": {
@@ -3992,7 +4087,14 @@
         "bn.js": true,
         "browserify>buffer": true,
         "eth-ens-namehash>js-sha3": true,
-        "eth-method-registry>@metamask/ethjs-contract>ethjs-abi>number-to-bn": true
+        "polkamarkets-js>web3>web3-utils>number-to-bn": true
+      }
+    },
+    "@polymarket/clob-client>@polymarket/order-utils>@metamask/eth-sig-util>ethjs-util": {
+      "packages": {
+        "browserify>buffer": true,
+        "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>is-hex-prefixed": true,
+        "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
       }
     },
     "webpack>events": {
@@ -4128,7 +4230,7 @@
         "ethers>@ethersproject/sha2>hash.js": true,
         "eth-ens-namehash>js-sha3": true,
         "lodash": true,
-        "eth-lattice-keyring>rlp": true,
+        "eth-lattice-keyring>gridplus-sdk>rlp": true,
         "ganache>secp256k1": true,
         "eth-lattice-keyring>gridplus-sdk>uuid": true
       }
@@ -4605,7 +4707,7 @@
     "@ensdomains/content-hash>multicodec": {
       "packages": {
         "@ensdomains/content-hash>multicodec>uint8arrays": true,
-        "sass-embedded>varint": true
+        "@ensdomains/content-hash>multicodec>varint": true
       }
     },
     "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": {
@@ -4627,8 +4729,8 @@
     "@ensdomains/content-hash>cids>multihashes": {
       "packages": {
         "@ensdomains/content-hash>cids>multibase": true,
-        "@ensdomains/content-hash>cids>multihashes>uint8arrays": true,
-        "@ensdomains/content-hash>cids>multihashes>varint": true
+        "@ensdomains/content-hash>cids>uint8arrays": true,
+        "@ensdomains/content-hash>multihashes>varint": true
       }
     },
     "nanoid": {
@@ -4704,7 +4806,7 @@
         "fetch": true
       }
     },
-    "eth-method-registry>@metamask/ethjs-contract>ethjs-abi>number-to-bn": {
+    "polkamarkets-js>web3>web3-utils>number-to-bn": {
       "packages": {
         "bn.js": true,
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
@@ -5411,10 +5513,9 @@
         "browserify>buffer": true
       }
     },
-    "@metamask/keyring-controller>ethereumjs-wallet>ethereumjs-util>rlp": {
-      "packages": {
-        "bn.js": true,
-        "browserify>buffer": true
+    "eth-lattice-keyring>gridplus-sdk>rlp": {
+      "globals": {
+        "TextEncoder": true
       }
     },
     "wait-on>rxjs": {
@@ -5663,6 +5764,15 @@
         "browserify>browser-resolve": true
       }
     },
+    "@polymarket/clob-client>@polymarket/order-utils>@metamask/eth-sig-util>tweetnacl-util": {
+      "globals": {
+        "atob": true,
+        "btoa": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
     "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {
       "globals": {
         "define": true
@@ -5670,7 +5780,8 @@
     },
     "@ensdomains/content-hash>cids>uint8arrays": {
       "globals": {
-        "TextDecoder": true
+        "TextDecoder": true,
+        "TextEncoder": true
       },
       "packages": {
         "@ensdomains/content-hash>cids>multibase": true
@@ -5684,15 +5795,6 @@
       },
       "packages": {
         "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true
-      }
-    },
-    "@ensdomains/content-hash>cids>multihashes>uint8arrays": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@ensdomains/content-hash>cids>multibase": true
       }
     },
     "@metamask/keyring-controller>ulid": {

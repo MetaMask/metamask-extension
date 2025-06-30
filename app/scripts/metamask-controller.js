@@ -4304,6 +4304,9 @@ export default class MetamaskController extends EventEmitter {
           notificationServicesController,
         ),
 
+      getNetworkClientById:
+        networkController.getNetworkClientById.bind(networkController),
+
       // E2E testing
       throwTestError: this.throwTestError.bind(this),
 
