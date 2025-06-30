@@ -276,6 +276,18 @@ export type MarketGamma = {
   negRisk: boolean;
 };
 
+export type MarketMyriad = {
+  title: string;
+  id: string;
+  image_url: string;
+  expires_at: string;
+  outcomes: {
+    id: number;
+    market_id: number;
+  }[];
+  volume: number;
+};
+
 export type Activity = {
   proxyWallet: string;
   timestamp: number;

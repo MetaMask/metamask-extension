@@ -15,9 +15,9 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { MarketGamma } from '../types';
+import { MarketMyriad } from '../types';
 import PredictNavigation from '../predict.navigation';
-import { GAMMA_API_ENDPOINT } from '../utils';
+import { STAGING_API_ENDPOINT } from '../utils';
 
 const PredictMarketsContainer = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -36,7 +36,7 @@ const PredictMarketsContainer = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${GAMMA_API_ENDPOINT}/markets?limit=5&closed=false&active=true&tag_id=51`,
+        `${STAGING_API_ENDPOINT}/markets\?token\=USDC`,
         {
           method: 'GET',
           headers: {
@@ -92,10 +92,10 @@ const PredictMarketsContainer = () => {
         )}
         {marketData &&
           marketData.length > 0 &&
-          marketData.map((market: MarketGamma) => {
+          marketData.map((market: MarketMyriad) => {
             return (
               <Box
-                key={market.conditionId}
+                key={market.id}
                 backgroundColor={BackgroundColor.backgroundDefault}
                 borderRadius={BorderRadius.LG}
                 padding={4}
@@ -108,13 +108,13 @@ const PredictMarketsContainer = () => {
                   gap={3}
                 >
                   <img
-                    src={market.image}
-                    alt={market.question}
+                    src={market.image_url?.replace(/\s+/g, '') || './images/logo/metamask-fox.svg'}
+                    alt={market.title}
                     style={{ width: 48, height: 48, borderRadius: 8 }}
                   />
                   <Box>
                     <Text variant={TextVariant.headingSm}>
-                      {market.question}
+                      {market.title}
                     </Text>
                   </Box>
                 </Box>
@@ -127,7 +127,7 @@ const PredictMarketsContainer = () => {
                 >
                   <Box>
                     <Text variant={TextVariant.bodySm}>
-                      {getDaysLeft(market.endDate)}
+                      {getDaysLeft(market.expires_at)}
                     </Text>
                   </Box>
                   <Box>
@@ -151,7 +151,7 @@ const PredictMarketsContainer = () => {
                       color: 'white',
                     }}
                     onClick={() => {
-                      history.push(`/predict-bet/${market.conditionId}`);
+                      history.push(`/myriad/predict-bet/${market.outcomes[1].market_id}/${market.outcomes[1].id}`);
                     }}
                   >
                     Buy No ($10)
@@ -164,7 +164,7 @@ const PredictMarketsContainer = () => {
                       color: 'white',
                     }}
                     onClick={() => {
-                      history.push(`/predict-bet/${market.conditionId}`);
+                      history.push(`/myriad/predict-bet/${market.outcomes[0].market_id}/${market.outcomes[0].id}`);
                     }}
                   >
                     Buy Yes ($10)

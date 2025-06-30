@@ -1,0 +1,2768 @@
+[
+  {
+    "liked": false,
+    "id": 11,
+    "network_id": 1112432,
+    "slug": "test-1-2-3-fees",
+    "title": "Test 1-2-3 fees",
+    "description": "Test 1-2-3 fees",
+    "created_at": "2025-06-18T00:03:06.279Z",
+    "expires_at": "2025-06-30T23:00:00.000Z",
+    "scheduled_at": null,
+    "fee": 0.01,
+    "treasury_fee": 0.02,
+    "treasury": "0x968CF2b84C63099266b1282C6B5590adc0A00711",
+    "fees": {
+      "treasury": "0x968CF2b84C63099266b1282C6B5590adc0A00711",
+      "distributor": "0x68FcB3Db1BA4Abb85D9f9420A110948e6459d613",
+      "buy": {
+        "fee": 0.01,
+        "treasury_fee": 0.02,
+        "distributor_fee": 0.03
+      },
+      "sell": {
+        "fee": 0.0,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      }
+    },
+    "state": "open",
+    "verified": false,
+    "category": "Crypto",
+    "subcategory": "",
+    "topics": [
+      "Crypto"
+    ],
+    "resolution_source": "https://thirdweb.com/thirdweb.eth",
+    "resolution_title": "T",
+    "token": {
+      "name": "USDC",
+      "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+      "symbol": "USDC",
+      "decimals": 6,
+      "wrapped": false
+    },
+    "image_url": null,
+    "liquidity": 1000.0,
+    "liquidity_eur": 1000.0,
+    "liquidity_price": 0.9984963757958546,
+    "volume": 253.986,
+    "volume_24h": 0,
+    "volume_eur": 253.986,
+    "shares": 2003.011784,
+    "question_id": "0x9e2a2a70f3ed7bff1924eb26d396023b9a35003b1ca30306f5836856956c2eb7",
+    "resolved_outcome_id": -1,
+    "voided": false,
+    "trading_view_symbol": null,
+    "question": {
+      "id": "0x9e2a2a70f3ed7bff1924eb26d396023b9a35003b1ca30306f5836856956c2eb7",
+      "bond": 0.0,
+      "best_answer": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "is_finalized": false,
+      "arbitrator": "0x0000000000000000000000000000000000000000",
+      "is_pending_arbitration": false,
+      "is_claimed": false,
+      "finalize_ts": 0,
+      "timeout": 0,
+      "dispute_id": null,
+      "is_pending_arbitration_request": false
+    },
+    "banner_url": null,
+    "og_image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/6aa5229e-f9a7-4c7a-511a-4e5c48aa6500/public",
+    "news": [],
+    "votes": {
+      "up": 0,
+      "down": 0
+    },
+    "users": 5,
+    "top_holders": [
+      "0xc3E25f0370B68dc14e88F3cb792868456e40170B",
+      "0x968CF2b84C63099266b1282C6B5590adc0A00711",
+      "0x9c6ade4835F069bB959BB6cd9d2D294797F509d2"
+    ],
+    "likes": 0,
+    "comments": 0,
+    "featured": false,
+    "featured_at": null,
+    "publish_status": "published",
+    "image_ipfs_hash": "",
+    "edit_history": [],
+    "sponsorship": null,
+    "tournaments": [
+      {
+        "id": 1778,
+        "network_id": 1112432,
+        "slug": "myriad-szn2-pts-contest",
+        "title": "Myriad SZN2 USDC Contest",
+        "description": "Myriad USDC Contest",
+        "token": {
+          "name": "USDC",
+          "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+          "symbol": "USDC",
+          "decimals": 6,
+          "wrapped": false
+        },
+        "created_at": "2025-06-11T08:51:49.782Z",
+        "image_url": "",
+        "avatar_url": null,
+        "og_image_url": null,
+        "metadata_url": null,
+        "expires_at": "2026-01-01T00:00:01.000Z",
+        "users": 8,
+        "position": 1,
+        "rank_by": "claim_winnings_count,earnings_eur",
+        "rewards": [
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "claim_winnings_count",
+            "image_url": "",
+            "description": "R1"
+          },
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "earnings_eur",
+            "image_url": "",
+            "description": "R1"
+          }
+        ],
+        "rules": "",
+        "topics": [
+          "Other"
+        ],
+        "published": true,
+        "comments_enabled": true,
+        "markets": [
+          {
+            "id": 1,
+            "title": "Fear and Greed Index at 62 or higher on December 31?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/01f666d4-6dec-4cf9-bb9d-eda8144f6900/public",
+            "slug": "fear-and-greed-index-at-62-or-higher-on-december-31-7c02a20e-bcdd-4fed-9771-d2923296bdc7"
+          },
+          {
+            "id": 4,
+            "title": "Will Bitcoin price hit 250,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-250-000-in-2025"
+          },
+          {
+            "id": 5,
+            "title": "Will Bitcoin price hit 500,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-500-000-in-2025"
+          },
+          {
+            "id": 6,
+            "title": "Will Bitcoin price hit 1,000,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-1-000-000-in-2025"
+          },
+          {
+            "id": 7,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+            "slug": "market-with-3-outcomes"
+          },
+          {
+            "id": 8,
+            "title": "Closed Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "closed-market-with-3-outcomes"
+          },
+          {
+            "id": 9,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "market-with-3-outcomes-1cf1723c-1966-4692-83de-4752632db4cb"
+          },
+          {
+            "id": 2,
+            "title": "Will Bitcoin price hit 150,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-150-000-in-2025"
+          },
+          {
+            "id": 3,
+            "title": "Will Bitcoin price hit 200,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-200-000-in-2025-4cc33143-4f5c-4859-941b-98c3cba58240"
+          },
+          {
+            "id": 11,
+            "title": "Test 1-2-3 fees",
+            "image_url": null,
+            "slug": "test-1-2-3-fees"
+          }
+        ],
+        "land": {
+          "id": 905,
+          "slug": "myriad-szn2-usdc",
+          "title": "Myriad SZN2 USDC",
+          "network_id": "1112432",
+          "description": "Myriad Abstract USDC Land",
+          "short_description": "Myriad USDC Land.",
+          "token": {
+            "name": "USDC",
+            "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+            "symbol": "USDC",
+            "decimals": 6,
+            "wrapped": false
+          },
+          "token_controller_address": "0xd679cd5d513de3163aae5dd1e8472cac4971f287",
+          "created_at": "2025-06-11T08:09:13.458Z",
+          "position": 35,
+          "rank_by": "claim_winnings_count,earnings_eur",
+          "users": 0,
+          "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+          "banner_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/359049f1-f480-4ef0-d59c-33258993bb00/public",
+          "og_image_url": null,
+          "metadata_url": null,
+          "tags": [
+            "Myriad"
+          ],
+          "social_urls": {},
+          "admins": [
+            "0x68FcB3Db1BA4Abb85D9f9420A110948e6459d613",
+            "0xA9b69Aa5AbE255e54442cAA4689d3Cea654609fd",
+            "0x968CF2b84C63099266b1282C6B5590adc0A00711",
+            "0x31F99af8a746411DC81eD6cdE002DD22B7FCD1fC"
+          ],
+          "published": true,
+          "website_url": "https://abstract.myriad.markets/",
+          "whitelabel": true,
+          "onboarded": true,
+          "advanced": true,
+          "topics": [
+            "Crypto"
+          ]
+        }
+      }
+    ],
+    "outcomes": [
+      {
+        "id": 0,
+        "market_id": 11,
+        "title": "A",
+        "shares": 946.605544,
+        "shares_held": 109.80069600000002,
+        "holders": 5,
+        "price": 0.5274088991580291,
+        "closing_price": null,
+        "price_change_24h": 0.0,
+        "image_url": null,
+        "image_ipfs_hash": null
+      },
+      {
+        "id": 1,
+        "market_id": 11,
+        "title": "B",
+        "shares": 1056.40624,
+        "shares_held": 0.0,
+        "holders": 0,
+        "price": 0.47259110084197087,
+        "closing_price": null,
+        "price_change_24h": -1.1746127071025852e-16,
+        "image_url": null,
+        "image_ipfs_hash": null
+      }
+    ]
+  },
+  {
+    "liked": false,
+    "id": 9,
+    "network_id": 1112432,
+    "slug": "market-with-3-outcomes-1cf1723c-1966-4692-83de-4752632db4cb",
+    "title": "Market With 3 Outcomes",
+    "description": "Market With 3 Outcomes?",
+    "created_at": "2025-06-13T14:12:17.654Z",
+    "expires_at": "2025-06-13T14:00:58.000Z",
+    "scheduled_at": null,
+    "fee": 0.03,
+    "treasury_fee": 0.0,
+    "treasury": "0x0000000000000000000000000000000000000000",
+    "fees": {
+      "treasury": "0x0000000000000000000000000000000000000000",
+      "distributor": "0x0000000000000000000000000000000000000000",
+      "buy": {
+        "fee": 0.03,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      },
+      "sell": {
+        "fee": 0.0,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      }
+    },
+    "state": "closed",
+    "verified": false,
+    "category": "Other",
+    "subcategory": "",
+    "topics": [
+      "Crypto"
+    ],
+    "resolution_source": "https://coinmarketcap.com/",
+    "resolution_title": "Coinmarketcap",
+    "token": {
+      "name": "USDC",
+      "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+      "symbol": "USDC",
+      "decimals": 6,
+      "wrapped": false
+    },
+    "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+    "liquidity": 1000.0,
+    "liquidity_eur": 1000.0,
+    "liquidity_price": 1.0,
+    "volume": 0,
+    "volume_24h": 0,
+    "volume_eur": 0,
+    "shares": 4000.0,
+    "question_id": "0xd539faeae16442cd13cf5e715a83240b79de08aaf323c379d91e811280fc606d",
+    "resolved_outcome_id": -1,
+    "voided": false,
+    "trading_view_symbol": null,
+    "question": {
+      "id": "0xd539faeae16442cd13cf5e715a83240b79de08aaf323c379d91e811280fc606d",
+      "bond": 0.0,
+      "best_answer": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "is_finalized": false,
+      "arbitrator": "0x0000000000000000000000000000000000000000",
+      "is_pending_arbitration": false,
+      "is_claimed": false,
+      "finalize_ts": 0,
+      "timeout": 0,
+      "dispute_id": null,
+      "is_pending_arbitration_request": false
+    },
+    "banner_url": null,
+    "og_image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/b5ba554e-e3a7-47ca-d98a-6fe9394b6800/public",
+    "news": [],
+    "votes": {
+      "up": 0,
+      "down": 0
+    },
+    "users": 1,
+    "top_holders": [],
+    "likes": 0,
+    "comments": 0,
+    "featured": false,
+    "featured_at": null,
+    "publish_status": "published",
+    "image_ipfs_hash": "",
+    "edit_history": [],
+    "sponsorship": null,
+    "tournaments": [
+      {
+        "id": 1778,
+        "network_id": 1112432,
+        "slug": "myriad-szn2-pts-contest",
+        "title": "Myriad SZN2 USDC Contest",
+        "description": "Myriad USDC Contest",
+        "token": {
+          "name": "USDC",
+          "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+          "symbol": "USDC",
+          "decimals": 6,
+          "wrapped": false
+        },
+        "created_at": "2025-06-11T08:51:49.782Z",
+        "image_url": "",
+        "avatar_url": null,
+        "og_image_url": null,
+        "metadata_url": null,
+        "expires_at": "2026-01-01T00:00:01.000Z",
+        "users": 8,
+        "position": 1,
+        "rank_by": "claim_winnings_count,earnings_eur",
+        "rewards": [
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "claim_winnings_count",
+            "image_url": "",
+            "description": "R1"
+          },
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "earnings_eur",
+            "image_url": "",
+            "description": "R1"
+          }
+        ],
+        "rules": "",
+        "topics": [
+          "Other"
+        ],
+        "published": true,
+        "comments_enabled": true,
+        "markets": [
+          {
+            "id": 1,
+            "title": "Fear and Greed Index at 62 or higher on December 31?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/01f666d4-6dec-4cf9-bb9d-eda8144f6900/public",
+            "slug": "fear-and-greed-index-at-62-or-higher-on-december-31-7c02a20e-bcdd-4fed-9771-d2923296bdc7"
+          },
+          {
+            "id": 4,
+            "title": "Will Bitcoin price hit 250,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-250-000-in-2025"
+          },
+          {
+            "id": 5,
+            "title": "Will Bitcoin price hit 500,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-500-000-in-2025"
+          },
+          {
+            "id": 6,
+            "title": "Will Bitcoin price hit 1,000,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-1-000-000-in-2025"
+          },
+          {
+            "id": 7,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+            "slug": "market-with-3-outcomes"
+          },
+          {
+            "id": 8,
+            "title": "Closed Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "closed-market-with-3-outcomes"
+          },
+          {
+            "id": 9,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "market-with-3-outcomes-1cf1723c-1966-4692-83de-4752632db4cb"
+          },
+          {
+            "id": 2,
+            "title": "Will Bitcoin price hit 150,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-150-000-in-2025"
+          },
+          {
+            "id": 3,
+            "title": "Will Bitcoin price hit 200,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-200-000-in-2025-4cc33143-4f5c-4859-941b-98c3cba58240"
+          },
+          {
+            "id": 11,
+            "title": "Test 1-2-3 fees",
+            "image_url": null,
+            "slug": "test-1-2-3-fees"
+          }
+        ],
+        "land": {
+          "id": 905,
+          "slug": "myriad-szn2-usdc",
+          "title": "Myriad SZN2 USDC",
+          "network_id": "1112432",
+          "description": "Myriad Abstract USDC Land",
+          "short_description": "Myriad USDC Land.",
+          "token": {
+            "name": "USDC",
+            "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+            "symbol": "USDC",
+            "decimals": 6,
+            "wrapped": false
+          },
+          "token_controller_address": "0xd679cd5d513de3163aae5dd1e8472cac4971f287",
+          "created_at": "2025-06-11T08:09:13.458Z",
+          "position": 35,
+          "rank_by": "claim_winnings_count,earnings_eur",
+          "users": 0,
+          "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+          "banner_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/359049f1-f480-4ef0-d59c-33258993bb00/public",
+          "og_image_url": null,
+          "metadata_url": null,
+          "tags": [
+            "Myriad"
+          ],
+          "social_urls": {},
+          "admins": [
+            "0x68FcB3Db1BA4Abb85D9f9420A110948e6459d613",
+            "0xA9b69Aa5AbE255e54442cAA4689d3Cea654609fd",
+            "0x968CF2b84C63099266b1282C6B5590adc0A00711",
+            "0x31F99af8a746411DC81eD6cdE002DD22B7FCD1fC"
+          ],
+          "published": true,
+          "website_url": "https://abstract.myriad.markets/",
+          "whitelabel": true,
+          "onboarded": true,
+          "advanced": true,
+          "topics": [
+            "Crypto"
+          ]
+        }
+      }
+    ],
+    "outcomes": [
+      {
+        "id": 0,
+        "market_id": 9,
+        "title": "A",
+        "shares": 1000.0,
+        "shares_held": 0.0,
+        "holders": 0,
+        "price": 0.25,
+        "closing_price": 0.25,
+        "price_change_24h": 0.0,
+        "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+        "image_ipfs_hash": " QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu"
+      },
+      {
+        "id": 1,
+        "market_id": 9,
+        "title": "B",
+        "shares": 1000.0,
+        "shares_held": 0.0,
+        "holders": 0,
+        "price": 0.25,
+        "closing_price": 0.25,
+        "price_change_24h": 0.0,
+        "image_url": null,
+        "image_ipfs_hash": null
+      },
+      {
+        "id": 2,
+        "market_id": 9,
+        "title": "C",
+        "shares": 1000.0,
+        "shares_held": 0.0,
+        "holders": 0,
+        "price": 0.25,
+        "closing_price": 0.25,
+        "price_change_24h": 0.0,
+        "image_url": null,
+        "image_ipfs_hash": null
+      },
+      {
+        "id": 3,
+        "market_id": 9,
+        "title": "D",
+        "shares": 1000.0,
+        "shares_held": 0.0,
+        "holders": 0,
+        "price": 0.25,
+        "closing_price": 0.25,
+        "price_change_24h": 0.0,
+        "image_url": null,
+        "image_ipfs_hash": null
+      }
+    ]
+  },
+  {
+    "liked": false,
+    "id": 8,
+    "network_id": 1112432,
+    "slug": "closed-market-with-3-outcomes",
+    "title": "Closed Market With 3 Outcomes",
+    "description": "Market With 3 Outcomes?",
+    "created_at": "2025-06-13T14:12:15.780Z",
+    "expires_at": "2025-06-13T14:00:58.000Z",
+    "scheduled_at": null,
+    "fee": 0.03,
+    "treasury_fee": 0.0,
+    "treasury": "0x0000000000000000000000000000000000000000",
+    "fees": {
+      "treasury": "0x0000000000000000000000000000000000000000",
+      "distributor": "0x0000000000000000000000000000000000000000",
+      "buy": {
+        "fee": 0.03,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      },
+      "sell": {
+        "fee": 0.0,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      }
+    },
+    "state": "closed",
+    "verified": false,
+    "category": "Other",
+    "subcategory": "",
+    "topics": [
+      "Crypto"
+    ],
+    "resolution_source": "https://coinmarketcap.com/",
+    "resolution_title": "Coinmarketcap",
+    "token": {
+      "name": "USDC",
+      "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+      "symbol": "USDC",
+      "decimals": 6,
+      "wrapped": false
+    },
+    "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+    "liquidity": 1000.0,
+    "liquidity_eur": 1000.0,
+    "liquidity_price": 1.0,
+    "volume": 0,
+    "volume_24h": 0,
+    "volume_eur": 0,
+    "shares": 3000.0,
+    "question_id": "0x25bb522d556776fd96ef4d3054ee6edbda1b03ac2c66e657cf0a9a4c0068e8f7",
+    "resolved_outcome_id": -1,
+    "voided": false,
+    "trading_view_symbol": null,
+    "question": {
+      "id": "0x25bb522d556776fd96ef4d3054ee6edbda1b03ac2c66e657cf0a9a4c0068e8f7",
+      "bond": 0.0,
+      "best_answer": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "is_finalized": false,
+      "arbitrator": "0x0000000000000000000000000000000000000000",
+      "is_pending_arbitration": false,
+      "is_claimed": false,
+      "finalize_ts": 0,
+      "timeout": 0,
+      "dispute_id": null,
+      "is_pending_arbitration_request": false
+    },
+    "banner_url": null,
+    "og_image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/cdcb893d-fbfc-44b8-14b3-29cf00e8d400/public",
+    "news": [],
+    "votes": {
+      "up": 0,
+      "down": 0
+    },
+    "users": 1,
+    "top_holders": [],
+    "likes": 0,
+    "comments": 0,
+    "featured": false,
+    "featured_at": null,
+    "publish_status": "published",
+    "image_ipfs_hash": "",
+    "edit_history": [],
+    "sponsorship": null,
+    "tournaments": [
+      {
+        "id": 1778,
+        "network_id": 1112432,
+        "slug": "myriad-szn2-pts-contest",
+        "title": "Myriad SZN2 USDC Contest",
+        "description": "Myriad USDC Contest",
+        "token": {
+          "name": "USDC",
+          "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+          "symbol": "USDC",
+          "decimals": 6,
+          "wrapped": false
+        },
+        "created_at": "2025-06-11T08:51:49.782Z",
+        "image_url": "",
+        "avatar_url": null,
+        "og_image_url": null,
+        "metadata_url": null,
+        "expires_at": "2026-01-01T00:00:01.000Z",
+        "users": 8,
+        "position": 1,
+        "rank_by": "claim_winnings_count,earnings_eur",
+        "rewards": [
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "claim_winnings_count",
+            "image_url": "",
+            "description": "R1"
+          },
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "earnings_eur",
+            "image_url": "",
+            "description": "R1"
+          }
+        ],
+        "rules": "",
+        "topics": [
+          "Other"
+        ],
+        "published": true,
+        "comments_enabled": true,
+        "markets": [
+          {
+            "id": 1,
+            "title": "Fear and Greed Index at 62 or higher on December 31?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/01f666d4-6dec-4cf9-bb9d-eda8144f6900/public",
+            "slug": "fear-and-greed-index-at-62-or-higher-on-december-31-7c02a20e-bcdd-4fed-9771-d2923296bdc7"
+          },
+          {
+            "id": 4,
+            "title": "Will Bitcoin price hit 250,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-250-000-in-2025"
+          },
+          {
+            "id": 5,
+            "title": "Will Bitcoin price hit 500,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-500-000-in-2025"
+          },
+          {
+            "id": 6,
+            "title": "Will Bitcoin price hit 1,000,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-1-000-000-in-2025"
+          },
+          {
+            "id": 7,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+            "slug": "market-with-3-outcomes"
+          },
+          {
+            "id": 8,
+            "title": "Closed Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "closed-market-with-3-outcomes"
+          },
+          {
+            "id": 9,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "market-with-3-outcomes-1cf1723c-1966-4692-83de-4752632db4cb"
+          },
+          {
+            "id": 2,
+            "title": "Will Bitcoin price hit 150,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-150-000-in-2025"
+          },
+          {
+            "id": 3,
+            "title": "Will Bitcoin price hit 200,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-200-000-in-2025-4cc33143-4f5c-4859-941b-98c3cba58240"
+          },
+          {
+            "id": 11,
+            "title": "Test 1-2-3 fees",
+            "image_url": null,
+            "slug": "test-1-2-3-fees"
+          }
+        ],
+        "land": {
+          "id": 905,
+          "slug": "myriad-szn2-usdc",
+          "title": "Myriad SZN2 USDC",
+          "network_id": "1112432",
+          "description": "Myriad Abstract USDC Land",
+          "short_description": "Myriad USDC Land.",
+          "token": {
+            "name": "USDC",
+            "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+            "symbol": "USDC",
+            "decimals": 6,
+            "wrapped": false
+          },
+          "token_controller_address": "0xd679cd5d513de3163aae5dd1e8472cac4971f287",
+          "created_at": "2025-06-11T08:09:13.458Z",
+          "position": 35,
+          "rank_by": "claim_winnings_count,earnings_eur",
+          "users": 0,
+          "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+          "banner_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/359049f1-f480-4ef0-d59c-33258993bb00/public",
+          "og_image_url": null,
+          "metadata_url": null,
+          "tags": [
+            "Myriad"
+          ],
+          "social_urls": {},
+          "admins": [
+            "0x68FcB3Db1BA4Abb85D9f9420A110948e6459d613",
+            "0xA9b69Aa5AbE255e54442cAA4689d3Cea654609fd",
+            "0x968CF2b84C63099266b1282C6B5590adc0A00711",
+            "0x31F99af8a746411DC81eD6cdE002DD22B7FCD1fC"
+          ],
+          "published": true,
+          "website_url": "https://abstract.myriad.markets/",
+          "whitelabel": true,
+          "onboarded": true,
+          "advanced": true,
+          "topics": [
+            "Crypto"
+          ]
+        }
+      }
+    ],
+    "outcomes": [
+      {
+        "id": 0,
+        "market_id": 8,
+        "title": "A",
+        "shares": 1000.0,
+        "shares_held": 0.0,
+        "holders": 0,
+        "price": 0.3333333333333333,
+        "closing_price": 0.3333333333333333,
+        "price_change_24h": 0.0,
+        "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+        "image_ipfs_hash": " QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu"
+      },
+      {
+        "id": 1,
+        "market_id": 8,
+        "title": "B",
+        "shares": 1000.0,
+        "shares_held": 0.0,
+        "holders": 0,
+        "price": 0.3333333333333333,
+        "closing_price": 0.3333333333333333,
+        "price_change_24h": 0.0,
+        "image_url": null,
+        "image_ipfs_hash": null
+      },
+      {
+        "id": 2,
+        "market_id": 8,
+        "title": "C",
+        "shares": 1000.0,
+        "shares_held": 0.0,
+        "holders": 0,
+        "price": 0.3333333333333333,
+        "closing_price": 0.3333333333333333,
+        "price_change_24h": 0.0,
+        "image_url": null,
+        "image_ipfs_hash": null
+      }
+    ]
+  },
+  {
+    "liked": false,
+    "id": 7,
+    "network_id": 1112432,
+    "slug": "market-with-3-outcomes",
+    "title": "Market With 3 Outcomes",
+    "description": "Market With 3 Outcomes?",
+    "created_at": "2025-06-13T14:12:14.077Z",
+    "expires_at": "2026-01-01T00:00:00.000Z",
+    "scheduled_at": null,
+    "fee": 0.03,
+    "treasury_fee": 0.0,
+    "treasury": "0x0000000000000000000000000000000000000000",
+    "fees": {
+      "treasury": "0x0000000000000000000000000000000000000000",
+      "distributor": "0x0000000000000000000000000000000000000000",
+      "buy": {
+        "fee": 0.03,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      },
+      "sell": {
+        "fee": 0.0,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      }
+    },
+    "state": "open",
+    "verified": false,
+    "category": "Other",
+    "subcategory": "",
+    "topics": [
+      "Crypto"
+    ],
+    "resolution_source": "https://coinmarketcap.com/",
+    "resolution_title": "Coinmarketcap",
+    "token": {
+      "name": "USDC",
+      "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+      "symbol": "USDC",
+      "decimals": 6,
+      "wrapped": false
+    },
+    "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+    "liquidity": 1000.0,
+    "liquidity_eur": 1000.0,
+    "liquidity_price": 0.6888390436835902,
+    "volume": 1606.026,
+    "volume_24h": 0,
+    "volume_eur": 1606.026,
+    "shares": 4043.58909,
+    "question_id": "0xcb7cc2f980df56f25ff043f8822342705b3f28f2ede04856a495c212fe850b62",
+    "resolved_outcome_id": -1,
+    "voided": false,
+    "trading_view_symbol": null,
+    "question": {
+      "id": "0xcb7cc2f980df56f25ff043f8822342705b3f28f2ede04856a495c212fe850b62",
+      "bond": 0.0,
+      "best_answer": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "is_finalized": false,
+      "arbitrator": "0x0000000000000000000000000000000000000000",
+      "is_pending_arbitration": false,
+      "is_claimed": false,
+      "finalize_ts": 0,
+      "timeout": 0,
+      "dispute_id": null,
+      "is_pending_arbitration_request": false
+    },
+    "banner_url": null,
+    "og_image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/b9553a9d-9d16-45db-126c-fcacf3670100/public",
+    "news": [],
+    "votes": {
+      "up": 0,
+      "down": 0
+    },
+    "users": 7,
+    "top_holders": [
+      "0x9c6ade4835F069bB959BB6cd9d2D294797F509d2",
+      "0x968CF2b84C63099266b1282C6B5590adc0A00711",
+      "0x8b04b5113C17CC35f5ECF222F78edAABB98b5D80"
+    ],
+    "likes": 0,
+    "comments": 0,
+    "featured": false,
+    "featured_at": null,
+    "publish_status": "published",
+    "image_ipfs_hash": "",
+    "edit_history": [],
+    "sponsorship": null,
+    "tournaments": [
+      {
+        "id": 1778,
+        "network_id": 1112432,
+        "slug": "myriad-szn2-pts-contest",
+        "title": "Myriad SZN2 USDC Contest",
+        "description": "Myriad USDC Contest",
+        "token": {
+          "name": "USDC",
+          "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+          "symbol": "USDC",
+          "decimals": 6,
+          "wrapped": false
+        },
+        "created_at": "2025-06-11T08:51:49.782Z",
+        "image_url": "",
+        "avatar_url": null,
+        "og_image_url": null,
+        "metadata_url": null,
+        "expires_at": "2026-01-01T00:00:01.000Z",
+        "users": 8,
+        "position": 1,
+        "rank_by": "claim_winnings_count,earnings_eur",
+        "rewards": [
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "claim_winnings_count",
+            "image_url": "",
+            "description": "R1"
+          },
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "earnings_eur",
+            "image_url": "",
+            "description": "R1"
+          }
+        ],
+        "rules": "",
+        "topics": [
+          "Other"
+        ],
+        "published": true,
+        "comments_enabled": true,
+        "markets": [
+          {
+            "id": 1,
+            "title": "Fear and Greed Index at 62 or higher on December 31?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/01f666d4-6dec-4cf9-bb9d-eda8144f6900/public",
+            "slug": "fear-and-greed-index-at-62-or-higher-on-december-31-7c02a20e-bcdd-4fed-9771-d2923296bdc7"
+          },
+          {
+            "id": 4,
+            "title": "Will Bitcoin price hit 250,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-250-000-in-2025"
+          },
+          {
+            "id": 5,
+            "title": "Will Bitcoin price hit 500,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-500-000-in-2025"
+          },
+          {
+            "id": 6,
+            "title": "Will Bitcoin price hit 1,000,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-1-000-000-in-2025"
+          },
+          {
+            "id": 7,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+            "slug": "market-with-3-outcomes"
+          },
+          {
+            "id": 8,
+            "title": "Closed Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "closed-market-with-3-outcomes"
+          },
+          {
+            "id": 9,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "market-with-3-outcomes-1cf1723c-1966-4692-83de-4752632db4cb"
+          },
+          {
+            "id": 2,
+            "title": "Will Bitcoin price hit 150,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-150-000-in-2025"
+          },
+          {
+            "id": 3,
+            "title": "Will Bitcoin price hit 200,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-200-000-in-2025-4cc33143-4f5c-4859-941b-98c3cba58240"
+          },
+          {
+            "id": 11,
+            "title": "Test 1-2-3 fees",
+            "image_url": null,
+            "slug": "test-1-2-3-fees"
+          }
+        ],
+        "land": {
+          "id": 905,
+          "slug": "myriad-szn2-usdc",
+          "title": "Myriad SZN2 USDC",
+          "network_id": "1112432",
+          "description": "Myriad Abstract USDC Land",
+          "short_description": "Myriad USDC Land.",
+          "token": {
+            "name": "USDC",
+            "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+            "symbol": "USDC",
+            "decimals": 6,
+            "wrapped": false
+          },
+          "token_controller_address": "0xd679cd5d513de3163aae5dd1e8472cac4971f287",
+          "created_at": "2025-06-11T08:09:13.458Z",
+          "position": 35,
+          "rank_by": "claim_winnings_count,earnings_eur",
+          "users": 0,
+          "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+          "banner_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/359049f1-f480-4ef0-d59c-33258993bb00/public",
+          "og_image_url": null,
+          "metadata_url": null,
+          "tags": [
+            "Myriad"
+          ],
+          "social_urls": {},
+          "admins": [
+            "0x68FcB3Db1BA4Abb85D9f9420A110948e6459d613",
+            "0xA9b69Aa5AbE255e54442cAA4689d3Cea654609fd",
+            "0x968CF2b84C63099266b1282C6B5590adc0A00711",
+            "0x31F99af8a746411DC81eD6cdE002DD22B7FCD1fC"
+          ],
+          "published": true,
+          "website_url": "https://abstract.myriad.markets/",
+          "whitelabel": true,
+          "onboarded": true,
+          "advanced": true,
+          "topics": [
+            "Crypto"
+          ]
+        }
+      }
+    ],
+    "outcomes": [
+      {
+        "id": 0,
+        "market_id": 7,
+        "title": "A",
+        "shares": 1322.947535,
+        "shares_held": 1112.6985849999999,
+        "holders": 4,
+        "price": 0.17356169348106215,
+        "closing_price": null,
+        "price_change_24h": 1.599176353891558e-16,
+        "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+        "image_ipfs_hash": " QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu"
+      },
+      {
+        "id": 1,
+        "market_id": 7,
+        "title": "B",
+        "shares": 314.096745,
+        "shares_held": 2121.549375,
+        "holders": 3,
+        "price": 0.731026405769333,
+        "closing_price": null,
+        "price_change_24h": -1.518718087148653e-16,
+        "image_url": null,
+        "image_ipfs_hash": null
+      },
+      {
+        "id": 2,
+        "market_id": 7,
+        "title": "C",
+        "shares": 2406.54481,
+        "shares_held": 29.101310000000012,
+        "holders": 1,
+        "price": 0.09541190074960486,
+        "closing_price": null,
+        "price_change_24h": -1.4545132943357623e-16,
+        "image_url": null,
+        "image_ipfs_hash": null
+      }
+    ]
+  },
+  {
+    "liked": false,
+    "id": 6,
+    "network_id": 1112432,
+    "slug": "will-bitcoin-price-hit-1-000-000-in-2025",
+    "title": "Will Bitcoin price hit 1,000,000$ in 2025?",
+    "description": "Will Bitcoin price hit 1,000,000$ in 2025?",
+    "created_at": "2025-06-13T14:12:12.423Z",
+    "expires_at": "2026-01-01T00:00:00.000Z",
+    "scheduled_at": null,
+    "fee": 0.03,
+    "treasury_fee": 0.0,
+    "treasury": "0x0000000000000000000000000000000000000000",
+    "fees": {
+      "treasury": "0x0000000000000000000000000000000000000000",
+      "distributor": "0x0000000000000000000000000000000000000000",
+      "buy": {
+        "fee": 0.03,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      },
+      "sell": {
+        "fee": 0.0,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      }
+    },
+    "state": "open",
+    "verified": false,
+    "category": "Other",
+    "subcategory": "",
+    "topics": [
+      "Crypto"
+    ],
+    "resolution_source": "https://coinmarketcap.com/",
+    "resolution_title": "Coinmarketcap",
+    "token": {
+      "name": "USDC",
+      "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+      "symbol": "USDC",
+      "decimals": 6,
+      "wrapped": false
+    },
+    "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+    "liquidity": 1000.0,
+    "liquidity_eur": 1000.0,
+    "liquidity_price": 0.9998451769073504,
+    "volume": 329.788,
+    "volume_24h": 9.999,
+    "volume_eur": 329.788,
+    "shares": 2000.309708,
+    "question_id": "0x40e021244793a92d9f972bd162ef95e9bfffd2c36d4785ceb3a9650facd10e7f",
+    "resolved_outcome_id": -1,
+    "voided": false,
+    "trading_view_symbol": null,
+    "question": {
+      "id": "0x40e021244793a92d9f972bd162ef95e9bfffd2c36d4785ceb3a9650facd10e7f",
+      "bond": 0.0,
+      "best_answer": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "is_finalized": false,
+      "arbitrator": "0x0000000000000000000000000000000000000000",
+      "is_pending_arbitration": false,
+      "is_claimed": false,
+      "finalize_ts": 0,
+      "timeout": 0,
+      "dispute_id": null,
+      "is_pending_arbitration_request": false
+    },
+    "banner_url": null,
+    "og_image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/d705aaf4-fdb6-49f7-4dda-555fd4dfad00/public",
+    "news": [],
+    "votes": {
+      "up": 0,
+      "down": 0
+    },
+    "users": 9,
+    "top_holders": [
+      "0x968CF2b84C63099266b1282C6B5590adc0A00711",
+      "0x064c3731F9454f9ff8010eCC4b1FB166A9bc226c",
+      "0xc3E25f0370B68dc14e88F3cb792868456e40170B"
+    ],
+    "likes": 0,
+    "comments": 0,
+    "featured": false,
+    "featured_at": null,
+    "publish_status": "published",
+    "image_ipfs_hash": "",
+    "edit_history": [],
+    "sponsorship": null,
+    "tournaments": [
+      {
+        "id": 1778,
+        "network_id": 1112432,
+        "slug": "myriad-szn2-pts-contest",
+        "title": "Myriad SZN2 USDC Contest",
+        "description": "Myriad USDC Contest",
+        "token": {
+          "name": "USDC",
+          "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+          "symbol": "USDC",
+          "decimals": 6,
+          "wrapped": false
+        },
+        "created_at": "2025-06-11T08:51:49.782Z",
+        "image_url": "",
+        "avatar_url": null,
+        "og_image_url": null,
+        "metadata_url": null,
+        "expires_at": "2026-01-01T00:00:01.000Z",
+        "users": 8,
+        "position": 1,
+        "rank_by": "claim_winnings_count,earnings_eur",
+        "rewards": [
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "claim_winnings_count",
+            "image_url": "",
+            "description": "R1"
+          },
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "earnings_eur",
+            "image_url": "",
+            "description": "R1"
+          }
+        ],
+        "rules": "",
+        "topics": [
+          "Other"
+        ],
+        "published": true,
+        "comments_enabled": true,
+        "markets": [
+          {
+            "id": 1,
+            "title": "Fear and Greed Index at 62 or higher on December 31?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/01f666d4-6dec-4cf9-bb9d-eda8144f6900/public",
+            "slug": "fear-and-greed-index-at-62-or-higher-on-december-31-7c02a20e-bcdd-4fed-9771-d2923296bdc7"
+          },
+          {
+            "id": 4,
+            "title": "Will Bitcoin price hit 250,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-250-000-in-2025"
+          },
+          {
+            "id": 5,
+            "title": "Will Bitcoin price hit 500,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-500-000-in-2025"
+          },
+          {
+            "id": 6,
+            "title": "Will Bitcoin price hit 1,000,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-1-000-000-in-2025"
+          },
+          {
+            "id": 7,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+            "slug": "market-with-3-outcomes"
+          },
+          {
+            "id": 8,
+            "title": "Closed Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "closed-market-with-3-outcomes"
+          },
+          {
+            "id": 9,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "market-with-3-outcomes-1cf1723c-1966-4692-83de-4752632db4cb"
+          },
+          {
+            "id": 2,
+            "title": "Will Bitcoin price hit 150,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-150-000-in-2025"
+          },
+          {
+            "id": 3,
+            "title": "Will Bitcoin price hit 200,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-200-000-in-2025-4cc33143-4f5c-4859-941b-98c3cba58240"
+          },
+          {
+            "id": 11,
+            "title": "Test 1-2-3 fees",
+            "image_url": null,
+            "slug": "test-1-2-3-fees"
+          }
+        ],
+        "land": {
+          "id": 905,
+          "slug": "myriad-szn2-usdc",
+          "title": "Myriad SZN2 USDC",
+          "network_id": "1112432",
+          "description": "Myriad Abstract USDC Land",
+          "short_description": "Myriad USDC Land.",
+          "token": {
+            "name": "USDC",
+            "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+            "symbol": "USDC",
+            "decimals": 6,
+            "wrapped": false
+          },
+          "token_controller_address": "0xd679cd5d513de3163aae5dd1e8472cac4971f287",
+          "created_at": "2025-06-11T08:09:13.458Z",
+          "position": 35,
+          "rank_by": "claim_winnings_count,earnings_eur",
+          "users": 0,
+          "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+          "banner_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/359049f1-f480-4ef0-d59c-33258993bb00/public",
+          "og_image_url": null,
+          "metadata_url": null,
+          "tags": [
+            "Myriad"
+          ],
+          "social_urls": {},
+          "admins": [
+            "0x68FcB3Db1BA4Abb85D9f9420A110948e6459d613",
+            "0xA9b69Aa5AbE255e54442cAA4689d3Cea654609fd",
+            "0x968CF2b84C63099266b1282C6B5590adc0A00711",
+            "0x31F99af8a746411DC81eD6cdE002DD22B7FCD1fC"
+          ],
+          "published": true,
+          "website_url": "https://abstract.myriad.markets/",
+          "whitelabel": true,
+          "onboarded": true,
+          "advanced": true,
+          "topics": [
+            "Crypto"
+          ]
+        }
+      }
+    ],
+    "outcomes": [
+      {
+        "id": 0,
+        "market_id": 6,
+        "title": "Yes",
+        "shares": 982.555847,
+        "shares_held": 260.92221299999994,
+        "holders": 5,
+        "price": 0.5087981410726623,
+        "closing_price": null,
+        "price_change_24h": 0.009497699102906366,
+        "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+        "image_ipfs_hash": "QmXUjWBxCDQBC9rUKCXmqBZkxEXk6BNdVvNfQ5PDWyTX7R"
+      },
+      {
+        "id": 1,
+        "market_id": 6,
+        "title": "No",
+        "shares": 1017.753861,
+        "shares_held": 225.72419899999989,
+        "holders": 3,
+        "price": 0.49120185892733764,
+        "closing_price": null,
+        "price_change_24h": -0.009651319979264604,
+        "image_url": null,
+        "image_ipfs_hash": null
+      }
+    ]
+  },
+  {
+    "liked": false,
+    "id": 5,
+    "network_id": 1112432,
+    "slug": "will-bitcoin-price-hit-500-000-in-2025",
+    "title": "Will Bitcoin price hit 500,000$ in 2025?",
+    "description": "Will Bitcoin price hit 500,000$ in 2025?",
+    "created_at": "2025-06-13T14:12:10.915Z",
+    "expires_at": "2026-01-01T00:00:00.000Z",
+    "scheduled_at": null,
+    "fee": 0.03,
+    "treasury_fee": 0.0,
+    "treasury": "0x0000000000000000000000000000000000000000",
+    "fees": {
+      "treasury": "0x0000000000000000000000000000000000000000",
+      "distributor": "0x0000000000000000000000000000000000000000",
+      "buy": {
+        "fee": 0.03,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      },
+      "sell": {
+        "fee": 0.0,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      }
+    },
+    "state": "open",
+    "verified": false,
+    "category": "Other",
+    "subcategory": "",
+    "topics": [
+      "Crypto"
+    ],
+    "resolution_source": "https://coinmarketcap.com/",
+    "resolution_title": "Coinmarketcap",
+    "token": {
+      "name": "USDC",
+      "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+      "symbol": "USDC",
+      "decimals": 6,
+      "wrapped": false
+    },
+    "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+    "liquidity": 1000.0,
+    "liquidity_eur": 1000.0,
+    "liquidity_price": 0.94579764324991,
+    "volume": 5519.998,
+    "volume_24h": 0,
+    "volume_eur": 5519.998,
+    "shares": 2114.617248,
+    "question_id": "0x5e96a7ebe26056f140cfa009437154d3e2a8d8d93d25dbfd03c39b561f9bd199",
+    "resolved_outcome_id": -1,
+    "voided": false,
+    "trading_view_symbol": null,
+    "question": {
+      "id": "0x5e96a7ebe26056f140cfa009437154d3e2a8d8d93d25dbfd03c39b561f9bd199",
+      "bond": 0.0,
+      "best_answer": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "is_finalized": false,
+      "arbitrator": "0x0000000000000000000000000000000000000000",
+      "is_pending_arbitration": false,
+      "is_claimed": false,
+      "finalize_ts": 0,
+      "timeout": 0,
+      "dispute_id": null,
+      "is_pending_arbitration_request": false
+    },
+    "banner_url": null,
+    "og_image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/3e7eb76a-f622-47f6-ffcc-5aed10aaa900/public",
+    "news": [],
+    "votes": {
+      "up": 0,
+      "down": 0
+    },
+    "users": 3,
+    "top_holders": [
+      "0x9c6ade4835F069bB959BB6cd9d2D294797F509d2",
+      "0xc3E25f0370B68dc14e88F3cb792868456e40170B"
+    ],
+    "likes": 0,
+    "comments": 0,
+    "featured": false,
+    "featured_at": null,
+    "publish_status": "published",
+    "image_ipfs_hash": "",
+    "edit_history": [],
+    "sponsorship": null,
+    "tournaments": [
+      {
+        "id": 1778,
+        "network_id": 1112432,
+        "slug": "myriad-szn2-pts-contest",
+        "title": "Myriad SZN2 USDC Contest",
+        "description": "Myriad USDC Contest",
+        "token": {
+          "name": "USDC",
+          "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+          "symbol": "USDC",
+          "decimals": 6,
+          "wrapped": false
+        },
+        "created_at": "2025-06-11T08:51:49.782Z",
+        "image_url": "",
+        "avatar_url": null,
+        "og_image_url": null,
+        "metadata_url": null,
+        "expires_at": "2026-01-01T00:00:01.000Z",
+        "users": 8,
+        "position": 1,
+        "rank_by": "claim_winnings_count,earnings_eur",
+        "rewards": [
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "claim_winnings_count",
+            "image_url": "",
+            "description": "R1"
+          },
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "earnings_eur",
+            "image_url": "",
+            "description": "R1"
+          }
+        ],
+        "rules": "",
+        "topics": [
+          "Other"
+        ],
+        "published": true,
+        "comments_enabled": true,
+        "markets": [
+          {
+            "id": 1,
+            "title": "Fear and Greed Index at 62 or higher on December 31?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/01f666d4-6dec-4cf9-bb9d-eda8144f6900/public",
+            "slug": "fear-and-greed-index-at-62-or-higher-on-december-31-7c02a20e-bcdd-4fed-9771-d2923296bdc7"
+          },
+          {
+            "id": 4,
+            "title": "Will Bitcoin price hit 250,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-250-000-in-2025"
+          },
+          {
+            "id": 5,
+            "title": "Will Bitcoin price hit 500,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-500-000-in-2025"
+          },
+          {
+            "id": 6,
+            "title": "Will Bitcoin price hit 1,000,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-1-000-000-in-2025"
+          },
+          {
+            "id": 7,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+            "slug": "market-with-3-outcomes"
+          },
+          {
+            "id": 8,
+            "title": "Closed Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "closed-market-with-3-outcomes"
+          },
+          {
+            "id": 9,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "market-with-3-outcomes-1cf1723c-1966-4692-83de-4752632db4cb"
+          },
+          {
+            "id": 2,
+            "title": "Will Bitcoin price hit 150,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-150-000-in-2025"
+          },
+          {
+            "id": 3,
+            "title": "Will Bitcoin price hit 200,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-200-000-in-2025-4cc33143-4f5c-4859-941b-98c3cba58240"
+          },
+          {
+            "id": 11,
+            "title": "Test 1-2-3 fees",
+            "image_url": null,
+            "slug": "test-1-2-3-fees"
+          }
+        ],
+        "land": {
+          "id": 905,
+          "slug": "myriad-szn2-usdc",
+          "title": "Myriad SZN2 USDC",
+          "network_id": "1112432",
+          "description": "Myriad Abstract USDC Land",
+          "short_description": "Myriad USDC Land.",
+          "token": {
+            "name": "USDC",
+            "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+            "symbol": "USDC",
+            "decimals": 6,
+            "wrapped": false
+          },
+          "token_controller_address": "0xd679cd5d513de3163aae5dd1e8472cac4971f287",
+          "created_at": "2025-06-11T08:09:13.458Z",
+          "position": 35,
+          "rank_by": "claim_winnings_count,earnings_eur",
+          "users": 0,
+          "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+          "banner_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/359049f1-f480-4ef0-d59c-33258993bb00/public",
+          "og_image_url": null,
+          "metadata_url": null,
+          "tags": [
+            "Myriad"
+          ],
+          "social_urls": {},
+          "admins": [
+            "0x68FcB3Db1BA4Abb85D9f9420A110948e6459d613",
+            "0xA9b69Aa5AbE255e54442cAA4689d3Cea654609fd",
+            "0x968CF2b84C63099266b1282C6B5590adc0A00711",
+            "0x31F99af8a746411DC81eD6cdE002DD22B7FCD1fC"
+          ],
+          "published": true,
+          "website_url": "https://abstract.myriad.markets/",
+          "whitelabel": true,
+          "onboarded": true,
+          "advanced": true,
+          "topics": [
+            "Crypto"
+          ]
+        }
+      }
+    ],
+    "outcomes": [
+      {
+        "id": 0,
+        "market_id": 5,
+        "title": "Yes",
+        "shares": 713.940714,
+        "shares_held": 715.457346,
+        "holders": 2,
+        "price": 0.6623782792487655,
+        "closing_price": null,
+        "price_change_24h": -1.6761162909573558e-16,
+        "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+        "image_ipfs_hash": "QmXUjWBxCDQBC9rUKCXmqBZkxEXk6BNdVvNfQ5PDWyTX7R"
+      },
+      {
+        "id": 1,
+        "market_id": 5,
+        "title": "No",
+        "shares": 1400.676534,
+        "shares_held": 28.72152600000004,
+        "holders": 1,
+        "price": 0.3376217207512345,
+        "closing_price": null,
+        "price_change_24h": 0.0,
+        "image_url": null,
+        "image_ipfs_hash": null
+      }
+    ]
+  },
+  {
+    "liked": false,
+    "id": 4,
+    "network_id": 1112432,
+    "slug": "will-bitcoin-price-hit-250-000-in-2025",
+    "title": "Will Bitcoin price hit 250,000$ in 2025?",
+    "description": "Will Bitcoin price hit 250,000$ in 2025?",
+    "created_at": "2025-06-13T14:12:09.358Z",
+    "expires_at": "2026-01-01T00:00:00.000Z",
+    "scheduled_at": null,
+    "fee": 0.03,
+    "treasury_fee": 0.0,
+    "treasury": "0x0000000000000000000000000000000000000000",
+    "fees": {
+      "treasury": "0x0000000000000000000000000000000000000000",
+      "distributor": "0x0000000000000000000000000000000000000000",
+      "buy": {
+        "fee": 0.03,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      },
+      "sell": {
+        "fee": 0.0,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      }
+    },
+    "state": "open",
+    "verified": false,
+    "category": "Other",
+    "subcategory": "",
+    "topics": [
+      "Crypto"
+    ],
+    "resolution_source": "https://coinmarketcap.com/",
+    "resolution_title": "Coinmarketcap",
+    "token": {
+      "name": "USDC",
+      "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+      "symbol": "USDC",
+      "decimals": 6,
+      "wrapped": false
+    },
+    "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+    "liquidity": 1000.0,
+    "liquidity_eur": 1000.0,
+    "liquidity_price": 0.9957289627418646,
+    "volume": 6009.99,
+    "volume_24h": 0,
+    "volume_eur": 6009.99,
+    "shares": 2008.578722,
+    "question_id": "0x668d958cee4f9dbadb3d552396a69a065502b3b869b6c74e2ead63a1bf812af2",
+    "resolved_outcome_id": -1,
+    "voided": false,
+    "trading_view_symbol": null,
+    "question": {
+      "id": "0x668d958cee4f9dbadb3d552396a69a065502b3b869b6c74e2ead63a1bf812af2",
+      "bond": 0.0,
+      "best_answer": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "is_finalized": false,
+      "arbitrator": "0x0000000000000000000000000000000000000000",
+      "is_pending_arbitration": false,
+      "is_claimed": false,
+      "finalize_ts": 0,
+      "timeout": 0,
+      "dispute_id": null,
+      "is_pending_arbitration_request": false
+    },
+    "banner_url": null,
+    "og_image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/0817e284-339a-47b2-d6ee-45cdf09df400/public",
+    "news": [],
+    "votes": {
+      "up": 0,
+      "down": 0
+    },
+    "users": 3,
+    "top_holders": [
+      "0x064c3731F9454f9ff8010eCC4b1FB166A9bc226c"
+    ],
+    "likes": 0,
+    "comments": 0,
+    "featured": false,
+    "featured_at": null,
+    "publish_status": "published",
+    "image_ipfs_hash": "",
+    "edit_history": [],
+    "sponsorship": null,
+    "tournaments": [
+      {
+        "id": 1778,
+        "network_id": 1112432,
+        "slug": "myriad-szn2-pts-contest",
+        "title": "Myriad SZN2 USDC Contest",
+        "description": "Myriad USDC Contest",
+        "token": {
+          "name": "USDC",
+          "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+          "symbol": "USDC",
+          "decimals": 6,
+          "wrapped": false
+        },
+        "created_at": "2025-06-11T08:51:49.782Z",
+        "image_url": "",
+        "avatar_url": null,
+        "og_image_url": null,
+        "metadata_url": null,
+        "expires_at": "2026-01-01T00:00:01.000Z",
+        "users": 8,
+        "position": 1,
+        "rank_by": "claim_winnings_count,earnings_eur",
+        "rewards": [
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "claim_winnings_count",
+            "image_url": "",
+            "description": "R1"
+          },
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "earnings_eur",
+            "image_url": "",
+            "description": "R1"
+          }
+        ],
+        "rules": "",
+        "topics": [
+          "Other"
+        ],
+        "published": true,
+        "comments_enabled": true,
+        "markets": [
+          {
+            "id": 1,
+            "title": "Fear and Greed Index at 62 or higher on December 31?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/01f666d4-6dec-4cf9-bb9d-eda8144f6900/public",
+            "slug": "fear-and-greed-index-at-62-or-higher-on-december-31-7c02a20e-bcdd-4fed-9771-d2923296bdc7"
+          },
+          {
+            "id": 4,
+            "title": "Will Bitcoin price hit 250,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-250-000-in-2025"
+          },
+          {
+            "id": 5,
+            "title": "Will Bitcoin price hit 500,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-500-000-in-2025"
+          },
+          {
+            "id": 6,
+            "title": "Will Bitcoin price hit 1,000,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-1-000-000-in-2025"
+          },
+          {
+            "id": 7,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+            "slug": "market-with-3-outcomes"
+          },
+          {
+            "id": 8,
+            "title": "Closed Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "closed-market-with-3-outcomes"
+          },
+          {
+            "id": 9,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "market-with-3-outcomes-1cf1723c-1966-4692-83de-4752632db4cb"
+          },
+          {
+            "id": 2,
+            "title": "Will Bitcoin price hit 150,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-150-000-in-2025"
+          },
+          {
+            "id": 3,
+            "title": "Will Bitcoin price hit 200,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-200-000-in-2025-4cc33143-4f5c-4859-941b-98c3cba58240"
+          },
+          {
+            "id": 11,
+            "title": "Test 1-2-3 fees",
+            "image_url": null,
+            "slug": "test-1-2-3-fees"
+          }
+        ],
+        "land": {
+          "id": 905,
+          "slug": "myriad-szn2-usdc",
+          "title": "Myriad SZN2 USDC",
+          "network_id": "1112432",
+          "description": "Myriad Abstract USDC Land",
+          "short_description": "Myriad USDC Land.",
+          "token": {
+            "name": "USDC",
+            "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+            "symbol": "USDC",
+            "decimals": 6,
+            "wrapped": false
+          },
+          "token_controller_address": "0xd679cd5d513de3163aae5dd1e8472cac4971f287",
+          "created_at": "2025-06-11T08:09:13.458Z",
+          "position": 35,
+          "rank_by": "claim_winnings_count,earnings_eur",
+          "users": 0,
+          "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+          "banner_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/359049f1-f480-4ef0-d59c-33258993bb00/public",
+          "og_image_url": null,
+          "metadata_url": null,
+          "tags": [
+            "Myriad"
+          ],
+          "social_urls": {},
+          "admins": [
+            "0x68FcB3Db1BA4Abb85D9f9420A110948e6459d613",
+            "0xA9b69Aa5AbE255e54442cAA4689d3Cea654609fd",
+            "0x968CF2b84C63099266b1282C6B5590adc0A00711",
+            "0x31F99af8a746411DC81eD6cdE002DD22B7FCD1fC"
+          ],
+          "published": true,
+          "website_url": "https://abstract.myriad.markets/",
+          "whitelabel": true,
+          "onboarded": true,
+          "advanced": true,
+          "topics": [
+            "Crypto"
+          ]
+        }
+      }
+    ],
+    "outcomes": [
+      {
+        "id": 0,
+        "market_id": 4,
+        "title": "Yes",
+        "shares": 911.568722,
+        "shares_held": 185.441278,
+        "holders": 1,
+        "price": 0.5461623126763363,
+        "closing_price": null,
+        "price_change_24h": 0.0,
+        "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+        "image_ipfs_hash": "QmXUjWBxCDQBC9rUKCXmqBZkxEXk6BNdVvNfQ5PDWyTX7R"
+      },
+      {
+        "id": 1,
+        "market_id": 4,
+        "title": "No",
+        "shares": 1097.01,
+        "shares_held": 0.0,
+        "holders": 0,
+        "price": 0.4538376873236637,
+        "closing_price": null,
+        "price_change_24h": -1.2231498789493192e-16,
+        "image_url": null,
+        "image_ipfs_hash": null
+      }
+    ]
+  },
+  {
+    "liked": false,
+    "id": 3,
+    "network_id": 1112432,
+    "slug": "will-bitcoin-price-hit-200-000-in-2025-4cc33143-4f5c-4859-941b-98c3cba58240",
+    "title": "Will Bitcoin price hit 200,000$ in 2025?",
+    "description": "Will Bitcoin price hit 200,000$ in 2025?",
+    "created_at": "2025-06-13T14:12:07.782Z",
+    "expires_at": "2026-01-01T00:00:00.000Z",
+    "scheduled_at": null,
+    "fee": 0.03,
+    "treasury_fee": 0.0,
+    "treasury": "0x0000000000000000000000000000000000000000",
+    "fees": {
+      "treasury": "0x0000000000000000000000000000000000000000",
+      "distributor": "0x0000000000000000000000000000000000000000",
+      "buy": {
+        "fee": 0.03,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      },
+      "sell": {
+        "fee": 0.0,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      }
+    },
+    "state": "open",
+    "verified": false,
+    "category": "Other",
+    "subcategory": "",
+    "topics": [
+      "Crypto"
+    ],
+    "resolution_source": "https://coinmarketcap.com/",
+    "resolution_title": "Coinmarketcap",
+    "token": {
+      "name": "USDC",
+      "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+      "symbol": "USDC",
+      "decimals": 6,
+      "wrapped": false
+    },
+    "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+    "liquidity": 1000.0,
+    "liquidity_eur": 1000.0,
+    "liquidity_price": 0.9038929686640732,
+    "volume": 863.0,
+    "volume_24h": 0,
+    "volume_eur": 863.0,
+    "shares": 2212.651357,
+    "question_id": "0x489529093717a2714676081c65c31fdf6f03c8f37cfa353a30a9cbc048492245",
+    "resolved_outcome_id": -1,
+    "voided": false,
+    "trading_view_symbol": null,
+    "question": {
+      "id": "0x489529093717a2714676081c65c31fdf6f03c8f37cfa353a30a9cbc048492245",
+      "bond": 0.0,
+      "best_answer": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "is_finalized": false,
+      "arbitrator": "0x0000000000000000000000000000000000000000",
+      "is_pending_arbitration": false,
+      "is_claimed": false,
+      "finalize_ts": 0,
+      "timeout": 0,
+      "dispute_id": null,
+      "is_pending_arbitration_request": false
+    },
+    "banner_url": null,
+    "og_image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/1984103f-8f68-46a9-4922-9d2bb41ba900/public",
+    "news": [],
+    "votes": {
+      "up": 0,
+      "down": 0
+    },
+    "users": 4,
+    "top_holders": [
+      "0x9c6ade4835F069bB959BB6cd9d2D294797F509d2",
+      "0xc3E25f0370B68dc14e88F3cb792868456e40170B"
+    ],
+    "likes": 0,
+    "comments": 0,
+    "featured": false,
+    "featured_at": null,
+    "publish_status": "published",
+    "image_ipfs_hash": "",
+    "edit_history": [],
+    "sponsorship": null,
+    "tournaments": [
+      {
+        "id": 1778,
+        "network_id": 1112432,
+        "slug": "myriad-szn2-pts-contest",
+        "title": "Myriad SZN2 USDC Contest",
+        "description": "Myriad USDC Contest",
+        "token": {
+          "name": "USDC",
+          "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+          "symbol": "USDC",
+          "decimals": 6,
+          "wrapped": false
+        },
+        "created_at": "2025-06-11T08:51:49.782Z",
+        "image_url": "",
+        "avatar_url": null,
+        "og_image_url": null,
+        "metadata_url": null,
+        "expires_at": "2026-01-01T00:00:01.000Z",
+        "users": 8,
+        "position": 1,
+        "rank_by": "claim_winnings_count,earnings_eur",
+        "rewards": [
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "claim_winnings_count",
+            "image_url": "",
+            "description": "R1"
+          },
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "earnings_eur",
+            "image_url": "",
+            "description": "R1"
+          }
+        ],
+        "rules": "",
+        "topics": [
+          "Other"
+        ],
+        "published": true,
+        "comments_enabled": true,
+        "markets": [
+          {
+            "id": 1,
+            "title": "Fear and Greed Index at 62 or higher on December 31?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/01f666d4-6dec-4cf9-bb9d-eda8144f6900/public",
+            "slug": "fear-and-greed-index-at-62-or-higher-on-december-31-7c02a20e-bcdd-4fed-9771-d2923296bdc7"
+          },
+          {
+            "id": 4,
+            "title": "Will Bitcoin price hit 250,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-250-000-in-2025"
+          },
+          {
+            "id": 5,
+            "title": "Will Bitcoin price hit 500,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-500-000-in-2025"
+          },
+          {
+            "id": 6,
+            "title": "Will Bitcoin price hit 1,000,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-1-000-000-in-2025"
+          },
+          {
+            "id": 7,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+            "slug": "market-with-3-outcomes"
+          },
+          {
+            "id": 8,
+            "title": "Closed Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "closed-market-with-3-outcomes"
+          },
+          {
+            "id": 9,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "market-with-3-outcomes-1cf1723c-1966-4692-83de-4752632db4cb"
+          },
+          {
+            "id": 2,
+            "title": "Will Bitcoin price hit 150,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-150-000-in-2025"
+          },
+          {
+            "id": 3,
+            "title": "Will Bitcoin price hit 200,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-200-000-in-2025-4cc33143-4f5c-4859-941b-98c3cba58240"
+          },
+          {
+            "id": 11,
+            "title": "Test 1-2-3 fees",
+            "image_url": null,
+            "slug": "test-1-2-3-fees"
+          }
+        ],
+        "land": {
+          "id": 905,
+          "slug": "myriad-szn2-usdc",
+          "title": "Myriad SZN2 USDC",
+          "network_id": "1112432",
+          "description": "Myriad Abstract USDC Land",
+          "short_description": "Myriad USDC Land.",
+          "token": {
+            "name": "USDC",
+            "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+            "symbol": "USDC",
+            "decimals": 6,
+            "wrapped": false
+          },
+          "token_controller_address": "0xd679cd5d513de3163aae5dd1e8472cac4971f287",
+          "created_at": "2025-06-11T08:09:13.458Z",
+          "position": 35,
+          "rank_by": "claim_winnings_count,earnings_eur",
+          "users": 0,
+          "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+          "banner_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/359049f1-f480-4ef0-d59c-33258993bb00/public",
+          "og_image_url": null,
+          "metadata_url": null,
+          "tags": [
+            "Myriad"
+          ],
+          "social_urls": {},
+          "admins": [
+            "0x68FcB3Db1BA4Abb85D9f9420A110948e6459d613",
+            "0xA9b69Aa5AbE255e54442cAA4689d3Cea654609fd",
+            "0x968CF2b84C63099266b1282C6B5590adc0A00711",
+            "0x31F99af8a746411DC81eD6cdE002DD22B7FCD1fC"
+          ],
+          "published": true,
+          "website_url": "https://abstract.myriad.markets/",
+          "whitelabel": true,
+          "onboarded": true,
+          "advanced": true,
+          "topics": [
+            "Crypto"
+          ]
+        }
+      }
+    ],
+    "outcomes": [
+      {
+        "id": 0,
+        "market_id": 3,
+        "title": "Yes",
+        "shares": 1579.566109,
+        "shares_held": 3.4138909999999214,
+        "holders": 1,
+        "price": 0.2861206515871357,
+        "closing_price": null,
+        "price_change_24h": 0.0,
+        "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+        "image_ipfs_hash": "QmXUjWBxCDQBC9rUKCXmqBZkxEXk6BNdVvNfQ5PDWyTX7R"
+      },
+      {
+        "id": 1,
+        "market_id": 3,
+        "title": "No",
+        "shares": 633.085248,
+        "shares_held": 949.894752,
+        "holders": 1,
+        "price": 0.7138793484128643,
+        "closing_price": null,
+        "price_change_24h": 0.0,
+        "image_url": null,
+        "image_ipfs_hash": null
+      }
+    ]
+  },
+  {
+    "liked": false,
+    "id": 2,
+    "network_id": 1112432,
+    "slug": "will-bitcoin-price-hit-150-000-in-2025",
+    "title": "Will Bitcoin price hit 150,000$ in 2025?",
+    "description": "Will Bitcoin price hit 150,000$ in 2025?",
+    "created_at": "2025-06-13T14:12:06.093Z",
+    "expires_at": "2026-01-01T00:00:00.000Z",
+    "scheduled_at": null,
+    "fee": 0.03,
+    "treasury_fee": 0.0,
+    "treasury": "0x0000000000000000000000000000000000000000",
+    "fees": {
+      "treasury": "0x0000000000000000000000000000000000000000",
+      "distributor": "0x0000000000000000000000000000000000000000",
+      "buy": {
+        "fee": 0.03,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      },
+      "sell": {
+        "fee": 0.0,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      }
+    },
+    "state": "open",
+    "verified": false,
+    "category": "Other",
+    "subcategory": "",
+    "topics": [
+      "Crypto"
+    ],
+    "resolution_source": "https://coinmarketcap.com/",
+    "resolution_title": "Coinmarketcap",
+    "token": {
+      "name": "USDC",
+      "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+      "symbol": "USDC",
+      "decimals": 6,
+      "wrapped": false
+    },
+    "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+    "liquidity": 1000.0,
+    "liquidity_eur": 1000.0,
+    "liquidity_price": 1.00000000090002,
+    "volume": 340.8,
+    "volume_24h": 0,
+    "volume_eur": 340.8,
+    "shares": 2000.000002,
+    "question_id": "0x4aef172645c1f26591e1b89eca137ea719531340ede592179ed1d817d069aded",
+    "resolved_outcome_id": -1,
+    "voided": false,
+    "trading_view_symbol": null,
+    "question": {
+      "id": "0x4aef172645c1f26591e1b89eca137ea719531340ede592179ed1d817d069aded",
+      "bond": 0.0,
+      "best_answer": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "is_finalized": false,
+      "arbitrator": "0x0000000000000000000000000000000000000000",
+      "is_pending_arbitration": false,
+      "is_claimed": false,
+      "finalize_ts": 0,
+      "timeout": 0,
+      "dispute_id": null,
+      "is_pending_arbitration_request": false
+    },
+    "banner_url": null,
+    "og_image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/9a987e49-343b-4103-3b2d-13827ce58c00/public",
+    "news": [],
+    "votes": {
+      "up": 0,
+      "down": 0
+    },
+    "users": 2,
+    "top_holders": [],
+    "likes": 0,
+    "comments": 0,
+    "featured": false,
+    "featured_at": null,
+    "publish_status": "published",
+    "image_ipfs_hash": "",
+    "edit_history": [],
+    "sponsorship": null,
+    "tournaments": [
+      {
+        "id": 1778,
+        "network_id": 1112432,
+        "slug": "myriad-szn2-pts-contest",
+        "title": "Myriad SZN2 USDC Contest",
+        "description": "Myriad USDC Contest",
+        "token": {
+          "name": "USDC",
+          "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+          "symbol": "USDC",
+          "decimals": 6,
+          "wrapped": false
+        },
+        "created_at": "2025-06-11T08:51:49.782Z",
+        "image_url": "",
+        "avatar_url": null,
+        "og_image_url": null,
+        "metadata_url": null,
+        "expires_at": "2026-01-01T00:00:01.000Z",
+        "users": 8,
+        "position": 1,
+        "rank_by": "claim_winnings_count,earnings_eur",
+        "rewards": [
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "claim_winnings_count",
+            "image_url": "",
+            "description": "R1"
+          },
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "earnings_eur",
+            "image_url": "",
+            "description": "R1"
+          }
+        ],
+        "rules": "",
+        "topics": [
+          "Other"
+        ],
+        "published": true,
+        "comments_enabled": true,
+        "markets": [
+          {
+            "id": 1,
+            "title": "Fear and Greed Index at 62 or higher on December 31?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/01f666d4-6dec-4cf9-bb9d-eda8144f6900/public",
+            "slug": "fear-and-greed-index-at-62-or-higher-on-december-31-7c02a20e-bcdd-4fed-9771-d2923296bdc7"
+          },
+          {
+            "id": 4,
+            "title": "Will Bitcoin price hit 250,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-250-000-in-2025"
+          },
+          {
+            "id": 5,
+            "title": "Will Bitcoin price hit 500,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-500-000-in-2025"
+          },
+          {
+            "id": 6,
+            "title": "Will Bitcoin price hit 1,000,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-1-000-000-in-2025"
+          },
+          {
+            "id": 7,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+            "slug": "market-with-3-outcomes"
+          },
+          {
+            "id": 8,
+            "title": "Closed Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "closed-market-with-3-outcomes"
+          },
+          {
+            "id": 9,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "market-with-3-outcomes-1cf1723c-1966-4692-83de-4752632db4cb"
+          },
+          {
+            "id": 2,
+            "title": "Will Bitcoin price hit 150,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-150-000-in-2025"
+          },
+          {
+            "id": 3,
+            "title": "Will Bitcoin price hit 200,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-200-000-in-2025-4cc33143-4f5c-4859-941b-98c3cba58240"
+          },
+          {
+            "id": 11,
+            "title": "Test 1-2-3 fees",
+            "image_url": null,
+            "slug": "test-1-2-3-fees"
+          }
+        ],
+        "land": {
+          "id": 905,
+          "slug": "myriad-szn2-usdc",
+          "title": "Myriad SZN2 USDC",
+          "network_id": "1112432",
+          "description": "Myriad Abstract USDC Land",
+          "short_description": "Myriad USDC Land.",
+          "token": {
+            "name": "USDC",
+            "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+            "symbol": "USDC",
+            "decimals": 6,
+            "wrapped": false
+          },
+          "token_controller_address": "0xd679cd5d513de3163aae5dd1e8472cac4971f287",
+          "created_at": "2025-06-11T08:09:13.458Z",
+          "position": 35,
+          "rank_by": "claim_winnings_count,earnings_eur",
+          "users": 0,
+          "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+          "banner_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/359049f1-f480-4ef0-d59c-33258993bb00/public",
+          "og_image_url": null,
+          "metadata_url": null,
+          "tags": [
+            "Myriad"
+          ],
+          "social_urls": {},
+          "admins": [
+            "0x68FcB3Db1BA4Abb85D9f9420A110948e6459d613",
+            "0xA9b69Aa5AbE255e54442cAA4689d3Cea654609fd",
+            "0x968CF2b84C63099266b1282C6B5590adc0A00711",
+            "0x31F99af8a746411DC81eD6cdE002DD22B7FCD1fC"
+          ],
+          "published": true,
+          "website_url": "https://abstract.myriad.markets/",
+          "whitelabel": true,
+          "onboarded": true,
+          "advanced": true,
+          "topics": [
+            "Crypto"
+          ]
+        }
+      }
+    ],
+    "outcomes": [
+      {
+        "id": 0,
+        "market_id": 2,
+        "title": "Yes",
+        "shares": 999.990002,
+        "shares_held": 0.01999799999998686,
+        "holders": 0,
+        "price": 0.500004999499995,
+        "closing_price": null,
+        "price_change_24h": 0.0,
+        "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+        "image_ipfs_hash": "QmXUjWBxCDQBC9rUKCXmqBZkxEXk6BNdVvNfQ5PDWyTX7R"
+      },
+      {
+        "id": 1,
+        "market_id": 2,
+        "title": "No",
+        "shares": 1000.01,
+        "shares_held": 0.0,
+        "holders": 0,
+        "price": 0.499995000500005,
+        "closing_price": null,
+        "price_change_24h": 1.11023412585617e-16,
+        "image_url": null,
+        "image_ipfs_hash": null
+      }
+    ]
+  },
+  {
+    "liked": false,
+    "id": 1,
+    "network_id": 1112432,
+    "slug": "fear-and-greed-index-at-62-or-higher-on-december-31-7c02a20e-bcdd-4fed-9771-d2923296bdc7",
+    "title": "Fear and Greed Index at 62 or higher on December 31?",
+    "description": "**Market Closing:**  December 31, 2025 at 11:59pm UTC\n\n**Resolution Time:** April 28, 2025 at 00:00 UTC, upon Fear and Greed Index update\n\n**Yes/No Criteria:**\n\n- The market resolves to Yes if the [Alternative.me](http://Alternative.me) [Fear and Greed Index](https://alternative.me/crypto/fear-and-greed-index/) reaches or exceeds 62 at its update on January 1, 2026 at 00:00 UTC\n- The market resolves to \"No\" if the index falls below 62 at resolution time.\n\n**Cancellation Conditions:**\n\nThe market will be cancelled if the [Alternative.me](http://Alternative.me) [Fear and Greed Index](https://alternative.me/crypto/fear-and-greed-index/) becomes unavailable, compromised, or fails to update.\n\nIn case of cancellation, participants can claim their stakes at their positions' market value at the time of cancellation. This may result in either profit or loss, depending on the outstanding shares' price.",
+    "created_at": "2025-06-11T08:50:54.194Z",
+    "expires_at": "2026-01-01T00:00:01.000Z",
+    "scheduled_at": null,
+    "fee": 0.03,
+    "treasury_fee": 0.0,
+    "treasury": "0x000000000000000000000000000000000000dEaD",
+    "fees": {
+      "treasury": "0x000000000000000000000000000000000000dEaD",
+      "distributor": "0x000000000000000000000000000000000000dEaD",
+      "buy": {
+        "fee": 0.03,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      },
+      "sell": {
+        "fee": 0.0,
+        "treasury_fee": 0.0,
+        "distributor_fee": 0.0
+      }
+    },
+    "state": "resolved",
+    "verified": false,
+    "category": "Test",
+    "subcategory": "",
+    "topics": [
+      "Crypto"
+    ],
+    "resolution_source": "https://alternative.me/crypto/fear-and-greed-index/",
+    "resolution_title": "Alternative Me Fear and Greed Index",
+    "token": {
+      "name": "USDC",
+      "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+      "symbol": "USDC",
+      "decimals": 6,
+      "wrapped": false
+    },
+    "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/01f666d4-6dec-4cf9-bb9d-eda8144f6900/public",
+    "liquidity": 1000.0,
+    "liquidity_eur": 1000.0,
+    "liquidity_price": 1.515722235,
+    "volume": 17910.97,
+    "volume_24h": 0,
+    "volume_eur": 17910.97,
+    "shares": 2175.473737,
+    "question_id": "0xcd77fd7fb69ffb455b71c3f613f89f9518f4a7a1d4854c60e1c3a1a17827248c",
+    "resolved_outcome_id": 1,
+    "voided": false,
+    "trading_view_symbol": null,
+    "question": {
+      "id": "0xcd77fd7fb69ffb455b71c3f613f89f9518f4a7a1d4854c60e1c3a1a17827248c",
+      "bond": 0.0,
+      "best_answer": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "is_finalized": false,
+      "arbitrator": "0x0000000000000000000000000000000000000000",
+      "is_pending_arbitration": false,
+      "is_claimed": false,
+      "finalize_ts": 0,
+      "timeout": 0,
+      "dispute_id": null,
+      "is_pending_arbitration_request": false
+    },
+    "banner_url": null,
+    "og_image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/a221af92-4141-4d50-7741-e683d5900a00/public",
+    "news": [],
+    "votes": {
+      "up": 0,
+      "down": 0
+    },
+    "users": 6,
+    "top_holders": [
+      "0x9c6ade4835F069bB959BB6cd9d2D294797F509d2",
+      "0x8b04b5113C17CC35f5ECF222F78edAABB98b5D80",
+      "0x968CF2b84C63099266b1282C6B5590adc0A00711"
+    ],
+    "likes": 0,
+    "comments": 0,
+    "featured": false,
+    "featured_at": null,
+    "publish_status": "published",
+    "image_ipfs_hash": "",
+    "edit_history": [],
+    "sponsorship": null,
+    "tournaments": [
+      {
+        "id": 1778,
+        "network_id": 1112432,
+        "slug": "myriad-szn2-pts-contest",
+        "title": "Myriad SZN2 USDC Contest",
+        "description": "Myriad USDC Contest",
+        "token": {
+          "name": "USDC",
+          "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+          "symbol": "USDC",
+          "decimals": 6,
+          "wrapped": false
+        },
+        "created_at": "2025-06-11T08:51:49.782Z",
+        "image_url": "",
+        "avatar_url": null,
+        "og_image_url": null,
+        "metadata_url": null,
+        "expires_at": "2026-01-01T00:00:01.000Z",
+        "users": 8,
+        "position": 1,
+        "rank_by": "claim_winnings_count,earnings_eur",
+        "rewards": [
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "claim_winnings_count",
+            "image_url": "",
+            "description": "R1"
+          },
+          {
+            "to": 1,
+            "from": 1,
+            "label": "R1",
+            "title": "R1",
+            "rank_by": "earnings_eur",
+            "image_url": "",
+            "description": "R1"
+          }
+        ],
+        "rules": "",
+        "topics": [
+          "Other"
+        ],
+        "published": true,
+        "comments_enabled": true,
+        "markets": [
+          {
+            "id": 1,
+            "title": "Fear and Greed Index at 62 or higher on December 31?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/01f666d4-6dec-4cf9-bb9d-eda8144f6900/public",
+            "slug": "fear-and-greed-index-at-62-or-higher-on-december-31-7c02a20e-bcdd-4fed-9771-d2923296bdc7"
+          },
+          {
+            "id": 4,
+            "title": "Will Bitcoin price hit 250,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-250-000-in-2025"
+          },
+          {
+            "id": 5,
+            "title": "Will Bitcoin price hit 500,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-500-000-in-2025"
+          },
+          {
+            "id": 6,
+            "title": "Will Bitcoin price hit 1,000,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-1-000-000-in-2025"
+          },
+          {
+            "id": 7,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+            "slug": "market-with-3-outcomes"
+          },
+          {
+            "id": 8,
+            "title": "Closed Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "closed-market-with-3-outcomes"
+          },
+          {
+            "id": 9,
+            "title": "Market With 3 Outcomes",
+            "image_url": "https://polkamarkets.infura-ipfs.io/ipfs/ QmS1XPfDF7njaSj8RqYvDmi4SkTFyh5Es5rvsLQzj2kPwu",
+            "slug": "market-with-3-outcomes-1cf1723c-1966-4692-83de-4752632db4cb"
+          },
+          {
+            "id": 2,
+            "title": "Will Bitcoin price hit 150,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-150-000-in-2025"
+          },
+          {
+            "id": 3,
+            "title": "Will Bitcoin price hit 200,000$ in 2025?",
+            "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/fa01c3b1-45fa-42ba-0caa-e1ec4b948a00/public",
+            "slug": "will-bitcoin-price-hit-200-000-in-2025-4cc33143-4f5c-4859-941b-98c3cba58240"
+          },
+          {
+            "id": 11,
+            "title": "Test 1-2-3 fees",
+            "image_url": null,
+            "slug": "test-1-2-3-fees"
+          }
+        ],
+        "land": {
+          "id": 905,
+          "slug": "myriad-szn2-usdc",
+          "title": "Myriad SZN2 USDC",
+          "network_id": "1112432",
+          "description": "Myriad Abstract USDC Land",
+          "short_description": "Myriad USDC Land.",
+          "token": {
+            "name": "USDC",
+            "address": "0x8820c84FD53663C2e2EA26e7a4c2b79dCc479765",
+            "symbol": "USDC",
+            "decimals": 6,
+            "wrapped": false
+          },
+          "token_controller_address": "0xd679cd5d513de3163aae5dd1e8472cac4971f287",
+          "created_at": "2025-06-11T08:09:13.458Z",
+          "position": 35,
+          "rank_by": "claim_winnings_count,earnings_eur",
+          "users": 0,
+          "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/7a26f238-8194-49f0-1954-c9a0ec1f3300/public",
+          "banner_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/359049f1-f480-4ef0-d59c-33258993bb00/public",
+          "og_image_url": null,
+          "metadata_url": null,
+          "tags": [
+            "Myriad"
+          ],
+          "social_urls": {},
+          "admins": [
+            "0x68FcB3Db1BA4Abb85D9f9420A110948e6459d613",
+            "0xA9b69Aa5AbE255e54442cAA4689d3Cea654609fd",
+            "0x968CF2b84C63099266b1282C6B5590adc0A00711",
+            "0x31F99af8a746411DC81eD6cdE002DD22B7FCD1fC"
+          ],
+          "published": true,
+          "website_url": "https://abstract.myriad.markets/",
+          "whitelabel": true,
+          "onboarded": true,
+          "advanced": true,
+          "topics": [
+            "Crypto"
+          ]
+        }
+      }
+    ],
+    "outcomes": [
+      {
+        "id": 0,
+        "market_id": 1,
+        "title": "Yes",
+        "shares": 659.751502,
+        "shares_held": 3646.178498,
+        "holders": 5,
+        "price": 0.0,
+        "closing_price": 0.696732030923157,
+        "price_change_24h": -1.0,
+        "image_url": "https://imagedelivery.net/YN1-rdnufJQJCgu3i1CbVw/01f666d4-6dec-4cf9-bb9d-eda8144f6900/public",
+        "image_ipfs_hash": "Qmehw4S8t2xFTBEG5e7CGLZbJsSamwQRcTGYgEx7BRMuz2"
+      },
+      {
+        "id": 1,
+        "market_id": 1,
+        "title": "No",
+        "shares": 1515.722235,
+        "shares_held": 2790.207765,
+        "holders": 3,
+        "price": 1.0,
+        "closing_price": 0.30326796907684295,
+        "price_change_24h": 2.2974138450692,
+        "image_url": null,
+        "image_ipfs_hash": null
+      }
+    ]
+  }
+]

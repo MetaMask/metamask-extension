@@ -24,6 +24,7 @@ export const MSG_TO_SIGN =
 export const GAMMA_API_ENDPOINT = 'https://gamma-api.polymarket.com';
 export const CLOB_ENDPOINT = 'https://clob.polymarket.com';
 export const DATA_API_ENDPOINT = 'https://data-api.polymarket.com';
+export const STAGING_API_ENDPOINT = 'https://api-v1.staging.myriad.markets';
 
 const COLLATERAL_TOKEN_DECIMALS = 6;
 
