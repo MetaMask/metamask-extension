@@ -95,6 +95,12 @@ export default function CreatePassword({
         firstTimeFlowType === FirstTimeFlowType.socialImport
       ) {
         history.replace(ONBOARDING_METAMETRICS);
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        if (isFirefox) {
+          history.replace(ONBOARDING_COMPLETION_ROUTE);
+        } else {
+          history.replace(ONBOARDING_METAMETRICS);
+        }
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }

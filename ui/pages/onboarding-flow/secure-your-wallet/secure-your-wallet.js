@@ -15,9 +15,8 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  ONBOARDING_COMPLETION_ROUTE,
-  ONBOARDING_METAMETRICS,
   ONBOARDING_REVIEW_SRP_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   MetaMetricsEventCategory,
@@ -35,11 +34,7 @@ import {
 import { getHDEntropyIndex, getIsSocialLoginFlow } from '../../../selectors';
 import SRPDetailsModal from '../../../components/app/srp-details-modal';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import SkipSRPBackup from './skip-srp-backup-popover';
-
-const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 export default function SecureYourWallet() {
   const history = useHistory();
@@ -95,11 +90,7 @@ export default function SecureYourWallet() {
     // During the onboarding flow, this page does not belong to the social login flow,
     // so we need to redirect to the other pages (based on the browser)
     if (!onboardingCompleted && isSocialLoginFlow) {
-      if (isFirefox) {
-        history.replace(ONBOARDING_COMPLETION_ROUTE);
-      } else {
-        history.replace(ONBOARDING_METAMETRICS);
-      }
+      history.replace(ONBOARDING_WELCOME_ROUTE);
     }
   }, [onboardingCompleted, history, isSocialLoginFlow]);
 
