@@ -301,6 +301,8 @@ export enum IconName {
   WifiOff = 'wifi-off',
   Wifi = 'wifi',
   X = 'x',
+  Wise='wise',
+  Headphones='headphones'
 }
 
 // TODO: Convert to a `type` in a future major version.

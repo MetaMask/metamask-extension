@@ -196,8 +196,9 @@ export const GlobalMenu = ({
       borderStyle={BorderStyle.none}
       position={PopoverPosition.Auto}
     >
-      {basicFunctionality && (
+      {/* {basicFunctionality && (
         <>
+
           <MenuItem
             iconName={IconName.Notification}
             onClick={() => handleNotificationsClick()}
@@ -220,9 +221,10 @@ export const GlobalMenu = ({
             width={BlockSize.Full}
             style={{ height: '1px', borderBottomWidth: 0 }}
           ></Box>
+
         </>
-      )}
-      {account && (
+      )} */}
+      {/* {account && (
         <>
           <AccountDetailsMenuItem
             metricsLocation={METRICS_LOCATION}
@@ -258,8 +260,9 @@ export const GlobalMenu = ({
         disabled={hasUnapprovedTransactions}
       >
         {t('allPermissions')}
-      </MenuItem>
+      </MenuItem> */}
 
+      {/*
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem
           iconName={IconName.Expand}
@@ -279,7 +282,8 @@ export const GlobalMenu = ({
           {t('expandView')}
         </MenuItem>
       )}
-      {process.env.REMOVE_GNS && (
+      */}
+      {/* {process.env.REMOVE_GNS && (
         <MenuItem
           iconName={IconName.Hierarchy}
           onClick={() => {
@@ -324,10 +328,9 @@ export const GlobalMenu = ({
         data-testid="global-menu-support"
       >
         {supportText}
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem
         iconName={IconName.Setting}
-        disabled={hasUnapprovedTransactions}
         onClick={() => {
           history.push(SETTINGS_ROUTE);
           trackEvent({
@@ -344,7 +347,21 @@ export const GlobalMenu = ({
         {t('settings')}
       </MenuItem>
       <MenuItem
-        ref={lastItemRef} // ref for last item in GlobalMenu
+        iconName={IconName.Wise}
+        onClick={() => {}}
+        data-testid="global-menu-deposit-wise"
+      >
+        Deposit via Wise
+      </MenuItem>
+      <MenuItem
+        iconName={IconName.Headphones}
+        onClick={() => {}}
+        data-testid="global-menu-contact-us"
+      >
+        Contact Us
+      </MenuItem>
+      {/* <MenuItem
+        ref={lastItemRef}
         iconName={IconName.Lock}
         onClick={() => {
           dispatch(lockMetamask());
@@ -361,7 +378,7 @@ export const GlobalMenu = ({
         data-testid="global-menu-lock"
       >
         {t('lockCryptoBridge')}
-      </MenuItem>
+      </MenuItem> */}
     </Popover>
   );
 };

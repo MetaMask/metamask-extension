@@ -711,7 +711,7 @@ export default function TransactionList({
         <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
       ) : null}
       <Box className="transaction-list" {...boxProps}>
-        {renderFilterButton()}
+        {/* {renderFilterButton()} */}
         {process.env.REMOVE_GNS &&
         pendingTransactions.length === 0 &&
         completedTransactions.length === 0 ? (

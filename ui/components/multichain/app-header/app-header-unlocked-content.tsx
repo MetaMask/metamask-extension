@@ -62,6 +62,8 @@ import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 import { TraceName, trace } from '../../../../shared/lib/trace';
+import { NotificationsButton } from './notifications-button';
+import { ExpandViewButton } from './expand-view-button';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
@@ -324,7 +326,9 @@ export const AppHeaderUnlockedContent = ({
                 onClick={() => handleConnectionsRoute()}
               />
             </Box>
-          )}{' '}
+          )}
+          <ExpandViewButton />
+          <NotificationsButton />
           <Box
             ref={menuRef}
             display={Display.Flex}
@@ -336,7 +340,7 @@ export const AppHeaderUnlockedContent = ({
                 style={{ position: 'relative' }}
                 onClick={() => handleMainMenuOpened()}
               >
-                <NotificationsTagCounter noLabel />
+                {/* <NotificationsTagCounter noLabel /> 这里已被 NotificationsButton 替代 */}
               </Box>
             )}
             <ButtonIcon
