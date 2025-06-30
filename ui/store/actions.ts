@@ -1035,9 +1035,9 @@ export function removeSlide(
   };
 }
 
-export function setSplashPageAcknowledgedForAccount(account: string): void {
+export function setSmartAccountOptInForAccounts(accounts: Hex[]): void {
   try {
-    submitRequestToBackground('setSplashPageAcknowledgedForAccount', [account]);
+    submitRequestToBackground('setSmartAccountOptInForAccounts', [accounts]);
   } catch (error) {
     logErrorWithMessage(error);
     throw error;
@@ -4478,14 +4478,19 @@ export function updateAccountsList(
  * This method updates the enabledNetworkMap to mark specified networks as enabled.
  * It can handle both a single chain ID or an array of chain IDs.
  *
- * @param chainIds - A single CAIP-2 chain ID (e.g. 'eip155:1') or an array of chain IDs
+ * @param chainIds - A single chainId (e.g. 'eip155:1') or an array of chain IDs
  * to be enabled. All other networks will be implicitly disabled.
+ * @param networkId - The CAIP-2 chain ID of the currently selected network
  */
 export function setEnabledNetworks(
   chainIds: string[],
+  networkId: CaipNamespace,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('setEnabledNetworks', [chainIds]);
+    await submitRequestToBackground('setEnabledNetworks', [
+      chainIds,
+      networkId,
+    ]);
   };
 }
 

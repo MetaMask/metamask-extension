@@ -21,9 +21,11 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_ACCOUNT_EXIST,
   ONBOARDING_ACCOUNT_NOT_FOUND,
+  SECURITY_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
+  getIsPrimarySeedPhraseBackedUp,
   getIsUnlocked,
 } from '../../ducks/metamask/metamask';
 import {
@@ -91,9 +93,15 @@ export default function OnboardingFlow() {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
+  const isFromSettingsSecurity = new URLSearchParams(search).get(
+    'isFromSettingsSecurity',
+  );
   const trackEvent = useContext(MetaMetricsContext);
   const isUnlocked = useSelector(getIsUnlocked);
   const showTermsOfUse = useSelector(getShowTermsOfUse);
+  const isPrimarySeedPhraseBackedUp = useSelector(
+    getIsPrimarySeedPhraseBackedUp,
+  );
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
@@ -115,16 +123,26 @@ export default function OnboardingFlow() {
   }, [history, completedOnboarding, isFromReminder]);
 
   useEffect(() => {
-    if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
-      const needsSRP = [
-        ONBOARDING_REVIEW_SRP_ROUTE,
-        ONBOARDING_CONFIRM_SRP_ROUTE,
-      ].some((route) => pathname.startsWith(route));
+    const isSRPBackupRoute = [
+      ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+      ONBOARDING_REVIEW_SRP_ROUTE,
+      ONBOARDING_CONFIRM_SRP_ROUTE,
+    ].some((route) => pathname?.startsWith(route));
 
-      if (needsSRP) {
+    if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
+      if (isSRPBackupRoute) {
         history.push(ONBOARDING_UNLOCK_ROUTE);
       }
     }
+
+    if (
+      isPrimarySeedPhraseBackedUp &&
+      isSRPBackupRoute &&
+      completedOnboarding
+    ) {
+      history.replace(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
+    }
+
     if (pathname === ONBOARDING_WELCOME_ROUTE) {
       setWelcomePageState(
         showTermsOfUse ? WelcomePageState.Banner : WelcomePageState.Login,
@@ -139,6 +157,8 @@ export default function OnboardingFlow() {
     pathname,
     history,
     showTermsOfUse,
+    isPrimarySeedPhraseBackedUp,
+    isFromSettingsSecurity,
   ]);
 
   const handleCreateNewAccount = async (password) => {

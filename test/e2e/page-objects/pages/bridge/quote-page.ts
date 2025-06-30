@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 export type BridgeQuote = {
@@ -58,6 +59,8 @@ class BridgeQuotePage {
     css: '.mm-text--body-md',
   };
 
+  private switchTokensButton = '[data-testid="switch-tokens"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -116,6 +119,23 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.backButton);
   };
 
+  async searchAssetAndVerifyCount(
+    searchInput: string,
+    count: number,
+  ): Promise<void> {
+    console.log(`Fill search input with ${searchInput}`);
+    await this.driver.pasteIntoField(this.assetPrickerSearchInput, searchInput);
+    await this.driver.elementCountBecomesN(this.tokenButton, count);
+  }
+
+  async check_tokenIsDisabled() {
+    const [tkn] = await this.driver.findElements(this.tokenButton);
+
+    await tkn.click();
+    const isSelected = await tkn.isSelected();
+    assert.equal(isSelected, false);
+  }
+
   async check_noTradeRouteMessageIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.noOptionAvailable);
@@ -168,6 +188,10 @@ class BridgeQuotePage {
       throw e;
     }
     console.log('Price matches expected format');
+  }
+
+  async switchTokens(): Promise<void> {
+    await this.driver.clickElement(this.switchTokensButton);
   }
 }
 

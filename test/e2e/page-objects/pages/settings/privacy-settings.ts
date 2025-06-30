@@ -8,6 +8,9 @@ class PrivacySettings {
   private readonly autodetectNftToggleButton =
     '[data-testid="useNftDetection"] .toggle-button > div';
 
+  private readonly autoDetectToken =
+    '[data-testid="autoDetectTokens"] .toggle-button';
+
   private readonly closeRevealSrpDialogButton = {
     text: tEn('close'),
     tag: 'button',
@@ -136,6 +139,15 @@ class PrivacySettings {
       throw e;
     }
     console.log('Privacy & Security Settings page is loaded');
+  }
+
+  async check_srpListIsLoaded(): Promise<void> {
+    console.log('Check SRP list is loaded on privacy settings page');
+    const srpSelector = {
+      text: `Secret Recovery Phrase 1`,
+      tag: 'p',
+    };
+    await this.driver.waitForSelector(srpSelector);
   }
 
   async deleteMetaMetrics(): Promise<void> {
@@ -315,6 +327,13 @@ class PrivacySettings {
       css: this.displayedSrpText,
       text: expectedSrpText,
     });
+  }
+
+  async toggleAutoDetectTokens(): Promise<void> {
+    console.log(
+      'Toggle auto detect tokens in Security and Privacy settings page',
+    );
+    await this.driver.clickElement(this.autoDetectToken);
   }
 
   async toggleParticipateInMetaMetrics(): Promise<void> {

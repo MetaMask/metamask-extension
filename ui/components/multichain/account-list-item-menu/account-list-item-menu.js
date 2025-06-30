@@ -131,6 +131,12 @@ export const AccountListItemMenu = ({
   };
 
   const handleHidding = (address) => {
+    // If the account is already hidden, we do not add it again
+    // TODO: The controller should handle this logic
+    if (hiddenAccountList.includes(address)) {
+      return;
+    }
+
     const updatedHiddenAccountList = [...hiddenAccountList, address];
     if (pinnedAccountList.includes(address)) {
       handleUnpinning(address);

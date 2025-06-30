@@ -143,7 +143,6 @@
     "surveyLinkLastClickedOrClosed": "object",
     "switchedNetworkNeverShowMessage": "boolean",
     "slides": "object",
-    "upgradeSplashPageAcknowledgedForAccounts": "object",
     "isUpdateAvailable": false,
     "updateModalLastDismissedAt": null,
     "lastUpdatedAt": null,
@@ -230,7 +229,9 @@
     "subjectMetadata": "object",
     "announcements": "object",
     "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
-    "enabledNetworkMap": { "0x539": "boolean" },
+    "enabledNetworkMap": {
+      "eip155": "object"
+    },
     "pinnedAccountList": {},
     "hiddenAccountList": {},
     "gasFeeEstimatesByChainId": {},
