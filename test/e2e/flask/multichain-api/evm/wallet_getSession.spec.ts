@@ -1,14 +1,14 @@
 import { strict as assert } from 'assert';
-import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
-import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { withFixtures } from '../../../helpers';
+import FixtureBuilder from '../../../fixture-builder';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
+import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
   type FixtureCallbackArgs,
-} from './testHelpers';
+} from '../testHelpers';
 
 describe('Multichain API', function () {
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_getSession` when there is no existing session', function () {

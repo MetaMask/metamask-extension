@@ -5,22 +5,22 @@ import {
   withFixtures,
   ACCOUNT_1,
   ACCOUNT_2,
-} from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
-import HomePage from '../../page-objects/pages/home/homepage';
-import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
-import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
+} from '../../../helpers';
+import FixtureBuilder from '../../../fixture-builder';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import NetworkPermissionSelectModal from '../../../page-objects/pages/dialog/network-permission-select-modal';
+import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
+} from '../../../page-objects/flows/login.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
   type FixtureCallbackArgs,
-} from './testHelpers';
+} from '../testHelpers';
 
 describe('Multichain API', function () {
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the users enabled networks', function () {

@@ -4,21 +4,21 @@ import {
   ACCOUNT_2,
   WINDOW_TITLES,
   withFixtures,
-} from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import { DAPP_HOST_ADDRESS } from '../../constants';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
-import HomePage from '../../page-objects/pages/home/homepage';
-import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
-import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
-import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+} from '../../../helpers';
+import { Driver } from '../../../webdriver/driver';
+import FixtureBuilder from '../../../fixture-builder';
+import { DAPP_HOST_ADDRESS } from '../../../constants';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import PermissionListPage from '../../../page-objects/pages/permission/permission-list-page';
+import SitePermissionPage from '../../../page-objects/pages/permission/site-permission-page';
+import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
-} from './testHelpers';
+} from '../testHelpers';
 
 describe('Call `wallet_createSession`, then update the accounts and/or scopes in the permissions page of the wallet for that dapp', function () {
   const INITIAL_SCOPES = ['eip155:1337', 'eip155:1338'];
