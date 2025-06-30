@@ -227,7 +227,7 @@ function getAppleClientId({ buildType, variables, environment, testing }) {
     `Build type "${buildType}" has improperly set APPLE_CLIENT_ID_REF in builds.yml. Current value: "${appleClientIdReference}"`,
   );
   const appleClientId = variables.get(appleClientIdReference);
-  return { appleClientId };
+  return appleClientId;
 }
 
 /**

@@ -10,6 +10,12 @@ export function padBase64String(input: string) {
   const stringLength = input.length;
   // number of characters to pad to make the string length a multiple of 4
   const requiredPadLength = segmentLength - (stringLength % segmentLength);
+  if (requiredPadLength === segmentLength) {
+    // handle the case where the string length is already a multiple of 4
+    // in this case, we don't need to pad the string
+    return input;
+  }
+
   // total length of the padded string
   const paddedStringLength = stringLength + requiredPadLength;
   const paddedString = input.padEnd(paddedStringLength, '=');
