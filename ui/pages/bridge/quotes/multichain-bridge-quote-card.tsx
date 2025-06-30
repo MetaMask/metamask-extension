@@ -169,11 +169,20 @@ export const MultichainBridgeQuoteCard = () => {
                 {t('networkFee')}
               </Text>
               <Text>
-                {formatCurrencyAmount(
-                  activeQuote.totalMaxNetworkFee?.valueInCurrency,
-                  currency,
-                  2,
-                )}
+                {activeQuote.quote.gasIncluded &&
+                activeQuote.includedTxFees?.valueInCurrency
+                  ? formatCurrencyAmount(
+                      activeQuote.includedTxFees.valueInCurrency,
+                      currency,
+                      2,
+                    )
+                  : formatCurrencyAmount(
+                      activeQuote.totalMaxNetworkFee?.valueInCurrency,
+                      currency,
+                      2,
+                    )}
+
+                {activeQuote.quote.gasIncluded ? ' Included' : ''}
               </Text>
             </Row>
 
