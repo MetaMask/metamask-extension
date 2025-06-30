@@ -217,7 +217,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       },
     );
 
-    const isRequestingSpecificChains = supportedRequestedCaipChainIds.some(
+    const isRequestingSpecificEvmChains = supportedRequestedCaipChainIds.some(
       (caipChainId) => {
         const { namespace } = parseCaipChainId(caipChainId);
         return namespace === KnownCaipNamespace.Eip155;
@@ -226,7 +226,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 
     // If the request is for EVM and no specific chains are requested,
     // we merge the default chains with existing permitted chains
-    if (!isRequestingSpecificChains && existingCaip25CaveatValue) {
+    if (!isRequestingSpecificEvmChains && existingCaip25CaveatValue) {
       supportedRequestedCaipChainIds = [
         ...defaultSelectedNetworkList,
         ...supportedRequestedCaipChainIds,
