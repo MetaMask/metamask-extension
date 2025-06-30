@@ -50,8 +50,16 @@
 
   &__actions {
     height: 3rem;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     border-top: 1px solid var(--color-primary-inverse);
+  }
+
+  &__text {
+    height: 40px;
+  }
+
+  &__text-index {
+    width: 20px;
   }
 }
 
