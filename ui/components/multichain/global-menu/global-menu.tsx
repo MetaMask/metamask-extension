@@ -351,14 +351,14 @@ export const GlobalMenu = ({
         onClick={() => {}}
         data-testid="global-menu-deposit-wise"
       >
-        Deposit via Wise
+        {t('depositWise')}
       </MenuItem>
       <MenuItem
         iconName={IconName.Headphones}
         onClick={() => {}}
         data-testid="global-menu-contact-us"
       >
-        Contact Us
+        {t('contactUs')}
       </MenuItem>
       {/* <MenuItem
         ref={lastItemRef}

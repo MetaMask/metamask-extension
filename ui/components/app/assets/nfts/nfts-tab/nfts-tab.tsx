@@ -159,13 +159,13 @@ export default function NftsTab() {
                 flexDirection={FlexDirection.Column}
                 className="nfts-tab__link"
               >
-                <Text
+                {/* <Text
                   color={TextColor.textAlternative}
                   variant={TextVariant.bodyMdMedium}
                   textAlign={TextAlign.Center}
                 >
                   {t('noNFTs')}
-                </Text>
+                </Text> */}
                 {
                   <ButtonLink
                     size={ButtonLinkSize.Md}

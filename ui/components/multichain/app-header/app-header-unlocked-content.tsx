@@ -54,7 +54,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { ENVIRONMENT_TYPE_FULLSCREEN, ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
@@ -191,7 +191,9 @@ export const AppHeaderUnlockedContent = ({
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
             alignItems={
-              process.env.REMOVE_GNS ? AlignItems.flexStart : AlignItems.flexStart
+              process.env.REMOVE_GNS
+                ? AlignItems.flexStart
+                : AlignItems.flexStart
             }
             ellipsis
           >
@@ -327,7 +329,10 @@ export const AppHeaderUnlockedContent = ({
               />
             </Box>
           )}
-          <ExpandViewButton />
+          {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
+            <ExpandViewButton />
+          )}
+
           <NotificationsButton />
           <Box
             ref={menuRef}

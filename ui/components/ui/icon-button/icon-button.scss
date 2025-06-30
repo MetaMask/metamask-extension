@@ -39,14 +39,14 @@
     align-items: center;
     height: 48px;
     width: 48px;
-    background: #B771E5;
+    background: var(--brand-colors-purple);
     border-radius: 99px;
     margin-top: 6px;
     margin-bottom: 4px;
     margin-inline: auto;
 
     &:hover {
-      background: var(--color-background-muted-hover);
+      background: var(--brand-colors-purple-hover);
       transition: background 200ms ease;
     }
     .mm-icon{

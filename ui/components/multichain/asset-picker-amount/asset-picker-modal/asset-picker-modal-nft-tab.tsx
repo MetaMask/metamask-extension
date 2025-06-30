@@ -174,13 +174,13 @@ export function AssetPickerModalNftTab({
               flexDirection={FlexDirection.Column}
               className="nfts-tab__link"
             >
-              <Text
+              {/* <Text
                 color={TextColor.textAlternative}
                 variant={TextVariant.bodyMdMedium}
                 textAlign={TextAlign.Center}
               >
                 {t('noNFTs')}
-              </Text>
+              </Text> */}
               <ButtonLink
                 size={ButtonLinkSize.Sm}
                 href={ZENDESK_URLS.NFT_TOKENS}

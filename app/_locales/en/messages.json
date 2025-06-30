@@ -7117,5 +7117,8 @@
   },
   "welcomeTitle": {
     "message": "Welcome to CryptBridge"
+  },
+  "depositWise":{
+    "message": "Deposit via Wise"
   }
 }

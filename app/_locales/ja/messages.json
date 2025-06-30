@@ -6697,5 +6697,8 @@
   },
   "totalBalance":{
     "message":"合計残高"
+  },
+  "depositWise":{
+    "message": "Wise を通じて入金"
   }
 }
