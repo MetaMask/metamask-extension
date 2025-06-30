@@ -25,13 +25,6 @@ jest.mock('../../store/actions', () => ({
   disableMetamaskNotifications: jest.fn(),
 }));
 
-jest.mock('./useProfileSyncing', () => ({
-  useEnableProfileSyncing: jest.fn(() => ({
-    enableProfileSyncing: jest.fn(),
-  })),
-  useAccountSyncingEffect: jest.fn(),
-}));
-
 describe('useNotifications', () => {
   let store: Store;
 
@@ -39,7 +32,7 @@ describe('useNotifications', () => {
     store = mockStore({
       metamask: {
         isMetamaskNotificationsEnabled: false,
-        isProfileSyncingEnabled: false,
+        isBackupAndSyncEnabled: false,
         internalAccounts: {
           accounts: [
             {

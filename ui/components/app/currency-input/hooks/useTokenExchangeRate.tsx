@@ -1,10 +1,8 @@
 import { useMemo, useState } from 'react';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { shallowEqual, useSelector } from 'react-redux';
-import {
-  getCurrentChainId,
-  getTokenExchangeRates,
-} from '../../../../selectors';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import { getTokenExchangeRates } from '../../../../selectors';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import {
   getConversionRate,
@@ -76,6 +74,8 @@ export default function useTokenExchangeRate(
         .then((addressToExchangeRate) => {
           setExchangeRates((prev) => ({
             ...prev,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             [tokenAddress]: addressToExchangeRate[tokenAddress] || FAILED,
           }));
         })

@@ -173,13 +173,13 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
     >
       <footer>
         <button
-          class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button page-container__footer-button__cancel mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
           data-testid="page-container-footer-cancel"
         >
           Cancel
         </button>
         <button
-          class="button btn--rounded btn-primary page-container__footer-button"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           data-testid="page-container-footer-next"
         >
           Decrypt
@@ -365,13 +365,13 @@ exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`]
     >
       <footer>
         <button
-          class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button page-container__footer-button__cancel mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
           data-testid="page-container-footer-cancel"
         >
           Cancel
         </button>
         <button
-          class="button btn--rounded btn-primary page-container__footer-button"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           data-testid="page-container-footer-next"
         >
           Decrypt
@@ -581,13 +581,13 @@ exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
     >
       <footer>
         <button
-          class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button page-container__footer-button__cancel mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
           data-testid="page-container-footer-cancel"
         >
           Cancel
         </button>
         <button
-          class="button btn--rounded btn-primary page-container__footer-button"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           data-testid="page-container-footer-next"
         >
           Decrypt

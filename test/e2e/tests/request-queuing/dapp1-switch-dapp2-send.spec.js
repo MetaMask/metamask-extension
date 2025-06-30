@@ -2,12 +2,13 @@ const FixtureBuilder = require('../../fixture-builder');
 const {
   DAPP_ONE_URL,
   DAPP_URL,
-  defaultGanacheOptions,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
   withFixtures,
 } = require('../../helpers');
+
+const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
   it('should queue send tx after switch network confirmation and transaction should target the correct network after switch is confirmed', async function () {
@@ -17,26 +18,29 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+          .withNetworkControllerTripleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-            {
+          },
+          {
+            type: 'anvil',
+            options: {
               port: 7777,
               chainId: 1000,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -50,6 +54,11 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const permissionsTab = await driver.findElement(
+          '[data-testid="permissions-tab"]',
+        );
+        await permissionsTab.click();
 
         const editButtons = await driver.findElements('[data-testid="edit"]');
 
@@ -72,13 +81,22 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         );
 
         // Network Selector
-        await driver.clickElement('[data-testid="network-display"]');
+        if (isGlobalNetworkSelectorRemoved) {
+          await driver.clickElement('[data-testid="sort-by-networks"]');
+          await driver.clickElement({
+            text: 'Custom',
+            tag: 'button',
+          });
+          await driver.clickElement('[data-testid="Localhost 8546"]');
+        } else {
+          await driver.clickElement('[data-testid="network-display"]');
 
-        // Switch to second network
-        await driver.clickElement({
-          text: 'Localhost 8546',
-          css: 'p',
-        });
+          // Switch to second network
+          await driver.clickElement({
+            text: 'Localhost 8546',
+            css: 'p',
+          });
+        }
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
@@ -134,7 +152,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Check correct network on the send confirmation.
         await driver.findElement({
-          css: '[data-testid="network-display"]',
+          css: 'p',
           text: 'Localhost 8546',
         });
 
@@ -143,22 +161,8 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           tag: 'button',
         });
 
-        // Switch back to the extension
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-
-        // Check for transaction
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
+        // Wait for the first dapp's connect confirmation to disappear
+        await driver.waitUntilXWindowHandles(3);
       },
     );
   });
@@ -170,26 +174,35 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+          .withNetworkControllerTripleNode()
           .withSelectedNetworkControllerPerDomain()
+          .withEnabledNetworks({
+            eip155: {
+              '0x539': true,
+              '0x53a': true,
+            },
+          })
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-            {
+          },
+          {
+            type: 'anvil',
+            options: {
               port: 7777,
               chainId: 1000,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -203,6 +216,11 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const permissionsTab = await driver.findElement(
+          '[data-testid="permissions-tab"]',
+        );
+        await permissionsTab.click();
+
         const editButtons = await driver.findElements('[data-testid="edit"]');
 
         await editButtons[1].click();
@@ -224,13 +242,21 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         );
 
         // Network Selector
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Switch to second network
-        await driver.clickElement({
-          text: 'Localhost 8546',
-          css: 'p',
-        });
+        if (isGlobalNetworkSelectorRemoved) {
+          await driver.clickElement('[data-testid="sort-by-networks"]');
+          await driver.clickElement({
+            text: 'Custom',
+            tag: 'button',
+          });
+          await driver.clickElement('[data-testid="Localhost 8546"]');
+        } else {
+          await driver.clickElement('[data-testid="network-display"]');
+          // Switch to second network
+          await driver.clickElement({
+            text: 'Localhost 8546',
+            css: 'p',
+          });
+        }
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
@@ -279,7 +305,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Check correct network on the send confirmation.
         await driver.findElement({
-          css: '[data-testid="network-display"]',
+          css: 'p',
           text: 'Localhost 8546',
         });
 
@@ -292,6 +318,12 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
+        if (isGlobalNetworkSelectorRemoved) {
+          await driver.clickElement(
+            '[data-testid="modal-header-close-button"]',
+          );
+        }
 
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',

@@ -12,9 +12,10 @@ import {
   LEGACY_INPAGE,
   LEGACY_PROVIDER,
   LEGACY_PUBLIC_CONFIG,
+  METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_COOKIE_HANDLER,
   METAMASK_INPAGE,
-  METAMASK_PROVIDER,
+  METAMASK_EIP_1193_PROVIDER,
   PHISHING_SAFELIST,
   PHISHING_STREAM,
 } from '../constants/stream';
@@ -32,11 +33,13 @@ let legacyExtMux: ObjectMultiplex,
   notificationTransformStream: Transform;
 
 let extensionMux: ObjectMultiplex,
-  extensionChannel: Substream,
-  extensionPort: browser.Runtime.Port,
+  extensionEip1193Channel: Substream,
+  extensionCaipChannel: Substream,
+  extensionPort: browser.Runtime.Port | null,
   extensionStream: PortStream | null,
   pageMux: ObjectMultiplex,
-  pageChannel: Substream;
+  pageChannel: Substream,
+  caipChannel: Substream;
 
 const setupPageStreams = () => {
   // the transport-specific streams for communication between inpage and background
@@ -54,7 +57,9 @@ const setupPageStreams = () => {
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
 
-  pageChannel = pageMux.createStream(METAMASK_PROVIDER);
+  pageChannel = pageMux.createStream(METAMASK_EIP_1193_PROVIDER);
+  caipChannel = pageMux.createStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
+
   pageMux.ignoreStream(METAMASK_COOKIE_HANDLER);
   pageMux.ignoreStream(LEGACY_PROVIDER);
   pageMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
@@ -65,7 +70,7 @@ const setupPageStreams = () => {
 // The field below is used to ensure that replay is done only once for each restart.
 let METAMASK_EXTENSION_CONNECT_SENT = false;
 
-const setupExtensionStreams = () => {
+export const setupExtensionStreams = () => {
   METAMASK_EXTENSION_CONNECT_SENT = true;
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new PortStream(extensionPort);
@@ -83,10 +88,22 @@ const setupExtensionStreams = () => {
   });
 
   // forward communication across inpage-background for these channels only
-  extensionChannel = extensionMux.createStream(METAMASK_PROVIDER);
-  pipeline(pageChannel, extensionChannel, pageChannel, (error: Error) =>
+  extensionEip1193Channel = extensionMux.createStream(
+    METAMASK_EIP_1193_PROVIDER,
+  );
+  pipeline(pageChannel, extensionEip1193Channel, pageChannel, (error: Error) =>
     console.debug(
-      `MetaMask: Muxed traffic for channel "${METAMASK_PROVIDER}" failed.`,
+      `MetaMask: Muxed traffic for channel "${METAMASK_EIP_1193_PROVIDER}" failed.`,
+      error,
+    ),
+  );
+
+  extensionCaipChannel = extensionMux.createStream(
+    METAMASK_CAIP_MULTICHAIN_PROVIDER,
+  );
+  pipeline(caipChannel, extensionCaipChannel, caipChannel, (error: Error) =>
+    console.debug(
+      `MetaMask: Muxed traffic for channel "${METAMASK_CAIP_MULTICHAIN_PROVIDER}" failed.`,
       error,
     ),
   );
@@ -106,8 +123,11 @@ const destroyExtensionStreams = () => {
   extensionMux.removeAllListeners();
   extensionMux.destroy();
 
-  extensionChannel.removeAllListeners();
-  extensionChannel.destroy();
+  extensionEip1193Channel.removeAllListeners();
+  extensionEip1193Channel.destroy();
+
+  extensionCaipChannel.removeAllListeners();
+  extensionCaipChannel.destroy();
 
   extensionStream = null;
 };
@@ -137,7 +157,8 @@ const setupLegacyPageStreams = () => {
     legacyPageMux.createStream(LEGACY_PUBLIC_CONFIG);
 
   legacyPageMux.ignoreStream(METAMASK_COOKIE_HANDLER);
-  legacyPageMux.ignoreStream(METAMASK_PROVIDER);
+  legacyPageMux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
+  legacyPageMux.ignoreStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
   legacyPageMux.ignoreStream(PHISHING_SAFELIST);
   legacyPageMux.ignoreStream(PHISHING_STREAM);
 };
@@ -159,14 +180,14 @@ const setupLegacyExtensionStreams = () => {
     },
   );
 
-  legacyExtChannel = legacyExtMux.createStream(METAMASK_PROVIDER);
+  legacyExtChannel = legacyExtMux.createStream(METAMASK_EIP_1193_PROVIDER);
   pipeline(
     legacyPageMuxLegacyProviderChannel,
     legacyExtChannel,
     legacyPageMuxLegacyProviderChannel,
     (error: Error) =>
       console.debug(
-        `MetaMask: Muxed traffic between channels "${LEGACY_PROVIDER}" and "${METAMASK_PROVIDER}" failed.`,
+        `MetaMask: Muxed traffic between channels "${LEGACY_PROVIDER}" and "${METAMASK_EIP_1193_PROVIDER}" failed.`,
         error,
       ),
   );
@@ -183,6 +204,7 @@ const setupLegacyExtensionStreams = () => {
         error,
       ),
   );
+  legacyExtMux.ignoreStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
   legacyExtMux.ignoreStream(METAMASK_COOKIE_HANDLER);
   legacyExtMux.ignoreStream(LEGACY_PROVIDER);
   legacyExtMux.ignoreStream(PHISHING_SAFELIST);
@@ -227,18 +249,34 @@ const onMessageSetUpExtensionStreams = (msg: MessageType) => {
 };
 
 /**
+ * Ends two-way communication streams between browser extension and
+ * the local per-page browser context.
+ */
+export function destroyStreams() {
+  if (!extensionPort) {
+    return;
+  }
+  extensionPort.onDisconnect.removeListener(onDisconnectDestroyStreams);
+
+  destroyExtensionStreams();
+  destroyLegacyExtensionStreams();
+
+  extensionPort.disconnect();
+  extensionPort = null;
+
+  METAMASK_EXTENSION_CONNECT_SENT = false;
+}
+
+/**
  * This listener destroys the extension streams when the extension port is disconnected,
  * so that streams may be re-established later when the extension port is reconnected.
  *
  * @param [err] - Stream connection error
  */
-export const onDisconnectDestroyStreams = (err: unknown) => {
+export function onDisconnectDestroyStreams(err: unknown) {
   const lastErr = err || checkForLastError();
 
-  extensionPort.onDisconnect.removeListener(onDisconnectDestroyStreams);
-
-  destroyExtensionStreams();
-  destroyLegacyExtensionStreams();
+  destroyStreams();
 
   /**
    * If an error is found, reset the streams. When running two or more dapps, resetting the service
@@ -251,7 +289,7 @@ export const onDisconnectDestroyStreams = (err: unknown) => {
     console.warn(`${lastErr} Resetting the streams.`);
     setTimeout(setupExtensionStreams, 1000);
   }
-};
+}
 
 /**
  * Initializes two-way communication streams between the browser extension and
@@ -274,7 +312,7 @@ function getNotificationTransformStream() {
     highWaterMark: 16,
     objectMode: true,
     transform: (chunk, _, cb) => {
-      if (chunk?.name === METAMASK_PROVIDER) {
+      if (chunk?.name === METAMASK_EIP_1193_PROVIDER) {
         if (chunk.data?.method === 'metamask_accountsChanged') {
           chunk.data.method = 'wallet_accountsChanged';
           chunk.data.result = chunk.data.params;
@@ -306,7 +344,7 @@ function extensionStreamMessageListener(msg: MessageType) {
         target: METAMASK_INPAGE, // the post-message-stream "target"
         data: {
           // this object gets passed to @metamask/object-multiplex
-          name: METAMASK_PROVIDER, // the @metamask/object-multiplex channel name
+          name: METAMASK_EIP_1193_PROVIDER, // the @metamask/object-multiplex channel name
           data: {
             jsonrpc: '2.0',
             method: 'METAMASK_EXTENSION_CONNECT_CAN_RETRY',
@@ -329,7 +367,7 @@ function notifyInpageOfStreamFailure() {
       target: METAMASK_INPAGE, // the post-message-stream "target"
       data: {
         // this object gets passed to @metamask/object-multiplex
-        name: METAMASK_PROVIDER, // the @metamask/object-multiplex channel name
+        name: METAMASK_EIP_1193_PROVIDER, // the @metamask/object-multiplex channel name
         data: {
           jsonrpc: '2.0',
           method: 'METAMASK_STREAM_FAILURE',

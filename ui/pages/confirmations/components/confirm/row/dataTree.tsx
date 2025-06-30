@@ -118,6 +118,7 @@ export const DataTree = ({
           )}:`}
           style={{ paddingRight: 0 }}
           key={`tree-data-${label}-index-${i}`}
+          data-testid={`confirmation_data-${label}-index-${i}`}
         >
           {
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -137,11 +138,15 @@ export const DataTree = ({
 };
 
 function isDateField(label: string, primaryType?: PrimaryType) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   return (FIELD_DATE_PRIMARY_TYPES[label] || [])?.includes(primaryType || '');
 }
 
 function isTokenUnitsField(label: string, primaryType?: PrimaryType) {
   return (FIELD_TOKEN_UTILS_PRIMARY_TYPES[label] || [])?.includes(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     primaryType || '',
   );
 }
@@ -198,6 +203,10 @@ const DataField = memo(
       })
     ) {
       return <ConfirmInfoRowAddress address={value} chainId={chainId} />;
+    }
+
+    if (type === 'bool') {
+      return <ConfirmInfoRowText text={String(value)} />;
     }
 
     return <ConfirmInfoRowText text={sanitizeString(value)} />;

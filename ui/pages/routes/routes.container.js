@@ -2,29 +2,30 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
+  getCurrentChainId,
+  isNetworkLoading,
+  getProviderConfig,
+} from '../../../shared/modules/selectors/networks';
+import {
   getAllAccountsOnNetworkAreEmpty,
-  getIsNetworkUsed,
   getNetworkIdentifier,
   getPreferences,
-  isNetworkLoading,
   getTheme,
   getIsTestnet,
-  getCurrentChainId,
-  getShouldShowSeedPhraseReminder,
   isCurrentProviderCustom,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getUnapprovedConfirmations,
   ///: END:ONLY_INCLUDE_IF
   getShowExtensionInFullSizeView,
-  getSelectedAccount,
   getSwitchedNetworkDetails,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
-  getUseRequestQueue,
   getCurrentNetwork,
+  getSelectedInternalAccount,
   oldestPendingConfirmationSelector,
   getUnapprovedTransactions,
   getPendingApprovals,
+  getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -47,12 +48,10 @@ import {
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import { getSendStage } from '../../ducks/send';
-import {
-  getIsUnlocked,
-  getProviderConfig,
-} from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { selectSwitchedNetworkNeverShowMessage } from '../../components/app/toast-master/selectors';
+import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
 import Routes from './routes.component';
 
 function mapStateToProps(state) {
@@ -64,7 +63,7 @@ function mapStateToProps(state) {
 
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
-  const account = getSelectedAccount(state);
+  const account = getSelectedInternalAccount(state);
   const activeTabOrigin = activeTab?.origin;
   const currentNetwork = getCurrentNetwork(state);
 
@@ -75,6 +74,9 @@ function mapStateToProps(state) {
   const oldestPendingApproval = oldestPendingConfirmationSelector(state);
   const pendingApprovals = getPendingApprovals(state);
   const transactionsMetadata = getUnapprovedTransactions(state);
+
+  const shouldShowSeedPhraseReminder =
+    account && getShouldShowSeedPhraseReminder(state, account);
 
   return {
     alertOpen,
@@ -95,17 +97,16 @@ function mapStateToProps(state) {
     providerType: getProviderConfig(state).type,
     theme: getTheme(state),
     sendStage: getSendStage(state),
-    isNetworkUsed: getIsNetworkUsed(state),
     allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
     isTestNet: getIsTestnet(state),
     showExtensionInFullSizeView: getShowExtensionInFullSizeView(state),
     currentChainId: getCurrentChainId(state),
-    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
+    shouldShowSeedPhraseReminder,
     forgottenPassword: state.metamask.forgottenPassword,
     isCurrentProviderCustom: isCurrentProviderCustom(state),
     completedOnboarding,
-    isAccountMenuOpen: state.metamask.isAccountMenuOpen,
-    isNetworkMenuOpen: state.metamask.isNetworkMenuOpen,
+    isAccountMenuOpen: state.appState.isAccountMenuOpen,
+    isNetworkMenuOpen: state.appState.isNetworkMenuOpen,
     isImportTokensModalOpen: state.appState.importTokensModalOpen,
     isBasicConfigurationModalOpen: state.appState.showBasicFunctionalityModal,
     isDeprecatedNetworkModalOpen: state.appState.deprecatedNetworkModalOpen,
@@ -120,10 +121,11 @@ function mapStateToProps(state) {
     switchedNetworkNeverShowMessage:
       selectSwitchedNetworkNeverShowMessage(state),
     currentExtensionPopupId: state.metamask.currentExtensionPopupId,
-    useRequestQueue: getUseRequestQueue(state),
     oldestPendingApproval,
     pendingApprovals,
     transactionsMetadata,
+    isMultichainAccountsState1Enabled:
+      getIsMultichainAccountsState1Enabled(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,
@@ -150,7 +152,10 @@ function mapDispatchToProps(dispatch) {
     clearSwitchedNetworkDetails: () => dispatch(clearSwitchedNetworkDetails()),
     automaticallySwitchNetwork: (networkId, selectedTabOrigin) =>
       dispatch(automaticallySwitchNetwork(networkId, selectedTabOrigin)),
-    clearEditedNetwork: () => dispatch(setEditedNetwork()),
+    networkMenuClose: () => {
+      dispatch(toggleNetworkMenu());
+      dispatch(setEditedNetwork());
+    },
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     hideShowKeyringSnapRemovalResultModal: () =>
       dispatch(hideKeyringRemovalResultModal()),

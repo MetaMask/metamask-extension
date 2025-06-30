@@ -23,6 +23,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { SizeNumber } from '../../../../ui/box/box';
 import { CopyIcon } from './copy-icon';
 
 export enum ConfirmInfoRowVariant {
@@ -32,17 +33,19 @@ export enum ConfirmInfoRowVariant {
 }
 
 export type ConfirmInfoRowProps = {
-  label: string;
-  children: React.ReactNode | string;
-  tooltip?: string;
-  variant?: ConfirmInfoRowVariant;
-  style?: React.CSSProperties;
-  labelChildren?: React.ReactNode;
+  children?: React.ReactNode | string;
+  collapsed?: boolean;
   color?: TextColor;
   copyEnabled?: boolean;
   copyText?: string;
   'data-testid'?: string;
-  collapsed?: boolean;
+  label: string;
+  labelChildren?: React.ReactNode;
+  style?: React.CSSProperties;
+  tooltip?: string;
+  tooltipIcon?: IconName;
+  tooltipIconColor?: IconColor;
+  variant?: ConfirmInfoRowVariant;
 };
 
 const BACKGROUND_COLORS = {
@@ -85,10 +88,15 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   copyText,
   'data-testid': dataTestId,
   collapsed,
+  tooltipIcon,
+  tooltipIconColor,
 }) => {
   const [expanded, setExpanded] = useState(!collapsed);
 
   const isCollapsible = collapsed !== undefined;
+
+  const contentPaddingRight = ((copyEnabled ? 6 : 0) +
+    (isCollapsible ? 6 : 0)) as SizeNumber;
 
   return (
     <ConfirmInfoRowContext.Provider value={{ variant }}>
@@ -99,13 +107,13 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         flexDirection={isCollapsible ? FlexDirection.Column : FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         flexWrap={FlexWrap.Wrap}
-        alignItems={isCollapsible ? AlignItems.flexStart : AlignItems.center}
+        alignItems={AlignItems.flexStart}
         backgroundColor={BACKGROUND_COLORS[variant]}
         borderRadius={BorderRadius.LG}
         marginTop={2}
         marginBottom={2}
         paddingLeft={2}
-        paddingRight={copyEnabled ? 5 : 2}
+        paddingRight={2}
         color={TEXT_COLORS[variant] as TextColor}
         style={{
           overflowWrap: OverflowWrap.Anywhere,
@@ -117,7 +125,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         {copyEnabled && (
           <CopyIcon
             copyText={copyText ?? ''}
-            style={{ right: isCollapsible ? 32 : 4, top: 4 }}
+            style={{ right: isCollapsible ? 32 : 4 }}
             color={IconColor.iconMuted}
           />
         )}
@@ -130,7 +138,6 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
               cursor: 'pointer',
               position: 'absolute',
               right: 8,
-              top: 4,
             }}
             onClick={() => setExpanded(!expanded)}
             data-testid="sectionCollapseButton"
@@ -143,6 +150,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.flexStart}
           color={color}
+          paddingRight={contentPaddingRight || null}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
@@ -156,9 +164,12 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
                 style={{ display: 'flex' }}
               >
                 <Icon
-                  name={TOOLTIP_ICONS[variant]}
+                  name={tooltipIcon ?? TOOLTIP_ICONS[variant]}
                   marginLeft={1}
-                  color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
+                  color={
+                    tooltipIconColor ??
+                    (TOOLTIP_ICON_COLORS[variant] as unknown as IconColor)
+                  }
                   size={IconSize.Sm}
                   {...(dataTestId
                     ? { 'data-testid': `${dataTestId}-tooltip` }
@@ -169,6 +180,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           </Box>
         </Box>
         {expanded &&
+          children &&
           (typeof children === 'string' ? (
             <Text marginRight={copyEnabled ? 3 : 0} color={TextColor.inherit}>
               {children}

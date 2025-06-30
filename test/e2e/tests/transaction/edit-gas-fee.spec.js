@@ -1,32 +1,39 @@
 const { strict: assert } = require('assert');
 const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
+const {
   createInternalTransaction,
   createDappTransaction,
 } = require('../../page-objects/flows/transaction');
 
-const {
-  withFixtures,
-  unlockWallet,
-  generateGanacheOptions,
-  WINDOW_TITLES,
-} = require('../../helpers');
+const { withFixtures, WINDOW_TITLES } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
+const PREFERENCES_STATE_MOCK = {
+  preferences: {
+    showFiatInTestnets: true,
+  },
+  // Enables advanced details due to migration 123
+  useNonceField: true,
+};
+
 describe('Editing Confirm Transaction', function () {
-  it('allows selecting high, medium, low gas estimates on edit gas fee popover @no-mmi', async function () {
+  it('allows selecting high, medium, low gas estimates on edit gas fee popover', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
+
         await createInternalTransaction(driver);
 
         await driver.findElement({
-          css: '.currency-display-component__text',
-          text: '1',
+          css: 'h2',
+          text: '1 ETH',
         });
 
         // update estimates to high
@@ -62,7 +69,7 @@ describe('Editing Confirm Transaction', function () {
         await driver.waitForSelector({
           text: 'Slow',
         });
-        await driver.waitForSelector('[data-testid="low-gas-fee-alert"]');
+        await driver.waitForSelector('[data-testid="inline-alert"]');
 
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -89,17 +96,19 @@ describe('Editing Confirm Transaction', function () {
   it('allows accessing advance gas fee popover from edit gas fee popover', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        fixtures: new FixtureBuilder()
+          .withPreferencesController(PREFERENCES_STATE_MOCK)
+          .build(),
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await createInternalTransaction(driver);
 
         await driver.findElement({
-          css: '.currency-display-component__text',
-          text: '1',
+          css: 'h2',
+          text: '1 ETH',
         });
 
         // update estimates to high
@@ -128,12 +137,13 @@ describe('Editing Confirm Transaction', function () {
 
         // has correct updated value on the confirm screen the transaction
         await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '0.00085',
+          css: '[data-testid="first-gas-field"]',
+          text: '0.0002',
         });
+
         await driver.waitForSelector({
-          css: '.currency-display-component__suffix',
-          text: 'ETH',
+          css: '[data-testid="native-currency"]',
+          text: '$0.30',
         });
 
         // confirms the transaction
@@ -158,19 +168,20 @@ describe('Editing Confirm Transaction', function () {
     );
   });
 
-  it('should use dapp suggested estimates for transaction coming from dapp @no-mmi', async function () {
+  it('should use dapp suggested estimates for transaction coming from dapp', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
         dapp: true,
       },
       async ({ driver }) => {
         // login to extension
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await createDappTransaction(driver, {
           maxFeePerGas: '0x2000000000',
@@ -192,16 +203,20 @@ describe('Editing Confirm Transaction', function () {
           '[data-testid="edit-gas-fee-item-dappSuggested"]',
         );
 
-        const transactionAmounts = await driver.findElements(
-          '.currency-display-component__text',
-        );
-        const transactionAmount = transactionAmounts[0];
-        assert.equal(await transactionAmount.getText(), '0.001');
+        await driver.findElements({
+          css: 'h2',
+          text: '0.001 ETH',
+        });
 
         // has correct updated value on the confirm screen the transaction
         await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '0.00185144',
+          css: '[data-testid="first-gas-field"]',
+          text: '0.0019',
+        });
+
+        await driver.waitForSelector({
+          css: '[data-testid="native-currency"]',
+          text: '$3.15',
         });
 
         // confirms the transaction

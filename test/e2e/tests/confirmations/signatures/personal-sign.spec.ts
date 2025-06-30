@@ -1,52 +1,57 @@
-import { strict as assert } from 'assert';
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
-import { Ganache } from '../../../seeder/ganache';
+import { unlockWallet, WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
   mockSignatureRejected,
-  withRedesignConfirmationFixtures,
+  scrollAndConfirmAndAssertConfirm,
+  withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
+import TestDapp from '../../../page-objects/pages/test-dapp';
+import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/redesign/personal-sign-confirmation';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
+import FixtureBuilder from '../../../fixture-builder';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
+  assertRejectedSignature,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
+  initializePages,
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
 
-describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite) {
+describe('Confirmation Signature - Personal Sign', function (this: Suite) {
   it('initiates and confirms', async function () {
-    await withRedesignConfirmationFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
-        ganacheServer,
+        localNodes,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
-        const publicAddress = addresses?.[0] as string;
+        const addresses = await localNodes?.[0]?.getAccounts();
+        const publicAddress = addresses?.[0].toLowerCase() as string;
+        await initializePages(driver);
 
         await openDappAndTriggerSignature(driver, SignatureType.PersonalSign);
 
         await clickHeaderInfoBtn(driver);
-        await assertHeaderInfoBalance(driver);
+        await assertHeaderInfoBalance();
 
         await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress(driver);
+        await assertPastedAddress();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await assertInfoValues(driver);
 
-        await driver.clickElement('[data-testid="confirm-footer-button"]');
+        await scrollAndConfirmAndAssertConfirm(driver);
 
         await assertVerifiedPersonalMessage(driver, publicAddress);
 
@@ -59,6 +64,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureApproved,
@@ -66,68 +72,100 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
   });
 
   it('initiates and rejects', async function () {
-    await withRedesignConfirmationFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
+        const confirmation = new PersonalSignConfirmation(driver);
+
+        await initializePages(driver);
         await openDappAndTriggerSignature(driver, SignatureType.PersonalSign);
 
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="confirm-footer-cancel-button"]',
-        );
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.waitForSelector({
-          css: '#personalSign',
-          text: 'Error: User rejected the request.',
-        });
-        assert.ok(rejectionResult);
+        await assertRejectedSignature();
+
         await assertSignatureRejectedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
           location: 'confirmation',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureRejected,
     );
   });
+
+  it('can queue multiple personal signs and confirm', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        const publicAddress = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
+        const confirmation = new PersonalSignConfirmation(driver);
+        await unlockWallet(driver);
+
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
+
+        // Create first personal sign
+        await testDapp.clickPersonalSign();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await confirmation.verifyConfirmationHeadingTitle();
+
+        // Switch to Dapp
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+        // Create second personal sign
+        await testDapp.clickPersonalSign();
+
+        // Switch to confirmation window
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await confirmation.check_pageNumbers(1, 2);
+        await confirmation.verifyOrigin();
+        await confirmation.verifyMessage();
+
+        // Confirm first personal sign
+        await confirmation.clickFooterConfirmButton();
+        await confirmation.verifyRejectAllButtonNotPresent();
+
+        // Confirm second personal sign
+        await confirmation.clickFooterConfirmButton();
+
+        // Verify the signature
+        await testDapp.check_successPersonalSign(publicAddress);
+        await testDapp.verifyPersonalSignSigUtilResult(publicAddress);
+      },
+    );
+  });
 });
 
 async function assertInfoValues(driver: Driver) {
-  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
-  const message = driver.findElement({
-    text: 'Example `personal_sign` message',
-  });
-
-  assert.ok(await origin);
-  assert.ok(await message);
+  const personalSignConfirmation = new PersonalSignConfirmation(driver);
+  personalSignConfirmation.verifyOrigin();
+  personalSignConfirmation.verifyMessage();
 }
 
 async function assertVerifiedPersonalMessage(
   driver: Driver,
   publicAddress: string,
 ) {
+  const testDapp = new TestDapp(driver);
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#personalSignVerify');
 
-  await driver.waitForSelector({
-    css: '#personalSignVerifyECRecoverResult',
-    text: publicAddress,
-  });
-
-  await driver.waitForSelector({
-    css: '#personalSignVerifySigUtilResult',
-    text: publicAddress,
-  });
-
-  await driver.waitForSelector({
-    css: '#personalSignVerifyECRecoverResult',
-    text: publicAddress,
-  });
+  await testDapp.check_successPersonalSign(publicAddress);
+  await testDapp.verifyPersonalSignSigUtilResult(publicAddress);
 }

@@ -1,4 +1,4 @@
-import { type InternalAccount } from '@metamask/keyring-api';
+import { type InternalAccount } from '@metamask/keyring-internal-api';
 
 // Define ConnectedSite interface
 export type ConnectedSite = {

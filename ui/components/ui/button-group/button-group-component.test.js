@@ -16,13 +16,23 @@ describe('ButtonGroup Component', () => {
     <button key="a">
       <div className="mockClass" />
     </button>,
-    <button key="b"></button>,
-    <button key="c"></button>,
+    <button key="b" />,
+    <button key="c" />,
   ];
 
-  it('should match snapshot', () => {
+  it('should match snapshot with default variant', () => {
     const { container } = renderWithProvider(
       <ButtonGroup {...props}>{mockButtons}</ButtonGroup>,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot with radiogroup variant', () => {
+    const { container } = renderWithProvider(
+      <ButtonGroup {...props} variant="radiogroup">
+        {mockButtons}
+      </ButtonGroup>,
     );
 
     expect(container).toMatchSnapshot();

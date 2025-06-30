@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
+  getEnabledNetworkClientIds,
+  getNetworkClientIdsToPoll,
 } from '../selectors';
 import {
   accountTrackerStartPolling,
@@ -11,40 +11,26 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
+import { isGlobalNetworkSelectorRemoved } from '../selectors/selectors';
 import useMultiPolling from './useMultiPolling';
 
 const useAccountTrackerPolling = () => {
-  // Selectors to determine polling input
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-  const currentChainId = useSelector(getCurrentChainId);
-  const currentNetwork = networkConfigurations[currentChainId];
-  const currentRpcEndpoint =
-    currentNetwork.rpcEndpoints[currentNetwork.defaultRpcEndpointIndex];
-
+  const networkClientIdsToPoll = useSelector(getNetworkClientIdsToPoll);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isUnlocked = useSelector(getIsUnlocked);
-  const availableNetworkClientIds = Object.values(networkConfigurations).map(
-    (networkConfiguration) =>
-      networkConfiguration.rpcEndpoints[
-        networkConfiguration.defaultRpcEndpointIndex
-      ].networkClientId,
-  );
+  const enabledNetworkClientIds = useSelector(getEnabledNetworkClientIds);
   const canStartPolling = completedOnboarding && isUnlocked;
-  const portfolioViewNetworks = canStartPolling
-    ? availableNetworkClientIds
-    : [];
-  const nonPortfolioViewNetworks = canStartPolling
-    ? [currentRpcEndpoint.networkClientId]
-    : [];
 
-  const networkArrayToPollFor = process.env.PORTFOLIO_VIEW
-    ? portfolioViewNetworks
-    : nonPortfolioViewNetworks;
+  const pollableNetworkClientIds = isGlobalNetworkSelectorRemoved
+    ? enabledNetworkClientIds
+    : networkClientIdsToPoll;
 
   useMultiPolling({
     startPolling: accountTrackerStartPolling,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     stopPollingByPollingToken: accountTrackerStopPollingByPollingToken,
-    input: networkArrayToPollFor,
+    input: canStartPolling ? pollableNetworkClientIds : [],
   });
 };
 

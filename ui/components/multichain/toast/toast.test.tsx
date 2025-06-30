@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AvatarAccount, AvatarAccountSize } from '../../component-library';
 import { BorderColor } from '../../../helpers/constants/design-system';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';

@@ -1,6 +1,5 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import sinon from 'sinon';
 import { TransactionStatus } from '@metamask/transaction-controller';
 
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -289,20 +288,6 @@ describe('Confirm Transaction Duck', () => {
   });
 
   describe('Thunk actions', () => {
-    beforeEach(() => {
-      global.eth = {
-        getCode: sinon
-          .stub()
-          .callsFake((address) =>
-            Promise.resolve(address?.match(/isContract/u) ? 'not-0x' : '0x'),
-          ),
-      };
-    });
-
-    afterEach(function () {
-      global.eth.getCode.resetHistory();
-    });
-
     it('updates txData and updates gas values in confirmTransaction', () => {
       const txData = {
         history: [],

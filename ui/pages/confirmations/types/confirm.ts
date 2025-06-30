@@ -37,7 +37,6 @@ export type SignatureRequestType = {
     siwe?: SIWEMessage;
   };
   type: TransactionType;
-  custodyId?: string;
   securityAlertResponse?: SecurityAlertResponse;
   decodingLoading?: boolean;
   decodingData?: DecodingData;

@@ -6,16 +6,9 @@ import {
   Display,
   FlexWrap,
 } from '../../../helpers/constants/design-system';
-import type { PolymorphicRef, BoxProps } from '../box';
-import type { ButtonProps } from '../button';
-import {
-  Box,
-  Button,
-  ButtonSize,
-  ButtonVariant,
-  Container,
-  ContainerMaxWidth,
-} from '..';
+import { type PolymorphicRef, type BoxProps, Box } from '../box';
+import { Button, ButtonSize, ButtonVariant, type ButtonProps } from '../button';
+import { Container, ContainerMaxWidth } from '../container';
 import { ModalFooterProps, ModalFooterComponent } from './modal-footer.types';
 
 export const ModalFooter: ModalFooterComponent = React.forwardRef(
@@ -62,6 +55,8 @@ export const ModalFooter: ModalFooterComponent = React.forwardRef(
               size={ButtonSize.Lg} // TODO: There is a type issue with using variant, size and spreading props after size
               className={classnames(
                 'mm-modal-footer__button',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 cancelButtonProps?.className || '',
               )}
             />
@@ -74,6 +69,8 @@ export const ModalFooter: ModalFooterComponent = React.forwardRef(
               {...submitButtonProps}
               className={classnames(
                 'mm-modal-footer__button',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 submitButtonProps?.className || '',
               )}
             />

@@ -1,22 +1,23 @@
 import { useEffect } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { Confirmation } from '../types/confirm';
+import { useConfirmationNavigation } from './useConfirmationNavigation';
 
 const syncConfirmPath = (currentConfirmation?: Confirmation) => {
-  const history = useHistory();
-  const { id: paramsTransactionId } = useParams<{ id: string }>();
+  const { navigateToId } = useConfirmationNavigation();
+  const { id: paramId } = useParams<{ id: string }>();
+  const confirmationId = currentConfirmation?.id;
 
-  // Redirect below is done to keep the confirmation routes backward compatible
   useEffect(() => {
-    if (!currentConfirmation) {
+    if (!confirmationId) {
       return;
     }
-    if (!paramsTransactionId) {
-      history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${currentConfirmation.id}`);
+
+    if (!paramId) {
+      navigateToId(confirmationId);
     }
-  }, [currentConfirmation, paramsTransactionId]);
+  }, [confirmationId, paramId, navigateToId]);
 };
 
 export default syncConfirmPath;

@@ -1,12 +1,11 @@
 import { useSelector } from 'react-redux';
 import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-  getPetnamesEnabled,
+  getChainIdsToPoll,
   getUseExternalServices,
   getUseTokenDetection,
   getUseTransactionSimulations,
 } from '../selectors';
+import { getEnabledChainIds } from '../selectors/multichain/networks';
 import {
   tokenListStartPolling,
   tokenListStopPollingByPollingToken,
@@ -15,32 +14,34 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
+import { isGlobalNetworkSelectorRemoved } from '../selectors/selectors';
 import useMultiPolling from './useMultiPolling';
 
 const useTokenListPolling = () => {
-  const currentChainId = useSelector(getCurrentChainId);
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const useTokenDetection = useSelector(getUseTokenDetection);
   const useTransactionSimulations = useSelector(getUseTransactionSimulations);
-  const petnamesEnabled = useSelector(getPetnamesEnabled);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isUnlocked = useSelector(getIsUnlocked);
   const useExternalServices = useSelector(getUseExternalServices);
+  const chainIds = useSelector(getChainIdsToPoll);
+  const enabledChainIds = useSelector(getEnabledChainIds);
 
   const enabled =
     completedOnboarding &&
     isUnlocked &&
     useExternalServices &&
-    (useTokenDetection || petnamesEnabled || useTransactionSimulations);
+    (useTokenDetection || useTransactionSimulations);
 
-  const chainIds = process.env.PORTFOLIO_VIEW
-    ? Object.keys(networkConfigurations)
-    : [currentChainId];
+  const pollableChains = isGlobalNetworkSelectorRemoved
+    ? enabledChainIds
+    : chainIds;
 
   useMultiPolling({
     startPolling: tokenListStartPolling,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     stopPollingByPollingToken: tokenListStopPollingByPollingToken,
-    input: enabled ? chainIds : [],
+    input: enabled ? pollableChains : [],
   });
 
   return {};

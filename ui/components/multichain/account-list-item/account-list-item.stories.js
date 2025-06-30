@@ -64,7 +64,7 @@ const SNAP_ACCOUNT = {
     },
     snap: {
       name: 'Test Snap Name',
-      id: 'snap-id',
+      id: 'npm:snap-id',
       enabled: true,
     },
   },

@@ -4,26 +4,28 @@ import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import { SubjectType } from '@metamask/permission-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
 
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 import { getDedupedSnaps } from '../../../helpers/utils/util';
-import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
+
 import {
   BackgroundColor,
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-// eslint-disable-next-line import/no-restricted-paths
-import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
+import {
+  getRequestedCaip25CaveatValue,
+  getCaip25PermissionsResponse,
+} from '../../../pages/permissions-connect/connect-page/utils';
+import { TemplateAlertContextProvider } from '../../../pages/confirmations/confirmation/alerts/TemplateAlertContext';
+import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
+import { PermissionPageContainerFooter } from './permission-page-container-footer.component';
 import { PermissionPageContainerContent } from '.';
 
 export default class PermissionPageContainer extends Component {
@@ -31,6 +33,7 @@ export default class PermissionPageContainer extends Component {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedAccounts: PropTypes.array,
+    requestedChainIds: PropTypes.array,
     allAccountsSelected: PropTypes.bool,
     currentPermissions: PropTypes.object,
     snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
@@ -140,25 +143,27 @@ export default class PermissionPageContainer extends Component {
       approvePermissionsRequest,
       rejectPermissionsRequest,
       selectedAccounts,
+      requestedChainIds,
     } = this.props;
 
     const approvedAccounts = selectedAccounts.map(
       (selectedAccount) => selectedAccount.address,
     );
 
-    const permittedChainsPermission =
-      _request.permissions?.[PermissionNames.permittedChains];
-    const approvedChainIds = permittedChainsPermission?.caveats.find(
-      (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-    )?.value;
+    const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
+      _request.permissions,
+    );
 
     const request = {
       ..._request,
-      permissions: { ..._request.permissions },
-      ...(_request.permissions?.eth_accounts && { approvedAccounts }),
-      ...(_request.permissions?.[PermissionNames.permittedChains] && {
-        approvedChainIds,
-      }),
+      permissions: {
+        ..._request.permissions,
+        ...getCaip25PermissionsResponse(
+          requestedCaip25CaveatValue,
+          approvedAccounts,
+          requestedChainIds,
+        ),
+      },
     };
 
     if (Object.keys(request.permissions).length > 0) {
@@ -170,7 +175,7 @@ export default class PermissionPageContainer extends Component {
 
   onLeftFooterClick = () => {
     const requestedPermissions = this.getRequestedPermissions();
-    if (requestedPermissions[PermissionNames.permittedChains] === undefined) {
+    if (requestedPermissions[Caip25EndowmentPermissionName] === undefined) {
       this.goBack();
     } else {
       this.onCancel();
@@ -179,10 +184,12 @@ export default class PermissionPageContainer extends Component {
 
   render() {
     const {
+      request,
       requestMetadata,
       targetSubjectMetadata,
       selectedAccounts,
       allAccountsSelected,
+      requestedChainIds,
     } = this.props;
 
     const requestedPermissions = this.getRequestedPermissions();
@@ -199,13 +206,16 @@ export default class PermissionPageContainer extends Component {
     };
 
     const footerLeftActionText = requestedPermissions[
-      PermissionNames.permittedChains
+      Caip25EndowmentPermissionName
     ]
       ? this.context.t('cancel')
       : this.context.t('back');
 
     return (
-      <>
+      <TemplateAlertContextProvider
+        onSubmit={() => this.onSubmit()}
+        confirmationId={request?.metadata?.id}
+      >
         {this.state.isShowingSnapsPrivacyWarning && (
           <SnapPrivacyWarning
             onAccepted={() => confirmSnapsPrivacyWarning()}
@@ -213,9 +223,11 @@ export default class PermissionPageContainer extends Component {
           />
         )}
         <PermissionPageContainerContent
+          request={request}
           requestMetadata={requestMetadata}
           subjectMetadata={targetSubjectMetadata}
           selectedPermissions={requestedPermissions}
+          requestedChainIds={requestedChainIds}
           selectedAccounts={selectedAccounts}
           allAccountsSelected={allAccountsSelected}
         />
@@ -227,21 +239,17 @@ export default class PermissionPageContainer extends Component {
           {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
             <PermissionsConnectFooter />
           )}
-          <PageContainerFooter
-            footerClassName="permission-page-container-footer"
-            cancelButtonType="default"
+          <PermissionPageContainerFooter
             onCancel={() => this.onLeftFooterClick()}
             cancelText={footerLeftActionText}
             onSubmit={() => this.onSubmit()}
-            submitText={this.context.t('confirm')}
-            buttonSizeLarge={false}
             disabled={containsEthPermissionsAndNonEvmAccount(
               selectedAccounts,
               requestedPermissions,
             )}
           />
         </Box>
-      </>
+      </TemplateAlertContextProvider>
     );
   }
 }

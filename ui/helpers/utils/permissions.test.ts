@@ -1,8 +1,5 @@
-import {
-  BtcAccountType,
-  BtcMethod,
-  InternalAccount,
-} from '@metamask/keyring-api';
+import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { containsEthPermissionsAndNonEvmAccount } from './permissions';
 
@@ -11,7 +8,7 @@ const mockNonEvmAccount = {
   ...mockAccount,
   id: '4b94987c-165c-4287-bbc6-bee9c440e82a',
   type: BtcAccountType.P2wpkh,
-  methods: [BtcMethod.SendMany],
+  methods: [BtcMethod.SendBitcoin],
   address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
 };
 

@@ -19,8 +19,9 @@ import {
   AvatarBase,
 } from '../../component-library';
 import { getAvatarFallbackLetter } from '../../../helpers/utils/util';
+import { Nav } from '../../../pages/confirmations/components/confirm/nav';
 
-const PermissionConnectHeader = ({ origin, iconUrl }) => {
+const PermissionConnectHeader = ({ requestId, origin, iconUrl }) => {
   const transformOriginToTitle = (rawOrigin) => {
     try {
       const url = new URL(rawOrigin);
@@ -33,61 +34,65 @@ const PermissionConnectHeader = ({ origin, iconUrl }) => {
   const title = transformOriginToTitle(origin);
 
   return (
-    <Box
-      backgroundColor={BackgroundColor.backgroundDefault}
-      width={BlockSize.Full}
-      alignItems={AlignItems.center}
-      display={Display.Flex}
-      padding={4}
-      style={{
-        boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
-      }}
-    >
-      <Box>
-        {iconUrl ? (
-          <AvatarFavicon
-            backgroundColor={BackgroundColor.backgroundAlternative}
-            size={IconSize.Lg}
-            src={iconUrl}
-            name={title}
-          />
-        ) : (
-          <AvatarBase
-            size={IconSize.Lg}
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-            color={TextColor.textAlternative}
-            style={{ borderWidth: '0px' }}
-            backgroundColor={BackgroundColor.backgroundAlternative}
-          >
-            {getAvatarFallbackLetter(title)}
-          </AvatarBase>
-        )}
-      </Box>
+    <>
+      <Nav confirmationId={requestId} />
       <Box
-        marginLeft={4}
-        marginRight={4}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        width={BlockSize.Full}
+        alignItems={AlignItems.center}
         display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        style={{ overflow: 'hidden' }}
+        padding={4}
+        style={{
+          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+        }}
       >
-        <Text ellipsis fontWeight={FontWeight.Medium}>
-          {title}
-        </Text>
-        <Text
-          ellipsis
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
+        <Box>
+          {iconUrl ? (
+            <AvatarFavicon
+              backgroundColor={BackgroundColor.backgroundAlternative}
+              size={IconSize.Lg}
+              src={iconUrl}
+              name={title}
+            />
+          ) : (
+            <AvatarBase
+              size={IconSize.Lg}
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+              color={TextColor.textAlternative}
+              style={{ borderWidth: '0px' }}
+              backgroundColor={BackgroundColor.backgroundAlternative}
+            >
+              {getAvatarFallbackLetter(title)}
+            </AvatarBase>
+          )}
+        </Box>
+        <Box
+          marginLeft={4}
+          marginRight={4}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          style={{ overflow: 'hidden' }}
         >
-          {origin}
-        </Text>
+          <Text ellipsis fontWeight={FontWeight.Medium}>
+            {title}
+          </Text>
+          <Text
+            ellipsis
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+          >
+            {origin}
+          </Text>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 
 PermissionConnectHeader.propTypes = {
+  requestId: PropTypes.string,
   origin: PropTypes.string,
   iconUrl: PropTypes.string,
 };

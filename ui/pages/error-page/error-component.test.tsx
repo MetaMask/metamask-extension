@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import browser from 'webextension-polyfill';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
@@ -10,12 +10,6 @@ import { getParticipateInMetaMetrics } from '../../selectors';
 import { getMessage } from '../../helpers/utils/i18n-helper';
 // eslint-disable-next-line import/no-restricted-paths
 import messages from '../../../app/_locales/en/messages.json';
-import { SUPPORT_REQUEST_LINK } from '../../helpers/constants/common';
-import {
-  MetaMetricsContextProp,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
 import ErrorPage from './error-page.component';
 
 jest.mock('../../hooks/useI18nContext', () => ({
@@ -160,7 +154,7 @@ describe('ErrorPage', () => {
     expect(browser.runtime.reload).toHaveBeenCalled();
   });
 
-  it('should open the support link and track the MetaMetrics event when the "Contact Support" button is clicked', () => {
+  it('should open the support consent modal when the "Contact Support" button is clicked', () => {
     window.open = jest.fn();
 
     const { getByTestId } = renderWithProvider(
@@ -173,20 +167,6 @@ describe('ErrorPage', () => {
       'error-page-contact-support-button',
     );
     fireEvent.click(contactSupportButton);
-
-    expect(window.open).toHaveBeenCalledWith(SUPPORT_REQUEST_LINK, '_blank');
-
-    expect(mockTrackEvent).toHaveBeenCalledWith(
-      {
-        category: MetaMetricsEventCategory.Error,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
-          url: SUPPORT_REQUEST_LINK,
-        },
-      },
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
-    );
+    expect(getByTestId('visit-support-data-consent-modal')).toBeInTheDocument();
   });
 });

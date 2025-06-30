@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getUnconnectedAccounts } from '../../../selectors/selectors';
 import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 

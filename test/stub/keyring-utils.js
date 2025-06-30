@@ -15,6 +15,7 @@ export class Common {
   constructor({ chain, hardfork }) {
     this.chain = chain;
     this.hardfork = hardfork;
+    this.customCrypto = {};
   }
 
   /**
@@ -67,6 +68,17 @@ export class Common {
    */
   chainId() {
     return BigInt(this.chain.chainId);
+  }
+
+  /**
+   * Checks if a specific EIP (Ethereum Improvement Proposal) is activated.
+   * In this simplified test version, it always returns true.
+   * This method is a stub for the actual `isActivatedEIP` method in `@ethereumjs/common`.
+   *
+   * @returns {boolean} Always returns true.
+   */
+  isActivatedEIP() {
+    return true;
   }
 }
 

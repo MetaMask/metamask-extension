@@ -8,6 +8,7 @@ import {
   getSnapDerivationPathName,
 } from '@metamask/snaps-utils';
 import { isNonEmptyArray } from '@metamask/controller-utils';
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import {
   RestrictedMethods,
   EndowmentPermissions,
@@ -49,7 +50,26 @@ function getSnapNameComponent(snapName) {
   );
 }
 
-export const PERMISSION_DESCRIPTIONS = deepFreeze({
+const PERMISSION_DESCRIPTIONS = deepFreeze({
+  // "endowment:caip25" entry is needed for the Snaps Permissions Review UI
+  [Caip25EndowmentPermissionName]: ({
+    t,
+    isRequestApprovalPermittedChains,
+  }) => {
+    if (isRequestApprovalPermittedChains) {
+      return {
+        label: t('permission_walletSwitchEthereumChain'),
+        leftIcon: IconName.Wifi,
+        weight: PermissionWeight.permittedChains,
+      };
+    }
+    return {
+      label: t('permission_ethereumAccounts'),
+      leftIcon: IconName.Eye,
+      weight: PermissionWeight.eth_accounts,
+    };
+  },
+  // "eth_accounts" entry is needed for the Snaps Permissions Grant UI
   [RestrictedMethods.eth_accounts]: ({ t }) => ({
     label: t('permission_ethereumAccounts'),
     leftIcon: IconName.Eye,
@@ -515,6 +535,22 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.Search,
     weight: PermissionWeight.endowment_nameLookup,
   }),
+  [EndowmentPermissions['endowment:assets']]: ({ t, subjectName }) => ({
+    label: t('permission_assets'),
+    description: t('permission_assetsDescription', [
+      getSnapNameComponent(subjectName),
+    ]),
+    leftIcon: IconName.Coin,
+    weight: PermissionWeight.endowment_assets,
+  }),
+  [EndowmentPermissions['endowment:protocol']]: ({ t, subjectName }) => ({
+    label: t('permission_protocol'),
+    description: t('permission_protocolDescription', [
+      getSnapNameComponent(subjectName),
+    ]),
+    leftIcon: IconName.GlobalSearch,
+    weight: PermissionWeight.endowment_protocol,
+  }),
   [EndowmentPermissions['endowment:signature-insight']]: ({
     t,
     permissionValue,
@@ -621,6 +657,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
 /**
  * @typedef {object} PermissionDescriptionParamsObject
  * @property {Function} t - The translation function.
+ * @property {boolean} [isRequestApprovalPermittedChains] - Flag for checking if request incoming from 'wallet_switchEthereumChain'.
  * @property {string} permissionName - The name of the permission.
  * @property {object} permissionValue - The permission object.
  * @property {string} subjectName - The name of the subject.
@@ -633,6 +670,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
  */
 export const getPermissionDescription = ({
   t,
+  isRequestApprovalPermittedChains,
   permissionName,
   permissionValue,
   subjectName,
@@ -646,6 +684,7 @@ export const getPermissionDescription = ({
 
   const result = value({
     t,
+    isRequestApprovalPermittedChains,
     permissionName,
     permissionValue,
     subjectName,
@@ -665,6 +704,7 @@ export const getPermissionDescription = ({
 /**
  * @typedef {object} WeightedPermissionDescriptionParamsObject
  * @property {Function} t - The translation function.
+ * @property {boolean} [isRequestApprovalPermittedChains] - Flag for checking if request incoming from 'wallet_switchEthereumChain'.
  * @property {string} permissions - The permissions object.
  * @property {Function} [getSubjectName] - The function to get a subject name.
  * @property {string} [subjectName] - The name of the subject.
@@ -674,11 +714,12 @@ export const getPermissionDescription = ({
  * Get the weighted permissions from a permissions object. The weight is used to
  * sort the permissions in the UI.
  *
- * @param {WeightedPermissionDescriptionParamsObject} parms - The weighted permissions params object.
+ * @param {WeightedPermissionDescriptionParamsObject} params - The weighted permissions params object.
  * @returns {PermissionLabelObject[]}
  */
 export function getWeightedPermissions({
   t,
+  isRequestApprovalPermittedChains,
   permissions,
   getSubjectName,
   subjectName,
@@ -689,6 +730,7 @@ export function getWeightedPermissions({
         target.concat(
           getPermissionDescription({
             t,
+            isRequestApprovalPermittedChains,
             permissionName,
             permissionValue,
             subjectName,

@@ -5,9 +5,6 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
   ApprovalsMetaMaskState,
-  getIsRedesignedConfirmationsDeveloperEnabled,
-  getRedesignedConfirmationsEnabled,
-  getRedesignedTransactionsEnabled,
   getUnapprovedTransaction,
   oldestPendingConfirmationSelector,
   selectPendingApproval,
@@ -31,23 +28,12 @@ const useCurrentConfirmation = () => {
   const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
   const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
 
-  const isRedesignedSignaturesUserSettingEnabled = useSelector(
-    getRedesignedConfirmationsEnabled,
-  );
-
-  const isRedesignedTransactionsUserSettingEnabled = useSelector(
-    getRedesignedTransactionsEnabled,
-  );
-
-  const isRedesignedConfirmationsDeveloperEnabled = useSelector(
-    getIsRedesignedConfirmationsDeveloperEnabled,
-  );
-
   const pendingApproval = useSelector((state) =>
     selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
   );
 
   const transactionMetadata = useSelector((state) =>
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (getUnapprovedTransaction as any)(state, confirmationId),
   ) as TransactionMeta | undefined;
@@ -58,14 +44,10 @@ const useCurrentConfirmation = () => {
 
   const useRedesignedForSignatures = shouldUseRedesignForSignatures({
     approvalType: pendingApproval?.type as ApprovalType,
-    isRedesignedSignaturesUserSettingEnabled,
-    isRedesignedConfirmationsDeveloperEnabled,
   });
 
   const useRedesignedForTransaction = shouldUseRedesignForTransactions({
     transactionMetadataType: transactionMetadata?.type,
-    isRedesignedTransactionsUserSettingEnabled,
-    isRedesignedConfirmationsDeveloperEnabled,
   });
 
   const shouldUseRedesign =

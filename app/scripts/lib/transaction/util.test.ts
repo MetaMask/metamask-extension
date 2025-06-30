@@ -1,4 +1,4 @@
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { TransactionParams } from '@metamask/eth-json-rpc-middleware';
 import {
   TransactionController,
@@ -9,7 +9,6 @@ import { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep } from 'lodash';
 import {
   generateSecurityAlertId,
-  isChainSupported,
   validateRequestWithPPOM,
 } from '../ppom/ppom-util';
 import {
@@ -50,6 +49,7 @@ const TRANSACTION_PARAMS_MOCK: TransactionParams = {
 
 const TRANSACTION_OPTIONS_MOCK: AddTransactionOptions = {
   actionId: 'mockActionId',
+  networkClientId: 'mockNetworkClientId',
   origin: 'mockOrigin',
   requireApproval: false,
   type: TransactionType.simpleSend,
@@ -99,7 +99,6 @@ describe('Transaction Utils', () => {
   let userOperationController: jest.Mocked<UserOperationController>;
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
-  const isChainSupportedMock = jest.mocked(isChainSupported);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -107,6 +106,8 @@ describe('Transaction Utils', () => {
     request = cloneDeep(TRANSACTION_REQUEST_MOCK);
     transactionController = createTransactionControllerMock();
     userOperationController = createUserOperationControllerMock();
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     request.ppomController = {} as any;
 
@@ -124,7 +125,6 @@ describe('Transaction Utils', () => {
     });
 
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
-    isChainSupportedMock.mockResolvedValue(true);
 
     request.transactionController = transactionController;
     request.userOperationController = userOperationController;
@@ -149,23 +149,6 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
         });
-      });
-
-      it('adds transaction with networkClientId if process.env.TRANSACTION_MULTICHAIN is set', async () => {
-        process.env.TRANSACTION_MULTICHAIN = '1';
-
-        await addTransaction(request);
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-          networkClientId: 'mockNetworkClientId',
-        });
-        process.env.TRANSACTION_MULTICHAIN = '';
       });
 
       it('returns transaction meta', async () => {
@@ -415,7 +398,7 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
           securityAlertResponse: {
-            reason: BlockaidReason.checkingChain,
+            reason: BlockaidReason.inProgress,
             result_type: BlockaidResultType.Loading,
             securityAlertId: SECURITY_ALERT_ID_MOCK,
           },
@@ -539,27 +522,6 @@ describe('Transaction Utils', () => {
           securityAlertResponse: DAPP_REQUEST_MOCK.securityAlertResponse,
           type: undefined,
         });
-      });
-
-      it('adds transaction with networkClientId if process.env.TRANSACTION_MULTICHAIN is set', async () => {
-        process.env.TRANSACTION_MULTICHAIN = '1';
-
-        await addDappTransaction(dappRequest);
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-          networkClientId: 'mockNetworkClientId',
-          method: DAPP_REQUEST_MOCK.method,
-          requireApproval: true,
-          securityAlertResponse: DAPP_REQUEST_MOCK.securityAlertResponse,
-          type: undefined,
-        });
-        process.env.TRANSACTION_MULTICHAIN = '';
       });
 
       it('returns transaction hash', async () => {

@@ -1,11 +1,6 @@
 const FixtureBuilder = require('../../fixture-builder');
 
-const {
-  WINDOW_TITLES,
-  defaultGanacheOptions,
-  unlockWallet,
-  withFixtures,
-} = require('../../helpers');
+const { WINDOW_TITLES, unlockWallet, withFixtures } = require('../../helpers');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
@@ -59,7 +54,7 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
   await mockRequest(mockServer, maliciousTransferAlert);
 }
 
-describe('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
+describe('PPOM Blockaid Alert - Malicious ERC20 Transfer', function () {
   it('should show banner alert', async function () {
     // we need to use localhost instead of the ip
     // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
@@ -75,7 +70,6 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
             securityAlertsEnabled: true,
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfuraWithMaliciousResponses,
         title: this.test.fullTitle(),
       },

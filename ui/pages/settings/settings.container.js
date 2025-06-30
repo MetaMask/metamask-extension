@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   getAddressBookEntryOrAccountName,
+  getSettingsPageSnapsIds,
+  getSnapsMetadata,
   getUseExternalServices,
 } from '../../selectors';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
@@ -31,9 +33,14 @@ import {
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
+  SNAP_SETTINGS_ROUTE,
+  REVEAL_SRP_LIST_ROUTE,
+  BACKUPANDSYNC_ROUTE,
 } from '../../helpers/constants/routes';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
+import { getSnapName } from '../../helpers/utils/util';
+import { decodeSnapIdFromPathname } from '../../helpers/utils/snaps';
 import Settings from './settings.component';
 
 const ROUTES_TO_I18N_KEYS = {
@@ -41,6 +48,7 @@ const ROUTES_TO_I18N_KEYS = {
   [ADD_NETWORK_ROUTE]: 'networks',
   [ADD_POPULAR_CUSTOM_NETWORK]: 'addNetwork',
   [ADVANCED_ROUTE]: 'advanced',
+  [BACKUPANDSYNC_ROUTE]: 'backupAndSync',
   [CONTACT_ADD_ROUTE]: 'newContact',
   [CONTACT_EDIT_ROUTE]: 'editContact',
   [CONTACT_LIST_ROUTE]: 'contacts',
@@ -50,6 +58,7 @@ const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',
   [NETWORKS_FORM_ROUTE]: 'networks',
   [NETWORKS_ROUTE]: 'networks',
+  [REVEAL_SRP_LIST_ROUTE]: 'revealSecretRecoveryPhrase',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
 };
 
@@ -60,13 +69,15 @@ const mapStateToProps = (state, ownProps) => {
   const {
     metamask: { currencyRates },
   } = state;
-
+  const settingsPageSnapsIds = getSettingsPageSnapsIds(state);
+  const snapsMetadata = getSnapsMetadata(state);
   const conversionDate = currencyRates[ticker]?.conversionDate;
 
   const pathNameTail = pathname.match(/[^/]+$/u)[0];
   const isAddressEntryPage = pathNameTail.includes('0x');
   const isAddContactPage = Boolean(pathname.match(CONTACT_ADD_ROUTE));
   const isEditContactPage = Boolean(pathname.match(CONTACT_EDIT_ROUTE));
+  const isRevealSrpListPage = Boolean(pathname.match(REVEAL_SRP_LIST_ROUTE));
   const isNetworksFormPage =
     Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||
     Boolean(pathname.match(ADD_NETWORK_ROUTE));
@@ -74,6 +85,7 @@ const mapStateToProps = (state, ownProps) => {
   const isAddPopularCustomNetwork = Boolean(
     pathname.match(ADD_POPULAR_CUSTOM_NETWORK),
   );
+  const isSnapSettingsRoute = Boolean(pathname.match(SNAP_SETTINGS_ROUTE));
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname];
@@ -87,6 +99,8 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = NETWORKS_ROUTE;
   } else if (isAddPopularCustomNetwork) {
     backRoute = NETWORKS_ROUTE;
+  } else if (isRevealSrpListPage) {
+    backRoute = SECURITY_ROUTE;
   }
 
   let initialBreadCrumbRoute;
@@ -101,6 +115,16 @@ const mapStateToProps = (state, ownProps) => {
   );
   const useExternalServices = getUseExternalServices(state);
 
+  const snapNameGetter = getSnapName(snapsMetadata);
+
+  const settingsPageSnaps = settingsPageSnapsIds.map((snapId) => ({
+    id: snapId,
+    name: snapNameGetter(snapId),
+  }));
+
+  const snapSettingsTitle =
+    isSnapSettingsRoute && snapNameGetter(decodeSnapIdFromPathname(pathname));
+
   return {
     addNewNetwork,
     addressName,
@@ -113,6 +137,8 @@ const mapStateToProps = (state, ownProps) => {
     isPopup,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pathnameI18nKey,
+    settingsPageSnaps,
+    snapSettingsTitle,
     useExternalServices,
   };
 };

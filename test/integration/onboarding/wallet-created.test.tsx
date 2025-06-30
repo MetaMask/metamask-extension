@@ -1,4 +1,5 @@
-import { fireEvent, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
+import nock from 'nock';
 import mockMetaMaskState from '../data/onboarding-completion-route.json';
 import { integrationTestRender } from '../../lib/render-helpers';
 import * as backgroundConnection from '../../../ui/store/background-connection';
@@ -6,6 +7,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import {
+  clickElementById,
+  createMockImplementation,
+  waitForElementById,
+  waitForElementByText,
+} from '../helpers';
 
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
@@ -15,7 +22,6 @@ jest.mock('../../../ui/store/background-connection', () => ({
 
 jest.mock('../../../ui/ducks/bridge/actions', () => ({
   ...jest.requireActual('../../../ui/ducks/bridge/actions'),
-  setBridgeFeatureFlags: jest.fn().mockResolvedValueOnce(undefined),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -25,24 +31,53 @@ const backgroundConnectionMocked = {
   callBackgroundMethod: jest.fn(),
 };
 
+const setupSubmitRequestToBackgroundMocks = (
+  mockRequests?: Record<string, unknown>,
+) => {
+  mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
+    createMockImplementation({
+      ...mockRequests,
+    }),
+  );
+};
+
+export function mockSurveyLink() {
+  const mockEndpoint = nock('https://accounts.api.cx.metamask.io')
+    .persist()
+    .get(
+      '/v1/users/0x4d6d78a255217af6411a5bbd39e31b5e46e0e920bdf7e979470f316cbe8c00eb/surveys',
+    )
+    .reply(200, {
+      surveys: {},
+    });
+  return mockEndpoint;
+}
+
 describe('Wallet Created Events', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    mockSurveyLink();
+    setupSubmitRequestToBackgroundMocks();
+  });
+
+  afterEach(() => {
+    nock.cleanAll();
   });
 
   it('are sent when onboarding user who chooses to opt in metrics', async () => {
-    const { getByTestId, getByText } = await integrationTestRender({
+    await integrationTestRender({
       preloadedState: mockMetaMaskState,
       backgroundConnection: backgroundConnectionMocked,
     });
 
-    expect(getByText('Congratulations!')).toBeInTheDocument();
+    await waitForElementByText('Your wallet is ready!');
 
-    fireEvent.click(getByTestId('onboarding-complete-done'));
+    const completeOnboardingBtnId = 'onboarding-complete-done';
+    const pinExtensionNextBtnId = 'pin-extension-next';
+    const pinExtensionDoneBtnId = 'pin-extension-done';
 
-    await waitFor(() => {
-      expect(getByTestId('onboarding-pin-extension')).toBeInTheDocument();
-    });
+    await waitForElementById(completeOnboardingBtnId);
+    await clickElementById(completeOnboardingBtnId);
 
     let confirmAccountDetailsModalMetricsEvent;
 
@@ -64,12 +99,14 @@ describe('Wallet Created Events', () => {
           event: MetaMetricsEventName.OnboardingWalletCreationComplete,
           properties: {
             method: mockMetaMaskState.firstTimeFlowType,
+            hd_entropy_index: 0,
           },
         }),
       ]),
     );
 
-    fireEvent.click(getByTestId('pin-extension-next'));
+    await waitForElementById(pinExtensionNextBtnId);
+    await clickElementById(pinExtensionNextBtnId);
 
     let onboardingPinExtensionMetricsEvent;
 
@@ -83,16 +120,12 @@ describe('Wallet Created Events', () => {
       );
     });
 
-    await waitFor(() => {
-      expect(
-        getByText(
-          `Pin MetaMask on your browser so it's accessible and easy to view transaction confirmations.`,
-        ),
-      ).toBeInTheDocument();
-    });
+    await waitForElementByText(
+      `Access your MetaMask wallet with 1 click by clicking on the extension.`,
+    );
 
-    fireEvent.click(getByTestId('pin-extension-done'));
-
+    await waitForElementById(pinExtensionDoneBtnId);
+    await clickElementById(pinExtensionDoneBtnId);
     await waitFor(() => {
       const completeOnboardingBackgroundRequest =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(

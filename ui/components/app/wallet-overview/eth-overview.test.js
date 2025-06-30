@@ -1,8 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, waitFor, act } from '@testing-library/react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { fireEvent, waitFor } from '@testing-library/react';
+import { EthAccountType, EthMethod, BtcScope } from '@metamask/keyring-api';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
@@ -11,7 +12,6 @@ import useMultiPolling from '../../../hooks/useMultiPolling';
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { setBackgroundConnection } from '../../../store/background-connection';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -87,9 +87,20 @@ describe('EthOverview', () => {
   const mockStore = {
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      remoteFeatureFlags: {
+        bridgeConfig: {
+          support: true,
+        },
+      },
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
           '0x1': { address: mockEvmAccount1.address, balance: '0x1F4' },
+        },
+        [CHAIN_IDS.SEPOLIA]: {
+          '0x1': {
+            address: mockEvmAccount1.address,
+            balance: '0x24da51d247e8b8',
+          },
         },
       },
       tokenList: [],
@@ -101,6 +112,12 @@ describe('EthOverview', () => {
       preferences: {
         showNativeTokenAsMainBalance: true,
         tokenNetworkFilter: {},
+      },
+      enabledNetworkMap: {
+        eip155: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.SEPOLIA]: true,
+        },
       },
       useExternalServices: true,
       useCurrencyRateCheck: true,
@@ -134,6 +151,10 @@ describe('EthOverview', () => {
         },
       ],
       balances: {},
+      isEvmSelected: true,
+      multichainNetworkConfigurationsByChainId:
+        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      selectedMultichainNetworkChainId: BtcScope.Mainnet,
     },
     ramps: {
       buyableChains: defaultBuyableChains,
@@ -161,7 +182,6 @@ describe('EthOverview', () => {
         },
       });
       openTabSpy = jest.spyOn(global.platform, 'openTab');
-      setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() });
     });
 
     beforeEach(() => {
@@ -226,7 +246,7 @@ describe('EthOverview', () => {
       const primaryBalance = queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY);
       expect(primaryBalance).toBeInTheDocument();
       expect(primaryBalance).toHaveTextContent('0.0104ETH');
-      expect(queryByText('*')).toBeInTheDocument();
+      expect(queryByText('*')).not.toBeInTheDocument();
     });
 
     it('should have the Bridge button enabled if chain id is part of supported chains', () => {
@@ -235,6 +255,11 @@ describe('EthOverview', () => {
         metamask: {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: '0xa86a' }),
+          accountsByChainId: {
+            [CHAIN_IDS.AVALANCHE]: {
+              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+            },
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(mockedAvalancheStore);
@@ -253,7 +278,28 @@ describe('EthOverview', () => {
     });
 
     it('should open the Bridge URI when clicking on Bridge button on supported network', async () => {
-      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+      const mockedStore = configureMockStore([thunk])({
+        ...store,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: '0xa86a' }),
+          accountsByChainId: {
+            [CHAIN_IDS.AVALANCHE]: {
+              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+            },
+          },
+          useExternalServices: true,
+          remoteFeatureFlags: {
+            bridgeConfig: {
+              support: false,
+            },
+          },
+        },
+      });
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
 
       const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
 
@@ -261,59 +307,13 @@ describe('EthOverview', () => {
       expect(bridgeButton).not.toBeDisabled();
 
       fireEvent.click(bridgeButton);
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
-
-      await waitFor(() =>
-        expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(
-            '/bridge?metamaskEntry=ext_bridge_button',
-          ),
-        }),
-      );
-    });
-
-    it('should open the MMI PD Swaps URI when clicking on Swap button with a Custody account', async () => {
-      const mockedStoreWithCustodyKeyring = {
-        ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          mmiConfiguration: {
-            portfolio: {
-              enabled: true,
-              url: 'https://metamask-institutional.io',
-            },
-          },
-          keyrings: [
-            {
-              type: 'Custody',
-              accounts: ['0x1'],
-            },
-          ],
-        },
-      };
-
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithCustodyKeyring,
-      );
-
-      const { queryByTestId } = renderWithProvider(
-        <EthOverview />,
-        mockedStore,
-      );
-
-      const swapButton = queryByTestId(ETH_OVERVIEW_SWAP);
-
-      expect(swapButton).toBeInTheDocument();
-      expect(swapButton).not.toBeDisabled();
-
-      await act(async () => {
-        fireEvent.click(swapButton);
-      });
 
       await waitFor(() => {
         expect(openTabSpy).toHaveBeenCalledTimes(1);
         expect(openTabSpy).toHaveBeenCalledWith({
-          url: 'https://metamask-institutional.io/swap',
+          url: expect.stringContaining(
+            '/bridge?metamaskEntry=ext_bridge_button',
+          ),
         });
       });
     });
@@ -341,6 +341,12 @@ describe('EthOverview', () => {
       );
     });
 
+    it('should always show the Receive button', () => {
+      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+      const receiveButton = queryByTestId(ETH_OVERVIEW_RECEIVE);
+      expect(receiveButton).toBeInTheDocument();
+    });
+
     it('should always show the Portfolio button', () => {
       const { queryByTestId } = renderWithProvider(<EthOverview />, store);
       const portfolioButton = queryByTestId(ETH_OVERVIEW_RECEIVE);
@@ -359,6 +365,11 @@ describe('EthOverview', () => {
         metamask: {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
+          accountsByChainId: {
+            [CHAIN_IDS.GOERLI]: {
+              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+            },
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -380,6 +391,11 @@ describe('EthOverview', () => {
         metamask: {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+          accountsByChainId: {
+            [CHAIN_IDS.POLYGON]: {
+              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+            },
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -401,6 +417,11 @@ describe('EthOverview', () => {
         metamask: {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+          accountsByChainId: {
+            [CHAIN_IDS.POLYGON]: {
+              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+            },
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -445,6 +466,7 @@ describe('EthOverview', () => {
     expect(buyButton).not.toBeDisabled();
     fireEvent.click(buyButton);
 
+    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
@@ -539,6 +561,7 @@ describe('EthOverview', () => {
     expect(sendButton).not.toBeDisabled();
     fireEvent.click(sendButton);
 
+    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith(
       {
         event: MetaMetricsEventName.NavSendButtonClicked,

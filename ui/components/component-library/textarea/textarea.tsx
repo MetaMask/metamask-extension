@@ -7,8 +7,7 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 
-import { Text } from '..';
-import { TextProps } from '../text';
+import { Text, TextProps } from '../text';
 
 import { PolymorphicRef } from '../box';
 import {
@@ -64,6 +63,8 @@ export const Textarea: TextareaComponent = React.forwardRef(
           'mm-textarea',
           `mm-textarea--resize-${resize}`,
           {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             'mm-textarea--disabled': Boolean(isDisabled || disabled),
           },
           className,
@@ -75,6 +76,8 @@ export const Textarea: TextareaComponent = React.forwardRef(
         required={required}
         autoFocus={autoFocus}
         defaultValue={defaultValue}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         disabled={isDisabled || disabled}
         {...(error && { 'aria-invalid': error })}
         id={id}

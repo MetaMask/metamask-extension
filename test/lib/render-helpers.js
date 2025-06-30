@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { Router } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { createMemoryHistory } from 'history';
@@ -69,10 +69,15 @@ const createProviderWrapper = (store, pathname = '/') => {
   };
 };
 
-export function renderWithProvider(component, store, pathname = '/') {
+export function renderWithProvider(
+  component,
+  store,
+  pathname = '/',
+  renderer = render,
+) {
   const { history, Wrapper } = createProviderWrapper(store, pathname);
   return {
-    ...render(component, { wrapper: Wrapper }),
+    ...renderer(component, { wrapper: Wrapper }),
     history,
   };
 }

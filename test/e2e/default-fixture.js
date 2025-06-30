@@ -20,9 +20,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       AuthenticationController: {
         isSignedIn: true,
       },
-      UserStorageController: {
-        isProfileSyncingEnabled: true,
-      },
       NotificationServicesController: {
         subscriptionAccountsSeen: [],
         isFeatureAnnouncementsEnabled: false,
@@ -54,6 +51,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
                 'eth_signTypedData_v4',
               ],
               type: 'eip155:eoa',
+              scopes: ['eip155:0'],
             },
           },
         },
@@ -92,6 +90,11 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             networkRpcUrl: 'http://localhost:8545',
           },
         ],
+        enabledNetworkMap: {
+          eip155: {
+            [inputChainId]: true,
+          },
+        },
       },
       AccountOrderController: {
         pinnedAccountList: [],
@@ -113,29 +116,12 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
+        isRampCardClosed: false,
         newPrivacyPolicyToastClickedOrClosed: true,
         newPrivacyPolicyToastShownDate: Date.now(),
-        usedNetworks: {
-          [CHAIN_IDS.MAINNET]: true,
-          [CHAIN_IDS.LINEA_MAINNET]: true,
-          [CHAIN_IDS.GOERLI]: true,
-          [CHAIN_IDS.LOCALHOST]: true,
-        },
         snapsInstallPrivacyWarningShown: true,
       },
-      BridgeController: {
-        bridgeState: {
-          bridgeFeatureFlags: {
-            extensionSupport: false,
-            srcNetworkAllowlist: ['0x1', '0xa', '0xe708'],
-            destNetworkAllowlist: ['0x1', '0xa', '0xe708'],
-          },
-          destTokens: {},
-          destTopAssets: [],
-          srcTokens: {},
-          srcTopAssets: [],
-        },
-      },
+      BridgeController: {},
       CurrencyController: {
         currentCurrency: 'usd',
         currencyRates: {
@@ -143,6 +129,11 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             conversionDate: 1665507600.0,
             conversionRate: 1700.0,
             usdConversionRate: 1700.0,
+          },
+          MON: {
+            conversionDate: 1665507600.0,
+            conversionRate: 0.2,
+            usdConversionRate: 0.2,
           },
         },
       },
@@ -217,7 +208,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
-          isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {
             key: 'tokenFiatAmount',
@@ -231,12 +221,10 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         theme: 'light',
         useBlockie: false,
         useNftDetection: false,
-        useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        useRequestQueue: true,
         isMultiAccountBalancesEnabled: true,
         showIncomingTransactions: {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
@@ -260,9 +248,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
         },
-      },
-      QueuedRequestController: {
-        queuedRequestCount: 0,
       },
       SelectedNetworkController: {
         domains: {},
@@ -293,9 +278,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         allDetectedTokens: {},
         allIgnoredTokens: {},
         allTokens: {},
-        detectedTokens: [],
-        ignoredTokens: [],
-        tokens: [],
       },
       TransactionController: {
         transactions: {},

@@ -1,23 +1,16 @@
 import { NameType } from '@metamask/name-controller';
 import React, { memo, useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
   AlignItems,
-  BorderColor,
   Display,
   FlexDirection,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import { getPetnamesEnabled } from '../../../../../selectors';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  Box,
-  Text,
-} from '../../../../component-library';
+import { Box, Text } from '../../../../component-library';
 import NicknamePopovers from '../../../modals/nickname-popovers';
 import Name from '../../../name/name';
 import { shortenAddress } from '../../../../../helpers/utils/util';
+import Identicon from '../../../../ui/identicon';
 import { useFallbackDisplayName } from './hook';
 
 export type ConfirmInfoRowAddressProps = {
@@ -28,7 +21,6 @@ export type ConfirmInfoRowAddressProps = {
 
 export const ConfirmInfoRowAddress = memo(
   ({ address, chainId, isSnapUsingThis }: ConfirmInfoRowAddressProps) => {
-    const isPetNamesEnabled = useSelector(getPetnamesEnabled);
     const { displayName, hexAddress } = useFallbackDisplayName(address);
     const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
     const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
@@ -44,14 +36,7 @@ export const ConfirmInfoRowAddress = memo(
           // PetNames on this component are disabled for snaps until the `<Name />`
           // component can support variations. See this comment for context: //
           // https://github.com/MetaMask/metamask-extension/pull/23487#discussion_r1525055546
-          isPetNamesEnabled && !isSnapUsingThis ? (
-            <Name
-              value={hexAddress}
-              type={NameType.ETHEREUM_ADDRESS}
-              preferContractSymbol
-              variation={chainId}
-            />
-          ) : (
+          isSnapUsingThis ? (
             <>
               <Box
                 display={Display.Flex}
@@ -59,11 +44,7 @@ export const ConfirmInfoRowAddress = memo(
                 alignItems={AlignItems.center}
                 onClick={isSnapUsingThis ? () => null : handleDisplayNameClick}
               >
-                <AvatarAccount
-                  address={address}
-                  size={AvatarAccountSize.Xs}
-                  borderColor={BorderColor.transparent}
-                />
+                <Identicon address={address} diameter={16} />
                 <Text
                   marginLeft={2}
                   color={TextColor.inherit}
@@ -79,6 +60,13 @@ export const ConfirmInfoRowAddress = memo(
                 />
               ) : null}
             </>
+          ) : (
+            <Name
+              value={hexAddress}
+              type={NameType.ETHEREUM_ADDRESS}
+              preferContractSymbol
+              variation={chainId}
+            />
           )
         }
       </Box>

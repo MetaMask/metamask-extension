@@ -123,20 +123,5 @@ describe('AccountListItem Component', () => {
 
       expect(queryByText('0xmockAddress')).toBeInTheDocument();
     });
-
-    it('render without <AccountMismatchWarning /> if hideDefaultMismatchWarning is true', () => {
-      const { getByTestId, rerender } = renderWithProvider(
-        <AccountListItem {...props} />,
-        store,
-      );
-
-      const infoIcon = getByTestId('account-mismatch-warning-tooltip');
-
-      expect(infoIcon).toBeInTheDocument();
-
-      rerender(<AccountListItem {...props} hideDefaultMismatchWarning />);
-
-      expect(infoIcon).not.toBeInTheDocument();
-    });
   });
 });

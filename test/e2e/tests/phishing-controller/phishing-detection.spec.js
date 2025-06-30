@@ -4,11 +4,11 @@ const { createDeferredPromise } = require('@metamask/utils');
 const { until } = require('selenium-webdriver');
 
 const {
-  defaultGanacheOptions,
   withFixtures,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
+  createWebSocketConnection,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -44,7 +44,6 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
@@ -79,7 +78,6 @@ describe('Phishing Detection', function () {
     const getFixtureOptions = (overrides) => {
       return {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
@@ -151,7 +149,6 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
@@ -203,7 +200,6 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: (mockServer) => {
           setupPhishingDetectionMocks(mockServer, {
@@ -239,7 +235,6 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
@@ -274,7 +269,6 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
@@ -307,10 +301,80 @@ describe('Phishing Detection', function () {
           text: 'Back to safety',
         });
 
-        const currentUrl = await driver.getCurrentUrl();
-        const expectedPortfolioUrl = `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`;
+        await driver.waitForUrl({
+          url: `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
+        });
+      },
+    );
+  });
 
-        assert.equal(currentUrl, expectedPortfolioUrl);
+  it('should block a website that makes a websocket connection to a malicious command and control server', async function () {
+    const testPageURL = 'http://localhost:8080';
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test.fullTitle(),
+        testSpecificMock: async (mockServer) => {
+          await mockServer.forAnyWebSocket().thenEcho();
+          await setupPhishingDetectionMocks(mockServer, {
+            blockProvider: BlockProvider.MetaMask,
+          });
+        },
+        dapp: true,
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await driver.openNewPage(testPageURL);
+
+        await createWebSocketConnection(driver, 'malicious.localhost');
+
+        await driver.switchToWindowWithTitle(
+          'MetaMask Phishing Detection',
+          10000,
+        );
+
+        await driver.waitForSelector({
+          testId: 'unsafe-continue-loaded',
+        });
+
+        await driver.clickElement({
+          text: 'Back to safety',
+        });
+
+        await driver.waitForUrl({
+          url: `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
+        });
+      },
+    );
+  });
+
+  it('should not block a website that makes a safe WebSocket connection', async function () {
+    const testPageURL = 'http://localhost:8080/';
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test.fullTitle(),
+        testSpecificMock: async (mockServer) => {
+          await mockServer.forAnyWebSocket().thenEcho();
+          await setupPhishingDetectionMocks(mockServer, {
+            blockProvider: BlockProvider.MetaMask,
+          });
+        },
+        dapp: true,
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await driver.openNewPage(testPageURL);
+
+        await createWebSocketConnection(driver, 'safe.localhost');
+
+        await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
+
+        const currentUrl = await driver.getCurrentUrl();
+
+        assert.equal(currentUrl, testPageURL);
       },
     );
   });
@@ -411,7 +475,6 @@ describe('Phishing Detection', function () {
       fixturePromise = withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: async (mockServer) => {
             await setupPhishingDetectionMocks(mockServer, {

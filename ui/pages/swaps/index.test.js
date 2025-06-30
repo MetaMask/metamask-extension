@@ -28,14 +28,15 @@ jest.mock('react-router-dom', () => ({
 }));
 
 setBackgroundConnection({
+  getStatePatches: jest.fn().mockResolvedValue([]),
+  setSwapsFeatureFlags: jest.fn(),
+  addPollingTokenToAppState: jest.fn(),
   resetPostFetchState: jest.fn(),
   resetSwapsState: jest.fn(),
   setSwapsLiveness: jest.fn(() => true),
   setSwapsTokens: jest.fn(),
   setSwapsTxGasPrice: jest.fn(),
-  gasFeeStartPollingByNetworkClientId: jest
-    .fn()
-    .mockResolvedValue('pollingToken'),
+  gasFeeStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   gasFeeStopPollingByPollingToken: jest.fn(),
   getNetworkConfigurationByNetworkClientId: jest
     .fn()

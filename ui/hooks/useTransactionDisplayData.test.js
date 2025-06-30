@@ -16,6 +16,8 @@ import transactions from '../../test/data/transaction-data.json';
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
 import { TransactionGroupCategory } from '../../shared/constants/transaction';
+import { KeyringType } from '../../shared/constants/keyring';
+import { createMockInternalAccount } from '../../test/jest/mocks';
 import { formatDateWithYearContext } from '../helpers/utils/util';
 import { getMessage } from '../helpers/utils/i18n-helper';
 import { mockNetworkState } from '../../test/stub/networks';
@@ -26,7 +28,7 @@ import { useTransactionDisplayData } from './useTransactionDisplayData';
 
 const expectedResults = [
   {
-    title: 'Send',
+    title: 'Sent',
     category: TransactionGroupCategory.send,
     subtitle: 'To: 0xffe5b...91a97',
     subtitleContainsOrigin: false,
@@ -38,9 +40,11 @@ const expectedResults = [
     isPending: false,
     displayedStatusKey: TransactionStatus.confirmed,
     isSubmitted: false,
+    detailsTitle: 'Sent',
+    remoteSignerAddress: null,
   },
   {
-    title: 'Send',
+    title: 'Sent',
     category: TransactionGroupCategory.send,
     subtitle: 'To: 0x0ccc8...f8848',
     subtitleContainsOrigin: false,
@@ -53,7 +57,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Send',
+    title: 'Sent',
     category: TransactionGroupCategory.send,
     subtitle: 'To: 0xffe5b...91a97',
     subtitleContainsOrigin: false,
@@ -66,7 +70,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Receive',
+    title: 'Received',
     category: TransactionGroupCategory.receive,
     subtitle: 'From: 0x31b98...84523',
     subtitleContainsOrigin: false,
@@ -79,7 +83,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Receive',
+    title: 'Received',
     category: TransactionGroupCategory.receive,
     subtitle: 'From: 0x9eca6...6a149',
     subtitleContainsOrigin: false,
@@ -92,7 +96,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Receive',
+    title: 'Received',
     category: TransactionGroupCategory.receive,
     subtitle: 'From: 0xee014...efebb',
     subtitleContainsOrigin: false,
@@ -155,7 +159,7 @@ const expectedResults = [
     isPending: false,
   },
   {
-    title: 'Send BAT as ETH',
+    title: 'Sent BAT as ETH',
     category: TransactionType.swapAndSend,
     subtitle: 'metamask',
     subtitleContainsOrigin: true,
@@ -168,7 +172,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Send USDC as DAI',
+    title: 'Sent USDC as DAI',
     category: TransactionType.swapAndSend,
     subtitle: 'metamask',
     subtitleContainsOrigin: true,
@@ -181,7 +185,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Send BNB as USDC',
+    title: 'Sent BNB as USDC',
     category: TransactionType.swapAndSend,
     subtitle: 'metamask',
     subtitleContainsOrigin: true,
@@ -196,6 +200,15 @@ const expectedResults = [
 ];
 
 let useI18nContext, useTokenFiatAmount;
+const ADDRESS_MOCK = '0xabc';
+const NAME_MOCK = 'Account 1';
+
+const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
+  address: ADDRESS_MOCK,
+  name: NAME_MOCK,
+  keyringType: KeyringType.hd,
+  snapOptions: undefined,
+});
 
 const renderHookWithRouter = (cb, tokenAddress) => {
   const initialEntries = [
@@ -214,13 +227,45 @@ const renderHookWithRouter = (cb, tokenAddress) => {
         getShowFiatInTestnets: false,
       },
       allNfts: [],
-      tokens: [
-        {
-          address: '0xabca64466f257793eaa52fcfff5066894b76a149',
-          symbol: 'ABC',
-          decimals: 18,
+      internalAccounts: {
+        accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
+        selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
+      },
+      allTokens: {
+        [CHAIN_IDS.MAINNET]: {
+          [ADDRESS_MOCK]: [
+            {
+              address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+              symbol: 'ABC',
+              decimals: 18,
+            },
+          ],
         },
-      ],
+      },
+      allDetectedTokens: {
+        [CHAIN_IDS.MAINNET]: [
+          {
+            [ADDRESS_MOCK]: [
+              {
+                address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+                symbol: 'ABC',
+                decimals: 18,
+              },
+            ],
+          },
+        ],
+      },
+      tokensChainsCache: {
+        '0x4': {
+          data: {
+            '0xabca64466f257793eaa52fcfff5066894b76a149': {
+              address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+              symbol: 'ABC',
+              decimals: 18,
+            },
+          },
+        },
+      },
     },
   };
 

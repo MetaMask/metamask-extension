@@ -7,10 +7,17 @@ import {
 } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import {
+  AlignItems,
   Display,
   JustifyContent,
 } from '../../../../../../../helpers/constants/design-system';
 import Preloader from '../../../../../../../components/ui/icon/preloader';
+
+const CollapsedSectionStyles = {
+  display: Display.Flex,
+  alignItems: AlignItems.center,
+  justifyContent: JustifyContent.spaceBetween,
+};
 
 const StaticSimulation: React.FC<{
   title: string;
@@ -18,9 +25,20 @@ const StaticSimulation: React.FC<{
   description?: string;
   simulationElements: React.ReactNode;
   isLoading?: boolean;
-}> = ({ title, titleTooltip, description, simulationElements, isLoading }) => {
+  isCollapsed?: boolean;
+}> = ({
+  title,
+  titleTooltip,
+  description,
+  simulationElements,
+  isLoading,
+  isCollapsed = false,
+}) => {
   return (
-    <ConfirmInfoSection data-testid="confirmation__simulation_section">
+    <ConfirmInfoSection
+      data-testid="confirmation__simulation_section"
+      style={isCollapsed ? CollapsedSectionStyles : {}}
+    >
       <ConfirmInfoRow label={title} tooltip={titleTooltip}>
         {description && <ConfirmInfoRowText text={description} />}
       </ConfirmInfoRow>

@@ -1,8 +1,6 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
+import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
 import { IconName } from '../../components/component-library';
 import {
   ADVANCED_ROUTE,
@@ -13,6 +11,7 @@ import {
   CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
+  BACKUPANDSYNC_ROUTE,
 } from './routes';
 
 /**
@@ -91,7 +90,7 @@ const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('smartTransactions'),
-    descriptionMessage: (t) => t('stxOptInDescription'),
+    descriptionMessage: (t) => t('stxOptInSupportedNetworksDescription'),
     route: `${ADVANCED_ROUTE}#smart-transactions`,
     icon: 'fas fa-upload',
   },
@@ -122,20 +121,12 @@ const SETTINGS_CONSTANTS = [
   // advanced settingsRefs[6]
   {
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('nonceField'),
-    descriptionMessage: (t) => t('nonceFieldDesc'),
-    route: `${ADVANCED_ROUTE}#customize-nonce`,
-    icon: 'fas fa-sliders-h',
-  },
-  // advanced settingsRefs[7]
-  {
-    tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('autoLockTimeLimit'),
     descriptionMessage: (t) => t('autoLockTimeLimitDescription'),
     route: `${ADVANCED_ROUTE}#autolock-timer`,
     icon: 'fas fa-sliders-h',
   },
-  // advanced settingsRefs[8]
+  // advanced settingsRefs[7]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('showExtensionInFullSizeView'),
@@ -143,7 +134,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#extension-full-size-view`,
     icon: 'fas fa-sliders-h',
   },
-  // advanced settingsRefs[9]
+  // advanced settingsRefs[8]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('dismissReminderField'),
@@ -151,7 +142,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#dismiss-secretrecovery`,
     icon: 'fas fa-sliders-h',
   },
-  // advanced settingsRefs[10]
+  // advanced settingsRefs[9]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('exportYourData'),
@@ -159,7 +150,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#export-data`,
     icon: 'fas fa-download',
   },
-  // advanced settingsRefs[11]
+  // advanced settingsRefs[10]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('overrideContentSecurityPolicyHeader'),
@@ -167,7 +158,28 @@ const SETTINGS_CONSTANTS = [
       t('overrideContentSecurityPolicyHeaderDescription'),
     route: `${ADVANCED_ROUTE}#override-content-security-policy-header`,
     icon: 'fas fa-sliders-h',
-    hidden: getPlatform() !== PLATFORM_FIREFOX,
+    hidden: getBrowserName() !== PLATFORM_FIREFOX,
+  },
+  {
+    tabMessage: (t) => t('backupAndSync'),
+    sectionMessage: (t) => t('backupAndSyncEnable'),
+    descriptionMessage: (t) => t('backupAndSyncEnable'),
+    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-toggle`,
+    iconName: IconName.SecurityTime,
+  },
+  {
+    tabMessage: (t) => t('backupAndSync'),
+    sectionMessage: (t) => t('backupAndSyncFeatureAccounts'),
+    descriptionMessage: (t) => t('backupAndSyncFeatureAccounts'),
+    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-features-toggles-account-syncing`,
+    iconName: IconName.SecurityTime,
+  },
+  {
+    tabMessage: (t) => t('backupAndSync'),
+    sectionMessage: (t) => t('backupAndSyncFeatureContacts'),
+    descriptionMessage: (t) => t('backupAndSyncFeatureContacts'),
+    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-features-toggles-contact-syncing`,
+    iconName: IconName.SecurityTime,
   },
   {
     tabMessage: (t) => t('contacts'),
@@ -195,24 +207,24 @@ const SETTINGS_CONSTANTS = [
   // securityAndPrivacy settingsRefs[2]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('showIncomingTransactions'),
-    descriptionMessage: (t) => t('showIncomingTransactionsDescription'),
-    route: `${SECURITY_ROUTE}#incoming-transaction`,
+    sectionMessage: (t) => t('usePhishingDetection'),
+    descriptionMessage: (t) => t('usePhishingDetectionDescription'),
+    route: `${SECURITY_ROUTE}#phishing-detection`,
     icon: 'fa fa-lock',
   },
   // securityAndPrivacy settingsRefs[3]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('usePhishingDetection'),
-    descriptionMessage: (t) => t('usePhishingDetectionDescription'),
-    route: `${SECURITY_ROUTE}#phishing-detection`,
+    sectionMessage: (t) => t('skipDeepLinkInterstitial'),
+    descriptionMessage: (t) => t('skipDeepLinkInterstitialDescription'),
+    route: `${SECURITY_ROUTE}#skip-deep-link-interstitial`,
     icon: 'fa fa-lock',
   },
   // securityAndPrivacy settingsRefs[4]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('use4ByteResolution'),
-    descriptionMessage: (t) => t('use4ByteResolutionDescription'),
+    descriptionMessage: (t) => t('toggleDecodeDescription'),
     route: `${SECURITY_ROUTE}#decode-smart-contracts`,
     icon: 'fa fa-lock',
   },
@@ -338,6 +350,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#dataCollectionForMarketing`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[20]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('deleteMetaMetricsData'),
@@ -464,33 +477,9 @@ const SETTINGS_CONSTANTS = [
   // experimental settingsRefs[0]
   {
     tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('petnamesEnabledToggle'),
-    descriptionMessage: (t) => t('petnamesEnabledToggleDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#nicknames`,
-    icon: 'fas fa-flask',
-  },
-  // experimental settingsRefs[1]
-  {
-    tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('notificationsFeatureToggle'),
     descriptionMessage: (t) => t('notificationsFeatureToggleDescription'),
     route: `${EXPERIMENTAL_ROUTE}#notifications`,
-    icon: 'fas fa-flask',
-  },
-  // experimental settingsRefs[2]
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('redesignedConfirmationsEnabledToggle'),
-    descriptionMessage: (t) => t('redesignedConfirmationsToggleDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#redesigned-confirmations`,
-    icon: 'fas fa-flask',
-  },
-  // experimental settingsRefs[3]
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('redesignedTransactionsEnabledToggle'),
-    descriptionMessage: (t) => t('redesignedTransactionsToggleDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#redesigned-transactions`,
     icon: 'fas fa-flask',
   },
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -543,6 +532,15 @@ const SETTINGS_CONSTANTS = [
     route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
     icon: IconName.CodeCircle,
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('watchEthereumAccountsToggle'),
+    descriptionMessage: (t) => t('watchEthereumAccountsDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#watch-only`,
+    icon: 'fas fa-flask',
+  },
+  ///: END:ONLY_INCLUDE_IF
 ];
 
 export default SETTINGS_CONSTANTS;

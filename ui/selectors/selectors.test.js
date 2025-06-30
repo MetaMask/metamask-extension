@@ -3,18 +3,31 @@ import {
   BtcAccountType,
   EthAccountType,
   EthMethod,
+  SolAccountType,
 } from '@metamask/keyring-api';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { deepClone } from '@metamask/snaps-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { KeyringType } from '../../shared/constants/keyring';
 import mockState from '../../test/data/mock-state.json';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
-import { getProviderConfig } from '../ducks/metamask/metamask';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
+import * as networkSelectors from '../../shared/modules/selectors/networks';
+import { MultichainNetworks } from '../../shared/constants/multichain/networks';
+
+import {
+  SOLANA_WALLET_NAME,
+  SOLANA_WALLET_SNAP_ID,
+} from '../../shared/lib/accounts';
 import * as selectors from './selectors';
+
+jest.mock('../../shared/modules/selectors/networks', () => ({
+  ...jest.requireActual('../../shared/modules/selectors/networks'),
+}));
 
 jest.mock('../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../app/scripts/lib/util'),
@@ -28,6 +41,22 @@ jest.mock('../../shared/modules/network.utils', () => {
     shouldShowLineaMainnet: jest.fn().mockResolvedValue(true),
   };
 });
+
+jest.mock('./multichain/networks', () => ({
+  ...jest.requireActual('./multichain/networks'),
+  getIsEvmMultichainNetworkSelected: jest.fn(
+    (state) => state.metamask.isEvmSelected,
+  ),
+  getSelectedMultichainNetworkChainId: jest.fn((state) => {
+    if (state.metamask.isEvmSelected) {
+      const chainId = state.metamask.networkConfigurationsByChainId
+        ? Object.keys(state.metamask.networkConfigurationsByChainId)[0]
+        : '0x1';
+      return `eip155:${parseInt(chainId, 16)}`;
+    }
+    return state.metamask.selectedMultichainNetworkChainId;
+  }),
+}));
 
 const modifyStateWithHWKeyring = (keyring) => {
   const modifiedState = deepClone(mockState);
@@ -189,7 +218,7 @@ describe('Selectors', () => {
 
       expect(selectors.getSwitchedNetworkDetails(state)).toStrictEqual({
         imageUrl: './images/eth_logo.svg',
-        nickname: getProviderConfig(state).nickname,
+        nickname: networkSelectors.getProviderConfig(state).nickname,
         origin,
       });
     });
@@ -206,11 +235,10 @@ describe('Selectors', () => {
       ).toStrictEqual(0);
     });
 
-    it('returns correct number of unapproved transactions and queued requests', () => {
+    it('returns correct number of unapproved transactions', () => {
       expect(
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
-            queuedRequestCount: 5,
             transactions: [
               {
                 id: 0,
@@ -248,7 +276,7 @@ describe('Selectors', () => {
             },
           },
         }),
-      ).toStrictEqual(8);
+      ).toStrictEqual(3);
     });
 
     it('returns correct number of unapproved transactions and messages', () => {
@@ -301,7 +329,6 @@ describe('Selectors', () => {
       },
       metamask: {
         isUnlocked: true,
-        useRequestQueue: true,
         selectedTabOrigin: SELECTED_ORIGIN,
         unapprovedDecryptMsgs: [],
         unapprovedPersonalMsgs: [],
@@ -322,7 +349,6 @@ describe('Selectors', () => {
             ],
           },
         },
-        queuedRequestCount: 0,
         transactions: [],
         selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
         // networkConfigurations:
@@ -386,18 +412,6 @@ describe('Selectors', () => {
               status: TransactionStatus.approved,
             },
           ],
-        },
-      });
-      expect(networkToSwitchTo).toBe(null);
-    });
-
-    it('should return no network to switch to because there are queued requests', () => {
-      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
-        ...state,
-        metamask: {
-          ...state.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
-          queuedRequestCount: 1,
         },
       });
       expect(networkToSwitchTo).toBe(null);
@@ -646,45 +660,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNetworkConfigurationsByChainId', () => {
-    it('returns networkConfigurationsByChainId', () => {
-      const networkConfigurationsByChainId = {
-        '0xtest': {
-          chainId: '0xtest',
-          nativeCurrency: 'TEST',
-          defaultRpcEndpointUrl: 'https://mock-rpc-url-1',
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'testNetworkConfigurationId1',
-              url: 'https://mock-rpc-url-1',
-            },
-          ],
-        },
-        '0x1337': {
-          chainId: '0x1337',
-          nativeCurrency: 'RPC',
-          defaultRpcEndpointUrl: 'https://mock-rpc-url-2',
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'testNetworkConfigurationId2',
-              url: 'https://mock-rpc-url-2',
-            },
-          ],
-        },
-      };
-
-      expect(
-        selectors.getNetworkConfigurationsByChainId({
-          metamask: {
-            networkConfigurationsByChainId,
-          },
-        }),
-      ).toStrictEqual(networkConfigurationsByChainId);
-    });
-  });
-
   describe('#getCurrentNetwork', () => {
     it('returns built-in network configuration', () => {
       const modifiedMockState = {
@@ -873,8 +848,18 @@ describe('Selectors', () => {
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getChainIdsToPoll({
         metamask: {
+          enabledNetworkMap: {
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+            },
+          },
           networkConfigurationsByChainId,
           selectedNetworkClientId: 'mainnet',
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
         },
       });
       expect(Object.values(chainIds)).toHaveLength(2);
@@ -920,8 +905,18 @@ describe('Selectors', () => {
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getNetworkClientIdsToPoll({
         metamask: {
+          enabledNetworkMap: {
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+            },
+          },
           networkConfigurationsByChainId,
           selectedNetworkClientId: 'mainnet',
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
         },
       });
       expect(Object.values(chainIds)).toHaveLength(2);
@@ -1047,6 +1042,10 @@ describe('Selectors', () => {
             {
               type: KeyringType.ledger,
               accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+              metadata: {
+                name: 'Ledger',
+                id: 'ledger',
+              },
             },
           ],
         },
@@ -1110,16 +1109,6 @@ describe('Selectors', () => {
     expect(currentAccountwithSendEther.metadata.name).toStrictEqual(
       'Test Account',
     );
-  });
-
-  it('#getGasIsLoading', () => {
-    const gasIsLoading = selectors.getGasIsLoading(mockState);
-    expect(gasIsLoading).toStrictEqual(false);
-  });
-
-  it('#getCurrentCurrency', () => {
-    const currentCurrency = selectors.getCurrentCurrency(mockState);
-    expect(currentCurrency).toStrictEqual('usd');
   });
 
   it('#getTotalUnapprovedCount', () => {
@@ -1193,33 +1182,6 @@ describe('Selectors', () => {
     const appIsLoading = selectors.getAppIsLoading(mockState);
     expect(appIsLoading).toStrictEqual(false);
   });
-  it('#getNotifications', () => {
-    const notifications = selectors.getNotifications(mockState);
-
-    expect(notifications).toStrictEqual([
-      mockState.metamask.notifications.test,
-      mockState.metamask.notifications.test2,
-    ]);
-  });
-  it('#getReadNotificationsCount', () => {
-    const readNotificationsCount =
-      selectors.getReadNotificationsCount(mockState);
-    expect(readNotificationsCount).toStrictEqual(1);
-  });
-  it('#getUnreadNotificationsCount', () => {
-    const unreadNotificationCount =
-      selectors.getUnreadNotificationsCount(mockState);
-
-    expect(unreadNotificationCount).toStrictEqual(1);
-  });
-
-  it('#getUnreadNotifications', () => {
-    const unreadNotifications = selectors.getUnreadNotifications(mockState);
-
-    expect(unreadNotifications).toStrictEqual([
-      mockState.metamask.notifications.test,
-    ]);
-  });
 
   it('#getUseCurrencyRateCheck', () => {
     const useCurrencyRateCheck = selectors.getUseCurrencyRateCheck(mockState);
@@ -1246,51 +1208,14 @@ describe('Selectors', () => {
     expect(showOutdatedBrowserWarning).toStrictEqual(true);
   });
 
-  it('#getTotalUnapprovedSignatureRequestCount', () => {
-    const totalUnapprovedSignatureRequestCount =
-      selectors.getTotalUnapprovedSignatureRequestCount(mockState);
-    expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
-  });
-
-  describe('#getPetnamesEnabled', () => {
-    function createMockStateWithPetnamesEnabled(petnamesEnabled) {
-      return { metamask: { preferences: { petnamesEnabled } } };
-    }
-
-    describe('usePetnamesEnabled', () => {
-      const tests = [
-        {
-          petnamesEnabled: true,
-          expectedResult: true,
-        },
-        {
-          petnamesEnabled: false,
-          expectedResult: false,
-        },
-        {
-          // Petnames is enabled by default.
-          petnamesEnabled: undefined,
-          expectedResult: true,
-        },
-      ];
-
-      tests.forEach(({ petnamesEnabled, expectedResult }) => {
-        it(`should return ${String(
-          expectedResult,
-        )} when petnames preference is ${String(petnamesEnabled)}`, () => {
-          const result = selectors.getPetnamesEnabled(
-            createMockStateWithPetnamesEnabled(petnamesEnabled),
-          );
-          expect(result).toBe(expectedResult);
-        });
-      });
-    });
-  });
-
   it('#getIsBridgeChain', () => {
     const isOptimismSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
+        internalAccounts: {
+          selectedAccount: '0xabc',
+          accounts: { '0xabc': { metadata: { keyring: {} } } },
+        },
       },
     });
     expect(isOptimismSupported).toBeTruthy();
@@ -1298,9 +1223,27 @@ describe('Selectors', () => {
     const isFantomSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.FANTOM }),
+        internalAccounts: {
+          selectedAccount: '0xabc',
+          accounts: { '0xabc': { metadata: { keyring: {} } } },
+        },
       },
     });
     expect(isFantomSupported).toBeFalsy();
+
+    const isSolanaSupported = selectors.getIsBridgeChain({
+      metamask: {
+        ...mockNetworkState({ chainId: MultichainNetworks.SOLANA }),
+        internalAccounts: {
+          selectedAccount: '0xabc',
+          accounts: {
+            '0xabc': { metadata: { keyring: {} } },
+            type: 'solana',
+          },
+        },
+      },
+    });
+    expect(isSolanaSupported).toBeTruthy();
   });
 
   it('returns proper values for snaps privacy warning shown status', () => {
@@ -1315,24 +1258,6 @@ describe('Selectors', () => {
 
     mockState.metamask.snapsInstallPrivacyWarningShown = null;
     expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
-  });
-
-  it('#getInfuraBlocked', () => {
-    let isInfuraBlocked = selectors.getInfuraBlocked(mockState);
-    expect(isInfuraBlocked).toBe(false);
-
-    const modifiedMockState = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        ...mockNetworkState({
-          chainId: CHAIN_IDS.GOERLI,
-          metadata: { status: 'blocked' },
-        }),
-      },
-    };
-    isInfuraBlocked = selectors.getInfuraBlocked(modifiedMockState);
-    expect(isInfuraBlocked).toBe(true);
   });
 
   it('#getSnapRegistryData', () => {
@@ -1376,6 +1301,7 @@ describe('Selectors', () => {
       'npm:@metamask/test-snap-networkAccess': false,
       'npm:@metamask/test-snap-notify': false,
       'npm:@metamask/test-snap-wasm': false,
+      'local:snap-id': false,
     });
   });
 
@@ -1453,6 +1379,30 @@ describe('Selectors', () => {
             balance: '0x0',
           },
         },
+        accountsByChainId: {
+          '0x5': {
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              balance: '0x0',
+            },
+            '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
+              address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+              balance: '0x0',
+            },
+            '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
+              address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+              balance: '0x0',
+            },
+            '0xeb9e64b93097bc15f01f13eae97015c57ab64823': {
+              address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+              balance: '0x0',
+            },
+            '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
+              address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+              balance: '0x0',
+            },
+          },
+        },
         permissionHistory: {
           'https://test.dapp': {
             eth_accounts: {
@@ -1465,15 +1415,25 @@ describe('Selectors', () => {
         subjects: {
           'https://test.dapp': {
             permissions: {
-              eth_accounts: {
+              'endowment:caip25': {
                 caveats: [
                   {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
                   },
                 ],
                 invoker: 'https://test.dapp',
-                parentCapability: 'eth_accounts',
+                parentCapability: 'endowment:caip25',
               },
             },
           },
@@ -1498,7 +1458,9 @@ describe('Selectors', () => {
             type: 'HD Key Tree',
           },
         },
-        options: {},
+        options: {
+          entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        },
         methods: [
           'personal_sign',
           'eth_signTransaction',
@@ -1507,6 +1469,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
         pinned: true,
         hidden: false,
         active: false,
@@ -1523,7 +1486,9 @@ describe('Selectors', () => {
             type: 'HD Key Tree',
           },
         },
-        options: {},
+        options: {
+          entropySource: '01JKAF3PJ247KAM6C03G5Q0NP8',
+        },
         methods: [
           'personal_sign',
           'eth_signTransaction',
@@ -1532,6 +1497,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
         pinned: true,
         hidden: false,
         active: false,
@@ -1547,7 +1513,9 @@ describe('Selectors', () => {
             type: 'HD Key Tree',
           },
         },
-        options: {},
+        options: {
+          entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        },
         methods: [
           'personal_sign',
           'eth_signTransaction',
@@ -1556,6 +1524,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
         balance: '0x0',
         pinned: false,
         hidden: false,
@@ -1582,6 +1551,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
         balance: '0x0',
         pinned: false,
         hidden: false,
@@ -1599,7 +1569,7 @@ describe('Selectors', () => {
           name: 'Snap Account 1',
           snap: {
             enabled: true,
-            id: 'snap-id',
+            id: 'local:snap-id',
             name: 'snap-name',
           },
         },
@@ -1615,6 +1585,7 @@ describe('Selectors', () => {
         pinned: false,
         active: false,
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
       },
       {
         id: '694225f4-d30b-4e77-a900-c8bbce735b42',
@@ -1634,6 +1605,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
         address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
         balance: '0x0',
         pinned: false,
@@ -2028,5 +2000,1042 @@ describe('#getConnectedSitesList', () => {
       const state = mockAccountsState([nonEvmAccount1, nonEvmAccount2]);
       expect(selectors.getSelectedEvmInternalAccount(state)).toBe(undefined);
     });
+  });
+
+  describe('getSwapsDefaultToken', () => {
+    it('returns the token object for the current chainId when no overrideChainId is provided', () => {
+      const expectedToken = {
+        symbol: 'ETH',
+        name: 'Ether',
+        address: '0x0000000000000000000000000000000000000000',
+        decimals: 18,
+        balance: '966987986469506564059',
+        string: '966.988',
+        iconUrl: './images/black-eth-logo.svg',
+      };
+
+      const result = selectors.getSwapsDefaultToken(mockState);
+
+      expect(result).toStrictEqual(expectedToken);
+    });
+
+    it('returns the token object for the overridden chainId when overrideChainId is provided', () => {
+      const getCurrentChainIdSpy = jest.spyOn(
+        networkSelectors,
+        'getCurrentChainId',
+      );
+      const expectedToken = {
+        symbol: 'POL',
+        name: 'Polygon',
+        address: '0x0000000000000000000000000000000000000000',
+        decimals: 18,
+        balance: '966987986469506564059',
+        string: '966.988',
+        iconUrl: './images/pol-token.svg',
+      };
+
+      const result = selectors.getSwapsDefaultToken(
+        mockState,
+        CHAIN_IDS.POLYGON,
+      );
+
+      expect(result).toStrictEqual(expectedToken);
+      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
+    });
+  });
+
+  describe('getIsSwapsChain', () => {
+    it('returns true for an allowed chainId in production environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'production';
+
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'testNetworkConfigurationId', // corresponds to mainnet RPC in mockState
+        },
+      };
+
+      const result = selectors.getIsSwapsChain(state);
+
+      expect(result).toBe(true);
+    });
+
+    it('returns true for an allowed chainId in development environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'development';
+
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'goerli',
+        },
+      };
+
+      const result = selectors.getIsSwapsChain(state);
+
+      expect(result).toBe(true);
+    });
+
+    it('returns false for a disallowed chainId in production environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'production';
+
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'fooChain', // corresponds to mainnet RPC in mockState
+          networkConfigurationsByChainId: {
+            '0x8080': {
+              chainId: '0x8080',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  type: 'custom',
+                  url: 'https://testrpc.com',
+                  networkClientId: 'fooChain',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = selectors.getIsSwapsChain(state);
+
+      expect(result).toBe(false);
+    });
+
+    it('returns false for a disallowed chainId in development environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'development';
+
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'fooChain', // corresponds to mainnet RPC in mockState
+          networkConfigurationsByChainId: {
+            '0x8080': {
+              chainId: '0x8080',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  type: 'custom',
+                  url: 'https://testrpc.com',
+                  networkClientId: 'fooChain',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = selectors.getIsSwapsChain(state);
+
+      expect(result).toBe(false);
+    });
+
+    it('respects the overrideChainId parameter', () => {
+      process.env.METAMASK_ENVIRONMENT = 'production';
+
+      const getCurrentChainIdSpy = jest.spyOn(
+        networkSelectors,
+        'getCurrentChainId',
+      );
+
+      const result = selectors.getIsSwapsChain(mockState, '0x89');
+      expect(result).toBe(true);
+      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
+    });
+  });
+
+  describe('getIsBridgeChain', () => {
+    it('returns true for an allowed bridge chainId', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'testNetworkConfigurationId', // corresponds to mainnet RPC in mockState
+        },
+      };
+
+      const result = selectors.getIsBridgeChain(state);
+
+      expect(result).toBe(true);
+    });
+
+    it('returns false for a disallowed bridge chainId', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'fooChain', // corresponds to mainnet RPC in mockState
+          networkConfigurationsByChainId: {
+            '0x8080': {
+              chainId: '0x8080',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  type: 'custom',
+                  url: 'https://testrpc.com',
+                  networkClientId: 'fooChain',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = selectors.getIsBridgeChain(state);
+
+      expect(result).toBe(false);
+    });
+
+    it('respects the overrideChainId parameter', () => {
+      const getCurrentChainIdSpy = jest.spyOn(
+        networkSelectors,
+        'getCurrentChainId',
+      );
+
+      const result = selectors.getIsBridgeChain(mockState, '0x89');
+
+      expect(result).toBe(true);
+      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
+    });
+  });
+
+  describe('getIsTokenNetworkFilterEqualCurrentNetwork', () => {
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
+    it('returns true when the token network filter is equal to the current network', () => {
+      const state = {
+        metamask: {
+          enabledNetworkMap: {
+            eip155: {
+              '0x1': true,
+            },
+          },
+          preferences: {
+            tokenNetworkFilter: {
+              '0x1': true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
+        },
+      };
+      expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
+        true,
+      );
+    });
+
+    it('returns false when the token network filter is on multiple networks', () => {
+      const state = {
+        metamask: {
+          enabledNetworkMap: {
+            eip155: {
+              '0x1': true,
+              '0x89': true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
+        },
+      };
+      expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
+        false,
+      );
+    });
+  });
+
+  describe('getTokenNetworkFilter', () => {
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
+    it('always returns an object containing the network if portfolio view is disabled', () => {
+      process.env.PORTFOLIO_VIEW = undefined;
+
+      const state = {
+        metamask: {
+          enabledNetworkMap: {
+            eip155: {
+              '0x1': true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
+        },
+      };
+
+      expect(selectors.getEnabledNetworks(state)).toStrictEqual({
+        eip155: {
+          [CHAIN_IDS.MAINNET]: true,
+        },
+      });
+    });
+
+    it('always returns an object containing the network if it is not included in popular networks', () => {
+      const state = {
+        metamask: {
+          enabledNetworkMap: {
+            eip155: {
+              '0xNotPopularNetwork': true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0xNotPopularNetwork': {
+              chainId: '0xNotPopularNetwork',
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
+        },
+      };
+
+      expect(selectors.getEnabledNetworks(state)).toStrictEqual({
+        eip155: {
+          '0xNotPopularNetwork': true,
+        },
+      });
+    });
+
+    it('returns an object containing all the popular networks for portfolio view', () => {
+      const state = {
+        metamask: {
+          enabledNetworkMap: {
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.ARBITRUM]: true,
+              [CHAIN_IDS.AVALANCHE]: true,
+              [CHAIN_IDS.BSC]: true,
+              [CHAIN_IDS.OPTIMISM]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.ZKSYNC_ERA]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+          preferences: {
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.ARBITRUM]: true,
+              [CHAIN_IDS.AVALANCHE]: true,
+              [CHAIN_IDS.BSC]: true,
+              [CHAIN_IDS.OPTIMISM]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.ZKSYNC_ERA]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
+          },
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
+        },
+      };
+
+      expect(selectors.getEnabledNetworks(state)).toStrictEqual({
+        eip155: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.LINEA_MAINNET]: true,
+          [CHAIN_IDS.ARBITRUM]: true,
+          [CHAIN_IDS.AVALANCHE]: true,
+          [CHAIN_IDS.BSC]: true,
+          [CHAIN_IDS.OPTIMISM]: true,
+          [CHAIN_IDS.POLYGON]: true,
+          [CHAIN_IDS.ZKSYNC_ERA]: true,
+          [CHAIN_IDS.BASE]: true,
+        },
+      });
+    });
+
+    it('always returns the same object (memoized) if the same state is given', () => {
+      const state = {
+        metamask: {
+          enabledNetworkMap: {
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.ARBITRUM]: true,
+              [CHAIN_IDS.AVALANCHE]: true,
+              [CHAIN_IDS.BSC]: true,
+              [CHAIN_IDS.OPTIMISM]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.ZKSYNC_ERA]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+          preferences: {
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.ARBITRUM]: true,
+              [CHAIN_IDS.AVALANCHE]: true,
+              [CHAIN_IDS.BSC]: true,
+              [CHAIN_IDS.OPTIMISM]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.ZKSYNC_ERA]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
+          },
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
+        },
+      };
+
+      const result1 = selectors.getTokenNetworkFilter(state);
+      const result2 = selectors.getTokenNetworkFilter(state);
+      expect(result1 === result2).toBe(true);
+    });
+  });
+
+  describe('getMetaMaskAccounts', () => {
+    it('return balance from cachedBalances if chainId passed is different from currentChainId', () => {
+      const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+      const BALANCE = '38D7EA4C680000';
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          accountsByChainId: {
+            ...mockState.metamask.accountsByChainId,
+            '0x1': {
+              [ACCOUNT_ADDRESS]: {
+                balance: BALANCE,
+              },
+            },
+          },
+        },
+      };
+      expect(
+        selectors.getMetaMaskAccounts(state, '0x1')[ACCOUNT_ADDRESS].balance,
+      ).toStrictEqual(BALANCE);
+    });
+  });
+
+  describe('getManageInstitutionalWallets', () => {
+    it('returns the manageInstitutionalWallets state', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask.metamask,
+          manageInstitutionalWallets: true,
+        },
+      };
+
+      expect(selectors.getManageInstitutionalWallets(state)).toBe(true);
+    });
+  });
+
+  describe('#getHDEntropyIndex', () => {
+    const selectedAddress = '0xSelectedAddress';
+    const otherAddress = '0xOtherAddress';
+    const hdKeyringType = KeyringType.hdKeyTree;
+    const nonHdKeyringType = 'some-other-keyring-type';
+    const entropySourceId1 = 'entropy-id-1';
+    const entropySourceId2 = 'entropy-id-2';
+
+    const baseMockState = {
+      metamask: {
+        internalAccounts: {
+          accounts: {
+            acc1: {
+              address: selectedAddress,
+              metadata: { keyring: { type: 'some-type' } },
+              options: {},
+            },
+            acc2: {
+              address: otherAddress,
+              metadata: { keyring: { type: 'some-type' } },
+              options: {},
+            },
+          },
+          selectedAccount: 'acc1',
+        },
+        keyrings: [],
+      },
+    };
+
+    it('should return the index of the HD keyring containing the selected address', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          keyrings: [
+            {
+              type: nonHdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: 'mock-keyring-id-1',
+                name: '',
+              },
+            },
+            {
+              type: hdKeyringType,
+              accounts: [otherAddress, selectedAddress],
+              metadata: {
+                id: 'mock-keyring-id-2',
+                name: '',
+              },
+            }, // Index 1 (0 for hdKeyrings filter)
+            {
+              type: hdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: 'mock-keyring-id-3',
+                name: '',
+              },
+            }, // Index 2 (1 for hdKeyrings filter)
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBe(0);
+    });
+
+    it('should return the index based on metadata if account not in HD keyring but entropySource matches', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          internalAccounts: {
+            ...baseMockState.metamask.internalAccounts,
+            accounts: {
+              ...baseMockState.metamask.internalAccounts.accounts,
+              acc1: {
+                ...baseMockState.metamask.internalAccounts.accounts.acc1,
+                options: { entropySource: entropySourceId2 },
+              },
+            },
+          },
+          keyrings: [
+            {
+              type: hdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: 'some-other-id',
+                name: '',
+              },
+            }, // No selectedAddress here
+            {
+              type: nonHdKeyringType,
+              accounts: [selectedAddress],
+              metadata: {
+                id: entropySourceId1,
+                name: '',
+              },
+            },
+            {
+              type: nonHdKeyringType,
+              accounts: [selectedAddress],
+              metadata: {
+                id: entropySourceId2,
+                name: '',
+              },
+            },
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBe(2);
+    });
+
+    it('should return undefined if account not in HD keyring and entropySource does not match any metadata id', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          internalAccounts: {
+            ...baseMockState.metamask.internalAccounts,
+            accounts: {
+              ...baseMockState.metamask.internalAccounts.accounts,
+              acc1: {
+                ...baseMockState.metamask.internalAccounts.accounts.acc1,
+                options: { entropySource: 'non-matching-entropy-id' },
+              },
+            },
+          },
+          keyrings: [
+            {
+              type: hdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: entropySourceId1,
+                name: '',
+              },
+            },
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBeUndefined();
+    });
+
+    it('should return undefined if account not in HD keyring and no entropySource in account options', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          // selected account acc1 has no options.entropySource by default in baseMockState
+          keyrings: [
+            {
+              type: hdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: entropySourceId1,
+                name: '',
+              },
+            },
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBeUndefined();
+    });
+
+    it('should return undefined if account not in HD keyring and no selected internal account found', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          internalAccounts: {
+            ...baseMockState.metamask.internalAccounts,
+            selectedAccount: 'non-existent-acc-id',
+          },
+          keyrings: [
+            {
+              type: hdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: entropySourceId1,
+                name: '',
+              },
+            },
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBeUndefined();
+    });
+
+    it('should return undefined if no HD keyrings and no matching entropySource', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          internalAccounts: {
+            ...baseMockState.metamask.internalAccounts,
+            accounts: {
+              ...baseMockState.metamask.internalAccounts.accounts,
+              acc1: {
+                ...baseMockState.metamask.internalAccounts.accounts.acc1,
+                options: { entropySource: 'non-matching-entropy-id' },
+              },
+            },
+          },
+          keyrings: [
+            {
+              type: nonHdKeyringType,
+              accounts: [selectedAddress],
+              metadata: {
+                id: entropySourceId1,
+                name: '',
+              },
+            },
+            {
+              type: nonHdKeyringType,
+              accounts: [otherAddress],
+              metadata: { id: 'some-other-id', name: '' },
+            },
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBeUndefined();
+    });
+
+    it('should return correct index from metadata if no HD keyrings but matching entropySource', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          internalAccounts: {
+            ...baseMockState.metamask.internalAccounts,
+            accounts: {
+              ...baseMockState.metamask.internalAccounts.accounts,
+              acc1: {
+                ...baseMockState.metamask.internalAccounts.accounts.acc1,
+                options: { entropySource: entropySourceId1 },
+              },
+            },
+          },
+          keyrings: [
+            {
+              type: nonHdKeyringType,
+              accounts: [selectedAddress],
+              metadata: {
+                id: 'another-id',
+                name: '',
+              },
+            },
+            {
+              type: nonHdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: entropySourceId1,
+                name: '',
+              },
+            },
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBe(1);
+    });
+
+    it('should correctly identify the first HD keyring if multiple HD keyrings exist and selected address is in the first one', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          keyrings: [
+            {
+              type: hdKeyringType,
+              accounts: [selectedAddress, otherAddress],
+              metadata: {
+                id: 'mock-keyring-id-1',
+                name: '',
+              },
+            }, // Index 0 (0 for hdKeyrings filter)
+            {
+              type: hdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: 'mock-keyring-id-2',
+                name: '',
+              },
+            }, // Index 1 (1 for hdKeyrings filter)
+            {
+              type: nonHdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: 'mock-keyring-id-3',
+                name: '',
+              },
+            },
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBe(0);
+    });
+
+    it('should correctly identify a later HD keyring if selected address is not in earlier ones', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          keyrings: [
+            {
+              type: hdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: 'mock-keyring-id-1',
+                name: '',
+              },
+            }, // Index 0 (0 for hdKeyrings filter)
+            {
+              type: nonHdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: 'mock-keyring-id-2',
+                name: '',
+              },
+            },
+            {
+              type: hdKeyringType,
+              accounts: [selectedAddress, otherAddress],
+              metadata: {
+                id: 'mock-keyring-id-3',
+                name: '',
+              },
+            }, // Index 2 (1 for hdKeyrings filter)
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBe(1); // 1st HD keyring (index 1 of filtered hdKeyrings)
+    });
+  });
+});
+
+describe('getNativeTokenInfo', () => {
+  const arrange = () => {
+    const state = {
+      metamask: {
+        networkConfigurationsByChainId: {},
+        provider: {},
+      },
+    };
+
+    return { state };
+  };
+
+  it('provides native token info from a network a user has added', () => {
+    const mocks = arrange();
+    mocks.state.metamask.networkConfigurationsByChainId['0x1337'] = {
+      nativeCurrency: 'HELLO',
+      name: 'MyToken',
+    };
+
+    const result = selectors.getNativeTokenInfo(mocks.state, '0x1337');
+    expect(result).toStrictEqual({
+      symbol: 'HELLO',
+      decimals: 18,
+      name: 'MyToken',
+    });
+  });
+
+  it('provides native token info from a network added but with fallbacks for missing fields', () => {
+    const mocks = arrange();
+    mocks.state.metamask.networkConfigurationsByChainId['0x1337'] = {
+      nativeCurrency: undefined,
+      name: undefined,
+    };
+
+    const result = selectors.getNativeTokenInfo(mocks.state, '0x1337');
+    expect(result).toStrictEqual({
+      symbol: 'NATIVE',
+      decimals: 18,
+      name: 'Native Token',
+    });
+  });
+
+  it('provides native token from DApp provider', () => {
+    const mocks = arrange();
+    mocks.state.metamask.provider = {
+      chainId: '0x1337',
+      ticker: 'HELLO',
+      nativeCurrency: { decimals: 18 },
+      nickname: 'MyToken',
+    };
+
+    const result = selectors.getNativeTokenInfo(mocks.state, '0x1337');
+    expect(result).toStrictEqual({
+      symbol: 'HELLO',
+      decimals: 18,
+      name: 'MyToken',
+    });
+  });
+
+  it('provides native token from DApp provider but with fallbacks for missing fields', () => {
+    const mocks = arrange();
+    mocks.state.metamask.provider = {
+      chainId: '0x1337',
+      ticker: undefined,
+      nativeCurrency: undefined,
+      nickname: undefined,
+    };
+
+    const result = selectors.getNativeTokenInfo(mocks.state, '0x1337');
+    expect(result).toStrictEqual({
+      symbol: 'NATIVE',
+      decimals: 18,
+      name: 'Native Token',
+    });
+  });
+
+  it('provides native token from known list of hardcoded native tokens', () => {
+    const mocks = arrange();
+
+    const result = selectors.getNativeTokenInfo(mocks.state, '0x89');
+    expect(result).toStrictEqual({
+      symbol: 'POL',
+      decimals: 18,
+      name: 'Polygon',
+    });
+  });
+
+  it('fallbacks for unknown native token info', () => {
+    const mocks = arrange();
+    const result = selectors.getNativeTokenInfo(mocks.state, '0xFakeToken');
+    expect(result).toStrictEqual({
+      symbol: 'NATIVE',
+      decimals: 18,
+      name: 'Native Token',
+    });
+  });
+});
+
+describe('getInternalAccountsSortedByKeyring', () => {
+  const hdAccountFromHdKeyring1 = {
+    ...createMockInternalAccount({
+      address: '0x67B2fAf7959fB61eb9746571041476Bbd0672569',
+      keyringType: KeyringTypes.hd,
+    }),
+    balance: '0x0',
+  };
+  const hdAccountFromHdKeyring2 = {
+    ...createMockInternalAccount({
+      address: '0x38b00C1620c260cc683F0C89bda9b0D985A233a7',
+      keyringType: KeyringTypes.hd,
+    }),
+    balance: '0x0',
+  };
+  const solanaAccount1 = {
+    ...createMockInternalAccount({
+      address: 'eVFCkMPMevHrWfkvAixLcjsJnpGTkuU4HAP3S3RXU3b',
+      type: SolAccountType.DataAccount,
+      keyringType: KeyringTypes.snap,
+      snapOptions: {
+        id: SOLANA_WALLET_SNAP_ID,
+        name: SOLANA_WALLET_NAME,
+        enabled: true,
+      },
+      options: {
+        entropySource: 'mockHdKeyring1',
+      },
+    }),
+    balance: '0',
+  };
+  const solanaAccount2 = {
+    ...createMockInternalAccount({
+      address: 'DdHGa63k3vcH6kqDbX834GpeRUUef81Q8bUrBPdF937k',
+      type: SolAccountType.DataAccount,
+      keyringType: KeyringTypes.snap,
+      snapOptions: {
+        id: SOLANA_WALLET_SNAP_ID,
+        name: SOLANA_WALLET_NAME,
+        enabled: true,
+      },
+      options: {
+        entropySource: 'mockHdKeyring2',
+      },
+    }),
+    balance: '0',
+  };
+
+  const mockHdKeyring1 = {
+    type: KeyringTypes.hd,
+    accounts: [hdAccountFromHdKeyring1.address],
+    metadata: {
+      id: 'mockHdKeyring1',
+      name: '',
+    },
+  };
+
+  const mockHdKeyring2 = {
+    type: KeyringTypes.hd,
+    accounts: [hdAccountFromHdKeyring2.address],
+    metadata: {
+      id: 'mockHdKeyring2',
+      name: '',
+    },
+  };
+  const mockSnapKeyring = {
+    type: KeyringTypes.snap,
+    accounts: [solanaAccount1.address, solanaAccount2.address],
+    metadata: {
+      id: 'mockSnapKeyring',
+      name: '',
+    },
+  };
+
+  it('returns internal accounts sorted by keyring', () => {
+    const mockStateWithSnapAccounts = {
+      metamask: {
+        internalAccounts: {
+          accounts: {
+            [hdAccountFromHdKeyring1.id]: hdAccountFromHdKeyring1,
+            [hdAccountFromHdKeyring2.id]: hdAccountFromHdKeyring2,
+            [solanaAccount1.id]: solanaAccount1,
+            [solanaAccount2.id]: solanaAccount2,
+          },
+          selectedAccount: solanaAccount1.id,
+        },
+        keyrings: [mockHdKeyring1, mockHdKeyring2, mockSnapKeyring],
+        networkConfigurationsByChainId:
+          mockState.metamask.networkConfigurationsByChainId,
+        selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
+      },
+    };
+
+    const result = selectors.getInternalAccountsSortedByKeyring(
+      mockStateWithSnapAccounts,
+    );
+    expect(result).toStrictEqual([
+      hdAccountFromHdKeyring1,
+      solanaAccount1,
+      hdAccountFromHdKeyring2,
+      solanaAccount2,
+    ]);
   });
 });

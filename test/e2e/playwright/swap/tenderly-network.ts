@@ -1,12 +1,11 @@
 import axios from 'axios';
-import log from 'loglevel';
 
 export const Tenderly = {
   Mainnet: {
     name: 'Ethereum Mainnet',
     rpcName: 'Tenderly - Mainnet',
-    url: 'https://virtual.mainnet.rpc.tenderly.co/03bb8912-7505-4856-839f-52819a26d0cd',
-    chainID: '1',
+    url: 'https://virtual.mainnet.rpc.tenderly.co/6a1cf1d8-3625-4ba0-b07e-c620d326ecb9',
+    chainID: '0x1',
     symbol: 'ETH',
   },
   Optimism: {
@@ -21,6 +20,13 @@ export const Tenderly = {
     rpcName: '',
     url: 'https://virtual.polygon.rpc.tenderly.co/e834a81e-69ba-49e9-a6a5-be5b6eea3cdc',
     chainID: '137',
+    symbol: 'ETH',
+  },
+  Linea: {
+    name: 'Linea',
+    rpcName: '',
+    url: 'https://virtual.linea.rpc.tenderly.co/76ec2678-5c4e-4cd8-baa0-8d3dea738645',
+    chainID: '0xe708',
     symbol: 'ETH',
   },
 };
@@ -42,9 +48,5 @@ export async function addFundsToAccount(
     },
   });
 
-  if (response.data.error) {
-    log.error(
-      `\tERROR: RROR: Failed to add funds to Tenderly VirtualTestNet\n${response.data.error}`,
-    );
-  }
+  return response.data;
 }

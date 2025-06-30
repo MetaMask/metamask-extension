@@ -1,7 +1,8 @@
 import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import Homepage from '../../../page-objects/pages/homepage';
+import Homepage from '../../../page-objects/pages/home/homepage';
+import NFTListPage from '../../../page-objects/pages/home/nft-list';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -15,7 +16,15 @@ describe('NFT detection', function () {
     const driverOptions = { mock: true };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+              '0x5': true,
+            },
+          })
+          .build(),
         driverOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: setupAutoDetectMocking,
@@ -39,10 +48,11 @@ describe('NFT detection', function () {
         await homepage.check_pageIsLoaded();
         await homepage.check_expectedBalanceIsDisplayed();
         await homepage.goToNftTab();
-        await homepage.check_nftNameIsDisplayed(
-          'ENS: Ethereum Name Service (1)',
+        const nftListPage = new NFTListPage(driver);
+        await nftListPage.check_nftNameIsDisplayed(
+          'ENS: Ethereum Name Service',
         );
-        await homepage.check_nftImageIsDisplayed();
+        await nftListPage.check_nftImageIsDisplayed();
       },
     );
   });

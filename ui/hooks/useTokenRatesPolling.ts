@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 import {
-  getCurrentChainId,
+  getChainIdsToPoll,
   getMarketData,
-  getNetworkConfigurationsByChainId,
   getTokenExchangeRates,
   getTokensMarketData,
   getUseCurrencyRateCheck,
 } from '../selectors';
+import { getEnabledChainIds } from '../selectors/multichain/networks';
 import {
   tokenRatesStartPolling,
   tokenRatesStopPollingByPollingToken,
@@ -15,15 +15,16 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
+import { isGlobalNetworkSelectorRemoved } from '../selectors/selectors';
 import useMultiPolling from './useMultiPolling';
 
 const useTokenRatesPolling = () => {
   // Selectors to determine polling input
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isUnlocked = useSelector(getIsUnlocked);
-  const currentChainId = useSelector(getCurrentChainId);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const chainIds = useSelector(getChainIdsToPoll);
+  const enabledChainIds = useSelector(getEnabledChainIds);
 
   // Selectors returning state updated by the polling
   const tokenExchangeRates = useSelector(getTokenExchangeRates);
@@ -32,14 +33,16 @@ const useTokenRatesPolling = () => {
 
   const enabled = completedOnboarding && isUnlocked && useCurrencyRateCheck;
 
-  const chainIds = process.env.PORTFOLIO_VIEW
-    ? Object.keys(networkConfigurations)
-    : [currentChainId];
+  const pollableChains = isGlobalNetworkSelectorRemoved
+    ? enabledChainIds
+    : chainIds;
 
   useMultiPolling({
     startPolling: tokenRatesStartPolling,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     stopPollingByPollingToken: tokenRatesStopPollingByPollingToken,
-    input: enabled ? chainIds : [],
+    input: enabled ? [pollableChains] : [],
   });
 
   return {

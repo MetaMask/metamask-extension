@@ -1,20 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTokenNetworkFilter } from '../../../../../store/actions';
 import {
-  getCurrentChainId,
+  setEnabledNetworks,
+  setTokenNetworkFilter,
+} from '../../../../../store/actions';
+import {
   getCurrentNetwork,
-  getPreferences,
-  getNetworkConfigurationsByChainId,
-  getChainIdsToPoll,
   getShouldHideZeroBalanceTokens,
   getSelectedAccount,
+  getAllChainsToPoll,
+  getTokenNetworkFilter,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  getEnabledNetworksByNamespace,
 } from '../../../../../selectors';
+import {
+  getCurrentChainId,
+  getIsAllNetworksFilterEnabled,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../../shared/modules/selectors/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SelectableListItem } from '../sort-control/sort-control';
 import { Text } from '../../../../component-library/text/text';
 import {
   AlignItems,
+  BlockSize,
   Display,
   JustifyContent,
   TextColor,
@@ -28,28 +37,42 @@ import {
 import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  TEST_CHAINS,
+  FEATURED_NETWORK_CHAIN_IDS,
 } from '../../../../../../shared/constants/network';
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
+import InfoTooltip from '../../../../ui/info-tooltip';
+import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
 
 type SortControlProps = {
   handleClose: () => void;
+  handleFilterNetwork?: (chainFilters: Record<string, boolean>) => void;
+  networkFilter?: Record<string, boolean>;
+  showTokenFiatBalance?: boolean;
 };
 
-const NetworkFilter = ({ handleClose }: SortControlProps) => {
+const NetworkFilter = ({
+  handleClose,
+  handleFilterNetwork,
+  networkFilter,
+  showTokenFiatBalance = true,
+}: SortControlProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const chainId = useSelector(getCurrentChainId);
   const currentNetwork = useSelector(getCurrentNetwork);
   const selectedAccount = useSelector(getSelectedAccount);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const [chainsToShow, setChainsToShow] = useState<string[]>([]);
-  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
+
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-  const allChainIDs = useSelector(getChainIdsToPoll);
+  const allChainIDs = useSelector(getAllChainsToPoll);
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     selectedAccount,
     shouldHideZeroBalanceTokens,
@@ -76,31 +99,40 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     );
 
   const handleFilter = (chainFilters: Record<string, boolean>) => {
-    dispatch(setTokenNetworkFilter(chainFilters));
+    if (handleFilterNetwork) {
+      handleFilterNetwork(chainFilters);
+    } else {
+      isGlobalNetworkSelectorRemoved
+        ? dispatch(setEnabledNetworks(Object.keys(chainFilters), chainId))
+        : dispatch(setTokenNetworkFilter(chainFilters));
+    }
 
     // TODO Add metrics
     handleClose();
   };
 
-  useEffect(() => {
-    const testnetChains: string[] = TEST_CHAINS;
-    const mainnetChainIds = Object.keys(allNetworks || {}).filter(
-      (chain) => !testnetChains.includes(chain),
-    );
-    setChainsToShow(mainnetChainIds);
-  }, []);
+  const allOpts = useSelector(getIsAllNetworksFilterEnabled);
 
-  const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks || {}).forEach((chain) => {
-    allOpts[chain] = true;
+  const allAddedPopularNetworks = FEATURED_NETWORK_CHAIN_IDS.filter(
+    (chain) => allOpts[chain],
+  ).map((chain) => {
+    return allNetworks[chain].name;
   });
+
+  const networks = isGlobalNetworkSelectorRemoved
+    ? enabledNetworksByNamespace
+    : tokenNetworkFilter;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const filter = networkFilter || networks;
 
   return (
     <>
       <SelectableListItem
         isSelected={
-          Object.keys(tokenNetworkFilter || {}).length ===
-          Object.keys(allNetworks || {}).length
+          networkFilter
+            ? Object.keys(networkFilter).length > 1 && networkFilter[chainId]
+            : !isTokenNetworkFilterEqualCurrentNetwork
         }
         onClick={() => handleFilter(allOpts)}
         testId="network-filter-all"
@@ -108,43 +140,48 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
+          width={BlockSize.Full}
+          gap={3}
         >
           <Box>
             <Text
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
             >
-              {t('allNetworks')}
+              {t('popularNetworks')}
             </Text>
-            <Text
-              variant={TextVariant.bodySmMedium}
-              color={TextColor.textAlternative}
-              data-testid="network-filter-all__total"
-            >
-              {/* TODO: Should query cross chain account balance */}
-
-              <UserPreferencedCurrencyDisplay
-                value={selectedAccountBalanceForAllNetworks}
-                type="PRIMARY"
-                ethNumberOfDecimals={4}
-                hideTitle
-                showFiat
-                isAggregatedFiatOverviewBalance
-              />
-            </Text>
+            {showTokenFiatBalance && (
+              <Text
+                variant={TextVariant.bodySmMedium}
+                color={TextColor.textAlternative}
+                data-testid="network-filter-all__total"
+              >
+                <UserPreferencedCurrencyDisplay
+                  value={selectedAccountBalanceForAllNetworks}
+                  type="PRIMARY"
+                  ethNumberOfDecimals={4}
+                  hideTitle
+                  showFiat
+                  isAggregatedFiatOverviewBalance
+                />
+              </Text>
+            )}
           </Box>
           <Box display={Display.Flex} alignItems={AlignItems.center}>
-            {chainsToShow
-              .slice(0, 5) // only show a max of 5 icons overlapping
-              .map((chain, index) => {
+            <InfoTooltip
+              position="bottom"
+              contentText={allAddedPopularNetworks.join(', ')}
+            />
+            {FEATURED_NETWORK_CHAIN_IDS.filter((chain) => allOpts[chain]).map(
+              (chain, index) => {
                 const networkImageUrl =
                   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
                     chain as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                   ];
                 return (
                   <AvatarNetwork
-                    key={chainId}
-                    name="All"
+                    key={networkImageUrl}
+                    name={networkImageUrl}
                     src={networkImageUrl ?? undefined}
                     size={AvatarNetworkSize.Sm}
                     // overlap the icons
@@ -154,22 +191,22 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
                     }}
                   />
                 );
-              })}
+              },
+            )}
           </Box>
         </Box>
       </SelectableListItem>
       <SelectableListItem
-        isSelected={
-          tokenNetworkFilter[chainId] &&
-          Object.keys(tokenNetworkFilter || {}).length === 1
-        }
+        isSelected={Object.keys(filter).length === 1 && filter[chainId]}
         onClick={() => handleFilter({ [chainId]: true })}
         testId="network-filter-current"
       >
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
+          gap={3}
           alignItems={AlignItems.center}
+          width={BlockSize.Full}
         >
           <Box>
             <Text
@@ -182,18 +219,23 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               variant={TextVariant.bodySmMedium}
               color={TextColor.textAlternative}
             >
-              <UserPreferencedCurrencyDisplay
-                value={selectedAccountBalance}
-                type="PRIMARY"
-                ethNumberOfDecimals={4}
-                hideTitle
-                showFiat
-                isAggregatedFiatOverviewBalance
-              />
+              {showTokenFiatBalance && (
+                <UserPreferencedCurrencyDisplay
+                  value={selectedAccountBalance}
+                  type="PRIMARY"
+                  ethNumberOfDecimals={4}
+                  hideTitle
+                  showFiat
+                  isAggregatedFiatOverviewBalance
+                />
+              )}
             </Text>
           </Box>
           <AvatarNetwork
-            name="Current"
+            size={AvatarNetworkSize.Sm}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            name={currentNetwork?.nickname || ''}
             src={currentNetwork?.rpcPrefs?.imageUrl}
           />
         </Box>

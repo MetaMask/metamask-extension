@@ -4,9 +4,11 @@ import * as actions from '../../../store/actions';
 import {
   getAllEnabledNetworks,
   getNetworkIdentifier,
-  isNetworkLoading,
 } from '../../../selectors';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import {
+  getProviderConfig,
+  isNetworkLoading,
+} from '../../../../shared/modules/selectors/networks';
 import LoadingNetworkScreen from './loading-network-screen.component';
 
 const DEPRECATED_TEST_NET_CHAINIDS = ['0x3', '0x2a', '0x4'];

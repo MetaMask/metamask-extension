@@ -8,29 +8,21 @@ import {
   TestSuiteArguments,
 } from './shared';
 
-const {
-  defaultGanacheOptions,
-  defaultGanacheOptionsForType2Transactions,
-  withFixtures,
-} = require('../../../helpers');
+const { withFixtures } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 
 describe('Confirmation Redesign Contract Deployment Component', function () {
-  describe('Create a deploy transaction @no-mmi', function () {
+  describe('Create a deploy transaction', function () {
     it(`Sends a contract interaction type 0 transaction (Legacy)`, async function () {
       await withFixtures(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
-          ganacheOptions: defaultGanacheOptions,
+          localNodeOptions: {
+            hardfork: 'muirGlacier',
+          },
           title: this.test?.fullTitle(),
         },
         async ({ driver }: TestSuiteArguments) => {
@@ -56,14 +48,7 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: TestSuiteArguments) => {

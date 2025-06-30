@@ -383,12 +383,11 @@ export default class SwapsController extends BaseController<
       const [firstQuote] = Object.values(newQuotes);
 
       // For a user to be able to swap a token, they need to have approved the MetaSwap contract to withdraw that token.
-      // _getERC20Allowance() returns the amount of the token they have approved for withdrawal. If that amount is greater
-      // than 0, it means that approval has already occurred and is not needed. Otherwise, for tokens to be swapped, a new
-      // call of the ERC-20 approve method is required.
+      // _getERC20Allowance() returns the amount of the token they have approved for withdrawal. If that amount is either
+      // zero or less than the sourceAmount of the swap, a new call of the ERC-20 approve method is required.
       approvalRequired =
         firstQuote.approvalNeeded &&
-        allowance.eq(0) &&
+        (allowance.eq(0) || allowance.lt(firstQuote.sourceAmount)) &&
         firstQuote.aggregator !== 'wrappedNative';
       if (!approvalRequired) {
         newQuotes = mapValues(newQuotes, (quote) => ({
@@ -409,6 +408,8 @@ export default class SwapsController extends BaseController<
                   // approvalNeeded is guaranteed to be defined here because of the conditional above, since all quotes are from the same source token
                   // the approvalNeeded object will be present for all quotes
                   ...quote.approvalNeeded,
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                   gas: approvalGas || DEFAULT_ERC20_APPROVE_GAS,
                 },
               }
@@ -530,6 +531,8 @@ export default class SwapsController extends BaseController<
       ).toDenomination(EtherDenomination.WEI);
 
       usedGasPrice = new Numeric(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         customMaxPriorityFeePerGas || suggestedMaxPriorityFeePerGasInHexWEI,
         16,
       )
@@ -538,9 +541,13 @@ export default class SwapsController extends BaseController<
         .toString();
     } else if (gasEstimateType === GasEstimateTypes.legacy) {
       usedGasPrice =
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         customGasPrice || decGWEIToHexWEI(Number(gasFeeEstimates.high));
     } else if (gasEstimateType === GasEstimateTypes.ethGasPrice) {
       usedGasPrice =
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         customGasPrice || decGWEIToHexWEI(Number(gasFeeEstimates.gasPrice));
     }
 
@@ -572,6 +579,8 @@ export default class SwapsController extends BaseController<
         : new BigNumber(averageGas || MAX_GAS_LIMIT, 10);
 
       const totalGasLimitForCalculation = tradeGasLimitForCalculation
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         .plus(approvalNeeded?.gas || '0x0', 16)
         .toString(16);
 
@@ -582,6 +591,8 @@ export default class SwapsController extends BaseController<
       if (multiLayerL1TradeFeeTotal !== null) {
         gasTotalInWeiHex = sumHexes(
           gasTotalInWeiHex || '0x0',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           multiLayerL1TradeFeeTotal || '0x0',
         );
       }
@@ -634,6 +645,8 @@ export default class SwapsController extends BaseController<
         ? tokenConversionRates[tokenConversionRateKey]
         : null;
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       const conversionRateForSorting = tokenConversionRate?.price || 1;
 
       const ethValueOfTokens = decimalAdjustedDestinationAmount.times(
@@ -1073,19 +1086,31 @@ export default class SwapsController extends BaseController<
     }
     this.update((_state) => {
       _state.swapsState.swapsQuoteRefreshTime =
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         swapsNetworkConfig?.quotes || FALLBACK_QUOTE_REFRESH_TIME;
       _state.swapsState.swapsQuotePrefetchingRefreshTime =
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         swapsNetworkConfig?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME;
       _state.swapsState.swapsStxGetTransactionsRefreshTime =
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         swapsNetworkConfig?.stxGetTransactions ||
         FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME;
       _state.swapsState.swapsStxBatchStatusRefreshTime =
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         swapsNetworkConfig?.stxBatchStatus ||
         FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME;
       _state.swapsState.swapsStxMaxFeeMultiplier =
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         swapsNetworkConfig?.stxMaxFeeMultiplier ||
         FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER;
       _state.swapsState.swapsStxStatusDeadline =
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         swapsNetworkConfig?.stxStatusDeadline ||
         FALLBACK_SMART_TRANSACTIONS_DEADLINE;
     });

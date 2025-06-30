@@ -1,29 +1,45 @@
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getCurrentChainId } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { getNetworkNameByChainId } from '../feature-flags';
+import { ProviderConfigState, getCurrentChainId } from './networks';
+
+type NetworkFeatureFlag = {
+  extensionActive: boolean;
+  mobileActive: boolean;
+  smartTransactions?: {
+    mobileActive?: boolean;
+    extensionActive?: boolean;
+    expectedDeadline?: number;
+    maxDeadline?: number;
+    extensionReturnTxHashAsap?: boolean;
+  };
+};
+
+type SmartTransactionsFeatureFlag = {
+  mobileActive: boolean;
+  extensionActive: boolean;
+  extensionReturnTxHashAsap: boolean;
+};
+
+export type SwapsFeatureFlags = {
+  [networkName: string]: NetworkFeatureFlag;
+  smartTransactions: SmartTransactionsFeatureFlag;
+};
 
 type FeatureFlagsMetaMaskState = {
   metamask: {
     swapsState: {
-      swapsFeatureFlags: {
-        [key: string]: {
-          extensionActive: boolean;
-          mobileActive: boolean;
-          smartTransactions: {
-            expectedDeadline?: number;
-            maxDeadline?: number;
-            returnTxHashAsap?: boolean;
-          };
-        };
-      };
+      swapsFeatureFlags: SwapsFeatureFlags;
     };
   };
 };
 
-export function getFeatureFlagsByChainId(state: FeatureFlagsMetaMaskState) {
-  const chainId = getCurrentChainId(state);
-  const networkName = getNetworkNameByChainId(chainId);
+export function getFeatureFlagsByChainId(
+  state: ProviderConfigState & FeatureFlagsMetaMaskState,
+  chainId?: string,
+) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const effectiveChainId = chainId || getCurrentChainId(state);
+  const networkName = getNetworkNameByChainId(effectiveChainId);
   const featureFlags = state.metamask.swapsState?.swapsFeatureFlags;
   if (!featureFlags?.[networkName]) {
     return null;

@@ -25,6 +25,12 @@ import {
   getApprovedAndSignedTransactions,
   smartTransactionsListSelector,
   getTransactions,
+  getAllNetworkTransactions,
+  getUnapprovedTransactions,
+  incomingTxListSelectorAllChains,
+  selectedAddressTxListSelectorAllChain,
+  transactionSubSelectorAllChains,
+  transactionsSelectorAllChains,
 } from './transactions';
 
 describe('Transaction Selectors', () => {
@@ -448,6 +454,7 @@ describe('Transaction Selectors', () => {
 
       expect(Array.isArray(selectedTx)).toStrictEqual(true);
       expect(selectedTx).toStrictEqual([
+        state.metamask.transactions[2],
         state.metamask.transactions[1],
         state.metamask.transactions[0],
       ]);
@@ -809,6 +816,901 @@ describe('Transaction Selectors', () => {
     });
   });
 
+  describe('getAllNetworkTransactions', () => {
+    it('returns an empty array if there are no transactions', () => {
+      const state = {
+        metamask: {
+          transactions: [],
+        },
+      };
+
+      const result = getAllNetworkTransactions(state);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('returns all transactions when there are multiple transactions', () => {
+      const transactions = [
+        {
+          id: 1,
+          chainId: CHAIN_IDS.MAINNET,
+          status: TransactionStatus.submitted,
+          txParams: {
+            from: '0xAddress1',
+            to: '0xRecipient1',
+          },
+        },
+        {
+          id: 2,
+          chainId: CHAIN_IDS.MAINNET,
+          status: TransactionStatus.approved,
+          txParams: {
+            from: '0xAddress2',
+            to: '0xRecipient2',
+          },
+        },
+      ];
+
+      const state = {
+        metamask: {
+          transactions,
+        },
+      };
+
+      const result = getAllNetworkTransactions(state);
+
+      expect(result).toStrictEqual(transactions);
+    });
+
+    it('returns all transactions, preserving order when they have different statuses', () => {
+      const transactions = [
+        {
+          id: 1,
+          chainId: CHAIN_IDS.MAINNET,
+          status: TransactionStatus.submitted,
+          txParams: {
+            from: '0xAddress1',
+            to: '0xRecipient1',
+          },
+        },
+        {
+          id: 2,
+          chainId: CHAIN_IDS.MAINNET,
+          status: TransactionStatus.signed,
+          txParams: {
+            from: '0xAddress2',
+            to: '0xRecipient2',
+          },
+        },
+        {
+          id: 3,
+          chainId: CHAIN_IDS.MAINNET,
+          status: TransactionStatus.unapproved,
+          txParams: {
+            from: '0xAddress3',
+            to: '0xRecipient3',
+          },
+        },
+      ];
+
+      const state = {
+        metamask: {
+          transactions,
+        },
+      };
+
+      const result = getAllNetworkTransactions(state);
+
+      expect(result).toStrictEqual(transactions);
+    });
+
+    it('returns the same reference when called multiple times with the same state', () => {
+      const transactions = [
+        {
+          id: 1,
+          chainId: CHAIN_IDS.MAINNET,
+          status: TransactionStatus.submitted,
+          txParams: {
+            from: '0xAddress1',
+            to: '0xRecipient1',
+          },
+        },
+      ];
+      const state = {
+        metamask: { transactions },
+      };
+
+      const firstResult = getAllNetworkTransactions(state);
+      const secondResult = getAllNetworkTransactions(state);
+
+      // Both calls should return the same reference since the input hasn't changed.
+      expect(firstResult).toBe(secondResult);
+    });
+
+    it('returns the same result reference even when a new but deeply equal state is provided', () => {
+      const transactions = [
+        {
+          id: 1,
+          chainId: CHAIN_IDS.MAINNET,
+          status: TransactionStatus.submitted,
+          txParams: {
+            from: '0xAddress1',
+            to: '0xRecipient1',
+          },
+        },
+      ];
+      const state1 = {
+        metamask: { transactions },
+      };
+
+      // Create a new transactions array that is deeply equal to the original.
+      const newTransactions = JSON.parse(JSON.stringify(transactions));
+      const state2 = {
+        metamask: { transactions: newTransactions },
+      };
+
+      const result1 = getAllNetworkTransactions(state1);
+      const result2 = getAllNetworkTransactions(state2);
+
+      // If using deep equality in the selector, the result should be memoized
+      // and both references should be equal.
+      expect(result1).toBe(result2);
+    });
+  });
+
+  describe('incomingTxListSelectorAllChains', () => {
+    it('returns an empty array if there are no incoming transactions', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: 1,
+              type: TransactionType.outgoing,
+              txParams: { to: '0xAddress' },
+            },
+          ],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+        },
+      };
+
+      const result = incomingTxListSelectorAllChains(state);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('returns only incoming transactions for the selected address across networks', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: 1,
+              chainId: '0x1',
+              type: TransactionType.incoming,
+              txParams: { to: '0xSelectedAddress' },
+            },
+            {
+              id: 2,
+              chainId: '0x1',
+              type: TransactionType.incoming,
+              txParams: { to: '0xOtherAddress' },
+            },
+            {
+              id: 3,
+              chainId: '0x1',
+              type: TransactionType.outgoing,
+              txParams: { to: '0xSelectedAddress' },
+            },
+            {
+              id: 4,
+              chainId: '0x1',
+              type: TransactionType.incoming,
+              txParams: { to: '0xSelectedAddress' },
+            },
+          ],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+        },
+      };
+
+      const result = incomingTxListSelectorAllChains(state);
+
+      expect(result).toStrictEqual([
+        state.metamask.transactions[0],
+        state.metamask.transactions[3],
+      ]);
+    });
+
+    it('returns an empty array if no transactions match the selected address', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: 1,
+              type: TransactionType.incoming,
+              txParams: { to: '0xOtherAddress' },
+            },
+          ],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+        },
+      };
+
+      const result = incomingTxListSelectorAllChains(state);
+
+      expect(result).toStrictEqual([]);
+    });
+  });
+
+  describe('selectedAddressTxListSelectorAllChain', () => {
+    it('returns an empty array if there are no transactions or smart transactions', () => {
+      const state = {
+        metamask: {
+          transactions: [],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          smartTransactionsState: {
+            smartTransactions: [],
+          },
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = selectedAddressTxListSelectorAllChain(state);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('filters out incoming transactions for the selected address', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: 1,
+              chainId: '0x1',
+              type: TransactionType.incoming,
+              txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
+            },
+            {
+              id: 2,
+              chainId: '0x1',
+              type: TransactionType.contractInteraction,
+              txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
+            },
+          ],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
+          smartTransactionsState: {
+            smartTransactions: [],
+          },
+        },
+      };
+
+      const result = selectedAddressTxListSelectorAllChain(state);
+
+      expect(result).toStrictEqual([state.metamask.transactions[1]]);
+    });
+
+    it('returns only non-incoming transactions for the selected address', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: 1,
+              chainId: '0x1',
+              type: TransactionType.incoming,
+              txParams: { from: '0xAnotherAddress', to: '0xSelectedAddress' },
+            },
+            {
+              id: 2,
+              chainId: '0x1',
+              type: TransactionType.simpleSend,
+              txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
+            },
+            {
+              id: 3,
+              chainId: '0x1',
+              type: TransactionType.contractInteraction,
+              txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
+            },
+          ],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
+          smartTransactionsState: {
+            smartTransactions: [],
+          },
+        },
+      };
+
+      const result = selectedAddressTxListSelectorAllChain(state);
+
+      expect(result).toStrictEqual([
+        state.metamask.transactions[1],
+        state.metamask.transactions[2],
+      ]);
+    });
+  });
+
+  describe('transactionSubSelectorAllChains', () => {
+    it('returns an empty array when both unapprovedMessages and incomingTxList are empty', () => {
+      const state = {
+        metamask: {
+          unapprovedPersonalMsgs: {},
+          transactions: [],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = transactionSubSelectorAllChains(state);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('returns only unapprovedMessages when incomingTxList is empty', () => {
+      const unapprovedMessages = [
+        {
+          id: 1,
+          status: 'unapproved',
+          msgParams: { from: '0xAddress', data: '0xData' },
+        },
+      ];
+
+      const state = {
+        metamask: {
+          unapprovedPersonalMsgs: {
+            1: unapprovedMessages[0],
+          },
+          transactions: [],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = transactionSubSelectorAllChains(state);
+
+      expect(result).toStrictEqual(unapprovedMessages);
+    });
+
+    it('returns only incomingTxList when unapprovedMessages is empty', () => {
+      const incomingTxList = [
+        {
+          id: 1,
+          chainId: '0x1',
+          type: 'incoming',
+          txParams: { to: '0xSelectedAddress', from: '0xOtherAddress' },
+        },
+      ];
+
+      const state = {
+        metamask: {
+          unapprovedPersonalMsgs: {},
+          transactions: incomingTxList,
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = transactionSubSelectorAllChains(state);
+
+      expect(result).toStrictEqual(incomingTxList);
+    });
+
+    it('concatenates unapprovedMessages and incomingTxList when both are present', () => {
+      const unapprovedMessages = [
+        {
+          id: 1,
+          chainId: '0x1',
+          status: 'unapproved',
+          msgParams: { from: '0xAddress', data: '0xData' },
+        },
+      ];
+
+      const incomingTxList = [
+        {
+          id: 2,
+          chainId: '0x1',
+          type: 'incoming',
+          txParams: { to: '0xSelectedAddress', from: '0xOtherAddress' },
+        },
+      ];
+
+      const state = {
+        metamask: {
+          unapprovedPersonalMsgs: {
+            1: unapprovedMessages[0],
+          },
+          transactions: incomingTxList,
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = transactionSubSelectorAllChains(state);
+
+      expect(result).toStrictEqual([...unapprovedMessages, ...incomingTxList]);
+    });
+
+    describe('transactionsSelectorAllChains', () => {
+      it('returns an empty array when both subSelectorTxList and selectedAddressTxList are empty', () => {
+        const state = {
+          metamask: {
+            transactions: [],
+            unapprovedPersonalMsgs: {},
+            internalAccounts: {
+              accounts: {
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                  address: '0xSelectedAddress',
+                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  metadata: {
+                    name: 'Test Account',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: ETH_EOA_METHODS,
+                  type: EthAccountType.Eoa,
+                },
+              },
+              selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            },
+            selectedNetworkClientId: 'testNetworkConfigurationId',
+            networkConfigurationsByChainId: {
+              '0x1': {
+                chainId: '0x1',
+                name: 'Custom Mainnet RPC',
+                nativeCurrency: 'ETH',
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [
+                  {
+                    url: 'https://testrpc.com',
+                    networkClientId: 'testNetworkConfigurationId',
+                    type: 'custom',
+                  },
+                ],
+              },
+            },
+          },
+        };
+
+        const result = transactionsSelectorAllChains(state);
+
+        expect(result).toStrictEqual([]);
+      });
+
+      it('returns only subSelectorTxList when selectedAddressTxList is empty', () => {
+        const subSelectorTxList = [
+          {
+            id: 2,
+            time: 1,
+            txParams: { from: '0xOtherAddress', to: '0xSelectedAddress' },
+          },
+        ];
+
+        const state = {
+          metamask: {
+            transactions: [],
+            unapprovedPersonalMsgs: { 1: subSelectorTxList[0] },
+            internalAccounts: {
+              accounts: {
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                  address: '0xSelectedAddress',
+                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  metadata: {
+                    name: 'Test Account',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: ETH_EOA_METHODS,
+                  type: EthAccountType.Eoa,
+                },
+              },
+              selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            },
+            selectedNetworkClientId: 'testNetworkConfigurationId',
+            networkConfigurationsByChainId: {
+              '0x1': {
+                chainId: '0x1',
+                name: 'Custom Mainnet RPC',
+                nativeCurrency: 'ETH',
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [
+                  {
+                    url: 'https://testrpc.com',
+                    networkClientId: 'testNetworkConfigurationId',
+                    type: 'custom',
+                  },
+                ],
+              },
+            },
+          },
+        };
+
+        const result = transactionsSelectorAllChains(state);
+
+        expect(result).toStrictEqual(subSelectorTxList);
+      });
+    });
+  });
+
+  describe('transactionsSelectorAllChains', () => {
+    it('returns an empty array when both subSelectorTxList and selectedAddressTxList are empty', () => {
+      const state = {
+        metamask: {
+          transactions: [],
+          unapprovedPersonalMsgs: {},
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: 'ETH_EOA_METHODS',
+                type: 'EthAccountType.Eoa',
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = transactionsSelectorAllChains(state);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('returns only subSelectorTxList when selectedAddressTxList is empty', () => {
+      const subSelectorTxList = [
+        {
+          id: 2,
+          time: 1,
+          txParams: { from: '0xOtherAddress', to: '0xSelectedAddress' },
+        },
+      ];
+
+      const state = {
+        metamask: {
+          transactions: [],
+          unapprovedPersonalMsgs: { 1: subSelectorTxList[0] },
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: 'ETH_EOA_METHODS',
+                type: 'EthAccountType.Eoa',
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = transactionsSelectorAllChains(state);
+
+      expect(result).toStrictEqual(subSelectorTxList);
+    });
+  });
+
   describe('getTransactions', () => {
     it('returns all transactions for all networks', () => {
       const state = {
@@ -853,6 +1755,72 @@ describe('Transaction Selectors', () => {
     it('returns an empty array if there are no transactions', () => {
       const results = getTransactions({});
       expect(results).toStrictEqual([]);
+    });
+  });
+
+  describe('getUnapprovedTransactions', () => {
+    it('returns confirmations from all networks', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: 1,
+              chainId: '0x1',
+              status: TransactionStatus.unapproved,
+              type: TransactionType.incoming,
+              txParams: { to: '0xSelectedAddress' },
+            },
+            {
+              id: 2,
+              chainId: '0x2',
+              status: TransactionStatus.unapproved,
+              type: TransactionType.incoming,
+              txParams: { to: '0xOtherAddress' },
+            },
+            {
+              id: 3,
+              chainId: '0x3',
+              status: TransactionStatus.unapproved,
+              type: TransactionType.outgoing,
+              txParams: { to: '0xSelectedAddress' },
+            },
+            {
+              id: 4,
+              chainId: '0x1',
+              status: TransactionStatus.unapproved,
+              type: TransactionType.incoming,
+              txParams: { to: '0xSelectedAddress' },
+            },
+          ],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+        },
+      };
+
+      const result = getUnapprovedTransactions(state);
+
+      expect(result).toStrictEqual({
+        1: state.metamask.transactions[0],
+        2: state.metamask.transactions[1],
+        3: state.metamask.transactions[2],
+        4: state.metamask.transactions[3],
+      });
     });
   });
 });

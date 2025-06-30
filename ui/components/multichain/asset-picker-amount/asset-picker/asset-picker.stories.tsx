@@ -25,6 +25,7 @@ const props = {
     address: '0xaddress1',
     image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
     type: AssetType.token,
+    chainId: '0x1',
   } as ERC20Asset,
 };
 export const DefaultStory = () => {
@@ -65,6 +66,7 @@ export const SendDestStory = () => {
         symbol: 'ETH',
         image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
         type: AssetType.native,
+        chainId: '0x1',
       }}
       sendingAsset={{
         image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
@@ -93,8 +95,70 @@ SendDestStory.decorators = [
 
 SendDestStory.storyName = 'With Sending Asset';
 
-export const NetworksStory = ({ isOpen }: { isOpen: boolean }) => {
-  const t = useI18nContext();
+const networkProps = {
+  network: {
+    chainId: '0x1',
+    name: 'Mainnet',
+    blockExplorerUrls: [],
+    defaultRpcEndpointIndex: 0,
+    rpcEndpoints: [
+      {
+        networkClientId: 'test1',
+        url: 'https://mainnet.infura.io/v3/',
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    nativeCurrency: 'ETH',
+  },
+  networks: [
+    {
+      chainId: '0x1',
+      name: 'Mainnet Name That Is Very Long',
+      blockExplorerUrls: [],
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'test1',
+          url: 'https://mainnet.infura.io/v3/',
+          type: RpcEndpointType.Custom,
+        },
+      ],
+      nativeCurrency: 'ETH',
+    },
+    {
+      chainId: '0x10',
+      name: 'Optimism',
+      blockExplorerUrls: [],
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'test2',
+          url: 'https://optimism.infura.io/v3/',
+          type: RpcEndpointType.Custom,
+        },
+      ],
+      nativeCurrency: 'ETH',
+    },
+    {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      name: 'Linea Mainnet Test Name',
+      blockExplorerUrls: [],
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'test3',
+          url: 'https://linea.infura.io/v3/',
+          type: RpcEndpointType.Custom,
+        },
+      ],
+      nativeCurrency: 'ETH',
+    },
+  ],
+  shouldDisableNetwork: (networkConfig) =>
+    networkConfig.chainId === CHAIN_IDS.LINEA_MAINNET,
+  onNetworkChange: () => ({}),
+};
+export const NetworksStory = () => {
   return (
     <AssetPicker
       header={'Bridge from'}
@@ -104,54 +168,9 @@ export const NetworksStory = ({ isOpen }: { isOpen: boolean }) => {
         symbol: 'ETH',
         image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
         type: AssetType.native,
+        chainId: '0x1',
       }}
-      networkProps={{
-        network: {
-          chainId: '0x1',
-          name: 'Mainnet',
-          blockExplorerUrls: [],
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'test1',
-              url: 'https://mainnet.infura.io/v3/',
-              type: RpcEndpointType.Custom,
-            },
-          ],
-          nativeCurrency: 'ETH',
-        },
-        networks: [
-          {
-            chainId: '0x1',
-            name: 'Mainnet',
-            blockExplorerUrls: [],
-            defaultRpcEndpointIndex: 0,
-            rpcEndpoints: [
-              {
-                networkClientId: 'test1',
-                url: 'https://mainnet.infura.io/v3/',
-                type: RpcEndpointType.Custom,
-              },
-            ],
-            nativeCurrency: 'ETH',
-          },
-          {
-            chainId: '0x10',
-            name: 'Optimism',
-            blockExplorerUrls: [],
-            defaultRpcEndpointIndex: 0,
-            rpcEndpoints: [
-              {
-                networkClientId: 'test2',
-                url: 'https://optimism.infura.io/v3/',
-                type: RpcEndpointType.Custom,
-              },
-            ],
-            nativeCurrency: 'ETH',
-          },
-        ],
-        onNetworkChange: () => ({}),
-      }}
+      networkProps={networkProps as never}
       visibleTabs={[TabName.TOKENS]}
     />
   );
@@ -162,5 +181,30 @@ NetworksStory.decorators = [
 ];
 
 NetworksStory.storyName = 'With Network Picker';
+
+export const MultichainNetworksStory = () => {
+  return (
+    <AssetPicker
+      header={'Bridge from'}
+      onAssetChange={() => ({})}
+      {...props}
+      asset={{
+        symbol: 'ETH',
+        image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
+        type: AssetType.native,
+        chainId: '0x1',
+      }}
+      isMultiselectEnabled={true}
+      networkProps={networkProps as never}
+      visibleTabs={[TabName.TOKENS]}
+    />
+  );
+};
+
+MultichainNetworksStory.decorators = [
+  (story) => <Provider store={store()}>{story()}</Provider>,
+];
+
+MultichainNetworksStory.storyName = 'With Multichain Network Picker';
 
 export default storybook;

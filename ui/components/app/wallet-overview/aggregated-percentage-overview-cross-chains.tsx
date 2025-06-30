@@ -1,15 +1,17 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { zeroAddress, toChecksumAddress } from 'ethereumjs-util';
+import { toChecksumAddress } from 'ethereumjs-util';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { Hex } from '@metamask/utils';
 import {
-  getCurrentCurrency,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getPreferences,
   getMarketData,
   getChainIdsToPoll,
 } from '../../../selectors';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -24,7 +26,7 @@ import { Box, SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
-import { TokenWithBalance } from '../assets/asset-list/asset-list';
+import { TokenWithBalance } from '../assets/types';
 
 export const AggregatedPercentageOverviewCrossChains = () => {
   const locale = useSelector(getIntlLocale);
@@ -89,8 +91,9 @@ export const AggregatedPercentageOverviewCrossChains = () => {
           item.tokensWithBalances,
         );
         const nativePricePercentChange1d =
-          crossChainMarketData?.[item.chainId]?.[zeroAddress()]
-            ?.pricePercentChange1d;
+          crossChainMarketData?.[item.chainId]?.[
+            getNativeTokenAddress(item.chainId as Hex)
+          ]?.pricePercentChange1d;
 
         const nativeFiat1dAgo = getCalculatedTokenAmount1dAgo(
           item.nativeFiatValue,

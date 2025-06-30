@@ -1,4 +1,5 @@
-import { EthAccountType, InternalAccount } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   TransactionController,
   TransactionMeta,
@@ -23,7 +24,7 @@ import {
   UpdateSecurityAlertResponse,
 } from '../ppom/types';
 import {
-  SECURITY_ALERT_RESPONSE_CHECKING_CHAIN,
+  LOADING_SECURITY_ALERT_RESPONSE,
   SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
 } from '../../../../shared/constants/security-provider';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -46,7 +47,7 @@ type BaseAddTransactionRequest = {
 };
 
 type FinalAddTransactionRequest = BaseAddTransactionRequest & {
-  transactionOptions: AddTransactionOptions;
+  transactionOptions: Partial<AddTransactionOptions>;
 };
 
 export type AddTransactionRequest = FinalAddTransactionRequest & {
@@ -54,7 +55,7 @@ export type AddTransactionRequest = FinalAddTransactionRequest & {
 };
 
 export type AddDappTransactionRequest = BaseAddTransactionRequest & {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dappRequest: Record<string, any>;
 };
@@ -66,7 +67,7 @@ export async function addDappTransaction(
   const { id: actionId, method, origin } = dappRequest;
   const { securityAlertResponse, traceContext } = dappRequest;
 
-  const transactionOptions: AddTransactionOptions = {
+  const transactionOptions: Partial<AddTransactionOptions> = {
     actionId,
     method,
     origin,
@@ -143,10 +144,11 @@ async function addTransactionWithController(
     transactionParams,
     networkClientId,
   } = request;
+
   const { result, transactionMeta } =
     await transactionController.addTransaction(transactionParams, {
       ...transactionOptions,
-      ...(process.env.TRANSACTION_MULTICHAIN ? { networkClientId } : {}),
+      networkClientId,
     });
 
   return {
@@ -167,7 +169,8 @@ async function addUserOperationWithController(
   } = request;
 
   const { maxFeePerGas, maxPriorityFeePerGas } = transactionParams;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { origin, requireApproval, type } = transactionOptions as any;
 
@@ -206,7 +209,7 @@ async function addUserOperationWithController(
   };
 }
 
-function getTransactionById(
+export function getTransactionById(
   transactionId: string,
   transactionController: TransactionController,
 ) {
@@ -285,13 +288,13 @@ async function validateSecurity(request: AddTransactionRequest) {
       updateSecurityAlertResponse,
     });
 
-    const securityAlertResponseCheckingChain: SecurityAlertResponse = {
-      ...SECURITY_ALERT_RESPONSE_CHECKING_CHAIN,
+    const securityAlertResponseLoading: SecurityAlertResponse = {
+      ...LOADING_SECURITY_ALERT_RESPONSE,
       securityAlertId,
     };
 
     request.transactionOptions.securityAlertResponse =
-      securityAlertResponseCheckingChain;
+      securityAlertResponseLoading;
   } catch (error) {
     handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
   }

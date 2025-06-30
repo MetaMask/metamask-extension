@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import nock from 'nock';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
@@ -12,13 +13,20 @@ import {
 } from '../../../../../shared/constants/network';
 import * as fetchWithCacheModule from '../../../../../shared/lib/fetch-with-cache';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import { addNetwork, updateNetwork } from '../../../../store/actions';
+import {
+  addNetwork,
+  setTokenNetworkFilter,
+  updateNetwork,
+} from '../../../../store/actions';
 import { NetworksForm } from './networks-form';
 
 jest.mock('../../../../../ui/store/actions', () => ({
   ...jest.requireActual('../../../../../ui/store/actions'),
   updateNetwork: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
   addNetwork: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
+  setTokenNetworkFilter: jest
+    .fn()
+    .mockReturnValue(jest.fn().mockResolvedValue()),
 }));
 
 const renderComponent = (props) => {
@@ -30,6 +38,10 @@ const renderComponent = (props) => {
         networkId: '0x1',
         networkRpcUrl: 'https://mainnet.infura.io/v3/',
       },
+      multichainNetworkConfigurationsByChainId:
+        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      selectedMultichainNetworkChainId: 'eip155:1',
+      isEvmSelected: true,
     },
   });
   return renderWithProvider(<NetworksForm {...props} />, store);
@@ -442,6 +454,7 @@ describe('NetworkForm Component', () => {
           replacementSelectedRpcEndpointIndex: undefined,
         },
       );
+      expect(setTokenNetworkFilter).toHaveBeenCalledTimes(1);
     });
   });
 });

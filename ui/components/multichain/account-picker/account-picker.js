@@ -6,6 +6,7 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 import {
   AvatarAccount,
   AvatarAccountVariant,
+  Box,
   ButtonBase,
   ButtonBaseSize,
   IconName,
@@ -16,21 +17,14 @@ import {
   BackgroundColor,
   BorderRadius,
   Display,
+  FlexDirection,
   IconColor,
   Size,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  getUseBlockie,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getSelectedAddress,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../selectors';
+import { getUseBlockie } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
 import { trace, TraceName } from '../../../../shared/lib/trace';
 
 export const AccountPicker = ({
@@ -48,101 +42,82 @@ export const AccountPicker = ({
   const useBlockie = useSelector(getUseBlockie);
   const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const selectedAddress = useSelector(getSelectedAddress);
-  const custodianIcon = useSelector((state) =>
-    getCustodianIconForAddress(state, selectedAddress),
-  );
-  ///: END:ONLY_INCLUDE_IF
-
   return (
-    <ButtonBase
-      className={classnames('multichain-account-picker', className)}
-      data-testid="account-menu-icon"
-      onClick={() => {
-        trace({ name: TraceName.AccountList });
-        onClick();
-      }}
-      backgroundColor={BackgroundColor.transparent}
-      borderRadius={BorderRadius.LG}
-      ellipsis
-      textProps={{
-        display: Display.Flex,
-        alignItems: AlignItems.center,
-        gap: 2,
-        ...textProps,
-      }}
-      size={showAddress ? ButtonBaseSize.Lg : ButtonBaseSize.Sm}
-      disabled={disabled}
-      endIconName={IconName.ArrowDown}
-      endIconProps={{
-        color: IconColor.iconDefault,
-        size: Size.SM,
-      }}
-      {...props}
-      gap={2}
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
     >
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        <AvatarAccount
-          variant={
-            useBlockie
-              ? AvatarAccountVariant.Blockies
-              : AvatarAccountVariant.Jazzicon
-          }
-          address={address}
-          size={showAddress ? Size.MD : Size.XS}
-          borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
-        />
-        ///: END:ONLY_INCLUDE_IF
-      }
-
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        custodianIcon ? (
-          <img
-            src={custodianIcon}
-            data-testid="custody-logo"
-            className="custody-logo"
-            alt="custody logo"
-          />
-        ) : (
-          <AvatarAccount
-            variant={
-              useBlockie
-                ? AvatarAccountVariant.Blockies
-                : AvatarAccountVariant.Jazzicon
-            }
-            address={address}
-            size={showAddress ? Size.MD : Size.XS}
-            borderColor={BackgroundColor.backgroundDefault}
-          />
-        )
-        ///: END:ONLY_INCLUDE_IF
-      }
-
-      <Text
-        as="span"
+      <ButtonBase
+        className={classnames('multichain-account-picker', className)}
+        data-testid="account-menu-icon"
+        onClick={() => {
+          trace({ name: TraceName.AccountList });
+          onClick();
+        }}
+        backgroundColor={BackgroundColor.transparent}
+        borderRadius={BorderRadius.LG}
         ellipsis
-        {...labelProps}
-        className={classnames(
-          'multichain-account-picker__label',
-          labelProps.className ?? '',
-        )}
+        textProps={{
+          display: Display.Flex,
+          alignItems: AlignItems.center,
+          gap: 2,
+          ...textProps,
+        }}
+        size={showAddress ? ButtonBaseSize.Lg : ButtonBaseSize.Sm}
+        disabled={disabled}
+        endIconName={IconName.ArrowDown}
+        endIconProps={{
+          color: IconColor.iconDefault,
+          size: Size.SM,
+        }}
+        {...props}
+        gap={1}
       >
-        {name}
-        {showAddress ? (
+        <Box
+          display={Display.Flex}
+          flexDirection={
+            process.env.REMOVE_GNS ? FlexDirection.Column : FlexDirection.Row
+          }
+          alignItems={AlignItems.center}
+          gap={process.env.REMOVE_GNS ? 0 : 2}
+        >
+          {process.env.REMOVE_GNS ? null : (
+            <AvatarAccount
+              variant={
+                useBlockie
+                  ? AvatarAccountVariant.Blockies
+                  : AvatarAccountVariant.Jazzicon
+              }
+              address={address}
+              size={showAddress ? Size.MD : Size.XS}
+              borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
+            />
+          )}
           <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodySm}
+            as="span"
             ellipsis
-            {...addressProps}
+            {...labelProps}
+            className={classnames(
+              'multichain-account-picker__label',
+              labelProps.className ?? '',
+            )}
           >
-            {shortenedAddress}
+            {name}
+            {showAddress ? (
+              <Text
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodySm}
+                ellipsis
+                {...addressProps}
+              >
+                {shortenedAddress}
+              </Text>
+            ) : null}
           </Text>
-        ) : null}
-      </Text>
-    </ButtonBase>
+        </Box>
+      </ButtonBase>
+    </Box>
   );
 };
 

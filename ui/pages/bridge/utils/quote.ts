@@ -1,59 +1,102 @@
-import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import { QuoteResponse, QuoteRequest } from '../types';
+import { BigNumber } from 'bignumber.js';
+import {
+  type QuoteResponse,
+  isSolanaChainId,
+  formatChainIdToCaip,
+  isNativeAddress,
+} from '@metamask/bridge-controller';
+import type {
+  NetworkConfiguration,
+  AddNetworkFields,
+} from '@metamask/network-controller';
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
+import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
+import type { BridgeToken } from '../../../ducks/bridge/types';
 
-export const isValidQuoteRequest = (
-  partialRequest: Partial<QuoteRequest>,
-  requireAmount = true,
-): partialRequest is QuoteRequest => {
-  const STRING_FIELDS = ['srcTokenAddress', 'destTokenAddress'];
-  if (requireAmount) {
-    STRING_FIELDS.push('srcTokenAmount');
-  }
-  const NUMBER_FIELDS = ['srcChainId', 'destChainId', 'slippage'];
+export const formatTokenAmount = (
+  locale: string,
+  amount: string,
+  symbol: string = '',
+) => {
+  const stringifiedAmount = formatAmount(locale, new BigNumber(amount));
 
-  return (
-    STRING_FIELDS.every(
-      (field) =>
-        field in partialRequest &&
-        typeof partialRequest[field as keyof typeof partialRequest] ===
-          'string' &&
-        partialRequest[field as keyof typeof partialRequest] !== undefined &&
-        partialRequest[field as keyof typeof partialRequest] !== '' &&
-        partialRequest[field as keyof typeof partialRequest] !== null,
-    ) &&
-    NUMBER_FIELDS.every(
-      (field) =>
-        field in partialRequest &&
-        typeof partialRequest[field as keyof typeof partialRequest] ===
-          'number' &&
-        partialRequest[field as keyof typeof partialRequest] !== undefined &&
-        !isNaN(Number(partialRequest[field as keyof typeof partialRequest])) &&
-        partialRequest[field as keyof typeof partialRequest] !== null,
-    )
-  );
+  return [stringifiedAmount, symbol].join(' ').trim();
 };
 
-export const getQuoteDisplayData = (quoteResponse?: QuoteResponse) => {
-  const { quote, estimatedProcessingTimeInSeconds } = quoteResponse ?? {};
-  if (!quoteResponse || !quote || !estimatedProcessingTimeInSeconds) {
-    return {};
+export const formatCurrencyAmount = (
+  stringifiedDecAmount: string | null,
+  currency: string,
+  precision: number = DEFAULT_PRECISION,
+) => {
+  if (!stringifiedDecAmount) {
+    return undefined;
+  }
+  const amount = new BigNumber(stringifiedDecAmount);
+
+  if (precision === 0) {
+    if (amount.lt(0.01)) {
+      return '<$0.01';
+    }
+    if (amount.lt(1)) {
+      return formatCurrency(amount.toString(), currency, 2);
+    }
+  }
+  return formatCurrency(amount.toString(), currency, precision);
+};
+
+export const formatProviderLabel = (args?: {
+  bridgeId: QuoteResponse['quote']['bridgeId'];
+  bridges: QuoteResponse['quote']['bridges'];
+}): `${string}_${string}` => `${args?.bridgeId}_${args?.bridges[0]}`;
+
+export const isQuoteExpiredOrInvalid = ({
+  activeQuote,
+  toToken,
+  toChain,
+  fromChain,
+  isQuoteExpired,
+  insufficientBal,
+}: {
+  activeQuote: QuoteResponse | null;
+  toToken: BridgeToken | null;
+  toChain?: NetworkConfiguration | AddNetworkFields;
+  fromChain?: NetworkConfiguration;
+  isQuoteExpired: boolean;
+  insufficientBal?: boolean;
+}): boolean => {
+  // 1. Ignore quotes that are expired (unless the only reason is an `insufficientBal` override for non-Solana chains)
+  if (
+    isQuoteExpired &&
+    (!insufficientBal ||
+      // `insufficientBal` is always true for Solana
+      (fromChain && isSolanaChainId(fromChain.chainId)))
+  ) {
+    return true;
   }
 
-  const etaInMinutes = (estimatedProcessingTimeInSeconds / 60).toFixed();
-  const quoteRate = `1 ${quote.srcAsset.symbol} = ${calcTokenAmount(
-    quote.destTokenAmount,
-    quote.destAsset.decimals,
-  )
-    .div(calcTokenAmount(quote.srcTokenAmount, quote.srcAsset.decimals))
-    .toFixed(4)
-    .toString()} ${quote.destAsset.symbol}`;
+  // 2. Ensure the quote still matches the currently selected destination asset / chain
+  if (activeQuote && toToken) {
+    const quoteDestAddress =
+      activeQuote.quote?.destAsset?.address?.toLowerCase() || '';
+    const selectedDestAddress = toToken.address?.toLowerCase() || '';
 
-  return {
-    etaInMinutes,
-    totalFees: {
-      amount: '0.01 ETH', // TODO implement gas + relayer fee
-      fiat: '$0.01',
-    },
-    quoteRate,
-  };
+    const quoteDestChainIdCaip = activeQuote.quote?.destChainId
+      ? formatChainIdToCaip(activeQuote.quote.destChainId)
+      : '';
+    const selectedDestChainIdCaip = toChain?.chainId
+      ? formatChainIdToCaip(toChain.chainId)
+      : '';
+
+    return !(
+      (quoteDestAddress === selectedDestAddress ||
+        // Extension's native asset address may be different from bridge-api's native
+        // asset address so if both assets are native, we should still return true
+        (isNativeAddress(quoteDestAddress) &&
+          isNativeAddress(selectedDestAddress))) &&
+      quoteDestChainIdCaip === selectedDestChainIdCaip
+    );
+  }
+
+  return false;
 };

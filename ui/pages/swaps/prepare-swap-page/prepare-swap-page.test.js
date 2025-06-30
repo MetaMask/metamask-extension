@@ -268,4 +268,60 @@ describe('PrepareSwapPage', () => {
 
     expect(bridgeButton).toBeNull();
   });
+
+  describe('Smart Transactions Migration Banner', () => {
+    it('shows banner when alert is enabled, opted in, and migration applied', () => {
+      const mockStore = createSwapsMockStore();
+      const store = configureMockStore(middleware)({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          alertEnabledness: {
+            smartTransactionsMigration: true,
+          },
+          preferences: {
+            smartTransactionsOptInStatus: true,
+            smartTransactionsMigrationApplied: true,
+          },
+        },
+      });
+
+      const props = createProps();
+      const { getByTestId } = renderWithProvider(
+        <PrepareSwapPage {...props} />,
+        store,
+      );
+
+      expect(
+        getByTestId('smart-transactions-banner-alert'),
+      ).toBeInTheDocument();
+    });
+
+    it('does not show banner when alert is disabled', () => {
+      const mockStore = createSwapsMockStore();
+      const store = configureMockStore(middleware)({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          alertEnabledness: {
+            smartTransactionsMigration: false,
+          },
+          preferences: {
+            smartTransactionsOptInStatus: true,
+            smartTransactionsMigrationApplied: true,
+          },
+        },
+      });
+
+      const props = createProps();
+      const { queryByTestId } = renderWithProvider(
+        <PrepareSwapPage {...props} />,
+        store,
+      );
+
+      expect(
+        queryByTestId('smart-transactions-banner-alert'),
+      ).not.toBeInTheDocument();
+    });
+  });
 });
