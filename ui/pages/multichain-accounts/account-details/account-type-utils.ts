@@ -69,7 +69,7 @@ export const getAccountTypeCategory = (
 /**
  * Checks if an account is an EVM account (EOA or ERC-4337)
  *
- * @param account
+ * @param account - The internal account object to check.
  */
 export const isEVMAccount = (account: InternalAccount): boolean => {
   return getAccountTypeCategory(account) === 'evm';
@@ -78,7 +78,7 @@ export const isEVMAccount = (account: InternalAccount): boolean => {
 /**
  * Checks if an account is a Solana account
  *
- * @param account
+ * @param account - The internal account object to check.
  */
 export const isSolanaAccount = (account: InternalAccount): boolean => {
   return getAccountTypeCategory(account) === 'solana';
@@ -87,7 +87,7 @@ export const isSolanaAccount = (account: InternalAccount): boolean => {
 /**
  * Checks if an account is a hardware wallet account
  *
- * @param account
+ * @param account - The internal account object to check.
  */
 export const isHardwareAccount = (account: InternalAccount): boolean => {
   return getAccountTypeCategory(account) === 'hardware';
@@ -96,7 +96,7 @@ export const isHardwareAccount = (account: InternalAccount): boolean => {
 /**
  * Checks if an account is a private key account
  *
- * @param account
+ * @param account - The internal account object to check.
  */
 export const isPrivateKeyAccount = (account: InternalAccount): boolean => {
   return getAccountTypeCategory(account) === 'private-key';
@@ -105,7 +105,7 @@ export const isPrivateKeyAccount = (account: InternalAccount): boolean => {
 /**
  * Checks if an account is an institutional EVM account
  *
- * @param account
+ * @param account - The internal account object to check.
  */
 export const isInstitutionalEVMAccount = (
   account: InternalAccount,
