@@ -1034,10 +1034,7 @@ export default class MetamaskController extends EventEmitter {
 
     let initialNetworkOrderControllerState;
 
-    if (
-      process.env.METAMASK_DEBUG ||
-      process.env.METAMASK_ENVIRONMENT === 'test'
-    ) {
+    if (process.env.METAMASK_DEBUG) {
       initialNetworkOrderControllerState = {
         orderedNetworkList: [],
         enabledNetworkMap: {
