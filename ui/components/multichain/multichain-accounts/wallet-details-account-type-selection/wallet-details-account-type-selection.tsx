@@ -20,7 +20,10 @@ import {
   Text,
   Box,
 } from '../../../component-library';
-import { WalletClientType } from '../../../../hooks/accounts/useMultichainWalletSnapClient';
+import {
+  WalletClientType,
+  EVM_WALLET_TYPE,
+} from '../../../../hooks/accounts/useMultichainWalletSnapClient';
 import {
   getIsSolanaSupportEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
@@ -29,7 +32,9 @@ import {
 } from '../../../../selectors';
 
 type WalletDetailsAccountTypeSelectionProps = {
-  onAccountTypeSelect: (accountType: WalletClientType | 'EVM') => void;
+  onAccountTypeSelect: (
+    accountType: WalletClientType | typeof EVM_WALLET_TYPE,
+  ) => void;
   onClose: () => void;
 };
 
@@ -78,7 +83,7 @@ export const WalletDetailsAccountTypeSelection: React.FC<
             size={ButtonLinkSize.Sm}
             startIconName={IconName.Add}
             startIconProps={{ size: IconSize.Md }}
-            onClick={() => onAccountTypeSelect('EVM')}
+            onClick={() => onAccountTypeSelect(EVM_WALLET_TYPE)}
             data-testid="wallet-details-add-ethereum-account"
           >
             {t('addNewEthereumAccountLabel')}

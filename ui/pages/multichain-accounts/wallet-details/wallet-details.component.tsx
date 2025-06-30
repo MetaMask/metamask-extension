@@ -60,6 +60,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
+  EVM_WALLET_TYPE,
   WalletClientType,
   useMultichainWalletSnapClient,
 } from '../../../hooks/accounts/useMultichainWalletSnapClient';
@@ -84,7 +85,9 @@ const WalletDetails = () => {
 
   // Initialize wallet snap clients
   const solanaClient = useMultichainWalletSnapClient(WalletClientType.Solana);
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const bitcoinClient = useMultichainWalletSnapClient(WalletClientType.Bitcoin);
+  ///: END:ONLY_INCLUDE_IF
 
   const totalBalance = useMemo(
     () =>
@@ -190,7 +193,9 @@ const WalletDetails = () => {
     if (clientType === WalletClientType.Solana) {
       client = solanaClient;
     } else if (clientType === WalletClientType.Bitcoin) {
+      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       client = bitcoinClient;
+      ///: END:ONLY_INCLUDE_IF
     } else {
       console.error(`Unsupported client type: ${clientType}`);
       return;
@@ -214,9 +219,9 @@ const WalletDetails = () => {
   };
 
   const handleAccountTypeSelect = async (
-    accountType: WalletClientType | 'EVM',
+    accountType: WalletClientType | typeof EVM_WALLET_TYPE,
   ) => {
-    if (accountType === 'EVM') {
+    if (accountType === EVM_WALLET_TYPE) {
       await handleCreateEthereumAccount();
     } else if (accountType === WalletClientType.Solana) {
       await handleCreateSnapAccount(
@@ -224,10 +229,12 @@ const WalletDetails = () => {
         SolScope.Mainnet as CaipChainId,
       );
     } else if (accountType === WalletClientType.Bitcoin) {
+      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       await handleCreateSnapAccount(
         WalletClientType.Bitcoin,
         BtcScope.Mainnet as CaipChainId,
       );
+      ///: END:ONLY_INCLUDE_IF
     }
     handleCloseModal();
   };

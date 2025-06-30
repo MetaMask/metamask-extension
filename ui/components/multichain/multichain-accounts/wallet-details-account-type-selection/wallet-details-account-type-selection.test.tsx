@@ -1,7 +1,10 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import { WalletClientType } from '../../../../hooks/accounts/useMultichainWalletSnapClient';
+import {
+  WalletClientType,
+  EVM_WALLET_TYPE,
+} from '../../../../hooks/accounts/useMultichainWalletSnapClient';
 import { WalletDetailsAccountTypeSelection } from './wallet-details-account-type-selection';
 
 jest.mock('react-redux', () => ({
@@ -55,7 +58,7 @@ describe('WalletDetailsAccountTypeSelection', () => {
   it('calls onAccountTypeSelect with "EVM" when Ethereum button is clicked', () => {
     const { getByTestId } = renderComponent();
     fireEvent.click(getByTestId('wallet-details-add-ethereum-account'));
-    expect(onAccountTypeSelect).toHaveBeenCalledWith('EVM');
+    expect(onAccountTypeSelect).toHaveBeenCalledWith(EVM_WALLET_TYPE);
   });
 
   it('calls onAccountTypeSelect with WalletClientType.Solana when Solana button is clicked', () => {
