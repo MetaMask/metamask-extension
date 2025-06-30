@@ -79,6 +79,7 @@ import {
   getSelectedInternalAccount,
   getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
+  getIsSocialLoginFlow,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -306,6 +307,44 @@ export function restoreSocialBackupAndGetSeedPhrase(
       console.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
       dispatch(hideLoadingIndication());
       dispatch(displayWarning(error.message));
+      throw error;
+    }
+  };
+}
+
+/**
+ * Changes the password of the currently unlocked account.
+ *
+ * This function changes the password of the currently unlocked account (Keyring Vault) and
+ * also change the wallet password of the social login account.
+ *
+ * This changes affects the multiple devices sync, i.e. users will have to unlock the account
+ * using new password on any other devices where the account is unlocked.
+ *
+ * @param newPassword - The new password.
+ * @param oldPassword - The old password.
+ */
+export function changePassword(
+  newPassword: string,
+  oldPassword: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
+    const isSocialLoginFlow = getIsSocialLoginFlow(getState());
+    try {
+      if (isSocialLoginFlow) {
+        await submitRequestToBackground<void>('socialSyncChangePassword', [
+          newPassword,
+          oldPassword,
+        ]);
+      }
+      await submitRequestToBackground<void>('keyringChangePassword', [
+        newPassword,
+      ]);
+    } catch (error) {
+      dispatch(displayWarning(error));
       throw error;
     }
   };

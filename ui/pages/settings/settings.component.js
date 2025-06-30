@@ -24,6 +24,7 @@ import {
   SNAP_SETTINGS_ROUTE,
   REVEAL_SRP_LIST_ROUTE,
   BACKUPANDSYNC_ROUTE,
+  SECURITY_PASSWORD_CHANGE_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -61,6 +62,7 @@ import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
 import { RevealSrpList } from './security-tab/reveal-srp-list';
 import BackupAndSyncTab from './backup-and-sync-tab';
+import ChangePassword from './security-tab/change-password';
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -475,6 +477,11 @@ class SettingsPage extends PureComponent {
           component={ContactListTab}
         />
         <Route exact path={REVEAL_SRP_LIST_ROUTE} component={RevealSrpList} />
+        <Route
+          exact
+          path={SECURITY_PASSWORD_CHANGE_ROUTE}
+          component={ChangePassword}
+        />
         <Route
           render={(routeProps) => (
             <SettingsTab

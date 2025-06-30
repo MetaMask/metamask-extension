@@ -298,6 +298,7 @@ describe('MetaMaskController', () => {
   beforeAll(async () => {
     process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
     await ganacheServer.start();
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
   });
 
   beforeEach(() => {
