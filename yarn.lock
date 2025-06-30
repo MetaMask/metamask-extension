@@ -7377,10 +7377,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.33.2":
-  version: 1.33.2
-  resolution: "@metamask/solana-wallet-snap@npm:1.33.2"
-  checksum: 10/7d860b78020a7f8640c1f372f09fa4f5c1081aad9fa42b5afc3f36e039b23df2a761c499856c8d66ea0e6f27a36569de820905bdcd95c05002fc70b39d994ae2
+"@metamask/solana-wallet-snap@npm:^1.34.0":
+  version: 1.34.0
+  resolution: "@metamask/solana-wallet-snap@npm:1.34.0"
+  checksum: 10/7a84d65bb481cbcd8a11f62c97e08ae6eed4fcd958b019250a1c32f26f6cb9c3c79a6709c68033dac61bf9b989ced2b844b49dc9d28e427c481aebf7136ebb3a
   languageName: node
   linkType: hard
 
@@ -31731,7 +31731,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^13.1.0"
     "@metamask/snaps-sdk": "npm:^8.1.0"
     "@metamask/snaps-utils": "npm:^10.1.0"
-    "@metamask/solana-wallet-snap": "npm:^1.33.2"
+    "@metamask/solana-wallet-snap": "npm:^1.34.0"
     "@metamask/solana-wallet-standard": "npm:^0.5.0"
     "@metamask/streams": "npm:^0.2.0"
     "@metamask/superstruct": "npm:^3.2.1"
@@ -41349,9 +41349,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tiny-secp256k1@npm:^1.1.6":
-  version: 1.1.6
-  resolution: "tiny-secp256k1@npm:1.1.6"
+"tiny-secp256k1@npm:^1.1.7":
+  version: 1.1.7
+  resolution: "tiny-secp256k1@npm:1.1.7"
   dependencies:
     bindings: "npm:^1.3.0"
     bn.js: "npm:^4.11.8"
@@ -41359,7 +41359,7 @@ __metadata:
     elliptic: "npm:^6.4.0"
     nan: "npm:^2.13.2"
     node-gyp: "npm:latest"
-  checksum: 10/e25b45ba3e95a332d21556617f2049f7ef065c737dd979e197856f35ef0bd9ee5608872f0068e5cddf0b50919b43b8eaca86bdea560f623e63ec5c560934ca9b
+  checksum: 10/588393c36df18b2819787fc91616e1fcb930509307eecc460ad45c7011f99f900eea28493a36eb203c3933ae76f737e6a1b978fa0b8a391fcc5dd7b64d57c572
   languageName: node
   linkType: hard
 
