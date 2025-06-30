@@ -65,11 +65,9 @@ describe('ManifestPlugin', () => {
         zip,
       } = testCase;
       const context = join(__dirname, `fixtures/ManifestPlugin/${fixture}`);
-      const baseManifest = require(join(
-        context,
-        `manifest/v${manifestVersion}`,
-        '_base.json',
-      ));
+      const baseManifest = require(
+        join(context, `manifest/v${manifestVersion}`, '_base.json'),
+      );
       const expectedAssets = getExpectedAssets(zip, browsers, files);
       const validateManifest = getValidateManifest(testCase, baseManifest);
 

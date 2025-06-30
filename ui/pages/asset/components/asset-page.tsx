@@ -291,7 +291,7 @@ const AssetPage = ({
         >
           {name && symbol && name !== symbol
             ? `${name} (${symbol})`
-            : name ?? symbol}
+            : (name ?? symbol)}
         </Text>
       </Box>
       <AssetChart

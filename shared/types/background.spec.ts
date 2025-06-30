@@ -11,14 +11,12 @@ type _ = {
 /**
  * The purpose of this function is to cause a compiler error to be emitted if the types are not equivalent.
  */
-type Expect<
-  X extends IsEquivalent<X, V> extends true ? V : V & _,
-  V = true,
-> = IsEquivalent<V, never> extends true
-  ? X
-  : IsEquivalent<X, never> extends true
-  ? Expect<X, V>
-  : X;
+type Expect<X extends IsEquivalent<X, V> extends true ? V : V & _, V = true> =
+  IsEquivalent<V, never> extends true
+    ? X
+    : IsEquivalent<X, never> extends true
+      ? Expect<X, V>
+      : X;
 
 /**
  * If this type triggers the following error

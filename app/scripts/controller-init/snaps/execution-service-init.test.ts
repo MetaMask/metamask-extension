@@ -37,9 +37,8 @@ describe('ExecutionServiceInit', () => {
   });
 
   it('does not store state', () => {
-    const { memStateKey, persistedStateKey } = ExecutionServiceInit(
-      getInitRequestMock(),
-    );
+    const { memStateKey, persistedStateKey } =
+      ExecutionServiceInit(getInitRequestMock());
 
     expect(memStateKey).toBeNull();
     expect(persistedStateKey).toBeNull();

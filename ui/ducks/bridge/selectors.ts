@@ -304,13 +304,13 @@ export const getFromTokenConversionRate = createSelector(
         ? Number(
             conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
           )
-        : currencyRates[fromChain.nativeCurrency]?.conversionRate ?? null;
+        : (currencyRates[fromChain.nativeCurrency]?.conversionRate ?? null);
       const nativeToUsdRate = isSolanaChainId(fromChain.chainId)
         ? Number(
             rates?.[fromChain.nativeCurrency.toLowerCase()]
               ?.usdConversionRate ?? null,
           )
-        : currencyRates[fromChain.nativeCurrency]?.usdConversionRate ?? null;
+        : (currencyRates[fromChain.nativeCurrency]?.usdConversionRate ?? null);
 
       if (isNativeAddress(fromToken.address)) {
         return {

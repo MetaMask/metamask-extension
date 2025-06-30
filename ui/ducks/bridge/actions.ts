@@ -63,7 +63,8 @@ export const resetBridgeState = () => {
 };
 
 export const trackUnifiedSwapBridgeEvent = <
-  T extends (typeof UnifiedSwapBridgeEventName)[keyof typeof UnifiedSwapBridgeEventName],
+  T extends
+    (typeof UnifiedSwapBridgeEventName)[keyof typeof UnifiedSwapBridgeEventName],
 >(
   eventName: T,
   propertiesFromClient: Pick<RequiredEventContextFromClient, T>[T],

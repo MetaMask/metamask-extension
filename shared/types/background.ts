@@ -371,11 +371,12 @@ export type IsEquivalent<A, B> = [A, B] extends [B, A] ? true : false;
  *
  * Evaluates to `never` if the type definition is wrong or incomplete.
  */
-export type FlattenedBackgroundStateProxy = IsEquivalent<
-  ControllerStatePropertiesEnumerated,
-  ControllerStateTypesMerged
-> extends true
-  ? { isInitialized: boolean } & {
-      [P in keyof ControllerStatePropertiesEnumerated]: ControllerStatePropertiesEnumerated[P];
-    }
-  : never;
+export type FlattenedBackgroundStateProxy =
+  IsEquivalent<
+    ControllerStatePropertiesEnumerated,
+    ControllerStateTypesMerged
+  > extends true
+    ? { isInitialized: boolean } & {
+        [P in keyof ControllerStatePropertiesEnumerated]: ControllerStatePropertiesEnumerated[P];
+      }
+    : never;

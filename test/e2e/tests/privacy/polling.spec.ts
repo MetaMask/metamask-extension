@@ -297,9 +297,8 @@ describe('Account Tracker API polling', function () {
         await homepage.check_pageIsLoaded();
         // Want to wait long enough  to pull requests relevant to a single loop cycle
         await driver.delay(DELAY_UNTIL_NEXT_POLL);
-        const infuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
-          mockedEndpoint,
-        );
+        const infuraJsonRpcRequests =
+          await getAllInfuraJsonRpcRequests(mockedEndpoint);
 
         // TODO: expecting the length of infuraJsonRpcRequests would be more accurate
         if (process.env.PORTFOLIO_VIEW) {

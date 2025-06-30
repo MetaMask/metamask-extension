@@ -112,7 +112,7 @@ async function withController<ReturnValue>(
     ({
       id: 'accountId',
       address: SELECTED_ADDRESS,
-    } as InternalAccount);
+    }) as InternalAccount;
   messenger.registerActionHandler(
     'AccountsController:getSelectedAccount',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880

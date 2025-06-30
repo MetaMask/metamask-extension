@@ -156,9 +156,8 @@ class ActivityListPage {
     );
 
     await this.driver.wait(async () => {
-      const transactionActionText = await transactionActions[
-        expectedNumber - 1
-      ].getText();
+      const transactionActionText =
+        await transactionActions[expectedNumber - 1].getText();
       return transactionActionText === expectedAction;
     }, 60000);
 
@@ -235,9 +234,8 @@ class ActivityListPage {
     const transactionAmounts = await this.driver.findElements(
       this.transactionAmountsInActivity,
     );
-    const transactionAmountsText = await transactionAmounts[
-      expectedNumber - 1
-    ].getText();
+    const transactionAmountsText =
+      await transactionAmounts[expectedNumber - 1].getText();
     assert.equal(
       transactionAmountsText,
       expectedAmount,

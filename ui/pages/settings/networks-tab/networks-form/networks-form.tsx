@@ -150,8 +150,8 @@ export const NetworksForm = ({
   useEffect(() => {
     const chainIdHex = chainId ? toHex(chainId) : undefined;
     const expectedName = chainIdHex
-      ? NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
-        safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name
+      ? (NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
+        safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name)
       : undefined;
 
     const mismatch = expectedName && expectedName !== name;
@@ -171,11 +171,11 @@ export const NetworksForm = ({
   useEffect(() => {
     const chainIdHex = chainId ? toHex(chainId) : undefined;
     const expectedSymbol = chainIdHex
-      ? CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
+      ? (CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
           chainIdHex as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
         ] ??
         safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)
-          ?.nativeCurrency?.symbol
+          ?.nativeCurrency?.symbol)
       : undefined;
 
     const mismatch = expectedSymbol && expectedSymbol !== ticker;

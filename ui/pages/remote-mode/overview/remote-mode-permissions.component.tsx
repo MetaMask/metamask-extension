@@ -97,7 +97,8 @@ export default function RemoteModePermissions({
   return (
     <Box>
       <Text variant={TextVariant.bodyMd} color={TextColor.textAlternativeSoft}>
-        Remote Mode lets you use your hardware wallet without plugging it in.{' '}
+        Remote Mode lets you use your hardware wallet without plugging it
+        in.{' '}
       </Text>
       <Box paddingTop={2} paddingBottom={2}>
         <Card backgroundColor={BackgroundColor.backgroundSection}>
