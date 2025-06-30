@@ -26,11 +26,7 @@ export function useFirstTimeInteractionAlert(): Alert[] {
     (account) => account.address?.toLowerCase() === to?.toLowerCase(),
   );
 
-  const { state } = useTrustSignal(
-    to || '',
-    NameType.ETHEREUM_ADDRESS,
-    currentConfirmation?.chainId as string,
-  );
+  const { state } = useTrustSignal(to || '', NameType.ETHEREUM_ADDRESS);
 
   const isVerifiedAddress = state === TrustSignalDisplayState.Verified;
 
