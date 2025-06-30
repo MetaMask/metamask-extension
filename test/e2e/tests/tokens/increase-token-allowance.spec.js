@@ -38,8 +38,9 @@ describe('Increase Token Allowance', function () {
 
         await unlockWallet(driver);
 
-        const contractAddress =
-          await contractRegistry.getContractAddress(smartContract);
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await openDapp(driver, contractAddress);
 
         await deployTokenContract(driver);

@@ -24,8 +24,9 @@ describe('Failing contract interaction ', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
-        const contractAddress =
-          await contractRegistry.getContractAddress(smartContract);
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await unlockWallet(driver);
 
         await openDapp(driver, contractAddress);
@@ -87,8 +88,9 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
-        const contractAddress =
-          await contractRegistry.getContractAddress(smartContract);
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await unlockWallet(driver);
 
         await openDapp(driver, contractAddress);

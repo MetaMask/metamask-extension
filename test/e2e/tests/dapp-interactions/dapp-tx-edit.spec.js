@@ -22,8 +22,9 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
-        const contractAddress =
-          await contractRegistry.getContractAddress(smartContract);
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await logInWithBalanceValidation(driver);
 
         // deploy contract

@@ -24,8 +24,9 @@ describe('Create token, approve token and approve token without gas', function (
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry, ganacheServer }) => {
-        const contractAddress =
-          await contractRegistry.getContractAddress(smartContract);
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await logInWithBalanceValidation(driver, ganacheServer);
 
         // imports custom token from extension
@@ -78,8 +79,9 @@ describe('Create token, approve token and approve token without gas', function (
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry, ganacheServer }) => {
-        const contractAddress =
-          await contractRegistry.getContractAddress(smartContract);
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await logInWithBalanceValidation(driver, ganacheServer);
 
         // create token
@@ -175,8 +177,9 @@ describe('Create token, approve token and approve token without gas', function (
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry, ganacheServer }) => {
-        const contractAddress =
-          await contractRegistry.getContractAddress(smartContract);
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await logInWithBalanceValidation(driver, ganacheServer);
 
         // create token
@@ -309,8 +312,9 @@ describe('Create token, approve token and approve token without gas', function (
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry, ganacheServer }) => {
-        const contractAddress =
-          await contractRegistry.getContractAddress(smartContract);
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await logInWithBalanceValidation(driver, ganacheServer);
 
         // create token
@@ -389,8 +393,9 @@ describe('Create token, approve token and approve token without gas', function (
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry, ganacheServer }) => {
-        const contractAddress =
-          await contractRegistry.getContractAddress(smartContract);
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await logInWithBalanceValidation(driver, ganacheServer);
 
         await openDapp(driver, contractAddress);

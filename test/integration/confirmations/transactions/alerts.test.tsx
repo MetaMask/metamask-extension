@@ -142,8 +142,9 @@ describe('Contract Interaction Confirmation Alerts', () => {
     ).toHaveTextContent('Gas prices are high and estimates are less accurate.');
 
     expect(await screen.findByTestId('alert-modal-button')).toBeInTheDocument();
-    const alertModalConfirmButton =
-      await screen.findByTestId('alert-modal-button');
+    const alertModalConfirmButton = await screen.findByTestId(
+      'alert-modal-button',
+    );
 
     fireEvent.click(alertModalConfirmButton);
 
@@ -196,8 +197,9 @@ describe('Contract Interaction Confirmation Alerts', () => {
     );
 
     expect(await screen.findByTestId('alert-modal-button')).toBeInTheDocument();
-    const alertModalConfirmButton =
-      await screen.findByTestId('alert-modal-button');
+    const alertModalConfirmButton = await screen.findByTestId(
+      'alert-modal-button',
+    );
 
     fireEvent.click(alertModalConfirmButton);
 

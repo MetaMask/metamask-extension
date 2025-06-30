@@ -50,8 +50,9 @@ describe('Remove NFT', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints, contractRegistry }) => {
         await unlockWallet(driver);
 
-        const contractAddress =
-          await contractRegistry.getContractAddress(smartContract);
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
 
         // Open the details and click remove nft button
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');

@@ -23,8 +23,9 @@ const _setupLocale = async (currentLocale) => {
     promises.push(Promise.resolve({})); // currentLocaleMessages
   }
 
-  const [, enLocaleMessages, currentLocaleMessages] =
-    await Promise.all(promises);
+  const [, enLocaleMessages, currentLocaleMessages] = await Promise.all(
+    promises,
+  );
   return { currentLocaleMessages, enLocaleMessages };
 };
 
