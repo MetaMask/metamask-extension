@@ -90,14 +90,17 @@ export function IntentsSection() {
     tokenAddress: targetTokenAddress,
   });
 
-  const { sourceTokenAmountFormatted, sourceTokenAmountRaw } =
-    useIntentSourceAmount({
-      sourceDecimals,
-      sourceFiatRate,
-      targetDecimals,
-      targetFiatRate,
-      targetAmount,
-    });
+  const {
+    sourceTokenAmountFormatted,
+    sourceTokenAmountRaw,
+    sourceAmountFeeFormatted,
+  } = useIntentSourceAmount({
+    sourceDecimals,
+    sourceFiatRate,
+    targetDecimals,
+    targetFiatRate,
+    targetAmount,
+  });
 
   const { gasFeeFormatted, loading: quoteLoading } = useIntentsQuote({
     sourceChainId: sourceToken.chainId,
@@ -127,9 +130,45 @@ export function IntentsSection() {
         />
       )}
       {!loading && isAdvanced && (
+        <IntentsFeeRow
+          feeFormatted={sourceAmountFeeFormatted}
+          sourceChainId={sourceToken.chainId}
+          sourceTokenAddress={sourceToken.address}
+        />
+      )}
+      {!loading && isAdvanced && (
         <IntentsNetworkFeeRow gasFeeFormatted={gasFeeFormatted} />
       )}
     </ConfirmInfoSection>
+  );
+}
+
+function IntentsFeeRow({
+  feeFormatted,
+  sourceChainId,
+  sourceTokenAddress,
+}: {
+  feeFormatted?: string;
+  sourceChainId: Hex;
+  sourceTokenAddress: Hex;
+}) {
+  if (!feeFormatted) {
+    return null;
+  }
+
+  const feeFiat = useTokenFiatAmount(
+    sourceTokenAddress,
+    feeFormatted,
+    undefined,
+    {},
+    true,
+    sourceChainId,
+  );
+
+  return (
+    <ConfirmInfoRow label="Fee">
+      <ConfirmInfoRowText text={`${feeFiat} ${feeFormatted}`} />
+    </ConfirmInfoRow>
   );
 }
 

@@ -35,20 +35,17 @@ export function useIntentSourceAmount({
     -targetDecimals,
   );
 
-  const targetAmountFiat = targetAmountDecimals
-    .mul(targetFiatRate)
-    .mul((1 + INTENTS_SLIPPAGE + INTENTS_FEE).toString());
+  const targetAmountFiat = targetAmountDecimals.mul(targetFiatRate);
 
-  const targetAmountFormatted = targetAmountDecimals.round(6).toString();
-
-  log(
-    'Target token amount',
-    targetAmountDecimals.toString(),
-    targetAmountFormatted,
-    targetAmountFiat.toString(),
+  const targetAmountTotal = targetAmountFiat.mul(
+    (1 + INTENTS_SLIPPAGE + INTENTS_FEE).toString(),
   );
 
-  const sourceTokenAmountDecimals = targetAmountFiat.div(sourceFiatRate);
+  const targetAmountFee = targetAmountDecimals.mul(INTENTS_FEE);
+
+  log('Target token amount', targetAmountTotal.toString());
+
+  const sourceTokenAmountDecimals = targetAmountTotal.div(sourceFiatRate);
   const sourceTokenAmountFormatted = sourceTokenAmountDecimals
     .round(6)
     .toString();
@@ -64,10 +61,19 @@ export function useIntentSourceAmount({
     sourceTokenAmountFormatted,
   );
 
+  const sourceAmountFee = targetAmountFee.div(sourceFiatRate);
+  const sourceAmountFeeFormatted = sourceAmountFee.round(6).toString();
+
+  log(
+    'Source amount fee',
+    sourceAmountFee.toString(),
+    sourceAmountFeeFormatted,
+  );
+
   return {
     loading: false,
+    sourceAmountFeeFormatted,
     sourceTokenAmountFormatted,
     sourceTokenAmountRaw,
-    targetAmountFormatted,
   };
 }

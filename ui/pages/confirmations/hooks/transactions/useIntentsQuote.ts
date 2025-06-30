@@ -23,6 +23,7 @@ import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { toHex } from '@metamask/controller-utils';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { useIntentsNetworkFee } from './useIntentsNetworkFee';
+import { INTENTS_FEE } from '../../../../helpers/constants/intents';
 
 const log = createProjectLogger('intents');
 
@@ -116,14 +117,6 @@ export function useIntentsQuote({
     toHex(sourceChainId),
   );
 
-  const feeRaw = activeQuote?.quote?.feeData?.metabridge?.amount;
-  const sourceDecimals = activeQuote?.quote?.srcAsset?.decimals;
-
-  const feeFormatted =
-    feeRaw &&
-    sourceDecimals &&
-    new BigNumber(feeRaw).shift(-sourceDecimals).toFixed(6);
-
   useEffect(() => {
     setIntentQuoteForTransaction(transactionId, activeQuote);
   }, [transactionId, activeQuote]);
@@ -131,7 +124,6 @@ export function useIntentsQuote({
   const loading = gasFeeLoading || isQuoteLoading;
 
   return {
-    feeFormatted,
     gasFeeFormatted: activeQuote ? gasFeeFormatted : undefined,
     loading,
     sourceTokenAmount,
