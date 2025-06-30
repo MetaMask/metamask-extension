@@ -140,7 +140,6 @@ const PopularNetworkList = ({
         marginBottom={1}
         paddingLeft={4}
         paddingRight={4}
-        // ref={setBoxRef}
       >
         {popoverContent}
         {searchAddNetworkResults.map((network) => (
