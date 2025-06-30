@@ -3,9 +3,7 @@ import {
   UserStorageControllerState,
   Controller as UserStorageController,
 } from '@metamask/profile-sync-controller/user-storage';
-import {
-  MetaMetrics,
-} from '@metamask/profile-sync-controller';
+import { MetaMetrics } from '@metamask/profile-sync-controller';
 import { captureException } from '@sentry/browser';
 import { ControllerInitFunction } from '../types';
 import { isProduction } from '../../../../shared/modules/environment';
@@ -37,14 +35,18 @@ export const UserStorageControllerInit: ControllerInitFunction<
           trackEvent({
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncAdded,
-            properties: MetaMetrics.BackupAndSyncEventProperties.ACCOUNT_ADDED(profileId),
+            properties:
+              MetaMetrics.BackupAndSyncEventProperties.ACCOUNT_ADDED(profileId),
           });
         },
         onAccountNameUpdated: (profileId) => {
           trackEvent({
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncNameUpdated,
-            properties: MetaMetrics.BackupAndSyncEventProperties.ACCOUNT_NAME_UPDATED(profileId),
+            properties:
+              MetaMetrics.BackupAndSyncEventProperties.ACCOUNT_NAME_UPDATED(
+                profileId,
+              ),
           });
         },
         onAccountSyncErroneousSituation: (
@@ -59,7 +61,11 @@ export const UserStorageControllerInit: ControllerInitFunction<
           trackEvent({
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncErroneousSituation,
-            properties: MetaMetrics.BackupAndSyncEventProperties.ACCOUNT_SYNC_ERROR(profileId, situationMessage),
+            properties:
+              MetaMetrics.BackupAndSyncEventProperties.ACCOUNT_SYNC_ERROR(
+                profileId,
+                situationMessage,
+              ),
           });
         },
       },
@@ -68,14 +74,20 @@ export const UserStorageControllerInit: ControllerInitFunction<
           trackEvent({
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.ProfileActivityUpdated,
-            properties: MetaMetrics.BackupAndSyncEventProperties.CONTACT_UPDATED(profileId),
+            properties:
+              MetaMetrics.BackupAndSyncEventProperties.CONTACT_UPDATED(
+                profileId,
+              ),
           });
         },
         onContactDeleted: (profileId) => {
           trackEvent({
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.ProfileActivityUpdated,
-            properties: MetaMetrics.BackupAndSyncEventProperties.CONTACT_DELETED(profileId),
+            properties:
+              MetaMetrics.BackupAndSyncEventProperties.CONTACT_DELETED(
+                profileId,
+              ),
           });
         },
         onContactSyncErroneousSituation: (
@@ -90,7 +102,11 @@ export const UserStorageControllerInit: ControllerInitFunction<
           trackEvent({
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.ProfileActivityUpdated,
-            properties: MetaMetrics.BackupAndSyncEventProperties.CONTACT_SYNC_ERROR(profileId, situationMessage),
+            properties:
+              MetaMetrics.BackupAndSyncEventProperties.CONTACT_SYNC_ERROR(
+                profileId,
+                situationMessage,
+              ),
           });
         },
       },
