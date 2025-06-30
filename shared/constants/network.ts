@@ -1337,7 +1337,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     nativeCurrency: CURRENCY_SYMBOLS.BNB,
     rpcEndpoints: [
       {
-        url: `https://base-mainnet.infura.io/v3/${infuraProjectId}`,
+        url: `https://bsc-mainnet.infura.io/v3/${infuraProjectId}`,
         failoverUrls: getFailoverUrlsForInfuraNetwork('bsc-mainnet'),
         type: RpcEndpointType.Custom,
       },

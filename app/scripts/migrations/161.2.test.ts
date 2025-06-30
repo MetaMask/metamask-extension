@@ -82,14 +82,14 @@ describe('migration #161.2', () => {
       expect(transformedState.data).toEqual(oldState);
     });
 
-    it('replaces "https://bsc-dataseed.binance.org" if the default RPC endpoint is Infura', async () => {
+    it('replaces "https://bsc-dataseed.binance.org/" if the default RPC endpoint is Infura', async () => {
       const oldState = {
         NetworkController: {
           networkConfigurationsByChainId: {
             [BSC_CHAIN_ID]: {
               rpcEndpoints: [
                 {
-                  url: 'https://bsc-dataseed.binance.org',
+                  url: 'https://bsc-dataseed.binance.org/',
                   type: 'custom',
                 },
               ],
@@ -162,14 +162,14 @@ describe('migration #161.2', () => {
       ).toEqual('https://other.rpc');
     });
 
-    it('keeps defaultRpcEndpointIndex unchanged when replacing "https://bsc-dataseed.binance.org"', async () => {
+    it('keeps defaultRpcEndpointIndex unchanged when replacing "https://bsc-dataseed.binance.org/"', async () => {
       const oldState = {
         NetworkController: {
           networkConfigurationsByChainId: {
             [BSC_CHAIN_ID]: {
               rpcEndpoints: [
                 {
-                  url: 'https://bsc-dataseed.binance.org',
+                  url: 'https://bsc-dataseed.binance.org/',
                   type: 'custom',
                 },
               ],
@@ -209,7 +209,7 @@ describe('migration #161.2', () => {
             [BSC_CHAIN_ID]: {
               rpcEndpoints: [
                 {
-                  url: 'https://bsc-dataseed.binance.org',
+                  url: 'https://bsc-dataseed.binance.org/',
                   type: 'custom',
                 },
               ],
@@ -250,7 +250,7 @@ describe('migration #161.2', () => {
       expect(
         updatedNetworkController.networkConfigurationsByChainId[BSC_CHAIN_ID]
           .rpcEndpoints[0].url,
-      ).toEqual('https://bsc-dataseed.binance.org');
+      ).toEqual('https://bsc-dataseed.binance.org/');
     });
   });
 });
