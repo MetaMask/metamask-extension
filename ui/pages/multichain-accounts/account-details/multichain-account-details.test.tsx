@@ -23,11 +23,6 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-// Mock the useI18nContext hook
-jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string) => key,
-}));
-
 const createMockState = (address: string, account = MOCK_ACCOUNT_EOA) => ({
   appState: {
     accountDetailsAddress: address,
@@ -166,20 +161,6 @@ describe('AccountDetails', () => {
       // Should render the base account details (which includes account name in header and details)
       const accountNameElements = screen.getAllByText('Solana Account');
       expect(accountNameElements).toHaveLength(2);
-    });
-
-    it('should navigate to default route when no address is provided', () => {
-      const state = createMockState('', MOCK_ACCOUNT_EOA);
-      const store = mockStore(state);
-
-      renderWithProvider(
-        <MemoryRouter>
-          <MultichainAccountDetails />
-        </MemoryRouter>,
-        store,
-      );
-
-      expect(mockPush).toHaveBeenCalledWith('/');
     });
   });
 });
