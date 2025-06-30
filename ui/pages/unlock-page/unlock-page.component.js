@@ -323,6 +323,7 @@ export default class UnlockPage extends Component {
               variant={ButtonVariant.Link}
               data-testid="unlock-forgot-password-button"
               key="import-account"
+              type="button"
               onClick={() => this.onForgotPassword()}
               marginBottom={6}
             >
@@ -334,6 +335,7 @@ export default class UnlockPage extends Component {
                 <Button
                   variant={ButtonVariant.Link}
                   href={SUPPORT_LINK}
+                  type="button"
                   target="_blank"
                   rel="noopener noreferrer"
                   key="need-help-link"
