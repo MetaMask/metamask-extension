@@ -27,7 +27,10 @@ describe('Petnames - Transactions', function () {
         await testDapp.openTestDappPage();
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.expectName(ABBREVIATED_ADDRESS_MOCK, false);
+        await confirmation.check_nameIsDisplayed(
+          ABBREVIATED_ADDRESS_MOCK,
+          false,
+        );
 
         // Test custom name.
         await confirmation.saveName(
@@ -40,7 +43,7 @@ describe('Petnames - Transactions', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.expectName(CUSTOM_NAME_MOCK, true);
+        await confirmation.check_nameIsDisplayed(CUSTOM_NAME_MOCK, true);
 
         // Test proposed name.
         await confirmation.saveName(
@@ -53,7 +56,7 @@ describe('Petnames - Transactions', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.expectName(PROPOSED_NAME_MOCK, true);
+        await confirmation.check_nameIsDisplayed(PROPOSED_NAME_MOCK, true);
       },
     );
   });
@@ -75,7 +78,10 @@ describe('Petnames - Transactions', function () {
         const confirmation = new Confirmation(driver);
         await loginWithBalanceValidation(driver);
         await confirmation.createWalletSendTransaction(ADDRESS_MOCK);
-        await confirmation.expectName(ABBREVIATED_ADDRESS_MOCK, false);
+        await confirmation.check_nameIsDisplayed(
+          ABBREVIATED_ADDRESS_MOCK,
+          false,
+        );
 
         // Test custom name.
         await confirmation.saveName(
@@ -90,7 +96,7 @@ describe('Petnames - Transactions', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await confirmation.createWalletSendTransaction(ADDRESS_MOCK);
-        await confirmation.expectName(CUSTOM_NAME_MOCK, true);
+        await confirmation.check_nameIsDisplayed(CUSTOM_NAME_MOCK, true);
 
         // Test proposed name.
         await confirmation.saveName(
@@ -104,7 +110,7 @@ describe('Petnames - Transactions', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await confirmation.createWalletSendTransaction(ADDRESS_MOCK);
-        await confirmation.expectName(PROPOSED_NAME_MOCK, true);
+        await confirmation.check_nameIsDisplayed(PROPOSED_NAME_MOCK, true);
       },
     );
   });

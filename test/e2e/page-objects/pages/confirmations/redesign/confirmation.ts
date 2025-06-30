@@ -153,7 +153,10 @@ class Confirmation {
     });
   }
 
-  async expectName(expectedValue: string, isSaved: boolean): Promise<void> {
+  async check_nameIsDisplayed(
+    expectedValue: string,
+    isSaved: boolean,
+  ): Promise<void> {
     const containerClass = isSaved ? 'name__saved' : 'name__missing';
     const valueClass = isSaved ? 'name__name' : 'name__value';
 
@@ -164,6 +167,7 @@ class Confirmation {
   }
 
   async clickName(value: string): Promise<void> {
+    console.log(`Clicking on name: ${value}`);
     await this.driver.clickElement({
       css: this.nameSelector,
       text: value,
@@ -176,6 +180,9 @@ class Confirmation {
     proposedName?: string,
   ): Promise<void> {
     await this.clickName(value);
+    console.log(
+      `Saving name for value: ${value}, name: ${name}, proposedName: ${proposedName}`,
+    );
     await this.driver.clickElement(this.formComboFieldSelector);
 
     if (proposedName) {
@@ -196,7 +203,7 @@ class Confirmation {
     await this.driver.clickElement(this.saveButtonSelector);
   }
 
-  async expectProposedNames(
+  async check_proposedNames(
     value: string,
     options: [string, string][],
   ): Promise<void> {

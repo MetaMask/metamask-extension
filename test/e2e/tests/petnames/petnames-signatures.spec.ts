@@ -20,20 +20,20 @@ describe('Petnames - Signatures', function (this: Suite) {
         await testDapp.openTestDappPage();
         await testDapp.clickSignTypedDatav3();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.expectName('0xCD2a3...DD826', false);
-        await confirmation.expectName('0xbBbBB...bBBbB', false);
+        await confirmation.check_nameIsDisplayed('0xCD2a3...DD826', false);
+        await confirmation.check_nameIsDisplayed('0xbBbBB...bBBbB', false);
         await confirmation.saveName('0xCD2a3...DD826', undefined, 'test.lens');
         await confirmation.saveName('0xbBbBB...bBBbB', undefined, 'test2.lens');
-        await confirmation.expectName('0xCcCCc...ccccC', false);
+        await confirmation.check_nameIsDisplayed('0xCcCCc...ccccC', false);
         await confirmation.saveName('0xCcCCc...ccccC', 'Custom Name');
         await confirmation.check_pageIsLoaded();
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav3();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.expectName('test.lens', true);
-        await confirmation.expectName('test2.lens', true);
-        await confirmation.expectName('Custom Name', true);
+        await confirmation.check_nameIsDisplayed('test.lens', true);
+        await confirmation.check_nameIsDisplayed('test2.lens', true);
+        await confirmation.check_nameIsDisplayed('Custom Name', true);
       },
     );
   });
@@ -48,27 +48,27 @@ describe('Petnames - Signatures', function (this: Suite) {
         await testDapp.openTestDappPage();
         await testDapp.clickSignTypedDatav4();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.expectName('0xCD2a3...DD826', false);
-        await confirmation.expectName('0xDeaDb...DbeeF', false);
-        await confirmation.expectName('0xbBbBB...bBBbB', false);
-        await confirmation.expectName('0xB0Bda...bEa57', false);
-        await confirmation.expectName('0xB0B0b...00000', false);
+        await confirmation.check_nameIsDisplayed('0xCD2a3...DD826', false);
+        await confirmation.check_nameIsDisplayed('0xDeaDb...DbeeF', false);
+        await confirmation.check_nameIsDisplayed('0xbBbBB...bBBbB', false);
+        await confirmation.check_nameIsDisplayed('0xB0Bda...bEa57', false);
+        await confirmation.check_nameIsDisplayed('0xB0B0b...00000', false);
         await confirmation.saveName('0xCD2a3...DD826', undefined, 'test.lens');
         await confirmation.saveName(
           '0xB0Bda...bEa57',
           undefined,
           'Test Token 2',
         );
-        await confirmation.expectName('0xCcCCc...ccccC', false);
+        await confirmation.check_nameIsDisplayed('0xCcCCc...ccccC', false);
         await confirmation.saveName('0xCcCCc...ccccC', 'Custom Name');
         await confirmation.check_pageIsLoaded();
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav4();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.expectName('test.lens', true);
-        await confirmation.expectName('Test Toke...', true);
-        await confirmation.expectName('Custom Name', true);
+        await confirmation.check_nameIsDisplayed('test.lens', true);
+        await confirmation.check_nameIsDisplayed('Test Toke...', true);
+        await confirmation.check_nameIsDisplayed('Custom Name', true);
       },
     );
   });
@@ -96,7 +96,7 @@ describe('Petnames - Signatures', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav4();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.expectProposedNames('0xCD2a3...DD826', [
+        await confirmation.check_proposedNames('0xCD2a3...DD826', [
           ['test.lens', 'Lens Protocol'],
           ['cd2.1337.test.domain', 'Name Lookup Example Snap'],
         ]);
