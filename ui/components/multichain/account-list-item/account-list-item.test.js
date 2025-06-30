@@ -1,6 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { merge } from 'lodash';
 import { BtcScope } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/jest';
@@ -168,6 +168,21 @@ describe('AccountListItem', () => {
     expect(
       document.querySelector('.multichain-account-list-item--selected'),
     ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('account-list-item-selected-indicator'),
+    ).toBeInTheDocument();
+  });
+
+  it('does not render selection indicator if showSelectionIndicator is false', async () => {
+    render({ selected: true, showSelectionIndicator: false });
+    expect(
+      document.querySelector('.multichain-account-list-item--selected'),
+    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('account-list-item-selected-indicator'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('renders the account name tooltip for long names', () => {
@@ -359,7 +374,7 @@ describe('AccountListItem', () => {
       });
     });
   });
-  describe('SRP Pills', () => {
+  describe('Account labels', () => {
     it('renders the SRP pill for account when multi SRP are present in state', () => {
       const { container } = render(
         {
@@ -405,10 +420,10 @@ describe('AccountListItem', () => {
       expect(tag.textContent).toBe('SRP #1');
     });
 
-    it('does not render the SRP pill when explicitly disabled', () => {
+    it('does not render the any account label when explicitly disabled', () => {
       const { container } = render(
         {
-          showSrpPill: false,
+          showAccountLabels: false,
           account: {
             ...mockAccount,
             metadata: {

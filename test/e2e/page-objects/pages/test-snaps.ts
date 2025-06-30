@@ -2,6 +2,7 @@ import { isEqual } from 'lodash';
 import { GetPreferencesResult } from '@metamask/snaps-sdk';
 import { Driver } from '../../webdriver/driver';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
+import { veryLargeDelayMs } from '../../helpers';
 
 const inputLocator = {
   dataManageStateInput: '#dataManageState',
@@ -29,6 +30,8 @@ export const buttonLocator = {
   connectBip32Button: '#connectbip32',
   connectBip44Button: '#connectbip44',
   connectClientStatusButton: '#connectclient-status',
+  connectCronJobsButton: '#connectcronjobs',
+  connectCronjobDurationButton: '#connectcronjob-duration',
   connectDialogsButton: '#connectdialogs',
   connectErrorsButton: '#connecterrors',
   connectGetEntropyButton: '#connectGetEntropySnap',
@@ -36,6 +39,7 @@ export const buttonLocator = {
   connectHomePageButton: '#connecthomepage',
   connectjsxButton: '#connectjsx',
   displayJsxButton: '#displayJsx',
+  connectJsonRpcButton: '#connectjson-rpc',
   connectInteractiveButton: '#connectinteractive-ui',
   connectImagesButton: '#connectimages',
   connectLifeCycleButton: '#connectlifecycle-hooks',
@@ -78,6 +82,7 @@ export const buttonLocator = {
   sendNetworkAccessTestButton: '#sendNetworkAccessTest',
   sendManageStateButton: '#sendManageState',
   sendStateButton: '#sendState',
+  sendRpcButton: '#sendRpc',
   sendUnencryptedManageStateButton: '#sendUnencryptedManageState',
   sendWasmMessageButton: '#sendWasmMessage',
   signBip32messageSecp256k1Button: '#sendBip32-secp256k1',
@@ -98,6 +103,9 @@ export const buttonLocator = {
   cancelBackgroundEventButton: '#cancelBackgroundEvent',
   getBackgroundEventResultButton: '#getBackgroundEvents',
   showPreinstalledDialogButton: '#showPreinstalledDialog',
+  startWebSocket: '#startWebSocket',
+  stopWebSocket: '#stopWebSocket',
+  getWebSocketState: '#getWebSocketState',
 } satisfies Record<string, string>;
 
 const spanLocator = {
@@ -124,6 +132,7 @@ const spanLocator = {
   preferencesResultSpan: '#preferencesResult',
   providerVersionResultSpan: '#ethproviderResult',
   sendManageStateResultSpan: '#sendManageStateResult',
+  snapUIRenderer: '.snap-ui-renderer__content',
   sendUnencryptedManageStateResultSpan: '#sendUnencryptedManageStateResult',
   signTypedDataResultSpan: '#signTypedDataResult',
   retrieveManageStateResultSpan: '#retrieveManageStateResult',
@@ -334,5 +343,47 @@ export class TestSnaps {
       text: name,
       css: `${locator} option`,
     });
+  }
+
+  async waitForWebSocketUpdate(state: {
+    open: boolean;
+    origin: string | null;
+    blockNumber: string | null;
+  }) {
+    const resultElement = await this.driver.findElement('#networkAccessResult');
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          await this.clickButton('getWebSocketState');
+
+          // Wait for response from Snap.
+          await this.driver.waitForSelector('#getWebSocketState', {
+            state: 'enabled',
+          });
+
+          const text = await resultElement.getText();
+
+          const { open, origin, blockNumber } = JSON.parse(text);
+
+          console.log('Retrieved WebSocket state:', {
+            open,
+            origin,
+            blockNumber,
+          });
+
+          const blockNumberMatch =
+            typeof state.blockNumber === 'string'
+              ? typeof blockNumber === state.blockNumber
+              : blockNumber === state.blockNumber;
+
+          return (
+            open === state.open && origin === state.origin && blockNumberMatch
+          );
+        } catch {
+          return false;
+        }
+      },
+      { timeout: veryLargeDelayMs * 2, interval: 200 },
+    );
   }
 }

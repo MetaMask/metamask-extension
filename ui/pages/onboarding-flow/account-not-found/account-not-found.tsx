@@ -31,8 +31,8 @@ import {
 import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
-  setFirstTimeFlowType,
   resetOAuthLoginState,
+  setFirstTimeFlowType,
 } from '../../../store/actions';
 
 export default function AccountNotFound() {
@@ -48,15 +48,16 @@ export default function AccountNotFound() {
     history.goBack();
   };
 
-  const onCreateWallet = () => {
-    dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
-    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
-  };
-
   const onLoginWithDifferentMethod = async () => {
     // clear the social login state
     await dispatch(resetOAuthLoginState());
+    await dispatch(setFirstTimeFlowType(null));
     history.push(ONBOARDING_WELCOME_ROUTE);
+  };
+
+  const onCreateNewAccount = () => {
+    dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
+    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
   };
 
   useEffect(() => {
@@ -145,12 +146,12 @@ export default function AccountNotFound() {
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           width={BlockSize.Full}
-          onClick={onCreateWallet}
+          onClick={onCreateNewAccount}
         >
           {t('accountNotFoundCreateOne')}
         </Button>
         <Button
-          data-testid="account-not-found-login-with-different-method"
+          data-testid="account-exist-login-with-different-method"
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
           width={BlockSize.Full}

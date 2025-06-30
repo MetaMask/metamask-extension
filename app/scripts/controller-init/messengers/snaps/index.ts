@@ -24,3 +24,5 @@ export { getSnapInterfaceControllerMessenger } from './snap-interface-controller
 export type { SnapInterfaceControllerMessenger } from './snap-interface-controller-messenger';
 export { getSnapsRegistryMessenger } from './snaps-registry-messenger';
 export type { SnapsRegistryMessenger } from './snaps-registry-messenger';
+export { getWebSocketServiceMessenger } from './websocket-service-messenger';
+export type { WebSocketServiceMessenger } from './websocket-service-messenger';

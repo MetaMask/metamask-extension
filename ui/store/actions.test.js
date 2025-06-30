@@ -195,7 +195,7 @@ describe('Actions', () => {
         );
       const createNewVaultAndKeychainStub =
         background.createNewVaultAndKeychain.callsFake((_, cb) =>
-          cb(null, mockKeyrings),
+          cb(null, mockKeyrings[0]),
         );
       const getSeedPhraseStub = background.getSeedPhrase.callsFake(
         (_, __, cb) => cb(null, mockEncodedSeedPhrase),
@@ -236,7 +236,7 @@ describe('Actions', () => {
         Buffer.from(mockSeedPhrase).values(),
       );
 
-      const fetchAllSeedPhrasesStub = background.fetchAllSeedPhrases.callsFake(
+      const fetchAllSecretDataStub = background.fetchAllSecretData.callsFake(
         (_, cb) => cb(null, [mockEncodedSeedPhrase]),
       );
       const createNewVaultAndRestoreStub =
@@ -255,15 +255,15 @@ describe('Actions', () => {
         actions.restoreSocialBackupAndGetSeedPhrase('password'),
       );
 
-      expect(fetchAllSeedPhrasesStub.callCount).toStrictEqual(1);
+      expect(fetchAllSecretDataStub.callCount).toStrictEqual(1);
       expect(createNewVaultAndRestoreStub.callCount).toStrictEqual(1);
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('should throw an error if no seed phrase is found', async () => {
+    it('should not restore vault if no seed phrase is found', async () => {
       const store = mockStore();
 
-      const fetchAllSeedPhrasesStub = background.fetchAllSeedPhrases.callsFake(
+      const fetchAllSecretDataStub = background.fetchAllSecretData.callsFake(
         (_, cb) => cb(null, []),
       );
       const createNewVaultAndRestoreStub =
@@ -282,8 +282,9 @@ describe('Actions', () => {
       await expect(
         store.dispatch(actions.restoreSocialBackupAndGetSeedPhrase('password')),
       ).rejects.toThrow('No seed phrase found');
+      expect(store.getActions()).toStrictEqual(expectedActions);
 
-      expect(fetchAllSeedPhrasesStub.callCount).toStrictEqual(1);
+      expect(fetchAllSecretDataStub.callCount).toStrictEqual(1);
       expect(createNewVaultAndRestoreStub.callCount).toStrictEqual(0);
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
@@ -291,7 +292,7 @@ describe('Actions', () => {
     it('errors when fetchAndRestoreSeedPhrase throws', async () => {
       const store = mockStore();
 
-      background.fetchAllSeedPhrases.callsFake((_, cb) =>
+      background.fetchAllSecretData.callsFake((_, cb) =>
         cb(new Error('error')),
       );
 
@@ -2660,90 +2661,78 @@ describe('Actions', () => {
     });
   });
 
-  describe('#deleteOnChainTriggersByAccount', () => {
+  describe('#disableAccounts', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls deleteOnChainTriggersByAccount in the background', async () => {
+    it('calls disableAccounts in the background', async () => {
       const store = mockStore();
       const accounts = ['0x123', '0x456'];
 
-      const deleteOnChainTriggersByAccountStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
+      const disableAccountsStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        deleteOnChainTriggersByAccount: deleteOnChainTriggersByAccountStub,
+        disableAccounts: disableAccountsStub,
       });
       setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.deleteOnChainTriggersByAccount(accounts));
-      expect(deleteOnChainTriggersByAccountStub.calledOnceWith(accounts)).toBe(
-        true,
-      );
+      await store.dispatch(actions.disableAccounts(accounts));
+      expect(disableAccountsStub.calledOnceWith(accounts)).toBe(true);
     });
 
-    it('handles errors when deleteOnChainTriggersByAccount fails', async () => {
+    it('handles errors when disableAccounts fails', async () => {
       const store = mockStore();
       const accounts = ['0x123', '0x456'];
       const error = new Error('Failed to delete on-chain triggers');
 
-      const deleteOnChainTriggersByAccountStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb(error));
+      const disableAccountsStub = sinon.stub().callsFake((_, cb) => cb(error));
 
       background.getApi.returns({
-        deleteOnChainTriggersByAccount: deleteOnChainTriggersByAccountStub,
+        disableAccounts: disableAccountsStub,
       });
       setBackgroundConnection(background.getApi());
 
       await expect(
-        store.dispatch(actions.deleteOnChainTriggersByAccount(accounts)),
+        store.dispatch(actions.disableAccounts(accounts)),
       ).rejects.toThrow(error);
     });
   });
 
-  describe('#updateOnChainTriggersByAccount', () => {
+  describe('#enableAccounts', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls updateOnChainTriggersByAccount in the background with correct parameters', async () => {
+    it('calls enableAccounts in the background with correct parameters', async () => {
       const store = mockStore();
       const accountIds = ['0x789', '0xabc'];
 
-      const updateOnChainTriggersByAccountStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
+      const enableAccountsStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        updateOnChainTriggersByAccount: updateOnChainTriggersByAccountStub,
+        enableAccounts: enableAccountsStub,
       });
       setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.updateOnChainTriggersByAccount(accountIds));
-      expect(
-        updateOnChainTriggersByAccountStub.calledOnceWith(accountIds),
-      ).toBe(true);
+      await store.dispatch(actions.enableAccounts(accountIds));
+      expect(enableAccountsStub.calledOnceWith(accountIds)).toBe(true);
     });
 
-    it('handles errors when updateOnChainTriggersByAccount fails', async () => {
+    it('handles errors when enableAccounts fails', async () => {
       const store = mockStore();
       const accountIds = ['0x789', '0xabc'];
       const error = new Error('Failed to update on-chain triggers');
 
-      const updateOnChainTriggersByAccountStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb(error));
+      const enableAccountsStub = sinon.stub().callsFake((_, cb) => cb(error));
 
       background.getApi.returns({
-        updateOnChainTriggersByAccount: updateOnChainTriggersByAccountStub,
+        enableAccounts: enableAccountsStub,
       });
       setBackgroundConnection(background.getApi());
 
       await expect(
-        store.dispatch(actions.updateOnChainTriggersByAccount(accountIds)),
+        store.dispatch(actions.enableAccounts(accountIds)),
       ).rejects.toThrow(error);
     });
   });
@@ -3061,6 +3050,28 @@ describe('Actions', () => {
       expect(syncInternalAccountsWithUserStorageStub.calledOnceWith()).toBe(
         true,
       );
+    });
+  });
+
+  describe('syncContactsWithUserStorage', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls syncContactsWithUserStorage in the background', async () => {
+      const store = mockStore();
+
+      const syncContactsWithUserStorageStub = sinon
+        .stub()
+        .callsFake((cb) => cb());
+
+      background.getApi.returns({
+        syncContactsWithUserStorage: syncContactsWithUserStorageStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.syncContactsWithUserStorage());
+      expect(syncContactsWithUserStorageStub.calledOnceWith()).toBe(true);
     });
   });
 

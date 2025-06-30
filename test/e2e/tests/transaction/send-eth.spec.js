@@ -5,7 +5,6 @@ const {
   openDapp,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
-  unlockWallet,
   editGasFeeForm,
   WINDOW_TITLES,
 } = require('../../helpers');
@@ -55,16 +54,13 @@ describe('Send ETH', function () {
           await inputAmount.press(driver.Key.BACK_SPACE);
           await inputAmount.press(driver.Key.BACK_SPACE);
 
-          const amountMax = await driver.findClickableElement(
-            '[data-testid="max-clear-button"]',
-          );
-          await amountMax.click();
+          await driver.clickElement('[data-testid="max-clear-button"]');
 
           let inputValue = await inputAmount.getProperty('value');
 
           assert(Number(inputValue) > 24);
 
-          await amountMax.click();
+          await driver.clickElement('[data-testid="max-clear-button"]');
 
           assert.equal(await inputAmount.isEnabled(), true);
 
@@ -104,9 +100,7 @@ describe('Send ETH', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await unlockWallet(driver);
-
-          await driver.delay(1000);
+          await logInWithBalanceValidation(driver);
 
           await openActionMenuAndStartSendFlow(driver);
           await driver.fill(
@@ -124,8 +118,6 @@ describe('Send ETH', function () {
 
           // Continue to next screen
           await driver.clickElement({ text: 'Continue', tag: 'button' });
-
-          await driver.delay(1000);
 
           // Transaction Amount
           await driver.findElement({
@@ -163,9 +155,6 @@ describe('Send ETH', function () {
             smartContract,
           );
           await logInWithBalanceValidation(driver, localNodes[0]);
-
-          // Wait for balance to load
-          await driver.delay(500);
 
           await driver.clickElement('[data-testid="eth-overview-send"]');
           await driver.fill(
@@ -212,13 +201,7 @@ describe('Send ETH', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await unlockWallet(driver);
-
-          await driver.assertElementNotPresent('.loading-overlay__spinner');
-          const balance = await driver.findElement(
-            '[data-testid="eth-overview__primary-currency"]',
-          );
-          assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
+          await logInWithBalanceValidation(driver);
 
           await openActionMenuAndStartSendFlow(driver);
           // choose to scan via QR code
@@ -229,7 +212,10 @@ describe('Send ETH', function () {
             css: '.qr-scanner__error',
             text: "We couldn't access your camera. Please give it another try.",
           });
-          await driver.clickElement({ text: 'Cancel', tag: 'button' });
+          await driver.clickElementAndWaitToDisappear({
+            text: 'Cancel',
+            tag: 'button',
+          });
           await driver.assertElementNotPresent(
             '[data-testid="qr-scanner-modal"]',
           );
@@ -252,17 +238,12 @@ describe('Send ETH', function () {
             },
           },
           async ({ driver }) => {
-            await unlockWallet(driver);
+            await logInWithBalanceValidation(driver);
 
             // initiates a send from the dapp
             await openDapp(driver);
             await driver.clickElement({ text: 'Send', tag: 'button' });
-            const windowHandles = await driver.waitUntilXWindowHandles(3);
-            const extension = windowHandles[0];
-            await driver.switchToWindowWithTitle(
-              WINDOW_TITLES.Dialog,
-              windowHandles,
-            );
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
             await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
             await driver.waitForSelector({
@@ -287,9 +268,13 @@ describe('Send ETH', function () {
               text: '$3.57',
             });
 
-            await driver.clickElement({ text: 'Confirm', tag: 'button' });
-            await driver.waitUntilXWindowHandles(2);
-            await driver.switchToWindow(extension);
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Confirm',
+              tag: 'button',
+            });
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.ExtensionInFullScreenView,
+            );
 
             // finds the transaction in the transactions list
             await driver.clickElement(
@@ -326,7 +311,7 @@ describe('Send ETH', function () {
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
-            await unlockWallet(driver);
+            await logInWithBalanceValidation(driver);
 
             // initiates a transaction from the dapp
             await openDapp(driver);
@@ -334,13 +319,8 @@ describe('Send ETH', function () {
               text: 'Create Token',
               tag: 'button',
             });
-            const windowHandles = await driver.waitUntilXWindowHandles(3);
 
-            const extension = windowHandles[0];
-            await driver.switchToWindowWithTitle(
-              WINDOW_TITLES.Dialog,
-              windowHandles,
-            );
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
             await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
             await driver.clickElement(
@@ -368,9 +348,13 @@ describe('Send ETH', function () {
               text: '$76.59',
             });
 
-            await driver.clickElement({ text: 'Confirm', tag: 'button' });
-            await driver.waitUntilXWindowHandles(2);
-            await driver.switchToWindow(extension);
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Confirm',
+              tag: 'button',
+            });
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.ExtensionInFullScreenView,
+            );
 
             // Identify the transaction in the transactions list
             await driver.waitForSelector(
@@ -431,13 +415,7 @@ describe('Send ETH', function () {
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
-            await unlockWallet(driver);
-
-            await driver.assertElementNotPresent('.loading-overlay__spinner');
-            const balance = await driver.findElement(
-              '[data-testid="eth-overview__primary-currency"]',
-            );
-            assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
+            await logInWithBalanceValidation(driver);
 
             await openActionMenuAndStartSendFlow(driver);
 

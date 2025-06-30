@@ -19,6 +19,7 @@ import useBlockaidAlerts from './alerts/useBlockaidAlerts';
 import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOriginSwitchingAlerts';
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
+import { useTrustSignalAlerts } from './alerts/useTrustSignalAlerts';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -44,6 +45,7 @@ function useTransactionAlerts(): Alert[] {
   const pendingTransactionAlerts = usePendingTransactionAlerts();
   const resimulationAlert = useResimulationAlert();
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
+  const trustSignalAlerts = useTrustSignalAlerts();
 
   return useMemo(
     () => [
@@ -60,6 +62,7 @@ function useTransactionAlerts(): Alert[] {
       ...pendingTransactionAlerts,
       ...resimulationAlert,
       ...signingOrSubmittingAlerts,
+      ...trustSignalAlerts,
     ],
     [
       accountTypeUpgradeAlerts,
@@ -75,6 +78,7 @@ function useTransactionAlerts(): Alert[] {
       pendingTransactionAlerts,
       resimulationAlert,
       signingOrSubmittingAlerts,
+      trustSignalAlerts,
     ],
   );
 }

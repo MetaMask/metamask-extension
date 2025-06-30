@@ -22,6 +22,7 @@ describe('Solana Wallet Standard - Sign Message', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await connectSolanaTestDapp(driver, testDapp);
+          await testDapp.check_pageIsLoaded();
 
           const signMessageTest = await testDapp.getSignMessageTest();
           await signMessageTest.setMessage(messageToSign);

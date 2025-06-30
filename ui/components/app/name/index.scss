@@ -11,6 +11,11 @@
     cursor: pointer;
   }
 
+  &__trust-signal-icon {
+    width: 16px;
+    height: 16px;
+  }
+
   &__missing {
     background-color: var(--color-background-alternative);
 
@@ -35,13 +40,43 @@
     }
   }
 
-  &__missing &__icon {
-    color: var(--color-text-default);
+  &__verified {
+    background-color: var(--color-info-muted);
+
+    .name__name,
+    .name__value {
+      color: var(--color-info-default);
+    }
   }
 
-  &__saved &__icon {
-    color: var(--color-info-default);
+  &__warning {
+    background-color: var(--color-warning-muted);
+
+    .name__name,
+    .name__value {
+      color: var(--color-text-default);
+    }
   }
+
+  &__malicious {
+    background-color: var(--color-error-muted);
+
+    .name__name,
+    .name__value {
+      color: var(--color-text-default);
+    }
+  }
+
+  &__unknown {
+    background-color: var(--color-background-alternative);
+
+    .name__name,
+    .name__value {
+      color: var(--color-text-default);
+    }
+  }
+
+
 
   &__value,
   &__name {

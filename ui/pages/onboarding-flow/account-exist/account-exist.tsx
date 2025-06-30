@@ -30,8 +30,8 @@ import {
 import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
-  setFirstTimeFlowType,
   resetOAuthLoginState,
+  setFirstTimeFlowType,
 } from '../../../store/actions';
 
 export default function AccountExist() {
@@ -55,6 +55,8 @@ export default function AccountExist() {
   const onLoginWithDifferentMethod = async () => {
     // clear the social login state
     await dispatch(resetOAuthLoginState());
+    // reset the first time flow type
+    await dispatch(setFirstTimeFlowType(null));
     history.push(ONBOARDING_WELCOME_ROUTE);
   };
 

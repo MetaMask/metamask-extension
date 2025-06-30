@@ -208,10 +208,16 @@ export default class OnboardingController extends BaseController<
     }
   };
 
-  isSocialLoginFlowType(): boolean {
+  /**
+   * Check if the user onboarding flow is Social login flow or not.
+   *
+   * @returns true if the user onboarding flow is Social loing flow, otherwise false.
+   */
+  getIsSocialLoginFlow(): boolean {
+    const { firstTimeFlowType } = this.state;
     return (
-      this.state.firstTimeFlowType === FirstTimeFlowType.socialCreate ||
-      this.state.firstTimeFlowType === FirstTimeFlowType.socialImport
+      firstTimeFlowType === FirstTimeFlowType.socialCreate ||
+      firstTimeFlowType === FirstTimeFlowType.socialImport
     );
   }
 }

@@ -25,7 +25,7 @@ describe('BTC Account - Send', function (this: Suite) {
       await bitcoinSendPage.check_pageIsLoaded();
       await bitcoinSendPage.fillRecipientAddress(recipientAddress);
       await bitcoinSendPage.fillAmount(sendAmount);
-      await bitcoinSendPage.clickReviewButton();
+      await bitcoinSendPage.clickContinueButton();
 
       // ------------------------------------------------------------------------------
       // From here, we have moved to the confirmation screen (second part of the flow).
@@ -60,7 +60,7 @@ describe('BTC Account - Send', function (this: Suite) {
       await bitcoinSendPage.check_pageIsLoaded();
       await bitcoinSendPage.fillRecipientAddress(recipientAddress);
       await bitcoinSendPage.selectMaxAmount();
-      await bitcoinSendPage.clickReviewButton();
+      await bitcoinSendPage.clickContinueButton();
 
       // ------------------------------------------------------------------------------
       // From here, we have moved to the confirmation screen (second part of the flow).

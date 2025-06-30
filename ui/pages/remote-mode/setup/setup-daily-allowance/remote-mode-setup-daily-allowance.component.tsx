@@ -275,7 +275,7 @@ export default function RemoteModeSetupDailyAllowance() {
               />
             )}
             <Card
-              backgroundColor={BackgroundColor.backgroundMuted}
+              backgroundColor={BackgroundColor.backgroundSection}
               marginBottom={4}
             >
               <Box>
@@ -312,7 +312,7 @@ export default function RemoteModeSetupDailyAllowance() {
               </Box>
             </Card>
             <Card
-              backgroundColor={BackgroundColor.backgroundMuted}
+              backgroundColor={BackgroundColor.backgroundSection}
               marginBottom={2}
             >
               <Box marginBottom={2}>
@@ -389,7 +389,7 @@ export default function RemoteModeSetupDailyAllowance() {
                   Add
                 </Button>
               </Box>
-              <Box backgroundColor={BackgroundColor.backgroundMuted}>
+              <Box backgroundColor={BackgroundColor.backgroundSection}>
                 <Box marginTop={2}>
                   {dailyAllowance.map((allowance) => (
                     <RemoteModeDailyAllowanceCard
@@ -406,7 +406,7 @@ export default function RemoteModeSetupDailyAllowance() {
       case 2:
         return (
           <>
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
+            <Card backgroundColor={BackgroundColor.backgroundSection}>
               <Box
                 display={Display.Flex}
                 gap={2}

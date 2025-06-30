@@ -4,15 +4,16 @@ import {
   ACCOUNT_1,
   ACCOUNT_2,
   largeDelayMs,
-  unlockWallet,
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-  addAccountInWalletAndAuthorize,
   sendMultichainApiRequest,
   type FixtureCallbackArgs,
 } from './testHelpers';
@@ -30,19 +31,34 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
       async ({ driver, extensionId }: FixtureCallbackArgs) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
         await testDapp.connectExternallyConnectable(extensionId);
         await testDapp.initCreateSessionScopes(
           GANACHE_SCOPES,
           CAIP_ACCOUNT_IDS,
         );
-        await addAccountInWalletAndAuthorize(driver);
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
-        await driver.delay(largeDelayMs);
+
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.openEditAccountsModal();
+
+        const editConnectedAccountsModal = new EditConnectedAccountsModal(
+          driver,
+        );
+        await editConnectedAccountsModal.check_pageIsLoaded();
+        await editConnectedAccountsModal.addNewEthereumAccount();
+
+        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+        await testDapp.check_pageIsLoaded();
 
         /**
          * We verify that scopes are not empty before calling `wallet_revokeSession`
@@ -82,20 +98,34 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
             'The requested account and/or method has not been authorized by the user.',
         };
 
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
         await testDapp.connectExternallyConnectable(extensionId);
 
         await testDapp.initCreateSessionScopes(
           GANACHE_SCOPES,
           CAIP_ACCOUNT_IDS,
         );
-        await addAccountInWalletAndAuthorize(driver);
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
-        await driver.delay(largeDelayMs);
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.openEditAccountsModal();
+
+        const editConnectedAccountsModal = new EditConnectedAccountsModal(
+          driver,
+        );
+        await editConnectedAccountsModal.check_pageIsLoaded();
+        await editConnectedAccountsModal.addNewEthereumAccount();
+
+        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+        await testDapp.check_pageIsLoaded();
 
         await testDapp.revokeSession();
         await driver.delay(largeDelayMs);

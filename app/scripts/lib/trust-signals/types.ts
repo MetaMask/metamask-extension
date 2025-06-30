@@ -22,7 +22,7 @@ export enum SupportedEVMChain {
   Worldchain = 'worldchain',
   SoneiumMinato = 'soneium-minato',
   Ronin = 'ronin',
-  Apec = 'apechain',
+  ApeChain = 'apechain',
   ZeroNetwork = 'zero-network',
   Berachain = 'berachain',
   BerachainBartio = 'berachain-bartio',

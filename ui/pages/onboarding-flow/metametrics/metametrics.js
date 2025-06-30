@@ -25,7 +25,6 @@ import {
 } from '../../../selectors';
 
 import {
-  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -71,38 +70,20 @@ export default function OnboardingMetametrics() {
     nextRouteByBrowser = ONBOARDING_WELCOME_ROUTE;
   }
 
-  const onConfirm = async () => {
+  const onConfirm = async (e) => {
+    e.preventDefault();
+    console.log('onConfirm', nextRouteByBrowser);
     if (dataCollectionForMarketing === null) {
       await dispatch(setDataCollectionForMarketing(false));
     }
-    const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
+    await dispatch(setParticipateInMetaMetrics(true));
     try {
-      if (firstTimeFlowType) {
-        trackEvent(
-          {
-            category: MetaMetricsEventCategory.Onboarding,
-            event: MetaMetricsEventName.WalletSetupStarted,
-            properties: {
-              account_type:
-                firstTimeFlowType === FirstTimeFlowType.create
-                  ? MetaMetricsEventAccountType.Default
-                  : MetaMetricsEventAccountType.Imported,
-            },
-          },
-          {
-            isOptIn: true,
-            metaMetricsId,
-            flushImmediately: true,
-          },
-        );
-      }
-
-      trackEvent({
+      await trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.AppInstalled,
       });
 
-      trackEvent({
+      await trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
@@ -114,12 +95,16 @@ export default function OnboardingMetametrics() {
       // Flush buffered events when user opts in
       await submitRequestToBackground('trackEventsAfterMetricsOptIn');
       await submitRequestToBackground('clearEventsAfterMetricsOptIn');
+    } catch (error) {
+      console.error('onConfirm::error', error);
     } finally {
+      console.log('onConfirm::beforeHistoryPush', nextRouteByBrowser);
       history.push(nextRouteByBrowser);
     }
   };
 
-  const onCancel = async () => {
+  const onCancel = async (e) => {
+    e.preventDefault();
     await dispatch(setParticipateInMetaMetrics(false));
     await dispatch(setDataCollectionForMarketing(false));
     await submitRequestToBackground('clearEventsAfterMetricsOptIn');
@@ -231,7 +216,7 @@ export default function OnboardingMetametrics() {
           dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
         }
         label={
-          <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Medium}>
+          <Text fontWeight={FontWeight.Medium}>
             {t('onboardingMetametricsUseDataCheckbox')}
           </Text>
         }
@@ -267,7 +252,6 @@ export default function OnboardingMetametrics() {
         width={BlockSize.Full}
         className="onboarding-metametrics__buttons"
         marginTop={6}
-        marginBottom={4}
         gap={4}
       >
         <Button

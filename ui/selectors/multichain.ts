@@ -538,6 +538,44 @@ export const getMultichainNetworkConfigurationsByChainId = (
       defaultRpcEndpointIndex: 0,
       chainId: MultichainNetworks.SOLANA as unknown as Hex,
     },
+    [MultichainNetworks.BITCOIN]: {
+      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
+      blockExplorerUrls: [],
+      name:
+        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN].nickname ?? '',
+      nativeCurrency: 'BTC',
+      rpcEndpoints: [
+        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+      ],
+      defaultRpcEndpointIndex: 0,
+      chainId: MultichainNetworks.BITCOIN as unknown as Hex,
+    },
+    [MultichainNetworks.BITCOIN_TESTNET]: {
+      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_TESTNET],
+      blockExplorerUrls: [],
+      name:
+        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_TESTNET]
+          .nickname ?? '',
+      nativeCurrency: 'tBTC',
+      rpcEndpoints: [
+        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+      ],
+      defaultRpcEndpointIndex: 0,
+      chainId: MultichainNetworks.BITCOIN_TESTNET as unknown as Hex,
+    },
+    [MultichainNetworks.BITCOIN_SIGNET]: {
+      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_SIGNET],
+      blockExplorerUrls: [],
+      name:
+        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_SIGNET]
+          .nickname ?? '',
+      nativeCurrency: 'sBTC',
+      rpcEndpoints: [
+        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+      ],
+      defaultRpcEndpointIndex: 0,
+      chainId: MultichainNetworks.BITCOIN_SIGNET as unknown as Hex,
+    },
   };
 };
 

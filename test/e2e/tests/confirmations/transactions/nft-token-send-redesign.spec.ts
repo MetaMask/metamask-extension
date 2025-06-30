@@ -272,6 +272,9 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
 ) {
   await unlockWallet(driver);
 
+  const homePage = new HomePage(driver);
+  await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
   ).getContractAddress(SMART_CONTRACTS.ERC1155);
@@ -297,7 +300,7 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
   await watchAssetConfirmation.clickFooterConfirmButton();
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await new HomePage(driver).goToNftTab();
+  await homePage.goToNftTab();
   await new NFTListPage(driver).clickNFTIconOnActivityList();
 
   const nftDetailsPage = new NFTDetailsPage(driver);

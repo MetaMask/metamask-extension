@@ -122,6 +122,10 @@ import {
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../shared/constants/app';
 import { NetworkFilterComponent } from '../../multichain/network-filter-menu';
+import {
+  startIncomingTransactionPolling,
+  stopIncomingTransactionPolling,
+} from '../../../store/controller-actions/transaction-controller';
 import NoTransactions from './no-transactions';
 
 const PAGE_INCREMENT = 10;
@@ -251,7 +255,7 @@ const groupEvmTransactionsByDate = (transactionGroups) =>
   groupTransactionsByDate(
     transactionGroups,
     (transactionGroup) => transactionGroup.primaryTransaction.time,
-    false, // maintains nonce ordering for EVM
+    true, // timestamp sorting for EVM
   );
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -448,6 +452,18 @@ export default function TransactionList({
   const isFullScreen =
     windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
     windowType !== ENVIRONMENT_TYPE_POPUP;
+
+  useEffect(() => {
+    stopIncomingTransactionPolling();
+    startIncomingTransactionPolling();
+
+    return () => {
+      stopIncomingTransactionPolling();
+    };
+  }, [
+    // Required to restart polling on new account
+    selectedAccount,
+  ]);
 
   const renderDateStamp = (index, dateGroup) => {
     return index === 0 ? (

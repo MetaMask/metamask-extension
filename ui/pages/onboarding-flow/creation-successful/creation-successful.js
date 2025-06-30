@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
@@ -33,12 +33,14 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
+  DEFAULT_ROUTE,
+  SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getFirstTimeFlowType,
   getHDEntropyIndex,
   getSocialLoginType,
-  isSocialLoginFlow,
+  getIsSocialLoginFlow,
 } from '../../../selectors';
 import {
   MetaMetricsEventCategory,
@@ -46,9 +48,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
-import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function CreationSuccessful() {
   const history = useHistory();
@@ -57,30 +59,27 @@ export default function CreationSuccessful() {
   const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const userSocialLoginType = useSelector(getSocialLoginType);
-  const socialLoginFlow = useSelector(isSocialLoginFlow);
+  const socialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const isWalletReady = useSelector(getIsPrimarySeedPhraseBackedUp);
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
-  const isWalletReady =
-    firstTimeFlowType === FirstTimeFlowType.import || seedPhraseBackedUp;
 
   const searchParams = new URLSearchParams(search);
-  const isFromReminderParam = searchParams.get('isFromReminder')
-    ? '/?isFromReminder=true'
-    : '';
+  const isFromReminder = searchParams.get('isFromReminder');
+  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
 
   const renderTitle = useMemo(() => {
     if (socialLoginFlow || isWalletReady) {
-      return isFromReminderParam
+      return isFromReminder
         ? t('yourWalletIsReadyFromReminder')
         : t('yourWalletIsReady');
     }
 
     return t('yourWalletIsReadyRemind');
-  }, [socialLoginFlow, isFromReminderParam, isWalletReady, t]);
+  }, [socialLoginFlow, isFromReminder, isWalletReady, t]);
 
   const renderDetails1 = useMemo(() => {
     if (userSocialLoginType) {
@@ -88,18 +87,20 @@ export default function CreationSuccessful() {
     }
 
     if (isWalletReady) {
-      return t('walletReadyLoseSrp');
+      return isFromReminder
+        ? t('walletReadyLoseSrpFromReminder')
+        : t('walletReadyLoseSrp');
     }
 
     return t('walletReadyLoseSrpRemind');
-  }, [isWalletReady, userSocialLoginType, t]);
+  }, [userSocialLoginType, isWalletReady, t, isFromReminder]);
 
   const renderDetails2 = useMemo(() => {
     if (userSocialLoginType) {
       return t('walletReadySocialDetails2');
     }
 
-    if (isWalletReady) {
+    if (isWalletReady || isFromReminder) {
       return t('walletReadyLearn', [
         <ButtonLink
           key="walletReadyLearn"
@@ -119,14 +120,14 @@ export default function CreationSuccessful() {
     }
 
     return t('walletReadyLearnRemind');
-  }, [isWalletReady, userSocialLoginType, t]);
+  }, [userSocialLoginType, isWalletReady, isFromReminder, t]);
 
   const renderFox = useMemo(() => {
-    if (socialLoginFlow || isWalletReady) {
+    if (socialLoginFlow || isWalletReady || isFromReminder) {
       return (
         <LottieAnimation
           path="images/animations/fox/celebrating.lottie.json"
-          loop={false}
+          loop
           autoplay
         />
       );
@@ -135,11 +136,37 @@ export default function CreationSuccessful() {
     return (
       <LottieAnimation
         path="images/animations/fox/celebrating.lottie.json"
-        loop={false}
+        loop
         autoplay
       />
     );
-  }, [socialLoginFlow, isWalletReady]);
+  }, [isWalletReady, isFromReminder, socialLoginFlow]);
+
+  const onDone = useCallback(() => {
+    if (isFromReminder) {
+      history.push(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
+      return;
+    }
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletCreationComplete,
+      properties: {
+        method: firstTimeFlowType,
+        is_profile_syncing_enabled: isBackupAndSyncEnabled,
+        hd_entropy_index: hdEntropyIndex,
+      },
+    });
+    history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+  }, [
+    firstTimeFlowType,
+    isBackupAndSyncEnabled,
+    hdEntropyIndex,
+    trackEvent,
+    history,
+    isFromReminder,
+    isFromSettingsSecurity,
+  ]);
 
   return (
     <Box
@@ -198,7 +225,7 @@ export default function CreationSuccessful() {
             {renderDetails2}
           </Text>
         </Box>
-        {!isFromReminderParam && (
+        {!isFromReminder && (
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
@@ -233,34 +260,23 @@ export default function CreationSuccessful() {
             </ButtonBase>
           </Box>
         )}
-      </Box>
 
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-      >
-        <Button
-          data-testid="onboarding-complete-done"
-          variant={ButtonVariant.Primary}
-          size={ButtonSize.Lg}
-          width={BlockSize.Full}
-          onClick={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event: MetaMetricsEventName.OnboardingWalletCreationComplete,
-              properties: {
-                method: firstTimeFlowType,
-                is_profile_syncing_enabled: isBackupAndSyncEnabled,
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
-            history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
-          }}
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
         >
-          {t('done')}
-        </Button>
+          <Button
+            data-testid="onboarding-complete-done"
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            width={BlockSize.Full}
+            onClick={onDone}
+          >
+            {t('done')}
+          </Button>
+        </Box>
       </Box>
     </Box>
   );

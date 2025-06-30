@@ -4413,18 +4413,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Đã hiểu"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Luôn lưu giữ Cụm từ khôi phục bí mật ở nơi an toàn và bí mật"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Bạn cần sao lưu lại Cụm từ khôi phục bí mật?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Tuyệt đối không cho ai biết Cụm từ khôi phục bí mật"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Nhóm MetaMask sẽ không bao giờ hỏi Cụm từ khôi phục bí mật của bạn"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Cụm từ khôi phục bí mật sẽ kiểm soát mọi thứ trong tài khoản của bạn."
   },

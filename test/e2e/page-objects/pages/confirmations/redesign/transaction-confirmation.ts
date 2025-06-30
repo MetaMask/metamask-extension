@@ -23,11 +23,17 @@ class TransactionConfirmation extends Confirmation {
 
   private gasFeeText: RawLocator;
 
+  private gasFeeCloseToastMessage: RawLocator;
+
   private gasFeeTokenArrow: RawLocator;
 
   private gasFeeTokenFeeText: RawLocator;
 
   private gasFeeTokenPill: RawLocator;
+
+  private senderAccount: RawLocator;
+
+  private transactionDetails: RawLocator;
 
   constructor(driver: Driver) {
     super(driver);
@@ -53,11 +59,16 @@ class TransactionConfirmation extends Confirmation {
       '[data-testid="advanced-details-data-param-0"]';
     this.advancedDetailsHexData =
       '[data-testid="advanced-details-transaction-hex"]';
+    this.gasFeeCloseToastMessage =
+      '.toasts-container__banner-base button[aria-label="Close"]';
     this.gasFeeFiatText = '[data-testid="native-currency"]';
     this.gasFeeText = '[data-testid="first-gas-field"]';
     this.gasFeeTokenArrow = '[data-testid="selected-gas-fee-token-arrow"]';
     this.gasFeeTokenFeeText = '[data-testid="gas-fee-token-fee"]';
     this.gasFeeTokenPill = '[data-testid="selected-gas-fee-token"]';
+    this.senderAccount = '[data-testid="sender-address"]';
+    this.transactionDetails =
+      '[data-testid="confirmation__token-details-section"]';
   }
 
   async check_walletInitiatedHeadingTitle() {
@@ -96,12 +107,45 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  /**
+   * Checks if the sender account is displayed in the transaction confirmation page.
+   *
+   * @param account - The sender account to check.
+   */
+  async check_isSenderAccountDisplayed(account: string): Promise<boolean> {
+    console.log(
+      `Checking sender account ${account} on transaction confirmation page.`,
+    );
+    return await this.driver.isElementPresentAndVisible(
+      {
+        css: this.senderAccount,
+        text: account,
+      },
+      2000,
+    );
+  }
+
+  async check_networkIsDisplayed(network: string): Promise<void> {
+    console.log(
+      `Checking network ${network} is displayed on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector({
+      css: this.transactionDetails,
+      text: network,
+    });
+  }
+
   async clickAdvancedDetailsButton() {
     await this.driver.clickElement(this.advancedDetailsButton);
   }
 
   async clickGasFeeTokenPill() {
     await this.driver.clickElement(this.gasFeeTokenArrow);
+  }
+
+  async closeGasFeeToastMessage() {
+    // the toast message automatically disappears after some seconds, so we need to use clickElementSafe to prevent race conditions
+    await this.driver.clickElementSafe(this.gasFeeCloseToastMessage, 5000);
   }
 
   async verifyAdvancedDetailsIsDisplayed(type: string) {

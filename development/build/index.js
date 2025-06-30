@@ -271,7 +271,6 @@ async function defineAndRunBuildTasks() {
       composeParallel(
         scriptTasks.dist,
         staticTasks.prod,
-        manifestTasks.prod,
         manifestTasks.scriptDist,
       ),
       zip,

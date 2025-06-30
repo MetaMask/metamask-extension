@@ -4,8 +4,14 @@ import {
   TransactionFactory,
 } from '@ethereumjs/tx';
 import { signTypedData, SignTypedDataVersion } from '@metamask/eth-sig-util';
-import { bigIntToHex, bytesToBigInt, bytesToHex } from '@metamask/utils';
+import {
+  bigIntToHex,
+  bytesToBigInt,
+  bytesToHex,
+  remove0x,
+} from '@metamask/utils';
 import { rlp } from 'ethereumjs-util';
+import { utils as EthersUtils } from 'ethers';
 import { Common } from './keyring-utils';
 
 // BIP32 Public Key: xpub6ELgkkwgfoky9h9fFu4Auvx6oHvJ6XfwiS1NE616fe9Uf4H3JHtLGjCePVkb6RFcyDCqVvjXhNXbDNDqs6Kjoxw7pTAeP1GSEiLHmA5wYa9
@@ -276,5 +282,29 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
 
   updateTransportMethod() {
     return true;
+  }
+
+  async deviceSignTypedData(params) {
+    const { domain, types, primaryType, message } = params.message;
+    const typedData = {
+      types,
+      domain,
+      primaryType,
+      message,
+    };
+    const signature = signTypedData({
+      privateKey: KNOWN_PRIVATE_KEYS[0],
+      data: typedData,
+      version: SignTypedDataVersion.V4,
+    });
+    // signTypedData returns an hex, we need to split it into rsv format
+    const { r, s, v } = EthersUtils.splitSignature(signature);
+
+    // Split signature adds 0x prefixes for r and s, we need to strip them.
+    return {
+      r: remove0x(r),
+      s: remove0x(s),
+      v,
+    };
   }
 }

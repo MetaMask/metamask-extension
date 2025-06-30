@@ -105,16 +105,6 @@ export default class Home extends PureComponent {
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     showTermsOfUsePopup: PropTypes.bool.isRequired,
-    seedPhraseBackedUp: (props) => {
-      if (
-        props.seedPhraseBackedUp !== null &&
-        typeof props.seedPhraseBackedUp !== 'boolean'
-      ) {
-        throw new Error(
-          `seedPhraseBackedUp is required to be null or boolean. Received ${props.seedPhraseBackedUp}`,
-        );
-      }
-    },
     firstTimeFlowType: PropTypes.string,
     completedOnboarding: PropTypes.bool,
     showWhatsNewPopup: PropTypes.bool.isRequired,
@@ -784,7 +774,6 @@ export default class Home extends PureComponent {
       dataCollectionForMarketing,
       connectedStatusPopoverHasBeenShown,
       isPopup,
-      seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       showTermsOfUsePopup,
       showWhatsNewPopup,
@@ -849,7 +838,6 @@ export default class Home extends PureComponent {
           {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
-              hasBackedUp={seedPhraseBackedUp}
               onConfirm={this.onRecoveryPhraseReminderClose}
             />
           ) : null}

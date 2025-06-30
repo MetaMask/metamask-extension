@@ -1,0 +1,25 @@
+@use "design-system";
+
+.account-selection {
+  &__close {
+    position: absolute;
+    left: 4px;
+    top: 4px;
+  }
+
+  &__close-wrapped {
+    position: absolute;
+    left: 10px;
+    top: 20px;
+  }
+
+  &__select {
+    align-self: center;
+  }
+
+  &__accounts-list {
+    height: 84%;
+    overflow: auto;
+    width: 100%;
+  }
+}

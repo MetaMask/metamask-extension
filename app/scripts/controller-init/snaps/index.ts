@@ -5,3 +5,4 @@ export { SnapControllerInit } from './snap-controller-init';
 export { SnapInsightsControllerInit } from './snap-insights-controller-init';
 export { SnapInterfaceControllerInit } from './snap-interface-controller-init';
 export { SnapsRegistryInit } from './snaps-registry-init';
+export { WebSocketServiceInit } from './websocket-service-init';

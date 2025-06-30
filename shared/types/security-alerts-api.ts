@@ -1,3 +1,5 @@
+import { Infer, nullable, string, type } from '@metamask/superstruct';
+
 export type ScanTokenRequest = {
   chain: string;
   address: string;
@@ -98,3 +100,22 @@ export type TokenAlertWithLabelIds = TokenFeature & {
   titleId: string | null;
   descriptionId: string | null;
 };
+
+export type TxAlert = {
+  titleId: string;
+  description: string;
+  descriptionId: string;
+};
+
+export const MessageScanResponse = type({
+  error: nullable(string()),
+  status: string(),
+  error_details: nullable(
+    type({
+      message: string(),
+      code: string(),
+    }),
+  ),
+});
+
+export type MessageScanResponse = Infer<typeof MessageScanResponse>;

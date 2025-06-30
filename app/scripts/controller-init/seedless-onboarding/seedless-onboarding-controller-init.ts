@@ -6,15 +6,29 @@ import {
 import { EncryptionKey, EncryptionResult } from '@metamask/browser-passworder';
 import { ControllerInitFunction } from '../types';
 import { encryptorFactory } from '../../lib/encryptor-factory';
+import { getIsDevOrTestEnv } from '../../../../shared/modules/environment';
+
+const loadWeb3AuthNetwork = (): Web3AuthNetwork => {
+  if (getIsDevOrTestEnv()) {
+    return Web3AuthNetwork.Devnet;
+  }
+  return Web3AuthNetwork.Mainnet;
+};
 
 export const SeedlessOnboardingControllerInit: ControllerInitFunction<
   SeedlessOnboardingController<EncryptionKey>,
   SeedlessOnboardingControllerMessenger
 > = (request) => {
-  const { controllerMessenger, persistedState, refreshOAuthToken, revokeAndGetNewRefreshToken } = request;
+  const {
+    controllerMessenger,
+    persistedState,
+    refreshOAuthToken,
+    revokeAndGetNewRefreshToken,
+  } = request;
 
   const encryptor = encryptorFactory(600_000);
-  const network = process.env.WEB3AUTH_NETWORK as Web3AuthNetwork;
+
+  const network = loadWeb3AuthNetwork();
 
   const controller = new SeedlessOnboardingController({
     messenger: controllerMessenger,

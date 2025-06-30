@@ -28,7 +28,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -70,8 +70,8 @@ exports[`Security Tab should match snapshot 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-2 mm-box--color-text-alternative"
         >
           <span>
-             
-            MetaMask offers basic features like token details and gas settings through internet services. When you use internet services, your IP address is shared, in this case with MetaMask. This is just like when you visit any website. MetaMask uses this data temporarily and never sells your data. You can use a VPN or turn off these services, but it may affect your MetaMask experience. To learn more read our 
+
+            MetaMask offers basic features like token details and gas settings through internet services. When you use internet services, your IP address is shared, in this case with MetaMask. This is just like when you visit any website. MetaMask uses this data temporarily and never sells your data. You can use a VPN or turn off these services, but it may affect your MetaMask experience. To learn more read our
             <a
               href="https://consensys.io/privacy-policy"
               rel="noreferrer noopener"
@@ -80,7 +80,7 @@ exports[`Security Tab should match snapshot 1`] = `
               Privacy policy
             </a>
             .
-             
+
           </span>
         </p>
       </div>
@@ -132,8 +132,49 @@ exports[`Security Tab should match snapshot 1`] = `
         data-theme="light"
         type="danger"
       >
-        Reveal Secret Recovery Phrase
-      </button>
+        <div
+          class="settings-page__content-item"
+        >
+          <div
+            class="settings-page__content-description"
+          >
+            Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget.
+          </div>
+          <div
+            class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-success mm-box--margin-top-4 mm-box--padding-3 mm-box--padding-top-2 mm-box--padding-bottom-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-success-muted mm-box--rounded-sm"
+            data-testid="backup-state-banner-alert"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-success-default"
+              style="mask-image: url('./images/icons/confirmation.svg');"
+            />
+            <div
+              class="mm-box mm-box--min-width-0"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                Secret Recovery Phrase backed up
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="settings-page__content-item-col"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
+            data-testid="reveal-seed-words"
+            data-theme="light"
+            type="danger"
+          >
+            Reveal Secret Recovery Phrase
+          </button>
+        </div>
+      </div>
     </div>
     <div
       class="settings-page__security-tab-sub-header"
@@ -175,8 +216,8 @@ exports[`Security Tab should match snapshot 1`] = `
             class="settings-page__content-description"
           >
             <span>
-               
-              This feature alerts you to malicious or unusual activity by actively reviewing transaction and signature requests. 
+
+              This feature alerts you to malicious or unusual activity by actively reviewing transaction and signature requests.
               <a
                 href="https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/"
                 rel="noreferrer"
@@ -184,8 +225,8 @@ exports[`Security Tab should match snapshot 1`] = `
               >
                 Learn more
               </a>
-              
-               
+
+
             </span>
           </div>
         </div>
@@ -201,7 +242,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -323,6 +364,82 @@ exports[`Security Tab should match snapshot 1`] = `
         </div>
       </div>
     </div>
+    <div
+      class="settings-page__content-padded"
+    >
+      <div
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+        data-testid="setting-skip-deep-link-interstitial"
+        id="skip-deep-link-interstitial"
+      >
+        <div
+          class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+        >
+          <div
+            class="settings-page__content-item"
+          >
+            <span>
+              Don't show interstitial screen when opening deep links
+            </span>
+            <div
+              class="settings-page__content-description"
+            >
+              Enabling this option will skip the interstitial screen that is shown when opening deep links in MetaMask. A "deep link" is a link like https://link.metamask.io/home that will cause MetaMask to open; these links can be obfuscated by others. The interstitial screen is designed to protect you from accidentally opening pages within MetaMask that might display your accounts, tokens, history, balances, settings, or other potentially sensitive information. This setting only applies to links signed by MetaMask.
+            </div>
+          </div>
+          <div
+            class="settings-page__content-item-col"
+            data-testid="skipDeepLinkInterstitial"
+          >
+            <label
+              class="toggle-button toggle-button--off"
+              tabindex="0"
+            >
+              <div
+                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+              >
+                <div
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
+                >
+                  <div
+                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                  />
+                  <div
+                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                  />
+                </div>
+                <div
+                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+                >
+                  <div
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                  />
+                </div>
+                <input
+                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                  type="checkbox"
+                  value="false"
+                />
+              </div>
+              <div
+                class="toggle-button__status"
+              >
+                <span
+                  class="toggle-button__label-off"
+                >
+                  Off
+                </span>
+                <span
+                  class="toggle-button__label-on"
+                >
+                  On
+                </span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
     <div>
       <span
         class="settings-page__security-tab-sub-header"
@@ -421,8 +538,8 @@ exports[`Security Tab should match snapshot 1`] = `
             class="settings-page__content-description"
           >
             <span>
-               
-              We use 
+
+              We use
               <a
                 href="https://www.coingecko.com/"
                 rel="noreferrer"
@@ -430,7 +547,7 @@ exports[`Security Tab should match snapshot 1`] = `
               >
                 CoinGecko
               </a>
-               and 
+               and
               <a
                 href="https://www.cryptocompare.com/"
                 rel="noreferrer"
@@ -438,7 +555,7 @@ exports[`Security Tab should match snapshot 1`] = `
               >
                 CryptoCompare
               </a>
-               APIs to display your balance and token price. 
+               APIs to display your balance and token price.
               <a
                 href="https://consensys.io/privacy-policy/"
                 rel="noreferrer"
@@ -446,8 +563,8 @@ exports[`Security Tab should match snapshot 1`] = `
               >
                 Privacy policy
               </a>
-              
-               
+
+
             </span>
           </div>
         </div>
@@ -515,8 +632,8 @@ exports[`Security Tab should match snapshot 1`] = `
             class="settings-page__content-description"
           >
             <span>
-               
-              Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome. 
+
+              Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome.
               <a
                 href="https://support.metamask.io/transactions-and-gas/transactions/simulations/"
                 rel="noreferrer"
@@ -524,8 +641,8 @@ exports[`Security Tab should match snapshot 1`] = `
               >
                 Learn more
               </a>
-              
-               
+
+
             </span>
           </div>
         </div>
@@ -541,7 +658,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -603,8 +720,8 @@ exports[`Security Tab should match snapshot 1`] = `
             class="settings-page__content-description"
           >
             <span>
-               
-              When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. To learn more about how Infura handles data for EVM accounts, read our 
+
+              When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. To learn more about how Infura handles data for EVM accounts, read our
               <a
                 href="https://consensys.io/privacy-policy/"
                 rel="noopener noreferrer"
@@ -612,7 +729,7 @@ exports[`Security Tab should match snapshot 1`] = `
               >
                 Privacy policy
               </a>
-              , and for Solana accounts, 
+              , and for Solana accounts,
               <a
                 href="https://support.metamask.io/configure/accounts/how-to-add-accounts-in-your-wallet/#solana-accounts"
                 rel="noopener noreferrer"
@@ -621,7 +738,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 click here
               </a>
               .
-               
+
             </span>
           </div>
         </div>
@@ -654,13 +771,13 @@ exports[`Security Tab should match snapshot 1`] = `
               class="settings-page__content-description"
             >
               <span>
-                 
-                MetaMask uses a third-party service called 
+
+                MetaMask uses a third-party service called
                 <b>
                   chainid.network
                 </b>
                  to show accurate and standardized network details. This reduces your chances of connecting to malicious or incorrect network. When using this feature, your IP address is exposed to chainid.network.
-                 
+
               </span>
             </div>
           </div>
@@ -676,7 +793,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -809,7 +926,7 @@ exports[`Security Tab should match snapshot 1`] = `
                   value="dweb.link"
                 />
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -861,7 +978,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -925,8 +1042,8 @@ exports[`Security Tab should match snapshot 1`] = `
             class="settings-page__content-description"
           >
             <span>
-               
-              We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to automatically pull data from those services. 
+
+              We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to automatically pull data from those services.
               <a
                 href="https://consensys.io/privacy-policy/"
                 rel="noopener noreferrer"
@@ -934,8 +1051,8 @@ exports[`Security Tab should match snapshot 1`] = `
               >
                 Learn More
               </a>
-              
-               
+
+
             </span>
           </div>
         </div>
@@ -1017,7 +1134,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -1229,7 +1346,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -1298,7 +1415,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -1350,8 +1467,8 @@ exports[`Security Tab should match snapshot 1`] = `
             class="settings-page__content-description"
           >
             <span>
-               
-              This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our 
+
+              This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our
               <a
                 href="https://consensys.io/privacy-policy/"
                 rel="noopener noreferrer"
@@ -1360,7 +1477,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 Privacy policy
               </a>
               .
-               
+
             </span>
           </div>
         </div>

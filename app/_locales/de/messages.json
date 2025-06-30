@@ -4413,18 +4413,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Verstanden"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Bewahren Sie Ihre geheime Wiederherstellungsphrase immer an einem sicheren und geheimen Ort auf."
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Möchten Sie erneut ein Backup Ihrer geheimen Wiederherstellungsphrase erstellen?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Teilen Sie niemals Ihre geheime Wiederherstellungsphrase mit jemandem."
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Das MetaMask-Team wird Sie niemals nach Ihrer geheimen Wiederherstellungsphrase fragen."
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Ihre geheime Wiederherstellungsphrase kontrolliert alle Ihre Konten."
   },

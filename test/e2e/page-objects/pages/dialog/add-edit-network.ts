@@ -84,7 +84,9 @@ class AddEditNetworkModal {
    */
   async addExplorerUrl(explorerUrl: string): Promise<void> {
     console.log(`Add explorer URL ${explorerUrl}`);
-    await this.driver.clickElement(this.explorerUrlInputDropDownButton);
+    await this.driver.findScrollToAndClickElement(
+      this.explorerUrlInputDropDownButton,
+    );
     await this.driver.clickElement(this.addExplorerUrlButton);
     await this.driver.waitForSelector(this.addExplorerUrlTitle);
     await this.driver.fill(this.addExplorerUrlInput, explorerUrl);

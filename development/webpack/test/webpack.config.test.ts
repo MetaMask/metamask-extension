@@ -13,6 +13,7 @@ import { noop } from '../utils/helpers';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
 import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
+import { MANIFEST_DEV_KEY } from '../../build/constants';
 
 function getWebpackInstance(config: Configuration) {
   // webpack logs a warning if we pass config.watch to it without a callback
@@ -140,36 +141,36 @@ ${Object.entries(env)
       `development build from git id: ${getLatestCommit().hash()}`,
     );
     assert(manifestPlugin.options.transform);
-    assert.deepStrictEqual(
-      manifestPlugin.options.transform(
-        {
-          manifest_version: 3,
-          name: 'name',
-          version: '1.2.3',
-          content_scripts: [
-            {
-              js: [
-                'ignored',
-                'scripts/contentscript.js',
-                'scripts/inpage.js',
-                'ignored',
-              ],
-            },
-          ],
-        },
-        'brave',
-      ),
+    const transformedManifest = manifestPlugin.options.transform(
       {
         manifest_version: 3,
         name: 'name',
         version: '1.2.3',
         content_scripts: [
           {
-            js: ['scripts/contentscript.js', 'scripts/inpage.js'],
+            js: [
+              'ignored',
+              'scripts/contentscript.js',
+              'scripts/inpage.js',
+              'ignored',
+            ],
           },
         ],
       },
+      'brave',
     );
+    console.log('transformedManifest', transformedManifest);
+    assert.deepStrictEqual(transformedManifest, {
+      manifest_version: 3,
+      name: 'name',
+      version: '1.2.3',
+      content_scripts: [
+        {
+          js: ['scripts/contentscript.js', 'scripts/inpage.js'],
+        },
+      ],
+      key: MANIFEST_DEV_KEY,
+    });
     assert.strictEqual(manifestPlugin.options.zip, false);
     const manifestOpts = manifestPlugin.options as ManifestPluginOptions<true>;
     assert.strictEqual(manifestOpts.zipOptions, undefined);

@@ -11,6 +11,7 @@ import {
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
+import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
 import { getTokenExchangeRate } from './utils';
 import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
 
@@ -26,6 +27,7 @@ const initialState: BridgeState = {
   selectedQuote: null,
   wasTxDeclined: false,
   slippage: BRIDGE_DEFAULT_SLIPPAGE,
+  txAlert: null,
 };
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
@@ -41,6 +43,11 @@ export const setDestTokenExchangeRates = createAsyncThunk(
 export const setDestTokenUsdExchangeRates = createAsyncThunk(
   'bridge/setDestTokenUsdExchangeRates',
   getTokenExchangeRate,
+);
+
+export const setTxAlerts = createAsyncThunk(
+  'bridge/setTxAlerts',
+  fetchTxAlerts,
 );
 
 const getTokenImage = (payload: TokenPayload['payload']) => {
@@ -141,6 +148,15 @@ const bridgeSlice = createSlice({
     });
     builder.addCase(setSrcTokenExchangeRates.fulfilled, (state, action) => {
       state.fromTokenExchangeRate = action.payload ?? null;
+    });
+    builder.addCase(setTxAlerts.pending, (state) => {
+      state.txAlert = null;
+    });
+    builder.addCase(setTxAlerts.fulfilled, (state, action) => {
+      state.txAlert = action.payload;
+    });
+    builder.addCase(setTxAlerts.rejected, (state) => {
+      state.txAlert = null;
     });
   },
 });

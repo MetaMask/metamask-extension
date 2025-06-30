@@ -1,3 +1,5 @@
+import { KeyringTypes } from '@metamask/keyring-controller';
+
 import { HardwareKeyringType } from './hardware-wallets';
 
 /**
@@ -24,3 +26,8 @@ export const KeyringType = {
   ...SnapKeyringType,
   ///: END:ONLY_INCLUDE_IF
 };
+
+export const KEYRING_TYPES_SUPPORTING_7702 = [
+  KeyringTypes.hd,
+  KeyringTypes.simple,
+];

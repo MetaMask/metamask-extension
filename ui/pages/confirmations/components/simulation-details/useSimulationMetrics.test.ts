@@ -15,6 +15,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { BalanceChange } from './types';
 import {
   AssetType,
@@ -53,18 +54,24 @@ const BALANCE_CHANGE_MOCK = {
   fiatAmount: 1.23,
 } as unknown as BalanceChange;
 
-const DISPLAY_NAME_UNKNOWN_MOCK = { hasPetname: false, name: null };
+const DISPLAY_NAME_UNKNOWN_MOCK = {
+  hasPetname: false,
+  name: null,
+  displayState: TrustSignalDisplayState.Unknown,
+};
 
 const DISPLAY_NAME_DEFAULT_MOCK = {
   hasPetname: false,
   name: SYMBOL_MOCK,
   contractDisplayName: SYMBOL_MOCK,
+  displayState: TrustSignalDisplayState.Unknown,
 };
 
 const DISPLAY_NAME_SAVED_MOCK = {
   hasPetname: true,
   name: 'testName',
   contractDisplayName: SYMBOL_MOCK,
+  displayState: TrustSignalDisplayState.Unknown,
 };
 
 describe('useSimulationMetrics', () => {

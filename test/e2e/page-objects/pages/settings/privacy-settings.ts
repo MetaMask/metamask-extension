@@ -253,8 +253,6 @@ class PrivacySettings {
   }
 
   async openRevealSrpQuiz(srpIndex: number = 1): Promise<void> {
-    console.log('Open reveal SRP quiz on privacy settings page');
-
     await this.openSrpList();
     // We only pass in the srpIndex when there are multiple SRPs
     const srpSelector = {

@@ -176,6 +176,13 @@ const SETTINGS_CONSTANTS = [
     iconName: IconName.SecurityTime,
   },
   {
+    tabMessage: (t) => t('backupAndSync'),
+    sectionMessage: (t) => t('backupAndSyncFeatureContacts'),
+    descriptionMessage: (t) => t('backupAndSyncFeatureContacts'),
+    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-features-toggles-contact-syncing`,
+    iconName: IconName.SecurityTime,
+  },
+  {
     tabMessage: (t) => t('contacts'),
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
@@ -212,6 +219,14 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('usePhishingDetection'),
     descriptionMessage: (t) => t('usePhishingDetectionDescription'),
     route: `${SECURITY_ROUTE}#phishing-detection`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[3]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('skipDeepLinkInterstitial'),
+    descriptionMessage: (t) => t('skipDeepLinkInterstitialDescription'),
+    route: `${SECURITY_ROUTE}#skip-deep-link-interstitial`,
     icon: 'fa fa-lock',
   },
   // securityAndPrivacy settingsRefs[4]

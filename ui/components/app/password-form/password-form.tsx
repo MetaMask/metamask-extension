@@ -147,7 +147,6 @@ export default function PasswordForm({
         id="create-password-new"
         autoFocus
         autoComplete
-        labelProps={{ marginBottom: 1 }}
         size={FormTextFieldSize.Lg}
         value={password}
         inputProps={{
@@ -182,7 +181,6 @@ export default function PasswordForm({
         id="create-password-confirm"
         autoComplete
         marginTop={4}
-        labelProps={{ marginBottom: 1 }}
         size={FormTextFieldSize.Lg}
         error={Boolean(confirmPasswordError)}
         helpTextProps={{

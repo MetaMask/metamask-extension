@@ -1,4 +1,5 @@
 import merge from 'lodash/merge';
+import { MANIFEST_DEV_KEY } from '../../../../build/constants';
 /**
  * Returns a function that will transform a manifest JSON object based on the
  * given build args.
@@ -23,6 +24,7 @@ export function transformManifest(
 ) {
   const transforms: ((
     manifest: chrome.runtime.Manifest,
+    browser?: string,
   ) => chrome.runtime.Manifest | void)[] = [];
 
   function removeLockdown(browserManifest: chrome.runtime.Manifest) {
@@ -98,10 +100,40 @@ export function transformManifest(
     transforms.push(addTabsPermission);
   }
 
+  function addManifestKeyAndPermissions(
+    browserManifest: chrome.runtime.Manifest,
+    browser?: string,
+  ) {
+    if (!browserManifest.key) {
+      browserManifest.key = MANIFEST_DEV_KEY;
+    }
+
+    if (browser === 'firefox') {
+      // Firefox requires the identity as the installation permission
+      if (browserManifest.permissions?.includes('identity')) {
+        throw new Error(
+          "manifest contains 'identity' already; this transform should be removed.",
+        );
+      } else {
+        browserManifest.permissions?.push('identity');
+      }
+    } else if (browserManifest.optional_permissions?.includes('identity')) {
+      throw new Error(
+        "manifest contains 'identity' already; this transform should be removed.",
+      );
+    } else {
+      browserManifest.optional_permissions?.push('identity');
+    }
+  }
+
+  if (isDevelopment || args.test) {
+    transforms.push(addManifestKeyAndPermissions);
+  }
+
   return transforms.length
-    ? (browserManifest: chrome.runtime.Manifest, _browser: string) => {
+    ? (browserManifest: chrome.runtime.Manifest, browser: string) => {
         const manifestClone = structuredClone(browserManifest);
-        transforms.forEach((transform) => transform(manifestClone));
+        transforms.forEach((transform) => transform(manifestClone, browser));
         return manifestClone;
       }
     : undefined;

@@ -50,6 +50,10 @@ export default class UnlockPage extends Component {
      */
     history: PropTypes.object.isRequired,
     /**
+     * Location router for redirect after action
+     */
+    location: PropTypes.object.isRequired,
+    /**
      * If isUnlocked is true will redirect to most recent route in history
      */
     isUnlocked: PropTypes.bool,
@@ -81,10 +85,16 @@ export default class UnlockPage extends Component {
   animationEventEmitter = new EventEmitter();
 
   UNSAFE_componentWillMount() {
-    const { isUnlocked, history } = this.props;
+    const { isUnlocked, history, location } = this.props;
 
     if (isUnlocked) {
-      history.push(DEFAULT_ROUTE);
+      // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
+      let redirectTo = DEFAULT_ROUTE;
+      if (location.state?.from?.pathname) {
+        const search = location.state.from.search || '';
+        redirectTo = location.state.from.pathname + search;
+      }
+      history.push(redirectTo);
     }
   }
 
@@ -241,6 +251,14 @@ export default class UnlockPage extends Component {
     this.setState({ showResetPasswordModal: true });
   };
 
+  onRestoreWallet = () => {
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Accounts,
+      event: MetaMetricsEventName.ResetWallet,
+    });
+    this.props.onRestore();
+  };
+
   render() {
     const { password, error, isLocked, showResetPasswordModal, isSubmitting } =
       this.state;
@@ -264,7 +282,7 @@ export default class UnlockPage extends Component {
         {showResetPasswordModal && (
           <ResetPasswordModal
             onClose={() => this.setState({ showResetPasswordModal: false })}
-            onRestore={() => this.props.onRestore()}
+            onRestore={this.onRestoreWallet}
           />
         )}
         <Box
@@ -320,7 +338,6 @@ export default class UnlockPage extends Component {
                   width={BlockSize.Full}
                   justifyContent={JustifyContent.spaceBetween}
                   alignItems={AlignItems.center}
-                  marginBottom={1}
                 >
                   <Text variant={TextVariant.bodyMdMedium}>
                     {t('password')}

@@ -31,3 +31,12 @@ export function getErrorMessage(error: unknown): string {
 export function logErrorWithMessage(error: unknown) {
   log.error(isErrorWithMessage(error) ? getErrorMessage(error) : error);
 }
+
+export enum OAuthErrorMessages {
+  PERMISSION_NOT_GRANTED_ERROR = '`Identity` permission not granted',
+  // Error message from the Identity API when the user cancels the login
+  USER_CANCELLED_LOGIN_ERROR = 'The user did not approve access.',
+  NO_REDIRECT_URL_FOUND_ERROR = 'No redirect URL found',
+  NO_AUTH_CODE_FOUND_ERROR = 'No auth code found',
+  INVALID_OAUTH_STATE_ERROR = 'Invalid OAuth state',
+}

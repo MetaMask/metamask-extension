@@ -250,6 +250,17 @@ export const getQuoteRequest = (state: BridgeAppState) => {
   return quoteRequest;
 };
 
+export const getShouldUseSnapConfirmation = createSelector(
+  getBridgeFeatureFlags,
+  getFromChain,
+  (extensionConfig, fromChain) =>
+    Boolean(
+      fromChain &&
+        extensionConfig.chains[formatChainIdToCaip(fromChain.chainId)]
+          ?.isSnapConfirmationEnabled,
+    ),
+);
+
 export const getQuoteRefreshRate = createSelector(
   getBridgeFeatureFlags,
   getFromChain,
@@ -513,6 +524,8 @@ export const getFromAmountInCurrency = createSelector(
   },
 );
 
+export const getTxAlerts = (state: BridgeAppState) => state.bridge.txAlert;
+
 export const getValidationErrors = createDeepEqualSelector(
   getBridgeQuotes,
   _getValidatedSrcAmount,
@@ -521,6 +534,7 @@ export const getValidationErrors = createDeepEqualSelector(
   ({ metamask }: BridgeAppState) =>
     selectMinimumBalanceForRentExemptionInSOL(metamask),
   getQuoteRequest,
+  getTxAlerts,
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
     validatedSrcAmount,
@@ -528,6 +542,7 @@ export const getValidationErrors = createDeepEqualSelector(
     fromTokenInputValue,
     minimumBalanceForRentExemptionInSOL,
     quoteRequest,
+    txAlert,
   ) => {
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
@@ -537,6 +552,7 @@ export const getValidationErrors = createDeepEqualSelector(
         : '0';
 
     return {
+      isTxAlertPresent: Boolean(txAlert),
       isNoQuotesAvailable: Boolean(
         !activeQuote &&
           quotesLastFetchedMs &&

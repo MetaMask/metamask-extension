@@ -13,6 +13,7 @@ import {
   setDestTokenExchangeRates,
   setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
+  setTxAlerts,
 } from './bridge';
 
 const {
@@ -40,6 +41,7 @@ export {
   setSelectedQuote,
   setWasTxDeclined,
   setSlippage,
+  setTxAlerts,
 };
 
 const callBridgeControllerMethod = (

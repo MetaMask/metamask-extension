@@ -13,8 +13,10 @@ import {
   AccountListItem,
   AccountListItemMenuTypes,
 } from '../../multichain/account-list-item';
-import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/multichain-accounts-selectors.types';
+import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import { HiddenAccountList } from '../../multichain/account-list-menu/hidden-account-list';
+import { matchesSearchPattern } from './utils';
 
 export type MultichainAccountsTreeProps = {
   wallets: ConsolidatedWallets;
@@ -22,10 +24,11 @@ export type MultichainAccountsTreeProps = {
   connectedSites: Record<string, { origin: string; iconUrl?: string }[]>;
   currentTabOrigin?: string;
   privacyMode?: boolean;
-  accountListItemProps?: Record<string, unknown>;
+  accountTreeItemProps?: Record<string, unknown>;
+  searchPattern?: string;
   selectedAccount: InternalAccount;
   onClose: () => void;
-  onAccountListItemItemClicked: (account: MergedInternalAccount) => void;
+  onAccountTreeItemClick: (account: MergedInternalAccount) => void;
 };
 
 export const MultichainAccountsTree = ({
@@ -34,14 +37,18 @@ export const MultichainAccountsTree = ({
   connectedSites,
   currentTabOrigin,
   privacyMode,
-  accountListItemProps,
+  accountTreeItemProps,
+  searchPattern,
   selectedAccount,
   onClose,
-  onAccountListItemItemClicked,
+  onAccountTreeItemClick,
 }: MultichainAccountsTreeProps) => {
   const accountsTree = useMemo(() => {
-    return Object.entries(wallets).reduce(
-      (allWallets, [walletId, walletData]) => {
+    // We keep a flag to check if there are any hidden accounts
+    let hasHiddenAccounts: boolean = false;
+
+    const allWallets = Object.entries(wallets).reduce(
+      (walletsAccumulator, [walletId, walletData]) => {
         const walletName = walletData.metadata?.name;
 
         const walletHeader = (
@@ -73,42 +80,55 @@ export const MultichainAccountsTree = ({
         // Process all groups in the wallet and collect its account items
         const groupsItems = Object.entries(walletData.groups || {}).flatMap(
           ([groupId, groupData]) => {
-            // Filter accounts by allowed types
-            const filteredAccounts = groupData.accounts.filter((account) =>
-              allowedAccountTypes.includes(account.type),
-            );
+            // Filter accounts based on allowed types and the search pattern
+            const filteredAccounts = groupData.accounts.filter((account) => {
+              const matchesSearch = searchPattern
+                ? matchesSearchPattern(searchPattern, account)
+                : true;
+              const isAllowedType = allowedAccountTypes.includes(account.type);
+              hasHiddenAccounts ||= account.hidden;
+
+              return matchesSearch && isAllowedType && !account.hidden;
+            });
 
             if (filteredAccounts.length === 0) {
               return [];
             }
 
             // Create account items for group
-            const accountItems = filteredAccounts.map((account) => {
-              const connectedSite = connectedSites[account.address]?.find(
-                ({ origin }) => origin === currentTabOrigin,
-              );
+            const accountItems = filteredAccounts
+              .sort((accountA, accountB) => {
+                // Convert boolean values to numbers for sorting
+                return Number(accountB.pinned) - Number(accountA.pinned);
+              })
+              .map((account) => {
+                const connectedSite = connectedSites[account.address]?.find(
+                  ({ origin }) => origin === currentTabOrigin,
+                );
 
-              return (
-                <Box
-                  className="multichain-account-menu-popover__list--menu-item"
-                  key={`box-${account.id}`}
-                >
-                  <AccountListItem
-                    onClick={onAccountListItemItemClicked}
-                    account={account}
-                    key={`account-list-item-${account.id}`}
-                    selected={selectedAccount.id === account.id}
-                    closeMenu={onClose}
-                    connectedAvatar={connectedSite?.iconUrl}
-                    menuType={AccountListItemMenuTypes.Account}
-                    currentTabOrigin={currentTabOrigin}
-                    privacyMode={privacyMode}
-                    showSrpPill={false}
-                    {...accountListItemProps}
-                  />
-                </Box>
-              );
-            });
+                return (
+                  <Box
+                    className="multichain-account-menu-popover__list--menu-item"
+                    key={`box-${account.id}`}
+                  >
+                    <AccountListItem
+                      onClick={onAccountTreeItemClick}
+                      account={account}
+                      key={`account-list-item-${account.id}`}
+                      selected={selectedAccount.id === account.id}
+                      closeMenu={onClose}
+                      connectedAvatar={connectedSite?.iconUrl}
+                      menuType={AccountListItemMenuTypes.Account}
+                      currentTabOrigin={currentTabOrigin}
+                      isActive={account.active}
+                      privacyMode={privacyMode}
+                      isPinned={account.pinned}
+                      showAccountLabels={false}
+                      {...accountTreeItemProps}
+                    />
+                  </Box>
+                );
+              });
 
             return [
               <Box
@@ -123,20 +143,33 @@ export const MultichainAccountsTree = ({
           },
         );
 
-        return [...allWallets, walletHeader, ...groupsItems];
+        // Skip adding wallet if no groupsItems exist
+        if (groupsItems.length === 0) {
+          return walletsAccumulator;
+        }
+
+        return [...walletsAccumulator, walletHeader, ...groupsItems];
       },
       [] as React.ReactNode[],
     );
+
+    // Add a final section for hidden accounts
+    if (hasHiddenAccounts) {
+      allWallets.push(<HiddenAccountList onClose={onClose} />);
+    }
+
+    return allWallets;
   }, [
     wallets,
+    searchPattern,
     allowedAccountTypes,
     connectedSites,
+    onClose,
     currentTabOrigin,
     privacyMode,
-    accountListItemProps,
+    accountTreeItemProps,
     selectedAccount,
-    onClose,
-    onAccountListItemItemClicked,
+    onAccountTreeItemClick,
   ]);
 
   return <>{accountsTree}</>;

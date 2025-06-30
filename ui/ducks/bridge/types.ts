@@ -6,6 +6,7 @@ import {
   type ChainId,
   type GenericQuoteRequest,
 } from '@metamask/bridge-controller';
+import { type TxAlert } from '../../../shared/types/security-alerts-api';
 
 export type BridgeToken = {
   address: string;
@@ -33,6 +34,7 @@ export type BridgeState = {
   selectedQuote: (QuoteResponse & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
   wasTxDeclined: boolean; // Whether the user declined the transaction. Relevant for hardware wallets.
   slippage?: number;
+  txAlert: TxAlert | null;
 };
 
 export type ChainIdPayload = { payload: ChainId | Hex | CaipChainId | null };

@@ -52,12 +52,12 @@ describe('AccountNetwork', () => {
 
     expect(getByText('Sepolia')).toBeInTheDocument();
     expect(getByText('Smart Account')).toBeInTheDocument();
-    expect(getByText('Switch')).toBeInTheDocument();
+    expect(getByText('Switch back')).toBeInTheDocument();
   });
 
   it('click on switch should call downgradeAccount method for smart accounts', async () => {
     const { getByText } = renderComponent();
-    fireEvent.click(getByText('Switch'));
+    fireEvent.click(getByText('Switch back'));
 
     expect(mockDowngradeAccount).toHaveBeenCalled();
   });
