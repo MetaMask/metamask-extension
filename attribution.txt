@@ -36254,7 +36254,7 @@ SOFTWARE.
 ******************************
 
 tiny-secp256k1
-1.1.6 <https://github.com/bitcoinjs/tiny-secp256k1>
+1.1.7 <https://github.com/bitcoinjs/tiny-secp256k1>
 MIT License
 
 Copyright (c) 2018 bitcoinjs contributors
