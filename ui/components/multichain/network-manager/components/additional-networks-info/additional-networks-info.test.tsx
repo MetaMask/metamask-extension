@@ -42,7 +42,7 @@ describe('AdditionalNetworksInfo', () => {
     expect(infoIcon).toBeInTheDocument();
   });
 
-  it.only('shows popover on mouse enter and hides on mouse leave', async () => {
+  it('shows popover on mouse enter and hides on mouse leave', async () => {
     renderComponent();
 
     // Initially the popover should not show its content
