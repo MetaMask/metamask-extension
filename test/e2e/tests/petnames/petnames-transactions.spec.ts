@@ -85,7 +85,10 @@ describe('Petnames - Transactions', function () {
         );
 
         await confirmation.check_pageIsLoaded();
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterCancelButtonAndWaitToDisappear();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await confirmation.createWalletSendTransaction(ADDRESS_MOCK);
         await confirmation.expectName(CUSTOM_NAME_MOCK, true);
 
@@ -96,7 +99,10 @@ describe('Petnames - Transactions', function () {
           PROPOSED_NAME_MOCK,
         );
         await confirmation.check_pageIsLoaded();
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterCancelButtonAndWaitToDisappear();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await confirmation.createWalletSendTransaction(ADDRESS_MOCK);
         await confirmation.expectName(PROPOSED_NAME_MOCK, true);
       },

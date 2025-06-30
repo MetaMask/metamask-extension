@@ -103,6 +103,10 @@ class Confirmation {
     );
   }
 
+  async clickFooterCancelButtonAndWaitToDisappear() {
+    await this.driver.clickElementAndWaitToDisappear(this.footerCancelButton);
+  }
+
   async clickCollapseSectionButton() {
     await this.driver.clickElement(this.sectionCollapseButton);
   }
