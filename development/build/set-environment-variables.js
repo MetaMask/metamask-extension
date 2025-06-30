@@ -170,7 +170,6 @@ function getGoogleClientId({ buildType, variables, environment, testing }) {
     environment !== ENVIRONMENT.PRODUCTION ||
     !isSeedlessOnboardingEnabled
   ) {
-    console.log('isSeedlessOnboardingEnabled', isSeedlessOnboardingEnabled);
     if (
       isSeedlessOnboardingEnabled &&
       !variables.isDefined('GOOGLE_CLIENT_ID')

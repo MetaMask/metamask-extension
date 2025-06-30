@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { log } from 'loglevel';
 import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
@@ -138,6 +139,8 @@ export default function OnboardingWelcome({
         } else {
           history.push(ONBOARDING_ACCOUNT_EXIST);
         }
+      } catch (error) {
+        log.error('onSocialLoginCreateClick::error', error);
       } finally {
         setIsLoggingIn(false);
       }
@@ -166,6 +169,8 @@ export default function OnboardingWelcome({
         } else {
           history.push(ONBOARDING_UNLOCK_ROUTE);
         }
+      } catch (error) {
+        log.error('onSocialLoginImportClick::error', error);
       } finally {
         setIsLoggingIn(false);
       }

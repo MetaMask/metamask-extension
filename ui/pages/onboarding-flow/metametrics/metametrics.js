@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import log from 'loglevel';
 
 import {
   Display,
@@ -97,7 +98,7 @@ export default function OnboardingMetametrics() {
       await submitRequestToBackground('trackEventsAfterMetricsOptIn');
       await submitRequestToBackground('clearEventsAfterMetricsOptIn');
     } catch (error) {
-      console.error('onConfirm::error', error);
+      log.error('onConfirm::error', error);
     } finally {
       history.push(nextRouteByBrowser);
     }
