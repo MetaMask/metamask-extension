@@ -42,6 +42,7 @@ import { DelegationController } from '@metamask/delegation-controller';
 
 import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-controller';
 import { AccountTreeController } from '@metamask/account-tree-controller';
+import { GatorPermissionsController } from '@metamask/gator-permissions-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -57,6 +58,7 @@ export type Controller =
   | DeFiPositionsController
   | ExecutionService
   | GasFeeController
+  | GatorPermissionsController
   | JsonSnapsRegistry
   | KeyringController
   | MultichainAssetsController
@@ -99,6 +101,7 @@ export type ControllerFlatState = AccountsController['state'] &
   DeFiPositionsController['state'] &
   DelegationController['state'] &
   GasFeeController['state'] &
+  GatorPermissionsController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
   MultichainAssetsController['state'] &

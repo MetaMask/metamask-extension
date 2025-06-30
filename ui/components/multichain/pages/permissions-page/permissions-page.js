@@ -1,11 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
-import {
-  TransactionEnvelopeType,
-  TransactionType,
-} from '@metamask/transaction-controller';
 import { Content, Header, Page } from '../page';
 import {
   Box,
@@ -30,13 +26,12 @@ import {
   DEFAULT_ROUTE,
   REVIEW_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
+import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
+import { getGatorPermissions } from '../../../../selectors/gator-permissions';
 import {
-  getConnectedSitesListWithNetworkInfo,
-  getGatorPermissions,
-  getSelectedInternalAccount,
-  selectDefaultRpcEndpointByChainId,
-} from '../../../../selectors';
-import { addTransactionAndRouteToConfirmationPage } from '../../../../store/actions';
+  enableGatorPermissions,
+  fetchAndUpdateGatorPermissions,
+} from '../../../../store/controller-actions/gator-permissions-controller';
 import { ConnectionListItem } from './connection-list-item';
 import { GatorPermissionItem } from './gator-permission-item';
 
@@ -44,7 +39,6 @@ import { GatorPermissionItem } from './gator-permission-item';
 export const PermissionsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
-  const dispatch = useDispatch();
   const headerRef = useRef();
   const [totalConnections, setTotalConnections] = useState(0);
   const sitesConnectionsList = useSelector(
@@ -52,11 +46,6 @@ export const PermissionsPage = () => {
   );
 
   const gatorPermissionsList = useSelector(getGatorPermissions);
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const defaultRpcEndpoint = useSelector((state) =>
-    selectDefaultRpcEndpointByChainId(state, '0x1'),
-  ) ?? { defaultRpcEndpoint: {} };
-  const { networkClientId } = defaultRpcEndpoint;
 
   useEffect(() => {
     const totalSites = Object.keys(sitesConnectionsList).length;
@@ -73,26 +62,9 @@ export const PermissionsPage = () => {
 
   const handleGatorPermissionClick = async (_origin) => {
     try {
-      console.log('handleGatorPermissionClick', selectedAccount);
-      // Create a simple transaction to send 0.001 ETH to a hardcoded address
-      // But here should be here we can build the call data to revoke the delegation with the delegation manager contract
-      // Dispatch the transaction creation action
-      const transactionMeta = await dispatch(
-        addTransactionAndRouteToConfirmationPage(
-          {
-            from: selectedAccount.address,
-            to: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6', // Example recipient address but this needs to be the delegation manager contract address
-            value: '0x38D7EA4C68000', // 0.001 ETH in wei (hex)
-            data: '0x', // No additional data
-            type: TransactionEnvelopeType.simpleSend,
-          },
-          {
-            networkClientId,
-            type: TransactionType.simpleSend, // here we can use the (TransactionType.batch) to send revoke multiple permissions at once
-          },
-        ),
-      );
-      console.log('transactionMeta', transactionMeta);
+      await enableGatorPermissions();
+      const res = await fetchAndUpdateGatorPermissions();
+      console.log('fetchAndUpdateGatorPermissions', res);
     } catch (error) {
       console.error('Failed to create transaction:', error);
     }

@@ -411,6 +411,7 @@ import {
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
+import { GatorPermissionsControllerInit } from './controller-init/gator-permissions/gator-permissions-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1911,6 +1912,7 @@ export default class MetamaskController extends EventEmitter {
         NotificationServicesPushControllerInit,
       DeFiPositionsController: DeFiPositionsControllerInit,
       DelegationController: DelegationControllerInit,
+      GatorPermissionsController: GatorPermissionsControllerInit,
       AccountTreeController: AccountTreeControllerInit,
     };
 
@@ -1958,6 +1960,8 @@ export default class MetamaskController extends EventEmitter {
     this.authenticationController = controllersByName.AuthenticationController;
     this.userStorageController = controllersByName.UserStorageController;
     this.delegationController = controllersByName.DelegationController;
+    this.gatorPermissionsController =
+      controllersByName.GatorPermissionsController;
     this.notificationServicesController =
       controllersByName.NotificationServicesController;
     this.notificationServicesPushController =
@@ -3350,20 +3354,8 @@ export default class MetamaskController extends EventEmitter {
   getState() {
     const { vault } = this.keyringController.state;
     const isInitialized = Boolean(vault);
-    // Seed with some gator permissions for testing
-    const flatState = {
-      ...this.memStore.getFlatState(),
-      gator7715Permissions: [
-        {
-          origin: 'https://gator.com',
-          id: '123',
-        },
-        {
-          origin: 'https://gator.com',
-          id: '456',
-        },
-      ],
-    };
+    const flatState = this.memStore.getFlatState();
+    console.log('flatState:', flatState);
 
     return {
       isInitialized,
@@ -3413,6 +3405,7 @@ export default class MetamaskController extends EventEmitter {
       userStorageController,
       notificationServicesController,
       notificationServicesPushController,
+      gatorPermissionsController,
     } = this;
 
     return {
@@ -3476,6 +3469,18 @@ export default class MetamaskController extends EventEmitter {
       setWatchEthereumAccountEnabled:
         preferencesController.setWatchEthereumAccountEnabled.bind(
           preferencesController,
+        ),
+      enableGatorPermissions:
+        gatorPermissionsController.enableGatorPermissions.bind(
+          gatorPermissionsController,
+        ),
+      disableGatorPermissions:
+        gatorPermissionsController.disableGatorPermissions.bind(
+          gatorPermissionsController,
+        ),
+      fetchAndUpdateGatorPermissions:
+        gatorPermissionsController.fetchAndUpdateGatorPermissions.bind(
+          gatorPermissionsController,
         ),
       ///: END:ONLY_INCLUDE_IF
       setUseExternalNameSources:
