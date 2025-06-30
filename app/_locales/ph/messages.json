@@ -1006,10 +1006,6 @@
   "send": {
     "message": "Magpadala"
   },
-  "sendSpecifiedTokens": {
-    "message": "Magpadala ng $1",
-    "description": "Symbol of the specified token"
-  },
   "settings": {
     "message": "Mga Setting"
   },

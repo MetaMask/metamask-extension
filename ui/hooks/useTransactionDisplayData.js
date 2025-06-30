@@ -330,7 +330,7 @@ export function useTransactionDisplayData(transactionGroup) {
     recipientAddress = initialTransaction.swapAndSendRecipient;
 
     category = TransactionGroupCategory.swapAndSend;
-    title = t('sendTokenAsToken', [
+    title = t('sentTokenAsToken', [
       initialTransaction.sourceTokenSymbol,
       initialTransaction.destinationTokenSymbol,
     ]);
@@ -405,7 +405,7 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.incoming) {
     category = TransactionGroupCategory.receive;
-    title = t('receive');
+    title = t('received');
     prefix = '';
     subtitle = t('fromAddress', [shortenAddress(senderAddress)]);
   } else if (
@@ -413,7 +413,7 @@ export function useTransactionDisplayData(transactionGroup) {
     type === TransactionType.tokenMethodTransfer
   ) {
     category = TransactionGroupCategory.send;
-    title = t('sendSpecifiedTokens', [
+    title = t('sentSpecifiedTokens', [
       token?.symbol || nft?.name || t('token'),
     ]);
     recipientAddress = getTokenAddressParam(tokenData);
@@ -425,7 +425,7 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TransactionType.simpleSend) {
     category = TransactionGroupCategory.send;
-    title = t('send');
+    title = t('sent');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TransactionType.bridgeApproval) {
     title = t('bridgeApproval');
@@ -435,7 +435,7 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitleContainsOrigin = true;
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
   } else if (type === TransactionType.bridge) {
-    title = destChainName ? t('bridgeToChain', [destChainName]) : t('bridge');
+    title = destChainName ? t('bridgedToChain', [destChainName]) : t('bridged');
     category = bridgeTokenDisplayData.category;
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
     primaryDisplayValue = formatAmount(

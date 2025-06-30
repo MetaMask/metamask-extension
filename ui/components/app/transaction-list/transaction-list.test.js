@@ -58,8 +58,10 @@ const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
 const defaultState = {
   metamask: {
     ...mockState.metamask,
-    eip155: {
-      [CHAIN_IDS.GOERLI]: true,
+    enabledNetworkMap: {
+      eip155: {
+        [CHAIN_IDS.GOERLI]: true,
+      },
     },
     transactions: [MOCK_TRANSACTION_BY_TYPE[TransactionType.incoming]],
     internalAccounts: {
@@ -284,7 +286,7 @@ describe('TransactionList', () => {
 
     // The activity list item has a status of "Confirmed" and a type of "Send"
     expect(getByText('Confirmed')).toBeInTheDocument();
-    expect(getByText('Send')).toBeInTheDocument();
+    expect(getByText('Sent')).toBeInTheDocument();
     expect(getByText('-1.2 BTC')).toBeInTheDocument();
 
     // A BTC activity list item exists
