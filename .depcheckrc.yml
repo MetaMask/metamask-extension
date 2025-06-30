@@ -38,7 +38,6 @@ ignores:
   - 'jest'
   - 'lavamoat-viz'
   - 'mocha-junit-reporter'
-  - 'prettier-plugin-sort-json' # automatically imported by prettier
   - 'source-map-explorer'
   - 'playwright'
   - 'wait-on'
