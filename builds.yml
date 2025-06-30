@@ -249,6 +249,7 @@ env:
   - QUICKNODE_OPTIMISM_URL: null
   - QUICKNODE_POLYGON_URL: null
   - QUICKNODE_BASE_URL: null
+  - QUICKNODE_BSC_URL: null
 
   ###
   # API keys to 3rd party services
