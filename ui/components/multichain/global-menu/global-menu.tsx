@@ -16,6 +16,7 @@ import {
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
+  setShowSupportDataConsentModal,
   showConfirmTurnOnMetamaskNotifications,
   toggleNetworkMenu,
 } from '../../../store/actions';
@@ -303,7 +304,7 @@ export const GlobalMenu = ({
       <MenuItem
         iconName={IconName.MessageQuestion}
         onClick={() => {
-          global.platform.openTab({ url: supportLink });
+          dispatch(setShowSupportDataConsentModal(true));
           trackEvent(
             {
               category: MetaMetricsEventCategory.Home,
