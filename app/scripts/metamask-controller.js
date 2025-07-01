@@ -3795,21 +3795,6 @@ export default class MetamaskController extends EventEmitter {
           this.seedlessOnboardingController,
         ),
 
-      // OAuthService
-      startOAuthLogin: this.oauthService.startOAuthLogin.bind(
-        this.oauthService,
-      ),
-
-      // SeedlessOnboardingController
-      authenticate: this.seedlessOnboardingController.authenticate.bind(
-        this.seedlessOnboardingController,
-      ),
-      resetOAuthLoginState: this.seedlessOnboardingController.clearState.bind(
-        this.seedlessOnboardingController,
-      ),
-      createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
-      fetchAllSecretData: this.fetchAllSecretData.bind(this),
-
       // KeyringController
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),

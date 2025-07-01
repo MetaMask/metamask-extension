@@ -295,6 +295,7 @@ export default class SecurityTab extends PureComponent {
           <Button
             data-testid="change-password-button"
             width={BlockSize.Full}
+            size={ButtonSize.Lg}
             marginTop={4}
             block
             onClick={() => {

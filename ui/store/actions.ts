@@ -337,7 +337,7 @@ export function changePassword(
       await keyringChangePassword(newPassword);
       if (isSocialLoginFlow) {
         try {
-          await socialSyncChangePassword(oldPassword, newPassword);
+          await socialSyncChangePassword(newPassword, oldPassword);
         } catch (error) {
           // revert the keyring password change
           await keyringChangePassword(oldPassword);
@@ -631,12 +631,12 @@ export function verifyPassword(password: string): Promise<boolean> {
 }
 
 export function socialSyncChangePassword(
-  currentPassword: string,
   newPassword: string,
+  currentPassword: string,
 ): Promise<void> {
   return submitRequestToBackground('socialSyncChangePassword', [
-    currentPassword,
     newPassword,
+    currentPassword,
   ]);
 }
 
