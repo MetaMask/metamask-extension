@@ -46,6 +46,7 @@
 
   &__word-index {
     width: 20px;
+    flex-shrink: 0;
   }
 
   &__actions {
@@ -56,10 +57,6 @@
 
   &__text {
     height: 40px;
-  }
-
-  &__text-index {
-    width: 20px;
   }
 }
 
