@@ -1,6 +1,6 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/jest';
@@ -114,8 +114,10 @@ describe('AccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <MultichainAccountDetails />
+        <MemoryRouter initialEntries={[`/account-details/${MOCK_ACCOUNT_EOA.address}`]}>
+          <Route path="/account-details/:address">
+            <MultichainAccountDetails />
+          </Route>
         </MemoryRouter>,
         store,
       );
@@ -133,8 +135,10 @@ describe('AccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <MultichainAccountDetails />
+        <MemoryRouter initialEntries={[`/account-details/${MOCK_ACCOUNT_ERC4337.address}`]}>
+          <Route path="/account-details/:address">
+            <MultichainAccountDetails />
+          </Route>
         </MemoryRouter>,
         store,
       );
@@ -152,8 +156,10 @@ describe('AccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <MultichainAccountDetails />
+        <MemoryRouter initialEntries={[`/account-details/${MOCK_ACCOUNT_SOLANA_MAINNET.address}`]}>
+          <Route path="/account-details/:address">
+            <MultichainAccountDetails />
+          </Route>
         </MemoryRouter>,
         store,
       );
