@@ -7118,22 +7118,28 @@
   "welcomeTitle": {
     "message": "Welcome to CryptBridge"
   },
-  "depositWise":{
+  "depositWise": {
     "message": "Deposit via Wise"
   },
-  "receiveModalTips":{
+  "receiveModalTips": {
     "message": "Send only Ethereum network assets to this address"
   },
-  "receiveModalDes1":{
+  "receiveModalDes1": {
     "message": "At the moment, CryptoBridge only supports ERC-20 transfers."
   },
-  "receiveModalDes2":{
+  "receiveModalDes2": {
     "message": "Please double-check that the recipient’s wallet address is an ERC-20 address."
   },
-  "receiveModalDes3":{
+  "receiveModalDes3": {
     "message": "Sending funds to the wrong network may result in permanent loss of funds."
   },
-  "receiveModalDes4":{
+  "receiveModalDes4": {
     "message": "The system cannot detect network mismatches, and CryptoBridge is not responsible for loss of funds due to sending funds to an incompatible blockchain network."
+  },
+  "tipsBank": {
+    "message": "Link your JDB Bank Account or apply for one to enable fiat-crypto transactions."
+  },
+  "startNow": {
+    "message": "Start Now"
   }
 }

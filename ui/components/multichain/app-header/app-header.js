@@ -21,7 +21,6 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-import { getUnapprovedTransactions } from '../../../selectors';
 
 import { toggleNetworkMenu } from '../../../store/actions';
 // TODO: Remove restricted import
@@ -29,7 +28,6 @@ import { toggleNetworkMenu } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
-import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
@@ -55,12 +53,6 @@ export const AppHeader = ({ location }) => {
 
   // Disable the network and account pickers if the user is in
   // a critical flow
-  const sendStage = useSelector(getSendStage);
-  const isTransactionEditPage = [
-    SEND_STAGES.EDIT,
-    SEND_STAGES.DRAFT,
-    SEND_STAGES.ADD_RECIPIENT,
-  ].includes(sendStage);
   const isConfirmationPage = Boolean(
     matchPath(location.pathname, {
       path: CONFIRM_TRANSACTION_ROUTE,
@@ -71,18 +63,7 @@ export const AppHeader = ({ location }) => {
     matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
   );
 
-  const unapprovedTransactions = useSelector(getUnapprovedTransactions);
-
-  const hasUnapprovedTransactions =
-    Object.keys(unapprovedTransactions).length > 0;
-
   const disableAccountPicker = isConfirmationPage || isSwapsPage;
-
-  const disableNetworkPicker =
-    isSwapsPage ||
-    isTransactionEditPage ||
-    isConfirmationPage ||
-    hasUnapprovedTransactions;
 
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {
@@ -135,11 +116,6 @@ export const AppHeader = ({ location }) => {
           >
             {isUnlocked ? (
               <AppHeaderUnlockedContent
-                popupStatus={popupStatus}
-                currentNetwork={multichainNetwork}
-                networkIconSrc={networkIconSrc}
-                networkOpenCallback={networkOpenCallback}
-                disableNetworkPicker={disableNetworkPicker}
                 disableAccountPicker={disableAccountPicker}
                 menuRef={menuRef}
               />

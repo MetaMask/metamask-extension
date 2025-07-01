@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import browser from 'webextension-polyfill';
-
-import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -28,10 +26,8 @@ import {
   ButtonIconSize,
   IconName,
   IconSize,
-  PickerNetwork,
   Text,
 } from '../../component-library';
-import Tooltip from '../../ui/tooltip';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
@@ -43,42 +39,26 @@ import { AccountPicker } from '../account-picker';
 import { GlobalMenu } from '../global-menu';
 import {
   getSelectedInternalAccount,
-  getTestNetworkBackgroundColor,
   getOriginOfCurrentTab,
   getUseBlockie,
 } from '../../../selectors';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN, ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
-import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
-import { getNetworkIcon } from '../../../../shared/modules/network.utils';
-import { TraceName, trace } from '../../../../shared/lib/trace';
 import { NotificationsButton } from './notifications-button';
 import { ExpandViewButton } from './expand-view-button';
 
 type AppHeaderUnlockedContentProps = {
-  popupStatus: boolean;
-  currentNetwork: MultichainNetworkConfiguration;
-  networkOpenCallback: () => void;
-  disableNetworkPicker: boolean;
   disableAccountPicker: boolean;
   menuRef: React.RefObject<HTMLButtonElement>;
 };
 
 export const AppHeaderUnlockedContent = ({
-  popupStatus,
-  currentNetwork,
-  networkOpenCallback,
-  disableNetworkPicker,
   disableAccountPicker,
   menuRef,
 }: AppHeaderUnlockedContentProps) => {
@@ -89,8 +69,6 @@ export const AppHeaderUnlockedContent = ({
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const useBlockie = useSelector(getUseBlockie);
-  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
-  const networkIconSrc = getNetworkIcon(currentNetwork);
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
@@ -216,16 +194,6 @@ export const AppHeaderUnlockedContent = ({
               paddingLeft={0}
               paddingRight={0}
             />
-            {/* {process.env.REMOVE_GNS ? (
-              <>{CopyButton}</>
-            ) : (
-              <Tooltip
-                position="left"
-                title={copied ? t('addressCopied') : t('copyToClipboard')}
-              >
-                {CopyButton}
-              </Tooltip>
-            )} */}
           </Text>
         )}
       </>
@@ -244,65 +212,6 @@ export const AppHeaderUnlockedContent = ({
 
   return (
     <>
-      {/* 注释掉header中的网络选择器，因为已经移到home页面 */}
-      {/* {process.env.REMOVE_GNS ? null : (
-        <>
-          {popupStatus ? (
-            <Box className="multichain-app-header__contents__container">
-              <Tooltip title={currentNetwork.name} position="right">
-                <PickerNetwork
-                  avatarNetworkProps={{
-                    backgroundColor: testNetworkBackgroundColor,
-                    role: 'img',
-                    name: currentNetwork.name,
-                  }}
-                  className="multichain-app-header__contents--avatar-network"
-                  ref={menuRef}
-                  as="button"
-                  src={networkIconSrc}
-                  label={currentNetwork.name}
-                  aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
-                  labelProps={{
-                    display: Display.None,
-                  }}
-                  onClick={(e: React.MouseEvent<HTMLElement>) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    trace({ name: TraceName.NetworkList });
-                    networkOpenCallback();
-                  }}
-                  display={[Display.Flex, Display.None]} // show on popover hide on desktop
-                  disabled={disableNetworkPicker}
-                />
-              </Tooltip>
-            </Box>
-          ) : (
-            <div>
-              <PickerNetwork
-                avatarNetworkProps={{
-                  backgroundColor: testNetworkBackgroundColor,
-                  role: 'img',
-                  name: currentNetwork.name,
-                }}
-                margin={2}
-                aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
-                label={currentNetwork.name}
-                src={networkIconSrc}
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  trace({ name: TraceName.NetworkList });
-                  networkOpenCallback();
-                }}
-                display={[Display.None, Display.Flex]} // show on desktop hide on popover
-                className="multichain-app-header__contents__network-picker"
-                disabled={disableNetworkPicker}
-                data-testid="network-display"
-              />
-            </div>
-          )}
-        </>
-      )} */}
       {process.env.REMOVE_GNS ? (
         <Box
           display={Display.Flex}

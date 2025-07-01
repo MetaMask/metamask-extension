@@ -18,12 +18,8 @@
     display: flex;
     gap: 4px;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     width: 100%;
-
-    .wallet-overview-fullscreen > & {
-      align-items: center;
-    }
   }
 
   &__buttons {
@@ -79,7 +75,7 @@
 
   &__total-title{
     color:#6F6F6F;
-    text-align: center;
+    // text-align: center;
     font-size: 14px;
     font-weight: 400;
     width: 100%;

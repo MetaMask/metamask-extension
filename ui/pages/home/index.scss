@@ -20,12 +20,57 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    .tips-home-content{
+    .tips-home-content {
       display: flex;
       align-items: flex-start;
       padding: 16px;
       gap: 5px;
-      background: #EDF6FF;
+      background: var(--color-primary-attention-home);
+    }
+    .tips-bank-content {
+      display: flex;
+      align-items: flex-start;
+      padding: 16px;
+      gap: 5px;
+      background: var(--color-primary-attention-bank);
+      flex-direction: column;
+
+      @include design-system.screen-lg-min {
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row;
+      }
+    }
+    .tips-bank-ico {
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+    }
+    .tips-bank-des {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      flex: 1;
+      width: 100%;
+
+      @include design-system.screen-lg-min {
+        align-items: center;
+        justify-content: flex-end;
+        flex-direction: row;
+      }
+    }
+    .tips-bank-start {
+      width: 76px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--brand-colors-purple);
+      color: var(--color-text-white);
+      font-size: 14px;
+      border-radius: 5px;
+      cursor: pointer;
     }
   }
 
