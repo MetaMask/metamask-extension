@@ -3,6 +3,11 @@ import {
   Web3AuthNetwork,
 } from '@metamask/seedless-onboarding-controller';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import {
+  MOCK_AUTH_CONNECTION_ID,
+  MOCK_GROUPED_AUTH_CONNECTION_ID,
+} from '../../../../test/e2e/constants';
+import { isProduction } from '../../../../shared/modules/environment';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
@@ -37,14 +42,6 @@ export default class OAuthService {
   async startOAuthLogin(
     authConnection: AuthConnection,
   ): Promise<OAuthLoginResult> {
-    // request the identity permission from the user
-    // 'identity' permission is required for the OAuth login
-    const permissionGranted =
-      await this.#webAuthenticator.requestIdentityPermission();
-    if (!permissionGranted) {
-      throw new Error(OAuthErrorMessages.PERMISSION_NOT_GRANTED_ERROR);
-    }
-
     // create the login handler for the given social login type
     // this is to get the Jwt Token in the exchange for the Authorization Code
     const loginHandler = createLoginHandler(
@@ -117,16 +114,14 @@ export default class OAuthService {
   }
 
   #loadConfig(): OAuthConfig {
-    const { METAMASK_ENVIRONMENT, METAMASK_BUILD_TYPE } = process.env;
-    const buildType = METAMASK_BUILD_TYPE || 'development';
-
-    let config: Record<string, string> = {};
-    if (METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT) {
-      config = OAUTH_CONFIG.development;
-    } else {
-      config = OAUTH_CONFIG[buildType];
+    let configKey = 'development';
+    if (process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.OTHER) {
+      configKey = 'development';
+    } else if (isProduction()) {
+      configKey = process.env.METAMASK_BUILD_TYPE || 'main';
     }
 
+    const config = OAUTH_CONFIG[configKey] || OAUTH_CONFIG.main;
     return {
       authServerUrl: config.AUTH_SERVER_URL,
       web3AuthNetwork: config.WEB3AUTH_NETWORK as Web3AuthNetwork,
@@ -163,7 +158,12 @@ export default class OAuthService {
           (responseUrl) => {
             try {
               if (responseUrl) {
-                resolve(responseUrl);
+                try {
+                  loginHandler.validateState(responseUrl);
+                  resolve(responseUrl);
+                } catch (error) {
+                  reject(error);
+                }
               } else {
                 reject(
                   new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR),
@@ -224,14 +224,19 @@ export default class OAuthService {
     loginHandler: BaseLoginHandler,
     authCode: string | null,
   ): Promise<OAuthLoginResult> {
-    const authConnectionId =
-      loginHandler.authConnection === AuthConnection.Google
-        ? this.#env.googleAuthConnectionId
-        : this.#env.appleAuthConnectionId;
-    const groupedAuthConnectionId =
-      loginHandler.authConnection === AuthConnection.Google
-        ? this.#env.googleGrouppedAuthConnectionId
-        : this.#env.appleGrouppedAuthConnectionId;
+    let authConnectionId = '';
+    let groupedAuthConnectionId = '';
+
+    if (process.env.IN_TEST) {
+      authConnectionId = MOCK_AUTH_CONNECTION_ID;
+      groupedAuthConnectionId = MOCK_GROUPED_AUTH_CONNECTION_ID;
+    } else if (loginHandler.authConnection === AuthConnection.Google) {
+      authConnectionId = this.#env.googleAuthConnectionId;
+      groupedAuthConnectionId = this.#env.googleGrouppedAuthConnectionId;
+    } else if (loginHandler.authConnection === AuthConnection.Apple) {
+      authConnectionId = this.#env.appleAuthConnectionId;
+      groupedAuthConnectionId = this.#env.appleGrouppedAuthConnectionId;
+    }
 
     const authTokenData = await loginHandler.getAuthIdToken(authCode);
     const idToken = authTokenData.id_token;

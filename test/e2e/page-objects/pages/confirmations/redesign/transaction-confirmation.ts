@@ -292,6 +292,16 @@ class TransactionConfirmation extends Confirmation {
       }),
     );
   }
+
+  async check_sendAmount(amount: string) {
+    console.log(
+      `Checking send amount ${amount} on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector({
+      text: amount,
+      tag: 'h2',
+    });
+  }
 }
 
 export default TransactionConfirmation;

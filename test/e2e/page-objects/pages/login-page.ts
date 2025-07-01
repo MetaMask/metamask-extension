@@ -31,7 +31,7 @@ class LoginPage {
 
     this.incorrectPasswordMessage = {
       css: '[data-testid="unlock-page-help-text"]',
-      text: 'Incorrect password',
+      text: 'Password is incorrect. Please try again.',
     };
   }
 
