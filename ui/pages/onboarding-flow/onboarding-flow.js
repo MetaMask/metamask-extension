@@ -356,7 +356,7 @@ export default function OnboardingFlow() {
               category: MetaMetricsEventCategory.Onboarding,
               event: MetaMetricsEventName.OnboardingTwitterClick,
               properties: {
-                text: t('followUsOnX'),
+                text: t('followUsOnX', ['X']),
                 location: MetaMetricsEventName.OnboardingWalletCreationComplete,
                 url: TWITTER_URL,
                 hd_entropy_index: hdEntropyIndex,
