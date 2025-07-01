@@ -23,7 +23,10 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
+import {
+  AssetPickerModal,
+  TokenFilter,
+} from '../asset-picker-modal/asset-picker-modal';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -83,6 +86,7 @@ export type AssetPickerProps = {
     | 'shouldDisableNetwork'
     | 'header'
   >;
+  tokenFilter?: TokenFilter;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModal>,
   | 'visibleTabs'
@@ -108,6 +112,7 @@ export function AssetPicker({
   isTokenListLoading = false,
   isMultiselectEnabled = false,
   autoFocus = true,
+  tokenFilter,
 }: AssetPickerProps) {
   const t = useI18nContext();
 
@@ -249,6 +254,7 @@ export function AssetPicker({
         customTokenListGenerator={customTokenListGenerator}
         isTokenListLoading={isTokenListLoading}
         autoFocus={autoFocus}
+        tokenFilter={tokenFilter}
       />
 
       {/** If a child prop is passed in, use it as the trigger button instead of the default */}

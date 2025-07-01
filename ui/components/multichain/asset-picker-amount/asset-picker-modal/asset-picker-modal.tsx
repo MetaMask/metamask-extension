@@ -87,6 +87,13 @@ import { Search } from './asset-picker-modal-search';
 import { AssetPickerModalNetwork } from './asset-picker-modal-network';
 import { SolanaAccountCreationPrompt } from './solana-account-creation-prompt';
 
+export type TokenFilter = (token: {
+  symbol: string;
+  address?: string | null;
+  chainId?: string;
+  fiatBalance?: number;
+}) => boolean;
+
 type AssetPickerModalProps = {
   header: JSX.Element | string | null;
   isOpen: boolean;
@@ -120,6 +127,7 @@ type AssetPickerModalProps = {
   >;
   isTokenListLoading?: boolean;
   autoFocus: boolean;
+  tokenFilter?: TokenFilter;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
@@ -148,6 +156,7 @@ export function AssetPickerModal({
   isMultiselectEnabled,
   selectedChainIds,
   autoFocus,
+  tokenFilter,
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
@@ -311,6 +320,7 @@ export function AssetPickerModal({
         symbol: string,
         address?: null | string,
         tokenChainId?: string,
+        tokenFiatAmount?: number,
       ) => boolean,
     ): Generator<
       | AssetWithDisplayData<NativeAsset>
@@ -324,7 +334,14 @@ export function AssetPickerModal({
 
       // Yield multichain tokens with balances
       for (const token of multichainTokensWithBalance) {
-        if (shouldAddToken(token.symbol, token.address, token.chainId)) {
+        if (
+          shouldAddToken(
+            token.symbol,
+            token.address,
+            token.chainId,
+            token.tokenFiatAmount ?? undefined,
+          )
+        ) {
           yield token.isNative
             ? {
                 ...token,
@@ -362,6 +379,7 @@ export function AssetPickerModal({
           nativeToken.symbol,
           nativeToken.address,
           nativeToken.chainId,
+          nativeToken.tokenFiatAmount ?? undefined,
         )
       ) {
         yield nativeToken;
@@ -439,6 +457,7 @@ export function AssetPickerModal({
       symbol: string,
       address?: string | null,
       tokenChainId?: string,
+      tokenFiatAmount?: number,
     ) => {
       const trimmedSearchQuery = debouncedSearchQuery.trim().toLowerCase();
       const isMatchedBySearchQuery = Boolean(
@@ -450,10 +469,20 @@ export function AssetPickerModal({
         ? tokenChainId && selectedChainIds?.indexOf(tokenChainId) !== -1
         : selectedNetwork?.chainId === tokenChainId;
 
+      const matchesTokenFilter = tokenFilter
+        ? tokenFilter({
+            symbol,
+            address,
+            chainId: tokenChainId,
+            fiatBalance: tokenFiatAmount,
+          })
+        : true;
+
       return Boolean(
         isTokenInSelectedChain &&
           isMatchedBySearchQuery &&
-          !filteredTokensAddresses.has(getTokenKey(address, tokenChainId)),
+          !filteredTokensAddresses.has(getTokenKey(address, tokenChainId)) &&
+          matchesTokenFilter,
       );
     };
 

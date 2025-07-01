@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Hex } from '@metamask/utils';
 import { IntentSourceAmounts } from '../../../hooks/transactions/useIntentSourceAmount';
 import {
@@ -38,7 +38,7 @@ import { getFromChains } from '../../../../../ducks/bridge/selectors';
 import { AssetPicker } from '../../../../../components/multichain/asset-picker-amount/asset-picker';
 import { TabName } from '../../../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { useTokenFiatAmount } from '../../../../../hooks/useTokenFiatAmount';
-import { AssetType } from '@metamask/bridge-controller';
+import { AssetType, isSolanaChainId } from '@metamask/bridge-controller';
 
 export type SelectedToken = {
   address: Hex;
@@ -91,13 +91,23 @@ export function IntentsSourceRow({
     .round(6)
     .toString();
 
-  const sourceTokenFiat = useTokenFiatAmount(
+  const sourceAmountFiatFormatted = useTokenFiatAmount(
     sourceTokenAddress,
     sourceAmountTotal,
     undefined,
     {},
     true,
     sourceTokenChainId,
+  );
+
+  const sourceAmountFiat = useTokenFiatAmount(
+    sourceTokenAddress,
+    sourceAmountTotal,
+    undefined,
+    {},
+    true,
+    sourceTokenChainId,
+    false,
   );
 
   return (
@@ -114,13 +124,14 @@ export function IntentsSourceRow({
             <Preloader size={20} />
           </div>
         )}
-        <Text>{sourceTokenFiat}</Text>
+        <Text>{sourceAmountFiatFormatted}</Text>
         <Text>{sourceAmountTotal}</Text>
         <AssetPickerWrapper
           asset={asset}
           network={network}
           onAssetChange={(newAsset) => setAsset(newAsset)}
           onNetworkChange={(newNetwork) => setNetwork(newNetwork)}
+          sourceAmountFiat={sourceAmountFiat}
         />
       </Box>
     </ConfirmInfoRow>
@@ -132,6 +143,7 @@ function AssetPickerWrapper({
   network,
   onAssetChange,
   onNetworkChange,
+  sourceAmountFiat,
 }: {
   asset: AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>;
   network: NetworkConfiguration;
@@ -139,8 +151,20 @@ function AssetPickerWrapper({
     asset: AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>,
   ) => void;
   onNetworkChange: (network: NetworkConfiguration) => void;
+  sourceAmountFiat?: string;
 }) {
-  const supportedChains = useSelector(getFromChains);
+  const supportedChains = useSelector(getFromChains).filter(
+    ({ chainId }) => !isSolanaChainId(chainId),
+  );
+
+  const sourceAmountFiatNumber = new BigNumber(
+    sourceAmountFiat ?? '0',
+  ).toNumber();
+
+  const tokenFilter = useCallback(
+    (token) => token.fiatBalance >= sourceAmountFiatNumber,
+    [sourceAmountFiatNumber],
+  );
 
   return (
     <AssetPicker
@@ -155,6 +179,7 @@ function AssetPickerWrapper({
         onNetworkChange: (network) =>
           onNetworkChange(network as NetworkConfiguration),
       }}
+      tokenFilter={tokenFilter}
     >
       {(onClickHandler, networkImageSrc) => (
         <AssetPickerOverride
