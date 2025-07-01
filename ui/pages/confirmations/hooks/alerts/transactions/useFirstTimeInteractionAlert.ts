@@ -3,6 +3,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -21,7 +22,11 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const internalAccounts = useSelector(getInternalAccounts);
   const to = useTransferRecipient();
-  const { isFirstTimeInteraction, chainId } = currentConfirmation ?? {};
+  const {
+    isFirstTimeInteraction,
+    chainId,
+    txParams: { to: recipient },
+  } = currentConfirmation ?? {};
 
   const isInternalAccount = internalAccounts.some(
     (account) => account.address?.toLowerCase() === to?.toLowerCase(),
@@ -35,7 +40,9 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   const isVerifiedAddress =
     trustSignalDisplayState === TrustSignalDisplayState.Verified;
 
-  const isFirstPartyContract = Boolean(getExperience(to, chainId));
+  const isFirstPartyContract = Boolean(
+    getExperience((recipient ?? '0x') as Hex, chainId),
+  );
 
   const showAlert =
     !isInternalAccount &&
