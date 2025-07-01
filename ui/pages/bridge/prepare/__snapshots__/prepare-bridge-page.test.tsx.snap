@@ -78,17 +78,10 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
       </div>
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        style="height: 24px;"
       >
-        <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
-          />
-        </div>
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative-soft"
-          style="cursor: default; text-decoration: none;"
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
         />
       </div>
     </div>
@@ -146,17 +139,10 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
         </div>
         <div
           class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          style="height: 24px;"
         >
-          <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
-            />
-          </div>
-          <a
-            class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative-soft"
-            style="cursor: pointer; text-decoration: underline;"
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
           />
         </div>
       </div>
@@ -268,17 +254,10 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
       </div>
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        style="height: 24px;"
       >
-        <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
-          />
-        </div>
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative-soft"
-          style="cursor: default; text-decoration: none;"
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
         />
       </div>
     </div>
@@ -336,17 +315,10 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
         </div>
         <div
           class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          style="height: 24px;"
         >
-          <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
-            />
-          </div>
-          <a
-            class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative-soft"
-            style="cursor: pointer; text-decoration: underline;"
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
           />
         </div>
       </div>

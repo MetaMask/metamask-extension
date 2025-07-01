@@ -2226,9 +2226,6 @@
   "floatAmountToken": {
     "message": "代币金额必须是整数"
   },
-  "followUsOnTwitter": {
-    "message": "在 Twitter 上关注我们"
-  },
   "forbiddenIpfsGateway": {
     "message": "禁用的 IPFS 网关：请指定一个 CID 网关"
   },
