@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toHex } from '@metamask/controller-utils';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  FEATURED_NETWORK_CHAIN_IDS,
   FEATURED_RPCS,
 } from '../../../../../../shared/constants/network';
 import {
@@ -91,13 +92,6 @@ const DefaultNetworks = memo(() => {
     [nonTestNetworks, orderedNetworksList],
   );
 
-  // Memoize the all networks selected calculation
-  const allNetworksSelected = useMemo(() => {
-    return (
-      Object.keys(enabledNetworksByNamespace).length === orderedNetworks.length
-    );
-  }, [enabledNetworksByNamespace, orderedNetworks.length]);
-
   // Memoize the featured networks calculation
   const featuredNetworksNotYetEnabled = useMemo(
     () =>
@@ -107,33 +101,34 @@ const DefaultNetworks = memo(() => {
     [evmNetworks],
   );
 
+  // Memoize the featured chain IDs as a Set for O(1) lookups
+  const featuredChainIdsSet = useMemo(
+    () => new Set(FEATURED_NETWORK_CHAIN_IDS),
+    [],
+  );
+
   // Use useCallback for stable function references
   const selectAllDefaultNetworks = useCallback(() => {
-    const evmNetworksList = orderedNetworks.filter((network) => network.isEvm);
+    // filter for EVM networks and extract featured chain IDs in one operation
+    const evmChainIds = orderedNetworks.reduce<string[]>((acc, network) => {
+      if (!network.isEvm) {
+        return acc;
+      }
 
-    if (evmNetworksList.length === 0) {
+      const hexChainId = convertCaipToHexChainId(network.chainId);
+      if (featuredChainIdsSet.has(hexChainId)) {
+        acc.push(hexChainId);
+      }
+
+      return acc;
+    }, []);
+
+    if (evmChainIds.length === 0) {
       return;
     }
 
-    const evmChainIds = evmNetworksList.map(
-      (network) => convertCaipToHexChainId(network.chainId) as CaipChainId,
-    );
-
-    // Use the first EVM network's chain ID for getting RPC data
-    const firstEvmChainId = evmNetworksList[0].chainId;
-    const { defaultRpcEndpoint } = getRpcDataByChainId(
-      firstEvmChainId,
-      evmNetworks,
-    );
-    const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
-
-    dispatch(setActiveNetwork(finalNetworkClientId));
     dispatch(setEnabledNetworks(evmChainIds, namespace));
-  }, [dispatch, evmNetworks, namespace, orderedNetworks]);
-
-  const deselectAllDefaultNetworks = useCallback(() => {
-    dispatch(setEnabledNetworks([], namespace));
-  }, [dispatch, namespace]);
+  }, [dispatch, namespace, orderedNetworks, featuredChainIdsSet]);
 
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
 
@@ -223,6 +218,7 @@ const DefaultNetworks = memo(() => {
         );
       });
   }, [
+    enabledNetworks,
     orderedNetworks,
     isEvmNetworkSelected,
     isNetworkInDefaultNetworkTab,
@@ -291,15 +287,9 @@ const DefaultNetworks = memo(() => {
           paddingTop={4}
           paddingLeft={4}
         >
-          {allNetworksSelected ? (
-            <ButtonLink onClick={deselectAllDefaultNetworks}>
-              {t('deselectAll')}
-            </ButtonLink>
-          ) : (
-            <ButtonLink onClick={selectAllDefaultNetworks}>
-              {t('selectAll')}
-            </ButtonLink>
-          )}
+          <ButtonLink onClick={selectAllDefaultNetworks}>
+            {t('selectAll')}
+          </ButtonLink>
         </Box>
         {networkListItems}
         {isEvmNetworkSelected && (
