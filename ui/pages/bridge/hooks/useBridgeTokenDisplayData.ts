@@ -7,7 +7,9 @@ import { TransactionGroupCategory } from '../../../../shared/constants/transacti
 import {
   selectBridgeHistoryForAccount,
   selectBridgeHistoryForApprovalTxId,
+  selectBridgeHistoryForBatchId,
 } from '../../../ducks/bridge-status/selectors';
+import { BigNumber } from 'bignumber.js';
 
 /**
  * A Bridge transaction group's primaryTransaction contains details of the swap,
@@ -27,8 +29,13 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
   const bridgeHistoryItemWithApprovalTxId = useSelector((state) =>
     selectBridgeHistoryForApprovalTxId(state, primaryTransaction.id),
   );
+  const bridgeHistoryItemWithBatchId = useSelector((state) =>
+    selectBridgeHistoryForBatchId(state, primaryTransaction.batchId),
+  );
   const bridgeHistoryItem: BridgeHistoryItem | undefined =
-    bridgeHistoryItemForPrimaryTxId ?? bridgeHistoryItemWithApprovalTxId;
+    bridgeHistoryItemForPrimaryTxId ??
+    bridgeHistoryItemWithBatchId ??
+    bridgeHistoryItemWithApprovalTxId;
 
   // Display currency can be fiat or a token
   const displayCurrencyAmount = useTokenFiatAmount(
@@ -52,9 +59,9 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
     sourceTokenSymbol:
       bridgeHistoryItem?.quote.srcAsset.symbol ??
       primaryTransaction.sourceTokenSymbol,
-    sourceTokenAmountSent:
-      bridgeHistoryItem?.pricingData?.amountSent ??
-      primaryTransaction.sourceTokenAmount,
+    sourceTokenAmountSent: bridgeHistoryItem?.pricingData?.amountSent
+      ? new BigNumber(bridgeHistoryItem.pricingData.amountSent).toFixed(6)
+      : primaryTransaction.sourceTokenAmount,
     destinationTokenSymbol:
       bridgeHistoryItem?.quote.destAsset.symbol ??
       primaryTransaction.destinationTokenSymbol,

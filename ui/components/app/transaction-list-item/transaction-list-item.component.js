@@ -113,7 +113,9 @@ function TransactionListItemInner({
   });
   const isUnifiedSwapTx =
     (isBridgeTx ||
-      transactionGroup.initialTransaction.type === TransactionType.swap) &&
+      transactionGroup.initialTransaction.type === TransactionType.swap ||
+      bridgeTxHistoryItem?.type === TransactionType.swap ||
+      bridgeTxHistoryItem?.type === TransactionType.bridge) &&
     bridgeTxHistoryItem;
 
   const getTestNetworkBackgroundColor = (networkId) => {

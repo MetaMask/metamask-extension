@@ -52,6 +52,18 @@ export const selectBridgeHistoryForApprovalTxId = createSelector(
   },
 );
 
+/**
+ * Returns a bridge history item for a given approval tx id
+ */
+export const selectBridgeHistoryForBatchId = createSelector(
+  [selectBridgeHistoryForAccount, (_, batchId: Hex) => batchId],
+  (bridgeHistory, batchId) => {
+    return Object.values(bridgeHistory).find(
+      (bridgeHistoryItem) => bridgeHistoryItem.batchId === batchId,
+    );
+  },
+);
+
 export const selectReceivedSwapsTokenAmountFromTxMeta = createSelector(
   [
     selectBridgeHistoryItemForTxMetaId,
