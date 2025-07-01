@@ -436,6 +436,7 @@ async function withFixtures(options, testSuite) {
 
 const WINDOW_TITLES = Object.freeze({
   ExtensionInFullScreenView: 'MetaMask',
+  ExtensionUpdating: 'MetaMask Updating',
   InstalledExtensions: 'Extensions',
   Dialog: 'MetaMask Dialog',
   Phishing: 'MetaMask Phishing Detection',
@@ -761,9 +762,9 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
  * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
  */
 async function clickSignOnRedesignedSignatureConfirmation({
-  driver,
-  snapSigInsights = false,
-}) {
+                                                            driver,
+                                                            snapSigInsights = false,
+                                                          }) {
   await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
 
   if (snapSigInsights) {
