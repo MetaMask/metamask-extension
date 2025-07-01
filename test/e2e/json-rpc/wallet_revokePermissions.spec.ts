@@ -19,6 +19,7 @@ describe('Revoke Dapp Permissions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
         const beforeGetPermissionsRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -77,6 +78,7 @@ describe('Revoke Dapp Permissions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
         const beforeGetPermissionsRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -135,6 +137,7 @@ describe('Revoke Dapp Permissions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
         const beforeGetPermissionsRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -195,7 +198,8 @@ describe('Revoke Dapp Permissions', function () {
           await loginWithBalanceValidation(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
-          await driver.clickElement('#personalSign');
+          await testDapp.check_pageIsLoaded();
+          await testDapp.clickPersonalSign();
 
           const revokePermissionsRequest = JSON.stringify({
             jsonrpc: '2.0',

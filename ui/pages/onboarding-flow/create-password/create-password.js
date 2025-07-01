@@ -15,7 +15,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ONBOARDING_METAMETRICS,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
@@ -23,9 +26,11 @@ import {
   getCurrentKeyring,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
+  getIsSocialLoginFlow,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -43,6 +48,11 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import PasswordForm from '../../../components/app/password-form/password-form';
 import LoadingScreen from '../../../components/ui/loading-screen';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
+
+const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 export default function CreatePassword({
   createNewAccount,
@@ -58,6 +68,9 @@ export default function CreatePassword({
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
+  const isSeedlessOnboardingFeatureEnabled =
+    getIsSeedlessOnboardingFeatureEnabled();
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const metametricsId = useSelector(getMetaMetricsId);
@@ -77,59 +90,144 @@ export default function CreatePassword({
 
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
-      if (firstTimeFlowType === FirstTimeFlowType.import) {
-        history.replace(ONBOARDING_COMPLETION_ROUTE);
+      if (
+        firstTimeFlowType === FirstTimeFlowType.import ||
+        firstTimeFlowType === FirstTimeFlowType.socialImport
+      ) {
+        history.replace(ONBOARDING_METAMETRICS);
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        if (isFirefox) {
+          history.replace(ONBOARDING_COMPLETION_ROUTE);
+        } else {
+          history.replace(ONBOARDING_METAMETRICS);
+        }
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
+    } else if (
+      firstTimeFlowType === FirstTimeFlowType.import &&
+      !secretRecoveryPhrase
+    ) {
+      history.replace(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
     }
   }, [
     currentKeyring,
     history,
     firstTimeFlowType,
     newAccountCreationInProgress,
+    secretRecoveryPhrase,
   ]);
 
-  const handleCreate = async (event) => {
+  const handleLearnMoreClick = (event) => {
+    event.stopPropagation();
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.ExternalLinkClicked,
+      properties: {
+        text: 'Learn More',
+        location: 'create_password',
+        url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
+      },
+    });
+  };
+
+  const handleWalletImport = async () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletImportAttempted,
+    });
+
+    await importWithRecoveryPhrase(password, secretRecoveryPhrase);
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletImported,
+      properties: {
+        biometrics_enabled: false,
+      },
+    });
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletSetupCompleted,
+      properties: {
+        wallet_setup_type: 'import',
+        new_wallet: false,
+        account_type: MetaMetricsEventAccountType.Imported,
+      },
+    });
+
+    if (isFirefox) {
+      history.replace(ONBOARDING_COMPLETION_ROUTE);
+    } else {
+      history.replace(ONBOARDING_METAMETRICS);
+    }
+  };
+
+  const handleCreateNewWallet = async () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletCreationAttempted,
+      properties: {
+        account_type: MetaMetricsEventAccountType.Default,
+      },
+    });
+
+    if (createNewAccount) {
+      setNewAccountCreationInProgress(true);
+      await createNewAccount(password);
+    }
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletSetupCompleted,
+      properties: {
+        wallet_setup_type: 'new',
+        new_wallet: true,
+        account_type: MetaMetricsEventAccountType.Default,
+      },
+    });
+
+    if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
+      if (isFirefox) {
+        history.replace(ONBOARDING_COMPLETION_ROUTE);
+      } else {
+        history.replace(ONBOARDING_METAMETRICS);
+      }
+    } else {
+      history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+    }
+  };
+
+  const handleCreatePassword = async (event) => {
     event?.preventDefault();
 
     if (!password) {
       return;
     }
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletCreationAttempted,
-    });
-
-    // If secretRecoveryPhrase is defined we are in import wallet flow
-    if (
-      secretRecoveryPhrase &&
-      firstTimeFlowType === FirstTimeFlowType.import
-    ) {
-      await importWithRecoveryPhrase(password, secretRecoveryPhrase);
-      history.push(ONBOARDING_COMPLETION_ROUTE);
-    } else {
-      // Otherwise we are in create new wallet flow
-      try {
-        if (createNewAccount) {
-          setNewAccountCreationInProgress(true);
-          await createNewAccount(password);
-        }
-        if (firstTimeFlowType === FirstTimeFlowType.social) {
-          history.push(ONBOARDING_COMPLETION_ROUTE);
-        } else {
-          history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
-        }
-      } catch (error) {
-        console.error(error);
+    try {
+      // If secretRecoveryPhrase is defined we are in import wallet flow
+      if (
+        secretRecoveryPhrase &&
+        firstTimeFlowType === FirstTimeFlowType.import
+      ) {
+        await handleWalletImport();
+      } else {
+        // Otherwise we are in create new wallet flow
+        await handleCreateNewWallet();
       }
+    } catch (error) {
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.WalletSetupFailure,
+      });
     }
   };
 
   const createPasswordLink = (
     <a
-      onClick={(e) => e.stopPropagation()}
+      onClick={handleLearnMoreClick}
       key="create-password__link-text"
       href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
       target="_blank"
@@ -151,7 +249,7 @@ export default function CreatePassword({
       as="form"
       className="create-password"
       data-testid="create-password"
-      onSubmit={handleCreate}
+      onSubmit={handleCreatePassword}
     >
       <Box>
         <Box
@@ -165,7 +263,11 @@ export default function CreatePassword({
             size={ButtonIconSize.Md}
             data-testid="create-password-back-button"
             type="button"
-            onClick={() => history.goBack()}
+            onClick={() =>
+              firstTimeFlowType === FirstTimeFlowType.import
+                ? history.replace(ONBOARDING_IMPORT_WITH_SRP_ROUTE)
+                : history.replace(ONBOARDING_WELCOME_ROUTE)
+            }
             ariaLabel={t('back')}
           />
         </Box>
@@ -174,12 +276,17 @@ export default function CreatePassword({
           marginBottom={4}
           width={BlockSize.Full}
         >
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {t('stepOf', [
-              firstTimeFlowType === FirstTimeFlowType.import ? 2 : 1,
-              firstTimeFlowType === FirstTimeFlowType.import ? 2 : 3,
-            ])}
-          </Text>
+          {!isSocialLoginFlow && (
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
+              {t('stepOf', [
+                firstTimeFlowType === FirstTimeFlowType.import ? 2 : 1,
+                firstTimeFlowType === FirstTimeFlowType.import ? 2 : 3,
+              ])}
+            </Text>
+          )}
           <Text variant={TextVariant.headingLg} as="h2">
             {t('createPassword')}
           </Text>
@@ -188,7 +295,9 @@ export default function CreatePassword({
             color={TextColor.textAlternative}
             as="h2"
           >
-            {t('createPasswordDetails')}
+            {isSocialLoginFlow
+              ? t('createPasswordDetailsSocial')
+              : t('createPasswordDetails')}
           </Text>
         </Box>
         <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />

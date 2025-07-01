@@ -151,7 +151,7 @@ export const FontFamilyStory: StoryFn<typeof Text> = (args) => (
     gap={4}
   >
     <Text {...args} fontFamily={FontFamily.Default}>
-      Default Font (CentraNo1) - The quick brown fox jumps over the lazy dog
+      Default Font (Geist) - The quick brown fox jumps over the lazy dog
     </Text>
     <Text {...args} fontFamily={FontFamily.Accent}>
       Accent Font (MMSans) - The quick brown fox jumps over the lazy dog

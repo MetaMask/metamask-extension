@@ -55,6 +55,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -134,7 +135,10 @@ import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/con
 import { EndTraceRequest, trace, TraceName } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
-import { getDismissSmartAccountSuggestionEnabled } from '../pages/confirmations/selectors/preferences';
+import {
+  getDismissSmartAccountSuggestionEnabled,
+  getUseSmartAccount,
+} from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import * as actionConstants from './actionConstants';
 
@@ -162,6 +166,150 @@ export function goHome() {
   };
 }
 // async actions
+
+/**
+ * Starts the OAuth2 login process for the given Social Login type
+ * and authenticate the user with the Seedless Onboarding Services.
+ *
+ * @param authConnection - The authentication connection to use (google | apple).
+ * @returns The social login result.
+ */
+export function startOAuthLogin(
+  authConnection: AuthConnection,
+): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      const oauth2LoginResult = await submitRequestToBackground(
+        'startOAuthLogin',
+        [authConnection],
+      );
+
+      const { isNewUser } = await submitRequestToBackground('authenticate', [
+        oauth2LoginResult,
+      ]);
+
+      return isNewUser;
+    } catch (error) {
+      dispatch(displayWarning(error));
+      if (isErrorWithMessage(error)) {
+        throw new Error(getErrorMessage(error));
+      } else {
+        throw error;
+      }
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Resets the social login state.
+ *
+ * This function is used to reset the social login state when the user
+ * wants to login with a different method after the successful social login.
+ */
+export function resetOAuthLoginState() {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      await submitRequestToBackground('resetOAuthLoginState');
+    } catch (error) {
+      dispatch(displayWarning(error));
+      if (isErrorWithMessage(error)) {
+        throw new Error(getErrorMessage(error));
+      } else {
+        throw error;
+      }
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Creates a new vault and backups/syncs the seed phrase with social login.
+ *
+ * @param password - The password.
+ * @returns The seed phrase.
+ */
+export function createNewVaultAndSyncWithSocial(
+  password: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      const primaryKeyring = await createNewVault(password);
+      if (!primaryKeyring) {
+        throw new Error('No keyring found');
+      }
+
+      const seedPhrase = await getSeedPhrase(password);
+      await createSeedPhraseBackup(
+        password,
+        seedPhrase,
+        primaryKeyring.metadata.id,
+      );
+      return seedPhrase;
+    } catch (error) {
+      dispatch(displayWarning(error));
+      if (isErrorWithMessage(error)) {
+        throw new Error(getErrorMessage(error));
+      } else {
+        throw error;
+      }
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
+ *
+ * @param password - The password.
+ * @returns The seed phrase.
+ */
+export function restoreSocialBackupAndGetSeedPhrase(
+  password: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      // get the first seed phrase from the array, this is the oldest seed phrase
+      // and we will use it to create the initial vault
+      const [firstSeedPhrase] = await fetchAllSecretData(password);
+      if (!firstSeedPhrase) {
+        throw new Error('No seed phrase found');
+      }
+
+      const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
+      const encodedSeedPhrase = Array.from(
+        Buffer.from(mnemonic, 'utf8').values(),
+      );
+
+      // restore the vault using the seed phrase
+      await submitRequestToBackground('createNewVaultAndRestore', [
+        password,
+        encodedSeedPhrase,
+      ]);
+
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+
+      return mnemonic;
+    } catch (error) {
+      console.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
+      dispatch(hideLoadingIndication());
+      dispatch(displayWarning(error.message));
+      throw error;
+    }
+  };
+}
 
 export function tryUnlockMetamask(
   password: string,
@@ -316,7 +464,6 @@ export function createNewVaultAndGetSeedPhrase(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-
     try {
       await createNewVault(password);
       const seedPhrase = await getSeedPhrase(password);
@@ -373,16 +520,60 @@ export function submitPassword(password: string): Promise<void> {
   });
 }
 
+/**
+ * Creates a seed phrase backup in the metadata store for seedless onboarding flow.
+ *
+ * @param password - The password.
+ * @param seedPhrase - The seed phrase.
+ * @param keyringId - The keyring id of the backup seed phrase.
+ */
+export async function createSeedPhraseBackup(
+  password: string,
+  seedPhrase: string,
+  keyringId: string,
+): Promise<void> {
+  const encodedSeedPhrase = Array.from(
+    Buffer.from(seedPhrase, 'utf8').values(),
+  );
+  await submitRequestToBackground('createSeedPhraseBackup', [
+    password,
+    encodedSeedPhrase,
+    keyringId,
+  ]);
+}
+
+/**
+ * Fetches all secret data (Seed phrases - Mnemonics, Private Keys, etc.) from the metadata store.
+ *
+ * Secret data are sorted by creation date, the latest secret data is the first one in the array.
+ *
+ * @param password - The password.
+ * @returns The seed phrases.
+ */
+export async function fetchAllSecretData(
+  password: string,
+): Promise<Buffer[] | null> {
+  const encodedSeedPhrases = await submitRequestToBackground<Buffer[]>(
+    'fetchAllSecretData',
+    [password],
+  );
+  return encodedSeedPhrases;
+}
+
 export function createNewVault(password: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    callBackgroundMethod('createNewVaultAndKeychain', [password], (error) => {
-      if (error) {
-        reject(error);
-        return;
-      }
+    callBackgroundMethod(
+      'createNewVaultAndKeychain',
+      [password],
+      (error, keyring) => {
+        if (error) {
+          reject(error);
+          return;
+        }
 
-      resolve(true);
-    });
+        resolve(keyring);
+      },
+    );
   });
 }
 
@@ -1032,9 +1223,9 @@ export function removeSlide(
   };
 }
 
-export function setSplashPageAcknowledgedForAccount(account: string): void {
+export function setSmartAccountOptInForAccounts(accounts: Hex[]): void {
   try {
-    submitRequestToBackground('setSplashPageAcknowledgedForAccount', [account]);
+    submitRequestToBackground('setSmartAccountOptInForAccounts', [accounts]);
   } catch (error) {
     logErrorWithMessage(error);
     throw error;
@@ -3504,6 +3695,26 @@ export function setDismissSmartAccountSuggestionEnabled(
   };
 }
 
+export function setSmartAccountOptIn(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  return async (dispatch, getState) => {
+    const prevUseSmartAccount = getUseSmartAccount(getState());
+    trackMetaMetricsEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        use_smart_account: value,
+        prev_use_smart_account: prevUseSmartAccount,
+      },
+    });
+    await dispatch(setPreference('smartAccountOptIn', value));
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function setTokenSortConfig(value: SortCriteria) {
   return setPreference('tokenSortConfig', value, false);
 }
@@ -4455,14 +4666,19 @@ export function updateAccountsList(
  * This method updates the enabledNetworkMap to mark specified networks as enabled.
  * It can handle both a single chain ID or an array of chain IDs.
  *
- * @param chainIds - A single CAIP-2 chain ID (e.g. 'eip155:1') or an array of chain IDs
+ * @param chainIds - A single chainId (e.g. 'eip155:1') or an array of chain IDs
  * to be enabled. All other networks will be implicitly disabled.
+ * @param networkId - The CAIP-2 chain ID of the currently selected network
  */
 export function setEnabledNetworks(
   chainIds: string[],
+  networkId: CaipNamespace,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('setEnabledNetworks', [chainIds]);
+    await submitRequestToBackground('setEnabledNetworks', [
+      chainIds,
+      networkId,
+    ]);
   };
 }
 
@@ -4579,7 +4795,7 @@ export function updateThrottledOriginState(
 }
 
 export function setFirstTimeFlowType(
-  type: FirstTimeFlowType,
+  type: FirstTimeFlowType | null,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -6077,16 +6293,14 @@ export function createOnChainTriggers(): ThunkAction<
  * @param accounts - An array of account identifiers for which on-chain triggers should be deleted.
  * @returns A thunk action that, when dispatched, attempts to delete on-chain triggers for the specified accounts.
  */
-export function deleteOnChainTriggersByAccount(
+export function disableAccounts(
   accounts: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async () => {
     try {
-      await submitRequestToBackground('deleteOnChainTriggersByAccount', [
-        accounts,
-      ]);
+      await submitRequestToBackground('disableAccounts', [accounts]);
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -6104,16 +6318,14 @@ export function deleteOnChainTriggersByAccount(
  * @param accounts - An array of account identifiers for which on-chain triggers should be updated.
  * @returns A thunk action that, when dispatched, attempts to update on-chain triggers for the specified accounts.
  */
-export function updateOnChainTriggersByAccount(
+export function enableAccounts(
   accounts: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async () => {
     try {
-      await submitRequestToBackground('updateOnChainTriggersByAccount', [
-        accounts,
-      ]);
+      await submitRequestToBackground('enableAccounts', [accounts]);
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -6283,6 +6495,33 @@ export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
       const response = await submitRequestToBackground(
         'deleteAccountSyncingDataFromUserStorage',
         [USER_STORAGE_FEATURE_NAMES.accounts],
+      );
+      return response;
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Synchronizes address book data with user storage between devices.
+ *
+ * This function sends a request to the background script to sync address book data and update the state accordingly.
+ * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @returns A thunk action that, when dispatched, attempts to synchronize address book data with user storage between devices.
+ */
+export function syncContactsWithUserStorage(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      const response = await submitRequestToBackground(
+        'syncContactsWithUserStorage',
       );
       return response;
     } catch (error) {
@@ -6616,6 +6855,16 @@ export async function isRelaySupported(chainId: Hex): Promise<boolean> {
   return await submitRequestToBackground<boolean>('isRelaySupported', [
     chainId,
   ]);
+}
+
+/**
+ * Sets the preference for skipping the interstitial page when opening a deep link.
+ *
+ * @param value - Whether to skip the interstitial page when opening a deep link.
+ * @returns A promise that resolves when the preference is set.
+ */
+export function setSkipDeepLinkInterstitial(value: boolean) {
+  return setPreference('skipDeepLinkInterstitial', value, false);
 }
 
 /**

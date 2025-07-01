@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
@@ -8,6 +7,11 @@ import { mockSegment } from './mocks/segment';
 
 describe('Wallet Created Events - Imported Account', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
+    const eventsToMock = [
+      'Wallet Import Started',
+      'Wallet Setup Completed',
+      'Wallet Created',
+    ];
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
@@ -17,11 +21,7 @@ describe('Wallet Created Events - Imported Account', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
-          return await mockSegment(server, [
-            'Wallet Setup Selected',
-            'Wallet Setup Complete',
-            'Wallet Created',
-          ]);
+          return await mockSegment(server, eventsToMock);
         },
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
@@ -31,59 +31,62 @@ describe('Wallet Created Events - Imported Account', function () {
         });
 
         const events = await getEventPayloads(driver, mockedEndpoints);
-        const expectedEvents =
-          process.env.SELENIUM_BROWSER === Browser.FIREFOX ? 2 : 3;
-        assert.equal(events.length, expectedEvents);
 
-        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-          // In Firefox, we expect 2 events in a specific order
-          assert.deepStrictEqual(events[0].properties, {
-            wallet_setup_type: 'import',
-            new_wallet: false,
-            category: 'Onboarding',
-            locale: 'en',
-            chain_id: '0x539',
-            environment_type: 'fullscreen',
-          });
+        // Filter events to only include expected ones and remove duplicates as
+        // events are currently being restructured
+        const filteredEvents = events.filter((event) =>
+          eventsToMock.includes(event.event),
+        );
 
-          assert.deepStrictEqual(events[1].properties, {
-            method: 'import',
-            is_profile_syncing_enabled: true,
-            hd_entropy_index: 0,
-            category: 'Onboarding',
-            locale: 'en',
-            chain_id: '0x539',
-            environment_type: 'fullscreen',
-          });
-        } else {
-          // In other browsers, we expect 3 events
-          assert.deepStrictEqual(events[0].properties, {
-            account_type: 'imported',
-            category: 'Onboarding',
-            locale: 'en',
-            chain_id: '0x539',
-            environment_type: 'fullscreen',
-          });
+        const uniqueEvents = [];
+        const seenEventTypes = new Set();
 
-          assert.deepStrictEqual(events[1].properties, {
-            wallet_setup_type: 'import',
-            new_wallet: false,
-            category: 'Onboarding',
-            locale: 'en',
-            chain_id: '0x539',
-            environment_type: 'fullscreen',
-          });
-
-          assert.deepStrictEqual(events[2].properties, {
-            method: 'import',
-            is_profile_syncing_enabled: true,
-            category: 'Onboarding',
-            locale: 'en',
-            chain_id: '0x539',
-            environment_type: 'fullscreen',
-            hd_entropy_index: 0,
-          });
+        for (const event of filteredEvents) {
+          if (!seenEventTypes.has(event.event)) {
+            uniqueEvents.push(event);
+            seenEventTypes.add(event.event);
+          }
         }
+
+        assert.equal(uniqueEvents.length, eventsToMock.length);
+
+        const walletImportStarted = uniqueEvents.find(
+          (e) => e.event === 'Wallet Import Started',
+        );
+        const walletSetupCompleted = uniqueEvents.find(
+          (e) => e.event === 'Wallet Setup Completed',
+        );
+        const walletCreated = uniqueEvents.find(
+          (e) => e.event === 'Wallet Created',
+        );
+
+        assert.deepStrictEqual(walletImportStarted.properties, {
+          account_type: 'imported',
+          category: 'Onboarding',
+          locale: 'en',
+          chain_id: '0x539',
+          environment_type: 'fullscreen',
+        });
+
+        assert.deepStrictEqual(walletSetupCompleted.properties, {
+          wallet_setup_type: 'import',
+          new_wallet: false,
+          account_type: 'imported',
+          category: 'Onboarding',
+          locale: 'en',
+          chain_id: '0x539',
+          environment_type: 'fullscreen',
+        });
+
+        assert.deepStrictEqual(walletCreated.properties, {
+          method: 'import',
+          is_profile_syncing_enabled: true,
+          category: 'Onboarding',
+          locale: 'en',
+          chain_id: '0x539',
+          environment_type: 'fullscreen',
+          hd_entropy_index: 0,
+        });
       },
     );
   });

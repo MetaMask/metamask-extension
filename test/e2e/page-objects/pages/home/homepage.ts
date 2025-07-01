@@ -43,6 +43,10 @@ class HomePage {
     testId: 'asset-list-control-bar-action-button',
   };
 
+  private readonly loadingOverlay = {
+    text: 'Connecting to Localhost 8545',
+  };
+
   private readonly nftTab = {
     testId: 'account-overview__nfts-tab',
   };
@@ -71,6 +75,8 @@ class HomePage {
   private readonly tokensTab = {
     testId: 'account-overview__asset-tab',
   };
+
+  private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -146,12 +152,24 @@ class HomePage {
     await this.driver.clickElement(this.sendButton);
   }
 
+  async startSwapFlow(): Promise<void> {
+    await this.driver.clickElement(this.swapButton);
+  }
+
   async startBridgeFlow(): Promise<void> {
     await this.driver.clickElement(this.bridgeButton);
   }
 
   async togglePrivacyBalance(): Promise<void> {
     await this.driver.clickElement(this.privacyBalanceToggle);
+  }
+
+  async waitForLoadingOverlayToDisappear(): Promise<void> {
+    console.log(`Wait for loading overlay to disappear`);
+    await this.driver.assertElementNotPresent(this.loadingOverlay, {
+      waitAtLeastGuard: 1000,
+      timeout: 10000,
+    });
   }
 
   /**
@@ -337,6 +355,16 @@ class HomePage {
       text: message,
       tag: 'p',
     });
+  }
+
+  /**
+   * Clicks the copy address button.
+   */
+  async getAccountAddress(): Promise<string> {
+    const accountAddress = await this.driver.findElement(
+      this.copyAddressButton,
+    );
+    return accountAddress.getText();
   }
 }
 
