@@ -27,7 +27,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { setEnabledNetworks } from '../../../../../store/actions';
+import {
+  setActiveNetwork,
+  setEnabledNetworks,
+} from '../../../../../store/actions';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -104,14 +107,28 @@ const DefaultNetworks = memo(() => {
   );
 
   // Use useCallback for stable function references
-  const selectAllDefaultNetworks = useCallback(() => {
-    const evmChainIds = orderedNetworks
-      .filter((network) => network.isEvm)
-      .map(
-        (network) => convertCaipToHexChainId(network.chainId) as CaipChainId,
-      );
-    dispatch(setEnabledNetworks(evmChainIds, namespace));
-  }, [dispatch, namespace, orderedNetworks]);
+  const selectAllDefaultNetworks = useCallback(async () => {
+    const evmNetworksList = orderedNetworks.filter((network) => network.isEvm);
+
+    if (evmNetworksList.length === 0) {
+      return;
+    }
+
+    const evmChainIds = evmNetworksList.map(
+      (network) => convertCaipToHexChainId(network.chainId) as CaipChainId,
+    );
+
+    // Use the first EVM network's chain ID for getting RPC data
+    const firstEvmChainId = evmNetworksList[0].chainId;
+    const { defaultRpcEndpoint } = getRpcDataByChainId(
+      firstEvmChainId,
+      evmNetworks,
+    );
+    const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
+
+    await dispatch(setActiveNetwork(finalNetworkClientId));
+    await dispatch(setEnabledNetworks(evmChainIds, namespace));
+  }, [dispatch, evmNetworks, namespace, orderedNetworks]);
 
   const deselectAllDefaultNetworks = useCallback(() => {
     dispatch(setEnabledNetworks([], namespace));
