@@ -31,9 +31,23 @@ export const AccountDetailsRow = ({
       paddingRight={4}
       alignItems={AlignItems.center}
     >
-      <Text color={TextColor.textDefault}>{label}</Text>
-      <Box display={Display.Flex} alignItems={AlignItems.center}>
-        <Text color={TextColor.textAlternative}>{value}</Text>
+      <Text color={TextColor.textDefault} paddingRight={12}>
+        {label}
+      </Text>
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        style={{ minWidth: 0, flex: 1, justifyContent: 'flex-end' }}
+      >
+        <Text
+          color={TextColor.textAlternative}
+          ellipsis
+          style={{
+            maxWidth: '200px',
+          }}
+        >
+          {value}
+        </Text>
         {endAccessory}
       </Box>
     </Box>
