@@ -1,5 +1,6 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
+  MOCK_ACCOUNT_BIP122_P2WPKH,
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_ERC4337,
   MOCK_ACCOUNT_HARDWARE,
@@ -14,6 +15,7 @@ import {
   isHardwareAccount,
   isPrivateKeyAccount,
   isInstitutionalEVMAccount,
+  isBitcoinAccount,
 } from './account-type-utils';
 
 describe('Account Type Utils', () => {
@@ -109,6 +111,20 @@ describe('Account Type Utils', () => {
 
     it('should return false for regular ERC-4337 accounts', () => {
       expect(isInstitutionalEVMAccount(MOCK_ACCOUNT_ERC4337)).toBe(false);
+    });
+  });
+
+  describe('isBitcoinAccount', () => {
+    it('should return true for Bitcoin accounts', () => {
+      expect(isBitcoinAccount(MOCK_ACCOUNT_BIP122_P2WPKH)).toBe(true);
+    });
+
+    it('should return false for EOA accounts', () => {
+      expect(isBitcoinAccount(MOCK_ACCOUNT_EOA)).toBe(false);
+    });
+
+    it('should return false for Solana accounts', () => {
+      expect(isBitcoinAccount(MOCK_ACCOUNT_SOLANA_MAINNET)).toBe(false);
     });
   });
 });
