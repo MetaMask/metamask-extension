@@ -1,4 +1,4 @@
-import { SolAccountType, isEvmAccountType } from '@metamask/keyring-api';
+import { BtcAccountType, SolAccountType, isEvmAccountType } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 
@@ -8,6 +8,7 @@ export type AccountTypeCategory =
   | 'hardware'
   | 'private-key'
   | 'institutional-evm'
+  | 'bitcoin'
   | 'unknown';
 
 /**
@@ -61,6 +62,11 @@ export const getAccountTypeCategory = (
   // Solana accounts
   if (type === SolAccountType.DataAccount) {
     return 'solana';
+  }
+
+  // Bitcoin accounts
+  if (Object.values(BtcAccountType).includes(type as BtcAccountType)) {
+    return 'bitcoin';
   }
 
   return 'unknown';

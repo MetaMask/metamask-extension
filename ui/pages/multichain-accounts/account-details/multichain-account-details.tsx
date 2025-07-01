@@ -7,6 +7,7 @@ import { SolanaAccountDetails } from './solana-account-details';
 import { HardwareAccountDetails } from './hardware-account-details';
 import { PrivateKeyAccountDetails } from './private-key-account-details';
 import { InstitutionalEVMAccountDetails } from './institutional-evm-account-details';
+import { BitcoinAccountDetails } from './btc-account-details';
 import { useParams } from 'react-router-dom';
 
 export const MultichainAccountDetails = () => {
@@ -35,6 +36,9 @@ export const MultichainAccountDetails = () => {
         return (
           <InstitutionalEVMAccountDetails address={address as string} account={account} />
         );
+
+      case 'bitcoin':
+        return <BitcoinAccountDetails address={address as string} account={account} />;
 
       default:
         return null;
