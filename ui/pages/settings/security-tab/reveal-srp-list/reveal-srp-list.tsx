@@ -51,6 +51,15 @@ export const RevealSrpList = () => {
     }
   };
 
+  const maskHostNameFromEmail = (email: string) => {
+    const [hostname, domain] = email.split('@');
+    const initialPart = hostname.slice(0, 1);
+    const maskedHostname = `${initialPart}${'*'.repeat(
+      hostname.length - initialPart.length,
+    )}`;
+    return `${maskedHostname}@${domain}`;
+  };
+
   return (
     <Box className="srp-reveal-list">
       {isSocialLoginFlow && (
@@ -97,12 +106,14 @@ export const RevealSrpList = () => {
                 <Text fontWeight={FontWeight.Medium}>
                   {t('securitySocialLoginEnabled')}
                 </Text>
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
-                >
-                  {socialLoginEmail}
-                </Text>
+                {socialLoginEmail && (
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={TextColor.textAlternative}
+                  >
+                    {maskHostNameFromEmail(socialLoginEmail)}
+                  </Text>
+                )}
               </Box>
             </Box>
           </Card>
