@@ -58,6 +58,7 @@ import {
   getOrderedNetworksList,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../../../selectors';
+import Tooltip from '../../../../ui/tooltip';
 
 const DefaultNetworks = memo(() => {
   const t = useI18nContext();
@@ -107,7 +108,7 @@ const DefaultNetworks = memo(() => {
   );
 
   // Use useCallback for stable function references
-  const selectAllDefaultNetworks = useCallback(async () => {
+  const selectAllDefaultNetworks = useCallback(() => {
     const evmNetworksList = orderedNetworks.filter((network) => network.isEvm);
 
     if (evmNetworksList.length === 0) {
@@ -126,8 +127,8 @@ const DefaultNetworks = memo(() => {
     );
     const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
-    await dispatch(setActiveNetwork(finalNetworkClientId));
-    await dispatch(setEnabledNetworks(evmChainIds, namespace));
+    dispatch(setActiveNetwork(finalNetworkClientId));
+    dispatch(setEnabledNetworks(evmChainIds, namespace));
   }, [dispatch, evmNetworks, namespace, orderedNetworks]);
 
   const deselectAllDefaultNetworks = useCallback(() => {
@@ -138,30 +139,20 @@ const DefaultNetworks = memo(() => {
 
   // Memoize the network change handler to avoid recreation
   const handleNetworkChangeCallback = useCallback(
-    async (chainId: CaipChainId) => {
-      const chainIdToUse = Object.keys(enabledNetworks)[0];
-      const haveOneSelectedNetwork = Object.keys(enabledNetworks).length === 1;
-
-      const { namespace: selectedNamespace, reference: selectedReference } =
-        parseCaipChainId(chainId);
-
-      if (
-        haveOneSelectedNetwork &&
-        selectedNamespace === KnownCaipNamespace.Eip155 &&
-        toHex(selectedReference) === chainIdToUse
-      ) {
-        return;
-      } else if (haveOneSelectedNetwork && chainId === chainIdToUse) {
+    async (chainId: CaipChainId, isLastRemainingNetwork: boolean) => {
+      if (isLastRemainingNetwork) {
         return;
       }
 
       await handleNetworkChange(chainId);
     },
-    [handleNetworkChange, enabledNetworks],
+    [handleNetworkChange],
   );
 
   // Memoize the network list items to avoid recreation on every render
   const networkListItems = useMemo(() => {
+    const enabledChainIds = Object.keys(enabledNetworks);
+
     return orderedNetworks
       .filter((network) => {
         // If EVM network is selected, only show EVM networks
@@ -189,9 +180,24 @@ const DefaultNetworks = memo(() => {
           hexChainId,
         );
 
+        const singleRemainingNetwork = enabledChainIds.length === 1;
+        const isLastRemainingNetwork =
+          singleRemainingNetwork && enabledChainIds[0] === hexChainId;
+
         return (
           <NetworkListItem
-            startAccessory={<Checkbox label="" isChecked={isEnabled} />}
+            startAccessory={
+              singleRemainingNetwork && isLastRemainingNetwork ? (
+                <Tooltip
+                  title={'Must have at least one network enabled'}
+                  position="top"
+                >
+                  <Checkbox label="" isChecked={isEnabled} />
+                </Tooltip>
+              ) : (
+                <Checkbox label="" isChecked={isEnabled} />
+              )
+            }
             key={network.chainId}
             chainId={network.chainId}
             name={network.name}
@@ -203,7 +209,12 @@ const DefaultNetworks = memo(() => {
                     .defaultRpcEndpoint
                 : undefined
             }
-            onClick={() => handleNetworkChangeCallback(network.chainId)}
+            onClick={() =>
+              handleNetworkChangeCallback(
+                network.chainId,
+                isLastRemainingNetwork,
+              )
+            }
             onDeleteClick={onDelete}
             onEditClick={onEdit}
             onDiscoverClick={onDiscoverClick}
