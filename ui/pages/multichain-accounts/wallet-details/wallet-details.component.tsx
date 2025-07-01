@@ -79,7 +79,7 @@ const WalletDetails = () => {
 
   const handleAccountClick = (account: { id: string; address: string }) => {
     dispatch(setAccountDetailsAddress(account.address));
-    history.push(ACCOUNT_DETAILS_ROUTE);
+    history.push(`${ACCOUNT_DETAILS_ROUTE}/${account.address}`);
   };
 
   const handleBack = () => {
