@@ -44,6 +44,14 @@ const ALLOWLISTED_URLS = [
   'https://metamask.github.io/vault-decryptor',
   'https://metamask.github.io/vault-decryptor/',
   'https://metamask.github.io/vault-decryptor/bundle.js',
+  // Seedless Onboarding (TOPRF Service Nodes)
+  'https://node-1.dev-node.web3auth.io/sss/jrpc',
+  'https://node-2.dev-node.web3auth.io/sss/jrpc',
+  'https://node-3.dev-node.web3auth.io/sss/jrpc',
+  'https://node-4.dev-node.web3auth.io/sss/jrpc',
+  'https://node-5.dev-node.web3auth.io/sss/jrpc',
+  'https://node-1.dev-node.web3auth.io/metadata/enc_account_data/set',
+  'https://node-1.dev-node.web3auth.io/metadata/enc_account_data/get',
 ];
 
 module.exports = { ALLOWLISTED_URLS };
