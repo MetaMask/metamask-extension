@@ -1592,6 +1592,9 @@
     "message": "Use $1 to customize the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
+  "customNetworks": {
+    "message": "Custom networks"
+  },
   "customSlippage": {
     "message": "Custom"
   },
@@ -1820,6 +1823,9 @@
   "descriptionFromSnap": {
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
+  },
+  "deselectAll": {
+    "message": "Deselect all"
   },
   "destinationAccountPickerNoEligible": {
     "message": "No eligible accounts found"
@@ -2071,6 +2077,9 @@
   },
   "editInPortfolio": {
     "message": "Edit in Portfolio"
+  },
+  "editNetwork": {
+    "message": "Edit network"
   },
   "editNetworkLink": {
     "message": "edit the original network"
@@ -3670,6 +3679,9 @@
   "noNetworksFound": {
     "message": "No networks found for the given search query"
   },
+  "noNetworksSelected": {
+    "message": "No networks selected"
+  },
   "noOptionsAvailableMessage": {
     "message": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
   },
@@ -4044,8 +4056,14 @@
   "onboardingSrpInputClearAll": {
     "message": "Clear all"
   },
+  "onboardingSrpInputHideAll": {
+    "message": "Hide all"
+  },
   "onboardingSrpInputPlaceholder": {
     "message": "Add a space between each word and make sure no one is watching."
+  },
+  "onboardingSrpInputShowAll": {
+    "message": "Show all"
   },
   "onekey": {
     "message": "OneKey"
@@ -4708,6 +4726,14 @@
   },
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
+  },
+  "removeAccountModalBannerDescription": {
+    "message": "Make sure you have the Secret Recovery Phrase or private key for this account before removing.",
+    "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
+  },
+  "removeAccountModalBannerTitle": {
+    "message": "This account will be removed from MetaMask.",
+    "description": "Title of a banner alert used on account remove modal."
   },
   "removeKeyringSnap": {
     "message": "Removing this Snap removes these accounts from MetaMask:"

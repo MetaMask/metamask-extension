@@ -63,11 +63,13 @@ const withMetamaskConnectedToMainnet = {
     },
   },
   enabledNetworkMap: {
-    '0x1': true,
-    '0x89': true,
-    '0xaa36a7': true,
-    '0xe705': true,
-    '0xe708': true,
+    eip155: {
+      '0x1': true,
+      '0x89': true,
+      '0xaa36a7': true,
+      '0xe705': true,
+      '0xe708': true,
+    },
   },
   remoteFeatureFlags: {
     assetsDefiPositionsEnabled: true,
@@ -244,6 +246,8 @@ const withMetamaskConnectedToMainnet = {
   },
 };
 
+const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
+
 describe('Defi positions list', () => {
   beforeEach(() => {
     process.env.PORTFOLIO_VIEW = 'true';
@@ -281,7 +285,9 @@ describe('Defi positions list', () => {
         },
       },
       enabledNetworkMap: {
-        '0x1': true,
+        eip155: {
+          '0x1': true,
+        },
       },
     };
     await act(async () => {
@@ -294,8 +300,10 @@ describe('Defi positions list', () => {
     await screen.findByText(accountName);
 
     await clickElementById('account-overview__defi-tab');
-    await clickElementById('sort-by-networks');
-    await clickElementById('network-filter-current__button');
+    if (!isGlobalNetworkSelectorRemoved) {
+      await clickElementById('sort-by-networks');
+      await clickElementById('network-filter-current__button');
+    }
     await waitForElementByText('AaveV3 Mainnet');
     await waitForElementByText('MetaMask Staking');
     await waitForElementByTextToNotBePresent('AaveV3 Polygon');

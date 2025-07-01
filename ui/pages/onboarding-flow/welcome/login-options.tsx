@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
   Box,
   BoxProps,
@@ -80,13 +80,6 @@ export default function LoginOptions({
   // TODO: enable apple login once it's deployed securely.
   const shouldDisableAppleLogin = true;
 
-  const onLogin = useCallback(
-    (loginType: LoginType) => {
-      handleLogin(loginType);
-    },
-    [handleLogin],
-  );
-
   return (
     <Modal
       isOpen
@@ -121,7 +114,7 @@ export default function LoginOptions({
                 : t('onboardingContinueWith', ['Google'])
             }
             marginBottom={4}
-            onClick={() => onLogin(LOGIN_TYPE.GOOGLE)}
+            onClick={() => handleLogin(LOGIN_TYPE.GOOGLE)}
           />
           <SocialButton
             data-testid={
@@ -142,7 +135,7 @@ export default function LoginOptions({
                 : t('onboardingContinueWith', ['Apple'])
             }
             marginBottom={2}
-            onClick={() => onLogin(LOGIN_TYPE.APPLE)}
+            onClick={() => handleLogin(LOGIN_TYPE.APPLE)}
             disabled={shouldDisableAppleLogin}
           />
           <Box
@@ -177,7 +170,7 @@ export default function LoginOptions({
             variant={ButtonVariant.Secondary}
             width={BlockSize.Full}
             size={ButtonSize.Lg}
-            onClick={() => onLogin(LOGIN_TYPE.SRP)}
+            onClick={() => handleLogin(LOGIN_TYPE.SRP)}
           >
             {loginOption === LOGIN_OPTION.EXISTING
               ? t('onboardingSrpImport')

@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import log from 'loglevel';
 import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
@@ -10,6 +11,7 @@ import {
   ONBOARDING_ACCOUNT_EXIST,
   ONBOARDING_ACCOUNT_NOT_FOUND,
   ONBOARDING_UNLOCK_ROUTE,
+  ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -22,6 +24,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
 import { LOGIN_OPTION, LOGIN_TYPE } from './types';
@@ -50,11 +54,19 @@ export default function OnboardingWelcome({
   // have already imported or created a wallet
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
-      if (firstTimeFlowType === FirstTimeFlowType.import) {
+      if (
+        firstTimeFlowType === FirstTimeFlowType.import ||
+        firstTimeFlowType === FirstTimeFlowType.socialImport
+      ) {
         history.replace(ONBOARDING_COMPLETION_ROUTE);
-      }
-      if (firstTimeFlowType === FirstTimeFlowType.restore) {
+      } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
         history.replace(ONBOARDING_COMPLETION_ROUTE);
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        if (getBrowserName() === PLATFORM_FIREFOX) {
+          history.replace(ONBOARDING_COMPLETION_ROUTE);
+        } else {
+          history.replace(ONBOARDING_METAMETRICS);
+        }
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
@@ -111,7 +123,7 @@ export default function OnboardingWelcome({
     async (socialConnectionType) => {
       setIsLoggingIn(true);
       setNewAccountCreationInProgress(true);
-      dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
+      await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
 
       try {
         const isNewUser = await handleSocialLogin(socialConnectionType);
@@ -123,10 +135,12 @@ export default function OnboardingWelcome({
           },
         });
         if (isNewUser) {
-          history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+          history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
         } else {
-          history.push(ONBOARDING_ACCOUNT_EXIST);
+          history.replace(ONBOARDING_ACCOUNT_EXIST);
         }
+      } catch (error) {
+        log.error('onSocialLoginCreateClick::error', error);
       } finally {
         setIsLoggingIn(false);
       }
@@ -155,6 +169,8 @@ export default function OnboardingWelcome({
         } else {
           history.push(ONBOARDING_UNLOCK_ROUTE);
         }
+      } catch (error) {
+        log.error('onSocialLoginImportClick::error', error);
       } finally {
         setIsLoggingIn(false);
       }

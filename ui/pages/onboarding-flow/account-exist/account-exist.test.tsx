@@ -12,12 +12,12 @@ import {
 import * as Actions from '../../../store/actions';
 import AccountExist from './account-exist';
 
-const mockHistoryPush = jest.fn();
+const mockHistoryReplace = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
-    push: mockHistoryPush,
+    replace: mockHistoryReplace,
   }),
 }));
 
@@ -55,7 +55,7 @@ describe('Account Exist Seedless Onboarding View', () => {
     fireEvent.click(loginButton);
 
     await waitFor(() => {
-      expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE);
+      expect(mockHistoryReplace).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE);
       expect(setFirstTimeFlowTypeSpy).toHaveBeenCalledWith(
         FirstTimeFlowType.socialImport,
       );
@@ -73,7 +73,7 @@ describe('Account Exist Seedless Onboarding View', () => {
 
     renderWithProvider(<AccountExist />, store);
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE);
+    expect(mockHistoryReplace).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE);
   });
 
   it('should reset login state and navigate to the welcome page when the button is clicked', async () => {
@@ -94,7 +94,7 @@ describe('Account Exist Seedless Onboarding View', () => {
     fireEvent.click(loginButton);
 
     await waitFor(() => {
-      expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE);
+      expect(mockHistoryReplace).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE);
       expect(resetOAuthLoginStateSpy).toHaveBeenCalled();
       expect(setFirstTimeFlowTypeSpy).toHaveBeenCalledWith(null);
     });

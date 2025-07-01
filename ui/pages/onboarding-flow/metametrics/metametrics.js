@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import log from 'loglevel';
 
 import {
   Display,
@@ -19,6 +20,7 @@ import {
   setDataCollectionForMarketing,
 } from '../../../store/actions';
 import {
+  getCurrentKeyring,
   getDataCollectionForMarketing,
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
@@ -29,7 +31,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../../helpers/constants/routes';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -59,6 +64,8 @@ export default function OnboardingMetametrics() {
 
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
 
+  const currentKeyring = useSelector(getCurrentKeyring);
+
   const trackEvent = useContext(MetaMetricsContext);
 
   let nextRouteByBrowser = useSelector(
@@ -69,7 +76,14 @@ export default function OnboardingMetametrics() {
     firstTimeFlowType !== FirstTimeFlowType.restore &&
     firstTimeFlowType !== FirstTimeFlowType.socialImport
   ) {
-    nextRouteByBrowser = ONBOARDING_WELCOME_ROUTE;
+    if (
+      currentKeyring &&
+      firstTimeFlowType === FirstTimeFlowType.socialCreate
+    ) {
+      nextRouteByBrowser = ONBOARDING_COMPLETION_ROUTE;
+    } else {
+      nextRouteByBrowser = ONBOARDING_WELCOME_ROUTE;
+    }
   }
 
   const onConfirm = async (e) => {
@@ -97,7 +111,7 @@ export default function OnboardingMetametrics() {
       await submitRequestToBackground('trackEventsAfterMetricsOptIn');
       await submitRequestToBackground('clearEventsAfterMetricsOptIn');
     } catch (error) {
-      console.error('onConfirm::error', error);
+      log.error('onConfirm::error', error);
     } finally {
       history.push(nextRouteByBrowser);
     }
