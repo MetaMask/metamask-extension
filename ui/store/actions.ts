@@ -334,15 +334,16 @@ export function changePassword(
   ) => {
     const isSocialLoginFlow = getIsSocialLoginFlow(getState());
     try {
+      await keyringChangePassword(newPassword);
       if (isSocialLoginFlow) {
-        await submitRequestToBackground<void>('socialSyncChangePassword', [
-          newPassword,
-          oldPassword,
-        ]);
+        try {
+          await socialSyncChangePassword(oldPassword, newPassword);
+        } catch (error) {
+          // revert the keyring password change
+          await keyringChangePassword(oldPassword);
+          throw error;
+        }
       }
-      await submitRequestToBackground<void>('keyringChangePassword', [
-        newPassword,
-      ]);
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
@@ -627,6 +628,20 @@ export function verifyPassword(password: string): Promise<boolean> {
       resolve(true);
     });
   });
+}
+
+export function socialSyncChangePassword(
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> {
+  return submitRequestToBackground('socialSyncChangePassword', [
+    currentPassword,
+    newPassword,
+  ]);
+}
+
+export function keyringChangePassword(newPassword: string): Promise<void> {
+  return submitRequestToBackground('keyringChangePassword', [newPassword]);
 }
 
 export async function getSeedPhrase(password: string, keyringId: string) {
