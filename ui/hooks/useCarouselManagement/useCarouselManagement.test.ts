@@ -576,7 +576,8 @@ describe('useCarouselManagement', () => {
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
 
-      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
+      const updatedSlides = mockUpdateSlides.mock
+        .calls[0][0] as CarouselSlide[];
       const ids = updatedSlides.map((s) => s.id);
 
       expect(ids).toContain('contentful-priority-slide-id');
