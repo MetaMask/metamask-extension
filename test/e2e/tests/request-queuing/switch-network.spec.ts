@@ -35,7 +35,7 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
       async ({ driver, localNodes }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
 
-        // Open dapp 
+        // Open dapp
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 
