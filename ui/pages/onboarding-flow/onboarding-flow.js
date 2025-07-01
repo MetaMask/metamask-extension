@@ -38,7 +38,6 @@ import {
   getShowTermsOfUse,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import Button from '../../components/ui/button';
 import RevealSRPModal from '../../components/app/reveal-SRP-modal';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -50,7 +49,14 @@ import ExperimentalArea from '../../components/app/flask/experimental-area';
 ///: END:ONLY_INCLUDE_IF
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
 import { getHDEntropyIndex } from '../../selectors/selectors';
-import { Box } from '../../components/component-library';
+import {
+  Box,
+  Button,
+  ButtonVariant,
+  Icon,
+  IconName,
+  IconSize,
+} from '../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -61,6 +67,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
+  TextVariant,
 } from '../../helpers/constants/design-system';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -335,25 +342,36 @@ export default function OnboardingFlow() {
       </Box>
       {pathname === ONBOARDING_COMPLETION_ROUTE && (
         <Button
-          className="onboarding-flow__twitter-button"
-          type="link"
+          variant={ButtonVariant.Link}
           href={TWITTER_URL}
+          marginInline="auto"
+          marginTop={4}
+          target="_blank"
+          rel="noopener noreferrer"
+          textProps={{
+            variant: TextVariant.bodyLgMedium,
+          }}
           onClick={() => {
             trackEvent({
               category: MetaMetricsEventCategory.Onboarding,
               event: MetaMetricsEventName.OnboardingTwitterClick,
               properties: {
-                text: t('followUsOnTwitter'),
+                text: t('followUsOnX', ['X']),
                 location: MetaMetricsEventName.OnboardingWalletCreationComplete,
                 url: TWITTER_URL,
                 hd_entropy_index: hdEntropyIndex,
               },
             });
           }}
-          target="_blank"
         >
-          <span>{t('followUsOnTwitter')}</span>
-          <i className="fab fa-twitter onboarding-flow__twitter-button__icon" />
+          {t('followUsOnX', [
+            <Icon
+              key="x-icon"
+              className="onboarding-flow__x-button__icon"
+              name={IconName.X}
+              size={IconSize.Lg}
+            />,
+          ])}
         </Button>
       )}
     </Box>
