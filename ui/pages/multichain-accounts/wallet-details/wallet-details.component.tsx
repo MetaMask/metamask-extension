@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -70,12 +70,15 @@ const WalletDetails = () => {
     [accountBalances],
   );
 
-  const handleBalanceUpdate = (accountId: string, balance: string | number) => {
-    setAccountBalances((prev) => ({
-      ...prev,
-      [accountId]: balance,
-    }));
-  };
+  const handleBalanceUpdate = useCallback(
+    (accountId: string, balance: string | number) => {
+      setAccountBalances((prev) => ({
+        ...prev,
+        [accountId]: balance,
+      }));
+    },
+    [],
+  );
 
   const handleAccountClick = (account: { id: string; address: string }) => {
     dispatch(setAccountDetailsAddress(account.address));
