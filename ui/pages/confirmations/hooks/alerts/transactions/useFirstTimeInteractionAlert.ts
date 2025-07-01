@@ -22,11 +22,9 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const internalAccounts = useSelector(getInternalAccounts);
   const to = useTransferRecipient();
-  const {
-    isFirstTimeInteraction,
-    chainId,
-    txParams: { to: recipient },
-  } = currentConfirmation ?? {};
+  const { isFirstTimeInteraction, chainId, txParams } =
+    currentConfirmation ?? {};
+  const recipient = (txParams?.to ?? '0x') as Hex;
 
   const isInternalAccount = internalAccounts.some(
     (account) => account.address?.toLowerCase() === to?.toLowerCase(),
@@ -40,9 +38,7 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   const isVerifiedAddress =
     trustSignalDisplayState === TrustSignalDisplayState.Verified;
 
-  const isFirstPartyContract = Boolean(
-    getExperience((recipient ?? '0x') as Hex, chainId),
-  );
+  const isFirstPartyContract = Boolean(getExperience(recipient, chainId));
 
   const showAlert =
     !isInternalAccount &&
