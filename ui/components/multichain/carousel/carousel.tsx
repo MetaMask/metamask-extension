@@ -74,6 +74,14 @@ export const Carousel = React.forwardRef(
         return !slide.dismissed || slide.undismissable;
       })
       .sort((a, b) => {
+        // Prioritize Contentful Priority slides
+        if (a.priorityPlacement === true && b.priorityPlacement !== true) {
+          return -1;
+        }
+        if (a.priorityPlacement !== true && b.priorityPlacement === true) {
+          return 1;
+        }
+
         if (!useExternalServices) {
           if (a.id === BASIC_FUNCTIONALITY_SLIDE.id) {
             return -1;

@@ -544,6 +544,49 @@ describe('useCarouselManagement', () => {
     });
   });
 
+  describe('priorityPlacement', () => {
+    it('should place priority slides before regular contentful slides', async () => {
+      const PRIORITY_SLIDE: CarouselSlide = {
+        ...FUND_SLIDE,
+        id: 'contentful-priority-slide-id',
+        dismissed: false,
+        priorityPlacement: true,
+        title: 'Priority Slide',
+        description: 'Comes first',
+        image: 'priority.png',
+      };
+
+      const REGULAR_SLIDE: CarouselSlide = {
+        ...CARD_SLIDE,
+        id: 'regular-slide-id',
+        dismissed: false,
+        title: 'Regular Slide',
+        description: 'Comes later',
+        image: 'regular.png',
+      };
+
+      jest.mocked(fetchCarouselSlidesFromContentful).mockResolvedValueOnce({
+        prioritySlides: [PRIORITY_SLIDE],
+        regularSlides: [REGULAR_SLIDE],
+      });
+
+      renderHook(() =>
+        useCarouselManagement({ testDate: new Date().toISOString() }),
+      );
+
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
+
+      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
+      const ids = updatedSlides.map((s) => s.id);
+
+      expect(ids).toContain('contentful-priority-slide-id');
+      expect(ids).toContain('regular-slide-id');
+      expect(ids.indexOf('contentful-priority-slide-id')).toBeLessThan(
+        ids.indexOf('regular-slide-id'),
+      );
+    });
+  });
+
   describe('Smart account upgrade slide', () => {
     beforeEach(() => {
       mockGetUseExternalServices.mockReturnValue(false);
