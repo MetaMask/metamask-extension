@@ -3,6 +3,9 @@ import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
+import HomePage from '../../page-objects/pages/home/homepage';
+import SendTokenPage from '../../page-objects/pages/send/send-token-page';
+import { Driver } from '../../webdriver/driver';
 
 const ADDRESS_MOCK = '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb';
 const ABBREVIATED_ADDRESS_MOCK = '0x0c54F...7AaFb';
@@ -77,7 +80,7 @@ describe('Petnames - Transactions', function () {
       async ({ driver }) => {
         const confirmation = new Confirmation(driver);
         await loginWithBalanceValidation(driver);
-        await confirmation.createWalletSendTransaction(ADDRESS_MOCK);
+        await createWalletSendTransaction(ADDRESS_MOCK, driver);
         await confirmation.check_nameIsDisplayed(
           ABBREVIATED_ADDRESS_MOCK,
           false,
@@ -95,7 +98,7 @@ describe('Petnames - Transactions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await confirmation.createWalletSendTransaction(ADDRESS_MOCK);
+        await createWalletSendTransaction(ADDRESS_MOCK, driver);
         await confirmation.check_nameIsDisplayed(CUSTOM_NAME_MOCK, true);
 
         // Test proposed name.
@@ -109,9 +112,21 @@ describe('Petnames - Transactions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await confirmation.createWalletSendTransaction(ADDRESS_MOCK);
+        await createWalletSendTransaction(ADDRESS_MOCK, driver);
         await confirmation.check_nameIsDisplayed(PROPOSED_NAME_MOCK, true);
       },
     );
   });
 });
+
+async function createWalletSendTransaction(
+  recipientAddress: string,
+  driver: Driver,
+): Promise<void> {
+  const homePage = new HomePage(driver);
+  await homePage.startSendFlow();
+  const sendToPage = new SendTokenPage(driver);
+  await sendToPage.check_pageIsLoaded();
+  await sendToPage.fillRecipient(recipientAddress);
+  await sendToPage.goToNextScreen();
+}

@@ -1,8 +1,6 @@
 import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../../webdriver/driver';
 import { RawLocator } from '../../../common';
-import HomePage from '../../home/homepage';
-import SendTokenPage from '../../send/send-token-page';
 
 class Confirmation {
   protected driver: Driver;
@@ -227,15 +225,6 @@ class Confirmation {
         text: option[1],
       });
     }
-  }
-
-  async createWalletSendTransaction(recipientAddress: string): Promise<void> {
-    const homePage = new HomePage(this.driver);
-    await homePage.startSendFlow();
-    const sendToPage = new SendTokenPage(this.driver);
-    await sendToPage.check_pageIsLoaded();
-    await sendToPage.fillRecipient(recipientAddress);
-    await sendToPage.goToNextScreen();
   }
 }
 export default Confirmation;
