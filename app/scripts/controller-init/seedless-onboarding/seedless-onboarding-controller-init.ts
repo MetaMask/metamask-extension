@@ -6,12 +6,18 @@ import {
 import { EncryptionKey, EncryptionResult } from '@metamask/browser-passworder';
 import { ControllerInitFunction } from '../types';
 import { encryptorFactory } from '../../lib/encryptor-factory';
+import { toprfKeyDeriver } from './key-deriver';
 
 export const SeedlessOnboardingControllerInit: ControllerInitFunction<
   SeedlessOnboardingController<EncryptionKey>,
   SeedlessOnboardingControllerMessenger
 > = (request) => {
-  const { controllerMessenger, persistedState, refreshOAuthToken, revokeAndGetNewRefreshToken } = request;
+  const {
+    controllerMessenger,
+    persistedState,
+    refreshOAuthToken,
+    revokeAndGetNewRefreshToken,
+  } = request;
 
   const encryptor = encryptorFactory(600_000);
   const network = process.env.WEB3AUTH_NETWORK as Web3AuthNetwork;
@@ -40,6 +46,7 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
       encryptWithDetail: (key, data) => encryptor.encryptWithDetail(key, data),
       importKey: (key) => encryptor.importKey(key),
     },
+    toprfKeyDeriver,
   });
 
   return {
