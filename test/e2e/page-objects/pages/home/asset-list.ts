@@ -70,6 +70,8 @@ class AssetListPage {
 
   private readonly sendButton = '[data-testid="eth-overview-send"]';
 
+  private readonly coinSendButton = '[data-testid="coin-overview-send"]';
+
   private readonly swapButton = '[data-testid="eth-overview-swap"]';
 
   private readonly buySellButton = '[data-testid="coin-overview-buy"]';
@@ -164,6 +166,11 @@ class AssetListPage {
   async clickSendButton(): Promise<void> {
     console.log(`Clicking on the send button`);
     await this.driver.clickElement(this.sendButton);
+  }
+
+  async clickCoinSendButton(): Promise<void> {
+    console.log(`Clicking on the send button`);
+    await this.driver.clickElement(this.coinSendButton);
   }
 
   async clickSwapButton(): Promise<void> {

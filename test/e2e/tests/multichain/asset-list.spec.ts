@@ -76,20 +76,20 @@ describe('Multichain Asset List', function (this: Suite) {
   });
   it('switches networks when clicking on send for a token on another network', async function () {
     await withFixtures(
-      buildFixtures(this.test?.fullTitle() as string, 137),
+      buildFixtures(this.test?.fullTitle() as string, 1337),
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24.9978', 'POL');
+        await homePage.check_expectedBalanceIsDisplayed('24.9978', 'ETH');
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
         const sendPage = new SendTokenPage(driver);
-        await assetListPage.check_tokenItemNumber(5);
-        await assetListPage.clickOnAsset('TST');
-        await assetListPage.clickSendButton();
+        await assetListPage.check_tokenItemNumber(4);
+        await assetListPage.clickOnAsset('Ethereum');
+        await assetListPage.clickCoinSendButton();
         await sendPage.check_pageIsLoaded();
         await sendPage.fillRecipient(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -98,7 +98,7 @@ describe('Multichain Asset List', function (this: Suite) {
         const assetPickerItems = await sendPage.getAssetPickerItems();
         assert.equal(
           assetPickerItems.length,
-          2,
+          1,
           'Two assets should be shown in the asset picker',
         );
       },
