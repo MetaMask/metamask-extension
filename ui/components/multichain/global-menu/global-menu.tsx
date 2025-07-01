@@ -348,10 +348,7 @@ export const GlobalMenu = ({
       </MenuItem>
       <MenuItem
         iconName={IconName.Wise}
-        onClick={() => {
-          history.push('https://wise.com/');
-          closeMenu();
-        }}
+        onClick={() => {}}
         data-testid="global-menu-deposit-wise"
       >
         {t('depositWise')}
