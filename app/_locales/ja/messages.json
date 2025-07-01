@@ -6700,5 +6700,20 @@
   },
   "depositWise":{
     "message": "Wise を通じて入金"
+  },
+  "receiveModalTips":{
+    "message": "このアドレスにイーサリアムネットワークの資産のみを送信してください"
+  },
+  "receiveModalDes1":{
+    "message": "現時点では、cryptobridgeはerc-20転送のみをサポートしています。"
+  },
+  "receiveModalDes2":{
+    "message": "受取人のウォレットアドレスがerc-20アドレスであることを再確認してください。"
+  },
+  "receiveModalDes3":{
+    "message": "間違ったネットワークに資金を送ると、資金が永久的に失われる可能性があります。"
+  },
+  "receiveModalDes4":{
+    "message": "ネットワークのミスマッチを検知することはできず、互換性のないブロックチェーンネットワークへの送金による資金損失については、cryptobridgeは責任を負いません。"
   }
 }

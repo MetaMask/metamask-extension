@@ -64,30 +64,15 @@ export const ReceiveModal = ({ address, token, onClose }) => {
             <div className="attention-des">
               <ul>
                 <li>
-                  At the moment, CryptoBridge only supports ERC-20 transfers.
-                  <span>
-                    Please double-check that the recipient’s wallet address is
-                    an ERC-20 address.
-                  </span>
+                  {t('receiveModalDes1')}
+                  <span>{t('receiveModalDes2')}</span>
                 </li>
-                <li>
-                  Sending funds to the wrong network{' '}
-                  <span>may result in permanent loss of funds.</span>
-                </li>
-                <li>
-                  The system cannot detect network mismatches, and{' '}
-                  <span>
-                    CryptoBridge is not responsible for loss of funds due to
-                    sending funds
-                  </span>{' '}
-                  to an incompatible blockchain network.
-                </li>
+                <li>{t('receiveModalDes3')}</li>
+                <li>{t('receiveModalDes4')}</li>
               </ul>
             </div>
           </div>
-          <div className="attention-tips">
-            Send only Ethereum network assets to this address
-          </div>
+          <div className="attention-tips">{t('receiveModalTips')}</div>
           <QrCodeView Qr={data} accountName={name} />
         </Box>
       </ModalContent>
