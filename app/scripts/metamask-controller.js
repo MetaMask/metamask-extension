@@ -172,10 +172,7 @@ import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
-import {
-  RecoveryError,
-  SecretType,
-} from '@metamask/seedless-onboarding-controller';
+import { RecoveryError } from '@metamask/seedless-onboarding-controller';
 
 import { ErrorReportingService } from '@metamask/error-reporting-service';
 import { TokenStandard } from '../../shared/constants/transaction';
@@ -4724,7 +4721,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async syncSeedPhrases() {
-    const isSocialLoginFlow = this.onboardingController.isSocialLoginFlowType();
+    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
 
     if (!isSocialLoginFlow) {
       throw new Error(
@@ -4734,7 +4731,7 @@ export default class MetamaskController extends EventEmitter {
 
     // 1. fetch all seed phrases
     const secretData =
-      await this.seedlessOnboardingController.fetchAllSecretData();
+      await this.seedlessOnboardingController.fetchAllSeedPhrases();
 
     const [rootSRP, ...otherSRPs] = secretData.mnemonic;
     if (!rootSRP) {
@@ -4778,17 +4775,15 @@ export default class MetamaskController extends EventEmitter {
       this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
 
     if (syncWithSocial) {
-      await this.seedlessOnboardingController.addNewSecretData(
+      await this.seedlessOnboardingController.addNewSeedPhraseBackup(
         seedPhraseAsUint8Array,
-        SecretType.Mnemonic,
-        { keyringId },
+        keyringId,
       );
     } else {
       // Do not sync the seed phrase to the server, only update the local state
       this.seedlessOnboardingController.updateBackupMetadataState({
         keyringId,
         data: seedPhraseAsUint8Array,
-        type: SecretType.Mnemonic,
       });
     }
   }
@@ -4871,7 +4866,7 @@ export default class MetamaskController extends EventEmitter {
         },
       );
 
-      if (this.onboardingController.isSocialLoginFlowType()) {
+      if (this.onboardingController.getIsSocialLoginFlow()) {
         // if social backup is requested, add the seed phrase backup
         await this.addNewSeedPhraseBackup(
           mnemonic,
@@ -4907,7 +4902,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async restoreSeedPhrasesToVault(seedPhrases) {
-    const isSocialLoginFlow = this.onboardingController.isSocialLoginFlowType();
+    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
 
     if (!isSocialLoginFlow) {
       // import the restored seed phrase (mnemonics) to the vault
@@ -5324,7 +5319,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async submitPassword(password) {
     const { completedOnboarding } = this.onboardingController.state;
-    const isSocialLoginFlow = this.onboardingController.isSocialLoginFlowType();
+    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
 
     // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
     await this.offscreenPromise;
