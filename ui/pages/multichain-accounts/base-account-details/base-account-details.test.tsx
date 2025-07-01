@@ -146,7 +146,10 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_EOA.address}
+            account={MOCK_ACCOUNT_EOA}
+          />
         </MemoryRouter>,
         store,
       );
@@ -175,7 +178,10 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_SOLANA_MAINNET.address}
+            account={MOCK_ACCOUNT_SOLANA_MAINNET}
+          />
         </MemoryRouter>,
         store,
       );
@@ -196,7 +202,10 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails>
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_EOA.address}
+            account={MOCK_ACCOUNT_EOA}
+          >
             <div data-testid="test-child">Test Child Component</div>
           </BaseAccountDetails>
         </MemoryRouter>,
@@ -215,7 +224,10 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_EOA.address}
+            account={MOCK_ACCOUNT_EOA}
+          />
         </MemoryRouter>,
         store,
       );
@@ -232,7 +244,10 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_EOA.address}
+            account={MOCK_ACCOUNT_EOA}
+          />
         </MemoryRouter>,
         store,
       );
@@ -242,7 +257,9 @@ describe('BaseAccountDetails', () => {
       const addressRowButton = nextButtons[0];
       fireEvent.click(addressRowButton);
 
-      expect(mockPush).toHaveBeenCalledWith(ACCOUNT_DETAILS_QR_CODE_ROUTE);
+      expect(mockPush).toHaveBeenCalledWith(
+        `${ACCOUNT_DETAILS_QR_CODE_ROUTE}/${MOCK_ACCOUNT_EOA.address}`,
+      );
     });
 
     it('should navigate to wallet details when wallet row is clicked', () => {
@@ -251,7 +268,10 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_EOA.address}
+            account={MOCK_ACCOUNT_EOA}
+          />
         </MemoryRouter>,
         store,
       );
@@ -272,7 +292,10 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_EOA.address}
+            account={MOCK_ACCOUNT_EOA}
+          />
         </MemoryRouter>,
         store,
       );
@@ -296,7 +319,10 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={mockEvmAccount.address}
+            account={mockEvmAccount}
+          />
         </MemoryRouter>,
         store,
       );
@@ -314,7 +340,10 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_SOLANA_MAINNET.address}
+            account={MOCK_ACCOUNT_SOLANA_MAINNET}
+          />
         </MemoryRouter>,
         store,
       );
@@ -331,7 +360,10 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_EOA.address}
+            account={MOCK_ACCOUNT_EOA}
+          />
         </MemoryRouter>,
         store,
       );
