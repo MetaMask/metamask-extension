@@ -167,12 +167,14 @@ const WalletDetails = () => {
     setIsModalOpen(false);
   };
 
-  const handleCreateEthereumAccount = async () => {
+  const handleCreateEthereumAccount = async (): Promise<boolean> => {
     trace({ name: TraceName.AddAccount });
     try {
       await dispatch(addNewAccount(keyringId));
+      return true;
     } catch (error) {
       console.error('Error creating Ethereum account:', error);
+      return false;
     } finally {
       endTrace({ name: TraceName.AddAccount });
     }
@@ -181,28 +183,29 @@ const WalletDetails = () => {
   const handleCreateSnapAccount = async (
     clientType: WalletClientType,
     chainId: CaipChainId,
-  ) => {
-    let client;
-
-    if (clientType === WalletClientType.Solana) {
-      client = solanaClient;
-    }
-    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-    else if (clientType === WalletClientType.Bitcoin) {
-      client = bitcoinClient;
-    }
-    ///: END:ONLY_INCLUDE_IF
-    else {
-      console.error(`Unsupported client type: ${clientType}`);
-      return;
-    }
-
-    if (!client) {
-      console.error(`Client not available for type: ${clientType}`);
-      return;
-    }
-
+  ): Promise<boolean> => {
+    trace({ name: TraceName.AddAccount });
     try {
+      let client;
+
+      if (clientType === WalletClientType.Solana) {
+        client = solanaClient;
+      }
+      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+      else if (clientType === WalletClientType.Bitcoin) {
+        client = bitcoinClient;
+      }
+      ///: END:ONLY_INCLUDE_IF
+      else {
+        console.error(`Unsupported client type: ${clientType}`);
+        return false;
+      }
+
+      if (!client) {
+        console.error(`Client not available for type: ${clientType}`);
+        return false;
+      }
+
       await client.createAccount(
         {
           scope: chainId,
@@ -214,31 +217,40 @@ const WalletDetails = () => {
           setSelectedAccount: false,
         },
       );
+      return true;
     } catch (error) {
       console.error(`Error creating ${clientType} account:`, error);
+      return false;
+    } finally {
+      endTrace({ name: TraceName.AddAccount });
     }
   };
 
   const handleAccountTypeSelect = async (
     accountType: WalletClientType | typeof EVM_WALLET_TYPE,
   ) => {
+    let success = false;
+
     if (accountType === EVM_WALLET_TYPE) {
-      await handleCreateEthereumAccount();
+      success = await handleCreateEthereumAccount();
     } else if (accountType === WalletClientType.Solana) {
-      await handleCreateSnapAccount(
+      success = await handleCreateSnapAccount(
         WalletClientType.Solana,
         SolScope.Mainnet as CaipChainId,
       );
     }
     ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     else if (accountType === WalletClientType.Bitcoin) {
-      await handleCreateSnapAccount(
+      success = await handleCreateSnapAccount(
         WalletClientType.Bitcoin,
         BtcScope.Mainnet as CaipChainId,
       );
     }
     ///: END:ONLY_INCLUDE_IF
-    handleCloseModal();
+
+    if (success) {
+      handleCloseModal();
+    }
   };
 
   const rowStylesProps = {
