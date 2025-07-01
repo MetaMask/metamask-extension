@@ -45,7 +45,6 @@ export const CustomNetworks = React.memo(() => {
     getMultichainNetworkConfigurationsByChainId,
   );
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
-  console.log('enabledNetworksByNamespace', enabledNetworksByNamespace);
 
   const { nonTestNetworks, testNetworks } = useNetworkManagerState();
 
