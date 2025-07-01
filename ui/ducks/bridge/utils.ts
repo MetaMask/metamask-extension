@@ -13,6 +13,7 @@ import {
   formatChainIdToHex,
   BridgeClientId,
   formatChainIdToCaip,
+  isNativeAddress,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
@@ -21,6 +22,7 @@ import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util'
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import type { BridgeToken } from './types';
 
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
@@ -207,3 +209,55 @@ export const isNetworkAdded = (
 ): v is NetworkConfiguration =>
   v !== undefined &&
   'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];
+
+export const calculateMaxBridgeAmount = ({
+  balance,
+  fromToken,
+  fromChain,
+  activeQuote,
+}: {
+  balance: string;
+  fromToken: BridgeToken | null;
+  fromChain?: { chainId: string } | null;
+  activeQuote?: { totalMaxNetworkFee?: { amount: string } } | null;
+}): string => {
+  if (!fromToken || !balance) {
+    return '0';
+  }
+
+  // For non-native tokens, return full balance
+  if (!isNativeAddress(fromToken.address)) {
+    return balance;
+  }
+
+  // For native tokens, calculate max amount considering gas fees
+  const balanceBN = new BigNumber(balance);
+  let maxAmount: BigNumber;
+
+  // If we have an active quote, use its totalMaxNetworkFee
+  if (activeQuote?.totalMaxNetworkFee?.amount) {
+    const networkFee = new BigNumber(activeQuote.totalMaxNetworkFee.amount);
+
+    if (fromChain && isSolanaChainId(fromChain.chainId)) {
+      // For Solana, also account for rent exemption
+      // The minimumBalanceForRentExemptionInSOL is already considered in the validation
+      // but we can add a small buffer for safety
+      const buffer = new BigNumber('0.001'); // 0.001 SOL buffer
+      maxAmount = balanceBN.minus(networkFee).minus(buffer);
+    } else {
+      // For EVM chains, subtract the network fee
+      maxAmount = balanceBN.minus(networkFee);
+    }
+  } else if (fromChain && isSolanaChainId(fromChain.chainId)) {
+    // If no active quote and it's Solana, use conservative estimate
+    const buffer = new BigNumber('0.01'); // 0.01 SOL buffer
+    maxAmount = balanceBN.minus(buffer);
+  } else {
+    // If no active quote and it's EVM, use a reasonable gas buffer
+    const gasBuffer = new BigNumber('0.01'); // 0.01 ETH buffer
+    maxAmount = balanceBN.minus(gasBuffer);
+  }
+
+  // Ensure we don't go negative
+  return maxAmount.lte(0) ? '0' : maxAmount.toFixed();
+};

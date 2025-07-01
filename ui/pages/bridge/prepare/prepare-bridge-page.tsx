@@ -96,7 +96,10 @@ import {
 } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { isNetworkAdded } from '../../../ducks/bridge/utils';
+import {
+  isNetworkAdded,
+  calculateMaxBridgeAmount,
+} from '../../../ducks/bridge/utils';
 import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column, Row, Tooltip } from '../layout';
@@ -699,7 +702,14 @@ const PrepareBridgePage = () => {
           }}
           isMultiselectEnabled={isUnifiedUIEnabled || !isSwap}
           onMaxButtonClick={(value: string) => {
-            dispatch(setFromTokenInputValue(value));
+            const maxAmount = calculateMaxBridgeAmount({
+              balance: value,
+              fromToken,
+              fromChain,
+              activeQuote,
+            });
+
+            dispatch(setFromTokenInputValue(maxAmount));
           }}
           // Hides fiat amount string before a token quantity is entered.
           amountInFiat={
