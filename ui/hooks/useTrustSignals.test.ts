@@ -21,7 +21,6 @@ jest.mock('../selectors', () => ({
 
 const VALUE_MOCK = '0x1234567890123456789012345678901234567890';
 const VALUE_MOCK_2 = '0x9876543210987654321098765432109876543210';
-const VARIATION_MOCK = '0x1';
 const TRUST_LABEL_MOCK = 'Malicious Address';
 const VERIFIED_LABEL_MOCK = 'Verified Contract';
 const WARNING_LABEL_MOCK = 'Suspicious Activity';
@@ -42,11 +41,7 @@ describe('useTrustSignals', () => {
         label: TRUST_LABEL_MOCK,
       });
 
-      const result = useTrustSignal(
-        VALUE_MOCK,
-        NameType.ETHEREUM_ADDRESS,
-        VARIATION_MOCK,
-      );
+      const result = useTrustSignal(VALUE_MOCK, NameType.ETHEREUM_ADDRESS);
 
       expect(result).toStrictEqual({
         state: TrustSignalDisplayState.Malicious,
@@ -67,7 +62,6 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
-            variation: VARIATION_MOCK,
           },
         ];
 
@@ -95,7 +89,6 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
-            variation: VARIATION_MOCK,
           },
         ];
 
@@ -118,7 +111,6 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
-            variation: VARIATION_MOCK,
           },
         ];
 
@@ -141,7 +133,6 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
-            variation: VARIATION_MOCK,
           },
         ];
 
@@ -164,7 +155,6 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
-            variation: VARIATION_MOCK,
           },
         ];
 
@@ -186,7 +176,6 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
-            variation: VARIATION_MOCK,
           },
         ];
 
@@ -208,7 +197,6 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
-            variation: VARIATION_MOCK,
           },
         ];
 
@@ -230,7 +218,6 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
-            variation: VARIATION_MOCK,
           },
         ];
 
@@ -250,7 +237,6 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
-            variation: VARIATION_MOCK,
           },
         ];
 
@@ -280,12 +266,10 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
-            variation: VARIATION_MOCK,
           },
           {
             value: VALUE_MOCK_2,
             type: NameType.ETHEREUM_ADDRESS,
-            variation: VARIATION_MOCK,
           },
         ];
 
@@ -333,12 +317,10 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
-            variation: VARIATION_MOCK,
           },
           {
             value: 'test.eth',
             type: NameType.ETHEREUM_ADDRESS, // Using ETHEREUM_ADDRESS as it's the only supported type
-            variation: VARIATION_MOCK,
           },
         ];
 
