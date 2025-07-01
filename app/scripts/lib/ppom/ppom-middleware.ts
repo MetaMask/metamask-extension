@@ -80,9 +80,11 @@ export function createPPOMMiddleware<
           metamask: {
             ...networkController.state,
             ...selectedNetworkController.state,
-            domains: selectedNetworkController.state.domains || {},
           },
         }) ?? {};
+
+        console.log("OMG NO CHAIN ID!");
+
       if (!chainId) {
         return;
       }

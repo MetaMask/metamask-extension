@@ -246,23 +246,29 @@ export const getProviderConfig = createDeepEqualSelector(
               network.defaultBlockExplorerUrlIndex ?? 0
             ];
 
-          return {
-            chainId: network.chainId,
-            ticker: network.nativeCurrency,
-            rpcPrefs: { ...(blockExplorerUrl && { blockExplorerUrl }) },
-            type:
-              rpcEndpoint.type === RpcEndpointType.Custom
-                ? 'rpc'
-                : rpcEndpoint.networkClientId,
-            ...(rpcEndpoint.type === RpcEndpointType.Custom && {
-              id: rpcEndpoint.networkClientId,
-              nickname: network.name,
-              rpcUrl: rpcEndpoint.url,
-            }),
-          };
+            const providerConfig = {
+              chainId: network.chainId,
+              ticker: network.nativeCurrency,
+              rpcPrefs: { ...(blockExplorerUrl && { blockExplorerUrl }) },
+              type:
+                rpcEndpoint.type === RpcEndpointType.Custom
+                  ? 'rpc'
+                  : rpcEndpoint.networkClientId,
+              ...(rpcEndpoint.type === RpcEndpointType.Custom && {
+                id: rpcEndpoint.networkClientId,
+                nickname: network.name,
+                rpcUrl: rpcEndpoint.url,
+              }),
+            };
+
+          console.log("providerConfig is: ", JSON.stringify(providerConfig, null, 2));
+
+          return providerConfig;
         }
       }
     }
+
+    console.log("OMFG NO PROVIDER CONFIG!");
     throw new Error('Provider configuration not found');
   },
 );
