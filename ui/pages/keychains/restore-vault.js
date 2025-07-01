@@ -41,10 +41,6 @@ class RestoreVaultPage extends Component {
     const {
       // eslint-disable-next-line no-shadow
       createNewVaultAndRestore,
-      // eslint-disable-next-line no-shadow
-      setFirstTimeFlowType,
-      // eslint-disable-next-line no-shadow
-      resetOAuthLoginState,
       leaveImportSeedScreenState,
       history,
       // eslint-disable-next-line no-shadow
@@ -55,11 +51,11 @@ class RestoreVaultPage extends Component {
 
     if (isSocialLoginFlow) {
       // reset oauth and onboarding state
-      await resetOAuthLoginState();
+      await this.props.resetOAuthLoginState();
     }
 
     // update the first time flow type to restore
-    await setFirstTimeFlowType(FirstTimeFlowType.restore);
+    await this.props.setFirstTimeFlowType(FirstTimeFlowType.restore);
 
     // import the seed phrase and create a new vault
     await createNewVaultAndRestore(password, seedPhrase);
