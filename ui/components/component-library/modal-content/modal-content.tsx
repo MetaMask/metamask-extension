@@ -26,7 +26,7 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
     {
       className = '',
       children,
-      size = ModalContentSize.Sm,
+      size = ModalContentSize.Md,
       modalDialogProps,
       ...props
     }: ModalContentProps<C>,
@@ -92,7 +92,7 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
           width={BlockSize.Screen}
           height={BlockSize.Screen}
           justifyContent={JustifyContent.center}
-          alignItems={AlignItems.flexStart}
+          alignItems={AlignItems.center}
           paddingRight={4}
           paddingLeft={4}
           paddingTop={[4, 8, 12]}

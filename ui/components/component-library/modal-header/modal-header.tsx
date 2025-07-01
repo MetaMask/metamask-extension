@@ -31,6 +31,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
       paddingLeft={4}
       paddingRight={4}
       paddingBottom={4}
+      style={{ borderBottom: '1px solid #E2E2E2' }}
       childrenWrapperProps={{
         width: BlockSize.Full,
       }}

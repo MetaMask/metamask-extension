@@ -65,6 +65,7 @@ import { trace, TraceName } from '../../../../shared/lib/trace';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
+import ReceiveAssetListModal from '../../multichain/receive-modal/receive-asset-list-modal';
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -95,6 +96,11 @@ const CoinButtons = ({
 
   const trackEvent = useContext(MetaMetricsContext);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
+  const [showAssetListModal, setShowAssetListModal] = useState(false);
+  const [selectedReceiveAddress, setSelectedReceiveAddress] = useState<
+    string | null
+  >(null);
+  const [selectedToken, setSelectedToken] = useState<SwapsEthToken | null>(null);
 
   const { address: selectedAddress } = account;
   const history = useHistory();
@@ -460,10 +466,28 @@ const CoinButtons = ({
       />
       {
         <>
-          {showReceiveModal && (
+          {showAssetListModal && (
+            <ReceiveAssetListModal
+              isOpen={showAssetListModal}
+              onClose={() => setShowAssetListModal(false)}
+              onSelectAsset={(_chainId, address, token) => {
+                const receiveAddress = address || selectedAddress;
+                setSelectedReceiveAddress(receiveAddress);
+                setShowAssetListModal(false);
+                setShowReceiveModal(true);
+                setSelectedToken(token);
+              }}
+            />
+          )}
+          {showReceiveModal && selectedReceiveAddress && (
             <ReceiveModal
-              address={selectedAddress}
-              onClose={() => setShowReceiveModal(false)}
+              address={selectedReceiveAddress}
+              token={selectedToken}
+              onClose={() => {
+                setShowReceiveModal(false);
+                setSelectedReceiveAddress(null);
+                setSelectedToken(null);
+              }}
             />
           )}
           <IconButton
@@ -497,7 +521,7 @@ const CoinButtons = ({
                   chain_id: chainId,
                 },
               });
-              setShowReceiveModal(true);
+              setShowAssetListModal(true);
             }}
             round={!displayNewIconButtons}
           />

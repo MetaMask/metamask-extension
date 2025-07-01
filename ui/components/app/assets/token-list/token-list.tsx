@@ -31,7 +31,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 
 type TokenListProps = {
-  onTokenClick: (chainId: string, address: string) => void;
+  onTokenClick: (chainId: string, address: string, token?: any) => void;
   safeChains?: SafeChain[];
 };
 
@@ -99,7 +99,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       return;
     }
 
-    onTokenClick(token.chainId, token.address);
+    onTokenClick(token.chainId, token.address, token);
 
     // Track event: token details
     trackEvent({

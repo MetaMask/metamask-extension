@@ -15,7 +15,7 @@ import { trace, TraceName } from '../../../../../shared/lib/trace';
 import AssetListFundingModals from './asset-list-funding-modals';
 
 export type AssetListProps = {
-  onClickAsset: (chainId: string, address: string) => void;
+  onClickAsset: (chainId: string, address: string, token?: any) => void;
   showTokensLinks?: boolean;
   safeChains?: SafeChain[];
 };
@@ -29,9 +29,9 @@ const TokenListContainer = React.memo(
     const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
 
     const onTokenClick = useCallback(
-      (chainId: string, tokenAddress: string) => {
+      (chainId: string, tokenAddress: string, token?: any) => {
         trace({ name: TraceName.AssetDetails });
-        onClickAsset(chainId, tokenAddress);
+        onClickAsset(chainId, tokenAddress, token);
         trackEvent({
           event: MetaMetricsEventName.TokenScreenOpened,
           category: MetaMetricsEventCategory.Navigation,

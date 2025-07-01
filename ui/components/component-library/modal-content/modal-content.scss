@@ -62,6 +62,49 @@
       max-width: var(--modal-content-size);
     }
   }
+
+  .attention {
+    display: flex;
+    align-items: flex-start;
+    padding: 13px;
+    box-sizing: border-box;
+    gap: 16px;
+    background: var(--color-primary-attention);
+  }
+
+  .attention-ico {
+    width: 24px;
+    height: 24px;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-primary-attention-ico);
+  }
+
+  .attention-des {
+    color: var(--color-primary-attention-des);
+    font-family: Inter;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    flex: 1;
+  }
+
+  .attention-des span {
+    font-weight: 700;
+  }
+
+  .attention-tips {
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color: var(--color-primary-attention-tips);
+    text-align: center;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {

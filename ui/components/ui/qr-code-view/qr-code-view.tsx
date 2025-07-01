@@ -6,7 +6,15 @@ import { isHexPrefixed } from 'ethereumjs-util';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+  AvatarToken,
+  AvatarTokenSize,
+} from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import type { MetaMaskReduxState } from '../../../store/store';
 import {
@@ -40,7 +48,7 @@ function QrCodeView({
   accountName,
   location = 'Account Details Modal',
 }: {
-  Qr: { message?: string; data: string };
+  Qr: { message?: string; data: string; token?: any };
   warning: string | null | undefined;
   accountName?: string;
   location?: string;
@@ -48,7 +56,7 @@ function QrCodeView({
   const trackEvent = useContext(MetaMetricsContext);
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
   const t = useI18nContext();
-  const { message, data } = Qr;
+  const { message, data, token } = Qr;
   const checksummedAddress = normalizeSafeAddress(data);
   const address = `${
     isHexPrefixed(data) ? 'ethereum:' : ''
@@ -92,10 +100,23 @@ function QrCodeView({
           }}
         />
         <Box className="qr-code__logo">
-          <img src="images/logo/metamask-fox.svg" alt="Logo" />
+          {token && token.iconUrl ? (
+            <AvatarToken
+              name={token.symbol}
+              src={token.iconUrl}
+              size={AvatarTokenSize.Lg}
+            />
+          ) : (
+            <img
+              src="images/logo/metamask-fox.svg"
+              alt="Logo"
+              style={{ width: 40, height: 40, borderRadius: 20 }}
+            />
+          )}
         </Box>
       </Box>
-      {accountName ? (
+
+      {/* {accountName ? (
         <Text
           variant={TextVariant.bodyLgMedium}
           textAlign={TextAlign.Center}
@@ -103,7 +124,7 @@ function QrCodeView({
         >
           {accountName}
         </Text>
-      ) : null}
+      ) : null} */}
       <Text
         variant={TextVariant.bodyMd}
         className="qr-code__address-segments"
