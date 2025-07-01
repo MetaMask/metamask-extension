@@ -201,15 +201,15 @@ export const AppHeaderUnlockedContent = ({
               address={internalAccount.address}
               name={internalAccount.metadata.name}
               onClick={() => {
-                // dispatch(toggleAccountMenu());
+                dispatch(toggleAccountMenu());
 
-                // trackEvent({
-                //   event: MetaMetricsEventName.NavAccountMenuOpened,
-                //   category: MetaMetricsEventCategory.Navigation,
-                //   properties: {
-                //     location: 'Home',
-                //   },
-                // });
+                trackEvent({
+                  event: MetaMetricsEventName.NavAccountMenuOpened,
+                  category: MetaMetricsEventCategory.Navigation,
+                  properties: {
+                    location: 'Home',
+                  },
+                });
               }}
               disabled={disableAccountPicker}
               labelProps={{ fontWeight: FontWeight.Bold }}
