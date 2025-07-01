@@ -257,7 +257,9 @@ describe('BaseAccountDetails', () => {
       const addressRowButton = nextButtons[0];
       fireEvent.click(addressRowButton);
 
-      expect(mockPush).toHaveBeenCalledWith(ACCOUNT_DETAILS_QR_CODE_ROUTE);
+      expect(mockPush).toHaveBeenCalledWith(
+        `${ACCOUNT_DETAILS_QR_CODE_ROUTE}/${MOCK_ACCOUNT_EOA.address}`,
+      );
     });
 
     it('should navigate to wallet details when wallet row is clicked', () => {
