@@ -570,12 +570,16 @@ describe('useCarouselManagement', () => {
         regularSlides: [REGULAR_SLIDE],
       });
 
+      mockGetSlides.mockReturnValue([]);
+      mockGetSelectedAccountCachedBalance.mockReturnValue(ZERO_BALANCE);
+      mockGetIsRemoteModeEnabled.mockReturnValue(false);
+      mockGetUseExternalServices.mockReturnValue(false);
+
       renderHook(() =>
         useCarouselManagement({ testDate: new Date().toISOString() }),
       );
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
-
       const updatedSlides = mockUpdateSlides.mock
         .calls[0][0] as CarouselSlide[];
       const ids = updatedSlides.map((s) => s.id);
