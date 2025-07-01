@@ -423,12 +423,12 @@ export default class Routes extends Component {
             exact
           />
           <Authenticated
-            path={ACCOUNT_DETAILS_ROUTE}
+            path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
             component={MultichainAccountDetails}
             exact
           />
           <Authenticated
-            path={ACCOUNT_DETAILS_QR_CODE_ROUTE}
+            path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
             component={AddressQRCode}
             exact
           />
