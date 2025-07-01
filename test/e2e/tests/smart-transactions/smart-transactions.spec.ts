@@ -79,7 +79,7 @@ describe('Smart Transactions', function () {
         await activityList.check_completedTxNumberDisplayedInActivity(2);
         await activityList.check_noFailedTransactions();
         await activityList.check_confirmedTxNumberDisplayedInActivity(2);
-        await activityList.check_txAction('Send', 2);
+        await activityList.check_txAction('Sent', 2);
         await activityList.check_txAmountInActivity(`-0 ETH`, 1);
         await activityList.check_txAmountInActivity(`-0.01 ETH`, 2);
       },
