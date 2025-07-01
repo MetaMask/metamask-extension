@@ -86,6 +86,10 @@ describe('Actions', () => {
 
   let originalNavigator;
 
+  beforeAll(() => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
+  });
+
   beforeEach(async () => {
     // Save original navigator for restoring after tests
     originalNavigator = global.navigator;
@@ -125,6 +129,129 @@ describe('Actions', () => {
     });
 
     sinon.restore();
+  });
+
+  describe('createAndBackupSeedPhrase', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('should create KeyChain, vault and Backup in the background', async () => {
+      const store = mockStore();
+      const mockKeyrings = [{ metadata: { id: 'mock-keyring-id' } }];
+      const mockSeedPhrase = 'mock seed phrase';
+      const mockEncodedSeedPhrase = Array.from(
+        Buffer.from(mockSeedPhrase).values(),
+      );
+
+      const createSeedPhraseBackupStub =
+        background.createSeedPhraseBackup.resolves();
+      const createNewVaultAndKeychainStub =
+        background.createNewVaultAndKeychain.resolves(mockKeyrings[0]);
+      const getSeedPhraseStub = background.getSeedPhrase.resolves(
+        mockEncodedSeedPhrase,
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(actions.createNewVaultAndSyncWithSocial('password'));
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(getSeedPhraseStub.callCount).toStrictEqual(1);
+      expect(createNewVaultAndKeychainStub.callCount).toStrictEqual(1);
+      expect(
+        createSeedPhraseBackupStub.calledOnceWith(
+          'password',
+          mockEncodedSeedPhrase,
+          mockKeyrings[0].metadata.id,
+        ),
+      ).toStrictEqual(true);
+    });
+  });
+
+  describe('#restoreAndGetSeedPhrase', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('fetches all seed phrases from the metadata store, restores the vault and updates the SocialbackupMetadata state', async () => {
+      const store = mockStore();
+      const mockSeedPhrase = 'mock seed phrase';
+      const mockKeyrings = [{ metadata: { id: 'mock-keyring-id' } }];
+      const mockEncodedSeedPhrase = Array.from(
+        Buffer.from(mockSeedPhrase).values(),
+      );
+
+      const fetchAllSecretDataStub = background.fetchAllSecretData.resolves([
+        mockEncodedSeedPhrase,
+      ]);
+      const createNewVaultAndRestoreStub =
+        background.createNewVaultAndRestore.resolves(mockKeyrings);
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(
+        actions.restoreSocialBackupAndGetSeedPhrase('password'),
+      );
+
+      expect(fetchAllSecretDataStub.callCount).toStrictEqual(1);
+      expect(createNewVaultAndRestoreStub.callCount).toStrictEqual(1);
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('should not restore vault if no seed phrase is found', async () => {
+      const store = mockStore();
+
+      const fetchAllSecretDataStub = background.fetchAllSecretData.resolves([]);
+      const createNewVaultAndRestoreStub =
+        background.createNewVaultAndRestore.resolves();
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', payload: 'No seed phrase found' },
+      ];
+
+      await expect(
+        store.dispatch(actions.restoreSocialBackupAndGetSeedPhrase('password')),
+      ).rejects.toThrow('No seed phrase found');
+      expect(store.getActions()).toStrictEqual(expectedActions);
+
+      expect(fetchAllSecretDataStub.callCount).toStrictEqual(1);
+      expect(createNewVaultAndRestoreStub.callCount).toStrictEqual(0);
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('errors when fetchAndRestoreSeedPhrase throws', async () => {
+      const store = mockStore();
+
+      background.fetchAllSecretData.rejects(new Error('error'));
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
+      ];
+
+      await expect(
+        store.dispatch(actions.restoreSocialBackupAndGetSeedPhrase('password')),
+      ).rejects.toThrow('error');
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
   });
 
   describe('#tryUnlockMetamask', () => {

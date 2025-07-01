@@ -2226,9 +2226,6 @@
   "floatAmountToken": {
     "message": "トークンの金額は整数で入力する必要があります"
   },
-  "followUsOnTwitter": {
-    "message": "Twitterでフォロー"
-  },
   "forbiddenIpfsGateway": {
     "message": "IPFSゲートウェイの使用は禁止されています。CIDゲートウェイを指定してください"
   },
