@@ -14,13 +14,14 @@ import {
   useTrustSignal,
   TrustSignalDisplayState,
 } from '../../../../../hooks/useTrustSignals';
+import { getExperience } from '../../../../../../shared/constants/verification';
 
 export function useFirstTimeInteractionAlert(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const internalAccounts = useSelector(getInternalAccounts);
   const to = useTransferRecipient();
-  const { isFirstTimeInteraction } = currentConfirmation ?? {};
+  const { isFirstTimeInteraction, chainId } = currentConfirmation ?? {};
 
   const isInternalAccount = internalAccounts.some(
     (account) => account.address?.toLowerCase() === to?.toLowerCase(),
@@ -34,8 +35,13 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   const isVerifiedAddress =
     trustSignalDisplayState === TrustSignalDisplayState.Verified;
 
+  const isFirstPartyContract = Boolean(getExperience(to, chainId));
+
   const showAlert =
-    !isInternalAccount && isFirstTimeInteraction && !isVerifiedAddress;
+    !isInternalAccount &&
+    isFirstTimeInteraction &&
+    !isVerifiedAddress &&
+    !isFirstPartyContract;
 
   return useMemo(() => {
     // If isFirstTimeInteraction is undefined that means it's either disabled or error in accounts API
