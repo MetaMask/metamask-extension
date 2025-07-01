@@ -21,6 +21,7 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -283,7 +284,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
                     alignItems={AlignItems.center}
                     backgroundColor={BackgroundColor.backgroundDefault}
                     borderColor={BorderColor.borderMuted}
-                    borderRadius={BorderRadius.XL}
+                    borderRadius={BorderRadius.LG}
                     paddingInline={2}
                     paddingTop={1}
                     paddingBottom={1}
@@ -294,7 +295,8 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
                   >
                     <Text
                       color={TextColor.textAlternative}
-                      className="srp-input-import__text-index"
+                      textAlign={TextAlign.Left}
+                      className="srp-input-import__word-index"
                     >
                       {index + 1}.
                     </Text>
@@ -323,9 +325,10 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
                     startAccessory={
                       <Text
                         color={TextColor.textAlternative}
+                        textAlign={TextAlign.Left}
                         className="srp-input-import__word-index"
                       >
-                        {index + 1}
+                        {index + 1}.
                       </Text>
                     }
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
