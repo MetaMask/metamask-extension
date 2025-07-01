@@ -423,7 +423,6 @@ describe('WalletDetails', () => {
     it('creates Ethereum account directly when Ethereum button is clicked', async () => {
       const mockNewAccount = { address: '0x456', id: 'new-account-id' };
       mockAddNewAccount.mockResolvedValue(mockNewAccount);
-      mockGetNextAvailableAccountName.mockResolvedValue('Account 2');
 
       const { getByText, getByTestId, queryByTestId } = renderComponent();
       fireEvent.click(getByText('addAccount'));
@@ -431,7 +430,6 @@ describe('WalletDetails', () => {
 
       await waitFor(() => {
         expect(mockAddNewAccount).toHaveBeenCalledWith('test-wallet');
-        expect(mockSetAccountLabel).toHaveBeenCalledWith('0x456', 'Account 2');
         expect(
           queryByTestId('mock-account-type-selection'),
         ).not.toBeInTheDocument();

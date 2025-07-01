@@ -5,8 +5,6 @@ import {
   AccountGroupId,
   AccountWalletId,
 } from '@metamask/account-tree-controller';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { KeyringTypes } from '@metamask/keyring-controller';
 import { CaipChainId } from '@metamask/utils';
 import {
   SolScope,
@@ -56,8 +54,6 @@ import { WalletDetailsAccountTypeSelection } from '../../../components/multichai
 import {
   setAccountDetailsAddress,
   addNewAccount,
-  setAccountLabel,
-  getNextAvailableAccountName as getNextAvailableAccountNameFromController,
 } from '../../../store/actions';
 import {
   ACCOUNT_DETAILS_ROUTE,
@@ -174,15 +170,7 @@ const WalletDetails = () => {
   const handleCreateEthereumAccount = async () => {
     trace({ name: TraceName.AddAccount });
     try {
-      const newAccount = (await dispatch(
-        addNewAccount(keyringId),
-      )) as unknown as InternalAccount;
-      if (newAccount?.address) {
-        const defaultName = await getNextAvailableAccountNameFromController(
-          KeyringTypes.hd,
-        );
-        dispatch(setAccountLabel(newAccount.address, defaultName));
-      }
+      await dispatch(addNewAccount(keyringId));
     } catch (error) {
       console.error('Error creating Ethereum account:', error);
     } finally {
