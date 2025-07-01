@@ -1,6 +1,5 @@
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { mockWebAuthenticator } from '../../../../test/e2e/helpers/social-sync/mocks';
-import { getPlatform } from '../../lib/util';
+import browser from 'webextension-polyfill';
+import { mockWebAuthenticator } from '../../../../test/e2e/helpers/seedless-onboarding/mocks';
 import { WebAuthenticator } from './types';
 import { base64urlencode } from './utils';
 
@@ -10,7 +9,7 @@ async function generateCodeVerifierAndChallenge(): Promise<{
 }> {
   const bytes = new Uint8Array(32);
   crypto.getRandomValues(bytes);
-  const codeVerifier = Array.from(bytes).join('');
+  const codeVerifier = base64urlencode(bytes);
 
   const challengeBuffer = await crypto.subtle.digest(
     'SHA-256',
@@ -29,13 +28,21 @@ function generateNonce(): string {
   return crypto.randomUUID();
 }
 
-export function getIdentityAPI():
-  | typeof chrome.identity
-  | typeof browser.identity {
-  const isFirefox = getPlatform() === PLATFORM_FIREFOX;
-  return isFirefox
-    ? globalThis.browser.identity // use browser.identity for Firefox
-    : chrome.identity; // use chrome.identity for Chromium based browsers
+function getIdentityAPI(): typeof chrome.identity | typeof browser.identity {
+  // if chrome.identity API is available, we will use it
+  // note that, in firefox, chrome.identity is available
+  // but only some of the methods are supported
+  // learn more here {@link https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/identity#browser_compatibility}
+  if (
+    chrome?.identity &&
+    'getRedirectURL' in chrome.identity &&
+    'launchWebAuthFlow' in chrome.identity
+  ) {
+    return chrome.identity;
+  }
+
+  // otherwise use browser.identity API
+  return browser.identity;
 }
 
 async function launchWebAuthFlow(
@@ -54,18 +61,6 @@ function getRedirectURL(): string {
   return identityAPI.getRedirectURL();
 }
 
-async function requestIdentityPermission(): Promise<boolean> {
-  const isFirefox = getPlatform() === PLATFORM_FIREFOX;
-  if (isFirefox) {
-    return true;
-  }
-
-  const permissionGranted = await chrome.permissions.request({
-    permissions: ['identity'],
-  });
-  return permissionGranted;
-}
-
 export function webAuthenticatorFactory(): WebAuthenticator {
   if (process.env.IN_TEST) {
     return mockWebAuthenticator();
@@ -76,7 +71,5 @@ export function webAuthenticatorFactory(): WebAuthenticator {
     generateCodeVerifierAndChallenge,
     generateNonce,
     getRedirectURL,
-    getPlatform,
-    requestIdentityPermission,
   };
 }

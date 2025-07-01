@@ -24,6 +24,11 @@ class OnboardingCompletePage {
     tag: 'h2',
   };
 
+  private readonly keepSrpSafeMessage = {
+    text: 'Keep your Secret Recovery Phrase safe!',
+    tag: 'h2',
+  };
+
   private readonly remindMeLaterButton = {
     text: 'We’ll remind you later',
     tag: 'h2',
@@ -52,15 +57,33 @@ class OnboardingCompletePage {
     console.log('Onboarding wallet creation complete page is loaded');
   }
 
+  async check_pageIsLoaded_backup(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.keepSrpSafeMessage,
+        this.onboardingCompleteDoneButton,
+      ]);
+    } catch (e) {
+      console.error(
+        'Timeout while waiting for srp backup complete page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('SRP backup complete page is loaded');
+  }
+
   async clickCreateWalletDoneButton(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(
       this.onboardingCompleteDoneButton,
     );
   }
 
-  async completeOnboarding(): Promise<void> {
+  async completeOnboarding(isSocialImportFlow: boolean = false): Promise<void> {
     console.log('Complete onboarding');
-    await this.clickCreateWalletDoneButton();
+    if (!isSocialImportFlow) {
+      await this.clickCreateWalletDoneButton();
+    }
     await this.driver.waitForSelector(this.installCompleteMessage);
     await this.driver.waitForSelector(this.pinExtensionMessage);
     await this.driver.clickElementAndWaitToDisappear(
@@ -68,11 +91,9 @@ class OnboardingCompletePage {
     );
   }
 
-  async completeOnboardingPinExtensionOnly(): Promise<void> {
-    console.log('Complete onboarding with pin extension step only');
-    await this.driver.clickElementAndWaitToDisappear(
-      this.pinExtensionDoneButton,
-    );
+  async completeBackup(): Promise<void> {
+    console.log('Complete backup');
+    await this.clickCreateWalletDoneButton();
   }
 
   async navigateToDefaultPrivacySettings(): Promise<void> {
@@ -83,6 +104,10 @@ class OnboardingCompletePage {
 
   async check_walletReadyMessageIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.walletReadyMessage);
+  }
+
+  async check_keepSrpSafeMessageIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.keepSrpSafeMessage);
   }
 
   async check_remindMeLaterButtonIsDisplayed(): Promise<void> {

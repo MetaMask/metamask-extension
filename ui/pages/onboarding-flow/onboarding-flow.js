@@ -21,17 +21,19 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_ACCOUNT_EXIST,
   ONBOARDING_ACCOUNT_NOT_FOUND,
+  SECURITY_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
+  getIsPrimarySeedPhraseBackedUp,
   getIsUnlocked,
 } from '../../ducks/metamask/metamask';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
-  createNewVaultAndSyncWithSocial,
   restoreSocialBackupAndGetSeedPhrase,
+  createNewVaultAndSyncWithSocial,
 } from '../../store/actions';
 import {
   getFirstTimeFlowType,
@@ -63,7 +65,11 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../helpers/constants/design-system';
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -93,9 +99,20 @@ export default function OnboardingFlow() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
+  const isFromSettingsSecurity = new URLSearchParams(search).get(
+    'isFromSettingsSecurity',
+  );
   const trackEvent = useContext(MetaMetricsContext);
   const isUnlocked = useSelector(getIsUnlocked);
   const showTermsOfUse = useSelector(getShowTermsOfUse);
+  const isSeedlessOnboardingFeatureEnabled =
+    getIsSeedlessOnboardingFeatureEnabled();
+  const isPrimarySeedPhraseBackedUp = useSelector(
+    getIsPrimarySeedPhraseBackedUp,
+  );
+
+  const envType = getEnvironmentType();
+  const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
 
   // If the user has not agreed to the terms of use, we show the banner
   // Otherwise, we show the login page
@@ -114,16 +131,26 @@ export default function OnboardingFlow() {
   }, [history, completedOnboarding, isFromReminder]);
 
   useEffect(() => {
-    if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
-      const needsSRP = [
-        ONBOARDING_REVIEW_SRP_ROUTE,
-        ONBOARDING_CONFIRM_SRP_ROUTE,
-      ].some((route) => pathname.startsWith(route));
+    const isSRPBackupRoute = [
+      ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+      ONBOARDING_REVIEW_SRP_ROUTE,
+      ONBOARDING_CONFIRM_SRP_ROUTE,
+    ].some((route) => pathname?.startsWith(route));
 
-      if (needsSRP) {
+    if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
+      if (isSRPBackupRoute) {
         history.push(ONBOARDING_UNLOCK_ROUTE);
       }
     }
+
+    if (
+      isPrimarySeedPhraseBackedUp &&
+      isSRPBackupRoute &&
+      completedOnboarding
+    ) {
+      history.replace(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
+    }
+
     if (pathname === ONBOARDING_WELCOME_ROUTE) {
       setWelcomePageState(
         showTermsOfUse ? WelcomePageState.Banner : WelcomePageState.Login,
@@ -138,15 +165,20 @@ export default function OnboardingFlow() {
     pathname,
     history,
     showTermsOfUse,
+    isPrimarySeedPhraseBackedUp,
+    isFromSettingsSecurity,
   ]);
 
   const handleCreateNewAccount = async (password) => {
     let newSecretRecoveryPhrase;
-    if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+    if (
+      isSeedlessOnboardingFeatureEnabled &&
+      firstTimeFlowType === FirstTimeFlowType.socialCreate
+    ) {
       newSecretRecoveryPhrase = await dispatch(
         createNewVaultAndSyncWithSocial(password),
       );
-    } else {
+    } else if (firstTimeFlowType === FirstTimeFlowType.create) {
       newSecretRecoveryPhrase = await dispatch(
         createNewVaultAndGetSeedPhrase(password),
       );
@@ -156,7 +188,11 @@ export default function OnboardingFlow() {
 
   const handleUnlock = async (password) => {
     let retrievedSecretRecoveryPhrase;
-    if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+
+    if (
+      isSeedlessOnboardingFeatureEnabled &&
+      firstTimeFlowType === FirstTimeFlowType.socialImport
+    ) {
       retrievedSecretRecoveryPhrase = await dispatch(
         restoreSocialBackupAndGetSeedPhrase(password),
       );
@@ -204,7 +240,7 @@ export default function OnboardingFlow() {
           welcomePageState === WelcomePageState.Login,
       })}
     >
-      <OnboardingAppHeader pageState={welcomePageState} />
+      {!isPopup && <OnboardingAppHeader pageState={welcomePageState} />}
       <RevealSRPModal
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
         onClose={() => history.goBack()}
@@ -216,16 +252,19 @@ export default function OnboardingFlow() {
         paddingBottom={isWelcomeAndUnlockPage ? 0 : 8}
         width={BlockSize.Full}
         borderStyle={
-          isWelcomeAndUnlockPage ? BorderStyle.none : BorderStyle.solid
+          isWelcomeAndUnlockPage || isPopup
+            ? BorderStyle.none
+            : BorderStyle.solid
         }
         borderRadius={BorderRadius.LG}
-        marginTop={pathname === ONBOARDING_WELCOME_ROUTE ? 0 : 3}
+        marginTop={pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? 0 : 3}
         marginInline="auto"
         borderColor={BorderColor.borderMuted}
         style={{
           maxWidth: isWelcomeAndUnlockPage ? 'none' : '446px',
           minHeight: isWelcomeAndUnlockPage ? 'auto' : '627px',
-          height: pathname === ONBOARDING_WELCOME_ROUTE ? '100%' : 'auto',
+          height:
+            pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? '100%' : 'auto',
         }}
       >
         <Switch>

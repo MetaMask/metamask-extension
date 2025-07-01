@@ -57,6 +57,17 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
   }, [currentKeyring, history]);
   const trackEvent = useContext(MetaMetricsContext);
 
+  const onShowSrpDetailsModal = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.SrpDefinitionClicked,
+      properties: {
+        location: 'import_srp',
+      },
+    });
+    setShowSrpDetailsModal(true);
+  }, [trackEvent]);
+
   const onContinue = useCallback(() => {
     let newSrpError = '';
     if (
@@ -80,7 +91,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
         hd_entropy_index: hdEntropyIndex,
       },
     });
-    history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
+    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
   }, [
     secretRecoveryPhrase,
     t,
@@ -114,7 +125,9 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             color={IconColor.iconDefault}
             size={ButtonIconSize.Md}
             data-testid="import-srp-back-button"
-            onClick={() => history.push(ONBOARDING_WELCOME_ROUTE)}
+            onClick={() => {
+              history.replace(ONBOARDING_WELCOME_ROUTE);
+            }}
             ariaLabel={t('back')}
           />
         </Box>
@@ -138,7 +151,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             iconName={IconName.Info}
             size={ButtonIconSize.Sm}
             color={IconColor.iconAlternative}
-            onClick={() => setShowSrpDetailsModal(true)}
+            onClick={onShowSrpDetailsModal}
             ariaLabel="info"
           />
         </Box>

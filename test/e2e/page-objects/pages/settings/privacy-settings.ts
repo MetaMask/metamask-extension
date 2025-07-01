@@ -8,6 +8,9 @@ class PrivacySettings {
   private readonly autodetectNftToggleButton =
     '[data-testid="useNftDetection"] .toggle-button > div';
 
+  private readonly autoDetectToken =
+    '[data-testid="autoDetectTokens"] .toggle-button';
+
   private readonly closeRevealSrpDialogButton = {
     text: tEn('close'),
     tag: 'button',
@@ -70,15 +73,6 @@ class PrivacySettings {
     '[data-testid="useSafeChainsListValidation"] .toggle-button';
 
   private readonly revealSrpButton = '[data-testid="reveal-seed-words"]';
-
-  private readonly changePasswordButton =
-    '[data-testid="change-password-button"]';
-
-  private readonly passwordChangeSuccessToast =
-    '[data-testid="password-change-toast-success"]';
-
-  private readonly passwordChangeErrorToast =
-    '[data-testid="password-change-toast-error"]';
 
   private readonly revealSrpNextButton = {
     text: 'Next',
@@ -145,6 +139,15 @@ class PrivacySettings {
       throw e;
     }
     console.log('Privacy & Security Settings page is loaded');
+  }
+
+  async check_srpListIsLoaded(): Promise<void> {
+    console.log('Check SRP list is loaded on privacy settings page');
+    const srpSelector = {
+      text: `Secret Recovery Phrase 1`,
+      tag: 'p',
+    };
+    await this.driver.waitForSelector(srpSelector);
   }
 
   async deleteMetaMetrics(): Promise<void> {
@@ -240,21 +243,7 @@ class PrivacySettings {
     await this.driver.clickElement(this.revealSrpButton);
   }
 
-  async openChangePassword(): Promise<void> {
-    console.log('Open change password on privacy settings page');
-    await this.driver.clickElement(this.changePasswordButton);
-  }
-
-  async check_passwordChangeSuccessToastIsDisplayed(): Promise<void> {
-    console.log(
-      'Check password change success toast is displayed on privacy settings page',
-    );
-    await this.driver.waitForSelector(this.passwordChangeSuccessToast);
-  }
-
   async openRevealSrpQuiz(srpIndex: number = 1): Promise<void> {
-    console.log('Open reveal SRP quiz on privacy settings page');
-
     await this.openSrpList();
     // We only pass in the srpIndex when there are multiple SRPs
     const srpSelector = {
@@ -338,6 +327,13 @@ class PrivacySettings {
       css: this.displayedSrpText,
       text: expectedSrpText,
     });
+  }
+
+  async toggleAutoDetectTokens(): Promise<void> {
+    console.log(
+      'Toggle auto detect tokens in Security and Privacy settings page',
+    );
+    await this.driver.clickElement(this.autoDetectToken);
   }
 
   async toggleParticipateInMetaMetrics(): Promise<void> {

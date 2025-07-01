@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import log from 'loglevel';
 import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
@@ -10,6 +11,7 @@ import {
   ONBOARDING_ACCOUNT_EXIST,
   ONBOARDING_ACCOUNT_NOT_FOUND,
   ONBOARDING_UNLOCK_ROUTE,
+  ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -17,9 +19,13 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { setFirstTimeFlowType, startOAuthLogin } from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
 import { LOGIN_OPTION, LOGIN_TYPE } from './types';
@@ -36,6 +42,8 @@ export default function OnboardingWelcome({
   const dispatch = useDispatch();
   const history = useHistory();
   const currentKeyring = useSelector(getCurrentKeyring);
+  const isSeedlessOnboardingFeatureEnabled =
+    getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
@@ -46,11 +54,19 @@ export default function OnboardingWelcome({
   // have already imported or created a wallet
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
-      if (firstTimeFlowType === FirstTimeFlowType.import) {
+      if (
+        firstTimeFlowType === FirstTimeFlowType.import ||
+        firstTimeFlowType === FirstTimeFlowType.socialImport
+      ) {
         history.replace(ONBOARDING_COMPLETION_ROUTE);
-      }
-      if (firstTimeFlowType === FirstTimeFlowType.restore) {
+      } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
         history.replace(ONBOARDING_COMPLETION_ROUTE);
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        if (getBrowserName() === PLATFORM_FIREFOX) {
+          history.replace(ONBOARDING_COMPLETION_ROUTE);
+        } else {
+          history.replace(ONBOARDING_METAMETRICS);
+        }
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
@@ -66,12 +82,12 @@ export default function OnboardingWelcome({
   const onCreateClick = useCallback(async () => {
     setIsLoggingIn(true);
     setNewAccountCreationInProgress(true);
-    dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
+    await dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletCreationStarted,
+      event: MetaMetricsEventName.WalletSetupStarted,
       properties: {
-        account_type: 'metamask',
+        account_type: MetaMetricsEventAccountType.Default,
       },
     });
 
@@ -83,9 +99,9 @@ export default function OnboardingWelcome({
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletImportStarted,
+      event: MetaMetricsEventName.WalletImportStarted,
       properties: {
-        account_type: 'imported',
+        account_type: MetaMetricsEventAccountType.Imported,
       },
     });
 
@@ -94,32 +110,37 @@ export default function OnboardingWelcome({
 
   const handleSocialLogin = useCallback(
     async (socialConnectionType) => {
-      const isNewUser = await dispatch(startOAuthLogin(socialConnectionType));
-      return isNewUser;
+      if (isSeedlessOnboardingFeatureEnabled) {
+        const isNewUser = await dispatch(startOAuthLogin(socialConnectionType));
+        return isNewUser;
+      }
+      return true;
     },
-    [dispatch],
+    [dispatch, isSeedlessOnboardingFeatureEnabled],
   );
 
   const onSocialLoginCreateClick = useCallback(
     async (socialConnectionType) => {
       setIsLoggingIn(true);
       setNewAccountCreationInProgress(true);
-      dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
+      await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
 
       try {
         const isNewUser = await handleSocialLogin(socialConnectionType);
         trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.OnboardingWalletCreationStarted,
+          event: MetaMetricsEventName.WalletSetupStarted,
           properties: {
-            account_type: 'metamask',
+            account_type: MetaMetricsEventAccountType.Social,
           },
         });
         if (isNewUser) {
-          history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+          history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
         } else {
-          history.push(ONBOARDING_ACCOUNT_EXIST);
+          history.replace(ONBOARDING_ACCOUNT_EXIST);
         }
+      } catch (error) {
+        log.error('onSocialLoginCreateClick::error', error);
       } finally {
         setIsLoggingIn(false);
       }
@@ -137,9 +158,9 @@ export default function OnboardingWelcome({
 
         trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.OnboardingWalletCreationStarted,
+          event: MetaMetricsEventName.WalletImportStarted,
           properties: {
-            account_type: 'metamask',
+            account_type: MetaMetricsEventAccountType.Social,
           },
         });
 
@@ -148,6 +169,8 @@ export default function OnboardingWelcome({
         } else {
           history.push(ONBOARDING_UNLOCK_ROUTE);
         }
+      } catch (error) {
+        log.error('onSocialLoginImportClick::error', error);
       } finally {
         setIsLoggingIn(false);
       }
@@ -159,15 +182,17 @@ export default function OnboardingWelcome({
     async (loginType, loginOption) => {
       if (loginOption === LOGIN_OPTION.NEW && loginType === LOGIN_TYPE.SRP) {
         onCreateClick();
-      } else if (loginOption === LOGIN_OPTION.NEW) {
-        await onSocialLoginCreateClick(loginType);
       } else if (
         loginOption === LOGIN_OPTION.EXISTING &&
         loginType === LOGIN_TYPE.SRP
       ) {
         onImportClick();
-      } else if (loginOption === LOGIN_OPTION.EXISTING) {
-        await onSocialLoginImportClick(loginType);
+      } else if (isSeedlessOnboardingFeatureEnabled) {
+        if (loginOption === LOGIN_OPTION.NEW) {
+          await onSocialLoginCreateClick(loginType);
+        } else if (loginOption === LOGIN_OPTION.EXISTING) {
+          await onSocialLoginImportClick(loginType);
+        }
       }
     },
     [
@@ -175,6 +200,7 @@ export default function OnboardingWelcome({
       onImportClick,
       onSocialLoginCreateClick,
       onSocialLoginImportClick,
+      isSeedlessOnboardingFeatureEnabled,
     ],
   );
 

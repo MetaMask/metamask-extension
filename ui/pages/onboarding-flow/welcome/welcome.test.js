@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import Welcome from './welcome';
+import { WelcomePageState } from './types';
 
 const mockHistoryPush = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -33,11 +34,7 @@ describe('Welcome Page', () => {
 
   it('should render', () => {
     const { getByText } = renderWithProvider(
-      <Welcome
-        setPageState={() => {
-          // no-op
-        }}
-      />,
+      <Welcome pageState={WelcomePageState.Banner} setPageState={jest.fn()} />,
       mockStore,
     );
 
@@ -48,11 +45,7 @@ describe('Welcome Page', () => {
 
   it('should show the terms of use popup when the user clicks the "Get started" button', () => {
     const { getByText, getByTestId } = renderWithProvider(
-      <Welcome
-        setPageState={() => {
-          // no-op
-        }}
-      />,
+      <Welcome pageState={WelcomePageState.Banner} setPageState={jest.fn()} />,
       mockStore,
     );
 

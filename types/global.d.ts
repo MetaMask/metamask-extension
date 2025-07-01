@@ -17,7 +17,7 @@ import {
   EthereumSignTypedDataTypes,
 } from '@trezor/connect-web';
 import type { Provider } from '@metamask/network-controller';
-import { Browser } from 'webextension-polyfill';
+import * as Browser from 'webextension-polyfill';
 import {
   OffscreenCommunicationTarget,
   TrezorAction,
@@ -276,11 +276,11 @@ export declare global {
 
   var chrome: Chrome;
 
-  var browser: Browser;
-
   var ethereumProvider: Provider;
 
   var stateHooks: StateHooks;
+
+  var browser: Browser;
 
   namespace jest {
     // The interface is being used for declaration merging, which is an acceptable exception to this rule.

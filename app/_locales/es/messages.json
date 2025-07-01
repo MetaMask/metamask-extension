@@ -911,9 +911,6 @@
   "bridgeTo": {
     "message": "Puentear hacia"
   },
-  "bridgeToChain": {
-    "message": "Puentear hacia $1"
-  },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Si agregó este token manualmente, asegúrese de que conoce los riesgos para sus fondos antes de puentear."
   },
@@ -4413,18 +4410,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Entendido"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Guarde siempre su frase secreta de recuperación en un lugar seguro y secreto."
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "¿Necesita volver a crear una copia de seguridad de su frase secreta de recuperación?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "No comparta nunca su frase secreta de recuperación con nadie."
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "El equipo de MetaMask nunca le pedirá su frase secreta de recuperación."
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Mediante su frase secreta de recuperación, se controlan todas sus cuentas."
   },
@@ -4795,16 +4780,8 @@
   "sendSelectSendAsset": {
     "message": "Seleccione el activo a enviar"
   },
-  "sendSpecifiedTokens": {
-    "message": "Enviar $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Al hacer clic en este botón se iniciará inmediatamente su transacción de canje. Revise los detalles de la transacción antes de continuar."
-  },
-  "sendTokenAsToken": {
-    "message": "Enviar $1 como $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Enviando $1"

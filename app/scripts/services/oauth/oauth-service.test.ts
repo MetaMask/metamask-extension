@@ -2,14 +2,15 @@ import {
   AuthConnection,
   Web3AuthNetwork,
 } from '@metamask/seedless-onboarding-controller';
-import { PLATFORM_CHROME } from '../../../../shared/constants/app';
-import { OAuthLoginEnv, WebAuthenticator } from './types';
+import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import { ENVIRONMENT } from '../../../../development/build/constants';
+import { OAuthConfig, WebAuthenticator } from './types';
 import OAuthService from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
+import { OAUTH_CONFIG } from './constants';
 
 const DEFAULT_GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
 const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
-const OAUTH_AUD = 'metamask';
 const MOCK_USER_ID = 'user-id';
 const MOCK_REDIRECT_URI = 'https://mocked-redirect-uri';
 const MOCK_JWT_TOKEN =
@@ -21,14 +22,26 @@ const MOCK_STATE = JSON.stringify({
   nonce: MOCK_NONCE,
 });
 
-function getOAuthLoginEnvs(): OAuthLoginEnv {
+function getOAuthLoginEnvs(): {
+  googleClientId: string;
+  appleClientId: string;
+} {
   return {
     googleClientId: DEFAULT_GOOGLE_CLIENT_ID,
     appleClientId: DEFAULT_APPLE_CLIENT_ID,
-    authServerUrl: process.env.AUTH_SERVER_URL as string,
-    web3AuthNetwork: process.env.WEB3AUTH_NETWORK as Web3AuthNetwork,
-    authConnectionId: process.env.AUTH_CONNECTION_ID as string,
-    groupedAuthConnectionId: process.env.GROUPED_AUTH_CONNECTION_ID as string,
+  };
+}
+
+function getOAuthConfig(): OAuthConfig {
+  const config = OAUTH_CONFIG.development;
+
+  return {
+    authServerUrl: config.AUTH_SERVER_URL,
+    web3AuthNetwork: config.WEB3AUTH_NETWORK as Web3AuthNetwork,
+    googleAuthConnectionId: config.GOOGLE_AUTH_CONNECTION_ID,
+    googleGrouppedAuthConnectionId: config.GOOGLE_GROUPED_AUTH_CONNECTION_ID,
+    appleAuthConnectionId: config.APPLE_AUTH_CONNECTION_ID,
+    appleGrouppedAuthConnectionId: config.APPLE_GROUPED_AUTH_CONNECTION_ID,
   };
 }
 
@@ -41,19 +54,19 @@ const generateCodeVerifierAndChallengeSpy = jest.fn().mockResolvedValue({
   challenge: 'mocked-code-verifier-challenge',
 });
 const generateNonceSpy = jest.fn().mockReturnValue(MOCK_NONCE);
-const getPlatformSpy = jest.fn().mockReturnValue(PLATFORM_CHROME);
-const mockRequestIdentityPermission = jest.fn().mockResolvedValue(true);
 
 const mockWebAuthenticator: WebAuthenticator = {
   getRedirectURL: getRedirectUrlSpy,
   launchWebAuthFlow: launchWebAuthFlowSpy,
   generateCodeVerifierAndChallenge: generateCodeVerifierAndChallengeSpy,
   generateNonce: generateNonceSpy,
-  getPlatform: getPlatformSpy,
-  requestIdentityPermission: mockRequestIdentityPermission,
 };
 
 describe('OAuthService - startOAuthLogin', () => {
+  beforeAll(() => {
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
+  });
+
   beforeEach(() => {
     // mock the fetch call to auth-server
     jest.spyOn(global, 'fetch').mockImplementation(
@@ -61,9 +74,7 @@ describe('OAuthService - startOAuthLogin', () => {
         return Promise.resolve({
           json: jest.fn().mockResolvedValue({
             verifier_id: MOCK_USER_ID,
-            jwt_tokens: {
-              [OAUTH_AUD]: MOCK_JWT_TOKEN,
-            },
+            id_token: MOCK_JWT_TOKEN,
           }),
         });
       }) as jest.Mock,
@@ -75,8 +86,10 @@ describe('OAuthService - startOAuthLogin', () => {
   });
 
   it('should start the OAuth login process with `Google`', async () => {
+    const oauthEnv = getOAuthLoginEnvs();
+
     const oauthService = new OAuthService({
-      env: getOAuthLoginEnvs(),
+      env: oauthEnv,
       webAuthenticator: mockWebAuthenticator,
     });
 
@@ -84,7 +97,10 @@ describe('OAuthService - startOAuthLogin', () => {
 
     const googleLoginHandler = createLoginHandler(
       AuthConnection.Google,
-      getOAuthLoginEnvs(),
+      {
+        ...oauthEnv,
+        ...getOAuthConfig(),
+      },
       mockWebAuthenticator,
     );
 
@@ -98,8 +114,10 @@ describe('OAuthService - startOAuthLogin', () => {
   });
 
   it('should start the OAuth login process with `Apple`', async () => {
+    const oauthEnv = getOAuthLoginEnvs();
+
     const oauthService = new OAuthService({
-      env: getOAuthLoginEnvs(),
+      env: oauthEnv,
       webAuthenticator: mockWebAuthenticator,
     });
 
@@ -107,7 +125,10 @@ describe('OAuthService - startOAuthLogin', () => {
 
     const appleLoginHandler = createLoginHandler(
       AuthConnection.Apple,
-      getOAuthLoginEnvs(),
+      {
+        ...oauthEnv,
+        ...getOAuthConfig(),
+      },
       mockWebAuthenticator,
     );
 
@@ -119,6 +140,22 @@ describe('OAuthService - startOAuthLogin', () => {
       expect.any(Function),
     );
   });
+
+  it('should throw an error if the state validation fails - google', async () => {
+    const oauthEnv = getOAuthLoginEnvs();
+
+    const oauthService = new OAuthService({
+      env: oauthEnv,
+      webAuthenticator: {
+        ...mockWebAuthenticator,
+        generateNonce: jest.fn().mockReturnValue(Math.random().toString()),
+      },
+    });
+
+    await expect(
+      oauthService.startOAuthLogin(AuthConnection.Google),
+    ).rejects.toThrow(OAuthErrorMessages.INVALID_OAUTH_STATE_ERROR);
+  });
 });
 
 describe('OAuthService - getNewRefreshToken', () => {
@@ -128,12 +165,9 @@ describe('OAuthService - getNewRefreshToken', () => {
       jest.fn(() => {
         return Promise.resolve({
           json: jest.fn().mockResolvedValue({
-            success: true,
-            message: 'Token refreshed successfully',
-            jwt_tokens: {
-              [OAUTH_AUD]: 'MOCK_NEW_JWT_TOKEN',
-            },
+            id_token: 'MOCK_NEW_JWT_TOKEN',
             refresh_token: 'MOCK_NEW_REFRESH_TOKEN',
+            revoke_token: 'MOCK_NEW_REVOKE_TOKEN',
           }),
         });
       }) as jest.Mock,
@@ -141,6 +175,8 @@ describe('OAuthService - getNewRefreshToken', () => {
   });
 
   it('should be able to get new refresh token', async () => {
+    const oauthConfig = getOAuthConfig();
+
     const oauthService = new OAuthService({
       env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
@@ -156,7 +192,7 @@ describe('OAuthService - getNewRefreshToken', () => {
     });
 
     expect(fetch).toHaveBeenCalledWith(
-      `${getOAuthLoginEnvs().authServerUrl}/api/v1/oauth/token`,
+      `${oauthConfig.authServerUrl}/api/v1/oauth/token`,
       {
         method: 'POST',
         headers: {
@@ -165,7 +201,7 @@ describe('OAuthService - getNewRefreshToken', () => {
         body: JSON.stringify({
           client_id: DEFAULT_GOOGLE_CLIENT_ID,
           login_provider: AuthConnection.Google,
-          network: getOAuthLoginEnvs().web3AuthNetwork,
+          network: oauthConfig.web3AuthNetwork,
           refresh_token: 'MOCK_REFRESH_TOKEN',
           grant_type: 'refresh_token',
         }),
@@ -196,6 +232,7 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
       env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
     });
+    const oauthConfig = getOAuthConfig();
 
     const result = await oauthService.revokeAndGetNewRefreshToken({
       connection: AuthConnection.Google,
@@ -208,7 +245,7 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
     });
 
     expect(fetch).toHaveBeenCalledWith(
-      `${getOAuthLoginEnvs().authServerUrl}/api/v1/oauth/revoke`,
+      `${oauthConfig.authServerUrl}/api/v1/oauth/revoke`,
       {
         method: 'POST',
         headers: {

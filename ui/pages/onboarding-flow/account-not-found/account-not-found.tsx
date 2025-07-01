@@ -31,8 +31,8 @@ import {
 import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
-  setFirstTimeFlowType,
   resetOAuthLoginState,
+  setFirstTimeFlowType,
 } from '../../../store/actions';
 
 export default function AccountNotFound() {
@@ -42,27 +42,22 @@ export default function AccountNotFound() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
 
-  const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    await dispatch(resetOAuthLoginState());
-    history.goBack();
-  };
-
-  const onCreateWallet = () => {
-    dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
-    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
-  };
-
   const onLoginWithDifferentMethod = async () => {
     // clear the social login state
     await dispatch(resetOAuthLoginState());
-    history.push(ONBOARDING_WELCOME_ROUTE);
+    await dispatch(setFirstTimeFlowType(null));
+    history.replace(ONBOARDING_WELCOME_ROUTE);
+  };
+
+  const onCreateNewAccount = () => {
+    dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
+    history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
   };
 
   useEffect(() => {
     if (firstTimeFlowType !== FirstTimeFlowType.socialImport) {
       // if the onboarding flow is not social import, redirect to the welcome page
-      history.push(ONBOARDING_WELCOME_ROUTE);
+      history.replace(ONBOARDING_WELCOME_ROUTE);
     }
   }, [firstTimeFlowType, history]);
 
@@ -88,7 +83,7 @@ export default function AccountNotFound() {
             color={IconColor.iconDefault}
             size={ButtonIconSize.Md}
             data-testid="create-password-back-button"
-            onClick={onBack}
+            onClick={() => history.goBack()}
             ariaLabel="back"
           />
         </Box>
@@ -145,12 +140,12 @@ export default function AccountNotFound() {
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           width={BlockSize.Full}
-          onClick={onCreateWallet}
+          onClick={onCreateNewAccount}
         >
           {t('accountNotFoundCreateOne')}
         </Button>
         <Button
-          data-testid="account-not-found-login-with-different-method"
+          data-testid="account-exist-login-with-different-method"
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
           width={BlockSize.Full}

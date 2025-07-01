@@ -20,19 +20,17 @@ import {
   setUseTransactionSimulations,
   setSecurityAlertsEnabled,
   updateDataDeletionTaskStatus,
+  setSkipDeepLinkInterstitial,
 } from '../../../store/actions';
 import {
   getIsSecurityAlertsEnabled,
   getMetaMetricsDataDeletionId,
   getHDEntropyIndex,
-  getSocialLoginType,
-  isSocialLoginFlow,
-  getFirstTimeFlowType,
-} from '../../../selectors';
+  getPreferences,
+} from '../../../selectors/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
-import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -53,14 +51,11 @@ const mapStateToProps = (state) => {
     use4ByteResolution,
     useExternalServices,
     useExternalNameSources,
-    socialLoginEmail,
   } = metamask;
 
-  const networkConfigurations = getNetworkConfigurationsByChainId(state);
+  const { skipDeepLinkInterstitial } = getPreferences(state);
 
-  const seedPhraseBackedUp =
-    getSeedPhraseBackedUp(state) ||
-    getFirstTimeFlowType(state) !== FirstTimeFlowType.create;
+  const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
   return {
     networkConfigurations,
@@ -82,10 +77,8 @@ const mapStateToProps = (state) => {
     useTransactionSimulations: metamask.useTransactionSimulations,
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
     hdEntropyIndex: getHDEntropyIndex(state),
-    socialLoginEnabled: isSocialLoginFlow(state),
-    socialLoginType: getSocialLoginType(state),
-    seedPhraseBackedUp,
-    socialLoginEmail,
+    skipDeepLinkInterstitial: Boolean(skipDeepLinkInterstitial),
+    isSeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
   };
 };
 
@@ -108,6 +101,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setUseSafeChainsListValidation(val)),
     setBasicFunctionalityModalOpen: () =>
       dispatch(openBasicFunctionalityModal()),
+    setSkipDeepLinkInterstitial: (val) =>
+      dispatch(setSkipDeepLinkInterstitial(val)),
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
     setUseNftDetection: (val) => dispatch(setUseNftDetection(val)),
     setUse4ByteResolution: (value) => {

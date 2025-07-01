@@ -911,9 +911,6 @@
   "bridgeTo": {
     "message": "ブリッジ先:"
   },
-  "bridgeToChain": {
-    "message": "$1にブリッジ"
-  },
   "bridgeTokenCannotVerifyDescription": {
     "message": "このトークンを手動で追加した場合は、ブリッジを行う前に、資金へのリスクを認識していることを確認してください。"
   },
@@ -4413,18 +4410,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "了解"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "シークレットリカバリーフレーズは常に安全かつ秘密の場所に保管してください"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "シークレットリカバリーフレーズのバックアップが必要ですか？"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "シークレットリカバリーフレーズは誰とも決して共有しないでください"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMaskチームが、ユーザーのシークレットリカバリーフレーズを確認することは絶対にありません"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "シークレットリカバリーフレーズは、ご利用のすべてのアカウントを制御します。"
   },
@@ -4795,16 +4780,8 @@
   "sendSelectSendAsset": {
     "message": "送る資産を選択してください"
   },
-  "sendSpecifiedTokens": {
-    "message": "$1を送金",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "このボタンをクリックすると、直ちにスワップトランザクションが開始します。続ける前に、トランザクションの詳細を確認してください。"
-  },
-  "sendTokenAsToken": {
-    "message": "$1を$2として送金",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "$1を送信中"

@@ -14,6 +14,7 @@ import {
   markPasswordForgotten,
   forceUpdateMetamaskState,
 } from '../../store/actions';
+import { getIsSocialLoginFlow } from '../../selectors';
 import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
@@ -22,6 +23,7 @@ const mapStateToProps = (state) => {
   } = state;
   return {
     isUnlocked,
+    isSocialLoginFlow: getIsSocialLoginFlow(state),
   };
 };
 
@@ -41,7 +43,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     tryUnlockMetamask,
     ...restDispatchProps
   } = dispatchProps;
-  const { history, onSubmit: ownPropsSubmit, ...restOwnProps } = ownProps;
+  const {
+    history,
+    onSubmit: ownPropsSubmit,
+    location,
+    ...restOwnProps
+  } = ownProps;
 
   const onImport = async () => {
     await markPasswordForgotten();
@@ -54,7 +61,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
   const onSubmit = async (password) => {
     await tryUnlockMetamask(password);
-    history.push(DEFAULT_ROUTE);
+    // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
+    let redirectTo = DEFAULT_ROUTE;
+    if (location.state?.from?.pathname) {
+      const search = location.state.from.search || '';
+      redirectTo = location.state.from.pathname + search;
+    }
+    history.push(redirectTo);
   };
 
   return {
@@ -64,6 +77,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     onRestore: onImport,
     onSubmit: ownPropsSubmit || onSubmit,
     history,
+    location,
   };
 };
 

@@ -17,7 +17,7 @@ import {
  * @param {object} state - MetaMask state tree
  * @returns {boolean} True if the user is on a social login flow
  */
-export const isSocialLoginFlow = (state) => {
+export const getIsSocialLoginFlow = (state) => {
   const { firstTimeFlowType } = state.metamask;
   return (
     firstTimeFlowType === FirstTimeFlowType.socialCreate ||

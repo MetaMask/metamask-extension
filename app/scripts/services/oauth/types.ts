@@ -59,22 +59,6 @@ export type WebAuthenticator = {
    * @returns The nonce string.
    */
   generateNonce: () => string;
-
-  /**
-   * Get the platform of the browser.
-   *
-   * @returns The platform of the browser.
-   */
-  getPlatform: () => string;
-
-  /**
-   * Request the identity permission from the user.
-   *
-   * OAuth2 authentication requires the identity permission to be granted.
-   *
-   * @returns Whether the identity permission is granted.
-   */
-  requestIdentityPermission: () => Promise<boolean>;
 };
 
 export type LoginHandlerOptions = {
@@ -83,38 +67,27 @@ export type LoginHandlerOptions = {
   web3AuthNetwork: Web3AuthNetwork;
   webAuthenticator: WebAuthenticator;
   scopes?: string[];
-  /**
-   * The server redirect URI to use for the OAuth login.
-   * This is the URI that the OAuth provider will redirect to after the user has logged in.
-   * This is required for Apple login.
-   */
-  serverRedirectUri?: string;
-};
-
-/**
- * The configuration to initiate the OAuth login and get the Authorization Code.
- *
- * - clientId: string - the client ID of the OAuth provider
- * - redirectUri: string - the redirect URI of the OAuth provider
- * - serverRedirectUri: string - the server redirect URI of the OAuth provider, to be used for Apple login
- * - scopes: string[] - the scopes of the OAuth provider
- */
-export type OAuthProviderConfig = {
-  clientId: string;
-  redirectUri?: string;
-  /** for apple, we need to redirect to a server endpoint that will handle the post request and redirect back to client */
-  serverRedirectUri?: string;
-  scopes?: string[];
 };
 
 export type OAuthLoginEnv = {
-  authConnectionId: string;
-  groupedAuthConnectionId: string;
+  /**
+   * The Google Client ID for the OAuth login.
+   */
   googleClientId: string;
+
+  /**
+   * The Apple Client ID for the OAuth login.
+   */
   appleClientId: string;
+};
+
+export type OAuthConfig = {
+  googleAuthConnectionId: string;
+  googleGrouppedAuthConnectionId: string;
+  appleAuthConnectionId: string;
+  appleGrouppedAuthConnectionId: string;
   authServerUrl: string;
   web3AuthNetwork: Web3AuthNetwork;
-  serverRedirectUri?: string;
 };
 
 export type OAuthServiceOptions = {
@@ -138,13 +111,7 @@ export type OAuthServiceOptions = {
  * - jwt_tokens: Record<string, string> - the JWT Tokens issued from the Web3Auth Authentication Server
  */
 export type AuthTokenResponse = {
-  success: boolean;
-  message: string;
-  /**
-   * The JWT Tokens issued from the Web3Auth Authentication Server.
-   * The key is the audience value and the value is the JWT Token.
-   */
-  jwt_tokens: Record<string, string>;
+  id_token: string;
 
   /**
    * The refresh token issued from the Web3Auth Authentication Server.
@@ -154,9 +121,11 @@ export type AuthTokenResponse = {
 
   /**
    * The revoke token issued from the Web3Auth Authentication Server.
-   * This is used to revoke the Refresh Token.
+   * This is used to revoke the JWT Token.
    */
   revoke_token: string;
+  indexes: number[];
+  endpoints: Record<string, string>;
 };
 
 /**

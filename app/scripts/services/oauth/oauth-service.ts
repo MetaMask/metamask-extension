@@ -1,22 +1,35 @@
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import {
+  AuthConnection,
+  Web3AuthNetwork,
+} from '@metamask/seedless-onboarding-controller';
+import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import {
+  MOCK_AUTH_CONNECTION_ID,
+  MOCK_GROUPED_AUTH_CONNECTION_ID,
+} from '../../../../test/e2e/constants';
+import { isProduction } from '../../../../shared/modules/environment';
+import { ENVIRONMENT } from '../../../../development/build/constants';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import type {
+  OAuthConfig,
   OAuthLoginEnv,
   OAuthLoginResult,
   OAuthServiceOptions,
   WebAuthenticator,
 } from './types';
+import { OAUTH_CONFIG } from './constants';
 
 export default class OAuthService {
-  readonly #audience = 'metamask';
-
-  #env: OAuthLoginEnv;
+  #env: OAuthConfig & OAuthLoginEnv;
 
   #webAuthenticator: WebAuthenticator;
 
   constructor({ env, webAuthenticator }: OAuthServiceOptions) {
-    this.#env = env;
+    this.#env = {
+      ...env,
+      ...this.#loadConfig(),
+    };
     this.#webAuthenticator = webAuthenticator;
   }
 
@@ -29,14 +42,6 @@ export default class OAuthService {
   async startOAuthLogin(
     authConnection: AuthConnection,
   ): Promise<OAuthLoginResult> {
-    // request the identity permission from the user
-    // 'identity' permission is required for the OAuth login
-    const permissionGranted =
-      await this.#webAuthenticator.requestIdentityPermission();
-    if (!permissionGranted) {
-      throw new Error('Identity permission not granted');
-    }
-
     // create the login handler for the given social login type
     // this is to get the Jwt Token in the exchange for the Authorization Code
     const loginHandler = createLoginHandler(
@@ -45,16 +50,29 @@ export default class OAuthService {
       this.#webAuthenticator,
     );
 
-    return this.#handleOAuthLogin(loginHandler);
+    try {
+      return this.#handleOAuthLogin(loginHandler);
+    } catch (error) {
+      if (this.#isUserCancelledLoginError()) {
+        throw new Error(OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR);
+      }
+      throw error;
+    }
   }
 
-  async getNewRefreshToken({
-    connection,
-    refreshToken,
-  }: {
+  /**
+   * Get a new refresh token from the Web3Auth Authentication Server.
+   *
+   * @param options - The options for the get new refresh token.
+   * @param options.connection - The social login type to login with.
+   * @param options.refreshToken - The refresh token to authenticate the refresh request.
+   * @returns The new refresh token.
+   */
+  async getNewRefreshToken(options: {
     connection: AuthConnection;
     refreshToken: string;
   }): Promise<{ idTokens: string[] }> {
+    const { connection, refreshToken } = options;
     const loginHandler = createLoginHandler(
       connection,
       this.#env,
@@ -62,20 +80,26 @@ export default class OAuthService {
     );
 
     const refreshTokenData = await loginHandler.refreshAuthToken(refreshToken);
-    const idToken = refreshTokenData.jwt_tokens[this.#audience];
+    const idToken = refreshTokenData.id_token;
 
     return {
       idTokens: [idToken],
     };
   }
 
-  async revokeAndGetNewRefreshToken({
-    connection,
-    revokeToken,
-  }: {
+  /**
+   * Revoke the current refresh token and get a new refresh token.
+   *
+   * @param options - The options for the revoke and get new refresh token.
+   * @param options.connection - The social login type to login with.
+   * @param options.revokeToken - The revoke token to authenticate the revoke request.
+   * @returns The new refresh token and revoke token.
+   */
+  async revokeAndGetNewRefreshToken(options: {
     connection: AuthConnection;
     revokeToken: string;
   }): Promise<{ newRevokeToken: string; newRefreshToken: string }> {
+    const { connection, revokeToken } = options;
     const loginHandler = createLoginHandler(
       connection,
       this.#env,
@@ -86,6 +110,25 @@ export default class OAuthService {
     return {
       newRefreshToken: res.refresh_token,
       newRevokeToken: res.revoke_token,
+    };
+  }
+
+  #loadConfig(): OAuthConfig {
+    let configKey = 'development';
+    if (process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.OTHER) {
+      configKey = 'development';
+    } else if (isProduction()) {
+      configKey = process.env.METAMASK_BUILD_TYPE || 'main';
+    }
+
+    const config = OAUTH_CONFIG[configKey] || OAUTH_CONFIG.main;
+    return {
+      authServerUrl: config.AUTH_SERVER_URL,
+      web3AuthNetwork: config.WEB3AUTH_NETWORK as Web3AuthNetwork,
+      googleAuthConnectionId: config.GOOGLE_AUTH_CONNECTION_ID,
+      googleGrouppedAuthConnectionId: config.GOOGLE_GROUPED_AUTH_CONNECTION_ID,
+      appleAuthConnectionId: config.APPLE_AUTH_CONNECTION_ID,
+      appleGrouppedAuthConnectionId: config.APPLE_GROUPED_AUTH_CONNECTION_ID,
     };
   }
 
@@ -115,13 +158,16 @@ export default class OAuthService {
           (responseUrl) => {
             try {
               if (responseUrl) {
-                const url = new URL(responseUrl);
-                const state = url.searchParams.get('state');
-
-                loginHandler.validateState(state);
-                resolve(responseUrl);
+                try {
+                  loginHandler.validateState(responseUrl);
+                  resolve(responseUrl);
+                } catch (error) {
+                  reject(error);
+                }
               } else {
-                reject(new Error('No redirect URL found'));
+                reject(
+                  new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR),
+                );
               }
             } catch (error: unknown) {
               reject(error);
@@ -130,11 +176,6 @@ export default class OAuthService {
         );
       },
     );
-
-    if (!redirectUrlFromOAuth) {
-      console.error('[identity auth] redirectUrl is null');
-      throw new Error('No redirect URL found');
-    }
 
     // handle the OAuth response from the social login provider and get the Jwt Token in exchange
     const loginResult = await this.#handleOAuthResponse(
@@ -159,10 +200,15 @@ export default class OAuthService {
     loginHandler: BaseLoginHandler,
     redirectUrl: string,
   ): Promise<OAuthLoginResult> {
-    const authCode = this.#getRedirectUrlAuthCode(redirectUrl);
-    if (!authCode) {
-      throw new Error('No auth code found');
-    }
+    const { authConnection } = loginHandler;
+
+    // We still need to extract the Authorization Code from the redirect URL for Google login (PKCE flow)
+    // For Apple login (BFF flow), the Authorization Code is returned to the Authentication Server in the redirect URL
+    const authCode =
+      authConnection === AuthConnection.Google
+        ? this.#getRedirectUrlAuthCode(redirectUrl)
+        : null;
+
     const res = await this.#getAuthIdToken(loginHandler, authCode);
     return res;
   }
@@ -176,12 +222,24 @@ export default class OAuthService {
    */
   async #getAuthIdToken(
     loginHandler: BaseLoginHandler,
-    authCode: string,
+    authCode: string | null,
   ): Promise<OAuthLoginResult> {
-    const { authConnectionId, groupedAuthConnectionId } = this.#env;
+    let authConnectionId = '';
+    let groupedAuthConnectionId = '';
+
+    if (process.env.IN_TEST) {
+      authConnectionId = MOCK_AUTH_CONNECTION_ID;
+      groupedAuthConnectionId = MOCK_GROUPED_AUTH_CONNECTION_ID;
+    } else if (loginHandler.authConnection === AuthConnection.Google) {
+      authConnectionId = this.#env.googleAuthConnectionId;
+      groupedAuthConnectionId = this.#env.googleGrouppedAuthConnectionId;
+    } else if (loginHandler.authConnection === AuthConnection.Apple) {
+      authConnectionId = this.#env.appleAuthConnectionId;
+      groupedAuthConnectionId = this.#env.appleGrouppedAuthConnectionId;
+    }
 
     const authTokenData = await loginHandler.getAuthIdToken(authCode);
-    const idToken = authTokenData.jwt_tokens[this.#audience];
+    const idToken = authTokenData.id_token;
     const userInfo = await loginHandler.getUserInfo(idToken);
 
     return {
@@ -199,5 +257,15 @@ export default class OAuthService {
   #getRedirectUrlAuthCode(redirectUrl: string): string | null {
     const url = new URL(redirectUrl);
     return url.searchParams.get('code');
+  }
+
+  #isUserCancelledLoginError(): boolean {
+    const error = browser.runtime.lastError;
+    return (
+      (error instanceof Error &&
+        error.message === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) ||
+      browser.runtime.lastError?.message ===
+        OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR
+    );
   }
 }

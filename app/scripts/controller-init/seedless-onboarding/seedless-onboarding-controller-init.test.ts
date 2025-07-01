@@ -9,6 +9,7 @@ import {
   SeedlessOnboardingControllerMessenger,
 } from '../messengers/seedless-onboarding';
 import { buildControllerInitRequestMock } from '../test/utils';
+import { ENVIRONMENT } from '../../../../development/build/constants';
 import { SeedlessOnboardingControllerInit } from './seedless-onboarding-controller-init';
 
 jest.mock('@metamask/seedless-onboarding-controller');
@@ -32,6 +33,10 @@ describe('SeedlessOnboardingControllerInit', () => {
     SeedlessOnboardingController,
   );
 
+  beforeAll(() => {
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
+  });
+
   beforeEach(() => {
     jest.resetAllMocks();
   });
@@ -47,14 +52,12 @@ describe('SeedlessOnboardingControllerInit', () => {
     const requestMock = buildInitRequestMock();
     SeedlessOnboardingControllerInit(requestMock);
 
-    const network = process.env.WEB3AUTH_NETWORK as Web3AuthNetwork;
+    const network = Web3AuthNetwork.Devnet;
 
     expect(SeedlessOnboardingControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.SeedlessOnboardingController,
       network,
-      refreshJWTToken: expect.any(Function),
-      revokeRefreshToken: expect.any(Function),
       encryptor: {
         decrypt: expect.any(Function),
         decryptWithDetail: expect.any(Function),

@@ -13,6 +13,7 @@ import {
   getSnapInsightsControllerMessenger,
   getSnapInterfaceControllerMessenger,
   getSnapsRegistryMessenger,
+  getWebSocketServiceMessenger,
 } from './snaps';
 import {
   getTransactionControllerMessenger,
@@ -160,5 +161,9 @@ export const CONTROLLER_MESSENGERS = {
   AccountTreeController: {
     getMessenger: getAccountTreeControllerMessenger,
     getInitMessenger: getAccountTreeControllerInitMessenger,
+  },
+  WebSocketService: {
+    getMessenger: getWebSocketServiceMessenger,
+    getInitMessenger: noop,
   },
 } as const;

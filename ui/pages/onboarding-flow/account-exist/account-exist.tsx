@@ -30,8 +30,8 @@ import {
 import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
-  setFirstTimeFlowType,
   resetOAuthLoginState,
+  setFirstTimeFlowType,
 } from '../../../store/actions';
 
 export default function AccountExist() {
@@ -41,26 +41,22 @@ export default function AccountExist() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
 
-  const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    await dispatch(resetOAuthLoginState());
-    history.goBack();
-  };
-
-  const onLogin = () => {
-    dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
-    history.push(ONBOARDING_UNLOCK_ROUTE);
-  };
-
   const onLoginWithDifferentMethod = async () => {
     // clear the social login state
     await dispatch(resetOAuthLoginState());
-    history.push(ONBOARDING_WELCOME_ROUTE);
+    // reset the first time flow type
+    await dispatch(setFirstTimeFlowType(null));
+    history.replace(ONBOARDING_WELCOME_ROUTE);
+  };
+
+  const onDone = async () => {
+    await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
+    history.replace(ONBOARDING_UNLOCK_ROUTE);
   };
 
   useEffect(() => {
     if (firstTimeFlowType !== FirstTimeFlowType.socialCreate) {
-      history.push(ONBOARDING_WELCOME_ROUTE);
+      history.replace(ONBOARDING_WELCOME_ROUTE);
     }
   }, [firstTimeFlowType, history]);
 
@@ -86,7 +82,7 @@ export default function AccountExist() {
             color={IconColor.iconDefault}
             size={ButtonIconSize.Md}
             data-testid="create-password-back-button"
-            onClick={onBack}
+            onClick={() => history.goBack()}
             ariaLabel="back"
           />
         </Box>
@@ -143,7 +139,7 @@ export default function AccountExist() {
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           width={BlockSize.Full}
-          onClick={onLogin}
+          onClick={onDone}
         >
           {t('accountAlreadyExistsLogin')}
         </Button>

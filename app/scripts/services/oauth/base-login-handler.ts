@@ -1,16 +1,23 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { LoginHandlerOptions, AuthTokenResponse, OAuthUserInfo } from './types';
-import { padBase64String } from './utils';
 
 export abstract class BaseLoginHandler {
   public options: LoginHandlerOptions;
 
+  public codeVerifier: string | undefined;
+
+  // For the verification of the state (in the client side)
   public nonce: string | undefined;
 
   // This prompt value is used to force the user to select an account before OAuth login
   protected readonly prompt = 'select_account';
 
   protected readonly CODE_CHALLENGE_METHOD = 'S256';
+
+  protected readonly AUTH_SERVER_TOKEN_PATH = '/api/v1/oauth/token';
+
+  protected readonly AUTH_SERVER_REVOKE_PATH = '/api/v1/oauth/revoke';
 
   constructor(options: LoginHandlerOptions) {
     this.options = options;
@@ -33,7 +40,7 @@ export abstract class BaseLoginHandler {
    * @param code - The authorization code from the social login provider.
    * @returns The JWT Token from the Web3Auth Authentication Server.
    */
-  abstract getAuthIdToken(code: string): Promise<AuthTokenResponse>;
+  abstract getAuthIdToken(code?: string | null): Promise<AuthTokenResponse>;
 
   /**
    * Generate the request body data to get the JWT Token from the Web3Auth Authentication Server.
@@ -54,17 +61,20 @@ export abstract class BaseLoginHandler {
   /**
    * Validate the state value from the OAuth login redirect URL.
    *
-   * @param state - The state value from the OAuth login redirect URL.
+   * @param url - The OAuth login redirect URL.
    */
-  validateState(state: unknown): void {
+  validateState(url: string): void {
+    const urlObj = new URL(url);
+    const state = urlObj.searchParams.get('state');
+
     if (typeof state !== 'string') {
-      throw new Error('Invalid state');
+      throw new Error(OAuthErrorMessages.INVALID_OAUTH_STATE_ERROR);
     }
 
     const parsedState = JSON.parse(state);
 
     if (parsedState.nonce !== this.nonce) {
-      throw new Error('Invalid state');
+      throw new Error(OAuthErrorMessages.INVALID_OAUTH_STATE_ERROR);
     }
   }
 
@@ -74,9 +84,7 @@ export abstract class BaseLoginHandler {
    * @param refreshToken - The refresh token from the Web3Auth Authentication Server.
    * @returns The JWT Token from the Web3Auth Authentication Server and new refresh token.
    */
-  async refreshAuthToken(
-    refreshToken: string,
-  ): Promise<Pick<AuthTokenResponse, 'jwt_tokens'>> {
+  async refreshAuthToken(refreshToken: string): Promise<AuthTokenResponse> {
     const { web3AuthNetwork } = this.options;
     const requestData = {
       client_id: this.options.oAuthClientId,
@@ -103,7 +111,7 @@ export abstract class BaseLoginHandler {
     };
 
     const res = await fetch(
-      `${this.options.authServerUrl}/api/v1/oauth/revoke`,
+      `${this.options.authServerUrl}${this.AUTH_SERVER_REVOKE_PATH}`,
       {
         method: 'POST',
         headers: {
@@ -130,7 +138,7 @@ export abstract class BaseLoginHandler {
     requestData: string,
   ): Promise<AuthTokenResponse> {
     const res = await fetch(
-      `${this.options.authServerUrl}/api/v1/oauth/token`,
+      `${this.options.authServerUrl}${this.AUTH_SERVER_TOKEN_PATH}`,
       {
         method: 'POST',
         headers: {
@@ -142,23 +150,6 @@ export abstract class BaseLoginHandler {
 
     const data = await res.json();
     return data;
-  }
-
-  /**
-   * Decode the JWT Token to get the user's information.
-   *
-   * @param idToken - The JWT Token from the Web3Auth Authentication Server.
-   * @returns The user's information from the JWT Token.
-   */
-  protected decodeIdToken(idToken: string): string {
-    const [, idTokenPayload] = idToken.split('.');
-    const base64String = padBase64String(idTokenPayload)
-      .replace(/-/u, '+')
-      .replace(/_/u, '/');
-    // Using buffer here instead of atob because userinfo can contain emojis which are not supported by atob
-    // the browser replacement for atob is https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/fromBase64
-    // which is not supported in all chrome yet
-    return Buffer.from(base64String, 'base64').toString('utf-8');
   }
 
   /**
@@ -176,10 +167,13 @@ export abstract class BaseLoginHandler {
    *
    * @returns The code verifier and challenge value.
    */
-  protected generateCodeVerifierChallenge(): Promise<{
+  protected async generateCodeVerifierChallenge(): Promise<{
     codeVerifier: string;
     challenge: string;
   }> {
-    return this.options.webAuthenticator.generateCodeVerifierAndChallenge();
+    const { codeVerifier, challenge } =
+      await this.options.webAuthenticator.generateCodeVerifierAndChallenge();
+    this.codeVerifier = codeVerifier;
+    return { codeVerifier, challenge };
   }
 }
