@@ -43,7 +43,7 @@ export const AccountDetailsRow = ({
           color={TextColor.textAlternative}
           ellipsis
           style={{
-            maxWidth: '200px',
+            maxWidth: '150px',
           }}
         >
           {value}
