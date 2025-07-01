@@ -5,6 +5,7 @@ import {
   EthMethod,
   SolAccountType,
 } from '@metamask/keyring-api';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { deepClone } from '@metamask/snaps-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -40,6 +41,22 @@ jest.mock('../../shared/modules/network.utils', () => {
     shouldShowLineaMainnet: jest.fn().mockResolvedValue(true),
   };
 });
+
+jest.mock('./multichain/networks', () => ({
+  ...jest.requireActual('./multichain/networks'),
+  getIsEvmMultichainNetworkSelected: jest.fn(
+    (state) => state.metamask.isEvmSelected,
+  ),
+  getSelectedMultichainNetworkChainId: jest.fn((state) => {
+    if (state.metamask.isEvmSelected) {
+      const chainId = state.metamask.networkConfigurationsByChainId
+        ? Object.keys(state.metamask.networkConfigurationsByChainId)[0]
+        : '0x1';
+      return `eip155:${parseInt(chainId, 16)}`;
+    }
+    return state.metamask.selectedMultichainNetworkChainId;
+  }),
+}));
 
 const modifyStateWithHWKeyring = (keyring) => {
   const modifiedState = deepClone(mockState);
@@ -831,11 +848,18 @@ describe('Selectors', () => {
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getChainIdsToPoll({
         metamask: {
-          preferences: {
-            tokenNetworkFilter: {},
+          enabledNetworkMap: {
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+            },
           },
           networkConfigurationsByChainId,
           selectedNetworkClientId: 'mainnet',
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
         },
       });
       expect(Object.values(chainIds)).toHaveLength(2);
@@ -881,11 +905,18 @@ describe('Selectors', () => {
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getNetworkClientIdsToPoll({
         metamask: {
-          preferences: {
-            tokenNetworkFilter: {},
+          enabledNetworkMap: {
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+            },
           },
           networkConfigurationsByChainId,
           selectedNetworkClientId: 'mainnet',
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
         },
       });
       expect(Object.values(chainIds)).toHaveLength(2);
@@ -2191,6 +2222,11 @@ describe('#getConnectedSitesList', () => {
     it('returns true when the token network filter is equal to the current network', () => {
       const state = {
         metamask: {
+          enabledNetworkMap: {
+            eip155: {
+              '0x1': true,
+            },
+          },
           preferences: {
             tokenNetworkFilter: {
               '0x1': true,
@@ -2205,6 +2241,10 @@ describe('#getConnectedSitesList', () => {
               ],
             },
           },
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
         },
       };
       expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
@@ -2215,8 +2255,8 @@ describe('#getConnectedSitesList', () => {
     it('returns false when the token network filter is on multiple networks', () => {
       const state = {
         metamask: {
-          preferences: {
-            tokenNetworkFilter: {
+          enabledNetworkMap: {
+            eip155: {
               '0x1': true,
               '0x89': true,
             },
@@ -2230,6 +2270,10 @@ describe('#getConnectedSitesList', () => {
               ],
             },
           },
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
         },
       };
       expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
@@ -2252,9 +2296,9 @@ describe('#getConnectedSitesList', () => {
 
       const state = {
         metamask: {
-          preferences: {
-            tokenNetworkFilter: {
-              [CHAIN_IDS.MAINNET]: true,
+          enabledNetworkMap: {
+            eip155: {
+              '0x1': true,
             },
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
@@ -2266,19 +2310,25 @@ describe('#getConnectedSitesList', () => {
               ],
             },
           },
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
         },
       };
 
-      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: true,
+      expect(selectors.getEnabledNetworks(state)).toStrictEqual({
+        eip155: {
+          [CHAIN_IDS.MAINNET]: true,
+        },
       });
     });
 
     it('always returns an object containing the network if it is not included in popular networks', () => {
       const state = {
         metamask: {
-          preferences: {
-            tokenNetworkFilter: {
+          enabledNetworkMap: {
+            eip155: {
               '0xNotPopularNetwork': true,
             },
           },
@@ -2291,19 +2341,25 @@ describe('#getConnectedSitesList', () => {
               ],
             },
           },
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
         },
       };
 
-      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
-        '0xNotPopularNetwork': true,
+      expect(selectors.getEnabledNetworks(state)).toStrictEqual({
+        eip155: {
+          '0xNotPopularNetwork': true,
+        },
       });
     });
 
     it('returns an object containing all the popular networks for portfolio view', () => {
       const state = {
         metamask: {
-          preferences: {
-            tokenNetworkFilter: {
+          enabledNetworkMap: {
+            eip155: {
               [CHAIN_IDS.MAINNET]: true,
               [CHAIN_IDS.LINEA_MAINNET]: true,
               [CHAIN_IDS.ARBITRUM]: true,
@@ -2324,27 +2380,46 @@ describe('#getConnectedSitesList', () => {
               ],
             },
           },
+          preferences: {
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.ARBITRUM]: true,
+              [CHAIN_IDS.AVALANCHE]: true,
+              [CHAIN_IDS.BSC]: true,
+              [CHAIN_IDS.OPTIMISM]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.ZKSYNC_ERA]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
+          },
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
         },
       };
 
-      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: true,
-        [CHAIN_IDS.ARBITRUM]: true,
-        [CHAIN_IDS.AVALANCHE]: true,
-        [CHAIN_IDS.BSC]: true,
-        [CHAIN_IDS.OPTIMISM]: true,
-        [CHAIN_IDS.POLYGON]: true,
-        [CHAIN_IDS.ZKSYNC_ERA]: true,
-        [CHAIN_IDS.BASE]: true,
+      expect(selectors.getEnabledNetworks(state)).toStrictEqual({
+        eip155: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.LINEA_MAINNET]: true,
+          [CHAIN_IDS.ARBITRUM]: true,
+          [CHAIN_IDS.AVALANCHE]: true,
+          [CHAIN_IDS.BSC]: true,
+          [CHAIN_IDS.OPTIMISM]: true,
+          [CHAIN_IDS.POLYGON]: true,
+          [CHAIN_IDS.ZKSYNC_ERA]: true,
+          [CHAIN_IDS.BASE]: true,
+        },
       });
     });
 
     it('always returns the same object (memoized) if the same state is given', () => {
       const state = {
         metamask: {
-          preferences: {
-            tokenNetworkFilter: {
+          enabledNetworkMap: {
+            eip155: {
               [CHAIN_IDS.MAINNET]: true,
               [CHAIN_IDS.LINEA_MAINNET]: true,
               [CHAIN_IDS.ARBITRUM]: true,
@@ -2365,6 +2440,23 @@ describe('#getConnectedSitesList', () => {
               ],
             },
           },
+          preferences: {
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.ARBITRUM]: true,
+              [CHAIN_IDS.AVALANCHE]: true,
+              [CHAIN_IDS.BSC]: true,
+              [CHAIN_IDS.OPTIMISM]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.ZKSYNC_ERA]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
+          },
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
         },
       };
 

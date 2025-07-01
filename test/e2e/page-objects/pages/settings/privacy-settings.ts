@@ -8,6 +8,9 @@ class PrivacySettings {
   private readonly autodetectNftToggleButton =
     '[data-testid="useNftDetection"] .toggle-button > div';
 
+  private readonly autoDetectToken =
+    '[data-testid="autoDetectTokens"] .toggle-button';
+
   private readonly closeRevealSrpDialogButton = {
     text: tEn('close'),
     tag: 'button',
@@ -65,6 +68,9 @@ class PrivacySettings {
     text: tEn('holdToRevealSRP'),
     tag: 'span',
   };
+
+  private readonly networkDetailsCheckToggle =
+    '[data-testid="useSafeChainsListValidation"] .toggle-button';
 
   private readonly revealSrpButton = '[data-testid="reveal-seed-words"]';
 
@@ -133,6 +139,15 @@ class PrivacySettings {
       throw e;
     }
     console.log('Privacy & Security Settings page is loaded');
+  }
+
+  async check_srpListIsLoaded(): Promise<void> {
+    console.log('Check SRP list is loaded on privacy settings page');
+    const srpSelector = {
+      text: `Secret Recovery Phrase 1`,
+      tag: 'p',
+    };
+    await this.driver.waitForSelector(srpSelector);
   }
 
   async deleteMetaMetrics(): Promise<void> {
@@ -228,20 +243,14 @@ class PrivacySettings {
     await this.driver.clickElement(this.revealSrpButton);
   }
 
-  async openRevealSrpQuiz(srpIndex?: number): Promise<void> {
-    console.log('Open reveal SRP quiz on privacy settings page');
-
-    if (srpIndex) {
-      await this.openSrpList();
-      // We only pass in the srpIndex when there are multiple SRPs
-      const srpSelector = {
-        text: `Secret Recovery Phrase ${srpIndex.toString()}`,
-        tag: 'p',
-      };
-      await this.driver.clickElement(srpSelector);
-    } else {
-      await this.driver.clickElement(this.revealSrpButton);
-    }
+  async openRevealSrpQuiz(srpIndex: number = 1): Promise<void> {
+    await this.openSrpList();
+    // We only pass in the srpIndex when there are multiple SRPs
+    const srpSelector = {
+      text: `Secret Recovery Phrase ${srpIndex.toString()}`,
+      tag: 'p',
+    };
+    await this.driver.clickElement(srpSelector);
 
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
   }
@@ -270,6 +279,11 @@ class PrivacySettings {
   async toggleIpfsGateway(): Promise<void> {
     console.log('Toggle IPFS gateway on privacy settings page');
     await this.driver.clickElement(this.ipfsGatewayToggle);
+  }
+
+  async toggleNetworkDetailsCheck(): Promise<void> {
+    console.log('Toggle network details check on privacy settings page');
+    await this.driver.clickElement(this.networkDetailsCheckToggle);
   }
 
   /**
@@ -313,6 +327,13 @@ class PrivacySettings {
       css: this.displayedSrpText,
       text: expectedSrpText,
     });
+  }
+
+  async toggleAutoDetectTokens(): Promise<void> {
+    console.log(
+      'Toggle auto detect tokens in Security and Privacy settings page',
+    );
+    await this.driver.clickElement(this.autoDetectToken);
   }
 
   async toggleParticipateInMetaMetrics(): Promise<void> {

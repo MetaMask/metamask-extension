@@ -2,11 +2,7 @@ import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import GenericAssetCellLayout from '../../asset-list/cells/generic-asset-cell-layout';
 import { getPreferences } from '../../../../../selectors';
-
-import {
-  TextVariant,
-  TextColor,
-} from '../../../../../helpers/constants/design-system';
+import { TextVariant } from '../../../../../helpers/constants/design-system';
 import { SensitiveText } from '../../../../component-library';
 import { AvatarType } from '../../../../multichain/avatar-group/avatar-group.types';
 import { AssetCellBadge } from '../../asset-list/cells/asset-cell-badge';
@@ -62,8 +58,7 @@ export default function DefiProtocolCell({
       headerLeftDisplay={<AssetCellTitle title={position.title} />}
       headerRightDisplay={
         <SensitiveText
-          color={TextColor.textAlternativeSoft}
-          variant={TextVariant.bodySmMedium}
+          variant={TextVariant.bodyMdMedium}
           isHidden={privacyMode}
           data-testid="defi-list-market-value"
         >

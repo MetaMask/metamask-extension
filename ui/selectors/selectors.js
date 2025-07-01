@@ -141,8 +141,14 @@ import {
   getMultichainNetworkProviders,
   getMultichainNetwork,
 } from './multichain';
+import {
+  getSelectedMultichainNetworkChainId,
+  getIsEvmMultichainNetworkSelected,
+} from './multichain/networks';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
+
+export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
 
 /** `appState` slice selectors */
 
@@ -303,7 +309,7 @@ export function getCurrentKeyring(state) {
     return null;
   }
 
-  return internalAccount.metadata.keyring;
+  return internalAccount.metadata?.keyring;
 }
 
 /**
@@ -1389,15 +1395,28 @@ export const getTokenSortConfig = createDeepEqualSelector(
  * Returns an object indicating which networks
  * tokens should be shown on in the portfolio view.
  */
+// @deprecated('Use `getEnabledNetworks` instead')
 export const getTokenNetworkFilter = createDeepEqualSelector(
   getCurrentChainId,
   getPreferences,
+  getIsEvmMultichainNetworkSelected,
+  getSelectedMultichainNetworkChainId,
   /**
    * @param {*} currentChainId - chainId
    * @param {*} preferences - preferences state
+   * @param {*} isEvmMultichainNetworkSelected - whether the evm multichain network is selected
+   * @param {*} multichainNetworkChainId - the chainId of the multichain network
    * @returns {Record<Hex, boolean>}
    */
-  (currentChainId, { tokenNetworkFilter }) => {
+  (
+    currentChainId,
+    { tokenNetworkFilter },
+    isEvmMultichainNetworkSelected,
+    multichainNetworkChainId,
+  ) => {
+    if (!isEvmMultichainNetworkSelected) {
+      return { [multichainNetworkChainId]: true };
+    }
     // Portfolio view not enabled outside popular networks
     if (
       !process.env.PORTFOLIO_VIEW ||
@@ -1418,12 +1437,22 @@ export const getTokenNetworkFilter = createDeepEqualSelector(
   },
 );
 
+// @deprecated('Use `getEnabledNetworks` instead')
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
+  const enabledNetworks = getEnabledNetworks(state);
   const tokenNetworkFilter = getTokenNetworkFilter(state);
+
+  const currentMultichainChainId = getSelectedMultichainNetworkChainId(state);
+  const { namespace } = parseCaipChainId(currentMultichainChainId);
+
+  const networks = isGlobalNetworkSelectorRemoved
+    ? enabledNetworks?.[namespace] ?? {}
+    : tokenNetworkFilter;
+
   if (
-    Object.keys(tokenNetworkFilter).length === 1 &&
-    Object.keys(tokenNetworkFilter)[0] === chainId
+    Object.keys(networks).length === 1 &&
+    Object.keys(networks)[0] === chainId
   ) {
     return true;
   }
@@ -2338,6 +2367,10 @@ export function getOrderedNetworksList(state) {
   return state.metamask.orderedNetworkList;
 }
 
+export function getEnabledNetworks(state) {
+  return state.metamask.enabledNetworkMap;
+}
+
 export function getPinnedAccountsList(state) {
   return state.metamask.pinnedAccountList;
 }
@@ -2664,6 +2697,7 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
  *   - Otherwise, it includes all chains from `networkConfigurations`, excluding
  *     `TEST_CHAINS`, while ensuring the `currentChainId` is included.
  */
+// @deprecated('Use `getEnabledChainIds` instead')
 export const getAllChainsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -2680,6 +2714,7 @@ export const getAllChainsToPoll = createDeepEqualSelector(
   },
 );
 
+// @deprecated('Use `getEnabledChainIds` instead')
 export const getChainIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -2704,6 +2739,7 @@ export const getChainIdsToPoll = createDeepEqualSelector(
   },
 );
 
+// @deprecated('Use `getEnabledNetworkClientIds` instead')
 export const getNetworkClientIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -2845,6 +2881,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.POLYGON_ZKEVM,
     CHAIN_IDS.MOONBEAM,
     CHAIN_IDS.MOONRIVER,
+    CHAIN_IDS.SEI,
   ].includes(chainId);
 }
 
@@ -2947,6 +2984,20 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
  */
 export function getIsSecurityAlertsEnabled(state) {
   return state.metamask.securityAlertsEnabled;
+}
+
+/**
+ * Gets the cached address security alert response for a given address
+ *
+ * @param {*} state
+ * @param {string} address - The address to get security alert for
+ * @returns the cached address security alert response for the given address
+ */
+export function getAddressSecurityAlertResponse(state, address) {
+  if (!address) {
+    return undefined;
+  }
+  return state.metamask.addressSecurityAlertResponses?.[address.toLowerCase()];
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -3834,3 +3885,44 @@ export function getRequestType(state, id) {
 }
 
 // #endregion permissions selectors
+
+/**
+ * Determines whether the update modal should be shown.
+ *
+ * @param {import('../../ui/store/store').MetaMaskReduxState} state - The MetaMask state.
+ * @returns {boolean} True if the update modal should be shown, false otherwise.
+ */
+export function getShowUpdateModal(state) {
+  const {
+    metamask: { isUpdateAvailable, updateModalLastDismissedAt, lastUpdatedAt },
+  } = state;
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
+
+  const extensionCurrentVersion = semver.valid(
+    semver.coerce(global.platform?.getVersion()),
+  );
+  const extensionMinimumVersion = semver.valid(
+    semver.coerce(remoteFeatureFlags.extensionMinimumVersion),
+  );
+  const isExtensionOutdated =
+    extensionCurrentVersion && extensionMinimumVersion
+      ? semver.lt(extensionCurrentVersion, extensionMinimumVersion)
+      : false;
+
+  const currentTime = Date.now();
+  const updateModalCooldown = 24 * 60 * 60 * 1000; // 24 hours
+  const enoughTimePassedSinceLastDismissal = updateModalLastDismissedAt
+    ? currentTime - updateModalLastDismissedAt > updateModalCooldown
+    : true;
+  const enoughTimePassedSinceLastUpdate = lastUpdatedAt
+    ? currentTime - lastUpdatedAt > updateModalCooldown
+    : true;
+
+  const showUpdateModal =
+    isExtensionOutdated &&
+    isUpdateAvailable &&
+    enoughTimePassedSinceLastDismissal &&
+    enoughTimePassedSinceLastUpdate;
+
+  return showUpdateModal;
+}

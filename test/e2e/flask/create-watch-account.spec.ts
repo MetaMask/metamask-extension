@@ -27,6 +27,11 @@ describe('Account-watcher snap', function (this: Suite) {
               watchEthereumAccountEnabled: true,
             })
             .withNetworkControllerOnMainnet()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true,
+              },
+            })
             .build(),
           title: this.test?.fullTitle(),
         },
@@ -51,6 +56,11 @@ describe('Account-watcher snap', function (this: Suite) {
               watchEthereumAccountEnabled: true,
             })
             .withNetworkControllerOnMainnet()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true,
+              },
+            })
             .build(),
           title: this.test?.fullTitle(),
         },
@@ -117,6 +127,11 @@ describe('Account-watcher snap', function (this: Suite) {
                 watchEthereumAccountEnabled: true,
               })
               .withNetworkControllerOnMainnet()
+              .withEnabledNetworks({
+                eip155: {
+                  '0x1': true,
+                },
+              })
               .build(),
             title: this.test?.fullTitle(),
           },
@@ -150,6 +165,11 @@ describe('Account-watcher snap', function (this: Suite) {
               watchEthereumAccountEnabled: true,
             })
             .withNetworkControllerOnMainnet()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true,
+              },
+            })
             .build(),
           title: this.test?.fullTitle(),
         },
@@ -180,6 +200,11 @@ describe('Account-watcher snap', function (this: Suite) {
               watchEthereumAccountEnabled: true,
             })
             .withNetworkControllerOnMainnet()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true,
+              },
+            })
             .build(),
           title: this.test?.fullTitle(),
         },
@@ -209,6 +234,11 @@ describe('Account-watcher snap', function (this: Suite) {
               watchEthereumAccountEnabled: true,
             })
             .withNetworkControllerOnMainnet()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true,
+              },
+            })
             .build(),
           title: this.test?.fullTitle(),
         },

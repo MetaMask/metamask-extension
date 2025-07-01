@@ -1213,7 +1213,7 @@
       },
       "packages": {
         "browserify>JSONStream>jsonparse": true,
-        "debounce-stream>through": true
+        "browserify>JSONStream>through": true
       }
     },
     "@lavamoat/lavapack>readable-stream>abort-controller": {
@@ -2426,7 +2426,7 @@
         "unzipper>duplexer2>readable-stream": true
       }
     },
-    "debounce-stream>duplexer": {
+    "gulp-livereload>event-stream>duplexer": {
       "builtin": {
         "stream": true
       }
@@ -2909,13 +2909,13 @@
         "setImmediate": true
       },
       "packages": {
-        "debounce-stream>duplexer": true,
+        "gulp-livereload>event-stream>duplexer": true,
         "gulp-livereload>event-stream>from": true,
         "gulp-livereload>event-stream>map-stream": true,
         "gulp-livereload>event-stream>pause-stream": true,
         "gulp-livereload>event-stream>split": true,
         "gulp-livereload>event-stream>stream-combiner": true,
-        "debounce-stream>through": true
+        "browserify>JSONStream>through": true
       }
     },
     "@lavamoat/lavapack>readable-stream>abort-controller>event-target-shim": {
@@ -3054,6 +3054,7 @@
         "os.cpus": true,
         "os.platform": true,
         "path.basename": true,
+        "path.isAbsolute": true,
         "path.resolve": true,
         "stream.PassThrough": true,
         "stream.Readable": true
@@ -5027,7 +5028,7 @@
     },
     "gulp-livereload>event-stream>pause-stream": {
       "packages": {
-        "debounce-stream>through": true
+        "browserify>JSONStream>through": true
       }
     },
     "postcss>picocolors": {
@@ -7907,7 +7908,7 @@
         "string_decoder.StringDecoder": true
       },
       "packages": {
-        "debounce-stream>through": true
+        "browserify>JSONStream>through": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>class-utils>static-extend": {
@@ -7927,7 +7928,7 @@
     },
     "gulp-livereload>event-stream>stream-combiner": {
       "packages": {
-        "debounce-stream>duplexer": true
+        "gulp-livereload>event-stream>duplexer": true
       }
     },
     "gulp>glob-watcher>async-done>stream-exhaust": {
@@ -8587,7 +8588,7 @@
         "watchify>xtend": true
       }
     },
-    "debounce-stream>through": {
+    "browserify>JSONStream>through": {
       "builtin": {
         "stream": true
       },
@@ -8832,7 +8833,7 @@
         "react-markdown>unified>bail": true,
         "react-markdown>unified>extend": true,
         "react-markdown>unified>is-buffer": true,
-        "mocha>yargs-unparser>is-plain-obj": true,
+        "react-markdown>unified>is-plain-obj": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
       }

@@ -55,9 +55,7 @@ export function useTransactionConfirm() {
       handleGasless7702();
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
-    ///: END:ONLY_INCLUDE_IF
   }, [
     customNonceValue,
     dispatch,

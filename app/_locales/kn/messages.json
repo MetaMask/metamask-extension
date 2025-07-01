@@ -257,20 +257,8 @@
   "gasLimit": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿ"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "ಗ್ಯಾಸ್‌ ಮಿತಿ ಎಂದರೆ ನೀವು ಖರ್ಚು ಮಾಡಲು ಸಿದ್ಧವಿರುವ ಗ್ಯಾಸ್‌ನ ಗರಿಷ್ಠ ಪ್ರಮಾಣ."
-  },
   "gasLimitTooLow": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿಯು ಕನಿಷ್ಟ 21000 ಆಗಿರಬೇಕು"
-  },
-  "gasPrice": {
-    "message": "ಗ್ಯಾಸ್ ದರ (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "ಗ್ಯಾಸ್ ದರವು ಅತ್ಯಂತ ಕಡಿಮೆಯಿದೆ"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "ಗ್ಯಾಸ್ ದರವು ಪ್ರತಿ ಯೂನಿಟ್ ಗ್ಯಾಸ್‌ಗೆ ನೀವು ಪಾವತಿಸಲು ಸಿದ್ಧವಿರುವ ಎಥರ್‌ನ ಪ್ರಮಾಣವನ್ನು ಸೂಚಿಸುತ್ತದೆ."
   },
   "gasUsed": {
     "message": "ಗ್ಯಾಸ್ ಬಳಸಲಾಗಿದೆ"
@@ -644,9 +632,6 @@
   "terms": {
     "message": "ಬಳಕೆಯ ನಿಯಮಗಳು"
   },
-  "tips": {
-    "message": "ಸಲಹೆಗಳು"
-  },
   "to": {
     "message": "ವರೆಗೆ"
   },
@@ -725,9 +710,6 @@
   "unlock": {
     "message": "ಅನ್‌ಲಾಕ್"
   },
-  "unlockMessage": {
-    "message": "ವಿಕೇಂದ್ರೀಕೃತ ವೆಬ್ ನಿರೀಕ್ಷಿಸುತ್ತಿದೆ"
-  },
   "urlErrorMsg": {
     "message": "URI ಗಳಿಗೆ ಸೂಕ್ತವಾದ HTTP/HTTPS ಪೂರ್ವಪ್ರತ್ಯಯದ ಅಗತ್ಯವಿದೆ."
   },
@@ -751,8 +733,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "ನಿಮ್ಮ ಖಾಸಗಿ ಸೀಡ್ ಫ್ರೇಸ್"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "ವೇಗ ಹೆಚ್ಚಿಸುವುದಕ್ಕೆ ಶೂನ್ಯ ಗ್ಯಾಸ್ ಬೆಲೆ"
   }
 }

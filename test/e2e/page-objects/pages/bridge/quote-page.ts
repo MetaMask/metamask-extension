@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 export type BridgeQuote = {
@@ -43,6 +44,9 @@ class BridgeQuotePage {
 
   private applyButton = { text: 'Apply', tag: 'button' };
 
+  private confirmButton =
+    '[data-testid="confirm-sign-and-send-transaction-confirm-snap-footer-button"]';
+
   private selectAllButton = { text: 'Select all', tag: 'button' };
 
   private noOptionAvailable = {
@@ -54,6 +58,8 @@ class BridgeQuotePage {
     text: `You don't have enough ETH to pay the gas fee for this bridge. Enter a smaller amount or buy more ETH.`,
     css: '.mm-text--body-md',
   };
+
+  private switchTokensButton = '[data-testid="switch-tokens"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -104,10 +110,31 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.submitButton);
   };
 
+  confirmBridgeTransaction = async () => {
+    await this.driver.clickElement(this.confirmButton);
+  };
+
   goBack = async () => {
     await this.driver.waitForSelector(this.backButton);
     await this.driver.clickElement(this.backButton);
   };
+
+  async searchAssetAndVerifyCount(
+    searchInput: string,
+    count: number,
+  ): Promise<void> {
+    console.log(`Fill search input with ${searchInput}`);
+    await this.driver.pasteIntoField(this.assetPrickerSearchInput, searchInput);
+    await this.driver.elementCountBecomesN(this.tokenButton, count);
+  }
+
+  async check_tokenIsDisabled() {
+    const [tkn] = await this.driver.findElements(this.tokenButton);
+
+    await tkn.click();
+    const isSelected = await tkn.isSelected();
+    assert.equal(isSelected, false);
+  }
 
   async check_noTradeRouteMessageIsDisplayed(): Promise<void> {
     try {
@@ -161,6 +188,10 @@ class BridgeQuotePage {
       throw e;
     }
     console.log('Price matches expected format');
+  }
+
+  async switchTokens(): Promise<void> {
+    await this.driver.clickElement(this.switchTokensButton);
   }
 }
 

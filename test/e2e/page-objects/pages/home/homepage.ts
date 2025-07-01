@@ -28,7 +28,7 @@ class HomePage {
 
   private readonly basicFunctionalityOffWarningMessage = {
     text: 'Basic functionality is off',
-    css: '.mm-banner-alert',
+    css: '.mm-banner-base',
   };
 
   protected readonly bridgeButton: string =
@@ -41,6 +41,10 @@ class HomePage {
 
   private readonly erc20TokenDropdown = {
     testId: 'asset-list-control-bar-action-button',
+  };
+
+  private readonly loadingOverlay = {
+    text: 'Connecting to Localhost 8545',
   };
 
   private readonly nftTab = {
@@ -71,6 +75,8 @@ class HomePage {
   private readonly tokensTab = {
     testId: 'account-overview__asset-tab',
   };
+
+  private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -154,6 +160,14 @@ class HomePage {
     await this.driver.clickElement(this.privacyBalanceToggle);
   }
 
+  async waitForLoadingOverlayToDisappear(): Promise<void> {
+    console.log(`Wait for loading overlay to disappear`);
+    await this.driver.assertElementNotPresent(this.loadingOverlay, {
+      waitAtLeastGuard: 1000,
+      timeout: 10000,
+    });
+  }
+
   /**
    * Checks if the toaster message for adding a network is displayed on the homepage.
    *
@@ -186,7 +200,7 @@ class HomePage {
   async check_disabledButtonTooltip(tooltipText: string): Promise<void> {
     console.log(`Check if disabled button tooltip is displayed on homepage`);
     await this.driver.waitForSelector(
-      `.icon-button--disabled [data-tooltipped][data-original-title="${tooltipText}"]`,
+      `.icon-button-round--disabled [data-tooltipped][data-original-title="${tooltipText}"]`,
     );
   }
 
@@ -321,6 +335,11 @@ class HomePage {
     });
   }
 
+  async check_portfolioLinkIsDisplayed(): Promise<void> {
+    console.log('Check if portfolio link is displayed on homepage');
+    await this.driver.waitForSelector(this.portfolioLink);
+  }
+
   /**
    * Check if the expected warning message is displayed on homepage.
    *
@@ -332,6 +351,16 @@ class HomePage {
       text: message,
       tag: 'p',
     });
+  }
+
+  /**
+   * Clicks the copy address button.
+   */
+  async getAccountAddress(): Promise<string> {
+    const accountAddress = await this.driver.findElement(
+      this.copyAddressButton,
+    );
+    return accountAddress.getText();
   }
 }
 

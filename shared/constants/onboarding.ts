@@ -16,4 +16,14 @@ export enum FirstTimeFlowType {
    * firstTimeFlowType to 'restore'.
    */
   restore = 'restore',
+  /**
+   * When a user logins with Social Login and creates a new wallet,
+   * they will have the 'socialCreate' firstTimeFlowType.
+   */
+  socialCreate = 'socialCreate',
+  /**
+   * When a user logins with Social Login and imports their wallet,
+   * they will have the 'socialImport' firstTimeFlowType.
+   */
+  socialImport = 'socialImport',
 }
