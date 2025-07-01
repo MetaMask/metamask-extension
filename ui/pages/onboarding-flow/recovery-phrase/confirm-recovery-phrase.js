@@ -170,6 +170,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
+      height={BlockSize.Full}
       gap={6}
       className="recovery-phrase recovery-phrase__confirm"
       data-testid="confirm-recovery-phrase"
