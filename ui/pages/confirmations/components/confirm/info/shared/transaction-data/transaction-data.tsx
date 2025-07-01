@@ -94,10 +94,13 @@ export const TransactionData = ({
             APPROVAL_METHOD_NAMES.includes(method.name);
           if (isBatchedApproval) {
             return (
-              <BatchedApprovalFunction
-                method={method}
-                nestedTransactionIndex={nestedTransactionIndex}
-              />
+              <React.Fragment key={index}>
+                <BatchedApprovalFunction
+                  method={method}
+                  nestedTransactionIndex={nestedTransactionIndex}
+                />
+                {index < decodeData.length - 1 && <ConfirmInfoRowDivider />}
+              </React.Fragment>
             );
           }
           return (
