@@ -2226,9 +2226,6 @@
   "floatAmountToken": {
     "message": "Le nombre de jetons doit être un nombre entier"
   },
-  "followUsOnTwitter": {
-    "message": "Suivez-nous sur Twitter"
-  },
   "forbiddenIpfsGateway": {
     "message": "Passerelle IPFS interdite : veuillez spécifier une passerelle CID"
   },

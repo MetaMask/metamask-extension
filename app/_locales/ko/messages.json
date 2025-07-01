@@ -2226,9 +2226,6 @@
   "floatAmountToken": {
     "message": "토큰 금액은 정수여야 합니다"
   },
-  "followUsOnTwitter": {
-    "message": "트위터에서 팔로우하세요"
-  },
   "forbiddenIpfsGateway": {
     "message": "금지된 IPFS 게이트웨이: CID 게이트웨이를 지정하세요."
   },
