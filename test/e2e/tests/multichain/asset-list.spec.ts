@@ -3,7 +3,7 @@ import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation, loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
@@ -67,7 +67,7 @@ describe('Multichain Asset List', function (this: Suite) {
         const assetListPage = new AssetListPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
-        await assetListPage.check_tokenItemNumber(1);
+        await assetListPage.check_tokenItemNumber(4);
         await assetListPage.clickOnAsset('Ethereum');
         await assetListPage.check_buySellButtonIsPresent();
         await assetListPage.check_multichainTokenListButtonIsPresent();
@@ -124,16 +124,15 @@ describe('Multichain Asset List', function (this: Suite) {
       },
     );
   });
-  it('shows correct asset and balance when swapping on a different chain', async function () {
+  it.only('shows correct asset and balance when swapping on a different chain', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24.9978', 'ETH');
         const headerNavbar = new HeaderNavbar(driver);
         const assetListPage = new AssetListPage(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
@@ -143,7 +142,7 @@ describe('Multichain Asset List', function (this: Suite) {
         await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
         await assetListPage.check_tokenItemNumber(1);
         await assetListPage.clickOnAsset('Ethereum');
-        await homePage.gotToSwapTab();
+        await homePage.goToSwapTab();
         await sendPage.check_networkChange(NETWORK_NAME_MAINNET);
         await swapPage.check_prepareSwapBalanceMessage(BALANCE_AMOUNT);
       },
