@@ -547,6 +547,7 @@ export function AssetPickerModal({
     conversionRate,
     currentCurrency,
     asset,
+    tokenFilter,
   ]);
 
   // This fetches the metadata for the asset if it is not already in the filteredTokenList
