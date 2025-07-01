@@ -81,6 +81,12 @@ class Confirmation {
     await this.driver.clickElement(this.footerCancelButton);
   }
 
+  async clickFooterConfirmButtonAndAndWaitForWindowToClose() {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.footerConfirmButton,
+    );
+  }
+
   async clickFooterCancelButtonAndAndWaitForWindowToClose() {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.footerCancelButton,
