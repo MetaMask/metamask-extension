@@ -1,4 +1,4 @@
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 import { CompletedRequest, Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { MOCK_SRP_E2E_IDENTIFIER_BASE_KEY } from '../../../tests/identity/mocks';
@@ -19,6 +19,10 @@ export const pathRegexps = {
     `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.notifications}`,
     'u',
   ),
+  [USER_STORAGE_FEATURE_NAMES.addressBook]: new RegExp(
+    `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.addressBook}`,
+    'u',
+  ),
 };
 
 export type UserStorageResponseData = {
@@ -28,18 +32,21 @@ export type UserStorageResponseData = {
   SrpIdentifier?: string;
 };
 
-export enum UserStorageMockttpControllerEvents {
-  GET_NOT_FOUND = 'GET_NOT_FOUND',
-  GET_SINGLE = 'GET_SINGLE',
-  GET_ALL = 'GET_ALL',
-  PUT_SINGLE = 'PUT_SINGLE',
-  PUT_BATCH = 'PUT_BATCH',
-  DELETE_NOT_FOUND = 'DELETE_NOT_FOUND',
-  DELETE_SINGLE = 'DELETE_SINGLE',
-  DELETE_ALL = 'DELETE_ALL',
-  DELETE_BATCH_NOT_FOUND = 'DELETE_BATCH_NOT_FOUND',
-  DELETE_BATCH = 'DELETE_BATCH',
-}
+export const UserStorageMockttpControllerEvents = {
+  GET_NOT_FOUND: 'GET_NOT_FOUND',
+  GET_SINGLE: 'GET_SINGLE',
+  GET_ALL: 'GET_ALL',
+  PUT_SINGLE: 'PUT_SINGLE',
+  PUT_BATCH: 'PUT_BATCH',
+  DELETE_NOT_FOUND: 'DELETE_NOT_FOUND',
+  DELETE_SINGLE: 'DELETE_SINGLE',
+  DELETE_ALL: 'DELETE_ALL',
+  DELETE_BATCH_NOT_FOUND: 'DELETE_BATCH_NOT_FOUND',
+  DELETE_BATCH: 'DELETE_BATCH',
+} as const;
+
+// Helper type for converting const objects to enum-like types
+export type AsEnum<T> = T[keyof T];
 
 const determineIfFeatureEntryFromURL = (url: string) =>
   url.substring(url.lastIndexOf('userstorage') + 12).split('/').length === 2;

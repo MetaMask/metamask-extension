@@ -2,6 +2,7 @@ import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sd
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
+  AsEnum,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { Driver } from '../../../webdriver/driver';
 
@@ -29,7 +30,7 @@ export const arrangeTestUtils = (
   const BASE_INTERVAL = 1000;
 
   const prepareEventsEmittedCounter = (
-    event: UserStorageMockttpControllerEvents,
+    event: AsEnum<typeof UserStorageMockttpControllerEvents>,
   ) => {
     let counter = 0;
     userStorageMockttpController.eventEmitter.on(event, () => {

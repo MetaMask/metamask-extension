@@ -5,9 +5,10 @@ import { regularDelayMs, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 const SOLANA_URL_REGEX_MAINNET =
@@ -1517,6 +1518,8 @@ export async function mockBridgeGetTokens(mockServer: Mockttp) {
   });
 }
 
+export const SHOW_SWAP_SNAP_CONFIRMATION = false;
+
 const featureFlags = {
   refreshRate: 30000,
   maxRefreshCount: 5,
@@ -1539,13 +1542,27 @@ const featureFlags = {
       ],
       isActiveSrc: true,
       isActiveDest: true,
+      isSnapConfirmationEnabled: false,
     },
   },
 };
+
+const featureFlagsWithSnapConfirmation = {
+  ...featureFlags,
+  chains: {
+    ...featureFlags.chains,
+    '1151111081099710': {
+      ...featureFlags.chains['1151111081099710'],
+      isSnapConfirmationEnabled: true,
+    },
+  },
+};
+
 export async function withSolanaAccountSnap(
   {
     title,
     showNativeTokenAsMainBalance = true,
+    showSnapConfirmation = false,
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
     mockZeroBalance,
@@ -1557,9 +1574,11 @@ export async function withSolanaAccountSnap(
     dappPaths,
     withProtocolSnap,
     withCustomMocks,
+    withFixtureBuilder,
   }: {
     title?: string;
     showNativeTokenAsMainBalance?: boolean;
+    showSnapConfirmation?: boolean;
     numberOfAccounts?: number;
     mockGetTransactionSuccess?: boolean;
     mockGetTransactionFailed?: boolean;
@@ -1577,6 +1596,7 @@ export async function withSolanaAccountSnap(
       | Promise<MockedEndpoint[] | MockedEndpoint>
       | MockedEndpoint[]
       | MockedEndpoint;
+    withFixtureBuilder?: (builder: FixtureBuilder) => FixtureBuilder;
   },
   test: (
     driver: Driver,
@@ -1591,6 +1611,10 @@ export async function withSolanaAccountSnap(
       fixtures.withPreferencesControllerShowNativeTokenAsMainBalanceDisabled();
   }
 
+  if (withFixtureBuilder) {
+    fixtures = withFixtureBuilder(fixtures);
+  }
+
   await withFixtures(
     {
       fixtures: fixtures.build(),
@@ -1603,7 +1627,9 @@ export async function withSolanaAccountSnap(
         // - If this flag is set, the slides count will be 5.
         remoteFeatureFlags: {
           addSolanaAccount: true,
-          bridgeConfig: featureFlags,
+          bridgeConfig: showSnapConfirmation
+            ? featureFlagsWithSnapConfirmation
+            : featureFlags,
         },
       },
       dappPaths,
@@ -1718,7 +1744,7 @@ export async function withSolanaAccountSnap(
       mockServer: Mockttp;
       extensionId: string;
     }) => {
-      await loginWithoutBalanceValidation(driver);
+      await loginWithBalanceValidation(driver);
       const headerComponent = new HeaderNavbar(driver);
       const accountListPage = new AccountListPage(driver);
 
@@ -1728,7 +1754,9 @@ export async function withSolanaAccountSnap(
           accountType: ACCOUNT_TYPE.Solana,
           accountName: `Solana ${i}`,
         });
+        await new NonEvmHomepage(driver).check_pageIsLoaded();
         await headerComponent.check_accountLabel(`Solana ${i}`);
+        await headerComponent.check_currentSelectedNetwork('Solana');
       }
 
       if (numberOfAccounts > 0) {

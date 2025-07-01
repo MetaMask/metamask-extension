@@ -911,9 +911,6 @@
   "bridgeTo": {
     "message": "Realizar ponte para"
   },
-  "bridgeToChain": {
-    "message": "Realizar ponte para $1"
-  },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Se você adicionou esse token manualmente, confirme que está ciente dos riscos para seus fundos antes de fazer a ponte."
   },
@@ -2228,9 +2225,6 @@
   },
   "floatAmountToken": {
     "message": "A quantidade de tokens deve ser um número inteiro"
-  },
-  "followUsOnTwitter": {
-    "message": "Siga-nos no Twitter"
   },
   "forbiddenIpfsGateway": {
     "message": "Gateway IPFS proibido: especifique um gateway de CID"
@@ -4413,18 +4407,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Entendi"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Sempre mantenha a sua Frase de Recuperação Secreta em um lugar seguro e secreto"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Precisa fazer backup da sua Frase de Recuperação Secreta novamente?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Nunca compartilhe a sua Frase de Recuperação Secreta com ninguém"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "A equipe da MetaMask jamais pedirá sua Frase de Recuperação Secreta"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Sua Frase de Recuperação Secreta controla todas as suas contas."
   },
@@ -4795,16 +4777,8 @@
   "sendSelectSendAsset": {
     "message": "Selecionar ativo para enviar"
   },
-  "sendSpecifiedTokens": {
-    "message": "Enviar $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Clicar neste botão iniciará imediatamente sua transação de swap. Confira os detalhes da sua transação antes de prosseguir."
-  },
-  "sendTokenAsToken": {
-    "message": "Enviar $1 como $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Enviando $1"

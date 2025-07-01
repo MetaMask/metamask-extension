@@ -1,5 +1,11 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -29,7 +35,13 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
-import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_METAMETRICS,
+  ONBOARDING_REVIEW_SRP_ROUTE,
+} from '../../../helpers/constants/routes';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
@@ -63,11 +75,24 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const splitSecretRecoveryPhrase = useMemo(
     () => (secretRecoveryPhrase ? secretRecoveryPhrase.split(' ') : []),
     [secretRecoveryPhrase],
   );
+  const searchParams = new URLSearchParams(search);
+  const isFromReminder = searchParams.get('isFromReminder');
+  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
+
+  const queryParams = new URLSearchParams();
+  if (isFromReminder) {
+    queryParams.set('isFromReminder', isFromReminder);
+  }
+  if (isFromSettingsSecurity) {
+    queryParams.set('isFromSettingsSecurity', isFromSettingsSecurity);
+  }
+  const nextRouteQueryString = queryParams.toString();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [matching, setMatching] = useState(false);
@@ -75,6 +100,16 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     generateQuizWords(splitSecretRecoveryPhrase),
   );
   const [answerSrp, setAnswerSrp] = useState('');
+
+  useEffect(() => {
+    if (!secretRecoveryPhrase) {
+      history.replace(
+        `${ONBOARDING_REVIEW_SRP_ROUTE}${
+          nextRouteQueryString ? `?${nextRouteQueryString}` : ''
+        }`,
+      );
+    }
+  }, [history, secretRecoveryPhrase, nextRouteQueryString]);
 
   const resetQuizWords = useCallback(() => {
     const newQuizWords = generateQuizWords(splitSecretRecoveryPhrase);
@@ -113,8 +148,22 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       },
     });
 
-    history.push(ONBOARDING_COMPLETION_ROUTE);
-  }, [dispatch, hdEntropyIndex, history, trackEvent]);
+    const nextRoute =
+      getBrowserName() === PLATFORM_FIREFOX || isFromReminder
+        ? ONBOARDING_COMPLETION_ROUTE
+        : ONBOARDING_METAMETRICS;
+
+    history.replace(
+      `${nextRoute}${nextRouteQueryString ? `?${nextRouteQueryString}` : ''}`,
+    );
+  }, [
+    dispatch,
+    hdEntropyIndex,
+    history,
+    trackEvent,
+    isFromReminder,
+    nextRouteQueryString,
+  ]);
 
   return (
     <Box
@@ -155,9 +204,14 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
           marginBottom={4}
           width={BlockSize.Full}
         >
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {t('stepOf', [3, 3])}
-          </Text>
+          {!isFromReminder && (
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
+              {t('stepOf', [3, 3])}
+            </Text>
+          )}
           <Text variant={TextVariant.headingLg} as="h2">
             {t('confirmRecoveryPhraseTitle')}
           </Text>
