@@ -126,10 +126,11 @@ PATH_NAME_MAP.set(
 export const NEW_ACCOUNT_ROUTE = '/new-account';
 PATH_NAME_MAP.set(NEW_ACCOUNT_ROUTE, 'New Account Page');
 
-export const ACCOUNT_DETAILS_ROUTE = '/account-details';
+export const ACCOUNT_DETAILS_ROUTE = '/account-details/:address';
 PATH_NAME_MAP.set(ACCOUNT_DETAILS_ROUTE, 'Account Details Page');
 
-export const ACCOUNT_DETAILS_QR_CODE_ROUTE = '/account-details/qr-code';
+export const ACCOUNT_DETAILS_QR_CODE_ROUTE =
+  '/account-details/qr-code/:address';
 PATH_NAME_MAP.set(
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   'Account Details QR Code Page',

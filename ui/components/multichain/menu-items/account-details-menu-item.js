@@ -46,7 +46,7 @@ export const AccountDetailsMenuItem = ({
           },
         });
         if (isMultichainAccountsState1Enabled) {
-          history.push(ACCOUNT_DETAILS_ROUTE);
+          history.push(`${ACCOUNT_DETAILS_ROUTE}/${address}`);
         }
         closeMenu?.();
       }}

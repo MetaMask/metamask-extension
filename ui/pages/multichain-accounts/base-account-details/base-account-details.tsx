@@ -39,14 +39,14 @@ import {
 
 type BaseAccountDetailsProps = {
   children?: React.ReactNode | React.ReactNode[];
-  address: string;
   account: InternalAccount;
+  address: string;
 };
 
 export const BaseAccountDetails = ({
   children,
-  address,
   account,
+  address,
 }: BaseAccountDetailsProps) => {
   const useBlockie = useSelector(getUseBlockie);
   const history = useHistory();
@@ -58,14 +58,14 @@ export const BaseAccountDetails = ({
     type,
   } = account;
   const formattedAddress = isEvmAccountType(type)
-    ? toChecksumHexAddress(address)?.toLowerCase()
+    ? toChecksumHexAddress(address as string)?.toLowerCase()
     : address;
   const shortenedAddress = shortenAddress(formattedAddress);
 
   const [isEditingAccountName, setIsEditingAccountName] = useState(false);
 
   const handleShowAddress = () => {
-    history.push(ACCOUNT_DETAILS_QR_CODE_ROUTE);
+    history.push(`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/${address}`);
   };
 
   const handleNavigation = useCallback(() => {
