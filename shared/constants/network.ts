@@ -193,6 +193,7 @@ export const CHAIN_IDS = {
   SOPHON_TESTNET: '0x1fa72e78',
   EDUCHAIN: '0xa3c3',
   ABSTRACT: '0xab5',
+  OMNI: '0xa6',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -342,6 +343,7 @@ export const EDUCHAIN_DISPLAY_NAME = 'EDU Chain';
 export const APECHAIN_DISPLAY_NAME = 'ApeChain';
 export const APECHAIN_TESTNET_DISPLAY_NAME = 'ApeChain Testnet';
 export const ABSTRACT_DISPLAY_NAME = 'Abstract';
+export const OMNI_DISPLAY_NAME = 'Omni';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -409,6 +411,7 @@ export const CURRENCY_SYMBOLS = {
   EDUCHAIN: 'EDU',
   APECHAIN: 'APE',
   ABSTRACT: 'ETH',
+  OMNI: 'OMNI',
 } as const;
 
 // Non-EVM currency symbols
@@ -604,6 +607,8 @@ export const EDUCHAIN_IMAGE_URL = './images/educhain.svg';
 export const APECHAIN_IMAGE_URL = './images/apechain.svg';
 export const APECHAIN_NATIVE_TOKEN_IMAGE_URL = './images/apechain-native.svg';
 export const ABSTRACT_IMAGE_URL = './images/abstract.svg';
+export const OMNI_IMAGE_URL = './images/omni.png';
+export const OMNI_NATIVE_TOKEN_IMAGE_URL = './images/omni-native.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -750,6 +755,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.SEI]: SEI_DISPLAY_NAME,
   [CHAIN_IDS.ABSTRACT]: ABSTRACT_DISPLAY_NAME,
+  [CHAIN_IDS.OMNI]: OMNI_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -896,6 +902,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.APECHAIN_TESTNET]: CURRENCY_SYMBOLS.APECHAIN,
   [CHAIN_IDS.SEI]: CURRENCY_SYMBOLS.SEI,
   [CHAIN_IDS.ABSTRACT]: CURRENCY_SYMBOLS.ABSTRACT,
+  [CHAIN_IDS.OMNI]: CURRENCY_SYMBOLS.OMNI,
 } as const;
 
 /**
@@ -1050,6 +1057,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.APECHAIN_MAINNET]: APECHAIN_IMAGE_URL,
   [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_IMAGE_URL,
   [CHAIN_IDS.ABSTRACT]: ABSTRACT_IMAGE_URL,
+  [CHAIN_IDS.OMNI]: OMNI_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1117,6 +1125,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.APECHAIN_MAINNET]: APECHAIN_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ABSTRACT]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.OMNI]: OMNI_NATIVE_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_MAINNET]: ETH_TOKEN_IMAGE_URL,
 } as const;
 
