@@ -197,11 +197,12 @@ class Confirmation {
     }
 
     if (name) {
-      const input = await this.driver.findElement(
+      await this.driver.fill(this.formComboFieldInputSelector, name);
+      // Pressing enter before saving is needed for firefox to get the dropdown to go away.
+      await this.driver.press(
         this.formComboFieldInputSelector,
+        this.driver.Key.ENTER,
       );
-      await input.sendKeys(name);
-      await input.sendKeys(this.driver.Key.ENTER); // Press Enter to close dropdown
     }
 
     await this.driver.clickElement(this.saveButtonSelector);
