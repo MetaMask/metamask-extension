@@ -1,10 +1,5 @@
 import { execSync } from 'child_process';
 import util from 'util';
-import {
-  getJobsByWorkflowId,
-  getPipelineId,
-  getWorkflowId,
-} from '../.github/scripts/shared/circle-artifacts';
 const exec = util.promisify(require('node:child_process').exec);
 
 function getGitBranch() {
@@ -15,9 +10,6 @@ function getGitBranch() {
 }
 
 async function getBuilds(branch: string, jobNames: string[]) {
-  const pipelineId = await getPipelineId(branch);
-  const workflowId = await getWorkflowId(pipelineId);
-  const jobs = await getJobsByWorkflowId(workflowId);
   let builds = [] as any[];
 
   for (const jobName of jobNames) {
@@ -25,7 +17,6 @@ async function getBuilds(branch: string, jobNames: string[]) {
 
     console.log(`jobName: ${jobName}, jobId: ${jobId}`);
 
-    // Using the CircleCI API version 1.1 here, because this endpoint recently started requiring Authorization in v2
     const response = await fetch(
       `https://circleci.com/api/v1.1/project/gh/MetaMask/metamask-extension/${jobId}/artifacts`,
     );
@@ -63,7 +54,7 @@ function getVersionNumber(builds: any[]) {
 async function downloadBuilds(builds: any[]) {
   if (!builds || builds.length === 0) {
     console.log(
-      'No builds found on CircleCI for the current branch, you will have to build the Extension yourself',
+      'No builds found on CI for the current branch, you will have to build the Extension yourself',
     );
     return false;
   }
@@ -117,7 +108,7 @@ function unzipBuilds(folder: 'builds' | 'builds-test', versionNumber: string) {
 }
 
 async function main(jobNames: string[]) {
-  const branch = process.env.CIRCLE_BRANCH || getGitBranch();
+  const branch = getGitBranch();
 
   const builds = await getBuilds(branch, jobNames);
 
