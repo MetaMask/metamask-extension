@@ -575,9 +575,7 @@ describe('useCarouselManagement', () => {
       mockGetIsRemoteModeEnabled.mockReturnValue(false);
       mockGetUseExternalServices.mockReturnValue(false);
 
-      renderHook(() =>
-        useCarouselManagement({ testDate: new Date().toISOString() }),
-      );
+      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock
