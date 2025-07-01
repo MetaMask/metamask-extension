@@ -84,12 +84,19 @@ export const useNetworkChangeHandlers = () => {
     (chainId: CaipChainId) => {
       const { namespace } = parseCaipChainId(chainId);
       const hexChainId = convertCaipToHexChainId(chainId);
+      const hexCurrentChainId = convertCaipToHexChainId(currentChainId);
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
-      dispatch(setActiveNetwork(finalNetworkClientId));
-
       const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
+      const isGlobalNetworkPopularNetwork =
+        FEATURED_NETWORK_CHAIN_IDS.includes(hexCurrentChainId);
+
+      if (!isPopularNetwork) {
+        dispatch(setActiveNetwork(finalNetworkClientId));
+      } else if (!isGlobalNetworkPopularNetwork) {
+        dispatch(setActiveNetwork(finalNetworkClientId));
+      }
 
       const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
 
