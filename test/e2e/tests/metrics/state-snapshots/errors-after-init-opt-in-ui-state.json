@@ -66,8 +66,7 @@
     "isMultiRpcOnboarding": "boolean",
     "isAccessedFromDappConnectedSitePopover": "boolean",
     "errorInSettings": null,
-    "showNewSrpAddedToast": "boolean",
-    "showPasswordChangeToast": "string"
+    "showNewSrpAddedToast": "boolean"
   },
   "bridge": "object",
   "confirmAlerts": "object",
@@ -155,7 +154,6 @@
     "currentExtensionPopupId": "number",
     "termsOfUseLastAgreed": "number",
     "snapsInstallPrivacyWarningShown": true,
-    "socialBackupsMetadata": "object",
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,

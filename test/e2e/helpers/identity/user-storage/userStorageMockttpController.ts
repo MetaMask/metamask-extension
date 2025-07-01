@@ -309,7 +309,6 @@ export class UserStorageMockttpController {
       deleteStatusCode?: number;
     },
   ) => {
-    console.log('UserStorageMockttpController::setupPath', path);
     const previouslySetupPath = this.paths.get(path);
 
     this.paths.set(path, {

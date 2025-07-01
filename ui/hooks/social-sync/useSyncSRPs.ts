@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { syncSeedPhrases } from '../../store/actions';
-import { isSocialLoginFlow } from '../../selectors';
+import { getIsSocialLoginFlow } from '../../selectors';
 
 export const useSyncSRPs = () => {
   const dispatch = useDispatch();
-  const isSocialLoginEnabled = useSelector(isSocialLoginFlow);
+  const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

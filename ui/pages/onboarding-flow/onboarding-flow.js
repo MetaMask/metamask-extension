@@ -96,7 +96,6 @@ export default function OnboardingFlow() {
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const completedOnboarding = useSelector(getCompletedOnboarding);
-  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const isFromSettingsSecurity = new URLSearchParams(search).get(
@@ -105,6 +104,7 @@ export default function OnboardingFlow() {
   const trackEvent = useContext(MetaMetricsContext);
   const isUnlocked = useSelector(getIsUnlocked);
   const showTermsOfUse = useSelector(getShowTermsOfUse);
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const isPrimarySeedPhraseBackedUp = useSelector(
@@ -183,6 +183,7 @@ export default function OnboardingFlow() {
         createNewVaultAndGetSeedPhrase(password),
       );
     }
+
     setSecretRecoveryPhrase(newSecretRecoveryPhrase);
   };
 

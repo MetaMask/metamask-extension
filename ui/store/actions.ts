@@ -396,7 +396,6 @@ export function createNewVaultAndRestore(
     const encodedSeedPhrase = Array.from(
       Buffer.from(seedPhrase, 'utf8').values(),
     );
-    console.log('encodedSeedPhrase', encodedSeedPhrase);
 
     return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(

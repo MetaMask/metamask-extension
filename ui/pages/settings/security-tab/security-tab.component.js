@@ -23,6 +23,7 @@ import {
   SECURITY_ALERTS_LEARN_MORE_LINK,
   TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
+import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
   Button,
   ButtonSize,
@@ -58,7 +59,6 @@ import {
 
 import { updateDataDeletionTaskStatus } from '../../../store/actions';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import SRPQuiz from '../../../components/app/srp-quiz-modal';
 import MetametricsToggle from './metametrics-toggle';
 import DeleteMetametricsDataButton from './delete-metametrics-data-button';
 
@@ -115,6 +115,7 @@ export default class SecurityTab extends PureComponent {
   state = {
     ipfsGateway: this.props.ipfsGateway || IPFS_DEFAULT_GATEWAY_URL,
     ipfsGatewayError: '',
+    srpQuizModalVisible: false,
     showDataCollectionDisclaimer: false,
     ipfsToggle: this.props.ipfsGateway.length > 0,
   };
@@ -165,6 +166,8 @@ export default class SecurityTab extends PureComponent {
     toggleMethod(!value);
   }
 
+  hideSrpQuizModal = () => this.setState({ srpQuizModalVisible: false });
+
   renderSeedWords() {
     const { t } = this.context;
     const { history, isSeedPhraseBackedUp } = this.props;
@@ -187,7 +190,7 @@ export default class SecurityTab extends PureComponent {
           ref={this.settingsRefs[1]}
           className="settings-page__security-tab-sub-header"
         >
-          {t('securitySrpTitle')}
+          {t('secretRecoveryPhrase')}
         </div>
         <div className="settings-page__content-padded">
           <Box
@@ -473,8 +476,8 @@ export default class SecurityTab extends PureComponent {
             onClick={() => {
               getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
                 ? global.platform.openExtensionInBrowser(
-                    ADD_POPULAR_CUSTOM_NETWORK,
-                  )
+                  ADD_POPULAR_CUSTOM_NETWORK,
+                )
                 : this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
             }}
           >
@@ -720,7 +723,7 @@ export default class SecurityTab extends PureComponent {
                 href={AUTO_DETECT_TOKEN_LEARN_MORE_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
-                key="auto-detect-tokens-learn-more-link"
+                key="cyn-consensys-privacy-link"
               >
                 {startCase(t('learnMore'))}
               </a>,
@@ -1236,7 +1239,6 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('security')}
         </span>
         {this.renderSeedWords()}
-        {this.renderChangePassword()}
         {this.renderSecurityAlertsToggle()}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
