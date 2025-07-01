@@ -1913,6 +1913,8 @@ export default class MetamaskController extends EventEmitter {
       this.gasFeeController,
       this.onboardingController,
       this.keyringController,
+      this.metaMetricsController,
+      this.accountsController,
     ];
 
     /** @type {import('./controller-init/utils').InitFunctions} */

@@ -5,7 +5,7 @@ import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constant
 import { getFeatureFlagsByChainId } from '../../../../shared/modules/selectors';
 
 export const SmartTransactionsControllerInit = ({
-  baseControllerMessenger,
+  controllerMessenger,
   getController,
   persistedState,
   getStateUI,
@@ -14,19 +14,8 @@ export const SmartTransactionsControllerInit = ({
   getDeviceModel,
   getHardwareTypeForMetric,
 }: any) => {
-  const accountsController = getController('AccountsController');
   const transactionController = getController('TransactionController');
   const metaMetricsController = getController('MetaMetricsController');
-
-  const smartTransactionsControllerMessenger =
-    baseControllerMessenger.getRestricted({
-      name: 'SmartTransactionsController',
-      allowedActions: [
-        'NetworkController:getNetworkClientById',
-        'NetworkController:getState',
-      ],
-      allowedEvents: ['NetworkController:stateChange'],
-    });
 
   const smartTransactionsController = new SmartTransactionsController({
     supportedChainIds: getAllowedSmartTransactionsChainIds() as Hex[],
@@ -39,7 +28,7 @@ export const SmartTransactionsControllerInit = ({
       metaMetricsController,
     ),
     state: persistedState.SmartTransactionsController,
-    messenger: smartTransactionsControllerMessenger,
+    messenger: controllerMessenger,
     getTransactions: (...args: any[]) =>
       transactionController.getTransactions(...args),
     updateTransaction: (...args: any[]) =>
@@ -59,6 +48,7 @@ export const SmartTransactionsControllerInit = ({
       );
     },
     getMetaMetricsProps: async () => {
+      const accountsController = getController('AccountsController');
       const selectedAddress = accountsController.getSelectedAccount().address;
       const accountHardwareType = await getHardwareTypeForMetric(
         selectedAddress,
