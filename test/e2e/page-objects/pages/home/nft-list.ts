@@ -25,6 +25,8 @@ class NftListPage {
 
   private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   private readonly LineaMainnet =
     '[data-testid="network-list-item-eip155:59144"]';
 

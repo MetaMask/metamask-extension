@@ -143,6 +143,8 @@ class PrivacySettings {
     console.log('Privacy & Security Settings page is loaded');
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_srpListIsLoaded(): Promise<void> {
     console.log('Check SRP list is loaded on privacy settings page');
     const srpSelector = {

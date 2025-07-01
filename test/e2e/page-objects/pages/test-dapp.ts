@@ -481,6 +481,8 @@ class TestDapp {
    *
    * @param expectedNumber - The expected number of providers to be displayed. Defaults to 1.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_providerNumber(expectedNumber: number = 1): Promise<void> {
     console.log(
       `Wait for ${expectedNumber} providers to be displayed in test dapp`,
@@ -713,6 +715,8 @@ class TestDapp {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_ethSignErrorMessage(): Promise<void> {
     await this.driver.waitForSelector(this.ethSignErrorMessage);
   }
@@ -1077,6 +1081,8 @@ class TestDapp {
    *
    * @param networkId - The network id to check if the test dapp is connected to.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_networkIsConnected(networkId: string) {
     console.log(`Check testdapp is connected to network ${networkId}`);
     await this.driver.waitForSelector(this.connectedNetwork(networkId));

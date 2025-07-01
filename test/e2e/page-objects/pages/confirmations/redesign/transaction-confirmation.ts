@@ -124,6 +124,8 @@ class TransactionConfirmation extends Confirmation {
    *
    * @param account - The sender account to check.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_isSenderAccountDisplayed(account: string): Promise<boolean> {
     console.log(
       `Checking sender account ${account} on transaction confirmation page.`,
@@ -137,6 +139,8 @@ class TransactionConfirmation extends Confirmation {
     );
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_networkIsDisplayed(network: string): Promise<void> {
     console.log(
       `Checking network ${network} is displayed on transaction confirmation page.`,
@@ -305,6 +309,8 @@ class TransactionConfirmation extends Confirmation {
     );
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_sendAmount(amount: string) {
     console.log(
       `Checking send amount ${amount} on transaction confirmation page.`,

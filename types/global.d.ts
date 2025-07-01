@@ -313,6 +313,8 @@ export declare global {
 // esnext
 
 export declare global {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   type PromiseWithResolvers<T> = {
     promise: Promise<T>;
     resolve: (value: T | PromiseLike<T>) => void;
@@ -335,6 +337,8 @@ export declare global {
      * const { promise, resolve, reject } = Promise.withResolvers<T>();
      * ```
      */
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     withResolvers<T>(): PromiseWithResolvers<T>;
   }
 }

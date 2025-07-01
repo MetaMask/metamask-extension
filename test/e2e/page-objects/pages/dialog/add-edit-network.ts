@@ -204,6 +204,8 @@ class AddEditNetworkModal {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_currencySymbolWarningIsDisplayed(
     warningMessage: string,
   ): Promise<void> {
@@ -247,6 +249,8 @@ class AddEditNetworkModal {
     }
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_saveButtonIsEnabled(): Promise<boolean> {
     console.log('Check if save button is enabled on add/edit network modal');
     try {

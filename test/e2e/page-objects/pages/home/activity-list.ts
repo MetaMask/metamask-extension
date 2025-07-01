@@ -354,6 +354,8 @@ class ActivityListPage {
    * @param txnText - The text to search for within the transaction activity list. (e.g., "Swap SOL to USDC")
    * @returns A promise that resolves when the transaction activity with the specified text is found.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_transactionActivityByText(txnText: string): Promise<void> {
     console.log(`Check transaction activity with text: ${txnText}`);
     await this.driver.waitForSelector({

@@ -127,6 +127,8 @@ class SnapListPage {
     await this.driver.clickElement(this.updateSnapButton);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_updateLinkIsNotDisplayed(): Promise<void> {
     await this.driver.assertElementNotPresent(this.updateSnapButton, {
       // make sure the Snap page has loaded

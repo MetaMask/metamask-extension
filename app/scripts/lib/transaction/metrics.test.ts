@@ -1639,6 +1639,8 @@ describe('Transaction metrics', () => {
 
       expect(properties).toStrictEqual(
         expect.objectContaining({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           gas_paid_with: 'pre-funded_ETH',
         }),
       );
