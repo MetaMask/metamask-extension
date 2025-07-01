@@ -114,7 +114,9 @@ describe('AccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter initialEntries={[`/account-details/${MOCK_ACCOUNT_EOA.address}`]}>
+        <MemoryRouter
+          initialEntries={[`/account-details/${MOCK_ACCOUNT_EOA.address}`]}
+        >
           <Route path="/account-details/:address">
             <MultichainAccountDetails />
           </Route>
@@ -135,7 +137,9 @@ describe('AccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter initialEntries={[`/account-details/${MOCK_ACCOUNT_ERC4337.address}`]}>
+        <MemoryRouter
+          initialEntries={[`/account-details/${MOCK_ACCOUNT_ERC4337.address}`]}
+        >
           <Route path="/account-details/:address">
             <MultichainAccountDetails />
           </Route>
@@ -156,7 +160,11 @@ describe('AccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter initialEntries={[`/account-details/${MOCK_ACCOUNT_SOLANA_MAINNET.address}`]}>
+        <MemoryRouter
+          initialEntries={[
+            `/account-details/${MOCK_ACCOUNT_SOLANA_MAINNET.address}`,
+          ]}
+        >
           <Route path="/account-details/:address">
             <MultichainAccountDetails />
           </Route>
