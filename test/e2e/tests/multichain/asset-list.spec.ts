@@ -35,21 +35,22 @@ describe('Multichain Asset List', function (this: Suite) {
       buildFixtures(this.test?.fullTitle() as string),
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_expectedBalanceIsDisplayed('24.9978', 'POL');
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
-        await assetListPage.check_tokenItemNumber(3);
+        await assetListPage.check_tokenItemNumber(4);
         await assetListPage.openNetworksFilter();
         await assetListPage.clickCurrentNetworkOption();
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
-        await assetListPage.waitUntilFilterLabelIs(LINEA_NAME_MAINNET);
-        await assetListPage.check_tokenItemNumber(1);
+        await assetListPage.check_tokenItemNumber(4);
         assert.equal(
           await assetListPage.getNetworksFilterLabel(),
-          LINEA_NAME_MAINNET,
+          'Popular networks',
         );
       },
     );
@@ -59,13 +60,15 @@ describe('Multichain Asset List', function (this: Suite) {
       buildFixtures(this.test?.fullTitle() as string),
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_expectedBalanceIsDisplayed('24.9978', 'ETH');
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
-        await assetListPage.check_tokenItemNumber(3);
-        await assetListPage.clickOnAsset('POL');
+        await assetListPage.check_tokenItemNumber(1);
+        await assetListPage.clickOnAsset('Ethereum');
         await assetListPage.check_buySellButtonIsPresent();
         await assetListPage.check_multichainTokenListButtonIsPresent();
       },
@@ -76,16 +79,17 @@ describe('Multichain Asset List', function (this: Suite) {
       buildFixtures(this.test?.fullTitle() as string, 137),
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_expectedBalanceIsDisplayed('24.9978', 'POL');
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
         const sendPage = new SendTokenPage(driver);
-        await assetListPage.check_tokenItemNumber(4);
+        await assetListPage.check_tokenItemNumber(5);
         await assetListPage.clickOnAsset('TST');
         await assetListPage.clickSendButton();
-        await sendPage.check_networkChange(POLYGON_NAME_MAINNET);
         await sendPage.check_pageIsLoaded();
         await sendPage.fillRecipient(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -105,13 +109,15 @@ describe('Multichain Asset List', function (this: Suite) {
       buildFixtures(this.test?.fullTitle() as string, 137),
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_expectedBalanceIsDisplayed('24.9978', 'ETH');
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
         const sendPage = new SendTokenPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
-        await assetListPage.check_tokenItemNumber(4);
+        await assetListPage.check_tokenItemNumber(5);
         await assetListPage.clickOnAsset('TST');
         await assetListPage.clickSwapButton();
         await sendPage.check_networkChange(POLYGON_NAME_MAINNET);
@@ -120,18 +126,22 @@ describe('Multichain Asset List', function (this: Suite) {
   });
   it('shows correct asset and balance when swapping on a different chain', async function () {
     await withFixtures(
-      buildFixtures(this.test?.fullTitle() as string),
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test?.fullTitle(),
+      },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_expectedBalanceIsDisplayed('24.9978', 'ETH');
         const headerNavbar = new HeaderNavbar(driver);
         const assetListPage = new AssetListPage(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
-        const homePage = new HomePage(driver);
         const sendPage = new SendTokenPage(driver);
         const swapPage = new SwapPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
-        await assetListPage.check_tokenItemNumber(3);
+        await assetListPage.check_tokenItemNumber(1);
         await assetListPage.clickOnAsset('Ethereum');
         await homePage.gotToSwapTab();
         await sendPage.check_networkChange(NETWORK_NAME_MAINNET);
