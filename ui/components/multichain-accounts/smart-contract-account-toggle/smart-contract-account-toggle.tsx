@@ -22,16 +22,16 @@ import { setRedirectAfterDefaultPage } from '../../../ducks/history/history';
 type SmartContractAccountToggleProps = {
   networkConfig: EIP7702NetworkConfiguration;
   address: string;
-  userIntent: boolean | null;
-  setUserIntent: (value: boolean | null) => void;
+  pendingToggleState: boolean | null;
+  setPendingToggleState: (value: boolean | null) => void;
   returnToPage?: string; // Optional page to return to after transaction
 };
 
 export const SmartContractAccountToggle = ({
   networkConfig,
   address,
-  userIntent,
-  setUserIntent,
+  pendingToggleState,
+  setPendingToggleState,
   returnToPage,
 }: SmartContractAccountToggleProps) => {
   const { name, isSupported, upgradeContractAddress, chainIdHex } =
@@ -55,8 +55,8 @@ export const SmartContractAccountToggle = ({
     chainIdHex,
   );
 
-  // Use userIntent as primary source of truth, fallback to actual account state
-  const toggleValue = userIntent ?? addressSupportSmartAccount;
+  // Use pendingToggleState as primary source of truth, fallback to actual account state
+  const toggleValue = pendingToggleState ?? addressSupportSmartAccount;
 
   // Check initial account state and verify transaction results
   useEffect(() => {
@@ -64,14 +64,14 @@ export const SmartContractAccountToggle = ({
       try {
         const upgraded = await isUpgraded(address as `0x${string}`);
         setAddressSupportSmartAccount(upgraded);
-        // Only clear userIntent when we have confirmed the actual state matches the intent
+        // Only clear pendingToggleState when we have confirmed the actual state matches the intent
         // AND there are no pending requests (transaction is confirmed)
         if (
-          userIntent !== null &&
-          userIntent === upgraded &&
+          pendingToggleState !== null &&
+          pendingToggleState === upgraded &&
           !hasPendingRequests
         ) {
-          setUserIntent(null);
+          setPendingToggleState(null);
         }
       } catch (error) {
         // Fall back to isSupported if we can't determine upgrade status
@@ -79,9 +79,9 @@ export const SmartContractAccountToggle = ({
       }
     };
 
-    // Only check actual account state if userIntent is null (no pending user action)
+    // Only check actual account state if pendingToggleState is null (no pending user action)
     // OR when pending requests complete (to verify transaction result)
-    if (userIntent === null) {
+    if (pendingToggleState === null) {
       // Check initial state (when component mounts)
       if (prevHasPendingRequests.current === undefined) {
         checkUpgradeStatus();
@@ -91,7 +91,7 @@ export const SmartContractAccountToggle = ({
         checkUpgradeStatus();
       }
     } else if (prevHasPendingRequests.current && !hasPendingRequests) {
-      // If we have userIntent and pending requests just completed, verify the result
+      // If we have pendingToggleState and pending requests just completed, verify the result
       checkUpgradeStatus();
     }
 
@@ -101,8 +101,8 @@ export const SmartContractAccountToggle = ({
     address,
     isSupported,
     hasPendingRequests,
-    userIntent,
-    setUserIntent,
+    pendingToggleState,
+    setPendingToggleState,
   ]);
 
   const findAndRedirectToTransaction = useCallback(() => {
@@ -125,7 +125,7 @@ export const SmartContractAccountToggle = ({
       }
 
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${latestTransaction.id}`);
-      setUserIntent(null);
+      setPendingToggleState(null);
       return true;
     }
     return false;
@@ -134,21 +134,21 @@ export const SmartContractAccountToggle = ({
     address,
     chainIdHex,
     history,
-    setUserIntent,
+    setPendingToggleState,
     returnToPage,
     dispatch,
   ]);
 
-  // Monitor for transactions when userIntent is set
+  // Monitor for transactions when pendingToggleState is set
   useEffect(() => {
-    if (userIntent !== null) {
+    if (pendingToggleState !== null) {
       findAndRedirectToTransaction();
     }
-  }, [userIntent, findAndRedirectToTransaction]);
+  }, [pendingToggleState, findAndRedirectToTransaction]);
 
   const onSwitch = useCallback(async () => {
-    // Immediately update the user intent to show user's action
-    setUserIntent(!toggleValue);
+    // Immediately update the pending toggle state to show user's action
+    setPendingToggleState(!toggleValue);
 
     try {
       // Dispatch the transaction
@@ -158,8 +158,8 @@ export const SmartContractAccountToggle = ({
         await upgradeAccount(address as Hex, upgradeContractAddress);
       }
     } catch (error) {
-      // Reset userIntent on error
-      setUserIntent(null);
+      // Reset pendingToggleState on error
+      setPendingToggleState(null);
     }
   }, [
     address,
@@ -167,7 +167,7 @@ export const SmartContractAccountToggle = ({
     toggleValue,
     upgradeAccount,
     upgradeContractAddress,
-    setUserIntent,
+    setPendingToggleState,
   ]);
 
   return (
@@ -187,7 +187,7 @@ export const SmartContractAccountToggle = ({
         onToggle={onSwitch}
         disabled={
           hasPendingRequests ||
-          userIntent !== null ||
+          pendingToggleState !== null ||
           (!toggleValue && !upgradeContractAddress)
         }
       />

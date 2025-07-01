@@ -27,13 +27,13 @@ export const SmartContractAccountToggleSection = ({
   const t = useI18nContext();
   const { network7702List, pending } = useEIP7702Networks(address);
 
-  // userIntent state per network
-  const [userIntentMap, setUserIntentMap] = useState<
+  // pendingToggleState per network
+  const [pendingToggleStateMap, setPendingToggleStateMap] = useState<
     Record<string, boolean | null>
   >({});
-  const setUserIntent = useCallback(
+  const setPendingToggleState = useCallback(
     (chainIdHex: string, value: boolean | null) => {
-      setUserIntentMap((prev) => ({ ...prev, [chainIdHex]: value }));
+      setPendingToggleStateMap((prev) => ({ ...prev, [chainIdHex]: value }));
     },
     [],
   );
@@ -59,9 +59,11 @@ export const SmartContractAccountToggleSection = ({
                 key={network.chainIdHex}
                 networkConfig={network}
                 address={address}
-                userIntent={userIntentMap[network.chainIdHex] ?? null}
-                setUserIntent={(value: boolean | null) =>
-                  setUserIntent(network.chainIdHex, value)
+                pendingToggleState={
+                  pendingToggleStateMap[network.chainIdHex] ?? null
+                }
+                setPendingToggleState={(value: boolean | null) =>
+                  setPendingToggleState(network.chainIdHex, value)
                 }
                 returnToPage={returnToPage}
               />
