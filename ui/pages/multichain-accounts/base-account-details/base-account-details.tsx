@@ -81,7 +81,10 @@ export const BaseAccountDetails = ({
   const walletRoute = `/wallet-details/${walletId}`;
 
   return (
-    <Page backgroundColor={BackgroundColor.backgroundDefault}>
+    <Page
+      backgroundColor={BackgroundColor.backgroundDefault}
+      className="multichain-account-details-page"
+    >
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={
