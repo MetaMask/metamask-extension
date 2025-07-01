@@ -121,7 +121,7 @@
     "create-bug-report-issue": "ts-node ./.github/scripts/create-bug-report-issue.ts",
     "audit": "yarn npm audit --recursive --environment production --severity moderate --ignore '@metamask/types (deprecation)'",
     "download-builds": "tsx .devcontainer/download-builds.ts",
-    "download-builds:test": "BUILD_TYPE=test tsx .devcontainer/download-builds.ts",
+    "download-builds:test": "BUILD_TYPE='test' tsx .devcontainer/download-builds.ts",
     "master-sync": "node development/master-sync.js",
     "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js",
     "update-snap-binary": "tsx test/e2e/mock-response-data/snaps/update-snap-binary.ts",
