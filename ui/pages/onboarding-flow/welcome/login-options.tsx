@@ -1,10 +1,13 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
   Box,
   BoxProps,
   Button,
   ButtonSize,
   ButtonVariant,
+  Icon,
+  IconName,
+  IconSize,
   Modal,
   ModalContent,
   ModalContentSize,
@@ -21,8 +24,11 @@ import {
   BorderRadius,
   Display,
   FontWeight,
+  IconColor,
   JustifyContent,
   TextAlign,
+  TextColor,
+  TextTransform,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -71,13 +77,8 @@ export default function LoginOptions({
   handleLogin: (loginType: LoginType) => void;
 }) {
   const t = useI18nContext();
-
-  const onLogin = useCallback(
-    (loginType: LoginType) => {
-      handleLogin(loginType);
-    },
-    [handleLogin],
-  );
+  // TODO: enable apple login once it's deployed securely.
+  const shouldDisableAppleLogin = true;
 
   return (
     <Modal
@@ -94,9 +95,12 @@ export default function LoginOptions({
           </Text>
         </ModalHeader>
         <Box paddingInline={4}>
-          {/*
-          SOCIAL: Add when social login is available
           <SocialButton
+            data-testid={
+              loginOption === LOGIN_OPTION.EXISTING
+                ? 'onboarding-import-with-google-button'
+                : 'onboarding-create-with-google-button'
+            }
             icon={
               <img
                 src="images/icons/google.svg"
@@ -110,9 +114,14 @@ export default function LoginOptions({
                 : t('onboardingContinueWith', ['Google'])
             }
             marginBottom={4}
-            onClick={() => onLogin(LOGIN_TYPE.GOOGLE)}
+            onClick={() => handleLogin(LOGIN_TYPE.GOOGLE)}
           />
           <SocialButton
+            data-testid={
+              loginOption === LOGIN_OPTION.EXISTING
+                ? 'onboarding-import-with-apple-button'
+                : 'onboarding-create-with-apple-button'
+            }
             icon={
               <Icon
                 name={IconName.Apple}
@@ -126,7 +135,8 @@ export default function LoginOptions({
                 : t('onboardingContinueWith', ['Apple'])
             }
             marginBottom={2}
-            onClick={() => onLogin(LOGIN_TYPE.APPLE)}
+            onClick={() => handleLogin(LOGIN_TYPE.APPLE)}
+            disabled={shouldDisableAppleLogin}
           />
           <Box
             alignItems={AlignItems.center}
@@ -151,7 +161,6 @@ export default function LoginOptions({
               {t('or')}
             </Text>
           </Box>
-          */}
           <Button
             data-testid={
               loginOption === LOGIN_OPTION.EXISTING
@@ -161,7 +170,7 @@ export default function LoginOptions({
             variant={ButtonVariant.Secondary}
             width={BlockSize.Full}
             size={ButtonSize.Lg}
-            onClick={() => onLogin(LOGIN_TYPE.SRP)}
+            onClick={() => handleLogin(LOGIN_TYPE.SRP)}
           >
             {loginOption === LOGIN_OPTION.EXISTING
               ? t('onboardingSrpImport')

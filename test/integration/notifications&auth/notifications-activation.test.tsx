@@ -94,6 +94,8 @@ describe('Notifications Activation', () => {
           isNotificationServicesEnabled: false,
           isFeatureAnnouncementsEnabled: false,
           isMetamaskNotificationsFeatureSeen: false,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -138,6 +140,8 @@ describe('Notifications Activation', () => {
           isNotificationServicesEnabled: false,
           isFeatureAnnouncementsEnabled: false,
           isMetamaskNotificationsFeatureSeen: false,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
         },
         backgroundConnection: backgroundConnectionMocked,
       });

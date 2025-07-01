@@ -5,8 +5,7 @@ import {
   getUseCurrencyRateCheck,
   useSafeChainsListValidationSelector,
 } from '../selectors';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
-import { getOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
+import { getEnabledChainIds } from '../selectors/multichain/networks';
 import {
   currencyRateStartPolling,
   currencyRateStopPollingByPollingToken,
@@ -15,6 +14,9 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
+import { isGlobalNetworkSelectorRemoved } from '../selectors/selectors';
+import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import { getOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
 import usePolling from './usePolling';
 
 const usePollingEnabled = () => {
@@ -32,6 +34,11 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
   );
   const [nativeCurrencies, setNativeCurrencies] = useState<string[]>([]);
   const chainIds = useSelector(getChainIdsToPoll);
+  const enabledChainIds = useSelector(getEnabledChainIds);
+
+  const pollableChains = isGlobalNetworkSelectorRemoved
+    ? enabledChainIds
+    : chainIds;
 
   useEffect(() => {
     // Use validated currency tickers
@@ -43,7 +50,7 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
             useAPICall: useSafeChainsListValidation && isPollingEnabled,
           });
 
-          if (!chainIds.includes(n.chainId)) {
+          if (!pollableChains.includes(n.chainId)) {
             return null;
           }
 
@@ -64,6 +71,7 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
     chainIds,
     isPollingEnabled,
     networkConfigurations,
+    pollableChains,
     useSafeChainsListValidation,
   ]);
 

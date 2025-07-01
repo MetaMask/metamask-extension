@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import { largeDelayMs, regularDelayMs } from '../../helpers';
+import { largeDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';
 import { ACCOUNT_TYPE } from '../../constants';
 import PrivacySettings from './settings/privacy-settings';
@@ -391,6 +391,9 @@ class AccountListPage {
     );
     await fileInput.sendKeys(jsonFilePath);
     await this.driver.fill(this.importAccountJsonPasswordInput, password);
+    // needed to mitigate a race condition with the state update
+    // there is no condition we can wait for in the UI
+    await this.driver.delay(largeDelayMs);
     await this.driver.clickElementAndWaitToDisappear(
       this.importAccountConfirmButton,
     );
@@ -508,9 +511,9 @@ class AccountListPage {
     console.log(`Open connect hardware wallet modal`);
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.clickElement(this.addHardwareWalletButton);
-    // This delay is needed to mitigate an existing bug in FF
+    // This delay is needed to mitigate an existing bug
     // See https://github.com/metamask/metamask-extension/issues/25851
-    await this.driver.delay(regularDelayMs);
+    await this.driver.delay(largeDelayMs);
   }
 
   async openHiddenAccountOptions(): Promise<void> {
@@ -811,10 +814,12 @@ class AccountListPage {
   }
 
   async selectAccount(accountLabel: string): Promise<void> {
+    console.log(`Select account with label ${accountLabel} in account list`);
     await this.driver.clickElement({
       css: this.selectAccountSelector,
       text: accountLabel,
     });
+    console.log(`Account with label ${accountLabel} selected`);
   }
 
   async startImportSecretPhrase(srp: string): Promise<void> {

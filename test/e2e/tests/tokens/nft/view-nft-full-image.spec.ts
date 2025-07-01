@@ -7,14 +7,25 @@ import PrivacySettings from '../../../page-objects/pages/settings/privacy-settin
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { setupAutoDetectMocking } from './mocks';
+
+const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
 
 describe('NFT full', function () {
   it('displays NFT full image when NFT is on a network different from the current network', async function () {
     const driverOptions = { mock: true };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnLinea().build(),
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnLinea()
+          .withEnabledNetworks({
+            eip155: {
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.MAINNET]: true,
+            },
+          })
+          .build(),
         driverOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: setupAutoDetectMocking,
@@ -39,6 +50,10 @@ describe('NFT full', function () {
         await homepage.check_expectedBalanceIsDisplayed();
         await homepage.goToNftTab();
         const nftListPage = new NFTListPage(driver);
+
+        if (!isGlobalNetworkSelectorRemoved) {
+          await nftListPage.filterNftsByNetworks('Popular networks');
+        }
         await nftListPage.check_nftNameIsDisplayed(
           'ENS: Ethereum Name Service',
         );

@@ -192,15 +192,36 @@ export const useTokensWithFiltering = (
           symbol: string,
           address?: string,
           tokenChainId?: string,
-        ) =>
-          filterCondition(symbol, address, tokenChainId) &&
-          (tokenToExclude && tokenChainId
-            ? !(
-                tokenToExclude.symbol === symbol &&
-                tokenToExclude.address === address &&
-                tokenToExclude.chainId === formatChainIdToCaip(tokenChainId)
-              )
-            : true);
+        ) => {
+          /**
+           * Native tokens can be represented differently across the codebase:
+           * - When selected as source: address = '0x0000000000000000000000000000000000000000'
+           * - When yielded in token lists: address = '' (empty string)
+           *
+           * @param addr - The token address to normalize
+           * @returns Empty string for native addresses, original address otherwise
+           */
+          const normalizeAddress = (addr?: string) => {
+            return addr && isNativeAddress(addr) ? '' : addr;
+          };
+
+          return (
+            filterCondition(symbol, address, tokenChainId) &&
+            (tokenToExclude && tokenChainId
+              ? !(
+                  tokenToExclude.symbol === symbol &&
+                  (isSolanaChainId(tokenChainId)
+                    ? // For Solana: normalize both addresses before comparison to handle native SOL
+                      normalizeAddress(tokenToExclude.address) ===
+                      normalizeAddress(address)
+                    : // For EVM: use case-insensitive comparison (native tokens already normalized)
+                      tokenToExclude.address?.toLowerCase() ===
+                      address?.toLowerCase()) &&
+                  tokenToExclude.chainId === formatChainIdToCaip(tokenChainId)
+                )
+              : true)
+          );
+        };
 
         if (
           !chainId ||
@@ -274,7 +295,9 @@ export const useTokensWithFiltering = (
 
         // Yield topTokens from selected chain
         for (const token_ of topTokens) {
-          const matchedToken = tokenList?.[token_.address];
+          const matchedToken =
+            tokenList?.[token_.address] ??
+            tokenList?.[token_.address.toLowerCase()];
           const token = buildTokenData(chainId, matchedToken);
           if (
             token &&

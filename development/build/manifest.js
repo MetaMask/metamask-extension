@@ -1,7 +1,7 @@
 const { promises: fs } = require('fs');
 const path = require('path');
 const childProcess = require('child_process');
-const { mergeWith, cloneDeep } = require('lodash');
+const { merge, mergeWith, cloneDeep } = require('lodash');
 const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 
 const baseManifest = isManifestV3
@@ -9,7 +9,7 @@ const baseManifest = isManifestV3
   : require('../../app/manifest/v2/_base.json');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
-const { TASKS, ENVIRONMENT } = require('./constants');
+const { TASKS, ENVIRONMENT, MANIFEST_DEV_KEY } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getEnvironment, getBuildName } = require('./utils');
 const { fromIniFile } = require('./config');
@@ -42,12 +42,13 @@ async function loadManifestFlags() {
 }
 
 function createManifestTasks({
+  applyLavaMoat,
   browserPlatforms,
   browserVersionMap,
   buildType,
-  applyLavaMoat,
-  shouldIncludeSnow,
   entryTask,
+  shouldIncludeOcapKernel = false,
+  shouldIncludeSnow,
 }) {
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {
@@ -77,6 +78,10 @@ function createManifestTasks({
         );
         modifyNameAndDescForNonProd(result);
 
+        if (shouldIncludeOcapKernel) {
+          applyOcapKernelChanges(result);
+        }
+
         const dir = path.join('.', 'dist', platform);
         await fs.mkdir(dir, { recursive: true });
         await writeJson(result, path.join(dir, 'manifest.json'));
@@ -87,6 +92,7 @@ function createManifestTasks({
   // dev: add perms
   const envDev = createTaskForModifyManifestForEnvironment((manifest) => {
     manifest.permissions = [...manifest.permissions, 'webRequestBlocking'];
+    manifest.key = MANIFEST_DEV_KEY;
   });
 
   // testDev: add perms
@@ -97,6 +103,7 @@ function createManifestTasks({
       'http://localhost/*',
       'tabs', // test builds need tabs permission for switchToWindowWithTitle
     ];
+    manifest.key = MANIFEST_DEV_KEY;
   });
 
   // test: add permissions
@@ -107,7 +114,14 @@ function createManifestTasks({
       'http://localhost/*',
       'tabs', // test builds need tabs permission for switchToWindowWithTitle
     ];
+    manifest.key = MANIFEST_DEV_KEY;
   });
+
+  const envScriptDist = createTaskForModifyManifestForEnvironment(
+    (manifest) => {
+      manifest.key = MANIFEST_DEV_KEY;
+    },
+  );
 
   // high level manifest tasks
   const dev = createTask(
@@ -125,9 +139,14 @@ function createManifestTasks({
     composeSeries(prepPlatforms, envTest),
   );
 
+  const scriptDist = createTask(
+    TASKS.MANIFEST_SCRIPT_DIST,
+    composeSeries(prepPlatforms, envScriptDist),
+  );
+
   const prod = createTask(TASKS.MANIFEST_PROD, prepPlatforms);
 
-  return { prod, dev, testDev, test };
+  return { prod, dev, testDev, test, scriptDist };
 
   // helper for modifying each platform's manifest.json in place
   function createTaskForModifyManifestForEnvironment(transformFn) {
@@ -182,6 +201,13 @@ function createManifestTasks({
     }
     return undefined;
   }
+
+  function applyOcapKernelChanges(manifest) {
+    if (!Array.isArray(manifest.sandbox?.pages)) {
+      merge(manifest, { sandbox: { pages: [] } });
+    }
+    manifest.sandbox.pages.push('ocap-kernel/vat/iframe.html');
+  }
 }
 
 // helper for reading and deserializing json from fs
@@ -200,7 +226,7 @@ async function writeJson(obj, file) {
  *
  * @param {string} buildType - The build type.
  * @param {string} platform - The platform (i.e. the browser).
- * @returns {object} The build modifications for the given build type and platform.
+ * @returns {Promise<object>} The build modifications for the given build type and platform.
  */
 async function getBuildModifications(buildType, platform) {
   const buildConfig = loadBuildTypesConfig();

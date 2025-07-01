@@ -48,6 +48,7 @@ import {
   setNextNonce,
   addPermittedChain,
   setTokenNetworkFilter,
+  setEnabledNetworks,
   detectNfts,
 } from '../../../store/actions';
 import {
@@ -74,6 +75,7 @@ import {
   getSelectedMultichainNetworkChainId,
   getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
+  getEnabledNetworksByNamespace,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -153,6 +155,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const showTestnets = useSelector(getShowTestNetworks);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const isUnlocked = useSelector(getIsUnlocked);
@@ -360,6 +363,14 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         return acc;
       }, {} as Record<string, boolean>);
       dispatch(setTokenNetworkFilter(allOpts));
+    }
+
+    const { namespace } = parseCaipChainId(currentChainId);
+
+    if (Object.keys(enabledNetworksByNamespace).length === 1) {
+      dispatch(setEnabledNetworks([hexChainId], namespace));
+    } else {
+      dispatch(setEnabledNetworks(Object.keys(evmNetworks), namespace));
     }
 
     // If presently on a dapp, communicate a change to

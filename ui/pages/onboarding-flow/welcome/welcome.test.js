@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import Welcome from './welcome';
+import { WelcomePageState } from './types';
 
 const mockHistoryPush = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -10,6 +11,14 @@ jest.mock('react-router-dom', () => ({
     push: mockHistoryPush,
   }),
 }));
+
+const mockIntersectionObserver = jest.fn();
+mockIntersectionObserver.mockReturnValue({
+  observe: () => null,
+  unobserve: () => null,
+  disconnect: () => null,
+});
+window.IntersectionObserver = mockIntersectionObserver;
 
 describe('Welcome Page', () => {
   const mockState = {
@@ -24,7 +33,10 @@ describe('Welcome Page', () => {
   const mockStore = configureMockStore()(mockState);
 
   it('should render', () => {
-    const { getByText } = renderWithProvider(<Welcome />, mockStore);
+    const { getByText } = renderWithProvider(
+      <Welcome pageState={WelcomePageState.Banner} setPageState={jest.fn()} />,
+      mockStore,
+    );
 
     expect(getByText('Welcome to MetaMask')).toBeInTheDocument();
 
@@ -33,7 +45,7 @@ describe('Welcome Page', () => {
 
   it('should show the terms of use popup when the user clicks the "Get started" button', () => {
     const { getByText, getByTestId } = renderWithProvider(
-      <Welcome />,
+      <Welcome pageState={WelcomePageState.Banner} setPageState={jest.fn()} />,
       mockStore,
     );
 

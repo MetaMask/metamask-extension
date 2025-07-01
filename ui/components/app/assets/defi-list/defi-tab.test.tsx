@@ -2,7 +2,7 @@ import React from 'react';
 import { screen, act, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
@@ -88,6 +88,11 @@ const render = (
     metamask: {
       ...mockState.metamask,
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true,
+        },
+      },
       allDeFiPositions: selectedDeFiPositions,
       currencyRates: {
         ETH: {

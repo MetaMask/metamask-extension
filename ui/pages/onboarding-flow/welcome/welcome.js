@@ -2,24 +2,29 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import log from 'loglevel';
 import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ONBOARDING_ACCOUNT_EXIST,
+  ONBOARDING_ACCOUNT_NOT_FOUND,
+  ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { setFirstTimeFlowType } from '../../../store/actions';
+import { setFirstTimeFlowType, startOAuthLogin } from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
@@ -37,6 +42,8 @@ export default function OnboardingWelcome({
   const dispatch = useDispatch();
   const history = useHistory();
   const currentKeyring = useSelector(getCurrentKeyring);
+  const isSeedlessOnboardingFeatureEnabled =
+    getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
@@ -47,11 +54,19 @@ export default function OnboardingWelcome({
   // have already imported or created a wallet
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
-      if (firstTimeFlowType === FirstTimeFlowType.import) {
+      if (
+        firstTimeFlowType === FirstTimeFlowType.import ||
+        firstTimeFlowType === FirstTimeFlowType.socialImport
+      ) {
         history.replace(ONBOARDING_COMPLETION_ROUTE);
-      }
-      if (firstTimeFlowType === FirstTimeFlowType.restore) {
+      } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
         history.replace(ONBOARDING_COMPLETION_ROUTE);
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        if (getBrowserName() === PLATFORM_FIREFOX) {
+          history.replace(ONBOARDING_COMPLETION_ROUTE);
+        } else {
+          history.replace(ONBOARDING_METAMETRICS);
+        }
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
@@ -67,22 +82,16 @@ export default function OnboardingWelcome({
   const onCreateClick = useCallback(async () => {
     setIsLoggingIn(true);
     setNewAccountCreationInProgress(true);
-    dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
+    await dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletCreationStarted,
+      event: MetaMetricsEventName.WalletSetupStarted,
       properties: {
-        account_type: 'metamask',
+        account_type: MetaMetricsEventAccountType.Default,
       },
     });
 
-    history.push(
-      getPlatform() === PLATFORM_FIREFOX
-        ? ONBOARDING_CREATE_PASSWORD_ROUTE
-        : ONBOARDING_METAMETRICS,
-    );
-    // SOCIAL: metametrics has new flow
-    // history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
   }, [dispatch, history, trackEvent]);
 
   const onImportClick = useCallback(async () => {
@@ -90,34 +99,109 @@ export default function OnboardingWelcome({
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletImportStarted,
+      event: MetaMetricsEventName.WalletImportStarted,
       properties: {
-        account_type: 'imported',
+        account_type: MetaMetricsEventAccountType.Imported,
       },
     });
 
-    history.push(
-      getPlatform() === PLATFORM_FIREFOX
-        ? ONBOARDING_IMPORT_WITH_SRP_ROUTE
-        : ONBOARDING_METAMETRICS,
-    );
-    // SOCIAL: metametrics has new flow
-    // history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
+    history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
   }, [dispatch, history, trackEvent]);
 
-  const handleLogin = useCallback(
-    (loginType, loginOption) => {
-      if (loginType === LOGIN_TYPE.SRP) {
-        if (loginOption === LOGIN_OPTION.NEW) {
-          onCreateClick();
+  const handleSocialLogin = useCallback(
+    async (socialConnectionType) => {
+      if (isSeedlessOnboardingFeatureEnabled) {
+        const isNewUser = await dispatch(startOAuthLogin(socialConnectionType));
+        return isNewUser;
+      }
+      return true;
+    },
+    [dispatch, isSeedlessOnboardingFeatureEnabled],
+  );
+
+  const onSocialLoginCreateClick = useCallback(
+    async (socialConnectionType) => {
+      setIsLoggingIn(true);
+      setNewAccountCreationInProgress(true);
+      await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
+
+      try {
+        const isNewUser = await handleSocialLogin(socialConnectionType);
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.WalletSetupStarted,
+          properties: {
+            account_type: MetaMetricsEventAccountType.Social,
+          },
+        });
+        if (isNewUser) {
+          history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
         } else {
-          onImportClick();
+          history.replace(ONBOARDING_ACCOUNT_EXIST);
         }
-      } else {
-        setIsLoggingIn(true);
+      } catch (error) {
+        log.error('onSocialLoginCreateClick::error', error);
+      } finally {
+        setIsLoggingIn(false);
       }
     },
-    [onCreateClick, onImportClick],
+    [dispatch, handleSocialLogin, trackEvent, history],
+  );
+
+  const onSocialLoginImportClick = useCallback(
+    async (socialConnectionType) => {
+      setIsLoggingIn(true);
+      dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
+
+      try {
+        const isNewUser = await handleSocialLogin(socialConnectionType);
+
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.WalletImportStarted,
+          properties: {
+            account_type: MetaMetricsEventAccountType.Social,
+          },
+        });
+
+        if (isNewUser) {
+          history.push(ONBOARDING_ACCOUNT_NOT_FOUND);
+        } else {
+          history.push(ONBOARDING_UNLOCK_ROUTE);
+        }
+      } catch (error) {
+        log.error('onSocialLoginImportClick::error', error);
+      } finally {
+        setIsLoggingIn(false);
+      }
+    },
+    [dispatch, handleSocialLogin, trackEvent, history],
+  );
+
+  const handleLogin = useCallback(
+    async (loginType, loginOption) => {
+      if (loginOption === LOGIN_OPTION.NEW && loginType === LOGIN_TYPE.SRP) {
+        onCreateClick();
+      } else if (
+        loginOption === LOGIN_OPTION.EXISTING &&
+        loginType === LOGIN_TYPE.SRP
+      ) {
+        onImportClick();
+      } else if (isSeedlessOnboardingFeatureEnabled) {
+        if (loginOption === LOGIN_OPTION.NEW) {
+          await onSocialLoginCreateClick(loginType);
+        } else if (loginOption === LOGIN_OPTION.EXISTING) {
+          await onSocialLoginImportClick(loginType);
+        }
+      }
+    },
+    [
+      onCreateClick,
+      onImportClick,
+      onSocialLoginCreateClick,
+      onSocialLoginImportClick,
+      isSeedlessOnboardingFeatureEnabled,
+    ],
   );
 
   return (

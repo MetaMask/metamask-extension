@@ -113,6 +113,12 @@ describe('EthOverview', () => {
         showNativeTokenAsMainBalance: true,
         tokenNetworkFilter: {},
       },
+      enabledNetworkMap: {
+        eip155: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.SEPOLIA]: true,
+        },
+      },
       useExternalServices: true,
       useCurrencyRateCheck: true,
       currentCurrency: 'usd',

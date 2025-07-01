@@ -1,9 +1,10 @@
-import { Hex, JsonRpcParams, JsonRpcResponse, Json } from '@metamask/utils';
+import { Hex, JsonRpcResponse, Json, JsonRpcRequest } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { createTrustSignalsMiddleware } from './trust-signals-middleware';
-import { scanAddress } from './security-alerts-api';
-import { SupportedEVMChain, ResultType } from './types';
+import { scanAddressAndAddToCache } from './security-alerts-api';
+import { ResultType } from './types';
 
 jest.mock('./security-alerts-api');
 process.env.TRUST_SIGNALS_PROD_ENABLED = 'true';
@@ -33,7 +34,7 @@ const MOCK_SCAN_RESPONSES = {
 const createMockRequest = (
   method: string,
   params: Json[] = [],
-): JsonRpcParams => ({
+): JsonRpcRequest => ({
   method,
   params,
   id: 1,
@@ -76,27 +77,77 @@ const createMiddleware = (
     getAddressSecurityAlertResponse: jest.fn(),
   };
 
+  const phishingController = {
+    scanUrl: jest.fn(),
+  };
+
+  const preferencesController = {
+    state: {
+      securityAlertsEnabled: true,
+    },
+  };
+
   return {
     middleware: createTrustSignalsMiddleware(
       networkController,
       appStateController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+      phishingController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+      preferencesController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
     ),
     appStateController,
     networkController,
+    phishingController,
+    preferencesController,
   };
 };
 
 describe('TrustSignalsMiddleware', () => {
-  const scanAddressMock = jest.mocked(scanAddress);
+  const scanAddressMockAndAddToCache = jest.mocked(scanAddressAndAddToCache);
+  let consoleErrorSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.resetAllMocks();
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('should not run if security alerts are disabled in preferences', async () => {
+    const {
+      middleware,
+      preferencesController,
+      appStateController,
+      phishingController,
+    } = createMiddleware();
+    preferencesController.state.securityAlertsEnabled = false;
+    const req = createMockRequest('eth_sendTransaction', [
+      createTransactionParams(),
+    ]);
+    const res = createMockResponse();
+    const next = jest.fn();
+
+    await middleware(req, res, next);
+
+    expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
+    expect(
+      appStateController.getAddressSecurityAlertResponse,
+    ).not.toHaveBeenCalled();
+    expect(
+      appStateController.addAddressSecurityAlertResponse,
+    ).not.toHaveBeenCalled();
+    expect(phishingController.scanUrl).not.toHaveBeenCalled();
+    expect(next).toHaveBeenCalled();
   });
 
   describe('eth_sendTransaction', () => {
     it('should scan a new address and cache the security alert response', async () => {
-      scanAddressMock.mockResolvedValue(MOCK_SCAN_RESPONSES.BENIGN);
-      const { middleware, appStateController } = createMiddleware();
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.BENIGN,
+      );
+      const { middleware, appStateController, networkController } =
+        createMiddleware();
       appStateController.getAddressSecurityAlertResponse.mockReturnValue(
         undefined,
       );
@@ -109,21 +160,20 @@ describe('TrustSignalsMiddleware', () => {
 
       await middleware(req, res, next);
 
-      expect(
-        appStateController.getAddressSecurityAlertResponse,
-      ).toHaveBeenCalledWith(TEST_ADDRESSES.TO);
-      expect(scanAddressMock).toHaveBeenCalledWith(
-        SupportedEVMChain.Ethereum,
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
+        appStateController,
+        networkController,
       );
-      expect(
-        appStateController.addAddressSecurityAlertResponse,
-      ).toHaveBeenCalledWith(TEST_ADDRESSES.TO, MOCK_SCAN_RESPONSES.BENIGN);
       expect(next).toHaveBeenCalled();
     });
 
     it('should skip scanning when address has cached security alert response', async () => {
-      const { middleware, appStateController } = createMiddleware();
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.CACHED,
+      );
+      const { middleware, appStateController, networkController } =
+        createMiddleware();
       appStateController.getAddressSecurityAlertResponse.mockReturnValue(
         MOCK_SCAN_RESPONSES.CACHED,
       );
@@ -136,20 +186,19 @@ describe('TrustSignalsMiddleware', () => {
 
       await middleware(req, res, next);
 
-      expect(
-        appStateController.getAddressSecurityAlertResponse,
-      ).toHaveBeenCalledWith(TEST_ADDRESSES.TO);
-      expect(scanAddressMock).not.toHaveBeenCalled();
-      expect(
-        appStateController.addAddressSecurityAlertResponse,
-      ).not.toHaveBeenCalled();
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+        TEST_ADDRESSES.TO,
+        appStateController,
+        networkController,
+      );
       expect(next).toHaveBeenCalled();
     });
 
     it('should handle scan errors gracefully without blocking the transaction', async () => {
       const error = new Error('Network error');
-      scanAddressMock.mockRejectedValue(error);
-      const { middleware, appStateController } = createMiddleware();
+      scanAddressMockAndAddToCache.mockRejectedValue(error);
+      const { middleware, appStateController, networkController } =
+        createMiddleware();
       appStateController.getAddressSecurityAlertResponse.mockReturnValue(
         undefined,
       );
@@ -162,14 +211,16 @@ describe('TrustSignalsMiddleware', () => {
 
       await middleware(req, res, next);
 
-      expect(scanAddressMock).toHaveBeenCalledWith(
-        SupportedEVMChain.Ethereum,
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
+        appStateController,
+        networkController,
       );
-      expect(
-        appStateController.addAddressSecurityAlertResponse,
-      ).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[createTrustSignalsMiddleware] error: ',
+        error,
+      );
     });
 
     it('should handle timeout errors gracefully without blocking the transaction', async () => {
@@ -177,8 +228,9 @@ describe('TrustSignalsMiddleware', () => {
         'The user aborted a request.',
         'AbortError',
       );
-      scanAddressMock.mockRejectedValue(timeoutError);
-      const { middleware, appStateController } = createMiddleware();
+      scanAddressMockAndAddToCache.mockRejectedValue(timeoutError);
+      const { middleware, appStateController, networkController } =
+        createMiddleware();
       appStateController.getAddressSecurityAlertResponse.mockReturnValue(
         undefined,
       );
@@ -191,21 +243,22 @@ describe('TrustSignalsMiddleware', () => {
 
       await middleware(req, res, next);
 
-      expect(scanAddressMock).toHaveBeenCalledWith(
-        SupportedEVMChain.Ethereum,
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
+        appStateController,
+        networkController,
       );
-      expect(
-        appStateController.addAddressSecurityAlertResponse,
-      ).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
     });
 
     it('should map chain IDs to supported EVM chains correctly', async () => {
-      scanAddressMock.mockResolvedValue(MOCK_SCAN_RESPONSES.WARNING);
-      const { middleware, appStateController } = createMiddleware({
-        chainId: CHAIN_IDS.POLYGON,
-      });
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.WARNING,
+      );
+      const { middleware, appStateController, networkController } =
+        createMiddleware({
+          chainId: CHAIN_IDS.POLYGON,
+        });
       appStateController.getAddressSecurityAlertResponse.mockReturnValue(
         undefined,
       );
@@ -218,13 +271,11 @@ describe('TrustSignalsMiddleware', () => {
 
       await middleware(req, res, next);
 
-      expect(scanAddressMock).toHaveBeenCalledWith(
-        SupportedEVMChain.Polygon,
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
+        appStateController,
+        networkController,
       );
-      expect(
-        appStateController.addAddressSecurityAlertResponse,
-      ).toHaveBeenCalledWith(TEST_ADDRESSES.TO, MOCK_SCAN_RESPONSES.WARNING);
     });
 
     describe('edge cases', () => {
@@ -246,7 +297,7 @@ describe('TrustSignalsMiddleware', () => {
         expect(
           appStateController.getAddressSecurityAlertResponse,
         ).not.toHaveBeenCalled();
-        expect(scanAddressMock).not.toHaveBeenCalled();
+        expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
       });
 
@@ -258,7 +309,7 @@ describe('TrustSignalsMiddleware', () => {
 
         await middleware(req, res, next);
 
-        expect(scanAddressMock).not.toHaveBeenCalled();
+        expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
       });
 
@@ -270,14 +321,17 @@ describe('TrustSignalsMiddleware', () => {
 
         await middleware(req, res, next);
 
-        expect(scanAddressMock).not.toHaveBeenCalled();
+        expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
       });
 
       it('should handle missing chain ID gracefully', async () => {
-        const { middleware, appStateController } = createMiddleware({
-          chainId: null,
-        });
+        const error = new Error('Chain ID not found');
+        scanAddressMockAndAddToCache.mockRejectedValue(error);
+        const { middleware, appStateController, networkController } =
+          createMiddleware({
+            chainId: null,
+          });
         appStateController.getAddressSecurityAlertResponse.mockReturnValue(
           undefined,
         );
@@ -290,9 +344,227 @@ describe('TrustSignalsMiddleware', () => {
 
         await middleware(req, res, next);
 
-        expect(scanAddressMock).not.toHaveBeenCalled();
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.TO,
+          appStateController,
+          networkController,
+        );
         expect(next).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('eth_signTypedData', () => {
+    const createTypedDataParams = (verifyingContract?: string) => [
+      TEST_ADDRESSES.FROM,
+      {
+        domain: {
+          name: 'Test',
+          version: '1',
+          chainId: 1,
+          ...(verifyingContract && { verifyingContract }),
+        },
+        message: {
+          test: 'data',
+        },
+      },
+    ];
+
+    it('should scan verifying contract address', async () => {
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.BENIGN,
+      );
+      const { middleware, appStateController, networkController } =
+        createMiddleware();
+
+      const req = createMockRequest(
+        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+        createTypedDataParams(TEST_ADDRESSES.TO),
+      );
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      await middleware(req, res, next);
+
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+        TEST_ADDRESSES.TO,
+        appStateController,
+        networkController,
+      );
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('should handle stringified typed data params', async () => {
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.BENIGN,
+      );
+      const { middleware, appStateController, networkController } =
+        createMiddleware();
+
+      const typedData = {
+        domain: {
+          name: 'Test',
+          version: '1',
+          chainId: 1,
+          verifyingContract: TEST_ADDRESSES.TO,
+        },
+        message: {
+          test: 'data',
+        },
+      };
+
+      const req = createMockRequest(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
+        TEST_ADDRESSES.FROM,
+        JSON.stringify(typedData),
+      ]);
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      await middleware(req, res, next);
+
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+        TEST_ADDRESSES.TO,
+        appStateController,
+        networkController,
+      );
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('should skip scanning when verifyingContract is not present', async () => {
+      const { middleware } = createMiddleware();
+
+      const req = createMockRequest(
+        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+        createTypedDataParams(), // No verifyingContract
+      );
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      await middleware(req, res, next);
+
+      expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('should handle all eth_signTypedData variants', async () => {
+      const variants = [
+        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1,
+        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
+        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+      ];
+
+      for (const method of variants) {
+        scanAddressMockAndAddToCache.mockResolvedValue(
+          MOCK_SCAN_RESPONSES.BENIGN,
+        );
+        const { middleware, appStateController, networkController } =
+          createMiddleware();
+
+        const req = createMockRequest(
+          method,
+          createTypedDataParams(TEST_ADDRESSES.TO),
+        );
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        await middleware(req, res, next);
+
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.TO,
+          appStateController,
+          networkController,
+        );
+        expect(next).toHaveBeenCalled();
+      }
+    });
+
+    it('should handle invalid typed data params', async () => {
+      const { middleware } = createMiddleware();
+
+      const invalidParamsCases = [
+        [], // Empty params
+        [TEST_ADDRESSES.FROM], // Only one param
+        [TEST_ADDRESSES.FROM, null], // Null second param
+        [TEST_ADDRESSES.FROM, undefined], // Undefined second param
+      ];
+
+      for (const params of invalidParamsCases) {
+        const req = createMockRequest(
+          MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+          params as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+        );
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        await middleware(req, res, next);
+
+        expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
+        expect(next).toHaveBeenCalled();
+      }
+    });
+  });
+
+  describe('eth_accounts', () => {
+    it('should scan URL when mainFrameOrigin is present', async () => {
+      const { middleware, phishingController } = createMiddleware();
+      const mainFrameOrigin = 'https://example.com';
+      const req = {
+        ...createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS),
+        mainFrameOrigin,
+      };
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      phishingController.scanUrl.mockResolvedValue({
+        result_type: 'benign',
+        label: 'Safe site',
+      });
+
+      await middleware(req, res, next);
+
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(mainFrameOrigin);
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('should not scan URL when mainFrameOrigin is not present', async () => {
+      const { middleware, phishingController } = createMiddleware();
+      const req = createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS);
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      await middleware(req, res, next);
+
+      expect(phishingController.scanUrl).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('should handle phishing scan errors gracefully', async () => {
+      const { middleware, phishingController } = createMiddleware();
+      const mainFrameOrigin = 'https://malicious.com';
+      const req = {
+        ...createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS),
+        mainFrameOrigin,
+      };
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      const error = new Error('Phishing scan failed');
+      phishingController.scanUrl.mockRejectedValue(error);
+
+      consoleErrorSpy.mockClear();
+
+      await middleware(req, res, next);
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(mainFrameOrigin);
+      expect(next).toHaveBeenCalled();
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[createTrustSignalsMiddleware] error:',
+        error,
+      );
     });
   });
 
@@ -308,7 +580,7 @@ describe('TrustSignalsMiddleware', () => {
       expect(
         appStateController.getAddressSecurityAlertResponse,
       ).not.toHaveBeenCalled();
-      expect(scanAddressMock).not.toHaveBeenCalled();
+      expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
     });
   });

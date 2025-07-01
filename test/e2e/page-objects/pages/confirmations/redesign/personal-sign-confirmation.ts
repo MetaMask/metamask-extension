@@ -10,6 +10,8 @@ export default class PersonalSignConfirmation extends Confirmation {
     this.driver = driver;
   }
 
+  private signatureHeadingTitle = { text: 'Signature request' };
+
   private originSelector = { text: DAPP_HOST_ADDRESS };
 
   private messageSelector = { text: 'Example `personal_sign` message' };
@@ -53,5 +55,10 @@ export default class PersonalSignConfirmation extends Confirmation {
       this.siweMessage,
       this.signinMessageUrl,
     ]);
+  }
+
+  async verifyConfirmationHeadingTitle() {
+    console.log('Verify confirmation heading title is Signature request');
+    await this.driver.waitForSelector(this.signatureHeadingTitle);
   }
 }

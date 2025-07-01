@@ -40,6 +40,11 @@ class TestDapp {
 
   private readonly connectedAccount = '#accounts';
 
+  private readonly connectedNetwork = (networkId: string) => ({
+    css: '#chainId',
+    text: networkId,
+  });
+
   private readonly createTokenButton = { text: 'Create Token', tag: 'button' };
 
   private readonly decryptButton = '#decryptButton';
@@ -57,6 +62,8 @@ class TestDapp {
   private readonly encryptedMessage = '#ciphertextDisplay';
 
   private readonly encryptMessageInput = '#encryptMessageInput';
+
+  private readonly erc1155DeployButton = '#deployERC1155Button';
 
   private readonly erc1155MintButton = '#batchMintButton';
 
@@ -77,6 +84,8 @@ class TestDapp {
   private readonly erc20TokenTransferButton = '#transferTokens';
 
   private readonly erc20WatchAssetButton = '#watchAssets';
+
+  private readonly erc721DeployButton = '#deployNFTsButton';
 
   private readonly erc721MintButton = '#mintButton';
 
@@ -107,6 +116,13 @@ class TestDapp {
 
   private maliciousERC20TransferButton = '#maliciousERC20TransferButton';
 
+  private readonly ethSignButton = '#ethSign';
+
+  private readonly ethSignErrorMessage = {
+    css: '#ethSign',
+    text: 'Error: The method "eth_sign" does not exist / is not available.',
+  };
+
   private readonly personalSignButton = '#personalSign';
 
   private readonly personalSignResult = '#personalSignVerifyECRecoverResult';
@@ -115,6 +131,8 @@ class TestDapp {
 
   private personalSignSigUtilResultSelector =
     '#personalSignVerifySigUtilResult';
+
+  private readonly provider = '#provider';
 
   private readonly revokePermissionButton = '#revokeAccountsPermission';
 
@@ -459,6 +477,22 @@ class TestDapp {
   }
 
   /**
+   * Verify the number of providers displayed in the test dapp.
+   *
+   * @param expectedNumber - The expected number of providers to be displayed. Defaults to 1.
+   */
+  async check_providerNumber(expectedNumber: number = 1): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} providers to be displayed in test dapp`,
+    );
+    await this.driver.wait(async () => {
+      const providers = await this.driver.findElements(this.provider);
+      return providers.length === expectedNumber;
+    }, 10000);
+    console.log(`${expectedNumber} providers found in test dapp`);
+  }
+
+  /**
    * Verify the successful personal sign signature.
    *
    * @param publicKey - The public key to verify the signature with.
@@ -679,6 +713,10 @@ class TestDapp {
     });
   }
 
+  async check_ethSignErrorMessage(): Promise<void> {
+    await this.driver.waitForSelector(this.ethSignErrorMessage);
+  }
+
   async assertEip747ContractAddressInputValue(expectedValue: string) {
     const formFieldEl = await this.driver.findElement(
       this.eip747ContractAddressInput,
@@ -714,6 +752,10 @@ class TestDapp {
     await this.driver.clickElement(this.approveTokensButtonWithoutGas);
   }
 
+  async clickERC1155DeployButton() {
+    await this.driver.clickElement(this.erc1155DeployButton);
+  }
+
   async clickERC1155MintButton() {
     await this.driver.clickElement(this.erc1155MintButton);
   }
@@ -736,6 +778,10 @@ class TestDapp {
 
   async clickERC20WatchAssetButton() {
     await this.driver.clickElement(this.erc20WatchAssetButton);
+  }
+
+  async clickERC721DeployButton() {
+    await this.driver.clickElement(this.erc721DeployButton);
   }
 
   async clickERC721MintButton() {
@@ -764,6 +810,10 @@ class TestDapp {
 
   async clickPermit() {
     await this.driver.clickElement(this.signPermitButton);
+  }
+
+  async clickEthSignButton() {
+    await this.driver.clickElement(this.ethSignButton);
   }
 
   async clickPersonalSign() {
@@ -1020,6 +1070,16 @@ class TestDapp {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
     );
+  }
+
+  /**
+   * Check if the test dapp is connected to the specified network.
+   *
+   * @param networkId - The network id to check if the test dapp is connected to.
+   */
+  async check_networkIsConnected(networkId: string) {
+    console.log(`Check testdapp is connected to network ${networkId}`);
+    await this.driver.waitForSelector(this.connectedNetwork(networkId));
   }
 }
 

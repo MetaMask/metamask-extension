@@ -148,6 +148,11 @@ const mockMetamaskStore = {
     AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
   selectedMultichainNetworkChainId: BtcScope.Mainnet,
   isEvmSelected: false,
+  enabledNetworkMap: {
+    bip122: {
+      [MultichainNetworks.BITCOIN]: true,
+    },
+  },
 };
 const mockRampsStore = {
   buyableChains: mockBuyableChainsEvmOnly,
@@ -205,8 +210,12 @@ describe('NonEvmOverview', () => {
           // The balances won't be available
           preferences: {
             showNativeTokenAsMainBalance: false,
-            tokenNetworkFilter: {},
             privacyMode: false,
+          },
+          enabledNetworkMap: {
+            bip122: {
+              [MultichainNetworks.BITCOIN]: true,
+            },
           },
           currentCurrency: 'usd',
           conversionRates: {

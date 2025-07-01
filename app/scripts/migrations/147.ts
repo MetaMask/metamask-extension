@@ -1,4 +1,3 @@
-import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
@@ -22,9 +21,7 @@ export type VersionedData = {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     AuthenticationController?: {
       isSignedIn: boolean;
-      sessionData?:
-        | AuthenticationControllerState['sessionData']
-        | previousSessionDataShape;
+      sessionData?: previousSessionDataShape;
     };
   };
 };

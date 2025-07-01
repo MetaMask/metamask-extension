@@ -76,6 +76,22 @@ class SelectNetwork {
     await this.driver.clickElementAndWaitToDisappear(this.addNetworkButton);
   }
 
+  /**
+   * Click the Add button for a popular network.
+   *
+   * @param chainId - The chain ID of the popular network to add.
+   */
+  async clickAddButtonForPopularNetwork(chainId: string): Promise<void> {
+    console.log('Click Add Button for Popular Network');
+    await this.driver.clickElementAndWaitToDisappear({
+      text: 'Add',
+      css: `[data-testid="test-add-button"]`,
+      parent: {
+        css: `[data-testid="popular-network-${chainId}"]`,
+      },
+    });
+  }
+
   async clickCloseButton(): Promise<void> {
     console.log('Click Close Button');
     await this.driver.clickElementAndWaitToDisappear(this.closeButton);
@@ -202,9 +218,35 @@ class SelectNetwork {
     await this.driver.clickElement(this.discoverButton);
   }
 
+  async check_chainInformationIsDisplayed(information: string): Promise<void> {
+    console.log(`Check chain information is displayed: ${information}`);
+    await this.driver.waitForSelector({
+      text: information,
+    });
+  }
+
   async check_discoverButtonIsVisible(): Promise<void> {
     console.log('Check Discover button is visible in network options');
     await this.driver.waitForSelector(this.discoverButton);
+  }
+
+  async check_popularNetworkIsDisplayed({
+    chainId,
+    networkName,
+  }: {
+    chainId: string;
+    networkName: string;
+  }): Promise<void> {
+    console.log(
+      `Check if ${networkName} is displayed in popular network options`,
+    );
+    await this.driver.waitForSelector({
+      text: networkName,
+      tag: 'p',
+      parent: {
+        css: `[data-testid="popular-network-${chainId}"]`,
+      },
+    });
   }
 }
 
