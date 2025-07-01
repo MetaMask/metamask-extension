@@ -152,19 +152,26 @@ export class LedgerOffscreenBridge
             // and then reject with the error
             const error = response?.payload?.error;
 
-            if (error.statusCode > 0 && error.statusText) {
+            if (
+              error &&
+              typeof error.statusCode === 'number' &&
+              error.statusCode > 0
+            ) {
               // this is TransportStatusError, convert the SerializedLedgerError to a TransportStatusError
               // TransportStatusError will regenerate the error message based on the statusCode
               const transportStatusError = new TransportStatusError(
                 error.statusCode,
               );
               reject(transportStatusError);
-            } else {
+            } else if (error?.message) {
               // Regenerate the error based on the SerializedLedgerError
               const newError = new Error(error.message, {
                 cause: error,
               });
               reject(newError);
+            } else {
+              // Fallback for unknown Ledger errors when error information is not available
+              reject(new Error('Unknown Ledger error occurred'));
             }
           }
         },
