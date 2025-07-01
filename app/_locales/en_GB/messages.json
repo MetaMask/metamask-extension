@@ -2405,6 +2405,20 @@
   "forgotPasswordModalTitle": {
     "message": "Forgot your password?"
   },
+  "forgotPasswordSocialDescription": {
+    "message": "MetaMask can’t recover your password for you."
+  },
+  "forgotPasswordSocialStep1": {
+    "message": "If you’re logged into MetaMask on a device with $1 (like Face ID), you can reset your password there.",
+    "description": "$1 is bold biometrics turned on"
+  },
+  "forgotPasswordSocialStep1Biometrics": {
+    "message": "biometrics turned on"
+  },
+  "forgotPasswordSocialStep2": {
+    "message": "If you have your $1, you can reset your current wallet and reimport using $1.",
+    "description": "$1 is bold Secret Recovery Phrase"
+  },
   "form": {
     "message": "form"
   },
