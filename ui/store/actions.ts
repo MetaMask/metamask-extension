@@ -141,6 +141,7 @@ import {
   getUseSmartAccount,
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -333,9 +334,11 @@ export function changePassword(
     getState: () => MetaMaskReduxState,
   ) => {
     const isSocialLoginFlow = getIsSocialLoginFlow(getState());
+    const isSeedlessOnboardingFeatureEnabled =
+      getIsSeedlessOnboardingFeatureEnabled();
     try {
       await keyringChangePassword(newPassword);
-      if (isSocialLoginFlow) {
+      if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
         try {
           await socialSyncChangePassword(newPassword, oldPassword);
         } catch (error) {
