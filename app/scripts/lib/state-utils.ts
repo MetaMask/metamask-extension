@@ -25,6 +25,12 @@ export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
     delete newState[key];
   }
 
+  // Handle PhishingController state - only keep urlScanCache
+  if (newState.PhishingController) {
+    const { urlScanCache } = newState.PhishingController;
+    newState.PhishingController = { urlScanCache };
+  }
+
   sanitizeSnapData(newState);
 
   return newState;
