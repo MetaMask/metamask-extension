@@ -4,8 +4,10 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { Interface } from '@ethersproject/abi';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import { Hex } from '@metamask/utils';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../helpers/constants/intents';
+import { useMemo } from 'react';
 
-const USRC_ARBITRUM = '0xaf88d065e77c8cc2239327c5edb3a432268e5831' as const;
+const USDC_ARBITRUM = '0xaf88d065e77c8cc2239327c5edb3a432268e5831' as const;
 
 export function useIntentsTarget() {
   const { currentConfirmation: transactionMeta } =
@@ -25,8 +27,17 @@ export function useIntentsTarget() {
     targetAmount = toHex(result['_value']);
   } catch {}
 
-  return {
-    targetTokenAddress: USRC_ARBITRUM,
-    targetAmount,
-  };
+  return useMemo(
+    () => [
+      {
+        targetTokenAddress: NATIVE_TOKEN_ADDRESS,
+        targetAmount: toHex('400000000000000'),
+      },
+      {
+        targetTokenAddress: USDC_ARBITRUM,
+        targetAmount,
+      },
+    ],
+    [targetAmount],
+  );
 }

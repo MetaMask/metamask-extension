@@ -10,7 +10,7 @@ import { MetaMaskReduxState } from '../../metamask-controller';
 const log = createProjectLogger('intents-utils');
 
 const POLL_INTERVAL = 1000; // 1 Second
-const MAX_POLL_COUNT = 10;
+const MAX_POLL_COUNT = 5;
 
 export type BridgeQuoteRequest = {
   from: Hex;
@@ -31,6 +31,8 @@ export async function getBridgeQuotes(
   },
   requests: BridgeQuoteRequest[],
 ): Promise<(QuoteResponse | undefined)[]> {
+  log('Fetching bridge quotes', requests);
+
   try {
     let quotes = [];
 
@@ -66,16 +68,19 @@ export async function getBridgeQuotes(
         },
       );
 
-      await new Promise((resolve) => {
-        setTimeout(resolve, 2000); // Wait for 1 second before requesting quotes
-      });
+      log('Waiting for quote', request);
 
-      const activeQuote = await waitForQuoteOrTimeout(getState);
+      const activeQuote = await waitForQuoteOrTimeout(
+        getState,
+        targetTokenAddress,
+      );
 
       quotes.push(activeQuote);
     }
 
     bridgeController.resetState();
+
+    log('Quotes', quotes);
 
     return quotes;
   } catch (error) {
@@ -86,6 +91,7 @@ export async function getBridgeQuotes(
 
 function waitForQuoteOrTimeout(
   getState: () => MetaMaskReduxState['metamask'],
+  targetTokenAddress: Hex,
 ): Promise<QuoteResponse | undefined> {
   let pollCount = 0;
 
@@ -96,12 +102,18 @@ function waitForQuoteOrTimeout(
         selectedQuote: null,
       }).activeQuote;
 
-      if (activeQuote) {
+      const isMatch =
+        activeQuote?.quote.destAsset.address.toLowerCase() ===
+        targetTokenAddress.toLowerCase();
+
+      if (activeQuote && isMatch) {
+        log('Found active quote', activeQuote);
         clearInterval(interval);
         resolve(activeQuote);
       }
 
       if (pollCount >= MAX_POLL_COUNT) {
+        log('Polling timed out, no quote found');
         clearInterval(interval);
         resolve(undefined);
       }

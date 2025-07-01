@@ -1,51 +1,30 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  resetBridgeState,
-  updateQuoteRequestParams,
-} from '../../../../ducks/bridge/actions';
 import { useConfirmContext } from '../../context/confirm';
-import {
-  FeeMarketGasFeeEstimates,
-  GasFeeEstimateLevel,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { Hex, add0x, createProjectLogger } from '@metamask/utils';
+import { Hex, createProjectLogger } from '@metamask/utils';
 import {
-  estimateGasFee,
   getBridgeQuotes,
   setIntentQuoteForTransaction,
 } from '../../../../store/actions';
-import BigNumber from 'bignumber.js';
-import { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
-import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
-import { toHex } from '@metamask/controller-utils';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { useIntentsNetworkFee } from './useIntentsNetworkFee';
-import {
-  INTENTS_FEE,
-  NATIVE_TOKEN_ADDRESS,
-} from '../../../../helpers/constants/intents';
+import { QuoteResponse } from '@metamask/bridge-controller';
 
 const log = createProjectLogger('intents');
-
-const QUOTE_LOADING_TIMEOUT = 10000;
 
 export function useIntentsQuote({
   sourceChainId,
   sourceTokenAddress,
-  sourceTokenAmount,
-  targetTokenAddress,
+  sourceTokenAmounts,
+  targetTokenAddresses,
 }: {
   sourceChainId: Hex;
-  sourceTokenAmount?: string;
+  sourceTokenAmounts: string[] | undefined;
   sourceTokenAddress: Hex;
-  targetTokenAddress: Hex;
+  targetTokenAddresses: Hex[];
 }) {
-  const dispatch = useDispatch();
-  const currency = useSelector(getCurrentCurrency);
-
   const { currentConfirmation: transasctionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -60,80 +39,51 @@ export function useIntentsQuote({
     error,
     value: quotes,
   } = useAsyncResult(async () => {
-    if (!sourceTokenAmount) {
+    if (!sourceTokenAmounts?.length) {
       return [];
     }
 
-    return getBridgeQuotes([
-      {
-        from: from as Hex,
-        sourceChainId,
-        sourceTokenAddress,
-        sourceTokenAmount: sourceTokenAmount,
-        targetChainId: destChainId,
-        targetTokenAddress,
-      },
-      {
-        from: from as Hex,
-        sourceChainId,
-        sourceTokenAddress,
-        sourceTokenAmount: '1000000', // 0.00001 ETH
-        targetChainId: destChainId,
-        targetTokenAddress: NATIVE_TOKEN_ADDRESS,
-      },
-    ]);
+    const requests = sourceTokenAmounts.map((sourceTokenAmount, index) => ({
+      from: from as Hex,
+      sourceChainId,
+      sourceTokenAddress,
+      sourceTokenAmount,
+      targetChainId: destChainId,
+      targetTokenAddress: targetTokenAddresses[index],
+    }));
+
+    return getBridgeQuotes(requests);
   }, [
-    sourceTokenAmount,
+    JSON.stringify(sourceTokenAmounts),
     sourceChainId,
-    sourceTokenAddress,
+    JSON.stringify(sourceTokenAddress),
     destChainId,
     from,
-    targetTokenAddress,
+    JSON.stringify(targetTokenAddresses),
   ]);
 
   if (error) {
     throw error;
   }
 
-  const mainQuote = quotes?.[0];
-  const gasQuote = quotes?.[1];
+  log('Quotes', transactionId, quotes);
 
-  log('Main quote', mainQuote, mainQuote?.quote?.destAsset?.address);
-  log('Gas quote', gasQuote, gasQuote?.quote?.destAsset?.address);
+  const finalQuotes = quotes?.some((quote) => !quote)
+    ? undefined
+    : (quotes as QuoteResponse[]);
 
-  const { loading: gasFeeLoading, value: gasFee } =
-    useIntentsNetworkFee(mainQuote);
-
-  const [gasFeeFormatted] = useCurrencyDisplay(
-    gasFee ?? '0x0',
-    {
-      currency,
-      hideLabel: true,
-    },
-    toHex(sourceChainId),
-  );
-
-  const result = useMemo(
-    () =>
-      mainQuote || gasQuote
-        ? {
-            main: mainQuote ?? null,
-            gas: gasQuote ?? null,
-          }
-        : null,
-    [mainQuote, gasQuote],
-  );
+  const { loading: gasFeeLoading, networkFee } =
+    useIntentsNetworkFee(finalQuotes);
 
   useEffect(() => {
-    log('Saving quotes', transactionId, result);
-    setIntentQuoteForTransaction(transactionId, result);
-  }, [transactionId, result]);
+    log('Saving quotes', transactionId, finalQuotes);
+    setIntentQuoteForTransaction(transactionId, finalQuotes ?? null);
+  }, [transactionId, JSON.stringify(finalQuotes)]);
 
   const loading = gasFeeLoading || quotesLoading;
 
   return {
-    gasFeeFormatted: mainQuote ? gasFeeFormatted : undefined,
+    networkFee,
     loading,
-    sourceTokenAmount,
   };
 }

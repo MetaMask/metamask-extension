@@ -8,39 +8,43 @@ import {
 } from '@metamask/transaction-controller';
 import { add0x } from '@metamask/utils';
 import BigNumber from 'bignumber.js';
+import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../helpers/constants/intents';
 
-export function useIntentsNetworkFee(intentQuote?: QuoteResponse | null) {
-  const chainId = toHex(intentQuote?.quote?.srcChainId ?? '0x1');
-  const trade = intentQuote?.trade;
-
+export function useIntentsNetworkFee(quotes?: (QuoteResponse | undefined)[]) {
   const { pending: loading, value: gasFee } = useAsyncResult(async () => {
-    if (!trade) {
+    if (!quotes?.length) {
       return undefined;
     }
 
     return estimateGasFee({
-      transactionParams: trade,
-      chainId,
+      transactionParams: quotes[0]?.trade,
+      chainId: toHex(quotes[0]?.trade.chainId ?? '0x0'),
     });
-  }, [chainId, trade]);
+  }, [JSON.stringify(quotes)]);
 
   const tradeMediumFee =
     (gasFee?.estimates as FeeMarketGasFeeEstimates)?.[
       GasFeeEstimateLevel.Medium
     ]?.maxFeePerGas ?? '0x0';
 
-  const tradeGasLimit = intentQuote?.trade.gasLimit ?? 0;
-  const approvalGasLimit = intentQuote?.approval?.gasLimit ?? 0;
-  const totalGasLimit = tradeGasLimit + approvalGasLimit;
+  const totalGasLimit =
+    quotes?.reduce((acc, quote) => {
+      const tradeGasLimit = quote?.trade.gasLimit ?? 0;
+      const approvalGasLimit = quote?.approval?.gasLimit ?? 0;
+      return acc + tradeGasLimit + approvalGasLimit;
+    }, 0) ?? 0;
 
-  const totalCostNative = add0x(
-    new BigNumber(totalGasLimit).mul(tradeMediumFee, 16).toString(16),
-  );
-
-  const value = intentQuote ? totalCostNative : undefined;
+  const networkFee = quotes?.length
+    ? new BigNumber(totalGasLimit)
+        .mul(tradeMediumFee, 16)
+        .shift(-18)
+        .round(6)
+        .toString()
+    : undefined;
 
   return {
     loading,
-    value,
+    networkFee,
   };
 }

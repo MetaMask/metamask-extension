@@ -66,29 +66,30 @@ export class IntentsHook {
 
     const intentQuotes = appStateControllerState.intentQuoteByTransaction?.[
       transactionId
-    ] as {main: QuoteResponse | undefined; gas: QuoteResponse | undefined} | undefined;
+    ] as QuoteResponse[] | undefined;
 
-    if (!intentQuotes) {
+    if (!intentQuotes?.length) {
       log('No quotes found for transaction', transactionId);
       return EMPTY_RESULT;
     }
 
-    const mainQuote = intentQuotes?.main as QuoteResponse;
-    const gasQuote = intentQuotes?.gas;
-    const isBridge = mainQuote.quote.srcChainId !== mainQuote.quote.destChainId;
+    const isBridge =
+      intentQuotes[0].quote.srcChainId !== intentQuotes[0].quote.destChainId;
 
     if (!isBridge) {
       log('Bridging not required');
       return EMPTY_RESULT;
     }
 
-    if (gasQuote) {
-      log('Submitting gas bridge', gasQuote);
-      await this.submitBridge(gasQuote);
-    }
+    let index = 0;
 
-    log('Submitting main bridge', mainQuote);
-    await this.submitBridge(mainQuote);
+    for (const quote of intentQuotes) {
+      log('Submitting bridge', index, quote);
+
+      await this.submitBridge(quote);
+
+      index += 1;
+    }
 
     return EMPTY_RESULT;
   }

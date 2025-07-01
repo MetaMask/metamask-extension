@@ -33,12 +33,7 @@ export function useTransactionConfirm() {
 
   const intentQuotes = useSelector((state: ConfirmMetamaskState) =>
     selectIntentQuoteForTransaction(state, transactionMeta?.id),
-  ) as
-    | { main: QuoteResponse | undefined; gas: QuoteResponse | undefined }
-    | undefined;
-
-  const mainIntentQuote = intentQuotes?.main;
-  const gasIntentQuote = intentQuotes?.gas;
+  ) as QuoteResponse[] | undefined;
 
   const newTransactionMeta = useMemo(
     () => cloneDeep(transactionMeta),
@@ -66,44 +61,44 @@ export function useTransactionConfirm() {
   }, [newTransactionMeta]);
 
   const handleIntents = useCallback(() => {
-    if (!mainIntentQuote) {
+    if (!intentQuotes?.length) {
       return;
     }
 
-    const { approval: mainApproval, trade: mainTrade } = mainIntentQuote;
-    const { approval: gasApproval, trade: gasTrade } = gasIntentQuote || {};
+    // const { approval: mainApproval, trade: mainTrade } = mainIntentQuote;
+    // const { approval: gasApproval, trade: gasTrade } = gasIntentQuote || {};
 
-    const isSwap =
-      mainIntentQuote.quote.srcChainId === mainIntentQuote.quote.destChainId;
+    // const isSwap =
+    //   mainIntentQuote.quote.srcChainId === mainIntentQuote.quote.destChainId;
 
-    if (!isSwap) {
-      return;
-    }
+    // if (!isSwap) {
+    //   return;
+    // }
 
-    newTransactionMeta.batchTransactions = [];
+    // newTransactionMeta.batchTransactions = [];
 
-    if (gasApproval) {
-      newTransactionMeta.batchTransactions.push(
-        gasApproval as BatchTransactionParams,
-      );
-    }
+    // if (gasApproval) {
+    //   newTransactionMeta.batchTransactions.push(
+    //     gasApproval as BatchTransactionParams,
+    //   );
+    // }
 
-    if (gasTrade) {
-      newTransactionMeta.batchTransactions.push(
-        gasTrade as BatchTransactionParams,
-      );
-    }
+    // if (gasTrade) {
+    //   newTransactionMeta.batchTransactions.push(
+    //     gasTrade as BatchTransactionParams,
+    //   );
+    // }
 
-    if (mainApproval) {
-      newTransactionMeta.batchTransactions.push(
-        mainApproval as BatchTransactionParams,
-      );
-    }
+    // if (mainApproval) {
+    //   newTransactionMeta.batchTransactions.push(
+    //     mainApproval as BatchTransactionParams,
+    //   );
+    // }
 
-    newTransactionMeta.batchTransactions.push(
-      mainTrade as BatchTransactionParams,
-    );
-  }, [mainIntentQuote, gasIntentQuote, newTransactionMeta]);
+    // newTransactionMeta.batchTransactions.push(
+    //   mainTrade as BatchTransactionParams,
+    // );
+  }, [intentQuotes, newTransactionMeta]);
 
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;

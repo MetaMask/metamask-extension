@@ -5,31 +5,42 @@ import { NATIVE_TOKEN_ADDRESS } from '../../../../helpers/constants/intents';
 
 export function useTokenDecimals({
   chainId,
-  tokenAddress,
+  tokenAddresses,
 }: {
   chainId?: Hex;
-  tokenAddress?: Hex;
+  tokenAddresses?: Hex[];
 }) {
   return useAsyncResult(async () => {
-    if (!chainId || !tokenAddress) {
+    if (!chainId || !tokenAddresses?.length) {
       return undefined;
     }
 
-    if (tokenAddress === NATIVE_TOKEN_ADDRESS) {
-      return 18;
-    }
-
-    const details = await getTokenStandardAndDetailsByChain(
-      tokenAddress,
-      undefined,
-      undefined,
-      chainId,
+    return await Promise.all(
+      tokenAddresses.map((tokenAddress) =>
+        getTokenDecimal(tokenAddress, chainId),
+      ),
     );
+  }, [chainId, JSON.stringify(tokenAddresses)]);
+}
 
-    if (!details.decimals) {
-      return undefined;
-    }
+async function getTokenDecimal(
+  tokenAddress: Hex,
+  chainId: Hex,
+): Promise<number | undefined> {
+  if (tokenAddress === NATIVE_TOKEN_ADDRESS) {
+    return 18;
+  }
 
-    return parseInt(details.decimals, 10);
-  }, [chainId, tokenAddress]);
+  const details = await getTokenStandardAndDetailsByChain(
+    tokenAddress,
+    undefined,
+    undefined,
+    chainId,
+  );
+
+  if (!details.decimals) {
+    return undefined;
+  }
+
+  return parseInt(details.decimals, 10);
 }

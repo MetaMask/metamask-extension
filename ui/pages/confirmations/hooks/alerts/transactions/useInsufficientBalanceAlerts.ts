@@ -66,8 +66,7 @@ export function useInsufficientBalanceAlerts({
     balance,
   });
 
-  const showAlert =
-    insufficientBalance && (ignoreGasFeeToken || !selectedGasFeeToken);
+  const showAlert = false;
 
   return useMemo(() => {
     if (!showAlert) {

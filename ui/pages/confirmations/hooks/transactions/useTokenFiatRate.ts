@@ -11,8 +11,9 @@ import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import BigNumber from 'bignumber.js';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../helpers/constants/intents';
+import { useMemo } from 'react';
 
-export function useTokenFiatRate(tokenAddress: Hex, chainId: Hex) {
+export function useTokenFiatRates(tokenAddresses: Hex[], chainId: Hex) {
   const allMarketData = useSelector(getMarketData);
 
   const contractExchangeRates = useSelector(
@@ -51,20 +52,33 @@ export function useTokenFiatRate(tokenAddress: Hex, chainId: Hex) {
         ?.conversionRate
     : conversionRate;
 
-  const contractExchangeTokenKey = Object.keys(mergedRates).find((key) =>
-    isEqualCaseInsensitive(key, tokenAddress),
+  return useMemo(
+    () =>
+      tokenAddresses.map((tokenAddress) => {
+        const contractExchangeTokenKey = Object.keys(mergedRates).find((key) =>
+          isEqualCaseInsensitive(key, tokenAddress),
+        );
+
+        const tokenExchangeRate =
+          contractExchangeTokenKey && mergedRates[contractExchangeTokenKey];
+
+        if (tokenAddress === NATIVE_TOKEN_ADDRESS) {
+          return new BigNumber(tokenConversionRate);
+        }
+
+        if (!tokenExchangeRate || !tokenConversionRate) {
+          return undefined;
+        }
+
+        return new BigNumber(tokenExchangeRate.toString()).mul(
+          tokenConversionRate,
+        );
+      }),
+    [
+      JSON.stringify(tokenAddresses),
+      chainId,
+      JSON.stringify(mergedRates),
+      tokenConversionRate,
+    ],
   );
-
-  const tokenExchangeRate =
-    contractExchangeTokenKey && mergedRates[contractExchangeTokenKey];
-
-  if (tokenAddress === NATIVE_TOKEN_ADDRESS) {
-    return new BigNumber(tokenConversionRate);
-  }
-
-  if (!tokenExchangeRate || !tokenConversionRate) {
-    return undefined;
-  }
-
-  return new BigNumber(tokenExchangeRate.toString()).mul(tokenConversionRate);
 }

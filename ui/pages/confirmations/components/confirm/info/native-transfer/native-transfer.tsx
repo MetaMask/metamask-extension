@@ -28,7 +28,6 @@ const NativeTransferInfo = () => {
         metricsOnly={isWalletInitiated}
       />
       <TokenDetailsSection />
-      <IntentsSection />
       <GasFeesSection />
       <AdvancedDetails />
     </>

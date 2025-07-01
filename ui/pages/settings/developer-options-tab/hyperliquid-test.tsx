@@ -67,7 +67,7 @@ function Deposit() {
       {
         data,
         from: selectedAddress,
-        gas: toHex(50000),
+        gas: toHex(80000),
         to: USDC_ARBITRUM,
       },
       {
