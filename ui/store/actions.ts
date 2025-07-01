@@ -140,6 +140,8 @@ import {
   getUseSmartAccount,
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
+// eslint-disable-next-line import/no-restricted-paths
+import { BridgeQuoteRequest } from '../../app/scripts/lib/transaction/intents';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -6717,4 +6719,13 @@ export async function estimateGasFee(
     logErrorWithMessage(error);
     throw error;
   }
+}
+
+export async function getBridgeQuotes(
+  requests: BridgeQuoteRequest[],
+): Promise<(QuoteResponse | undefined)[]> {
+  return await submitRequestToBackground<(QuoteResponse | undefined)[]>(
+    'getBridgeQuotes',
+    [requests],
+  );
 }

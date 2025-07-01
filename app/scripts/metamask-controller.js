@@ -415,6 +415,7 @@ import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
 import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
+import { getBridgeQuotes } from './lib/transaction/intents';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -4333,6 +4334,10 @@ export default class MetamaskController extends EventEmitter {
       endTrace,
       isRelaySupported,
       requestSafeReload: this.requestSafeReload.bind(this),
+      getBridgeQuotes: getBridgeQuotes.bind(null, {
+        bridgeController: this.bridgeController,
+        getState: this.getState.bind(this),
+      }),
     };
   }
 

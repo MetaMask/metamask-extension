@@ -22,9 +22,6 @@ const STATUS_INTERVAL = 5 * 1000; // 5 Seconds
 const EMPTY_RESULT = {
   transactionHash: undefined,
 };
-
-type IntentQuote = QuoteResponse<string | TxData> & QuoteMetadata;
-
 export class IntentsHook {
   #bridgeStatusController: BridgeStatusController;
 
@@ -67,46 +64,51 @@ export class IntentsHook {
       'AppStateController:getState',
     );
 
-    const intentQuote = appStateControllerState.intentQuoteByTransaction?.[
+    const intentQuotes = appStateControllerState.intentQuoteByTransaction?.[
       transactionId
-    ] as (QuoteResponse<string | TxData> & QuoteMetadata) | undefined;
+    ] as {main: QuoteResponse | undefined; gas: QuoteResponse | undefined} | undefined;
 
-    if (!intentQuote) {
-      log('No quote found for transaction', transactionId);
+    if (!intentQuotes) {
+      log('No quotes found for transaction', transactionId);
       return EMPTY_RESULT;
     }
 
-    log('Intent quote', intentQuote);
-
-    const isBridge =
-      intentQuote.quote.srcChainId !== intentQuote.quote.destChainId;
+    const mainQuote = intentQuotes?.main as QuoteResponse;
+    const gasQuote = intentQuotes?.gas;
+    const isBridge = mainQuote.quote.srcChainId !== mainQuote.quote.destChainId;
 
     if (!isBridge) {
       log('Bridging not required');
       return EMPTY_RESULT;
     }
 
-    const finalQuote = this.normalizeQuote(intentQuote);
+    if (gasQuote) {
+      log('Submitting gas bridge', gasQuote);
+      await this.submitBridge(gasQuote);
+    }
 
-    log('Final quote', finalQuote);
+    log('Submitting main bridge', mainQuote);
+    await this.submitBridge(mainQuote);
+
+    return EMPTY_RESULT;
+  }
+
+  async submitBridge(quote: QuoteResponse): Promise<void> {
+    const finalQuote = this.normalizeQuote(quote);
 
     const result = await this.#messenger.call(
       'BridgeStatusController:submitTx',
-      finalQuote,
+      finalQuote as never,
       false,
     );
+
+    log('Bridge transaction submitted', result);
 
     const { id: bridgeTransactionId } = result;
 
     log('Waiting for bridge completion', bridgeTransactionId);
 
     await this.waitForBridgeCompletion(bridgeTransactionId);
-
-    log('Safe delay');
-
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
-    return EMPTY_RESULT;
   }
 
   async waitForBridgeCompletion(transactionId: string): Promise<void> {
@@ -138,7 +140,7 @@ export class IntentsHook {
     });
   }
 
-  normalizeQuote(quoteResponse: IntentQuote): IntentQuote {
+  normalizeQuote(quoteResponse: QuoteResponse): QuoteResponse {
     const finalQuote = cloneDeep(quoteResponse);
     const trade = finalQuote.trade as TxData;
     const approval = finalQuote.approval as TxData | undefined;

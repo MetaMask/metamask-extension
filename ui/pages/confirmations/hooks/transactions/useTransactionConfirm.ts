@@ -31,9 +31,14 @@ export function useTransactionConfirm() {
     getIsSmartTransaction(state, transactionMeta?.chainId),
   );
 
-  const intentQuote = useSelector((state: ConfirmMetamaskState) =>
+  const intentQuotes = useSelector((state: ConfirmMetamaskState) =>
     selectIntentQuoteForTransaction(state, transactionMeta?.id),
-  ) as QuoteResponse | undefined;
+  ) as
+    | { main: QuoteResponse | undefined; gas: QuoteResponse | undefined }
+    | undefined;
+
+  const mainIntentQuote = intentQuotes?.main;
+  const gasIntentQuote = intentQuotes?.gas;
 
   const newTransactionMeta = useMemo(
     () => cloneDeep(transactionMeta),
@@ -61,14 +66,15 @@ export function useTransactionConfirm() {
   }, [newTransactionMeta]);
 
   const handleIntents = useCallback(() => {
-    if (!intentQuote) {
+    if (!mainIntentQuote) {
       return;
     }
 
-    const { approval, trade } = intentQuote;
+    const { approval: mainApproval, trade: mainTrade } = mainIntentQuote;
+    const { approval: gasApproval, trade: gasTrade } = gasIntentQuote || {};
 
     const isSwap =
-      intentQuote.quote.srcChainId === intentQuote.quote.destChainId;
+      mainIntentQuote.quote.srcChainId === mainIntentQuote.quote.destChainId;
 
     if (!isSwap) {
       return;
@@ -76,14 +82,28 @@ export function useTransactionConfirm() {
 
     newTransactionMeta.batchTransactions = [];
 
-    if (approval) {
+    if (gasApproval) {
       newTransactionMeta.batchTransactions.push(
-        approval as BatchTransactionParams,
+        gasApproval as BatchTransactionParams,
       );
     }
 
-    newTransactionMeta.batchTransactions.push(trade as BatchTransactionParams);
-  }, [intentQuote, newTransactionMeta]);
+    if (gasTrade) {
+      newTransactionMeta.batchTransactions.push(
+        gasTrade as BatchTransactionParams,
+      );
+    }
+
+    if (mainApproval) {
+      newTransactionMeta.batchTransactions.push(
+        mainApproval as BatchTransactionParams,
+      );
+    }
+
+    newTransactionMeta.batchTransactions.push(
+      mainTrade as BatchTransactionParams,
+    );
+  }, [mainIntentQuote, gasIntentQuote, newTransactionMeta]);
 
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;

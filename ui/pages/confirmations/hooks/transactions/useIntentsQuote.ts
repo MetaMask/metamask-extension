@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   resetBridgeState,
@@ -10,24 +10,27 @@ import {
   GasFeeEstimateLevel,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { getBridgeQuotes } from '../../../../ducks/bridge/selectors';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { Hex, add0x, createProjectLogger } from '@metamask/utils';
 import {
   estimateGasFee,
+  getBridgeQuotes,
   setIntentQuoteForTransaction,
 } from '../../../../store/actions';
 import BigNumber from 'bignumber.js';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { toHex } from '@metamask/controller-utils';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { useIntentsNetworkFee } from './useIntentsNetworkFee';
-import { INTENTS_FEE } from '../../../../helpers/constants/intents';
+import {
+  INTENTS_FEE,
+  NATIVE_TOKEN_ADDRESS,
+} from '../../../../helpers/constants/intents';
 
 const log = createProjectLogger('intents');
 
-const QUOTE_LOADING_TIMEOUT = 5000;
+const QUOTE_LOADING_TIMEOUT = 10000;
 
 export function useIntentsQuote({
   sourceChainId,
@@ -42,7 +45,6 @@ export function useIntentsQuote({
 }) {
   const dispatch = useDispatch();
   const currency = useSelector(getCurrentCurrency);
-  const [quoteStart, setQuoteStart] = useState<number>(0);
 
   const { currentConfirmation: transasctionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -53,60 +55,54 @@ export function useIntentsQuote({
     txParams: { from },
   } = transasctionMeta;
 
-  useEffect(() => {
+  const {
+    pending: quotesLoading,
+    error,
+    value: quotes,
+  } = useAsyncResult(async () => {
     if (!sourceTokenAmount) {
-      return;
+      return [];
     }
 
-    dispatch(
-      updateQuoteRequestParams(
-        {
-          srcTokenAddress: sourceTokenAddress,
-          destTokenAddress: targetTokenAddress,
-          srcTokenAmount: sourceTokenAmount,
-          srcChainId: sourceChainId,
-          destChainId,
-          insufficientBal: true,
-          walletAddress: from,
-          destWalletAddress: from,
-          slippage: 0.5,
-        },
-        {
-          stx_enabled: false,
-          token_symbol_source: '',
-          token_symbol_destination: '',
-          security_warnings: [],
-        },
-      ),
-    );
-
-    setQuoteStart(Date.now());
+    return getBridgeQuotes([
+      {
+        from: from as Hex,
+        sourceChainId,
+        sourceTokenAddress,
+        sourceTokenAmount: sourceTokenAmount,
+        targetChainId: destChainId,
+        targetTokenAddress,
+      },
+      {
+        from: from as Hex,
+        sourceChainId,
+        sourceTokenAddress,
+        sourceTokenAmount: '1000000', // 0.00001 ETH
+        targetChainId: destChainId,
+        targetTokenAddress: NATIVE_TOKEN_ADDRESS,
+      },
+    ]);
   }, [
-    destChainId,
-    dispatch,
-    from,
     sourceTokenAmount,
     sourceChainId,
     sourceTokenAddress,
+    destChainId,
+    from,
     targetTokenAddress,
   ]);
 
-  useEffect(() => {
-    return () => {
-      dispatch(resetBridgeState());
-    };
-  }, [dispatch]);
+  if (error) {
+    throw error;
+  }
 
-  const quoteData = useSelector(getBridgeQuotes);
-  const activeQuote = quoteData.activeQuote;
+  const mainQuote = quotes?.[0];
+  const gasQuote = quotes?.[1];
 
-  log('Active quote', activeQuote);
-
-  const isQuoteLoading =
-    !activeQuote && Date.now() - quoteStart < QUOTE_LOADING_TIMEOUT;
+  log('Main quote', mainQuote, mainQuote?.quote?.destAsset?.address);
+  log('Gas quote', gasQuote, gasQuote?.quote?.destAsset?.address);
 
   const { loading: gasFeeLoading, value: gasFee } =
-    useIntentsNetworkFee(activeQuote);
+    useIntentsNetworkFee(mainQuote);
 
   const [gasFeeFormatted] = useCurrencyDisplay(
     gasFee ?? '0x0',
@@ -117,14 +113,26 @@ export function useIntentsQuote({
     toHex(sourceChainId),
   );
 
-  useEffect(() => {
-    setIntentQuoteForTransaction(transactionId, activeQuote);
-  }, [transactionId, activeQuote]);
+  const result = useMemo(
+    () =>
+      mainQuote || gasQuote
+        ? {
+            main: mainQuote ?? null,
+            gas: gasQuote ?? null,
+          }
+        : null,
+    [mainQuote, gasQuote],
+  );
 
-  const loading = gasFeeLoading || isQuoteLoading;
+  useEffect(() => {
+    log('Saving quotes', transactionId, result);
+    setIntentQuoteForTransaction(transactionId, result);
+  }, [transactionId, result]);
+
+  const loading = gasFeeLoading || quotesLoading;
 
   return {
-    gasFeeFormatted: activeQuote ? gasFeeFormatted : undefined,
+    gasFeeFormatted: mainQuote ? gasFeeFormatted : undefined,
     loading,
     sourceTokenAmount,
   };
