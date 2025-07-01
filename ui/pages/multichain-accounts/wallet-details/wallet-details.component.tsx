@@ -40,7 +40,10 @@ import WalletDetailsAccountItem from '../../../components/multichain/multichain-
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import SRPQuiz from '../../../components/app/srp-quiz-modal';
 import { setAccountDetailsAddress } from '../../../store/actions';
-import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ACCOUNT_DETAILS_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
+} from '../../../helpers/constants/routes';
 
 type AccountBalance = {
   [key: string]: string | number;
@@ -76,6 +79,7 @@ const WalletDetails = () => {
 
   const handleAccountClick = (account: { id: string; address: string }) => {
     dispatch(setAccountDetailsAddress(account.address));
+    history.push(`${ACCOUNT_DETAILS_ROUTE}/${account.address}`);
   };
 
   const handleBack = () => {
