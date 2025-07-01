@@ -176,8 +176,8 @@ const CoinButtons = ({
 
   const getSnapAccountMetaMetricsPropertiesIfAny = (
     internalAccount: InternalAccount,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
   ): { snap_id?: string } => {
     // Some accounts might be Snap accounts, in this case we add some extra properties
     // to the metrics:
