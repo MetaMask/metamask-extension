@@ -62,7 +62,7 @@ const ChangePassword = () => {
     }
     return (
       <Mascot
-        animationEventEmitter={animationEventEmitter}
+        animationEventEmitter={animationEventEmitter.current}
         width="100"
         height="100"
       />

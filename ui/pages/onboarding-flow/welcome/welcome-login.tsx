@@ -48,7 +48,7 @@ export default function WelcomeLogin({
     }
     return (
       <Mascot
-        animationEventEmitter={animationEventEmitter}
+        animationEventEmitter={animationEventEmitter.current}
         width="268"
         height="268"
       />
