@@ -5899,9 +5899,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-ledger-bridge-keyring@npm:@metamask-previews/eth-ledger-bridge-keyring@11.1.0-752968c":
-  version: 11.1.0-752968c
-  resolution: "@metamask-previews/eth-ledger-bridge-keyring@npm:11.1.0-752968c"
+"@metamask/eth-ledger-bridge-keyring@npm:^11.1.1":
+  version: 11.1.1
+  resolution: "@metamask/eth-ledger-bridge-keyring@npm:11.1.1"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -5909,7 +5909,7 @@ __metadata:
     "@ledgerhq/hw-app-eth": "npm:^6.42.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     hdkey: "npm:^2.1.0"
-  checksum: 10/c5c6a5c52e1bc00b0d19dfc087037ed69ef6a3c2f035b132eb1baada8bf3405517d0604b6c9ec38f2fe79a7e180ea695566382629ef8ec11e05233c660d516ad
+  checksum: 10/c3e9093cafd438280a52d54f35f8b76435e44ed64d0e6a159914ff47b59c19bafa8fb85f3dd1bf9c1932cf501c2c00419398c1c75f17e4d5f4220471e8bde91d
   languageName: node
   linkType: hard
 
@@ -31426,7 +31426,7 @@ __metadata:
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^17.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
-    "@metamask/eth-ledger-bridge-keyring": "npm:^11.1.0"
+    "@metamask/eth-ledger-bridge-keyring": "npm:^11.1.1"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^13.0.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
