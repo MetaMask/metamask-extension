@@ -89,7 +89,6 @@ export const useNetworkChangeHandlers = () => {
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
       const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
-      console.log('isPopularNetwork', isPopularNetwork);
 
       const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
 
@@ -175,39 +174,10 @@ export const useNetworkChangeHandlers = () => {
   const handleNonEvmNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
       const { namespace } = parseCaipChainId(chainId);
-      const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
-
-      if (enabledNetworkKeys.includes(chainId)) {
-        dispatch(setEnabledNetworks([], namespace));
-      } else {
-        if (hasAnyAccountsInNetwork(chainId)) {
-          dispatch(setActiveNetwork(chainId));
-          dispatch(setEnabledNetworks([chainId], namespace));
-          return;
-        }
-
-        if (enabledNetworkKeys.includes(chainId)) {
-          const filteredEnabledNetworks = enabledNetworkKeys.filter(
-            (key: string) => key !== chainId,
-          );
-          dispatch(
-            setEnabledNetworks(
-              filteredEnabledNetworks as CaipChainId[],
-              namespace,
-            ),
-          );
-        } else {
-          dispatch(
-            setEnabledNetworks(
-              [...enabledNetworkKeys, chainId] as CaipChainId[],
-              namespace,
-            ),
-          );
-        }
-        setActionMode(ACTION_MODE.ADD_NON_EVM_ACCOUNT);
-      }
+      dispatch(setActiveNetwork(chainId));
+      dispatch(setEnabledNetworks([chainId], namespace));
     },
-    [enabledNetworksByNamespace, dispatch, hasAnyAccountsInNetwork],
+    [dispatch],
   );
 
   const getMultichainNetworkConfigurationOrThrow = useCallback(

@@ -13,16 +13,24 @@ import {
   FEATURED_RPCS,
   TEST_CHAINS,
 } from '../../../../../shared/constants/network';
-import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors';
+import {
+  getEnabledNetworksByNamespace,
+  getMultichainNetworkConfigurationsByChainId,
+  getSelectedMultichainNetworkConfiguration,
+} from '../../../../selectors';
 
 export const useNetworkManagerState = ({
   showDefaultNetworks = false,
 }: {
   showDefaultNetworks?: boolean;
 } = {}) => {
+  const currentMultichainNetwork = useSelector(
+    getSelectedMultichainNetworkConfiguration,
+  );
   const [multichainNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
@@ -97,9 +105,22 @@ export const useNetworkManagerState = ({
     [],
   );
 
+  const initialTab = useMemo(() => {
+    if (!currentMultichainNetwork.isEvm) {
+      return 'networks';
+    }
+
+    const isCustomNetworkEnabled = FEATURED_NETWORK_CHAIN_IDS.some((chainId) =>
+      Object.keys(enabledNetworksByNamespace).includes(chainId),
+    );
+
+    return isCustomNetworkEnabled ? 'networks' : 'custom-networks';
+  }, []);
+
   return {
     nonTestNetworks,
     testNetworks,
     isNetworkInDefaultNetworkTab,
+    initialTab,
   };
 };
