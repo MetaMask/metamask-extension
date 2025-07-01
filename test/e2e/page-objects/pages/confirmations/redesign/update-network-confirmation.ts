@@ -35,6 +35,13 @@ class UpdateNetworkConfirmation {
     await this.driver.clickElement(this.approveButton);
   }
 
+  async approveUpdateNetworkAndWaitToClose() {
+    console.log(
+      'Approving update network on confirmation dialog and wait to close',
+    );
+    await this.driver.clickElementAndWaitForWindowToClose(this.approveButton);
+  }
+
   async cancelUpdateNetwork() {
     console.log('Cancelling update network on confirmation dialog');
     await this.driver.clickElementAndWaitForWindowToClose(this.cancelButton);

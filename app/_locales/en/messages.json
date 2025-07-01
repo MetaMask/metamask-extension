@@ -1508,6 +1508,9 @@
   "createPasswordDetails": {
     "message": "Unlocks MetaMask on this device only."
   },
+  "createPasswordDetailsSocial": {
+    "message": "Use this for wallet recovery on all devices."
+  },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
   },
@@ -2198,6 +2201,9 @@
   "enterYourPassword": {
     "message": "Enter your password"
   },
+  "enterYourPasswordSocialLoginFlow": {
+    "message": "Enter Metamask Password"
+  },
   "errorCode": {
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
@@ -2374,8 +2380,9 @@
   "floatAmountToken": {
     "message": "Token amount must be an integer"
   },
-  "followUsOnTwitter": {
-    "message": "Follow us on Twitter"
+  "followUsOnX": {
+    "message": "Follow us on $1",
+    "description": "$1 is the x icon"
   },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
@@ -2397,6 +2404,20 @@
   },
   "forgotPasswordModalTitle": {
     "message": "Forgot your password?"
+  },
+  "forgotPasswordSocialDescription": {
+    "message": "MetaMask can’t recover your password for you."
+  },
+  "forgotPasswordSocialStep1": {
+    "message": "If you’re logged into MetaMask on a device with $1 (like Face ID), you can reset your password there.",
+    "description": "$1 is bold biometrics turned on"
+  },
+  "forgotPasswordSocialStep1Biometrics": {
+    "message": "biometrics turned on"
+  },
+  "forgotPasswordSocialStep2": {
+    "message": "If you have your $1, you can reset your current wallet and reimport using $1.",
+    "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {
     "message": "form"
@@ -3949,11 +3970,15 @@
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "Choose your network"
   },
+  "onboardingContinueWith": {
+    "message": "Continue with $1",
+    "description": "$1 is the type of login used Google, Apple, etc."
+  },
   "onboardingCreateWallet": {
     "message": "Create a new wallet"
   },
   "onboardingImportWallet": {
-    "message": "Import using Secret Recovery Phrase"
+    "message": "I have an existing wallet"
   },
   "onboardingMetametricsAgree": {
     "message": "I agree"
@@ -3995,6 +4020,13 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
   },
+  "onboardingOptionIcon": {
+    "message": "$1 icon",
+    "description": "$1 is the icon name"
+  },
+  "onboardingOptionTitle": {
+    "message": "Choose an option to continue"
+  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Launch extension"
   },
@@ -4013,6 +4045,16 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Installation is complete!"
+  },
+  "onboardingSignInWith": {
+    "message": "Sign in with $1",
+    "description": "$1 is the type of login used Google, Apple, etc"
+  },
+  "onboardingSrpCreate": {
+    "message": "Continue with Secret Recovery Phrase"
+  },
+  "onboardingSrpImport": {
+    "message": "Import using Secret Recovery Phrase"
   },
   "onboardingSrpImportError": {
     "message": "Use only lowercase letters, check your spelling, and put the words in the original order."
@@ -4051,6 +4093,9 @@
   },
   "options": {
     "message": "Options"
+  },
+  "or": {
+    "message": "Or"
   },
   "origin": {
     "message": "Origin"
@@ -6814,6 +6859,9 @@
   "unlockPageIncorrectPassword": {
     "message": "Password is incorrect. Please try again."
   },
+  "unlockPageTooManyFailedAttempts": {
+    "message": "Too many failed attempts. Please try again in "
+  },
   "unpin": {
     "message": "Unpin"
   },
@@ -6870,6 +6918,9 @@
   },
   "use4ByteResolution": {
     "message": "Decode smart contracts"
+  },
+  "useDifferentLoginMethod": {
+    "message": "Use a different login method"
   },
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"
@@ -7020,6 +7071,13 @@
   },
   "walletReadyLoseSrpRemind": {
     "message": "If you don’t back up your Secret Recovery Phrase, you’ll lose access to your funds if you get locked out of the app or get a new device."
+  },
+  "walletReadySocialDetails1": {
+    "message": "You can log in to your wallet anytime with your $1 account and password.",
+    "description": "$1 is the social login type. e.g Google, Apple, etc."
+  },
+  "walletReadySocialDetails2": {
+    "message": "If you forget your password, you won’t be able to access your wallet."
   },
   "wantToAddThisNetwork": {
     "message": "Want to add this network?"

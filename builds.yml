@@ -78,6 +78,10 @@ buildTypes:
     manifestOverrides: ./app/build-types/beta/manifest/
     buildNameOverride: MetaMask Beta
 
+  experimental:
+    id: 12
+    extends: main
+
   flask:
     id: 15
     # Code surrounded using code fences for that feature
@@ -381,6 +385,6 @@ env:
   # OAuth (Social login)
   - GOOGLE_CLIENT_ID_REF
   - APPLE_CLIENT_ID_REF
-  - SEEDLESS_ONBOARDING_ENABLED: 'true'
+  - SEEDLESS_ONBOARDING_ENABLED: 'false'
   - GOOGLE_CLIENT_ID: ''
   - APPLE_CLIENT_ID: ''

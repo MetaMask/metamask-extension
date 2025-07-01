@@ -40,6 +40,11 @@ class TestDapp {
 
   private readonly connectedAccount = '#accounts';
 
+  private readonly connectedNetwork = (networkId: string) => ({
+    css: '#chainId',
+    text: networkId,
+  });
+
   private readonly createTokenButton = { text: 'Create Token', tag: 'button' };
 
   private readonly decryptButton = '#decryptButton';
@@ -1017,6 +1022,16 @@ class TestDapp {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
     );
+  }
+
+  /**
+   * Check if the test dapp is connected to the specified network.
+   *
+   * @param networkId - The network id to check if the test dapp is connected to.
+   */
+  async check_networkIsConnected(networkId: string) {
+    console.log(`Check testdapp is connected to network ${networkId}`);
+    await this.driver.waitForSelector(this.connectedNetwork(networkId));
   }
 }
 

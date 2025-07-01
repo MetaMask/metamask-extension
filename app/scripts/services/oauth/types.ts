@@ -59,15 +59,6 @@ export type WebAuthenticator = {
    * @returns The nonce string.
    */
   generateNonce: () => string;
-
-  /**
-   * Request the identity permission from the user.
-   *
-   * OAuth2 authentication requires the identity permission to be granted.
-   *
-   * @returns Whether the identity permission is granted.
-   */
-  requestIdentityPermission: () => Promise<boolean>;
 };
 
 export type LoginHandlerOptions = {
@@ -130,7 +121,7 @@ export type AuthTokenResponse = {
 
   /**
    * The revoke token issued from the Web3Auth Authentication Server.
-   * This is used to revoke the Refresh Token.
+   * This is used to revoke the JWT Token.
    */
   revoke_token: string;
   indexes: number[];
