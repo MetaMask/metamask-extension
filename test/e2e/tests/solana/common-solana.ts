@@ -10,11 +10,8 @@ import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
-import {
-  mockTokensEthereum,
-  mockTopAssetsEthereum,
-} from '../bridge/bridge-test-utils';
 import { toggleStxSetting } from '../../page-objects/flows/toggle-stx-setting.flow';
+import { MOCK_TOKENS_ETHEREUM } from '../bridge/constants';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
@@ -107,6 +104,29 @@ export const commonSolanaTxFailedDetailsFixture = {
   txHash:
     '3dcsK2iXLKHqb5v3bboQvvd7LScajnXENhhxeje2tn3cgQ9e4YJZc7h5QFRypTmYwccAzy4DUskt6R9mXib3Tu1D',
 };
+
+export const TOP_ASSETS_SWAP_API_ETHEREUM_MOCK_RESULT = [
+  {
+    address: '0x0000000000000000000000000000000000000000',
+    symbol: 'ETH',
+  },
+  {
+    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    symbol: 'DAI',
+  },
+  {
+    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    symbol: 'USDC',
+  },
+  {
+    address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    symbol: 'USDT',
+  },
+  {
+    address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+    symbol: 'WBTC',
+  },
+];
 
 async function readResponseJsonFile(fileName: string): Promise<object> {
   try {
@@ -1953,6 +1973,26 @@ export async function mockGetTransactionsAccountBalance(mockServer: Mockttp) {
         json: response,
       };
     });
+}
+
+export async function mockTokensEthereum(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(`https://token.api.cx.metamask.io/tokens/1`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_TOKENS_ETHEREUM,
+      };
+    });
+}
+
+export async function mockTopAssetsEthereum(mockServer: Mockttp) {
+  return await mockServer.forGet(/1\/topAssets/u).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: TOP_ASSETS_SWAP_API_ETHEREUM_MOCK_RESULT,
+    };
+  });
 }
 
 export const SHOW_SWAP_SNAP_CONFIRMATION = false;

@@ -12,9 +12,12 @@ import BridgeQuotePage, {
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
+import { MOCK_META_METRICS_ID } from '../../constants';
+import { mockSegment } from '../metrics/mocks/segment';
 import {
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
+  MOCK_TOKENS_ARBITRUM,
   MOCK_TOKENS_ETHEREUM,
   MOCK_TOKENS_LINEA,
   MOCK_GET_TOKEN_ARBITRUM,
@@ -29,7 +32,6 @@ import {
   TOP_ASSETS_API_LINEA_MOCK_RESULT,
   TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
-  TOP_ASSETS_SWAP_API_ETHEREUM_MOCK_RESULT,
 } from './constants';
 
 export class BridgePage {
@@ -116,13 +118,13 @@ export async function bridgeTransaction(
   );
 
   if (quote.unapproved) {
-    await activityList.check_txAction(`Bridge to ${quote.toChain}`);
+    await activityList.check_txAction(`Bridged to ${quote.toChain}`);
     await activityList.check_txAction(
       `Approve ${quote.tokenFrom} for bridge`,
       2,
     );
   } else {
-    await activityList.check_txAction(`Bridge to ${quote.toChain}`);
+    await activityList.check_txAction(`Bridged to ${quote.toChain}`);
   }
   // Check the amount of ETH deducted in the activity is correct
   await activityList.check_txAmountInActivity(
@@ -139,7 +141,6 @@ export async function bridgeTransaction(
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer
     .forGet(`https://portfolio.metamask.io/bridge`)
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -173,15 +174,6 @@ async function mockGetTxStatus(mockServer: Mockttp) {
   });
 }
 
-export async function mockTopAssetsEthereum(mockServer: Mockttp) {
-  return await mockServer.forGet(/1\/topAssets/u).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: TOP_ASSETS_SWAP_API_ETHEREUM_MOCK_RESULT,
-    };
-  });
-}
-
 async function mockTopAssetsLinea(mockServer: Mockttp) {
   return await mockServer.forGet(/59144\/topAssets/u).thenCallback(() => {
     return {
@@ -200,7 +192,7 @@ async function mockTopAssetsArbitrum(mockServer: Mockttp) {
   });
 }
 
-export async function mockTokensEthereum(mockServer: Mockttp) {
+async function mockTokensEthereum(mockServer: Mockttp) {
   return await mockServer
     .forGet(`https://token.api.cx.metamask.io/tokens/1`)
     .thenCallback(() => {
@@ -218,6 +210,17 @@ async function mockTokensLinea(mockServer: Mockttp) {
       return {
         statusCode: 200,
         json: MOCK_TOKENS_LINEA,
+      };
+    });
+}
+
+async function mockTokensArbitrum(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(`https://token.api.cx.metamask.io/tokens/42161`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_TOKENS_ARBITRUM,
       };
     });
 }
@@ -241,7 +244,6 @@ async function mockETHtoETH(mockServer: Mockttp) {
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0x0000000000000000000000000000000000000000',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -257,7 +259,6 @@ async function mockETHtoWETH(mockServer: Mockttp) {
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -273,7 +274,6 @@ async function mockETHtoUSDC(mockServer: Mockttp) {
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -305,7 +305,6 @@ async function mockUSDCtoDAI(mockServer: Mockttp) {
       srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       destTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -346,7 +345,6 @@ async function mockL2toMainnet(mockServer: Mockttp) {
       destChainId: 1,
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -363,7 +361,6 @@ async function mockNativeL2toL2(mockServer: Mockttp) {
       destChainId: 42161,
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -378,9 +375,7 @@ async function mockDAIL2toL2(mockServer: Mockttp) {
       srcChainId: 59144,
       destChainId: 42161,
       srcTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
-      destTokenAddress: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -398,7 +393,6 @@ async function mockDAIL2toMainnet(mockServer: Mockttp) {
       srcTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
       destTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     })
-    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -508,14 +502,44 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
     });
 }
 
+// Expected event types for Bridge metrics
+export enum EventTypes {
+  BridgeLinkClicked = 'Bridge Link Clicked',
+  SwapBridgeButtonClicked = 'Unified SwapBridge Button Clicked',
+  SwapBridgePageViewed = 'Unified SwapBridge Page Viewed',
+  SwapBridgeInputChanged = 'Unified SwapBridge Input Changed',
+  SwapBridgeQuotesRequested = 'Unified SwapBridge Quotes Requested',
+  CrossChainQuotesReceived = 'Cross-chain Quotes Received',
+  ActionSubmitted = 'Action Submitted',
+  SwapBridgeSubmitted = 'Unified SwapBridge Submitted',
+  TransactionAddedAnon = 'Transaction Added Anon',
+  TransactionAdded = 'Transaction Added',
+  TransactionSubmittedAnon = 'Transaction Submitted Anon',
+  TransactionSubmitted = 'Transaction Submitted',
+  TransactionApprovedAnon = 'Transaction Approved Anon',
+  TransactionApproved = 'Transaction Approved',
+  TransactionFinalizedAnon = 'Transaction Finalized Anon',
+  TransactionFinalized = 'Transaction Finalized',
+  SwapBridgeCompleted = 'Unified SwapBridge Completed',
+  UnifiedSwapBridgeSubmitted = 'Unified SwapBridge Submitted',
+  SwapBridgeTokenFlipped = 'Source and Destination Flipped',
+}
+
+export const EXPECTED_EVENT_TYPES = Object.values(EventTypes);
+
 export const getBridgeFixtures = (
   title?: string,
   featureFlags: Partial<FeatureFlagResponse> = {},
   withErc20: boolean = true,
+  withMockedSegment: boolean = false,
 ) => {
   const fixtureBuilder = new FixtureBuilder({
     inputChainId: CHAIN_IDS.MAINNET,
   })
+    .withMetaMetricsController({
+      metaMetricsId: MOCK_META_METRICS_ID,
+      participateInMetaMetrics: true,
+    })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
     .withTokensController({
@@ -552,9 +576,11 @@ export const getBridgeFixtures = (
       },
     })
     .withEnabledNetworks({
-      '0x1': true,
-      '0xe708': true,
-      '0xa4b1': true,
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+        '0xa4b1': true,
+      },
     });
 
   if (withErc20) {
@@ -563,23 +589,59 @@ export const getBridgeFixtures = (
 
   return {
     fixtures: fixtureBuilder.build(),
-    testSpecificMock: async (mockServer: Mockttp) => [
-      await mockPortfolioPage(mockServer),
-      await mockGetTxStatus(mockServer),
-      await mockTopAssetsLinea(mockServer),
-      await mockTopAssetsArbitrum(mockServer),
-      await mockTokensEthereum(mockServer),
-      await mockTokensLinea(mockServer),
-      await mockGetTokenArbitrum(mockServer),
-      await mockETHtoETH(mockServer),
-      await mockETHtoUSDC(mockServer),
-      await mockDAItoETH(mockServer),
-      await mockUSDCtoDAI(mockServer),
-      await mockAccountsTransactions(mockServer),
-      await mockAccountsBalances(mockServer),
-      await mockPriceSpotPrices(mockServer),
-      await mockPriceSpotPricesV3(mockServer),
-    ],
+    testSpecificMock: async (mockServer: Mockttp) => {
+      const standardMocks = [
+        await mockPortfolioPage(mockServer),
+        await mockGetTxStatus(mockServer),
+        await mockTopAssetsLinea(mockServer),
+        await mockTopAssetsArbitrum(mockServer),
+        await mockTokensEthereum(mockServer),
+        await mockTokensLinea(mockServer),
+        await mockGetTokenArbitrum(mockServer),
+        await mockETHtoETH(mockServer),
+        await mockETHtoUSDC(mockServer),
+        await mockDAItoETH(mockServer),
+        await mockUSDCtoDAI(mockServer),
+        await mockAccountsTransactions(mockServer),
+        await mockAccountsBalances(mockServer),
+        await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
+      ];
+
+      if (withMockedSegment) {
+        const segmentMocks = await mockSegment(
+          mockServer,
+          [
+            EventTypes.BridgeLinkClicked,
+            EventTypes.SwapBridgeButtonClicked,
+            EventTypes.SwapBridgePageViewed,
+            EventTypes.SwapBridgeInputChanged,
+            EventTypes.SwapBridgeQuotesRequested,
+            EventTypes.CrossChainQuotesReceived,
+            EventTypes.ActionSubmitted,
+            EventTypes.SwapBridgeSubmitted,
+            EventTypes.TransactionAddedAnon,
+            EventTypes.TransactionAdded,
+            EventTypes.TransactionSubmittedAnon,
+            EventTypes.TransactionSubmitted,
+            EventTypes.TransactionApprovedAnon,
+            EventTypes.TransactionApproved,
+            EventTypes.TransactionFinalizedAnon,
+            EventTypes.TransactionFinalized,
+            EventTypes.SwapBridgeCompleted,
+            EventTypes.UnifiedSwapBridgeSubmitted,
+            EventTypes.SwapBridgeInputChanged,
+            EventTypes.SwapBridgeTokenFlipped,
+          ],
+          { shouldAlwaysMatch: true },
+        );
+        standardMocks.push(...segmentMocks);
+      } else {
+        console.log('No custom segment mock provided');
+      }
+
+      return standardMocks.filter(Boolean);
+    },
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
@@ -613,9 +675,11 @@ export const getQuoteNegativeCasesFixtures = (
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
-      '0x1': true,
-      '0xe708': true,
-      '0xa4b1': true,
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+        '0xa4b1': true,
+      },
     });
 
   return {
@@ -623,6 +687,8 @@ export const getQuoteNegativeCasesFixtures = (
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockTopAssetsLinea(mockServer),
       await mockGetQuoteInvalid(mockServer, options),
+      await mockTokensLinea(mockServer),
+      await mockPriceSpotPrices(mockServer),
     ],
     manifestFlags: {
       remoteFeatureFlags: {
@@ -655,16 +721,20 @@ export const getBridgeNegativeCasesFixtures = (
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
-      '0x1': true,
-      '0xe708': true,
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+      },
     });
 
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockTopAssetsLinea(mockServer),
+      await mockTokensLinea(mockServer),
       await mockETHtoETH(mockServer),
       await mockGetTxStatusInvalid(mockServer, options),
+      await mockPriceSpotPrices(mockServer),
     ],
     manifestFlags: {
       remoteFeatureFlags: {
@@ -696,13 +766,16 @@ export const getInsufficientFundsFixtures = (
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
-      '0x1': true,
-      '0xe708': true,
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+      },
     });
 
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
+      await mockTokensLinea(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockETHtoWETH(mockServer),
     ],
@@ -736,15 +809,17 @@ export const getBridgeL2Fixtures = (
     .withBridgeControllerDefaultState()
     .withNetworkControllerOnLineaLocahost()
     .withEnabledNetworks({
-      '0x1': true, // Ethereum Mainnet
-      '0xa4b1': true, // Arbitrum One
-      '0xe708': true, // Linea Mainnet
-      '0xa': true, // Optimism
-      '0x89': true, // Polygon
-      '0x38': true, // BSC
-      '0xa86a': true, // Avalanche
-      '0x2105': true, // Base
-      '0x144': true, // zkSync Era
+      eip155: {
+        '0x1': true, // Ethereum Mainnet
+        '0xa4b1': true, // Arbitrum One
+        '0xe708': true, // Linea Mainnet
+        '0xa': true, // Optimism
+        '0x89': true, // Polygon
+        '0x38': true, // BSC
+        '0xa86a': true, // Avalanche
+        '0x2105': true, // Base
+        '0x144': true, // zkSync Era
+      },
     });
 
   return {
@@ -754,6 +829,7 @@ export const getBridgeL2Fixtures = (
       await mockGetTxStatus(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockTopAssetsArbitrum(mockServer),
+      await mockTokensArbitrum(mockServer),
       await mockTokensEthereum(mockServer),
       await mockTokensLinea(mockServer),
       await mockGetTokenArbitrum(mockServer),
@@ -761,6 +837,8 @@ export const getBridgeL2Fixtures = (
       await mockNativeL2toL2(mockServer),
       await mockDAIL2toL2(mockServer),
       await mockDAIL2toMainnet(mockServer),
+      await mockPriceSpotPrices(mockServer),
+      await mockPriceSpotPricesV3(mockServer),
     ],
     manifestFlags: {
       remoteFeatureFlags: {
