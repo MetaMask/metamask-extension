@@ -48,6 +48,8 @@ const maskedBackgroundFields = [
   'CurrencyController.currencyRates.SepoliaETH.conversionDate',
   'CurrencyController.currencyRates.MegaETH.conversionDate',
   'CurrencyController.currencyRates.MON.conversionDate',
+  // PhishingController cache data is dynamic and changes between runs
+  'PhishingController.urlScanCache',
 ];
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
@@ -65,14 +67,6 @@ const removedBackgroundFields = [
   'PPOMController.versionInfo',
   // This property is timing-dependent
   'MetaMetricsController.latestNonAnonymousEventTimestamp',
-
-  // adding phishing controller
-  'PhishingController.phishingLists',
-  'PhishingController.whitelist',
-  'PhishingController.hotlistLastFetched',
-  'PhishingController.stalelistLastFetched',
-  'PhishingController.c2DomainBlocklistLastFetched',
-  'PhishingController.listState',
 ];
 
 const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
