@@ -26,6 +26,7 @@ import {
   getCurrentKeyring,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
+  getIsSocialLoginFlow,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -49,6 +50,9 @@ import PasswordForm from '../../../components/app/password-form/password-form';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
+
+const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 export default function CreatePassword({
   createNewAccount,
@@ -64,6 +68,9 @@ export default function CreatePassword({
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
+  const isSeedlessOnboardingFeatureEnabled =
+    getIsSeedlessOnboardingFeatureEnabled();
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const metametricsId = useSelector(getMetaMetricsId);
@@ -83,8 +90,17 @@ export default function CreatePassword({
 
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
-      if (firstTimeFlowType === FirstTimeFlowType.import) {
+      if (
+        firstTimeFlowType === FirstTimeFlowType.import ||
+        firstTimeFlowType === FirstTimeFlowType.socialImport
+      ) {
         history.replace(ONBOARDING_METAMETRICS);
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        if (isFirefox) {
+          history.replace(ONBOARDING_COMPLETION_ROUTE);
+        } else {
+          history.replace(ONBOARDING_METAMETRICS);
+        }
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
@@ -141,7 +157,7 @@ export default function CreatePassword({
       },
     });
 
-    if (getBrowserName() === PLATFORM_FIREFOX) {
+    if (isFirefox) {
       history.replace(ONBOARDING_COMPLETION_ROUTE);
     } else {
       history.replace(ONBOARDING_METAMETRICS);
@@ -172,7 +188,15 @@ export default function CreatePassword({
       },
     });
 
-    history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+    if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
+      if (isFirefox) {
+        history.replace(ONBOARDING_COMPLETION_ROUTE);
+      } else {
+        history.replace(ONBOARDING_METAMETRICS);
+      }
+    } else {
+      history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+    }
   };
 
   const handleCreatePassword = async (event) => {
@@ -252,12 +276,17 @@ export default function CreatePassword({
           marginBottom={4}
           width={BlockSize.Full}
         >
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {t('stepOf', [
-              firstTimeFlowType === FirstTimeFlowType.import ? 2 : 1,
-              firstTimeFlowType === FirstTimeFlowType.import ? 2 : 3,
-            ])}
-          </Text>
+          {!isSocialLoginFlow && (
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
+              {t('stepOf', [
+                firstTimeFlowType === FirstTimeFlowType.import ? 2 : 1,
+                firstTimeFlowType === FirstTimeFlowType.import ? 2 : 3,
+              ])}
+            </Text>
+          )}
           <Text variant={TextVariant.headingLg} as="h2">
             {t('createPassword')}
           </Text>
@@ -266,7 +295,9 @@ export default function CreatePassword({
             color={TextColor.textAlternative}
             as="h2"
           >
-            {t('createPasswordDetails')}
+            {isSocialLoginFlow
+              ? t('createPasswordDetailsSocial')
+              : t('createPasswordDetails')}
           </Text>
         </Box>
         <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
