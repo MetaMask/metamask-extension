@@ -32,8 +32,11 @@ import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
+  restoreSocialBackupAndGetSeedPhrase,
+  createNewVaultAndSyncWithSocial,
 } from '../../store/actions';
 import {
+  getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
   getShowTermsOfUse,
 } from '../../selectors';
@@ -72,6 +75,8 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -106,6 +111,9 @@ export default function OnboardingFlow() {
   const trackEvent = useContext(MetaMetricsContext);
   const isUnlocked = useSelector(getIsUnlocked);
   const showTermsOfUse = useSelector(getShowTermsOfUse);
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const isSeedlessOnboardingFeatureEnabled =
+    getIsSeedlessOnboardingFeatureEnabled();
   const isPrimarySeedPhraseBackedUp = useSelector(
     getIsPrimarySeedPhraseBackedUp,
   );
@@ -169,16 +177,39 @@ export default function OnboardingFlow() {
   ]);
 
   const handleCreateNewAccount = async (password) => {
-    const newSecretRecoveryPhrase = await dispatch(
-      createNewVaultAndGetSeedPhrase(password),
-    );
+    let newSecretRecoveryPhrase;
+    if (
+      isSeedlessOnboardingFeatureEnabled &&
+      firstTimeFlowType === FirstTimeFlowType.socialCreate
+    ) {
+      newSecretRecoveryPhrase = await dispatch(
+        createNewVaultAndSyncWithSocial(password),
+      );
+    } else if (firstTimeFlowType === FirstTimeFlowType.create) {
+      newSecretRecoveryPhrase = await dispatch(
+        createNewVaultAndGetSeedPhrase(password),
+      );
+    }
+
     setSecretRecoveryPhrase(newSecretRecoveryPhrase);
   };
 
   const handleUnlock = async (password) => {
-    const retrievedSecretRecoveryPhrase = await dispatch(
-      unlockAndGetSeedPhrase(password),
-    );
+    let retrievedSecretRecoveryPhrase;
+
+    if (
+      isSeedlessOnboardingFeatureEnabled &&
+      firstTimeFlowType === FirstTimeFlowType.socialImport
+    ) {
+      retrievedSecretRecoveryPhrase = await dispatch(
+        restoreSocialBackupAndGetSeedPhrase(password),
+      );
+    } else {
+      retrievedSecretRecoveryPhrase = await dispatch(
+        unlockAndGetSeedPhrase(password),
+      );
+    }
+
     setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
     history.push(nextRoute);
   };
