@@ -19,6 +19,7 @@ export const NetworkListItemMenu = ({
   onEditClick,
   onDeleteClick,
   onDiscoverClick,
+  onActivateNetworkClick,
   isOpen,
 }) => {
   const t = useI18nContext();
@@ -76,6 +77,18 @@ export const NetworkListItemMenu = ({
               <Text color={TextColor.errorDefault}>{t('delete')}</Text>
             </MenuItem>
           ) : null}
+          {onActivateNetworkClick ? (
+            <MenuItem
+              iconName={IconName.Connect}
+              onClick={(e) => {
+                e.stopPropagation();
+                onActivateNetworkClick();
+              }}
+              data-testid="network-list-item-options-activate"
+            >
+              <Text>Activate</Text>
+            </MenuItem>
+          ) : null}
         </Box>
       </ModalFocus>
     </Popover>
@@ -103,6 +116,10 @@ NetworkListItemMenu.propTypes = {
    * Function that executes when the Discover menu item is clicked
    */
   onDiscoverClick: PropTypes.func,
+  /**
+   * Function that executes when the Activate menu item is clicked
+   */
+  onActivateNetworkClick: PropTypes.func,
   /**
    * Represents if the menu is open or not
    *

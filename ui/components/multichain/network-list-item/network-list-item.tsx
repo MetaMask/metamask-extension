@@ -2,11 +2,14 @@ import React, {
   ReactNode,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { CaipChainId } from '@metamask/utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -19,6 +22,8 @@ import {
   FlexDirection,
   TextVariant,
   BorderColor,
+  Color,
+  Size,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -35,6 +40,18 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
+import {
+  convertCaipToHexChainId,
+  getRpcDataByChainId,
+} from '../../../../shared/modules/network.utils';
+import {
+  getEnabledNetworksByNamespace,
+  getMultichainNetworkConfigurationsByChainId,
+  getSelectedMultichainNetworkChainId,
+} from '../../../selectors';
+import ColorIndicator from '../../ui/color-indicator';
+import { setActiveNetwork } from '../../../store/actions';
+import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 
 // TODO: Consider increasing this. This tooltip is
 // rendering when it has enough room to see everything
@@ -81,6 +98,13 @@ export const NetworkListItem = ({
 }) => {
   const t = useI18nContext();
   const networkRef = useRef<HTMLInputElement>(null);
+  const dispatch = useDispatch();
+  const [, evmNetworks] = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
+  const currentCaipChainId = useSelector(getSelectedMultichainNetworkChainId);
+  const hexChainId = convertCaipToHexChainId(currentCaipChainId);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   const [networkListItemMenuElement, setNetworkListItemMenuElement] =
     useState();
@@ -88,7 +112,7 @@ export const NetworkListItem = ({
   // I can't find a type that satisfies this.
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-hooks/exhaustive-deps
   const setNetworkListItemMenuRef = (ref: any) => {
     setNetworkListItemMenuElement(ref);
   };
@@ -119,6 +143,7 @@ export const NetworkListItem = ({
     setNetworkListItemMenuRef,
     setNetworkOptionsMenuOpen,
   ]);
+
   useEffect(() => {
     if (networkRef.current && focus) {
       networkRef.current.focus();
@@ -131,6 +156,27 @@ export const NetworkListItem = ({
       onClick();
     }
   };
+
+  const onActivateNetworkClick = useCallback(() => {
+    const { defaultRpcEndpoint } = getRpcDataByChainId(
+      chainId as CaipChainId,
+      evmNetworks,
+    );
+    const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
+    dispatch(setActiveNetwork(finalNetworkClientId));
+    setNetworkOptionsMenuOpen(false);
+  }, [chainId, evmNetworks, dispatch]);
+
+  const shouldShowActivateNetworkBtn = useMemo(() => {
+    const listItemHexChainId = convertCaipToHexChainId(chainId as CaipChainId);
+    const isPopular = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
+    const isEnabled = Object.keys(enabledNetworksByNamespace).includes(
+      listItemHexChainId,
+    );
+    const isActive = currentCaipChainId === chainId;
+
+    return isPopular && isEnabled && !isActive;
+  }, [chainId, hexChainId, enabledNetworksByNamespace, currentCaipChainId]);
 
   return (
     <Box
@@ -233,6 +279,15 @@ export const NetworkListItem = ({
         )}
       </Box>
 
+      {currentCaipChainId === chainId && (
+        <Box style={{ flexShrink: 0 }}>
+          <ColorIndicator
+            type="filled"
+            color={Color.successDefault}
+            size={Size.SM} // or Size.SM for slightly larger
+          />
+        </Box>
+      )}
       {renderButton()}
       {showEndAccessory
         ? endAccessory ?? (
@@ -242,6 +297,11 @@ export const NetworkListItem = ({
               onDeleteClick={onDeleteClick}
               onEditClick={onEditClick}
               onDiscoverClick={onDiscoverClick}
+              onActivateNetworkClick={
+                shouldShowActivateNetworkBtn
+                  ? onActivateNetworkClick
+                  : undefined
+              }
               onClose={() => setNetworkOptionsMenuOpen(false)}
             />
           )

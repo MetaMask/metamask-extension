@@ -10,7 +10,11 @@ import {
   getRpcDataByChainId,
 } from '../../../../../shared/modules/network.utils';
 import { openWindow } from '../../../../helpers/utils/window';
-import { setEditedNetwork, showModal } from '../../../../store/actions';
+import {
+  setActiveNetwork,
+  setEditedNetwork,
+  showModal,
+} from '../../../../store/actions';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getNetworkDiscoverButtonEnabled,

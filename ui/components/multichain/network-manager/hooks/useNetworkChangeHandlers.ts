@@ -87,9 +87,11 @@ export const useNetworkChangeHandlers = () => {
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
-      dispatch(setActiveNetwork(finalNetworkClientId));
-
       const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
+
+      if (!isPopularNetwork) {
+        dispatch(setActiveNetwork(finalNetworkClientId));
+      }
 
       const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
 
