@@ -40,8 +40,6 @@ const render = (
   const {
     props = {
       request: {
-        id: '1',
-        origin: mockTestDappUrl,
         permissions: {
           [Caip25EndowmentPermissionName]: {
             caveats: [
@@ -116,10 +114,7 @@ describe('ConnectPage', () => {
   it('should render fallback icon correctly', () => {
     const { container } = render({
       props: {
-        request: {
-          id: '1',
-          origin: mockTestDappUrl,
-        },
+        request: {},
         permissionsRequestId: '1',
         rejectPermissionsRequest: jest.fn(),
         approveConnection: jest.fn(),
@@ -138,10 +133,7 @@ describe('ConnectPage', () => {
   it('should render fallback icon correctly for IP address as an origin', () => {
     const { container } = render({
       props: {
-        request: {
-          id: '1',
-          origin: 'http://127.0.0.1/test-dapp',
-        },
+        request: {},
         permissionsRequestId: '1',
         rejectPermissionsRequest: jest.fn(),
         approveConnection: jest.fn(),
@@ -251,8 +243,6 @@ describe('ConnectPage', () => {
     const { container } = render({
       props: {
         request: {
-          id: '1',
-          origin: mockTestDappUrl,
           permissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -295,8 +285,6 @@ describe('ConnectPage', () => {
     const { getByText } = render({
       props: {
         request: {
-          id: '1',
-          origin: mockTestDappUrl,
           permissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -317,6 +305,8 @@ describe('ConnectPage', () => {
             },
           },
           metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
             promptToCreateSolanaAccount: true,
           },
         },
@@ -338,8 +328,6 @@ describe('ConnectPage', () => {
     const { queryByText } = render({
       props: {
         request: {
-          id: '1',
-          origin: mockTestDappUrl,
           permissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -360,6 +348,8 @@ describe('ConnectPage', () => {
             },
           },
           metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
             promptToCreateSolanaAccount: false,
           },
         },
@@ -381,8 +371,6 @@ describe('ConnectPage', () => {
     const { getByText, getByTestId } = render({
       props: {
         request: {
-          id: '1',
-          origin: mockTestDappUrl,
           permissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -403,6 +391,8 @@ describe('ConnectPage', () => {
             },
           },
           metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
             promptToCreateSolanaAccount: true,
           },
         },
@@ -424,8 +414,6 @@ describe('ConnectPage', () => {
     const { queryByText } = render({
       props: {
         request: {
-          id: '1',
-          origin: mockTestDappUrl,
           permissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -446,6 +434,8 @@ describe('ConnectPage', () => {
             },
           },
           metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
             promptToCreateSolanaAccount: true,
           },
         },
