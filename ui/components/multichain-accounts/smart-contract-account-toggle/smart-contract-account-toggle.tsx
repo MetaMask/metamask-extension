@@ -51,7 +51,7 @@ export const SmartContractAccountToggle = ({
 
   const prevHasPendingRequests = useRef<boolean>();
   const { hasPendingRequests } = useBatchAuthorizationRequests(
-    address,
+    address as `0x${string}`,
     chainIdHex,
   );
 
@@ -62,7 +62,7 @@ export const SmartContractAccountToggle = ({
   useEffect(() => {
     const checkUpgradeStatus = async () => {
       try {
-        const upgraded = await isUpgraded(address);
+        const upgraded = await isUpgraded(address as `0x${string}`);
         setAddressSupportSmartAccount(upgraded);
         // Only clear userIntent when we have confirmed the actual state matches the intent
         // AND there are no pending requests (transaction is confirmed)
@@ -117,7 +117,11 @@ export const SmartContractAccountToggle = ({
       )[0];
 
       if (returnToPage) {
-        dispatch(setRedirectAfterDefaultPage({ path: returnToPage, address }));
+        const redirectPath =
+          returnToPage === '/account-details'
+            ? `${returnToPage}/${address}`
+            : returnToPage;
+        dispatch(setRedirectAfterDefaultPage({ path: redirectPath, address }));
       }
 
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${latestTransaction.id}`);
@@ -138,17 +142,7 @@ export const SmartContractAccountToggle = ({
   // Monitor for transactions when userIntent is set
   useEffect(() => {
     if (userIntent !== null) {
-      // Try to find transaction immediately
       findAndRedirectToTransaction();
-
-      // If not found immediately, check again after a short delay
-      // const timeoutId = setTimeout(() => {
-      //   if (userIntent !== null) {
-      //     findAndRedirectToTransaction();
-      //   }
-      // }, 500);
-
-      // return () => clearTimeout(timeoutId);
     }
   }, [userIntent, findAndRedirectToTransaction]);
 

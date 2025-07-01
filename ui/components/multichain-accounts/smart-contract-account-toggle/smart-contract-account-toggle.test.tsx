@@ -364,6 +364,33 @@ describe('SmartContractAccountToggle', () => {
       });
     });
 
+    it('includes address in path when returning to account details', () => {
+      const mockTransactions = [
+        {
+          id: 'tx-123',
+          txParams: { from: mockAddress },
+          chainId: mockNetworkConfig.chainIdHex,
+          time: Date.now(),
+        },
+      ];
+
+      mockUseSelectorImpl.mockReturnValue(mockTransactions);
+
+      const returnToPage = '/account-details';
+      render({
+        userIntent: true,
+        returnToPage,
+      });
+
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'SET_REDIRECT_AFTER_DEFAULT_PAGE',
+        payload: {
+          path: `${returnToPage}/${mockAddress}`,
+          address: mockAddress,
+        },
+      });
+    });
+
     it('finds the latest transaction when multiple transactions exist', () => {
       const mockTransactions = [
         {
