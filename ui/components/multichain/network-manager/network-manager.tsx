@@ -158,7 +158,7 @@ const NetworkManagerRouter = () => {
           onBack={handleClose}
           closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
         >
-          {t('editRpcUrl')}
+          {t('addRpcUrl')}
         </ModalHeader>
         <AddRpcUrlModal onAdded={handleAddRPC} />
       </Route>
