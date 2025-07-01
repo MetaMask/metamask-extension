@@ -4783,7 +4783,7 @@ export default class MetamaskController extends EventEmitter {
       // Do not sync the seed phrase to the server, only update the local state
       this.seedlessOnboardingController.updateBackupMetadataState({
         keyringId,
-        data: seedPhraseAsUint8Array,
+        seedPhrase: seedPhraseAsUint8Array,
       });
     }
   }
