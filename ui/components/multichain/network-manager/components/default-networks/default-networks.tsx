@@ -1,11 +1,6 @@
-import {
-  CaipChainId,
-  KnownCaipNamespace,
-  parseCaipChainId,
-} from '@metamask/utils';
+import { CaipChainId, parseCaipChainId } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { toHex } from '@metamask/controller-utils';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
@@ -55,6 +50,7 @@ import {
   getOrderedNetworksList,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../../../selectors';
+import Tooltip from '../../../../ui/tooltip';
 
 const DefaultNetworks = memo(() => {
   const t = useI18nContext();
@@ -117,30 +113,17 @@ const DefaultNetworks = memo(() => {
     dispatch(setEnabledNetworks([], namespace));
   }, [dispatch, namespace]);
 
-  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
-
   // Memoize the network change handler to avoid recreation
   const handleNetworkChangeCallback = useCallback(
     async (chainId: CaipChainId) => {
-      const chainIdToUse = Object.keys(enabledNetworks)[0];
-      const haveOneSelectedNetwork = Object.keys(enabledNetworks).length === 1;
-
-      const { namespace: selectedNamespace, reference: selectedReference } =
-        parseCaipChainId(chainId);
-
-      if (
-        haveOneSelectedNetwork &&
-        selectedNamespace === KnownCaipNamespace.Eip155 &&
-        toHex(selectedReference) === chainIdToUse
-      ) {
-        return;
-      } else if (haveOneSelectedNetwork && chainId === chainIdToUse) {
+      // Return empty if the selected chain is equal to the global selected network
+      if (chainId === currentCaipChainId) {
         return;
       }
 
       await handleNetworkChange(chainId);
     },
-    [handleNetworkChange, enabledNetworks],
+    [handleNetworkChange, currentCaipChainId],
   );
 
   // Memoize the network list items to avoid recreation on every render
@@ -172,9 +155,23 @@ const DefaultNetworks = memo(() => {
           hexChainId,
         );
 
+        const isActive = currentCaipChainId === network.chainId;
+
         return (
           <NetworkListItem
-            startAccessory={<Checkbox label="" isChecked={isEnabled} />}
+            startAccessory={
+              <Tooltip
+                title={isActive && 'Cannot deselect active network'}
+                position="top"
+                disabled={!isActive}
+              >
+                <Checkbox
+                  label=""
+                  isChecked={isEnabled}
+                  isDisabled={isActive}
+                />
+              </Tooltip>
+            }
             key={network.chainId}
             chainId={network.chainId}
             name={network.name}
@@ -200,6 +197,7 @@ const DefaultNetworks = memo(() => {
     isNetworkInDefaultNetworkTab,
     getItemCallbacks,
     enabledNetworksByNamespace,
+    currentCaipChainId,
     hasMultiRpcOptions,
     evmNetworks,
     handleNetworkChangeCallback,

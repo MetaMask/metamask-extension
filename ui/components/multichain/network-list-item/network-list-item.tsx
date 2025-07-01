@@ -52,6 +52,7 @@ import {
 import ColorIndicator from '../../ui/color-indicator';
 import { setActiveNetwork } from '../../../store/actions';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
 
 // TODO: Consider increasing this. This tooltip is
 // rendering when it has enough room to see everything
@@ -103,8 +104,8 @@ export const NetworkListItem = ({
     getMultichainNetworkConfigurationsByChainId,
   );
   const currentCaipChainId = useSelector(getSelectedMultichainNetworkChainId);
-  const hexChainId = convertCaipToHexChainId(currentCaipChainId);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
 
   const [networkListItemMenuElement, setNetworkListItemMenuElement] =
     useState();
@@ -168,6 +169,10 @@ export const NetworkListItem = ({
   }, [chainId, evmNetworks, dispatch]);
 
   const shouldShowActivateNetworkBtn = useMemo(() => {
+    if (!isEvmNetworkSelected) {
+      return false;
+    }
+    const hexChainId = convertCaipToHexChainId(currentCaipChainId);
     const listItemHexChainId = convertCaipToHexChainId(chainId as CaipChainId);
     const isPopular = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
     const isEnabled = Object.keys(enabledNetworksByNamespace).includes(
@@ -176,7 +181,12 @@ export const NetworkListItem = ({
     const isActive = currentCaipChainId === chainId;
 
     return isPopular && isEnabled && !isActive;
-  }, [chainId, hexChainId, enabledNetworksByNamespace, currentCaipChainId]);
+  }, [
+    isEvmNetworkSelected,
+    currentCaipChainId,
+    chainId,
+    enabledNetworksByNamespace,
+  ]);
 
   return (
     <Box
