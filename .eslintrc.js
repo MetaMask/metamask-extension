@@ -207,6 +207,13 @@ module.exports = {
             ignoreRestSiblings: true,
           },
         ],
+        '@typescript-eslint/restrict-template-expressions': [
+          'error',
+          {
+            allowBoolean: true,
+            allowNumber: true,
+          },
+        ],
       },
       settings: {
         'import/resolver': {

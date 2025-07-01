@@ -126,6 +126,8 @@ class NotificationsSettingsPage {
         selector = this.allowNotificationsAddressToggle(address, 'input');
         break;
       default:
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         throw new Error(`Invalid toggle type: ${toggleType}`);
     }
 
@@ -200,6 +202,8 @@ class NotificationsSettingsPage {
         console.log(`Clicking notifications toggle for address ${address}`);
         break;
       default:
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         throw new Error(`Invalid toggle type: ${toggleType}`);
     }
 
