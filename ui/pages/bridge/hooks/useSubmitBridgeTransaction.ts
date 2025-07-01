@@ -14,7 +14,7 @@ import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import {
-  getSmartTransactionsEnabled,
+  getIsSmartTransaction,
   isHardwareWallet,
 } from '../../../../shared/modules/selectors';
 import { getShouldUseSnapConfirmation } from '../../../ducks/bridge/selectors';
@@ -64,7 +64,7 @@ export default function useSubmitBridgeTransaction() {
   // This redirects to the confirmation page if an unapproved snap confirmation exists
   useSnapConfirmation();
 
-  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const smartTransactionsEnabled = useSelector(getIsSmartTransaction);
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
@@ -106,6 +106,7 @@ export default function useSubmitBridgeTransaction() {
       );
     } catch (e) {
       debugLog('Bridge transaction failed', e);
+      console.error('====', e);
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));

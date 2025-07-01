@@ -50,7 +50,7 @@ import {
 } from '../../../../shared/constants/multichain/networks';
 import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const MultichainBridgeQuoteCard = () => {
@@ -67,14 +67,14 @@ export const MultichainBridgeQuoteCard = () => {
   const toChain = useSelector(getToChain);
   const locale = useSelector(getIntlLocale);
   const isBridgeTx = useSelector(getIsBridgeTx);
-  const isStxEnabled = useSelector(getSmartTransactionsEnabled);
+  const isStxEnabled = useSelector(getIsSmartTransaction);
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const dispatch = useDispatch();
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
-  const getNetworkImage = (chainId: ChainId) => {
+  const getNetworkImage = (chainId: string | number) => {
     if (isSolanaChainId(chainId)) {
       return MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA];
     }
@@ -85,7 +85,7 @@ export const MultichainBridgeQuoteCard = () => {
     ];
   };
 
-  const getNetworkName = (chainId: ChainId) => {
+  const getNetworkName = (chainId: string | number) => {
     if (isSolanaChainId(chainId)) {
       return NETWORK_TO_SHORT_NETWORK_NAME_MAP[MultichainNetworks.SOLANA];
     }

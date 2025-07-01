@@ -53,7 +53,7 @@ import { useTradeProperties } from '../../../hooks/bridge/events/useTradePropert
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -62,7 +62,7 @@ export const BridgeQuotesModal = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const isStxEnabled = useSelector(getSmartTransactionsEnabled);
+  const isStxEnabled = useSelector(getIsSmartTransaction);
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const fromChain = useSelector(getFromChain);
