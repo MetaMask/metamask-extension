@@ -1,133 +1,83 @@
-import { execSync } from 'child_process';
-import util from 'util';
-const exec = util.promisify(require('node:child_process').exec);
+import { promisify } from 'node:util';
+import { exec as callbackExec } from 'node:child_process';
+import unzipper from 'unzipper';
+import { version } from '../package.json';
 
-function getGitBranch() {
-  const gitOutput = execSync('git status').toString();
+const exec = promisify(callbackExec);
 
-  const branchRegex = /On branch (?<branch>.*)\n/;
-  return gitOutput.match(branchRegex)?.groups?.branch || 'main';
+const getBranch = async () => {
+  const { stdout } = await exec('git symbolic-ref --short HEAD');
+  return stdout.trim();
+};
+
+async function main() {
+  const { Octokit } = await import('octokit');
+
+  const env = {
+    OWNER: process.env.OWNER || 'metamask',
+    REPOSITORY: process.env.REPOSITORY || 'metamask-extension',
+    WORKFLOW_ID: process.env.WORKFLOW_ID || 'main.yml',
+    BRANCH: process.env.BRANCH || (await getBranch()),
+    BUILD_TYPE: process.env.BUILD_TYPE || 'main',
+    GITHUB_TOKEN: process.env.GITHUB_TOKEN || '',
+    AWS_CLOUDFRONT_URL: 'https://diuv6g5fj9pvx.cloudfront.net',
+  };
+
+  const github = new Octokit({ auth: env.GITHUB_TOKEN });
+
+  const runs = await github.rest.actions.listWorkflowRuns({
+    owner: env.OWNER,
+    repo: env.REPOSITORY,
+    workflow_id: env.WORKFLOW_ID,
+    branch: env.BRANCH,
+    status: 'success',
+    per_page: 1,
+  });
+
+  const latestRun = runs.data.workflow_runs.at(0);
+
+  if (!latestRun)
+    throw new Error(`No successful builds found on branch '${env.BRANCH}'`);
+
+  const HOST_URL = `${env.AWS_CLOUDFRONT_URL}/${env.REPOSITORY}/${latestRun.id}`;
+
+  const buildMap = {
+    main: {
+      chrome: `${HOST_URL}/build-dist-browserify/builds/metamask-chrome-${version}.zip`,
+      firefox: `${HOST_URL}/build-dist-mv2-browserify/builds/metamask-firefox-${version}.zip`,
+    },
+    beta: {
+      chrome: `${HOST_URL}/build-beta-browserify/builds/metamask-beta-chrome-${version}-beta.0.zip`,
+      firefox: `${HOST_URL}/build-beta-mv2-browserify/builds/metamask-beta-firefox-${version}-beta.0.zip`,
+    },
+    flask: {
+      chrome: `${HOST_URL}/build-flask-browserify/builds/metamask-flask-chrome-${version}-flask.0.zip`,
+      firefox: `${HOST_URL}/build-flask-mv2-browserify/builds/metamask-flask-firefox-${version}-flask.0.zip`,
+    },
+    test: {
+      chrome: `${HOST_URL}/build-test-browserify/builds/metamask-chrome-${version}.zip`,
+      firefox: `${HOST_URL}/build-test-mv2-browserify/builds/metamask-firefox-${version}.zip`,
+    },
+    'test-flask': {
+      chrome: `${HOST_URL}/build-test-flask-browserify/builds/metamask-flask-chrome-${version}-flask.0.zip`,
+      firefox: `${HOST_URL}/build-test-flask-mv2-browserify/builds/metamask-flask-firefox-${version}-flask.0.zip`,
+    },
+  };
+
+  const builds: { chrome: string; firefox: string } | undefined =
+    buildMap[env.BUILD_TYPE];
+
+  if (!builds)
+    throw new Error(`No builds found for build type '${env.BUILD_TYPE}'`);
+
+  await Promise.all(
+    Object.entries(builds).map(async ([platform, url]) => {
+      const artifact = await fetch(url);
+      const buffer = Buffer.from(await artifact.arrayBuffer());
+      const zip = await unzipper.Open.buffer(buffer);
+      await zip.extract({ path: `dist/${platform}` });
+    }),
+  );
 }
 
-async function getBuilds(branch: string, jobNames: string[]) {
-  let builds = [] as any[];
-
-  for (const jobName of jobNames) {
-    const jobId = jobs.find((job: any) => job.name === jobName).job_number;
-
-    console.log(`jobName: ${jobName}, jobId: ${jobId}`);
-
-    const response = await fetch(
-      `https://circleci.com/api/v1.1/project/gh/MetaMask/metamask-extension/${jobId}/artifacts`,
-    );
-
-    const artifacts = await response.json();
-
-    if (
-      !artifacts ||
-      artifacts.length === 0 ||
-      artifacts.message === 'Not Found'
-    ) {
-      return [];
-    }
-
-    builds = builds.concat(
-      artifacts.filter((artifact: any) => artifact.path.endsWith('.zip')),
-    );
-  }
-
-  return builds;
-}
-
-function getVersionNumber(builds: any[]) {
-  for (const build of builds) {
-    const versionRegex = /metamask-chrome-(?<version>\d+\.\d+\.\d+).zip/;
-
-    const versionNumber = build.path.match(versionRegex)?.groups?.version;
-
-    if (versionNumber) {
-      return versionNumber;
-    }
-  }
-}
-
-async function downloadBuilds(builds: any[]) {
-  if (!builds || builds.length === 0) {
-    console.log(
-      'No builds found on CI for the current branch, you will have to build the Extension yourself',
-    );
-    return false;
-  }
-
-  const buildPromises = [] as Promise<any>[];
-
-  for (const build of builds) {
-    if (
-      build.path.startsWith('builds/') ||
-      build.path.startsWith('builds-test/')
-    ) {
-      const { url } = build;
-
-      console.log('downloading', build.path);
-
-      buildPromises.push(exec(`curl -L --create-dirs -o ${build.path} ${url}`));
-    }
-  }
-
-  await Promise.all(buildPromises);
-
-  console.log('downloads complete');
-
-  return true;
-}
-
-function unzipBuilds(folder: 'builds' | 'builds-test', versionNumber: string) {
-  if (!versionNumber) {
-    return;
-  }
-
-  if (process.platform === 'win32') {
-    execSync(`rmdir /s /q dist & mkdir dist\\chrome & mkdir dist\\firefox`);
-  } else {
-    execSync('rm -rf dist && mkdir -p dist');
-  }
-
-  for (const browser of ['chrome', 'firefox']) {
-    if (process.platform === 'win32') {
-      execSync(
-        `tar -xf ${folder}/metamask-${browser}-${versionNumber}.zip -C dist/${browser}`,
-      );
-    } else {
-      execSync(
-        `unzip ${folder}/metamask-${browser}-${versionNumber}.zip -d dist/${browser}`,
-      );
-    }
-  }
-
-  console.log(`unzipped ${folder} into ./dist`);
-}
-
-async function main(jobNames: string[]) {
-  const branch = getGitBranch();
-
-  const builds = await getBuilds(branch, jobNames);
-
-  console.log('builds', builds);
-
-  const downloadWorked = await downloadBuilds(builds);
-
-  if (downloadWorked) {
-    const versionNumber = getVersionNumber(builds);
-    const folder = builds[0].path.split('/')[0];
-
-    unzipBuilds(folder, versionNumber);
-  }
-}
-
-let args = process.argv.slice(2);
-
-if (!args || args.length === 0) {
-  args = ['prep-build'];
-}
-
-main(args);
+main();
