@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { convertCaipToHexChainId } from '../../../../../shared/modules/network.utils';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import {
+  FEATURED_NETWORK_CHAIN_IDS,
   FEATURED_RPCS,
   TEST_CHAINS,
 } from '../../../../../shared/constants/network';
@@ -85,28 +86,13 @@ export const useNetworkManagerState = ({
 
   const isNetworkInDefaultNetworkTab = useCallback(
     (network: MultichainNetworkConfiguration) => {
-      const networkChainId = network.chainId; // eip155:59144
-      // Convert CAIP format to hex format for comparison
-      const hexChainId = network.isEvm
-        ? convertCaipToHexChainId(networkChainId)
-        : networkChainId;
+      if (!network.isEvm) {
+        return true;
+      }
 
-      // Only show networks if they are built-in networks or featured RPCs
-      const isBuiltInNetwork = Object.values(BUILT_IN_NETWORKS).some(
-        (builtInNetwork) => builtInNetwork.chainId === hexChainId,
+      return FEATURED_NETWORK_CHAIN_IDS.includes(
+        convertCaipToHexChainId(network.chainId),
       );
-
-      const isFeaturedRpc = FEATURED_RPCS.some(
-        (featuredRpc) => featuredRpc.chainId === hexChainId,
-      );
-
-      const isMultichainProviderConfig = Object.values(MultichainNetworks).some(
-        (multichainNetwork) =>
-          multichainNetwork === networkChainId ||
-          multichainNetwork === hexChainId,
-      );
-
-      return isBuiltInNetwork || isFeaturedRpc || isMultichainProviderConfig;
     },
     [],
   );
