@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -40,7 +40,7 @@ const ChangePassword = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
-  const [eventEmitter] = useState(new EventEmitter());
+  const animationEventEmitter = useRef(new EventEmitter());
   const [step, setStep] = useState(ChangePasswordSteps.VerifyCurrentPassword);
 
   const [currentPassword, setCurrentPassword] = useState('');
@@ -61,7 +61,11 @@ const ChangePassword = () => {
       );
     }
     return (
-      <Mascot animationEventEmitter={eventEmitter} width="100" height="100" />
+      <Mascot
+        animationEventEmitter={animationEventEmitter}
+        width="100"
+        height="100"
+      />
     );
   };
 
