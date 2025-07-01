@@ -17,11 +17,12 @@ jest.mock('../../../store/actions.ts', () => ({
   setSeedPhraseBackedUp: jest.fn().mockReturnValue(jest.fn()),
 }));
 
-const mockHistoryPush = jest.fn();
+const mockHistoryReplace = jest.fn();
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
-    push: mockHistoryPush,
+    replace: mockHistoryReplace,
   }),
 }));
 
@@ -192,7 +193,7 @@ describe('Confirm Recovery Phrase Component', () => {
     fireEvent.click(gotItButton);
 
     expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
-    expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
+    expect(mockHistoryReplace).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
   });
 
   it('should go to Onboarding Completion page as a next step in firefox', async () => {
@@ -225,6 +226,8 @@ describe('Confirm Recovery Phrase Component', () => {
     fireEvent.click(getByText('Got it'));
 
     expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
-    expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
+    expect(mockHistoryReplace).toHaveBeenCalledWith(
+      ONBOARDING_COMPLETION_ROUTE,
+    );
   });
 });

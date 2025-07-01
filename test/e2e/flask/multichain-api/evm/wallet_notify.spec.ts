@@ -1,11 +1,11 @@
-import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { withFixtures } from '../../../helpers';
+import FixtureBuilder from '../../../fixture-builder';
+import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   type FixtureCallbackArgs,
-} from './testHelpers';
+} from '../testHelpers';
 
 describe('Calling `eth_subscribe` on a particular network event', function () {
   it('Should receive a notification through the Multichain API for the event app subscribed to', async function () {
