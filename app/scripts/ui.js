@@ -91,7 +91,12 @@ async function start() {
   const connectionStream = new PortStream(extensionPort);
   const subStreams = connectSubstreams(connectionStream);
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);
-  connectToBackground(container, backgroundConnection, handleStartUISync);
+  connectToBackground(
+    container,
+    extensionPort,
+    backgroundConnection,
+    handleStartUISync,
+  );
 
   async function handleStartUISync() {
     endTrace({ name: TraceName.BackgroundConnect });

@@ -52,11 +52,13 @@ let reduxStore;
  * Method to update backgroundConnection object use by UI
  *
  * @param container - container to render the UI
+ * @param port - port to connect to background
  * @param backgroundConnection - connection object to background
  * @param handleStartUISync - function to call when startUISync notification is received
  */
 export const connectToBackground = (
   container,
+  port,
   backgroundConnection,
   handleStartUISync,
 ) => {
@@ -68,8 +70,16 @@ export const connectToBackground = (
     } else if (method === METHOD_START_UI_SYNC) {
       handleStartUISync();
     } else if (method === METHOD_DISPLAY_STATE_CORRUPTION_ERROR) {
-      const { error, currentLocale } = params;
-      displayStateCorruptionError(container, error, currentLocale);
+      const { error, hasBackup, currentLocale } = params;
+      displayStateCorruptionError(
+        container,
+        port,
+        error,
+        hasBackup,
+        currentLocale,
+      );
+    } else if (method === 'RELOAD') {
+      window.location.reload();
     } else {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(

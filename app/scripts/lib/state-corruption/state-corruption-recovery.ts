@@ -180,7 +180,9 @@ export class CorruptionHandler {
 
     // send the `error` to the UI for this port
     const sent = tryPostMessage(port, {
+      name: 'controller',
       data: {
+        jsonrpc: '2.0',
         method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
         params: {
           error: {
@@ -243,7 +245,9 @@ export class CorruptionHandler {
                   // as each page reloads, it will remove itself from the
                   // `connectedPorts` on disconnection.
                   tryPostMessage(connectedPort, {
+                    name: 'controller',
                     data: {
+                      jsonrpc: '2.0',
                       method: 'RELOAD',
                     },
                   });
