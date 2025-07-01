@@ -177,7 +177,10 @@ describe('Security Alerts API', () => {
       expect(
         mockAppStateController.getAddressSecurityAlertResponse,
       ).toHaveBeenCalledWith(TEST_ADDRESS);
-      expect(mockedGetChainId).toHaveBeenCalledWith(mockNetworkController);
+      expect(mockedGetChainId).toHaveBeenCalledWith(
+        mockNetworkController,
+        mockSelectedNetworkController,
+      );
       expect(
         mockAppStateController.addAddressSecurityAlertResponse,
       ).toHaveBeenCalledWith(TEST_ADDRESS, RESPONSE_MOCK);
@@ -205,7 +208,10 @@ describe('Security Alerts API', () => {
       );
 
       expect(result).toEqual(RESPONSE_MOCK);
-      expect(mockedGetChainId).toHaveBeenCalledWith(mockNetworkController);
+      expect(mockedGetChainId).toHaveBeenCalledWith(
+        mockNetworkController,
+        mockSelectedNetworkController,
+      );
       expect(
         mockAppStateController.addAddressSecurityAlertResponse,
       ).toHaveBeenCalledWith(TEST_ADDRESS, RESPONSE_MOCK);
@@ -232,7 +238,10 @@ describe('Security Alerts API', () => {
       expect(
         mockAppStateController.getAddressSecurityAlertResponse,
       ).toHaveBeenCalledWith(TEST_ADDRESS);
-      expect(mockedGetChainId).toHaveBeenCalledWith(mockNetworkController);
+      expect(mockedGetChainId).toHaveBeenCalledWith(
+        mockNetworkController,
+        mockSelectedNetworkController,
+      );
       expect(
         mockAppStateController.addAddressSecurityAlertResponse,
       ).not.toHaveBeenCalled();
@@ -257,7 +266,10 @@ describe('Security Alerts API', () => {
       expect(
         mockAppStateController.getAddressSecurityAlertResponse,
       ).toHaveBeenCalledWith(TEST_ADDRESS);
-      expect(mockedGetChainId).toHaveBeenCalledWith(mockNetworkController);
+      expect(mockedGetChainId).toHaveBeenCalledWith(
+        mockNetworkController,
+        mockSelectedNetworkController,
+      );
       expect(
         mockAppStateController.addAddressSecurityAlertResponse,
       ).not.toHaveBeenCalled();
