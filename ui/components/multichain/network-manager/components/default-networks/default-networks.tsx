@@ -1,11 +1,6 @@
-import {
-  CaipChainId,
-  KnownCaipNamespace,
-  parseCaipChainId,
-} from '@metamask/utils';
+import { CaipChainId, parseCaipChainId } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { toHex } from '@metamask/controller-utils';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_NETWORK_CHAIN_IDS,
@@ -28,10 +23,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import {
-  setActiveNetwork,
-  setEnabledNetworks,
-} from '../../../../../store/actions';
+import { setEnabledNetworks } from '../../../../../store/actions';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -101,34 +93,20 @@ const DefaultNetworks = memo(() => {
     [evmNetworks],
   );
 
-  // Memoize the featured chain IDs as a Set for O(1) lookups
-  const featuredChainIdsSet = useMemo(
-    () => new Set(FEATURED_NETWORK_CHAIN_IDS),
-    [],
-  );
-
   // Use useCallback for stable function references
   const selectAllDefaultNetworks = useCallback(() => {
-    // filter for EVM networks and extract featured chain IDs in one operation
-    const evmChainIds = orderedNetworks.reduce<string[]>((acc, network) => {
-      if (!network.isEvm) {
-        return acc;
-      }
+    const evmNetworksList = orderedNetworks.filter((network) => network.isEvm);
 
-      const hexChainId = convertCaipToHexChainId(network.chainId);
-      if (featuredChainIdsSet.has(hexChainId)) {
-        acc.push(hexChainId);
-      }
-
-      return acc;
-    }, []);
-
-    if (evmChainIds.length === 0) {
+    if (evmNetworksList.length === 0) {
       return;
     }
 
+    const evmChainIds = evmNetworksList
+      .map((network) => convertCaipToHexChainId(network.chainId))
+      .filter((chainId) => FEATURED_NETWORK_CHAIN_IDS.includes(chainId));
+
     dispatch(setEnabledNetworks(evmChainIds, namespace));
-  }, [dispatch, namespace, orderedNetworks, featuredChainIdsSet]);
+  }, [dispatch, namespace, orderedNetworks]);
 
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
 
