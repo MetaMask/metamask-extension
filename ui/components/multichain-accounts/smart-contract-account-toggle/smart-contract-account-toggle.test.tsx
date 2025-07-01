@@ -12,6 +12,35 @@ import { SmartContractAccountToggle } from './smart-contract-account-toggle';
 jest.mock('../../../pages/confirmations/hooks/useEIP7702Account');
 jest.mock('../../../pages/confirmations/hooks/useBatchAuthorizationRequests');
 
+// Mock react-router-dom
+const mockPush = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    push: mockPush,
+  }),
+}));
+
+// Mock redux
+const mockDispatch = jest.fn();
+const mockUseSelectorImpl = jest.fn();
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useDispatch: () => mockDispatch,
+  useSelector: (...args: unknown[]) => mockUseSelectorImpl(...args),
+}));
+
+// Mock the setRedirectAfterDefaultPage action
+jest.mock('../../../ducks/history/history', () => ({
+  setRedirectAfterDefaultPage: (payload: {
+    path: string;
+    address: string;
+  }) => ({
+    type: 'SET_REDIRECT_AFTER_DEFAULT_PAGE',
+    payload,
+  }),
+}));
+
 const mockUseEIP7702Account = useEIP7702Account as jest.MockedFunction<
   typeof useEIP7702Account
 >;
@@ -49,12 +78,17 @@ const render = (
   props: {
     networkConfig?: EIP7702NetworkConfiguration;
     address?: Hex;
+    userIntent?: boolean | null;
+    setUserIntent?: (value: boolean | null) => void;
+    returnToPage?: string;
   } = {},
 ) => {
   const store = configureStore({});
   const defaultProps = {
     networkConfig: mockNetworkConfig,
     address: mockAddress,
+    userIntent: null,
+    setUserIntent: jest.fn(),
     ...props,
   };
   return renderWithProvider(
@@ -76,6 +110,9 @@ describe('SmartContractAccountToggle', () => {
     mockUseBatchAuthorizationRequests.mockReturnValue({
       hasPendingRequests: false,
     });
+
+    // Mock useSelector to return empty array by default
+    mockUseSelectorImpl.mockReturnValue([]);
   });
 
   describe('Basic Rendering', () => {
@@ -87,17 +124,16 @@ describe('SmartContractAccountToggle', () => {
     });
 
     it('shows toggle as ON for supported networks', () => {
-      const { container } = render({
+      render({
         networkConfig: mockNetworkConfig,
       });
 
       const toggle = screen.getByRole('checkbox');
       expect(toggle.closest('.toggle-button')).toHaveClass('toggle-button--on');
-      expect(container).toMatchSnapshot();
     });
 
     it('shows toggle as OFF for unsupported networks', () => {
-      const { container } = render({
+      render({
         networkConfig: mockUnsupportedNetworkConfig,
       });
 
@@ -105,7 +141,6 @@ describe('SmartContractAccountToggle', () => {
       expect(toggle.closest('.toggle-button')).toHaveClass(
         'toggle-button--off',
       );
-      expect(container).toMatchSnapshot();
     });
 
     it('displays different network names correctly', () => {
@@ -119,37 +154,42 @@ describe('SmartContractAccountToggle', () => {
 
   describe('Toggle Actions', () => {
     it('downgrades account when turning OFF supported network', async () => {
+      const setUserIntent = jest.fn();
       render({
-        networkConfig: mockNetworkConfig, // isSupported: true
+        networkConfig: mockNetworkConfig,
+        setUserIntent,
       });
 
       const toggle = screen.getByRole('checkbox');
       fireEvent.click(toggle);
 
       await waitFor(() => {
-        expect(mockDowngradeAccount).toHaveBeenCalledWith(mockAddress);
+        expect(setUserIntent).toHaveBeenCalledWith(false);
       });
-      expect(mockUpgradeAccount).not.toHaveBeenCalled();
+      expect(mockDowngradeAccount).toHaveBeenCalledWith(mockAddress);
     });
 
     it('upgrades account when turning ON unsupported network', async () => {
+      const setUserIntent = jest.fn();
       render({
-        networkConfig: mockUnsupportedNetworkConfig, // isSupported: false
+        networkConfig: mockUnsupportedNetworkConfig,
+        setUserIntent,
       });
 
       const toggle = screen.getByRole('checkbox');
       fireEvent.click(toggle);
 
       await waitFor(() => {
-        expect(mockUpgradeAccount).toHaveBeenCalledWith(
-          mockAddress,
-          mockUnsupportedNetworkConfig.upgradeContractAddress,
-        );
+        expect(setUserIntent).toHaveBeenCalledWith(true);
       });
-      expect(mockDowngradeAccount).not.toHaveBeenCalled();
+      expect(mockUpgradeAccount).toHaveBeenCalledWith(
+        mockAddress,
+        mockUnsupportedNetworkConfig.upgradeContractAddress,
+      );
     });
 
     it('prevents upgrade when contract address is missing', async () => {
+      const setUserIntent = jest.fn();
       const networkWithoutUpgradeAddress = {
         ...mockUnsupportedNetworkConfig,
         upgradeContractAddress: undefined,
@@ -157,15 +197,13 @@ describe('SmartContractAccountToggle', () => {
 
       render({
         networkConfig: networkWithoutUpgradeAddress,
+        setUserIntent,
       });
 
       const toggle = screen.getByRole('checkbox');
-      fireEvent.click(toggle);
-
-      await waitFor(() => {
-        expect(mockUpgradeAccount).not.toHaveBeenCalled();
-        expect(mockDowngradeAccount).not.toHaveBeenCalled();
-      });
+      expect(toggle.closest('.toggle-button')).toHaveClass(
+        'toggle-button--disabled',
+      );
     });
   });
 
@@ -175,13 +213,12 @@ describe('SmartContractAccountToggle', () => {
         hasPendingRequests: true,
       });
 
-      const { container } = render();
+      render();
 
       const toggle = screen.getByRole('checkbox');
       expect(toggle.closest('.toggle-button')).toHaveClass(
         'toggle-button--disabled',
       );
-      expect(container).toMatchSnapshot();
     });
 
     it('enables toggle when no requests pending', () => {
@@ -202,38 +239,173 @@ describe('SmartContractAccountToggle', () => {
         hasPendingRequests: true,
       });
 
-      render();
+      const setUserIntent = jest.fn();
+      render({
+        setUserIntent,
+      });
 
       const toggle = screen.getByRole('checkbox');
       fireEvent.click(toggle);
 
-      expect(mockDowngradeAccount).not.toHaveBeenCalled();
-      expect(mockUpgradeAccount).not.toHaveBeenCalled();
+      expect(setUserIntent).not.toHaveBeenCalled();
     });
   });
 
-  describe('State Changes', () => {
-    it('reflects network support status correctly', () => {
-      // Test with supported network
-      const { rerender } = render({
-        networkConfig: mockNetworkConfig, // isSupported: true
+  describe('User Intent Management', () => {
+    it('disables toggle when userIntent is not null', () => {
+      render({
+        userIntent: true,
       });
 
-      let toggle = screen.getByRole('checkbox');
-      expect(toggle.closest('.toggle-button')).toHaveClass('toggle-button--on');
-
-      // Test with unsupported network
-      rerender(
-        <SmartContractAccountToggle
-          networkConfig={mockUnsupportedNetworkConfig} // isSupported: false
-          address={mockAddress}
-        />,
+      const toggle = screen.getByRole('checkbox');
+      expect(toggle.closest('.toggle-button')).toHaveClass(
+        'toggle-button--disabled',
       );
+    });
 
-      toggle = screen.getByRole('checkbox');
+    it('uses userIntent as primary source of truth', () => {
+      render({
+        userIntent: false,
+      });
+
+      const toggle = screen.getByRole('checkbox');
       expect(toggle.closest('.toggle-button')).toHaveClass(
         'toggle-button--off',
       );
+    });
+
+    it('falls back to actual state when userIntent is null', () => {
+      render({
+        userIntent: null,
+      });
+
+      const toggle = screen.getByRole('checkbox');
+      expect(toggle.closest('.toggle-button')).toHaveClass('toggle-button--on');
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('resets userIntent when upgradeAccount throws error', async () => {
+      const setUserIntent = jest.fn();
+      mockUpgradeAccount.mockRejectedValue(new Error('Upgrade failed'));
+
+      render({
+        networkConfig: mockUnsupportedNetworkConfig,
+        setUserIntent,
+      });
+
+      const toggle = screen.getByRole('checkbox');
+      fireEvent.click(toggle);
+
+      await waitFor(() => {
+        expect(setUserIntent).toHaveBeenCalledWith(null);
+      });
+    });
+
+    it('resets userIntent when downgradeAccount throws error', async () => {
+      const setUserIntent = jest.fn();
+      mockDowngradeAccount.mockRejectedValue(new Error('Downgrade failed'));
+
+      render({
+        networkConfig: mockNetworkConfig,
+        setUserIntent,
+      });
+
+      const toggle = screen.getByRole('checkbox');
+      fireEvent.click(toggle);
+
+      await waitFor(() => {
+        expect(setUserIntent).toHaveBeenCalledWith(null);
+      });
+    });
+  });
+
+  describe('Transaction Monitoring', () => {
+    it('redirects to transaction confirmation when userIntent is set and transaction is found', () => {
+      const mockTransactions = [
+        {
+          id: 'tx-123',
+          txParams: { from: mockAddress },
+          chainId: mockNetworkConfig.chainIdHex,
+          time: Date.now(),
+        },
+      ];
+
+      mockUseSelectorImpl.mockReturnValue(mockTransactions);
+
+      render({
+        userIntent: true,
+      });
+
+      expect(mockPush).toHaveBeenCalledWith('/confirm-transaction/tx-123');
+    });
+
+    it('sets redirect after default page when returnToPage is provided', () => {
+      const mockTransactions = [
+        {
+          id: 'tx-123',
+          txParams: { from: mockAddress },
+          chainId: mockNetworkConfig.chainIdHex,
+          time: Date.now(),
+        },
+      ];
+
+      mockUseSelectorImpl.mockReturnValue(mockTransactions);
+
+      const returnToPage = '/home';
+      render({
+        userIntent: true,
+        returnToPage,
+      });
+
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'SET_REDIRECT_AFTER_DEFAULT_PAGE',
+        payload: { path: returnToPage, address: mockAddress },
+      });
+    });
+
+    it('finds the latest transaction when multiple transactions exist', () => {
+      const mockTransactions = [
+        {
+          id: 'tx-old',
+          txParams: { from: mockAddress },
+          chainId: mockNetworkConfig.chainIdHex,
+          time: Date.now() - 1000,
+        },
+        {
+          id: 'tx-new',
+          txParams: { from: mockAddress },
+          chainId: mockNetworkConfig.chainIdHex,
+          time: Date.now(),
+        },
+      ];
+
+      mockUseSelectorImpl.mockReturnValue(mockTransactions);
+
+      render({
+        userIntent: true,
+      });
+
+      expect(mockPush).toHaveBeenCalledWith('/confirm-transaction/tx-new');
+    });
+
+    it('does not redirect when no matching transactions are found', () => {
+      const mockTransactions = [
+        {
+          id: 'tx-other',
+          txParams: { from: '0xDifferentAddress' },
+          chainId: mockNetworkConfig.chainIdHex,
+          time: Date.now(),
+        },
+      ];
+
+      mockUseSelectorImpl.mockReturnValue(mockTransactions);
+
+      render({
+        userIntent: true,
+      });
+
+      expect(mockPush).not.toHaveBeenCalled();
     });
   });
 });

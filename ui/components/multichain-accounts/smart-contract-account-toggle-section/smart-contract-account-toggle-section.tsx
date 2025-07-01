@@ -1,6 +1,4 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import React, { useState, useCallback } from 'react';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import {
   AlignItems,
@@ -13,17 +11,32 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { AppSliceState } from '../../../ducks/app/app';
 import { useEIP7702Networks } from '../../../pages/confirmations/hooks/useEIP7702Networks';
 import { SmartContractAccountToggle } from '../smart-contract-account-toggle';
 import Preloader from '../../ui/icon/preloader';
 
-export const SmartContractAccountToggleSection = () => {
-  const address = useSelector(
-    (state: AppSliceState) => state.appState.accountDetailsAddress,
-  );
+type SmartContractAccountToggleSectionProps = {
+  address: string;
+  returnToPage?: string; // Optional page to return to after transaction
+};
+
+export const SmartContractAccountToggleSection = ({
+  address,
+  returnToPage,
+}: SmartContractAccountToggleSectionProps) => {
   const t = useI18nContext();
   const { network7702List, pending } = useEIP7702Networks(address);
+
+  // userIntent state per network
+  const [userIntentMap, setUserIntentMap] = useState<
+    Record<string, boolean | null>
+  >({});
+  const setUserIntent = useCallback(
+    (chainIdHex: string, value: boolean | null) => {
+      setUserIntentMap((prev) => ({ ...prev, [chainIdHex]: value }));
+    },
+    [],
+  );
 
   const NetworkList = () => {
     return (
@@ -45,7 +58,12 @@ export const SmartContractAccountToggleSection = () => {
               <SmartContractAccountToggle
                 key={network.chainIdHex}
                 networkConfig={network}
-                address={address as Hex}
+                address={address}
+                userIntent={userIntentMap[network.chainIdHex] ?? null}
+                setUserIntent={(value: boolean | null) =>
+                  setUserIntent(network.chainIdHex, value)
+                }
+                returnToPage={returnToPage}
               />
             ))}
           </Box>
