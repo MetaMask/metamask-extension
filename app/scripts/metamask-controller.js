@@ -458,6 +458,7 @@ const buildTypeMappingForRemoteFeatureFlag = {
   flask: DistributionType.Flask,
   main: DistributionType.Main,
   beta: DistributionType.Beta,
+  experimental: DistributionType.Main, // experimental builds use main distribution
 };
 
 export default class MetamaskController extends EventEmitter {
