@@ -1,4 +1,8 @@
-import { BtcAccountType, SolAccountType, isEvmAccountType } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  SolAccountType,
+  isEvmAccountType,
+} from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 
