@@ -32,7 +32,6 @@ import {
   getPreferences,
   getSelectedMultichainNetworkChainId,
 } from '../../../../selectors';
-import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/useAccountCreationOnNetworkChange';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
 export enum ACTION_MODE {
@@ -69,8 +68,6 @@ export const useNetworkChangeHandlers = () => {
   );
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const allChainIds = useSelector(getAllChainsToPoll);
-
-  const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   // This value needs to be tracked in case the user changes to a Non EVM
   // network and there is no account created for that network. This will
