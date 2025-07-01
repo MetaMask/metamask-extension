@@ -11,20 +11,13 @@ import {
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { useIntentsNetworkFee } from './useIntentsNetworkFee';
 import { QuoteResponse } from '@metamask/bridge-controller';
+import { useIntentSourceAmounts } from './useIntentSourceAmount';
+import { useIntentsContext } from '../../context/intents/intents';
+import { useIntentsTargets } from './useIntentsTarget';
 
 const log = createProjectLogger('intents');
 
-export function useIntentsQuote({
-  sourceChainId,
-  sourceTokenAddress,
-  sourceTokenAmounts,
-  targetTokenAddresses,
-}: {
-  sourceChainId: Hex;
-  sourceTokenAmounts: string[] | undefined;
-  sourceTokenAddress: Hex;
-  targetTokenAddresses: Hex[];
-}) {
+export function useIntentsQuote() {
   const { currentConfirmation: transasctionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -34,27 +27,40 @@ export function useIntentsQuote({
     txParams: { from },
   } = transasctionMeta;
 
+  const { sourceToken, loading, setLoading } = useIntentsContext();
+  const sourceAmounts = useIntentSourceAmounts();
+  const targets = useIntentsTargets();
+
+  const sourceChainId = sourceToken?.chainId;
+  const sourceTokenAddress = sourceToken?.address;
+
+  const targetTokenAddresses = targets.map(
+    (target) => target.targetTokenAddress,
+  );
+
   const {
     pending: quotesLoading,
     error,
     value: quotes,
   } = useAsyncResult(async () => {
-    if (!sourceTokenAmounts?.length) {
+    if (!sourceAmounts?.length || !sourceChainId || !sourceTokenAddress) {
       return [];
     }
 
-    const requests = sourceTokenAmounts.map((sourceTokenAmount, index) => ({
+    log('Fetching quotes', transactionId);
+
+    const requests = sourceAmounts.map((sourceAmount, index) => ({
       from: from as Hex,
       sourceChainId,
       sourceTokenAddress,
-      sourceTokenAmount,
+      sourceTokenAmount: sourceAmount.sourceTokenAmountRaw,
       targetChainId: destChainId,
       targetTokenAddress: targetTokenAddresses[index],
     }));
 
     return getBridgeQuotes(requests);
   }, [
-    JSON.stringify(sourceTokenAmounts),
+    JSON.stringify(sourceAmounts),
     sourceChainId,
     JSON.stringify(sourceTokenAddress),
     destChainId,
@@ -80,7 +86,15 @@ export function useIntentsQuote({
     setIntentQuoteForTransaction(transactionId, finalQuotes ?? null);
   }, [transactionId, JSON.stringify(finalQuotes)]);
 
-  const loading = gasFeeLoading || quotesLoading;
+  useEffect(() => {
+    if ((quotesLoading || gasFeeLoading) && !loading) {
+      setLoading?.(true);
+    }
+
+    if (!quotesLoading && !gasFeeLoading && loading) {
+      setLoading?.(false);
+    }
+  }, [quotesLoading, gasFeeLoading, loading, setLoading]);
 
   return {
     networkFee,

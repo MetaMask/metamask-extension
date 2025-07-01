@@ -14,6 +14,7 @@ import {
   getCurrentCurrency,
 } from '../ducks/metamask/metamask';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { NATIVE_TOKEN_ADDRESS } from '../helpers/constants/intents';
 
 /**
  * Get the token balance converted to fiat and formatted for display
@@ -82,9 +83,15 @@ export function useTokenFiatAmount(
   const contractExchangeTokenKey = Object.keys(mergedRates).find((key) =>
     isEqualCaseInsensitive(key, tokenAddress),
   );
-  const tokenExchangeRate =
+
+  let tokenExchangeRate =
     overrides.exchangeRate ??
     (contractExchangeTokenKey && mergedRates[contractExchangeTokenKey]);
+
+  if (tokenAddress === NATIVE_TOKEN_ADDRESS) {
+    tokenExchangeRate = 1.0;
+  }
+
   const formattedFiat = useMemo(
     () =>
       getTokenFiatAmount(

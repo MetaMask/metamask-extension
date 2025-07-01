@@ -13,7 +13,7 @@ import BigNumber from 'bignumber.js';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../helpers/constants/intents';
 import { useMemo } from 'react';
 
-export function useTokenFiatRates(tokenAddresses: Hex[], chainId: Hex) {
+export function useTokenFiatRates(tokenAddresses?: Hex[], chainId?: Hex) {
   const allMarketData = useSelector(getMarketData);
 
   const contractExchangeRates = useSelector(
@@ -52,33 +52,35 @@ export function useTokenFiatRates(tokenAddresses: Hex[], chainId: Hex) {
         ?.conversionRate
     : conversionRate;
 
-  return useMemo(
-    () =>
-      tokenAddresses.map((tokenAddress) => {
-        const contractExchangeTokenKey = Object.keys(mergedRates).find((key) =>
-          isEqualCaseInsensitive(key, tokenAddress),
-        );
+  return useMemo(() => {
+    if (!tokenAddresses || !chainId) {
+      return undefined;
+    }
 
-        const tokenExchangeRate =
-          contractExchangeTokenKey && mergedRates[contractExchangeTokenKey];
+    return tokenAddresses?.map((tokenAddress) => {
+      const contractExchangeTokenKey = Object.keys(mergedRates).find((key) =>
+        isEqualCaseInsensitive(key, tokenAddress),
+      );
 
-        if (tokenAddress === NATIVE_TOKEN_ADDRESS) {
-          return new BigNumber(tokenConversionRate);
-        }
+      const tokenExchangeRate =
+        contractExchangeTokenKey && mergedRates[contractExchangeTokenKey];
 
-        if (!tokenExchangeRate || !tokenConversionRate) {
-          return undefined;
-        }
+      if (tokenAddress === NATIVE_TOKEN_ADDRESS) {
+        return new BigNumber(tokenConversionRate);
+      }
 
-        return new BigNumber(tokenExchangeRate.toString()).mul(
-          tokenConversionRate,
-        );
-      }),
-    [
-      JSON.stringify(tokenAddresses),
-      chainId,
-      JSON.stringify(mergedRates),
-      tokenConversionRate,
-    ],
-  );
+      if (!tokenExchangeRate || !tokenConversionRate) {
+        return undefined;
+      }
+
+      return new BigNumber(tokenExchangeRate.toString()).mul(
+        tokenConversionRate,
+      );
+    });
+  }, [
+    JSON.stringify(tokenAddresses),
+    chainId,
+    JSON.stringify(mergedRates),
+    tokenConversionRate,
+  ]);
 }

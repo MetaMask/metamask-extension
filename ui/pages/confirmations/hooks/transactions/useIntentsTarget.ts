@@ -9,7 +9,12 @@ import { useMemo } from 'react';
 
 const USDC_ARBITRUM = '0xaf88d065e77c8cc2239327c5edb3a432268e5831' as const;
 
-export function useIntentsTarget() {
+export type IntentsTarget = {
+  targetTokenAddress: Hex;
+  targetAmount: Hex;
+};
+
+export function useIntentsTargets() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 

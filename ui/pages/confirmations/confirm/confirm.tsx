@@ -20,6 +20,7 @@ import { ConfirmContextProvider, useConfirmContext } from '../context/confirm';
 import { ConfirmNav } from '../components/confirm/nav/nav';
 import { GasFeeTokenToast } from '../components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast';
 import { Splash } from '../components/confirm/splash';
+import { IntentsContextProvider } from '../context/intents/intents';
 
 const EIP1559TransactionGasModal = () => {
   return (
@@ -47,23 +48,25 @@ const Confirm = () => (
       {/* This context should be removed once we implement the new edit gas fees popovers */}
       <GasFeeContextProviderWrapper>
         <EIP1559TransactionGasModal />
-        <ConfirmAlerts>
-          <Page className="confirm_wrapper">
-            <ConfirmNav />
-            <Header />
-            <SmartTransactionsBannerAlert marginType="noTop" />
-            <ScrollToBottom>
-              <BlockaidLoadingIndicator />
-              <LedgerInfo />
-              <Title />
-              <Info />
-              <PluggableSection />
-            </ScrollToBottom>
-            <GasFeeTokenToast />
-            <Footer />
-            <Splash />
-          </Page>
-        </ConfirmAlerts>
+        <IntentsContextProvider>
+          <ConfirmAlerts>
+            <Page className="confirm_wrapper">
+              <ConfirmNav />
+              <Header />
+              <SmartTransactionsBannerAlert marginType="noTop" />
+              <ScrollToBottom>
+                <BlockaidLoadingIndicator />
+                <LedgerInfo />
+                <Title />
+                <Info />
+                <PluggableSection />
+              </ScrollToBottom>
+              <GasFeeTokenToast />
+              <Footer />
+              <Splash />
+            </Page>
+          </ConfirmAlerts>
+        </IntentsContextProvider>
       </GasFeeContextProviderWrapper>
     </TransactionModalContextProvider>
   </ConfirmContextProvider>

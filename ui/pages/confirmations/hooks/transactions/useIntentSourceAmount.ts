@@ -1,120 +1,69 @@
-import { Hex, createProjectLogger } from '@metamask/utils';
+import { createProjectLogger } from '@metamask/utils';
 import BigNumber from 'bignumber.js';
-import {
-  INTENTS_FEE,
-  INTENTS_SLIPPAGE,
-} from '../../../../helpers/constants/intents';
 import { useTokenDecimals } from './useTokenDecimals';
 import { useTokenFiatRates } from './useTokenFiatRate';
 import { useMemo } from 'react';
+import { useIntentsContext } from '../../context/intents/intents';
+import { useIntentsSourceFiat } from './useIntentsSourceFiat';
 
 const log = createProjectLogger('intents');
 
 export type IntentSourceAmounts = ReturnType<typeof useIntentSourceAmounts>;
 
-export function useIntentSourceAmounts({
-  sourceChainId,
-  sourceTokenAddress,
-  targetChainId,
-  targets,
-}: {
-  sourceChainId: Hex;
-  sourceTokenAddress: Hex;
-  targetChainId: Hex;
-  targets: {
-    targetAmount: Hex;
-    targetTokenAddress: Hex;
-  }[];
-}) {
-  const sourceTokenAddresss = useMemo(
-    () => [sourceTokenAddress],
-    [sourceTokenAddress],
-  );
+export function useIntentSourceAmounts() {
+  const { sourceToken } = useIntentsContext();
+
+  const sourceChainId = sourceToken?.chainId;
+  const sourceTokenAddress = sourceToken?.address;
+
+  const sourceTokenAddresses = sourceTokenAddress
+    ? [sourceTokenAddress]
+    : undefined;
 
   const { value: allSourceDecimals } = useTokenDecimals({
     chainId: sourceChainId,
-    tokenAddresses: sourceTokenAddresss,
+    tokenAddresses: sourceTokenAddresses,
   });
 
   log('Source token decimals', allSourceDecimals);
 
-  const sourceFiatRates = useTokenFiatRates(sourceTokenAddresss, sourceChainId);
+  const sourceFiatRates = useTokenFiatRates(
+    sourceTokenAddresses,
+    sourceChainId,
+  );
 
   log('Source token fiat rates', sourceFiatRates);
 
   const sourceDecimals = allSourceDecimals?.[0];
   const sourceFiatRate = sourceFiatRates?.[0];
 
-  const targetTokenAddresses = useMemo(
-    () => targets.map(({ targetTokenAddress }) => targetTokenAddress),
-    [targets],
-  );
-
-  const { value: targetTokenDecimals } = useTokenDecimals({
-    chainId: targetChainId,
-    tokenAddresses: targetTokenAddresses,
-  });
-
-  log('Target token decimals', targetTokenDecimals);
-
-  const targetTokenFiatRates = useTokenFiatRates(
-    targetTokenAddresses,
-    targetChainId,
-  );
-
-  log('Target token fiat rates', targetTokenFiatRates);
+  const { sourceAmounts } = useIntentsSourceFiat();
 
   return useMemo(() => {
-    if (
-      !sourceDecimals ||
-      !sourceFiatRate ||
-      !targetTokenDecimals?.length ||
-      !targetTokenFiatRates?.length
-    ) {
-      return [];
+    if (!sourceDecimals || !sourceFiatRate || !sourceAmounts?.length) {
+      return undefined;
     }
 
-    return targets.map((target, index) => {
-      const targetDecimals = targetTokenDecimals?.[index];
-      const targetFiatRate = targetTokenFiatRates?.[index];
-
+    return sourceAmounts.map((sourceAmount) => {
       return calculateSourceAmount(
-        target.targetAmount,
-        targetDecimals ?? 18, // Default to 18 decimals if not provided
-        targetFiatRate ?? new BigNumber(0),
+        sourceAmount.sourceAmountFiat,
+        sourceAmount.sourceFeeFiat,
         sourceDecimals,
         sourceFiatRate,
       );
     });
-  }, [
-    sourceDecimals,
-    sourceFiatRate,
-    targetTokenDecimals,
-    targetTokenFiatRates,
-    targets,
-  ]);
+  }, [sourceDecimals, sourceFiatRate, JSON.stringify(sourceAmounts)]);
 }
 
 function calculateSourceAmount(
-  targetAmount: Hex,
-  targetDecimals: number,
-  targetFiatRate: BigNumber,
+  sourceAmountFiat: string,
+  sourceFeeFiat: string,
   sourceDecimals: number,
   sourceFiatRate: BigNumber,
 ) {
-  const targetAmountDecimals = new BigNumber(targetAmount, 16).shift(
-    -targetDecimals,
+  const sourceTokenAmountDecimals = new BigNumber(sourceAmountFiat).div(
+    sourceFiatRate,
   );
-
-  const targetAmountFiat = targetAmountDecimals.mul(targetFiatRate);
-
-  const targetAmountTotal = targetAmountFiat.mul(
-    (1 + INTENTS_SLIPPAGE + INTENTS_FEE).toString(),
-  );
-
-  const targetAmountFee = targetAmountDecimals.mul(INTENTS_FEE);
-
-  const sourceTokenAmountDecimals = targetAmountTotal.div(sourceFiatRate);
   const sourceTokenAmountFormatted = sourceTokenAmountDecimals
     .round(6)
     .toString();
@@ -123,7 +72,7 @@ function calculateSourceAmount(
     .shift(sourceDecimals)
     .toFixed(0);
 
-  const sourceAmountFee = targetAmountFee.div(sourceFiatRate);
+  const sourceAmountFee = new BigNumber(sourceFeeFiat).div(sourceFiatRate);
   const sourceAmountFeeFormatted = sourceAmountFee.round(6).toString();
 
   return {

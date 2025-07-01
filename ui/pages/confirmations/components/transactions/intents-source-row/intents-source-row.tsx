@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Hex } from '@metamask/utils';
-import { IntentSourceAmounts } from '../../../hooks/transactions/useIntentSourceAmount';
+import { useIntentSourceAmounts } from '../../../hooks/transactions/useIntentSourceAmount';
 import {
   AssetWithDisplayData,
   ERC20Asset,
@@ -39,50 +39,55 @@ import { AssetPicker } from '../../../../../components/multichain/asset-picker-a
 import { TabName } from '../../../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { useTokenFiatAmount } from '../../../../../hooks/useTokenFiatAmount';
 import { AssetType, isSolanaChainId } from '@metamask/bridge-controller';
+import { useMultichainBalances } from '../../../../../hooks/useMultichainBalances';
+import { useIntentsContext } from '../../../context/intents/intents';
 
 export type SelectedToken = {
-  address: Hex;
-  chainId: Hex;
+  address?: Hex;
+  chainId?: Hex;
 };
 
-export function IntentsSourceRow({
-  loading,
-  onChange,
-  sourceTokenAmounts,
-  sourceTokenChainId,
-  sourceTokenAddress,
-  targetChainId,
-}: {
-  loading?: boolean;
-  onChange?: (token: SelectedToken) => void;
-  sourceTokenAmounts?: IntentSourceAmounts;
-  sourceTokenChainId: Hex;
-  sourceTokenAddress: Hex;
-  targetChainId: Hex;
-}) {
-  const [asset, setAsset] = useState<
-    AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
-  >({
-    chainId: targetChainId,
-    image: './images/eth_logo.svg',
-    type: AssetType.native,
-    symbol: 'ETH',
-  } as never);
+export function IntentsSourceRow() {
+  const { assetsWithBalance: multichainTokensWithBalance } =
+    useMultichainBalances();
 
-  const defaultNetwork = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, targetChainId),
+  const { sourceToken, setSourceToken, loading } = useIntentsContext();
+  const sourceAmounts = useIntentSourceAmounts();
+
+  const sourceTokenChainId = sourceToken?.chainId;
+  const sourceTokenAddress = sourceToken?.address;
+
+  const sourceTokenMetadata = multichainTokensWithBalance.find(
+    (token) =>
+      token.chainId === sourceTokenChainId &&
+      (token.address || NATIVE_TOKEN_ADDRESS).toLowerCase() ===
+        sourceTokenAddress?.toLowerCase(),
   );
 
-  const [network, setNetwork] = useState<NetworkConfiguration>(defaultNetwork);
+  const asset = {
+    address: sourceTokenAddress,
+    chainId: sourceTokenChainId,
+    image: sourceTokenMetadata?.image,
+    type:
+      sourceTokenAddress === NATIVE_TOKEN_ADDRESS
+        ? AssetType.native
+        : AssetType.token,
+    symbol: sourceTokenMetadata?.symbol,
+  };
+
+  const defaultNetwork = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, sourceTokenChainId),
+  );
+
+  const [network, setNetwork] = useState<NetworkConfiguration>();
 
   useEffect(() => {
-    onChange?.({
-      address: (asset.address as Hex) || NATIVE_TOKEN_ADDRESS,
-      chainId: network.chainId,
-    });
-  }, [asset.address, network.chainId, onChange]);
+    if (defaultNetwork && !network) {
+      setNetwork(defaultNetwork);
+    }
+  }, [defaultNetwork, network]);
 
-  const sourceAmountTotal = sourceTokenAmounts
+  const sourceAmountTotal = sourceAmounts
     ?.reduce(
       (acc, amount) =>
         acc.plus(new BigNumber(amount.sourceTokenAmountFormatted)),
@@ -110,6 +115,10 @@ export function IntentsSourceRow({
     false,
   );
 
+  if (!sourceAmounts?.length || !sourceTokenChainId || !sourceTokenAddress) {
+    return null;
+  }
+
   return (
     <ConfirmInfoRow label="Pay">
       <Box
@@ -127,9 +136,14 @@ export function IntentsSourceRow({
         <Text>{sourceAmountFiatFormatted}</Text>
         <Text>{sourceAmountTotal}</Text>
         <AssetPickerWrapper
-          asset={asset}
-          network={network}
-          onAssetChange={(newAsset) => setAsset(newAsset)}
+          asset={asset as never}
+          network={network as never}
+          onAssetChange={(newAsset) =>
+            setSourceToken?.({
+              chainId: newAsset.chainId as Hex,
+              address: (newAsset.address as Hex) || NATIVE_TOKEN_ADDRESS,
+            })
+          }
           onNetworkChange={(newNetwork) => setNetwork(newNetwork)}
           sourceAmountFiat={sourceAmountFiat}
         />
@@ -226,7 +240,7 @@ function AssetPickerOverride({
               className="intents-network-icon"
               size={AvatarNetworkSize.Xs}
               src={networkImageSrc}
-              name={network.name}
+              name={network?.name}
             />
           ) : undefined
         }

@@ -15,17 +15,13 @@ import { NATIVE_TOKEN_ADDRESS } from '../../../../../helpers/constants/intents';
 import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import { AssetIdentifier } from '../../simulation-details/types';
 import { useTokenDecimals } from '../../../hooks/transactions/useTokenDecimals';
+import { useIntentsTargets } from '../../../hooks/transactions/useIntentsTarget';
+import { useIntentsTargetChainId } from '../../../hooks/transactions/useIntentsTargetChainId';
 
-export function IntentsTargetRow({
-  targetChainId,
-  targets,
-}: {
-  targetChainId: Hex;
-  targets: {
-    targetTokenAddress: Hex;
-    targetAmount: Hex;
-  }[];
-}) {
+export function IntentsTargetRow() {
+  const targetChainId = useIntentsTargetChainId();
+  const targets = useIntentsTargets();
+
   return (
     <ConfirmInfoRow label="Target">
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
