@@ -65,39 +65,29 @@ export function useTransactionConfirm() {
       return;
     }
 
-    // const { approval: mainApproval, trade: mainTrade } = mainIntentQuote;
-    // const { approval: gasApproval, trade: gasTrade } = gasIntentQuote || {};
+    const isSwap =
+      intentQuotes?.[0]?.quote.srcChainId ===
+      intentQuotes?.[0]?.quote.destChainId;
 
-    // const isSwap =
-    //   mainIntentQuote.quote.srcChainId === mainIntentQuote.quote.destChainId;
+    if (!isSwap) {
+      return;
+    }
 
-    // if (!isSwap) {
-    //   return;
-    // }
+    newTransactionMeta.batchTransactions = [];
 
-    // newTransactionMeta.batchTransactions = [];
+    for (const quote of intentQuotes) {
+      const { approval, trade } = quote;
 
-    // if (gasApproval) {
-    //   newTransactionMeta.batchTransactions.push(
-    //     gasApproval as BatchTransactionParams,
-    //   );
-    // }
+      if (approval) {
+        newTransactionMeta.batchTransactions.push(
+          approval as BatchTransactionParams,
+        );
+      }
 
-    // if (gasTrade) {
-    //   newTransactionMeta.batchTransactions.push(
-    //     gasTrade as BatchTransactionParams,
-    //   );
-    // }
-
-    // if (mainApproval) {
-    //   newTransactionMeta.batchTransactions.push(
-    //     mainApproval as BatchTransactionParams,
-    //   );
-    // }
-
-    // newTransactionMeta.batchTransactions.push(
-    //   mainTrade as BatchTransactionParams,
-    // );
+      newTransactionMeta.batchTransactions.push(
+        trade as BatchTransactionParams,
+      );
+    }
   }, [intentQuotes, newTransactionMeta]);
 
   const onTransactionConfirm = useCallback(async () => {
