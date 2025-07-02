@@ -22,12 +22,14 @@ import {
   ButtonLinkSize,
   ButtonLink,
 } from '../../../components/component-library';
-import { LOGIN_ERROR, LoginErrorType } from './types';
-import { MetaMetricsContextProp } from '../../../../shared/constants/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { LOGIN_ERROR, LoginErrorType } from './types';
 
 type LoginErrorModalProps = {
   onClose: () => void;

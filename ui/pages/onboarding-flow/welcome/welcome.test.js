@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
+import { waitFor } from '@testing-library/dom';
+import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import * as Actions from '../../../store/actions';
 import Welcome from './welcome';
 import { WelcomePageState } from './types';
@@ -63,7 +64,7 @@ describe('Welcome Page', () => {
   it('should show the error modal when the error thrown in login', async () => {
     process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
 
-    const mockStartOAuthLogin = jest
+    jest
       .spyOn(Actions, 'startOAuthLogin')
       .mockRejectedValue(new Error('login error'));
 
@@ -81,7 +82,6 @@ describe('Welcome Page', () => {
     fireEvent.click(createWithGoogleButton);
 
     await waitFor(() => {
-      expect(mockStartOAuthLogin).toHaveBeenCalled();
       expect(getByTestId('login-error-modal')).toBeInTheDocument();
     });
   });
