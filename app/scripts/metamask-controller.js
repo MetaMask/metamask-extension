@@ -7368,6 +7368,8 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'NetworkController:getNetworkClientById',
         ),
+        startTrace: trace,
+        endTrace,
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         handleSnapRpcRequest: (args) =>
           this.handleSnapRequest({ ...args, origin }),
