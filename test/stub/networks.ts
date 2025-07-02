@@ -80,19 +80,25 @@ export const mockMultichainNetworkState =
       multichainNetworkConfigurationsByChainId: {
         [BtcScope.Mainnet]: {
           chainId: BtcScope.Mainnet,
-          name: 'Bitcoin Mainnet',
+          name: 'Bitcoin',
           nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
           isEvm: false,
         },
         [SolScope.Mainnet]: {
           chainId: SolScope.Mainnet,
-          name: 'Solana Mainnet',
+          name: 'Solana',
           nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
           isEvm: false,
         },
       },
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
       isEvmSelected: true,
+      networksWithTransactionActivity: {
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+          namespace: 'eip155',
+          activeChains: ['0x5'],
+        },
+      },
     };
   };
 

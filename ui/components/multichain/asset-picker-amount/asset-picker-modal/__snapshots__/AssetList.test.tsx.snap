@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AssetList should pass an undefined nativeCurrencySymbol if the safe chains are not loaded 1`] = `
+[
+  [
+    {
+      "address": "0xToken1",
+      "assetItemProps": {
+        "nativeCurrencySymbol": "ETH",
+      },
+      "balance": "0",
+      "chainId": "0x1",
+      "decimals": 18,
+      "image": "image1.png",
+      "string": "10",
+      "symbol": "TOKEN1",
+      "tooltipText": undefined,
+      "type": "TOKEN",
+    },
+    {},
+  ],
+  [
+    {
+      "address": "0xToken2",
+      "assetItemProps": {
+        "nativeCurrencySymbol": "ETH",
+      },
+      "balance": "10",
+      "chainId": "0x1",
+      "decimals": 6,
+      "image": "image2.png",
+      "string": "20",
+      "symbol": "TOKEN2",
+      "tooltipText": undefined,
+      "type": "TOKEN",
+    },
+    {},
+  ],
+]
+`;
+
+exports[`AssetList should show the scam warning modal 1`] = `
+[
+  [
+    {
+      "address": "0xToken1",
+      "assetItemProps": {
+        "nativeCurrencySymbol": "ETH",
+      },
+      "balance": "0",
+      "chainId": "0x1",
+      "decimals": 18,
+      "image": "image1.png",
+      "string": "10",
+      "symbol": "TOKEN1",
+      "tooltipText": undefined,
+      "type": "TOKEN",
+    },
+    {},
+  ],
+  [
+    {
+      "address": "0xToken2",
+      "assetItemProps": {
+        "nativeCurrencySymbol": "ETH",
+      },
+      "balance": "10",
+      "chainId": "0x1",
+      "decimals": 6,
+      "image": "image2.png",
+      "string": "20",
+      "symbol": "TOKEN2",
+      "tooltipText": undefined,
+      "type": "TOKEN",
+    },
+    {},
+  ],
+]
+`;

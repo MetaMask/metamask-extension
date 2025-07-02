@@ -17,7 +17,7 @@ exports[`TransactionBreakdownRow Component should match snapshot 1`] = `
       data-testid="transaction-breakdown-row-value"
     >
       <button
-        class="button btn--rounded btn-default"
+        class="button btn-default"
       >
         Button
       </button>

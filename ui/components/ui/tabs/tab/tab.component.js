@@ -37,13 +37,16 @@ const Tab = (props) => {
       data-testid={dataTestId}
       onClick={(event) => {
         event.preventDefault();
-        onClick(tabIndex);
+        if (!disabled) {
+          onClick(tabIndex);
+        }
       }}
       key={tabKey}
       {...rest}
       className={classnames('tab', className, {
         'tab--single': isSingleTab,
         'tab--active': isActive,
+        'tab--disabled': disabled,
         [activeClassName]: activeClassName && isActive,
         ...rest?.className,
       })}

@@ -1,3 +1,5 @@
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { BtcScope } from '@metamask/keyring-api';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import {
   tokenRatesStartPolling,
@@ -39,6 +41,12 @@ describe('useTokenRatesPolling', () => {
         completedOnboarding: true,
         useCurrencyRateCheck: true,
         selectedNetworkClientId: 'selectedNetworkClientId',
+        enabledNetworkMap: {
+          eip155: {
+            '0x1': true,
+            '0x89': true,
+          },
+        },
         networkConfigurationsByChainId: {
           '0x1': {
             chainId: '0x1',
@@ -57,6 +65,10 @@ describe('useTokenRatesPolling', () => {
             ],
           },
         },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: BtcScope.Mainnet,
+        isEvmSelected: true,
       },
     };
 
@@ -67,17 +79,13 @@ describe('useTokenRatesPolling', () => {
 
     // Should poll each chain
     await Promise.all(mockPromises);
-    expect(tokenRatesStartPolling).toHaveBeenCalledTimes(2);
-    expect(tokenRatesStartPolling).toHaveBeenCalledWith('0x1');
-    expect(tokenRatesStartPolling).toHaveBeenCalledWith('0x89');
+    expect(tokenRatesStartPolling).toHaveBeenCalledTimes(1);
+    expect(tokenRatesStartPolling).toHaveBeenCalledWith(['0x1', '0x89']);
     // Stop polling on dismount
     unmount();
-    expect(tokenRatesStopPollingByPollingToken).toHaveBeenCalledTimes(2);
+    expect(tokenRatesStopPollingByPollingToken).toHaveBeenCalledTimes(1);
     expect(tokenRatesStopPollingByPollingToken).toHaveBeenCalledWith(
-      '0x1_rates',
-    );
-    expect(tokenRatesStopPollingByPollingToken).toHaveBeenCalledWith(
-      '0x89_rates',
+      '0x1,0x89_rates',
     );
   });
 
@@ -91,6 +99,10 @@ describe('useTokenRatesPolling', () => {
           '0x1': {},
           '0x89': {},
         },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: BtcScope.Mainnet,
+        isEvmSelected: true,
       },
     };
 
@@ -111,6 +123,10 @@ describe('useTokenRatesPolling', () => {
           '0x1': {},
           '0x89': {},
         },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: BtcScope.Mainnet,
+        isEvmSelected: true,
       },
     };
 
@@ -131,6 +147,10 @@ describe('useTokenRatesPolling', () => {
           '0x1': {},
           '0x89': {},
         },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: BtcScope.Mainnet,
+        isEvmSelected: true,
       },
     };
 
@@ -148,6 +168,10 @@ describe('useTokenRatesPolling', () => {
         completedOnboarding: true,
         useCurrencyRateCheck: true,
         networkConfigurationsByChainId: {},
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: BtcScope.Mainnet,
+        isEvmSelected: true,
       },
     };
 

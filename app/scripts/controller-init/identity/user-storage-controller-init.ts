@@ -32,7 +32,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
         maxNumberOfAccountsToAdd: isProduction() ? undefined : 100,
         onAccountAdded: (profileId) => {
           trackEvent({
-            category: MetaMetricsEventCategory.ProfileSyncing,
+            category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncAdded,
             properties: {
               profile_id: profileId,
@@ -41,7 +41,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
         },
         onAccountNameUpdated: (profileId) => {
           trackEvent({
-            category: MetaMetricsEventCategory.ProfileSyncing,
+            category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncNameUpdated,
             properties: {
               profile_id: profileId,
@@ -58,11 +58,55 @@ export const UserStorageControllerInit: ControllerInitFunction<
             sentryContext,
           );
           trackEvent({
-            category: MetaMetricsEventCategory.ProfileSyncing,
+            category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncErroneousSituation,
             properties: {
               profile_id: profileId,
               situation_message: situationMessage,
+            },
+          });
+        },
+      },
+      contactSyncing: {
+        onContactUpdated: (profileId) => {
+          trackEvent({
+            category: MetaMetricsEventCategory.BackupAndSync,
+            event: MetaMetricsEventName.ProfileActivityUpdated,
+            properties: {
+              profile_id: profileId,
+              feature_name: 'Backup And Sync',
+              action: 'Contacts Sync Contact Updated',
+            },
+          });
+        },
+        onContactDeleted: (profileId) => {
+          trackEvent({
+            category: MetaMetricsEventCategory.BackupAndSync,
+            event: MetaMetricsEventName.ProfileActivityUpdated,
+            properties: {
+              profile_id: profileId,
+              feature_name: 'Backup And Sync',
+              action: 'Contacts Sync Contact Deleted',
+            },
+          });
+        },
+        onContactSyncErroneousSituation: (
+          profileId,
+          situationMessage,
+          sentryContext,
+        ) => {
+          captureException(
+            new Error(`Contact sync - ${situationMessage}`),
+            sentryContext,
+          );
+          trackEvent({
+            category: MetaMetricsEventCategory.BackupAndSync,
+            event: MetaMetricsEventName.ProfileActivityUpdated,
+            properties: {
+              profile_id: profileId,
+              feature_name: 'Backup And Sync',
+              action: 'Contacts Sync Erroneous Situation',
+              additional_description: situationMessage,
             },
           });
         },

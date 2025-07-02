@@ -81,7 +81,7 @@ exports[`BridgeQuoteCard should render the recommended quote 1`] = `
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
           >
             <img
-              alt="Polygon Mainnet logo"
+              alt="Polygon logo"
               class="mm-avatar-network__network-image"
               src="./images/pol-token.svg"
             />
@@ -114,6 +114,7 @@ exports[`BridgeQuoteCard should render the recommended quote 1`] = `
             >
               <p
                 class="mm-box mm-text mm-text--body-md"
+                data-testid="network-fees"
                 style="white-space: nowrap; overflow: visible; text-decoration: underline; cursor: pointer;"
               >
                 $2.52
@@ -245,7 +246,7 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
           >
             <img
-              alt="Polygon Mainnet logo"
+              alt="Polygon logo"
               class="mm-avatar-network__network-image"
               src="./images/pol-token.svg"
             />
@@ -278,6 +279,7 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
             >
               <p
                 class="mm-box mm-text mm-text--body-md"
+                data-testid="network-fees"
                 style="white-space: nowrap; overflow: visible; text-decoration: underline; cursor: pointer;"
               >
                 $2.52

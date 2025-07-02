@@ -1,6 +1,6 @@
 import { LavaDomeDebug } from '@lavamoat/lavadome-core';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
 
@@ -18,6 +18,10 @@ import { AccountDetailsKey } from './account-details-key';
 import { AccountDetails } from '.';
 
 jest.mock('../../../store/actions.ts');
+
+jest.mock('../../../pages/confirmations/hooks/useEIP7702Networks', () => ({
+  useEIP7702Networks: () => ({ pending: false }),
+}));
 
 describe('AccountDetails', () => {
   const account = Object.values(
@@ -65,6 +69,7 @@ describe('AccountDetails', () => {
 
   it('shows export private key contents and password field when clicked', () => {
     const { queryByText, queryByPlaceholderText, getByTestId } = render();
+
     const exportPrivateKeyButton = getByTestId(
       'account-details-display-export-private-key',
     );
@@ -82,6 +87,7 @@ describe('AccountDetails', () => {
     const password = 'password';
 
     const { queryByPlaceholderText, queryByText, getByTestId } = render();
+
     const exportPrivateKeyButton = getByTestId(
       'account-details-display-export-private-key',
     );

@@ -9,6 +9,7 @@ import {
   WebHIDConnectedStatuses,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
+import { PasswordChangeToastType } from '../../../shared/constants/app-state';
 
 type AppState = {
   customNonceValue: string;
@@ -122,8 +123,10 @@ type AppState = {
   snapsInstallPrivacyWarningShown: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
+  isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
   showNewSrpAddedToast: boolean;
+  showPasswordChangeToast: PasswordChangeToastType | null;
 };
 
 export type AppSliceState = {
@@ -219,8 +222,10 @@ const initialState: AppState = {
   snapsInstallPrivacyWarningShown: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
+  isAccessedFromDappConnectedSitePopover: false,
   errorInSettings: null,
   showNewSrpAddedToast: false,
+  showPasswordChangeToast: null,
 };
 
 export default function reduceApp(
@@ -692,6 +697,9 @@ export default function reduceApp(
         ...appState,
         isAddingNewNetwork: Boolean(action.payload?.isAddingNewNetwork),
         isMultiRpcOnboarding: Boolean(action.payload?.isMultiRpcOnboarding),
+        isAccessedFromDappConnectedSitePopover: Boolean(
+          action.payload?.isAccessedFromDappConnectedSitePopover,
+        ),
         isNetworkMenuOpen: !appState.isNetworkMenuOpen,
       };
     case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
@@ -747,6 +755,12 @@ export default function reduceApp(
       return {
         ...appState,
         showNewSrpAddedToast: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_PASSWORD_CHANGE_TOAST:
+      return {
+        ...appState,
+        showPasswordChangeToast: action.payload,
       };
 
     default:

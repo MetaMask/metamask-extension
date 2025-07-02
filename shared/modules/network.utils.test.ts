@@ -167,53 +167,55 @@ describe('network utils', () => {
   });
 
   describe('sortNetworks', () => {
+    const networks: Record<CaipChainId, MultichainNetworkConfiguration> = {
+      [SolScope.Mainnet]: {
+        chainId: SolScope.Mainnet,
+        name: 'Solana',
+        nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
+        isEvm: false,
+      },
+      [EthScope.Mainnet]: {
+        chainId: EthScope.Mainnet,
+        name: 'Ethereum Mainnet',
+        nativeCurrency: 'ETH',
+        blockExplorerUrls: ['https://etherscan.io'],
+        defaultBlockExplorerUrlIndex: 0,
+        isEvm: true,
+      },
+      [EthScope.Testnet]: {
+        chainId: EthScope.Testnet,
+        name: 'Sepolia',
+        nativeCurrency: 'SepoliaETH',
+        blockExplorerUrls: ['https://sepolia.etherscan.io'],
+        defaultBlockExplorerUrlIndex: 0,
+        isEvm: true,
+      },
+      [BtcScope.Mainnet]: {
+        chainId: BtcScope.Mainnet,
+        name: 'Bitcoin',
+        nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
+        isEvm: false,
+      },
+    };
+
     it('sorts a list of networks based on the order of their chain IDs', () => {
-      const networks: Record<CaipChainId, MultichainNetworkConfiguration> = {
-        [SolScope.Mainnet]: {
-          chainId: SolScope.Mainnet,
-          name: 'Solana Mainnet',
-          nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
-          isEvm: false,
-        },
-        [EthScope.Mainnet]: {
-          chainId: EthScope.Mainnet,
-          name: 'Ethereum Mainnet',
-          nativeCurrency: 'ETH',
-          blockExplorerUrls: ['https://etherscan.io'],
-          defaultBlockExplorerUrlIndex: 0,
-          isEvm: true,
-        },
-        [EthScope.Testnet]: {
-          chainId: EthScope.Testnet,
-          name: 'Sepolia',
-          nativeCurrency: 'SepoliaETH',
-          blockExplorerUrls: ['https://sepolia.etherscan.io'],
-          defaultBlockExplorerUrlIndex: 0,
-          isEvm: true,
-        },
-        [BtcScope.Mainnet]: {
-          chainId: BtcScope.Mainnet,
-          name: 'Bitcoin Mainnet',
-          nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
-          isEvm: false,
-        },
-      };
-      const sortedChainIds = [
-        { networkId: SolScope.Mainnet },
-        { networkId: BtcScope.Mainnet },
-        { networkId: EthScope.Mainnet },
-        { networkId: EthScope.Testnet },
-      ];
-      expect(sortNetworks(networks, sortedChainIds)).toStrictEqual([
+      expect(
+        sortNetworks(networks, [
+          { networkId: SolScope.Mainnet },
+          { networkId: BtcScope.Mainnet },
+          { networkId: EthScope.Mainnet },
+          { networkId: EthScope.Testnet },
+        ]),
+      ).toStrictEqual([
         {
           chainId: SolScope.Mainnet,
-          name: 'Solana Mainnet',
+          name: 'Solana',
           nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
           isEvm: false,
         },
         {
           chainId: BtcScope.Mainnet,
-          name: 'Bitcoin Mainnet',
+          name: 'Bitcoin',
           nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
           isEvm: false,
         },
@@ -232,6 +234,44 @@ describe('network utils', () => {
           blockExplorerUrls: ['https://sepolia.etherscan.io'],
           defaultBlockExplorerUrlIndex: 0,
           isEvm: true,
+        },
+      ]);
+    });
+
+    it('places non-EVM networks to the end of the array', () => {
+      expect(
+        sortNetworks(networks, [
+          { networkId: EthScope.Mainnet },
+          { networkId: EthScope.Testnet },
+        ]),
+      ).toStrictEqual([
+        {
+          chainId: EthScope.Mainnet,
+          name: 'Ethereum Mainnet',
+          nativeCurrency: 'ETH',
+          blockExplorerUrls: ['https://etherscan.io'],
+          defaultBlockExplorerUrlIndex: 0,
+          isEvm: true,
+        },
+        {
+          chainId: EthScope.Testnet,
+          name: 'Sepolia',
+          nativeCurrency: 'SepoliaETH',
+          blockExplorerUrls: ['https://sepolia.etherscan.io'],
+          defaultBlockExplorerUrlIndex: 0,
+          isEvm: true,
+        },
+        {
+          chainId: SolScope.Mainnet,
+          name: 'Solana',
+          nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
+          isEvm: false,
+        },
+        {
+          chainId: BtcScope.Mainnet,
+          name: 'Bitcoin',
+          nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
+          isEvm: false,
         },
       ]);
     });

@@ -15,4 +15,4 @@ export const BANNER_STYLES = {
   HEIGHT: '64px',
 };
 
-export const MAX_SLIDES = 5;
+export const MAX_SLIDES = 7;

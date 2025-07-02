@@ -1,8 +1,10 @@
+import { Suite } from 'mocha';
+import { Browser } from 'selenium-webdriver';
+import { Anvil } from '../../seeder/anvil';
 import { withFixtures } from '../../helpers';
 import { WALLET_PASSWORD } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
-import { Suite } from 'mocha';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
@@ -20,23 +22,32 @@ describe('Incremental Security', function (this: Suite) {
         title: this.test?.fullTitle(),
         dappPath: 'send-eth-with-private-key-test',
       },
-      async ({ driver, localNodes }: { driver: Driver; localNodes: any[] }) => {
+      async ({
+        driver,
+        localNodes,
+      }: {
+        driver: Driver;
+        localNodes: Anvil[];
+      }) => {
         // Seed Account
-        await localNodes[0].setAccountBalance(
+        await localNodes?.[0]?.setAccountBalance(
           '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3',
           '0x100000000000000000000',
         );
         await driver.navigate();
 
+        // skip collect metametrics
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
+
         // agree to terms of use and start onboarding
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
-        await startOnboardingPage.clickCreateWalletButton();
-
-        // skip collect metametrics
-        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-        await onboardingMetricsPage.clickNoThanksButton();
+        await startOnboardingPage.check_bannerPageIsLoaded();
+        await startOnboardingPage.agreeToTermsOfUse();
+        await startOnboardingPage.check_loginPageIsLoaded();
+        await startOnboardingPage.createWalletWithSrp();
 
         // create password
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
@@ -47,6 +58,12 @@ describe('Incremental Security', function (this: Suite) {
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.check_pageIsLoaded();
         await secureWalletPage.skipSRPBackup();
+
+        // skip collect metametrics
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
 
         // complete onboarding and pin extension
         const onboardingCompletePage = new OnboardingCompletePage(driver);
@@ -77,6 +94,11 @@ describe('Incremental Security', function (this: Suite) {
 
         // reveal and confirm the Secret Recovery Phrase on backup SRP page
         await secureWalletPage.revealAndConfirmSRP(WALLET_PASSWORD);
+
+        // complete backup
+        await onboardingCompletePage.check_pageIsLoaded_backup();
+        await onboardingCompletePage.check_keepSrpSafeMessageIsDisplayed();
+        await onboardingCompletePage.completeBackup();
 
         // check the balance is correct after revealing and confirming the SRP
         await homePage.check_pageIsLoaded();

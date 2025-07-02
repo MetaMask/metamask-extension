@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import { largeDelayMs, regularDelayMs } from '../../helpers';
+import { largeDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';
 import { ACCOUNT_TYPE } from '../../constants';
 import PrivacySettings from './settings/privacy-settings';
@@ -13,7 +13,7 @@ class AccountListPage {
     '[data-testid="account-list-address"]';
 
   private readonly accountListBalance =
-    '[data-testid="second-currency-display"]';
+    '[data-testid="first-currency-display"]';
 
   private readonly accountValueAndSuffix =
     '[data-testid="account-value-and-suffix"]';
@@ -23,6 +23,8 @@ class AccountListPage {
 
   private readonly accountMenuButton =
     '[data-testid="account-list-menu-details"]';
+
+  private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
 
   private readonly accountNameInput = '#account-name';
 
@@ -142,7 +144,7 @@ class AccountListPage {
 
   private readonly importSrpModalTitle = {
     text: 'Import Secret Recovery Phrase',
-    tag: 'h4',
+    tag: 'p',
   };
 
   private readonly importSrpInput = '#import-srp__multi-srp__srp-word-0';
@@ -273,10 +275,6 @@ class AccountListPage {
       }
       await this.driver.clickElementAndWaitToDisappear(
         this.addAccountConfirmButton,
-        // Longer timeout than usual, this reduces the flakiness
-        // around Bitcoin account creation (mainly required for
-        // Firefox)
-        5000,
       );
     } else {
       const createButton = await this.driver.findElement(
@@ -391,6 +389,9 @@ class AccountListPage {
     );
     await fileInput.sendKeys(jsonFilePath);
     await this.driver.fill(this.importAccountJsonPasswordInput, password);
+    // needed to mitigate a race condition with the state update
+    // there is no condition we can wait for in the UI
+    await this.driver.delay(largeDelayMs);
     await this.driver.clickElementAndWaitToDisappear(
       this.importAccountConfirmButton,
     );
@@ -414,6 +415,7 @@ class AccountListPage {
     );
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.clickElement(this.accountMenuButton);
+    await this.driver.clickElementSafe(this.accountDetailsTab);
   }
 
   /**
@@ -494,13 +496,18 @@ class AccountListPage {
     await this.driver.waitForSelector(this.addEthereumAccountButton);
   }
 
+  async openImportSrpModal(): Promise<void> {
+    await this.openAddAccountModal();
+    await this.driver.clickElement(this.importSrpButton);
+  }
+
   async openConnectHardwareWalletModal(): Promise<void> {
     console.log(`Open connect hardware wallet modal`);
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.clickElement(this.addHardwareWalletButton);
-    // This delay is needed to mitigate an existing bug in FF
+    // This delay is needed to mitigate an existing bug
     // See https://github.com/metamask/metamask-extension/issues/25851
-    await this.driver.delay(regularDelayMs);
+    await this.driver.delay(largeDelayMs);
   }
 
   async openHiddenAccountOptions(): Promise<void> {
@@ -700,12 +707,16 @@ class AccountListPage {
    * Verifies number of accounts currently showing in the accounts menu.
    *
    * @param expectedNumberOfAccounts - The expected number of accounts showing.
+   * @param accountType - Optional account type to filter by. If not provided, counts all accounts.
    */
   async check_numberOfAvailableAccounts(
     expectedNumberOfAccounts: number,
+    accountType?: ACCOUNT_TYPE,
   ): Promise<void> {
     console.log(
-      `Verify the number of accounts in the account menu is: ${expectedNumberOfAccounts}`,
+      `Verify the number of ${
+        accountType ? ACCOUNT_TYPE[accountType] : 'all'
+      } accounts in the account menu is: ${expectedNumberOfAccounts}`,
     );
 
     await this.driver.waitForSelector(this.accountListItem);
@@ -713,9 +724,39 @@ class AccountListPage {
       const internalAccounts = await this.driver.findElements(
         this.accountListItem,
       );
-      const isValid = internalAccounts.length === expectedNumberOfAccounts;
+
+      let filteredAccounts = internalAccounts;
+      if (accountType !== undefined) {
+        // Filter accounts based on type
+        filteredAccounts = await Promise.all(
+          internalAccounts.map(async (account) => {
+            const accountText = await account.getText();
+            switch (accountType) {
+              case ACCOUNT_TYPE.Ethereum:
+                return (
+                  !accountText.includes('Bitcoin') &&
+                  !accountText.includes('Solana')
+                );
+              case ACCOUNT_TYPE.Bitcoin:
+                return accountText.includes('Bitcoin');
+              case ACCOUNT_TYPE.Solana:
+                return accountText.includes('Solana');
+              default:
+                return true;
+            }
+          }),
+        ).then((results) =>
+          internalAccounts.filter((_, index) => results[index]),
+        );
+      }
+
+      const isValid = filteredAccounts.length === expectedNumberOfAccounts;
       console.log(
-        `Number of accounts: ${internalAccounts.length} is equal to ${expectedNumberOfAccounts}? ${isValid}`,
+        `Number of ${
+          accountType ? ACCOUNT_TYPE[accountType] : 'all'
+        } accounts: ${
+          filteredAccounts.length
+        } is equal to ${expectedNumberOfAccounts}? ${isValid}`,
       );
       return isValid;
     }, 20000);
@@ -737,10 +778,12 @@ class AccountListPage {
   }
 
   async selectAccount(accountLabel: string): Promise<void> {
+    console.log(`Select account with label ${accountLabel} in account list`);
     await this.driver.clickElement({
       css: this.selectAccountSelector,
       text: accountLabel,
     });
+    console.log(`Account with label ${accountLabel} selected`);
   }
 
   async startImportSecretPhrase(srp: string): Promise<void> {

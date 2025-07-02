@@ -16,7 +16,7 @@ export enum FormTextFieldSize {
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface FormTextFieldStyleUtilityProps
-  extends Omit<TextFieldStyleUtilityProps, 'size' | 'type'> {
+  extends Omit<TextFieldStyleUtilityProps, 'size'> {
   /*
    * Additional classNames to be added to the FormTextField component
    */
@@ -36,7 +36,7 @@ export interface FormTextFieldStyleUtilityProps
   /*
    * props to be passed to the HelpText component
    */
-  helpTextProps?: HelpTextProps<'div'>;
+  helpTextProps?: Partial<HelpTextProps<'div'>>;
 }
 
 // TODO: Convert to a `type` in a future major version.
@@ -51,7 +51,7 @@ export interface FormTextFieldWithLabelProps
   /*
    * props to be passed to the Label component
    */
-  labelProps?: LabelProps<'label'>;
+  labelProps?: Partial<LabelProps<'label'>>;
   id: string; // id is required when label is provided
 }
 

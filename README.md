@@ -147,7 +147,6 @@ Before running e2e tests, ensure you've run `yarn install` to download dependenc
    - `yarn build:test` for main build
    - `yarn build:test:flask` for flask build
    - `yarn build:test:mv2` for mv2 build
-   - `yarn build:test:mmi` for mmi build
 3. Start a test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes. This option is ideal for iterative testing and development. This command also allows you to generate test builds for various types, including:
    - `yarn start:test` for main build
    - `yarn start:test:flask` for flask build

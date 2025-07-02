@@ -210,6 +210,7 @@ describe('useConfirmationNavigation', () => {
       expect(result.count).toBe(2);
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ['token', undefined],
       ['NFT', '123'],
@@ -261,6 +262,7 @@ describe('useConfirmationNavigation', () => {
       ]);
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ['token', undefined],
       ['NFT', '123'],

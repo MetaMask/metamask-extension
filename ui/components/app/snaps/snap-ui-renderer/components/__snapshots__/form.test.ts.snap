@@ -20,7 +20,7 @@ exports[`SnapUIForm will render 1`] = `
             class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
           >
             <div
-              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
             >
               <input
                 autocomplete="off"
@@ -70,13 +70,13 @@ exports[`SnapUIForm will render with fields 1`] = `
             class="mm-box mm-form-text-field snap-ui-renderer__input snap-ui-renderer__field mm-box--display-flex mm-box--flex-direction-column"
           >
             <label
-              class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
               for="input"
             >
               My Input
             </label>
             <div
-              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
             >
               <input
                 autocomplete="off"

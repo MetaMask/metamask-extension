@@ -1,7 +1,7 @@
 import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { BigNumber } from '@ethersproject/bignumber';
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { waitFor } from '@testing-library/react';
 import {
@@ -107,10 +107,12 @@ describe('Send Slice', () => {
   beforeEach(() => {
     setBackgroundConnection({
       addPollingTokenToAppState: jest.fn(),
-      addTransaction: jest.fn((_u, _v, cb) => {
-        cb(null, { transactionMeta: null });
+      addTransaction: jest.fn((_u, _v) => {
+        return Promise.resolve({ transactionMeta: null });
       }),
-      updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) => cb(null)),
+      updateTransactionSendFlowHistory: jest.fn((_x, _y, _z) => {
+        return Promise.resolve();
+      }),
     });
 
     jest.useFakeTimers();
@@ -1548,6 +1550,7 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
@@ -1736,6 +1739,7 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
@@ -1810,6 +1814,7 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
@@ -1878,6 +1883,7 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
@@ -1954,6 +1960,7 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
@@ -2027,6 +2034,7 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
@@ -2092,6 +2100,7 @@ describe('Send Slice', () => {
                 },
                 options: {},
                 methods: ETH_EOA_METHODS,
+                scopes: [EthScope.Eoa],
                 type: EthAccountType.Eoa,
               },
             },
@@ -2374,6 +2383,7 @@ describe('Send Slice', () => {
                 },
                 options: {},
                 methods: ETH_EOA_METHODS,
+                scopes: [EthScope.Eoa],
                 type: EthAccountType.Eoa,
               },
             },
@@ -2687,6 +2697,7 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
@@ -2919,6 +2930,7 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
@@ -3108,12 +3120,10 @@ describe('Send Slice', () => {
           const history = { push: jest.fn() };
 
           setBackgroundConnection({
-            addPollingTokenToAppState: jest.fn(),
-            addTransaction: jest.fn((_u, _v) => {
-              throw new Error(ERROR);
-            }),
-            updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) =>
-              cb(null),
+            addPollingTokenToAppState: jest.fn(() => Promise.resolve()),
+            addTransaction: jest.fn((_u, _v) => Promise.reject(ERROR)),
+            updateTransactionSendFlowHistory: jest.fn((_x, _y, _z) =>
+              Promise.resolve(),
             ),
           });
 
@@ -3293,6 +3303,7 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
@@ -3377,6 +3388,7 @@ describe('Send Slice', () => {
               },
               options: {},
               methods: ETH_EOA_METHODS,
+              scopes: [EthScope.Eoa],
               type: EthAccountType.Eoa,
               balance: '0x0',
             },
@@ -3476,6 +3488,7 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
@@ -3553,6 +3566,7 @@ describe('Send Slice', () => {
               },
               options: {},
               methods: ETH_EOA_METHODS,
+              scopes: [EthScope.Eoa],
               type: EthAccountType.Eoa,
               balance: '0x0',
             },
@@ -3664,6 +3678,7 @@ describe('Send Slice', () => {
                 id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
                 options: {},
                 methods: ETH_EOA_METHODS,
+                scopes: [EthScope.Eoa],
                 type: EthAccountType.Eoa,
                 metadata: {
                   name: 'Test Account',
@@ -3778,6 +3793,7 @@ describe('Send Slice', () => {
             },
             options: {},
             methods: ETH_EOA_METHODS,
+            scopes: [EthScope.Eoa],
             type: EthAccountType.Eoa,
             balance: '0x0',
           },
@@ -3885,6 +3901,7 @@ describe('Send Slice', () => {
                 id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
                 options: {},
                 methods: ETH_EOA_METHODS,
+                scopes: [EthScope.Eoa],
                 type: EthAccountType.Eoa,
                 metadata: {
                   name: 'Test Account',
@@ -4025,6 +4042,7 @@ describe('Send Slice', () => {
                   'eth_signTypedData_v4',
                 ],
                 options: {},
+                scopes: ['eip155:0'],
                 type: 'eip155:eoa',
               },
               gas: {

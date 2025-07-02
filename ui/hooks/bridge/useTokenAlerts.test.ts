@@ -1,7 +1,7 @@
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { useTokenAlerts } from './useTokenAlerts';
 
 const renderUseSolanaAlerts = (mockStoreState: object) =>

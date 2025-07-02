@@ -4,6 +4,7 @@ import { getMetaMaskHdKeyrings } from '../../selectors';
 import { getInternalAccounts } from '../../selectors/accounts';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import mockState from '../../../test/data/mock-state.json';
+import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 import { useHdKeyringsWithSnapAccounts } from './useHdKeyringsWithSnapAccounts';
 
 const mockHdAccount = createMockInternalAccount({
@@ -22,12 +23,14 @@ const mockFirstPartySnapAccount = createMockInternalAccount({
   options: {
     entropySource: 'keyring1',
   },
+  keyringType: KeyringTypes.snap,
 });
 
 const mockSnapAccount2 = createMockInternalAccount({
   address: '',
   name: 'Second Party Snap Account',
   options: {},
+  keyringType: KeyringTypes.snap,
 });
 
 const mockHdKeyring = {
@@ -56,8 +59,15 @@ jest.mock('../../selectors/accounts', () => ({
   getInternalAccounts: jest.fn(),
 }));
 
+jest.mock('../../../shared/lib/snaps/snaps', () => ({
+  ...jest.requireActual('../../../shared/lib/snaps/snaps'),
+  isSnapPreinstalled: jest.fn(),
+}));
+
 const mockGetMetaMaskHdKeyrings = getMetaMaskHdKeyrings as unknown as jest.Mock;
 const mockGetInternalAccounts = getInternalAccounts as unknown as jest.Mock;
+const mockIsSnapPreinstalled = isSnapPreinstalled as unknown as jest.Mock;
+
 describe('useHdKeyringsWithSnapAccounts', () => {
   beforeEach(() => {
     mockGetMetaMaskHdKeyrings.mockReturnValue([mockHdKeyring, mockHdKeyring2]);
@@ -67,6 +77,7 @@ describe('useHdKeyringsWithSnapAccounts', () => {
       mockFirstPartySnapAccount,
       mockSnapAccount2,
     ]);
+    mockIsSnapPreinstalled.mockReturnValue(true);
   });
 
   it('includes snap accounts that have a matching entropy source', () => {

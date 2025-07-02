@@ -10,15 +10,21 @@
     color: unset;
     font-weight: 500;
     transition: color 50ms ease, border-color 50ms ease;
+
+    &:not([disabled]) {
+      &:hover {
+        color: var(--color-text-default);
+      }
+    }
+  }
+
+  &--disabled {
+    color: var(--color-text-muted);
   }
 
   &--single {
     color: var(--color-text-default);
     border-bottom: none;
-  }
-
-  &:hover {
-    color: var(--color-text-default);
   }
 
   &--active {
