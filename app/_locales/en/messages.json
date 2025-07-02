@@ -187,9 +187,6 @@
   "addBitcoinAccountLabel": {
     "message": "Bitcoin account"
   },
-  "addBitcoinTaprootAccountLabel": {
-    "message": "Bitcoin Taproot account"
-  },
   "addBlockExplorer": {
     "message": "Add a block explorer"
   },
