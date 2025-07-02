@@ -5553,10 +5553,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^0.15.0":
-  version: 0.15.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:0.15.0"
-  checksum: 10/e5110650fc911eba9759942c6fe7da78d9bf4615fc853a38e3fbb0bf020fe0bcbb9b37b5b5a72f8c55dbe3342d69b75c9c64b5f1460309b48b52c11ca2a09b12
+"@metamask/bitcoin-wallet-snap@npm:^0.16.0":
+  version: 0.16.0
+  resolution: "@metamask/bitcoin-wallet-snap@npm:0.16.0"
+  checksum: 10/757916bc163f1db9c5235ba210eb48c24dde6f3a095852be802053e344a92f91912b902ab6143ddbf3d2bcb8bbdd87dc6927fca057e28a4311aed9a0285f07bb
   languageName: node
   linkType: hard
 
@@ -7336,10 +7336,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.34.0":
-  version: 1.34.0
-  resolution: "@metamask/solana-wallet-snap@npm:1.34.0"
-  checksum: 10/7a84d65bb481cbcd8a11f62c97e08ae6eed4fcd958b019250a1c32f26f6cb9c3c79a6709c68033dac61bf9b989ced2b844b49dc9d28e427c481aebf7136ebb3a
+"@metamask/solana-wallet-snap@npm:^1.35.0":
+  version: 1.35.0
+  resolution: "@metamask/solana-wallet-snap@npm:1.35.0"
+  checksum: 10/7c13267328b75e62674904a11a3aafa34d1a0883e157d3b034db253542e72ed4734c382c41ffbf3621947db4e22bc42900dc86453646e6548a333436e7d2bbd4
   languageName: node
   linkType: hard
 
@@ -31714,7 +31714,7 @@ __metadata:
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A68.2.0#~/.yarn/patches/@metamask-assets-controllers-npm-68.2.0-402120c55e.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^0.15.0"
+    "@metamask/bitcoin-wallet-snap": "npm:^0.16.0"
     "@metamask/bridge-controller": "npm:^33.0.1"
     "@metamask/bridge-status-controller": "npm:^32.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
@@ -31797,7 +31797,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^13.2.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
-    "@metamask/solana-wallet-snap": "npm:^1.33.2"
+    "@metamask/solana-wallet-snap": "npm:^1.35.0"
     "@metamask/solana-wallet-standard": "npm:^0.5.0"
     "@metamask/streams": "npm:^0.2.0"
     "@metamask/superstruct": "npm:^3.2.1"
