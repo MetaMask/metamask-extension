@@ -1,6 +1,11 @@
-import { CaipChainId, parseCaipChainId } from '@metamask/utils';
+import {
+  CaipChainId,
+  KnownCaipNamespace,
+  parseCaipChainId,
+} from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toHex } from '@metamask/controller-utils';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_NETWORK_CHAIN_IDS,
@@ -23,7 +28,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { setEnabledNetworks } from '../../../../../store/actions';
+import {
+  setActiveNetwork,
+  setEnabledNetworks,
+} from '../../../../../store/actions';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -105,8 +113,17 @@ const DefaultNetworks = memo(() => {
       .map((network) => convertCaipToHexChainId(network.chainId))
       .filter((chainId) => FEATURED_NETWORK_CHAIN_IDS.includes(chainId));
 
+    // Use the first EVM network's chain ID for getting RPC data
+    const firstEvmChainId = evmNetworksList[0].chainId;
+    const { defaultRpcEndpoint } = getRpcDataByChainId(
+      firstEvmChainId,
+      evmNetworks,
+    );
+    const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
+
     dispatch(setEnabledNetworks(evmChainIds, namespace));
-  }, [dispatch, namespace, orderedNetworks]);
+    dispatch(setActiveNetwork(finalNetworkClientId));
+  }, [dispatch, evmNetworks, namespace, orderedNetworks]);
 
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
 
