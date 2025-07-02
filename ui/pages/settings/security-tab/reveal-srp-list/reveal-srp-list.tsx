@@ -65,22 +65,6 @@ export const RevealSrpList = () => {
 
   return (
     <Box className="srp-reveal-list">
-      {syncSRPsLoading && (
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
-          marginTop={12}
-        >
-          <Spinner className="change-password__spinner" />
-          <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
-            {t('syncingSeedPhrases')}
-          </Text>
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-            {t('syncingSeedPhrasesNote')}
-          </Text>
-        </Box>
-      )}
       {isSocialLoginFlow && (
         <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
           <Text
@@ -165,11 +149,32 @@ export const RevealSrpList = () => {
         >
           {t('securitySrpLabel')}
         </Text>
-        <SrpList
-          onActionComplete={onSrpActionComplete}
-          hideShowAccounts={false}
-          isSettingsPage={true}
-        />
+        {syncSRPsLoading && (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.center}
+            marginTop={12}
+          >
+            <Spinner className="change-password__spinner" />
+            <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
+              {t('syncingSeedPhrases')}
+            </Text>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+            >
+              {t('syncingSeedPhrasesNote')}
+            </Text>
+          </Box>
+        )}
+        {!syncSRPsLoading && (
+          <SrpList
+            onActionComplete={onSrpActionComplete}
+            hideShowAccounts={false}
+            isSettingsPage={true}
+          />
+        )}
       </Box>
       {srpQuizModalVisible && selectedKeyringId && (
         <SRPQuizModal
