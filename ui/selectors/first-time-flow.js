@@ -1,6 +1,7 @@
 import { PLATFORM_FIREFOX } from '../../shared/constants/app';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getBrowserName } from '../../shared/modules/browser-runtime.utils';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
@@ -18,6 +19,10 @@ import {
  * @returns {boolean} True if the user is on a social login flow
  */
 export const getIsSocialLoginFlow = (state) => {
+  if (!getIsSeedlessOnboardingFeatureEnabled()) {
+    return false;
+  }
+
   const { firstTimeFlowType } = state.metamask;
   return (
     firstTimeFlowType === FirstTimeFlowType.socialCreate ||

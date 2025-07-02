@@ -1080,6 +1080,12 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
+  "changePasswordLoading": {
+    "message": "Changing password..."
+  },
+  "changePasswordLoadingNote": {
+    "message": "This shouldn't take long"
+  },
   "chooseYourNetwork": {
     "message": "Choose your network"
   },
@@ -2189,6 +2195,9 @@
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
+  "enterPasswordCurrent": {
+    "message": "Enter your current password"
+  },
   "enterRpcUrl": {
     "message": "Enter RPC URL"
   },
@@ -2404,6 +2413,20 @@
   },
   "forgotPasswordModalTitle": {
     "message": "Forgot your password?"
+  },
+  "forgotPasswordSocialDescription": {
+    "message": "MetaMask can’t recover your password for you."
+  },
+  "forgotPasswordSocialStep1": {
+    "message": "If you’re logged into MetaMask on a device with $1 (like Face ID), you can reset your password there.",
+    "description": "$1 is bold biometrics turned on"
+  },
+  "forgotPasswordSocialStep1Biometrics": {
+    "message": "biometrics turned on"
+  },
+  "forgotPasswordSocialStep2": {
+    "message": "If you have your $1, you can reset your current wallet and reimport using $1.",
+    "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {
     "message": "form"
@@ -3105,6 +3128,37 @@
   },
   "lockTimeInvalid": {
     "message": "Lock time must be a number between 0 and 10080"
+  },
+  "loginErrorConnectButton": {
+    "message": "Try again"
+  },
+  "loginErrorConnectDescription": {
+    "message": "Your internet connection is unstable. Check your connection and try again."
+  },
+  "loginErrorConnectTitle": {
+    "message": "Unable to connect"
+  },
+  "loginErrorGenericButton": {
+    "message": "Try again"
+  },
+  "loginErrorGenericDescription": {
+    "message": "An error occurred while logging in. Try again and if the issue continues, contact $1.",
+    "description": "$1 is the key 'loginErrorGenericSupport'"
+  },
+  "loginErrorGenericSupport": {
+    "message": "Metamask Support"
+  },
+  "loginErrorGenericTitle": {
+    "message": "Something went wrong"
+  },
+  "loginErrorSessionExpiredButton": {
+    "message": "Log in"
+  },
+  "loginErrorSessionExpiredDescription": {
+    "message": "Your session has expired. Please log in again to continue."
+  },
+  "loginErrorSessionExpiredTitle": {
+    "message": "Session has expired"
   },
   "logo": {
     "message": "$1 logo",
@@ -4833,7 +4887,7 @@
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
   },
   "revealSecretRecoveryPhrase": {
-    "message": "Reveal Secret Recovery Phrase"
+    "message": "Secret Recovery Phrase"
   },
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
@@ -4975,8 +5029,27 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
+  "securityChangePassword": {
+    "message": "Change password"
+  },
+  "securityChangePasswordDescription": {
+    "message": "Choose a strong password to unlock MetaMask app on your device. If you lose this password, you will need your Secret Recovery Phrase to re-import your wallet."
+  },
+  "securityChangePasswordTitle": {
+    "message": "Password"
+  },
+  "securityChangePasswordToastError": {
+    "message": "Password couldn’t be changed. Please try again."
+  },
+  "securityChangePasswordToastSuccess": {
+    "message": "New password saved"
+  },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
+  },
+  "securityLoginWithSocial": {
+    "message": "Login with $1",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securityLoginWithSrpBackedUp": {
     "message": "Secret Recovery Phrase backed up"
@@ -4991,11 +5064,24 @@
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
   },
+  "securitySocialLoginEnabled": {
+    "message": "Enabled"
+  },
+  "securitySocialLoginEnabledDescription": {
+    "message": "This email and your MetaMask password will help you recover your account and recovery phrases."
+  },
+  "securitySocialLoginLabel": {
+    "message": "$1 RECOVERY",
+    "description": "The $1 is the text 'Google' or 'Apple'"
+  },
   "securitySrpDescription": {
     "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
   },
   "securitySrpLabel": {
     "message": "SECRET RECOVERY PHRASES"
+  },
+  "securitySrpWalletRecovery": {
+    "message": "Manage recovery methods"
   },
   "seeAllPermissions": {
     "message": "See all permissions",

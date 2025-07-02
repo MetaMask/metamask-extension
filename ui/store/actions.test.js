@@ -19,6 +19,7 @@ import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametric
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -251,6 +252,41 @@ describe('Actions', () => {
         store.dispatch(actions.restoreSocialBackupAndGetSeedPhrase('password')),
       ).rejects.toThrow('error');
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#changePassword', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('should change the password for both seedless onboarding and keyring controller', async () => {
+      const store = mockStore({
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+      const oldPassword = 'old-password';
+      const newPassword = 'new-password';
+
+      const socialSyncChangePasswordStub = sinon.stub().resolves();
+      const keyringChangePasswordStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        socialSyncChangePassword: socialSyncChangePasswordStub,
+        keyringChangePassword: keyringChangePasswordStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.changePassword(newPassword, oldPassword));
+
+      expect(
+        socialSyncChangePasswordStub.calledOnceWith(newPassword, oldPassword),
+      ).toStrictEqual(true);
+      expect(
+        keyringChangePasswordStub.calledOnceWith(newPassword),
+      ).toStrictEqual(true);
     });
   });
 

@@ -458,6 +458,7 @@ const buildTypeMappingForRemoteFeatureFlag = {
   flask: DistributionType.Flask,
   main: DistributionType.Main,
   beta: DistributionType.Beta,
+  experimental: DistributionType.Main, // experimental builds use main distribution
 };
 
 export default class MetamaskController extends EventEmitter {
@@ -3790,6 +3791,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
       fetchAllSecretData: this.fetchAllSecretData.bind(this),
+      socialSyncChangePassword:
+        this.seedlessOnboardingController.changePassword.bind(
+          this.seedlessOnboardingController,
+        ),
 
       // KeyringController
       setLocked: this.setLocked.bind(this),
@@ -3799,6 +3804,9 @@ export default class MetamaskController extends EventEmitter {
         this.generateNewMnemonicAndAddToVault.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
       exportAccount: this.exportAccount.bind(this),
+      keyringChangePassword: this.keyringController.changePassword.bind(
+        this.keyringController,
+      ),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
