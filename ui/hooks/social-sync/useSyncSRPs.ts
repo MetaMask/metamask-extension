@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import log from 'loglevel';
 import { syncSeedPhrases } from '../../store/actions';
 import { getIsSocialLoginFlow } from '../../selectors';
 
@@ -18,7 +19,7 @@ export const useSyncSRPs = () => {
         setLoading(true);
         await dispatch(syncSeedPhrases());
       } catch (error) {
-        console.error('[useSyncSRPs] error', error);
+        log.error('[useSyncSRPs] error', error);
       } finally {
         setLoading(false);
       }

@@ -311,7 +311,7 @@ export function restoreSocialBackupAndGetSeedPhrase(
 
       return mnemonic;
     } catch (error) {
-      console.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
+      log.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
       dispatch(hideLoadingIndication());
       dispatch(displayWarning(error.message));
       throw error;
@@ -331,7 +331,7 @@ export function syncSeedPhrases(): ThunkAction<
     try {
       await submitRequestToBackground('syncSeedPhrases');
     } catch (error) {
-      console.error('[syncSeedPhrases] error', error);
+      log.error('[syncSeedPhrases] error', error);
       dispatch(displayWarning(error.message));
       throw error;
     } finally {
