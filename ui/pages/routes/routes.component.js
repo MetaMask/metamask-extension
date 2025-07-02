@@ -55,6 +55,8 @@ import {
   DEEP_LINK_ROUTE,
   SMART_ACCOUNT_UPDATE,
   WALLET_DETAILS_ROUTE,
+  ACCOUNT_DETAILS_ROUTE,
+  ACCOUNT_DETAILS_QR_CODE_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -88,6 +90,8 @@ import {
 } from '../../../shared/lib/confirmation.utils';
 import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
 import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
+import { MultichainAccountDetails } from '../multichain-accounts/account-details';
+import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -418,6 +422,16 @@ export default class Routes extends Component {
             component={WalletDetails}
             exact
           />
+          <Authenticated
+            path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
+            component={MultichainAccountDetails}
+            exact
+          />
+          <Authenticated
+            path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
+            component={AddressQRCode}
+            exact
+          />
 
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
@@ -435,6 +449,15 @@ export default class Routes extends Component {
     return routes;
   }
 
+  renderAccountDetails() {
+    const { accountDetailsAddress, isMultichainAccountsState1Enabled } =
+      this.props;
+    if (!accountDetailsAddress || isMultichainAccountsState1Enabled) {
+      return null;
+    }
+    return <AccountDetails address={accountDetailsAddress} />;
+  }
+
   render() {
     const {
       isLoading,
@@ -450,7 +473,6 @@ export default class Routes extends Component {
       isAccountMenuOpen,
       toggleAccountMenu,
       isNetworkMenuOpen,
-      accountDetailsAddress,
       isImportTokensModalOpen,
       isDeprecatedNetworkModalOpen,
       location,
@@ -568,9 +590,7 @@ export default class Routes extends Component {
           <NetworkListMenu onClose={networkMenuClose} />
         ) : null}
         <NetworkConfirmationPopover />
-        {accountDetailsAddress ? (
-          <AccountDetails address={accountDetailsAddress} />
-        ) : null}
+        {this.renderAccountDetails()}
         {isImportNftsModalOpen ? (
           <ImportNftsModal onClose={hideImportNftsModal} />
         ) : null}
