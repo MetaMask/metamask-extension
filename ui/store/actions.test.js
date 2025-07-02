@@ -187,13 +187,11 @@ describe('Actions', () => {
         Buffer.from(mockSeedPhrase).values(),
       );
 
-      const fetchAllSeedPhrasesStub = background.fetchAllSeedPhrases.callsFake(
-        (_, cb) => cb(null, [mockEncodedSeedPhrase]),
-      );
+      const fetchAllSecretDataStub = background.fetchAllSecretData.resolves([
+        mockEncodedSeedPhrase,
+      ]);
       const createNewVaultAndRestoreStub =
-        background.createNewVaultAndRestore.callsFake((_, __, cb) =>
-          cb(null, mockKeyrings),
-        );
+        background.createNewVaultAndRestore.resolves(mockKeyrings);
 
       setBackgroundConnection(background);
 
@@ -206,7 +204,7 @@ describe('Actions', () => {
         actions.restoreSocialBackupAndGetSeedPhrase('password'),
       );
 
-      expect(fetchAllSeedPhrasesStub.callCount).toStrictEqual(1);
+      expect(fetchAllSecretDataStub.callCount).toStrictEqual(1);
       expect(createNewVaultAndRestoreStub.callCount).toStrictEqual(1);
       expect(store.getActions()).toStrictEqual(expectedActions);
     });

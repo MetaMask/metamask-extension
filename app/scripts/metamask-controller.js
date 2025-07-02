@@ -172,9 +172,9 @@ import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
-import { RecoveryError } from '@metamask/seedless-onboarding-controller';
 
 import { ErrorReportingService } from '@metamask/error-reporting-service';
+import { RecoveryError } from '@metamask/seedless-onboarding-controller';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -459,6 +459,7 @@ const buildTypeMappingForRemoteFeatureFlag = {
   flask: DistributionType.Flask,
   main: DistributionType.Main,
   beta: DistributionType.Beta,
+  experimental: DistributionType.Main, // experimental builds use main distribution
 };
 
 export default class MetamaskController extends EventEmitter {
@@ -2009,9 +2010,6 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.NotificationServicesPushController;
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
     this.accountWalletController = controllersByName.AccountTreeController;
-    this.seedlessOnboardingController =
-      controllersByName.SeedlessOnboardingController;
-
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
 
