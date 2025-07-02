@@ -186,7 +186,7 @@ export async function integrationTestRender(extendedRenderOptions) {
     ...renderOptions
   } = extendedRenderOptions;
 
-  connectToBackground(null, backgroundConnection, () => {
+  connectToBackground(null, null, backgroundConnection, () => {
     // our lint rules waste so much of my time.
   });
 
