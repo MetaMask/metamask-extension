@@ -77,6 +77,7 @@ class SettingsPage extends PureComponent {
     initialBreadCrumbRoute: PropTypes.string,
     isAddressEntryPage: PropTypes.bool,
     isPopup: PropTypes.bool,
+    isRevealSrpListPage: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
     settingsPageSnaps: PropTypes.array,
@@ -127,11 +128,12 @@ class SettingsPage extends PureComponent {
       currentPath,
       mostRecentOverviewPage,
       addNewNetwork,
+      isRevealSrpListPage,
     } = this.props;
 
-    const { searchResults, isSearchList, searchText } = this.state;
     const { t } = this.context;
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+    const isSearchHidden = isRevealSrpListPage;
 
     return (
       <div
@@ -147,7 +149,12 @@ class SettingsPage extends PureComponent {
           padding={4}
           paddingBottom={[2, 4]}
         >
-          <div className="settings-page__header__title-container">
+          <div
+            className={classnames('settings-page__header__title-container', {
+              'settings-page__header__title-container--hide-search':
+                isSearchHidden,
+            })}
+          >
             {isPopup && (
               <>
                 {currentPath === SETTINGS_ROUTE ? (
@@ -171,27 +178,7 @@ class SettingsPage extends PureComponent {
               </>
             )}
             {this.renderTitle()}
-            <Box
-              className="settings-page__header__title-container__search"
-              display={[Display.Block]}
-            >
-              <SettingsSearch
-                onSearch={({ searchQuery = '', results = [] }) => {
-                  this.setState({
-                    isSearchList: searchQuery !== '',
-                    searchResults: results,
-                    searchText: searchQuery,
-                  });
-                }}
-                settingsRoutesList={getSettingsRoutes()}
-              />
-              {isSearchList && searchText.length >= 3 && (
-                <SettingsSearchList
-                  results={searchResults}
-                  onClickSetting={(setting) => this.handleClickSetting(setting)}
-                />
-              )}
-            </Box>
+            {this.renderSearch()}
             <ButtonIcon
               className="settings-page__header__title-container__close-button"
               iconName={IconName.Close}
@@ -243,6 +230,39 @@ class SettingsPage extends PureComponent {
           {titleText}
         </Text>
       </div>
+    );
+  }
+
+  renderSearch() {
+    const { isSearchList, searchText, searchResults } = this.state;
+    const { isRevealSrpListPage } = this.props;
+
+    if (isRevealSrpListPage) {
+      return null;
+    }
+
+    return (
+      <Box
+        className="settings-page__header__title-container__search"
+        display={[Display.Block]}
+      >
+        <SettingsSearch
+          onSearch={({ searchQuery = '', results = [] }) => {
+            this.setState({
+              isSearchList: searchQuery !== '',
+              searchResults: results,
+              searchText: searchQuery,
+            });
+          }}
+          settingsRoutesList={getSettingsRoutes()}
+        />
+        {isSearchList && searchText.length >= 3 && (
+          <SettingsSearchList
+            results={searchResults}
+            onClickSetting={(setting) => this.handleClickSetting(setting)}
+          />
+        )}
+      </Box>
     );
   }
 
