@@ -476,8 +476,8 @@ export default class SecurityTab extends PureComponent {
             onClick={() => {
               getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
                 ? global.platform.openExtensionInBrowser(
-                  ADD_POPULAR_CUSTOM_NETWORK,
-                )
+                    ADD_POPULAR_CUSTOM_NETWORK,
+                  )
                 : this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
             }}
           >
