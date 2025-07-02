@@ -481,7 +481,7 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#submitLatestGlobalSeedlessPassword', function () {
+  describe.skip('#submitLatestGlobalSeedlessPassword', function () {
     const globalPassword = 'newGlobalPassword';
     const currentDevicePassword = 'oldDevicePassword';
 

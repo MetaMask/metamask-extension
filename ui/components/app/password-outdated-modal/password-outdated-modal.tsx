@@ -34,7 +34,7 @@ export default function PasswordOutdatedModal() {
   return (
     <Modal
       isOpen
-      onClose={() => {}}
+      onClose={() => undefined}
       data-testid="password-outdated-modal"
     >
       <ModalOverlay />
