@@ -3854,6 +3854,10 @@ export default class MetamaskController extends EventEmitter {
         this.seedlessOnboardingController,
       ),
       createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
+      storeKeyringEncryptionKey:
+        this.seedlessOnboardingController.storeKeyringEncryptionKey.bind(
+          this.seedlessOnboardingController,
+        ),
       fetchAllSecretData: this.fetchAllSecretData.bind(this),
       restoreSeedPhrasesToVault: this.restoreSeedPhrasesToVault.bind(this),
       syncSeedPhrases: this.syncSeedPhrases.bind(this),
@@ -3871,6 +3875,9 @@ export default class MetamaskController extends EventEmitter {
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
       exportAccount: this.exportAccount.bind(this),
       keyringChangePassword: this.keyringController.changePassword.bind(
+        this.keyringController,
+      ),
+      exportEncryptionKey: this.keyringController.exportEncryptionKey.bind(
         this.keyringController,
       ),
 

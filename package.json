@@ -295,7 +295,7 @@
     "@metamask/kernel-shims": "^0.2.0",
     "@metamask/kernel-utils": "^0.1.0",
     "@metamask/keyring-api": "^18.0.0",
-    "@metamask/keyring-controller": "^22.0.2",
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@22.0.2-preview-29bd474",
     "@metamask/keyring-internal-api": "^6.2.0",
     "@metamask/keyring-internal-snap-client": "^4.1.0",
     "@metamask/keyring-snap-client": "^5.0.0",
