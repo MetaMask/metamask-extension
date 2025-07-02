@@ -44,7 +44,7 @@ jobs:
       matrix-total: ${{ strategy.job-total }}
     secrets:
       CONTAINER_REGISTRY_USERNAME: 'AWS'
-      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
+      CONTAINER_REGISTRY_TOKEN: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-firefox-flask:
     uses: ./.github/workflows/run-e2e.yml
@@ -62,7 +62,7 @@ jobs:
       matrix-total: ${{ strategy.job-total }}
     secrets:
       CONTAINER_REGISTRY_USERNAME: 'AWS'
-      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
+      CONTAINER_REGISTRY_TOKEN: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-firefox-report:
     needs:

@@ -47,7 +47,7 @@ jobs:
       matrix-total: ${{ strategy.job-total }}
     secrets:
       CONTAINER_REGISTRY_USERNAME: 'AWS'
-      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
+      CONTAINER_REGISTRY_TOKEN: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-chrome-webpack:
     needs: prepare-ecr-auth
@@ -67,7 +67,7 @@ jobs:
       matrix-total: ${{ strategy.job-total }}
     secrets:
       CONTAINER_REGISTRY_USERNAME: 'AWS'
-      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
+      CONTAINER_REGISTRY_TOKEN: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-chrome-multiple-providers:
     needs: prepare-ecr-auth
@@ -79,7 +79,7 @@ jobs:
       test-command: yarn test:e2e:chrome:multi-provider
     secrets:
       CONTAINER_REGISTRY_USERNAME: 'AWS'
-      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
+      CONTAINER_REGISTRY_TOKEN: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-chrome-rpc:
     needs: prepare-ecr-auth
@@ -91,7 +91,7 @@ jobs:
       test-command: yarn test:e2e:chrome:rpc
     secrets:
       CONTAINER_REGISTRY_USERNAME: 'AWS'
-      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
+      CONTAINER_REGISTRY_TOKEN: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-chrome-flask:
     needs: prepare-ecr-auth
@@ -109,7 +109,7 @@ jobs:
       matrix-total: ${{ strategy.job-total }}
     secrets:
       CONTAINER_REGISTRY_USERNAME: 'AWS'
-      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
+      CONTAINER_REGISTRY_TOKEN: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-chrome-vault-decryption:
     needs: prepare-ecr-auth
@@ -120,7 +120,7 @@ jobs:
       test-command: yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
     secrets:
       CONTAINER_REGISTRY_USERNAME: 'AWS'
-      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
+      CONTAINER_REGISTRY_TOKEN: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-chrome-api-specs:
     needs: prepare-ecr-auth
@@ -133,7 +133,7 @@ jobs:
       test-artifacts-path: html-report
     secrets:
       CONTAINER_REGISTRY_USERNAME: 'AWS'
-      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
+      CONTAINER_REGISTRY_TOKEN: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-chrome-api-specs-alert-on-failure:
     needs:
@@ -178,7 +178,7 @@ jobs:
       test-artifacts-path: html-report-multichain
     secrets:
       CONTAINER_REGISTRY_USERNAME: 'AWS'
-      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
+      CONTAINER_REGISTRY_TOKEN: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-chrome-api-specs-multichain-alert-on-failure:
     needs:
