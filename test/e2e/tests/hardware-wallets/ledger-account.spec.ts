@@ -1,3 +1,4 @@
+import { Browser, By } from 'selenium-webdriver';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
@@ -8,6 +9,8 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SelectHardwareWalletAccountPage from '../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+
+const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 describe('Ledger Hardware', function () {
   it('derives the correct accounts and unlocks the first account', async function () {
@@ -31,32 +34,40 @@ describe('Ledger Hardware', function () {
         await connectHardwareWalletPage.check_pageIsLoaded();
         await connectHardwareWalletPage.openConnectLedgerPage();
 
-        const selectLedgerAccountPage = new SelectHardwareWalletAccountPage(
-          driver,
-        );
-        await selectLedgerAccountPage.check_pageIsLoaded();
+        if (IS_FIREFOX) {
+          // check Firefox Not Supported text exists and stop test
+          await driver.findElement(
+            By.xpath("//*[contains(text(), 'Firefox Not Supported')]"),
+          );
+        } else {
+          const selectLedgerAccountPage = new SelectHardwareWalletAccountPage(
+            driver,
+          );
 
-        // Check that the first page of accounts is correct
-        await selectLedgerAccountPage.check_accountNumber();
-        for (const { address } of KNOWN_PUBLIC_KEY_ADDRESSES.slice(0, 4)) {
-          const shortenedAddress = `${address.slice(0, 4)}...${address.slice(
-            -4,
-          )}`;
-          await selectLedgerAccountPage.check_addressIsDisplayed(
-            shortenedAddress,
+          await selectLedgerAccountPage.check_pageIsLoaded();
+
+          // Check that the first page of accounts is correct
+          await selectLedgerAccountPage.check_accountNumber();
+          for (const { address } of KNOWN_PUBLIC_KEY_ADDRESSES.slice(0, 4)) {
+            const shortenedAddress = `${address.slice(0, 4)}...${address.slice(
+              -4,
+            )}`;
+            await selectLedgerAccountPage.check_addressIsDisplayed(
+              shortenedAddress,
+            );
+          }
+
+          // Unlock first account of first page and check that the correct account has been added
+          await selectLedgerAccountPage.unlockAccount(1);
+          await headerNavbar.check_pageIsLoaded();
+          await new HomePage(driver).check_expectedBalanceIsDisplayed('0');
+          await headerNavbar.openAccountMenu();
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.check_accountDisplayedInAccountList('Ledger 1');
+          await accountListPage.check_accountAddressDisplayedInAccountList(
+            shortenAddress(KNOWN_PUBLIC_KEY_ADDRESSES[0].address),
           );
         }
-
-        // Unlock first account of first page and check that the correct account has been added
-        await selectLedgerAccountPage.unlockAccount(1);
-        await headerNavbar.check_pageIsLoaded();
-        await new HomePage(driver).check_expectedBalanceIsDisplayed('0');
-        await headerNavbar.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountDisplayedInAccountList('Ledger 1');
-        await accountListPage.check_accountAddressDisplayedInAccountList(
-          shortenAddress(KNOWN_PUBLIC_KEY_ADDRESSES[0].address),
-        );
       },
     );
   });
