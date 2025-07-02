@@ -8,7 +8,6 @@ import {
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import type { ChainId } from '@metamask/bridge-controller';
 import {
   Text,
   PopoverPosition,
