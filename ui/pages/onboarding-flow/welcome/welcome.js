@@ -26,6 +26,7 @@ import {
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
 import { LOGIN_OPTION, LOGIN_TYPE, WelcomePageState } from './types';
@@ -136,8 +137,6 @@ export default function OnboardingWelcome({
         } else {
           history.replace(ONBOARDING_ACCOUNT_EXIST);
         }
-      } catch (error) {
-        log.error('onSocialLoginCreateClick::error', error);
       } finally {
         setIsLoggingIn(false);
       }
@@ -166,8 +165,6 @@ export default function OnboardingWelcome({
         } else {
           history.push(ONBOARDING_UNLOCK_ROUTE);
         }
-      } catch (error) {
-        log.error('onSocialLoginImportClick::error', error);
       } finally {
         setIsLoggingIn(false);
       }
@@ -175,21 +172,35 @@ export default function OnboardingWelcome({
     [dispatch, handleSocialLogin, trackEvent, history],
   );
 
+  const handleLoginError = useCallback((error) => {
+    log.error('handleLoginError::error', error);
+    const errorMessage = error.message;
+    if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
+      setLoginError(null);
+    } else {
+      setLoginError(error);
+    }
+  }, []);
+
   const handleLogin = useCallback(
     async (loginType, loginOption) => {
-      if (loginOption === LOGIN_OPTION.NEW && loginType === LOGIN_TYPE.SRP) {
-        onCreateClick();
-      } else if (
-        loginOption === LOGIN_OPTION.EXISTING &&
-        loginType === LOGIN_TYPE.SRP
-      ) {
-        onImportClick();
-      } else if (isSeedlessOnboardingFeatureEnabled) {
-        if (loginOption === LOGIN_OPTION.NEW) {
-          await onSocialLoginCreateClick(loginType);
-        } else if (loginOption === LOGIN_OPTION.EXISTING) {
-          await onSocialLoginImportClick(loginType);
+      try {
+        if (loginOption === LOGIN_OPTION.NEW && loginType === LOGIN_TYPE.SRP) {
+          onCreateClick();
+        } else if (
+          loginOption === LOGIN_OPTION.EXISTING &&
+          loginType === LOGIN_TYPE.SRP
+        ) {
+          onImportClick();
+        } else if (isSeedlessOnboardingFeatureEnabled) {
+          if (loginOption === LOGIN_OPTION.NEW) {
+            await onSocialLoginCreateClick(loginType);
+          } else if (loginOption === LOGIN_OPTION.EXISTING) {
+            await onSocialLoginImportClick(loginType);
+          }
         }
+      } catch (error) {
+        handleLoginError(error);
       }
     },
     [
@@ -198,6 +209,7 @@ export default function OnboardingWelcome({
       onSocialLoginCreateClick,
       onSocialLoginImportClick,
       isSeedlessOnboardingFeatureEnabled,
+      handleLoginError,
     ],
   );
 

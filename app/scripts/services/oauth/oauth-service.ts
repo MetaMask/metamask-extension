@@ -9,6 +9,7 @@ import {
 } from '../../../../test/e2e/constants';
 import { isProduction } from '../../../../shared/modules/environment';
 import { ENVIRONMENT } from '../../../../development/build/constants';
+import { checkForLastError } from '../../../../shared/modules/browser-runtime.utils';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import type {
@@ -50,14 +51,7 @@ export default class OAuthService {
       this.#webAuthenticator,
     );
 
-    try {
-      return this.#handleOAuthLogin(loginHandler);
-    } catch (error) {
-      if (this.#isUserCancelledLoginError()) {
-        throw new Error(OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR);
-      }
-      throw error;
-    }
+    return this.#handleOAuthLogin(loginHandler);
   }
 
   /**
@@ -165,6 +159,11 @@ export default class OAuthService {
                   reject(error);
                 }
               } else {
+                if (this.#isUserCancelledLoginError()) {
+                  reject(
+                    new Error(OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR),
+                  );
+                }
                 reject(
                   new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR),
                 );
@@ -260,12 +259,7 @@ export default class OAuthService {
   }
 
   #isUserCancelledLoginError(): boolean {
-    const error = browser.runtime.lastError;
-    return (
-      (error instanceof Error &&
-        error.message === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) ||
-      browser.runtime.lastError?.message ===
-        OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR
-    );
+    const error = checkForLastError();
+    return error?.message === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR;
   }
 }
