@@ -1,22 +1,19 @@
 import React, { useMemo } from 'react';
 import { Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
 import {
   AlignItems,
   Display,
   FlexDirection,
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
-import BigNumber from 'bignumber.js';
 import { useTokenFiatAmount } from '../../../../../hooks/useTokenFiatAmount';
 import { Box, Text } from '../../../../../components/component-library';
 import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
-import { AssetPill } from '../../simulation-details/asset-pill';
-import { NATIVE_TOKEN_ADDRESS } from '../../../../../helpers/constants/intents';
-import { TokenStandard } from '../../../../../../shared/constants/transaction';
-import { AssetIdentifier } from '../../simulation-details/types';
 import { useTokenDecimals } from '../../../hooks/transactions/useTokenDecimals';
 import { useIntentsTargets } from '../../../hooks/transactions/useIntentsTarget';
 import { useIntentsTargetChainId } from '../../../hooks/transactions/useIntentsTargetChainId';
+import { TokenPill } from '../../confirm/token-pill/token-pill';
 
 export function IntentsTargetRow() {
   const targetChainId = useIntentsTargetChainId();
@@ -73,17 +70,6 @@ function Line({
     targetChainId,
   );
 
-  const standard: TokenStandard =
-    targetTokenAddress === NATIVE_TOKEN_ADDRESS
-      ? TokenStandard.none
-      : TokenStandard.ERC20;
-
-  const asset: AssetIdentifier = {
-    chainId: targetChainId,
-    address: targetTokenAddress,
-    standard,
-  } as AssetIdentifier;
-
   return (
     <Box
       display={Display.Flex}
@@ -94,7 +80,7 @@ function Line({
     >
       <Text>{targetAmountFiat}</Text>
       <Text>{targetAmountFormatted}</Text>
-      <AssetPill asset={asset} />
+      <TokenPill chainId={targetChainId} tokenAddress={targetTokenAddress} />
     </Box>
   );
 }

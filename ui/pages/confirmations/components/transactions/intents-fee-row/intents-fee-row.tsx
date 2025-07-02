@@ -1,12 +1,17 @@
 import React from 'react';
-import BigNumber from 'bignumber.js';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowText,
-} from '../../../../../components/app/confirm/info/row';
+import { BigNumber } from 'bignumber.js';
+import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
 import { useIntentsContext } from '../../../context/intents/intents';
 import { useIntentSourceAmounts } from '../../../hooks/transactions/useIntentSourceAmount';
 import { useTokenFiatAmount } from '../../../../../hooks/useTokenFiatAmount';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  JustifyContent,
+} from '../../../../../helpers/constants/design-system';
+import { Box, Text } from '../../../../../components/component-library';
+import { TokenPill } from '../../confirm/token-pill/token-pill';
 
 export function IntentsFeeRow() {
   const { sourceToken } = useIntentsContext();
@@ -38,7 +43,17 @@ export function IntentsFeeRow() {
 
   return (
     <ConfirmInfoRow label="Fee">
-      <ConfirmInfoRowText text={`${feeFiat} ${feeTotal}`} />
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.flexEnd}
+        alignItems={AlignItems.center}
+        gap={2}
+      >
+        <Text>{feeFiat}</Text>
+        <Text>{feeTotal}</Text>
+        <TokenPill chainId={sourceChainId} tokenAddress={sourceTokenAddress} />
+      </Box>
     </ConfirmInfoRow>
   );
 }

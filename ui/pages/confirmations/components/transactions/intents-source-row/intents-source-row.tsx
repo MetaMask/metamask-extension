@@ -1,46 +1,33 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Hex } from '@metamask/utils';
+import { useSelector } from 'react-redux';
+import { NetworkConfiguration } from '@metamask/network-controller';
+import { BigNumber } from 'bignumber.js';
+import { AssetType, isSolanaChainId } from '@metamask/bridge-controller';
 import { useIntentSourceAmounts } from '../../../hooks/transactions/useIntentSourceAmount';
 import {
   AssetWithDisplayData,
   ERC20Asset,
   NativeAsset,
 } from '../../../../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { useSelector } from 'react-redux';
 import { selectNetworkConfigurationByChainId } from '../../../../../selectors';
-import { useEffect, useState } from 'react';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../helpers/constants/intents';
-import BigNumber from 'bignumber.js';
 import {
   AlignItems,
-  BorderColor,
-  BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
 import Preloader from '../../../../../components/ui/icon/preloader';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  AvatarTokenSize,
-  BadgeWrapper,
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../../../components/component-library';
+import { Box, Text } from '../../../../../components/component-library';
 import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
 import { getFromChains } from '../../../../../ducks/bridge/selectors';
 import { AssetPicker } from '../../../../../components/multichain/asset-picker-amount/asset-picker';
 import { TabName } from '../../../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { useTokenFiatAmount } from '../../../../../hooks/useTokenFiatAmount';
-import { AssetType, isSolanaChainId } from '@metamask/bridge-controller';
 import { useMultichainBalances } from '../../../../../hooks/useMultichainBalances';
 import { useIntentsContext } from '../../../context/intents/intents';
+import { TokenPill } from '../../confirm/token-pill/token-pill';
 
 export type SelectedToken = {
   address?: Hex;
@@ -190,69 +177,18 @@ function AssetPickerWrapper({
       networkProps={{
         network,
         networks: supportedChains,
-        onNetworkChange: (network) =>
-          onNetworkChange(network as NetworkConfiguration),
+        onNetworkChange: (_network) =>
+          onNetworkChange(_network as NetworkConfiguration),
       }}
       tokenFilter={tokenFilter}
     >
-      {(onClickHandler, networkImageSrc) => (
-        <AssetPickerOverride
-          asset={asset}
-          network={network}
-          networkImageSrc={networkImageSrc}
+      {(onClickHandler) => (
+        <TokenPill
+          chainId={asset.chainId as Hex}
+          tokenAddress={asset.address as Hex}
           onClick={onClickHandler}
         />
       )}
     </AssetPicker>
-  );
-}
-
-function AssetPickerOverride({
-  asset,
-  network,
-  networkImageSrc,
-  onClick,
-}: {
-  asset: AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>;
-  network: NetworkConfiguration;
-  networkImageSrc?: string;
-  onClick?: () => void;
-}) {
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      borderRadius={BorderRadius.pill}
-      borderColor={BorderColor.borderMuted}
-      alignItems={AlignItems.center}
-      gap={2}
-      paddingInline={2}
-      onClick={onClick}
-      style={{
-        cursor: 'pointer',
-      }}
-    >
-      <BadgeWrapper
-        className="intents-network-icon-wrapper"
-        badge={
-          networkImageSrc ? (
-            <AvatarNetwork
-              className="intents-network-icon"
-              size={AvatarNetworkSize.Xs}
-              src={networkImageSrc}
-              name={network?.name}
-            />
-          ) : undefined
-        }
-      >
-        <AvatarToken
-          borderRadius={BorderRadius.full}
-          src={asset.image}
-          size={AvatarTokenSize.Xs}
-        />
-      </BadgeWrapper>
-      <Text>{asset.symbol}</Text>
-      <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
-    </Box>
   );
 }
