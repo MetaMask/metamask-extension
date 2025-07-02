@@ -136,10 +136,10 @@ export const BaseAccountDetails = ({
   }, [
     dispatch,
     account.address,
-    account.type,
     trackEvent,
     deviceName,
     chainId,
+    accountType,
     hdEntropyIndex,
     history,
   ]);
