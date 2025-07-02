@@ -311,11 +311,16 @@ export const NetworksForm = ({
             );
           }
         } else {
+          await dispatch(addNetwork(networkPayload));
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          const networkClientId = networkConfigurationIdsByChainId[chainIdHex];
-          await dispatch(addNetwork(networkPayload));
-          await dispatch(setActiveNetwork(networkClientId));
+          if (networkConfigurationIdsByChainId?.[chainIdHex]) {
+            const networkClientId =
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              networkConfigurationIdsByChainId?.[chainIdHex];
+            await dispatch(setActiveNetwork(networkClientId));
+          }
           await dispatch(
             setEnabledNetworks([networkPayload.chainId], namespace),
           );
