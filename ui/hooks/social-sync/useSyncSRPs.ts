@@ -9,12 +9,14 @@ export const useSyncSRPs = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (!isSocialLoginEnabled) {
+      return;
+    }
+
     (async () => {
       try {
         setLoading(true);
-        if (isSocialLoginEnabled) {
-          await dispatch(syncSeedPhrases());
-        }
+        await dispatch(syncSeedPhrases());
       } catch (error) {
         console.error('[useSyncSRPs] error', error);
       } finally {
