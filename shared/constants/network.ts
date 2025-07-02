@@ -268,7 +268,6 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   SHAPE_SEPOLIA: '0x2b03',
   SHAPE: '0x168',
   XRPLEVM_TESTNET: '0x161c28',
-  XRPLEVM: '0x15f900',
   SOPHON: '0xc3b8',
   SOPHON_TESTNET: '0x1fa72e78',
 } as const;
