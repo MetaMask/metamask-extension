@@ -5,7 +5,7 @@
 INFURA_PROJECT_ID=00000000000
 
 ; Set this to `true` to enable Seedless onboarding (Social login flow)
-SEEDLESS_ONBOARDING_ENABLED='true'
+SEEDLESS_ONBOARDING_ENABLED='false'
 
 ; These variables are required for OAuth Service
 GOOGLE_CLIENT_ID=
