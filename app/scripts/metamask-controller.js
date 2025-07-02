@@ -1048,6 +1048,9 @@ export default class MetamaskController extends EventEmitter {
           [KnownCaipNamespace.Eip155]: {
             [CHAIN_IDS.SEPOLIA]: true,
           },
+          [KnownCaipNamespace.Solana]: {
+            [SolScope.Mainnet]: true,
+          },
         },
       };
     } else {
