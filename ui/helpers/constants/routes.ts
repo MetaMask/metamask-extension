@@ -163,6 +163,9 @@ PATH_NAME_MAP.set(CONNECTIONS, 'Connections');
 export const PERMISSIONS = '/permissions';
 PATH_NAME_MAP.set(PERMISSIONS, 'Permissions');
 
+export const SITES = '/sites';
+PATH_NAME_MAP.set(SITES, 'Sites');
+
 export const REVIEW_PERMISSIONS = '/review-permissions';
 
 export const CONNECT_ROUTE = '/connect';

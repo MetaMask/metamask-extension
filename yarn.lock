@@ -5932,13 +5932,13 @@ __metadata:
 
 "@metamask/gator-permissions-controller@file:./deps/@metamask-gator-permissions-controller-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/gator-permissions-controller@file:./deps/@metamask-gator-permissions-controller-0.0.0.tgz#./deps/@metamask-gator-permissions-controller-0.0.0.tgz::hash=6e7585&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/gator-permissions-controller@file:./deps/@metamask-gator-permissions-controller-0.0.0.tgz#./deps/@metamask-gator-permissions-controller-0.0.0.tgz::hash=aa39cc&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/utils": "npm:^11.2.0"
   peerDependencies:
     "@metamask/profile-sync-controller": ^19.0.0
-  checksum: 10/409ecbbc7b157408ef664aa8b8719b0f5fbe5630c407eba34a0107bdd9ce9d11844f23e693ac70cbebef5b39f5fbd59171c75900218733bfabe8fe2ab7187229
+  checksum: 10/028ecd2ce8b93158309b61062d7c05d4dbda8e8a29b9134ba6981ccee912742f24de2af7994fe610c7a8206774d14f797cc535b7ba55038901a2c036aaa9e28b
   languageName: node
   linkType: hard
 

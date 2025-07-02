@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Header, Page } from '../page';
 import {
   Box,
@@ -11,6 +10,7 @@ import {
   Text,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useGatorPermissions } from '../../../../hooks/gator-permissions/useGatorPermissions';
 import {
   BackgroundColor,
   BlockSize,
@@ -21,78 +21,184 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
+  AlignItems,
 } from '../../../../helpers/constants/design-system';
-import {
-  DEFAULT_ROUTE,
-  REVIEW_PERMISSIONS,
-} from '../../../../helpers/constants/routes';
+import { DEFAULT_ROUTE, SITES } from '../../../../helpers/constants/routes';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
-import { getGatorPermissions } from '../../../../selectors/gator-permissions';
-import {
-  enableGatorPermissions,
-  fetchAndUpdateGatorPermissions,
-} from '../../../../store/controller-actions/gator-permissions-controller';
-import { ConnectionListItem } from './connection-list-item';
-import { GatorPermissionItem } from './gator-permission-item';
+import { getGatorPermissions } from '../../../../selectors/gator-permissions/gator-permissions';
+import { PermissionListItem } from './permission-list-item';
 
-// TODO: Gator - Shows a list of all connected sites/dapps
 export const PermissionsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   const headerRef = useRef();
   const [totalConnections, setTotalConnections] = useState(0);
+  const [totalSpendingCapPermissions, setTotalSpendingCapPermissions] =
+    useState(0);
+  const [totalTokenStreamsPermissions, setTotalTokenStreamsPermissions] =
+    useState(0);
+  const [
+    totalTokenSubscriptionsPermissions,
+    setTotalTokenSubscriptionsPermissions,
+  ] = useState(0);
+  const [totalPermissions, setTotalPermissions] = useState(0);
+
   const sitesConnectionsList = useSelector(
     getConnectedSitesListWithNetworkInfo,
   );
-
   const gatorPermissionsList = useSelector(getGatorPermissions);
+
+  // Use the hook to fetch gator permissions on component mount
+  const { loading: gatorPermissionsLoading, error: gatorPermissionsError } =
+    useGatorPermissions();
 
   useEffect(() => {
     const totalSites = Object.keys(sitesConnectionsList).length;
-    const totalGatorPermissions = Object.keys(gatorPermissionsList).length;
-    setTotalConnections(totalSites + totalGatorPermissions);
-  }, [sitesConnectionsList, gatorPermissionsList]);
+    const totalSpendingCap =
+      gatorPermissionsList['native-token-stream'].length || 0;
+    const totalTokenStreams =
+      gatorPermissionsList['erc20-token-stream'].length || 0;
+    const totalTokenSubscriptions =
+      gatorPermissionsList['native-token-periodic'].length || 0;
 
-  const handleConnectionClick = (connection) => {
-    const hostName = connection.origin;
-    const safeEncodedHost = encodeURIComponent(hostName);
+    setTotalConnections(totalSites);
+    setTotalSpendingCapPermissions(totalSpendingCap);
+    setTotalTokenStreamsPermissions(totalTokenStreams);
+    setTotalTokenSubscriptionsPermissions(totalTokenSubscriptions);
+    setTotalPermissions(
+      totalConnections +
+        totalSpendingCap +
+        totalTokenStreams +
+        totalTokenSubscriptions,
+    );
+  }, [
+    sitesConnectionsList,
+    gatorPermissionsList,
+    totalConnections,
+    totalSpendingCapPermissions,
+    totalTokenStreamsPermissions,
+    totalTokenSubscriptionsPermissions,
+  ]);
 
-    history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
-  };
-
-  const handleGatorPermissionClick = async (_origin) => {
-    try {
-      await enableGatorPermissions();
-      const res = await fetchAndUpdateGatorPermissions();
-      console.log('fetchAndUpdateGatorPermissions', res);
-    } catch (error) {
-      console.error('Failed to create transaction:', error);
+  const handleAssetClick = async (assetType) => {
+    switch (assetType) {
+      case 'sites':
+        history.push(SITES);
+        break;
+      case 'spending-cap':
+        history.push(SITES);
+        break;
+      case 'token-streams':
+        history.push(SITES);
+        break;
+      case 'token-subscriptions':
+        history.push(SITES);
+        break;
+      default:
+        break;
     }
   };
 
-  const renderConnectionsList = (connectionList) =>
-    Object.entries(connectionList).map(([itemKey, connection]) => {
-      const isSnap = isSnapId(connection.origin);
-      return isSnap ? null : (
-        <ConnectionListItem
-          data-testid="connection-list-item"
-          key={itemKey}
-          connection={connection}
-          onClick={() => handleConnectionClick(connection)}
-        />
-      );
-    });
+  const renderPermissionList = () => {
+    return (
+      <Box
+        data-testid="permission-list"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.baseline}
+        width={BlockSize.Full}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        padding={4}
+        gap={4}
+      >
+        {/* Sites */}
+        {totalConnections > 0 && (
+          <PermissionListItem
+            total={totalConnections}
+            name="Sites"
+            onClick={() => handleAssetClick('sites')}
+          />
+        )}
 
-  const renderGatorPermissions = (gatorPermissions) =>
-    Object.entries(gatorPermissions).map(([origin, permission]) => (
-      <GatorPermissionItem
-        data-testid="gator-7715-permission-item"
-        key={`gator-7715-${origin}-${permission.id}`}
-        permission={permission}
-        origin={origin}
-        onClick={() => handleGatorPermissionClick(origin)}
-      />
-    ));
+        {/* Assets */}
+        <PermissionListItem
+          total={totalSpendingCapPermissions}
+          name="Spending Cap"
+          onClick={() => handleAssetClick('spending-cap')}
+        />
+        <PermissionListItem
+          total={totalTokenStreamsPermissions}
+          name="Token Streams"
+          onClick={() => handleAssetClick('token-streams')}
+        />
+        <PermissionListItem
+          total={totalTokenSubscriptionsPermissions}
+          name="Token Subscriptions"
+          onClick={() => handleAssetClick('token-subscriptions')}
+        />
+      </Box>
+    );
+  };
+
+  // Show error state if gator permissions failed to load
+  if (gatorPermissionsError) {
+    console.error('Failed to load gator permissions:', gatorPermissionsError);
+  }
+
+  const renderContent = () => {
+    if (gatorPermissionsLoading) {
+      return (
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.center}
+          height={BlockSize.Full}
+          gap={2}
+          padding={4}
+        >
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            backgroundColor={BackgroundColor.backgroundDefault}
+            textAlign={TextAlign.Center}
+          >
+            {t('loading')}
+          </Text>
+        </Box>
+      );
+    }
+
+    if (totalPermissions > 0) {
+      return renderPermissionList();
+    }
+
+    return (
+      <Box
+        data-testid="no-connections"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        justifyContent={JustifyContent.center}
+        height={BlockSize.Full}
+        gap={2}
+        padding={4}
+      >
+        <Text
+          variant={TextVariant.bodyMdMedium}
+          backgroundColor={BackgroundColor.backgroundDefault}
+          textAlign={TextAlign.Center}
+        >
+          {t('permissionsPageEmptyContent')}
+        </Text>
+        <Text
+          variant={TextVariant.bodyMd}
+          color={TextColor.textAlternative}
+          backgroundColor={BackgroundColor.backgroundDefault}
+          textAlign={TextAlign.Center}
+        >
+          {t('permissionsPageEmptySubContent')}
+        </Text>
+      </Box>
+    );
+  };
 
   return (
     <Page className="main-container" data-testid="permissions-page">
@@ -119,38 +225,7 @@ export const PermissionsPage = () => {
       </Header>
       <Content padding={0}>
         <Box ref={headerRef}></Box>
-        {totalConnections > 0 ? (
-          <Box>
-            {renderConnectionsList(sitesConnectionsList)}
-            {renderGatorPermissions(gatorPermissionsList)}
-          </Box>
-        ) : (
-          <Box
-            data-testid="no-connections"
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            justifyContent={JustifyContent.center}
-            height={BlockSize.Full}
-            gap={2}
-            padding={4}
-          >
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              textAlign={TextAlign.Center}
-            >
-              {t('permissionsPageEmptyContent')}
-            </Text>
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              textAlign={TextAlign.Center}
-            >
-              {t('permissionsPageEmptySubContent')}
-            </Text>
-          </Box>
-        )}
+        {renderContent()}
       </Content>
     </Page>
   );

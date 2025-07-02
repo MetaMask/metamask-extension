@@ -40,6 +40,7 @@ import {
   ONBOARDING_ROUTE,
   CONNECTIONS,
   PERMISSIONS,
+  SITES,
   REVIEW_PERMISSIONS,
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
@@ -129,6 +130,9 @@ const Asset = mmLazy(() => import('../asset'));
 const DeFiPage = mmLazy(() => import('../defi'));
 const PermissionsPage = mmLazy(() =>
   import('../../components/multichain/pages/permissions-page/permissions-page'),
+);
+const SitesPage = mmLazy(() =>
+  import('../../components/multichain/pages/sites-page/sites.page'),
 );
 const Connections = mmLazy(() =>
   import('../../components/multichain/pages/connections'),
@@ -378,6 +382,7 @@ export default class Routes extends Component {
             component={Connections}
           />
           <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
+          <Authenticated path={SITES} component={SitesPage} exact />
           <Authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             component={ReviewPermissions}

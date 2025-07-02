@@ -3355,7 +3355,6 @@ export default class MetamaskController extends EventEmitter {
     const { vault } = this.keyringController.state;
     const isInitialized = Boolean(vault);
     const flatState = this.memStore.getFlatState();
-    console.log('flatState:', flatState);
 
     return {
       isInitialized,
