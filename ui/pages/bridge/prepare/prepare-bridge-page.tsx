@@ -136,6 +136,7 @@ import {
 } from '../../../../shared/lib/asset-utils';
 import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import useBridgeDefaultToToken from '../../../hooks/bridge/useBridgeDefaultToToken';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -634,6 +635,22 @@ const PrepareBridgePage = () => {
     }
     return isSwap ? t('swapSwapTo') : t('bridgeTo');
   };
+
+  const { defaultToChainId, defaultToToken } = useBridgeDefaultToToken();
+
+  useEffect(() => {
+    // Only set default chain if user hasn't already selected one
+    if (!toChain && defaultToChainId && fromChain) {
+      dispatch(setToChainId(defaultToChainId));
+    }
+  }, [defaultToChainId, toChain, fromChain, dispatch]);
+
+  useEffect(() => {
+    // Only set default token if user hasn't already selected one and we have a destination chain
+    if (!toToken && defaultToToken && toChain) {
+      dispatch(setToToken(defaultToToken));
+    }
+  }, [defaultToToken, toToken, toChain, dispatch]);
 
   return (
     <>

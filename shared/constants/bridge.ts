@@ -98,3 +98,58 @@ export const SOLANA_USDC_ASSET = {
     'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
   chainId: MultichainNetworks.SOLANA,
 };
+
+export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR = {
+  [CHAIN_IDS.MAINNET]: {
+    // ETH -> USDC on mainnet
+    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USD Coin',
+  },
+  [CHAIN_IDS.OPTIMISM]: {
+    // ETH -> USDC on Optimism
+    address: '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USD Coin',
+  },
+  [CHAIN_IDS.ARBITRUM]: {
+    // ETH -> USDC on Arbitrum
+    address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USD Coin',
+  },
+  [CHAIN_IDS.BASE]: {
+    // ETH -> USDC on Base
+    address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USD Coin',
+  },
+  [CHAIN_IDS.POLYGON]: {
+    // MATIC -> USDC on Polygon
+    address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USD Coin',
+  },
+  [MultichainNetworks.SOLANA]: {
+    // SOL -> USDC on Solana
+    address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USD Coin',
+  },
+} as const;
+
+// Default destination chains for common bridge routes
+export const BRIDGE_DEFAULT_DESTINATION_CHAINS = {
+  [CHAIN_IDS.MAINNET]: CHAIN_IDS.ARBITRUM, // Mainnet -> Arbitrum
+  [CHAIN_IDS.ARBITRUM]: CHAIN_IDS.MAINNET, // Arbitrum -> Mainnet
+  [CHAIN_IDS.OPTIMISM]: CHAIN_IDS.MAINNET, // Optimism -> Mainnet
+  [CHAIN_IDS.BASE]: CHAIN_IDS.MAINNET, // Base -> Mainnet
+  [CHAIN_IDS.POLYGON]: CHAIN_IDS.MAINNET, // Polygon -> Mainnet
+  [MultichainNetworks.SOLANA]: CHAIN_IDS.MAINNET, // Solana -> Mainnet
+} as const;
