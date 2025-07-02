@@ -545,47 +545,47 @@ describe('useCarouselManagement', () => {
   });
 
   describe('priorityPlacement', () => {
-    it('should place priority slides before regular contentful slides', async () => {
-      const PRIORITY_SLIDE: CarouselSlide = {
-        ...FUND_SLIDE,
-        id: 'contentful-priority-slide-id',
+    it('should sort priorityPlacement slide before regular slides', async () => {
+      const prioritySlide: CarouselSlide = {
+        id: 'contentful-priority',
         dismissed: false,
+        undismissable: false,
         priorityPlacement: true,
         title: 'Priority Slide',
-        description: 'Comes first',
+        description: 'Goes first',
         image: 'priority.png',
       };
 
-      const REGULAR_SLIDE: CarouselSlide = {
-        ...CARD_SLIDE,
-        id: 'regular-slide-id',
+      const regularSlide: CarouselSlide = {
+        id: 'contentful-regular',
         dismissed: false,
+        undismissable: false,
         title: 'Regular Slide',
-        description: 'Comes later',
+        description: 'Goes second',
         image: 'regular.png',
       };
 
       jest.mocked(fetchCarouselSlidesFromContentful).mockResolvedValueOnce({
-        prioritySlides: [PRIORITY_SLIDE],
-        regularSlides: [REGULAR_SLIDE],
+        prioritySlides: [prioritySlide],
+        regularSlides: [regularSlide],
       });
 
       mockGetSlides.mockReturnValue([]);
-      mockGetSelectedAccountCachedBalance.mockReturnValue(ZERO_BALANCE);
-      mockGetIsRemoteModeEnabled.mockReturnValue(false);
+      mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
       mockGetUseExternalServices.mockReturnValue(false);
+      mockGetIsRemoteModeEnabled.mockReturnValue(false);
 
-      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
+      renderHook(() => useCarouselManagement());
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock
         .calls[0][0] as CarouselSlide[];
       const ids = updatedSlides.map((s) => s.id);
 
-      expect(ids).toContain('contentful-priority-slide-id');
-      expect(ids).toContain('regular-slide-id');
-      expect(ids.indexOf('contentful-priority-slide-id')).toBeLessThan(
-        ids.indexOf('regular-slide-id'),
+      expect(ids).toContain('contentful-priority');
+      expect(ids).toContain('contentful-regular');
+      expect(ids.indexOf('contentful-priority')).toBeLessThan(
+        ids.indexOf('contentful-regular'),
       );
     });
   });
