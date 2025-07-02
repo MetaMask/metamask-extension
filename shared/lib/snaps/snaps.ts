@@ -1,5 +1,6 @@
 import { SnapId } from '@metamask/snaps-sdk';
 
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 /**
  * Whether to force local Snaps to be treated as preinstalled Snaps.
  *
@@ -8,6 +9,7 @@ import { SnapId } from '@metamask/snaps-sdk';
  */
 const FORCE_PREINSTALLED_SNAPS =
   process.env.FORCE_PREINSTALLED_SNAPS === 'true';
+///: END:ONLY_INCLUDE_IF
 
 export const PREINSTALLED_SNAPS = [
   'npm:@metamask/message-signing-snap',
