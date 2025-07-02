@@ -8,7 +8,7 @@ const {
   withFixtures,
 } = require('../../helpers');
 
-const isGlobalNetworkSelectorRemoved = 'true';
+const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
   it('should queue send tx after switch network confirmation and transaction should target the correct network after switch is confirmed', async function () {
