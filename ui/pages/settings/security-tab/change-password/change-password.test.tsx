@@ -106,6 +106,17 @@ describe('ChangePassword', () => {
 
     fireEvent.click(changePasswordButton);
 
+    const changePasswordWarningModal = getByTestId(
+      'change-password-warning-modal',
+    );
+    expect(changePasswordWarningModal).toBeInTheDocument();
+
+    const changePasswordWarningConfirmButton = getByTestId(
+      'change-password-warning-confirm',
+    );
+    expect(changePasswordWarningConfirmButton).toBeInTheDocument();
+
+    fireEvent.click(changePasswordWarningConfirmButton);
     await waitFor(() => {
       expect(mockChangePassword).toHaveBeenCalledWith(
         mockNewPassword,
