@@ -13,16 +13,17 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
-import { t } from '../../translate';
+import { t } from '../../../../shared/lib/translate';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { IconName } from '../../../../ui/components/component-library/icon';
 import MetaMetricsController from '../../controllers/metametrics-controller';
 import { getUniqueAccountName } from '../../../../shared/lib/accounts';
+import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
+import { getSnapName } from '../../../../shared/lib/accounts/snaps';
 import { SnapKeyringBuilderMessenger } from './types';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
-import { getSnapName, isSnapPreinstalled } from './snaps';
 
 /**
  * Builder type for the Snap keyring.

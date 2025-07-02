@@ -1,0 +1,62 @@
+@use "design-system";
+
+.srp-input-import {
+  &__container {
+    min-height: 264px;
+  }
+
+  &__srp-note {
+    // SRP_OVERRIDE: remove focus outline from textarea
+    .mm-textarea {
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  &__initial-input {
+    padding: 0 0;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &__words-list {
+    grid-template-columns: repeat(3, 1fr);
+    // SRP_OVERRIDE: custom text field style
+    .mm-text-field {
+      padding-inline-start: 8px;
+      border-radius: 8px;
+    }
+
+    .mm-text-field:not(.mm-text-field--error) {
+      border-color: var(--color-border-muted);
+    }
+    // SRP_OVERRIDE: custom text field style
+    .mm-text-field.mm-text-field--focused {
+      outline: 5px auto var(--color-primary-default);
+    }
+    // SRP_OVERRIDE: custom text field style
+    .mm-input {
+      padding-inline-end: 8px;
+      padding-inline-start: 4px;
+    }
+  }
+
+  &__word-index {
+    width: 20px;
+    flex-shrink: 0;
+  }
+
+  &__actions {
+    height: 3rem;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--color-primary-inverse);
+  }
+
+  &__text {
+    height: 40px;
+  }
+}
+

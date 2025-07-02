@@ -1609,8 +1609,11 @@ const slice = createSlice({
           draftTransaction.recipient.error = null;
           draftTransaction.recipient.warning = null;
         } else {
-          const { tokens, tokenAddressList, isProbablyAnAssetContract } =
-            action.payload;
+          const {
+            tokens,
+            tokenAddressList = [],
+            isProbablyAnAssetContract,
+          } = action.payload;
 
           if (
             isBurnAddress(state.recipientInput) ||
@@ -2712,12 +2715,14 @@ export function updateSendAsset(
           asset.error = INVALID_ASSET_TYPE;
           throw new Error(INVALID_ASSET_TYPE);
         } else {
+          const selectedNetworkClientId = getSelectedNetworkClientId(state);
           let isCurrentOwner = true;
           try {
             isCurrentOwner = await isNftOwner(
               sendingAddress,
               details.address,
               details.tokenId,
+              selectedNetworkClientId,
             );
           } catch (err) {
             const message = getErrorMessage(err);
@@ -2962,10 +2967,7 @@ export function signTransaction(history) {
       );
       history.push(CONFIRM_TRANSACTION_ROUTE);
     } else {
-      let transactionType =
-        draftTransaction.recipient.type === RECIPIENT_TYPES.SMART_CONTRACT
-          ? TransactionType.contractInteraction
-          : TransactionType.simpleSend;
+      let transactionType;
 
       if (draftTransaction.sendAsset.type !== AssetType.native) {
         if (draftTransaction.sendAsset.type === AssetType.NFT) {

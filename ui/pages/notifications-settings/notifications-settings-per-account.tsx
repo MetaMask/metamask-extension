@@ -68,6 +68,8 @@ export const NotificationsSettingsPerAccount = ({
     error: accountError,
   } = useUpdateAccountSetting(address, refetchAccountSettings);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const loading = isLoading || isUpdatingAccount;
   const error = accountError;
 
@@ -91,6 +93,8 @@ export const NotificationsSettingsPerAccount = ({
     <>
       <NotificationsSettingsBox
         value={isEnabled ?? false}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onToggle={handleToggleAccountNotifications}
         key={address}
         disabled={disabledSwitch}

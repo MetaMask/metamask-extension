@@ -26,6 +26,10 @@ class Confirmation {
 
   private navigationTitle: RawLocator;
 
+  private rejectAllButton: RawLocator;
+
+  private confirmationHeadingTitle: RawLocator;
+
   constructor(driver: Driver) {
     this.driver = driver;
 
@@ -38,6 +42,24 @@ class Confirmation {
     this.previousPageButton =
       '[data-testid="confirm-nav__previous-confirmation"]';
     this.navigationTitle = '[data-testid="confirm-page-nav-position"]';
+    this.rejectAllButton = '[data-testid="confirm-nav__reject-all"]';
+    this.confirmationHeadingTitle = { text: 'Confirmation Dialog' };
+  }
+
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.footerCancelButton,
+        this.footerConfirmButton,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for confirmation page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Confirmation page is loaded');
   }
 
   async clickScrollToBottomButton() {
@@ -53,6 +75,16 @@ class Confirmation {
       this.headerAccountDetailsButton,
     );
     await accountDetailsButton.sendKeys(Key.RETURN);
+  }
+
+  async clickFooterCancelButton() {
+    await this.driver.clickElement(this.footerCancelButton);
+  }
+
+  async clickFooterConfirmButtonAndAndWaitForWindowToClose() {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.footerConfirmButton,
+    );
   }
 
   async clickFooterCancelButtonAndAndWaitForWindowToClose() {
@@ -82,7 +114,7 @@ class Confirmation {
     totalPages: number,
   ): Promise<void> {
     try {
-      await this.driver.findElement({
+      await this.driver.waitForSelector({
         css: this.navigationTitle,
         text: `${currentPage} of ${totalPages}`,
       });
@@ -90,6 +122,21 @@ class Confirmation {
       console.log('Timeout while waiting for navigation page numbers', e);
       throw e;
     }
+  }
+
+  async clickRejectAll(): Promise<void> {
+    await this.driver.clickElementAndWaitForWindowToClose(this.rejectAllButton);
+  }
+
+  async verifyConfirmationHeadingTitle(): Promise<void> {
+    console.log('Verify confirmation heading title is Confirmation Dialog');
+    await this.driver.waitForSelector(this.confirmationHeadingTitle);
+  }
+
+  async verifyRejectAllButtonNotPresent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.rejectAllButton, {
+      timeout: 5000,
+    });
   }
 }
 

@@ -9,7 +9,14 @@ if (process.env.SELENIUM_BROWSER === undefined) {
 
 export const folder = `dist/${process.env.SELENIUM_BROWSER}`;
 
-type ManifestType = { _flags?: ManifestFlags; manifest_version: string };
+type ManifestType = {
+  _flags?: ManifestFlags;
+  manifest_version: string;
+  /**
+   * The public key assigned to the extension's manifest to get consistent id. (For OAuth2 WAF redirect)
+   */
+  key?: string;
+};
 let manifest: ManifestType;
 
 function parseIntOrUndefined(value: string | undefined): number | undefined {
@@ -45,6 +52,13 @@ export async function setManifestFlags(flags: ManifestFlags = {}) {
   readManifest();
 
   manifest._flags = flags;
+
+  if (process.env.MULTIPROVIDER && 'key' in manifest) {
+    // for multi-provider tests, we need to install the second extension
+    // if any key is present, we need to remove it to generate a new random key (id) for each extension
+    // since two extensions with the same key can't be installed at the same time
+    delete manifest.key;
+  }
 
   fs.writeFileSync(`${folder}/manifest.json`, JSON.stringify(manifest));
 }

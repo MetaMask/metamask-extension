@@ -4,8 +4,8 @@ import log from 'loglevel';
 import {
   setFeatureAnnouncementsEnabled,
   checkAccountsPresence,
-  deleteOnChainTriggersByAccount,
-  updateOnChainTriggersByAccount,
+  disableAccounts,
+  enableAccounts,
   hideLoadingIndication,
 } from '../../store/actions';
 import {
@@ -26,8 +26,6 @@ export function useSwitchFeatureAnnouncementsChange(): {
       setError(null);
 
       try {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
-        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(setFeatureAnnouncementsEnabled(state));
       } catch (e) {
         const errorMessage =
@@ -60,13 +58,9 @@ export function useSwitchAccountNotificationsChange(): {
 
       try {
         if (state) {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
-          // eslint-disable-next-line @typescript-eslint/await-thenable
-          await dispatch(updateOnChainTriggersByAccount(addresses));
+          await dispatch(enableAccounts(addresses));
         } else {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
-          // eslint-disable-next-line @typescript-eslint/await-thenable
-          await dispatch(deleteOnChainTriggersByAccount(addresses));
+          await dispatch(disableAccounts(addresses));
         }
       } catch (e) {
         const errorMessage =
@@ -90,8 +84,6 @@ function useRefetchAccountSettings() {
 
   const getAccountSettings = useCallback(async (accounts: string[]) => {
     try {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
-      // eslint-disable-next-line @typescript-eslint/await-thenable
       const result = (await dispatch(
         checkAccountsPresence(accounts),
       )) as unknown as UseSwitchAccountNotificationsData;

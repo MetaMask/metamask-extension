@@ -58,6 +58,7 @@ export const NetworkListItem = ({
   showEndAccessory = true,
   disabled = false,
   variant,
+  notSelectable = false,
 }: {
   name: string;
   iconSrc?: string;
@@ -76,6 +77,7 @@ export const NetworkListItem = ({
   showEndAccessory?: boolean;
   disabled?: boolean;
   variant?: TextVariant;
+  notSelectable?: boolean;
 }) => {
   const t = useI18nContext();
   const networkRef = useRef<HTMLInputElement>(null);
@@ -93,6 +95,8 @@ export const NetworkListItem = ({
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
 
   const renderButton = useCallback(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     return onDeleteClick || onEditClick || onDiscoverClick ? (
       <ButtonIcon
         iconName={IconName.MoreVertical}
@@ -130,6 +134,7 @@ export const NetworkListItem = ({
 
   return (
     <Box
+      data-testid={`network-list-item-${chainId}`}
       paddingLeft={4}
       paddingRight={4}
       paddingTop={rpcEndpoint ? 2 : 4}
@@ -141,6 +146,7 @@ export const NetworkListItem = ({
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
         'multichain-network-list-item--disabled': disabled,
+        'multichain-network-list-item--not-selectable': notSelectable,
       })}
       display={Display.Flex}
       alignItems={AlignItems.center}

@@ -8,6 +8,9 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('../../snaps/enums');
 const {
+  mockLookupSnap,
+} = require('../../mock-response-data/snaps/snap-binary-mocks');
+const {
   expectName,
   focusTestDapp,
   saveName,
@@ -157,6 +160,7 @@ describe('Petnames - Signatures', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
+        testSpecificMock: mockLookupSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

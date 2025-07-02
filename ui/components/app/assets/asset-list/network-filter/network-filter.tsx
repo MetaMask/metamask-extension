@@ -1,6 +1,9 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTokenNetworkFilter } from '../../../../../store/actions';
+import {
+  setEnabledNetworks,
+  setTokenNetworkFilter,
+} from '../../../../../store/actions';
 import {
   getCurrentNetwork,
   getShouldHideZeroBalanceTokens,
@@ -8,6 +11,7 @@ import {
   getAllChainsToPoll,
   getTokenNetworkFilter,
   getIsTokenNetworkFilterEqualCurrentNetwork,
+  getEnabledNetworksByNamespace,
 } from '../../../../../selectors';
 import {
   getCurrentChainId,
@@ -38,6 +42,7 @@ import {
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
+import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -59,6 +64,7 @@ const NetworkFilter = ({
   const selectedAccount = useSelector(getSelectedAccount);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
@@ -96,7 +102,9 @@ const NetworkFilter = ({
     if (handleFilterNetwork) {
       handleFilterNetwork(chainFilters);
     } else {
-      dispatch(setTokenNetworkFilter(chainFilters));
+      isGlobalNetworkSelectorRemoved
+        ? dispatch(setEnabledNetworks(Object.keys(chainFilters), chainId))
+        : dispatch(setTokenNetworkFilter(chainFilters));
     }
 
     // TODO Add metrics
@@ -110,7 +118,13 @@ const NetworkFilter = ({
   ).map((chain) => {
     return allNetworks[chain].name;
   });
-  const filter = networkFilter || tokenNetworkFilter;
+
+  const networks = isGlobalNetworkSelectorRemoved
+    ? enabledNetworksByNamespace
+    : tokenNetworkFilter;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const filter = networkFilter || networks;
 
   return (
     <>
@@ -219,6 +233,8 @@ const NetworkFilter = ({
           </Box>
           <AvatarNetwork
             size={AvatarNetworkSize.Sm}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             name={currentNetwork?.nickname || ''}
             src={currentNetwork?.rpcPrefs?.imageUrl}
           />

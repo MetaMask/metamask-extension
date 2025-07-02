@@ -32,6 +32,7 @@ import {
   selectERC20TokensByChain,
   getTokenNetworkFilter,
   getAllTokens,
+  getEnabledNetworksByNamespace,
 } from '../../../selectors';
 import {
   addImportedTokens,
@@ -113,6 +114,8 @@ import { NetworkSelectorCustomImport } from '../../app/import-token/network-sele
 import { getImageForChainId } from '../../../selectors/multichain';
 import { NetworkListItem } from '../network-list-item';
 import TokenListPlaceholder from '../../app/import-token/token-list/token-list-placeholder';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
+import { isGlobalNetworkSelectorRemoved } from '../../../selectors/selectors';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 const ACTION_MODES = {
@@ -154,7 +157,12 @@ export const ImportTokensModal = ({ onClose }) => {
   const [actionMode, setActionMode] = useState(ACTION_MODES.CUSTOM_IMPORT);
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
-  const [networkFilter, setNetworkFilter] = useState(tokenNetworkFilter);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const [networkFilter, setNetworkFilter] = useState(
+    isGlobalNetworkSelectorRemoved
+      ? enabledNetworksByNamespace
+      : tokenNetworkFilter,
+  );
 
   // Determine if we should show the search tab
   const isTokenDetectionSupported = useSelector(getIsTokenDetectionSupported);
@@ -375,7 +383,7 @@ export const ImportTokensModal = ({ onClose }) => {
       const {
         symbol = '',
         decimals,
-        name,
+        name = '',
       } = await infoGetter.current(
         address,
         tokenListByChain?.[selectedNetworkForCustomImport]?.data,
@@ -386,9 +394,28 @@ export const ImportTokensModal = ({ onClose }) => {
       handleCustomDecimalsChange(decimals);
       // Set custom token name
       setCustomName(name);
+      setShowSymbolAndDecimals(true);
     },
     [selectedNetworkForCustomImport, tokenListByChain],
   );
+
+  useEffect(() => {
+    const canAttemptAutofill =
+      customAddress && // Address is present
+      !customAddressError && // No general address error
+      !nftAddressError && // Not an NFT address
+      !mainnetTokenWarning; // Not a mainnet token on the wrong chain
+
+    if (canAttemptAutofill) {
+      attemptToAutoFillTokenParams(customAddress);
+    }
+  }, [
+    customAddress,
+    customAddressError,
+    nftAddressError,
+    mainnetTokenWarning,
+    attemptToAutoFillTokenParams,
+  ]);
 
   const handleToggleToken = (token) => {
     const { address } = token;
@@ -565,12 +592,8 @@ export const ImportTokensModal = ({ onClose }) => {
         break;
 
       default:
-        if (!addressIsEmpty) {
-          attemptToAutoFillTokenParams(address);
-          setShowSymbolAndDecimals(true);
-          if (standard) {
-            setTokenStandard(standard);
-          }
+        if (standard) {
+          setTokenStandard(standard);
         }
     }
   };
@@ -902,7 +925,7 @@ export const ImportTokensModal = ({ onClose }) => {
                         <FormTextField
                           paddingLeft={4}
                           paddingRight={4}
-                          paddingTop={6}
+                          size={Size.LG}
                           label={t('tokenContractAddress')}
                           value={customAddress}
                           onChange={(e) => {
@@ -940,6 +963,7 @@ export const ImportTokensModal = ({ onClose }) => {
                               paddingLeft={4}
                               paddingRight={4}
                               paddingTop={4}
+                              size={Size.LG}
                               label={<>{t('tokenSymbol')}</>}
                               value={customSymbol}
                               onChange={(e) =>
@@ -961,6 +985,7 @@ export const ImportTokensModal = ({ onClose }) => {
                               paddingLeft={4}
                               paddingRight={4}
                               paddingTop={4}
+                              size={Size.LG}
                               label={t('decimal')}
                               type="number"
                               value={customDecimals}
@@ -1013,7 +1038,9 @@ export const ImportTokensModal = ({ onClose }) => {
             <ButtonPrimary
               size={Size.LG}
               onClick={async () => {
+                trace({ name: TraceName.ImportTokens });
                 await handleAddTokens();
+                endTrace({ name: TraceName.ImportTokens });
                 history.push(DEFAULT_ROUTE);
               }}
               block

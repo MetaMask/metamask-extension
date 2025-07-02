@@ -116,6 +116,8 @@ export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
   return (
     <>
       <Modal
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClose={handleModalClose}
         data-testid="whats-new-modal"
         isOpen={notifications.length > 0 && !showCreateSolanaAccountModal}

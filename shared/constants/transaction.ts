@@ -1,4 +1,5 @@
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
 
 /**
  * With this list we can detect if a transaction is still in progress.
@@ -17,18 +18,6 @@ export const SIGNING_METHODS = Object.freeze([
   'eth_signTypedData_v4',
   'personal_sign',
 ]);
-
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-/**
- * Status for finalized transactions.
- */
-export const FINALIZED_TRANSACTION_STATUSES = [
-  TransactionStatus.rejected,
-  TransactionStatus.failed,
-  TransactionStatus.dropped,
-  TransactionStatus.confirmed,
-];
-///: END:ONLY_INCLUDE_IF
 
 /**
  * Transaction Group Status is a MetaMask construct to track the status of groups
@@ -218,3 +207,11 @@ export enum EIP5792ErrorCode {
   UnknownBundleId = 5730,
   RejectedUpgrade = 5750,
 }
+
+export const APPROVAL_METHOD_NAMES = [
+  'approve',
+  'increaseAllowance',
+  'setApprovalForAll',
+];
+
+export const NATIVE_TOKEN_ADDRESS = '0x0'.padEnd(42, '0') as Hex;

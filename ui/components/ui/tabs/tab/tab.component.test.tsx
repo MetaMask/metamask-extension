@@ -97,4 +97,23 @@ describe('Tab', () => {
     const { getByTestId } = renderTab({ name: complexName });
     expect(getByTestId('complex-name')).toBeInTheDocument();
   });
+
+  it('applies disabled class when disabled is true', () => {
+    const { container } = renderTab({ disabled: true });
+    expect(container.firstChild).toHaveClass('tab--disabled');
+  });
+
+  it('does not call onClick when disabled and clicked', () => {
+    const onClick = jest.fn();
+    const { getByRole } = renderTab({ disabled: true, onClick });
+
+    fireEvent.click(getByRole('button'));
+
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it('applies disabled attribute to button when disabled', () => {
+    const { getByRole } = renderTab({ disabled: true });
+    expect(getByRole('button')).toHaveAttribute('disabled');
+  });
 });

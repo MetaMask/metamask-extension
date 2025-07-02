@@ -91,7 +91,7 @@ describe('ExtensionStore', () => {
       const result = await localStore.get();
 
       expect(result).toBe(MOCK_STATE);
-      expect(getMock).toHaveBeenCalledWith(null);
+      expect(getMock).toHaveBeenCalledWith(['data', 'meta']);
     });
   });
 });

@@ -17,6 +17,7 @@ import {
   OPTIMISM,
   POLYGON,
   ZKSYNC_ERA,
+  SEI,
   SWAPS_API_V2_BASE_URL,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CLIENT_ID,
@@ -212,6 +213,13 @@ export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
 export async function fetchTopAssetsList(
   chainId: string,
 ): Promise<{ address: Hex }[]> {
+  if (
+    !Object.values(CHAIN_IDS).includes(
+      chainId as (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS],
+    )
+  ) {
+    return [];
+  }
   const topAssetsUrl = getBaseApi('topAssets', chainId);
   const response =
     (await fetchWithCache({
@@ -408,6 +416,8 @@ export function getRenderableNetworkFeesForQuote({
   const gasTotalInWeiHex = sumHexes(
     tradeGasFeeTotalHex,
     approveGasFeeTotalHex,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     multiLayerL1FeeTotal || '0x0',
   );
 
@@ -447,6 +457,8 @@ export function getRenderableNetworkFeesForQuote({
   }
 
   const chainCurrencySymbolToUse =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
 
   return {
@@ -701,6 +713,8 @@ export const getNetworkNameByChainId = (chainId: string): string => {
       return LINEA;
     case CHAIN_IDS.BASE:
       return BASE;
+    case CHAIN_IDS.SEI:
+      return SEI;
     default:
       return '';
   }

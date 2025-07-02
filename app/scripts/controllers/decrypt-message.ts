@@ -404,6 +404,8 @@ export default class DecryptMessageController extends BaseController<
 
   private _requestApproval(messageParams: AbstractMessageParamsMetamask) {
     const id = messageParams.metamaskId as string;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const origin = messageParams.origin || ORIGIN_METAMASK;
     try {
       this.messagingSystem.call(

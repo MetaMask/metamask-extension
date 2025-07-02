@@ -3,9 +3,6 @@ import { Box, Text } from '../../../components/component-library';
 import {
   JustifyContent,
   Display,
-  FlexDirection,
-  AlignItems,
-  TextAlign,
   TextVariant,
   BlockSize,
 } from '../../../helpers/constants/design-system';
@@ -20,25 +17,20 @@ export default function TransactionDetailRow({
   value,
 }: TransactionDetailRowProps) {
   return (
-    <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+    <Box
+      display={Display.Flex}
+      justifyContent={JustifyContent.spaceBetween}
+      data-testid="transaction-detail-row"
+      width={BlockSize.Full}
+    >
       <Text
-        width={BlockSize.OneFourth}
+        minWidth={BlockSize.Max}
         paddingRight={1}
         variant={TextVariant.bodyMd}
       >
         {title}
       </Text>
-      <Text
-        display={Display.Flex}
-        width={BlockSize.ThreeFourths}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexEnd}
-        textAlign={TextAlign.Right}
-        paddingLeft={1}
-        variant={TextVariant.bodyMd}
-      >
-        {value}
-      </Text>
+      {value}
     </Box>
   );
 }

@@ -25,3 +25,5 @@ export const GAS_FEES_LEARN_MORE_URL =
 
 export const SMART_ACCOUNT_INFO_LINK =
   'https://support.metamask.io/configure/accounts/what-is-a-smart-account';
+
+export const VAULT_RECOVERY_LINK = `https://support.metamask.io/configure/wallet/how-to-recover-your-secret-recovery-phrase/#step-two-locate-your-vault`;

@@ -1,10 +1,10 @@
-import { promisify } from 'util';
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import { clone } from 'lodash';
 import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
+import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -16,11 +16,10 @@ import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import { COPY_OPTIONS } from '../shared/constants/copy';
-import switchDirection from '../shared/lib/switch-direction';
+import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
-import { isInternalAccountInPermittedAccountIds } from '../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -40,6 +39,8 @@ import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
+
+export { displayStateCorruptionError } from './helpers/utils/state-corruption-html';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -70,14 +71,12 @@ export default async function launchMetamaskUi(opts) {
 
   const metamaskState = await trace(
     { name: TraceName.GetState, parentContext: traceContext },
-    () => promisify(backgroundConnection.getState.bind(backgroundConnection))(),
+    backgroundConnection.getState.bind(backgroundConnection),
   );
 
   const store = await startApp(metamaskState, backgroundConnection, opts);
 
-  await promisify(
-    backgroundConnection.startPatches.bind(backgroundConnection),
-  )();
+  await backgroundConnection.startPatches();
 
   setupStateHooks(store);
 
@@ -136,6 +135,7 @@ export async function setupInitialStore(
     const selectedAccount = getSelectedInternalAccount(draftInitialState);
 
     const currentTabIsConnectedToSelectedAddress =
+      selectedAccount &&
       isInternalAccountInPermittedAccountIds(
         selectedAccount,
         permittedAccountsForCurrentTab,

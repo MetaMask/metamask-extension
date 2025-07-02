@@ -489,33 +489,14 @@
   "gasLimit": {
     "message": "Limitasyon sa Gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ang limitasyon sa gas ay ang maximum na halaga ng mga unit ng gas na handa mong gastusin."
-  },
   "gasLimitTooLow": {
     "message": "Ang limitasyon sa gas ay dapat na hindi bababa sa 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Ang limitasyon sa gas ay dapat na hindi bababa sa $1",
-    "description": "$1 is the custom gas limit, in decimal."
-  },
-  "gasPrice": {
-    "message": "Presyo ng Gas (GWEI)"
   },
   "gasPriceExcessive": {
     "message": "Hindi makatuwirang naitakda nang mataas ang iyong bayarin sa gas. Subukang babaan ang halaga."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Labis-labis ang Presyo ng Gas"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Sobrang Baba ng Presyo ng Gas"
-  },
   "gasPriceFetchFailed": {
     "message": "Hindi nagtagumpay ang pagtatantya ng presyo ng gas dahil sa error sa network."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Tinutukoy ng presyo ng gas ang halaga ng Ether na handa mong bayaran para sa bawat unit ng gas."
   },
   "gasUsed": {
     "message": "Nagamit na Gas"
@@ -916,18 +897,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "OK"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Palaging panatilihin ang iyong Secret Recovery Phrase sa isang ligtas at lihim na lugar"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Kailangan ulit i-back up ang Secret Recovery Phrase mo?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Huwag kailanman ipaalam sa iba ang iyong Secret Recovery Phrase"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Hindi kailanman hihingin ng MetaMask team ang iyong Secret Recovery Phrase"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Kinokontrol ng iyong Secret Recovery Phrase ang lahat ng iyong account."
   },
@@ -1004,30 +973,6 @@
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Isulat ito at itabi sa maraming tagong lugar."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Ilagay sa safe-deposit box."
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Ang iyong recovery phrase ay ang iyong “pangunahing key” sa wallet at pondo mo."
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Kung may manghihingi man ng iyong recovery phrase, malamang na sinusubukan ka niyang i-scam."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Huwag kailanmang ibahagi ang iyong recovery phrase kahit na sa MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Ano ang recovery phrase?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Dapat kong ibahagi ang aking recovery phrase?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Paano ko mase-save ang aking recovery phrase?"
-  },
   "seedPhraseIntroTitle": {
     "message": "I-secure ang iyong wallet"
   },
@@ -1060,10 +1005,6 @@
   },
   "send": {
     "message": "Magpadala"
-  },
-  "sendSpecifiedTokens": {
-    "message": "Magpadala ng $1",
-    "description": "Symbol of the specified token"
   },
   "settings": {
     "message": "Mga Setting"
@@ -1392,9 +1333,6 @@
   "termsOfService": {
     "message": "Mga Tuntunin ng Serbisyo"
   },
-  "tips": {
-    "message": "Mga Tip"
-  },
   "to": {
     "message": "Para kay/sa"
   },
@@ -1490,9 +1428,6 @@
   "unlock": {
     "message": "I-unlock"
   },
-  "unlockMessage": {
-    "message": "Naghihintay ang decentralized web"
-  },
   "unrecognizedChain": {
     "message": "Hindi kinikilala ang custom na network na ito. Inirerekomenda naming $1 ka bago magpatuloy",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
@@ -1529,7 +1464,7 @@
     "description": "$1 is a clickable link."
   },
   "welcomeBack": {
-    "message": "Welcome back!"
+    "message": "Welcome back"
   },
   "whatsThis": {
     "message": "Ano ito?"
@@ -1539,8 +1474,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Ang iyong Secret Recovery Phrase"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Walang presyo ng gas sa pagpapabilis"
   }
 }

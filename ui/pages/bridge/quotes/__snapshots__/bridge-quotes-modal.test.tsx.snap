@@ -107,16 +107,18 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-                />
-                <p
-                  class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
                 >
-                  $14 total cost
+                  $0.16
                 </p>
                 <p
                   class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
                 >
-                  13.98 USDC receive amount
+                  $14.00 total cost
+                </p>
+                <p
+                  class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
+                >
+                  $13.84 receive amount
                 </p>
               </div>
               <div
@@ -143,16 +145,18 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-                />
-                <p
-                  class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
                 >
-                  $14 total cost
+                  $0.34
                 </p>
                 <p
                   class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
                 >
-                  13.8 USDC receive amount
+                  $14.00 total cost
+                </p>
+                <p
+                  class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
+                >
+                  $13.66 receive amount
                 </p>
               </div>
               <div

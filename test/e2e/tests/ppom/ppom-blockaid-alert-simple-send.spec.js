@@ -139,6 +139,11 @@ describe('Simple Send Security Alert - Blockaid', function () {
           .withPreferencesController({
             securityAlertsEnabled: true,
           })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         testSpecificMock: mockInfuraWithBenignResponses,
         title: this.test.fullTitle(),
@@ -179,6 +184,11 @@ describe('Simple Send Security Alert - Blockaid', function () {
           .withPreferencesController({
             securityAlertsEnabled: true,
           })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         testSpecificMock: mockInfuraWithMaliciousResponses,
         title: this.test.fullTitle(),
@@ -218,6 +228,11 @@ describe('Simple Send Security Alert - Blockaid', function () {
           .withNetworkControllerOnMainnet()
           .withPreferencesController({
             securityAlertsEnabled: true,
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .build(),
         testSpecificMock: mockInfuraWithFailedResponses,
