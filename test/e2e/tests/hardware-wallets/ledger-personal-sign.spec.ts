@@ -7,7 +7,7 @@ import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.fl
 import TestDappPage from '../../page-objects/pages/test-dapp';
 
 describe('Ledger Hardware Signatures', function (this: Suite) {
-  it('pseronal sign', async function () {
+  it('personal sign', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
