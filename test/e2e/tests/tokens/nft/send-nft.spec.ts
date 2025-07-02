@@ -69,7 +69,7 @@ describe('Send NFTs', function () {
     );
   });
 
-  it.only('user should only be able to view ERC721 NFTs on send flow that belong on selected network', async function () {
+  it('user should only be able to view ERC721 NFTs on send flow that belong on selected network', async function () {
     await withFixtures(
       {
         dapp: true,

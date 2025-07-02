@@ -6,13 +6,6 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import NetworkManager from '../../page-objects/pages/network-manager';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 
-function buildFixtures(title: string) {
-  return {
-    fixtures: new FixtureBuilder().build(),
-    title,
-  };
-}
-
 describe('Network Manager', function (this: Suite) {
   it('should reflect the enabled networks state in the network manager', async function () {
     await withFixtures(
@@ -68,9 +61,11 @@ describe('Network Manager', function (this: Suite) {
         await networkManager.checkNetworkIsSelected('eip155:1');
         await networkManager.checkNetworkIsDeselected('eip155:59144');
         await networkManager.selectNetwork('eip155:59144');
+        await driver.delay(12000);
         await networkManager.checkNetworkIsSelected('eip155:59144');
         await networkManager.checkNetworkIsSelected('eip155:1');
         await networkManager.deselectNetwork('eip155:1');
+        await driver.delay(12000);
         await networkManager.checkNetworkIsSelected('eip155:59144');
         await networkManager.checkNetworkIsDeselected('eip155:1');
       },
