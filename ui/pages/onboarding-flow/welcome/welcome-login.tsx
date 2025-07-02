@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import classnames from 'classnames';
 import Mascot from '../../../components/ui/mascot';
 import {
@@ -29,7 +29,7 @@ export default function WelcomeLogin({
   onLogin: (loginType: LoginType, loginOption: string) => Promise<void>;
 }) {
   const t = useI18nContext();
-  const [eventEmitter] = useState(new EventEmitter());
+  const animationEventEmitter = useRef(new EventEmitter());
   const [showLoginOptions, setShowLoginOptions] = useState(false);
   const [loginOption, setLoginOption] = useState<LoginOptionType | null>(null);
   const isSeedlessOnboardingFeatureEnabled =
@@ -47,7 +47,11 @@ export default function WelcomeLogin({
       );
     }
     return (
-      <Mascot animationEventEmitter={eventEmitter} width="268" height="268" />
+      <Mascot
+        animationEventEmitter={animationEventEmitter.current}
+        width="268"
+        height="268"
+      />
     );
   };
 
