@@ -244,24 +244,13 @@ function createScriptTasks({
       createSentryBundle({ buildTarget }),
     );
 
-    // devtools bundles (run inline when ocap-kernel is enabled)
-    const devtoolsBuildTask = shouldIncludeOcapKernel
-      ? createDevtoolsBundle({ buildTarget })
-      : async () => {
-          /* no-op */
-        };
-
-    const kernelPanelBuildTask = shouldIncludeOcapKernel
-      ? createKernelPanelBundle({ buildTarget })
-      : async () => {
-          /* no-op */
-        };
-
     // task for initiating browser livereload and building devtools
     const initiateLiveReload = async () => {
-      // Build devtools bundles inline (not as child processes)
-      await devtoolsBuildTask();
-      await kernelPanelBuildTask();
+      // devtools bundles (run inline when ocap-kernel is enabled)
+      if (shouldIncludeOcapKernel) {
+        createDevtoolsBundle({ buildTarget });
+        createKernelPanelBundle({ buildTarget });
+      }
       if (isDevBuild(buildTarget)) {
         // trigger live reload when the bundles are updated
         // this is not ideal, but overcomes the limitations:
