@@ -4,11 +4,12 @@ import {
   type TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
+import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import {
-  type BridgeHistoryItem,
+  StatusTypes,
+  type Step,
   ActionTypes,
-} from '@metamask/bridge-status-controller';
-import { StatusTypes, type Step } from '@metamask/bridge-controller';
+} from '@metamask/bridge-controller';
 import { Box, Text } from '../../../components/component-library';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import {
