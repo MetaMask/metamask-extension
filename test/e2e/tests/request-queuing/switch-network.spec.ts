@@ -5,7 +5,6 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/rede
 import HomePage from '../../page-objects/pages/home/homepage';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { PAGES } from '../../webdriver/driver';
 
 describe('Request Queuing - Extension and Dapp on different networks.', function () {
   it('should not switch to the dapps network automatically when mm network differs', async function () {
@@ -51,8 +50,6 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
         // Queue confirm tx should first auto switch network
         await testDapp.clickSimpleSendButton();
 
-        // Wait for confirmation dialog to appear
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Confirm transaction
@@ -64,7 +61,6 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.navigate(PAGES.HOME);
 
         // Check correct network switched and on the correct network
         const homePage = new HomePage(driver);
