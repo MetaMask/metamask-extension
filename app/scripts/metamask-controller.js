@@ -4976,6 +4976,24 @@ export default class MetamaskController extends EventEmitter {
         );
       }
 
+      ///: BEGIN:ONLY_INCLUDE_IF(solana)
+      const solanaClient = await this._getMultichainWalletSnapClient(
+        SOLANA_WALLET_SNAP_ID,
+      );
+      const solScope = SolScope.Mainnet;
+      const solanaAccounts = await solanaClient.discoverAccounts(
+        entropySource,
+        solScope,
+      );
+
+      // If none accounts got discovered, we still create the first (default) one.
+      if (solanaAccounts.length === 0) {
+        await this._addSnapAccount(entropySource, solanaClient, {
+          scope: solScope,
+        });
+      }
+      ///: END:ONLY_INCLUDE_IF
+
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       const btcClient = await this._getMultichainWalletSnapClient(
         BITCOIN_WALLET_SNAP_ID,
@@ -4991,24 +5009,6 @@ export default class MetamaskController extends EventEmitter {
         await this._addSnapAccount(entropySource, btcClient, {
           scope: btcScope,
           synchronize: true,
-        });
-      }
-      ///: END:ONLY_INCLUDE_IF
-
-      ///: BEGIN:ONLY_INCLUDE_IF(solana)
-      const solanaClient = await this._getMultichainWalletSnapClient(
-        SOLANA_WALLET_SNAP_ID,
-      );
-      const solScope = SolScope.Mainnet;
-      const solanaAccounts = await solanaClient.discoverAccounts(
-        entropySource,
-        solScope,
-      );
-
-      // If none accounts got discovered, we still create the first (default) one.
-      if (solanaAccounts.length === 0) {
-        await this._addSnapAccount(entropySource, solanaClient, {
-          scope: solScope,
         });
       }
       ///: END:ONLY_INCLUDE_IF
