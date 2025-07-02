@@ -11,7 +11,7 @@ import { mockDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
+const isGlobalNetworkSelectorRemoved = true;
 
 describe('View DeFi details', function () {
   it('user should be able to view Aave Positions details', async function () {

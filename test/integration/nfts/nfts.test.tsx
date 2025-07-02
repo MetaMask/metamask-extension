@@ -15,7 +15,7 @@ import {
   waitForElementByTextToNotBePresent,
 } from '../helpers';
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
+const isGlobalNetworkSelectorRemoved = true;
 
 jest.setTimeout(20_000);
 

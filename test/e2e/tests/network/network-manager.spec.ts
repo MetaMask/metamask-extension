@@ -6,7 +6,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import NetworkManager from '../../page-objects/pages/network-manager';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
+const isGlobalNetworkSelectorRemoved = true;
 
 describe('Network Manager', function (this: Suite) {
   if (!isGlobalNetworkSelectorRemoved) {

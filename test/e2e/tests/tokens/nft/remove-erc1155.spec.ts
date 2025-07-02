@@ -12,7 +12,7 @@ import PrivacySettings from '../../../page-objects/pages/settings/privacy-settin
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { setupAutoDetectMocking } from './mocks';
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
+const isGlobalNetworkSelectorRemoved = true;
 
 async function mockIPFSRequest(mockServer: MockttpServer) {
   return [

@@ -10,7 +10,7 @@ import { WALLET_ADDRESS } from '../confirmations/signatures/signature-helpers';
 import { Driver } from '../../webdriver/driver';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
+const isGlobalNetworkSelectorRemoved = true;
 
 // Network configuration type
 type NetworkConfig = {

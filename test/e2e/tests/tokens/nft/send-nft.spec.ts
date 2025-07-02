@@ -14,7 +14,7 @@ import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
 import { Anvil } from '../../../seeder/anvil';
 import NetworkManager from '../../../page-objects/pages/network-manager';
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
+const isGlobalNetworkSelectorRemoved = true;
 
 describe('Send NFTs', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
