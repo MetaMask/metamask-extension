@@ -33,9 +33,14 @@ export const AccountShowSrpRow = ({ account }: AccountShowSrpRowProps) => {
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   const seedPhraseBackedUp = useSelector(getIsPrimarySeedPhraseBackedUp);
   const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
-  const keyringId = account.options.entropySource as string;
+  const keyringId =
+    account.options?.entropySource &&
+    typeof account.options.entropySource === 'string'
+      ? account.options.entropySource
+      : undefined;
   const isFirstHdKeyring = hdKeyrings[0]?.metadata?.id === keyringId;
-  const shouldShowBackupReminder = !seedPhraseBackedUp && isFirstHdKeyring;
+  const shouldShowBackupReminder =
+    !seedPhraseBackedUp && isFirstHdKeyring && keyringId;
 
   return (
     <>
