@@ -76,6 +76,8 @@ class HomePage {
     testId: 'account-overview__asset-tab',
   };
 
+  private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
@@ -148,6 +150,10 @@ class HomePage {
 
   async startSendFlow(): Promise<void> {
     await this.driver.clickElement(this.sendButton);
+  }
+
+  async startSwapFlow(): Promise<void> {
+    await this.driver.clickElement(this.swapButton);
   }
 
   async startBridgeFlow(): Promise<void> {
@@ -349,6 +355,16 @@ class HomePage {
       text: message,
       tag: 'p',
     });
+  }
+
+  /**
+   * Clicks the copy address button.
+   */
+  async getAccountAddress(): Promise<string> {
+    const accountAddress = await this.driver.findElement(
+      this.copyAddressButton,
+    );
+    return accountAddress.getText();
   }
 }
 

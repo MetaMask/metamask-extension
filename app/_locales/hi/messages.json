@@ -2226,9 +2226,6 @@
   "floatAmountToken": {
     "message": "टोकन अमाउंट एक पूर्णांक होना चाहिए"
   },
-  "followUsOnTwitter": {
-    "message": "हमें Twitter पर फॉलो करें"
-  },
   "forbiddenIpfsGateway": {
     "message": "निषिद्ध IPFS गेटवे: कृपया एक CID गेटवे बताएं"
   },
