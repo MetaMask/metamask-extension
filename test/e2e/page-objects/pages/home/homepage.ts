@@ -152,6 +152,10 @@ class HomePage {
     await this.driver.clickElement(this.sendButton);
   }
 
+  async startSwapFlow(): Promise<void> {
+    await this.driver.clickElement(this.swapButton);
+  }
+
   async startBridgeFlow(): Promise<void> {
     await this.driver.clickElement(this.bridgeButton);
   }
