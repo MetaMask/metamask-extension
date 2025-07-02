@@ -5003,12 +5003,6 @@
   "slideMultiSrpTitle": {
     "message": "添加多个助记词"
   },
-  "slideRemoteModeDescription": {
-    "message": "无线使用您的冷钱包"
-  },
-  "slideRemoteModeTitle": {
-    "message": "冷存储，快速访问"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "地址相同，功能更加智能化"
   },

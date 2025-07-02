@@ -47,9 +47,6 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
-  REMOTE_ROUTE,
-  REMOTE_ROUTE_SETUP_SWAPS,
-  REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
   IMPORT_SRP_ROUTE,
   DEFI_ROUTE,
   DEEP_LINK_ROUTE,
@@ -153,13 +150,6 @@ const ReviewPermissions = mmLazy(
 );
 const Home = mmLazy(() => import('../home'));
 
-const RemoteModeOverview = mmLazy(() => import('../remote-mode/overview'));
-const RemoteModeSetupSwaps = mmLazy(
-  () => import('../remote-mode/setup/setup-swaps'),
-);
-const RemoteModeSetupDailyAllowance = mmLazy(
-  () => import('../remote-mode/setup/setup-daily-allowance'),
-);
 const DeepLink = mmLazy(() => import('../deep-link/deep-link'));
 const WalletDetails = mmLazy(
   () => import('../multichain-accounts/wallet-details'),
@@ -404,21 +394,6 @@ export default class Routes extends Component {
           <Authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             component={ReviewPermissions}
-            exact
-          />
-          <Authenticated
-            path={REMOTE_ROUTE}
-            component={RemoteModeOverview}
-            exact
-          />
-          <Authenticated
-            path={REMOTE_ROUTE_SETUP_SWAPS}
-            component={RemoteModeSetupSwaps}
-            exact
-          />
-          <Authenticated
-            path={REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE}
-            component={RemoteModeSetupDailyAllowance}
             exact
           />
           <Authenticated

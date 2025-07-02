@@ -4,13 +4,6 @@ export const BASIC_FUNCTIONALITY_SLIDE = {
   description: 'enableIt',
   image: './images/basic-functionality.svg',
 };
-export const REMOTE_MODE_SLIDE = {
-  id: 'remoteMode',
-  title: 'slideRemoteModeTitle',
-  description: 'slideRemoteModeDescription',
-  image: './images/slide-cold-storage.svg',
-  href: '/home.html#remote',
-};
 
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 export const SOLANA_SLIDE = {

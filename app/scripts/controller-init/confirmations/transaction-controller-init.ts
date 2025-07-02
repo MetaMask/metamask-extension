@@ -42,7 +42,6 @@ import { TransactionControllerInitMessenger } from '../messengers/transaction-co
 import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import { Delegation7702PublishHook } from '../../lib/transaction/hooks/delegation-7702-publish';
-import { updateRemoteModeTransaction } from '../../lib/remote-mode';
 import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation-hook';
 
 export const TransactionControllerInit: ControllerInitFunction<
@@ -125,12 +124,6 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
-      afterAdd: async ({ transactionMeta }) => {
-        return updateRemoteModeTransaction({
-          transactionMeta,
-          state: getFlatState(),
-        });
-      },
       afterSimulate: new EnforceSimulationHook({
         messenger: initMessenger,
       }).getAfterSimulateHook(),

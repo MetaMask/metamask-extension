@@ -65,8 +65,6 @@ import EditGasPopover from '../../../pages/confirmations/components/edit-gas-pop
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
-import { useRemoteModeTransaction } from '../../../hooks/useRemoteModeTransaction';
-// import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {
   useBridgeTxHistoryData,
   FINAL_NON_CONFIRMED_STATUSES,
@@ -86,17 +84,12 @@ function TransactionListItemInner({
   const t = useI18nContext();
   const history = useHistory();
   const { hasCancelled, initialTransaction } = transactionGroup;
-  const { isRemoteModeActivity, isRemoteModeGasTransaction } =
-    useRemoteModeTransaction({
-      transaction: initialTransaction,
-    });
   const [showDetails, setShowDetails] = useState(false);
   const [showCancelEditGasPopover, setShowCancelEditGasPopover] =
     useState(false);
   const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
   const { supportsEIP1559 } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
-  // const isSmartTransaction = useSelector(getIsSmartTransaction);
   const dispatch = useDispatch();
 
   // Bridge transactions
@@ -354,9 +347,6 @@ function TransactionListItemInner({
                 flexDirection={FlexDirection.Row}
                 alignItems={AlignItems.center}
               >
-                {isRemoteModeGasTransaction && (
-                  <Icon name={IconName.Gas} size={IconSize.Md} />
-                )}
                 <Text
                   variant={TextVariant.bodyLgMedium}
                   fontWeight={FontWeight.Medium}
@@ -381,7 +371,6 @@ function TransactionListItemInner({
             </>
           )
         }
-        isRemoteModeItem={isRemoteModeActivity}
       >
         {Boolean(showCancelButton || speedUpButton) && (
           <Box

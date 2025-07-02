@@ -38,10 +38,6 @@ import {
   updateSendAsset,
 } from '../../../../ducks/send';
 
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
-import { getRemoteSendAllowance } from '../../../../selectors/remote-mode';
-import { SendAllowanceBanner } from '../../../../pages/remote-mode/components';
-
 import {
   TokenStandard,
   AssetType,
@@ -66,7 +62,6 @@ import { AssetPickerAmount } from '../..';
 import useUpdateSwapsState from '../../../../pages/swaps/hooks/useUpdateSwapsState';
 import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
 import {
-  getSelectedInternalAccount,
   smartTransactionsListSelector,
 } from '../../../../selectors';
 import { TextVariant } from '../../../../helpers/constants/design-system';
@@ -372,19 +367,6 @@ export const SendPage = () => {
     [dispatch],
   );
 
-  // Remote Mode
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const currentChainId = useSelector(getCurrentChainId);
-  const remoteSendAllowance = useSelector((state) =>
-    getRemoteSendAllowance(state, {
-      from: selectedAccount.address,
-      chainId: currentChainId,
-      asset: transactionAsset,
-    }),
-  );
-  const isRemoteSendPossible = Boolean(remoteSendAllowance);
-  const showRemoteSendBanner = isRemoteSendPossible && isSendFormShown;
-
   let tooltipTitle = '';
 
   if (isSwapAndSend) {
@@ -411,10 +393,7 @@ export const SendPage = () => {
         {t('send')}
       </Header>
       <Content>
-        {showRemoteSendBanner && (
-          <SendAllowanceBanner allowance={remoteSendAllowance} />
-        )}
-        <SendPageAccountPicker isRemoteModeEnabled={isRemoteSendPossible} />
+        <SendPageAccountPicker />
         {isSendFormShown && (
           <AssetPickerAmount
             error={error}
@@ -422,7 +401,6 @@ export const SendPage = () => {
             header={t('sendSelectSendAsset')}
             asset={transactionAsset}
             amount={amount}
-            disableMaxButton={isRemoteSendPossible}
             onAssetChange={handleSelectSendToken}
             onAmountChange={onAmountChange}
             onClick={() => handleAssetPickerClick(false)}
