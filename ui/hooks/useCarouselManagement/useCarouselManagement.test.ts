@@ -278,45 +278,31 @@ describe('useCarouselManagement', () => {
   });
 
   describe('priorityPlacement', () => {
-    it('should sort priorityPlacement slide before regular slides', async () => {
-      const prioritySlide: CarouselSlide = {
-        id: 'contentful-priority',
-        dismissed: false,
-        undismissable: false,
+    it('should inject priorityPlacement slide first in correct order', async () => {
+      const priorityCashSlide: CarouselSlide = {
+        ...CASH_SLIDE,
+        id: 'cash-priority',
         priorityPlacement: true,
-        title: 'Priority Slide',
-        description: 'Goes first',
-        image: 'priority.png',
       };
 
-      const regularSlide: CarouselSlide = {
-        id: 'contentful-regular',
-        dismissed: false,
-        undismissable: false,
-        title: 'Regular Slide',
-        description: 'Goes second',
-        image: 'regular.png',
-      };
+      // Build expected array with priority slide first
+      const expectedSlides: CarouselSlide[] = [
+        priorityCashSlide,
+        ...SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF,
+      ];
 
-      jest.mocked(fetchCarouselSlidesFromContentful).mockResolvedValue({
-        prioritySlides: [prioritySlide],
-        regularSlides: [regularSlide],
+      // Inject priority slide before hook runs
+      (fetchCarouselSlidesFromContentful as jest.Mock).mockResolvedValueOnce({
+        prioritySlides: [priorityCashSlide],
+        regularSlides: [],
       });
 
-      renderHook(() =>
-        useCarouselManagement({ testDate: '2024-01-01T00:00:00Z' }),
-      );
+      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
-      const updatedSlides = mockUpdateSlides.mock
-        .calls[0][0] as CarouselSlide[];
-      const ids = updatedSlides.map((s) => s.id);
+      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
-      expect(ids).toContain('contentful-priority');
-      expect(ids).toContain('contentful-regular');
-      expect(ids.indexOf('contentful-priority')).toBeLessThan(
-        ids.indexOf('contentful-regular'),
-      );
+      expect(updatedSlides).toStrictEqual(expectedSlides);
     });
   });
 
