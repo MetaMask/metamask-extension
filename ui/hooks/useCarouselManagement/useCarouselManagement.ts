@@ -137,7 +137,7 @@ export const useCarouselManagement = ({
     // Handle Contentful Data
     const maybeFetchContentful = async () => {
       const contentfulEnabled =
-        remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
+        remoteFeatureFlags?.contentfulCarouselIntegration ?? false;
 
       if (contentfulEnabled) {
         try {
