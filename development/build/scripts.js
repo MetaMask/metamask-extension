@@ -246,11 +246,6 @@ function createScriptTasks({
 
     // task for initiating browser livereload and building devtools
     const initiateLiveReload = async () => {
-      // devtools bundles (run inline when ocap-kernel is enabled)
-      if (shouldIncludeOcapKernel) {
-        createDevtoolsBundle({ buildTarget });
-        createKernelPanelBundle({ buildTarget });
-      }
       if (isDevBuild(buildTarget)) {
         // trigger live reload when the bundles are updated
         // this is not ideal, but overcomes the limitations:
@@ -271,7 +266,21 @@ function createScriptTasks({
       contentscriptSubtask,
       disableConsoleSubtask,
       installSentrySubtask,
-    ].map((subtask) =>
+    ];
+
+    if (shouldIncludeOcapKernel) {
+      const devtoolsSubtask = createTask(
+        `${taskPrefix}:devtools`,
+        createDevtoolsBundle({ buildTarget }),
+      );
+      const kernelPanelSubtask = createTask(
+        `${taskPrefix}:kernel-panel`,
+        createKernelPanelBundle({ buildTarget }),
+      );
+      allSubtasks.push(devtoolsSubtask, kernelPanelSubtask);
+    }
+
+    allSubtasks.map((subtask) =>
       runInChildProcess(subtask, {
         shouldIncludeSnow,
         applyLavaMoat,
