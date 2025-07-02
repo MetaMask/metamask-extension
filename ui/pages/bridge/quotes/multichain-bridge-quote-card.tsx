@@ -67,7 +67,9 @@ export const MultichainBridgeQuoteCard = () => {
   const toChain = useSelector(getToChain);
   const locale = useSelector(getIntlLocale);
   const isBridgeTx = useSelector(getIsBridgeTx);
-  const isStxEnabled = useSelector(getIsSmartTransaction);
+  const isStxEnabled = useSelector((state) =>
+    getIsSmartTransaction(state as never, fromChain?.chainId),
+  );
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const dispatch = useDispatch();

@@ -74,7 +74,9 @@ export const BridgeQuoteCard = () => {
     useState(false);
 
   const dispatch = useDispatch();
-  const isStxEnabled = useSelector(getIsSmartTransaction);
+  const isStxEnabled = useSelector((state) =>
+    getIsSmartTransaction(state as never, fromChain?.chainId),
+  );
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   return (

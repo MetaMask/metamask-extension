@@ -62,10 +62,14 @@ export const BridgeQuotesModal = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const isStxEnabled = useSelector(getIsSmartTransaction);
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const fromChain = useSelector(getFromChain);
+
+  const isStxEnabled = useSelector((state) =>
+    getIsSmartTransaction(state as never, fromChain?.chainId),
+  );
+
   const { sortedQuotes, activeQuote, recommendedQuote } =
     useSelector(getBridgeQuotes);
   const sortOrder = useSelector(getBridgeSortOrder);
