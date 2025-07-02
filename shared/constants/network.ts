@@ -493,6 +493,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   SHAPE: 'ETH',
   SHAPE_SEPOLIA: 'ETH',
   XRPLEVM_TESTNET: 'XRP',
+  XRPLEVM: 'XRP',
   SOPHON: 'SOPH',
 } as const;
 
@@ -594,6 +595,8 @@ export const BITCOIN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const BITCOIN_TESTNET_IMAGE_URL = './images/bitcoin-testnet-logo.svg';
 export const BITCOIN_SIGNET_IMAGE_URL = './images/bitcoin-signet-logo.png';
 export const XRPLEVM_TESTNET_IMAGE_URL = './images/xrplevm.svg';
+export const XRPLEVM_TESTNET_NATIVE_TOKEN_IMAGE_URL =
+  './images/xrplevm-native.svg';
 export const LENS_IMAGE_URL = './images/lens.png';
 export const LENS_NATIVE_TOKEN_IMAGE_URL = './images/lens-native.svg';
 export const PLUME_IMAGE_URL = './images/plume.png';
@@ -1135,7 +1138,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.OMNI]: OMNI_NATIVE_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_MAINNET]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_NATIVE_TOKEN_IMAGE_URL,
-  [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]: XRPLEVM_TESTNET_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]:
+    XRPLEVM_TESTNET_NATIVE_TOKEN_IMAGE_URL,
 } as const;
 
 /**
