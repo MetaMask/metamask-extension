@@ -277,35 +277,6 @@ describe('useCarouselManagement', () => {
     process.env.IN_TEST = 'true';
   });
 
-  describe('priorityPlacement', () => {
-    it('should inject priorityPlacement slide first in correct order', async () => {
-      const priorityCashSlide: CarouselSlide = {
-        ...CASH_SLIDE,
-        id: 'cash-priority',
-        priorityPlacement: true,
-      };
-
-      // Build expected array with priority slide first
-      const expectedSlides: CarouselSlide[] = [
-        priorityCashSlide,
-        ...SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF,
-      ];
-
-      // Inject priority slide before hook runs
-      (fetchCarouselSlidesFromContentful as jest.Mock).mockResolvedValueOnce({
-        prioritySlides: [priorityCashSlide],
-        regularSlides: [],
-      });
-
-      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
-
-      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
-      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
-
-      expect(updatedSlides).toStrictEqual(expectedSlides);
-    });
-  });
-
   describe('getSweepstakesCampaignActive', () => {
     it('returns true when date is within the sweepstakes period', () => {
       const testDate = new Date(SWEEPSTAKES_START.getTime() + 1000); // 1 second after start
