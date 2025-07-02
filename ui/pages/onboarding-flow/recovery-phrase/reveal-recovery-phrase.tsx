@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { FormEvent, useCallback, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -124,7 +124,7 @@ export default function RevealRecoveryPhrase({
         <Box
           width={BlockSize.Full}
           as="form"
-          onSubmit={(e) => {
+          onSubmit={(e: FormEvent<HTMLElement>) => {
             e.preventDefault();
             onSubmit(password);
           }}
