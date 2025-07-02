@@ -178,7 +178,7 @@ export default function OnboardingWelcome({
     if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
       setLoginError(null);
     } else {
-      setLoginError(error);
+      setLoginError(errorMessage);
     }
   }, []);
 

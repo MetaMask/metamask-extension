@@ -163,6 +163,7 @@ export default class OAuthService {
                   reject(
                     new Error(OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR),
                   );
+                  return;
                 }
                 reject(
                   new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR),

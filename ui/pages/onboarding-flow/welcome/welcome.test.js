@@ -60,7 +60,7 @@ describe('Welcome Page', () => {
     expect(agreeButton).toBeDisabled();
   });
 
-  it('should show the error modal when the error thrown in login', () => {
+  it('should show the error modal when the error thrown in login', async () => {
     process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
 
     const mockStartOAuthLogin = jest
@@ -80,7 +80,7 @@ describe('Welcome Page', () => {
     );
     fireEvent.click(createWithGoogleButton);
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(mockStartOAuthLogin).toHaveBeenCalled();
       expect(getByTestId('login-error-modal')).toBeInTheDocument();
     });
