@@ -28,7 +28,7 @@ jobs:
 
       - name: Get ECR public login password
         id: login
-        run: echo "password=$(aws ecr-public get-login-password --region us-east-1)" >> $GITHUB_OUTPUT
+        run: echo "password=$(aws ecr-public get-login-password --region us-east-1)" >> "$GITHUB_OUTPUT"
 
   test-e2e-chrome-browserify:
     needs: prepare-ecr-auth
