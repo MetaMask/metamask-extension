@@ -3,6 +3,8 @@ import HeaderNavbar from '../pages/header-navbar';
 import SelectNetwork from '../pages/dialog/select-network';
 import NetworkSwitchModalConfirmation from '../pages/dialog/network-switch-modal-confirmation';
 
+const isGlobalNetworkSelectorRemoved = true;
+
 /**
  * Switches to a specified network in the header bar.
  *
@@ -16,17 +18,24 @@ export const switchToNetworkFlow = async (
   toggleShowTestNetwork: boolean = false,
 ) => {
   console.log(`Switch to network ${networkName} in header bar`);
-  const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.check_pageIsLoaded();
-  await headerNavbar.clickSwitchNetworkDropDown();
-
-  const selectNetworkDialog = new SelectNetwork(driver);
-  await selectNetworkDialog.check_pageIsLoaded();
-  if (toggleShowTestNetwork) {
-    await selectNetworkDialog.toggleShowTestNetwork();
+  if (isGlobalNetworkSelectorRemoved) {
+    await driver.clickElement('[data-testid="sort-by-networks"]');
+    await driver.clickElementSafe({
+      text: 'Custom',
+    });
+    await driver.clickElement(`[data-testid="${networkName}"]`);
+  } else {
+    const headerNavbar = new HeaderNavbar(driver);
+    await headerNavbar.check_pageIsLoaded();
+    await headerNavbar.clickSwitchNetworkDropDown();
+    const selectNetworkDialog = new SelectNetwork(driver);
+    await selectNetworkDialog.check_pageIsLoaded();
+    if (toggleShowTestNetwork) {
+      await selectNetworkDialog.toggleShowTestNetwork();
+    }
+    await selectNetworkDialog.selectNetworkName(networkName);
+    await headerNavbar.check_currentSelectedNetwork(networkName);
   }
-  await selectNetworkDialog.selectNetworkName(networkName);
-  await headerNavbar.check_currentSelectedNetwork(networkName);
 };
 
 /**
