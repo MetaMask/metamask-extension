@@ -193,10 +193,7 @@ describe('ConnectHardwareForm', () => {
 
       await waitFor(() => {
         expect(
-          getByText(
-            "If you're on the latest version of Firefox, you might be experiencing an issue related to Firefox dropping U2F support. Learn how to fix this issue",
-            { exact: false },
-          ),
+          getByText('Firefox Not Supported', { exact: false }),
         ).toBeInTheDocument();
       });
     });
