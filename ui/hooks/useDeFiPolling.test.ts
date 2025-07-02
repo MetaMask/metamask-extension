@@ -19,9 +19,28 @@ describe('useDeFiPolling', () => {
     jest.clearAllMocks();
   });
 
+  it('should not poll when locked', async () => {
+    const state = {
+      metamask: {
+        isUnlocked: false,
+        completedOnboarding: true,
+        networkConfigurationsByChainId: {
+          '0x1': {},
+        },
+      },
+    };
+
+    renderHookWithProvider(() => useDeFiPolling(), state);
+
+    await Promise.all(mockPromises);
+    expect(deFiStartPolling).toHaveBeenCalledTimes(0);
+    expect(deFiStopPolling).toHaveBeenCalledTimes(0);
+  });
+
   it('should poll defi when enabled and stop on dismount', async () => {
     const state = {
       metamask: {
+        isUnlocked: true,
         completedOnboarding: true,
       },
     };

@@ -85,6 +85,8 @@ export function getAssetsRates(state: AssetsRatesState) {
 export function getDefiPositions(
   state: DefiState,
 ): DeFiPositionsControllerState['allDeFiPositions'] {
+  console.log('getDefiPositions', state?.metamask?.allDeFiPositions);
+  console.log('getDefiPositions', state?.metamask);
   return state?.metamask?.allDeFiPositions;
 }
 

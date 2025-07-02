@@ -1,11 +1,15 @@
 import { useSelector } from 'react-redux';
 import { deFiStartPolling, deFiStopPolling } from '../store/actions';
-import { getCompletedOnboarding } from '../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../ducks/metamask/metamask';
 import useMultiPolling from './useMultiPolling';
 
 const useDeFiPolling = () => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
-  const enabled = completedOnboarding;
+  const isUnlocked = useSelector(getIsUnlocked);
+  const enabled = completedOnboarding && isUnlocked;
 
   useMultiPolling({
     startPolling: deFiStartPolling,
