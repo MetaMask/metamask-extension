@@ -603,7 +603,7 @@ export const BERACHAIN_NATIVE_TOKEN_IMAGE_URL = './images/berachain-native.svg';
 export const EDUCHAIN_IMAGE_URL = './images/educhain.svg';
 export const APECHAIN_IMAGE_URL = './images/apechain.svg';
 export const APECHAIN_NATIVE_TOKEN_IMAGE_URL = './images/apechain-native.svg';
-export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
+export const CHILIZ_IMAGE_URL = './images/chiliz.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -638,10 +638,12 @@ export const TEST_NETWORK_TICKER_MAP: {
     'localhost' | 'mainnet' | 'rpc' | 'linea-mainnet'
   >]: string;
 } = {
-  [NETWORK_TYPES.GOERLI]: `${typedCapitalize(NETWORK_TYPES.GOERLI)}${CURRENCY_SYMBOLS.ETH
-    }`,
-  [NETWORK_TYPES.SEPOLIA]: `${typedCapitalize(NETWORK_TYPES.SEPOLIA)}${CURRENCY_SYMBOLS.ETH
-    }`,
+  [NETWORK_TYPES.GOERLI]: `${typedCapitalize(NETWORK_TYPES.GOERLI)}${
+    CURRENCY_SYMBOLS.ETH
+  }`,
+  [NETWORK_TYPES.SEPOLIA]: `${typedCapitalize(NETWORK_TYPES.SEPOLIA)}${
+    CURRENCY_SYMBOLS.ETH
+  }`,
   [NETWORK_TYPES.LINEA_GOERLI]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.LINEA_SEPOLIA]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.MEGAETH_TESTNET]: 'MegaETH',
@@ -1138,8 +1140,9 @@ const defaultEtherscanSubdomainPrefix = 'api';
 export const ETHERSCAN_SUPPORTED_NETWORKS = {
   [CHAIN_IDS.GOERLI]: {
     domain: defaultEtherscanDomain,
-    subdomain: `${defaultEtherscanSubdomainPrefix}-${CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.GOERLI]
-      }`,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-${
+      CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.GOERLI]
+    }`,
   },
   [CHAIN_IDS.MAINNET]: {
     domain: defaultEtherscanDomain,
@@ -1147,8 +1150,9 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
   },
   [CHAIN_IDS.SEPOLIA]: {
     domain: defaultEtherscanDomain,
-    subdomain: `${defaultEtherscanSubdomainPrefix}-${CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.SEPOLIA]
-      }`,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-${
+      CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.SEPOLIA]
+    }`,
   },
   [CHAIN_IDS.LINEA_GOERLI]: {
     domain: 'lineascan.build',
