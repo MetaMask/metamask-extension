@@ -3123,17 +3123,23 @@
   "lock": {
     "message": "Lock"
   },
-  "loginErrorConnectTitle": {
-    "message": "Unable to connect"
+  "lockMetaMask": {
+    "message": "Lock MetaMask"
   },
-  "loginErrorConnectDescription": {
-    "message": "Your internet connection is unstable. Check your connection and try again."
+  "lockTimeInvalid": {
+    "message": "Lock time must be a number between 0 and 10080"
   },
   "loginErrorConnectButton": {
     "message": "Try again"
   },
-  "loginErrorGenericTitle": {
-    "message": "Something went wrong"
+  "loginErrorConnectDescription": {
+    "message": "Your internet connection is unstable. Check your connection and try again."
+  },
+  "loginErrorConnectTitle": {
+    "message": "Unable to connect"
+  },
+  "loginErrorGenericButton": {
+    "message": "Try again"
   },
   "loginErrorGenericDescription": {
     "message": "An error occurred while logging in. Try again and if the issue continues, contact $1.",
@@ -3142,23 +3148,17 @@
   "loginErrorGenericSupport": {
     "message": "Metamask Support"
   },
-  "loginErrorGenericButton": {
-    "message": "Try again"
-  },
-  "loginErrorSessionExpiredTitle": {
-    "message": "Session has expired"
-  },
-  "loginErrorSessionExpiredDescription": {
-    "message": "Your session has expired. Please log in again to continue."
+  "loginErrorGenericTitle": {
+    "message": "Something went wrong"
   },
   "loginErrorSessionExpiredButton": {
     "message": "Log in"
   },
-  "lockMetaMask": {
-    "message": "Lock MetaMask"
+  "loginErrorSessionExpiredDescription": {
+    "message": "Your session has expired. Please log in again to continue."
   },
-  "lockTimeInvalid": {
-    "message": "Lock time must be a number between 0 and 10080"
+  "loginErrorSessionExpiredTitle": {
+    "message": "Session has expired"
   },
   "logo": {
     "message": "$1 logo",
