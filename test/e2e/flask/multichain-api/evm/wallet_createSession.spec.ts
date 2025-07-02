@@ -5,22 +5,22 @@ import {
   withFixtures,
   ACCOUNT_1,
   ACCOUNT_2,
-} from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
-import HomePage from '../../page-objects/pages/home/homepage';
-import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
-import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
+} from '../../../helpers';
+import FixtureBuilder from '../../../fixture-builder';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import NetworkPermissionSelectModal from '../../../page-objects/pages/dialog/network-permission-select-modal';
+import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
+} from '../../../page-objects/flows/login.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
   type FixtureCallbackArgs,
-} from './testHelpers';
+} from '../testHelpers';
 
 describe('Multichain API', function () {
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the users enabled networks', function () {
@@ -30,6 +30,11 @@ describe('Multichain API', function () {
           title: this.test?.fullTitle(),
           fixtures: new FixtureBuilder()
             .withNetworkControllerOnMainnet()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true,
+              },
+            })
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
@@ -297,6 +302,11 @@ describe('Multichain API', function () {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
               .withNetworkControllerTripleNode()
+              .withEnabledNetworks({
+                eip155: {
+                  '0x539': true,
+                },
+              })
               .withPreferencesControllerAdditionalAccountIdentities()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -347,7 +357,13 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder().build(),
+            fixtures: new FixtureBuilder()
+              .withEnabledNetworks({
+                eip155: {
+                  '0x539': true,
+                },
+              })
+              .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
@@ -384,12 +400,12 @@ describe('Multichain API', function () {
     });
   });
 
-  describe('Dapp has existing session with 2 scopes and 2 accounts and then calls `wallet_createSession` with different scopes and accounts', function () {
+  describe('Dapp has existing session with 2 scopes and 1 account and then calls `wallet_createSession` with different scopes and accounts', function () {
     const OLD_SCOPES = ['eip155:1337', 'eip155:1'];
     const NEW_SCOPES = ['eip155:1338', 'eip155:1000'];
     const TREZOR_ACCOUNT = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
 
-    it('should entirely overwrite old session permissions by those requested in the new `wallet_createSession` request', async function () {
+    it('should include old session permissions as pre-selected in the connection screen along with those requested in the new `wallet_createSession` request', async function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
@@ -434,7 +450,9 @@ describe('Multichain API', function () {
             async (scope) =>
               await driver.clickElement(`input[name="${scope}"]`),
           );
-          await testDapp.initCreateSessionScopes(NEW_SCOPES, [TREZOR_ACCOUNT]);
+          await testDapp.initCreateSessionScopes(NEW_SCOPES, [
+            `eip155:0:${TREZOR_ACCOUNT}`,
+          ]);
 
           const connectAccountConfirmation = new ConnectAccountConfirmation(
             driver,
@@ -449,20 +467,14 @@ describe('Multichain API', function () {
 
           const newgetSessionResult = await testDapp.getSession();
 
-          /**
-           * Assert old sessions don't exist anymore, as they are overwritten by new session scopes
-           */
-          OLD_SCOPES.forEach((scope) =>
-            assert.strictEqual(
-              newgetSessionResult.sessionScopes[scope],
-              undefined,
-              `scope ${scope} should not exist anymore`,
-            ),
+          const expectedNewSessionScopes = [...OLD_SCOPES, ...NEW_SCOPES].map(
+            (scope) => ({
+              [scope]: getExpectedSessionScope(scope, [
+                ACCOUNT_1,
+                TREZOR_ACCOUNT,
+              ]),
+            }),
           );
-
-          const expectedNewSessionScopes = NEW_SCOPES.map((scope) => ({
-            [scope]: getExpectedSessionScope(scope, [TREZOR_ACCOUNT]),
-          }));
 
           for (const expectedSessionScope of expectedNewSessionScopes) {
             const [scopeName] = Object.keys(expectedSessionScope);

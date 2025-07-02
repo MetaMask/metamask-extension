@@ -2226,9 +2226,6 @@
   "floatAmountToken": {
     "message": "Ang halaga ng token ay dapat isang integer"
   },
-  "followUsOnTwitter": {
-    "message": "I-follow kami sa Twitter"
-  },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Tumukoy ng CID gateway"
   },

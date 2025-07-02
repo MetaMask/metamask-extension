@@ -1,6 +1,9 @@
-const { strict: assert } = require('assert');
-const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+import { strict as assert } from 'assert';
+import { withFixtures, WINDOW_TITLES } from '../helpers';
+import FixtureBuilder from '../fixture-builder';
+import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
+import TestDapp from '../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 
 describe('eth_sendTransaction', function () {
   const expectedHash =
@@ -14,13 +17,16 @@ describe('eth_sendTransaction', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: { hardfork: 'london' },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
+
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
         // eth_sendTransaction
-        await driver.openNewPage(`http://127.0.0.1:8080`);
         const request = JSON.stringify({
           jsonrpc: '2.0',
           method: 'eth_sendTransaction',
@@ -40,10 +46,12 @@ describe('eth_sendTransaction', function () {
         );
 
         // confirm transaction in mm popup
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.switchToWindowWithTitle('E2E Test Dapp');
+        const confirmation = new Confirmation(driver);
+        await confirmation.check_pageIsLoaded();
+        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.check_pageIsLoaded();
         const actualHash = await driver.executeScript(
           `return window.transactionHash;`,
         );
@@ -60,13 +68,16 @@ describe('eth_sendTransaction', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: { hardfork: 'london' },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
+
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
         // eth_sendTransaction
-        await driver.openNewPage(`http://127.0.0.1:8080`);
         const request = JSON.stringify({
           jsonrpc: '2.0',
           method: 'eth_sendTransaction',
@@ -86,16 +97,18 @@ describe('eth_sendTransaction', function () {
         );
 
         // reject transaction in mm popup
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElement({ text: 'Cancel', tag: 'button' });
-        await driver.switchToWindowWithTitle('E2E Test Dapp');
+        const confirmation = new Confirmation(driver);
+        await confirmation.check_pageIsLoaded();
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.check_pageIsLoaded();
         const result = await driver
           .executeScript(`return window.transactionHash;`)
-          .then((data) => {
+          .then((data: unknown) => {
             return data;
           })
-          .catch((err) => {
+          .catch((err: Error) => {
             return err;
           });
         assert.ok(
