@@ -76,7 +76,7 @@ const NetworkManagerRouter = () => {
           ],
           defaultRpcEndpointIndex: networkFormState.rpcUrls.rpcEndpoints.length,
         });
-        history.push('/edit');
+        history.push('/add');
       }
     },
     [history, networkFormState],
