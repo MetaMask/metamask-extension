@@ -3,8 +3,13 @@ import unzipper from 'unzipper';
 import { version } from '../package.json';
 import { program, Option } from 'commander';
 
-const getBranch = () =>
-  execSync('git symbolic-ref --short HEAD').toString().trim();
+const getBranch = () => {
+  try {
+    return execSync('git symbolic-ref --short HEAD').toString().trim();
+  } catch (error) {
+    return 'main';
+  }
+};
 
 interface DownloadBuildsArgs {
   owner: string;
