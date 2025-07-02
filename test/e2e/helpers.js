@@ -762,9 +762,9 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
  * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
  */
 async function clickSignOnRedesignedSignatureConfirmation({
-                                                            driver,
-                                                            snapSigInsights = false,
-                                                          }) {
+  driver,
+  snapSigInsights = false,
+}) {
   await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
 
   if (snapSigInsights) {
