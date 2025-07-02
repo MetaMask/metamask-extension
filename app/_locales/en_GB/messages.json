@@ -3056,6 +3056,21 @@
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Ethereum transaction's input data isn't sufficiently padded."
   },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "We're having trouble connecting to Ledger. Check out our "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " on how to connect a hardware wallet, then try again."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger no longer supports Firefox, so you might need to use a different browser."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "guide"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefox Not Supported"
+  },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
   },
