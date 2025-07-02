@@ -43,42 +43,8 @@ describe('Ledger Hardware', function (this: Suite) {
         await testDappPage.check_ERC721TokenAddressesValue(
           '0xcB17707e0623251182A654BEdaE16429C78A7424',
         );
-      },
-    );
-  });
 
-  it('can mint an ERC-721 token', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().withLedgerAccount().build(),
-        title: this.test?.fullTitle(),
-        dapp: true,
-      },
-      async ({ driver, localNodes }) => {
-        (await localNodes?.[0]?.setAccountBalance(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-          '0x100000000000000000000',
-        )) ?? console.error('localNodes is undefined or empty');
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '1208925.8196',
-        );
-        const testDappPage = new TestDappPage(driver);
-        await testDappPage.openTestDappPage();
-        await testDappPage.check_pageIsLoaded();
-        await testDappPage.clickERC721DeployButton();
-        // Confirm token creation
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const createContractModal = new CreateContractModal(driver);
-        await createContractModal.check_pageIsLoaded();
-        await createContractModal.clickConfirm();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDappPage.check_ERC721TokenAddressesValue(
-          '0xcB17707e0623251182A654BEdaE16429C78A7424',
-        );
-
+        // mint function test
         await testDappPage.clickERC721MintButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const mintTokenModal = new CreateContractModal(driver);
