@@ -142,7 +142,7 @@ exports[`Security Tab should match snapshot 1`] = `
             data-testid="reveal-seed-words"
             type="danger"
           >
-            Reveal Secret Recovery Phrase
+            Secret Recovery Phrase
           </button>
         </div>
       </div>
