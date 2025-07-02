@@ -53,6 +53,10 @@ import {
   IMPORT_SRP_ROUTE,
   DEFI_ROUTE,
   DEEP_LINK_ROUTE,
+  SMART_ACCOUNT_UPDATE,
+  WALLET_DETAILS_ROUTE,
+  ACCOUNT_DETAILS_ROUTE,
+  ACCOUNT_DETAILS_QR_CODE_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -85,6 +89,9 @@ import {
   isCorrectSignatureApprovalType,
 } from '../../../shared/lib/confirmation.utils';
 import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
+import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
+import { MultichainAccountDetails } from '../multichain-accounts/account-details';
+import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -150,6 +157,9 @@ const RemoteModeSetupDailyAllowance = mmLazy(() =>
   import('../remote-mode/setup/setup-daily-allowance'),
 );
 const DeepLink = mmLazy(() => import('../deep-link/deep-link'));
+const WalletDetails = mmLazy(() =>
+  import('../multichain-accounts/wallet-details'),
+);
 // End Lazy Routes
 
 export default class Routes extends Component {
@@ -306,6 +316,10 @@ export default class Routes extends Component {
             exact
           />
           <Authenticated
+            path={SMART_ACCOUNT_UPDATE}
+            component={SmartAccountUpdate}
+          />
+          <Authenticated
             // `:keyringId` is optional here, if not provided, this will fallback
             // to the main seed phrase.
             path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
@@ -403,6 +417,21 @@ export default class Routes extends Component {
             component={RemoteModeSetupDailyAllowance}
             exact
           />
+          <Authenticated
+            path={WALLET_DETAILS_ROUTE}
+            component={WalletDetails}
+            exact
+          />
+          <Authenticated
+            path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
+            component={MultichainAccountDetails}
+            exact
+          />
+          <Authenticated
+            path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
+            component={AddressQRCode}
+            exact
+          />
 
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
@@ -420,6 +449,15 @@ export default class Routes extends Component {
     return routes;
   }
 
+  renderAccountDetails() {
+    const { accountDetailsAddress, isMultichainAccountsState1Enabled } =
+      this.props;
+    if (!accountDetailsAddress || isMultichainAccountsState1Enabled) {
+      return null;
+    }
+    return <AccountDetails address={accountDetailsAddress} />;
+  }
+
   render() {
     const {
       isLoading,
@@ -435,7 +473,6 @@ export default class Routes extends Component {
       isAccountMenuOpen,
       toggleAccountMenu,
       isNetworkMenuOpen,
-      accountDetailsAddress,
       isImportTokensModalOpen,
       isDeprecatedNetworkModalOpen,
       location,
@@ -553,9 +590,7 @@ export default class Routes extends Component {
           <NetworkListMenu onClose={networkMenuClose} />
         ) : null}
         <NetworkConfirmationPopover />
-        {accountDetailsAddress ? (
-          <AccountDetails address={accountDetailsAddress} />
-        ) : null}
+        {this.renderAccountDetails()}
         {isImportNftsModalOpen ? (
           <ImportNftsModal onClose={hideImportNftsModal} />
         ) : null}

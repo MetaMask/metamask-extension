@@ -40,6 +40,11 @@ class TestDapp {
 
   private readonly connectedAccount = '#accounts';
 
+  private readonly connectedNetwork = (networkId: string) => ({
+    css: '#chainId',
+    text: networkId,
+  });
+
   private readonly createTokenButton = { text: 'Create Token', tag: 'button' };
 
   private readonly decryptButton = '#decryptButton';
@@ -73,6 +78,8 @@ class TestDapp {
   private readonly erc1155TokenIDInput = '#batchMintTokenIds';
 
   private readonly erc1155WatchButton = '#watchAssetButton';
+
+  private readonly erc20CreateTokenButton = '#createToken';
 
   private readonly erc20TokenAddresses = '#erc20TokenAddresses';
 
@@ -555,6 +562,19 @@ class TestDapp {
   }
 
   /**
+   * Checks the value of a token address once created.
+   *
+   * @param value - The address to be checked
+   */
+  async check_TokenAddressesValue(value: string) {
+    console.log('Verify token address');
+    await this.driver.waitForSelector({
+      css: this.erc20TokenAddresses,
+      text: value,
+    });
+  }
+
+  /**
    * Checks the count of token addresses.
    *
    * @param expectedCount - The expected count of token addresses.
@@ -717,6 +737,10 @@ class TestDapp {
 
   async clickERC1155WatchButton() {
     await this.driver.clickElement(this.erc1155WatchButton);
+  }
+
+  async clickERC20CreateTokenButton() {
+    await this.driver.clickElement(this.erc20CreateTokenButton);
   }
 
   async clickERC20TokenTransferButton() {
@@ -1017,6 +1041,16 @@ class TestDapp {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
     );
+  }
+
+  /**
+   * Check if the test dapp is connected to the specified network.
+   *
+   * @param networkId - The network id to check if the test dapp is connected to.
+   */
+  async check_networkIsConnected(networkId: string) {
+    console.log(`Check testdapp is connected to network ${networkId}`);
+    await this.driver.waitForSelector(this.connectedNetwork(networkId));
   }
 }
 

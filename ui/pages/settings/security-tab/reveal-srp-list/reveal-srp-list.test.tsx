@@ -65,7 +65,7 @@ describe('RevealSrpList', () => {
     fireEvent.click(srpListItem);
 
     expect(mockHistoryPush).toHaveBeenCalledWith(
-      `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`,
+      `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true&isFromSettingsSecurity=true`,
     );
   });
 
