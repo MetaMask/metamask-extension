@@ -10,7 +10,6 @@ import {
   AlignItems,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-
 import { Box, BoxProps } from '../box';
 import type { PolymorphicRef } from '../box';
 import { useModalContext } from '../modal/modal.context';
