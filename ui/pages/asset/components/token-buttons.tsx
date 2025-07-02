@@ -366,23 +366,24 @@ const TokenButtons = ({
         disabled={!isSwapsChain}
         round={!displayNewIconButtons}
       />
-      {!displayNewIconButtons && !isUnifiedUIEnabled && (
-        <IconButton
-          className="token-overview__button"
-          data-testid="token-overview-bridge"
-          Icon={
-            <Icon
-              name={IconName.Bridge}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
-          }
-          label={t('bridge')}
-          onClick={() => handleBridgeOnClick(false)}
-          disabled={!isBridgeChain}
-          round={!displayNewIconButtons}
-        />
-      )}
+      {!isUnifiedUIEnabled &&
+        (displayNewIconButtons ? null : (
+          <IconButton
+            className="token-overview__button"
+            data-testid="token-overview-bridge"
+            Icon={
+              <Icon
+                name={IconName.Bridge}
+                color={IconColor.iconDefault}
+                size={IconSize.Sm}
+              />
+            }
+            label={t('bridge')}
+            onClick={() => handleBridgeOnClick(false)}
+            disabled={!isBridgeChain}
+            round={!displayNewIconButtons}
+          />
+        ))}
     </Box>
   );
 };
