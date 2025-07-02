@@ -15,7 +15,7 @@ class OnboardingCompletePage {
     '[data-testid="pin-extension-done"]';
 
   private readonly pinExtensionMessage = {
-    text: 'Click Chrome extension icon to access it instantly',
+    text: 'Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations.',
     tag: 'p',
   };
 
