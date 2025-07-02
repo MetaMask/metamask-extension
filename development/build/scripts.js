@@ -829,7 +829,6 @@ function createFactoredBuild({
             });
             break;
           }
-
           default: {
             throw new Error(
               `build/scripts - unknown groupLabel "${groupLabel}"`,
