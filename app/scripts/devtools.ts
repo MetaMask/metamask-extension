@@ -2,6 +2,6 @@ import browser from 'webextension-polyfill';
 
 browser.devtools.panels.create(
   'Kernel Panel',
-  null,
+  'images/icon-16.png',
   'ocap-kernel/kernel-panel.html',
 );
