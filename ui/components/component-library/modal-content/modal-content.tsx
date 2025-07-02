@@ -20,6 +20,8 @@ import {
   ModalContentSize,
   ModalContentComponent,
 } from './modal-content.types';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 
 export const ModalContent: ModalContentComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(
@@ -78,6 +80,9 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
         document.removeEventListener('mousedown', handleClickOutside);
       };
     }, []);
+
+    const isFullWindow = getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN;
+
     return (
       <ModalFocus
         initialFocusRef={initialFocusRef}
@@ -89,14 +94,14 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
           className={classnames('mm-modal-content', className)}
           ref={ref}
           display={Display.Flex}
-          width={BlockSize.Screen}
-          height={BlockSize.Screen}
+          width={isFullWindow ? '100vw' : BlockSize.Screen}
+          height={isFullWindow ? '100vh' : BlockSize.Screen}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
-          paddingRight={4}
-          paddingLeft={4}
-          paddingTop={[4, 8, 12]}
-          paddingBottom={[4, 8, 12]}
+          paddingRight={isFullWindow ? 0 : 4}
+          paddingLeft={isFullWindow ? 0 : 4}
+          paddingTop={isFullWindow ? 0 : [4, 8, 12]}
+          paddingBottom={isFullWindow ? 0 : [4, 8, 12]}
           {...(props as BoxProps<C>)}
         >
           <Box
@@ -105,7 +110,8 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             aria-modal="true"
             backgroundColor={BackgroundColor.backgroundDefault}
             borderRadius={BorderRadius.LG}
-            width={BlockSize.Full}
+            width={isFullWindow ? '100vw' : BlockSize.Full}
+            height={isFullWindow ? '100vh' : undefined}
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
             paddingTop={4}
@@ -115,6 +121,7 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             className={classnames(
               'mm-modal-content__dialog',
               `mm-modal-content__dialog--size-${size}`,
+              isFullWindow ? 'mm-modal-content__dialog--fullscreen-fake' : '',
               modalDialogProps?.className,
             )}
           >

@@ -122,3 +122,19 @@
     }
   }
 }
+
+.mm-modal-content__dialog--fullscreen-fake {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  min-width: 100vw !important;
+  min-height: 100vh !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  .mm-modal-header{
+    padding: 16px;
+  }
+}
