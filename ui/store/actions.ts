@@ -79,6 +79,7 @@ import {
   getSelectedInternalAccount,
   getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
+  getIsSocialLoginFlow,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -140,6 +141,7 @@ import {
   getUseSmartAccount,
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -306,6 +308,47 @@ export function restoreSocialBackupAndGetSeedPhrase(
       console.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
       dispatch(hideLoadingIndication());
       dispatch(displayWarning(error.message));
+      throw error;
+    }
+  };
+}
+
+/**
+ * Changes the password of the currently unlocked account.
+ *
+ * This function changes the password of the currently unlocked account (Keyring Vault) and
+ * also change the wallet password of the social login account.
+ *
+ * This changes affects the multiple devices sync, i.e. users will have to unlock the account
+ * using new password on any other devices where the account is unlocked.
+ *
+ * @param newPassword - The new password.
+ * @param oldPassword - The old password.
+ */
+export function changePassword(
+  newPassword: string,
+  oldPassword: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
+    const isSocialLoginFlow = getIsSocialLoginFlow(getState());
+    const isSeedlessOnboardingFeatureEnabled =
+      getIsSeedlessOnboardingFeatureEnabled();
+    try {
+      await keyringChangePassword(newPassword);
+      if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
+        try {
+          await socialSyncChangePassword(newPassword, oldPassword);
+        } catch (error) {
+          // revert the keyring password change
+          await keyringChangePassword(oldPassword);
+          throw error;
+        }
+      }
+    } catch (error) {
+      dispatch(displayWarning(error));
       throw error;
     }
   };
@@ -588,6 +631,20 @@ export function verifyPassword(password: string): Promise<boolean> {
       resolve(true);
     });
   });
+}
+
+export function socialSyncChangePassword(
+  newPassword: string,
+  currentPassword: string,
+): Promise<void> {
+  return submitRequestToBackground('socialSyncChangePassword', [
+    newPassword,
+    currentPassword,
+  ]);
+}
+
+export function keyringChangePassword(newPassword: string): Promise<void> {
+  return submitRequestToBackground('keyringChangePassword', [newPassword]);
 }
 
 export async function getSeedPhrase(password: string, keyringId: string) {

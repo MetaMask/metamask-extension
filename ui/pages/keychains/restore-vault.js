@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   createNewVaultAndRestore,
+  resetOAuthLoginState,
+  setFirstTimeFlowType,
   unMarkPasswordForgotten,
 } from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -16,6 +18,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { getIsSocialLoginFlow } from '../../selectors';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -26,8 +30,11 @@ class RestoreVaultPage extends Component {
   static propTypes = {
     createNewVaultAndRestore: PropTypes.func.isRequired,
     leaveImportSeedScreenState: PropTypes.func,
+    setFirstTimeFlowType: PropTypes.func,
+    resetOAuthLoginState: PropTypes.func,
     history: PropTypes.object,
     isLoading: PropTypes.bool,
+    isSocialLoginFlow: PropTypes.bool,
   };
 
   handleImport = async (password, seedPhrase) => {
@@ -36,9 +43,21 @@ class RestoreVaultPage extends Component {
       createNewVaultAndRestore,
       leaveImportSeedScreenState,
       history,
+      // eslint-disable-next-line no-shadow
+      isSocialLoginFlow,
     } = this.props;
 
     leaveImportSeedScreenState();
+
+    if (isSocialLoginFlow) {
+      // reset oauth and onboarding state
+      await this.props.resetOAuthLoginState();
+    }
+
+    // update the first time flow type to restore
+    await this.props.setFirstTimeFlowType(FirstTimeFlowType.restore);
+
+    // import the seed phrase and create a new vault
     await createNewVaultAndRestore(password, seedPhrase);
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Retention,
@@ -122,12 +141,19 @@ class RestoreVaultPage extends Component {
 }
 
 export default connect(
-  ({ appState: { isLoading } }) => ({ isLoading }),
+  (state) => {
+    return {
+      isLoading: state.appState.isLoading,
+      isSocialLoginFlow: getIsSocialLoginFlow(state),
+    };
+  },
   (dispatch) => ({
     leaveImportSeedScreenState: () => {
       dispatch(unMarkPasswordForgotten());
     },
     createNewVaultAndRestore: (pw, seed) =>
       dispatch(createNewVaultAndRestore(pw, seed)),
+    setFirstTimeFlowType: (type) => dispatch(setFirstTimeFlowType(type)),
+    resetOAuthLoginState: () => dispatch(resetOAuthLoginState()),
   }),
 )(RestoreVaultPage);
