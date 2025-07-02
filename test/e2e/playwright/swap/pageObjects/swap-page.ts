@@ -177,6 +177,8 @@ export class SwapPage {
     await this.tokenSearch.fill(symbol);
     await this.page.waitForTimeout(1000);
     const regex = new RegExp(`^${symbol}$`, 'u');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     const searchItem = await this.tokenList.filter({ hasText: regex });
     await searchItem.click({ timeout: 5000 });
   }

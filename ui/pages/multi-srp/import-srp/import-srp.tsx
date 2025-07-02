@@ -83,6 +83,8 @@ export const ImportSrp = () => {
   async function importWallet() {
     const joinedSrp = secretRecoveryPhrase.join(' ');
     if (joinedSrp) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(actions.importMnemonicToVault(joinedSrp));
       // Clear the secret recovery phrase after importing
       setSecretRecoveryPhrase(Array(defaultNumberOfWords).fill(''));
@@ -415,6 +417,8 @@ export const ImportSrp = () => {
               trace({ name: TraceName.ImportSrp });
               try {
                 setLoading(true);
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+                // eslint-disable-next-line @typescript-eslint/await-thenable
                 await dispatch(actions.lockAccountSyncing());
                 await importWallet();
                 history.push(DEFAULT_ROUTE);
@@ -435,6 +439,8 @@ export const ImportSrp = () => {
               } finally {
                 setLoading(false);
                 endTrace({ name: TraceName.ImportSrp });
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+                // eslint-disable-next-line @typescript-eslint/await-thenable
                 await dispatch(actions.unlockAccountSyncing());
               }
             }}

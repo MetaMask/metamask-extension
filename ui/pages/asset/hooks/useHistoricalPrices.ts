@@ -201,6 +201,8 @@ const useHistoricalPricesNonEvm = ({
     const fetchPrices = async () => {
       setLoading(true);
       try {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(fetchHistoricalPricesForAsset(address as CaipAssetType));
       } catch (error) {
         console.error(

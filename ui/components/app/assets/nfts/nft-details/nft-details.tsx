@@ -230,6 +230,8 @@ export function NftDetailsComponent({
   const onRemove = async () => {
     let isSuccessfulEvent = false;
     try {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(removeAndIgnoreNft(address, tokenId, nftNetworkClientId));
       dispatch(setNewNftAddedMessage(''));
       dispatch(setRemoveNftMessage('success'));
@@ -294,7 +296,11 @@ export function NftDetailsComponent({
     if (nftChainId !== currentChain.chainId) {
       try {
         const networkConfigurationId = networks[nftChainId as Hex];
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(
           setSwitchedNetworkDetails({
             networkClientId: networkConfigurationId,
@@ -311,6 +317,8 @@ export function NftDetailsComponent({
 
   const onSend = async () => {
     await setCorrectChain();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(
       startNewDraftTransaction({
         type: AssetType.NFT,

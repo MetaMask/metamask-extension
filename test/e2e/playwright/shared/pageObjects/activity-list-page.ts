@@ -18,9 +18,13 @@ export class ActivityListPage {
 
   async checkActivityIsConfirmed(options: { activity: string }) {
     const itemText = await this.activityItem.innerText();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await expect(itemText).toEqual(options.activity);
 
     const itemStatus = await this.status.innerText();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await expect(itemStatus).toEqual('Confirmed');
   }
 }

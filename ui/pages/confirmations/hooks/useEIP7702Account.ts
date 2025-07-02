@@ -63,6 +63,8 @@ export function useEIP7702Account(
 
   const upgradeAccount = useCallback(
     async (address: Hex, upgradeContractAddress: Hex) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       const transactionMeta = (await dispatch(
         addTransactionAndRouteToConfirmationPage(
           {

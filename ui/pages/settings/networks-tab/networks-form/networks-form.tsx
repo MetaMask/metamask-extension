@@ -305,6 +305,8 @@ export const NetworksForm = ({
                 [existingNetwork.chainId]: true,
               }),
             );
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+            // eslint-disable-next-line @typescript-eslint/await-thenable
             await dispatch(
               setEnabledNetworks([existingNetwork.chainId], namespace),
             );
@@ -313,6 +315,8 @@ export const NetworksForm = ({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
           // eslint-disable-next-line @typescript-eslint/await-thenable
           await dispatch(addNetwork(networkPayload));
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+          // eslint-disable-next-line @typescript-eslint/await-thenable
           await dispatch(
             setEnabledNetworks([networkPayload.chainId], namespace),
           );

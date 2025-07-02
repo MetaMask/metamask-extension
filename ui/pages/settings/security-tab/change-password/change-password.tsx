@@ -86,6 +86,8 @@ const ChangePassword = () => {
 
     try {
       setStep(ChangePasswordSteps.ChangePasswordLoading);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(changePassword(newPassword, currentPassword));
 
       // upon successful password change, go back to the settings page

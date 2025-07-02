@@ -78,7 +78,11 @@ export default function useSubmitBridgeTransaction() {
       // Move to activity tab before submitting a transaction
       // This is a temporary solution to avoid the transaction not being shown in the activity tab
       // We should find a better solution in the future
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(setDefaultHomeActiveTabName('activity'));
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(submitBridgeTx(quoteResponse, false));
       // The useSnapConfirmation hook redirects to the confirmation page right after
       // submitting the tx so everything below is unnecessary and we can return early
@@ -88,15 +92,23 @@ export default function useSubmitBridgeTransaction() {
     // Execute transaction(s)
     try {
       if (isSolanaChainId(quoteResponse.quote.srcChainId)) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(setDefaultHomeActiveTabName('activity'));
         history.push({
           pathname: DEFAULT_ROUTE,
           state: { stayOnHomePage: true },
         });
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(submitBridgeTx(quoteResponse, false));
         return;
       }
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await submitBridgeTx(
           quoteResponse,
           isSolanaChainId(quoteResponse.quote.srcChainId)
@@ -111,12 +123,16 @@ export default function useSubmitBridgeTransaction() {
         dispatch(setWasTxDeclined(true));
         history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       } else {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(setDefaultHomeActiveTabName('activity'));
         history.push(DEFAULT_ROUTE);
       }
       return;
     }
     // Route user to activity tab on Home page
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(setDefaultHomeActiveTabName('activity'));
     history.push({
       pathname: DEFAULT_ROUTE,

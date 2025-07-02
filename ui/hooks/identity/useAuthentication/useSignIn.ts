@@ -31,6 +31,8 @@ export function useSignIn(): {
 
       if (shouldSignIn) {
         try {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+          // eslint-disable-next-line @typescript-eslint/await-thenable
           await dispatch(performSignIn());
         } catch (e) {
           // If an error occurs during the sign-in process, silently fail

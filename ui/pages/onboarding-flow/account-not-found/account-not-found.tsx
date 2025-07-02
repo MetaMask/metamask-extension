@@ -44,7 +44,11 @@ export default function AccountNotFound() {
 
   const onLoginWithDifferentMethod = async () => {
     // clear the social login state
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(resetOAuthLoginState());
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(setFirstTimeFlowType(null));
     history.replace(ONBOARDING_WELCOME_ROUTE);
   };
