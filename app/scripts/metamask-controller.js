@@ -1705,6 +1705,8 @@ export default class MetamaskController extends EventEmitter {
       estimateGasFeeFn: (...args) => this.txController.estimateGasFee(...args),
       addUserOperationFromTransactionFn: (...args) =>
         this.userOperationController.addUserOperationFromTransaction(...args),
+      updateTransactionFn: (...args) =>
+        this.txController.updateTransaction(...args),
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       },
