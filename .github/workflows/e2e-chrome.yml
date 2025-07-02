@@ -5,16 +5,33 @@ name: E2E Chrome
 
 on:
   workflow_call:
+    inputs:
+      container-registry-role:
+        required: true
+        type: string
+        description: The AWS IAM role to assume for ECR access
     secrets:
       PR_COMMENT_TOKEN:
         required: true
-      DOCKER_HUB_USERNAME:
-        required: true
-      DOCKER_HUB_TOKEN:
-        required: true
 
 jobs:
+  prepare-ecr-auth:
+    runs-on: ubuntu-latest
+    outputs:
+      ecr_password: ${{ steps.login.outputs.password }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ inputs.container-registry-role }}
+          aws-region: us-east-1
+
+      - name: Get ECR public login password
+        id: login
+        run: echo "password=$(aws ecr-public get-login-password --region us-east-1)" >> $GITHUB_OUTPUT
+
   test-e2e-chrome-browserify:
+    needs: prepare-ecr-auth
     uses: ./.github/workflows/run-e2e.yml
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
@@ -29,10 +46,11 @@ jobs:
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
     secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      CONTAINER_REGISTRY_USERNAME: 'AWS'
+      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-chrome-webpack:
+    needs: prepare-ecr-auth
     uses: ./.github/workflows/run-e2e.yml
     if: ${{ github.event_name != 'merge_group' }}
     strategy:
@@ -48,10 +66,11 @@ jobs:
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
     secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      CONTAINER_REGISTRY_USERNAME: 'AWS'
+      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-chrome-multiple-providers:
+    needs: prepare-ecr-auth
     uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: test-e2e-chrome-multiple-providers
@@ -59,10 +78,11 @@ jobs:
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:multi-provider
     secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      CONTAINER_REGISTRY_USERNAME: 'AWS'
+      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-chrome-rpc:
+    needs: prepare-ecr-auth
     uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: test-e2e-chrome-rpc
@@ -70,10 +90,11 @@ jobs:
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:rpc
     secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      CONTAINER_REGISTRY_USERNAME: 'AWS'
+      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-chrome-flask:
+    needs: prepare-ecr-auth
     uses: ./.github/workflows/run-e2e.yml
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
@@ -87,20 +108,22 @@ jobs:
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
     secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      CONTAINER_REGISTRY_USERNAME: 'AWS'
+      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-chrome-vault-decryption:
+    needs: prepare-ecr-auth
     uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: test-e2e-chrome-vault-decryption
       build-artifact: build-dist-browserify
       test-command: yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
     secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      CONTAINER_REGISTRY_USERNAME: 'AWS'
+      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-chrome-api-specs:
+    needs: prepare-ecr-auth
     uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: test-e2e-chrome-api-specs
@@ -109,8 +132,8 @@ jobs:
       test-command: yarn test:api-specs
       test-artifacts-path: html-report
     secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      CONTAINER_REGISTRY_USERNAME: 'AWS'
+      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-chrome-api-specs-alert-on-failure:
     needs:
@@ -145,6 +168,7 @@ jobs:
           gh pr comment "${PR_NUMBER}" --repo "${OWNER}/${REPOSITORY}" --body ":x: ${JOB_NAME} failed. View the html report [here](${HOST_URL}/${HTML_REPORT_PATH}/index.html)."
 
   test-e2e-chrome-api-specs-multichain:
+    needs: prepare-ecr-auth
     uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: test-e2e-chrome-api-specs-multichain
@@ -153,8 +177,8 @@ jobs:
       test-command: yarn test:api-specs-multichain
       test-artifacts-path: html-report-multichain
     secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      CONTAINER_REGISTRY_USERNAME: 'AWS'
+      CONTAINER_REGISTRY_PASSWORD: ${{ needs.prepare-ecr-auth.outputs.ecr_password }}
 
   test-e2e-chrome-api-specs-multichain-alert-on-failure:
     needs:
