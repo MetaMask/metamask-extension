@@ -75,6 +75,8 @@ export function useBasicFunctionalityDisableEffect() {
         // Do nothing
       }
     };
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     run();
   }, [
     disableNotifications,
@@ -116,6 +118,8 @@ export function useFetchInitialNotificationsEffect() {
         // Do nothing
       }
     };
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     run();
   }, [
     shouldFetchNotifications,

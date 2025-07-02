@@ -54,6 +54,8 @@ const rightAnswerIcon = (
 );
 
 const openSupportArticle = (): void => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   global.platform.openTab({
     url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
   });

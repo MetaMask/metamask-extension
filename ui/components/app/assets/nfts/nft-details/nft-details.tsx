@@ -218,6 +218,8 @@ export function NftDetailsComponent({
   const { chainId } = currentChain;
 
   useEffect(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       event: MetaMetricsEventName.NftDetailsOpened,
       category: MetaMetricsEventCategory.Tokens,
@@ -239,6 +241,8 @@ export function NftDetailsComponent({
       dispatch(setRemoveNftMessage('error'));
     } finally {
       // track event
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         event: MetaMetricsEventName.NFTRemoved,
         category: 'Wallet',
@@ -258,6 +262,8 @@ export function NftDetailsComponent({
   const prevNft = usePrevious(nft);
   useEffect(() => {
     if (!isEqual(prevNft, nft)) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       checkAndUpdateSingleNftOwnershipStatus(nft, nftNetworkClientId);
     }
   }, [nft, nftNetworkClientId, prevNft]);
@@ -512,6 +518,8 @@ export function NftDetailsComponent({
                         padding={2}
                         color={IconColor.iconMuted}
                         onClick={() => {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                          // eslint-disable-next-line @typescript-eslint/no-floating-promises
                           global.platform.openTab({
                             url: getBoughtForLink() as string,
                           });
@@ -566,6 +574,8 @@ export function NftDetailsComponent({
                         padding={2}
                         color={IconColor.iconMuted}
                         onClick={() => {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                          // eslint-disable-next-line @typescript-eslint/no-floating-promises
                           global.platform.openTab({
                             url: collection?.floorAsk?.source?.url as string,
                           });
@@ -621,6 +631,8 @@ export function NftDetailsComponent({
                   <button
                     className="nft-details__addressButton"
                     onClick={() => {
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                      // eslint-disable-next-line @typescript-eslint/no-floating-promises
                       global.platform.openTab({
                         url: blockExplorerTokenLink(address),
                       });
@@ -663,6 +675,8 @@ export function NftDetailsComponent({
                   <button
                     className="nft-details__addressButton"
                     onClick={() => {
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                      // eslint-disable-next-line @typescript-eslint/no-floating-promises
                       global.platform.openTab({
                         url: blockExplorerTokenLink(address),
                       });
@@ -765,6 +779,8 @@ export function NftDetailsComponent({
                   size={ButtonIconSize.Sm}
                   color={IconColor.iconMuted}
                   onClick={() => {
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     global.platform.openTab({
                       url: getBoughtForLink() as string,
                     });
@@ -785,6 +801,8 @@ export function NftDetailsComponent({
                   size={ButtonIconSize.Sm}
                   color={IconColor.iconMuted}
                   onClick={() => {
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     global.platform.openTab({
                       url: getTopBidSourceDomain() as string, // Adding cast here because verification has been done on line 594
                     });
@@ -837,6 +855,8 @@ export function NftDetailsComponent({
                 <button
                   className="nft-details__addressButton"
                   onClick={() => {
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     global.platform.openTab({
                       url: getAccountLink(
                         collection?.creator as string,

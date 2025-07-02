@@ -54,6 +54,8 @@ export const AccountDetailsSection = ({
           variant={TextVariant.bodyMd}
           marginBottom={1}
           onClick={() => {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             trackEvent({
               category: MetaMetricsEventCategory.Accounts,
               event: MetaMetricsEventName.KeyExportSelected,

@@ -139,6 +139,8 @@ export const ConnectedSitePopover = ({
               if (isConnected) {
                 onClick();
               } else {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 global.platform.openTab({
                   url: 'https://portfolio.metamask.io/explore/dapps',
                 });

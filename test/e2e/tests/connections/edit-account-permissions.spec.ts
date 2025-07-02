@@ -35,6 +35,8 @@ describe('Edit Accounts Permissions', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await new Homepage(driver).check_pageIsLoaded();
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         new HeaderNavbar(driver).openAccountMenu();
 
         // create second account with custom label

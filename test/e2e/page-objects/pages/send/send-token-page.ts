@@ -247,6 +247,8 @@ class SendTokenPage {
   async getHexInputValue(): Promise<string> {
     console.log('Getting value from hex input');
     const hexInputElement = await this.driver.waitForSelector(this.hexInput);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.driver.waitForNonEmptyElement(hexInputElement);
     const value = await hexInputElement.getAttribute('value');
     console.log(`Hex input value: ${value}`);
@@ -396,6 +398,8 @@ class SendTokenPage {
     const assetPickerSymbol = await this.driver.waitForSelector(
       this.assetPickerSymbol,
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.driver.waitForNonEmptyElement(assetPickerSymbol);
     const text = await assetPickerSymbol.getText();
     assert.equal(

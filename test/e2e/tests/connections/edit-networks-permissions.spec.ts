@@ -31,6 +31,8 @@ describe('Edit Networks Permissions', function () {
         await new Homepage(driver).check_pageIsLoaded();
 
         // Open permission page for dapp
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         new HeaderNavbar(driver).openPermissionsPage();
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.check_pageIsLoaded();

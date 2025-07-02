@@ -104,6 +104,8 @@ export const AccountOverviewLayout = ({
       history.replace(SMART_ACCOUNT_UPDATE);
     }
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       event: MetaMetricsEventName.BannerSelect,
       category: MetaMetricsEventCategory.Banner,
@@ -115,6 +117,8 @@ export const AccountOverviewLayout = ({
 
   const handleRemoveSlide = (isLastSlide: boolean, id: string) => {
     if (isLastSlide) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         event: MetaMetricsEventName.BannerCloseAll,
         category: MetaMetricsEventCategory.Banner,
@@ -127,6 +131,8 @@ export const AccountOverviewLayout = ({
     (renderedSlides: CarouselSlide[]) => {
       if (!hasRendered) {
         renderedSlides.forEach((slide) => {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           trackEvent({
             event: MetaMetricsEventName.BannerDisplay,
             category: MetaMetricsEventCategory.Banner,

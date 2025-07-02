@@ -143,6 +143,8 @@ class SwapPage {
   async enterSwapAmount(amount: string): Promise<void> {
     console.log('Entering swap amount');
     const stxToggle = await this.driver.findElement(this.swapAmount);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     stxToggle.sendKeys(amount);
   }
 

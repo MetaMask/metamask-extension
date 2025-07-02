@@ -149,6 +149,8 @@ export const useNetworkChangeHandlers = () => {
         // to ensure that the isConnected value can be accurately inferred from
         // NetworkController.state.networksMetadata in return value of
         // `metamask_getProviderState` requests and `metamask_chainChanged` events.
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId);
       }
 
@@ -242,6 +244,8 @@ export const useNetworkChangeHandlers = () => {
         ? convertCaipToHexChainId(currentChainId)
         : currentChainId;
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         event: MetaMetricsEventName.NavNetworkSwitched,
         category: MetaMetricsEventCategory.Network,

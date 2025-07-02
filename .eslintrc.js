@@ -207,6 +207,9 @@ module.exports = {
             ignoreRestSiblings: true,
           },
         ],
+        // This rule temporarily applies the latest `@typescript-eslint/no-floating-promises` config found in `@metamask/eslint-config`.
+        // TODO: Remove once `@metamask/eslint-config` is updated to `^14.0.0`.
+        '@typescript-eslint/no-floating-promises': 'error',
       },
       settings: {
         'import/resolver': {

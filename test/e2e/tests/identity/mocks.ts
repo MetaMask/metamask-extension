@@ -104,6 +104,8 @@ function mockAPICall(server: Mockttp, response: MockResponse) {
     requestRuleBuilder = server.forDelete(response.url);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   requestRuleBuilder?.thenCallback(async (request) => {
     const { path, body } = request;
 
@@ -170,6 +172,8 @@ export async function mockInfuraAndAccountSync(
   // Account Balances
   if (accounts.length > 0) {
     accounts.forEach((account) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       mockServer
         .forPost(INFURA_URL)
         .withJsonBodyIncluding({
@@ -187,6 +191,8 @@ export async function mockInfuraAndAccountSync(
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   mockIdentityServices(mockServer, userStorageMockttpController);
 }
 
@@ -200,6 +206,8 @@ export async function mockNftApiCall(
   mockServer: Mockttp,
   userAddress: string,
 ): Promise<void> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   mockServer
     .forGet(`https://nft.api.cx.metamask.io/users/${userAddress}/tokens`)
     .withQuery({

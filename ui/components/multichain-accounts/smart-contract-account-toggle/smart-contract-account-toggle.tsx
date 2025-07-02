@@ -48,10 +48,14 @@ export const SmartContractAccountToggle = ({
 
     // Check initial state (when component mounts)
     if (prevHasPendingRequests.current === undefined) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       checkUpgradeStatus();
     }
     // Verify transaction result when pending requests complete
     else if (prevHasPendingRequests.current && !hasPendingRequests) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       checkUpgradeStatus();
     }
 

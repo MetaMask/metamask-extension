@@ -78,6 +78,8 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
                 block_explorer_domain: getURLHostName(accountLink),
               },
             });
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             global.platform.openTab({
               url: accountLink,
             });

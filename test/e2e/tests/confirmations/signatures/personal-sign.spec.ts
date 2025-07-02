@@ -154,7 +154,11 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
 
 async function assertInfoValues(driver: Driver) {
   const personalSignConfirmation = new PersonalSignConfirmation(driver);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   personalSignConfirmation.verifyOrigin();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   personalSignConfirmation.verifyMessage();
 }
 

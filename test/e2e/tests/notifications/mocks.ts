@@ -134,6 +134,8 @@ function mockAPICall(
     requestRuleBuilder = server.forDelete(response.url);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   requestRuleBuilder?.thenCallback(() => ({
     statusCode: 200,
     json: response.response,

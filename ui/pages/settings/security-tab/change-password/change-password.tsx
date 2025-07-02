@@ -110,6 +110,8 @@ const ChangePassword = () => {
           height={BlockSize.Full}
           onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             handleSubmitCurrentPassword();
           }}
         >
@@ -158,6 +160,8 @@ const ChangePassword = () => {
           height={BlockSize.Full}
           onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             handleSubmitNewPassword();
           }}
         >

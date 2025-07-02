@@ -422,6 +422,8 @@ describe('Multichain API', function () {
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
           await loginWithoutBalanceValidation(driver);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           new HomePage(driver).check_expectedBalanceIsDisplayed('0');
 
           const testDapp = new TestDappMultichain(driver);

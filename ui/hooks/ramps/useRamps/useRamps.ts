@@ -65,6 +65,8 @@ const useRamps = (
   const openBuyCryptoInPdapp = useCallback(
     (_chainId?: ChainId | CaipChainId) => {
       const buyUrl = getBuyURI(_chainId || chainId);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       global.platform.openTab({
         url: buyUrl,
       });

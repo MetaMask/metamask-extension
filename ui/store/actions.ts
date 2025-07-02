@@ -1325,6 +1325,8 @@ export function removeSlide(
 
 export function setSmartAccountOptInForAccounts(accounts: Hex[]): void {
   try {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     submitRequestToBackground('setSmartAccountOptInForAccounts', [accounts]);
   } catch (error) {
     logErrorWithMessage(error);
@@ -3787,6 +3789,8 @@ export function setDismissSmartAccountSuggestionEnabled(
   return async (dispatch, getState) => {
     const prevDismissSmartAccountSuggestionEnabled =
       getDismissSmartAccountSuggestionEnabled(getState());
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackMetaMetricsEvent({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
@@ -3810,6 +3814,8 @@ export function setSmartAccountOptIn(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch, getState) => {
     const prevUseSmartAccount = getUseSmartAccount(getState());
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackMetaMetricsEvent({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,

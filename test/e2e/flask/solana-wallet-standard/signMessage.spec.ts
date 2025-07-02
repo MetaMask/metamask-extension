@@ -38,6 +38,8 @@ describe('Solana Wallet Standard - Sign Message', function () {
           await driver.delay(largeDelayMs);
           const signedMessage = await signMessageTest.getSignedMessage();
 
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertSignedMessageIsValid({
             signedMessageBase64: signedMessage[0],
             originalMessageString: messageToSign,

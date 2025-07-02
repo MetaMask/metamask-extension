@@ -50,6 +50,8 @@ export const AdditionalNetworksInfo = memo(() => {
 
   // Handler for "Learn More" button click - opens external documentation
   const handleLearnMoreClick = useCallback(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     global.platform.openTab({
       url: ZENDESK_URLS.UNKNOWN_NETWORK,
     });

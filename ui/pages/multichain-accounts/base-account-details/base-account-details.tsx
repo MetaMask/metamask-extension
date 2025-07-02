@@ -119,6 +119,8 @@ export const BaseAccountDetails = ({
   const handleAccountRemoveAction = useCallback(() => {
     dispatch(removeAccount(account.address));
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       event: MetaMetricsEventName.AccountRemoved,
       category: MetaMetricsEventCategory.Accounts,

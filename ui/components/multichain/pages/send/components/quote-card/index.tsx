@@ -250,6 +250,8 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
                             event: 'Clicked "Gas Fees: Learn More" Link',
                             category: MetaMetricsEventCategory.Swaps,
                           });
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                          // eslint-disable-next-line @typescript-eslint/no-floating-promises
                           global.platform.openTab({
                             url: GAS_FEES_LEARN_MORE_URL,
                           });

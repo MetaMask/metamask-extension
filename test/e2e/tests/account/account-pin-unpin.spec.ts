@@ -15,6 +15,8 @@ describe('Account list - pin/unpin functionality', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         new HeaderNavbar(driver).openAccountMenu();
 
         // pin account
@@ -40,6 +42,8 @@ describe('Account list - pin/unpin functionality', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         new HeaderNavbar(driver).openAccountMenu();
 
         // pin account

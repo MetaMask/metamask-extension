@@ -16,6 +16,8 @@ const RedirectUrlIcon = ({ url, onSubmit }: RedirectUrlIconProps) => {
     <ButtonIcon
       data-testid="snap-account-redirect-url-icon"
       onClick={() => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         global.platform.openTab({ url });
         onSubmit?.();
       }}

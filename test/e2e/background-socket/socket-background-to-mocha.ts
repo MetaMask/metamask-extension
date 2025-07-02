@@ -30,6 +30,8 @@ class SocketBackgroundToMocha {
         );
       }
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.receivedMessage(message);
     };
 
@@ -130,6 +132,8 @@ class SocketBackgroundToMocha {
       message.property &&
       message.value
     ) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.waitUntilWindowWithProperty(message.property, message.value);
     }
   }

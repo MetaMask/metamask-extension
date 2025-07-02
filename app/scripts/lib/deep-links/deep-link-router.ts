@@ -184,6 +184,8 @@ export class DeepLinkRouter extends EventEmitter<{
       link = this.get404ErrorURL();
     }
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.redirectTab(tabId, link);
 
     if (isManifestV3) {

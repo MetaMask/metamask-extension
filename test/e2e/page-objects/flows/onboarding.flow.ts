@@ -507,6 +507,8 @@ export const completeVaultRecoveryOnboardingFlow = async ({
   await onboardingCompletePage.completeOnboarding();
 
   const homePage = new HomePage(driver);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   homePage.check_pageIsLoaded();
 
   // Because our state was reset, and the flow skips the welcome screen, we now
