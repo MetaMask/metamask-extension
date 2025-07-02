@@ -241,9 +241,9 @@ class SettingsPage extends PureComponent {
 
   renderSearch() {
     const { isSearchList, searchText, searchResults } = this.state;
-    const { isRevealSrpListPage } = this.props;
+    const { isRevealSrpListPage, isPasswordChangePage } = this.props;
 
-    if (isRevealSrpListPage) {
+    if (isRevealSrpListPage || isPasswordChangePage) {
       return null;
     }
 
