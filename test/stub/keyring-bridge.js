@@ -235,6 +235,7 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
         chainId: parsedChainId,
         networkId: parsedChainId,
       },
+      chainId: parsedChainId,
       // Ensure hardfork is appropriate for the transaction type
       hardfork: txType === 2 ? 'london' : 'muirGlacier',
     });
