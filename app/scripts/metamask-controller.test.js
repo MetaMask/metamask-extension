@@ -663,55 +663,6 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#startOAuthLogin', () => {
-      it('should start the OAuth login flow', async () => {
-        const startOAuthLoginSpy = jest
-          .spyOn(metamaskController.oauthService, 'startOAuthLogin')
-          .mockResolvedValueOnce({
-            idTokens: ['mocked-id-token'],
-            authConnection: AuthConnection.Google,
-            authConnectionId: 'mocked-auth-connection-id',
-            groupedAuthConnectionId: 'mocked-grouped-auth-connection-id',
-            userId: 'mocked-user-id',
-            socialLoginEmail: 'user@gmail.com',
-          });
-        const authenticateSpy = jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'authenticate',
-          )
-          .mockResolvedValueOnce({
-            isNewUser: true,
-          });
-
-        await metamaskController.startOAuthLogin(AuthConnection.Google);
-
-        expect(startOAuthLoginSpy).toHaveBeenCalledWith(AuthConnection.Google);
-        expect(authenticateSpy).toHaveBeenCalledWith({
-          idTokens: ['mocked-id-token'],
-          authConnection: AuthConnection.Google,
-          authConnectionId: 'mocked-auth-connection-id',
-          groupedAuthConnectionId: 'mocked-grouped-auth-connection-id',
-          userId: 'mocked-user-id',
-          socialLoginEmail: 'user@gmail.com',
-        });
-      });
-    });
-
-    describe('#resetOAuthLoginState', () => {
-      it('should reset the social login state', async () => {
-        await metamaskController.resetOAuthLoginState();
-
-        const seedlessOnboardingState =
-          metamaskController.seedlessOnboardingController.state;
-        expect(seedlessOnboardingState.authConnection).toBe(undefined);
-        expect(seedlessOnboardingState.authConnectionId).toBe(undefined);
-        expect(seedlessOnboardingState.groupedAuthConnectionId).toBe(undefined);
-        expect(seedlessOnboardingState.userId).toBe(undefined);
-        expect(seedlessOnboardingState.socialLoginEmail).toBe(undefined);
-      });
-    });
-
     describe('#createNewVaultAndKeychain', () => {
       it('can only create new vault on keyringController once', async () => {
         const password = 'a-fake-password';
