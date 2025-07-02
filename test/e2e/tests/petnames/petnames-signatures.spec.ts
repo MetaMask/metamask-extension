@@ -22,10 +22,19 @@ describe('Petnames - Signatures', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmation.check_nameIsDisplayed('0xCD2a3...DD826', false);
         await confirmation.check_nameIsDisplayed('0xbBbBB...bBBbB', false);
-        await confirmation.saveName('0xCD2a3...DD826', undefined, 'test.lens');
-        await confirmation.saveName('0xbBbBB...bBBbB', undefined, 'test2.lens');
+        await confirmation.saveName({
+          value: '0xCD2a3...DD826',
+          proposedName: 'test.lens',
+        });
+        await confirmation.saveName({
+          value: '0xbBbBB...bBBbB',
+          proposedName: 'test2.lens',
+        });
         await confirmation.check_nameIsDisplayed('0xCcCCc...ccccC', false);
-        await confirmation.saveName('0xCcCCc...ccccC', 'Custom Name');
+        await confirmation.saveName({
+          value: '0xCcCCc...ccccC',
+          name: 'Custom Name',
+        });
         await confirmation.check_pageIsLoaded();
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -53,14 +62,19 @@ describe('Petnames - Signatures', function (this: Suite) {
         await confirmation.check_nameIsDisplayed('0xbBbBB...bBBbB', false);
         await confirmation.check_nameIsDisplayed('0xB0Bda...bEa57', false);
         await confirmation.check_nameIsDisplayed('0xB0B0b...00000', false);
-        await confirmation.saveName('0xCD2a3...DD826', undefined, 'test.lens');
-        await confirmation.saveName(
-          '0xB0Bda...bEa57',
-          undefined,
-          'Test Token 2',
-        );
+        await confirmation.saveName({
+          value: '0xCD2a3...DD826',
+          proposedName: 'test.lens',
+        });
+        await confirmation.saveName({
+          value: '0xB0Bda...bEa57',
+          proposedName: 'Test Token 2',
+        });
         await confirmation.check_nameIsDisplayed('0xCcCCc...ccccC', false);
-        await confirmation.saveName('0xCcCCc...ccccC', 'Custom Name');
+        await confirmation.saveName({
+          value: '0xCcCCc...ccccC',
+          name: 'Custom Name',
+        });
         await confirmation.check_pageIsLoaded();
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

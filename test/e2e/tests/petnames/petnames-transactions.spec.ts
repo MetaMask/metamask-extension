@@ -36,11 +36,10 @@ describe('Petnames - Transactions', function () {
         );
 
         // Test custom name.
-        await confirmation.saveName(
-          ABBREVIATED_ADDRESS_MOCK,
-          CUSTOM_NAME_MOCK,
-          undefined,
-        );
+        await confirmation.saveName({
+          value: ABBREVIATED_ADDRESS_MOCK,
+          name: CUSTOM_NAME_MOCK,
+        });
         await confirmation.check_pageIsLoaded();
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -49,11 +48,10 @@ describe('Petnames - Transactions', function () {
         await confirmation.check_nameIsDisplayed(CUSTOM_NAME_MOCK, true);
 
         // Test proposed name.
-        await confirmation.saveName(
-          CUSTOM_NAME_MOCK,
-          undefined,
-          PROPOSED_NAME_MOCK,
-        );
+        await confirmation.saveName({
+          value: CUSTOM_NAME_MOCK,
+          proposedName: PROPOSED_NAME_MOCK,
+        });
         await confirmation.check_pageIsLoaded();
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -87,11 +85,10 @@ describe('Petnames - Transactions', function () {
         );
 
         // Test custom name.
-        await confirmation.saveName(
-          ABBREVIATED_ADDRESS_MOCK,
-          CUSTOM_NAME_MOCK,
-          undefined,
-        );
+        await confirmation.saveName({
+          value: ABBREVIATED_ADDRESS_MOCK,
+          name: CUSTOM_NAME_MOCK,
+        });
 
         await confirmation.check_pageIsLoaded();
         await confirmation.clickFooterCancelButtonAndWaitToDisappear();
@@ -102,11 +99,10 @@ describe('Petnames - Transactions', function () {
         await confirmation.check_nameIsDisplayed(CUSTOM_NAME_MOCK, true);
 
         // Test proposed name.
-        await confirmation.saveName(
-          CUSTOM_NAME_MOCK,
-          undefined,
-          PROPOSED_NAME_MOCK,
-        );
+        await confirmation.saveName({
+          value: CUSTOM_NAME_MOCK,
+          proposedName: PROPOSED_NAME_MOCK,
+        });
         await confirmation.check_pageIsLoaded();
         await confirmation.clickFooterCancelButtonAndWaitToDisappear();
         await driver.switchToWindowWithTitle(

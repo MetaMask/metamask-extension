@@ -5,34 +5,11 @@ import { RawLocator } from '../../../common';
 class Confirmation {
   protected driver: Driver;
 
-  private scrollToBottomButton: RawLocator;
-
-  private footerConfirmButton: RawLocator;
-
-  private headerAccountDetailsButton: RawLocator;
+  private confirmationHeadingTitle: RawLocator;
 
   private footerCancelButton: RawLocator;
 
-  private sectionCollapseButton = '[data-testid="sectionCollapseButton"]';
-
-  private inlineAlertButton = {
-    css: '[data-testid="inline-alert"]',
-    text: 'Alert',
-  };
-
-  private nextPageButton: RawLocator;
-
-  private previousPageButton: RawLocator;
-
-  private navigationTitle: RawLocator;
-
-  private rejectAllButton: RawLocator;
-
-  private confirmationHeadingTitle: RawLocator;
-
-  private nameSelector = '.name';
-
-  private formComboFieldSelector = '.form-combo-field';
+  private footerConfirmButton: RawLocator;
 
   private formComboFieldInputSelector = '.form-combo-field input';
 
@@ -42,22 +19,45 @@ class Confirmation {
   private formComboFieldOptionSecondarySelector =
     '.form-combo-field__option-secondary';
 
+  private formComboFieldSelector = '.form-combo-field';
+
+  private headerAccountDetailsButton: RawLocator;
+
+  private inlineAlertButton = {
+    css: '[data-testid="inline-alert"]',
+    text: 'Alert',
+  };
+
+  private nameSelector = '.name';
+
+  private navigationTitle: RawLocator;
+
+  private nextPageButton: RawLocator;
+
+  private previousPageButton: RawLocator;
+
+  private rejectAllButton: RawLocator;
+
   private saveButtonSelector = { text: 'Save', tag: 'button' };
+
+  private scrollToBottomButton: RawLocator;
+
+  private sectionCollapseButton = '[data-testid="sectionCollapseButton"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
 
-    this.scrollToBottomButton = '.confirm-scroll-to-bottom__button';
+    this.confirmationHeadingTitle = { text: 'Confirmation Dialog' };
+    this.footerCancelButton = '[data-testid="confirm-footer-cancel-button"]';
     this.footerConfirmButton = '[data-testid="confirm-footer-button"]';
     this.headerAccountDetailsButton =
       '[data-testid="header-info__account-details-button"]';
-    this.footerCancelButton = '[data-testid="confirm-footer-cancel-button"]';
+    this.navigationTitle = '[data-testid="confirm-page-nav-position"]';
     this.nextPageButton = '[data-testid="confirm-nav__next-confirmation"]';
     this.previousPageButton =
       '[data-testid="confirm-nav__previous-confirmation"]';
-    this.navigationTitle = '[data-testid="confirm-page-nav-position"]';
     this.rejectAllButton = '[data-testid="confirm-nav__reject-all"]';
-    this.confirmationHeadingTitle = { text: 'Confirmation Dialog' };
+    this.scrollToBottomButton = '.confirm-scroll-to-bottom__button';
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -178,11 +178,15 @@ class Confirmation {
     });
   }
 
-  async saveName(
-    value: string,
-    name?: string,
-    proposedName?: string,
-  ): Promise<void> {
+  async saveName({
+    value,
+    name,
+    proposedName,
+  }: {
+    value: string;
+    name?: string;
+    proposedName?: string;
+  }): Promise<void> {
     await this.clickName(value);
     console.log(
       `Saving name for value: ${value}, name: ${name}, proposedName: ${proposedName}`,
