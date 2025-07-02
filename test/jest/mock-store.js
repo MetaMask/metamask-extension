@@ -1,15 +1,8 @@
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
-import {
-  getDefaultBridgeControllerState,
-  BRIDGE_PREFERRED_GAS_ESTIMATE,
-  formatChainIdToCaip,
-} from '@metamask/bridge-controller';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../stub/networks';
-import { DEFAULT_BRIDGE_STATUS_STATE } from '../../app/scripts/controllers/bridge-status/constants';
-import { mockTokenData } from '../data/bridge/mock-token-data';
 
 export const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -142,12 +135,18 @@ export const createSwapsMockStore = () => {
       swapsSTXLoading: false,
     },
     metamask: {
+      remoteFeatureFlags: {
+        bridgeConfig: {
+          support: false,
+        },
+      },
       preferences: {
         showFiatInTestnets: true,
         smartTransactionsOptInStatus: true,
         tokenNetworkFilter: {},
         showMultiRpcModal: false,
       },
+      enabledNetworkMap: {},
       transactions: [
         {
           id: 6571648590592143,
@@ -367,20 +366,18 @@ export const createSwapsMockStore = () => {
             'c5b8dbac4c1d3f152cdeb400e2313f309c410acb',
             '2f8d4a878cfa04a6e60d46362f5644deab66572d',
           ],
+          metadata: {
+            id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+            name: '',
+          },
         },
         {
           type: KeyringType.imported,
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
-        },
-      ],
-      keyringsMetadata: [
-        {
-          id: '01JKAF3DSGM3AB87EM9N0K41AJ',
-          name: '',
-        },
-        {
-          id: '01JKAF3KP7VPAG0YXEDTDRB6ZV',
-          name: '',
+          metadata: {
+            id: '01JKAF3KP7VPAG0YXEDTDRB6ZV',
+            name: '',
+          },
         },
       ],
       ...mockNetworkState({
@@ -722,99 +719,6 @@ export const createSwapsMockStore = () => {
         },
       },
       gasLoadingAnimationIsShowing: false,
-    },
-  };
-};
-
-export const createBridgeMockStore = (
-  {
-    featureFlagOverrides = {},
-    bridgeSliceOverrides = {},
-    bridgeStateOverrides = {},
-    bridgeStatusStateOverrides = {},
-    metamaskStateOverrides = {},
-  } = {
-    featureFlagOverrides: {},
-    bridgeSliceOverrides: {},
-    bridgeStateOverrides: {},
-    bridgeStatusStateOverrides: {},
-    metamaskStateOverrides: {},
-  },
-) => {
-  const swapsStore = createSwapsMockStore();
-  return {
-    ...swapsStore,
-    // For initial state of dest asset picker
-    swaps: {
-      ...swapsStore.swaps,
-      topAssets: [],
-    },
-    bridge: {
-      toChainId: null,
-      sortOrder: 'cost_ascending',
-      ...bridgeSliceOverrides,
-    },
-    localeMessages: { currentLocale: 'es_419' },
-    metamask: {
-      ...swapsStore.metamask,
-      ...mockNetworkState(
-        { chainId: CHAIN_IDS.MAINNET },
-        { chainId: CHAIN_IDS.LINEA_MAINNET },
-      ),
-      gasFeeEstimates: {
-        estimatedBaseFee: '0.00010456',
-        [BRIDGE_PREFERRED_GAS_ESTIMATE]: {
-          suggestedMaxFeePerGas: '0.00018456',
-          suggestedMaxPriorityFeePerGas: '0.0001',
-        },
-      },
-      currencyRates: {
-        ETH: { conversionRate: 2524.25 },
-        usd: { conversionRate: 1 },
-      },
-      marketData: {
-        '0x1': {
-          '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
-            currency: 'usd',
-            price: 2.3,
-          },
-        },
-      },
-      slides: [],
-      ...mockTokenData,
-      ...metamaskStateOverrides,
-      ...{
-        ...getDefaultBridgeControllerState(),
-        bridgeFeatureFlags: {
-          ...featureFlagOverrides,
-          extensionConfig: {
-            support: false,
-            ...featureFlagOverrides?.extensionConfig,
-            chains: {
-              [formatChainIdToCaip('0x1')]: {
-                isActiveSrc: true,
-                isActiveDest: false,
-              },
-              ...Object.fromEntries(
-                Object.entries(
-                  featureFlagOverrides?.extensionConfig?.chains ?? {},
-                ).map(([chainId, config]) => [
-                  formatChainIdToCaip(chainId),
-                  config,
-                ]),
-              ),
-            },
-          },
-        },
-      },
-      ...bridgeStateOverrides,
-      bridgeStatusState: {
-        ...DEFAULT_BRIDGE_STATUS_STATE,
-        ...bridgeStatusStateOverrides,
-      },
-    },
-    send: {
-      swapsBlockedTokens: [],
     },
   };
 };

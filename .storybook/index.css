@@ -3,14 +3,13 @@
 .create-snap-account-page, .remove-snap-account-page, .snap-ui-renderer {
   width: 100% !important;
 }
-
 .snap-ui-renderer__footer-centered {
   position: initial !important;
   margin-top: auto !important;
 }
 
-.snap-ui-renderer__container {
-  padding-bottom: 0 !important;
+.snap-ui-renderer__content {
+  margin-bottom: 0 !important;
 }
 
 .snap-ui-renderer__panel {

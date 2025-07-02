@@ -299,8 +299,12 @@ export default class AccountTrackerController extends BaseController<
     });
 
     // remove first to avoid double add
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     this.#blockTracker.removeListener('latest', this.#updateForBlock);
     // add listener
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     this.#blockTracker.addListener('latest', this.#updateForBlock);
     // fetch account balances
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
@@ -313,6 +317,8 @@ export default class AccountTrackerController extends BaseController<
    */
   stop(): void {
     // remove listener
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     this.#blockTracker.removeListener('latest', this.#updateForBlock);
   }
 
@@ -432,6 +438,8 @@ export default class AccountTrackerController extends BaseController<
     const { blockTracker } = this.#getCorrectNetworkClient(networkClientId);
     const updateForBlock = (blockNumber: string) =>
       this.#updateForBlockByNetworkClientId(networkClientId, blockNumber);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     blockTracker.addListener('latest', updateForBlock);
 
     this.#listeners[networkClientId] = updateForBlock;
@@ -451,6 +459,8 @@ export default class AccountTrackerController extends BaseController<
       return;
     }
     const { blockTracker } = this.#getCorrectNetworkClient(networkClientId);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     blockTracker.removeListener('latest', this.#listeners[networkClientId]);
 
     delete this.#listeners[networkClientId];
@@ -730,6 +740,8 @@ export default class AccountTrackerController extends BaseController<
     }
 
     const selectedAddress =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       address ||
       this.messagingSystem.call('AccountsController:getSelectedAccount')
         .address;

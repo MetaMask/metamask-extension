@@ -51,7 +51,7 @@ export const NetworkFilterDropdown = ({
       borderColor={BorderColor.borderDefault}
       borderWidth={1}
       paddingLeft={4}
-      paddingRight={1}
+      paddingRight={2}
       ref={dropdownRef}
     >
       <NetworkFilterDropdownItem
@@ -65,7 +65,7 @@ export const NetworkFilterDropdown = ({
         marginLeft="auto"
         iconName={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
         ariaLabel={title}
-        size={ButtonIconSize.Md}
+        size={ButtonIconSize.Sm}
         onClick={setDropdownOpen}
         data-testid={buttonDataTestId}
       />

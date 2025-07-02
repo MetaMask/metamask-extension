@@ -24,7 +24,7 @@ describe('swcLoader', () => {
     // swc doesn't use node's fs module, so we can't mock
     const resourcePath = 'test.ts';
 
-    let resolveCallback: (value: CallbackArgs) => void;
+    const { promise, resolve } = Promise.withResolvers<CallbackArgs>();
     const mockContext = {
       mode: 'production',
       sourceMap: true,
@@ -34,15 +34,12 @@ describe('swcLoader', () => {
       resourcePath,
       async: () => {
         return (...args: CallbackArgs) => {
-          resolveCallback(args);
+          resolve(args);
         };
       },
     } as unknown as LoaderContext<SwcLoaderOptions>;
-    const deferredPromise = new Promise<CallbackArgs>((resolve) => {
-      resolveCallback = resolve;
-    });
     mockContext.async = mockContext.async.bind(mockContext);
-    return { context: mockContext, source, expected, deferredPromise };
+    return { context: mockContext, source, expected, deferredPromise: promise };
   }
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878

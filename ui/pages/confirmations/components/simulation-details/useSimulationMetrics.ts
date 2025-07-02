@@ -16,6 +16,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { calculateTotalFiat } from './fiat-display';
 import { BalanceChange } from './types';
 import { useLoadingTime } from './useLoadingTime';
@@ -158,6 +159,8 @@ function useIncompleteAssetEvent(
     const displayName = displayNamesByAddress[assetAddress];
 
     const isIncomplete =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       (change.asset.address && !change.fiatAmount) ||
       getPetnameType(change, displayName) === PetnameType.Unknown;
 
@@ -248,7 +251,11 @@ function getAssetType(standard: TokenStandard) {
 
 function getPetnameType(
   balanceChange: BalanceChange,
-  displayName: UseDisplayNameResponse = { name: '', hasPetname: false },
+  displayName: UseDisplayNameResponse = {
+    name: '',
+    hasPetname: false,
+    displayState: TrustSignalDisplayState.Unknown,
+  },
 ) {
   if (balanceChange.asset.standard === TokenStandard.none) {
     return PetnameType.Default;

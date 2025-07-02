@@ -7,14 +7,13 @@ import {
   BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setBackgroundConnection } from '../../store/background-connection';
 import * as util from '../../helpers/utils/util';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import bridgeReducer from './bridge';
 import {
-  setBridgeFeatureFlags,
   setFromToken,
   setFromTokenInputValue,
   setToToken,
@@ -125,19 +124,6 @@ describe('Ducks - Bridge', () => {
     });
   });
 
-  describe('setBridgeFeatureFlags', () => {
-    it('should call setBridgeFeatureFlags in the background', async () => {
-      const mockSetBridgeFeatureFlags = jest.fn();
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      setBackgroundConnection({
-        [BridgeBackgroundAction.SET_FEATURE_FLAGS]: mockSetBridgeFeatureFlags,
-      } as never);
-      store.dispatch(setBridgeFeatureFlags() as never);
-      expect(mockSetBridgeFeatureFlags).toHaveBeenCalledTimes(1);
-    });
-  });
-
   describe('resetInputFields', () => {
     it('resets to initalState', async () => {
       const state = store.getState().bridge;
@@ -156,6 +142,7 @@ describe('Ducks - Bridge', () => {
         toTokenExchangeRate: null,
         fromTokenExchangeRate: null,
         wasTxDeclined: false,
+        txAlert: null,
         toTokenUsdExchangeRate: null,
       });
     });
@@ -164,18 +151,24 @@ describe('Ducks - Bridge', () => {
   describe('updateQuoteRequestParams', () => {
     it('dispatches quote params to the bridge controller', () => {
       const mockUpdateParams = jest.fn();
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       setBackgroundConnection({
         [BridgeUserAction.UPDATE_QUOTE_PARAMS]: mockUpdateParams,
       } as never);
 
       store.dispatch(
-        updateQuoteRequestParams({
-          srcChainId: 1,
-          srcTokenAddress: zeroAddress(),
-          destTokenAddress: undefined,
-        }) as never,
+        updateQuoteRequestParams(
+          {
+            srcChainId: 1,
+            srcTokenAddress: zeroAddress(),
+            destTokenAddress: undefined,
+          },
+          {
+            stx_enabled: false,
+            token_symbol_source: 'ETH',
+            token_symbol_destination: 'ETH',
+            security_warnings: [],
+          },
+        ) as never,
       );
 
       expect(mockUpdateParams).toHaveBeenCalledTimes(1);
@@ -185,7 +178,12 @@ describe('Ducks - Bridge', () => {
           srcTokenAddress: zeroAddress(),
           destTokenAddress: undefined,
         },
-        expect.anything(),
+        {
+          stx_enabled: false,
+          token_symbol_source: 'ETH',
+          token_symbol_destination: 'ETH',
+          security_warnings: [],
+        },
       );
     });
   });
@@ -201,8 +199,6 @@ describe('Ducks - Bridge', () => {
       );
       const state = mockStore.getState().bridge;
       const mockResetBridgeState = jest.fn();
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       setBackgroundConnection({
         [BridgeBackgroundAction.RESET_STATE]: mockResetBridgeState,
       } as never);
@@ -210,10 +206,7 @@ describe('Ducks - Bridge', () => {
       mockStore.dispatch(resetBridgeState() as never);
 
       expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
-      expect(mockResetBridgeState).toHaveBeenCalledWith(
-        undefined,
-        expect.anything(),
-      );
+      expect(mockResetBridgeState).toHaveBeenCalledWith();
       const actions = mockStore.getActions();
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
@@ -226,6 +219,7 @@ describe('Ducks - Bridge', () => {
         sortOrder: 'cost_ascending',
         toChainId: null,
         toToken: null,
+        txAlert: null,
         toTokenExchangeRate: null,
         wasTxDeclined: false,
         toTokenUsdExchangeRate: null,

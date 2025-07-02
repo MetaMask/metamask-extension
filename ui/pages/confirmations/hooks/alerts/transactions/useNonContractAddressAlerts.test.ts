@@ -22,6 +22,7 @@ import { useNonContractAddressAlerts } from './useNonContractAddressAlerts';
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 const messageIdMock = '12345';
@@ -353,6 +354,58 @@ describe('useNonContractAddressAlerts', () => {
       return {
         isContractAddress: false,
         contractCode: '',
+      };
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      useNonContractAddressAlerts,
+      {
+        currentConfirmation: transactionWithData,
+      },
+    );
+
+    await waitFor(() => {
+      expect(result.current).toEqual([]);
+    });
+  });
+
+  it('returns no alerts if readAddressAsContract fails (contractCode is null)', async () => {
+    const transactionWithData = {
+      ...TRANSACTION_META_MOCK,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        data: '0xabcdef',
+      },
+    };
+
+    useContextMock.mockImplementation((context) => {
+      if (context === ConfirmContext) {
+        return { currentConfirmation: transactionWithData };
+      } else if (context === I18nContext) {
+        return (translationKey: string) => translationKey;
+      }
+      return undefined;
+    });
+
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getNetworkConfigurationsByChainId) {
+        return {
+          '0x5': {
+            chainId: '0x5',
+            name: 'Mainnet',
+          },
+        };
+      } else if (selector === selectPendingApprovalsForNavigation) {
+        return [transactionWithData];
+      }
+
+      return undefined;
+    });
+
+    mockReadAddressAsContract.mockImplementation(async () => {
+      return {
+        isContractAddress: false,
+        contractCode: null, // simulate failure
       };
     });
 

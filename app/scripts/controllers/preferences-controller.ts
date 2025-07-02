@@ -105,8 +105,10 @@ export type Preferences = {
     sortCallback: string;
   };
   tokenNetworkFilter: Record<string, boolean>;
-  shouldShowAggregatedBalancePopover: boolean;
   dismissSmartAccountSuggestionEnabled: boolean;
+  skipDeepLinkInterstitial: boolean;
+  smartAccountOptIn: boolean;
+  smartAccountOptInForAccounts: Hex[];
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -129,10 +131,6 @@ export type PreferencesControllerState = Omit<
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  bitcoinSupportEnabled: boolean;
-  bitcoinTestnetSupportEnabled: boolean;
-  ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
   knownMethodData: Record<string, string>;
@@ -150,7 +148,6 @@ export type PreferencesControllerState = Omit<
   useExternalServices: boolean;
   textDirection?: string;
   manageInstitutionalWallets: boolean;
-  disabledUpgradeAccountsByChain?: Record<Hex, Hex[]>;
 };
 
 /**
@@ -174,8 +171,6 @@ export const getDefaultPreferencesControllerState =
     openSeaEnabled: true,
     securityAlertsEnabled: true,
     watchEthereumAccountEnabled: false,
-    bitcoinSupportEnabled: false,
-    bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     ///: END:ONLY_INCLUDE_IF
@@ -201,14 +196,16 @@ export const getDefaultPreferencesControllerState =
       showConfirmationAdvancedDetails: false,
       showMultiRpcModal: false,
       privacyMode: false,
-      shouldShowAggregatedBalancePopover: true, // by default user should see popover;
       dismissSmartAccountSuggestionEnabled: false,
+      smartAccountOptIn: true,
+      smartAccountOptInForAccounts: [],
       tokenSortConfig: {
         key: 'tokenFiatAmount',
         order: 'dsc',
         sortCallback: 'stringNumeric',
       },
       tokenNetworkFilter: {},
+      skipDeepLinkInterstitial: false,
     },
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -256,7 +253,6 @@ export const getDefaultPreferencesControllerState =
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
     },
     manageInstitutionalWallets: false,
-    disabledUpgradeAccountsByChain: {},
   });
 
 /**
@@ -320,14 +316,6 @@ const controllerMetadata = {
     anonymous: false,
   },
   watchEthereumAccountEnabled: {
-    persist: true,
-    anonymous: false,
-  },
-  bitcoinSupportEnabled: {
-    persist: true,
-    anonymous: false,
-  },
-  bitcoinTestnetSupportEnabled: {
     persist: true,
     anonymous: false,
   },
@@ -428,7 +416,6 @@ const controllerMetadata = {
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
   manageInstitutionalWallets: { persist: true, anonymous: false },
-  disabledUpgradeAccountsByChain: { persist: true, anonymous: false },
 };
 
 export class PreferencesController extends BaseController<
@@ -529,6 +516,7 @@ export class PreferencesController extends BaseController<
     this.setUseAddressBarEnsResolution(useExternalServices);
     this.setOpenSeaEnabled(useExternalServices);
     this.setUseNftDetection(useExternalServices);
+    this.setUseSafeChainsListValidation(useExternalServices);
   }
 
   /**
@@ -621,32 +609,6 @@ export class PreferencesController extends BaseController<
   setWatchEthereumAccountEnabled(watchEthereumAccountEnabled: boolean): void {
     this.update((state) => {
       state.watchEthereumAccountEnabled = watchEthereumAccountEnabled;
-    });
-  }
-  ///: END:ONLY_INCLUDE_IF
-
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  /**
-   * Setter for the `bitcoinSupportEnabled` property.
-   *
-   * @param bitcoinSupportEnabled - Whether or not the user wants to
-   * enable the "Add a new Bitcoin account (Beta)" button.
-   */
-  setBitcoinSupportEnabled(bitcoinSupportEnabled: boolean): void {
-    this.update((state) => {
-      state.bitcoinSupportEnabled = bitcoinSupportEnabled;
-    });
-  }
-
-  /**
-   * Setter for the `bitcoinTestnetSupportEnabled` property.
-   *
-   * @param bitcoinTestnetSupportEnabled - Whether or not the user wants to
-   * enable the "Add a new Bitcoin account (Testnet)" button.
-   */
-  setBitcoinTestnetSupportEnabled(bitcoinTestnetSupportEnabled: boolean): void {
-    this.update((state) => {
-      state.bitcoinTestnetSupportEnabled = bitcoinTestnetSupportEnabled;
     });
   }
   ///: END:ONLY_INCLUDE_IF
@@ -963,23 +925,17 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  getDisabledUpgradeAccountsByChain(): Record<Hex, Hex[]> {
-    return this.state.disabledUpgradeAccountsByChain ?? {};
-  }
-
-  disableAccountUpgrade(chainId: Hex, address: Hex): void {
+  /**
+   * Add account to list of accounts for which user has optedin
+   * smart account upgrade.
+   *
+   * @param accounts
+   */
+  setSmartAccountOptInForAccounts(accounts: Hex[] = []): void {
     this.update((state) => {
-      const { disabledUpgradeAccountsByChain = {} } = state;
-      const addressLowerCase = address.toLowerCase() as Hex;
-
-      if (
-        !disabledUpgradeAccountsByChain[chainId]?.includes(addressLowerCase)
-      ) {
-        if (!disabledUpgradeAccountsByChain[chainId]) {
-          disabledUpgradeAccountsByChain[chainId] = [];
-        }
-        disabledUpgradeAccountsByChain[chainId].push(addressLowerCase);
-      }
+      state.preferences.smartAccountOptInForAccounts = accounts.map(
+        (acc) => acc.toLowerCase() as Hex,
+      );
     });
   }
 

@@ -4,6 +4,13 @@
 ; This variable is required
 INFURA_PROJECT_ID=00000000000
 
+; Set this to `true` to enable Seedless onboarding (Social login flow)
+SEEDLESS_ONBOARDING_ENABLED='false'
+
+; These variables are required for OAuth Service
+GOOGLE_CLIENT_ID=
+APPLE_CLIENT_ID=
+
 ; This variable is not required but it's necessary for the storybook
 ; to render stories that use onchain data.
 INFURA_STORYBOOK_PROJECT_ID=
@@ -46,10 +53,6 @@ BLOCKAID_PUBLIC_KEY=
 ; Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render
 ; This should NEVER be enabled in production since it slows down react
 ; ENABLE_WHY_DID_YOU_RENDER=false
-
-; API key used in Etherscan requests to prevent rate limiting.
-; Only applies to Mainnet and Sepolia.
-; ETHERSCAN_API_KEY=
 
 ; A JSON config file that can be used to override the default manifest values.
 ; e.g., `.manifest-overrides.json` where the contents might be something like:

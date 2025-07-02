@@ -2,9 +2,10 @@ import fs from 'node:fs';
 import { describe, it, after, mock } from 'node:test';
 import assert from 'node:assert';
 import { resolve } from 'node:path';
+import { version } from '../../../package.json';
+import { loadBuildTypesConfig } from '../../lib/build-type';
 import * as config from '../utils/config';
 import { parseArgv } from '../utils/cli';
-import { version } from '../../../package.json';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -35,7 +36,7 @@ ${Object.entries(env)
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('should return valid build variables for the default build', () => {
-      const buildTypes = config.getBuildTypes();
+      const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv([], buildTypes);
       const { variables, safeVariables } = config.getVariables(
         args,
@@ -57,7 +58,7 @@ ${Object.entries(env)
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('should prefer .metamaskrc variables over others', () => {
-      const buildTypes = config.getBuildTypes();
+      const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv([], buildTypes);
       const defaultVars = config.getVariables(args, buildTypes);
 
@@ -81,7 +82,7 @@ ${Object.entries(env)
         // required by the `beta` build type
         SEGMENT_BETA_WRITE_KEY: '.',
       });
-      const buildTypes = config.getBuildTypes();
+      const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv(
         ['--type', 'beta', '--test', '--env', 'production'],
         buildTypes,
@@ -99,7 +100,7 @@ ${Object.entries(env)
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it("should handle true/false/null/'' in rc", () => {
-      const buildTypes = config.getBuildTypes();
+      const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv([], buildTypes);
 
       mockRc({

@@ -112,7 +112,11 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   );
 
   // Max fee
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const gasLimit = transactionMeta?.txParams?.gas || HEX_ZERO;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const gasPrice = transactionMeta?.txParams?.gasPrice || HEX_ZERO;
 
   const maxFee = useMemo(() => {
@@ -157,6 +161,8 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
       minimumFeePerGas = decimalToHex(maxFeePerGas);
     }
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const gasLimitNoBuffer = transactionMeta.gasLimitNoBuffer || HEX_ZERO;
     const estimatedFee = multiplyHexes(
       supportsEIP1559 ? (minimumFeePerGas as Hex) : (gasPrice as Hex),

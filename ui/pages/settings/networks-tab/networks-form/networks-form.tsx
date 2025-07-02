@@ -5,7 +5,7 @@ import {
   type UpdateNetworkFields,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { Hex, isStrictHexString } from '@metamask/utils';
+import { Hex, isStrictHexString, parseCaipChainId } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -32,6 +32,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules
 import {
   addNetwork,
   setEditedNetwork,
+  setEnabledNetworks,
   setTokenNetworkFilter,
   showDeprecatedNetworkModal,
   toggleNetworkMenu,
@@ -46,6 +47,7 @@ import {
   FormTextFieldSize,
   HelpText,
   HelpTextSeverity,
+  Tag,
   Text,
 } from '../../../../components/component-library';
 import {
@@ -67,7 +69,12 @@ import {
   DropdownEditor,
   DropdownEditorStyle,
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
-import { getTokenNetworkFilter } from '../../../../selectors';
+import {
+  getIsRpcFailoverEnabled,
+  getTokenNetworkFilter,
+} from '../../../../selectors';
+import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
+import { getSelectedMultichainNetworkChainId } from '../../../../selectors/multichain/networks';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -76,17 +83,24 @@ export const NetworksForm = ({
   existingNetwork,
   onRpcAdd,
   onBlockExplorerAdd,
+  toggleNetworkMenuAfterSubmit = true,
+  onComplete,
+  onEdit,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   existingNetwork?: UpdateNetworkFields;
   onRpcAdd: () => void;
   onBlockExplorerAdd: () => void;
+  toggleNetworkMenuAfterSubmit?: boolean;
+  onComplete?: () => void;
+  onEdit?: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const scrollableRef = useRef<HTMLDivElement>(null);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
 
   const {
     name,
@@ -100,6 +114,11 @@ export const NetworksForm = ({
     blockExplorers,
     setBlockExplorers,
   } = networkFormState;
+
+  const defaultRpcEndpoint =
+    rpcUrls.defaultRpcEndpointIndex === undefined
+      ? undefined
+      : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
 
   const { safeChains } = useSafeChains();
 
@@ -116,6 +135,11 @@ export const NetworksForm = ({
   const [fetchedChainId, setFetchedChainId] = useState<string>();
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
+  const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const templateInfuraRpc = (endpoint: string) =>
     endpoint.endsWith('{infuraProjectId}')
@@ -277,9 +301,15 @@ export const NetworksForm = ({
                 [existingNetwork.chainId]: true,
               }),
             );
+            await dispatch(
+              setEnabledNetworks([existingNetwork.chainId], namespace),
+            );
           }
         } else {
           await dispatch(addNetwork(networkPayload));
+          await dispatch(
+            setEnabledNetworks([networkPayload.chainId], namespace),
+          );
         }
 
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
@@ -318,7 +348,8 @@ export const NetworksForm = ({
     } catch (e) {
       console.error(e);
     } finally {
-      dispatch(toggleNetworkMenu());
+      toggleNetworkMenuAfterSubmit && dispatch(toggleNetworkMenu());
+      onComplete?.();
     }
   };
 
@@ -345,6 +376,8 @@ export const NetworksForm = ({
           data-testid="network-form-name-input"
           autoFocus
           helpText={
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             ((name && warnings?.name?.msg) || suggestedName) && (
               <>
                 {name && warnings?.name?.msg && (
@@ -410,6 +443,8 @@ export const NetworksForm = ({
           error={Boolean(errors.rpcUrl)}
           buttonDataTestId="test-add-rpc-drop-down"
           renderItem={(item, isList) =>
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             isList || item?.name || item?.type === RpcEndpointType.Infura ? (
               <RpcListItem rpcEndpoint={item} />
             ) : (
@@ -418,8 +453,16 @@ export const NetworksForm = ({
                 variant={TextVariant.bodyMd}
                 paddingTop={3}
                 paddingBottom={3}
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                gap={1}
               >
                 {stripProtocol(stripKeyFromInfuraUrl(item.url))}
+                {isRpcFailoverEnabled &&
+                item.failoverUrls &&
+                item.failoverUrls.length > 0 ? (
+                  <Tag label={t('failover')} display={Display.Inline} />
+                ) : null}
               </Text>
             )
           }
@@ -457,6 +500,29 @@ export const NetworksForm = ({
             </HelpText>
           </Box>
         )}
+
+        {isRpcFailoverEnabled &&
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+        defaultRpcEndpoint &&
+        defaultRpcEndpoint.failoverUrls &&
+        defaultRpcEndpoint.failoverUrls.length > 0 ? (
+          <FormTextField
+            id="failoverRpcUrl"
+            size={FormTextFieldSize.Lg}
+            paddingTop={4}
+            label={t('failoverRpcUrl')}
+            labelProps={{
+              children: undefined,
+              variant: TextVariant.bodyMdMedium,
+            }}
+            textFieldProps={{
+              borderRadius: BorderRadius.LG,
+            }}
+            value={onlyKeepHost(defaultRpcEndpoint.failoverUrls[0])}
+            disabled={true}
+          />
+        ) : null}
+
         <FormTextField
           id="chainId"
           size={FormTextFieldSize.Lg}
@@ -511,6 +577,7 @@ export const NetworksForm = ({
                         chainId: chainIdHex,
                       }),
                     );
+                    onEdit?.();
                   }
                 }}
               >
@@ -643,6 +710,8 @@ export const NetworksForm = ({
             !rpcUrls?.rpcEndpoints?.length ||
             Object.values(errors).some((e) => e)
           }
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={onSubmit}
           size={ButtonPrimarySize.Lg}
           width={BlockSize.Full}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import browser from 'webextension-polyfill';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers';

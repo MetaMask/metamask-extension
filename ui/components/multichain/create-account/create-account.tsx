@@ -1,6 +1,7 @@
 import React, {
   ChangeEvent,
   KeyboardEvent,
+  KeyboardEventHandler,
   useCallback,
   useContext,
   useEffect,
@@ -40,6 +41,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Display } from '../../../helpers/constants/design-system';
 import { SelectSrp } from '../multi-srp/select-srp/select-srp';
 import { getSnapAccountsByKeyringId } from '../../../selectors/multi-srp/multi-srp';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 
 type Props = {
   /**
@@ -55,7 +57,10 @@ type Props = {
   /**
    * Callback called once the account has been created
    */
-  onActionComplete: (completed: boolean) => Promise<void>;
+  onActionComplete: (
+    completed: boolean,
+    newAccount?: InternalAccount,
+  ) => Promise<void>;
 
   /**
    * The scope of the account
@@ -67,6 +72,7 @@ type Props = {
    */
   onSelectSrp?: () => void;
   selectedKeyringId?: string;
+  redirectToOverview?: boolean;
 };
 
 type CreateAccountProps<C extends React.ElementType> =
@@ -86,6 +92,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         selectedKeyringId,
         onActionComplete,
         scope,
+        redirectToOverview = true,
       }: CreateAccountProps<C>,
       ref?: PolymorphicRef<C>,
     ) => {
@@ -106,12 +113,11 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       // We are not using `accounts` as a dependency here to avoid having the input
       // updating when the new account will be created.
       useEffect(() => {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         getNextAvailableAccountName(accounts).then(setDefaultAccountName);
       }, []);
 
       const [newAccountName, setNewAccountName] = useState('');
+      const [creationError, setCreationError] = useState('');
       const trimmedAccountName = newAccountName.trim();
 
       const { isValidAccountName, errorMessage } = getAccountNameErrorMessage(
@@ -140,11 +146,11 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       const onSubmit = useCallback(
         async (event: KeyboardEvent<HTMLFormElement>) => {
           setLoading(true);
+          setCreationError('');
           event.preventDefault();
           try {
+            trace({ name: TraceName.CreateAccount });
             await onCreateAccount(trimmedAccountName || defaultAccountName);
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             trackEvent({
               category: MetaMetricsEventCategory.Accounts,
               event: MetaMetricsEventName.AccountAdded,
@@ -158,45 +164,54 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                   trimmedAccountName === defaultAccountName,
               },
             });
-            history.push(mostRecentOverviewPage);
+            if (redirectToOverview) {
+              history.push(mostRecentOverviewPage);
+            }
           } catch (error) {
+            setLoading(false);
+            let message = 'An unexpected error occurred.';
+            if (error instanceof Error) {
+              message = (error as Error).message;
+            }
+            setCreationError(message);
+
             if (selectedKeyringId) {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-              // eslint-disable-next-line @typescript-eslint/no-floating-promises
               trackEvent({
                 category: MetaMetricsEventCategory.Accounts,
                 event: MetaMetricsEventName.AccountImportFailed,
                 properties: {
                   account_type: MetaMetricsEventAccountType.Imported,
-                  error: (error as Error).message,
+                  error: message,
                   hd_entropy_index: hdEntropyIndex,
                   chain_id_caip: scope,
                 },
               });
             } else {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-              // eslint-disable-next-line @typescript-eslint/no-floating-promises
               trackEvent({
                 category: MetaMetricsEventCategory.Accounts,
                 event: MetaMetricsEventName.AccountAddFailed,
                 properties: {
                   account_type: MetaMetricsEventAccountType.Default,
-                  error: (error as Error).message,
+                  error: message,
                   hd_entropy_index: hdEntropyIndex,
                   chain_id_caip: scope,
                 },
               });
             }
+          } finally {
+            endTrace({ name: TraceName.CreateAccount });
           }
         },
         [trimmedAccountName, defaultAccountName, mostRecentOverviewPage],
       );
 
       return (
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         <Box as="form" onSubmit={onSubmit}>
           <FormTextField
             data-testid="account-name-input"
-            ref={ref}
+            inputRef={ref}
             size={FormTextFieldSize.Lg}
             gap={2}
             autoFocus
@@ -206,15 +221,15 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setNewAccountName(e.target.value)
             }
-            helpText={errorMessage}
-            error={!isValidAccountName}
-            onKeyPress={(e: KeyboardEvent<HTMLFormElement>) => {
-              if (e.key === 'Enter') {
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                onSubmit(e);
-              }
-            }}
+            helpText={creationError || errorMessage}
+            error={!isValidAccountName || Boolean(creationError)}
+            onKeyPress={
+              ((e: KeyboardEvent<HTMLFormElement>) => {
+                if (e.key === 'Enter') {
+                  onSubmit(e);
+                }
+              }) as unknown as KeyboardEventHandler<HTMLDivElement>
+            }
           />
           {hdKeyrings.length > 1 && onSelectSrp && selectedKeyring ? (
             <Box marginBottom={3}>
@@ -236,6 +251,8 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               type={
                 'button' /* needs to be 'button' to prevent submitting form on cancel */
               }
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={async () => await onActionComplete(false)}
               block
             >

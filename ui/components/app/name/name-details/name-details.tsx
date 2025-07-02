@@ -41,6 +41,9 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import FormComboField, {
   FormComboFieldOption,
@@ -54,6 +57,7 @@ import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
 
@@ -200,6 +204,8 @@ function useProposedNames(value: string, type: NameType, variation: string) {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     update();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     updateInterval.current = setInterval(update, UPDATE_DELAY);
     return reset;
   }, [value, type, variation, dispatch, initialSources, setInitialSources]);
@@ -219,7 +225,11 @@ export default function NameDetails({
     variation,
   );
 
-  const { name: displayName, hasPetname: hasSavedPetname } = useDisplayName({
+  const {
+    name: displayName,
+    hasPetname: hasSavedPetname,
+    displayState,
+  } = useDisplayName({
     value,
     type,
     variation,
@@ -233,7 +243,6 @@ export default function NameDetails({
   const dispatch = useDispatch();
   const t = useI18nContext();
 
-  const isRecognizedUnsaved = !hasSavedPetname && Boolean(displayName);
   const formattedValue = formatValue(value, type);
 
   const { proposedNames, initialSources } = useProposedNames(
@@ -242,10 +251,7 @@ export default function NameDetails({
     variation,
   );
 
-  const [copiedAddress, handleCopyAddress] = useCopyToClipboard() as [
-    boolean,
-    (value: string) => void,
-  ];
+  const [copiedAddress, handleCopyAddress] = useCopyToClipboard();
 
   useEffect(() => {
     setName(savedPetname ?? '');
@@ -257,7 +263,7 @@ export default function NameDetails({
 
   const proposedNameOptions = useMemo(
     () => generateComboOptions(proposedNames, t, nameSources),
-    [proposedNames, nameSources],
+    [proposedNames, t, nameSources],
   );
 
   const { trackPetnamesOpenEvent, trackPetnamesSaveEvent } = usePetnamesMetrics(
@@ -323,15 +329,49 @@ export default function NameDetails({
     handleCopyAddress(formattedValue);
   }, [handleCopyAddress, formattedValue]);
 
-  const [title, instructions] = (() => {
-    if (hasSavedPetname) {
-      return [t('nameModalTitleSaved'), t('nameInstructionsSaved')];
+  const getTitleAndInstructions = () => {
+    let titleKey: string;
+    let instructionsKey: string;
+
+    switch (displayState) {
+      case TrustSignalDisplayState.Malicious:
+        titleKey = 'nameModalTitleMalicious';
+        instructionsKey = 'nameInstructionsMalicious';
+        break;
+      case TrustSignalDisplayState.Warning:
+        titleKey = 'nameModalTitleWarning';
+        instructionsKey = 'nameInstructionsWarning';
+        break;
+      case TrustSignalDisplayState.Verified:
+        titleKey = 'nameModalTitleVerified';
+        instructionsKey = '';
+        break;
+      case TrustSignalDisplayState.Petname:
+        titleKey = 'nameModalTitleSaved';
+        instructionsKey = 'nameInstructionsSaved';
+        break;
+      case TrustSignalDisplayState.Recognized:
+        titleKey = 'nameModalTitleRecognized';
+        instructionsKey = 'nameInstructionsRecognized';
+        break;
+      case TrustSignalDisplayState.Unknown:
+      default:
+        titleKey = 'nameModalTitleNew';
+        instructionsKey = 'nameInstructionsNew';
+        break;
     }
-    if (isRecognizedUnsaved) {
-      return [t('nameModalTitleRecognized'), t('nameInstructionsRecognized')];
-    }
-    return [t('nameModalTitleNew'), t('nameInstructionsNew')];
-  })();
+
+    return {
+      title: t(titleKey),
+      instructions: instructionsKey ? t(instructionsKey) : '',
+    };
+  };
+
+  const { title, instructions } = getTitleAndInstructions();
+
+  const showFooterWarning =
+    displayState === TrustSignalDisplayState.Malicious ||
+    displayState === TrustSignalDisplayState.Warning;
 
   return (
     <Box>
@@ -343,11 +383,7 @@ export default function NameDetails({
             <div
               style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}
             >
-              <NameDisplay
-                value={value}
-                type={NameType.ETHEREUM_ADDRESS}
-                variation={variation}
-              />
+              <NameDisplay value={value} type={type} variation={variation} />
             </div>
             <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
               {instructions}
@@ -384,7 +420,11 @@ export default function NameDetails({
                 hideDropdownIfNoOptions
                 value={name}
                 options={proposedNameOptions}
-                placeholder={t('nameSetPlaceholder')}
+                placeholder={
+                  displayName && !hasSavedPetname
+                    ? t('nameSetPlaceholderSuggested', [displayName])
+                    : t('nameSetPlaceholder')
+                }
                 onChange={handleNameChange}
                 onOptionClick={handleProposedNameClick}
               />
@@ -395,11 +435,23 @@ export default function NameDetails({
               variant={ButtonVariant.Primary}
               startIconName={IconName.Save}
               width={BlockSize.Full}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={handleSaveClick}
               size={ButtonSize.Lg}
             >
               {t('save')}
             </Button>
+            {showFooterWarning && (
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                marginTop={3}
+                textAlign={TextAlign.Center}
+              >
+                {t('nameFooterTrustWarning')}
+              </Text>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>

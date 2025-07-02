@@ -15,6 +15,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { BalanceChange } from './types';
 import {
   AssetType,
@@ -53,18 +54,24 @@ const BALANCE_CHANGE_MOCK = {
   fiatAmount: 1.23,
 } as unknown as BalanceChange;
 
-const DISPLAY_NAME_UNKNOWN_MOCK = { hasPetname: false, name: null };
+const DISPLAY_NAME_UNKNOWN_MOCK = {
+  hasPetname: false,
+  name: null,
+  displayState: TrustSignalDisplayState.Unknown,
+};
 
 const DISPLAY_NAME_DEFAULT_MOCK = {
   hasPetname: false,
   name: SYMBOL_MOCK,
   contractDisplayName: SYMBOL_MOCK,
+  displayState: TrustSignalDisplayState.Unknown,
 };
 
 const DISPLAY_NAME_SAVED_MOCK = {
   hasPetname: true,
   name: 'testName',
   contractDisplayName: SYMBOL_MOCK,
+  displayState: TrustSignalDisplayState.Unknown,
 };
 
 describe('useSimulationMetrics', () => {
@@ -168,33 +175,22 @@ describe('useSimulationMetrics', () => {
       jest.restoreAllMocks();
     });
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['in progress', undefined, 'simulation_in_progress'],
       [
         'reverted',
-        { error: { code: SimulationErrorCode.Reverted } } as SimulationData,
+        { error: { code: SimulationErrorCode.Reverted } },
         'transaction_revert',
       ],
-      [
-        'failed',
-        { error: { message: 'testError' } } as SimulationData,
-        'failed',
-      ],
-      [
-        'no changes',
-        { tokenBalanceChanges: [] } as SimulationData,
-        'no_balance_change',
-      ],
-      [
-        'changes',
-        { tokenBalanceChanges: [{}] } as SimulationData,
-        'balance_change',
-      ],
+      ['failed', { error: { message: 'testError' } }, 'failed'],
+      ['no changes', { tokenBalanceChanges: [] }, 'no_balance_change'],
+      ['changes', { tokenBalanceChanges: [{}] }, 'balance_change'],
     ])(
       'with simulation response if %s',
       (
         _: string,
-        simulationData: SimulationData | undefined,
+        simulationData: Record<string, unknown>,
         simulationResponse: string,
       ) => {
         useDisplayNamesMock.mockReset();
@@ -213,6 +209,7 @@ describe('useSimulationMetrics', () => {
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['receiving', false, 'simulation_receiving_assets_quantity'],
       ['sending', true, 'simulation_sending_assets_quantity'],
@@ -237,6 +234,7 @@ describe('useSimulationMetrics', () => {
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         'receiving ERC-20',
@@ -322,6 +320,7 @@ describe('useSimulationMetrics', () => {
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         'receiving and available',
@@ -379,6 +378,7 @@ describe('useSimulationMetrics', () => {
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         'receiving and native',
@@ -477,6 +477,7 @@ describe('useSimulationMetrics', () => {
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['receiving', false, 'simulation_receiving_assets_total_value'],
       ['sending', true, 'simulation_sending_assets_total_value'],
@@ -561,6 +562,7 @@ describe('useSimulationMetrics', () => {
     });
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     [
       'simulation disabled',

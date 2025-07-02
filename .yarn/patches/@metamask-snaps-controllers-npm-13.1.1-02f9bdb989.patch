@@ -1,0 +1,46 @@
+diff --git a/dist/cronjob/CronjobController.cjs b/dist/cronjob/CronjobController.cjs
+index 0e8feebadcaf91dcf2fb248f78df0433c16aff38..2bf546a8f1691f145dbbcf669e72dc09ef01f937 100644
+--- a/dist/cronjob/CronjobController.cjs
++++ b/dist/cronjob/CronjobController.cjs
+@@ -39,9 +39,18 @@ class CronjobController extends base_controller_1.BaseController {
+         this.messagingSystem.subscribe('SnapController:snapEnabled', this.#handleSnapEnabledEvent);
+         this.messagingSystem.subscribe('SnapController:snapDisabled', this.#handleSnapDisabledEvent);
+         this.messagingSystem.subscribe('SnapController:snapUpdated', this.#handleSnapUpdatedEvent);
++        this.messagingSystem.registerActionHandler(`${controllerName}:init`, (...args) => this.init(...args));
+         this.messagingSystem.registerActionHandler(`${controllerName}:schedule`, (...args) => this.schedule(...args));
+         this.messagingSystem.registerActionHandler(`${controllerName}:cancel`, (...args) => this.cancel(...args));
+         this.messagingSystem.registerActionHandler(`${controllerName}:get`, (...args) => this.get(...args));
++    }
++    /**
++     * Initialize the CronjobController.
++     *
++     * This starts the daily timer, clears out expired events
++     * and reschedules any remaining events.
++     */
++    init() {
+         this.#start();
+         this.#clear();
+         this.#reschedule();
+diff --git a/dist/cronjob/CronjobController.mjs b/dist/cronjob/CronjobController.mjs
+index e3f025c419fa6f4683de678fb6d415b0f3a12782..b90b08f8ec394f0a7e994721f5b8942da5279650 100644
+--- a/dist/cronjob/CronjobController.mjs
++++ b/dist/cronjob/CronjobController.mjs
+@@ -36,9 +36,18 @@ export class CronjobController extends BaseController {
+         this.messagingSystem.subscribe('SnapController:snapEnabled', this.#handleSnapEnabledEvent);
+         this.messagingSystem.subscribe('SnapController:snapDisabled', this.#handleSnapDisabledEvent);
+         this.messagingSystem.subscribe('SnapController:snapUpdated', this.#handleSnapUpdatedEvent);
++        this.messagingSystem.registerActionHandler(`${controllerName}:init`, (...args) => this.init(...args));
+         this.messagingSystem.registerActionHandler(`${controllerName}:schedule`, (...args) => this.schedule(...args));
+         this.messagingSystem.registerActionHandler(`${controllerName}:cancel`, (...args) => this.cancel(...args));
+         this.messagingSystem.registerActionHandler(`${controllerName}:get`, (...args) => this.get(...args));
++    }
++    /**
++     * Initialize the CronjobController.
++     *
++     * This starts the daily timer, clears out expired events
++     * and reschedules any remaining events.
++     */
++    init() {
+         this.#start();
+         this.#clear();
+         this.#reschedule();

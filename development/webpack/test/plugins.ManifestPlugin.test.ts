@@ -6,6 +6,7 @@ import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
 import { Manifest } from '../utils/helpers';
 import { transformManifest } from '../utils/plugins/ManifestPlugin/helpers';
+import { MANIFEST_DEV_KEY } from '../../build/constants';
 import { generateCases, type Combination, mockWebpack } from './helpers';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
@@ -181,6 +182,8 @@ describe('ManifestPlugin', () => {
           if (testCase.webAccessibleResources) {
             if (baseManifest.manifest_version === 3) {
               // Extend expected resources for manifest version 3
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               expectedWar = baseManifest.web_accessible_resources || [];
               expectedWar = [
                 {
@@ -194,6 +197,8 @@ describe('ManifestPlugin', () => {
                 },
               ];
             } else {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               expectedWar = baseManifest.web_accessible_resources || [];
               // Keep or extend expected resources for manifest version 2
               expectedWar = [
@@ -202,10 +207,14 @@ describe('ManifestPlugin', () => {
               ];
             }
           } else {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             expectedWar = baseManifest.web_accessible_resources || [];
           }
 
           assert.deepStrictEqual(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             json.web_accessible_resources || [],
             expectedWar,
             "should have the correct 'web_accessible_resources' in the manifest",
@@ -239,6 +248,8 @@ describe('ManifestPlugin', () => {
 
       function runTest(baseManifest: Combination<typeof manifestMatrix>) {
         const manifest = baseManifest as unknown as chrome.runtime.Manifest;
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         const hasTabsPermission = (manifest.permissions || []).includes('tabs');
         const transform = transformManifest(args, false);
 
@@ -284,6 +295,8 @@ describe('ManifestPlugin', () => {
             if (args.test) {
               assert.deepStrictEqual(
                 transformed.permissions,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 [...(manifest.permissions || []), 'tabs'],
                 "manifest should have 'tabs' permission",
               );
@@ -301,7 +314,10 @@ describe('ManifestPlugin', () => {
     const notEmptyTestManifest = {
       _flags: { remoteFeatureFlags: { testFlag: false, testFlag2: 'value1' } },
     } as unknown as chrome.runtime.Manifest;
-    const mockFlags = { _flags: { remoteFeatureFlags: { testFlag: true } } };
+    const mockFlags = {
+      _flags: { remoteFeatureFlags: { testFlag: true } },
+      key: MANIFEST_DEV_KEY,
+    };
     const manifestOverridesPath = 'testManifestOverridesPath.json';
     const fs = require('node:fs');
     const { mock } = require('node:test');
@@ -360,6 +376,7 @@ describe('ManifestPlugin', () => {
               testFlag: true,
             },
           },
+          key: MANIFEST_DEV_KEY,
         },
         'manifest should merge original properties with overrides, with overrides taking precedence',
       );

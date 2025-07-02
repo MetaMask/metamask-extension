@@ -1,6 +1,6 @@
 import { isValidHexAddress } from '@metamask/controller-utils';
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getErrorMessage } from '../../../../shared/modules/error';
@@ -19,15 +19,23 @@ import {
   JustifyContent,
   Severity,
   Size,
+  TextAlign,
+  TextVariant,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+  getSelectedNetworkClientId,
+} from '../../../../shared/modules/selectors/networks';
 import {
   getIsMainnet,
   getSelectedInternalAccount,
   getOpenSeaEnabled,
 } from '../../../selectors';
+import { getImageForChainId } from '../../../selectors/multichain';
 import {
   addNftVerifyOwnership,
   getTokenStandardAndDetails,
@@ -48,13 +56,26 @@ import {
   Label,
   Modal,
   ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  Text,
+  AvatarNetworkSize,
 } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
-import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import Tooltip from '../../ui/tooltip';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { checkTokenIdExists } from '../../../helpers/utils/util';
+import { NetworkListItem } from '../network-list-item';
+import { NetworkSelectorCustomImport } from '../../app/import-token/network-selector-custom-import';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
+
+const ACTION_MODES = {
+  // Displays the import nft modal
+  IMPORT_TOKEN: 'IMPORT_NFT',
+  // Displays the page for selecting a network from custom import
+  NETWORK_SELECTOR: 'NETWORK_SELECTOR',
+};
 
 export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();
@@ -65,6 +86,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const chainId = useSelector(getCurrentChainId);
+  const networkClientId = useSelector(getSelectedNetworkClientId);
   const {
     tokenAddress: initialTokenAddress,
     tokenId: initialTokenId,
@@ -77,13 +99,26 @@ export const ImportNftsModal = ({ onClose }) => {
   const [nftAddFailed, setNftAddFailed] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
 
+  const [actionMode, setActionMode] = useState(ACTION_MODES.IMPORT_NFT);
+
+  const [selectedNetworkForCustomImport, setSelectedNetworkForCustomImport] =
+    useState(null);
+  const [selectedNetworkClientId, setSelectedNetworkClientIdForCustomImport] =
+    useState(null);
+
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+
   const [nftAddressValidationError, setNftAddressValidationError] =
     useState(null);
   const [duplicateTokenIdError, setDuplicateTokenIdError] = useState(null);
 
   const handleAddNft = async () => {
+    trace({ name: TraceName.ImportNfts });
     try {
-      await dispatch(addNftVerifyOwnership(nftAddress, tokenId));
+      await dispatch(
+        // selectedNetworkClientId is for the network the NFT is on, not the globally selected network of the wallet
+        addNftVerifyOwnership(nftAddress, tokenId, selectedNetworkClientId),
+      );
       const newNftDropdownState = {
         ...nftsDropdownState,
         [selectedAccount.address]: {
@@ -101,12 +136,16 @@ export const ImportNftsModal = ({ onClose }) => {
       dispatch(setNewNftAddedMessage(message));
       setNftAddFailed(true);
       return;
+    } finally {
+      endTrace({ name: TraceName.ImportNfts });
     }
+
     if (ignoreErc20Token && nftAddress) {
       await dispatch(
         ignoreTokens({
           tokensToIgnore: nftAddress,
           dontShowLoadingIndicator: true,
+          networkClientId,
         }),
       );
     }
@@ -165,6 +204,70 @@ export const ImportNftsModal = ({ onClose }) => {
     setTokenId(val);
   };
 
+  const handleNetworkSelect = useCallback(() => {
+    setActionMode(ACTION_MODES.NETWORK_SELECTOR);
+  }, []);
+
+  if (actionMode === ACTION_MODES.NETWORK_SELECTOR) {
+    return (
+      <Modal isOpen>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader
+            onBack={() => setActionMode(ACTION_MODES.IMPORT_NFT)}
+            onClose={() => {
+              onClose();
+              history.push();
+            }}
+          >
+            <Text variant={TextVariant.headingSm} align={TextAlign.Center}>
+              {t('networkMenuHeading')}
+            </Text>
+          </ModalHeader>
+          <ModalBody>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              width={BlockSize.Full}
+            >
+              {Object.values(networkConfigurations).map((network) => (
+                <Box
+                  key={network.chainId}
+                  data-testid={`select-network-item-${network.chainId}`}
+                >
+                  <NetworkListItem
+                    key={network.chainId}
+                    chainId={network.chainId}
+                    name={network.name}
+                    iconSrc={getImageForChainId(network.chainId)}
+                    iconSize={AvatarNetworkSize.Sm}
+                    focus={false}
+                    onClick={() => {
+                      const nftNetworkClientId =
+                        network.rpcEndpoints[network.defaultRpcEndpointIndex]
+                          .networkClientId;
+                      setSelectedNetworkForCustomImport(network.chainId);
+                      setSelectedNetworkClientIdForCustomImport(
+                        nftNetworkClientId,
+                      );
+                      setNftAddress('');
+                      setTokenId('');
+
+                      setActionMode(ACTION_MODES.IMPORT_TOKEN);
+                    }}
+                    selected={
+                      network?.chainId === selectedNetworkForCustomImport
+                    }
+                  />
+                </Box>
+              ))}
+            </Box>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    );
+  }
+
   return (
     <Modal
       isOpen
@@ -178,6 +281,7 @@ export const ImportNftsModal = ({ onClose }) => {
         <ModalHeader
           onClose={() => {
             onClose();
+            history.push(DEFAULT_ROUTE);
           }}
         >
           {t('importNFT')}
@@ -206,7 +310,17 @@ export const ImportNftsModal = ({ onClose }) => {
             marginTop={6}
             marginBottom={6}
           >
-            <Box>
+            <NetworkSelectorCustomImport
+              title={
+                selectedNetworkForCustomImport
+                  ? networkConfigurations[selectedNetworkForCustomImport]?.name
+                  : t('networkMenuHeading')
+              }
+              buttonDataTestId="test-import-tokens-drop-down-custom-import"
+              chainId={selectedNetworkForCustomImport}
+              onSelectNetwork={handleNetworkSelect}
+            />
+            <Box marginRight={4} marginLeft={4}>
               <Box
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
@@ -241,7 +355,7 @@ export const ImportNftsModal = ({ onClose }) => {
                 error={Boolean(nftAddressValidationError)}
               />
             </Box>
-            <Box>
+            <Box marginRight={4} marginLeft={4}>
               <Box
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
@@ -282,12 +396,14 @@ export const ImportNftsModal = ({ onClose }) => {
           flexDirection={FlexDirection.Row}
           justifyContent={JustifyContent.spaceBetween}
           gap={4}
-          paddingTop={4}
-          paddingBottom={4}
+          padding={4}
         >
           <ButtonSecondary
             size={ButtonSecondarySize.Lg}
-            onClick={() => onClose()}
+            onClick={() => {
+              onClose();
+              history.push(DEFAULT_ROUTE);
+            }}
             block
             className="import-nfts-modal__cancel-button"
           >

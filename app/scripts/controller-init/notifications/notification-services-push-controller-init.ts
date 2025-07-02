@@ -36,7 +36,7 @@ export const NotificationServicesPushControllerInit: ControllerInitFunction<
       vapidKey: process.env.VAPID_KEY ?? '',
     },
     config: {
-      isPushFeatureEnabled: isManifestV3,
+      isPushFeatureEnabled: isManifestV3 && !process.env.IN_TEST,
       platform: 'extension',
       pushService: {
         createRegToken,
@@ -44,6 +44,8 @@ export const NotificationServicesPushControllerInit: ControllerInitFunction<
         subscribeToPushNotifications: createSubscribeToPushNotifications({
           messenger: controllerMessenger,
           onReceivedHandler: onPushNotificationReceived,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClickHandler: onPushNotificationClicked,
         }),
       },
