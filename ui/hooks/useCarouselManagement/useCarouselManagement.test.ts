@@ -233,6 +233,52 @@ const mockGetSelectedInternalAccount = jest
   .mockImplementation(() => MOCK_ACCOUNT);
 const mockGetIsRemoteModeEnabled = jest.fn();
 
+describe('priorityPlacement', () => {
+  const prioritySlide: CarouselSlide = {
+    id: 'contentful-priority',
+    dismissed: false,
+    undismissable: false,
+    priorityPlacement: true,
+    title: 'Priority Slide',
+    description: 'Goes first',
+    image: 'priority.png',
+  };
+
+  const regularSlide: CarouselSlide = {
+    id: 'contentful-regular',
+    dismissed: false,
+    undismissable: false,
+    title: 'Regular Slide',
+    description: 'Goes second',
+    image: 'regular.png',
+  };
+
+  beforeEach(() => {
+    jest.mocked(fetchCarouselSlidesFromContentful).mockResolvedValue({
+      prioritySlides: [prioritySlide],
+      regularSlides: [regularSlide],
+    });
+
+    mockGetSlides.mockReturnValue([]);
+    mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
+    mockGetUseExternalServices.mockReturnValue(false);
+    mockGetIsRemoteModeEnabled.mockReturnValue(false);
+  });
+  it('should sort priorityPlacement slide before regular slides', async () => {
+    renderHook(() => useCarouselManagement());
+
+    await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
+    const updatedSlides = mockUpdateSlides.mock.calls[0][0] as CarouselSlide[];
+    const ids = updatedSlides.map((s) => s.id);
+
+    expect(ids).toContain('contentful-priority');
+    expect(ids).toContain('contentful-regular');
+    expect(ids.indexOf('contentful-priority')).toBeLessThan(
+      ids.indexOf('contentful-regular'),
+    );
+  });
+});
+
 describe('useCarouselManagement', () => {
   let validTestDate: string;
   let invalidTestDate: string;
@@ -541,52 +587,6 @@ describe('useCarouselManagement', () => {
       ).not.toThrow();
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
-    });
-  });
-
-  describe('priorityPlacement', () => {
-    it('should sort priorityPlacement slide before regular slides', async () => {
-      const prioritySlide: CarouselSlide = {
-        id: 'contentful-priority',
-        dismissed: false,
-        undismissable: false,
-        priorityPlacement: true,
-        title: 'Priority Slide',
-        description: 'Goes first',
-        image: 'priority.png',
-      };
-
-      const regularSlide: CarouselSlide = {
-        id: 'contentful-regular',
-        dismissed: false,
-        undismissable: false,
-        title: 'Regular Slide',
-        description: 'Goes second',
-        image: 'regular.png',
-      };
-
-      jest.mocked(fetchCarouselSlidesFromContentful).mockResolvedValueOnce({
-        prioritySlides: [prioritySlide],
-        regularSlides: [regularSlide],
-      });
-
-      mockGetSlides.mockReturnValue([]);
-      mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
-      mockGetUseExternalServices.mockReturnValue(false);
-      mockGetIsRemoteModeEnabled.mockReturnValue(false);
-
-      renderHook(() => useCarouselManagement());
-
-      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
-      const updatedSlides = mockUpdateSlides.mock
-        .calls[0][0] as CarouselSlide[];
-      const ids = updatedSlides.map((s) => s.id);
-
-      expect(ids).toContain('contentful-priority');
-      expect(ids).toContain('contentful-regular');
-      expect(ids.indexOf('contentful-priority')).toBeLessThan(
-        ids.indexOf('contentful-regular'),
-      );
     });
   });
 
