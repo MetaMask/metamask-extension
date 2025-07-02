@@ -138,18 +138,16 @@ export function useTransactionDisplayData(transactionGroup) {
   const { type, txParamsOriginal } = initialTransaction;
   const { from, to } = initialTransaction.txParams || {};
 
+  const isUnifiedSwapTx = [
+    TransactionType.swap,
+    TransactionType.bridge,
+  ].includes(type);
+
   // for smart contract interactions, methodData can be used to derive the name of the action being taken
   const methodData =
     useSelector((state) =>
       getKnownMethodData(state, initialTransaction?.txParams?.data),
     ) || {};
-
-  const isUnifiedSwapTx =
-    ([TransactionType.swap, TransactionType.bridge].includes(type) &&
-      Boolean(bridgeHistoryItem)) ||
-    (![TransactionType.swap, TransactionType.bridge].includes(type) &&
-      Boolean(bridgeHistoryItem) &&
-      bridgeHistoryItem.type === 'swap'); // TODO check if bridge quote params
 
   const displayedStatusKey = getStatusKey(primaryTransaction);
   const isPending = displayedStatusKey in PENDING_STATUS_HASH;
@@ -301,10 +299,7 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('signatureRequest');
     subtitle = origin;
     subtitleContainsOrigin = true;
-  } else if (
-    type === TransactionType.swap ||
-    bridgeHistoryItem?.type === TransactionType.swap
-  ) {
+  } else if (type === TransactionType.swap) {
     category = TransactionGroupCategory.swap;
     title = t('swapTokenToToken', [
       bridgeTokenDisplayData.sourceTokenSymbol ??
@@ -356,10 +351,7 @@ export function useTransactionDisplayData(transactionGroup) {
     } else {
       prefix = '-';
     }
-  } else if (
-    type === TransactionType.swapApproval ||
-    (type === TransactionType.tokenMethodApprove && bridgeTokenDisplayData)
-  ) {
+  } else if (type === TransactionType.swapApproval) {
     category = TransactionGroupCategory.approval;
     title = t('swapApproval', [
       bridgeTokenDisplayData.sourceTokenSymbol ??
@@ -443,10 +435,7 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle = origin;
     subtitleContainsOrigin = true;
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
-  } else if (
-    type === TransactionType.bridge ||
-    bridgeHistoryItem?.type === TransactionType.bridge
-  ) {
+  } else if (type === TransactionType.bridge) {
     title = destChainName ? t('bridgedToChain', [destChainName]) : t('bridged');
     category = bridgeTokenDisplayData.category;
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;

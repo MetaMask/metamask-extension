@@ -112,11 +112,8 @@ function TransactionListItemInner({
     isEarliestNonce,
   });
   const isUnifiedSwapTx =
-    (isBridgeTx ||
-      transactionGroup.initialTransaction.type === TransactionType.swap ||
-      bridgeTxHistoryItem?.type === TransactionType.swap ||
-      bridgeTxHistoryItem?.type === TransactionType.bridge) &&
-    bridgeTxHistoryItem;
+    isBridgeTx ||
+    transactionGroup.initialTransaction.type === TransactionType.swap;
 
   const getTestNetworkBackgroundColor = (networkId) => {
     switch (true) {

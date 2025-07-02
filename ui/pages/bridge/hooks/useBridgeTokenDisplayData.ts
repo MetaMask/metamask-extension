@@ -7,7 +7,6 @@ import { TransactionGroupCategory } from '../../../../shared/constants/transacti
 import {
   selectBridgeHistoryForAccount,
   selectBridgeHistoryForApprovalTxId,
-  selectBridgeHistoryForBatchId,
 } from '../../../ducks/bridge-status/selectors';
 import { BigNumber } from 'bignumber.js';
 
@@ -29,13 +28,8 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
   const bridgeHistoryItemWithApprovalTxId = useSelector((state) =>
     selectBridgeHistoryForApprovalTxId(state, primaryTransaction.id),
   );
-  const bridgeHistoryItemWithBatchId = useSelector((state) =>
-    selectBridgeHistoryForBatchId(state, primaryTransaction.batchId),
-  );
   const bridgeHistoryItem: BridgeHistoryItem | undefined =
-    bridgeHistoryItemForPrimaryTxId ??
-    bridgeHistoryItemWithBatchId ??
-    bridgeHistoryItemWithApprovalTxId;
+    bridgeHistoryItemForPrimaryTxId ?? bridgeHistoryItemWithApprovalTxId;
 
   // Display currency can be fiat or a token
   const displayCurrencyAmount = useTokenFiatAmount(

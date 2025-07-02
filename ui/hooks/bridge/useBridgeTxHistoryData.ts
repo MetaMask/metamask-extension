@@ -51,15 +51,16 @@ export function useBridgeTxHistoryData({
     ? bridgeHistoryItem?.status.status === StatusTypes.FAILED
     : null;
 
-  const showBridgeTxDetails =
-    FINAL_NON_CONFIRMED_STATUSES.includes(txMeta.status) || !bridgeHistoryItem
-      ? undefined
-      : () => {
-          history.push({
-            pathname: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`,
-            state: { transactionGroup, isEarliestNonce },
-          });
-        };
+  const showBridgeTxDetails = FINAL_NON_CONFIRMED_STATUSES.includes(
+    txMeta.status,
+  )
+    ? undefined
+    : () => {
+        history.push({
+          pathname: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`,
+          state: { transactionGroup, isEarliestNonce },
+        });
+      };
 
   return {
     bridgeTxHistoryItem: bridgeHistoryItem,
