@@ -23,6 +23,10 @@ async function main() {
     AWS_CLOUDFRONT_URL: 'https://diuv6g5fj9pvx.cloudfront.net',
   };
 
+  console.log('Downloading latest builds from');
+  console.log(`- Branch: ${env.BRANCH}`);
+  console.log(`- Build type: ${env.BUILD_TYPE}`);
+
   const github = new Octokit({ auth: env.GITHUB_TOKEN });
 
   const runs = await github.rest.actions.listWorkflowRuns({
@@ -38,6 +42,8 @@ async function main() {
 
   if (!latestRun)
     throw new Error(`No successful builds found on branch '${env.BRANCH}'`);
+
+  console.log(`- Run number: ${latestRun.id}`);
 
   const HOST_URL = `${env.AWS_CLOUDFRONT_URL}/${env.REPOSITORY}/${latestRun.id}`;
 
@@ -70,6 +76,9 @@ async function main() {
   if (!builds)
     throw new Error(`No builds found for build type '${env.BUILD_TYPE}'`);
 
+  console.log(`Downloading build for chrome from ${builds.chrome}`);
+  console.log(`Downloading build for firefox from ${builds.firefox}`);
+
   await Promise.all(
     Object.entries(builds).map(async ([platform, url]) => {
       const artifact = await fetch(url);
@@ -80,4 +89,4 @@ async function main() {
   );
 }
 
-main();
+main().then(() => console.log('Builds downloaded and unzipped successfully.'));
