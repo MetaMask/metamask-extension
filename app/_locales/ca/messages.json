@@ -59,11 +59,11 @@
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "CryptoBridge Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -82,7 +82,7 @@
     "message": "Temporitzador de tancament de sessió automàtic (minuts)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Configura el temps de repòs com minuts abans que MetaMask tanqui la sessió automàticament"
+    "message": "Configura el temps de repòs com minuts abans que CryptoBridge tanqui la sessió automàticament"
   },
   "average": {
     "message": "Mitjana"
@@ -128,7 +128,7 @@
     "message": "Cadena ID"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Necessites fer servir MetaMask amb Google Chrome per a connectar-te al teu Moneder Hardware."
+    "message": "Necessites fer servir CryptoBridge amb Google Chrome per a connectar-te al teu Moneder Hardware."
   },
   "close": {
     "message": "Tanca"
@@ -441,7 +441,7 @@
     "message": "Participar a MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Participa a MetaMetrics per ajudar-nos a fer MetaMask millor"
+    "message": "Participa a MetaMetrics per ajudar-nos a fer CryptoBridge millor"
   },
   "password": {
     "message": "Contrasenya"

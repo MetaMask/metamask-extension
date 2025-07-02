@@ -59,11 +59,11 @@
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "CryptoBridge Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -82,7 +82,7 @@
     "message": "Timer för automatisk utloggning (minuter)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Ställ in efter hur lång tids inaktivitet som MetaMask automatiskt loggar ut"
+    "message": "Ställ in efter hur lång tids inaktivitet som CryptoBridge automatiskt loggar ut"
   },
   "average": {
     "message": "Genomsnitt"
@@ -91,7 +91,7 @@
     "message": "Bakåt"
   },
   "backupApprovalInfo": {
-    "message": "Den hemliga koden krävs för att komma åt din plånbok ifall du tappar bort din enhet, glömmer ditt lösenord, behöver installera om MetaMask eller om du vill komma åt din plånbok på en annan enhet."
+    "message": "Den hemliga koden krävs för att komma åt din plånbok ifall du tappar bort din enhet, glömmer ditt lösenord, behöver installera om CryptoBridge eller om du vill komma åt din plånbok på en annan enhet."
   },
   "backupApprovalNotice": {
     "message": "Säkerhetskopiera din hemliga återställningskod för att se till att din plånbok och dina tillgångar är säkra."
@@ -125,7 +125,7 @@
     "message": "Avbruten"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Du måste använda MetaMask på Google Chrome för att ansluta till din hårdvaruplånbok."
+    "message": "Du måste använda CryptoBridge på Google Chrome för att ansluta till din hårdvaruplånbok."
   },
   "close": {
     "message": "Stäng"
@@ -441,7 +441,7 @@
     "message": "Delta i MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Delta i MetaMetrics för att hjälpa oss göra MetaMask bättre"
+    "message": "Delta i MetaMetrics för att hjälpa oss göra CryptoBridge bättre"
   },
   "password": {
     "message": "Lösenord"

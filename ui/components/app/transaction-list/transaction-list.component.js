@@ -707,9 +707,9 @@ export default function TransactionList({
 
   return (
     <>
-      {showRampsCard ? (
+      {/* {showRampsCard ? (
         <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
-      ) : null}
+      ) : null} */}
       <Box className="transaction-list" {...boxProps}>
         {/* {renderFilterButton()} */}
         {process.env.REMOVE_GNS &&

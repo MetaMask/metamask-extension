@@ -156,10 +156,10 @@
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
   "addAccountToMetaMask": {
-    "message": "Konto zu MetaMask hinzufügen"
+    "message": "Konto zu CryptoBridge hinzufügen"
   },
   "addAcquiredTokens": {
-    "message": "Fügen Sie die Tokens hinzu, die Sie mittels MetaMask erlangt haben."
+    "message": "Fügen Sie die Tokens hinzu, die Sie mittels CryptoBridge erlangt haben."
   },
   "addAlias": {
     "message": "Alias hinzufügen"
@@ -493,11 +493,11 @@
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "CryptoBridge Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "apply": {
@@ -578,7 +578,7 @@
     "message": "Auto-Lock-Timer (Minuten)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Legen Sie die Leerlaufzeit in Minuten fest, nach der MetaMask gesperrt werden soll."
+    "message": "Legen Sie die Leerlaufzeit in Minuten fest, nach der CryptoBridge gesperrt werden soll."
   },
   "average": {
     "message": "Durchschnitt"
@@ -600,7 +600,7 @@
     "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
   },
   "backupAndSyncEnableDescription": {
-    "message": "Mit Backup und Synchronisierung können wir verschlüsselte Daten für Ihre benutzerdefinierten Einstellungen und Funktionen speichern. Dadurch bleibt Ihr MetaMask-Erlebnis auf allen Geräten gleich und die Einstellungen und Funktionen werden bei eventueller Neuinstallation von MetaMask wiederhergestellt. Ihre geheime Wiederherstellungsphrase wird dabei nicht gesichert. $1.",
+    "message": "Mit Backup und Synchronisierung können wir verschlüsselte Daten für Ihre benutzerdefinierten Einstellungen und Funktionen speichern. Dadurch bleibt Ihr MetaMask-Erlebnis auf allen Geräten gleich und die Einstellungen und Funktionen werden bei eventueller Neuinstallation von CryptoBridge wiederhergestellt. Ihre geheime Wiederherstellungsphrase wird dabei nicht gesichert. $1.",
     "description": "$1 is link to the backup and sync privacy policy."
   },
   "backupAndSyncEnableDescriptionUpdatePreferences": {
@@ -629,7 +629,7 @@
     "message": "Einführung in Backup und Synchronisierung"
   },
   "backupApprovalInfo": {
-    "message": "Dieser geheime Code ist zum Wiedererlangen Ihrer Wallet erforderlich, falls Sie Ihr Gerät verlieren, Ihr Passwort vergessen, MetaMask neu installieren müssen oder auf einem anderen Gerät auf Ihre Wallet zugreifen möchten."
+    "message": "Dieser geheime Code ist zum Wiedererlangen Ihrer Wallet erforderlich, falls Sie Ihr Gerät verlieren, Ihr Passwort vergessen, CryptoBridge neu installieren müssen oder auf einem anderen Gerät auf Ihre Wallet zugreifen möchten."
   },
   "backupApprovalNotice": {
     "message": "Sichern Sie Ihre geheime Wiederherstellungsphrase, um Ihre Wallet und Ihr Geld geschützt zu halten."
@@ -656,7 +656,7 @@
     "message": "Grundfunktionalität ist ausgeschaltet"
   },
   "basicConfigurationDescription": {
-    "message": "MetaMask bietet grundlegende Funktionen wie Token-Details und Gas-Einstellungen über Internetdienste. Wenn Sie Internetdienste nutzen, wird Ihre IP-Adresse weitergegeben, in diesem Fall an MetaMask. Das ist genau so, wie wenn Sie eine beliebige Website besuchen. MetaMask verwendet diese Daten vorübergehend und verkauft Ihre Daten niemals. Sie können ein VPN verwenden oder diese Dienste abschalten, aber das kann Ihr MetaMask-Erlebnis beeinträchtigen. Um mehr zu erfahren, lesen Sie unsere $1.",
+    "message": "CryptoBridge bietet grundlegende Funktionen wie Token-Details und Gas-Einstellungen über Internetdienste. Wenn Sie Internetdienste nutzen, wird Ihre IP-Adresse weitergegeben, in diesem Fall an MetaMask. Das ist genau so, wie wenn Sie eine beliebige Website besuchen. CryptoBridge verwendet diese Daten vorübergehend und verkauft Ihre Daten niemals. Sie können ein VPN verwenden oder diese Dienste abschalten, aber das kann Ihr MetaMask-Erlebnis beeinträchtigen. Um mehr zu erfahren, lesen Sie unsere $1.",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationLabel": {
@@ -666,7 +666,7 @@
     "message": "Ich verstehe und möchte fortfahren"
   },
   "basicConfigurationModalDisclaimerOff": {
-    "message": "Das bedeutet, dass Sie Ihre Zeit auf MetaMask nicht vollständig optimieren können. Grundlegende Funktionen (wie Token-Details, optimale Gas-Einstellungen und andere) stehen Ihnen nicht zur Verfügung."
+    "message": "Das bedeutet, dass Sie Ihre Zeit auf CryptoBridge nicht vollständig optimieren können. Grundlegende Funktionen (wie Token-Details, optimale Gas-Einstellungen und andere) stehen Ihnen nicht zur Verfügung."
   },
   "basicConfigurationModalDisclaimerOffAdditionalText": {
     "message": "Durch Ausschalten dieser Funktion werden auch alle Funktionen innerhalb von $1 und $2 deaktiviert.",
@@ -679,7 +679,7 @@
     "message": "Benachrichtigungen"
   },
   "basicConfigurationModalDisclaimerOn": {
-    "message": "Um Ihre Zeit auf MetaMask zu optimieren, müssen Sie diese Funktion einschalten. Grundlegende Funktionen (wie Token-Details, optimale Gas-Einstellungen und andere) sind für das Web3-Erlebnis wichtig."
+    "message": "Um Ihre Zeit auf CryptoBridge zu optimieren, müssen Sie diese Funktion einschalten. Grundlegende Funktionen (wie Token-Details, optimale Gas-Einstellungen und andere) sind für das Web3-Erlebnis wichtig."
   },
   "basicConfigurationModalHeadingOff": {
     "message": "Grundfunktionalität ausschalten"
@@ -977,7 +977,7 @@
     "message": "Erstellen Sie Ihre Kontaktliste."
   },
   "builtAroundTheWorld": {
-    "message": "MetaMask ist weltweit konzipiert und aufgebaut."
+    "message": "CryptoBridge ist weltweit konzipiert und aufgebaut."
   },
   "bulletpoint": {
     "message": "·"
@@ -1041,7 +1041,7 @@
     "message": "klicken Sie hier"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Sie müssen MetaMask unter Google Chrome nutzen, um sich mit Ihrer Hardware-Wallet zu verbinden."
+    "message": "Sie müssen CryptoBridge unter Google Chrome nutzen, um sich mit Ihrer Hardware-Wallet zu verbinden."
   },
   "circulatingSupply": {
     "message": "Zirkulierende Versorgung"
@@ -1136,7 +1136,7 @@
     "message": "Einschließlich $1 Gebühr"
   },
   "confirmGasFeeTokenModalNativeToggleMetaMask": {
-    "message": "MetaMask ergänzt den Saldo, um diese Transaktion abzuschließen."
+    "message": "CryptoBridge ergänzt den Saldo, um diese Transaktion abzuschließen."
   },
   "confirmGasFeeTokenModalNativeToggleWallet": {
     "message": "Begleichen Sie die Netzwerkgebühr mit dem Guthaben in Ihrer Wallet."
@@ -1269,7 +1269,7 @@
     "description": "$1 is the snap for which a connection is being requested."
   },
   "connectWithMetaMask": {
-    "message": "Mit MetaMask verbinden"
+    "message": "Mit CryptoBridge verbinden"
   },
   "connectedAccounts": {
     "message": "Verbundene Konten"
@@ -1282,7 +1282,7 @@
     "message": "Sie haben $1 Konten mit dieser Seite verbunden."
   },
   "connectedAccountsEmptyDescription": {
-    "message": "MetaMask ist nicht mit dieser Seite verbunden. Um sich mit einer Web3-Seite zu verbinden, finden und klicken Sie auf die Schaltfläche „Verbinden“."
+    "message": "CryptoBridge ist nicht mit dieser Seite verbunden. Um sich mit einer Web3-Seite zu verbinden, finden und klicken Sie auf die Schaltfläche „Verbinden“."
   },
   "connectedAccountsListTooltip": {
     "message": "$1 kann den Kontostand, die Adresse und die Aktivitäten einsehen und Transaktionen vorschlagen, um für verbundene Konten zu genehmigen.",
@@ -1306,7 +1306,7 @@
     "description": "$1 is the account name"
   },
   "connectedSnapAndNoAccountDescription": {
-    "message": "MetaMask ist mit dieser Seite verbunden, aber es sind noch keine Konten verbunden"
+    "message": "CryptoBridge ist mit dieser Seite verbunden, aber es sind noch keine Konten verbunden"
   },
   "connectedSnaps": {
     "message": "Verbundene Snaps"
@@ -1355,7 +1355,7 @@
     "message": "Verbindung zum Sepolia-Testnetzwerk wird hergestellt"
   },
   "connectionDescription": {
-    "message": "Diese Website mit MetaMask verbinden"
+    "message": "Diese Website mit CryptoBridge verbinden"
   },
   "connectionFailed": {
     "message": "Verbindung fehlgeschlagen"
@@ -1365,7 +1365,7 @@
     "description": "$1 is the name of the snap being fetched."
   },
   "connectionPopoverDescription": {
-    "message": "Um eine Verbindung zu einer Website herzustellen, klicken Sie auf die Schaltfläche „Verbinden“. MetaMask kann sich nur mit web3-Websites verbinden."
+    "message": "Um eine Verbindung zu einer Website herzustellen, klicken Sie auf die Schaltfläche „Verbinden“. CryptoBridge kann sich nur mit web3-Websites verbinden."
   },
   "connectionRequest": {
     "message": "Verbindungsanfrage"
@@ -1399,7 +1399,7 @@
     "message": "Contract-Interaktion"
   },
   "convertTokenToNFTDescription": {
-    "message": "Wir haben festgestellt, dass dieses Asset eine NFT ist. MetaMask hat jetzt volle native Unterstützung für NFTs. Möchten Sie es aus Ihrer Tokenliste entfernen und als NFT hinzufügen?"
+    "message": "Wir haben festgestellt, dass dieses Asset eine NFT ist. CryptoBridge hat jetzt volle native Unterstützung für NFTs. Möchten Sie es aus Ihrer Tokenliste entfernen und als NFT hinzufügen?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Wir haben festgestellt, dass dieses Asset als NFT hinzugefügt wurde. Möchten Sie es aus Ihrer Token-Liste entfernen?"
@@ -1435,7 +1435,7 @@
     "message": "Passwort erstellen"
   },
   "createSnapAccountDescription": {
-    "message": "$1 möchte ein neues Konto zu MetaMask hinzufügen."
+    "message": "$1 möchte ein neues Konto zu CryptoBridge hinzufügen."
   },
   "createSnapAccountTitle": {
     "message": "Konto erstellen"
@@ -1447,7 +1447,7 @@
     "message": "Adresse des Erstellers"
   },
   "crossChainSwapsLink": {
-    "message": "Netzwerkübergreifender Austausch mit MetaMask Portfolio"
+    "message": "Netzwerkübergreifender Austausch mit CryptoBridge Portfolio"
   },
   "crossChainSwapsLinkNative": {
     "message": "Netzwerkübergreifender Austausch mit Bridge"
@@ -1572,7 +1572,7 @@
     "message": "Okay"
   },
   "dataCollectionWarningPopoverDescription": {
-    "message": "Sie haben die Datenerhebung für unsere Marketingzwecke deaktiviert. Dies gilt nur für dieses Gerät. Wenn Sie MetaMask auf anderen Geräten verwenden, stellen Sie sicher, dass Sie sich auch dort abmelden."
+    "message": "Sie haben die Datenerhebung für unsere Marketingzwecke deaktiviert. Dies gilt nur für dieses Gerät. Wenn Sie CryptoBridge auf anderen Geräten verwenden, stellen Sie sicher, dass Sie sich auch dort abmelden."
   },
   "dataUnavailable": {
     "message": "Daten nicht verfügbar"
@@ -1616,7 +1616,7 @@
     "message": "Standard-RPC-URL"
   },
   "defaultSettingsSubTitle": {
-    "message": "MetaMask verwendet Standardeinstellungen, um ein optimales Gleichgewicht zwischen Sicherheit und Benutzerfreundlichkeit herzustellen. Ändern Sie diese Einstellungen, um Ihre Privatsphäre weiter zu verbessern."
+    "message": "CryptoBridge verwendet Standardeinstellungen, um ein optimales Gleichgewicht zwischen Sicherheit und Benutzerfreundlichkeit herzustellen. Ändern Sie diese Einstellungen, um Ihre Privatsphäre weiter zu verbessern."
   },
   "defaultSettingsTitle": {
     "message": "Standard-Datenschutzeinstellungen"
@@ -1679,7 +1679,7 @@
     "message": "Verstanden"
   },
   "deprecatedNetworkDescription": {
-    "message": "Das Netzwerk, zu dem Sie eine Verbindung herstellen möchten, wird von Metamask nicht mehr unterstützt. $1"
+    "message": "Das Netzwerk, zu dem Sie eine Verbindung herstellen möchten, wird von CryptoBridge nicht mehr unterstützt. $1"
   },
   "description": {
     "message": "Beschreibung"
@@ -2006,13 +2006,13 @@
     "message": "Erweiterte Token-Erkennung ist derzeit über $1 verfügbar. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
-    "message": "MetaMask zeigt Ihnen ENS-Domains direkt in der Adressleiste Ihres Browsers an. So funktioniert es:"
+    "message": "CryptoBridge zeigt Ihnen ENS-Domains direkt in der Adressleiste Ihres Browsers an. So funktioniert es:"
   },
   "ensDomainsSettingDescriptionOutroduction": {
     "message": "Beachten Sie bitte, dass durch die Nutzung dieser Funktion Ihre IP-Adresse für IPFS-Dienste anbietende Dritte sichtbar wird."
   },
   "ensDomainsSettingDescriptionPart1": {
-    "message": "MetaMask findet mithilfe von Ethereums ENS-Contract den mit dem ENS-Namen verbundenen Code."
+    "message": "CryptoBridge findet mithilfe von Ethereums ENS-Contract den mit dem ENS-Namen verbundenen Code."
   },
   "ensDomainsSettingDescriptionPart2": {
     "message": "Wenn der Code mit IPFS verknüpft ist, wird der dazugehörige Content (in der Regel eine Website) wiedergegeben."
@@ -2097,7 +2097,7 @@
     "description": "In sentry feedback form, The message displayed after a successful feedback submission."
   },
   "errorPageTitle": {
-    "message": "MetaMask hat einen Fehler festgestellt.",
+    "message": "CryptoBridge hat einen Fehler festgestellt.",
     "description": "Title of generic error page"
   },
   "errorPageTryAgain": {
@@ -2212,15 +2212,15 @@
   },
   "flaskWelcomeWarning2": {
     "message": "Wir übernehmen keine Garantie für die Sicherheit oder Stabilität dieser Erweiterung. Die neuen von Flask angebotenen APIs sind nicht gegen Phishing-Angriffe gehärtet. Das bedeutet, dass jede Webseite oder jeder Snap, der Flask benötigt, ein böswilliger Versuch sein könnte, Ihre Assets zu stehlen.",
-    "description": "This explains the risks of using MetaMask Flask"
+    "description": "This explains the risks of using CryptoBridge Flask"
   },
   "flaskWelcomeWarning3": {
-    "message": "Alle Flask-APIs sind experimentell. Sie können ohne Vorankündigung geändert oder entfernt werden oder sie können auf unbestimmte Zeit in Flask bleiben, ohne jemals in die stabile MetaMask migriert zu werden. Die Verwendung erfolgt auf eigene Gefahr.",
+    "message": "Alle Flask-APIs sind experimentell. Sie können ohne Vorankündigung geändert oder entfernt werden oder sie können auf unbestimmte Zeit in Flask bleiben, ohne jemals in die stabile CryptoBridge migriert zu werden. Die Verwendung erfolgt auf eigene Gefahr.",
     "description": "This message warns developers about unstable Flask APIs"
   },
   "flaskWelcomeWarning4": {
     "message": "Stellen Sie sicher, dass Sie Ihre normale MetaMask-Erweiterung deaktivieren, wenn Sie Flask verwenden.",
-    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+    "description": "This message calls to pay attention about multiple versions of CryptoBridge running on the same site (Flask + Prod)"
   },
   "flaskWelcomeWarningAcceptButton": {
     "message": "Ich akzeptiere die Risiken",
@@ -2371,7 +2371,7 @@
     "message": "Hardware-Wallet-Integrationen nutzen API-Aufrufe zur Kommunikation mit externen Servern, die Ihre IP-Adresse und die Adressen der Smart Contracts, mit denen Sie interagieren, sehen können."
   },
   "hardwareWalletsMsg": {
-    "message": "Wählen Sie eine Hardware-Wallet aus, die Sie mit MetaMask verwenden möchten."
+    "message": "Wählen Sie eine Hardware-Wallet aus, die Sie mit CryptoBridge verwenden möchten."
   },
   "here": {
     "message": "hier",
@@ -2514,13 +2514,13 @@
     "message": "Dies ist ein ungültiger privater Schlüsseln. Sie müssen eine hexadezimale Zeichenfolge mit 64 Zeichen eingeben."
   },
   "importAccountJsonLoading1": {
-    "message": "Rechnen Sie damit, dass dieser JSON-Import ein paar Minuten dauert und MetaMask nicht reagiert."
+    "message": "Rechnen Sie damit, dass dieser JSON-Import ein paar Minuten dauert und CryptoBridge nicht reagiert."
   },
   "importAccountJsonLoading2": {
     "message": "Wir entschuldigen uns hierfür und werden dies in Zukunft beschleunigen."
   },
   "importAccountMsg": {
-    "message": "Importierte Konten werden nicht mit der geheimen Wiederherstellungsphrase von MetaMask verknüpft. Erfahren Sie mehr über importierte Konten."
+    "message": "Importierte Konten werden nicht mit der geheimen Wiederherstellungsphrase von CryptoBridge verknüpft. Erfahren Sie mehr über importierte Konten."
   },
   "importNFT": {
     "message": "NFT importieren"
@@ -2607,7 +2607,7 @@
     "message": "Beinhaltet $1 Transaktionen"
   },
   "infuraBlockedNotification": {
-    "message": "MetaMask kann sich nicht mit dem Blockchain Host verbinden. Überprüfen Sie mögliche Gründe $1.",
+    "message": "CryptoBridge kann sich nicht mit dem Blockchain Host verbinden. Überprüfen Sie mögliche Gründe $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
   "initialTransactionConfirmed": {
@@ -2624,7 +2624,7 @@
     "message": "Origin installieren"
   },
   "installRequest": {
-    "message": "Zu MetaMask hinzufügen"
+    "message": "Zu CryptoBridge hinzufügen"
   },
   "installedOn": {
     "message": "Installiert auf $1",
@@ -2717,7 +2717,7 @@
     "message": "IPFS-Gateway"
   },
   "ipfsGatewayDescription": {
-    "message": "MetaMask verwendet Dienste von Drittanbietern, um Bilder Ihrer auf IPFS gespeicherten NFTs wiederzugeben, Informationen zu ENS-Adressen anzuzeigen, die Sie in die Adressleiste Ihres Browsers eingegeben haben, und Symbole für verschiedene Tokens abzurufen. Ihre IP-Adresse kann diesen Diensten offengelegt werden, wenn Sie diese nutzen."
+    "message": "CryptoBridge verwendet Dienste von Drittanbietern, um Bilder Ihrer auf IPFS gespeicherten NFTs wiederzugeben, Informationen zu ENS-Adressen anzuzeigen, die Sie in die Adressleiste Ihres Browsers eingegeben haben, und Symbole für verschiedene Tokens abzurufen. Ihre IP-Adresse kann diesen Diensten offengelegt werden, wenn Sie diese nutzen."
   },
   "ipfsToggleModalDescriptionOne": {
     "message": "Wir verwenden Dienste von Drittanbietern, um Bilder Ihrer auf IPFS gespeicherten NFTs wiederzugeben, Informationen zu ENS-Adressen anzuzeigen, die Sie in die Adressleiste Ihres Browsers eingeben, und Symbole für verschiedene Tokens abzurufen. Ihre IP-Adresse kann diesen Diensten offengelegt werden, wenn Sie diese nutzen."
@@ -2825,10 +2825,10 @@
     "message": "Betrügereien und Sicherheitsrisiken."
   },
   "leaveMetaMask": {
-    "message": "MetaMask verlassen?"
+    "message": "CryptoBridge verlassen?"
   },
   "leaveMetaMaskDesc": {
-    "message": "Sie sind im Begriff, eine Seite außerhalb von MetaMask zu besuchen. Überprüfen Sie die URL, bevor Sie fortfahren."
+    "message": "Sie sind im Begriff, eine Seite außerhalb von CryptoBridge zu besuchen. Überprüfen Sie die URL, bevor Sie fortfahren."
   },
   "ledgerAccountRestriction": {
     "message": "Sie müssen Ihr letztes Konto verwenden, ehe Sie ein neues hinzufügen können."
@@ -2904,7 +2904,7 @@
     "message": "Link"
   },
   "linkCentralizedExchanges": {
-    "message": "Verlinken Sie Ihre Coinbase- oder Binance-Konten, um Kryptos kostenfrei an MetaMask zu übweisen."
+    "message": "Verlinken Sie Ihre Coinbase- oder Binance-Konten, um Kryptos kostenfrei an CryptoBridge zu übweisen."
   },
   "links": {
     "message": "Links"
@@ -3035,7 +3035,7 @@
     "message": "Wallet-Benachrichtigungen sind momentan nicht aktiv."
   },
   "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps wird gewartet. Bitte versuchen Sie es später erneut."
+    "message": "CryptoBridge Swaps wird gewartet. Bitte versuchen Sie es später erneut."
   },
   "metamaskVersion": {
     "message": "MetaMask-Version"
@@ -3097,7 +3097,7 @@
     "message": "Mehr Angebote"
   },
   "multichainAddEthereumChainConfirmationDescription": {
-    "message": "Sie fügen dieses Netzwerk zu MetaMask hinzu und geben dieser Website die Genehmigung, es zu nutzen."
+    "message": "Sie fügen dieses Netzwerk zu CryptoBridge hinzu und geben dieser Website die Genehmigung, es zu nutzen."
   },
   "multichainQuoteCardBridgingLabel": {
     "message": "Bridging"
@@ -3359,7 +3359,7 @@
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
   "newNFTDetectedInNFTsTabMessage": {
-    "message": "Lassen Sie zu, dass MetaMask NFTs automatisch erkennt und anzeigt."
+    "message": "Lassen Sie zu, dass CryptoBridge NFTs automatisch erkennt und anzeigt."
   },
   "newNFTsAutodetected": {
     "message": "Automatische NFT-Erkennung"
@@ -3409,7 +3409,7 @@
     "message": "Automatische NFT-Erkennung aktiviert"
   },
   "nftDisclaimer": {
-    "message": "Haftungsausschluss: MetaMask bezieht die Mediendatei aus der Quellen-URL. Diese URL wird manchmal vom Markt, auf dem das NFT erstellt wurde, geändert."
+    "message": "Haftungsausschluss: CryptoBridge bezieht die Mediendatei aus der Quellen-URL. Diese URL wird manchmal vom Markt, auf dem das NFT erstellt wurde, geändert."
   },
   "nftOptions": {
     "message": "NFT-Optionen"
@@ -3444,10 +3444,10 @@
     "message": "Noch keine Aktivität"
   },
   "noConnectedAccountTitle": {
-    "message": "MetaMask ist nicht mit dieser Website verbunden"
+    "message": "CryptoBridge ist nicht mit dieser Website verbunden"
   },
   "noConnectionDescription": {
-    "message": "Um eine Verbindung zu einer Website herzustellen, suchen und wählen Sie die Schaltfläche „Verbinden“. Beachten Sie, dass MetaMask nur Verbindungen zu Websites auf Web3 herstellen kann"
+    "message": "Um eine Verbindung zu einer Website herzustellen, suchen und wählen Sie die Schaltfläche „Verbinden“. Beachten Sie, dass CryptoBridge nur Verbindungen zu Websites auf Web3 herstellen kann"
   },
   "noConversionRateAvailable": {
     "message": "Kein Umrechnungskurs verfügbar"
@@ -3759,7 +3759,7 @@
     "message": "Ich stimme zu"
   },
   "onboardingMetametricsDescription": {
-    "message": "Wir würden gerne grundlegende Nutzungs- und Diagnosedaten sammeln, um MetaMask zu verbessern. Sie sollten wissen, dass wir die Daten, die Sie uns hier zur Verfügung stellen, niemals verkaufen."
+    "message": "Wir würden gerne grundlegende Nutzungs- und Diagnosedaten sammeln, um CryptoBridge zu verbessern. Sie sollten wissen, dass wir die Daten, die Sie uns hier zur Verfügung stellen, niemals verkaufen."
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Wir werden Sie informieren, wenn wir beschließen, diese Daten für andere Zwecke zu verwenden. Für weitere Informationen können Sie unsere $1 einsehen. Vergessen Sie nicht, dass Sie jederzeit zu Einstellungen gehen und sich abmelden können.",
@@ -3819,8 +3819,8 @@
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
   "openFullScreenForLedgerWebHid": {
-    "message": "Öffnen Sie MetaMask im Vollbildmodus, um Ihren Ledger über WebHID zu verbinden.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+    "message": "Öffnen Sie CryptoBridge im Vollbildmodus, um Ihren Ledger über WebHID zu verbinden.",
+    "description": "Shown to the user on the confirm screen when they are viewing CryptoBridge in a popup window but need to connect their ledger via webhid."
   },
   "openInBlockExplorer": {
     "message": "Im Block-Explorer öffnen"
@@ -3855,7 +3855,7 @@
     "message": "andere"
   },
   "outdatedBrowserNotification": {
-    "message": "Ihr Browser ist veraltet. Wenn Sie Ihren Browser nicht aktualisieren, können Sie keine Sicherheits-Patches und neue Funktionen von MetaMask erhalten."
+    "message": "Ihr Browser ist veraltet. Wenn Sie Ihren Browser nicht aktualisieren, können Sie keine Sicherheits-Patches und neue Funktionen von CryptoBridge erhalten."
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Content-Security-Policy-Header aufheben"
@@ -3870,7 +3870,7 @@
     "message": "Bei MetaMetrics teilnehmen"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Nehmen Sie an MetaMetrics teil, um uns bei der Verbesserung von MetaMask zu helfen."
+    "message": "Nehmen Sie an MetaMetrics teil, um uns bei der Verbesserung von CryptoBridge zu helfen."
   },
   "password": {
     "message": "Passwort"
@@ -3886,7 +3886,7 @@
     "message": "Ein starkes Passwort kann die Sicherheit Ihrer Wallet erhöhen, falls Ihr Gerät gestohlen oder kompromittiert wird."
   },
   "passwordTermsWarning": {
-    "message": "Ich verstehe, dass MetaMask dieses Passwort für mich nicht wiederherstellen kann. $1"
+    "message": "Ich verstehe, dass CryptoBridge dieses Passwort für mich nicht wiederherstellen kann. $1"
   },
   "passwordsDontMatch": {
     "message": "Passwörter stimmen nicht überein."
@@ -3958,7 +3958,7 @@
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
   "permission_assets": {
-    "message": "Konto-Assets in MetaMask anzeigen.",
+    "message": "Konto-Assets in CryptoBridge anzeigen.",
     "description": "The description for the `endowment:assets` permission."
   },
   "permission_assetsDescription": {
@@ -3974,7 +3974,7 @@
     "description": "An extended description for the `snap_cronjob` permission. $1 is the snap name."
   },
   "permission_dialog": {
-    "message": "Dialogfenster in MetaMask anzeigen.",
+    "message": "Dialogfenster in CryptoBridge anzeigen.",
     "description": "The description for the `snap_dialog` permission"
   },
   "permission_dialogDescription": {
@@ -3990,7 +3990,7 @@
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
   "permission_ethereumProviderDescription": {
-    "message": "Erlauben Sie $1, direkt mit MetaMask zu kommunizieren, damit es Daten aus der Blockchain lesen und Nachrichten und Transaktionen vorschlagen kann.",
+    "message": "Erlauben Sie $1, direkt mit CryptoBridge zu kommunizieren, damit es Daten aus der Blockchain lesen und Nachrichten und Transaktionen vorschlagen kann.",
     "description": "An extended description for the `endowment:ethereum-provider` permission. $1 is the snap name."
   },
   "permission_getEntropy": {
@@ -4022,7 +4022,7 @@
     "description": "The description for the `endowment:page-home` permission"
   },
   "permission_homePageDescription": {
-    "message": "Lassen Sie $1 einen benutzerdefinierten Startbildschirm in MetaMask anzeigen. Dieser kann für Benutzeroberflächen, Konfiguration und Dashboards verwendet werden.",
+    "message": "Lassen Sie $1 einen benutzerdefinierten Startbildschirm in CryptoBridge anzeigen. Dieser kann für Benutzeroberflächen, Konfiguration und Dashboards verwendet werden.",
     "description": "An extended description for the `endowment:page-home` permission. $1 is the snap name."
   },
   "permission_keyring": {
@@ -4082,7 +4082,7 @@
     "description": "The description for the `snap_notify` permission"
   },
   "permission_notificationsDescription": {
-    "message": "Erlauben Sie $1, Benachrichtigungen in MetaMask anzuzeigen. Ein kurzer Benachrichtigungstext kann durch einen Snap für handlungsrelevante oder zeitkritische Informationen ausgelöst werden.",
+    "message": "Erlauben Sie $1, Benachrichtigungen in CryptoBridge anzuzeigen. Ein kurzer Benachrichtigungstext kann durch einen Snap für handlungsrelevante oder zeitkritische Informationen ausgelöst werden.",
     "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
   },
   "permission_protocol": {
@@ -4090,7 +4090,7 @@
     "description": "The description for the `endowment:protocol` permission."
   },
   "permission_protocolDescription": {
-    "message": "Erlauben Sie $1, MetaMask Protokolldaten wie Gasschätzungen oder Token-Informationen bereitzustellen.",
+    "message": "Erlauben Sie $1, CryptoBridge Protokolldaten wie Gasschätzungen oder Token-Informationen bereitzustellen.",
     "description": "An extended description for the `endowment:protocol` permission. $1 is the name of the Snap."
   },
   "permission_rpc": {
@@ -4126,7 +4126,7 @@
     "description": "The description for the `endowment:transaction-insight` permission"
   },
   "permission_transactionInsightDescription": {
-    "message": "Erlauben Sie $1, Transaktionen zu dekodieren und Einblicke innerhalb der MetaMask UI zu zeigen. Dies kann für Anti-Phishing- und Sicherheitslösungen verwendet werden.",
+    "message": "Erlauben Sie $1, Transaktionen zu dekodieren und Einblicke innerhalb der CryptoBridge UI zu zeigen. Dies kann für Anti-Phishing- und Sicherheitslösungen verwendet werden.",
     "description": "An extended description for the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_transactionInsightOrigin": {
@@ -4471,7 +4471,7 @@
     "message": "Das Entfernen dieses Snaps entfernt folgende Konten aus MetaMask:"
   },
   "removeKeyringSnapToolTip": {
-    "message": "Der Snap kontrolliert die Konten und durch seine Entfernung werden diese Konten ebenfalls aus MetaMask entfernt, verbleiben jedoch in der Blockchain."
+    "message": "Der Snap kontrolliert die Konten und durch seine Entfernung werden diese Konten ebenfalls aus CryptoBridge entfernt, verbleiben jedoch in der Blockchain."
   },
   "removeNFT": {
     "message": "NFT entfernen"
@@ -4486,7 +4486,7 @@
     "message": "Snap entfernen"
   },
   "removeSnapAccountDescription": {
-    "message": "Wenn Sie fortfahren, wird dieses Konto nicht mehr in MetaMask verfügbar sein."
+    "message": "Wenn Sie fortfahren, wird dieses Konto nicht mehr in CryptoBridge verfügbar sein."
   },
   "removeSnapAccountTitle": {
     "message": "Konto entfernen"
@@ -4537,7 +4537,7 @@
     "message": "Wallet zurücksetzen"
   },
   "resetWalletSubHeader": {
-    "message": "MetaMask speichert keine Kopie Ihres Passworts. Wenn Sie Probleme haben, Ihr Konto zu entsperren, müssen Sie Ihre Wallet zurücksetzen. Sie können dies tun, indem Sie die geheime Wiederherstellungsphrase angeben, die Sie bei der Einrichtung Ihrer Wallet verwendet haben."
+    "message": "CryptoBridge speichert keine Kopie Ihres Passworts. Wenn Sie Probleme haben, Ihr Konto zu entsperren, müssen Sie Ihre Wallet zurücksetzen. Sie können dies tun, indem Sie die geheime Wiederherstellungsphrase angeben, die Sie bei der Einrichtung Ihrer Wallet verwendet haben."
   },
   "resetWalletUsingSRP": {
     "message": "Diese Aktion löscht Ihre aktuelle Wallet und die geheime Wiederherstellungsphrase von diesem Gerät zusammen mit der Liste der Konten, die Sie erstellt haben. Nach dem Zurücksetzen mit einer geheimen Wiederherstellungsphrase sehen Sie eine Liste von Konten, die auf der geheimen Wiederherstellungsphrase basiert, die Sie zum Zurücksetzen verwenden. Diese neue Liste enthält automatisch Konten, die ein Guthaben aufweisen. Sie können auch $1, die zuvor erstellt wurden. Benutzerdefinierte Konten, die Sie importiert haben, müssen $2 sein und alle benutzerdefinierten Tokens, die Sie einem Konto hinzugefügt haben, müssen ebenfalls $3 sein."
@@ -4546,7 +4546,7 @@
     "message": "Vergewissern Sie sich, dass Sie die richtige geheime Wiederherstellungsphrase verwenden, bevor Sie fortfahren. Sie können dies nicht mehr rückgängig machen."
   },
   "restartMetamask": {
-    "message": "MetaMask neu starten"
+    "message": "CryptoBridge neu starten"
   },
   "restore": {
     "message": "Wiederherstellen"
@@ -4583,7 +4583,7 @@
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
   },
   "revealSeedWordsDescription2": {
-    "message": "MetaMask ist ein $1. Das bedeutet, dass Sie der Besitzer Ihrer GWP sind.",
+    "message": "CryptoBridge ist ein $1. Das bedeutet, dass Sie der Besitzer Ihrer GWP sind.",
     "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
   },
   "revealSeedWordsDescription3": {
@@ -4606,7 +4606,7 @@
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSeedWordsWarning2": {
-    "message": "Der MetaMask Support wird Sie nie danach fragen.",
+    "message": "Der CryptoBridge Support wird Sie nie danach fragen.",
     "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
@@ -4744,7 +4744,7 @@
     "message": "Ein Konto auswählen"
   },
   "selectAnAccountAlreadyConnected": {
-    "message": "Dieses Konto wurde bereits mit MetaMask verbunden."
+    "message": "Dieses Konto wurde bereits mit CryptoBridge verbunden."
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "NFT-Medien anzeigen einschalten"
@@ -5024,7 +5024,7 @@
     "message": "Überweisen Sie Guthaben auf Ihre Wallet"
   },
   "slideMultiSrpDescription": {
-    "message": "Mehrere Wallets in MetaMask importieren und verwenden"
+    "message": "Mehrere Wallets in CryptoBridge importieren und verwenden"
   },
   "slideMultiSrpTitle": {
     "message": "Mehrere geheime Wiederherstellungsphrasen hinzufügen"
@@ -5161,7 +5161,7 @@
     "message": "Konto wurde entfernt"
   },
   "snapAccountRemovedDescription": {
-    "message": "Dieses Konto wird in MetaMask nicht mehr zur Nutzung zur Verfügung stehen."
+    "message": "Dieses Konto wird in CryptoBridge nicht mehr zur Nutzung zur Verfügung stehen."
   },
   "snapAccounts": {
     "message": "Konto-Snaps"
@@ -5453,7 +5453,7 @@
     "message": "Zur Enthüllung Ihrer geheimen Wiederherstellungsphrase, müssen Sie zwei Fragen richtig beantworten."
   },
   "srpSecurityQuizQuestionOneQuestion": {
-    "message": "Wenn Sie Ihre geheime Wiederherstellungsphrase verlieren, kann MetaMask ..."
+    "message": "Wenn Sie Ihre geheime Wiederherstellungsphrase verlieren, kann CryptoBridge ..."
   },
   "srpSecurityQuizQuestionOneRightAnswer": {
     "message": "Ihnen nicht helfen."
@@ -5552,7 +5552,7 @@
     "message": "Verbinden Sie Ihr Lattice1"
   },
   "step1LatticeWalletMsg": {
-    "message": "Sie können MetaMask mit Ihrem Lattice1-Gerät verbinden, sobald dieses eingerichtet und online ist. Entsperren Sie Ihr Gerät und halten Sie Ihre Geräte-ID bereit.",
+    "message": "Sie können CryptoBridge mit Ihrem Lattice1-Gerät verbinden, sobald dieses eingerichtet und online ist. Entsperren Sie Ihr Gerät und halten Sie Ihre Geräte-ID bereit.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
@@ -5731,7 +5731,7 @@
     "message": "Limit bearbeiten"
   },
   "swapEnableDescription": {
-    "message": "Dies ist erforderlich und gibt MetaMask die Genehmigung, Ihren $1 zu swappen.",
+    "message": "Dies ist erforderlich und gibt CryptoBridge die Genehmigung, Ihren $1 zu swappen.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
   "swapEnableTokenForSwapping": {
@@ -5778,7 +5778,7 @@
     "message": "Die Gas-Gebühren werden geschätzt und werden aufgrund der Komplexität des Netzwerk-Traffics und der Transaktionskomplexität schwanken."
   },
   "swapGasFeesExplanation": {
-    "message": "MetaMask verdient kein Geld mit Gas-Gebühren. Bei diesen Gebühren handelt es sich um Schätzwerte, die sich je nach Auslastung des Netzwerks und der Komplexität einer Transaktion ändern können. Erfahren Sie mehr über $1.",
+    "message": "CryptoBridge verdient kein Geld mit Gas-Gebühren. Bei diesen Gebühren handelt es sich um Schätzwerte, die sich je nach Auslastung des Netzwerks und der Komplexität einer Transaktion ändern können. Erfahren Sie mehr über $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
   },
   "swapGasFeesExplanationLinkText": {
@@ -5792,7 +5792,7 @@
     "message": "Die Gas-Gebühren auf dem vorherigen Bildschirm werden auf diese beiden Transaktionen aufgeteilt."
   },
   "swapGasFeesSummary": {
-    "message": "Gasgebühren werden an Krypto-Miner gezahlt, die Transaktionen im $1-Netzwerk verarbeiten. MetaMask profitiert nicht von den Gasgebühren.",
+    "message": "Gasgebühren werden an Krypto-Miner gezahlt, die Transaktionen im $1-Netzwerk verarbeiten. CryptoBridge profitiert nicht von den Gasgebühren.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
@@ -5806,19 +5806,19 @@
   },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "Enthält Gas und eine MetaMask-Gebühr von $1%",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "Enthält eine MetaMask-Gebühr von $1%.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
     "message": "Angebot umfasst $1% MetaMask-Gebühr",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "description": "Provides information about the fee that CryptoBridge takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Enthält eine MetaMask-Gebühr von $1% bis $2.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Mehr über Swaps erfahren"
@@ -5836,8 +5836,8 @@
     "message": "MetaMask-Gebühr"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "Die Gebühr von $1% ist automatisch in diesem Angebot enthalten. Sie zahlen sie als Gegenleistung für eine Lizenz zur Nutzung der Software von MetaMask zur Aggregation von Liquiditätsanbieterinformationen.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "message": "Die Gebühr von $1% ist automatisch in diesem Angebot enthalten. Sie zahlen sie als Gegenleistung für eine Lizenz zur Nutzung der Software von CryptoBridge zur Aggregation von Liquiditätsanbieterinformationen.",
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 Angebote.",
@@ -6050,7 +6050,7 @@
     "message": "Wechseln"
   },
   "switchEthereumChainConfirmationDescription": {
-    "message": "Dadurch wird das ausgewählte Netzwerk innerhalb von MetaMask auf ein zuvor hinzugefügtes Netzwerk umgeschaltet:"
+    "message": "Dadurch wird das ausgewählte Netzwerk innerhalb von CryptoBridge auf ein zuvor hinzugefügtes Netzwerk umgeschaltet:"
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "Dieser Seite das Wechseln eines Netzwerks erlauben?"
@@ -6340,7 +6340,7 @@
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
   "troubleStarting": {
-    "message": "Beim Starten von MetaMask ist ein Problem aufgetreten. Dies könnte ein vorübergehendes Problem sein. Versuchen Sie daher, die Erweiterung neu zu starten."
+    "message": "Beim Starten von CryptoBridge ist ein Problem aufgetreten. Dies könnte ein vorübergehendes Problem sein. Versuchen Sie daher, die Erweiterung neu zu starten."
   },
   "tryAgain": {
     "message": "Erneut versuchen"
@@ -6389,13 +6389,13 @@
   },
   "u2f": {
     "message": "U2F",
-    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
+    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect CryptoBridge to Ledger devices."
   },
   "unapproved": {
     "message": "Nicht genehmigt"
   },
   "unexpectedBehavior": {
-    "message": "Dieses Verhalten ist unerwartet und sollte als Fehler gemeldet werden, selbst wenn Ihre Konten korrekt wiederhergestellt wurden. Verwenden Sie den unten stehenden Link, um MetaMask einen Fehlerbericht zu senden."
+    "message": "Dieses Verhalten ist unerwartet und sollte als Fehler gemeldet werden, selbst wenn Ihre Konten korrekt wiederhergestellt wurden. Verwenden Sie den unten stehenden Link, um CryptoBridge einen Fehlerbericht zu senden."
   },
   "units": {
     "message": "Einheiten"
@@ -6480,7 +6480,7 @@
     "message": "NFTs automatisch erkennen"
   },
   "useNftDetectionDescriptionText": {
-    "message": "Lassen Sie MetaMask NFTs, die Sie besitzen, anhand von Drittanbieterdiensten hinzufügen. Durch die automatische Erkennung von NFTs werden Ihre IP- und Kontoadresse für diese Dienste offengelegt. Durch die Aktivierung dieser Funktion können eventuell Ihre IP- und Ethereum-Adresse miteinander in Verbindung gebracht und gefälschte, von Betrügern per Airdropping abgesetzte NFTs anzeigt werden. Es ist möglich, Tokens manuell hinzufügen, um dieses Risiko zu vermeiden."
+    "message": "Lassen Sie CryptoBridge NFTs, die Sie besitzen, anhand von Drittanbieterdiensten hinzufügen. Durch die automatische Erkennung von NFTs werden Ihre IP- und Kontoadresse für diese Dienste offengelegt. Durch die Aktivierung dieser Funktion können eventuell Ihre IP- und Ethereum-Adresse miteinander in Verbindung gebracht und gefälschte, von Betrügern per Airdropping abgesetzte NFTs anzeigt werden. Es ist möglich, Tokens manuell hinzufügen, um dieses Risiko zu vermeiden."
   },
   "usePhishingDetection": {
     "message": "Phishing-Erkennung verwenden"
@@ -6492,7 +6492,7 @@
     "message": "Überprüfung der Netzwerkangaben"
   },
   "useSafeChainsListValidationDescription": {
-    "message": "MetaMask verwendet einen Drittanbieter-Service namens $1, um genaue und standardisierte Netzwerkangaben anzuzeigen. Dies verringert die Wahrscheinlichkeit, dass Sie mit einem bösartigen oder falschen Netzwerk in Verbindungen treten. Wenn Sie diese Funktion benutzen, wird Ihre IP-Adresse chainid.network gegenüber offengelegt."
+    "message": "CryptoBridge verwendet einen Drittanbieter-Service namens $1, um genaue und standardisierte Netzwerkangaben anzuzeigen. Dies verringert die Wahrscheinlichkeit, dass Sie mit einem bösartigen oder falschen Netzwerk in Verbindungen treten. Wenn Sie diese Funktion benutzen, wird Ihre IP-Adresse chainid.network gegenüber offengelegt."
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",

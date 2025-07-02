@@ -59,11 +59,11 @@
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "CryptoBridge Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -82,7 +82,7 @@
     "message": "Tajmer za automatsko odjavljivanje (u minutama)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Podesite vreme mirovanja u minutima pre nego što se MetaMask automatski odjavi. "
+    "message": "Podesite vreme mirovanja u minutima pre nego što se CryptoBridge automatski odjavi. "
   },
   "average": {
     "message": "Prosečno"
@@ -91,7 +91,7 @@
     "message": "Назад"
   },
   "backupApprovalInfo": {
-    "message": "Potreban je tajni kôd za oporavak vašeg novčanika u slučaju da izgubite uređaj, zaboravite lozinku, morate ponovo da instalirate MetaMask ili želite da pristupite novčaniku sa drugog uređaja."
+    "message": "Potreban je tajni kôd za oporavak vašeg novčanika u slučaju da izgubite uređaj, zaboravite lozinku, morate ponovo da instalirate CryptoBridge ili želite da pristupite novčaniku sa drugog uređaja."
   },
   "backupApprovalNotice": {
     "message": "Napravite rezervnu kopiju tajnog kôda za oporavak da bi vaš novčanik i sredstva bili bezbedni."
@@ -128,7 +128,7 @@
     "message": "Otkazano"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Da biste se povezali sa Vašim hardverskim novčanikom morate da koristite MetaMask na Google Chrome-u."
+    "message": "Da biste se povezali sa Vašim hardverskim novčanikom morate da koristite CryptoBridge na Google Chrome-u."
   },
   "close": {
     "message": "Затвори"
@@ -299,7 +299,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": "Uvezeni nalozi neće biti povezani sa početnom frazom koju ste prvobitno kreirali za MetaMask nalog. Saznajte više o uvezenim nalozima."
+    "message": "Uvezeni nalozi neće biti povezani sa početnom frazom koju ste prvobitno kreirali za CryptoBridge nalog. Saznajte više o uvezenim nalozima."
   },
   "imported": {
     "message": "Увезени",
@@ -373,7 +373,7 @@
     "message": "Poruka"
   },
   "metamaskVersion": {
-    "message": "MetaMask verzija"
+    "message": "CryptoBridge verzija"
   },
   "mustSelectOne": {
     "message": "Morate izabrati najmanje 1 token."

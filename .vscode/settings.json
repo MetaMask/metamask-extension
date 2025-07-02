@@ -20,5 +20,8 @@
       "url": "./.vscode/package.json-schema.json"
     }
   ],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "workbench.editor.centeredLayoutFixedWidth": true,
+  "workbench.editor.closeEmptyGroups": false,
+  "workbench.editor.customLabels.enabled": false
 }

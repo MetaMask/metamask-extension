@@ -159,11 +159,11 @@
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "CryptoBridge Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -200,7 +200,7 @@
     "message": "Volver"
   },
   "backupApprovalInfo": {
-    "message": "Este código secreto es necesario para que recupere la cartera en caso de que pierda el dispositivo, olvide su contraseña, tenga que volver a instalar MetaMask o quiera acceder a la cartera en otro dispositivo."
+    "message": "Este código secreto es necesario para que recupere la cartera en caso de que pierda el dispositivo, olvide su contraseña, tenga que volver a instalar CryptoBridge o quiera acceder a la cartera en otro dispositivo."
   },
   "backupApprovalNotice": {
     "message": "Cree una copia de seguridad del código de recuperación secreto para mantener protegidos sus fondos y su cartera."
@@ -252,7 +252,7 @@
     "message": "Cree su lista de contactos"
   },
   "builtAroundTheWorld": {
-    "message": "MetaMask está diseñado y construido en todo el mundo."
+    "message": "CryptoBridge está diseñado y construido en todo el mundo."
   },
   "busy": {
     "message": "Ocupado"
@@ -290,7 +290,7 @@
     "message": "En este momento, la red $1 está utilizando este identificador de cadena."
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Debe usar MetaMask en Google Chrome para poder conectarse a su cartera de hardware."
+    "message": "Debe usar CryptoBridge en Google Chrome para poder conectarse a su cartera de hardware."
   },
   "clickToConnectLedgerViaWebHID": {
     "message": "Haga clic aquí para conectar su Ledger a través de WebHID",
@@ -340,7 +340,7 @@
     "message": "Tiene 1 cuenta conectada a este sitio."
   },
   "connectedAccountsEmptyDescription": {
-    "message": "MetaMask no está conectado a este sitio. Para conectarse a un sitio de Web3, busque el botón de conexión en su sitio."
+    "message": "CryptoBridge no está conectado a este sitio. Para conectarse a un sitio de Web3, busque el botón de conexión en su sitio."
   },
   "connectedSites": {
     "message": "Sitios conectados"
@@ -675,7 +675,7 @@
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
   "errorPageTitle": {
-    "message": "MetaMask encontró un error",
+    "message": "CryptoBridge encontró un error",
     "description": "Title of generic error page"
   },
   "errorStack": {
@@ -732,10 +732,10 @@
   },
   "flaskWelcomeWarning2": {
     "message": "No garantizamos la seguridad o estabilidad de esta extensión. Las nuevas API ofrecidas por Flask no están protegidas contra los ataques de phishing, lo que significa que cualquier sitio o snap que requiera Flask podría ser un intento malicioso de robar sus activos.",
-    "description": "This explains the risks of using MetaMask Flask"
+    "description": "This explains the risks of using CryptoBridge Flask"
   },
   "flaskWelcomeWarning3": {
-    "message": "Todas las API de Flask son experimentales. Se pueden cambiar o eliminadar sin previo aviso o pueden permanecer en Flask indefinidamente sin ser migradas a MetaMask estable. Úselas bajo su propia responsabilidad.",
+    "message": "Todas las API de Flask son experimentales. Se pueden cambiar o eliminadar sin previo aviso o pueden permanecer en Flask indefinidamente sin ser migradas a CryptoBridge estable. Úselas bajo su propia responsabilidad.",
     "description": "This message warns developers about unstable Flask APIs"
   },
   "flaskWelcomeWarningAcceptButton": {
@@ -882,7 +882,7 @@
     "description": "status showing that an account has been fully loaded into the keyring"
   },
   "infuraBlockedNotification": {
-    "message": "MetaMask no se pudo conectar al host de la cadena de bloques. Revise las razones posibles $1.",
+    "message": "CryptoBridge no se pudo conectar al host de la cadena de bloques. Revise las razones posibles $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
   "initialTransactionConfirmed": {
@@ -1083,7 +1083,7 @@
     "message": "El botón de estado de la conexión muestra si el sitio web que visita está conectado a la cuenta seleccionada actualmente."
   },
   "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps está en mantenimiento. Vuelva a comprobarlo más tarde."
+    "message": "CryptoBridge Swaps está en mantenimiento. Vuelva a comprobarlo más tarde."
   },
   "metamaskVersion": {
     "message": "Versión de MetaMask"
@@ -1245,25 +1245,25 @@
     "message": "Importar una cartera existente"
   },
   "onboardingPinExtensionDescription": {
-    "message": "Ancle MetaMask en su navegador para que sea accesible y las confirmaciones de las transacciones se vean fácilmente."
+    "message": "Ancle CryptoBridge en su navegador para que sea accesible y las confirmaciones de las transacciones se vean fácilmente."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Para abrir MetaMask haga clic en la extensión y acceda a su cartera con 1 clic."
+    "message": "Para abrir CryptoBridge haga clic en la extensión y acceda a su cartera con 1 clic."
   },
   "onboardingPinExtensionDescription3": {
     "message": "Haga clic en el icono de la extensión del navegador para tener acceso instantáneo",
     "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
-    "message": "¡Su instalación de MetaMask ha finalizado!"
+    "message": "¡Su instalación de CryptoBridge ha finalizado!"
   },
   "onlyConnectTrust": {
     "message": "Conéctese solo con sitios de confianza.",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
   "openFullScreenForLedgerWebHid": {
-    "message": "Abra MetaMask en pantalla completa para conectar su Ledger a través de WebHID.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+    "message": "Abra CryptoBridge en pantalla completa para conectar su Ledger a través de WebHID.",
+    "description": "Shown to the user on the confirm screen when they are viewing CryptoBridge in a popup window but need to connect their ledger via webhid."
   },
   "optional": {
     "message": "Opcional"
@@ -1284,7 +1284,7 @@
     "message": "La contraseña no es suficientemente larga"
   },
   "passwordTermsWarning": {
-    "message": "Entiendo que MetaMask no me puede recuperar esta contraseña. $1"
+    "message": "Entiendo que CryptoBridge no me puede recuperar esta contraseña. $1"
   },
   "passwordsDontMatch": {
     "message": "Las contraseñas no coinciden"
@@ -1372,7 +1372,7 @@
     "message": "No comparta nunca su frase secreta de recuperación con nadie"
   },
   "recoveryPhraseReminderItemTwo": {
-    "message": "El equipo de MetaMask nunca le pedirá su frase secreta de recuperación"
+    "message": "El equipo de CryptoBridge nunca le pedirá su frase secreta de recuperación"
   },
   "recoveryPhraseReminderSubText": {
     "message": "Mediante su frase secreta de recuperación, se controlan todas sus cuentas."
@@ -1619,7 +1619,7 @@
     "message": "Asegúrese de que su Lattice1 esté listo para conectarse"
   },
   "step1LatticeWalletMsg": {
-    "message": "Puede conectar MetaMask a su dispositivo Lattice1 una vez que esté configurado y en línea. Desbloquee su dispositivo y tenga a mano el ID correspondiente. Para más información sobre el uso de carteras de hardware, $1",
+    "message": "Puede conectar CryptoBridge a su dispositivo Lattice1 una vez que esté configurado y en línea. Desbloquee su dispositivo y tenga a mano el ID correspondiente. Para más información sobre el uso de carteras de hardware, $1",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
@@ -1701,7 +1701,7 @@
     "message": "Editar límite"
   },
   "swapEnableDescription": {
-    "message": "Esta acción es obligatoria y le da permiso a MetaMask para canjear su $1.",
+    "message": "Esta acción es obligatoria y le da permiso a CryptoBridge para canjear su $1.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
   "swapEnableTokenForSwapping": {
@@ -1744,12 +1744,12 @@
     "message": "Las tarifas de gas de la pantalla anterior se dividen entre estas dos transacciones."
   },
   "swapGasFeesSummary": {
-    "message": "Las tarifas de gas se pagan a los mineros de criptomonedas que procesan transacciones en la red $1. MetaMask no se beneficia de las tarifas de gas.",
+    "message": "Las tarifas de gas se pagan a los mineros de criptomonedas que procesan transacciones en la red $1. CryptoBridge no se beneficia de las tarifas de gas.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapIncludesMMFee": {
-    "message": "Incluye una tasa de MetaMask del $1%.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "message": "Incluye una tasa de CryptoBridge del $1%.",
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapMaxSlippage": {
     "message": "Desfase máximo"
@@ -1759,7 +1759,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "Buscamos el mejor precio en las fuentes de liquidez más importantes, todo el tiempo. Se incorpora de manera automática a esta cotización una cuota del $1 %.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 cotizaciones.",
@@ -1888,7 +1888,7 @@
     "message": "Ver en actividad"
   },
   "switchEthereumChainConfirmationDescription": {
-    "message": "Esto cambiará la red seleccionada en MetaMask por una red agregada con anterioridad:"
+    "message": "Esto cambiará la red seleccionada en CryptoBridge por una red agregada con anterioridad:"
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "¿Le permite a este sitio cambiar la red?"
@@ -2038,7 +2038,7 @@
   },
   "u2f": {
     "message": "U2F",
-    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
+    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect CryptoBridge to Ledger devices."
   },
   "unapproved": {
     "message": "No aprobado"

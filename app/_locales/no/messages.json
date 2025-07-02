@@ -59,11 +59,11 @@
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "CryptoBridge Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -82,7 +82,7 @@
     "message": "Timer for automatisk utlogging (minutter) "
   },
   "autoLockTimeLimitDescription": {
-    "message": "Innstill hviletiden i minutter før MetaMask automatisk logger ut"
+    "message": "Innstill hviletiden i minutter før CryptoBridge automatisk logger ut"
   },
   "average": {
     "message": "Gjennomsnitt"
@@ -128,7 +128,7 @@
     "message": "Blokkjede "
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Du må bruke MetaMask på Google Chrome for å koble deg til maskinvare-lommeboken."
+    "message": "Du må bruke CryptoBridge på Google Chrome for å koble deg til maskinvare-lommeboken."
   },
   "close": {
     "message": "Lukk"
@@ -441,7 +441,7 @@
     "message": "Delta i MetaMetrics "
   },
   "participateInMetaMetricsDescription": {
-    "message": "Delta i MetaMetrics for å hjelpe oss med å gjøre MetaMask bedre"
+    "message": "Delta i MetaMetrics for å hjelpe oss med å gjøre CryptoBridge bedre"
   },
   "password": {
     "message": "Passord"

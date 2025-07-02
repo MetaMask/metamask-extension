@@ -65,10 +65,24 @@ export type EvmAndMultichainNetworkConfigurationsWithCaipChainId = (
   caipChainId: CaipChainId;
 };
 
+export const ALLOWED_CHAIN_IDS = [1].map(
+  (_chainId) => `0x${hexToDecimal(_chainId)}`,
+);
+export const filterNetworkConfigurationsByWhiteList = (
+  networksObj: Record<string, InternalNetworkConfiguration>,
+) => {
+  return Object.fromEntries(
+    Object.entries(networksObj).filter(([chainId]) =>
+      ALLOWED_CHAIN_IDS.includes(chainId),
+    ),
+  );
+};
+
 export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
   (state: NetworkConfigurationsByChainIdState) =>
     state.metamask.networkConfigurationsByChainId,
-  (networkConfigurationsByChainId) => networkConfigurationsByChainId,
+  (networkConfigurationsByChainId) =>
+    filterNetworkConfigurationsByWhiteList(networkConfigurationsByChainId),
 );
 
 export function getSelectedNetworkClientId(

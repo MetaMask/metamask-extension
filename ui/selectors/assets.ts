@@ -13,6 +13,7 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { groupBy } from 'lodash';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+// import { useDispatch } from 'react-redux';
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
@@ -20,6 +21,7 @@ import { calculateTokenBalance } from '../components/app/assets/util/calculateTo
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
 import { getTokenBalances } from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
+// import { addImportedTokens } from '../store/actions';
 import { getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances, getMultichainIsEvm } from './multichain';
 import {
@@ -132,6 +134,8 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
           : !TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number]),
       ),
     );
+
+    console.log(filteredAccountTokensChains, 'filteredAccountTokensChains');
     const tokensWithBalance: TokenWithFiatAmount[] = [];
     Object.entries(filteredAccountTokensChains).forEach(
       ([stringChainKey, tokens]) => {
@@ -143,7 +147,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
           const balance =
             calculateTokenBalance({
               isNative,
-              chainId,
+              chainId: chainId as Hex,
               address: address as Hex,
               decimals,
               nativeBalances,
@@ -199,6 +203,59 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
         });
       },
     );
+    // 自动补全主流链USDT
+    const USDT_TOKEN_MAP: Record<string, Token> = {
+      '0x1': {
+        address: '0xdAC17F958D2ee523a2206206994597C13D831ec7', // EVM address only
+        symbol: 'USDT',
+        decimals: 6,
+        image: '', // Provide a valid image URL if available
+        chainId: '0x1',
+        isNative: false,
+      },
+    };
+    Object.entries(USDT_TOKEN_MAP).forEach(async ([chainId, usdt]) => {
+      const exists = tokensWithBalance.some(
+        (t) =>
+          t.chainId === chainId &&
+          t.address?.toLowerCase() === usdt.address.toLowerCase(),
+      );
+      const usdtBalance =
+        selectedAccountTokenBalancesAcrossChains?.[chainId]?.[usdt.address] ??
+        '0';
+      //  && (usdtBalance !== '0' || !hideZeroBalanceTokens)
+      if (!exists) {
+        // handleAddImportedTokens(params.token, chainId);
+        // dispatch(addImportedTokens([params.token], chainId));
+        const tokenFiatAmount = calculateTokenFiatAmount({
+          token: {
+            ...usdt,
+            isNative: false,
+            image: '', // or provide a valid image URL if available
+            chainId: chainId as Hex,
+            address: usdt.address as Hex, // ensure type compatibility
+          },
+          chainId: chainId as Hex,
+          balance: usdtBalance,
+          marketData,
+          currencyRates,
+        });
+        tokensWithBalance.push({
+          address: usdt.address as Hex,
+          symbol: usdt.symbol,
+          decimals: usdt.decimals,
+          isNative: false,
+          chainId: chainId as Hex,
+          balance: usdtBalance,
+          string: String(usdtBalance),
+          tokenFiatAmount,
+          primary: '',
+          secondary: 0,
+          title: usdt.symbol,
+          image: '',
+        });
+      }
+    });
     return tokensWithBalance;
   },
 );

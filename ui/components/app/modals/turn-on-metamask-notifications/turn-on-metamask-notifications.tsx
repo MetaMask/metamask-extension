@@ -95,25 +95,16 @@ export default function TurnOnMetamaskNotifications() {
     }
   }, [isNotificationEnabled, error, history, hideModal, listNotifications]);
 
-  const privacyLink = (
-    <Text
-      as="a"
-      href="https://support.metamask.io/privacy-and-security/profile-privacy"
-      target="_blank"
-      rel="noopener noreferrer"
-      key="privacy-link"
-      color={TextColor.infoDefault}
-    >
-      {t('turnOnMetamaskNotificationsMessagePrivacyLink')}
-    </Text>
-  );
-
-  const strongText = (
-    <Text as="span" fontWeight={FontWeight.Bold} key="strong-text">
-      {t('turnOnMetamaskNotificationsMessagePrivacyBold')}
-    </Text>
-  );
-
+  const items = [
+    {
+      title: t('noticesModalItem1Title'),
+      desc: t('noticesModalItem1Desc'),
+    },
+    {
+      title: t('noticesModa2Item1Title'),
+      desc: t('noticesModa2Item1Desc'),
+    },
+  ];
   return (
     <Modal isOpen onClose={() => handleHideModal()}>
       <ModalOverlay />
@@ -122,28 +113,54 @@ export default function TurnOnMetamaskNotifications() {
           {t('turnOnMetamaskNotifications')}
         </ModalHeader>
         <ModalBody>
-          <Box
-            as="img"
-            src="./images/turn-on-metamask-notifications.png"
-            width={BlockSize.Full}
-            borderRadius={BorderRadius.MD}
-            marginBottom={4}
-          />
-          <Text as="p">{t('turnOnMetamaskNotificationsMessageFirst')}</Text>
-          <Text as="p" paddingTop={4}>
-            {
-              // @ts-expect-error: Expected 0-1 arguments, but got an array.
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              t('turnOnMetamaskNotificationsMessageSecond', [privacyLink])
-            }
-          </Text>
-          <Text as="p" paddingTop={4}>
-            {
-              // @ts-expect-error: Expected 0-1 arguments, but got an array.
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              t('turnOnMetamaskNotificationsMessageThird', [strongText])
-            }
-          </Text>
+          <Box className="notices">
+            <Box className="notices__content">
+              <Box className="notices__content__text">
+                <Text as="p" className="notices__content__text__title">
+                  {t('noticesModalTitle')}
+                </Text>
+                <Text as="p">{t('noticesModalDesc')}</Text>
+              </Box>
+              <Box className="notices__content__items">
+                {items.map((item, index) => {
+                  return (
+                    <Box
+                      className="notices__content__items__ItemBox"
+                      key={index}
+                    >
+                      <Box className="notices__content__items__ItemBox__item">
+                        <img
+                          className="notices__content__items__ItemBox__item__icon"
+                          src="./images/icon-logo.svg"
+                        />
+                        <Box className="notices__content__items__ItemBox__item__center">
+                          <Text
+                            as="p"
+                            className="notices__content__items__ItemBox__item__center__label"
+                          >
+                            {item.title}
+                          </Text>
+                          <Text
+                            as="p"
+                            className="notices__content__items__ItemBox__item__center__desc"
+                          >
+                            {item.desc}
+                          </Text>
+                        </Box>
+                        <Text
+                          as="span"
+                          className="notices__content__items__ItemBox__item__now"
+                        >
+                          {t('noticesModalNow')}
+                        </Text>
+                      </Box>
+                      <Box className="notices__content__items__ItemBox__bg"></Box>
+                    </Box>
+                  );
+                })}
+              </Box>
+            </Box>
+          </Box>
         </ModalBody>
         <ModalFooter
           paddingTop={4}
@@ -164,7 +181,7 @@ export default function TurnOnMetamaskNotifications() {
         {error && (
           <Box paddingLeft={4} paddingRight={4}>
             <Text as="p" color={TextColor.errorDefault} paddingTop={4}>
-              {t('turnOnMetamaskNotificationsError')}
+              {t('done')}
             </Text>
           </Box>
         )}

@@ -1963,6 +1963,11 @@ export const getTokenList = createSelector(
   selectERC20Tokens,
   getIsTokenDetectionInactiveOnMainnet,
   (remoteTokenList, isTokenDetectionInactiveOnMainnet) => {
+    console.log(
+      remoteTokenList,
+      isTokenDetectionInactiveOnMainnet,
+      '/remoteTokenList',
+    );
     return isTokenDetectionInactiveOnMainnet
       ? STATIC_MAINNET_TOKEN_LIST
       : remoteTokenList;

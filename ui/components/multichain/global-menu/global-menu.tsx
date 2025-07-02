@@ -348,14 +348,18 @@ export const GlobalMenu = ({
       </MenuItem>
       <MenuItem
         iconName={IconName.Wise}
-        onClick={() => {}}
+        onClick={() => {
+          window.open('https://wise.com/', '_blank');
+        }}
         data-testid="global-menu-deposit-wise"
       >
         {t('depositWise')}
       </MenuItem>
       <MenuItem
         iconName={IconName.Headphones}
-        onClick={() => {}}
+        onClick={() => {
+          window.open('https://www.crypto-bridge.co/jp/#support', '_blank');
+        }}
         data-testid="global-menu-contact-us"
       >
         {t('contactUs')}

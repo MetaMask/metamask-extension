@@ -156,7 +156,7 @@
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
   "addAccountToMetaMask": {
-    "message": "向 MetaMask 添加账户"
+    "message": "向 CryptoBridge 添加账户"
   },
   "addAcquiredTokens": {
     "message": "添加您通过MetaMask获得的代币"
@@ -493,11 +493,11 @@
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "CryptoBridge Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "apply": {
@@ -578,7 +578,7 @@
     "message": "自动锁定计时器（分钟）"
   },
   "autoLockTimeLimitDescription": {
-    "message": "设置 MetaMask 将被锁定前的空闲时间（单位：分钟）。"
+    "message": "设置 CryptoBridge 将被锁定前的空闲时间（单位：分钟）。"
   },
   "average": {
     "message": "平均值"
@@ -600,7 +600,7 @@
     "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
   },
   "backupAndSyncEnableDescription": {
-    "message": "备份与同步功能使我们能够为您的自定义设置和功能存储加密数据。这将使您的 MetaMask 体验在不同设备上保持一致，并在需要重新安装 MetaMask 时恢复相关设置和功能。此操作不会备份您的私钥助记词。$1。",
+    "message": "备份与同步功能使我们能够为您的自定义设置和功能存储加密数据。这将使您的 CryptoBridge 体验在不同设备上保持一致，并在需要重新安装 CryptoBridge 时恢复相关设置和功能。此操作不会备份您的私钥助记词。$1。",
     "description": "$1 is link to the backup and sync privacy policy."
   },
   "backupAndSyncEnableDescriptionUpdatePreferences": {
@@ -656,7 +656,7 @@
     "message": "基本功能已关闭"
   },
   "basicConfigurationDescription": {
-    "message": "MetaMask 通过互联网服务提供代币详情和燃料设置等基本功能。当您使用互联网服务时，您的 IP 地址会共享，在本例中与 MetaMask 共享。这就像您访问任何网站一样。MetaMask 暂时使用这些数据，并且绝不会出卖您的数据。您可以使用 VPN 或关闭这些服务，但这可能会影响您的 MetaMask 体验。要了解详情，请参阅我们的 $1。",
+    "message": "CryptoBridge 通过互联网服务提供代币详情和燃料设置等基本功能。当您使用互联网服务时，您的 IP 地址会共享，在本例中与 CryptoBridge 共享。这就像您访问任何网站一样。CryptoBridge 暂时使用这些数据，并且绝不会出卖您的数据。您可以使用 VPN 或关闭这些服务，但这可能会影响您的 CryptoBridge 体验。要了解详情，请参阅我们的 $1。",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationLabel": {
@@ -666,7 +666,7 @@
     "message": "我理解并想继续"
   },
   "basicConfigurationModalDisclaimerOff": {
-    "message": "这意味着您不能充分优化您在 MetaMask 上的时间。您将无法使用基本功能（例如代币详情、最优燃料设置等）。"
+    "message": "这意味着您不能充分优化您在 CryptoBridge 上的时间。您将无法使用基本功能（例如代币详情、最优燃料设置等）。"
   },
   "basicConfigurationModalDisclaimerOffAdditionalText": {
     "message": "关闭此功能将同时禁用 $1 和 $2 中的所有功能。",
@@ -679,7 +679,7 @@
     "message": "通知"
   },
   "basicConfigurationModalDisclaimerOn": {
-    "message": "如需优化您在 MetaMask 上的时间，您将需要开启此功能。基本功能（例如代币详情、最优燃料设置等）对于 Web3 体验至关重要。"
+    "message": "如需优化您在 CryptoBridge 上的时间，您将需要开启此功能。基本功能（例如代币详情、最优燃料设置等）对于 Web3 体验至关重要。"
   },
   "basicConfigurationModalHeadingOff": {
     "message": "关闭基本功能"
@@ -697,7 +697,7 @@
     "message": "此为测试版。请$1报告错误"
   },
   "betaMetamaskVersion": {
-    "message": "MetaMask 测试版本"
+    "message": "CryptoBridge 测试版本"
   },
   "betaTerms": {
     "message": "测试版使用条款"
@@ -930,7 +930,7 @@
     "message": "联系"
   },
   "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "MetaMask 支持团队"
+    "message": "CryptoBridge 支持团队"
   },
   "bridgeTxDetailsDelayedTitle": {
     "message": "超过 3 小时了吗？"
@@ -977,7 +977,7 @@
     "message": "建立您的联系人列表"
   },
   "builtAroundTheWorld": {
-    "message": "MetaMask 是在世界各地设计和建造的。"
+    "message": "CryptoBridge 是在世界各地设计和建造的。"
   },
   "bulletpoint": {
     "message": "·"
@@ -1041,7 +1041,7 @@
     "message": "点击此处"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "您需要在 Google Chrome 上使用 MetaMask 以连接到您的硬件钱包。"
+    "message": "您需要在 Google Chrome 上使用 CryptoBridge 以连接到您的硬件钱包。"
   },
   "circulatingSupply": {
     "message": "循环供应"
@@ -1136,7 +1136,7 @@
     "message": "包含 $1 费用"
   },
   "confirmGasFeeTokenModalNativeToggleMetaMask": {
-    "message": "MetaMask 正在补充余额以完成这笔交易。"
+    "message": "CryptoBridge 正在补充余额以完成这笔交易。"
   },
   "confirmGasFeeTokenModalNativeToggleWallet": {
     "message": "使用您钱包中的余额支付网络费用。"
@@ -1154,7 +1154,7 @@
     "message": "您正在使用 $1 支付此网络费"
   },
   "confirmGasFeeTokenTooltip": {
-    "message": "此费用支付给网络以处理您的交易，其中包含针对非 ETH 代币或预存 ETH 收取的 $1 MetaMask 手续费。"
+    "message": "此费用支付给网络以处理您的交易，其中包含针对非 ETH 代币或预存 ETH 收取的 $1 CryptoBridge 手续费。"
   },
   "confirmInfoAccountNow": {
     "message": "现在"
@@ -1269,7 +1269,7 @@
     "description": "$1 is the snap for which a connection is being requested."
   },
   "connectWithMetaMask": {
-    "message": "与 MetaMask 连接"
+    "message": "与 CryptoBridge 连接"
   },
   "connectedAccounts": {
     "message": "已连接的账户"
@@ -1282,7 +1282,7 @@
     "message": "您有1个账户连接到了该网站。"
   },
   "connectedAccountsEmptyDescription": {
-    "message": "MetaMask 没有连接到该网站。要连接到 web3 网站，请找到并点击连接按钮。"
+    "message": "CryptoBridge 没有连接到该网站。要连接到 web3 网站，请找到并点击连接按钮。"
   },
   "connectedAccountsListTooltip": {
     "message": "$1 可以查看账户余额、地址、活动，并建议要批准的关联账户交易。",
@@ -1306,7 +1306,7 @@
     "description": "$1 is the account name"
   },
   "connectedSnapAndNoAccountDescription": {
-    "message": "MetaMask 已连接到此网站，但尚未连接任何账户"
+    "message": "CryptoBridge 已连接到此网站，但尚未连接任何账户"
   },
   "connectedSnaps": {
     "message": "连接的 Snap"
@@ -1355,7 +1355,7 @@
     "message": "正在连接Sepolia测试网络"
   },
   "connectionDescription": {
-    "message": "使用 MetaMask 连接此网站"
+    "message": "使用 CryptoBridge 连接此网站"
   },
   "connectionFailed": {
     "message": "连接失败"
@@ -1365,7 +1365,7 @@
     "description": "$1 is the name of the snap being fetched."
   },
   "connectionPopoverDescription": {
-    "message": "如要连接网站，请选择“连接”按钮。MetaMask 仅支持连接 Web3 网站。"
+    "message": "如要连接网站，请选择“连接”按钮。CryptoBridge 仅支持连接 Web3 网站。"
   },
   "connectionRequest": {
     "message": "连接请求"
@@ -1438,7 +1438,7 @@
     "message": "仅在此设备上解锁CryptoBridge。"
   },
   "createSnapAccountDescription": {
-    "message": "$1 想在 MetaMask 添加一个新账户。"
+    "message": "$1 想在 CryptoBridge 添加一个新账户。"
   },
   "createSnapAccountTitle": {
     "message": "创建账户"
@@ -1450,7 +1450,7 @@
     "message": "创建者地址"
   },
   "crossChainSwapsLink": {
-    "message": "使用 MetaMask Portfolio 跨网络兑换"
+    "message": "使用 CryptoBridge Portfolio 跨网络兑换"
   },
   "crossChainSwapsLinkNative": {
     "message": "使用跨链桥跨网络兑换"
@@ -1619,7 +1619,7 @@
     "message": "默认 RPC（远程过程调用）URL"
   },
   "defaultSettingsSubTitle": {
-    "message": "MetaMask 使用默认设置达到安全性和易用性的最佳平衡。更改这些设置以进一步保护您的隐私。"
+    "message": "CryptoBridge 使用默认设置达到安全性和易用性的最佳平衡。更改这些设置以进一步保护您的隐私。"
   },
   "defaultSettingsTitle": {
     "message": "默认隐私设置"
@@ -1682,7 +1682,7 @@
     "message": "知道了"
   },
   "deprecatedNetworkDescription": {
-    "message": "您尝试连接的网络不再由 Metamask 支持。$1"
+    "message": "您尝试连接的网络不再由 CryptoBridge 支持。$1"
   },
   "description": {
     "message": "描述"
@@ -2009,13 +2009,13 @@
     "message": "$1. $2目前提供增强型代币检测"
   },
   "ensDomainsSettingDescriptionIntroduction": {
-    "message": "MetaMask 让您可以直接在浏览器地址栏中看到 ENS（Ethereum 域名服务）域。其工作原理如下："
+    "message": "CryptoBridge 让您可以直接在浏览器地址栏中看到 ENS（Ethereum 域名服务）域。其工作原理如下："
   },
   "ensDomainsSettingDescriptionOutroduction": {
     "message": "请谨记，使用此功能时，IPFS 第三方服务可以看到您的 IP 地址。"
   },
   "ensDomainsSettingDescriptionPart1": {
-    "message": "MetaMask 会检查以太坊的 ENS（Ethereum 域名服务）合约，以查找与 ENS 名称相关的代码。"
+    "message": "CryptoBridge 会检查以太坊的 ENS（Ethereum 域名服务）合约，以查找与 ENS 名称相关的代码。"
   },
   "ensDomainsSettingDescriptionPart2": {
     "message": "如果代码与 IPFS 关联，您就可以看到与之相关的内容（通常是网站）。"
@@ -2215,15 +2215,15 @@
   },
   "flaskWelcomeWarning2": {
     "message": "我们不保证此扩展程序的安全性或稳定性。Flask 提供的新API并未针对网络钓鱼攻击进行强化，这意味着任何需要 Flask 的站点或快取都可能是窃取您资产的恶意企图。",
-    "description": "This explains the risks of using MetaMask Flask"
+    "description": "This explains the risks of using CryptoBridge Flask"
   },
   "flaskWelcomeWarning3": {
     "message": "所有Flask API都是实验性的。它们可能会在未事先通知的情况下被更改或删除，它们也可能会无限期地留在 Flask 上而不会迁移到稳定的 MetaMask。您需要自行承担使用它们的风险。",
     "description": "This message warns developers about unstable Flask APIs"
   },
   "flaskWelcomeWarning4": {
-    "message": "确保在使用Flask时禁用常规 MetaMask 扩展程序。",
-    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+    "message": "确保在使用Flask时禁用常规 CryptoBridge 扩展程序。",
+    "description": "This message calls to pay attention about multiple versions of CryptoBridge running on the same site (Flask + Prod)"
   },
   "flaskWelcomeWarningAcceptButton": {
     "message": "我接受风险",
@@ -2374,7 +2374,7 @@
     "message": "硬件钱包集成使用API调用外部服务器，这些外部服务器可以看到您的IP地址和您与之交互的智能合约地址。"
   },
   "hardwareWalletsMsg": {
-    "message": "选择希望用于 MetaMask 的硬件钱包。"
+    "message": "选择希望用于 CryptoBridge 的硬件钱包。"
   },
   "here": {
     "message": "此处",
@@ -2440,7 +2440,7 @@
     "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
   },
   "holdToRevealContent4": {
-    "message": "MetaMask 支持团队不会要求提供此项信息，",
+    "message": "CryptoBridge 支持团队不会要求提供此项信息，",
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
@@ -2486,7 +2486,7 @@
     "message": "报价如何运作"
   },
   "howQuotesWorkExplanation": {
-    "message": "在我们搜索到的报价中，该报价的回报率最高。这是基于兑换价格计算的，其中包括桥接费和 $1% 的 MetaMask 费用，减去燃料费。燃料费取决于网络的繁忙程度和交易的复杂程度。"
+    "message": "在我们搜索到的报价中，该报价的回报率最高。这是基于兑换价格计算的，其中包括桥接费和 $1% 的 CryptoBridge 费用，减去燃料费。燃料费取决于网络的繁忙程度和交易的复杂程度。"
   },
   "id": {
     "message": "ID"
@@ -2523,7 +2523,7 @@
     "message": "很抱歉，在未来我们将会加快此流程。"
   },
   "importAccountMsg": {
-    "message": "导入的账户将不会与最初创建的 MetaMask 账户私钥助记词相关联。了解更多有关导入账户的信息"
+    "message": "导入的账户将不会与最初创建的 CryptoBridge 账户私钥助记词相关联。了解更多有关导入账户的信息"
   },
   "importNFT": {
     "message": "导入 NFT"
@@ -2610,7 +2610,7 @@
     "message": "包含 $1 笔交易"
   },
   "infuraBlockedNotification": {
-    "message": "MetaMask 无法连接到区块链主机。请检查可能的原因 $1。",
+    "message": "CryptoBridge 无法连接到区块链主机。请检查可能的原因 $1。",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
   "initialTransactionConfirmed": {
@@ -2831,7 +2831,7 @@
     "message": "要离开 MetaMask？"
   },
   "leaveMetaMaskDesc": {
-    "message": "您即将访问 MetaMask 之外的网站。继续之前请仔细检查 URL。"
+    "message": "您即将访问 CryptoBridge 之外的网站。继续之前请仔细检查 URL。"
   },
   "ledgerAccountRestriction": {
     "message": "您需要先使用最后一个账户，然后才能添加新账户。"
@@ -3019,7 +3019,7 @@
     "message": "消息"
   },
   "metaMaskConnectStatusParagraphOne": {
-    "message": "现在您可以更好地控制 MetaMask 中的账户连接。"
+    "message": "现在您可以更好地控制 CryptoBridge 中的账户连接。"
   },
   "metaMaskConnectStatusParagraphThree": {
     "message": "点击它以管理您的连接账户。"
@@ -3038,10 +3038,10 @@
     "message": "钱包通知目前未开启。"
   },
   "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps 正在进行维护。请稍后再查看。"
+    "message": "CryptoBridge Swaps 正在进行维护。请稍后再查看。"
   },
   "metamaskVersion": {
-    "message": "MetaMask 版本"
+    "message": "CryptoBridge 版本"
   },
   "methodData": {
     "message": "方法"
@@ -3100,7 +3100,7 @@
     "message": "更多报价"
   },
   "multichainAddEthereumChainConfirmationDescription": {
-    "message": "您正在将此网络添加到 MetaMask 并授予该网站其使用许可。"
+    "message": "您正在将此网络添加到 CryptoBridge 并授予该网站其使用许可。"
   },
   "multichainQuoteCardBridgingLabel": {
     "message": "桥接"
@@ -3207,7 +3207,7 @@
     "message": "分享您的反馈"
   },
   "needHelpLinkText": {
-    "message": "MetaMask 支持"
+    "message": "CryptoBridge 支持"
   },
   "needHelpSubmitTicket": {
     "message": "提交工单"
@@ -3362,7 +3362,7 @@
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
   "newNFTDetectedInNFTsTabMessage": {
-    "message": "让 MetaMask 自动检测您钱包中的 NFT，并在检测到时显示那些 NFT。"
+    "message": "让 CryptoBridge 自动检测您钱包中的 NFT，并在检测到时显示那些 NFT。"
   },
   "newNFTsAutodetected": {
     "message": "NFT 自动检测"
@@ -3415,7 +3415,7 @@
     "message": "已启用 NFT 自动检测"
   },
   "nftDisclaimer": {
-    "message": "免责声明：MetaMask 从源网址中提取媒体文件。该网址有时会因铸造 NFT 的市场而改变。"
+    "message": "免责声明：CryptoBridge 从源网址中提取媒体文件。该网址有时会因铸造 NFT 的市场而改变。"
   },
   "nftOptions": {
     "message": "NFT 期权"
@@ -3450,10 +3450,10 @@
     "message": "暂无活动"
   },
   "noConnectedAccountTitle": {
-    "message": "MetaMask 未连接到此站点"
+    "message": "CryptoBridge 未连接到此站点"
   },
   "noConnectionDescription": {
-    "message": "要连接到网站，请找到并选择“连接”按钮。记住，MetaMask 仅限连接到 Web3 上的网站"
+    "message": "要连接到网站，请找到并选择“连接”按钮。记住，CryptoBridge 仅限连接到 Web3 上的网站"
   },
   "noConversionRateAvailable": {
     "message": "无可用汇率"
@@ -3964,11 +3964,11 @@
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
   "permission_assets": {
-    "message": "在 MetaMask 中显示账户资产。",
+    "message": "在 CryptoBridge 中显示账户资产。",
     "description": "The description for the `endowment:assets` permission."
   },
   "permission_assetsDescription": {
-    "message": "允许 $1 向 MetaMask 客户端提供资产信息。资产可以是链上的，也可以是链下的。",
+    "message": "允许 $1 向 CryptoBridge 客户端提供资产信息。资产可以是链上的，也可以是链下的。",
     "description": "An extended description for the `endowment:assets` permission. $1 is the name of the Snap."
   },
   "permission_cronjob": {
@@ -3980,11 +3980,11 @@
     "description": "An extended description for the `snap_cronjob` permission. $1 is the snap name."
   },
   "permission_dialog": {
-    "message": "在 MetaMask 中显示对话框窗口。",
+    "message": "在 CryptoBridge 中显示对话框窗口。",
     "description": "The description for the `snap_dialog` permission"
   },
   "permission_dialogDescription": {
-    "message": "允许 $1 显示带有以下内容的 MetaMask 弹出窗口：自定义文本、输入字段以及用于批准或拒绝操作的按钮。\n这适用于创建 snap 的提醒、确认和流程加入选项等。",
+    "message": "允许 $1 显示带有以下内容的 CryptoBridge 弹出窗口：自定义文本、输入字段以及用于批准或拒绝操作的按钮。\n这适用于创建 snap 的提醒、确认和流程加入选项等。",
     "description": "An extended description for the `snap_dialog` permission. $1 is the snap name."
   },
   "permission_ethereumAccounts": {
@@ -3996,7 +3996,7 @@
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
   "permission_ethereumProviderDescription": {
-    "message": "允许 $1 直接与 MetaMask 通信，使其可以从区块链中读取数据，并提供消息和交易建议。",
+    "message": "允许 $1 直接与 CryptoBridge 通信，使其可以从区块链中读取数据，并提供消息和交易建议。",
     "description": "An extended description for the `endowment:ethereum-provider` permission. $1 is the snap name."
   },
   "permission_getEntropy": {
@@ -4004,7 +4004,7 @@
     "description": "The description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getEntropyDescription": {
-    "message": "允许 $1 派生 $1 独有的任意私钥，但不公开私钥。这些私钥与您的 MetaMask 账户是分开的，与您的私钥或私钥助记词无关。其他 snap 无法访问此信息。",
+    "message": "允许 $1 派生 $1 独有的任意私钥，但不公开私钥。这些私钥与您的 CryptoBridge 账户是分开的，与您的私钥或私钥助记词无关。其他 snap 无法访问此信息。",
     "description": "An extended description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getLocale": {
@@ -4012,7 +4012,7 @@
     "description": "The description for the `snap_getLocale` permission"
   },
   "permission_getLocaleDescription": {
-    "message": "允许 $1 访问您的 MetaMask 首选语言设置。这可用于进行本地化，以及使用您的语言显示$1的内容。",
+    "message": "允许 $1 访问您的 CryptoBridge 首选语言设置。这可用于进行本地化，以及使用您的语言显示$1的内容。",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
   "permission_getPreferences": {
@@ -4020,7 +4020,7 @@
     "description": "The description for the `snap_getPreferences` permission"
   },
   "permission_getPreferencesDescription": {
-    "message": "让 $1 访问 MetaMask 设置中的首选语言和法币等信息。这有助于 $1 显示符合您偏好的内容。 ",
+    "message": "让 $1 访问 CryptoBridge 设置中的首选语言和法币等信息。这有助于 $1 显示符合您偏好的内容。 ",
     "description": "An extended description for the `snap_getPreferences` permission. $1 is the snap name."
   },
   "permission_homePage": {
@@ -4028,7 +4028,7 @@
     "description": "The description for the `endowment:page-home` permission"
   },
   "permission_homePageDescription": {
-    "message": "让 $1 在 MetaMask 中显示自定义主屏幕。这可以用于用户界面、配置和控制面板。",
+    "message": "让 $1 在 CryptoBridge 中显示自定义主屏幕。这可以用于用户界面、配置和控制面板。",
     "description": "An extended description for the `endowment:page-home` permission. $1 is the snap name."
   },
   "permission_keyring": {
@@ -4080,7 +4080,7 @@
     "description": "The description for the `endowment:name-lookup` permission."
   },
   "permission_nameLookupDescription": {
-    "message": "允许 Snap 在 MetaMask UI 的不同部分中获取和显示地址并进行域查找。",
+    "message": "允许 Snap 在 CryptoBridge UI 的不同部分中获取和显示地址并进行域查找。",
     "description": "An extended description for the `endowment:name-lookup` permission."
   },
   "permission_notifications": {
@@ -4088,7 +4088,7 @@
     "description": "The description for the `snap_notify` permission"
   },
   "permission_notificationsDescription": {
-    "message": "允许 $1 在 MetaMask 中显示通知。snap 可以触发简短的通知文本，以提供可操作或对时间敏感的信息。",
+    "message": "允许 $1 在 CryptoBridge 中显示通知。snap 可以触发简短的通知文本，以提供可操作或对时间敏感的信息。",
     "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
   },
   "permission_protocol": {
@@ -4096,7 +4096,7 @@
     "description": "The description for the `endowment:protocol` permission."
   },
   "permission_protocolDescription": {
-    "message": "允许 $1 向 MetaMask 提供协议数据，例如燃料估算或代币信息。",
+    "message": "允许 $1 向 CryptoBridge 提供协议数据，例如燃料估算或代币信息。",
     "description": "An extended description for the `endowment:protocol` permission. $1 is the name of the Snap."
   },
   "permission_rpc": {
@@ -4132,7 +4132,7 @@
     "description": "The description for the `endowment:transaction-insight` permission"
   },
   "permission_transactionInsightDescription": {
-    "message": "允许 $1 在 MetaMask UI 中对交易进行解码，并显示见解。这可用于防止网络钓鱼和采取安全措施。",
+    "message": "允许 $1 在 CryptoBridge UI 中对交易进行解码，并显示见解。这可用于防止网络钓鱼和采取安全措施。",
     "description": "An extended description for the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_transactionInsightOrigin": {
@@ -4369,7 +4369,7 @@
     "message": "解除质押完成"
   },
   "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "您的 MetaMask 兑换已成功"
+    "message": "您的 CryptoBridge 兑换已成功"
   },
   "pushPlatformNotificationsSwapCompletedTitle": {
     "message": "兑换已完成"
@@ -4429,7 +4429,7 @@
     "message": "切勿与任何人分享您的账户私钥助记词"
   },
   "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMask 团队绝对不会索要您的账户私钥助记词"
+    "message": "CryptoBridge 团队绝对不会索要您的账户私钥助记词"
   },
   "recoveryPhraseReminderSubText": {
     "message": "您的账户私钥助记词控制您的所有账户。"
@@ -4492,7 +4492,7 @@
     "message": "移除 Snap"
   },
   "removeSnapAccountDescription": {
-    "message": "如果您继续，此账户将不可在 MetaMask 中使用。"
+    "message": "如果您继续，此账户将不可在 CryptoBridge 中使用。"
   },
   "removeSnapAccountTitle": {
     "message": "去除账户"
@@ -4589,7 +4589,7 @@
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
   },
   "revealSeedWordsDescription2": {
-    "message": "MetaMask 是$1。这意味着您是自己的 SRP 的所有者。",
+    "message": "CryptoBridge 是$1。这意味着您是自己的 SRP 的所有者。",
     "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
   },
   "revealSeedWordsDescription3": {
@@ -4612,7 +4612,7 @@
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSeedWordsWarning2": {
-    "message": "MetaMask 支持团队绝对不会要求提供此项信息。",
+    "message": "CryptoBridge 支持团队绝对不会要求提供此项信息。",
     "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
@@ -5015,13 +5015,13 @@
     "message": "卖出加密货币，获取现金"
   },
   "slideCashOutTitle": {
-    "message": "通过 MetaMask 兑现"
+    "message": "通过 CryptoBridge 兑现"
   },
   "slideDebitCardDescription": {
     "message": "特定地区可用"
   },
   "slideDebitCardTitle": {
-    "message": "MetaMask 借记卡"
+    "message": "CryptoBridge 借记卡"
   },
   "slideFundWalletDescription": {
     "message": "添加或转入代币即可开始使用"
@@ -5030,7 +5030,7 @@
     "message": "为您的钱包存入资金"
   },
   "slideMultiSrpDescription": {
-    "message": "在 MetaMask 中导入并使用多个钱包"
+    "message": "在 CryptoBridge 中导入并使用多个钱包"
   },
   "slideMultiSrpTitle": {
     "message": "添加多个助记词"
@@ -5117,7 +5117,7 @@
     "message": "您的交易失败"
   },
   "smartTransactionErrorDescription": {
-    "message": "市场的突然变化可导致失败。如果问题仍然存在，请联系 MetaMask 客户支持团队。"
+    "message": "市场的突然变化可导致失败。如果问题仍然存在，请联系 CryptoBridge 客户支持团队。"
   },
   "smartTransactionPending": {
     "message": "您的交易已提交"
@@ -5167,7 +5167,7 @@
     "message": "账户已去除"
   },
   "snapAccountRemovedDescription": {
-    "message": "此账户将在 MetaMask 中不再可用。"
+    "message": "此账户将在 CryptoBridge 中不再可用。"
   },
   "snapAccounts": {
     "message": "账户Snap"
@@ -5537,7 +5537,7 @@
     "message": "检索状态日志时出错。"
   },
   "stateLogFileName": {
-    "message": "MetaMask 状态日志"
+    "message": "CryptoBridge 状态日志"
   },
   "stateLogs": {
     "message": "状态日志"
@@ -5558,7 +5558,7 @@
     "message": "关联您的 Lattice1"
   },
   "step1LatticeWalletMsg": {
-    "message": "当您的 Lattice1 设备设置好并在线时，您可以将 MetaMask 与其相关联。解锁您的设备并准备好您的设备 ID。",
+    "message": "当您的 Lattice1 设备设置好并在线时，您可以将 CryptoBridge 与其相关联。解锁您的设备并准备好您的设备 ID。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
@@ -5737,7 +5737,7 @@
     "message": "编辑限制"
   },
   "swapEnableDescription": {
-    "message": "这是必须的，并且允许 MetaMask 兑换您的 $1。",
+    "message": "这是必须的，并且允许 CryptoBridge 兑换您的 $1。",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
   "swapEnableTokenForSwapping": {
@@ -5784,7 +5784,7 @@
     "message": "燃料费用是估算的，并将根据网络流量和交易复杂性而波动。"
   },
   "swapGasFeesExplanation": {
-    "message": "MetaMask 不从燃料费中赚钱。这些费用是估计值，可能会根据网络的繁忙程度和交易的复杂程度而变化。了解更多信息 $1。",
+    "message": "CryptoBridge 不从燃料费中赚钱。这些费用是估计值，可能会根据网络的繁忙程度和交易的复杂程度而变化。了解更多信息 $1。",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
   },
   "swapGasFeesExplanationLinkText": {
@@ -5798,7 +5798,7 @@
     "message": "上一个屏幕上的燃料费用在这两笔交易之间分摊。"
   },
   "swapGasFeesSummary": {
-    "message": "燃料费用支付给在 $1 网络上处理交易的加密矿工。MetaMask 不会从燃料费用中获利。",
+    "message": "燃料费用支付给在 $1 网络上处理交易的加密矿工。CryptoBridge 不会从燃料费用中获利。",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
@@ -5811,20 +5811,20 @@
     "message": "高滑点"
   },
   "swapIncludesGasAndMetaMaskFee": {
-    "message": "包括燃料和 $1% 的 MetaMask 费用",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "message": "包括燃料和 $1% 的 CryptoBridge 费用",
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
-    "message": "包括 $1% 的 MetaMask 费用。",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "message": "包括 $1% 的 CryptoBridge 费用。",
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
-    "message": "报价反映了 $1% MetaMask 费用",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "message": "报价反映了 $1% CryptoBridge 费用",
+    "description": "Provides information about the fee that CryptoBridge takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "包含$1%的MetaMask费用 – $2",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "了解有关 Swaps 的更多信息"
@@ -5839,11 +5839,11 @@
     "message": "最大滑点"
   },
   "swapMetaMaskFee": {
-    "message": "MetaMask 费用"
+    "message": "CryptoBridge 费用"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "该报价中会自动计入一笔 $1% 的费用。您支付该费用以换取使用 MetaMask 流动性提供商信息聚合软件的许可证。",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "message": "该报价中会自动计入一笔 $1% 的费用。您支付该费用以换取使用 CryptoBridge 流动性提供商信息聚合软件的许可证。",
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 报价。",
@@ -6056,7 +6056,7 @@
     "message": "切换"
   },
   "switchEthereumChainConfirmationDescription": {
-    "message": "这将切换 MetaMask 中选定的网络到以前添加的网络："
+    "message": "这将切换 CryptoBridge 中选定的网络到以前添加的网络："
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "允许此网站切换网络？"
@@ -6401,13 +6401,13 @@
   },
   "u2f": {
     "message": "U2F",
-    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
+    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect CryptoBridge to Ledger devices."
   },
   "unapproved": {
     "message": "未批准"
   },
   "unexpectedBehavior": {
-    "message": "此行为属于异常情况，即使您的账户已成功恢复，也应作为错误上报。请通过下方链接向 MetaMask 提交错误报告。"
+    "message": "此行为属于异常情况，即使您的账户已成功恢复，也应作为错误上报。请通过下方链接向 CryptoBridge 提交错误报告。"
   },
   "units": {
     "message": "单位"
@@ -6492,7 +6492,7 @@
     "message": "自动检测NFT"
   },
   "useNftDetectionDescriptionText": {
-    "message": "让 MetaMask 使用第三方服务来添加您所拥有的 NFT。打开自动检测 NFT 功能后，这些服务就可以看到您的 IP 地址和账户地址。启用此功能可能会将您的 IP 地址与以太坊地址关联起来，并显示骗子空投的虚假 NFT。您可以手动添加代币以避免此风险。"
+    "message": "让 CryptoBridge 使用第三方服务来添加您所拥有的 NFT。打开自动检测 NFT 功能后，这些服务就可以看到您的 IP 地址和账户地址。启用此功能可能会将您的 IP 地址与以太坊地址关联起来，并显示骗子空投的虚假 NFT。您可以手动添加代币以避免此风险。"
   },
   "usePhishingDetection": {
     "message": "使用网络钓鱼检测"
@@ -6504,7 +6504,7 @@
     "message": "网络详细信息检查"
   },
   "useSafeChainsListValidationDescription": {
-    "message": "MetaMask 使用名为$1的第三方服务来显示标准化网络的准确详细信息。这可减少您连接到恶意或不正确网络的机会。使用此功能时，chainid.network 可以看到您的 IP 地址。"
+    "message": "CryptoBridge 使用名为$1的第三方服务来显示标准化网络的准确详细信息。这可减少您连接到恶意或不正确网络的机会。使用此功能时，chainid.network 可以看到您的 IP 地址。"
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
@@ -6577,7 +6577,7 @@
     "message": "确认"
   },
   "visitSupportDataConsentModalDescription": {
-    "message": "您是否愿意将 MetaMask 标识符和应用程序版本信息分享给我们的支持中心？这将有助于我们更好地解决您的问题，但此操作为可选。"
+    "message": "您是否愿意将 CryptoBridge 标识符和应用程序版本信息分享给我们的支持中心？这将有助于我们更好地解决您的问题，但此操作为可选。"
   },
   "visitSupportDataConsentModalReject": {
     "message": "不分享"

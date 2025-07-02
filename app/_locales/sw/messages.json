@@ -59,11 +59,11 @@
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "CryptoBridge Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -82,7 +82,7 @@
     "message": "Kihesabu Muda wa Kuondoka Kwenye Akaunti Kiotomatiki (dakika)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Weka muda katika dakika kabla MetaMask haijaondoa kwenye akaunti kiotomatiki."
+    "message": "Weka muda katika dakika kabla CryptoBridge haijaondoa kwenye akaunti kiotomatiki."
   },
   "average": {
     "message": "Wastani"
@@ -125,7 +125,7 @@
     "message": "Utambulisho wa Mnyororo"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Unapaswa kutumia MetaMask kwenye Google Chrome ili kuungnisha kwenye Waleti yako ya Programu Maunzi."
+    "message": "Unapaswa kutumia CryptoBridge kwenye Google Chrome ili kuungnisha kwenye Waleti yako ya Programu Maunzi."
   },
   "close": {
     "message": "Funga"
@@ -293,7 +293,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": "Akaunti zilizoingizwa hazitahusishwa na kirai chako cha kianzio cha akaunti ya MetaMask iliyoundwa awali. Pata maelezo zaidi kuhusu akaunti zilizoingizwa"
+    "message": "Akaunti zilizoingizwa hazitahusishwa na kirai chako cha kianzio cha akaunti ya CryptoBridge iliyoundwa awali. Pata maelezo zaidi kuhusu akaunti zilizoingizwa"
   },
   "imported": {
     "message": "Zilizoingizwa",
@@ -435,7 +435,7 @@
     "message": "Shiriki katika MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Shiriki katika MetaMetrics ili kutusaidia kufanya MetaMask kuwa bora zaidi"
+    "message": "Shiriki katika MetaMetrics ili kutusaidia kufanya CryptoBridge kuwa bora zaidi"
   },
   "password": {
     "message": "Nenosiri"

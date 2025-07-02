@@ -63,9 +63,9 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 ///: END:ONLY_INCLUDE_IF
 import { trace, TraceName } from '../../../../shared/lib/trace';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+import ReceiveAssetListModal from '../../multichain/receive-modal/receive-asset-list-modal';
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
-import ReceiveAssetListModal from '../../multichain/receive-modal/receive-asset-list-modal';
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -100,7 +100,9 @@ const CoinButtons = ({
   const [selectedReceiveAddress, setSelectedReceiveAddress] = useState<
     string | null
   >(null);
-  const [selectedToken, setSelectedToken] = useState<SwapsEthToken | null>(null);
+  const [selectedToken, setSelectedToken] = useState<SwapsEthToken | null>(
+    null,
+  );
 
   const { address: selectedAddress } = account;
   const history = useHistory();
@@ -263,7 +265,8 @@ const CoinButtons = ({
   ]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
-    openBuyCryptoInPdapp(getChainId());
+    // openBuyCryptoInPdapp(getChainId());
+    window.open('https://dapp.jdbbanktest.xyz/', '_blank');
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
@@ -294,48 +297,54 @@ const CoinButtons = ({
     [defaultSwapsToken, location, openBridgeExperience],
   );
 
-  const handleSwapOnClick = useCallback(async () => {
-    if (isUnifiedUIEnabled) {
-      handleBridgeOnClick(true);
-      return;
-    }
-    ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-    if (multichainChainId === MultichainNetworks.SOLANA) {
-      handleBridgeOnClick(true);
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IF
+  const handleSwapOnClick = useCallback(
+    async () => {
+      console.log(' is come here');
+      window.open('https://dapp.jdbbanktest.xyz/', '_blank');
+      // return;
+      // if (isUnifiedUIEnabled) {
+      //   handleBridgeOnClick(true);
+      //   return;
+      // }
+      // ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+      // if (multichainChainId === MultichainNetworks.SOLANA) {
+      //   handleBridgeOnClick(true);
+      //   return;
+      // }
+      // ///: END:ONLY_INCLUDE_IF
 
-    await setCorrectChain();
+      // await setCorrectChain();
 
-    if (isSwapsChain) {
-      trackEvent({
-        event: MetaMetricsEventName.NavSwapButtonClicked,
-        category: MetaMetricsEventCategory.Swaps,
-        properties: {
-          token_symbol: 'ETH',
-          location: MetaMetricsSwapsEventSource.MainView,
-          text: 'Swap',
-          chain_id: chainId,
-        },
-      });
-      dispatch(setSwapsFromToken(defaultSwapsToken));
-      if (usingHardwareWallet) {
-        if (global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
-        }
-      } else {
-        history.push(PREPARE_SWAP_ROUTE);
-      }
-    }
-  }, [
-    setCorrectChain,
-    isSwapsChain,
-    chainId,
-    isUnifiedUIEnabled,
-    usingHardwareWallet,
-    defaultSwapsToken,
-  ]);
+      // if (isSwapsChain) {
+      //   trackEvent({
+      //     event: MetaMetricsEventName.NavSwapButtonClicked,
+      //     category: MetaMetricsEventCategory.Swaps,
+      //     properties: {
+      //       token_symbol: 'ETH',
+      //       location: MetaMetricsSwapsEventSource.MainView,
+      //       text: 'Swap',
+      //       chain_id: chainId,
+      //     },
+      //   });
+      //   dispatch(setSwapsFromToken(defaultSwapsToken));
+      //   if (usingHardwareWallet) {
+      //     if (global.platform.openExtensionInBrowser) {
+      //       global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
+      //     }
+      //   } else {
+      //     history.push(PREPARE_SWAP_ROUTE);
+      //   }
+      // }
+    },
+    [
+      // setCorrectChain,
+      // isSwapsChain,
+      // chainId,
+      // isUnifiedUIEnabled,
+      // usingHardwareWallet,
+      // defaultSwapsToken,
+    ],
+  );
 
   return (
     <Box

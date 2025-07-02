@@ -874,16 +874,16 @@ export default class Home extends PureComponent {
             ></AccountOverview>
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
-              <div className="home__support">
-                <BetaHomeFooter />
-              </div>
+              // <div className="home__support">
+              //   <BetaHomeFooter />
+              // </div>
               ///: END:ONLY_INCLUDE_IF
             }
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-              <div className="home__support">
-                <FlaskHomeFooter />
-              </div>
+              // <div className="home__support">
+              //   <FlaskHomeFooter />
+              // </div>
               ///: END:ONLY_INCLUDE_IF
             }
           </div>

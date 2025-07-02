@@ -33,18 +33,6 @@ export const SmartAccountTab = ({ address }: { address: Hex }) => {
       >
         <>
           <Text>{t('smartAccountUpgradeBannerDescription')}</Text>
-          <ButtonLink
-            onClick={() => {
-              global.platform.openTab({
-                url: ZENDESK_URLS.ACCOUNT_UPGRADE,
-              });
-            }}
-            size={ButtonLinkSize.Inherit}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t('learnMoreUpperCase')}
-          </ButtonLink>
         </>
       </BannerAlert>
       {pending && (

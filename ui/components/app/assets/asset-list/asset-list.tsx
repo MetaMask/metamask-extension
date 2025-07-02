@@ -66,7 +66,7 @@ const AssetList = ({
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}
-      <AssetListFundingModals />
+      {/* <AssetListFundingModals /> */}
     </>
   );
 };

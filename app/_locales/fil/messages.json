@@ -53,11 +53,11 @@
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "CryptoBridge Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -110,7 +110,7 @@
     "message": "Nakansela"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Kailangan mong gamitin ang MetaMask sa Google Chrome upang makakonekta sa iyong Hardware Wallet."
+    "message": "Kailangan mong gamitin ang CryptoBridge sa Google Chrome upang makakonekta sa iyong Hardware Wallet."
   },
   "close": {
     "message": "Isara"
@@ -263,7 +263,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": " Ang mga na-import na account ay hindi iuugnay sa orihinal na seedphrase na ginawa ng iyong MetaMask account. Matuto pa tungkol sa mga na-import na account "
+    "message": " Ang mga na-import na account ay hindi iuugnay sa orihinal na seedphrase na ginawa ng iyong CryptoBridge account. Matuto pa tungkol sa mga na-import na account "
   },
   "imported": {
     "message": "Na-import",

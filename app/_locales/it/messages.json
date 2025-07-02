@@ -159,11 +159,11 @@
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "CryptoBridge Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -195,7 +195,7 @@
     "message": "Timer di logout automatico (minuti)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Imposta il tempo di inattività dopo il quale MetaMask fa il log out automaticamente"
+    "message": "Imposta il tempo di inattività dopo il quale CryptoBridge fa il log out automaticamente"
   },
   "average": {
     "message": "Media"
@@ -204,7 +204,7 @@
     "message": "Indietro"
   },
   "backupApprovalInfo": {
-    "message": "Questo codice è necessario per recuperare il tuo portafoglio nel caso in cui perdi il tuo dispositivo, dimentichi la tua password, debba reinstallare MetaMask o voglia accedere al tuo portafoglio su un altro dispositivo."
+    "message": "Questo codice è necessario per recuperare il tuo portafoglio nel caso in cui perdi il tuo dispositivo, dimentichi la tua password, debba reinstallare CryptoBridge o voglia accedere al tuo portafoglio su un altro dispositivo."
   },
   "backupApprovalNotice": {
     "message": "Mantieni al sicuro il portafoglio e i fondi eseguendo il backup della frase di recupero."
@@ -225,7 +225,7 @@
     "message": "Base"
   },
   "betaMetamaskVersion": {
-    "message": "MetaMask Versione Beta"
+    "message": "CryptoBridge Versione Beta"
   },
   "blockExplorerAccountAction": {
     "message": "Profilo",
@@ -251,7 +251,7 @@
     "message": "Costruisci la tua lista contatti"
   },
   "builtAroundTheWorld": {
-    "message": "MetaMask è progettato e costruito in tutto il mondo."
+    "message": "CryptoBridge è progettato e costruito in tutto il mondo."
   },
   "busy": {
     "message": "Occupato"
@@ -283,7 +283,7 @@
     "message": "Questo Chain ID al momento è usato dalla rete $1."
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Devi usare MetaMask con Google Chrome per connettere il tuo Portafoglio Hardware"
+    "message": "Devi usare CryptoBridge con Google Chrome per connettere il tuo Portafoglio Hardware"
   },
   "clickToConnectLedgerViaWebHID": {
     "message": "Clicca qui per connettere il tuo Ledger tramite WebHID",
@@ -330,7 +330,7 @@
     "message": "Hai un account connesso a questo sito."
   },
   "connectedAccountsEmptyDescription": {
-    "message": "MetaMask non è connesso a questo sito. Per connetterti ad un sito web3, trova il pulsante di connessione."
+    "message": "CryptoBridge non è connesso a questo sito. Per connetterti ad un sito web3, trova il pulsante di connessione."
   },
   "connectedSites": {
     "message": "Siti connessi"
@@ -386,7 +386,7 @@
     "message": "Interazione Contratto"
   },
   "convertTokenToNFTDescription": {
-    "message": "Abbiamo rilevato che questa risorsa è un NFT. MetaMask ora ha il supporto nativo completo per NFT. Vuoi rimuoverlo dal tuo elenco di token e aggiungerlo come NFT?"
+    "message": "Abbiamo rilevato che questa risorsa è un NFT. CryptoBridge ora ha il supporto nativo completo per NFT. Vuoi rimuoverlo dal tuo elenco di token e aggiungerlo come NFT?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Abbiamo rilevato che questa risorsa è stata aggiunta come NFT. Vuoi rimuoverlo dal tuo elenco di token?"
@@ -641,7 +641,7 @@
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
   "errorPageTitle": {
-    "message": "MetaMask ha riscontrato un errore",
+    "message": "CryptoBridge ha riscontrato un errore",
     "description": "Title of generic error page"
   },
   "ethereumPublicAddress": {
@@ -864,7 +864,7 @@
     "message": "Il bottone di stato della connessione mostra se il sito che stai visitando è connesso all'account corrente"
   },
   "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps è in manutenzione. Prova più tardi."
+    "message": "CryptoBridge Swaps è in manutenzione. Prova più tardi."
   },
   "metamaskVersion": {
     "message": "versione di MetaMask"
@@ -945,7 +945,7 @@
     "message": "Participa in MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Participa in MetaMetrics per aiutarci a rendere MetaMask migliore"
+    "message": "Participa in MetaMetrics per aiutarci a rendere CryptoBridge migliore"
   },
   "passwordNotLongEnough": {
     "message": "Password non abbastanza lunga"
@@ -1212,7 +1212,7 @@
     "message": "Modifica limite"
   },
   "swapEnableDescription": {
-    "message": "Questo è richiesto e darà a MetaMask il permesso di scambiare $1.",
+    "message": "Questo è richiesto e darà a CryptoBridge il permesso di scambiare $1.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
   "swapEstimatedNetworkFees": {
@@ -1237,8 +1237,8 @@
     "message": "Tassa MetaMask"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "Troviamo i migliori prezzi dalle sorgenti di liquidità migliori, sempre. Una tassa del $1% è automaticamente aggiunta ad ogni quotazione, ciò serve a supportare lo sviluppo in modo da rendere MetaMask sempre migliore.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "message": "Troviamo i migliori prezzi dalle sorgenti di liquidità migliori, sempre. Una tassa del $1% è automaticamente aggiunta ad ogni quotazione, ciò serve a supportare lo sviluppo in modo da rendere CryptoBridge sempre migliore.",
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapNewQuoteIn": {
     "message": "Nuove quotazioni in $1",

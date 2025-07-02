@@ -198,15 +198,15 @@ module.exports = {
         '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
         // Modified to include the 'ignoreRestSiblings' option.
         // TODO: Migrate this rule change back into `@metamask/eslint-config`
-        '@typescript-eslint/no-unused-vars': [
-          'error',
-          {
-            vars: 'all',
-            args: 'all',
-            argsIgnorePattern: '[_]+',
-            ignoreRestSiblings: true,
-          },
-        ],
+        // '@typescript-eslint/no-unused-vars': [
+        //   'error',
+        //   {
+        //     vars: 'all',
+        //     args: 'all',
+        //     argsIgnorePattern: '[_]+',
+        //     ignoreRestSiblings: true,
+        //   },
+        // ],
       },
       settings: {
         'import/resolver': {
@@ -255,8 +255,8 @@ module.exports = {
       },
       plugins: ['react'],
       rules: {
-        'react/no-unused-prop-types': 'error',
-        'react/no-unused-state': 'error',
+        // 'react/no-unused-prop-types': 'error',
+        // 'react/no-unused-state': 'error',
         'react/jsx-boolean-value': 'error',
         'react/jsx-curly-brace-presence': [
           'error',
@@ -297,8 +297,8 @@ module.exports = {
       },
       plugins: ['react'],
       rules: {
-        'react/no-unused-prop-types': 'warn',
-        'react/no-unused-state': 'warn',
+        // 'react/no-unused-prop-types': 'warn',
+        // 'react/no-unused-state': 'warn',
         'react/jsx-boolean-value': 'off',
         'react/jsx-curly-brace-presence': 'off',
         'react/no-deprecated': 'warn',

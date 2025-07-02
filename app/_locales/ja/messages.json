@@ -497,7 +497,7 @@
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "apply": {
@@ -1447,7 +1447,7 @@
     "message": "クリエイターのアドレス"
   },
   "crossChainSwapsLink": {
-    "message": "MetaMask Portfolioでネットワーク間でスワップ"
+    "message": "CryptoBridge Portfolioでネットワーク間でスワップ"
   },
   "crossChainSwapsLinkNative": {
     "message": " ブリッジによるネットワーク間のスワップ"
@@ -2212,7 +2212,7 @@
   },
   "flaskWelcomeWarning2": {
     "message": "この拡張機能の安全性や安定性は保証されていません。Flaskで提供される新しいAPIはフィッシング攻撃への対策ができていないため、Flaskを必要とするサイトまたはsnapは、資産の窃取を目的とした悪質なものである可能性があります。",
-    "description": "This explains the risks of using MetaMask Flask"
+    "description": "This explains the risks of using CryptoBridge Flask"
   },
   "flaskWelcomeWarning3": {
     "message": "Flask APIはすべて試験運用です。これらは通知なしに変更または削除される可能性があり、安定したMetaMaskに移行することなく永久にFlaskに残る可能性もあります。自己責任でご使用ください。",
@@ -2220,7 +2220,7 @@
   },
   "flaskWelcomeWarning4": {
     "message": "Flaskの使用中は、通常のMetaMask拡張機能を無効にしてください。",
-    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+    "description": "This message calls to pay attention about multiple versions of CryptoBridge running on the same site (Flask + Prod)"
   },
   "flaskWelcomeWarningAcceptButton": {
     "message": "リスクを受け入れる",
@@ -3035,7 +3035,7 @@
     "message": "ウォレットの通知は現在無効になっています"
   },
   "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swapsはメンテナンス中です。後でもう一度確認してください。"
+    "message": "CryptoBridge Swapsはメンテナンス中です。後でもう一度確認してください。"
   },
   "metamaskVersion": {
     "message": "MetaMaskのバージョン"
@@ -4074,7 +4074,7 @@
     "description": "The description for the `endowment:name-lookup` permission."
   },
   "permission_nameLookupDescription": {
-    "message": "SnapがMetaMask UIのさまざまな部分でアドレスとドメイン検索の取得と表示を行うことを許可します。",
+    "message": "SnapがCryptoBridge UIのさまざまな部分でアドレスとドメイン検索の取得と表示を行うことを許可します。",
     "description": "An extended description for the `endowment:name-lookup` permission."
   },
   "permission_notifications": {
@@ -4126,7 +4126,7 @@
     "description": "The description for the `endowment:transaction-insight` permission"
   },
   "permission_transactionInsightDescription": {
-    "message": "$1によるトランザクションのデコードと、MetaMask UI内でのインサイトの表示を許可します。これは、フィッシング対策やセキュリティソリューションに使用されます。",
+    "message": "$1によるトランザクションのデコードと、CryptoBridge UI内でのインサイトの表示を許可します。これは、フィッシング対策やセキュリティソリューションに使用されます。",
     "description": "An extended description for the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_transactionInsightOrigin": {
@@ -4546,7 +4546,7 @@
     "message": "続行する前に、正しいシークレットリカバリーフレーズを使用していることを確認してください。これは元に戻せません。"
   },
   "restartMetamask": {
-    "message": "MetaMask を再起動"
+    "message": "CryptoBridge を再起動"
   },
   "restore": {
     "message": "復元"
@@ -5806,19 +5806,19 @@
   },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "ガス代と$1%のMetaMask手数料が含まれています",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "$1%のMetaMask手数料が含まれています。",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
     "message": "クォートには$1%のMetaMask手数料が含まれています",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "description": "Provides information about the fee that CryptoBridge takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "$1%のMetaMask手数料が含まれています – $2",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Swapsの詳細"
@@ -5837,7 +5837,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "このクォートには、$1%の手数料が自動的に含まれています。この手数料は、MetaMaskの流動性プロバイダーの情報集積ソフトウェアの使用ライセンスの代金として支払うものです。",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1件の見積もり。",
@@ -6392,7 +6392,7 @@
   },
   "u2f": {
     "message": "U2F",
-    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
+    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect CryptoBridge to Ledger devices."
   },
   "unapproved": {
     "message": "未承認"

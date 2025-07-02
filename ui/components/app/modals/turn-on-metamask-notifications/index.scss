@@ -1,0 +1,111 @@
+.notices{
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  jusctify-content: center;
+
+  &__content{
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+    &__text{
+      color: var(--color12, #171717);
+      text-align: center;
+      leading-trim: both;
+      text-edge: cap;
+
+      /* Text/Regular/sm: 14px */
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      &__title{
+        color: var(--color12, #171717);
+
+        /* Heading/sm: 16px */
+        font-family: Inter;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 125%; /* 20px */
+      }
+    }
+
+    &__items{
+      display: flex;
+      flex-flow: column;
+      gap: 23px;
+      &__ItemBox{
+      position: relative;
+       &__item{
+      border-radius: 9px;
+      background: #F3F3F3;
+      padding: 16px;
+      height:66px;
+      position: relative;
+      display: flex;
+      flex-flow: row;
+      gap: 16px;
+      &__icon{
+        width: 36px;
+        height: 36px;
+      }
+      &__center{
+        display: flex;
+        flex-flow: column;
+        gap: 10px;
+        &__label{
+          color: var(--color12, #171717);
+          leading-trim: both;
+          text-edge: cap;
+          font-family: Inter;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: normal;
+        }
+        &__desc{
+          color: var(--color11, #6F6F6F);
+          leading-trim: both;
+          text-edge: cap;
+
+          /* Text/Regular/2xs: 12px */
+          font-family: Inter;
+          font-size: 12px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: normal;
+        }
+      }
+      &__now{
+        color: var(--color11, #6F6F6F);
+        leading-trim: both;
+        text-edge: cap;
+
+        /* Text/Regular/2xs: 12px */
+        font-family: Inter;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+      }
+    }
+     &__bg{
+        position: absolute;
+        width:80%;
+        height:66px;
+        border: 9px;
+        background: #EBEBEB;
+        left: 10%;
+        bottom: -10px;
+        z-index: -1;
+        flex-shrink: 0;
+      }
+    }
+
+    }
+
+  }
+}

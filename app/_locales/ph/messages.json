@@ -83,11 +83,11 @@
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "CryptoBridge Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -179,7 +179,7 @@
     "message": "Kasalukuyang ginagamit ng $1 network ang Chain ID na ito."
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Kailangan mong gamitin ang MetaMask sa Google Chrome para maikonekta sa iyong Hardware Wallet."
+    "message": "Kailangan mong gamitin ang CryptoBridge sa Google Chrome para maikonekta sa iyong Hardware Wallet."
   },
   "close": {
     "message": "Isara"
@@ -222,7 +222,7 @@
     "message": "Mayroon kang 1 account na nakakonekta sa site na ito."
   },
   "connectedAccountsEmptyDescription": {
-    "message": "Ang MetaMask ay hindi nakakonekta sa site na ito. Para kumonekta sa isang web3 site, hanapin ang button na kumonekta sa site nila."
+    "message": "Ang CryptoBridge ay hindi nakakonekta sa site na ito. Para kumonekta sa isang web3 site, hanapin ang button na kumonekta sa site nila."
   },
   "connectedSites": {
     "message": "Mga nakakonektang site"
@@ -554,7 +554,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": " Ang mga na-import na account ay hindi mauugnay sa orihinal mong nagawang Secret Recovery Phrase ng MetaMask account. Matuto pa tungkol sa mga na-import account "
+    "message": " Ang mga na-import na account ay hindi mauugnay sa orihinal mong nagawang Secret Recovery Phrase ng CryptoBridge account. Matuto pa tungkol sa mga na-import account "
   },
   "importTokenQuestion": {
     "message": "Mag-import ng token?"
@@ -567,7 +567,7 @@
     "description": "status showing that an account has been fully loaded into the keyring"
   },
   "infuraBlockedNotification": {
-    "message": "Hindi nakakonekta ang MetaMask sa blockchain host. Suriin ang mga posibleng dahilan na $1.",
+    "message": "Hindi nakakonekta ang CryptoBridge sa blockchain host. Suriin ang mga posibleng dahilan na $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
   "initialTransactionConfirmed": {
@@ -700,7 +700,7 @@
     "message": "Makikita sa button ng status ng koneksyon kung nakakonekta ang website na binibisita mo sa kasalukuyan mong napiling account."
   },
   "metamaskSwapsOfflineDescription": {
-    "message": "Kasalukuyang minementina ang MetaMask Swaps. Bumalik sa ibang pagkakataon."
+    "message": "Kasalukuyang minementina ang CryptoBridge Swaps. Bumalik sa ibang pagkakataon."
   },
   "metamaskVersion": {
     "message": "Bersyon ng MetaMask"
@@ -907,7 +907,7 @@
     "message": "Huwag kailanman ipaalam sa iba ang iyong Secret Recovery Phrase"
   },
   "recoveryPhraseReminderItemTwo": {
-    "message": "Hindi kailanman hihingin ng MetaMask team ang iyong Secret Recovery Phrase"
+    "message": "Hindi kailanman hihingin ng CryptoBridge team ang iyong Secret Recovery Phrase"
   },
   "recoveryPhraseReminderSubText": {
     "message": "Kinokontrol ng iyong Secret Recovery Phrase ang lahat ng iyong account."
@@ -1168,7 +1168,7 @@
     "message": "I-edit ang limitasyon"
   },
   "swapEnableDescription": {
-    "message": "Kinakailangan ito at nagbibigay ito ng pahintulot sa MetaMask na i-swap ang iyong $1.",
+    "message": "Kinakailangan ito at nagbibigay ito ng pahintulot sa CryptoBridge na i-swap ang iyong $1.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
   "swapEstimatedNetworkFees": {
@@ -1205,7 +1205,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "Hinahanap namin ang pinakasulit na presyo mula sa mga nangungunang pinagkukunan ng liquidity, sa lahat ng pagkakataon. Awtomatikong fina-factor ang bayaring $1% sa quote na ito.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapNewQuoteIn": {
     "message": "Mga bagong quote sa $1",
@@ -1320,7 +1320,7 @@
     "message": "Tingnan sa aktibidad"
   },
   "switchEthereumChainConfirmationDescription": {
-    "message": "Papalitan nito ang napiling network sa MetaMask at gagamitin ang nakaraang idinagdag na network:"
+    "message": "Papalitan nito ang napiling network sa CryptoBridge at gagamitin ang nakaraang idinagdag na network:"
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "Payagang palitan ng site na ito ang network?"

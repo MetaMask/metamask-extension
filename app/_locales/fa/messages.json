@@ -30,7 +30,7 @@
     "message": "دفترچه فعالیت"
   },
   "addAcquiredTokens": {
-    "message": "رمزیاب های را که با استفاده از MetaMask بدست آورده اید، اضافه کنید"
+    "message": "رمزیاب های را که با استفاده از CryptoBridge بدست آورده اید، اضافه کنید"
   },
   "addAlias": {
     "message": "نام مستعار اضافه کنید"
@@ -59,11 +59,11 @@
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "CryptoBridge Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -82,7 +82,7 @@
     "message": "زمان سنج خروج-خودکار (دقایق)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "زمان های بیکار را به شکل دقیقه قبل از خروج MetaMask تنظیم کنید"
+    "message": "زمان های بیکار را به شکل دقیقه قبل از خروج CryptoBridge تنظیم کنید"
   },
   "average": {
     "message": "اوسط"
@@ -131,7 +131,7 @@
     "message": "آی دی زنجیره"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "برای وصل شدن به کیف سخت افزار شما باید MetaMask را در گوگل کروم استفاده نمایید."
+    "message": "برای وصل شدن به کیف سخت افزار شما باید CryptoBridge را در گوگل کروم استفاده نمایید."
   },
   "close": {
     "message": "بستن"
@@ -302,7 +302,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": "حساب های وارد شده با عبارت بازیاب حساب MetaMask ایجاد شده اصلی تان یکجا نمیباشد. در مورد حساب های وارد شده بیشتر بدانید"
+    "message": "حساب های وارد شده با عبارت بازیاب حساب CryptoBridge ایجاد شده اصلی تان یکجا نمیباشد. در مورد حساب های وارد شده بیشتر بدانید"
   },
   "imported": {
     "message": "وارد شده",
@@ -453,7 +453,7 @@
     "message": "اشتراک در MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "در MetaMetrics اشتراک نمایید تا به ما کمک شود MetaMask را بهتر بسازیم"
+    "message": "در MetaMetrics اشتراک نمایید تا به ما کمک شود CryptoBridge را بهتر بسازیم"
   },
   "password": {
     "message": "گذرواژه"

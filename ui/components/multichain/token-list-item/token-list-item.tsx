@@ -54,7 +54,6 @@ import { setEditedNetwork } from '../../../store/actions';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { PercentageChange } from './price/percentage-change/percentage-change';
-import { StakeableLink } from './stakeable-link';
 
 type TokenListItemProps = {
   className?: string;
@@ -248,9 +247,6 @@ export const TokenListItemComponent = ({
                   ellipsis
                 >
                   {tokenMainTitleToDisplay}
-                  {isStakeable && (
-                    <StakeableLink chainId={chainId} symbol={tokenSymbol} />
-                  )}
                 </Text>
               </Tooltip>
             ) : (
@@ -260,9 +256,6 @@ export const TokenListItemComponent = ({
                 ellipsis
               >
                 {tokenMainTitleToDisplay}
-                {isStakeable && (
-                  <StakeableLink chainId={chainId} symbol={tokenSymbol} />
-                )}
               </Text>
             )}
 

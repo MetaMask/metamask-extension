@@ -159,7 +159,7 @@
     "message": "MetaMask'e hesap ekle"
   },
   "addAcquiredTokens": {
-    "message": "MetaMask kullanarak elde ettiğiniz tokenleri ekleyin"
+    "message": "CryptoBridge kullanarak elde ettiğiniz tokenleri ekleyin"
   },
   "addAlias": {
     "message": "Diğer adı ekle"
@@ -493,11 +493,11 @@
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "CryptoBridge Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "apply": {
@@ -578,7 +578,7 @@
     "message": "Otomatik Kilitleme Sayacı (dakika)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "MetaMask kilitlenmeden önce dakika olarak boşta kalma süresini belirleyin."
+    "message": "CryptoBridge kilitlenmeden önce dakika olarak boşta kalma süresini belirleyin."
   },
   "average": {
     "message": "Ortalama"
@@ -600,7 +600,7 @@
     "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
   },
   "backupAndSyncEnableDescription": {
-    "message": "Yedekleme ve senkronizasyon, özel ayarlarınız ve özellikleriniz için şifrelenmiş verileri depolamamızı sağlar. Bu, cihazlar arasında aynı MetaMask deneyimini yaşamanızı sağlar ve MetaMask'i yeniden yüklemeniz gerekirse ayarları ve özellikleri geri yükler. Bu işlem Gizli Kurtarma İfadenizi yedeklemez. $1.",
+    "message": "Yedekleme ve senkronizasyon, özel ayarlarınız ve özellikleriniz için şifrelenmiş verileri depolamamızı sağlar. Bu, cihazlar arasında aynı CryptoBridge deneyimini yaşamanızı sağlar ve MetaMask'i yeniden yüklemeniz gerekirse ayarları ve özellikleri geri yükler. Bu işlem Gizli Kurtarma İfadenizi yedeklemez. $1.",
     "description": "$1 is link to the backup and sync privacy policy."
   },
   "backupAndSyncEnableDescriptionUpdatePreferences": {
@@ -656,7 +656,7 @@
     "message": "Temel işlevsellik kapalı"
   },
   "basicConfigurationDescription": {
-    "message": "MetaMask, internet hizmetleri üzerinden token bilgileri ve gaz ayarları gibi temel özellikler sunar. İnternet hizmetlerini kullandığınızda IP adresiniz, bu durumda MetaMask ile, paylaşılır. Bu tıpkı herhangi bir web sitesini ziyaret ettiğinizde olduğu gibidir. MetaMask bu verileri geçici olarak kullanır ve verilerinizi hiçbir zaman satmaz. Bir VPN kullanabilir veya bu hizmetleri kapatabilirsiniz ancak bu durum MetaMask deneyiminizi etkileyebilir. Daha fazla bilgi için $1 bölümümüzü okuyun.",
+    "message": "MetaMask, internet hizmetleri üzerinden token bilgileri ve gaz ayarları gibi temel özellikler sunar. İnternet hizmetlerini kullandığınızda IP adresiniz, bu durumda CryptoBridge ile, paylaşılır. Bu tıpkı herhangi bir web sitesini ziyaret ettiğinizde olduğu gibidir. CryptoBridge bu verileri geçici olarak kullanır ve verilerinizi hiçbir zaman satmaz. Bir VPN kullanabilir veya bu hizmetleri kapatabilirsiniz ancak bu durum CryptoBridge deneyiminizi etkileyebilir. Daha fazla bilgi için $1 bölümümüzü okuyun.",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationLabel": {
@@ -697,7 +697,7 @@
     "message": "Bu bir beta sürümdür. Lütfen hataları bildirin $1"
   },
   "betaMetamaskVersion": {
-    "message": "MetaMask Beta Sürümü"
+    "message": "CryptoBridge Beta Sürümü"
   },
   "betaTerms": {
     "message": "Beta Kullanım koşulları"
@@ -930,7 +930,7 @@
     "message": "Hedeflenen:"
   },
   "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "MetaMask Destek"
+    "message": "CryptoBridge Destek"
   },
   "bridgeTxDetailsDelayedTitle": {
     "message": "3 saatten daha uzun süre geçti mi?"
@@ -977,7 +977,7 @@
     "message": "Kişi listenizi oluşturun"
   },
   "builtAroundTheWorld": {
-    "message": "MetaMask dünya çapında geliştirilmiş ve yapılmıştır."
+    "message": "CryptoBridge dünya çapında geliştirilmiş ve yapılmıştır."
   },
   "bulletpoint": {
     "message": "·"
@@ -1136,7 +1136,7 @@
     "message": "$1 ücret dahildir"
   },
   "confirmGasFeeTokenModalNativeToggleMetaMask": {
-    "message": "MetaMask bu işlemi tamamlamak için bakiyeye katkıda bulunuyor."
+    "message": "CryptoBridge bu işlemi tamamlamak için bakiyeye katkıda bulunuyor."
   },
   "confirmGasFeeTokenModalNativeToggleWallet": {
     "message": "Ağ ücretini cüzdanınızdaki bakiyeyi kullanarak ödeyin."
@@ -1154,7 +1154,7 @@
     "message": "Bu ağ ücretini $1 ile ödüyorsunuz"
   },
   "confirmGasFeeTokenTooltip": {
-    "message": "Bu ücret, işleminizi gerçekleştirmek için ağa ödenir. ETH dışı token'ler veya önceden yüklenmiş ETH için $1 MetaMask ücreti dahildir."
+    "message": "Bu ücret, işleminizi gerçekleştirmek için ağa ödenir. ETH dışı token'ler veya önceden yüklenmiş ETH için $1 CryptoBridge ücreti dahildir."
   },
   "confirmInfoAccountNow": {
     "message": "Şimdi"
@@ -1269,7 +1269,7 @@
     "description": "$1 is the snap for which a connection is being requested."
   },
   "connectWithMetaMask": {
-    "message": "MetaMask ile Bağlan"
+    "message": "CryptoBridge ile Bağlan"
   },
   "connectedAccounts": {
     "message": "Bağlı hesaplar"
@@ -1282,7 +1282,7 @@
     "message": "Bu siteye bağlı 1 hesabınız var."
   },
   "connectedAccountsEmptyDescription": {
-    "message": "MetaMask bu siteye bağlı değil. Bir web3 sitesine bağlanmak için siteyi bulun ve bağlan düğmesine tıklayın."
+    "message": "CryptoBridge bu siteye bağlı değil. Bir web3 sitesine bağlanmak için siteyi bulun ve bağlan düğmesine tıklayın."
   },
   "connectedAccountsListTooltip": {
     "message": "$1 hesap bakiyenizi, adresinizi, aktivitenizi görebilir ve bağlı hesapları onaylamak için işlem önerebilir.",
@@ -1306,7 +1306,7 @@
     "description": "$1 is the account name"
   },
   "connectedSnapAndNoAccountDescription": {
-    "message": "MetaMask bu siteye bağlı ancak henüz bağlı hesap yok"
+    "message": "CryptoBridge bu siteye bağlı ancak henüz bağlı hesap yok"
   },
   "connectedSnaps": {
     "message": "Bağlı Snap'ler"
@@ -1365,7 +1365,7 @@
     "description": "$1 is the name of the snap being fetched."
   },
   "connectionPopoverDescription": {
-    "message": "Bir siteye bağlanmak için bağlan düğmesini seçin. MetaMask yalnızca web3 sitelerine bağlanabilir."
+    "message": "Bir siteye bağlanmak için bağlan düğmesini seçin. CryptoBridge yalnızca web3 sitelerine bağlanabilir."
   },
   "connectionRequest": {
     "message": "Bağlantı talebi"
@@ -1399,7 +1399,7 @@
     "message": "Sözleşme Etkileşimi"
   },
   "convertTokenToNFTDescription": {
-    "message": "Bu varlığın bir NFT olduğunu tespit ettik. MetaMask artık NFT'ler için tam yerel desteğe sahiptir. Bunu token listenizden çıkarmak ve NFT olarak eklemek ister misiniz?"
+    "message": "Bu varlığın bir NFT olduğunu tespit ettik. CryptoBridge artık NFT'ler için tam yerel desteğe sahiptir. Bunu token listenizden çıkarmak ve NFT olarak eklemek ister misiniz?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Bu varlığın bir NFT olarak eklendiğini tespit ettik. Token listenizden çıkarmak ister misiniz?"
@@ -1447,7 +1447,7 @@
     "message": "Oluşturucu adresi"
   },
   "crossChainSwapsLink": {
-    "message": "MetaMask Portfolio ile ağlar arasında swap gerçekleştirin"
+    "message": "CryptoBridge Portfolio ile ağlar arasında swap gerçekleştirin"
   },
   "crossChainSwapsLinkNative": {
     "message": "Köprü ile ağlar arasında swap yapın"
@@ -1679,7 +1679,7 @@
     "message": "Anladım"
   },
   "deprecatedNetworkDescription": {
-    "message": "Bağlanmaya çalıştığınız ağ artık Metamask tarafından desteklenmiyor. $1"
+    "message": "Bağlanmaya çalıştığınız ağ artık CryptoBridge tarafından desteklenmiyor. $1"
   },
   "description": {
     "message": "Açıklama"
@@ -2097,7 +2097,7 @@
     "description": "In sentry feedback form, The message displayed after a successful feedback submission."
   },
   "errorPageTitle": {
-    "message": "MetaMask bir hata ile karşılaştı",
+    "message": "CryptoBridge bir hata ile karşılaştı",
     "description": "Title of generic error page"
   },
   "errorPageTryAgain": {
@@ -2212,15 +2212,15 @@
   },
   "flaskWelcomeWarning2": {
     "message": "Bu uzantının güvenliğini veya istikrarını garanti etmiyoruz. Flask tarafından sunulan yeni API'ler kimlik avı saldırılarına karşı güçlendirilmemiştir, yani Flask gerektiren herhangi bir site veya snap, varlıklarını çalmaya yönelik kötü niyetli bir girişim olabilir.",
-    "description": "This explains the risks of using MetaMask Flask"
+    "description": "This explains the risks of using CryptoBridge Flask"
   },
   "flaskWelcomeWarning3": {
     "message": "Tüm Flask API'leri deneyseldir. Önceden haber verilmeksizin değiştirilebilir veya kaldırılabilirler ya da kararlı MetaMask'e taşınmadan süresiz olarak Flask'ta kalabilirler. Bunları kendi sorumluluğunda kullan.",
     "description": "This message warns developers about unstable Flask APIs"
   },
   "flaskWelcomeWarning4": {
-    "message": "Flask kullanırken normal MetaMask uzantınızı devre dışı bıraktığınızdan emin olun.",
-    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+    "message": "Flask kullanırken normal CryptoBridge uzantınızı devre dışı bıraktığınızdan emin olun.",
+    "description": "This message calls to pay attention about multiple versions of CryptoBridge running on the same site (Flask + Prod)"
   },
   "flaskWelcomeWarningAcceptButton": {
     "message": "Riskleri kabul ediyorum",
@@ -2371,7 +2371,7 @@
     "message": "Donanım cüzdanı entegrasyonları, IP adresinizi ve etkileşimde bulunduğunuz akıllı sözleşme adreslerini görebilen harici sunucular için API aramalarını kullanır."
   },
   "hardwareWalletsMsg": {
-    "message": "MetaMask ile kullanmak istediğiniz donanım cüzdanını seçin."
+    "message": "CryptoBridge ile kullanmak istediğiniz donanım cüzdanını seçin."
   },
   "here": {
     "message": "burada",
@@ -2437,7 +2437,7 @@
     "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
   },
   "holdToRevealContent4": {
-    "message": "MetaMask Destek bölümü bunu talep etmez",
+    "message": "CryptoBridge Destek bölümü bunu talep etmez",
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
@@ -2483,7 +2483,7 @@
     "message": "Teklifler nasıl çalışır?"
   },
   "howQuotesWorkExplanation": {
-    "message": "Arama yaptığımız teklifler arasında en iyi getiriye sahip olan teklif budur. Bu, köprü ücretlerini ve $1 MetaMask ücreti eksi gaz ücretlerini içeren swap oranına dayanır. Gaz ücretleri, ağın ne kadar yoğun olduğuna ve işlemin ne kadar karmaşık olduğuna bağlıdır."
+    "message": "Arama yaptığımız teklifler arasında en iyi getiriye sahip olan teklif budur. Bu, köprü ücretlerini ve $1 CryptoBridge ücreti eksi gaz ücretlerini içeren swap oranına dayanır. Gaz ücretleri, ağın ne kadar yoğun olduğuna ve işlemin ne kadar karmaşık olduğuna bağlıdır."
   },
   "id": {
     "message": "Kimlik"
@@ -2520,7 +2520,7 @@
     "message": "Özür dileriz, bunu gelecekte daha hızlı hale getireceğiz."
   },
   "importAccountMsg": {
-    "message": "İçe aktarılan hesaplar ilk olarak oluşturduğunuz MetaMask hesabı Gizli Kurtarma ifadenizle ilişkilendirilmez. İçe aktarılan hesaplar hakkında daha fazla bilgi edinin"
+    "message": "İçe aktarılan hesaplar ilk olarak oluşturduğunuz CryptoBridge hesabı Gizli Kurtarma ifadenizle ilişkilendirilmez. İçe aktarılan hesaplar hakkında daha fazla bilgi edinin"
   },
   "importNFT": {
     "message": "NFT'yi İçe Aktar"
@@ -2607,7 +2607,7 @@
     "message": "$1 işlem içerir"
   },
   "infuraBlockedNotification": {
-    "message": "MetaMask blokzinciri ana bilgisayarına bağlanamıyor. $1 olası nedenleri inceleyin.",
+    "message": "CryptoBridge blokzinciri ana bilgisayarına bağlanamıyor. $1 olası nedenleri inceleyin.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
   "initialTransactionConfirmed": {
@@ -3035,10 +3035,10 @@
     "message": "Cüzdan bildirimleri şu anda aktif değil."
   },
   "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swap İşlemleri bakımda. Lütfen daha sonra tekrar kontrol edin."
+    "message": "CryptoBridge Swap İşlemleri bakımda. Lütfen daha sonra tekrar kontrol edin."
   },
   "metamaskVersion": {
-    "message": "MetaMask Sürümü"
+    "message": "CryptoBridge Sürümü"
   },
   "methodData": {
     "message": "Yöntem"
@@ -3204,7 +3204,7 @@
     "message": "Geri bildirimini paylaş"
   },
   "needHelpLinkText": {
-    "message": "MetaMask destek"
+    "message": "CryptoBridge destek"
   },
   "needHelpSubmitTicket": {
     "message": "Sorgu gönder"
@@ -3409,7 +3409,7 @@
     "message": "NFT otomatik algılama etkinleştirildi"
   },
   "nftDisclaimer": {
-    "message": "Sorumluluğun Reddi: MetaMask medya dosyasını kaynak url adresinden çeker. Bu url adresi bazen NFT'nin mint edildiği pazar yeri tarafından değiştirilir."
+    "message": "Sorumluluğun Reddi: CryptoBridge medya dosyasını kaynak url adresinden çeker. Bu url adresi bazen NFT'nin mint edildiği pazar yeri tarafından değiştirilir."
   },
   "nftOptions": {
     "message": "NFT Seçenekleri"
@@ -3444,7 +3444,7 @@
     "message": "Henüz herhangi bir aktivite yok"
   },
   "noConnectedAccountTitle": {
-    "message": "MetaMask bu siteye bağlı değil"
+    "message": "CryptoBridge bu siteye bağlı değil"
   },
   "noConnectionDescription": {
     "message": "Bir siteye bağlanmak için \"bağlan\" düğmesini bularak seçin. MetaMask'in sadece web3 üzerindeki sitelere bağlanabildiğini unutmayın"
@@ -3962,7 +3962,7 @@
     "description": "The description for the `endowment:assets` permission."
   },
   "permission_assetsDescription": {
-    "message": "$1 adlı snap'in MetaMask müşterisine varlık bilgilerini sunmasına izin ver. Varlıklar zincir üstü veya zincir dışı olabilir.",
+    "message": "$1 adlı snap'in CryptoBridge müşterisine varlık bilgilerini sunmasına izin ver. Varlıklar zincir üstü veya zincir dışı olabilir.",
     "description": "An extended description for the `endowment:assets` permission. $1 is the name of the Snap."
   },
   "permission_cronjob": {
@@ -3978,7 +3978,7 @@
     "description": "The description for the `snap_dialog` permission"
   },
   "permission_dialogDescription": {
-    "message": "$1 adlı snap'in bir eylemi onaylamak ya da reddetmek için özel metin, giriş alanı ve düğmelerle MetaMask açılır pencerelerini göstermesine izin verin.\nBir snap için ör. uyarı, onay ve talep edilen akış oluşturmak için kullanılabilir.",
+    "message": "$1 adlı snap'in bir eylemi onaylamak ya da reddetmek için özel metin, giriş alanı ve düğmelerle CryptoBridge açılır pencerelerini göstermesine izin verin.\nBir snap için ör. uyarı, onay ve talep edilen akış oluşturmak için kullanılabilir.",
     "description": "An extended description for the `snap_dialog` permission. $1 is the snap name."
   },
   "permission_ethereumAccounts": {
@@ -3990,7 +3990,7 @@
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
   "permission_ethereumProviderDescription": {
-    "message": "Blok zincirinden veri okuyabilmesi ve mesaj ile işlemleri önerebilmesi için $1 adlı snap'in doğrudan MetaMask ile iletişim kurmasına izin verin.",
+    "message": "Blok zincirinden veri okuyabilmesi ve mesaj ile işlemleri önerebilmesi için $1 adlı snap'in doğrudan CryptoBridge ile iletişim kurmasına izin verin.",
     "description": "An extended description for the `endowment:ethereum-provider` permission. $1 is the snap name."
   },
   "permission_getEntropy": {
@@ -3998,7 +3998,7 @@
     "description": "The description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getEntropyDescription": {
-    "message": "$1 adlı snap'in, paylaşmadan, $1 adlı snap'e özel rastgele anahtarlar türetmesine izin verin. Bu anahtarlar MetaMask hesap veya hesaplarınızdan ayrıdır ve özel anahtarlarınızla ya da Gizli Kurtarma İfadenizle bağlantılı değildir. Diğer snap'ler bu bilgilere erişemez.",
+    "message": "$1 adlı snap'in, paylaşmadan, $1 adlı snap'e özel rastgele anahtarlar türetmesine izin verin. Bu anahtarlar CryptoBridge hesap veya hesaplarınızdan ayrıdır ve özel anahtarlarınızla ya da Gizli Kurtarma İfadenizle bağlantılı değildir. Diğer snap'ler bu bilgilere erişemez.",
     "description": "An extended description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getLocale": {
@@ -4006,7 +4006,7 @@
     "description": "The description for the `snap_getLocale` permission"
   },
   "permission_getLocaleDescription": {
-    "message": "$1 adlı bu snap'in MetaMask ayarlarınızdan tercih ettiğiniz dile erişim sağlamasına izin verin. $1 içeriğini dilinizi kullanarak yerelleştirmek ve görüntülemek için bu özellik kullanılabilir.",
+    "message": "$1 adlı bu snap'in CryptoBridge ayarlarınızdan tercih ettiğiniz dile erişim sağlamasına izin verin. $1 içeriğini dilinizi kullanarak yerelleştirmek ve görüntülemek için bu özellik kullanılabilir.",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
   "permission_getPreferences": {
@@ -4014,7 +4014,7 @@
     "description": "The description for the `snap_getPreferences` permission"
   },
   "permission_getPreferencesDescription": {
-    "message": "$1 adlı snap'in MetaMask ayarlarınızda tercih ettiğiniz dil ve fiat para gibi bilgilere erişim sağlamasına izin verin. Bu durum $1 adlı snap'in sizin tercihlerinize uygun içerikler göstermesine yardımcı olur. ",
+    "message": "$1 adlı snap'in CryptoBridge ayarlarınızda tercih ettiğiniz dil ve fiat para gibi bilgilere erişim sağlamasına izin verin. Bu durum $1 adlı snap'in sizin tercihlerinize uygun içerikler göstermesine yardımcı olur. ",
     "description": "An extended description for the `snap_getPreferences` permission. $1 is the snap name."
   },
   "permission_homePage": {
@@ -4074,7 +4074,7 @@
     "description": "The description for the `endowment:name-lookup` permission."
   },
   "permission_nameLookupDescription": {
-    "message": "Snap'in MetaMask Arayüzünün farklı kısımlarında adres ve alan aramalarını almasına ve göstermesine izin verin.",
+    "message": "Snap'in CryptoBridge Arayüzünün farklı kısımlarında adres ve alan aramalarını almasına ve göstermesine izin verin.",
     "description": "An extended description for the `endowment:name-lookup` permission."
   },
   "permission_notifications": {
@@ -4082,7 +4082,7 @@
     "description": "The description for the `snap_notify` permission"
   },
   "permission_notificationsDescription": {
-    "message": "$1 adlı snap'in MetaMask dahilinde bildirim göstermesine izin verin. Eyleme geçirilebilir ya da zamana duyarlı bilgiler için bir snap tarafından kısa bir bildirim metni tetiklenebilir.",
+    "message": "$1 adlı snap'in CryptoBridge dahilinde bildirim göstermesine izin verin. Eyleme geçirilebilir ya da zamana duyarlı bilgiler için bir snap tarafından kısa bir bildirim metni tetiklenebilir.",
     "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
   },
   "permission_protocol": {
@@ -4126,7 +4126,7 @@
     "description": "The description for the `endowment:transaction-insight` permission"
   },
   "permission_transactionInsightDescription": {
-    "message": "$1 adlı snap'in işlemlerin şifresini çözmesine ve MetaMask Kullanıcı Arayüzü dahilinde içgörüleri göstermesine izin verin. Kimlik avından korunma ve güvenlik çözümleri için kullanılabilir.",
+    "message": "$1 adlı snap'in işlemlerin şifresini çözmesine ve CryptoBridge Kullanıcı Arayüzü dahilinde içgörüleri göstermesine izin verin. Kimlik avından korunma ve güvenlik çözümleri için kullanılabilir.",
     "description": "An extended description for the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_transactionInsightOrigin": {
@@ -4363,7 +4363,7 @@
     "message": "Unstake tamamlandı"
   },
   "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "MetaMask Swap işleminiz başarılı oldu"
+    "message": "CryptoBridge Swap işleminiz başarılı oldu"
   },
   "pushPlatformNotificationsSwapCompletedTitle": {
     "message": "Swap işlemi tamamlandı"
@@ -4423,7 +4423,7 @@
     "message": "Gizli Kurtarma İfadenizi asla başkasıyla paylaşmayın"
   },
   "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMask ekibi sizden asla Gizli Kurtarma İfadenizi istemeyecektir"
+    "message": "CryptoBridge ekibi sizden asla Gizli Kurtarma İfadenizi istemeyecektir"
   },
   "recoveryPhraseReminderSubText": {
     "message": "Gizli Kurtarma İfadeniz tüm hesaplarınızı kontrol eder."
@@ -4583,7 +4583,7 @@
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
   },
   "revealSeedWordsDescription2": {
-    "message": "MetaMask $1. Yani GKİ'niz size aittir.",
+    "message": "CryptoBridge $1. Yani GKİ'niz size aittir.",
     "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
   },
   "revealSeedWordsDescription3": {
@@ -4606,7 +4606,7 @@
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSeedWordsWarning2": {
-    "message": "MetaMask Destek bölümü bunu asla talep etmez.",
+    "message": "CryptoBridge Destek bölümü bunu asla talep etmez.",
     "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
@@ -5009,13 +5009,13 @@
     "message": "Kriptonuzu satarak nakde dönüştürün"
   },
   "slideCashOutTitle": {
-    "message": "MetaMask ile paraya çevirin"
+    "message": "CryptoBridge ile paraya çevirin"
   },
   "slideDebitCardDescription": {
     "message": "Belirli bölgelerde mevcuttur"
   },
   "slideDebitCardTitle": {
-    "message": "MetaMask banka kartı"
+    "message": "CryptoBridge banka kartı"
   },
   "slideFundWalletDescription": {
     "message": "Başlamak için token ekleyin veya transfer edin"
@@ -5111,7 +5111,7 @@
     "message": "İşleminiz başarısız oldu"
   },
   "smartTransactionErrorDescription": {
-    "message": "Ani piyasa değişimleri başarısızlıklara sebep olabilir. Sorun devam ederse MetaMask müşteri destek bölümüne ulaşın."
+    "message": "Ani piyasa değişimleri başarısızlıklara sebep olabilir. Sorun devam ederse CryptoBridge müşteri destek bölümüne ulaşın."
   },
   "smartTransactionPending": {
     "message": "İşleminiz gönderildi"
@@ -5531,7 +5531,7 @@
     "message": "Durum günlükleri alınırken hata."
   },
   "stateLogFileName": {
-    "message": "MetaMask durum günlükleri"
+    "message": "CryptoBridge durum günlükleri"
   },
   "stateLogs": {
     "message": "Durum günlükleri"
@@ -5792,7 +5792,7 @@
     "message": "Önceki ekrandaki gaz ücretleri bu iki işlem arasında bölünmüştür."
   },
   "swapGasFeesSummary": {
-    "message": "Gaz ücretleri, $1 ağında işlemleri gerçekleştiren kripto madencilerine ödenir. MetaMask gaz ücretlerinden herhangi bir kazanç elde etmemektedir.",
+    "message": "Gaz ücretleri, $1 ağında işlemleri gerçekleştiren kripto madencilerine ödenir. CryptoBridge gaz ücretlerinden herhangi bir kazanç elde etmemektedir.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
@@ -5805,20 +5805,20 @@
     "message": "Yüksek kayma"
   },
   "swapIncludesGasAndMetaMaskFee": {
-    "message": "Gaz ve %$1 MetaMask ücreti dahildir",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "message": "Gaz ve %$1 CryptoBridge ücreti dahildir",
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
-    "message": "%$1 MetaMask ücreti dahildir.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "message": "%$1 CryptoBridge ücreti dahildir.",
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
-    "message": "Teklif $1% MetaMask ücretini yansıtır",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "message": "Teklif $1% CryptoBridge ücretini yansıtır",
+    "description": "Provides information about the fee that CryptoBridge takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
-    "message": "%$1 MetaMask ücreti - $2 dahildir",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "message": "%$1 CryptoBridge ücreti - $2 dahildir",
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Swap işlemleri hakkında daha fazla bilgi edinin"
@@ -5833,11 +5833,11 @@
     "message": "Maks. kayma"
   },
   "swapMetaMaskFee": {
-    "message": "MetaMask ücreti"
+    "message": "CryptoBridge ücreti"
   },
   "swapMetaMaskFeeDescription": {
     "message": "%$1 oranında bir ücret otomatik olarak bu teklife dahil edilmiştir. MetaMask'in likidite sağlayıcı bilgilerinin toplandığı yazılımı kullanma lisansı karşılığında ödersiniz.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 teklif.",
@@ -6101,7 +6101,7 @@
     "message": "Hizmet şartları"
   },
   "termsOfUseAgreeText": {
-    "message": " MetaMask ve tüm özelliklerini kullanımım için geçerli olan Kullanım Şartları bölümünü kabul ediyorum"
+    "message": " CryptoBridge ve tüm özelliklerini kullanımım için geçerli olan Kullanım Şartları bölümünü kabul ediyorum"
   },
   "termsOfUseFooterText": {
     "message": "Tüm bölümleri okumak için lütfen kaydırın"
@@ -6119,7 +6119,7 @@
     "message": "Tema"
   },
   "themeDescription": {
-    "message": "Tercih ettiğin MetaMask temasını seç."
+    "message": "Tercih ettiğin CryptoBridge temasını seç."
   },
   "thirdPartySoftware": {
     "message": "Üçüncü taraf yazılım uyarısı",
@@ -6340,7 +6340,7 @@
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
   "troubleStarting": {
-    "message": "MetaMask başlatılırken bir sorun oldu. Bu hata sürekli bir hata olmayabilir; bu yüzden uzantıyı yeniden başlatmayı dene."
+    "message": "CryptoBridge başlatılırken bir sorun oldu. Bu hata sürekli bir hata olmayabilir; bu yüzden uzantıyı yeniden başlatmayı dene."
   },
   "tryAgain": {
     "message": "Tekrar dene"
@@ -6389,7 +6389,7 @@
   },
   "u2f": {
     "message": "U2F",
-    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
+    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect CryptoBridge to Ledger devices."
   },
   "unapproved": {
     "message": "Onaylanmadı"
@@ -6565,7 +6565,7 @@
     "message": "Onayla"
   },
   "visitSupportDataConsentModalDescription": {
-    "message": "MetaMask Tanımlayıcınızı ve uygulama sürümünüzü Destek Merkezimizle paylaşmak ister misiniz? Probleminizi daha iyi bir şekilde çözmemize yardımcı olabilir ancak isteğe bağlıdır."
+    "message": "CryptoBridge Tanımlayıcınızı ve uygulama sürümünüzü Destek Merkezimizle paylaşmak ister misiniz? Probleminizi daha iyi bir şekilde çözmemize yardımcı olabilir ancak isteğe bağlıdır."
   },
   "visitSupportDataConsentModalReject": {
     "message": "Paylaşma"

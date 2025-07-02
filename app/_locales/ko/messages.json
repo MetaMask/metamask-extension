@@ -493,11 +493,11 @@
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "CryptoBridge Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "apply": {
@@ -656,7 +656,7 @@
     "message": "기본 기능이 꺼져 있습니다."
   },
   "basicConfigurationDescription": {
-    "message": "MetaMask는 인터넷 서비스를 통해 토큰 세부 정보 및 가스 설정과 같은 기본 기능을 제공합니다. 인터넷 서비스를 이용할 때 IP 주소가 공유되며, 이 경우 MetaMask와 공유됩니다. 이는 다른 웹사이트를 방문할 때와 마찬가지입니다. MetaMask는 이 데이터를 일시적으로 사용하며 데이터를 절대 판매하지 않습니다. VPN을 사용하거나 이러한 서비스를 비활성화할 수 있지만 MetaMask 사용 환경에 영향을 미칠 수 있습니다. 자세한 내용은 $1 내용을 참고하세요.",
+    "message": "MetaMask는 인터넷 서비스를 통해 토큰 세부 정보 및 가스 설정과 같은 기본 기능을 제공합니다. 인터넷 서비스를 이용할 때 IP 주소가 공유되며, 이 경우 MetaMask와 공유됩니다. 이는 다른 웹사이트를 방문할 때와 마찬가지입니다. MetaMask는 이 데이터를 일시적으로 사용하며 데이터를 절대 판매하지 않습니다. VPN을 사용하거나 이러한 서비스를 비활성화할 수 있지만 CryptoBridge 사용 환경에 영향을 미칠 수 있습니다. 자세한 내용은 $1 내용을 참고하세요.",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationLabel": {
@@ -697,7 +697,7 @@
     "message": "베타 버전입니다. 버그는 $1로 보고하세요"
   },
   "betaMetamaskVersion": {
-    "message": "MetaMask 베타 버전"
+    "message": "CryptoBridge 베타 버전"
   },
   "betaTerms": {
     "message": "베타 이용약관"
@@ -930,7 +930,7 @@
     "message": "다음으로 연락하기:"
   },
   "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "MetaMask 지원"
+    "message": "CryptoBridge 지원"
   },
   "bridgeTxDetailsDelayedTitle": {
     "message": "3시간 이상 걸렸나요?"
@@ -1091,10 +1091,10 @@
     "message": "집중적 공급 분배"
   },
   "configureSnapPopupDescription": {
-    "message": "이제 이 스냅 구성을 위해 MetaMask 페이지를 떠나게 됩니다."
+    "message": "이제 이 스냅 구성을 위해 CryptoBridge 페이지를 떠나게 됩니다."
   },
   "configureSnapPopupInstallDescription": {
-    "message": "이제 이 스냅 설치를 위해 MetaMask 페이지를 떠나게 됩니다."
+    "message": "이제 이 스냅 설치를 위해 CryptoBridge 페이지를 떠나게 됩니다."
   },
   "configureSnapPopupInstallTitle": {
     "message": "스냅 설치"
@@ -1154,7 +1154,7 @@
     "message": "이 네트워크 수수료는 $1(으)로 지불됩니다"
   },
   "confirmGasFeeTokenTooltip": {
-    "message": "이 금액은 트랜잭션을 처리하기 위해 네트워크에 지불되는 비용입니다. 비ETH 토큰 또는 사전 충전된 ETH의 경우 $1의 MetaMask 수수료가 포함됩니다."
+    "message": "이 금액은 트랜잭션을 처리하기 위해 네트워크에 지불되는 비용입니다. 비ETH 토큰 또는 사전 충전된 ETH의 경우 $1의 CryptoBridge 수수료가 포함됩니다."
   },
   "confirmInfoAccountNow": {
     "message": "지금"
@@ -1447,7 +1447,7 @@
     "message": "크리에이터 주소"
   },
   "crossChainSwapsLink": {
-    "message": "MetaMask Portfolio로 네트워크 간 스왑"
+    "message": "CryptoBridge Portfolio로 네트워크 간 스왑"
   },
   "crossChainSwapsLinkNative": {
     "message": "브릿지로 네트워크 간 스왑"
@@ -2097,7 +2097,7 @@
     "description": "In sentry feedback form, The message displayed after a successful feedback submission."
   },
   "errorPageTitle": {
-    "message": "MetaMask 오류 발생",
+    "message": "CryptoBridge 오류 발생",
     "description": "Title of generic error page"
   },
   "errorPageTryAgain": {
@@ -2212,15 +2212,15 @@
   },
   "flaskWelcomeWarning2": {
     "message": "이 확장 프로그램은 안전성이나 안정성을 보장하지 않습니다. Flask에서 제공하는 새로운 API는 피싱 공격에 대비한 강화 과정을 거치지 않았습니다. 즉, Flask가 필요한 모든 사이트나 스냅은 자산을 훔치려는 악의적 시도일 수 있습니다.",
-    "description": "This explains the risks of using MetaMask Flask"
+    "description": "This explains the risks of using CryptoBridge Flask"
   },
   "flaskWelcomeWarning3": {
     "message": "모든 Flask의 API는 실험 단계입니다. 따라서 예고 없이 변경, 제거되거나 안정적인 MetaMask로 마이그레이션되지 않고 Flask에 무기한 남아 있을 수 있습니다. 사용 시 위험은 본인 책임입니다.",
     "description": "This message warns developers about unstable Flask APIs"
   },
   "flaskWelcomeWarning4": {
-    "message": "Flask를 사용할 때는 정규 MetaMask 익스텐션을 비활성화하세요.",
-    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+    "message": "Flask를 사용할 때는 정규 CryptoBridge 익스텐션을 비활성화하세요.",
+    "description": "This message calls to pay attention about multiple versions of CryptoBridge running on the same site (Flask + Prod)"
   },
   "flaskWelcomeWarningAcceptButton": {
     "message": "본인은 이 위험을 감수합니다",
@@ -2437,7 +2437,7 @@
     "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
   },
   "holdToRevealContent4": {
-    "message": "MetaMask 지원팀은 이러한 정보를 절대로 묻지 않습니다,",
+    "message": "CryptoBridge 지원팀은 이러한 정보를 절대로 묻지 않습니다,",
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
@@ -2483,7 +2483,7 @@
     "message": "견적 방식"
   },
   "howQuotesWorkExplanation": {
-    "message": "이 견적은 검색한 견적 중 최고의 수익률을 제공합니다. 이는 브릿지 수수료와 $1% MetaMask 수수료를 포함한 스왑 비율에서 가스비를 뺀 것을 기준으로 합니다. 가스비는 네트워크 혼잡도와 트랜잭션의 복잡성에 따라 달라집니다."
+    "message": "이 견적은 검색한 견적 중 최고의 수익률을 제공합니다. 이는 브릿지 수수료와 $1% CryptoBridge 수수료를 포함한 스왑 비율에서 가스비를 뺀 것을 기준으로 합니다. 가스비는 네트워크 혼잡도와 트랜잭션의 복잡성에 따라 달라집니다."
   },
   "id": {
     "message": "ID"
@@ -2520,7 +2520,7 @@
     "message": "죄송합니다. 향후에는 더 빠르게 개선하겠습니다."
   },
   "importAccountMsg": {
-    "message": "가져온 계정은 MetaMask 계정 비밀복구구문과 연결하지 못합니다. 가져온 계정에 대해 자세히 알아보기"
+    "message": "가져온 계정은 CryptoBridge 계정 비밀복구구문과 연결하지 못합니다. 가져온 계정에 대해 자세히 알아보기"
   },
   "importNFT": {
     "message": "NFT 가져오기"
@@ -2828,7 +2828,7 @@
     "message": "MetaMask를 나가시겠습니까?"
   },
   "leaveMetaMaskDesc": {
-    "message": "MetaMask 외부의 사이트를 방문하려고 합니다. 계속하기 전에 URL을 다시 한번 확인하세요."
+    "message": "CryptoBridge 외부의 사이트를 방문하려고 합니다. 계속하기 전에 URL을 다시 한번 확인하세요."
   },
   "ledgerAccountRestriction": {
     "message": "새 계정을 추가하려면 먼저 기존의 최종 계정을 사용해야 합니다."
@@ -3035,10 +3035,10 @@
     "message": "현재 지갑 알림이 꺼져 있습니다."
   },
   "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps 점검 중입니다. 나중에 다시 확인하세요."
+    "message": "CryptoBridge Swaps 점검 중입니다. 나중에 다시 확인하세요."
   },
   "metamaskVersion": {
-    "message": "MetaMask 버전"
+    "message": "CryptoBridge 버전"
   },
   "methodData": {
     "message": "메소드"
@@ -3204,7 +3204,7 @@
     "message": "피드백 공유"
   },
   "needHelpLinkText": {
-    "message": "MetaMask 지원"
+    "message": "CryptoBridge 지원"
   },
   "needHelpSubmitTicket": {
     "message": "티켓 제출"
@@ -3870,7 +3870,7 @@
     "message": "MetaMetrics에 참여"
   },
   "participateInMetaMetricsDescription": {
-    "message": "MetaMetrics에 참여하여 MetaMask 개선에 도움을 주세요."
+    "message": "MetaMetrics에 참여하여 CryptoBridge 개선에 도움을 주세요."
   },
   "password": {
     "message": "비밀번호"
@@ -3958,11 +3958,11 @@
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
   "permission_assets": {
-    "message": "MetaMask 계정 자산을 표시합니다.",
+    "message": "CryptoBridge 계정 자산을 표시합니다.",
     "description": "The description for the `endowment:assets` permission."
   },
   "permission_assetsDescription": {
-    "message": "MetaMask 클라이언트에 자산 정보를 제공하도록 $1을(를) 허용하세요. 자산은 온체인 또는 오프체인에 있을 수 있습니다.",
+    "message": "CryptoBridge 클라이언트에 자산 정보를 제공하도록 $1을(를) 허용하세요. 자산은 온체인 또는 오프체인에 있을 수 있습니다.",
     "description": "An extended description for the `endowment:assets` permission. $1 is the name of the Snap."
   },
   "permission_cronjob": {
@@ -3974,11 +3974,11 @@
     "description": "An extended description for the `snap_cronjob` permission. $1 is the snap name."
   },
   "permission_dialog": {
-    "message": "MetaMask 대화창 표시",
+    "message": "CryptoBridge 대화창 표시",
     "description": "The description for the `snap_dialog` permission"
   },
   "permission_dialogDescription": {
-    "message": "$1 스냅이 MetaMask 팝업을 만들고 여기에 맞춤 텍스트와 입력란, 그리고 버튼을 표시하여 승인 또는 거부에 활용하도록 허용합니다.\n이는 경고, 컨펌, Snap에 필요한 옵트인 플로우 등을 만드는 데 사용할 수 있습니다.",
+    "message": "$1 스냅이 CryptoBridge 팝업을 만들고 여기에 맞춤 텍스트와 입력란, 그리고 버튼을 표시하여 승인 또는 거부에 활용하도록 허용합니다.\n이는 경고, 컨펌, Snap에 필요한 옵트인 플로우 등을 만드는 데 사용할 수 있습니다.",
     "description": "An extended description for the `snap_dialog` permission. $1 is the snap name."
   },
   "permission_ethereumAccounts": {
@@ -3998,7 +3998,7 @@
     "description": "The description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getEntropyDescription": {
-    "message": "$1 스냅이 노출을 피하여 $1에 고유한 임의의 키를 파생하도록 허용합니다. 이 키는 MetaMask 계정과 별개이며 개인 키 또는 비밀복구구문과 관련이 없습니다. 다른 Snap은 이 정보에 액세스할 수 없습니다.",
+    "message": "$1 스냅이 노출을 피하여 $1에 고유한 임의의 키를 파생하도록 허용합니다. 이 키는 CryptoBridge 계정과 별개이며 개인 키 또는 비밀복구구문과 관련이 없습니다. 다른 Snap은 이 정보에 액세스할 수 없습니다.",
     "description": "An extended description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getLocale": {
@@ -4006,7 +4006,7 @@
     "description": "The description for the `snap_getLocale` permission"
   },
   "permission_getLocaleDescription": {
-    "message": "MetaMask 설정에서 원하는 언어로 $1 스냅을 사용하세요. 이 기능을 사용하면 선택한 언어로 $1의 콘텐츠를 현지화하고 표시할 수 있습니다.",
+    "message": "CryptoBridge 설정에서 원하는 언어로 $1 스냅을 사용하세요. 이 기능을 사용하면 선택한 언어로 $1의 콘텐츠를 현지화하고 표시할 수 있습니다.",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
   "permission_getPreferences": {
@@ -4014,7 +4014,7 @@
     "description": "The description for the `snap_getPreferences` permission"
   },
   "permission_getPreferencesDescription": {
-    "message": "MetaMask 설정에서 $1이(가) 회원님이 선호하는 언어 및 명목화폐와 같은 정보에 접근할 수 있도록 허용하세요. 이렇게 하면 $1이(가) 회원님의 선호도에 맞는 콘텐츠를 표시하는 데 도움이 됩니다. ",
+    "message": "CryptoBridge 설정에서 $1이(가) 회원님이 선호하는 언어 및 명목화폐와 같은 정보에 접근할 수 있도록 허용하세요. 이렇게 하면 $1이(가) 회원님의 선호도에 맞는 콘텐츠를 표시하는 데 도움이 됩니다. ",
     "description": "An extended description for the `snap_getPreferences` permission. $1 is the snap name."
   },
   "permission_homePage": {
@@ -4074,7 +4074,7 @@
     "description": "The description for the `endowment:name-lookup` permission."
   },
   "permission_nameLookupDescription": {
-    "message": "Snap이 주소 및 도메인 조회를 가져와 MetaMask UI의 다른 부분에 표시하도록 허용합니다.",
+    "message": "Snap이 주소 및 도메인 조회를 가져와 CryptoBridge UI의 다른 부분에 표시하도록 허용합니다.",
     "description": "An extended description for the `endowment:name-lookup` permission."
   },
   "permission_notifications": {
@@ -4126,7 +4126,7 @@
     "description": "The description for the `endowment:transaction-insight` permission"
   },
   "permission_transactionInsightDescription": {
-    "message": "$1 스냅이 트랜잭션을 디코딩하고 MetaMask UI에서 인사이트를 표시하도록 허용합니다. 피싱 방지와 보안 솔루션에 사용할 수 있습니다.",
+    "message": "$1 스냅이 트랜잭션을 디코딩하고 CryptoBridge UI에서 인사이트를 표시하도록 허용합니다. 피싱 방지와 보안 솔루션에 사용할 수 있습니다.",
     "description": "An extended description for the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_transactionInsightOrigin": {
@@ -4363,7 +4363,7 @@
     "message": "언스테이킹 완료"
   },
   "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "MetaMask 스왑에 성공했습니다"
+    "message": "CryptoBridge 스왑에 성공했습니다"
   },
   "pushPlatformNotificationsSwapCompletedTitle": {
     "message": "스왑 완료"
@@ -4423,7 +4423,7 @@
     "message": "절대로 다른 사람과 비밀복구구문을 공유하지 마십시오"
   },
   "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMask 팀에서는 절대로 비밀복구구문을 묻지 않습니다"
+    "message": "CryptoBridge 팀에서는 절대로 비밀복구구문을 묻지 않습니다"
   },
   "recoveryPhraseReminderSubText": {
     "message": "비밀복구구문은 모든 계정을 관리합니다."
@@ -4546,7 +4546,7 @@
     "message": "계속하기 전에 비밀복구구문이 정확한지 확인하세요. 이 작업은 취소할 수 없습니다."
   },
   "restartMetamask": {
-    "message": "MetaMask 재시작"
+    "message": "CryptoBridge 재시작"
   },
   "restore": {
     "message": "복구"
@@ -4606,7 +4606,7 @@
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSeedWordsWarning2": {
-    "message": "MetaMask 지원팀은 이러한 정보를 절대로 묻지 않습니다,",
+    "message": "CryptoBridge 지원팀은 이러한 정보를 절대로 묻지 않습니다,",
     "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
@@ -5015,7 +5015,7 @@
     "message": "일부 지역에서 사용 가능"
   },
   "slideDebitCardTitle": {
-    "message": "MetaMask 직불카드"
+    "message": "CryptoBridge 직불카드"
   },
   "slideFundWalletDescription": {
     "message": "시작하려면 토큰을 추가하거나 전송하세요"
@@ -5111,7 +5111,7 @@
     "message": "트랜잭션 실패"
   },
   "smartTransactionErrorDescription": {
-    "message": "시장 상황이 갑자기 변하면 실패할 수 있습니다. 문제가 지속되면 MetaMask 고객 지원으로 문의하세요."
+    "message": "시장 상황이 갑자기 변하면 실패할 수 있습니다. 문제가 지속되면 CryptoBridge 고객 지원으로 문의하세요."
   },
   "smartTransactionPending": {
     "message": "트랜잭션이 제출되었습니다"
@@ -5531,7 +5531,7 @@
     "message": "상태 로그를 가져오는 도중 오류가 발생했습니다."
   },
   "stateLogFileName": {
-    "message": "MetaMask 상태 로그"
+    "message": "CryptoBridge 상태 로그"
   },
   "stateLogs": {
     "message": "상태 로그"
@@ -5805,20 +5805,20 @@
     "message": "높은 슬리피지"
   },
   "swapIncludesGasAndMetaMaskFee": {
-    "message": "가스비 및 $1%의 MetaMask 수수료가 포함됩니다",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "message": "가스비 및 $1%의 CryptoBridge 수수료가 포함됩니다",
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
-    "message": "$1%의 MetaMask 요금이 포함됩니다.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "message": "$1%의 CryptoBridge 요금이 포함됩니다.",
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
-    "message": "견적에는 $1%의 MetaMask 수수료가 반영됩니다",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "message": "견적에는 $1%의 CryptoBridge 수수료가 반영됩니다",
+    "description": "Provides information about the fee that CryptoBridge takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
-    "message": "$1% MetaMask 요금 - $2 포함",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "message": "$1% CryptoBridge 요금 - $2 포함",
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "스왑 자세히 알아보기"
@@ -5833,11 +5833,11 @@
     "message": "최대 슬리패지"
   },
   "swapMetaMaskFee": {
-    "message": "MetaMask 수수료"
+    "message": "CryptoBridge 수수료"
   },
   "swapMetaMaskFeeDescription": {
     "message": "$1%의 수수료는 자동으로 각 견적에 반영됩니다. 이는 MetaMask의 유동성 공급자 정보 집계용 소프트웨어 사용 라이선스 비용입니다.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 견적.",
@@ -6119,7 +6119,7 @@
     "message": "테마"
   },
   "themeDescription": {
-    "message": "원하는 MetaMask 테마를 선택하세요."
+    "message": "원하는 CryptoBridge 테마를 선택하세요."
   },
   "thirdPartySoftware": {
     "message": "타사 소프트웨어 알림",
@@ -6340,7 +6340,7 @@
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
   "troubleStarting": {
-    "message": "MetaMask 실행 중 오류가 발생했습니다. 일시적인 오류일 수 있으니 확장 프로그램을 재시작해 보세요."
+    "message": "CryptoBridge 실행 중 오류가 발생했습니다. 일시적인 오류일 수 있으니 확장 프로그램을 재시작해 보세요."
   },
   "tryAgain": {
     "message": "다시 시도"
@@ -6389,7 +6389,7 @@
   },
   "u2f": {
     "message": "U2F",
-    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
+    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect CryptoBridge to Ledger devices."
   },
   "unapproved": {
     "message": "승인되지 않음"
@@ -6565,7 +6565,7 @@
     "message": "컨펌"
   },
   "visitSupportDataConsentModalDescription": {
-    "message": "MetaMask 식별자와 앱 버전을 지원 센터에 공유하시겠습니까? 문제 해결에 도움이 될 수 있으며, 선택 사항입니다."
+    "message": "CryptoBridge 식별자와 앱 버전을 지원 센터에 공유하시겠습니까? 문제 해결에 도움이 될 수 있으며, 선택 사항입니다."
   },
   "visitSupportDataConsentModalReject": {
     "message": "공유하지 않기"

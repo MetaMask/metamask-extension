@@ -79,11 +79,11 @@
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "CryptoBridge Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -111,7 +111,7 @@
     "message": "自動登出計時器（分）"
   },
   "autoLockTimeLimitDescription": {
-    "message": "設定閒置分鐘上限，時間到時 MetaMask 將自動登出"
+    "message": "設定閒置分鐘上限，時間到時 CryptoBridge 將自動登出"
   },
   "average": {
     "message": "平均"
@@ -169,7 +169,7 @@
     "message": "鏈 ID 用來簽署這個網路上的交易。"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "您需要在 Google Chrome 瀏覽器使用 MetaMask 連結您的硬體錢包。"
+    "message": "您需要在 Google Chrome 瀏覽器使用 CryptoBridge 連結您的硬體錢包。"
   },
   "close": {
     "message": "關閉"
@@ -212,7 +212,7 @@
     "message": "您有 1 個帳戶已連結到這個網站。"
   },
   "connectedAccountsEmptyDescription": {
-    "message": "MetaMask 尚未連結到這個網站。要連結到一個 web3 的網站，在該網站上尋找「連線」的按鈕。"
+    "message": "CryptoBridge 尚未連結到這個網站。要連結到一個 web3 的網站，在該網站上尋找「連線」的按鈕。"
   },
   "connectedSites": {
     "message": "已連結的網站"
@@ -520,7 +520,7 @@
     "message": "連線硬體錢包"
   },
   "hardwareWalletsMsg": {
-    "message": "選擇要連線到 MetaMask 的硬體錢包"
+    "message": "選擇要連線到 CryptoBridge 的硬體錢包"
   },
   "here": {
     "message": "這裡",
@@ -550,7 +550,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": " 匯入的帳戶並不會與您原有 MetaMask 帳戶助憶詞建立關聯。請用以下連結瞭解匯入帳戶相關的資料： "
+    "message": " 匯入的帳戶並不會與您原有 CryptoBridge 帳戶助憶詞建立關聯。請用以下連結瞭解匯入帳戶相關的資料： "
   },
   "importTokensCamelCase": {
     "message": "Import Tokens"
@@ -560,7 +560,7 @@
     "description": "status showing that an account has been fully loaded into the keyring"
   },
   "infuraBlockedNotification": {
-    "message": "MetaMask 無法連線到區塊鏈主機。在$1查看可能的原因。",
+    "message": "CryptoBridge 無法連線到區塊鏈主機。在$1查看可能的原因。",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
   "initialTransactionConfirmed": {
@@ -678,7 +678,7 @@
     "message": "訊息"
   },
   "metaMaskConnectStatusParagraphOne": {
-    "message": "您現在能夠在 MetaMask 裡更仔細地控制您帳戶的連結。"
+    "message": "您現在能夠在 CryptoBridge 裡更仔細地控制您帳戶的連結。"
   },
   "metaMaskConnectStatusParagraphThree": {
     "message": "按這裡管理您已連結的帳戶。"
@@ -687,10 +687,10 @@
     "message": "連線狀態按鈕會顯示您正在造訪的網站是否已經連結到您目前選擇的帳戶。"
   },
   "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps 正在維護。請晚點再來看看。"
+    "message": "CryptoBridge Swaps 正在維護。請晚點再來看看。"
   },
   "metamaskVersion": {
-    "message": "MetaMask 版本"
+    "message": "CryptoBridge 版本"
   },
   "mismatchedChainLinkText": {
     "message": "驗證網路的詳細資料",
@@ -707,7 +707,7 @@
     "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
   },
   "needHelpLinkText": {
-    "message": "MetaMask 支援"
+    "message": "CryptoBridge 支援"
   },
   "needImportFile": {
     "message": "您必須選擇一個檔案來匯入。",
@@ -960,7 +960,7 @@
     "message": "選擇帳戶"
   },
   "selectAnAccountAlreadyConnected": {
-    "message": "這個帳戶已經連結到 MetaMask 了"
+    "message": "這個帳戶已經連結到 CryptoBridge 了"
   },
   "selectHdPath": {
     "message": "選擇 HD Path"
@@ -1043,7 +1043,7 @@
     "message": "在取得狀態紀錄時發生錯誤。"
   },
   "stateLogFileName": {
-    "message": "MetaMask 狀態紀錄"
+    "message": "CryptoBridge 狀態紀錄"
   },
   "stateLogs": {
     "message": "狀態紀錄"
@@ -1084,7 +1084,7 @@
     "message": "造訪我們的協助中心"
   },
   "switchEthereumChainConfirmationDescription": {
-    "message": "這將在 MetaMask 中將目前選擇的網路切換到剛才新增的網路："
+    "message": "這將在 CryptoBridge 中將目前選擇的網路切換到剛才新增的網路："
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "允許這個網站切換網路？"

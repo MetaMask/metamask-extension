@@ -29,11 +29,11 @@
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "CryptoBridge Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "CryptoBridge Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -55,7 +55,7 @@
     "message": "ยกเลิก"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "คุณต้องใช้ MetaMask บน Google Chrome เพื่อเชื่อมต่อกับ Hardware Wallet ของคุณ"
+    "message": "คุณต้องใช้ CryptoBridge บน Google Chrome เพื่อเชื่อมต่อกับ Hardware Wallet ของคุณ"
   },
   "confirm": {
     "message": "ยืนยัน"

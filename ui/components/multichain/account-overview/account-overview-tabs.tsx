@@ -136,17 +136,17 @@ export const AccountOverviewTabs = ({
         )} */}
 
         {/* {showNfts && ( */}
-        <Tab
+        {/* <Tab
           name={t('nfts')}
           tabKey="nfts"
           data-testid="account-overview__nfts-tab"
           {...tabProps}
         >
           <NftsTab />
-        </Tab>
+        </Tab> */}
         {/* )} */}
 
-        {/* {showActivity && (
+        {showActivity && (
           <Tab
             name={t('activity')}
             tabKey="activity"
@@ -155,7 +155,7 @@ export const AccountOverviewTabs = ({
           >
             <TransactionList boxProps={{ paddingTop: 3 }} />
           </Tab>
-        )} */}
+        )}
       </Tabs>
     </Box>
   );
