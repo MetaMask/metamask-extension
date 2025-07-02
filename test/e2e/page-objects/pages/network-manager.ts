@@ -45,6 +45,9 @@ class NetworkManager {
 
   private readonly networkManagerToggle = '[data-testid="sort-by-networks"]';
 
+  private readonly networkManagerCloseButton =
+    '[data-testid="modal-header-close-button"]';
+
   // private readonly allNetworksOption =
   //   '[data-testid="network-filter-all__button"]';
 
@@ -84,6 +87,18 @@ class NetworkManager {
     await this.driver.clickElement(this.networkManagerToggle);
   }
 
+  async closeNetworkManager(): Promise<void> {
+    console.log(`Closing the network manager`);
+    await this.driver.clickElement(this.networkManagerCloseButton);
+  }
+
+  async selectTab(tabName: string): Promise<void> {
+    console.log(`Selecting tab: ${tabName}`);
+    await this.driver.clickElement({
+      text: tabName,
+    });
+  }
+
   // Method to select/click on a network item
   async selectNetwork(networkName: string): Promise<void> {
     console.log(`Selecting network: ${networkName}`);
@@ -110,6 +125,19 @@ class NetworkManager {
       );
     }
     console.log(`Network ${networkName} is properly selected`);
+  }
+
+  async checkCustomNetworkIsSelected(caipChainId: string) {
+    const selector = `[data-testid="network-list-item-${caipChainId}"].multichain-network-list-item--selected`;
+    await this.driver.waitForSelector(selector);
+
+    // Additional verification: ensure the selected indicator is present
+    const indicatorSelector = `[data-testid="network-list-item-${caipChainId}"] .multichain-network-list-item__selected-indicator`;
+    await this.driver.waitForSelector(indicatorSelector);
+
+    console.log(
+      `Custom network ${caipChainId} is properly selected with background indication`,
+    );
   }
 
   async checkNetworkIsDeselected(networkName: string): Promise<void> {
