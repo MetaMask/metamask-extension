@@ -73,6 +73,7 @@ import { PermissionLogController } from '@metamask/permission-log-controller';
 
 import { MultichainRouter } from '@metamask/snaps-controllers';
 import {
+  createPreinstalledSnapsMiddleware,
   createSnapsMethodMiddleware,
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
@@ -418,6 +419,7 @@ import { AccountTreeControllerInit } from './controller-init/accounts/account-tr
 import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
+import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -6901,6 +6903,26 @@ export default class MetamaskController extends EventEmitter {
     );
 
     engine.push(createUnsupportedMethodMiddleware());
+
+    if (subjectType === SubjectType.Snap && isSnapPreinstalled(origin)) {
+      engine.push(
+        createPreinstalledSnapsMiddleware({
+          getPermissions: this.permissionController.getPermissions.bind(
+            this.permissionController,
+            origin,
+          ),
+          getAllEvmAccounts: () =>
+            this.controllerMessenger
+              .call('AccountsController:listAccounts')
+              .map((account) => account.address),
+          grantPermissions: (approvedPermissions) =>
+            this.controllerMessenger.call(
+              'PermissionController:grantPermissions',
+              { approvedPermissions, subject: { origin } },
+            ),
+        }),
+      );
+    }
 
     // Legacy RPC method that needs to be implemented _ahead of_ the permission
     // middleware.
