@@ -74,6 +74,15 @@ class PrivacySettings {
 
   private readonly revealSrpButton = '[data-testid="reveal-seed-words"]';
 
+  private readonly changePasswordButton =
+    '[data-testid="change-password-button"]';
+
+  private readonly passwordChangeSuccessToast =
+    '[data-testid="password-change-toast-success"]';
+
+  private readonly passwordChangeErrorToast =
+    '[data-testid="password-change-toast-error"]';
+
   private readonly revealSrpNextButton = {
     text: 'Next',
     tag: 'button',
@@ -241,6 +250,11 @@ class PrivacySettings {
     // THe e2e clicks the reveal SRP too quickly before the component checks if there are multiple SRPs
     await this.driver.delay(1000);
     await this.driver.clickElement(this.revealSrpButton);
+  }
+
+  async openChangePassword(): Promise<void> {
+    console.log('Open change password on privacy settings page');
+    await this.driver.clickElement(this.changePasswordButton);
   }
 
   async openRevealSrpQuiz(srpIndex: number = 1): Promise<void> {
