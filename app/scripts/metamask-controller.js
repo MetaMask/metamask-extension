@@ -1714,8 +1714,6 @@ export default class MetamaskController extends EventEmitter {
       addTransactionBatchFn: (...args) =>
         this.txController.addTransactionBatch(...args),
       estimateGasFeeFn: (...args) => this.txController.estimateGasFee(...args),
-      addUserOperationFromTransactionFn: (...args) =>
-        this.userOperationController.addUserOperationFromTransaction(...args),
       updateTransactionFn: (...args) =>
         this.txController.updateTransaction(...args),
       config: {
