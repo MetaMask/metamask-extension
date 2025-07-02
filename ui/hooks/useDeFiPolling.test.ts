@@ -12,14 +12,9 @@ jest.mock('../store/actions', () => ({
   }),
   deFiStopPolling: jest.fn(),
 }));
-let originalPortfolioView: string | undefined;
 
 describe('useDeFiPolling', () => {
   beforeEach(() => {
-    // Mock process.env.PORTFOLIO_VIEW
-    originalPortfolioView = process.env.PORTFOLIO_VIEW;
-    process.env.PORTFOLIO_VIEW = 'true'; // Set your desired mock value here
-
     mockPromises = [];
     jest.clearAllMocks();
   });
