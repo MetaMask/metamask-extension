@@ -608,6 +608,8 @@ class TestDapp {
    *
    * @param value - The address to be checked
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_TokenAddressesValue(value: string) {
     console.log('Verify token address');
     await this.driver.waitForSelector({
