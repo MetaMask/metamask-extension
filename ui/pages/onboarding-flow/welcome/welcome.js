@@ -29,7 +29,12 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
-import { LOGIN_OPTION, LOGIN_TYPE, WelcomePageState } from './types';
+import {
+  LOGIN_ERROR,
+  LOGIN_OPTION,
+  LOGIN_TYPE,
+  WelcomePageState,
+} from './types';
 import LoginErrorModal from './login-error-modal';
 
 export default function OnboardingWelcome({
@@ -178,7 +183,7 @@ export default function OnboardingWelcome({
     if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
       setLoginError(null);
     } else {
-      setLoginError(errorMessage);
+      setLoginError(LOGIN_ERROR.GENERIC);
     }
   }, []);
 
@@ -186,12 +191,12 @@ export default function OnboardingWelcome({
     async (loginType, loginOption) => {
       try {
         if (loginOption === LOGIN_OPTION.NEW && loginType === LOGIN_TYPE.SRP) {
-          onCreateClick();
+          await onCreateClick();
         } else if (
           loginOption === LOGIN_OPTION.EXISTING &&
           loginType === LOGIN_TYPE.SRP
         ) {
-          onImportClick();
+          await onImportClick();
         } else if (isSeedlessOnboardingFeatureEnabled) {
           if (loginOption === LOGIN_OPTION.NEW) {
             await onSocialLoginCreateClick(loginType);
