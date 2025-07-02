@@ -237,20 +237,6 @@ const TEST_ADDRESS_3 = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
 const TEST_SEED_ALT =
   'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
-const TEST_INTERNAL_ACCOUNT = {
-  id: '2d47e693-26c2-47cb-b374-6151199bbe3f',
-  address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-  metadata: {
-    name: 'Account 1',
-    keyring: {
-      type: 'HD Key Tree',
-    },
-    lastSelected: 0,
-  },
-  options: {},
-  methods: ETH_EOA_METHODS,
-  type: EthAccountType.Eoa,
-};
 
 const ALT_MAINNET_RPC_URL = 'http://localhost:8545';
 const POLYGON_RPC_URL = 'https://polygon.llamarpc.com';
@@ -310,6 +296,7 @@ const noop = () => undefined;
 
 describe('MetaMaskController', () => {
   beforeAll(async () => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
     await ganacheServer.start();
   });
 
@@ -389,10 +376,6 @@ describe('MetaMaskController', () => {
 
     beforeEach(() => {
       jest.spyOn(MetaMaskController.prototype, 'resetStates');
-
-      jest
-        .spyOn(TransactionController.prototype, 'updateIncomingTransactions')
-        .mockReturnValue();
 
       jest
         .spyOn(
@@ -687,6 +670,62 @@ describe('MetaMaskController', () => {
         );
 
         expect(vault1).toStrictEqual(vault2);
+      });
+    });
+
+    describe('#createSeedPhraseBackup', () => {
+      it('should create a seed phrase backup', async () => {
+        const password = 'a-fake-password';
+        const mockSeedPhrase =
+          'mock seed phrase one two three four five six seven eight nine ten';
+        const mockEncodedSeedPhrase = Array.from(
+          Buffer.from(mockSeedPhrase, 'utf8').values(),
+        );
+
+        const createToprfKeyAndBackupSeedPhraseSpy = jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'createToprfKeyAndBackupSeedPhrase',
+          )
+          .mockResolvedValueOnce();
+
+        const primaryKeyring =
+          await metamaskController.createNewVaultAndKeychain(password);
+
+        await metamaskController.createSeedPhraseBackup(
+          password,
+          mockEncodedSeedPhrase,
+          primaryKeyring.metadata.id,
+        );
+
+        expect(createToprfKeyAndBackupSeedPhraseSpy).toHaveBeenCalled();
+      });
+    });
+
+    describe('#fetchAllSecretData', () => {
+      it('should fetch seedphrase backup correctly', async () => {
+        const password = 'a-fake-password';
+        const mockSeedPhrase =
+          'naive amused curtain never chef exotic ecology tomato field hamster then harvest';
+
+        const fetchSrpBackupSpy = jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'fetchAllSeedPhrases',
+          )
+          .mockResolvedValueOnce([
+            new Uint8Array([
+              149, 4, 65, 0, 177, 1, 168, 4, 58, 1, 128, 2, 48, 2, 32, 7, 175,
+              2, 69, 3, 1, 7, 75, 3,
+            ]),
+          ]);
+
+        const [srpBackup] = await metamaskController.fetchAllSecretData(
+          password,
+        );
+
+        expect(fetchSrpBackupSpy).toHaveBeenCalledWith(password);
+        expect(srpBackup.toString('utf8')).toStrictEqual(mockSeedPhrase);
       });
     });
 
@@ -3585,65 +3624,6 @@ describe('MetaMaskController', () => {
         );
 
         expect(tokenSymbol).toStrictEqual(null);
-      });
-    });
-
-    describe('incoming transactions', () => {
-      it('starts incoming transaction polling if useExternalServices is enabled for that chainId', async () => {
-        expect(
-          TransactionController.prototype.startIncomingTransactionPolling,
-        ).not.toHaveBeenCalled();
-
-        await simulatePreferencesChange({
-          useExternalServices: true,
-        });
-
-        expect(
-          TransactionController.prototype.startIncomingTransactionPolling,
-        ).toHaveBeenCalledTimes(1);
-      });
-
-      it('stops incoming transaction polling if useExternalServices is disabled for that chainId', async () => {
-        expect(
-          TransactionController.prototype.stopIncomingTransactionPolling,
-        ).not.toHaveBeenCalled();
-
-        await simulatePreferencesChange({
-          useExternalServices: false,
-        });
-
-        expect(
-          TransactionController.prototype.stopIncomingTransactionPolling,
-        ).toHaveBeenCalledTimes(1);
-      });
-
-      it('updates incoming transactions when changing account', async () => {
-        expect(
-          TransactionController.prototype.updateIncomingTransactions,
-        ).not.toHaveBeenCalled();
-
-        metamaskController.controllerMessenger.publish(
-          'AccountsController:selectedAccountChange',
-          TEST_INTERNAL_ACCOUNT,
-        );
-
-        expect(
-          TransactionController.prototype.updateIncomingTransactions,
-        ).toHaveBeenCalledTimes(1);
-      });
-
-      it('updates incoming transactions when changing network', async () => {
-        expect(
-          TransactionController.prototype.updateIncomingTransactions,
-        ).not.toHaveBeenCalled();
-
-        await Messenger.prototype.subscribe.mock.calls
-          .filter((args) => args[0] === 'NetworkController:networkDidChange')
-          .slice(-1)[0][1]();
-
-        expect(
-          TransactionController.prototype.updateIncomingTransactions,
-        ).toHaveBeenCalledTimes(1);
       });
     });
 

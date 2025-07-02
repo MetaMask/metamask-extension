@@ -45,6 +45,42 @@ class NetworkPermissionSelectModal {
   }
 
   /**
+   * Selects or deselects a network on the network permission select modal
+   *
+   * @param options - The options object
+   * @param options.networkName - The name of the network to select or deselect
+   * @param options.shouldBeSelected - Whether the network should be selected (true) or deselected (false). Defaults to true
+   */
+  async selectNetwork({
+    networkName,
+    shouldBeSelected = true,
+  }: {
+    networkName: string;
+    shouldBeSelected?: boolean;
+  }): Promise<void> {
+    console.log(
+      `Selecting network ${networkName} on network permission select modal. Should be selected: ${shouldBeSelected}`,
+    );
+    const networkItems = await this.driver.findElements(this.networkListItems);
+    for (const networkItem of networkItems) {
+      const networkNameDiv = await networkItem.findElement(
+        By.css('div[data-testid]'),
+      );
+      const network = await networkNameDiv.getAttribute('data-testid');
+      if (network === networkName) {
+        const checkbox = await networkItem.findElement(By.css(this.checkBox));
+        const isChecked = await checkbox.isSelected();
+        if (shouldBeSelected && !isChecked) {
+          await checkbox.click();
+        } else if (!shouldBeSelected && isChecked) {
+          await checkbox.click();
+        }
+        break;
+      }
+    }
+  }
+
+  /**
    * Update Multichain network edit form so that only matching networks are selected.
    *
    * @param selectedNetworkNames - Array of network names that should be selected
