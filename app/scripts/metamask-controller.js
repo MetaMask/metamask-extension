@@ -174,7 +174,10 @@ import {
 } from '@metamask/bridge-status-controller';
 
 import { ErrorReportingService } from '@metamask/error-reporting-service';
-import { RecoveryError } from '@metamask/seedless-onboarding-controller';
+import {
+  RecoveryError,
+  SecretType,
+} from '@metamask/seedless-onboarding-controller';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -4685,14 +4688,10 @@ export default class MetamaskController extends EventEmitter {
       // fetch all seed phrases
       // seedPhrases are sorted by creation date, the latest seed phrase is the first one in the array
       const allSeedPhrases =
-        await this.seedlessOnboardingController.fetchAllSeedPhrases(password);
-
-      if (allSeedPhrases.length === 0) {
-        return null;
-      }
+        await this.seedlessOnboardingController.fetchAllSecretData(password);
 
       return allSeedPhrases.map((phrase) =>
-        this._convertEnglishWordlistIndicesToCodepoints(phrase),
+        this._convertEnglishWordlistIndicesToCodepoints(phrase.data),
       );
     } catch (error) {
       log.error(
@@ -4882,7 +4881,8 @@ export default class MetamaskController extends EventEmitter {
             this.keyringController.state.keyrings[0].metadata.id;
           this.seedlessOnboardingController.updateBackupMetadataState({
             keyringId: primaryKeyringId,
-            seedPhrase: seedPhraseAsUint8Array,
+            data: seedPhraseAsUint8Array,
+            type: SecretType.Mnemonic,
           });
         }
       }
@@ -8710,6 +8710,11 @@ export default class MetamaskController extends EventEmitter {
       trackEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      refreshOAuthToken: this.oauthService.getNewRefreshToken.bind(
+        this.oauthService,
+      ),
+      revokeAndGetNewRefreshToken:
+        this.oauthService.revokeAndGetNewRefreshToken.bind(this.oauthService),
     };
 
     return initControllers({
