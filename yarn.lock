@@ -14066,16 +14066,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/imagemin@npm:*":
-  version: 9.0.1
-  resolution: "@types/imagemin@npm:9.0.1"
-  dependencies:
-    "@types/node": "npm:*"
-  checksum: 10/7aeb27f13557dcfed24a39ee7526ce0bd054479ef783c6c705445db73bb323b9e61c1726e8620c3b653228222fb10a837b844ea8afcefbb2814f7c426ef8caf3
-  languageName: node
-  linkType: hard
-
-"@types/imagemin@npm:^8":
+"@types/imagemin@npm:*, @types/imagemin@npm:^8":
   version: 8.0.5
   resolution: "@types/imagemin@npm:8.0.5"
   dependencies:
