@@ -4728,10 +4728,8 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // 1. fetch all seed phrases
-    const secretData =
+    const [rootSRP, ...otherSRPs] =
       await this.seedlessOnboardingController.fetchAllSeedPhrases();
-
-    const [rootSRP, ...otherSRPs] = secretData.mnemonic;
     if (!rootSRP) {
       throw new Error('No root SRP found');
     }
