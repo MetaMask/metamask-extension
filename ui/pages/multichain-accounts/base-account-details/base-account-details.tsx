@@ -5,6 +5,7 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
+  getAccountTypeForKeyring,
   getHardwareWalletType,
   getHDEntropyIndex,
   getUseBlockie,
@@ -57,6 +58,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { formatAccountType } from '../../../helpers/utils/metrics';
 
 type BaseAccountDetailsProps = {
   children?: React.ReactNode | React.ReactNode[];
@@ -93,6 +95,9 @@ export const BaseAccountDetails = ({
     history.push(`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/${address}`);
   };
 
+  const { keyring } = account.metadata;
+  const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
+
   const handleNavigation = useCallback(() => {
     dispatch(setAccountDetailsAddress(''));
     history.push(DEFAULT_ROUTE);
@@ -120,7 +125,7 @@ export const BaseAccountDetails = ({
       properties: {
         account_hardware_type: deviceName,
         chain_id: chainId,
-        account_type: account.type,
+        account_type: accountType,
         hd_entropy_index: hdEntropyIndex,
         caip_chain_id: formatChainIdToCaip(chainId),
       },
