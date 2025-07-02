@@ -5,6 +5,14 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import TermsOfUsePopup from './terms-of-use-popup';
 
+const mockIntersectionObserver = jest.fn();
+mockIntersectionObserver.mockReturnValue({
+  observe: () => null,
+  unobserve: () => null,
+  disconnect: () => null,
+});
+window.IntersectionObserver = mockIntersectionObserver;
+
 const render = () => {
   const store = configureStore({
     metamask: {
@@ -12,25 +20,21 @@ const render = () => {
     },
   });
   const onAccept = jest.fn();
-  return renderWithProvider(<TermsOfUsePopup onAccept={onAccept} />, store);
+  const onClose = jest.fn();
+  return renderWithProvider(
+    <TermsOfUsePopup onAccept={onAccept} isOpen onClose={onClose} />,
+    store,
+  );
 };
 
 describe('TermsOfUsePopup', () => {
-  beforeEach(() => {
-    const mockIntersectionObserver = jest.fn();
-    mockIntersectionObserver.mockReturnValue({
-      observe: () => null,
-      unobserve: () => null,
-      disconnect: () => null,
-    });
-    window.IntersectionObserver = mockIntersectionObserver;
-  });
-
   it('renders TermsOfUse component and shows Terms of Use text', () => {
     render();
-    expect(
-      screen.getByText('Our Terms of Use have updated'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Review our Terms of Use')).toBeInTheDocument();
+
+    const agreeButton = screen.getByTestId('terms-of-use-agree-button');
+    expect(agreeButton).toBeInTheDocument();
+    expect(agreeButton).toBeDisabled();
   });
 
   it('scrolls down when handleScrollDownClick is called', () => {
@@ -40,7 +44,8 @@ describe('TermsOfUsePopup', () => {
 
     render();
     const button = document.querySelector(
-      "[data-testid='popover-scroll-button']",
+      "[data-testid='terms-of-use-scroll-button']",
+      5000,
     );
 
     fireEvent.click(button);

@@ -2,7 +2,8 @@
 
 .srp-list {
   &__container {
-    overflow-y: hidden;
+    max-height: 500px;
+    overflow-y: auto;
   }
 
   &__divider {

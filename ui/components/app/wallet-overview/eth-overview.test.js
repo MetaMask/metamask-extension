@@ -12,7 +12,6 @@ import useMultiPolling from '../../../hooks/useMultiPolling';
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { setBackgroundConnection } from '../../../store/background-connection';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -88,6 +87,11 @@ describe('EthOverview', () => {
   const mockStore = {
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      remoteFeatureFlags: {
+        bridgeConfig: {
+          support: true,
+        },
+      },
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
           '0x1': { address: mockEvmAccount1.address, balance: '0x1F4' },
@@ -108,6 +112,12 @@ describe('EthOverview', () => {
       preferences: {
         showNativeTokenAsMainBalance: true,
         tokenNetworkFilter: {},
+      },
+      enabledNetworkMap: {
+        eip155: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.SEPOLIA]: true,
+        },
       },
       useExternalServices: true,
       useCurrencyRateCheck: true,
@@ -145,7 +155,6 @@ describe('EthOverview', () => {
       multichainNetworkConfigurationsByChainId:
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
-      bitcoinSupportEnabled: true,
     },
     ramps: {
       buyableChains: defaultBuyableChains,
@@ -173,7 +182,6 @@ describe('EthOverview', () => {
         },
       });
       openTabSpy = jest.spyOn(global.platform, 'openTab');
-      setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() });
     });
 
     beforeEach(() => {
@@ -281,8 +289,8 @@ describe('EthOverview', () => {
             },
           },
           useExternalServices: true,
-          bridgeFeatureFlags: {
-            extensionConfig: {
+          remoteFeatureFlags: {
+            bridgeConfig: {
               support: false,
             },
           },
@@ -331,6 +339,12 @@ describe('EthOverview', () => {
         'data-original-title',
         'Unavailable on this network',
       );
+    });
+
+    it('should always show the Receive button', () => {
+      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+      const receiveButton = queryByTestId(ETH_OVERVIEW_RECEIVE);
+      expect(receiveButton).toBeInTheDocument();
     });
 
     it('should always show the Portfolio button', () => {

@@ -131,24 +131,5 @@ describe('extension platform', () => {
         `Transaction 1 failed! ${errorMessage}`,
       );
     });
-
-    it('should show failed transaction without nonce', async () => {
-      const txMeta = {
-        txParams: {},
-        error: { message: 'Error message' },
-      };
-      const extensionPlatform = new ExtensionPlatform();
-      const showNotificationSpy = jest.spyOn(
-        extensionPlatform,
-        '_showNotification',
-      );
-
-      await extensionPlatform._showFailedTransaction(txMeta);
-
-      expect(showNotificationSpy).toHaveBeenCalledWith(
-        'Failed transaction',
-        `Transaction failed! ${txMeta.error.message}`,
-      );
-    });
   });
 });

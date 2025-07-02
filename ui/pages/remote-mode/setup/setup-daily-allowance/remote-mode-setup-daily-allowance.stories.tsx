@@ -5,9 +5,17 @@ import configureStore from '../../../../store/store';
 import RemoteModeSetupDailyAllowance from './remote-mode-setup-daily-allowance.component';
 import testData from '../../../../../.storybook/test-data';
 
-import { InternalAccount } from '@metamask/keyring-internal-api';
+const mockDelegationState = {
+  delegations: {},
+};
 
-const store = configureStore(testData);
+const store = configureStore({
+  ...testData,
+  metamask: {
+    ...testData.metamask,
+    ...mockDelegationState,
+  },
+});
 
 export default {
   title: 'Pages/Vault/RemoteMode/SetupDailyAllowance',
@@ -21,6 +29,4 @@ export default {
   ],
 };
 
-export const Default = () => (
-  <RemoteModeSetupDailyAllowance />
-);
+export const Default = () => <RemoteModeSetupDailyAllowance />;

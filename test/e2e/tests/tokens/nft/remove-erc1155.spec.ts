@@ -6,10 +6,13 @@ import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import { setupAutoDetectMocking } from './mocks';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { setupAutoDetectMocking } from './mocks';
+
+const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
 
 async function mockIPFSRequest(mockServer: MockttpServer) {
   return [
@@ -28,13 +31,22 @@ describe('Remove ERC1155 NFT', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
+        fixtures: new FixtureBuilder()
+          .withNftControllerERC1155()
+          .withEnabledNetworks({
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.LOCALHOST]: true,
+            },
+          })
+          .build(),
         smartContract,
         title: this.test?.fullTitle(),
         testSpecificMock: mockIPFSRequest,
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         // Open the NFT details page and click to remove NFT
         await new Homepage(driver).goToNftTab();
@@ -56,7 +68,16 @@ describe('Remove ERC1155 NFT', function () {
     const driverOptions = { mock: true };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnLinea().build(),
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnLinea()
+          .withEnabledNetworks({
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.LOCALHOST]: true,
+            },
+          })
+          .build(),
         driverOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: setupAutoDetectMocking,
@@ -81,6 +102,14 @@ describe('Remove ERC1155 NFT', function () {
         await homepage.check_expectedBalanceIsDisplayed();
         await homepage.goToNftTab();
         const nftListPage = new NftListPage(driver);
+        if (isGlobalNetworkSelectorRemoved) {
+          await driver.clickElement('[data-testid="sort-by-networks"]');
+          await driver.clickElement(
+            '[data-testid="modal-header-close-button"]',
+          );
+        } else {
+          await nftListPage.filterNftsByNetworks('Popular networks');
+        }
         await nftListPage.check_nftNameIsDisplayed(
           'ENS: Ethereum Name Service',
         );

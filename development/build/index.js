@@ -11,10 +11,13 @@ const { hideBin } = require('yargs/helpers');
 const { sync: globby } = require('globby');
 const lavapack = require('@lavamoat/lavapack');
 const difference = require('lodash/difference');
-const { intersection } = require('lodash');
+const intersection = require('lodash/intersection');
+
+const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 const { getVersion } = require('../lib/get-version');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { BUILD_TARGETS, TASKS } = require('./constants');
+const { getActiveFeatures, setActiveFeatures } = require('./config');
 const {
   createTask,
   composeSeries,
@@ -78,17 +81,17 @@ async function defineAndRunBuildTasks() {
     buildType,
     entryTask,
     isLavaMoat,
+    platform,
     policyOnly,
     shouldIncludeLockdown,
+    shouldIncludeOcapKernel,
     shouldIncludeSnow,
     shouldLintFenceFiles,
     skipStats,
     version,
-    platform,
   } = await parseArgv();
 
   const isRootTask = Object.values(BUILD_TARGETS).includes(entryTask);
-
   if (isRootTask) {
     // scuttle on production/tests environment only
     const shouldScuttle = entryTask !== BUILD_TARGETS.DEV;
@@ -144,6 +147,9 @@ async function defineAndRunBuildTasks() {
       'stateHooks',
       'sentryHooks',
       'sentry',
+      'logEncryptedVault',
+      // Globals used by `react-dom`
+      'getSelection',
     ];
 
     if (
@@ -156,6 +162,10 @@ async function defineAndRunBuildTasks() {
         // in the future, more of the globals above can be put in this list
         'Proxy',
         'ret_nodes',
+
+        'browser', // for testing vault corruption
+        'chrome', // for testing vault corruption
+        `indexedDB`, // for testing vault corruption
       ];
     }
 
@@ -178,29 +188,30 @@ async function defineAndRunBuildTasks() {
 
   const browserVersionMap = getBrowserVersionMap(browserPlatforms, version);
 
-  const ignoredFiles = getIgnoredFiles(buildType);
+  const ignoredFiles = getIgnoredFiles();
 
   const staticTasks = createStaticAssetTasks({
-    livereload,
     browserPlatforms,
-    shouldIncludeLockdown,
-    shouldIncludeSnow,
     buildType,
+    livereload,
+    shouldIncludeLockdown,
+    shouldIncludeOcapKernel,
+    shouldIncludeSnow,
   });
 
   const manifestTasks = createManifestTasks({
+    applyLavaMoat,
     browserPlatforms,
     browserVersionMap,
     buildType,
-    applyLavaMoat,
-    shouldIncludeSnow,
     entryTask,
+    shouldIncludeOcapKernel,
+    shouldIncludeSnow,
   });
 
   const styleTasks = createStyleTasks({ livereload });
 
   const scriptTasks = createScriptTasks({
-    shouldIncludeSnow,
     applyLavaMoat,
     browserPlatforms,
     buildType,
@@ -208,6 +219,8 @@ async function defineAndRunBuildTasks() {
     isLavaMoat,
     livereload,
     policyOnly,
+    shouldIncludeSnow,
+    shouldIncludeOcapKernel,
     shouldLintFenceFiles,
     version,
   });
@@ -255,7 +268,11 @@ async function defineAndRunBuildTasks() {
     composeSeries(
       clean,
       styleTasks.prod,
-      composeParallel(scriptTasks.dist, staticTasks.prod, manifestTasks.prod),
+      composeParallel(
+        scriptTasks.dist,
+        staticTasks.prod,
+        manifestTasks.scriptDist,
+      ),
       zip,
     ),
   );
@@ -364,6 +381,12 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
           hidden: true,
           type: 'string',
         })
+        .option('features', {
+          default: [],
+          description:
+            'Specify a list of features to include in the build, in addition to the features of the build type.',
+          type: 'array',
+        })
         .check((args) => {
           if (!Number.isInteger(args.buildVersion)) {
             throw new Error(
@@ -389,7 +412,10 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     skipStats,
     task,
     platform,
+    features: additionalFeatures,
   } = argv;
+
+  setActiveFeatures(buildType, additionalFeatures);
 
   // Manually default this to `false` for dev and test builds.
   const shouldLintFenceFiles =
@@ -404,29 +430,39 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     await getConfig(buildType, environment);
   }
 
+  const shouldIncludeOcapKernel = getActiveFeatures().includes('ocap-kernel');
+  if (shouldIncludeOcapKernel) {
+    if (!isManifestV3) {
+      throw new Error('Ocap Kernel is only supported in manifest v3');
+    }
+    if (!lockdown) {
+      throw new Error('Ocap Kernel is not supported without lockdown');
+    }
+  }
+
   return {
     applyLavaMoat,
     buildType,
     entryTask: task,
     isLavaMoat: process.argv[0].includes('lavamoat'),
+    platform,
     policyOnly,
     shouldIncludeLockdown: lockdown,
+    shouldIncludeOcapKernel,
     shouldIncludeSnow: snow,
     shouldLintFenceFiles,
     skipStats,
     version,
-    platform,
   };
 }
 
 /**
  * Gets the files to be ignored by the current build, if any.
  *
- * @param {string} currentBuildType - The type of the current build.
  * @returns {string[] | null} The array of files to be ignored by the current
  * build, or `null` if no files are to be ignored.
  */
-function getIgnoredFiles(currentBuildType) {
+function getIgnoredFiles() {
   const buildConfig = loadBuildTypesConfig();
   const cwd = process.cwd();
 
@@ -443,8 +479,7 @@ function getIgnoredFiles(currentBuildType) {
     );
 
   const allFeatures = Object.keys(buildConfig.features);
-  const activeFeatures =
-    buildConfig.buildTypes[currentBuildType].features ?? [];
+  const activeFeatures = getActiveFeatures();
   const inactiveFeatures = difference(allFeatures, activeFeatures);
 
   const ignoredPaths = exclusiveAssetsForFeatures(inactiveFeatures);
@@ -453,9 +488,9 @@ function getIgnoredFiles(currentBuildType) {
   const activePaths = exclusiveAssetsForFeatures(activeFeatures);
   const conflicts = intersection(activePaths, ignoredPaths);
   if (conflicts.length !== 0) {
-    throw new Error(`Below paths are required exclusively by both active and inactive features resulting in a conflict:
+    throw new Error(`The following paths are required exclusively by both active and inactive features:
 \t-> ${conflicts.join('\n\t-> ')}
-Please fix builds.yml`);
+Please fix builds.yml or specify a compatible set of features.`);
   }
 
   return ignoredPaths;

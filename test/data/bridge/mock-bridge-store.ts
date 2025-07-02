@@ -3,7 +3,8 @@ import {
   getDefaultBridgeControllerState,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
-import { DEFAULT_BRIDGE_STATUS_STATE } from '../../../app/scripts/controllers/bridge-status/constants';
+import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
 import { createSwapsMockStore } from '../../jest/mock-store';
@@ -49,11 +50,16 @@ export const createBridgeMockStore = ({
     },
     localeMessages: { currentLocale: 'es_419' },
     metamask: {
+      ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
       ...swapsStore.metamask,
       ...mockNetworkState(
         { chainId: CHAIN_IDS.MAINNET },
         { chainId: CHAIN_IDS.LINEA_MAINNET },
       ),
+      multichainNetworkConfigurationsByChainId:
+        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      selectedMultichainNetworkChainId: 'eip155:1',
+      isEvmSelected: true,
       completedOnboarding: true,
       gasFeeEstimates: {
         estimatedBaseFee: '0.00010456',
@@ -79,11 +85,15 @@ export const createBridgeMockStore = ({
       ...metamaskStateOverrides,
       ...{
         ...getDefaultBridgeControllerState(),
-        bridgeFeatureFlags: {
+        remoteFeatureFlags: {
           ...featureFlagOverrides,
-          extensionConfig: {
+          bridgeConfig: {
+            minimumVersion: '0.0.0',
             support: false,
+            refreshRate: 5000,
+            maxRefreshCount: 5,
             ...featureFlagOverrides?.extensionConfig,
+            ...featureFlagOverrides?.bridgeConfig,
             chains: {
               [formatChainIdToCaip('0x1')]: {
                 isActiveSrc: true,
@@ -91,7 +101,9 @@ export const createBridgeMockStore = ({
               },
               ...Object.fromEntries(
                 Object.entries(
-                  featureFlagOverrides?.extensionConfig?.chains ?? {},
+                  featureFlagOverrides?.extensionConfig?.chains ??
+                    featureFlagOverrides?.bridgeConfig?.chains ??
+                    {},
                 ).map(([chainId, config]) => [
                   formatChainIdToCaip(chainId),
                   config,
@@ -102,10 +114,7 @@ export const createBridgeMockStore = ({
         },
       },
       ...bridgeStateOverrides,
-      bridgeStatusState: {
-        ...DEFAULT_BRIDGE_STATUS_STATE,
-        ...bridgeStatusStateOverrides,
-      },
+      ...bridgeStatusStateOverrides,
     },
     send: {
       swapsBlockedTokens: [],

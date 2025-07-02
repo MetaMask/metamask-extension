@@ -86,10 +86,12 @@ describe('Notifications Activation', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedState,
-          isProfileSyncingEnabled: false,
+          isBackupAndSyncEnabled: false,
           isNotificationServicesEnabled: false,
           isFeatureAnnouncementsEnabled: false,
           isMetamaskNotificationsFeatureSeen: false,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -130,10 +132,12 @@ describe('Notifications Activation', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedState,
-          isProfileSyncingEnabled: false,
+          isBackupAndSyncEnabled: false,
           isNotificationServicesEnabled: false,
           isFeatureAnnouncementsEnabled: false,
           isMetamaskNotificationsFeatureSeen: false,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
         },
         backgroundConnection: backgroundConnectionMocked,
       });

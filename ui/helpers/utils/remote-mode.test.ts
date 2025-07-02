@@ -1,5 +1,11 @@
+import { Hex } from 'viem';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import { isRemoteModeSupported } from './remote-mode';
+
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  getChainNamesForDisplayByIds,
+  isRemoteModeSupported,
+} from './remote-mode';
 
 describe('Remote Mode Utils', () => {
   describe('isRemoteModeSupported', () => {
@@ -59,5 +65,35 @@ describe('Remote Mode Utils', () => {
 
       expect(isRemoteModeSupported(unsupportedAccount)).toBe(false);
     });
+  });
+});
+
+describe('getChainNamesForDisplayByIds', () => {
+  it('returns the correct chain name for a single known chain', () => {
+    expect(getChainNamesForDisplayByIds([CHAIN_IDS.MAINNET])).toBe(
+      'Ethereum Mainnet',
+    );
+  });
+
+  it('returns multiple chain names separated by commas', () => {
+    expect(
+      getChainNamesForDisplayByIds([CHAIN_IDS.MAINNET, CHAIN_IDS.SEPOLIA]),
+    ).toBe('Ethereum Mainnet, Sepolia');
+  });
+
+  it('returns "Unknown" for unrecognized chain IDs', () => {
+    expect(getChainNamesForDisplayByIds(['0x1234' as Hex])).toBe(
+      'Unknown(0x1234)',
+    );
+  });
+
+  it('handles a mix of known and unknown chain IDs', () => {
+    expect(
+      getChainNamesForDisplayByIds([CHAIN_IDS.MAINNET, '0x1234' as Hex]),
+    ).toBe('Ethereum Mainnet, Unknown(0x1234)');
+  });
+
+  it('returns an empty string for empty input', () => {
+    expect(getChainNamesForDisplayByIds([])).toBe('');
   });
 });

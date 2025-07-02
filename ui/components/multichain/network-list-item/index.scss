@@ -2,11 +2,14 @@
   position: relative;
   cursor: pointer;
 
-  &:not(.multichain-network-list-item--selected, .multichain-network-list-item--disabled) {
-    &:hover,
-    &:focus-within {
+  &:not(.multichain-network-list-item--selected, .multichain-network-list-item--disabled, .multichain-network-list-item--not-selectable) {
+    &:hover {
       background: var(--color-background-default-hover);
     }
+  }
+
+  &--not-selectable {
+    cursor: default;
   }
 
   &--disabled {
@@ -48,5 +51,9 @@
 
   &__rpc-endpoint {
     max-width: 100%;
+  }
+
+  .mm-button-icon {
+    --button-icon-size: 20px;
   }
 }
