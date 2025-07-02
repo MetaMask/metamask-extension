@@ -197,8 +197,6 @@ function createScriptTasks({
       standardEntryPoints.push('offscreen');
     }
 
-    // Note: devtools and kernel-panel are built separately as simple bundles
-
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
@@ -244,7 +242,7 @@ function createScriptTasks({
       createSentryBundle({ buildTarget }),
     );
 
-    // task for initiating browser livereload and building devtools
+    // task for initiating browser livereload
     const initiateLiveReload = async () => {
       if (isDevBuild(buildTarget)) {
         // trigger live reload when the bundles are updated
@@ -268,6 +266,7 @@ function createScriptTasks({
       installSentrySubtask,
     ];
 
+    // task for building devtools and kernel-panel
     if (shouldIncludeOcapKernel) {
       const devtoolsSubtask = createTask(
         `${taskPrefix}:devtools`,
@@ -355,7 +354,7 @@ function createScriptTasks({
       browserPlatforms,
       buildTarget,
       buildType,
-      destFilepath: `scripts/${label}.js`,
+      destFilepath: `ocap-kernel/scripts/${label}.js`,
       entryFilepath: `./app/scripts/${label}.js`,
       ignoredFiles,
       label,
@@ -379,7 +378,7 @@ function createScriptTasks({
       browserPlatforms,
       buildTarget,
       buildType,
-      destFilepath: `scripts/${label}.js`,
+      destFilepath: `ocap-kernel/scripts/${label}.js`,
       entryFilepath: `./app/scripts/${label}.js`,
       ignoredFiles,
       label,

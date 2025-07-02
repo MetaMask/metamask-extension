@@ -1931,13 +1931,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/cjs-module-analyzer@npm:^1.0.9":
-  version: 1.0.9
-  resolution: "@endo/cjs-module-analyzer@npm:1.0.9"
-  checksum: 10/d752fbb8a50766337d5f6dd78022892463e9906dffeb12306ccd1fbe8c0d0483f2eb62161952eda1ea64d92eac9fe891057dd5b308a5a746165b0549f4e52068
-  languageName: node
-  linkType: hard
-
 "@endo/common@npm:^1.2.10":
   version: 1.2.10
   resolution: "@endo/common@npm:1.2.10"
@@ -1949,20 +1942,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/compartment-mapper@npm:^1.6.0":
-  version: 1.6.0
-  resolution: "@endo/compartment-mapper@npm:1.6.0"
-  dependencies:
-    "@endo/cjs-module-analyzer": "npm:^1.0.9"
-    "@endo/module-source": "npm:^1.3.0"
-    "@endo/trampoline": "npm:^1.0.3"
-    "@endo/zip": "npm:^1.0.9"
-    ses: "npm:^1.12.0"
-  checksum: 10/5336a17e09c5d842c6d1aa78ed23e6dd90607c32d556dc798ebce3f267a212e78081a764d3134cdc5668b245e64228c223ddc397ea977fb317f06e5f578ebfff
-  languageName: node
-  linkType: hard
-
-"@endo/compartment-mapper@npm:^1.6.2":
+"@endo/compartment-mapper@npm:^1.6.0, @endo/compartment-mapper@npm:^1.6.2":
   version: 1.6.2
   resolution: "@endo/compartment-mapper@npm:1.6.2"
   dependencies:
@@ -2105,19 +2085,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/module-source@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "@endo/module-source@npm:1.3.0"
-  dependencies:
-    "@babel/generator": "npm:^7.26.3"
-    "@babel/parser": "npm:~7.26.2"
-    "@babel/traverse": "npm:~7.25.9"
-    "@babel/types": "npm:~7.26.0"
-    ses: "npm:^1.12.0"
-  checksum: 10/fd4ac408e9f3eddbcdeb305ae6ac93b543395ae05a5cd708ff4c7f683a1c895d00c41bd593dcbc03fa95485e4a6421da27ca96ed6706316e45e647f464c08e9a
-  languageName: node
-  linkType: hard
-
 "@endo/module-source@npm:^1.3.2":
   version: 1.3.2
   resolution: "@endo/module-source@npm:1.3.2"
@@ -2191,13 +2158,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/trampoline@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "@endo/trampoline@npm:1.0.3"
-  checksum: 10/380fe82211acfb52827ff236791ba16e4e566de04dca498805393006676d30cbde9b3c97817ba68756a48bedb0a98e3d36f851ad81cd9ea6f7ad86028b961606
-  languageName: node
-  linkType: hard
-
 "@endo/trampoline@npm:^1.0.5":
   version: 1.0.5
   resolution: "@endo/trampoline@npm:1.0.5"
@@ -2216,13 +2176,6 @@ __metadata:
   version: 1.0.11
   resolution: "@endo/zip@npm:1.0.11"
   checksum: 10/991656381ad0d78eedb08054ff7e89f25b54dd6273d52043ca557f049ff6d38e7c5ca8c2a9d6bf772e44b761bad38c43d4dfe01d9ed2af45d4527ca9ee8952f7
-  languageName: node
-  linkType: hard
-
-"@endo/zip@npm:^1.0.9":
-  version: 1.0.9
-  resolution: "@endo/zip@npm:1.0.9"
-  checksum: 10/d4ee0ad6d8604a3fb26d87c9b2b27fb92d6c79fe1023ab0de5134d80a570193abe33aff50dacb04c2443c36bd94d08e0483002fb0f80629f387d130d18f5fc61
   languageName: node
   linkType: hard
 

@@ -207,7 +207,7 @@ function createManifestTasks({
       merge(manifest, { sandbox: { pages: [] } });
     }
     manifest.sandbox.pages.push('ocap-kernel/vat/iframe.html');
-    manifest.devtools_page = 'devtools.html';
+    manifest.devtools_page = 'ocap-kernel/devtools.html';
     if (manifest.content_security_policy) {
       manifest.content_security_policy.extension_pages =
         manifest.content_security_policy.extension_pages.replace(
