@@ -26,14 +26,16 @@ import {
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
-import { LOGIN_OPTION, LOGIN_TYPE } from './types';
-
-const WelcomePageState = {
-  Banner: 'Banner',
-  Login: 'Login',
-};
+import {
+  LOGIN_ERROR,
+  LOGIN_OPTION,
+  LOGIN_TYPE,
+  WelcomePageState,
+} from './types';
+import LoginErrorModal from './login-error-modal';
 
 export default function OnboardingWelcome({
   pageState = WelcomePageState.Banner,
@@ -49,6 +51,7 @@ export default function OnboardingWelcome({
     useState(false);
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [loginError, setLoginError] = useState(null);
 
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
@@ -139,8 +142,6 @@ export default function OnboardingWelcome({
         } else {
           history.replace(ONBOARDING_ACCOUNT_EXIST);
         }
-      } catch (error) {
-        log.error('onSocialLoginCreateClick::error', error);
       } finally {
         setIsLoggingIn(false);
       }
@@ -169,8 +170,6 @@ export default function OnboardingWelcome({
         } else {
           history.push(ONBOARDING_UNLOCK_ROUTE);
         }
-      } catch (error) {
-        log.error('onSocialLoginImportClick::error', error);
       } finally {
         setIsLoggingIn(false);
       }
@@ -178,21 +177,35 @@ export default function OnboardingWelcome({
     [dispatch, handleSocialLogin, trackEvent, history],
   );
 
+  const handleLoginError = useCallback((error) => {
+    log.error('handleLoginError::error', error);
+    const errorMessage = error.message;
+    if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
+      setLoginError(null);
+    } else {
+      setLoginError(LOGIN_ERROR.GENERIC);
+    }
+  }, []);
+
   const handleLogin = useCallback(
     async (loginType, loginOption) => {
-      if (loginOption === LOGIN_OPTION.NEW && loginType === LOGIN_TYPE.SRP) {
-        onCreateClick();
-      } else if (
-        loginOption === LOGIN_OPTION.EXISTING &&
-        loginType === LOGIN_TYPE.SRP
-      ) {
-        onImportClick();
-      } else if (isSeedlessOnboardingFeatureEnabled) {
-        if (loginOption === LOGIN_OPTION.NEW) {
-          await onSocialLoginCreateClick(loginType);
-        } else if (loginOption === LOGIN_OPTION.EXISTING) {
-          await onSocialLoginImportClick(loginType);
+      try {
+        if (loginOption === LOGIN_OPTION.NEW && loginType === LOGIN_TYPE.SRP) {
+          await onCreateClick();
+        } else if (
+          loginOption === LOGIN_OPTION.EXISTING &&
+          loginType === LOGIN_TYPE.SRP
+        ) {
+          await onImportClick();
+        } else if (isSeedlessOnboardingFeatureEnabled) {
+          if (loginOption === LOGIN_OPTION.NEW) {
+            await onSocialLoginCreateClick(loginType);
+          } else if (loginOption === LOGIN_OPTION.EXISTING) {
+            await onSocialLoginImportClick(loginType);
+          }
         }
+      } catch (error) {
+        handleLoginError(error);
       }
     },
     [
@@ -201,6 +214,7 @@ export default function OnboardingWelcome({
       onSocialLoginCreateClick,
       onSocialLoginImportClick,
       isSeedlessOnboardingFeatureEnabled,
+      handleLoginError,
     ],
   );
 
@@ -213,6 +227,12 @@ export default function OnboardingWelcome({
         <WelcomeLogin onLogin={handleLogin} />
       )}
       {isLoggingIn && <LoadingScreen />}
+      {loginError !== null && (
+        <LoginErrorModal
+          onClose={() => setLoginError(null)}
+          loginError={loginError}
+        />
+      )}
     </>
   );
 }

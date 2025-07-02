@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import BigNumber from 'bignumber.js';
 import { Box } from '../../component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
 import UnitInput from '../../ui/unit-input';
@@ -205,10 +206,19 @@ export default function CurrencyInput({
 
     if (isTokenPrimary) {
       // Display fiat; `displayValue` bypasses calculations
-      displayValue = formatCurrency(
-        new Numeric(fiatDecimalValue, 10).toString(),
-        secondaryCurrency,
-      );
+      const isNonZeroSmallValue =
+        fiatDecimalValue &&
+        new BigNumber(fiatDecimalValue).lt(new BigNumber(0.01)) &&
+        new BigNumber(fiatDecimalValue).greaterThan(new BigNumber(0));
+      displayValue = isNonZeroSmallValue
+        ? `< ${formatCurrency(
+            new Numeric('0.01', 10).toString(),
+            secondaryCurrency,
+          )}`
+        : formatCurrency(
+            new Numeric(fiatDecimalValue, 10).toString(),
+            secondaryCurrency,
+          );
     } else {
       // Display token
       suffix = primarySuffix;
