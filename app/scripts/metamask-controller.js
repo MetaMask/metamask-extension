@@ -261,6 +261,7 @@ import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-s
 ///: END:ONLY_INCLUDE_IF
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
+import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -419,7 +420,6 @@ import { AccountTreeControllerInit } from './controller-init/accounts/account-tr
 import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
-import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -7106,9 +7106,6 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:get',
         ),
-        trackError: (error) => {
-          return captureException(error);
-        },
         trackEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
