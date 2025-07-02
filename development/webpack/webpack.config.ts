@@ -18,6 +18,8 @@ import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import discardFonts from 'postcss-discard-font-face';
+
+import cssnano from 'cssnano';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import { SelfInjectPlugin } from './utils/plugins/SelfInjectPlugin';
@@ -302,6 +304,7 @@ const config = {
                   autoprefixer({ overrideBrowserslist: browsersListQuery }),
                   rtlCss({ processEnv: false }),
                   discardFonts(['woff2']), // keep woff2 fonts
+                  cssnano({ preset: 'default' }),
                 ],
               },
             },

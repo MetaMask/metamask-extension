@@ -7,6 +7,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const rtlcss = require('postcss-rtlcss');
 const discardFonts = require('postcss-discard-font-face');
 const postcss = require('gulp-postcss');
+const cssnano = require('cssnano');
 const pipeline = pify(require('readable-stream').pipeline);
 const sass = require('sass-embedded');
 const gulpSass = require('gulp-sass')(sass);
@@ -84,7 +85,12 @@ async function buildScssPipeline(src, dest, devMode) {
           '-mm-fa-path()': () => new sass.SassString('./fonts/fontawesome'),
         },
       }).on('error', gulpSass.logError),
-      postcss([autoprefixer(), rtlcss(), discardFonts(['woff2'])]),
+      postcss([
+        autoprefixer(),
+        rtlcss(),
+        discardFonts(['woff2']),
+        cssnano({ preset: 'default' }),
+      ]),
       devMode && sourcemaps.write(),
       gulp.dest(dest),
     ].filter(Boolean),

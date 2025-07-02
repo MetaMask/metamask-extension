@@ -14,6 +14,8 @@ import CopyPlugin from 'copy-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 
+import cssnano from 'cssnano';
+
 const context = join(__dirname, '../../app');
 const browsersListPath = join(context, '../.browserslistrc');
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
@@ -67,6 +69,7 @@ const config = {
                 plugins: [
                   autoprefixer({ overrideBrowserslist: browsersListQuery }),
                   rtlCss({ processEnv: false }),
+                  cssnano({ preset: 'default' }),
                 ],
               },
             },
