@@ -38,8 +38,10 @@ async function doPasswordChangeAndLockWallet(
   await changePasswordPage.confirmCurrentPassword(currentPassword);
 
   await changePasswordPage.changePassword(newPassword);
-  await changePasswordPage.check_passwordChangedWarning();
-  await changePasswordPage.confirmChangePasswordWarning();
+  if (isSocialLogin) {
+    await changePasswordPage.check_passwordChangedWarning();
+    await changePasswordPage.confirmChangePasswordWarning();
+  }
 
   await privacySettings.check_passwordChangeSuccessToastIsDisplayed();
 
