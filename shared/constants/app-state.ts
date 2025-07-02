@@ -34,3 +34,8 @@ export type CarouselSlide = {
   endDate?: string;
   priorityPlacement?: boolean;
 };
+
+export enum PasswordChangeToastType {
+  Success = 'success',
+  Errored = 'errored',
+}
