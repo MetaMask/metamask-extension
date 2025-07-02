@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { AppSliceState } from '../../../ducks/app/app';
-import { getInternalAccountByAddress, getUseBlockie } from '../../../selectors';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { getUseBlockie } from '../../../selectors';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -31,6 +31,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AccountDetailsRow } from '../../../components/multichain-accounts/account-details-row';
 import { EditAccountNameModal } from '../../../components/multichain-accounts/edit-account-name-modal';
+import { setAccountDetailsAddress } from '../../../store/actions';
 import {
   getWalletIdAndNameByAccountAddress,
   WalletMetadata,
@@ -38,42 +39,52 @@ import {
 
 type BaseAccountDetailsProps = {
   children?: React.ReactNode | React.ReactNode[];
+  account: InternalAccount;
+  address: string;
 };
 
-export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
-  const address = useSelector(
-    (state: AppSliceState) => state.appState.accountDetailsAddress,
-  );
+export const BaseAccountDetails = ({
+  children,
+  account,
+  address,
+}: BaseAccountDetailsProps) => {
   const useBlockie = useSelector(getUseBlockie);
   const history = useHistory();
+  const dispatch = useDispatch();
   const t = useI18nContext();
-  const account = useSelector((state) =>
-    getInternalAccountByAddress(state, address),
-  );
+
   const {
     metadata: { name },
     type,
   } = account;
   const formattedAddress = isEvmAccountType(type)
-    ? toChecksumHexAddress(address)?.toLowerCase()
+    ? toChecksumHexAddress(address as string)?.toLowerCase()
     : address;
   const shortenedAddress = shortenAddress(formattedAddress);
 
   const [isEditingAccountName, setIsEditingAccountName] = useState(false);
 
   const handleShowAddress = () => {
-    history.push(ACCOUNT_DETAILS_QR_CODE_ROUTE);
+    history.push(`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/${address}`);
   };
+
+  const handleNavigation = useCallback(() => {
+    dispatch(setAccountDetailsAddress(''));
+    history.push(DEFAULT_ROUTE);
+  }, [history, dispatch]);
 
   // we can never have a scenario where an account is not associated with a wallet.
   const { id: walletId, name: walletName } = useSelector((state) =>
     getWalletIdAndNameByAccountAddress(state, address),
   ) as WalletMetadata;
 
-  const walletRoute = `/wallet-details/${walletId}`;
+  const walletRoute = `/wallet-details/${encodeURIComponent(walletId)}`;
 
   return (
-    <Page backgroundColor={BackgroundColor.backgroundDefault}>
+    <Page
+      backgroundColor={BackgroundColor.backgroundDefault}
+      className="multichain-account-details-page"
+    >
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={
@@ -81,13 +92,13 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            onClick={handleNavigation}
           />
         }
       >
         {name}
       </Header>
-      <Content paddingTop={3}>
+      <Content paddingTop={3} gap={4}>
         <AvatarAccount
           address={address}
           variant={
