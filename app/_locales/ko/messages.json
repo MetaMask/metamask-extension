@@ -911,9 +911,6 @@
   "bridgeTo": {
     "message": "브릿지 대상"
   },
-  "bridgeToChain": {
-    "message": "$1(으)로 브릿지"
-  },
   "bridgeTokenCannotVerifyDescription": {
     "message": "이 토큰을 직접 추가했다면, 브리지를 진행하기 전에 자금에 대한 위험을 충분히 인지하고 계셔야 합니다."
   },
@@ -2228,9 +2225,6 @@
   },
   "floatAmountToken": {
     "message": "토큰 금액은 정수여야 합니다"
-  },
-  "followUsOnTwitter": {
-    "message": "트위터에서 팔로우하세요"
   },
   "forbiddenIpfsGateway": {
     "message": "금지된 IPFS 게이트웨이: CID 게이트웨이를 지정하세요."
@@ -4413,18 +4407,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "확인"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "비밀복구구문은 언제나 보안이 유지되고 알려지지 않은 곳에 보관해야 합니다."
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "비밀복구구문을 다시 백업해야 합니까?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "절대로 다른 사람과 비밀복구구문을 공유하지 마십시오"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMask 팀에서는 절대로 비밀복구구문을 묻지 않습니다"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "비밀복구구문은 모든 계정을 관리합니다."
   },
@@ -4795,16 +4777,8 @@
   "sendSelectSendAsset": {
     "message": "전송할 자산 선택"
   },
-  "sendSpecifiedTokens": {
-    "message": "$1 보내기",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "이 버튼을 클릭하면 즉시 스왑 트랜젝션이 시작됩니다. 계속하기 전에 트랜젝션 세부 정보를 검토하세요."
-  },
-  "sendTokenAsToken": {
-    "message": "$2(으)로 $1 전송하기",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "$1 전송하기"

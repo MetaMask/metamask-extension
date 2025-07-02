@@ -41,6 +41,9 @@
     // SRP_OVERRIDE: END
   }
 
+  &__text {
+    height: 40px;
+  }
 
   &__word-index {
     width: 20px;
@@ -62,7 +65,7 @@
     top: 0;
     bottom: 0;
     flex-flow: column nowrap;
-    opacity: 0.3;
+    opacity: 0;
   }
 
   &__secret-blocker-text {

@@ -11,6 +11,7 @@ import type {
   MultichainBalancesControllerState,
   MultichainAssetsRatesControllerState,
   MultichainAssetsControllerState,
+  DeFiPositionsControllerState,
 } from '@metamask/assets-controllers';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
@@ -127,7 +128,6 @@ export type ControllerStatePropertiesEnumerated = {
   termsOfUseLastAgreed?: AppStateControllerState['termsOfUseLastAgreed'];
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];
   slides: AppStateControllerState['slides'];
-  upgradeSplashPageAcknowledgedForAccounts: AppStateControllerState['upgradeSplashPageAcknowledgedForAccounts'];
   isUpdateAvailable: AppStateControllerState['isUpdateAvailable'];
   updateModalLastDismissedAt: AppStateControllerState['updateModalLastDismissedAt'];
   lastUpdatedAt: AppStateControllerState['lastUpdatedAt'];
@@ -147,6 +147,8 @@ export type ControllerStatePropertiesEnumerated = {
   currencyRates: CurrencyRateState['currencyRates'];
   unapprovedDecryptMsgs: DecryptMessageControllerState['unapprovedDecryptMsgs'];
   unapprovedDecryptMsgCount: DecryptMessageControllerState['unapprovedDecryptMsgCount'];
+  allDeFiPositions: DeFiPositionsControllerState['allDeFiPositions'];
+  allDeFiPositionsCount: DeFiPositionsControllerState['allDeFiPositionsCount'];
   unapprovedEncryptionPublicKeyMsgs: EncryptionPublicKeyControllerState['unapprovedEncryptionPublicKeyMsgs'];
   unapprovedEncryptionPublicKeyMsgCount: EncryptionPublicKeyControllerState['unapprovedEncryptionPublicKeyMsgCount'];
   ensResolutionsByAddress: EnsControllerState['ensResolutionsByAddress'];
@@ -317,6 +319,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
   CronjobControllerState &
   CurrencyRateState &
   DecryptMessageControllerState &
+  DeFiPositionsControllerState &
   EncryptionPublicKeyControllerState &
   EnsControllerState & {
     // This is necessary due to the nested unions and intersections in the `GasFeeState` type definition
