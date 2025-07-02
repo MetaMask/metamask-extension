@@ -14,8 +14,6 @@ import CopyPlugin from 'copy-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 
-import cssnano from 'cssnano';
-
 const context = join(__dirname, '../../app');
 const browsersListPath = join(context, '../.browserslistrc');
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
@@ -69,7 +67,6 @@ const config = {
                 plugins: [
                   autoprefixer({ overrideBrowserslist: browsersListQuery }),
                   rtlCss({ processEnv: false }),
-                  cssnano({ preset: 'default' }),
                 ],
               },
             },
@@ -91,6 +88,8 @@ const config = {
                 // charset placement, as described here:
                 // https://github.com/webpack-contrib/css-loader/issues/1212
                 charset: false,
+                // Always compress for integration tests to avoid ENOBUFS errors
+                outputStyle: 'compressed',
                 // The order of includePaths is important; prefer our own
                 // folders over `node_modules`
                 includePaths: [

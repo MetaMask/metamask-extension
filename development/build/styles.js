@@ -7,7 +7,6 @@ const sourcemaps = require('gulp-sourcemaps');
 const rtlcss = require('postcss-rtlcss');
 const discardFonts = require('postcss-discard-font-face');
 const postcss = require('gulp-postcss');
-const cssnano = require('cssnano');
 const pipeline = pify(require('readable-stream').pipeline);
 const sass = require('sass-embedded');
 const gulpSass = require('gulp-sass')(sass);
@@ -79,18 +78,15 @@ async function buildScssPipeline(src, dest, devMode) {
           'ui/css/',
           'node_modules/',
         ],
+        // Conditionally compress CSS output based on devMode flag
+        outputStyle: devMode ? 'expanded' : 'compressed',
         functions: {
           // Tell sass where to find the font-awesome font files
           // update this location in static.js if it changes
           '-mm-fa-path()': () => new sass.SassString('./fonts/fontawesome'),
         },
       }).on('error', gulpSass.logError),
-      postcss([
-        autoprefixer(),
-        rtlcss(),
-        discardFonts(['woff2']),
-        cssnano({ preset: 'default' }),
-      ]),
+      postcss([autoprefixer(), rtlcss(), discardFonts(['woff2'])]),
       devMode && sourcemaps.write(),
       gulp.dest(dest),
     ].filter(Boolean),
