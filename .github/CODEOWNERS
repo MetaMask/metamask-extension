@@ -21,6 +21,7 @@ lavamoat/                            @MetaMask/extension-devs @MetaMask/policy-r
 # snaps development team to review and approve the changes.
 offscreen/scripts/offscreen.ts       @MetaMask/snaps-devs
 
+
 # The .circleci/ folder instructs Circle CI on the process by which it
 # should test, build and publish releases of our application. Due to the
 # impact that changes to the files contained within this folder may have
