@@ -197,6 +197,8 @@ function createScriptTasks({
       standardEntryPoints.push('offscreen');
     }
 
+    // Note: devtools and kernel-panel are built separately as simple bundles
+
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
@@ -242,8 +244,24 @@ function createScriptTasks({
       createSentryBundle({ buildTarget }),
     );
 
-    // task for initiating browser livereload
+    // devtools bundles (run inline when ocap-kernel is enabled)
+    const devtoolsBuildTask = shouldIncludeOcapKernel
+      ? createDevtoolsBundle({ buildTarget })
+      : async () => {
+          /* no-op */
+        };
+
+    const kernelPanelBuildTask = shouldIncludeOcapKernel
+      ? createKernelPanelBundle({ buildTarget })
+      : async () => {
+          /* no-op */
+        };
+
+    // task for initiating browser livereload and building devtools
     const initiateLiveReload = async () => {
+      // Build devtools bundles inline (not as child processes)
+      await devtoolsBuildTask();
+      await kernelPanelBuildTask();
       if (isDevBuild(buildTarget)) {
         // trigger live reload when the bundles are updated
         // this is not ideal, but overcomes the limitations:
@@ -323,6 +341,54 @@ function createScriptTasks({
       shouldLintFenceFiles,
       version,
       applyLavaMoat,
+    });
+  }
+
+  /**
+   * Create a bundle for the "devtools" module.
+   *
+   * @param {object} options - The build options.
+   * @param {BUILD_TARGETS} options.buildTarget - The current build target.
+   * @returns {Function} A function that creates the bundle.
+   */
+  function createDevtoolsBundle({ buildTarget }) {
+    const label = 'devtools';
+    return createNormalBundle({
+      browserPlatforms,
+      buildTarget,
+      buildType,
+      destFilepath: `scripts/${label}.js`,
+      entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
+      label,
+      policyOnly,
+      shouldLintFenceFiles,
+      version,
+      applyLavaMoat: false, // DevTools doesn't need LavaMoat
+    });
+  }
+
+  /**
+   * Create a bundle for the "kernel-panel" module.
+   *
+   * @param {object} options - The build options.
+   * @param {BUILD_TARGETS} options.buildTarget - The current build target.
+   * @returns {Function} A function that creates the bundle.
+   */
+  function createKernelPanelBundle({ buildTarget }) {
+    const label = 'kernel-panel';
+    return createNormalBundle({
+      browserPlatforms,
+      buildTarget,
+      buildType,
+      destFilepath: `scripts/${label}.js`,
+      entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
+      label,
+      policyOnly,
+      shouldLintFenceFiles,
+      version,
+      applyLavaMoat: false, // DevTools doesn't need LavaMoat
     });
   }
 
@@ -766,6 +832,7 @@ function createFactoredBuild({
             });
             break;
           }
+
           default: {
             throw new Error(
               `build/scripts - unknown groupLabel "${groupLabel}"`,

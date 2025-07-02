@@ -291,15 +291,16 @@
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/json-rpc-engine": "^10.0.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",
-    "@metamask/kernel-browser-runtime": "^0.1.0",
+    "@metamask/kernel-browser-runtime": "^0.2.0",
     "@metamask/kernel-shims": "^0.2.0",
+    "@metamask/kernel-ui": "^0.1.0",
     "@metamask/kernel-utils": "^0.1.0",
     "@metamask/keyring-api": "^18.0.0",
     "@metamask/keyring-controller": "^22.0.2",
     "@metamask/keyring-internal-api": "^6.2.0",
     "@metamask/keyring-internal-snap-client": "^4.1.0",
     "@metamask/keyring-snap-client": "^5.0.0",
-    "@metamask/logger": "^0.2.0",
+    "@metamask/logger": "^0.3.0",
     "@metamask/logging-controller": "^6.0.4",
     "@metamask/logo": "^4.0.0",
     "@metamask/message-manager": "^12.0.1",
@@ -789,7 +790,8 @@
       "@metamask/kernel-browser-runtime>@metamask/streams": false,
       "@metamask/kernel-browser-runtime>@metamask/kernel-store>better-sqlite3": false,
       "@metamask/logger>@metamask/streams": false,
-      "@metamask/streams": false
+      "@metamask/streams": false,
+      "metamask/kernel-utils": false
     }
   },
   "packageManager": "yarn@4.9.1",
