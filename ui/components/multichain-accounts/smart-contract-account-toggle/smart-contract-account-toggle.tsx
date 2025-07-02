@@ -21,7 +21,7 @@ import { setRedirectAfterDefaultPage } from '../../../ducks/history/history';
 
 type SmartContractAccountToggleProps = {
   networkConfig: EIP7702NetworkConfiguration;
-  address: string;
+  address: Hex;
   pendingToggleState: boolean | null;
   setPendingToggleState: (value: boolean | null) => void;
   returnToPage?: string; // Optional page to return to after transaction
@@ -51,7 +51,7 @@ export const SmartContractAccountToggle = ({
 
   const prevHasPendingRequests = useRef<boolean>();
   const { hasPendingRequests } = useBatchAuthorizationRequests(
-    address as `0x${string}`,
+    address,
     chainIdHex,
   );
 
@@ -62,7 +62,7 @@ export const SmartContractAccountToggle = ({
   useEffect(() => {
     const checkUpgradeStatus = async () => {
       try {
-        const upgraded = await isUpgraded(address as `0x${string}`);
+        const upgraded = await isUpgraded(address);
         setAddressSupportSmartAccount(upgraded);
         // Only clear pendingToggleState when we have confirmed the actual state matches the intent
         // AND there are no pending requests (transaction is confirmed)
@@ -142,9 +142,20 @@ export const SmartContractAccountToggle = ({
   // Monitor for transactions when pendingToggleState is set
   useEffect(() => {
     if (pendingToggleState !== null) {
-      findAndRedirectToTransaction();
+      const found = findAndRedirectToTransaction();
+
+      // If no transaction is found, set a timeout to reset pendingToggleState
+      // This prevents the toggle from being permanently disabled
+      if (!found) {
+        const timeoutId = setTimeout(() => {
+          setPendingToggleState(null);
+        }, 5000); // 5 second timeout
+
+        return () => clearTimeout(timeoutId);
+      }
     }
-  }, [pendingToggleState, findAndRedirectToTransaction]);
+    return undefined;
+  }, [pendingToggleState, findAndRedirectToTransaction, setPendingToggleState]);
 
   const onSwitch = useCallback(async () => {
     // Immediately update the pending toggle state to show user's action
@@ -153,9 +164,9 @@ export const SmartContractAccountToggle = ({
     try {
       // Dispatch the transaction
       if (toggleValue) {
-        await downgradeAccount(address as Hex);
+        await downgradeAccount(address);
       } else if (upgradeContractAddress) {
-        await upgradeAccount(address as Hex, upgradeContractAddress);
+        await upgradeAccount(address, upgradeContractAddress);
       }
     } catch (error) {
       // Reset pendingToggleState on error

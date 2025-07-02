@@ -1,7 +1,7 @@
 import { CaipChainId, Hex } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
@@ -78,9 +78,6 @@ export const useEIP7702Networks = (address: string) => {
     });
   }, [address, isSupportedKeyringType, networkList]);
 
-  // Use a ref to track the previous network7702List to prevent unnecessary remounts
-  const prevNetwork7702ListRef = useRef<EIP7702NetworkConfiguration[]>([]);
-
   const network7702List: EIP7702NetworkConfiguration[] | undefined =
     useMemo(() => {
       if (!value || !isSupportedKeyringType) {
@@ -106,26 +103,17 @@ export const useEIP7702Networks = (address: string) => {
         }
       });
 
-      // Compare with previous result to prevent unnecessary remounts
-      const prevList = prevNetwork7702ListRef.current;
-      if (
-        prevList.length === networksSupporting7702.length &&
-        prevList.every((prevNetwork, index) => {
-          const currentNetwork = networksSupporting7702[index];
-          return (
-            prevNetwork.chainIdHex === currentNetwork.chainIdHex &&
-            prevNetwork.isSupported === currentNetwork.isSupported &&
-            prevNetwork.upgradeContractAddress ===
-              currentNetwork.upgradeContractAddress &&
-            prevNetwork.name === currentNetwork.name
-          );
-        })
-      ) {
-        return prevList;
-      }
+      // Sort by chainIdHex to ensure consistent ordering for comparison
+      networksSupporting7702.sort((a, b) => {
+        if (a.chainIdHex < b.chainIdHex) {
+          return -1;
+        }
+        if (a.chainIdHex > b.chainIdHex) {
+          return 1;
+        }
+        return 0;
+      });
 
-      // Update ref and return new list
-      prevNetwork7702ListRef.current = networksSupporting7702;
       return networksSupporting7702;
     }, [isSupportedKeyringType, networkList, value]);
 

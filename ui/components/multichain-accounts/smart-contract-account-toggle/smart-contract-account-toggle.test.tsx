@@ -426,11 +426,43 @@ describe('SmartContractAccountToggle', () => {
 
       mockUseSelectorImpl.mockReturnValue(mockTransactions);
 
+      const setPendingToggleState = jest.fn();
       render({
         pendingToggleState: true,
+        setPendingToggleState,
       });
 
       expect(mockPush).not.toHaveBeenCalled();
+    });
+
+    it('resets pendingToggleState after timeout when no transaction is found', async () => {
+      jest.useFakeTimers();
+
+      const mockTransactions = [
+        {
+          id: 'tx-other',
+          txParams: { from: '0xDifferentAddress' },
+          chainId: mockNetworkConfig.chainIdHex,
+          time: Date.now(),
+        },
+      ];
+
+      mockUseSelectorImpl.mockReturnValue(mockTransactions);
+
+      const setPendingToggleState = jest.fn();
+      render({
+        pendingToggleState: true,
+        setPendingToggleState,
+      });
+
+      // Fast-forward time by 5 seconds
+      jest.advanceTimersByTime(5000);
+
+      await waitFor(() => {
+        expect(setPendingToggleState).toHaveBeenCalledWith(null);
+      });
+
+      jest.useRealTimers();
     });
   });
 });
