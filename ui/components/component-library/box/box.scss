@@ -8,6 +8,9 @@ $extraProperties: auto;
 $attributesToApplyExtraProperties: margin;
 
 .mm-box {
+  &--color-primary-inverse {
+    color: var(--color-text-white) !important;
+  }
   // Padding, Margin, and Gap
   @each $attribute in $attributes {
     @each $size in design-system.$sizes-numeric {

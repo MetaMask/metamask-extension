@@ -34,6 +34,7 @@ function MultiRpcEditModal() {
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
+  console.log(networkConfigurations, '/networkConfigurations');
   return (
     <Modal
       isOpen={true}

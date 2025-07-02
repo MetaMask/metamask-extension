@@ -1,18 +1,11 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  toggleNetworkMenu,
-} from '../../../store/actions';
-import {
-  getSelectedInternalAccount,
-} from '../../../selectors';
+import { toggleNetworkMenu } from '../../../store/actions';
+import { getSelectedInternalAccount } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { CreateSolanaAccountModal } from '../create-solana-account-modal';
 ///: END:ONLY_INCLUDE_IF
-import {
-  AccountOverviewTabsProps,
-  AccountOverviewTabs,
-} from './account-overview-tabs';
+// import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import { PickerNetwork, Box } from '../../component-library';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 import { getNetworkIcon } from '../../../../shared/modules/network.utils';
@@ -23,6 +16,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { shortenAddress } from '../../../helpers/utils/util';
+import {
+  AccountOverviewTabsProps,
+  AccountOverviewTabs,
+} from './account-overview-tabs';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
