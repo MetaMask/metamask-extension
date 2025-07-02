@@ -15,8 +15,6 @@ import {
   waitForElementByTextToNotBePresent,
 } from '../helpers';
 
-const isGlobalNetworkSelectorRemoved = true;
-
 jest.setTimeout(20_000);
 
 jest.mock('../../../ui/store/background-connection', () => ({
@@ -87,9 +85,6 @@ describe('NFTs list', () => {
 
     await clickElementById('account-overview__nfts-tab');
 
-    if (!isGlobalNetworkSelectorRemoved) {
-      await waitForElementById('sort-by-networks');
-    }
     await waitForElementByText('Test Dapp NFTs #1');
     await waitForElementByText('Punk #4');
     await waitForElementByText('Punk #3');
@@ -157,12 +152,6 @@ describe('NFTs list', () => {
 
     await clickElementById('account-overview__nfts-tab');
 
-    if (!isGlobalNetworkSelectorRemoved) {
-      await waitForElementById('sort-by-networks');
-      await clickElementById('sort-by-networks');
-      await clickElementById('network-filter-current__button');
-    }
-
     await waitForElementByText('MUNK #1 Mainnet');
     await waitForElementByTextToNotBePresent('MUNK #1 Chain 137');
     await waitForElementByTextToNotBePresent('MUNK #1 Chain 5');
@@ -192,14 +181,8 @@ describe('NFTs list', () => {
 
     await clickElementById('account-overview__nfts-tab');
 
-    if (isGlobalNetworkSelectorRemoved) {
-      await waitFor(() => {
-        expect(screen.getByTestId('sort-by-networks')).toBeEnabled();
-      });
-    } else {
-      await waitFor(() => {
-        expect(screen.getByTestId('sort-by-networks')).toBeDisabled();
-      });
-    }
+    await waitFor(() => {
+      expect(screen.getByTestId('sort-by-networks')).toBeEnabled();
+    });
   });
 });

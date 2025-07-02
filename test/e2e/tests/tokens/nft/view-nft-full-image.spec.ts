@@ -10,8 +10,6 @@ import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { setupAutoDetectMocking } from './mocks';
 
-const isGlobalNetworkSelectorRemoved = true;
-
 describe('NFT full', function () {
   it('displays NFT full image when NFT is on a network different from the current network', async function () {
     const driverOptions = { mock: true };
@@ -51,9 +49,6 @@ describe('NFT full', function () {
         await homepage.goToNftTab();
         const nftListPage = new NFTListPage(driver);
 
-        if (!isGlobalNetworkSelectorRemoved) {
-          await nftListPage.filterNftsByNetworks('Popular networks');
-        }
         await nftListPage.check_nftNameIsDisplayed(
           'ENS: Ethereum Name Service',
         );
