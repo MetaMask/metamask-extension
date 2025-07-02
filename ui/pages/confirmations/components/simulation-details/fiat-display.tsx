@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import {
   TextAlign,
   TextColor,
