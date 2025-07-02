@@ -4395,19 +4395,34 @@ describe('MetaMaskController', () => {
 
         // Both other SRPs don't exist in local state
         metamaskController.seedlessOnboardingController.getSeedPhraseBackupHash
-          .mockReturnValueOnce('existing-hash') // Root SRP exists
           .mockReturnValueOnce(null) // First other SRP doesn't exist
           .mockReturnValueOnce(null); // Second other SRP doesn't exist
 
-        metamaskController._convertEnglishWordlistIndicesToCodepoints
-          .mockReturnValueOnce(Buffer.from(mockMnemonic1, 'utf8'))
-          .mockReturnValueOnce(Buffer.from(mockMnemonic2, 'utf8'));
+        function isEqualUint8Array(arr1, arr2) {
+          if (arr1.length !== arr2.length) {
+            return false;
+          }
+
+          return arr1.every((value, index) => value === arr2[index]);
+        }
+
+        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockImplementation(
+          (wordlistIndices) => {
+            if (isEqualUint8Array(wordlistIndices, mockOtherSRP1)) {
+              return Buffer.from(mockMnemonic1, 'utf8');
+            } else if (isEqualUint8Array(wordlistIndices, mockOtherSRP2)) {
+              return Buffer.from(mockMnemonic2, 'utf8');
+            }
+
+            return new Uint8Array(0);
+          },
+        );
 
         await metamaskController.syncSeedPhrases();
 
         // Should import both SRPs that don't exist locally
         expect(metamaskController.importMnemonicToVault).toHaveBeenCalledTimes(
-          1,
+          2,
         );
         expect(
           metamaskController.importMnemonicToVault,
