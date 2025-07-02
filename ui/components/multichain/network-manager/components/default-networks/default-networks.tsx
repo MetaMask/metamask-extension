@@ -1,11 +1,6 @@
-import {
-  CaipChainId,
-  KnownCaipNamespace,
-  parseCaipChainId,
-} from '@metamask/utils';
+import { CaipChainId, parseCaipChainId } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { toHex } from '@metamask/controller-utils';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_NETWORK_CHAIN_IDS,
