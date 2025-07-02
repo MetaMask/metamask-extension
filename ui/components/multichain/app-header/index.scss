@@ -9,7 +9,7 @@
   // prevent overflow-x
   max-width: 100%;
   flex-flow: column nowrap;
-  z-index: 55;
+  z-index: design-system.$header-z-index;
   min-height: 68px;
 
   &__contents {
@@ -38,6 +38,7 @@
     border-bottom: 1px solid #858b9a33;
 
     &-layout-old-grid {
+      padding: 16px;
       display: grid;
       grid-template-columns: 1fr 2fr 1fr;
 
@@ -81,6 +82,20 @@
 
     @include design-system.screen-lg-min {
       width: $width-screen-lg-min;
+    }
+
+    // always display horizontal logo on locked screen
+    .app-header__metafox-logo {
+      &--icon {
+        display: none;
+      }
+
+      &--horizontal {
+        @include design-system.screen-sm-max {
+          display: block;
+          width: 60px;
+        }
+      }
     }
   }
 }

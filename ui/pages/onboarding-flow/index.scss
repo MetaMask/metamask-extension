@@ -21,12 +21,7 @@
     background-color: var(--color-accent02-dark);
   }
 
-  &__twitter-button {
-    margin-bottom: 40px;
-    vertical-align: middle;
-
-    &__icon {
-      margin-left: 4px;
-    }
+  &__x-button__icon {
+    margin-bottom: -6px;
   }
 }

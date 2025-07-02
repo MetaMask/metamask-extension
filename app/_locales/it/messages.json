@@ -1099,10 +1099,6 @@
   "send": {
     "message": "Invia"
   },
-  "sendSpecifiedTokens": {
-    "message": "Invia $1",
-    "description": "Symbol of the specified token"
-  },
   "settings": {
     "message": "Impostazioni"
   },
@@ -1436,9 +1432,6 @@
   },
   "unlock": {
     "message": "Sblocca"
-  },
-  "unlockMessage": {
-    "message": "Il web decentralizzato ti attende"
   },
   "urlErrorMsg": {
     "message": "Gli URI richiedono un prefisso HTTP/HTTPS."

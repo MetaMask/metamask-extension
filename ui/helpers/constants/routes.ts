@@ -88,6 +88,10 @@ PATH_NAME_MAP.set(
   'Reveal Secret Recovery Phrase List Page',
 );
 
+export const SECURITY_PASSWORD_CHANGE_ROUTE =
+  '/settings/security-and-privacy/password-change';
+PATH_NAME_MAP.set(SECURITY_PASSWORD_CHANGE_ROUTE, 'Change Password');
+
 export const BACKUPANDSYNC_ROUTE =
   '/settings/security-and-privacy/backup-and-sync';
 PATH_NAME_MAP.set(BACKUPANDSYNC_ROUTE, 'Backup And Sync Settings Page');
@@ -98,6 +102,9 @@ PATH_NAME_MAP.set(
   `${REVEAL_SEED_ROUTE}/:keyringId`,
   'Reveal Secret Recovery Phrase Page',
 );
+
+export const SMART_ACCOUNT_UPDATE = '/smart-account-update';
+PATH_NAME_MAP.set(SMART_ACCOUNT_UPDATE, 'Smart Account Update Page');
 
 export const IMPORT_SRP_ROUTE = '/import-srp';
 PATH_NAME_MAP.set(IMPORT_SRP_ROUTE, 'Import Secret Recovery Phrase Page');
@@ -351,3 +358,9 @@ export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 ///: END:ONLY_INCLUDE_IF
+
+export const DEEP_LINK_ROUTE = '/link';
+PATH_NAME_MAP.set(DEEP_LINK_ROUTE, 'Deep link Redirect Page');
+
+export const WALLET_DETAILS_ROUTE = '/wallet-details/:id';
+PATH_NAME_MAP.set(WALLET_DETAILS_ROUTE, 'Wallet Details Page');

@@ -971,10 +971,6 @@
   "send": {
     "message": "發送"
   },
-  "sendSpecifiedTokens": {
-    "message": "發送 $1",
-    "description": "Symbol of the specified token"
-  },
   "settings": {
     "message": "設定"
   },
@@ -1201,9 +1197,6 @@
   },
   "unlock": {
     "message": "解鎖"
-  },
-  "unlockMessage": {
-    "message": "去中心化網路世界等待著您"
   },
   "unrecognizedChain": {
     "message": "無法辨識這個自訂網路。我們建議您先$1再繼續。",

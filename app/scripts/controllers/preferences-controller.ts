@@ -6,7 +6,7 @@ import {
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
-import { Json } from '@metamask/utils';
+import { Hex, Json } from '@metamask/utils';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -106,6 +106,9 @@ export type Preferences = {
   };
   tokenNetworkFilter: Record<string, boolean>;
   dismissSmartAccountSuggestionEnabled: boolean;
+  skipDeepLinkInterstitial: boolean;
+  smartAccountOptIn: boolean;
+  smartAccountOptInForAccounts: Hex[];
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -194,12 +197,15 @@ export const getDefaultPreferencesControllerState =
       showMultiRpcModal: false,
       privacyMode: false,
       dismissSmartAccountSuggestionEnabled: false,
+      smartAccountOptIn: true,
+      smartAccountOptInForAccounts: [],
       tokenSortConfig: {
         key: 'tokenFiatAmount',
         order: 'dsc',
         sortCallback: 'stringNumeric',
       },
       tokenNetworkFilter: {},
+      skipDeepLinkInterstitial: false,
     },
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -916,6 +922,20 @@ export class PreferencesController extends BaseController<
   setServiceWorkerKeepAlivePreference(value: boolean): void {
     this.update((state) => {
       state.enableMV3TimestampSave = value;
+    });
+  }
+
+  /**
+   * Add account to list of accounts for which user has optedin
+   * smart account upgrade.
+   *
+   * @param accounts
+   */
+  setSmartAccountOptInForAccounts(accounts: Hex[] = []): void {
+    this.update((state) => {
+      state.preferences.smartAccountOptInForAccounts = accounts.map(
+        (acc) => acc.toLowerCase() as Hex,
+      );
     });
   }
 
