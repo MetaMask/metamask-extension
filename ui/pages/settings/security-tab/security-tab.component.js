@@ -51,6 +51,7 @@ import {
 import {
   ADD_POPULAR_CUSTOM_NETWORK,
   REVEAL_SRP_LIST_ROUTE,
+  SECURITY_PASSWORD_CHANGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
@@ -59,6 +60,7 @@ import {
 
 import { updateDataDeletionTaskStatus } from '../../../store/actions';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import MetametricsToggle from './metametrics-toggle';
 import DeleteMetametricsDataButton from './delete-metametrics-data-button';
 
@@ -110,6 +112,8 @@ export default class SecurityTab extends PureComponent {
     metaMetricsDataDeletionId: PropTypes.string,
     hdEntropyIndex: PropTypes.number,
     isSeedPhraseBackedUp: PropTypes.bool,
+    socialLoginEnabled: PropTypes.bool,
+    socialLoginType: PropTypes.string,
   };
 
   state = {
@@ -170,9 +174,18 @@ export default class SecurityTab extends PureComponent {
 
   renderSeedWords() {
     const { t } = this.context;
-    const { history, isSeedPhraseBackedUp } = this.props;
+    const {
+      history,
+      isSeedPhraseBackedUp,
+      socialLoginEnabled,
+      socialLoginType,
+    } = this.props;
 
     const getBannerDescription = () => {
+      if (socialLoginEnabled) {
+        return t('securityLoginWithSocial', [socialLoginType]);
+      }
+
       return isSeedPhraseBackedUp
         ? t('securityLoginWithSrpBackedUp')
         : t('securityLoginWithSrpNotBackedUp');
@@ -182,6 +195,13 @@ export default class SecurityTab extends PureComponent {
       return isSeedPhraseBackedUp
         ? BannerAlertSeverity.Success
         : BannerAlertSeverity.Danger;
+    };
+
+    const getButtonText = () => {
+      if (socialLoginEnabled) {
+        return t('securitySrpWalletRecovery');
+      }
+      return t('revealSecretRecoveryPhrase');
     };
 
     return (
@@ -241,7 +261,7 @@ export default class SecurityTab extends PureComponent {
                   });
                 }}
               >
-                {t('revealSeedWords')}
+                {getButtonText()}
               </Button>
             </div>
           </Box>
@@ -251,6 +271,39 @@ export default class SecurityTab extends PureComponent {
               onClose={this.hideSrpQuizModal}
             />
           )}
+        </div>
+      </>
+    );
+  }
+
+  renderChangePassword() {
+    const { t } = this.context;
+    const { history } = this.props;
+
+    return (
+      <>
+        <div
+          ref={this.settingsRefs[2]}
+          className="settings-page__security-tab-sub-header"
+        >
+          {t('securityChangePasswordTitle')}
+        </div>
+        <div className="settings-page__content-padded">
+          <div className="settings-page__content-description">
+            {t('securityChangePasswordDescription')}
+          </div>
+          <Button
+            data-testid="change-password-button"
+            width={BlockSize.Full}
+            size={ButtonSize.Lg}
+            marginTop={4}
+            block
+            onClick={() => {
+              history.push(SECURITY_PASSWORD_CHANGE_ROUTE);
+            }}
+          >
+            {t('securityChangePassword')}
+          </Button>
         </div>
       </>
     );
@@ -1239,6 +1292,7 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('security')}
         </span>
         {this.renderSeedWords()}
+        {getIsSeedlessOnboardingFeatureEnabled() && this.renderChangePassword()}
         {this.renderSecurityAlertsToggle()}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
