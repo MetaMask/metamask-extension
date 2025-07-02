@@ -6,6 +6,7 @@ import {
   JustifyContent,
   AlignItems,
   TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 type AccountDetailsRowProps = {
@@ -31,7 +32,11 @@ export const AccountDetailsRow = ({
       paddingRight={4}
       alignItems={AlignItems.center}
     >
-      <Text color={TextColor.textDefault} paddingRight={12}>
+      <Text
+        color={TextColor.textDefault}
+        variant={TextVariant.bodyMdMedium}
+        paddingRight={12}
+      >
         {label}
       </Text>
       <Box
@@ -41,6 +46,7 @@ export const AccountDetailsRow = ({
       >
         <Text
           color={TextColor.textAlternative}
+          variant={TextVariant.bodyMdMedium}
           ellipsis
           style={{
             maxWidth: '150px',

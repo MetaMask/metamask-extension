@@ -78,7 +78,7 @@ export const BaseAccountDetails = ({
     getWalletIdAndNameByAccountAddress(state, address),
   ) as WalletMetadata;
 
-  const walletRoute = `/wallet-details/${walletId}`;
+  const walletRoute = `/wallet-details/${encodeURIComponent(walletId)}`;
 
   return (
     <Page

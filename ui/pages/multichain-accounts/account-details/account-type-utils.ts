@@ -1,4 +1,8 @@
-import { BtcAccountType, SolAccountType, isEvmAccountType } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  SolAccountType,
+  isEvmAccountType,
+} from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 
@@ -117,4 +121,13 @@ export const isInstitutionalEVMAccount = (
   account: InternalAccount,
 ): boolean => {
   return getAccountTypeCategory(account) === 'institutional-evm';
+};
+
+/**
+ * Checks if an account is a Bitcoin account
+ *
+ * @param account - The internal account object to check.
+ */
+export const isBitcoinAccount = (account: InternalAccount): boolean => {
+  return getAccountTypeCategory(account) === 'bitcoin';
 };

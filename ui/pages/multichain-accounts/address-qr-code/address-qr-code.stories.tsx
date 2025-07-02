@@ -1,5 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+import { MemoryRouter, Route } from 'react-router-dom';
 import { EthAccountType, SolAccountType } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import configureStore from '../../../store/store';
@@ -156,38 +157,42 @@ const createBaseMockStore = (account, address) => ({
 });
 
 // Story wrapper component
-function StoryWrapper({ children, mockStore }) {
+function StoryWrapper({ children, mockStore, address }) {
   return (
     <Provider store={configureStore(mockStore)}>
-      <Box
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '592px',
-          width: '360px',
-          margin: '0 auto',
-          border: '1px solid #ccc',
-          borderRadius: '8px',
-          overflow: 'hidden',
-        }}
-      >
-        <Box
-          style={{
-            display: 'flex',
-            height: '100%',
-            flexDirection: 'column',
-          }}
-        >
+      <MemoryRouter initialEntries={[`/address-qr-code/${address}`]}>
+        <Route path="/address-qr-code/:address">
           <Box
             style={{
-              flex: '1 1 auto',
               display: 'flex',
+              flexDirection: 'column',
+              height: '592px',
+              width: '360px',
+              margin: '0 auto',
+              border: '1px solid #ccc',
+              borderRadius: '8px',
+              overflow: 'hidden',
             }}
           >
-            {children}
+            <Box
+              style={{
+                display: 'flex',
+                height: '100%',
+                flexDirection: 'column',
+              }}
+            >
+              <Box
+                style={{
+                  flex: '1 1 auto',
+                  display: 'flex',
+                }}
+              >
+                {children}
+              </Box>
+            </Box>
           </Box>
-        </Box>
-      </Box>
+        </Route>
+      </MemoryRouter>
     </Provider>
   );
 }
@@ -200,7 +205,7 @@ export default {
 // Ethereum Account QR Code Story
 export const EthereumAddressQR = {
   render: () => (
-    <StoryWrapper mockStore={createBaseMockStore(MOCK_ETH_ACCOUNT, MOCK_ETH_ACCOUNT.address)}>
+    <StoryWrapper mockStore={createBaseMockStore(MOCK_ETH_ACCOUNT, MOCK_ETH_ACCOUNT.address)} address={MOCK_ETH_ACCOUNT.address}>
       <AddressQRCode />
     </StoryWrapper>
   ),
@@ -209,7 +214,7 @@ export const EthereumAddressQR = {
 // Solana Account QR Code Story
 export const SolanaAddressQR = {
   render: () => (
-    <StoryWrapper mockStore={createBaseMockStore(MOCK_SOLANA_ACCOUNT, MOCK_SOLANA_ACCOUNT.address)}>
+    <StoryWrapper mockStore={createBaseMockStore(MOCK_SOLANA_ACCOUNT, MOCK_SOLANA_ACCOUNT.address)} address={MOCK_SOLANA_ACCOUNT.address}>
       <AddressQRCode />
     </StoryWrapper>
   ),
