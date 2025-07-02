@@ -87,7 +87,10 @@ describe('AccountShowSrpRow', () => {
       const store = mockStore(state);
       const account = {
         ...MOCK_ACCOUNT_EOA,
-        options: { ...MOCK_ACCOUNT_EOA.options, entropySource: 'mock-hd-keyring-id' },
+        options: {
+          ...MOCK_ACCOUNT_EOA.options,
+          entropySource: 'mock-hd-keyring-id',
+        },
       };
 
       renderWithProvider(
@@ -163,7 +166,10 @@ describe('AccountShowSrpRow', () => {
       const store = mockStore(state);
       const account = {
         ...MOCK_ACCOUNT_EOA,
-        options: { ...MOCK_ACCOUNT_EOA.options, entropySource: 'mock-hd-keyring-id' },
+        options: {
+          ...MOCK_ACCOUNT_EOA.options,
+          entropySource: 'mock-hd-keyring-id',
+        },
       };
 
       renderWithProvider(
