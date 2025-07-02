@@ -128,7 +128,16 @@ export const BaseAccountDetails = ({
 
     dispatch(setAccountDetailsAddress(''));
     history.push(DEFAULT_ROUTE);
-  }, [dispatch, account, history]);
+  }, [
+    dispatch,
+    account.address,
+    account.type,
+    trackEvent,
+    deviceName,
+    chainId,
+    hdEntropyIndex,
+    history,
+  ]);
 
   return (
     <Page
