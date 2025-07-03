@@ -64,6 +64,7 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { Asset } from '../types/asset';
+import { getIsUnifiedUIEnabled } from '../../../ducks/bridge/selectors';
 
 const TokenButtons = ({
   token,
@@ -106,6 +107,10 @@ const TokenButtons = ({
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const handleSendNonEvm = useHandleSendNonEvm(token.address as CaipAssetType);
   ///: END:ONLY_INCLUDE_IF
+
+  const isUnifiedUIEnabled = useSelector((state) =>
+    getIsUnifiedUIEnabled(state, isEvm ? currentChainId : multichainChainId),
+  );
 
   useEffect(() => {
     if (token.isERC721) {
@@ -234,6 +239,12 @@ const TokenButtons = ({
     }
     ///: END:ONLY_INCLUDE_IF
 
+    // Check if unified UI is enabled and route to bridge page for swaps
+    if (isUnifiedUIEnabled) {
+      handleBridgeOnClick(true); // true indicates it's a swap
+      return;
+    }
+
     await setCorrectChain();
 
     trackEvent({
@@ -274,6 +285,7 @@ const TokenButtons = ({
     setCorrectChain,
     handleBridgeOnClick,
     multichainChainId,
+    isUnifiedUIEnabled,
   ]);
 
   return (
@@ -354,31 +366,33 @@ const TokenButtons = ({
         disabled={!isSwapsChain}
         round={!displayNewIconButtons}
       />
-      {displayNewIconButtons ? null : (
-        <IconButton
-          className="token-overview__button"
-          data-testid="token-overview-bridge"
-          Icon={
-            displayNewIconButtons ? (
-              <Icon
-                name={IconName.Bridge}
-                color={IconColor.iconAlternative}
-                size={IconSize.Md}
-              />
-            ) : (
-              <Icon
-                name={IconName.Bridge}
-                color={IconColor.iconDefault}
-                size={IconSize.Sm}
-              />
-            )
-          }
-          label={t('bridge')}
-          onClick={() => handleBridgeOnClick(false)}
-          disabled={!isBridgeChain}
-          round={!displayNewIconButtons}
-        />
-      )}
+      {displayNewIconButtons
+        ? null
+        : !isUnifiedUIEnabled && (
+            <IconButton
+              className="token-overview__button"
+              data-testid="token-overview-bridge"
+              Icon={
+                displayNewIconButtons ? (
+                  <Icon
+                    name={IconName.Bridge}
+                    color={IconColor.iconAlternative}
+                    size={IconSize.Md}
+                  />
+                ) : (
+                  <Icon
+                    name={IconName.Bridge}
+                    color={IconColor.iconDefault}
+                    size={IconSize.Sm}
+                  />
+                )
+              }
+              label={t('bridge')}
+              onClick={() => handleBridgeOnClick(false)}
+              disabled={!isBridgeChain}
+              round={!displayNewIconButtons}
+            />
+          )}
     </Box>
   );
 };

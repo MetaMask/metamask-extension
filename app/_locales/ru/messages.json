@@ -2226,9 +2226,6 @@
   "floatAmountToken": {
     "message": "Сумма токена должна быть целым числом"
   },
-  "followUsOnTwitter": {
-    "message": "Подпишитесь на нас в Twitter"
-  },
   "forbiddenIpfsGateway": {
     "message": "Запрещенный шлюз IPFS. Укажите шлюз CID"
   },

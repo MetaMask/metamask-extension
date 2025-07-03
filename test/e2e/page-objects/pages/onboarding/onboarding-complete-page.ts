@@ -79,9 +79,11 @@ class OnboardingCompletePage {
     );
   }
 
-  async completeOnboarding(): Promise<void> {
+  async completeOnboarding(isSocialImportFlow: boolean = false): Promise<void> {
     console.log('Complete onboarding');
-    await this.clickCreateWalletDoneButton();
+    if (!isSocialImportFlow) {
+      await this.clickCreateWalletDoneButton();
+    }
     await this.driver.waitForSelector(this.installCompleteMessage);
     await this.driver.waitForSelector(this.pinExtensionMessage);
     await this.driver.clickElementAndWaitToDisappear(

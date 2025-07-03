@@ -137,9 +137,8 @@ describe('Carousel component e2e tests', function () {
 
           if (i < slideCountAfterOneDismissed) {
             await driver.wait(async () => {
-              const remainingSlidesAfter = await driver.findElements(
-                '.mm-carousel-slide',
-              );
+              const remainingSlidesAfter =
+                await driver.findElements('.mm-carousel-slide');
 
               return (
                 remainingSlidesAfter.length === slideCountAfterOneDismissed
