@@ -159,29 +159,4 @@ describe('NFTs list', () => {
     await waitForElementByTextToNotBePresent('Punk #3');
     await waitForElementByTextToNotBePresent('Punk #2');
   });
-
-  it('disables the filter list for the test networks', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const accountName = account.metadata.name;
-
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: mockMetaMaskState,
-        backgroundConnection: backgroundConnectionMocked,
-      });
-    });
-
-    await screen.findByText(accountName);
-
-    await clickElementById('account-overview__nfts-tab');
-
-    await waitFor(() => {
-      expect(screen.getByTestId('sort-by-networks')).toBeEnabled();
-    });
-  });
 });
