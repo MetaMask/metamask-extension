@@ -40,12 +40,12 @@ const createMessengerMock = () =>
     subscribe: jest.fn(),
     publish: jest.fn(),
     call: jest.fn(),
-  } as unknown as jest.Mocked<DecryptMessageControllerMessenger>);
+  }) as unknown as jest.Mocked<DecryptMessageControllerMessenger>;
 
 const createManagerMessengerMock = () =>
   ({
     subscribe: jest.fn(),
-  } as unknown as jest.Mocked<DecryptMessageManagerMessenger>);
+  }) as unknown as jest.Mocked<DecryptMessageManagerMessenger>;
 
 const createDecryptMessageManagerMock = <T>() =>
   ({
@@ -67,7 +67,7 @@ const createDecryptMessageManagerMock = <T>() =>
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any as jest.Mocked<T>);
+  }) as any as jest.Mocked<T>;
 
 describe('DecryptMessageController', () => {
   let decryptMessageController: DecryptMessageController;
@@ -175,9 +175,8 @@ describe('DecryptMessageController', () => {
     );
     getStateMock.mockReturnValue(mockExtState);
 
-    const result = await decryptMessageController.decryptMessage(
-      messageToDecrypt,
-    );
+    const result =
+      await decryptMessageController.decryptMessage(messageToDecrypt);
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
     // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -254,9 +253,8 @@ describe('DecryptMessageController', () => {
     );
     getStateMock.mockReturnValue(mockExtState);
 
-    const result = await decryptMessageController.decryptMessageInline(
-      messageToDecrypt,
-    );
+    const result =
+      await decryptMessageController.decryptMessageInline(messageToDecrypt);
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
     // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -287,9 +285,8 @@ describe('DecryptMessageController', () => {
     );
     getStateMock.mockReturnValue(mockExtState);
 
-    const result = await decryptMessageController.cancelDecryptMessage(
-      messageIdMock,
-    );
+    const result =
+      await decryptMessageController.cancelDecryptMessage(messageIdMock);
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
     // eslint-disable-next-line @typescript-eslint/unbound-method

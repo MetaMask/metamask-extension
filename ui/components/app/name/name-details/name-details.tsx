@@ -255,7 +255,7 @@ export default function NameDetails({
     setName(savedPetname ?? '');
     setSelectedSourceId(savedSourceId ?? undefined);
     setSelectedSourceName(
-      savedSourceId ? savedPetname ?? undefined : undefined,
+      savedSourceId ? (savedPetname ?? undefined) : undefined,
     );
   }, [savedPetname, savedSourceId, setName, setSelectedSourceId]);
 
