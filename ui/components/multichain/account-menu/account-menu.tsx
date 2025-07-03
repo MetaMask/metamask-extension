@@ -91,6 +91,8 @@ import { ImportAccount } from '../import-account';
 import { SrpList } from '../multi-srp/srp-list';
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
+import Spinner from '../../ui/spinner';
 
 // TODO: Should we use an enum for this instead?
 export const ACTION_MODES = {
@@ -196,6 +198,7 @@ export const AccountMenu = ({
   }, []);
   const history = useHistory();
 
+  const { loading: syncSRPsLoading } = useSyncSRPs();
   const [actionMode, setActionMode] = useState<ActionMode>(ACTION_MODES.LIST);
   const [previousActionMode, setPreviousActionMode] = useState<ActionMode>(
     ACTION_MODES.LIST,
@@ -625,29 +628,51 @@ export const AccountMenu = ({
         ) : null}
         {actionMode === ACTION_MODES.LIST ? (
           <>
-            {/* Menu content */}
-            {children}
-            {/* Add / Import / Hardware button */}
-            {showAccountCreation ? (
+            {syncSRPsLoading ? (
               <Box
-                paddingTop={2}
-                paddingBottom={4}
-                paddingLeft={4}
-                paddingRight={4}
-                alignItems={AlignItems.center}
                 display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                alignItems={AlignItems.center}
+                marginTop={12}
               >
-                <ButtonSecondary
-                  startIconName={IconName.Add}
-                  size={ButtonSecondarySize.Lg}
-                  block
-                  onClick={() => setActionMode(ACTION_MODES.MENU)}
-                  data-testid="multichain-account-menu-popover-action-button"
+                <Spinner className="change-password__spinner" />
+                <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
+                  {t('syncingSeedPhrases')}
+                </Text>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
                 >
-                  {t('addImportAccount')}
-                </ButtonSecondary>
+                  {t('syncingSeedPhrasesNote')}
+                </Text>
               </Box>
-            ) : null}
+            ) : (
+              <>
+                {/* Menu content */}
+                {children}
+                {/* Add / Import / Hardware button */}
+                {showAccountCreation ? (
+                  <Box
+                    paddingTop={2}
+                    paddingBottom={4}
+                    paddingLeft={4}
+                    paddingRight={4}
+                    alignItems={AlignItems.center}
+                    display={Display.Flex}
+                  >
+                    <ButtonSecondary
+                      startIconName={IconName.Add}
+                      size={ButtonSecondarySize.Lg}
+                      block
+                      onClick={() => setActionMode(ACTION_MODES.MENU)}
+                      data-testid="multichain-account-menu-popover-action-button"
+                    >
+                      {t('addImportAccount')}
+                    </ButtonSecondary>
+                  </Box>
+                ) : null}
+              </>
+            )}
           </>
         ) : null}
       </ModalContent>
