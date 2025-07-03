@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import configureStore from '../../../../store/store';
-import SendAllowanceBanner from './send-allowance-banner.component';
+import SendAllowanceTooltip from './send-allowance-tooltip.component';
 import testData from '../../../../../.storybook/test-data';
 import {
   DailyAllowance,
@@ -20,11 +20,12 @@ const mockAllowance: DailyAllowance = {
   image: TOKEN_DETAILS[TokenSymbol.ETH].image,
   symbol: TokenSymbol.ETH,
   amount: 100,
+  decimals: 18,
 };
 
 export default {
-  title: 'Components/Vault/RemoteMode/SendAllowanceBanner',
-  component: SendAllowanceBanner,
+  title: 'Components/Vault/RemoteMode/SendAllowanceTooltip',
+  component: SendAllowanceTooltip,
   decorators: [
     (story) => (
       <Provider store={store}>
@@ -34,4 +35,6 @@ export default {
   ],
 };
 
-export const Default = () => <SendAllowanceBanner allowance={mockAllowance} />;
+export const Default = () => <SendAllowanceTooltip allowance={mockAllowance} />;
+
+export const NullAllowance = () => <SendAllowanceTooltip allowance={null} />;
