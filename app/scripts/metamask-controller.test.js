@@ -1,6 +1,8 @@
 /**
  * @jest-environment node
  */
+// Import to set up global `Promise.withResolvers` polyfill
+import '../../shared/lib/promise-with-resolvers';
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
 import { obj as createThroughStream } from 'through2';
@@ -39,6 +41,7 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
+
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
   HardwareDeviceNames,
@@ -296,6 +299,7 @@ const noop = () => undefined;
 
 describe('MetaMaskController', () => {
   beforeAll(async () => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
     await ganacheServer.start();
   });
 
@@ -416,6 +420,10 @@ describe('MetaMaskController', () => {
       jest.spyOn(
         metamaskController.keyringController,
         'createNewVaultAndRestore',
+      );
+      jest.spyOn(
+        metamaskController.seedlessOnboardingController,
+        'authenticate',
       );
     });
 
@@ -661,14 +669,67 @@ describe('MetaMaskController', () => {
       it('can only create new vault on keyringController once', async () => {
         const password = 'a-fake-password';
 
-        const vault1 = await metamaskController.createNewVaultAndKeychain(
-          password,
-        );
-        const vault2 = await metamaskController.createNewVaultAndKeychain(
-          password,
-        );
+        const vault1 =
+          await metamaskController.createNewVaultAndKeychain(password);
+        const vault2 =
+          await metamaskController.createNewVaultAndKeychain(password);
 
         expect(vault1).toStrictEqual(vault2);
+      });
+    });
+
+    describe('#createSeedPhraseBackup', () => {
+      it('should create a seed phrase backup', async () => {
+        const password = 'a-fake-password';
+        const mockSeedPhrase =
+          'mock seed phrase one two three four five six seven eight nine ten';
+        const mockEncodedSeedPhrase = Array.from(
+          Buffer.from(mockSeedPhrase, 'utf8').values(),
+        );
+
+        const createToprfKeyAndBackupSeedPhraseSpy = jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'createToprfKeyAndBackupSeedPhrase',
+          )
+          .mockResolvedValueOnce();
+
+        const primaryKeyring =
+          await metamaskController.createNewVaultAndKeychain(password);
+
+        await metamaskController.createSeedPhraseBackup(
+          password,
+          mockEncodedSeedPhrase,
+          primaryKeyring.metadata.id,
+        );
+
+        expect(createToprfKeyAndBackupSeedPhraseSpy).toHaveBeenCalled();
+      });
+    });
+
+    describe('#fetchAllSecretData', () => {
+      it('should fetch seedphrase backup correctly', async () => {
+        const password = 'a-fake-password';
+        const mockSeedPhrase =
+          'naive amused curtain never chef exotic ecology tomato field hamster then harvest';
+
+        const fetchSrpBackupSpy = jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'fetchAllSeedPhrases',
+          )
+          .mockResolvedValueOnce([
+            new Uint8Array([
+              149, 4, 65, 0, 177, 1, 168, 4, 58, 1, 128, 2, 48, 2, 32, 7, 175,
+              2, 69, 3, 1, 7, 75, 3,
+            ]),
+          ]);
+
+        const [srpBackup] =
+          await metamaskController.fetchAllSecretData(password);
+
+        expect(fetchSrpBackupSpy).toHaveBeenCalledWith(password);
+        expect(srpBackup.toString('utf8')).toStrictEqual(mockSeedPhrase);
       });
     });
 
@@ -1936,9 +1997,8 @@ describe('MetaMaskController', () => {
               it('should be unlocked by default', async () => {
                 await metamaskController.connectHardware(device, 0);
 
-                const status = await metamaskController.checkHardwareStatus(
-                  device,
-                );
+                const status =
+                  await metamaskController.checkHardwareStatus(device);
 
                 expect(status).toStrictEqual(true);
               });
@@ -1955,9 +2015,8 @@ describe('MetaMaskController', () => {
               .spyOn(metamaskController.keyringController, 'withKeyring')
               .mockImplementation((_, fn) => fn({ keyring: { type } }));
 
-            const result = await metamaskController.getHardwareTypeForMetric(
-              '0x123',
-            );
+            const result =
+              await metamaskController.getHardwareTypeForMetric('0x123');
 
             expect(result).toBe(HardwareKeyringType[type]);
           },
@@ -3520,9 +3579,8 @@ describe('MetaMaskController', () => {
           )
           .mockReturnValue(tokenData);
 
-        const tokenSymbol = await metamaskController.getTokenSymbol(
-          '0xNotInTokenList',
-        );
+        const tokenSymbol =
+          await metamaskController.getTokenSymbol('0xNotInTokenList');
 
         expect(tokenSymbol).toStrictEqual(tokenData.symbol);
       });
@@ -3562,9 +3620,8 @@ describe('MetaMaskController', () => {
             throw new Error('error');
           });
 
-        const tokenSymbol = await metamaskController.getTokenSymbol(
-          '0xNotInTokenList',
-        );
+        const tokenSymbol =
+          await metamaskController.getTokenSymbol('0xNotInTokenList');
 
         expect(tokenSymbol).toStrictEqual(null);
       });
@@ -4198,6 +4255,332 @@ describe('MetaMaskController', () => {
               .failoverUrls,
           ).toHaveLength(0);
         });
+      });
+    });
+
+    describe('#syncSeedPhrases', () => {
+      beforeEach(async () => {
+        // Unlock the keyring controller first
+        await metamaskController.createNewVaultAndKeychain('test-password');
+
+        jest.spyOn(
+          metamaskController.onboardingController,
+          'getIsSocialLoginFlow',
+        );
+        jest.spyOn(
+          metamaskController.seedlessOnboardingController,
+          'fetchAllSeedPhrases',
+        );
+        jest.spyOn(
+          metamaskController.seedlessOnboardingController,
+          'getSeedPhraseBackupHash',
+        );
+        jest.spyOn(metamaskController, 'importMnemonicToVault');
+        jest.spyOn(
+          metamaskController,
+          '_convertEnglishWordlistIndicesToCodepoints',
+        );
+      });
+
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+
+      it('should throw error if not in social login flow', async () => {
+        metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
+          false,
+        );
+
+        await expect(metamaskController.syncSeedPhrases()).rejects.toThrow(
+          'Syncing seed phrases is only available for social login flow',
+        );
+      });
+
+      it('should throw error if no root SRP found', async () => {
+        metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
+          true,
+        );
+        metamaskController.seedlessOnboardingController.fetchAllSeedPhrases.mockResolvedValue(
+          [], // Empty array means no root SRP
+        );
+
+        await expect(metamaskController.syncSeedPhrases()).rejects.toThrow(
+          'No root SRP found',
+        );
+      });
+
+      it('should import new seed phrases that are not in local state', async () => {
+        const mockRootSRP = new Uint8Array([1, 2, 3, 4]);
+        const mockOtherSRP1 = new Uint8Array([5, 6, 7, 8]);
+        const mockOtherSRP2 = new Uint8Array([9, 10, 11, 12]);
+        const mockMnemonic =
+          'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
+
+        metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
+          true,
+        );
+        metamaskController.seedlessOnboardingController.fetchAllSeedPhrases.mockResolvedValue(
+          [mockRootSRP, mockOtherSRP1, mockOtherSRP2],
+        );
+
+        // First SRP exists in local state, second doesn't
+        metamaskController.seedlessOnboardingController.getSeedPhraseBackupHash
+          .mockReturnValueOnce('existing-hash') // First SRP exists
+          .mockReturnValueOnce(null); // Second SRP doesn't exist
+
+        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockReturnValueOnce(
+          Buffer.from(mockMnemonic, 'utf8'),
+        );
+
+        await metamaskController.syncSeedPhrases();
+
+        // Should only import the second SRP (the one that doesn't exist locally)
+        expect(metamaskController.importMnemonicToVault).toHaveBeenCalledTimes(
+          1,
+        );
+        expect(metamaskController.importMnemonicToVault).toHaveBeenCalledWith(
+          mockMnemonic,
+          {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+            shouldImportSolanaAccount: true,
+          },
+        );
+      });
+
+      it('should not import seed phrases that already exist in local state', async () => {
+        const mockRootSRP = new Uint8Array([1, 2, 3, 4]);
+        const mockOtherSRP = new Uint8Array([5, 6, 7, 8]);
+
+        metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
+          true,
+        );
+        metamaskController.seedlessOnboardingController.fetchAllSeedPhrases.mockResolvedValue(
+          [mockRootSRP, mockOtherSRP],
+        );
+
+        // Both SRPs exist in local state
+        metamaskController.seedlessOnboardingController.getSeedPhraseBackupHash.mockReturnValue(
+          'existing-hash',
+        );
+
+        await metamaskController.syncSeedPhrases();
+
+        // Should not import any SRPs since they all exist locally
+        expect(metamaskController.importMnemonicToVault).not.toHaveBeenCalled();
+      });
+
+      it('should handle multiple seed phrases that need to be imported', async () => {
+        const mockRootSRP = new Uint8Array([1, 2, 3, 4]);
+        const mockOtherSRP1 = new Uint8Array([5, 6, 7, 8]);
+        const mockOtherSRP2 = new Uint8Array([9, 10, 11, 12]);
+        const mockMnemonic1 =
+          'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
+        const mockMnemonic2 =
+          'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
+
+        metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
+          true,
+        );
+        metamaskController.seedlessOnboardingController.fetchAllSeedPhrases.mockResolvedValue(
+          [mockRootSRP, mockOtherSRP1, mockOtherSRP2],
+        );
+
+        // Both other SRPs don't exist in local state
+        metamaskController.seedlessOnboardingController.getSeedPhraseBackupHash
+          .mockReturnValueOnce(null) // First other SRP doesn't exist
+          .mockReturnValueOnce(null); // Second other SRP doesn't exist
+
+        function isEqualUint8Array(arr1, arr2) {
+          if (arr1.length !== arr2.length) {
+            return false;
+          }
+
+          return arr1.every((value, index) => value === arr2[index]);
+        }
+
+        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockImplementation(
+          (wordlistIndices) => {
+            if (isEqualUint8Array(wordlistIndices, mockOtherSRP1)) {
+              return Buffer.from(mockMnemonic1, 'utf8');
+            } else if (isEqualUint8Array(wordlistIndices, mockOtherSRP2)) {
+              return Buffer.from(mockMnemonic2, 'utf8');
+            }
+
+            return new Uint8Array(0);
+          },
+        );
+
+        await metamaskController.syncSeedPhrases();
+
+        // Should import both SRPs that don't exist locally
+        expect(metamaskController.importMnemonicToVault).toHaveBeenCalledTimes(
+          2,
+        );
+        expect(
+          metamaskController.importMnemonicToVault,
+        ).toHaveBeenNthCalledWith(1, mockMnemonic1, {
+          shouldCreateSocialBackup: false,
+          shouldSelectAccount: false,
+          shouldImportSolanaAccount: true,
+        });
+      });
+    });
+
+    describe('#restoreSeedPhrasesToVault', () => {
+      beforeEach(async () => {
+        // Unlock the keyring controller first
+        await metamaskController.createNewVaultAndKeychain('test-password');
+
+        jest.spyOn(
+          metamaskController.onboardingController,
+          'getIsSocialLoginFlow',
+        );
+        jest.spyOn(metamaskController, 'importMnemonicToVault');
+      });
+
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+
+      it('should return early if not in social login flow', async () => {
+        metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
+          false,
+        );
+
+        await metamaskController.restoreSeedPhrasesToVault([]);
+
+        expect(metamaskController.importMnemonicToVault).not.toHaveBeenCalled();
+      });
+
+      it('should import all seed phrases when in social login flow', async () => {
+        const mockSeedPhrases = [
+          Buffer.from(
+            'debris dizzy just program just float decrease vacant alarm reduce speak stadium',
+            'utf8',
+          ),
+          Buffer.from(
+            'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle',
+            'utf8',
+          ),
+        ];
+
+        metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
+          true,
+        );
+
+        await metamaskController.restoreSeedPhrasesToVault(mockSeedPhrases);
+
+        expect(metamaskController.importMnemonicToVault).toHaveBeenCalledTimes(
+          2,
+        );
+        expect(
+          metamaskController.importMnemonicToVault,
+        ).toHaveBeenNthCalledWith(
+          1,
+          'debris dizzy just program just float decrease vacant alarm reduce speak stadium',
+          {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+            shouldImportSolanaAccount: false,
+          },
+        );
+        expect(
+          metamaskController.importMnemonicToVault,
+        ).toHaveBeenNthCalledWith(
+          2,
+          'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle',
+          {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+            shouldImportSolanaAccount: false,
+          },
+        );
+      });
+
+      it('should handle empty seed phrases array', async () => {
+        metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
+          true,
+        );
+
+        await metamaskController.restoreSeedPhrasesToVault([]);
+
+        expect(metamaskController.importMnemonicToVault).not.toHaveBeenCalled();
+      });
+
+      it('should handle single seed phrase', async () => {
+        const mockSeedPhrase = [
+          Buffer.from(
+            'debris dizzy just program just float decrease vacant alarm reduce speak stadium',
+            'utf8',
+          ),
+        ];
+
+        metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
+          true,
+        );
+
+        await metamaskController.restoreSeedPhrasesToVault(mockSeedPhrase);
+
+        expect(metamaskController.importMnemonicToVault).toHaveBeenCalledTimes(
+          1,
+        );
+        expect(metamaskController.importMnemonicToVault).toHaveBeenCalledWith(
+          'debris dizzy just program just float decrease vacant alarm reduce speak stadium',
+          {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+            shouldImportSolanaAccount: false,
+          },
+        );
+      });
+
+      it('should handle seed phrases with special characters', async () => {
+        const mockSeedPhrases = [
+          Buffer.from(
+            'debris dizzy just program just float decrease vacant alarm reduce speak stadium',
+            'utf8',
+          ),
+        ];
+
+        metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
+          true,
+        );
+
+        await metamaskController.restoreSeedPhrasesToVault(mockSeedPhrases);
+
+        expect(metamaskController.importMnemonicToVault).toHaveBeenCalledWith(
+          'debris dizzy just program just float decrease vacant alarm reduce speak stadium',
+          {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+            shouldImportSolanaAccount: false,
+          },
+        );
+      });
+
+      it('should handle seed phrases with unicode characters', async () => {
+        const mockSeedPhrases = [
+          Buffer.from(
+            'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle',
+            'utf8',
+          ),
+        ];
+
+        metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
+          true,
+        );
+
+        await metamaskController.restoreSeedPhrasesToVault(mockSeedPhrases);
+
+        expect(metamaskController.importMnemonicToVault).toHaveBeenCalledWith(
+          'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle',
+          {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+            shouldImportSolanaAccount: false,
+          },
+        );
       });
     });
   });

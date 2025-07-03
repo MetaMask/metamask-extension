@@ -1,10 +1,17 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   AccountGroupId,
   AccountWalletId,
 } from '@metamask/account-tree-controller';
+import { CaipChainId } from '@metamask/utils';
+import {
+  SolScope,
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  BtcScope,
+  ///: END:ONLY_INCLUDE_IF
+} from '@metamask/keyring-api';
 import {
   Box,
   ButtonIcon,
@@ -15,7 +22,10 @@ import {
   Text,
   BannerAlert,
   BannerAlertSeverity,
+  Modal,
+  ModalOverlay,
 } from '../../../components/component-library';
+import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
 import {
   AlignItems,
   BlockSize,
@@ -26,6 +36,7 @@ import {
   TextAlign,
   JustifyContent,
   BackgroundColor,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import {
   Content,
@@ -39,8 +50,21 @@ import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask
 import WalletDetailsAccountItem from '../../../components/multichain/multichain-accounts/wallet-details-account-item/wallet-details-account-item';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import SRPQuiz from '../../../components/app/srp-quiz-modal';
-import { setAccountDetailsAddress } from '../../../store/actions';
-import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
+import { WalletDetailsAccountTypeSelection } from '../../../components/multichain/multichain-accounts/wallet-details-account-type-selection';
+import {
+  setAccountDetailsAddress,
+  addNewAccount,
+} from '../../../store/actions';
+import {
+  ACCOUNT_DETAILS_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
+} from '../../../helpers/constants/routes';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
+import {
+  EVM_WALLET_TYPE,
+  WalletClientType,
+  useMultichainWalletSnapClient,
+} from '../../../hooks/accounts/useMultichainWalletSnapClient';
 
 type AccountBalance = {
   [key: string]: string | number;
@@ -58,6 +82,13 @@ const WalletDetails = () => {
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   const wallet = walletsWithAccounts[decodedId as AccountWalletId];
   const [accountBalances, setAccountBalances] = useState<AccountBalance>({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Initialize wallet snap clients
+  const solanaClient = useMultichainWalletSnapClient(WalletClientType.Solana);
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  const bitcoinClient = useMultichainWalletSnapClient(WalletClientType.Bitcoin);
+  ///: END:ONLY_INCLUDE_IF
 
   const totalBalance = useMemo(
     () =>
@@ -67,15 +98,19 @@ const WalletDetails = () => {
     [accountBalances],
   );
 
-  const handleBalanceUpdate = (accountId: string, balance: string | number) => {
-    setAccountBalances((prev) => ({
-      ...prev,
-      [accountId]: balance,
-    }));
-  };
+  const handleBalanceUpdate = useCallback(
+    (accountId: string, balance: string | number) => {
+      setAccountBalances((prev) => ({
+        ...prev,
+        [accountId]: balance,
+      }));
+    },
+    [],
+  );
 
   const handleAccountClick = (account: { id: string; address: string }) => {
     dispatch(setAccountDetailsAddress(account.address));
+    history.push(`${ACCOUNT_DETAILS_ROUTE}/${account.address}`);
   };
 
   const handleBack = () => {
@@ -124,6 +159,100 @@ const WalletDetails = () => {
     groupKeys.length > 0 ? wallet.groups[groupKeys[0] as AccountGroupId] : null;
   const accounts = firstGroup?.accounts || [];
 
+  const handleAddAccount = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCreateEthereumAccount = async (): Promise<boolean> => {
+    trace({ name: TraceName.AddAccount });
+    try {
+      await dispatch(addNewAccount(keyringId));
+      return true;
+    } catch (error) {
+      console.error('Error creating Ethereum account:', error);
+      return false;
+    } finally {
+      endTrace({ name: TraceName.AddAccount });
+    }
+  };
+
+  const handleCreateSnapAccount = async (
+    clientType: WalletClientType,
+    chainId: CaipChainId,
+  ): Promise<boolean> => {
+    trace({ name: TraceName.AddAccount });
+    try {
+      let client;
+
+      if (clientType === WalletClientType.Solana) {
+        client = solanaClient;
+      }
+      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+      else if (clientType === WalletClientType.Bitcoin) {
+        client = bitcoinClient;
+      }
+      ///: END:ONLY_INCLUDE_IF
+      else {
+        console.error(`Unsupported client type: ${clientType}`);
+        return false;
+      }
+
+      if (!client) {
+        console.error(`Client not available for type: ${clientType}`);
+        return false;
+      }
+
+      await client.createAccount(
+        {
+          scope: chainId,
+          entropySource: keyringId,
+        },
+        {
+          displayConfirmation: false,
+          displayAccountNameSuggestion: false,
+          setSelectedAccount: false,
+        },
+      );
+      return true;
+    } catch (error) {
+      console.error(`Error creating ${clientType} account:`, error);
+      return false;
+    } finally {
+      endTrace({ name: TraceName.AddAccount });
+    }
+  };
+
+  const handleAccountTypeSelect = async (
+    accountType: WalletClientType | typeof EVM_WALLET_TYPE,
+  ) => {
+    let success = false;
+
+    if (accountType === EVM_WALLET_TYPE) {
+      success = await handleCreateEthereumAccount();
+    } else if (accountType === WalletClientType.Solana) {
+      success = await handleCreateSnapAccount(
+        WalletClientType.Solana,
+        SolScope.Mainnet as CaipChainId,
+      );
+    }
+    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+    else if (accountType === WalletClientType.Bitcoin) {
+      success = await handleCreateSnapAccount(
+        WalletClientType.Bitcoin,
+        BtcScope.Mainnet as CaipChainId,
+      );
+    }
+    ///: END:ONLY_INCLUDE_IF
+
+    if (success) {
+      handleCloseModal();
+    }
+  };
+
   const rowStylesProps = {
     display: Display.Flex,
     justifyContent: JustifyContent.spaceBetween,
@@ -153,7 +282,6 @@ const WalletDetails = () => {
           <Box
             className="wallet-details-page__row"
             padding={4}
-            marginBottom={1}
             {...rowStylesProps}
           >
             <Text
@@ -173,7 +301,6 @@ const WalletDetails = () => {
           <Box
             className="wallet-details-page__row"
             padding={4}
-            marginBottom={1}
             {...rowStylesProps}
           >
             <Text
@@ -260,6 +387,33 @@ const WalletDetails = () => {
                 {...rowStylesProps}
               />
             ))}
+            <Box
+              className="wallet-details-page__row wallet-details-page__add-account-button"
+              padding={4}
+              width={BlockSize.Full}
+              textAlign={TextAlign.Left}
+              {...rowStylesProps}
+              as="button"
+              onClick={handleAddAccount}
+            >
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                gap={3}
+              >
+                <Icon
+                  name={IconName.Add}
+                  size={IconSize.Md}
+                  color={IconColor.primaryDefault}
+                />
+                <Text
+                  variant={TextVariant.bodyMdMedium}
+                  color={TextColor.primaryDefault}
+                >
+                  {t('addAccount')}
+                </Text>
+              </Box>
+            </Box>
           </Box>
         )}
       </Content>
@@ -270,6 +424,25 @@ const WalletDetails = () => {
           onClose={() => setSrpQuizModalVisible(false)}
           closeAfterCompleting
         />
+      )}
+      {isModalOpen && (
+        <Modal isOpen onClose={handleCloseModal}>
+          <ModalOverlay />
+          <ModalContent
+            className="multichain-account-menu-popover"
+            modalDialogProps={{
+              className: 'multichain-account-menu-popover__dialog',
+              padding: 0,
+              display: Display.Flex,
+              flexDirection: FlexDirection.Column,
+            }}
+          >
+            <WalletDetailsAccountTypeSelection
+              onAccountTypeSelect={handleAccountTypeSelect}
+              onClose={handleCloseModal}
+            />
+          </ModalContent>
+        </Modal>
       )}
     </Page>
   );

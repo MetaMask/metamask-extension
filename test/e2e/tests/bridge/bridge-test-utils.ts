@@ -118,13 +118,13 @@ export async function bridgeTransaction(
   );
 
   if (quote.unapproved) {
-    await activityList.check_txAction(`Bridge to ${quote.toChain}`);
+    await activityList.check_txAction(`Bridged to ${quote.toChain}`);
     await activityList.check_txAction(
       `Approve ${quote.tokenFrom} for bridge`,
       2,
     );
   } else {
-    await activityList.check_txAction(`Bridge to ${quote.toChain}`);
+    await activityList.check_txAction(`Bridged to ${quote.toChain}`);
   }
   // Check the amount of ETH deducted in the activity is correct
   await activityList.check_txAmountInActivity(
@@ -470,10 +470,14 @@ async function mockPriceSpotPrices(mockServer: Mockttp) {
           data: {
             '0x0000000000000000000000000000000000000000': {
               usd: 2000.0,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               usd_24h_change: 2.5,
             },
             '0x6b175474e89094c44da98b954eedeac495271d0f': {
               usd: 1.0,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               usd_24h_change: 0.1,
             },
           },
@@ -491,10 +495,14 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
         json: {
           'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': {
             usd: 1.0,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             usd_24h_change: 0.1,
           },
           'eip155:1/slip44:60': {
             usd: 2000.0,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             usd_24h_change: 2.5,
           },
         },

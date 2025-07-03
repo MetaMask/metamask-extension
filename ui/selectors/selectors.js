@@ -141,11 +141,14 @@ import {
   getMultichainNetworkProviders,
   getMultichainNetwork,
 } from './multichain';
-import { getSelectedMultichainNetworkChainId } from './multichain/networks';
+import {
+  getSelectedMultichainNetworkChainId,
+  getIsEvmMultichainNetworkSelected,
+} from './multichain/networks';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
 
-export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
+export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
 
 /** `appState` slice selectors */
 
@@ -1396,12 +1399,24 @@ export const getTokenSortConfig = createDeepEqualSelector(
 export const getTokenNetworkFilter = createDeepEqualSelector(
   getCurrentChainId,
   getPreferences,
+  getIsEvmMultichainNetworkSelected,
+  getSelectedMultichainNetworkChainId,
   /**
    * @param {*} currentChainId - chainId
    * @param {*} preferences - preferences state
+   * @param {*} isEvmMultichainNetworkSelected - whether the evm multichain network is selected
+   * @param {*} multichainNetworkChainId - the chainId of the multichain network
    * @returns {Record<Hex, boolean>}
    */
-  (currentChainId, { tokenNetworkFilter }) => {
+  (
+    currentChainId,
+    { tokenNetworkFilter },
+    isEvmMultichainNetworkSelected,
+    multichainNetworkChainId,
+  ) => {
+    if (!isEvmMultichainNetworkSelected) {
+      return { [multichainNetworkChainId]: true };
+    }
     // Portfolio view not enabled outside popular networks
     if (
       !process.env.PORTFOLIO_VIEW ||
@@ -1432,7 +1447,7 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const networks = isGlobalNetworkSelectorRemoved
-    ? enabledNetworks?.[namespace] ?? {}
+    ? (enabledNetworks?.[namespace] ?? {})
     : tokenNetworkFilter;
 
   if (
