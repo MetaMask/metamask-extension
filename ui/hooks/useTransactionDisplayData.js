@@ -139,10 +139,9 @@ export function useTransactionDisplayData(transactionGroup) {
   const { transferInformation, type, txParamsOriginal } = initialTransaction;
   const { from, to } = initialTransaction.txParams || {};
 
-  const isUnifiedSwapTx = [
-    TransactionType.swap,
-    TransactionType.bridge,
-  ].includes(type);
+  const isUnifiedSwapTx =
+    [TransactionType.swap, TransactionType.bridge].includes(type) &&
+    Boolean(bridgeHistoryItem);
 
   // for smart contract interactions, methodData can be used to derive the name of the action being taken
   const methodData =

@@ -117,7 +117,6 @@ const expectedResults = [
     primaryCurrency: '+1 ABC',
     senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
     recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
-    secondaryCurrency: '+1 ETH',
     isPending: false,
     displayedStatusKey: TransactionStatus.confirmed,
   },
