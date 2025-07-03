@@ -244,7 +244,7 @@ const ChangePassword = () => {
           </Box>
           <Button
             type="submit"
-            disabled={!currentPassword || !newPassword}
+            disabled={!currentPassword || !newPassword || !termsChecked}
             data-testid="change-password-button"
             block
           >
