@@ -287,8 +287,8 @@ const config = {
       {
         test: /\.(?:js|mjs)$/u,
         include: NODE_MODULES_RE,
-        // never process `@lavamoat/snow/**.*`
-        exclude: /^.*\/node_modules\/@lavamoat\/snow\/.*$/u,
+        // never process `@lavamoat/snow/**.*` and `@trezor/**.*`
+        exclude: /^.*\/node_modules\/(@lavamoat\/snow|@trezor)\/.*$/u,
         // can be removed once https://github.com/MetaMask/key-tree/issues/152 is resolved
         resolve: { fullySpecified: false },
         use: ecmaLoader,
