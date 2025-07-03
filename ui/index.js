@@ -42,7 +42,7 @@ import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 
-export { installCriticalErrorListeners } from './helpers/utils/install-critical-error-listeners';
+export { installCriticalStartupErrorListeners } from './helpers/utils/install-critical-error-listeners';
 
 const METHOD_START_UI_SYNC = 'startUISync';
 
@@ -67,8 +67,6 @@ export const connectToBackground = (
       reduxStore.dispatch(actions.updateMetamaskState(params[0]));
     } else if (method === METHOD_START_UI_SYNC) {
       handleStartUISync();
-    } else if (method === 'RELOAD') {
-      window.location.reload();
     } else {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(

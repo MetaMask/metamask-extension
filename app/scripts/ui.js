@@ -21,7 +21,7 @@ import log from 'loglevel';
 // Import to set up global `Promise.withResolvers` polyfill
 import '../../shared/lib/promise-with-resolvers';
 import launchMetaMaskUi, {
-  installCriticalErrorListeners,
+  installCriticalStartupErrorListeners,
   connectToBackground,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
@@ -94,12 +94,12 @@ async function start() {
 
   // Set up error handlers as early as possible to ensure we are ready to
   // handle any errors that occur at any time
-  installCriticalErrorListeners(container, extensionPort);
+  installCriticalStartupErrorListeners(container, extensionPort);
 
   const connectionStream = new PortStream(extensionPort);
   const subStreams = connectSubstreams(connectionStream);
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);
-  connectToBackground(container, backgroundConnection, handleStartUISync);
+  connectToBackground(backgroundConnection, handleStartUISync);
 
   async function handleStartUISync() {
     endTrace({ name: TraceName.BackgroundConnect });
