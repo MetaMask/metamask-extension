@@ -157,7 +157,7 @@ export class LedgerOffscreenBridge
               typeof error.statusCode === 'number' &&
               error.statusCode > 0
             ) {
-              // this is TransportStatusError, convert the SerializedLedgerError to a TransportStatusError
+              // This is TransportStatusError, convert the SerializedLedgerError to a TransportStatusError
               // TransportStatusError will regenerate the error message based on the statusCode
               const transportStatusError = new TransportStatusError(
                 error.statusCode,
