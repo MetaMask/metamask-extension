@@ -65,7 +65,6 @@ const createBridgeToken = (
     address: tokenData.address,
     symbol: tokenData.symbol,
     decimals: tokenData.decimals,
-    // name: tokenData.name || tokenData.symbol,
     chainId,
     image: getTokenImage(chainId, tokenData.address, tokenData.assetId),
     balance: '0',
