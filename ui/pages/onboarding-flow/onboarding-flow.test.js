@@ -183,7 +183,7 @@ describe('Onboarding Flow', () => {
     );
 
     expect(history.location.pathname).toStrictEqual(
-      ONBOARDING_REVEAL_SRP_ROUTE,
+      `${ONBOARDING_REVEAL_SRP_ROUTE}/`,
     );
   });
 
@@ -195,7 +195,7 @@ describe('Onboarding Flow', () => {
     );
 
     expect(history.location.pathname).toStrictEqual(
-      ONBOARDING_REVEAL_SRP_ROUTE,
+      `${ONBOARDING_REVEAL_SRP_ROUTE}/`,
     );
   });
 
