@@ -96,7 +96,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
     );
   });
 
-  it.only('queues switchEthereumChain request from second dapp after send tx request', async function () {
+  it('queues switchEthereumChain request from second dapp after send tx request', async function () {
     await withFixtures(
       {
         dapp: true,
