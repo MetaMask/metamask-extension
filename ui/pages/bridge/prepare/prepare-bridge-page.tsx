@@ -1012,15 +1012,27 @@ const PrepareBridgePage = () => {
                       variant={TextVariant.bodyXs}
                       textAlign={TextAlign.Center}
                     >
-                      {isUsingHardwareWallet
-                        ? t('willApproveAmountForBridgingHardware')
-                        : t('willApproveAmountForBridging', [
+                      {(() => {
+                        if (isUsingHardwareWallet) {
+                          return t('willApproveAmountForBridgingHardware');
+                        }
+                        if (isSwap) {
+                          return t('willApproveAmountForSwapping', [
                             formatTokenAmount(
                               locale,
                               fromAmount,
                               fromToken.symbol,
                             ),
-                          ])}
+                          ]);
+                        }
+                        return t('willApproveAmountForBridging', [
+                          formatTokenAmount(
+                            locale,
+                            fromAmount,
+                            fromToken.symbol,
+                          ),
+                        ]);
+                      })()}
                     </Text>
                     {fromAmount && (
                       <Tooltip

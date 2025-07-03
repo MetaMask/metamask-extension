@@ -319,8 +319,8 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitleContainsOrigin = true;
     primarySuffix = isViewingReceivedTokenFromSwap
       ? currentAsset.symbol
-      : bridgeTokenDisplayData.sourceTokenSymbol ??
-        initialTransaction.sourceTokenSymbol;
+      : (bridgeTokenDisplayData.sourceTokenSymbol ??
+        initialTransaction.sourceTokenSymbol);
     primaryDisplayValue =
       bridgeTokenDisplayData.sourceTokenAmountSent ?? swapTokenValue;
     secondaryDisplayValue =

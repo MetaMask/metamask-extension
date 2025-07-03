@@ -283,8 +283,8 @@ const AssetListControlBar = ({
     ) {
       const chainId = Object.keys(enabledNetworksByNamespace)[0];
       return isStrictHexString(chainId)
-        ? allNetworks[chainId]?.name ?? t('currentNetwork')
-        : currentMultichainNetwork.network.nickname ?? t('currentNetwork');
+        ? (allNetworks[chainId]?.name ?? t('currentNetwork'))
+        : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
     }
 
     if (
