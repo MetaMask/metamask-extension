@@ -8,10 +8,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import { Driver } from '../../../webdriver/driver';
 import { mockDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
-import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
 describe('View DeFi details', function () {
   it('user should be able to view Aave Positions details', async function () {
@@ -37,20 +34,12 @@ describe('View DeFi details', function () {
 
         const defiTab = new DeFiTab(driver);
 
-        // check ethereum positions present)
-        if (!isGlobalNetworkSelectorRemoved) {
-          await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-        }
-
         await defiTab.check_groupIconIsDisplayed();
         await defiTab.defiTabCells.check_tokenName('Aave V3');
         await defiTab.defiTabCells.check_tokenMarketValue('$14.74');
         await defiTab.defiTabCells.check_tokenName('Aave V2');
         await defiTab.defiTabCells.check_tokenMarketValue('$0.33');
 
-        if (!isGlobalNetworkSelectorRemoved) {
-          await defiTab.openNetworksFilterAndClickPopularNetworks();
-        }
         await defiTab.defiTabCells.check_tokenName('UniswapV3');
         await defiTab.defiTabCells.check_tokenMarketValue('$8.48');
         await defiTab.defiTabCells.check_tokenName('UniswapV2');
@@ -58,19 +47,15 @@ describe('View DeFi details', function () {
 
         // deselect linea
         // this feels wrong, there might be a potential bug here with defi
-        if (isGlobalNetworkSelectorRemoved) {
-          await driver.clickElement('[data-testid="sort-by-networks"]');
-          await driver.clickElement({
-            text: 'Default',
-          });
-          await driver.clickElement({
-            text: 'Linea Mainnet',
-            css: 'p',
-          });
-          await driver.clickElement(
-            '[data-testid="modal-header-close-button"]',
-          );
-        }
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Default',
+        });
+        await driver.clickElement({
+          text: 'Linea Mainnet',
+          css: 'p',
+        });
+        await driver.clickElement('[data-testid="modal-header-close-button"]');
         // click detils page for AaveV3
         await defiTab.clickIntoAaveV3DetailsPage();
         const defiDetailsTab = new DeFiDetailsPage(driver);
