@@ -116,6 +116,8 @@ const createMockState = (
     // Required for permission selectors
     permissionHistory: {
       'https://test-dapp.com': {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         eth_accounts: {
           accounts: {
             [address]: Date.now(),
