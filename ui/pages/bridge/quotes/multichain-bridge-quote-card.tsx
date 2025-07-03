@@ -29,13 +29,9 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
-import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
-import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   BackgroundColor,
+  FontStyle,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -56,11 +52,6 @@ export const MultichainBridgeQuoteCard = () => {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
-
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
-  const { quoteRequestProperties } = useRequestProperties();
-  const requestMetadataProperties = useRequestMetadataProperties();
-  const quoteListProperties = useQuoteProperties();
 
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
@@ -169,22 +160,33 @@ export const MultichainBridgeQuoteCard = () => {
               >
                 {t('networkFee')}
               </Text>
-              <Text>
-                {activeQuote.quote.gasIncluded &&
-                activeQuote.includedTxFees?.valueInCurrency
-                  ? formatCurrencyAmount(
-                      activeQuote.includedTxFees.valueInCurrency,
-                      currency,
-                      2,
-                    )
-                  : formatCurrencyAmount(
-                      activeQuote.totalMaxNetworkFee?.valueInCurrency,
-                      currency,
-                      2,
-                    )}
-
-                {activeQuote.quote.gasIncluded ? ' Included' : ''}
-              </Text>
+              {activeQuote.quote.gasIncluded && (
+                <Row gap={1}>
+                  <Text style={{ textDecoration: 'line-through' }}>
+                    {activeQuote.includedTxFees?.valueInCurrency
+                      ? formatCurrencyAmount(
+                          activeQuote.includedTxFees.valueInCurrency,
+                          currency,
+                          2,
+                        )
+                      : formatCurrencyAmount(
+                          activeQuote.totalMaxNetworkFee?.valueInCurrency,
+                          currency,
+                          2,
+                        )}
+                  </Text>
+                  <Text fontStyle={FontStyle.Italic}>{' Included'}</Text>
+                </Row>
+              )}
+              {!activeQuote.quote.gasIncluded && (
+                <Text>
+                  {formatCurrencyAmount(
+                    activeQuote.totalMaxNetworkFee?.valueInCurrency,
+                    currency,
+                    2,
+                  )}
+                </Text>
+              )}
             </Row>
 
             {/* Time */}
@@ -215,17 +217,6 @@ export const MultichainBridgeQuoteCard = () => {
               <ButtonLink
                 variant={TextVariant.bodyMd}
                 onClick={() => {
-                  quoteRequestProperties &&
-                    requestMetadataProperties &&
-                    quoteListProperties &&
-                    trackCrossChainSwapsEvent({
-                      event: MetaMetricsEventName.AllQuotesOpened,
-                      properties: {
-                        ...quoteRequestProperties,
-                        ...requestMetadataProperties,
-                        ...quoteListProperties,
-                      },
-                    });
                   fromChain?.chainId &&
                     activeQuote &&
                     dispatch(
@@ -240,7 +231,7 @@ export const MultichainBridgeQuoteCard = () => {
                           price_impact: Number(
                             activeQuote.quote?.priceData?.priceImpact ?? '0',
                           ),
-                          gas_included: false,
+                          gas_included: Boolean(activeQuote.quote?.gasIncluded),
                         },
                       ),
                     );
