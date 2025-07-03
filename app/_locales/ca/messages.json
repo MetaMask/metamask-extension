@@ -30,7 +30,7 @@
     "message": "registre d'activitat"
   },
   "addAcquiredTokens": {
-    "message": "Afegeix les fitxes que has adquirit fent servir MetaMask"
+    "message": "Afegeix les fitxes que has adquirit fent servir CryptoBridge"
   },
   "addAlias": {
     "message": "Afegeix un àlies"
@@ -91,7 +91,7 @@
     "message": "Enrere"
   },
   "backupApprovalInfo": {
-    "message": "Aquest codi secret es requereix per recuperar el teu moneder en cas que perdis el dispositiu, oblidis la teva contrasenya, hagis de reinstal·lar MetaMask, o vulguis accedir al teu moneder des d'un altre dispositiu."
+    "message": "Aquest codi secret es requereix per recuperar el teu moneder en cas que perdis el dispositiu, oblidis la teva contrasenya, hagis de reinstal·lar CryptoBridge, o vulguis accedir al teu moneder des d'un altre dispositiu."
   },
   "backupApprovalNotice": {
     "message": "Fes una còpia de seguretat del teu codi Secret de Recuperació per mantenir el teu moneder i els teus fons segurs."
@@ -270,7 +270,7 @@
     "message": "Connectar un moneder hardware"
   },
   "hardwareWalletsMsg": {
-    "message": "Selecciona una cartera de hardware que t'agradaria utilizar amb MetaMask"
+    "message": "Selecciona una cartera de hardware que t'agradaria utilizar amb CryptoBridge"
   },
   "here": {
     "message": "aquí",
@@ -293,7 +293,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": "Els comptes importats no s'associaran amb la teva frase de recuperació creada originalment a MetaMask. Aprèn més sobre els comptes importats"
+    "message": "Els comptes importats no s'associaran amb la teva frase de recuperació creada originalment a CryptoBridge. Aprèn més sobre els comptes importats"
   },
   "imported": {
     "message": "Importats",
@@ -370,7 +370,7 @@
     "message": "Missatge"
   },
   "metamaskVersion": {
-    "message": "Versió MetaMask"
+    "message": "Versió CryptoBridge"
   },
   "mustSelectOne": {
     "message": "Has de seleccionar "

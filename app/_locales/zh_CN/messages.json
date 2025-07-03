@@ -629,7 +629,7 @@
     "message": "备份与同步简介"
   },
   "backupApprovalInfo": {
-    "message": "如果不慎丢失个人设备，忘记密码，需要重新安装 MetaMask，或者需在另一台设备上访问钱包，使用此助记词才能恢复您的钱包。"
+    "message": "如果不慎丢失个人设备，忘记密码，需要重新安装 CryptoBridge，或者需在另一台设备上访问钱包，使用此助记词才能恢复您的钱包。"
   },
   "backupApprovalNotice": {
     "message": "请备份您的私钥助记词，确保您的钱包和资金安全。"
@@ -1575,7 +1575,7 @@
     "message": "好的"
   },
   "dataCollectionWarningPopoverDescription": {
-    "message": "您关闭了我们用于营销目的的数据收集。此操作仅适用于此设备。如果您在其他设备上使用 MetaMask，请务必也在其他设备上选择关闭。"
+    "message": "您关闭了我们用于营销目的的数据收集。此操作仅适用于此设备。如果您在其他设备上使用 CryptoBridge，请务必也在其他设备上选择关闭。"
   },
   "dataUnavailable": {
     "message": "数据不可用"
@@ -2218,7 +2218,7 @@
     "description": "This explains the risks of using CryptoBridge Flask"
   },
   "flaskWelcomeWarning3": {
-    "message": "所有Flask API都是实验性的。它们可能会在未事先通知的情况下被更改或删除，它们也可能会无限期地留在 Flask 上而不会迁移到稳定的 MetaMask。您需要自行承担使用它们的风险。",
+    "message": "所有Flask API都是实验性的。它们可能会在未事先通知的情况下被更改或删除，它们也可能会无限期地留在 Flask 上而不会迁移到稳定的 CryptoBridge。您需要自行承担使用它们的风险。",
     "description": "This message warns developers about unstable Flask APIs"
   },
   "flaskWelcomeWarning4": {
@@ -2517,7 +2517,7 @@
     "message": "这不是有效的私钥。必须输入长度为 64 个字符的十六进制字符串。"
   },
   "importAccountJsonLoading1": {
-    "message": "预计此 JSON 导入需要几分钟时间并暂停 MetaMask。"
+    "message": "预计此 JSON 导入需要几分钟时间并暂停 CryptoBridge。"
   },
   "importAccountJsonLoading2": {
     "message": "很抱歉，在未来我们将会加快此流程。"
@@ -2627,7 +2627,7 @@
     "message": "安装源"
   },
   "installRequest": {
-    "message": "添加到 MetaMask"
+    "message": "添加到 CryptoBridge"
   },
   "installedOn": {
     "message": "已在 $1 上安装",
@@ -2828,7 +2828,7 @@
     "message": "欺诈和安全风险信息。"
   },
   "leaveMetaMask": {
-    "message": "要离开 MetaMask？"
+    "message": "要离开 CryptoBridge？"
   },
   "leaveMetaMaskDesc": {
     "message": "您即将访问 CryptoBridge 之外的网站。继续之前请仔细检查 URL。"
@@ -2907,7 +2907,7 @@
     "message": "链接"
   },
   "linkCentralizedExchanges": {
-    "message": "链接您的 Coinbase 或 Binance 账户，将加密货币免费转移到 MetaMask。"
+    "message": "链接您的 Coinbase 或 Binance 账户，将加密货币免费转移到 CryptoBridge。"
   },
   "links": {
     "message": "链接"
@@ -3765,7 +3765,7 @@
     "message": "我同意"
   },
   "onboardingMetametricsDescription": {
-    "message": "我们希望收集基本的使用和诊断数据，以改进 MetaMask。请注意，我们绝不会出卖您在此处提供的数据。"
+    "message": "我们希望收集基本的使用和诊断数据，以改进 CryptoBridge。请注意，我们绝不会出卖您在此处提供的数据。"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "如果我们决定将这些数据用于其他目的，我们会通知您。您可以查看我们的 $1 以了解更多信息。请记住，您可以随时转到设置并选择退出。",
@@ -3876,7 +3876,7 @@
     "message": "参加 MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "加入 MetaMetrics ，帮助我们改进 MetaMask"
+    "message": "加入 MetaMetrics ，帮助我们改进 CryptoBridge"
   },
   "password": {
     "message": "密码"
@@ -4750,7 +4750,7 @@
     "message": "选择一个账户"
   },
   "selectAnAccountAlreadyConnected": {
-    "message": "此账户已连接到 MetaMask"
+    "message": "此账户已连接到 CryptoBridge"
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "打开\"显示 NFT 媒体\""

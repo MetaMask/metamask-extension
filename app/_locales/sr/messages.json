@@ -30,7 +30,7 @@
     "message": "dnevnik aktivnosti"
   },
   "addAcquiredTokens": {
-    "message": "Dodajte stečene tokene koristeći MetaMask."
+    "message": "Dodajte stečene tokene koristeći CryptoBridge."
   },
   "addAlias": {
     "message": "Dodaj pseudonim"
@@ -276,7 +276,7 @@
     "message": "Povežite hardverski novčanik"
   },
   "hardwareWalletsMsg": {
-    "message": "Izaberite hardverski novčanik koji biste voleli da koristite sa MetaMask-om"
+    "message": "Izaberite hardverski novčanik koji biste voleli da koristite sa CryptoBridge-om"
   },
   "here": {
     "message": "ovde",
@@ -444,7 +444,7 @@
     "message": "Učestvujte u MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Učestvujte u MetaMetrics da biste nam pomogli da poboljšamo MetaMask."
+    "message": "Učestvujte u MetaMetrics da biste nam pomogli da poboljšamo CryptoBridge."
   },
   "password": {
     "message": "Лозинка"

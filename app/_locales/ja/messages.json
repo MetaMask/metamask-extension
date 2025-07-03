@@ -3409,7 +3409,7 @@
     "message": "NFTの自動検出が有効になりました"
   },
   "nftDisclaimer": {
-    "message": "開示事項: MetaMaskはソースURLからメディアファイルを取得します。このURLは時々、NFTがミントされたマーケットプレイスにより変更されることがあります。"
+    "message": "開示事項: CryptoBridgeはソースURLからメディアファイルを取得します。このURLは時々、NFTがミントされたマーケットプレイスにより変更されることがあります。"
   },
   "nftOptions": {
     "message": "NFTオプション"
@@ -6101,7 +6101,7 @@
     "message": "サービス規約"
   },
   "termsOfUseAgreeText": {
-    "message": " MetaMaskおよびそのすべての機能の利用に適用される利用規約に同意します。"
+    "message": " CryptoBridgeおよびそのすべての機能の利用に適用される利用規約に同意します。"
   },
   "termsOfUseFooterText": {
     "message": "スクロールしてすべてのセクションをお読みください"

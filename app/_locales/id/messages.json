@@ -156,10 +156,10 @@
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
   "addAccountToMetaMask": {
-    "message": "Tambahkan akun ke MetaMask"
+    "message": "Tambahkan akun ke CryptoBridge"
   },
   "addAcquiredTokens": {
-    "message": "Tambahkan token yang Anda peroleh menggunakan MetaMask"
+    "message": "Tambahkan token yang Anda peroleh menggunakan CryptoBridge"
   },
   "addAlias": {
     "message": "Tambahkan alias"
@@ -600,7 +600,7 @@
     "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
   },
   "backupAndSyncEnableDescription": {
-    "message": "Pencadangan dan sinkronisasi memungkinkan kami menyimpan data terenkripsi untuk pengaturan dan fitur khusus Anda. Ini menjaga pengalaman CryptoBridge Anda tetap sama di semua perangkat serta memulihkan pengaturan dan fiturnya jika Anda perlu menginstal ulang MetaMask. Ini tidak mencadangkan Frasa Pemulihan Rahasia. $1.",
+    "message": "Pencadangan dan sinkronisasi memungkinkan kami menyimpan data terenkripsi untuk pengaturan dan fitur khusus Anda. Ini menjaga pengalaman CryptoBridge Anda tetap sama di semua perangkat serta memulihkan pengaturan dan fiturnya jika Anda perlu menginstal ulang CryptoBridge. Ini tidak mencadangkan Frasa Pemulihan Rahasia. $1.",
     "description": "$1 is link to the backup and sync privacy policy."
   },
   "backupAndSyncEnableDescriptionUpdatePreferences": {
@@ -629,7 +629,7 @@
     "message": "Memperkenalkan pencadangan dan sinkronisasi"
   },
   "backupApprovalInfo": {
-    "message": "Kode rahasia ini diperlukan untuk memulihkan dompet seandainya perangkat Anda hilang, lupa kata sandi, harus memasang kembali MetaMask, atau ingin mengakses dompet Anda di perangkat lain."
+    "message": "Kode rahasia ini diperlukan untuk memulihkan dompet seandainya perangkat Anda hilang, lupa kata sandi, harus memasang kembali CryptoBridge, atau ingin mengakses dompet Anda di perangkat lain."
   },
   "backupApprovalNotice": {
     "message": "Cadangkan Frasa Pemulihan Rahasia untuk menjaga keamanan dompet dan dana Anda."
@@ -656,7 +656,7 @@
     "message": "Fungsionalitas dasar tidak aktif"
   },
   "basicConfigurationDescription": {
-    "message": "CryptoBridge menawarkan fitur dasar seperti detail token dan pengaturan gas melalui layanan internet. Alamat IP dibagikan saat menggunakan layanan internet, dalam hal ini kepada MetaMask. Ini sama seperti saat Anda mengunjungi situs web mana pun. CryptoBridge menggunakan data ini untuk sementara dan tidak akan pernah menjual data Anda. Anda dapat menggunakan VPN atau menonaktifkan layanan ini, akan tetapi hal ini dapat memengaruhi pengalaman dalam menggunakan MetaMask. Untuk selengkapnya, baca $1 kami.",
+    "message": "CryptoBridge menawarkan fitur dasar seperti detail token dan pengaturan gas melalui layanan internet. Alamat IP dibagikan saat menggunakan layanan internet, dalam hal ini kepada CryptoBridge. Ini sama seperti saat Anda mengunjungi situs web mana pun. CryptoBridge menggunakan data ini untuk sementara dan tidak akan pernah menjual data Anda. Anda dapat menggunakan VPN atau menonaktifkan layanan ini, akan tetapi hal ini dapat memengaruhi pengalaman dalam menggunakan CryptoBridge. Untuk selengkapnya, baca $1 kami.",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationLabel": {
@@ -666,7 +666,7 @@
     "message": "Saya memahami dan ingin melanjutkan"
   },
   "basicConfigurationModalDisclaimerOff": {
-    "message": "Artinya, Anda tidak akan benar-benar mengoptimalkan waktu di MetaMask. Fitur dasar (seperti detail token, pengaturan gas optimal, dan lainnya) tidak akan tersedia untuk Anda."
+    "message": "Artinya, Anda tidak akan benar-benar mengoptimalkan waktu di CryptoBridge. Fitur dasar (seperti detail token, pengaturan gas optimal, dan lainnya) tidak akan tersedia untuk Anda."
   },
   "basicConfigurationModalDisclaimerOffAdditionalText": {
     "message": "Dengan menonaktifkan ini, Anda juga akan menonaktifkan semua fitur di $1 dan $2.",
@@ -679,7 +679,7 @@
     "message": "notifikasi"
   },
   "basicConfigurationModalDisclaimerOn": {
-    "message": "Untuk mengoptimalkan waktu di MetaMask, Anda perlu mengaktifkan fitur ini. Fungsi dasar (seperti detail token, pengaturan gas optimal, dan lainnya) penting untuk pengalaman web3."
+    "message": "Untuk mengoptimalkan waktu di CryptoBridge, Anda perlu mengaktifkan fitur ini. Fungsi dasar (seperti detail token, pengaturan gas optimal, dan lainnya) penting untuk pengalaman web3."
   },
   "basicConfigurationModalHeadingOff": {
     "message": "Nonaktifkan fungsionalitas dasar"
@@ -930,7 +930,7 @@
     "message": "Hubungi kami"
   },
   "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Dukungan MetaMask"
+    "message": "Dukungan CryptoBridge"
   },
   "bridgeTxDetailsDelayedTitle": {
     "message": "Apakah sudah lebih dari 3 jam?"
@@ -1269,7 +1269,7 @@
     "description": "$1 is the snap for which a connection is being requested."
   },
   "connectWithMetaMask": {
-    "message": "Hubungkan dengan MetaMask"
+    "message": "Hubungkan dengan CryptoBridge"
   },
   "connectedAccounts": {
     "message": "Akun yang terhubung"
@@ -1355,7 +1355,7 @@
     "message": "Menghubungkan ke jaringan uji Sepolia"
   },
   "connectionDescription": {
-    "message": "Hubungkan situs web ini dengan MetaMask"
+    "message": "Hubungkan situs web ini dengan CryptoBridge"
   },
   "connectionFailed": {
     "message": "Koneksi gagal"
@@ -1435,7 +1435,7 @@
     "message": "Buat kata sandi"
   },
   "createSnapAccountDescription": {
-    "message": "$1 ingin menambahkan akun baru ke MetaMask."
+    "message": "$1 ingin menambahkan akun baru ke CryptoBridge."
   },
   "createSnapAccountTitle": {
     "message": "Buat akun"
@@ -1447,7 +1447,7 @@
     "message": "Alamat pembuat"
   },
   "crossChainSwapsLink": {
-    "message": "Bertukar antar jaringan dengan Portfolio MetaMask"
+    "message": "Bertukar antar jaringan dengan Portfolio CryptoBridge"
   },
   "crossChainSwapsLinkNative": {
     "message": "Bertukar antara jaringan dengan Bridge"
@@ -1679,7 +1679,7 @@
     "message": "Mengerti"
   },
   "deprecatedNetworkDescription": {
-    "message": "Jaringan yang Anda coba hubungkan tidak lagi didukung oleh Metamask. $1"
+    "message": "Jaringan yang Anda coba hubungkan tidak lagi didukung oleh CryptoBridge. $1"
   },
   "description": {
     "message": "Deskripsi"
@@ -2371,7 +2371,7 @@
     "message": "Integrasi dompet perangkat keras menggunakan panggilan API ke server eksternal, yang dapat melihat alamat IP Anda dan alamat kontrak cerdas tempat Anda berinteraksi."
   },
   "hardwareWalletsMsg": {
-    "message": "Pilih dompet perangkat keras yang ingin Anda gunakan dengan MetaMask."
+    "message": "Pilih dompet perangkat keras yang ingin Anda gunakan dengan CryptoBridge."
   },
   "here": {
     "message": "di sini",
@@ -2514,7 +2514,7 @@
     "message": "Ini bukan kunci pribadi yang valid. Anda harus memasukkan string heksadesimal dengan panjang 64 karakter."
   },
   "importAccountJsonLoading1": {
-    "message": "Impor JSON diperkirakan memerlukan waktu beberapa menit dan bekukan MetaMask."
+    "message": "Impor JSON diperkirakan memerlukan waktu beberapa menit dan bekukan CryptoBridge."
   },
   "importAccountJsonLoading2": {
     "message": "Mohon maaf, kami akan berupaya untuk membuatnya semakin cepat di masa mendatang."
@@ -2624,7 +2624,7 @@
     "message": "Instal asal"
   },
   "installRequest": {
-    "message": "Tambahkan ke MetaMask"
+    "message": "Tambahkan ke CryptoBridge"
   },
   "installedOn": {
     "message": "Diinstal di $1",
@@ -2825,10 +2825,10 @@
     "message": "penipuan dan risiko keamanan."
   },
   "leaveMetaMask": {
-    "message": "Keluar dari MetaMask?"
+    "message": "Keluar dari CryptoBridge?"
   },
   "leaveMetaMaskDesc": {
-    "message": "Anda akan mengunjungi situs di luar MetaMask. Periksa kembali URL sebelum melanjutkan."
+    "message": "Anda akan mengunjungi situs di luar CryptoBridge. Periksa kembali URL sebelum melanjutkan."
   },
   "ledgerAccountRestriction": {
     "message": "Manfaatkan akun terakhir Anda sebelum menambahkan yang baru."
@@ -3016,7 +3016,7 @@
     "message": "Pesan"
   },
   "metaMaskConnectStatusParagraphOne": {
-    "message": "Sekarang, Anda memiliki kontrol lebih banyak atas koneksi akun Anda di MetaMask."
+    "message": "Sekarang, Anda memiliki kontrol lebih banyak atas koneksi akun Anda di CryptoBridge."
   },
   "metaMaskConnectStatusParagraphThree": {
     "message": "Klik untuk mengelola akun Anda yang terhubung."
@@ -3038,7 +3038,7 @@
     "message": "CryptoBridge Swap sedang dalam pemeliharaan. Harap periksa kembali nanti."
   },
   "metamaskVersion": {
-    "message": "Versi MetaMask"
+    "message": "Versi CryptoBridge"
   },
   "methodData": {
     "message": "Metode"
@@ -3204,7 +3204,7 @@
     "message": "Bagikan umpan balik Anda"
   },
   "needHelpLinkText": {
-    "message": "Dukungan MetaMask"
+    "message": "Dukungan CryptoBridge"
   },
   "needHelpSubmitTicket": {
     "message": "Kirimkan tiket"
@@ -3759,7 +3759,7 @@
     "message": "Saya setuju"
   },
   "onboardingMetametricsDescription": {
-    "message": "Kami ingin mengumpulkan data penggunaan dasar dan diagnostik untuk meningkatkan MetaMask. Pahami bahwa kami tidak pernah menjual data yang Anda berikan di sini."
+    "message": "Kami ingin mengumpulkan data penggunaan dasar dan diagnostik untuk meningkatkan CryptoBridge. Pahami bahwa kami tidak pernah menjual data yang Anda berikan di sini."
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Kami akan memberitahukan keputusan untuk menggunakan data ini dengan tujuan lain. Anda dapat meninjau $1 kami untuk informasi selengkapnya. Ingat, Anda dapat membuka pengaturan dan memilih keluar setiap saat.",
@@ -3855,7 +3855,7 @@
     "message": "lainnya"
   },
   "outdatedBrowserNotification": {
-    "message": "Browser Anda sudah usang. Jika browser tidak diperbarui, Anda tidak akan bisa mendapatkan tambalan keamanan dan fitur baru dari MetaMask."
+    "message": "Browser Anda sudah usang. Jika browser tidak diperbarui, Anda tidak akan bisa mendapatkan tambalan keamanan dan fitur baru dari CryptoBridge."
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Batalkan header Content-Security-Policy"
@@ -3958,11 +3958,11 @@
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
   "permission_assets": {
-    "message": "Menampilkan aset akun di MetaMask.",
+    "message": "Menampilkan aset akun di CryptoBridge.",
     "description": "The description for the `endowment:assets` permission."
   },
   "permission_assetsDescription": {
-    "message": "Izinkan $1 untuk memberikan informasi aset kepada klien MetaMask. Aset dapat berupa onchain atau offchain.",
+    "message": "Izinkan $1 untuk memberikan informasi aset kepada klien CryptoBridge. Aset dapat berupa onchain atau offchain.",
     "description": "An extended description for the `endowment:assets` permission. $1 is the name of the Snap."
   },
   "permission_cronjob": {
@@ -3974,7 +3974,7 @@
     "description": "An extended description for the `snap_cronjob` permission. $1 is the snap name."
   },
   "permission_dialog": {
-    "message": "Tampilkan jendela dialog di MetaMask.",
+    "message": "Tampilkan jendela dialog di CryptoBridge.",
     "description": "The description for the `snap_dialog` permission"
   },
   "permission_dialogDescription": {
@@ -4006,7 +4006,7 @@
     "description": "The description for the `snap_getLocale` permission"
   },
   "permission_getLocaleDescription": {
-    "message": "Izinkan $1 mengakses bahasa pilihan Anda dari pengaturan MetaMask. Ini dapat digunakan untuk melokalisasi dan menampilkan konten $1 menggunakan bahasa Anda.",
+    "message": "Izinkan $1 mengakses bahasa pilihan Anda dari pengaturan CryptoBridge. Ini dapat digunakan untuk melokalisasi dan menampilkan konten $1 menggunakan bahasa Anda.",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
   "permission_getPreferences": {
@@ -4022,7 +4022,7 @@
     "description": "The description for the `endowment:page-home` permission"
   },
   "permission_homePageDescription": {
-    "message": "Izinkan $1 menampilkan layar beranda khusus di MetaMask. Ini dapat digunakan untuk antarmuka pengguna, konfigurasi, dan dasbor.",
+    "message": "Izinkan $1 menampilkan layar beranda khusus di CryptoBridge. Ini dapat digunakan untuk antarmuka pengguna, konfigurasi, dan dasbor.",
     "description": "An extended description for the `endowment:page-home` permission. $1 is the snap name."
   },
   "permission_keyring": {
@@ -4082,7 +4082,7 @@
     "description": "The description for the `snap_notify` permission"
   },
   "permission_notificationsDescription": {
-    "message": "Izinkan $1 untuk menampilkan notifikasi dalam MetaMask. Teks notifikasi singkat dapat dipicu oleh Snap untuk informasi yang dapat ditindaklanjuti atau peka terhadap waktu.",
+    "message": "Izinkan $1 untuk menampilkan notifikasi dalam CryptoBridge. Teks notifikasi singkat dapat dipicu oleh Snap untuk informasi yang dapat ditindaklanjuti atau peka terhadap waktu.",
     "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
   },
   "permission_protocol": {
@@ -4126,7 +4126,7 @@
     "description": "The description for the `endowment:transaction-insight` permission"
   },
   "permission_transactionInsightDescription": {
-    "message": "Izinkan $1 untuk membaca kode transaksi dan menampilkan wawasan dalam UI MetaMask. Ini dapat digunakan sebagai solusi anti pengelabuan dan keamanan.",
+    "message": "Izinkan $1 untuk membaca kode transaksi dan menampilkan wawasan dalam UI CryptoBridge. Ini dapat digunakan sebagai solusi anti pengelabuan dan keamanan.",
     "description": "An extended description for the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_transactionInsightOrigin": {
@@ -4471,7 +4471,7 @@
     "message": "Akun berikut akan dihapus dari CryptoBridge saat menghapus Snap ini:"
   },
   "removeKeyringSnapToolTip": {
-    "message": "Snap mengontrol akun. Jika dihapus, maka akun tersebut akan dihapus juga dari MetaMask, tetapi akun tersebut akan tetap berada di blockchain."
+    "message": "Snap mengontrol akun. Jika dihapus, maka akun tersebut akan dihapus juga dari CryptoBridge, tetapi akun tersebut akan tetap berada di blockchain."
   },
   "removeNFT": {
     "message": "Hapus NFT"
@@ -4486,7 +4486,7 @@
     "message": "Hapus Snap"
   },
   "removeSnapAccountDescription": {
-    "message": "Jika Anda melanjutkan, akun ini tidak lagi tersedia di MetaMask."
+    "message": "Jika Anda melanjutkan, akun ini tidak lagi tersedia di CryptoBridge."
   },
   "removeSnapAccountTitle": {
     "message": "Hapus akun"
@@ -4546,7 +4546,7 @@
     "message": "Pastikan Anda menggunakan Frasa Pemulihan Rahasia yang benar sebelum melanjutkan. Anda tidak dapat membatalkan tindakan ini."
   },
   "restartMetamask": {
-    "message": "Mulai ulang MetaMask"
+    "message": "Mulai ulang CryptoBridge"
   },
   "restore": {
     "message": "Pulihkan"
@@ -4744,7 +4744,7 @@
     "message": "Pilih akun"
   },
   "selectAnAccountAlreadyConnected": {
-    "message": "Akun ini sudah terhubung ke MetaMask."
+    "message": "Akun ini sudah terhubung ke CryptoBridge."
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Aktifkan Tampilkan Media NFT"
@@ -5009,13 +5009,13 @@
     "message": "Jual kripto dan dapatkan uang tunai"
   },
   "slideCashOutTitle": {
-    "message": "Cairkan uang tunai dengan MetaMask"
+    "message": "Cairkan uang tunai dengan CryptoBridge"
   },
   "slideDebitCardDescription": {
     "message": "Tersedia di wilayah tertentu"
   },
   "slideDebitCardTitle": {
-    "message": "Kartu debit MetaMask"
+    "message": "Kartu debit CryptoBridge"
   },
   "slideFundWalletDescription": {
     "message": "Tambah atau transfer token untuk memulai"
@@ -5024,7 +5024,7 @@
     "message": "Danai dompet Anda"
   },
   "slideMultiSrpDescription": {
-    "message": "Impor dan gunakan beberapa dompet di MetaMask"
+    "message": "Impor dan gunakan beberapa dompet di CryptoBridge"
   },
   "slideMultiSrpTitle": {
     "message": "Tambahkan beberapa Frasa Pemulihan Rahasia"
@@ -5111,7 +5111,7 @@
     "message": "Transaksi Anda gagal"
   },
   "smartTransactionErrorDescription": {
-    "message": "Perubahan pasar yang mendadak dapat menyebabkan kegagalan. Jika masalah berlanjut, hubungi dukungan pelanggan MetaMask."
+    "message": "Perubahan pasar yang mendadak dapat menyebabkan kegagalan. Jika masalah berlanjut, hubungi dukungan pelanggan CryptoBridge."
   },
   "smartTransactionPending": {
     "message": "Transaksi Anda telah dikirim"
@@ -5161,7 +5161,7 @@
     "message": "Akun dihapus"
   },
   "snapAccountRemovedDescription": {
-    "message": "Akun ini tidak lagi tersedia untuk digunakan di MetaMask."
+    "message": "Akun ini tidak lagi tersedia untuk digunakan di CryptoBridge."
   },
   "snapAccounts": {
     "message": "Akun Snap"
@@ -5453,7 +5453,7 @@
     "message": "Untuk mengungkapkan Frasa Pemulihan Rahasia, Anda perlu menjawab dua pertanyaan dengan benar"
   },
   "srpSecurityQuizQuestionOneQuestion": {
-    "message": "Jika Anda kehilangan Frasa Pemulihan Rahasia, MetaMask..."
+    "message": "Jika Anda kehilangan Frasa Pemulihan Rahasia, CryptoBridge..."
   },
   "srpSecurityQuizQuestionOneRightAnswer": {
     "message": "Tidak dapat membantu Anda"
@@ -5531,7 +5531,7 @@
     "message": "Terjadi kesalahan pada log status pengambilan."
   },
   "stateLogFileName": {
-    "message": "Log status MetaMask"
+    "message": "Log status CryptoBridge"
   },
   "stateLogs": {
     "message": "Log status"
@@ -5665,7 +5665,7 @@
     "message": "Ikuti survei kami"
   },
   "surveyTitle": {
-    "message": "Bentuk masa depan MetaMask"
+    "message": "Bentuk masa depan CryptoBridge"
   },
   "swap": {
     "message": "Pertukaran"
@@ -5809,7 +5809,7 @@
     "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
-    "message": "Termasuk $1% biaya MetaMask.",
+    "message": "Termasuk $1% biaya CryptoBridge.",
     "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
@@ -5833,10 +5833,10 @@
     "message": "Selipi maks"
   },
   "swapMetaMaskFee": {
-    "message": "Biaya MetaMask"
+    "message": "Biaya CryptoBridge"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "Biaya sebesar $1% otomatis diperhitungkan ke dalam kuotasi ini. Anda membayarnya sebagai ganti lisensi untuk menggunakan perangkat lunak pengumpul informasi penyedia likuiditas MetaMask.",
+    "message": "Biaya sebesar $1% otomatis diperhitungkan ke dalam kuotasi ini. Anda membayarnya sebagai ganti lisensi untuk menggunakan perangkat lunak pengumpul informasi penyedia likuiditas CryptoBridge.",
     "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
@@ -6395,7 +6395,7 @@
     "message": "Tidak disetujui"
   },
   "unexpectedBehavior": {
-    "message": "Perilaku ini tidak terduga dan harus dilaporkan sebagai bug, meskipun akun Anda telah dipulihkan dengan benar. Gunakan tautan di bawah ini untuk mengirim laporan bug ke MetaMask."
+    "message": "Perilaku ini tidak terduga dan harus dilaporkan sebagai bug, meskipun akun Anda telah dipulihkan dengan benar. Gunakan tautan di bawah ini untuk mengirim laporan bug ke CryptoBridge."
   },
   "units": {
     "message": "unit"

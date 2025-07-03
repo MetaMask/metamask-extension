@@ -600,7 +600,7 @@
     "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
   },
   "backupAndSyncEnableDescription": {
-    "message": "백업 및 동기화를 통해 사용자 지정 설정과 기능을 암호화된 상태로 저장할 수 있습니다. 이 기능은 MetaMask를 여러 기기에서 동일하게 사용할 수 있게 해주며, MetaMask를 재설치할 경우 설정과 기능을 복원해 줍니다. 비밀복구구문은 백업되지 않습니다. $1.",
+    "message": "백업 및 동기화를 통해 사용자 지정 설정과 기능을 암호화된 상태로 저장할 수 있습니다. 이 기능은 CryptoBridge를 여러 기기에서 동일하게 사용할 수 있게 해주며, CryptoBridge를 재설치할 경우 설정과 기능을 복원해 줍니다. 비밀복구구문은 백업되지 않습니다. $1.",
     "description": "$1 is link to the backup and sync privacy policy."
   },
   "backupAndSyncEnableDescriptionUpdatePreferences": {
@@ -629,7 +629,7 @@
     "message": "백업 및 동기화 소개"
   },
   "backupApprovalInfo": {
-    "message": "이 비밀 코드는 장치를 분실하여 지갑을 복구해야 하거나, 비밀번호를 잊은 경우, MetaMask를 다시 설치해야 하거나, 다른 장치에서 지갑에 액세스해야 할 때 필요합니다."
+    "message": "이 비밀 코드는 장치를 분실하여 지갑을 복구해야 하거나, 비밀번호를 잊은 경우, CryptoBridge를 다시 설치해야 하거나, 다른 장치에서 지갑에 액세스해야 할 때 필요합니다."
   },
   "backupApprovalNotice": {
     "message": "비밀복구구문을 백업하여 지갑과 자금을 안전하게 보호하세요."
@@ -656,7 +656,7 @@
     "message": "기본 기능이 꺼져 있습니다."
   },
   "basicConfigurationDescription": {
-    "message": "MetaMask는 인터넷 서비스를 통해 토큰 세부 정보 및 가스 설정과 같은 기본 기능을 제공합니다. 인터넷 서비스를 이용할 때 IP 주소가 공유되며, 이 경우 MetaMask와 공유됩니다. 이는 다른 웹사이트를 방문할 때와 마찬가지입니다. MetaMask는 이 데이터를 일시적으로 사용하며 데이터를 절대 판매하지 않습니다. VPN을 사용하거나 이러한 서비스를 비활성화할 수 있지만 CryptoBridge 사용 환경에 영향을 미칠 수 있습니다. 자세한 내용은 $1 내용을 참고하세요.",
+    "message": "MetaMask는 인터넷 서비스를 통해 토큰 세부 정보 및 가스 설정과 같은 기본 기능을 제공합니다. 인터넷 서비스를 이용할 때 IP 주소가 공유되며, 이 경우 CryptoBridge와 공유됩니다. 이는 다른 웹사이트를 방문할 때와 마찬가지입니다. CryptoBridge는 이 데이터를 일시적으로 사용하며 데이터를 절대 판매하지 않습니다. VPN을 사용하거나 이러한 서비스를 비활성화할 수 있지만 CryptoBridge 사용 환경에 영향을 미칠 수 있습니다. 자세한 내용은 $1 내용을 참고하세요.",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationLabel": {
@@ -666,7 +666,7 @@
     "message": "이해했습니다. 계속 진행하겠습니다"
   },
   "basicConfigurationModalDisclaimerOff": {
-    "message": "이렇게 하면 MetaMask에서 시간을 완전히 최적화할 수 없습니다. 기본 기능(토큰 세부 정보, 최적의 가스 설정 등)을 사용할 수 없게 됩니다."
+    "message": "이렇게 하면 CryptoBridge에서 시간을 완전히 최적화할 수 없습니다. 기본 기능(토큰 세부 정보, 최적의 가스 설정 등)을 사용할 수 없게 됩니다."
   },
   "basicConfigurationModalDisclaimerOffAdditionalText": {
     "message": "이 기능을 끄면 $1 및 $2에 포함된 모든 기능도 함께 비활성화됩니다.",
@@ -1034,14 +1034,14 @@
     "message": "네트워크 선택"
   },
   "chooseYourNetworkDescription": {
-    "message": "기본 설정과 구성을 사용할 경우, MetaMask는 Infura를 기본 원격 프로시저 호출(RPC) 제공업체로 사용하여 가능한 가장 안정적이고 공개성이 낮은 방식으로 이더리움 데이터에 접근할 수 있도록 합니다. 일부 제한된 경우에는 사용자에게 최상의 사용 경험을 제공하기 위해 다른 RPC 제공업체를 사용할 수 있습니다. 직접 RPC를 선택할 수도 있지만, 어떤 RPC를 사용하든 트랜잭션을 수행하려면 본인의 IP 주소와 이더리움 지갑 주소가 해당 RPC로 전송된다는 점을 유의하세요. Infura가 EVM 계정 데이터를 처리하는 방식에 대해 더 알고 싶다면 $1 내용을 확인하시고, Solana 계정에 대한 정보는 $2의 내용을 참고하세요.",
+    "message": "기본 설정과 구성을 사용할 경우, CryptoBridge는 Infura를 기본 원격 프로시저 호출(RPC) 제공업체로 사용하여 가능한 가장 안정적이고 공개성이 낮은 방식으로 이더리움 데이터에 접근할 수 있도록 합니다. 일부 제한된 경우에는 사용자에게 최상의 사용 경험을 제공하기 위해 다른 RPC 제공업체를 사용할 수 있습니다. 직접 RPC를 선택할 수도 있지만, 어떤 RPC를 사용하든 트랜잭션을 수행하려면 본인의 IP 주소와 이더리움 지갑 주소가 해당 RPC로 전송된다는 점을 유의하세요. Infura가 EVM 계정 데이터를 처리하는 방식에 대해 더 알고 싶다면 $1 내용을 확인하시고, Solana 계정에 대한 정보는 $2의 내용을 참고하세요.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chooseYourNetworkDescriptionCallToAction": {
     "message": "여기를 클릭하세요"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "하드웨어 지갑에 연결하려면 Google Chrome에서 MetaMask를 사용해야 합니다."
+    "message": "하드웨어 지갑에 연결하려면 Google Chrome에서 CryptoBridge를 사용해야 합니다."
   },
   "circulatingSupply": {
     "message": "순환 공급"
@@ -1136,7 +1136,7 @@
     "message": "$1 수수료 포함"
   },
   "confirmGasFeeTokenModalNativeToggleMetaMask": {
-    "message": "이 트랜잭션을 완료하기 위해 MetaMask가 잔액을 충전하고 있습니다."
+    "message": "이 트랜잭션을 완료하기 위해 CryptoBridge가 잔액을 충전하고 있습니다."
   },
   "confirmGasFeeTokenModalNativeToggleWallet": {
     "message": "지갑에 있는 잔액으로 네트워크 수수료를 결제하세요."
@@ -1355,7 +1355,7 @@
     "message": "Sepolia 테스트 네트워크에 연결 중"
   },
   "connectionDescription": {
-    "message": "이 사이트를 MetaMask와 연결"
+    "message": "이 사이트를 CryptoBridge와 연결"
   },
   "connectionFailed": {
     "message": "연결 실패"
@@ -1365,7 +1365,7 @@
     "description": "$1 is the name of the snap being fetched."
   },
   "connectionPopoverDescription": {
-    "message": "사이트에 연결하려면 연결 버튼을 선택하세요. MetaMask는 웹3 사이트에만 연결할 수 있습니다."
+    "message": "사이트에 연결하려면 연결 버튼을 선택하세요. CryptoBridge는 웹3 사이트에만 연결할 수 있습니다."
   },
   "connectionRequest": {
     "message": "연결 요청"
@@ -1399,7 +1399,7 @@
     "message": "계약 인터렉션"
   },
   "convertTokenToNFTDescription": {
-    "message": "이 자산은 NFT입니다. Metamask는 이제 NFT의 본래 기능에 따라 완전히 지원합니다. 이를 토큰 목록에서 제거하고 NFT로 추가하시겠습니까?"
+    "message": "이 자산은 NFT입니다. CryptoBridge는 이제 NFT의 본래 기능에 따라 완전히 지원합니다. 이를 토큰 목록에서 제거하고 NFT로 추가하시겠습니까?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "이 자산이 NFT로 추가되었습니다. 토큰 목록에서 제거하시겠습니까?"
@@ -1435,7 +1435,7 @@
     "message": "비밀번호 생성"
   },
   "createSnapAccountDescription": {
-    "message": "$1에서 MetaMask에 새로운 계정을 추가하려고 합니다."
+    "message": "$1에서 CryptoBridge에 새로운 계정을 추가하려고 합니다."
   },
   "createSnapAccountTitle": {
     "message": "계정 생성"
@@ -1572,7 +1572,7 @@
     "message": "확인"
   },
   "dataCollectionWarningPopoverDescription": {
-    "message": "마케팅 목적의 데이터 수집을 비활성화했습니다. 이는 이 장치에만 적용됩니다. 다른 장치에서 MetaMask를 사용하면 해당 장치에서도 데이터 수집을 비활성화해야 합니다."
+    "message": "마케팅 목적의 데이터 수집을 비활성화했습니다. 이는 이 장치에만 적용됩니다. 다른 장치에서 CryptoBridge를 사용하면 해당 장치에서도 데이터 수집을 비활성화해야 합니다."
   },
   "dataUnavailable": {
     "message": "데이터 사용 불가"
@@ -1679,7 +1679,7 @@
     "message": "확인"
   },
   "deprecatedNetworkDescription": {
-    "message": "연결하려는 네트워크는 Metamask에서 더 이상 지원되지 않습니다. $1"
+    "message": "연결하려는 네트워크는 CryptoBridge에서 더 이상 지원되지 않습니다. $1"
   },
   "description": {
     "message": "설명"
@@ -2215,7 +2215,7 @@
     "description": "This explains the risks of using CryptoBridge Flask"
   },
   "flaskWelcomeWarning3": {
-    "message": "모든 Flask의 API는 실험 단계입니다. 따라서 예고 없이 변경, 제거되거나 안정적인 MetaMask로 마이그레이션되지 않고 Flask에 무기한 남아 있을 수 있습니다. 사용 시 위험은 본인 책임입니다.",
+    "message": "모든 Flask의 API는 실험 단계입니다. 따라서 예고 없이 변경, 제거되거나 안정적인 CryptoBridge로 마이그레이션되지 않고 Flask에 무기한 남아 있을 수 있습니다. 사용 시 위험은 본인 책임입니다.",
     "description": "This message warns developers about unstable Flask APIs"
   },
   "flaskWelcomeWarning4": {
@@ -2514,7 +2514,7 @@
     "message": "유효한 개인 키가 아닙니다. 반드시 64자의 16진수 문자열인 개인 키를 입력해야 합니다."
   },
   "importAccountJsonLoading1": {
-    "message": "이 JSON 파일을 가져오려면 몇 분 정도 걸리며 MetaMask가 정지됩니다."
+    "message": "이 JSON 파일을 가져오려면 몇 분 정도 걸리며 CryptoBridge가 정지됩니다."
   },
   "importAccountJsonLoading2": {
     "message": "죄송합니다. 향후에는 더 빠르게 개선하겠습니다."
@@ -2904,7 +2904,7 @@
     "message": "링크"
   },
   "linkCentralizedExchanges": {
-    "message": "Coinbase나 Binance 계정을 연결하여 무료로 암호화폐를 MetaMask로 전송하세요."
+    "message": "Coinbase나 Binance 계정을 연결하여 무료로 암호화폐를 CryptoBridge로 전송하세요."
   },
   "links": {
     "message": "링크"
@@ -3016,7 +3016,7 @@
     "message": "메시지"
   },
   "metaMaskConnectStatusParagraphOne": {
-    "message": "이제 MetaMask에서 계정 연결을 더 효과적으로 제어할 수 있습니다."
+    "message": "이제 CryptoBridge에서 계정 연결을 더 효과적으로 제어할 수 있습니다."
   },
   "metaMaskConnectStatusParagraphThree": {
     "message": "클릭하여 연결된 계정을 관리하세요."
@@ -3409,7 +3409,7 @@
     "message": "NFT 자동 감지 활성화 완료"
   },
   "nftDisclaimer": {
-    "message": "면책 조항: MetaMask는 소스 URL에서 미디어 파일을 가져옵니다. 이러한 URL은 때때로 NFT가 민팅된 마켓플레이스에 의해 변경되기도 합니다."
+    "message": "면책 조항: CryptoBridge는 소스 URL에서 미디어 파일을 가져옵니다. 이러한 URL은 때때로 NFT가 민팅된 마켓플레이스에 의해 변경되기도 합니다."
   },
   "nftOptions": {
     "message": "NFT 옵션"
@@ -3447,7 +3447,7 @@
     "message": "MetaMask가 이 사이트와 연결되어 있지 않습니다"
   },
   "noConnectionDescription": {
-    "message": "사이트에 연결하려면 \"연결\" 버튼을 찾아 클릭하세요. MetaMask는 웹3의 사이트에만 연결할 수 있습니다."
+    "message": "사이트에 연결하려면 \"연결\" 버튼을 찾아 클릭하세요. CryptoBridge는 웹3의 사이트에만 연결할 수 있습니다."
   },
   "noConversionRateAvailable": {
     "message": "사용 가능한 환율 없음"
@@ -3741,7 +3741,7 @@
     "message": "PFS 게이트웨이 URL이 유효합니다"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
-    "message": "기본 설정과 구성을 사용할 경우, MetaMask는 Infura를 기본 원격 프로시저 호출(RPC) 제공업체로 사용하여 가능한 가장 안정적이고 공개성이 낮은 방식으로 이더리움 데이터에 접근할 수 있도록 합니다. 일부 제한된 경우에는 사용자에게 최상의 사용 경험을 제공하기 위해 다른 RPC 제공업체를 사용할 수 있습니다. 직접 RPC를 선택할 수도 있지만, 어떤 RPC를 사용하든 트랜잭션을 수행하려면 본인의 IP 주소와 이더리움 지갑 주소가 해당 RPC로 전송된다는 점을 유의하세요. Infura가 EVM 계정 데이터를 처리하는 방식에 대해 더 알고 싶다면 $1의 내용을, Solana 계정에 대한 정보는 $2의 내용을 참고하세요."
+    "message": "기본 설정과 구성을 사용할 경우, CryptoBridge는 Infura를 기본 원격 프로시저 호출(RPC) 제공업체로 사용하여 가능한 가장 안정적이고 공개성이 낮은 방식으로 이더리움 데이터에 접근할 수 있도록 합니다. 일부 제한된 경우에는 사용자에게 최상의 사용 경험을 제공하기 위해 다른 RPC 제공업체를 사용할 수 있습니다. 직접 RPC를 선택할 수도 있지만, 어떤 RPC를 사용하든 트랜잭션을 수행하려면 본인의 IP 주소와 이더리움 지갑 주소가 해당 RPC로 전송된다는 점을 유의하세요. Infura가 EVM 계정 데이터를 처리하는 방식에 대해 더 알고 싶다면 $1의 내용을, Solana 계정에 대한 정보는 $2의 내용을 참고하세요."
   },
   "onboardingAdvancedPrivacyNetworkDescriptionCallToAction": {
     "message": "여기를 클릭하세요"
@@ -3759,7 +3759,7 @@
     "message": "동의함"
   },
   "onboardingMetametricsDescription": {
-    "message": "MetaMask를 개선하기 위해 기본적인 사용 및 진단 데이터를 수집하고자 합니다. MetaMask는 제공받은 데이터를 절대 판매하지 않습니다."
+    "message": "MetaMask를 개선하기 위해 기본적인 사용 및 진단 데이터를 수집하고자 합니다. CryptoBridge는 제공받은 데이터를 절대 판매하지 않습니다."
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "이 데이터를 다른 목적으로 사용하기로 결정하면 알려드리겠습니다. 자세한 내용은 $1을(를) 참고하세요. 언제든지 설정으로 이동하여 해제할 수 있습니다.",
@@ -3776,7 +3776,7 @@
     "message": "개인 정보:"
   },
   "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 MetaMask는 사용자의 국가나 지역과 같은 일반적인 위치를 찾기 위해 일시적으로 사용자의 IP 주소를 사용하지만, 이 정보는 저장되지 않습니다.",
+    "message": "$1 CryptoBridge는 사용자의 국가나 지역과 같은 일반적인 위치를 찾기 위해 일시적으로 사용자의 IP 주소를 사용하지만, 이 정보는 저장되지 않습니다.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
   },
   "onboardingMetametricsNeverCollectIPEmphasis": {
@@ -3855,7 +3855,7 @@
     "message": "기타"
   },
   "outdatedBrowserNotification": {
-    "message": "현재 사용 중인 브라우저가 최신 버전이 아닙니다. 브라우저를 업데이트하지 않으면 보안 패치와 MetaMask의 새 기능을 이용할 수 없습니다."
+    "message": "현재 사용 중인 브라우저가 최신 버전이 아닙니다. 브라우저를 업데이트하지 않으면 보안 패치와 CryptoBridge의 새 기능을 이용할 수 없습니다."
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Content-Security-Policy 헤더 무시"
@@ -3990,7 +3990,7 @@
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
   "permission_ethereumProviderDescription": {
-    "message": "$1 스냅이 MetaMask와 직접 소통하여 블록체인에서 데이터를 읽고 메시지 및 트랜잭션을 제안하도록 허용합니다.",
+    "message": "$1 스냅이 CryptoBridge와 직접 소통하여 블록체인에서 데이터를 읽고 메시지 및 트랜잭션을 제안하도록 허용합니다.",
     "description": "An extended description for the `endowment:ethereum-provider` permission. $1 is the snap name."
   },
   "permission_getEntropy": {
@@ -4022,7 +4022,7 @@
     "description": "The description for the `endowment:page-home` permission"
   },
   "permission_homePageDescription": {
-    "message": "$1에서 MetaMask의 사용자 지정 홈 화면 구성에 참여하도록 허용합니다. 이는 사용자 인터페이스, 구성, 대시보드에 사용할 수 있습니다.",
+    "message": "$1에서 CryptoBridge의 사용자 지정 홈 화면 구성에 참여하도록 허용합니다. 이는 사용자 인터페이스, 구성, 대시보드에 사용할 수 있습니다.",
     "description": "An extended description for the `endowment:page-home` permission. $1 is the snap name."
   },
   "permission_keyring": {
@@ -4082,7 +4082,7 @@
     "description": "The description for the `snap_notify` permission"
   },
   "permission_notificationsDescription": {
-    "message": "$1 스냅이 MetaMask에서 알림을 표시하도록 허용합니다. Snap이 작업이 필요하거나 기한이 있는 정보를 짧은 알림으로 트리거할 수 있습니다.",
+    "message": "$1 스냅이 CryptoBridge에서 알림을 표시하도록 허용합니다. Snap이 작업이 필요하거나 기한이 있는 정보를 짧은 알림으로 트리거할 수 있습니다.",
     "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
   },
   "permission_protocol": {
@@ -4468,10 +4468,10 @@
     "message": "이 계정이 지갑에서 제거됩니다. 계속하기 전에 가져온 이 계정에 대한 원본 비밀복구구문이나 비공개 키가 있는지 확인하세요. 계정 드롭다운에서 계정을 가져오거나 다시 만들 수 있습니다. "
   },
   "removeKeyringSnap": {
-    "message": "이 Snap을 제거하면 이 계정들이 MetaMask에서 제거됩니다:"
+    "message": "이 Snap을 제거하면 이 계정들이 CryptoBridge에서 제거됩니다:"
   },
   "removeKeyringSnapToolTip": {
-    "message": "Snap은 계정을 제어하며 Snap을 제거하면 계정도 MetaMask에서 제거되지만, 블록체인에는 남게 됩니다."
+    "message": "Snap은 계정을 제어하며 Snap을 제거하면 계정도 CryptoBridge에서 제거되지만, 블록체인에는 남게 됩니다."
   },
   "removeNFT": {
     "message": "NFT 제거"
@@ -4486,7 +4486,7 @@
     "message": "스냅 제거"
   },
   "removeSnapAccountDescription": {
-    "message": "계속하면 이 계정을 MetaMask에서 사용할 수 없습니다."
+    "message": "계속하면 이 계정을 CryptoBridge에서 사용할 수 없습니다."
   },
   "removeSnapAccountTitle": {
     "message": "계정 제거"
@@ -4744,7 +4744,7 @@
     "message": "계정 선택"
   },
   "selectAnAccountAlreadyConnected": {
-    "message": "이 계정은 이미 MetaMask와 연결되어 있습니다."
+    "message": "이 계정은 이미 CryptoBridge와 연결되어 있습니다."
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "NFT 미디어 표시 켜기"
@@ -5161,7 +5161,7 @@
     "message": "계정 제거됨"
   },
   "snapAccountRemovedDescription": {
-    "message": "이 계정은 더 이상 MetaMask에서 사용할 수 없습니다."
+    "message": "이 계정은 더 이상 CryptoBridge에서 사용할 수 없습니다."
   },
   "snapAccounts": {
     "message": "계정 Snap"
@@ -5453,7 +5453,7 @@
     "message": "비밀복구구문을 찾으려면 두 가지 질문에 올바르게 답해야 합니다"
   },
   "srpSecurityQuizQuestionOneQuestion": {
-    "message": "비밀복구구문을 분실하시면 MetaMask가..."
+    "message": "비밀복구구문을 분실하시면 CryptoBridge가..."
   },
   "srpSecurityQuizQuestionOneRightAnswer": {
     "message": "도와드릴 수 없습니다"
@@ -5552,7 +5552,7 @@
     "message": "Lattice1을 연결하세요."
   },
   "step1LatticeWalletMsg": {
-    "message": "Lattice1이 장치 설정을 마치고 온라인 상태가 되면 MetaMask를 연결할 수 있습니다. 장치의 잠금을 해제하고 장치 ID를 준비하세요.",
+    "message": "Lattice1이 장치 설정을 마치고 온라인 상태가 되면 CryptoBridge를 연결할 수 있습니다. 장치의 잠금을 해제하고 장치 ID를 준비하세요.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
@@ -5731,7 +5731,7 @@
     "message": "한도 편집"
   },
   "swapEnableDescription": {
-    "message": "이는 MetaMask에게 $1 스왑 권한을 부여하는 것으로, 필수 사항입니다.",
+    "message": "이는 CryptoBridge에게 $1 스왑 권한을 부여하는 것으로, 필수 사항입니다.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
   "swapEnableTokenForSwapping": {
@@ -5792,7 +5792,7 @@
     "message": "이전 화면의 가스비는 이 두 트랜잭션으로 나뉩니다."
   },
   "swapGasFeesSummary": {
-    "message": "가스비는 $1 네트워크에서 트랜잭션을 처리하는 암호화폐 채굴자에게 지급됩니다. MetaMask는 가스비로 수익을 창출하지 않습니다.",
+    "message": "가스비는 $1 네트워크에서 트랜잭션을 처리하는 암호화폐 채굴자에게 지급됩니다. CryptoBridge는 가스비로 수익을 창출하지 않습니다.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
@@ -5836,7 +5836,7 @@
     "message": "CryptoBridge 수수료"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "$1%의 수수료는 자동으로 각 견적에 반영됩니다. 이는 MetaMask의 유동성 공급자 정보 집계용 소프트웨어 사용 라이선스 비용입니다.",
+    "message": "$1%의 수수료는 자동으로 각 견적에 반영됩니다. 이는 CryptoBridge의 유동성 공급자 정보 집계용 소프트웨어 사용 라이선스 비용입니다.",
     "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
@@ -6050,7 +6050,7 @@
     "message": "전환"
   },
   "switchEthereumChainConfirmationDescription": {
-    "message": "이는 MetaMask에서 선택한 네트워크를 이전에 추가한 다음 네트워크로 전환하게 됩니다:"
+    "message": "이는 CryptoBridge에서 선택한 네트워크를 이전에 추가한 다음 네트워크로 전환하게 됩니다:"
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "이 사이트가 네트워크를 전환하도록 허용하시겠습니까?"
@@ -6101,7 +6101,7 @@
     "message": "서비스 약관"
   },
   "termsOfUseAgreeText": {
-    "message": " 본인은 MetaMask의 사용 및 관련 모든 기능에 적용되는 이용약관에 동의합니다"
+    "message": " 본인은 CryptoBridge의 사용 및 관련 모든 기능에 적용되는 이용약관에 동의합니다"
   },
   "termsOfUseFooterText": {
     "message": "스크롤하여 모든 섹션의 내용을 확인하세요"
@@ -6395,7 +6395,7 @@
     "message": "승인되지 않음"
   },
   "unexpectedBehavior": {
-    "message": "이 동작은 예상치 못한 것으로, 계정이 정상적으로 복구되었더라도 버그로 신고해야 합니다. 아래 링크를 통해 MetaMask에 버그를 신고해 주세요."
+    "message": "이 동작은 예상치 못한 것으로, 계정이 정상적으로 복구되었더라도 버그로 신고해야 합니다. 아래 링크를 통해 CryptoBridge에 버그를 신고해 주세요."
   },
   "units": {
     "message": "단위"

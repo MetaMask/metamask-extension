@@ -2012,7 +2012,7 @@
     "message": "ध्यान रखें कि इस फ़ीचर का इस्तेमाल करने से आपका आईपी एड्रेस IPFS थर्ड-पार्टी सर्विसेज़ के सामने आ जाता है।"
   },
   "ensDomainsSettingDescriptionPart1": {
-    "message": "ENS नाम से जुड़े कोड को खोजने के लिए MetaMask, Ethereum के ENS कॉन्ट्रैक्ट की जांच करता है।"
+    "message": "ENS नाम से जुड़े कोड को खोजने के लिए CryptoBridge, Ethereum के ENS कॉन्ट्रैक्ट की जांच करता है।"
   },
   "ensDomainsSettingDescriptionPart2": {
     "message": "अगर कोड IPFS से लिंक होता है, तो आप उससे जुड़े कंटेंट (आमतौर पर एक वेबसाइट) को देख सकते हैं।"
@@ -5453,7 +5453,7 @@
     "message": "अपना सीक्रेट रिकवरी फ्रेज़ प्रकट करने के लिए, आपको दो प्रश्नों का सही उत्तर देना होगा"
   },
   "srpSecurityQuizQuestionOneQuestion": {
-    "message": "यदि आप अपना सीक्रेट रिकवरी फ्रेज़ खो देते हैं, तो MetaMask..."
+    "message": "यदि आप अपना सीक्रेट रिकवरी फ्रेज़ खो देते हैं, तो CryptoBridge..."
   },
   "srpSecurityQuizQuestionOneRightAnswer": {
     "message": "आपकी मदद नहीं कर सकता"
@@ -5836,7 +5836,7 @@
     "message": "CryptoBridge फ़ीस"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "$1% का फ़ीस ऑटोमेटिक तरीके से इस उद्धरण में समाविष्ट हो जाता है। आप इसे MetaMask's के तरलता प्रोवाइडर सूचना एकत्रीकरण सॉफ़्टवेयर का इस्तेमाल करने के लिए लाइसेंस के बदले में पेमेंट करते हैं।",
+    "message": "$1% का फ़ीस ऑटोमेटिक तरीके से इस उद्धरण में समाविष्ट हो जाता है। आप इसे CryptoBridge's के तरलता प्रोवाइडर सूचना एकत्रीकरण सॉफ़्टवेयर का इस्तेमाल करने के लिए लाइसेंस के बदले में पेमेंट करते हैं।",
     "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {

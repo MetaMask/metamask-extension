@@ -156,10 +156,10 @@
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
   "addAccountToMetaMask": {
-    "message": "Idagdag ang account sa MetaMask"
+    "message": "Idagdag ang account sa CryptoBridge"
   },
   "addAcquiredTokens": {
-    "message": "Idagdag ang mga token na nakuha mo gamit ang MetaMask"
+    "message": "Idagdag ang mga token na nakuha mo gamit ang CryptoBridge"
   },
   "addAlias": {
     "message": "Magdagdag ng alias"
@@ -578,7 +578,7 @@
     "message": "Timer sa Awtomatikong Pag-lock (minuto)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Itakda ang oras ng pag-idle sa ilang minuto bago ma-lock ang MetaMask."
+    "message": "Itakda ang oras ng pag-idle sa ilang minuto bago ma-lock ang CryptoBridge."
   },
   "average": {
     "message": "Average"
@@ -600,7 +600,7 @@
     "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
   },
   "backupAndSyncEnableDescription": {
-    "message": "Sa backup at sync, makakapagtago ka ng na-encrypt na data para sa mga custom na setting at feature mo. Pinapanatili nitong pareho ang karanasan mo sa CryptoBridge sa lahat ng device at ibinabalik ang mga setting at feature kung kailangan mong i-install muli ang MetaMask. Hindi nito naiba-back up ang iyong Secret Recovery Phrase. $1.",
+    "message": "Sa backup at sync, makakapagtago ka ng na-encrypt na data para sa mga custom na setting at feature mo. Pinapanatili nitong pareho ang karanasan mo sa CryptoBridge sa lahat ng device at ibinabalik ang mga setting at feature kung kailangan mong i-install muli ang CryptoBridge. Hindi nito naiba-back up ang iyong Secret Recovery Phrase. $1.",
     "description": "$1 is link to the backup and sync privacy policy."
   },
   "backupAndSyncEnableDescriptionUpdatePreferences": {
@@ -629,7 +629,7 @@
     "message": "Ipinapakilala ang backup at sync"
   },
   "backupApprovalInfo": {
-    "message": "Ang lihim na code na ito ay kinakailangan para ma-recover ang iyong wallet sakaling maiwala mo ang iyong device, makalimutan ang iyong password, kailanganin mong i-install ulit ang MetaMask, o gusto mong i-access ang iyong wallet sa ibang device."
+    "message": "Ang lihim na code na ito ay kinakailangan para ma-recover ang iyong wallet sakaling maiwala mo ang iyong device, makalimutan ang iyong password, kailanganin mong i-install ulit ang CryptoBridge, o gusto mong i-access ang iyong wallet sa ibang device."
   },
   "backupApprovalNotice": {
     "message": "I-back up ang iyong Lihim na Parirala sa Pagbawi para mapanatiling secure ang iyong wallet at mga pondo."
@@ -656,7 +656,7 @@
     "message": "Naka-off ang batayang kapakinabangan"
   },
   "basicConfigurationDescription": {
-    "message": "Nag-aalok ang CryptoBridge ng mga batayang tampok tulad ng mga detalye ng token at mga setting ng gas sa pamamagitan ng serbisyo sa internet. Kapag gumamit ka ng serbisyo sa internet, ibabahagi ang iyong IP address, sa kasong ito sa MetaMask. Tulad ito ng pagbisita mo sa anumang website. Ang CryptoBridge ay pansamantalang ginagamit ang datos na ito at hindi ibebenta ang iyong datos. Maaari kang gumamit ng VPN o i-off ang mga serbisyon ito, ngunit maaari itong makaapekto sa iyong karanasan sa MetaMask. Upang matuto pa basahin ang aming $1.",
+    "message": "Nag-aalok ang CryptoBridge ng mga batayang tampok tulad ng mga detalye ng token at mga setting ng gas sa pamamagitan ng serbisyo sa internet. Kapag gumamit ka ng serbisyo sa internet, ibabahagi ang iyong IP address, sa kasong ito sa CryptoBridge. Tulad ito ng pagbisita mo sa anumang website. Ang CryptoBridge ay pansamantalang ginagamit ang datos na ito at hindi ibebenta ang iyong datos. Maaari kang gumamit ng VPN o i-off ang mga serbisyon ito, ngunit maaari itong makaapekto sa iyong karanasan sa CryptoBridge. Upang matuto pa basahin ang aming $1.",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationLabel": {
@@ -666,7 +666,7 @@
     "message": "Nauunawaan ko at nais kong magpatuloy"
   },
   "basicConfigurationModalDisclaimerOff": {
-    "message": "Ibig sabihin nito hindi mo lubos na mao-optimize ang iyong oras sa MetaMask. Ang mga batayang tampok (tulad ng mga detalye ng token, optimal na settings ng gas, at iba pa) ay hindi magiging available para sa iyo."
+    "message": "Ibig sabihin nito hindi mo lubos na mao-optimize ang iyong oras sa CryptoBridge. Ang mga batayang tampok (tulad ng mga detalye ng token, optimal na settings ng gas, at iba pa) ay hindi magiging available para sa iyo."
   },
   "basicConfigurationModalDisclaimerOffAdditionalText": {
     "message": "Kapag in-off ito, madi-disable ang lahat ng feature sa loob ng $1 at $2.",
@@ -679,7 +679,7 @@
     "message": "mga notipikasyon"
   },
   "basicConfigurationModalDisclaimerOn": {
-    "message": "Upang ma-optimize ang iyong oras sa MetaMask, kailangan mong i-on ang tampok na ito. Ang mga batayang function (tulad ng mga detalye ng token, optimal na settings ng gas, at iba pa) ay mahalaga sa karanasan sa web3."
+    "message": "Upang ma-optimize ang iyong oras sa CryptoBridge, kailangan mong i-on ang tampok na ito. Ang mga batayang function (tulad ng mga detalye ng token, optimal na settings ng gas, at iba pa) ay mahalaga sa karanasan sa web3."
   },
   "basicConfigurationModalHeadingOff": {
     "message": "I-off ang batayang kapakinabangan"
@@ -930,7 +930,7 @@
     "message": "Makipag-ugnayan sa"
   },
   "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Suporta sa MetaMask"
+    "message": "Suporta sa CryptoBridge"
   },
   "bridgeTxDetailsDelayedTitle": {
     "message": "Nagtagal na ba ito nang higit sa 3 oras?"
@@ -1269,7 +1269,7 @@
     "description": "$1 is the snap for which a connection is being requested."
   },
   "connectWithMetaMask": {
-    "message": "Kumonekta sa MetaMask"
+    "message": "Kumonekta sa CryptoBridge"
   },
   "connectedAccounts": {
     "message": "Mga konektadong account"
@@ -1355,7 +1355,7 @@
     "message": "Kumokonekta sa Sepolia test network"
   },
   "connectionDescription": {
-    "message": "Ikonekta ang website na ito sa MetaMask"
+    "message": "Ikonekta ang website na ito sa CryptoBridge"
   },
   "connectionFailed": {
     "message": "Nabigo ang koneksyon"
@@ -1365,7 +1365,7 @@
     "description": "$1 is the name of the snap being fetched."
   },
   "connectionPopoverDescription": {
-    "message": "Upang kumonekta sa isang site, piliin ang button para sa pagkonekta. Sa mga web3 site lang puwedeng kumonekta ang MetaMask."
+    "message": "Upang kumonekta sa isang site, piliin ang button para sa pagkonekta. Sa mga web3 site lang puwedeng kumonekta ang CryptoBridge."
   },
   "connectionRequest": {
     "message": "Kahilingan sa koneksyon"
@@ -1435,7 +1435,7 @@
     "message": "Gumawa ng password"
   },
   "createSnapAccountDescription": {
-    "message": "Ang $1 ay nais na magdagdag ng bagong account sa MetaMask."
+    "message": "Ang $1 ay nais na magdagdag ng bagong account sa CryptoBridge."
   },
   "createSnapAccountTitle": {
     "message": "Gumawa ng account"
@@ -1679,7 +1679,7 @@
     "message": "Nakuha ko"
   },
   "deprecatedNetworkDescription": {
-    "message": "Ang network na sinusubukan mong ikonekta ay hindi na suportado ng Metamask. $1"
+    "message": "Ang network na sinusubukan mong ikonekta ay hindi na suportado ng CryptoBridge. $1"
   },
   "description": {
     "message": "Deskripsyon"
@@ -2097,7 +2097,7 @@
     "description": "In sentry feedback form, The message displayed after a successful feedback submission."
   },
   "errorPageTitle": {
-    "message": "Nagkaroon ng error sa MetaMask",
+    "message": "Nagkaroon ng error sa CryptoBridge",
     "description": "Title of generic error page"
   },
   "errorPageTryAgain": {
@@ -2215,7 +2215,7 @@
     "description": "This explains the risks of using CryptoBridge Flask"
   },
   "flaskWelcomeWarning3": {
-    "message": "Ang lahat ng API ng Flask ay eksperimental. Maaaring baguhin o alisin ang mga ito nang walang abiso, o maaari silang manatili sa Flask nang walang katapusan nang hindi nalilipat sa matatag na MetaMask. Gamitin ang mga ito sa iyong sariling pananagutan.",
+    "message": "Ang lahat ng API ng Flask ay eksperimental. Maaaring baguhin o alisin ang mga ito nang walang abiso, o maaari silang manatili sa Flask nang walang katapusan nang hindi nalilipat sa matatag na CryptoBridge. Gamitin ang mga ito sa iyong sariling pananagutan.",
     "description": "This message warns developers about unstable Flask APIs"
   },
   "flaskWelcomeWarning4": {
@@ -2371,7 +2371,7 @@
     "message": "Gumagamit ng mga API call ang mga integration ng wallet na hardware sa mga external server, na nakakakita sa IP address mo at sa mga address ng smart na kontrata kung saan ka nakikipag-ugnayan."
   },
   "hardwareWalletsMsg": {
-    "message": "Pumili ng wallet na hardware na gusto mong gamitin kasama ng MetaMask."
+    "message": "Pumili ng wallet na hardware na gusto mong gamitin kasama ng CryptoBridge."
   },
   "here": {
     "message": "dito",
@@ -2437,7 +2437,7 @@
     "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
   },
   "holdToRevealContent4": {
-    "message": "Hindi ito hihilingin ng Suporta sa MetaMask,",
+    "message": "Hindi ito hihilingin ng Suporta sa CryptoBridge,",
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
@@ -2514,13 +2514,13 @@
     "message": "Ito ay hindi wastong pribadong key. Dapat kang maglagay ng hexadecimal string na 64 ang haba."
   },
   "importAccountJsonLoading1": {
-    "message": "Asahan ang pag-import ng JSON na ito ay tatagal ng ilang minuto at i-freeze ang MetaMask."
+    "message": "Asahan ang pag-import ng JSON na ito ay tatagal ng ilang minuto at i-freeze ang CryptoBridge."
   },
   "importAccountJsonLoading2": {
     "message": "Humihingi kami ng paumanhin, at gagawin namin itong mas mabilis sa hinaharap."
   },
   "importAccountMsg": {
-    "message": "Ang mga na-import na account ay hindi mauugnay sa iyong Lihim na Parirala sa Pagbawi ng MetaMask. Matuto pa tungkol sa mga na-import na account"
+    "message": "Ang mga na-import na account ay hindi mauugnay sa iyong Lihim na Parirala sa Pagbawi ng CryptoBridge. Matuto pa tungkol sa mga na-import na account"
   },
   "importNFT": {
     "message": "Mag-import ng NFT"
@@ -2624,7 +2624,7 @@
     "message": "I-install ang pinagmulan"
   },
   "installRequest": {
-    "message": "Idagdag sa MetaMask"
+    "message": "Idagdag sa CryptoBridge"
   },
   "installedOn": {
     "message": "Na-install sa $1",
@@ -2825,10 +2825,10 @@
     "message": "mga panloloko at panganib sa seguridad."
   },
   "leaveMetaMask": {
-    "message": "Umalis sa MetaMask?"
+    "message": "Umalis sa CryptoBridge?"
   },
   "leaveMetaMaskDesc": {
-    "message": "Bibisita ka sa isang site sa labas ng MetaMask. I-double-check ang URL bago magpatuloy."
+    "message": "Bibisita ka sa isang site sa labas ng CryptoBridge. I-double-check ang URL bago magpatuloy."
   },
   "ledgerAccountRestriction": {
     "message": "Kailangan mong gamitin ang huli mong account bago ka magdagdag ng panibago."
@@ -3016,7 +3016,7 @@
     "message": "Mensahe"
   },
   "metaMaskConnectStatusParagraphOne": {
-    "message": "Mas may kontrol ka na ngayon sa mga koneksyon ng iyong account sa MetaMask."
+    "message": "Mas may kontrol ka na ngayon sa mga koneksyon ng iyong account sa CryptoBridge."
   },
   "metaMaskConnectStatusParagraphThree": {
     "message": "I-click ito para pamahalaan ang mga nakakonekta mong account."
@@ -3038,7 +3038,7 @@
     "message": "Kasalukuyang minementina ang CryptoBridge Swaps. Bumalik sa ibang pagkakataon."
   },
   "metamaskVersion": {
-    "message": "Bersyon ng MetaMask"
+    "message": "Bersyon ng CryptoBridge"
   },
   "methodData": {
     "message": "Pamamaraan"
@@ -3204,7 +3204,7 @@
     "message": "Ibahagi ang iyong Feedback"
   },
   "needHelpLinkText": {
-    "message": "Suporta sa MetaMask"
+    "message": "Suporta sa CryptoBridge"
   },
   "needHelpSubmitTicket": {
     "message": "Magsumite ng ticket"
@@ -3759,7 +3759,7 @@
     "message": "Sumasang-ayon ako"
   },
   "onboardingMetametricsDescription": {
-    "message": "Nais naming mangalap ng data para sa batayang paggamit upang mapahusay ang MetaMask. Dapat mong malaman na hindi namin ibebenta ang data na iyong ibibigay rito."
+    "message": "Nais naming mangalap ng data para sa batayang paggamit upang mapahusay ang CryptoBridge. Dapat mong malaman na hindi namin ibebenta ang data na iyong ibibigay rito."
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Ipapaalam namin sa iyo kung magdesisyon kaming gamitin ang data na ito para sa ibang layunin. Maaari mong suriin ang aming $1 para sa karagdagang impormasyon. Tandaan, maaari kang magpunta sa mga setting at mag-opt out anumang oras.",
@@ -3855,7 +3855,7 @@
     "message": "mga iba pa"
   },
   "outdatedBrowserNotification": {
-    "message": "Hindi na updated ang iyong browser. Kapag hindi mo inupdate ang iyong browser, hindi ka makakakuha ng mga security patch at bagong feature mula sa MetaMask."
+    "message": "Hindi na updated ang iyong browser. Kapag hindi mo inupdate ang iyong browser, hindi ka makakakuha ng mga security patch at bagong feature mula sa CryptoBridge."
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Override Content-Security-Policy header"
@@ -3870,7 +3870,7 @@
     "message": "Sumali sa MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Sumali sa MetaMetrics para mas mapahusay namin ang MetaMask"
+    "message": "Sumali sa MetaMetrics para mas mapahusay namin ang CryptoBridge"
   },
   "password": {
     "message": "Password"
@@ -3958,11 +3958,11 @@
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
   "permission_assets": {
-    "message": "Ipakita ang mga asset ng account sa MetaMask.",
+    "message": "Ipakita ang mga asset ng account sa CryptoBridge.",
     "description": "The description for the `endowment:assets` permission."
   },
   "permission_assetsDescription": {
-    "message": "Pahintulutan ang $1 na ibigay ang impormasyon ng asset sa kliyente ng MetaMask. Ang mga asset ay maaaring onchain o offchain.",
+    "message": "Pahintulutan ang $1 na ibigay ang impormasyon ng asset sa kliyente ng CryptoBridge. Ang mga asset ay maaaring onchain o offchain.",
     "description": "An extended description for the `endowment:assets` permission. $1 is the name of the Snap."
   },
   "permission_cronjob": {
@@ -3974,7 +3974,7 @@
     "description": "An extended description for the `snap_cronjob` permission. $1 is the snap name."
   },
   "permission_dialog": {
-    "message": "Ipakita ang mga dialog window sa MetaMask.",
+    "message": "Ipakita ang mga dialog window sa CryptoBridge.",
     "description": "The description for the `snap_dialog` permission"
   },
   "permission_dialogDescription": {
@@ -4006,7 +4006,7 @@
     "description": "The description for the `snap_getLocale` permission"
   },
   "permission_getLocaleDescription": {
-    "message": "Payagan ang $1 na i-access ang iyong mas gustong wika mula sa iyong mga setting sa MetaMask. Maaari itong gamitin para i-localize at ipakita ang content ng $1 gamit ang iyong wika.",
+    "message": "Payagan ang $1 na i-access ang iyong mas gustong wika mula sa iyong mga setting sa CryptoBridge. Maaari itong gamitin para i-localize at ipakita ang content ng $1 gamit ang iyong wika.",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
   "permission_getPreferences": {
@@ -4014,7 +4014,7 @@
     "description": "The description for the `snap_getPreferences` permission"
   },
   "permission_getPreferencesDescription": {
-    "message": "Pahintulutan ang $1 na ma-access ang impormasyon tulad ng gusto mong wika at fiat na salapi sa iyong mga setting ng MetaMask. Tumutulong ito sa $1 na magpakita ng content na nakaayon sa iyong mga kagustuhan. ",
+    "message": "Pahintulutan ang $1 na ma-access ang impormasyon tulad ng gusto mong wika at fiat na salapi sa iyong mga setting ng CryptoBridge. Tumutulong ito sa $1 na magpakita ng content na nakaayon sa iyong mga kagustuhan. ",
     "description": "An extended description for the `snap_getPreferences` permission. $1 is the snap name."
   },
   "permission_homePage": {
@@ -4022,7 +4022,7 @@
     "description": "The description for the `endowment:page-home` permission"
   },
   "permission_homePageDescription": {
-    "message": "Hayaan ang $1 na magpakita ng custom na home screen sa MetaMask. Maaari itong gamitin para sa mga user interface, configuration, at mga dashboard.",
+    "message": "Hayaan ang $1 na magpakita ng custom na home screen sa CryptoBridge. Maaari itong gamitin para sa mga user interface, configuration, at mga dashboard.",
     "description": "An extended description for the `endowment:page-home` permission. $1 is the snap name."
   },
   "permission_keyring": {
@@ -4082,7 +4082,7 @@
     "description": "The description for the `snap_notify` permission"
   },
   "permission_notificationsDescription": {
-    "message": "Payagan ang $1 na magpakita ng mga notipikasyon sa loob ng MetaMask. Isang maikling tekstong notipikasyon ang maaaring mapaumpisa ng isang snap para sa naaaksyunan o sensitibo sa oras na impormasyon.",
+    "message": "Payagan ang $1 na magpakita ng mga notipikasyon sa loob ng CryptoBridge. Isang maikling tekstong notipikasyon ang maaaring mapaumpisa ng isang snap para sa naaaksyunan o sensitibo sa oras na impormasyon.",
     "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
   },
   "permission_protocol": {
@@ -4468,10 +4468,10 @@
     "message": "Aalisin ang account na ito sa iyong wallet. Tiyaking nasa iyo ang orihinal na Lihim na Parirala sa Pagbawi o pribadong key para sa na-import na account na ito bago magpatuloy. Puwede kang mag-import o gumawa ulit ng mga account mula sa drop-down ng account. "
   },
   "removeKeyringSnap": {
-    "message": "Ang pag-alis ng Snap na ito ay nag-aalis sa mga account na ito sa MetaMask:"
+    "message": "Ang pag-alis ng Snap na ito ay nag-aalis sa mga account na ito sa CryptoBridge:"
   },
   "removeKeyringSnapToolTip": {
-    "message": "Kinokontrol ng snap ang mga account, at sa pag-alis nito, ang mga account ay aalisin din sa MetaMask, ngunit mananatili ang mga ito sa blockchain."
+    "message": "Kinokontrol ng snap ang mga account, at sa pag-alis nito, ang mga account ay aalisin din sa CryptoBridge, ngunit mananatili ang mga ito sa blockchain."
   },
   "removeNFT": {
     "message": "Alisin ang NFT"
@@ -4486,7 +4486,7 @@
     "message": "Alisin ang snap"
   },
   "removeSnapAccountDescription": {
-    "message": "Kung magpatuloy ka, ang account na ito ay hindi na available sa MetaMask."
+    "message": "Kung magpatuloy ka, ang account na ito ay hindi na available sa CryptoBridge."
   },
   "removeSnapAccountTitle": {
     "message": "Alisin ang account"
@@ -4546,7 +4546,7 @@
     "message": "Tiyakin na ginagamit mo ang tamang Lihim na Parirala sa Pagbawi bago magpatuloy. Hindi mo na ito maaaring bawiin."
   },
   "restartMetamask": {
-    "message": "I-restart ang MetaMask"
+    "message": "I-restart ang CryptoBridge"
   },
   "restore": {
     "message": "Ibalik"
@@ -4606,7 +4606,7 @@
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSeedWordsWarning2": {
-    "message": "Hindi ito kailanman hihilingin ng Suporta sa MetaMask.",
+    "message": "Hindi ito kailanman hihilingin ng Suporta sa CryptoBridge.",
     "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
@@ -4744,7 +4744,7 @@
     "message": "Pumili ng Account"
   },
   "selectAnAccountAlreadyConnected": {
-    "message": "Ang acount na ito ay nakakonekta na sa MetaMask"
+    "message": "Ang acount na ito ay nakakonekta na sa CryptoBridge"
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "I-on ang Ipakita ang NFT media"
@@ -5009,7 +5009,7 @@
     "message": "Ibenta ang iyong crypto kapalit ng cash"
   },
   "slideCashOutTitle": {
-    "message": "Mag-cash out gamit ang MetaMask"
+    "message": "Mag-cash out gamit ang CryptoBridge"
   },
   "slideDebitCardDescription": {
     "message": "Available sa mga piling rehiyon"
@@ -5024,7 +5024,7 @@
     "message": "Pondohan ang iyong wallet"
   },
   "slideMultiSrpDescription": {
-    "message": "Mag-import at gumamit ng maraming wallet sa MetaMask"
+    "message": "Mag-import at gumamit ng maraming wallet sa CryptoBridge"
   },
   "slideMultiSrpTitle": {
     "message": "Magdagdag ng maraming Lihim na Parirala sa Pagbawi"
@@ -5111,7 +5111,7 @@
     "message": "Nabigo ang transaksyon mo"
   },
   "smartTransactionErrorDescription": {
-    "message": "Maaaring magdulot ng pagkabigo ang biglaang pagbabago sa merkado. Kung magpatuloy ang problema, makipag-ugnayan sa customer support ng MetaMask."
+    "message": "Maaaring magdulot ng pagkabigo ang biglaang pagbabago sa merkado. Kung magpatuloy ang problema, makipag-ugnayan sa customer support ng CryptoBridge."
   },
   "smartTransactionPending": {
     "message": "Isinumite ang iyong transaksyon"
@@ -5161,7 +5161,7 @@
     "message": "Naalis ang account"
   },
   "snapAccountRemovedDescription": {
-    "message": "Ang account na ito ay hindi na magiging available para gamitin sa MetaMask."
+    "message": "Ang account na ito ay hindi na magiging available para gamitin sa CryptoBridge."
   },
   "snapAccounts": {
     "message": "Mga Account Snap"
@@ -5531,7 +5531,7 @@
     "message": "Error sa pagkuha ng mga log ng estado."
   },
   "stateLogFileName": {
-    "message": "Mga log ng estado ng MetaMask"
+    "message": "Mga log ng estado ng CryptoBridge"
   },
   "stateLogs": {
     "message": "Mga log ng estado"
@@ -5665,7 +5665,7 @@
     "message": "Sagutan ang aming survey"
   },
   "surveyTitle": {
-    "message": "Hubugin ang hinaharap ng MetaMask"
+    "message": "Hubugin ang hinaharap ng CryptoBridge"
   },
   "swap": {
     "message": "I-swap"
@@ -5805,7 +5805,7 @@
     "message": "Mataas na slippage"
   },
   "swapIncludesGasAndMetaMaskFee": {
-    "message": "Kasama ang gas at $1% bayad sa MetaMask",
+    "message": "Kasama ang gas at $1% bayad sa CryptoBridge",
     "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
@@ -5813,7 +5813,7 @@
     "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
-    "message": "Kasama sa quote ang $1% bayad sa MetaMask",
+    "message": "Kasama sa quote ang $1% bayad sa CryptoBridge",
     "description": "Provides information about the fee that CryptoBridge takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
@@ -5833,10 +5833,10 @@
     "message": "Max na slippage"
   },
   "swapMetaMaskFee": {
-    "message": "Bayarin sa MetaMask"
+    "message": "Bayarin sa CryptoBridge"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "Ang bayad na $1% ay awtomatikong isinasali sa quote na ito. Babayaran mo ito bilang kapalit ng isang lisensya para gamitin ang software ng pagsasama-sama ng impormasyon ng tagapagbigay ng liquidity ng MetaMask.",
+    "message": "Ang bayad na $1% ay awtomatikong isinasali sa quote na ito. Babayaran mo ito bilang kapalit ng isang lisensya para gamitin ang software ng pagsasama-sama ng impormasyon ng tagapagbigay ng liquidity ng CryptoBridge.",
     "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
@@ -6050,7 +6050,7 @@
     "message": "Lumipat"
   },
   "switchEthereumChainConfirmationDescription": {
-    "message": "Dahil dito, lilipat sa dating idinagdag na network ang napiling network sa loob ng MetaMask:"
+    "message": "Dahil dito, lilipat sa dating idinagdag na network ang napiling network sa loob ng CryptoBridge:"
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "Payagan ang site na ito para lumipat ng network?"
@@ -6119,7 +6119,7 @@
     "message": "Tema"
   },
   "themeDescription": {
-    "message": "Piliin ang mas gusto mong tema ng MetaMask."
+    "message": "Piliin ang mas gusto mong tema ng CryptoBridge."
   },
   "thirdPartySoftware": {
     "message": "Paunawa ng third-party na software",

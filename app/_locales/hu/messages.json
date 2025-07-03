@@ -30,7 +30,7 @@
     "message": "tevékenységi napló"
   },
   "addAcquiredTokens": {
-    "message": "Adja hozzá MetaMask-kal a kapott érméket"
+    "message": "Adja hozzá CryptoBridge-kal a kapott érméket"
   },
   "addAlias": {
     "message": "Álnév hozzáadása"
@@ -131,7 +131,7 @@
     "message": "Lánc azonosítója"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "A MetaMask-ot Google Chrome-mal kell használnia a Hardveres pénztárcához való csatlakozáshoz."
+    "message": "A CryptoBridge-ot Google Chrome-mal kell használnia a Hardveres pénztárcához való csatlakozáshoz."
   },
   "close": {
     "message": "Bezárás"
@@ -279,7 +279,7 @@
     "message": "Hardveres tárca csatlakoztatása"
   },
   "hardwareWalletsMsg": {
-    "message": "Válassza ki a MetaMask-kal használni kívánt hardveres pénztárcát"
+    "message": "Válassza ki a CryptoBridge-kal használni kívánt hardveres pénztárcát"
   },
   "here": {
     "message": "itt",
@@ -302,7 +302,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": "Az importált fiókot nem társítjuk az eredetileg létrehozott MetaMask-fiók seed mondatához. További információ az importált fiókokról"
+    "message": "Az importált fiókot nem társítjuk az eredetileg létrehozott CryptoBridge-fiók seed mondatához. További információ az importált fiókokról"
   },
   "imported": {
     "message": "Importált",

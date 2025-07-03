@@ -30,7 +30,7 @@
     "message": "יומן פעילות"
   },
   "addAcquiredTokens": {
-    "message": "הוספת הטוקנים שהשגת באמצעות MetaMask"
+    "message": "הוספת הטוקנים שהשגת באמצעות CryptoBridge"
   },
   "addAlias": {
     "message": "הוסף כינוי"
@@ -279,7 +279,7 @@
     "message": "חבר ארנק חומרה"
   },
   "hardwareWalletsMsg": {
-    "message": "בחר/י ארנק חומרה שבו תרצה להשתמש עם MetaMask"
+    "message": "בחר/י ארנק חומרה שבו תרצה להשתמש עם CryptoBridge"
   },
   "here": {
     "message": "כאן",
@@ -379,7 +379,7 @@
     "message": "הודעה"
   },
   "metamaskVersion": {
-    "message": "גרסת MetaMask"
+    "message": "גרסת CryptoBridge"
   },
   "mustSelectOne": {
     "message": "חובה לבחור לפחות אסימון אחד."
@@ -450,7 +450,7 @@
     "message": "קח/י חלק ב- MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "קח/י חלק ב-MetaMetrics כדי לעזור לנו לשפר את MetaMask"
+    "message": "קח/י חלק ב-MetaMetrics כדי לעזור לנו לשפר את CryptoBridge"
   },
   "password": {
     "message": "סיסמה"

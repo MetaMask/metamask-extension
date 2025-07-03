@@ -30,7 +30,7 @@
     "message": "kumbukumbu ya shughuli"
   },
   "addAcquiredTokens": {
-    "message": "Ongeza vianzio ulivyopata kwa kutumia MetaMask"
+    "message": "Ongeza vianzio ulivyopata kwa kutumia CryptoBridge"
   },
   "addAlias": {
     "message": "Ongeza jina jingine"
@@ -91,7 +91,7 @@
     "message": "Nyuma"
   },
   "backupApprovalInfo": {
-    "message": "Msimbo huu wa siri unahitajika ili kurejesha waleti yako ikitokea umepoteza kifaa chako, umesahau nenosiri lako, umelazimika kusakinisha MetaMask, au unataka kufikia waleti yako kwenye kifaa kingine."
+    "message": "Msimbo huu wa siri unahitajika ili kurejesha waleti yako ikitokea umepoteza kifaa chako, umesahau nenosiri lako, umelazimika kusakinisha CryptoBridge, au unataka kufikia waleti yako kwenye kifaa kingine."
   },
   "backupApprovalNotice": {
     "message": "Hifadhi msimbo wa Siri wa Kurejesha data ili kuweka salama waleti yako na fedha."
@@ -273,7 +273,7 @@
     "message": "Unganisha waleti ya programu maunzi"
   },
   "hardwareWalletsMsg": {
-    "message": "Chagua waleti ya programu maunzi ambayo ungependa kutumia kwenye MetaMask"
+    "message": "Chagua waleti ya programu maunzi ambayo ungependa kutumia kwenye CryptoBridge"
   },
   "here": {
     "message": "hapa",
@@ -364,7 +364,7 @@
     "message": "Ujumbe"
   },
   "metamaskVersion": {
-    "message": "Toleo la MetaMask"
+    "message": "Toleo la CryptoBridge"
   },
   "mustSelectOne": {
     "message": "Lazima uchague angalau kianzio 1."

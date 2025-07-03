@@ -33,10 +33,7 @@ import {
 } from '../../component-library';
 
 import { MenuItem } from '../../ui/menu';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
@@ -44,7 +41,6 @@ import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -56,16 +52,8 @@ import {
   getThirdPartyNotifySnaps,
   getUseExternalServices,
 } from '../../../selectors';
-import {
-  AlignItems,
-  BlockSize,
-  BorderColor,
-  BorderStyle,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
+import { BorderStyle } from '../../../helpers/constants/design-system';
+// import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -116,15 +104,7 @@ export const GlobalMenu = ({
    */
 
   let hasThirdPartyNotifySnaps = false;
-  const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
   hasThirdPartyNotifySnaps = useSelector(getThirdPartyNotifySnaps).length > 0;
-
-  let supportText = t('support');
-  let supportLink = SUPPORT_LINK || '';
-  ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
-  supportText = t('needHelpSubmitTicket');
-  supportLink = SUPPORT_REQUEST_LINK || '';
-  ///: END:ONLY_INCLUDE_IF
 
   // Accessibility improvement for popover
   const lastItemRef = React.useRef<HTMLButtonElement>(null);
@@ -196,139 +176,6 @@ export const GlobalMenu = ({
       borderStyle={BorderStyle.none}
       position={PopoverPosition.Auto}
     >
-      {/* {basicFunctionality && (
-        <>
-
-          <MenuItem
-            iconName={IconName.Notification}
-            onClick={() => handleNotificationsClick()}
-            data-testid="notifications-menu-item"
-          >
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.spaceBetween}
-            >
-              {t('notifications')}
-              {notificationsUnreadCount === 0 &&
-                !isMetamaskNotificationFeatureSeen && <NewFeatureTag />}
-              <NotificationsTagCounter />
-            </Box>
-          </MenuItem>
-          <Box
-            borderColor={BorderColor.borderMuted}
-            width={BlockSize.Full}
-            style={{ height: '1px', borderBottomWidth: 0 }}
-          ></Box>
-
-        </>
-      )} */}
-      {/* {account && (
-        <>
-          <AccountDetailsMenuItem
-            metricsLocation={METRICS_LOCATION}
-            closeMenu={closeMenu}
-            address={account.address}
-          />
-          <ViewExplorerMenuItem
-            metricsLocation={METRICS_LOCATION}
-            closeMenu={closeMenu}
-            account={account}
-          />
-        </>
-      )}
-      <Box
-        borderColor={BorderColor.borderMuted}
-        width={BlockSize.Full}
-        style={{ height: '1px', borderBottomWidth: 0 }}
-      ></Box>
-      <MenuItem
-        iconName={IconName.SecurityTick}
-        onClick={() => {
-          history.push(PERMISSIONS);
-          trackEvent({
-            event: MetaMetricsEventName.NavPermissionsOpened,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              location: METRICS_LOCATION,
-            },
-          });
-          closeMenu();
-        }}
-        data-testid="global-menu-connected-sites"
-        disabled={hasUnapprovedTransactions}
-      >
-        {t('allPermissions')}
-      </MenuItem> */}
-
-      {/*
-      {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
-        <MenuItem
-          iconName={IconName.Expand}
-          onClick={() => {
-            global?.platform?.openExtensionInBrowser?.();
-            trackEvent({
-              event: MetaMetricsEventName.AppWindowExpanded,
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                location: METRICS_LOCATION,
-              },
-            });
-            closeMenu();
-          }}
-          data-testid="global-menu-expand"
-        >
-          {t('expandView')}
-        </MenuItem>
-      )}
-      */}
-      {/* {process.env.REMOVE_GNS && (
-        <MenuItem
-          iconName={IconName.Hierarchy}
-          onClick={() => {
-            dispatch(toggleNetworkMenu());
-            closeMenu();
-          }}
-        >
-          {t('networks')}
-        </MenuItem>
-      )}
-      <MenuItem
-        iconName={IconName.Snaps}
-        onClick={() => {
-          history.push(SNAPS_ROUTE);
-          closeMenu();
-        }}
-        showInfoDot={snapsUpdatesAvailable}
-      >
-        {t('snaps')}
-      </MenuItem>
-      <MenuItem
-        iconName={IconName.MessageQuestion}
-        onClick={() => {
-          global.platform.openTab({ url: supportLink });
-          trackEvent(
-            {
-              category: MetaMetricsEventCategory.Home,
-              event: MetaMetricsEventName.SupportLinkClicked,
-              properties: {
-                url: supportLink,
-                location: METRICS_LOCATION,
-              },
-            },
-            {
-              contextPropsIntoEventProperties: [
-                MetaMetricsContextProp.PageTitle,
-              ],
-            },
-          );
-          closeMenu();
-        }}
-        data-testid="global-menu-support"
-      >
-        {supportText}
-      </MenuItem> */}
       <MenuItem
         iconName={IconName.Setting}
         onClick={() => {
@@ -364,7 +211,7 @@ export const GlobalMenu = ({
       >
         {t('contactUs')}
       </MenuItem>
-      {/* <MenuItem
+      <MenuItem
         ref={lastItemRef}
         iconName={IconName.Lock}
         onClick={() => {
@@ -382,7 +229,7 @@ export const GlobalMenu = ({
         data-testid="global-menu-lock"
       >
         {t('lockCryptoBridge')}
-      </MenuItem> */}
+      </MenuItem>
     </Popover>
   );
 };

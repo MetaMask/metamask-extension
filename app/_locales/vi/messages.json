@@ -156,10 +156,10 @@
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
   "addAccountToMetaMask": {
-    "message": "Thêm tài khoản vào MetaMask"
+    "message": "Thêm tài khoản vào CryptoBridge"
   },
   "addAcquiredTokens": {
-    "message": "Thêm token mà bạn đã mua bằng MetaMask"
+    "message": "Thêm token mà bạn đã mua bằng CryptoBridge"
   },
   "addAlias": {
     "message": "Thêm biệt danh"
@@ -600,7 +600,7 @@
     "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
   },
   "backupAndSyncEnableDescription": {
-    "message": "Sao lưu và đồng bộ cho phép chúng tôi lưu trữ dữ liệu được mã hóa cho các chế độ cài đặt và tính năng tùy chỉnh của bạn. Điều này giúp trải nghiệm sử dụng CryptoBridge của bạn nhất quán trên các thiết bị, đồng thời giúp khôi phục chế độ cài đặt và tính năng nếu bạn cần cài đặt lại MetaMask. Thao tác này không sao lưu Cụm từ khôi phục bí mật của bạn. $1.",
+    "message": "Sao lưu và đồng bộ cho phép chúng tôi lưu trữ dữ liệu được mã hóa cho các chế độ cài đặt và tính năng tùy chỉnh của bạn. Điều này giúp trải nghiệm sử dụng CryptoBridge của bạn nhất quán trên các thiết bị, đồng thời giúp khôi phục chế độ cài đặt và tính năng nếu bạn cần cài đặt lại CryptoBridge. Thao tác này không sao lưu Cụm từ khôi phục bí mật của bạn. $1.",
     "description": "$1 is link to the backup and sync privacy policy."
   },
   "backupAndSyncEnableDescriptionUpdatePreferences": {
@@ -656,7 +656,7 @@
     "message": "Chức năng cơ bản đã tắt"
   },
   "basicConfigurationDescription": {
-    "message": "CryptoBridge cung cấp các tính năng cơ bản như chi tiết token và cài đặt gas thông qua các dịch vụ Internet. Khi bạn sử dụng các dịch vụ Internet, địa chỉ IP của bạn sẽ được chia sẻ, trong trường hợp này là với MetaMask. Điều này giống như khi bạn truy cập bất kỳ trang web nào. CryptoBridge sử dụng dữ liệu này tạm thời và không bao giờ bán dữ liệu của bạn. Bạn có thể sử dụng VPN hoặc tắt các dịch vụ này, nhưng nó có thể ảnh hưởng đến trải nghiệm sử dụng CryptoBridge của bạn. Để tìm hiểu thêm, vui lòng đọc $1.",
+    "message": "CryptoBridge cung cấp các tính năng cơ bản như chi tiết token và cài đặt gas thông qua các dịch vụ Internet. Khi bạn sử dụng các dịch vụ Internet, địa chỉ IP của bạn sẽ được chia sẻ, trong trường hợp này là với CryptoBridge. Điều này giống như khi bạn truy cập bất kỳ trang web nào. CryptoBridge sử dụng dữ liệu này tạm thời và không bao giờ bán dữ liệu của bạn. Bạn có thể sử dụng VPN hoặc tắt các dịch vụ này, nhưng nó có thể ảnh hưởng đến trải nghiệm sử dụng CryptoBridge của bạn. Để tìm hiểu thêm, vui lòng đọc $1.",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationLabel": {
@@ -666,7 +666,7 @@
     "message": "Tôi hiểu rõ và muốn tiếp tục"
   },
   "basicConfigurationModalDisclaimerOff": {
-    "message": "Điều này có nghĩa là bạn sẽ không thể tối ưu hoàn toàn thời gian sử dụng MetaMask. Các tính năng cơ bản (chẳng hạn như chi tiết token, cài đặt gas tối ưu và các tính năng khác) sẽ không khả dụng."
+    "message": "Điều này có nghĩa là bạn sẽ không thể tối ưu hoàn toàn thời gian sử dụng CryptoBridge. Các tính năng cơ bản (chẳng hạn như chi tiết token, cài đặt gas tối ưu và các tính năng khác) sẽ không khả dụng."
   },
   "basicConfigurationModalDisclaimerOffAdditionalText": {
     "message": "Tắt tùy chọn này cũng sẽ vô hiệu hóa tất cả các tính năng trong $1 và $2.",
@@ -679,7 +679,7 @@
     "message": "thông báo"
   },
   "basicConfigurationModalDisclaimerOn": {
-    "message": "Để tối ưu thời gian sử dụng MetaMask, bạn cần bật tính năng này. Các chức năng cơ bản (chẳng hạn như chi tiết token, cài đặt gas tối ưu và các chức năng khác) rất quan trọng đối với trải nghiệm web3."
+    "message": "Để tối ưu thời gian sử dụng CryptoBridge, bạn cần bật tính năng này. Các chức năng cơ bản (chẳng hạn như chi tiết token, cài đặt gas tối ưu và các chức năng khác) rất quan trọng đối với trải nghiệm web3."
   },
   "basicConfigurationModalHeadingOff": {
     "message": "Tắt chức năng cơ bản"
@@ -930,7 +930,7 @@
     "message": "Liên hệ với"
   },
   "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Hỗ trợ MetaMask"
+    "message": "Hỗ trợ CryptoBridge"
   },
   "bridgeTxDetailsDelayedTitle": {
     "message": "Đã quá 3 giờ chưa?"
@@ -1269,7 +1269,7 @@
     "description": "$1 is the snap for which a connection is being requested."
   },
   "connectWithMetaMask": {
-    "message": "Kết nối với MetaMask"
+    "message": "Kết nối với CryptoBridge"
   },
   "connectedAccounts": {
     "message": "Tài khoản đã kết nối"
@@ -1355,7 +1355,7 @@
     "message": "Đang kết nối với mạng thử nghiệm Sepolia"
   },
   "connectionDescription": {
-    "message": "Kết nối trang web này với MetaMask"
+    "message": "Kết nối trang web này với CryptoBridge"
   },
   "connectionFailed": {
     "message": "Kết nối thất bại"
@@ -1435,7 +1435,7 @@
     "message": "Tạo mật khẩu"
   },
   "createSnapAccountDescription": {
-    "message": "$1 muốn thêm một tài khoản mới vào MetaMask."
+    "message": "$1 muốn thêm một tài khoản mới vào CryptoBridge."
   },
   "createSnapAccountTitle": {
     "message": "Tạo tài khoản"
@@ -2371,7 +2371,7 @@
     "message": "Các thành phần tích hợp của ví cứng sử dụng lệnh gọi API đến máy chủ bên ngoài, máy chủ này có thể xem địa chỉ IP của bạn và địa chỉ hợp đồng thông minh mà bạn tương tác."
   },
   "hardwareWalletsMsg": {
-    "message": "Chọn một ví cứng mà bạn muốn sử dụng với MetaMask."
+    "message": "Chọn một ví cứng mà bạn muốn sử dụng với CryptoBridge."
   },
   "here": {
     "message": "tại đây",
@@ -2483,7 +2483,7 @@
     "message": "Cách báo giá hoạt động"
   },
   "howQuotesWorkExplanation": {
-    "message": "Báo giá này có lợi nhuận cao nhất trong các báo giá mà chúng tôi đã tìm kiếm. Báo giá này dựa trên tỷ giá hoán đổi, bao gồm phí cầu nối và $1% phí MetaMask, trừ phí gas. Phí gas phụ thuộc vào mức độ bận rộn của mạng và độ phức tạp của giao dịch."
+    "message": "Báo giá này có lợi nhuận cao nhất trong các báo giá mà chúng tôi đã tìm kiếm. Báo giá này dựa trên tỷ giá hoán đổi, bao gồm phí cầu nối và $1% phí CryptoBridge, trừ phí gas. Phí gas phụ thuộc vào mức độ bận rộn của mạng và độ phức tạp của giao dịch."
   },
   "id": {
     "message": "ID"
@@ -2514,7 +2514,7 @@
     "message": "Khóa riêng tư này không hợp lệ. Bạn phải nhập một chuỗi thập lục phân có độ dài 64 ký tự."
   },
   "importAccountJsonLoading1": {
-    "message": "Dự kiến quá trình nhập JSON này sẽ mất vài phút và đóng băng MetaMask."
+    "message": "Dự kiến quá trình nhập JSON này sẽ mất vài phút và đóng băng CryptoBridge."
   },
   "importAccountJsonLoading2": {
     "message": "Chân thành xin lỗi bạn, chúng tôi sẽ cải thiện để quá trình này nhanh hơn trong tương lai."
@@ -2624,7 +2624,7 @@
     "message": "Cài đặt nguồn gốc"
   },
   "installRequest": {
-    "message": "Thêm vào MetaMask"
+    "message": "Thêm vào CryptoBridge"
   },
   "installedOn": {
     "message": "Đã cài đặt vào $1",
@@ -2825,10 +2825,10 @@
     "message": "lừa đảo và nguy cơ bảo mật."
   },
   "leaveMetaMask": {
-    "message": "Rời khỏi MetaMask?"
+    "message": "Rời khỏi CryptoBridge?"
   },
   "leaveMetaMaskDesc": {
-    "message": "Bạn sắp truy cập một trang web bên ngoài MetaMask. Hãy kiểm tra kỹ đường dẫn URL trước khi tiếp tục."
+    "message": "Bạn sắp truy cập một trang web bên ngoài CryptoBridge. Hãy kiểm tra kỹ đường dẫn URL trước khi tiếp tục."
   },
   "ledgerAccountRestriction": {
     "message": "Bạn cần sử dụng tài khoản gần đây nhất thì mới có thể thêm một tài khoản mới."
@@ -3016,7 +3016,7 @@
     "message": "Thông báo"
   },
   "metaMaskConnectStatusParagraphOne": {
-    "message": "Giờ đây, bạn có nhiều quyền kiểm soát hơn đối với các kết nối của tài khoản trong MetaMask."
+    "message": "Giờ đây, bạn có nhiều quyền kiểm soát hơn đối với các kết nối của tài khoản trong CryptoBridge."
   },
   "metaMaskConnectStatusParagraphThree": {
     "message": "Nhấp vào để quản lý các tài khoản đã kết nối của bạn."
@@ -3038,7 +3038,7 @@
     "message": "Tính năng Hoán đổi trên CryptoBridge đang được bảo trì. Vui lòng kiểm tra lại sau."
   },
   "metamaskVersion": {
-    "message": "Phiên bản MetaMask"
+    "message": "Phiên bản CryptoBridge"
   },
   "methodData": {
     "message": "Phương thức"
@@ -3204,7 +3204,7 @@
     "message": "Chia sẻ phản hồi của bạn"
   },
   "needHelpLinkText": {
-    "message": "Hỗ trợ về MetaMask"
+    "message": "Hỗ trợ về CryptoBridge"
   },
   "needHelpSubmitTicket": {
     "message": "Gửi phiếu"
@@ -3759,7 +3759,7 @@
     "message": "Tôi đồng ý"
   },
   "onboardingMetametricsDescription": {
-    "message": "Chúng tôi muốn thu thập dữ liệu sử dụng và chẩn đoán cơ bản để cải tiến MetaMask. Xin lưu ý, chúng tôi không bao giờ bán dữ liệu mà bạn cung cấp ở đây."
+    "message": "Chúng tôi muốn thu thập dữ liệu sử dụng và chẩn đoán cơ bản để cải tiến CryptoBridge. Xin lưu ý, chúng tôi không bao giờ bán dữ liệu mà bạn cung cấp ở đây."
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Chúng tôi sẽ thông báo cho bạn nếu chúng tôi quyết định sử dụng dữ liệu này cho các mục đích khác. Bạn có thể xem lại $1 của chúng tôi để biết thêm thông tin. Lưu ý, bạn có thể truy cập cài đặt và chọn không tham gia bất kỳ lúc nào.",
@@ -3855,7 +3855,7 @@
     "message": "loại khác"
   },
   "outdatedBrowserNotification": {
-    "message": "Trình duyệt của bạn đã cũ. Nếu không cập nhật trình duyệt, bạn sẽ không thể nhận các bản vá bảo mật và tính năng mới từ MetaMask."
+    "message": "Trình duyệt của bạn đã cũ. Nếu không cập nhật trình duyệt, bạn sẽ không thể nhận các bản vá bảo mật và tính năng mới từ CryptoBridge."
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Ghi đè tiêu đề Nội dung-Bảo mật-Riêng tư"
@@ -3870,7 +3870,7 @@
     "message": "Tham gia MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Tham gia MetaMetrics để giúp chúng tôi cải thiện MetaMask"
+    "message": "Tham gia MetaMetrics để giúp chúng tôi cải thiện CryptoBridge"
   },
   "password": {
     "message": "Mật khẩu"
@@ -3958,11 +3958,11 @@
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
   "permission_assets": {
-    "message": "Hiển thị tài sản của tài khoản trong MetaMask.",
+    "message": "Hiển thị tài sản của tài khoản trong CryptoBridge.",
     "description": "The description for the `endowment:assets` permission."
   },
   "permission_assetsDescription": {
-    "message": "Cho phép $1 cung cấp thông tin tài sản cho máy khách MetaMask. Tài sản có thể nằm trên chuỗi hoặc ngoài chuỗi.",
+    "message": "Cho phép $1 cung cấp thông tin tài sản cho máy khách CryptoBridge. Tài sản có thể nằm trên chuỗi hoặc ngoài chuỗi.",
     "description": "An extended description for the `endowment:assets` permission. $1 is the name of the Snap."
   },
   "permission_cronjob": {
@@ -3974,7 +3974,7 @@
     "description": "An extended description for the `snap_cronjob` permission. $1 is the snap name."
   },
   "permission_dialog": {
-    "message": "Hiển thị cửa sổ hộp thoại trong MetaMask.",
+    "message": "Hiển thị cửa sổ hộp thoại trong CryptoBridge.",
     "description": "The description for the `snap_dialog` permission"
   },
   "permission_dialogDescription": {
@@ -4006,7 +4006,7 @@
     "description": "The description for the `snap_getLocale` permission"
   },
   "permission_getLocaleDescription": {
-    "message": "Cho phép $1 truy cập ngôn ngữ ưa thích của bạn từ cài đặt MetaMask. Điều này có thể được sử dụng để dịch và hiển thị nội dung của $1 theo ngôn ngữ của bạn.",
+    "message": "Cho phép $1 truy cập ngôn ngữ ưa thích của bạn từ cài đặt CryptoBridge. Điều này có thể được sử dụng để dịch và hiển thị nội dung của $1 theo ngôn ngữ của bạn.",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
   "permission_getPreferences": {
@@ -4022,7 +4022,7 @@
     "description": "The description for the `endowment:page-home` permission"
   },
   "permission_homePageDescription": {
-    "message": "Cho phép $1 hiển thị màn hình chính tùy chỉnh trong MetaMask. Có thể được sử dụng cho giao diện người dùng, cấu hình và trang tổng quan.",
+    "message": "Cho phép $1 hiển thị màn hình chính tùy chỉnh trong CryptoBridge. Có thể được sử dụng cho giao diện người dùng, cấu hình và trang tổng quan.",
     "description": "An extended description for the `endowment:page-home` permission. $1 is the snap name."
   },
   "permission_keyring": {
@@ -4074,7 +4074,7 @@
     "description": "The description for the `endowment:name-lookup` permission."
   },
   "permission_nameLookupDescription": {
-    "message": "Cho phép Snap tìm nạp, hiển thị địa chỉ và tra cứu tên miền trong các phần khác nhau của Giao diện người dùng MetaMask.",
+    "message": "Cho phép Snap tìm nạp, hiển thị địa chỉ và tra cứu tên miền trong các phần khác nhau của Giao diện người dùng CryptoBridge.",
     "description": "An extended description for the `endowment:name-lookup` permission."
   },
   "permission_notifications": {
@@ -4082,7 +4082,7 @@
     "description": "The description for the `snap_notify` permission"
   },
   "permission_notificationsDescription": {
-    "message": "Cho phép $1 hiển thị thông báo trong MetaMask. Một văn bản thông báo ngắn có thể được kích hoạt bằng Snap đối với thông tin có thể thao tác hoặc nhạy cảm với thời gian.",
+    "message": "Cho phép $1 hiển thị thông báo trong CryptoBridge. Một văn bản thông báo ngắn có thể được kích hoạt bằng Snap đối với thông tin có thể thao tác hoặc nhạy cảm với thời gian.",
     "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
   },
   "permission_protocol": {
@@ -4090,7 +4090,7 @@
     "description": "The description for the `endowment:protocol` permission."
   },
   "permission_protocolDescription": {
-    "message": "Cho phép $1 cung cấp dữ liệu giao thức cho MetaMask, chẳng hạn như ước tính phí gas hoặc thông tin token.",
+    "message": "Cho phép $1 cung cấp dữ liệu giao thức cho CryptoBridge, chẳng hạn như ước tính phí gas hoặc thông tin token.",
     "description": "An extended description for the `endowment:protocol` permission. $1 is the name of the Snap."
   },
   "permission_rpc": {
@@ -4126,7 +4126,7 @@
     "description": "The description for the `endowment:transaction-insight` permission"
   },
   "permission_transactionInsightDescription": {
-    "message": "Cho phép $1 giải mã các giao dịch và hiển thị thông tin chi tiết trong giao diện người dùng MetaMask. Điều này có thể được sử dụng cho các giải pháp bảo mật và chống lừa đảo.",
+    "message": "Cho phép $1 giải mã các giao dịch và hiển thị thông tin chi tiết trong giao diện người dùng CryptoBridge. Điều này có thể được sử dụng cho các giải pháp bảo mật và chống lừa đảo.",
     "description": "An extended description for the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_transactionInsightOrigin": {
@@ -4468,10 +4468,10 @@
     "message": "Tài khoản này sẽ được xóa khỏi ví của bạn. Hãy đảm bảo rằng bạn có Cụm từ khôi phục bí mật ban đầu hoặc khóa riêng tư cho tài khoản được nhập trước khi tiếp tục. Bạn có thể nhập hoặc tạo lại tài khoản từ trình đơn tài khoản thả xuống. "
   },
   "removeKeyringSnap": {
-    "message": "Xóa Snap này sẽ xóa các tài khoản này khỏi MetaMask:"
+    "message": "Xóa Snap này sẽ xóa các tài khoản này khỏi CryptoBridge:"
   },
   "removeKeyringSnapToolTip": {
-    "message": "Snap giúp kiểm soát các tài khoản và khi xóa Snap, các tài khoản cũng sẽ bị xóa khỏi MetaMask, nhưng chúng sẽ vẫn tồn tại trên chuỗi khối."
+    "message": "Snap giúp kiểm soát các tài khoản và khi xóa Snap, các tài khoản cũng sẽ bị xóa khỏi CryptoBridge, nhưng chúng sẽ vẫn tồn tại trên chuỗi khối."
   },
   "removeNFT": {
     "message": "Xóa NFT"
@@ -4546,7 +4546,7 @@
     "message": "Đảm bảo bạn đang sử dụng đúng Cụm từ khôi phục bí mật trước khi tiếp tục vì bạn sẽ không thể hoàn tác."
   },
   "restartMetamask": {
-    "message": "Khởi động lại MetaMask"
+    "message": "Khởi động lại CryptoBridge"
   },
   "restore": {
     "message": "Khôi phục"
@@ -4744,7 +4744,7 @@
     "message": "Chọn một tài khoản"
   },
   "selectAnAccountAlreadyConnected": {
-    "message": "Tài khoản này đã được kết nối với MetaMask"
+    "message": "Tài khoản này đã được kết nối với CryptoBridge"
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Bật Hiển thị Phương tiện NFT"
@@ -5009,13 +5009,13 @@
     "message": "Bán tiền mã hóa để lấy tiền mặt"
   },
   "slideCashOutTitle": {
-    "message": "Rút tiền với MetaMask"
+    "message": "Rút tiền với CryptoBridge"
   },
   "slideDebitCardDescription": {
     "message": "Có sẵn ở một số khu vực được chọn"
   },
   "slideDebitCardTitle": {
-    "message": "Thẻ ghi nợ MetaMask"
+    "message": "Thẻ ghi nợ CryptoBridge"
   },
   "slideFundWalletDescription": {
     "message": "Thêm hoặc chuyển token để bắt đầu"
@@ -5024,7 +5024,7 @@
     "message": "Nạp tiền vào ví của bạn"
   },
   "slideMultiSrpDescription": {
-    "message": "Nhập và sử dụng nhiều ví trong MetaMask"
+    "message": "Nhập và sử dụng nhiều ví trong CryptoBridge"
   },
   "slideMultiSrpTitle": {
     "message": "Thêm nhiều Cụm từ khôi phục bí mật"
@@ -5111,7 +5111,7 @@
     "message": "Giao dịch của bạn đã thất bại"
   },
   "smartTransactionErrorDescription": {
-    "message": "Biến động đột ngột của thị trường có thể gây ra lỗi. Nếu sự cố tiếp diễn, hãy liên hệ với bộ phận hỗ trợ khách hàng của MetaMask."
+    "message": "Biến động đột ngột của thị trường có thể gây ra lỗi. Nếu sự cố tiếp diễn, hãy liên hệ với bộ phận hỗ trợ khách hàng của CryptoBridge."
   },
   "smartTransactionPending": {
     "message": "Giao dịch của bạn đã được gửi"
@@ -5453,7 +5453,7 @@
     "message": "Để hiển thị Cụm từ khôi phục bí mật, bạn cần trả lời đúng hai câu hỏi"
   },
   "srpSecurityQuizQuestionOneQuestion": {
-    "message": "Nếu bạn làm mất Cụm từ khôi phục bí mật, MetaMask..."
+    "message": "Nếu bạn làm mất Cụm từ khôi phục bí mật, CryptoBridge..."
   },
   "srpSecurityQuizQuestionOneRightAnswer": {
     "message": "Không thể giúp bạn"
@@ -5531,7 +5531,7 @@
     "message": "Lỗi khi truy xuất nhật ký trạng thái."
   },
   "stateLogFileName": {
-    "message": "Nhật ký trạng thái của MetaMask"
+    "message": "Nhật ký trạng thái của CryptoBridge"
   },
   "stateLogs": {
     "message": "Nhật ký trạng thái"
@@ -5665,7 +5665,7 @@
     "message": "Tham gia khảo sát của chúng tôi"
   },
   "surveyTitle": {
-    "message": "Định hình tương lai của MetaMask"
+    "message": "Định hình tương lai của CryptoBridge"
   },
   "swap": {
     "message": "Hoán đổi"
@@ -5805,15 +5805,15 @@
     "message": "Mức trượt giá cao"
   },
   "swapIncludesGasAndMetaMaskFee": {
-    "message": "Bao gồm phí gas và $1% phí của MetaMask",
+    "message": "Bao gồm phí gas và $1% phí của CryptoBridge",
     "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
-    "message": "Bao gồm $1% phí của MetaMask.",
+    "message": "Bao gồm $1% phí của CryptoBridge.",
     "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
-    "message": "Báo giá thể hiện khoản phí $1% của MetaMask",
+    "message": "Báo giá thể hiện khoản phí $1% của CryptoBridge",
     "description": "Provides information about the fee that CryptoBridge takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
@@ -5833,10 +5833,10 @@
     "message": "Mức trượt giá tối đa"
   },
   "swapMetaMaskFee": {
-    "message": "Phí của MetaMask"
+    "message": "Phí của CryptoBridge"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "Khoản phí $1% sẽ tự động được tính vào báo giá này. Bạn trả tiền để đổi lấy giấy phép sử dụng phần mềm tổng hợp thông tin từ nhà cung cấp thanh khoản của MetaMask.",
+    "message": "Khoản phí $1% sẽ tự động được tính vào báo giá này. Bạn trả tiền để đổi lấy giấy phép sử dụng phần mềm tổng hợp thông tin từ nhà cung cấp thanh khoản của CryptoBridge.",
     "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
@@ -6101,7 +6101,7 @@
     "message": "Điều khoản dịch vụ"
   },
   "termsOfUseAgreeText": {
-    "message": " Tôi đồng ý với Điều khoản sử dụng được áp dụng cho việc tôi sử dụng CryptoBridge và tất cả các tính năng của MetaMask"
+    "message": " Tôi đồng ý với Điều khoản sử dụng được áp dụng cho việc tôi sử dụng CryptoBridge và tất cả các tính năng của CryptoBridge"
   },
   "termsOfUseFooterText": {
     "message": "Vui lòng cuộn để đọc tất cả các phần"
@@ -6395,7 +6395,7 @@
     "message": "Chưa chấp thuận"
   },
   "unexpectedBehavior": {
-    "message": "Đây là hành vi bất thường và cần được báo cáo như một lỗi, ngay cả khi tài khoản của bạn đã được khôi phục đúng cách. Sử dụng liên kết bên dưới để gửi báo cáo lỗi cho MetaMask."
+    "message": "Đây là hành vi bất thường và cần được báo cáo như một lỗi, ngay cả khi tài khoản của bạn đã được khôi phục đúng cách. Sử dụng liên kết bên dưới để gửi báo cáo lỗi cho CryptoBridge."
   },
   "units": {
     "message": "đơn vị"

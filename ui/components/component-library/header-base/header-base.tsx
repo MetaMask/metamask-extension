@@ -5,9 +5,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../box';
-
 import type { PolymorphicRef, BoxProps } from '../box';
-
 import { HeaderBaseProps, HeaderBaseComponent } from './header-base.types';
 
 export const HeaderBase: HeaderBaseComponent = React.forwardRef(

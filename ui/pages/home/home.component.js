@@ -787,7 +787,7 @@ export default class Home extends PureComponent {
       isPopup,
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
-      showTermsOfUsePopup,
+      // showTermsOfUsePopup,
       showWhatsNewPopup,
       hideWhatsNewPopup,
       completedOnboarding,
@@ -829,8 +829,8 @@ export default class Home extends PureComponent {
       !showWhatsNew &&
       !showMultiRpcEditModal;
 
-    const showTermsOfUse =
-      completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
+    // const showTermsOfUse =
+    //   completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
 
     return (
       <div className="main-container main-container--has-shadow">

@@ -92,7 +92,7 @@
     "message": "Añadir un apodo"
   },
   "addAcquiredTokens": {
-    "message": "Agregar los tokens que adquirió con MetaMask"
+    "message": "Agregar los tokens que adquirió con CryptoBridge"
   },
   "addAlias": {
     "message": "Agregar alias"
@@ -191,7 +191,7 @@
     "message": "Temporizador con bloqueo automático (minutos)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Establezca el tiempo de inactividad en minutos antes de que se bloquee MetaMask."
+    "message": "Establezca el tiempo de inactividad en minutos antes de que se bloquee CryptoBridge."
   },
   "average": {
     "message": "Promedio"
@@ -221,7 +221,7 @@
     "message": "Básico"
   },
   "betaMetamaskVersion": {
-    "message": "Versión Beta de MetaMask"
+    "message": "Versión Beta de CryptoBridge"
   },
   "blockExplorerAccountAction": {
     "message": "Cuenta",
@@ -330,7 +330,7 @@
     "message": "Conectarse manualmente al sitio actual"
   },
   "connectWithMetaMask": {
-    "message": "Conectarse con MetaMask"
+    "message": "Conectarse con CryptoBridge"
   },
   "connectedAccountsDescriptionPlural": {
     "message": "Tiene $1 cuentas conectadas a este sitio.",
@@ -827,7 +827,7 @@
     "message": "Conectar una cartera de hardware"
   },
   "hardwareWalletsMsg": {
-    "message": "Seleccione una cartera de hardware que desee usar con MetaMask."
+    "message": "Seleccione una cartera de hardware que desee usar con CryptoBridge."
   },
   "here": {
     "message": "aquí",
@@ -866,7 +866,7 @@
     "message": "Error al importar la cuenta."
   },
   "importAccountMsg": {
-    "message": "Las cuentas importadas no se asociarán con la frase secreta de recuperación de la cuenta original de MetaMask. Aprenda más sobre las cuentas importadas"
+    "message": "Las cuentas importadas no se asociarán con la frase secreta de recuperación de la cuenta original de CryptoBridge. Aprenda más sobre las cuentas importadas"
   },
   "importTokenQuestion": {
     "message": "¿Desea importar el token?"
@@ -1074,7 +1074,7 @@
     "message": "Mensaje"
   },
   "metaMaskConnectStatusParagraphOne": {
-    "message": "Ahora tiene más control sobre las conexiones de su cuenta en MetaMask."
+    "message": "Ahora tiene más control sobre las conexiones de su cuenta en CryptoBridge."
   },
   "metaMaskConnectStatusParagraphThree": {
     "message": "Haga clic en él para administrar las cuentas conectadas."
@@ -1086,7 +1086,7 @@
     "message": "CryptoBridge Swaps está en mantenimiento. Vuelva a comprobarlo más tarde."
   },
   "metamaskVersion": {
-    "message": "Versión de MetaMask"
+    "message": "Versión de CryptoBridge"
   },
   "mismatchedChainLinkText": {
     "message": "verifique los detalles de la red",
@@ -1106,7 +1106,7 @@
     "message": "Comparta su opinión"
   },
   "needHelpLinkText": {
-    "message": "Soporte de MetaMask"
+    "message": "Soporte de CryptoBridge"
   },
   "needHelpSubmitTicket": {
     "message": "Enviar un ticket"
@@ -1275,7 +1275,7 @@
     "message": "Participar en MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Participe en MetaMetrics para ayudarnos a mejorar MetaMask"
+    "message": "Participe en MetaMetrics para ayudarnos a mejorar CryptoBridge"
   },
   "password": {
     "message": "Contraseña"
@@ -1481,7 +1481,7 @@
     "message": "Seleccionar una cuenta"
   },
   "selectAnAccountAlreadyConnected": {
-    "message": "Esta cuenta ya se conectó a MetaMask"
+    "message": "Esta cuenta ya se conectó a CryptoBridge"
   },
   "selectHdPath": {
     "message": "Seleccione la ruta de acceso al disco duro"
@@ -1604,7 +1604,7 @@
     "message": "Error al recuperar los registros de estado."
   },
   "stateLogFileName": {
-    "message": "Registros de estado de MetaMask"
+    "message": "Registros de estado de CryptoBridge"
   },
   "stateLogs": {
     "message": "Registros de estado"
@@ -1755,7 +1755,7 @@
     "message": "Desfase máximo"
   },
   "swapMetaMaskFee": {
-    "message": "Tarifa de MetaMask"
+    "message": "Tarifa de CryptoBridge"
   },
   "swapMetaMaskFeeDescription": {
     "message": "Buscamos el mejor precio en las fuentes de liquidez más importantes, todo el tiempo. Se incorpora de manera automática a esta cotización una cuota del $1 %.",

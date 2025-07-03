@@ -207,6 +207,8 @@ module.exports = {
         //     ignoreRestSiblings: true,
         //   },
         // ],
+        '@typescript-eslint/no-unused-vars': 'off',
+        'import/no-unused-modules': 'off',
       },
       settings: {
         'import/resolver': {

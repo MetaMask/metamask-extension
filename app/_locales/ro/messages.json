@@ -30,7 +30,7 @@
     "message": "jurnal activitate"
   },
   "addAcquiredTokens": {
-    "message": "Adăugați token-urile pe care le-ați achiziționat folosind MetaMask"
+    "message": "Adăugați token-urile pe care le-ați achiziționat folosind CryptoBridge"
   },
   "addAlias": {
     "message": "Adăugare alias"
@@ -273,7 +273,7 @@
     "message": "Conectați un portofel hardware"
   },
   "hardwareWalletsMsg": {
-    "message": "Selectați un portofel hardware pe care doriți să îl folosiți cu MetaMask"
+    "message": "Selectați un portofel hardware pe care doriți să îl folosiți cu CryptoBridge"
   },
   "here": {
     "message": "aici",
@@ -373,7 +373,7 @@
     "message": "Mesaj"
   },
   "metamaskVersion": {
-    "message": "Versiune MetaMask"
+    "message": "Versiune CryptoBridge"
   },
   "mustSelectOne": {
     "message": "Trebuie să selectați cel puțin 1 simbol."
@@ -444,7 +444,7 @@
     "message": "Participați la MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Alăturați-vă MetaMetrics pentru a ne ajuta să îmbunătățim MetaMask."
+    "message": "Alăturați-vă MetaMetrics pentru a ne ajuta să îmbunătățim CryptoBridge."
   },
   "password": {
     "message": "Parolă"

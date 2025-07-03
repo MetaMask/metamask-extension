@@ -30,7 +30,7 @@
     "message": "журнал активності"
   },
   "addAcquiredTokens": {
-    "message": "Додайте токени, отримані за допомогою MetaMask"
+    "message": "Додайте токени, отримані за допомогою CryptoBridge"
   },
   "addAlias": {
     "message": "Додати псевдо"
@@ -279,7 +279,7 @@
     "message": "Під'єднати апаратний гаманець"
   },
   "hardwareWalletsMsg": {
-    "message": "Оберіть апаратний гаманець, який ви хочете використовувати з MetaMask"
+    "message": "Оберіть апаратний гаманець, який ви хочете використовувати з CryptoBridge"
   },
   "here": {
     "message": "тут",
@@ -302,7 +302,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": "Імпортовані облікові записи не будуть пов'язані з вашою первісно створеною початковою фразою облікового запису MetaMask. Дізнайтесь більше про імпортовані облікові записи"
+    "message": "Імпортовані облікові записи не будуть пов'язані з вашою первісно створеною початковою фразою облікового запису CryptoBridge. Дізнайтесь більше про імпортовані облікові записи"
   },
   "imported": {
     "message": "Імпортовано",
@@ -382,7 +382,7 @@
     "message": "Повідомлення"
   },
   "metamaskVersion": {
-    "message": "Версія MetaMask"
+    "message": "Версія CryptoBridge"
   },
   "mustSelectOne": {
     "message": "Слід вибрати хоча б 1 токен."
@@ -453,7 +453,7 @@
     "message": "Взяти участь у MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Беріть участь у програмі MetaMetrics, щоб допомогти нам покращити MetaMask"
+    "message": "Беріть участь у програмі MetaMetrics, щоб допомогти нам покращити CryptoBridge"
   },
   "password": {
     "message": "Пароль"

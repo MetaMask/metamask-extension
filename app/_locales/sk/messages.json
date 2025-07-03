@@ -30,7 +30,7 @@
     "message": "protokol aktivity"
   },
   "addAcquiredTokens": {
-    "message": "Pridajte tokeny, ktoré ste získali pomocou MetaMask"
+    "message": "Pridajte tokeny, ktoré ste získali pomocou CryptoBridge"
   },
   "addAlias": {
     "message": "Pridať alias"
@@ -125,7 +125,7 @@
     "message": "ID reťazca"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Ak sa chcete pripojiť k svojej hardvérovej peňaženke, musíte v Google Chrome použiť MetaMask."
+    "message": "Ak sa chcete pripojiť k svojej hardvérovej peňaženke, musíte v Google Chrome použiť CryptoBridge."
   },
   "close": {
     "message": "Zavrieť"
@@ -273,7 +273,7 @@
     "message": "Pripojiť hardvérovú peňaženku"
   },
   "hardwareWalletsMsg": {
-    "message": "Vyberte hardvérovú peňaženku, ktorú chcete používať s MetaMask"
+    "message": "Vyberte hardvérovú peňaženku, ktorú chcete používať s CryptoBridge"
   },
   "here": {
     "message": "zde",
@@ -289,7 +289,7 @@
     "message": "História"
   },
   "importAccountMsg": {
-    "message": "Importované účty nebudou spojeny s vaší původní MetaMaskovou klíčovou frází. Zjistěte více o importovaných účtech "
+    "message": "Importované účty nebudou spojeny s vaší původní CryptoBridgeovou klíčovou frází. Zjistěte více o importovaných účtech "
   },
   "imported": {
     "message": "Importováno",
@@ -357,7 +357,7 @@
     "message": "Zpráva"
   },
   "metamaskVersion": {
-    "message": "Verzia MetaMask"
+    "message": "Verzia CryptoBridge"
   },
   "mustSelectOne": {
     "message": "Musíte zvolit aspoň 1 token."
@@ -425,7 +425,7 @@
     "message": "Zúčastnite sa na MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Zúčastnite sa na MetaMetrics a pomôžte nám vylepšiť MetaMask"
+    "message": "Zúčastnite sa na MetaMetrics a pomôžte nám vylepšiť CryptoBridge"
   },
   "password": {
     "message": "Heslo"

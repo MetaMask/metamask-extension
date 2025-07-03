@@ -30,7 +30,7 @@
     "message": "dnevnik dejavnosti"
   },
   "addAcquiredTokens": {
-    "message": "Dodaj žetone pridobljene z MetaMask"
+    "message": "Dodaj žetone pridobljene z CryptoBridge"
   },
   "addAlias": {
     "message": "Dodaj vzdevek"
@@ -441,7 +441,7 @@
     "message": "Sodelujte v MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Sodelujte v MetaMetrics in nam pomagajte izboljšati MetaMask"
+    "message": "Sodelujte v MetaMetrics in nam pomagajte izboljšati CryptoBridge"
   },
   "password": {
     "message": "Geslo"

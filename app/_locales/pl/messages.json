@@ -30,7 +30,7 @@
     "message": "dziennik aktywności"
   },
   "addAcquiredTokens": {
-    "message": "Dodaj tokeny pozyskane przy pomocy MetaMask"
+    "message": "Dodaj tokeny pozyskane przy pomocy CryptoBridge"
   },
   "addAlias": {
     "message": "Dodaj alias"
@@ -279,7 +279,7 @@
     "message": "Podłącz sprzętowy portfel"
   },
   "hardwareWalletsMsg": {
-    "message": "Wybierz portfel sprzętowy, którego chcesz użyć z MetaMaskiem"
+    "message": "Wybierz portfel sprzętowy, którego chcesz użyć z CryptoBridgeiem"
   },
   "here": {
     "message": "tutaj",
@@ -302,7 +302,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": " Importowane konta nie będą powiązane z Twoją pierwotną frazą seed MetaMask. Dowiedz się więcej o importowaniu kont "
+    "message": " Importowane konta nie będą powiązane z Twoją pierwotną frazą seed CryptoBridge. Dowiedz się więcej o importowaniu kont "
   },
   "imported": {
     "message": "Zaimportowane",
@@ -379,7 +379,7 @@
     "message": "Wiadomość"
   },
   "metamaskVersion": {
-    "message": "Wersja MetaMask"
+    "message": "Wersja CryptoBridge"
   },
   "mustSelectOne": {
     "message": "Należy wybrać co najmniej 1 token."
@@ -447,7 +447,7 @@
     "message": "Weź udział w MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Weź udział w MetaMetrics, aby pomóc nam ulepszyć MetaMask"
+    "message": "Weź udział w MetaMetrics, aby pomóc nam ulepszyć CryptoBridge"
   },
   "password": {
     "message": "Hasło"

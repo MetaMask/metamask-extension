@@ -92,7 +92,7 @@
     "message": "Adicionar um apelido"
   },
   "addAcquiredTokens": {
-    "message": "Adicione os tokens que você adquiriu usando a MetaMask"
+    "message": "Adicione os tokens que você adquiriu usando a CryptoBridge"
   },
   "addAlias": {
     "message": "Adicionar pseudônimo"
@@ -221,7 +221,7 @@
     "message": "Básico"
   },
   "betaMetamaskVersion": {
-    "message": "Versão Beta da MetaMask"
+    "message": "Versão Beta da CryptoBridge"
   },
   "blockExplorerAccountAction": {
     "message": "Conta",
@@ -330,7 +330,7 @@
     "message": "Conectar manualmente ao site atual"
   },
   "connectWithMetaMask": {
-    "message": "Conectar-se com a MetaMask"
+    "message": "Conectar-se com a CryptoBridge"
   },
   "connectedAccountsDescriptionPlural": {
     "message": "Você tem $1 contas conectadas a este site.",
@@ -827,7 +827,7 @@
     "message": "Conecte uma carteira de hardware"
   },
   "hardwareWalletsMsg": {
-    "message": "Selecione uma carteira de hardware que você gostaria de usar com a MetaMask."
+    "message": "Selecione uma carteira de hardware que você gostaria de usar com a CryptoBridge."
   },
   "here": {
     "message": "aqui",
@@ -1074,7 +1074,7 @@
     "message": "Mensagem"
   },
   "metaMaskConnectStatusParagraphOne": {
-    "message": "Agora você tem mais controle sobre as conexões da sua conta na MetaMask."
+    "message": "Agora você tem mais controle sobre as conexões da sua conta na CryptoBridge."
   },
   "metaMaskConnectStatusParagraphThree": {
     "message": "Clique para gerenciar suas contas conectadas."
@@ -1086,7 +1086,7 @@
     "message": "O CryptoBridge Swaps está em manutenção. Verifique novamente mais tarde."
   },
   "metamaskVersion": {
-    "message": "Versão da MetaMask"
+    "message": "Versão da CryptoBridge"
   },
   "mismatchedChainLinkText": {
     "message": "verifique os detalhes da rede",
@@ -1106,7 +1106,7 @@
     "message": "Compartilhe seu feedback"
   },
   "needHelpLinkText": {
-    "message": "Suporte da MetaMask"
+    "message": "Suporte da CryptoBridge"
   },
   "needHelpSubmitTicket": {
     "message": "Envie um chamado"
@@ -1481,7 +1481,7 @@
     "message": "Selecione uma conta"
   },
   "selectAnAccountAlreadyConnected": {
-    "message": "Essa conta já foi conectada à MetaMask"
+    "message": "Essa conta já foi conectada à CryptoBridge"
   },
   "selectHdPath": {
     "message": "Selecione o caminho do disco rígido"
@@ -1604,7 +1604,7 @@
     "message": "Erro ao recuperar os registros de estado."
   },
   "stateLogFileName": {
-    "message": "Registros de estado da MetaMask"
+    "message": "Registros de estado da CryptoBridge"
   },
   "stateLogs": {
     "message": "Registros de estado"
@@ -1748,14 +1748,14 @@
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapIncludesMMFee": {
-    "message": "Inclui uma taxa de $1% da MetaMask.",
+    "message": "Inclui uma taxa de $1% da CryptoBridge.",
     "description": "Provides information about the fee that CryptoBridge takes for swaps. $1 is a decimal number."
   },
   "swapMaxSlippage": {
     "message": "Slippage máximo"
   },
   "swapMetaMaskFee": {
-    "message": "Taxa da MetaMask"
+    "message": "Taxa da CryptoBridge"
   },
   "swapMetaMaskFeeDescription": {
     "message": "Encontramos o melhor preço das principais fontes de liquidez – todas as vezes. Uma taxa de $1% é automaticamente incorporada nessa cotação.",

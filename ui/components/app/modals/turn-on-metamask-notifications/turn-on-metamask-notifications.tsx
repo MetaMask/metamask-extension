@@ -29,10 +29,7 @@ import {
 } from '../../../component-library';
 import {
   AlignItems,
-  BlockSize,
-  BorderRadius,
   FlexDirection,
-  FontWeight,
   TextColor,
 } from '../../../../helpers/constants/design-system';
 
@@ -101,8 +98,8 @@ export default function TurnOnMetamaskNotifications() {
       desc: t('noticesModalItem1Desc'),
     },
     {
-      title: t('noticesModa2Item1Title'),
-      desc: t('noticesModa2Item1Desc'),
+      title: t('noticesModalItem2Title'),
+      desc: t('noticesModalItem2Desc'),
     },
   ];
   return (
@@ -119,7 +116,9 @@ export default function TurnOnMetamaskNotifications() {
                 <Text as="p" className="notices__content__text__title">
                   {t('noticesModalTitle')}
                 </Text>
-                <Text as="p">{t('noticesModalDesc')}</Text>
+                <Text as="p" className="notices__content__text__desc">
+                  {t('noticesModalDesc')}
+                </Text>
               </Box>
               <Box className="notices__content__items">
                 {items.map((item, index) => {
@@ -172,7 +171,7 @@ export default function TurnOnMetamaskNotifications() {
             alignItems: AlignItems.stretch,
           }}
           submitButtonProps={{
-            children: t('turnOnMetamaskNotificationsButton'),
+            children: t('done'),
             loading: isLoading,
             disabled: isLoading,
             'data-testid': 'turn-on-notifications-button',
@@ -181,7 +180,7 @@ export default function TurnOnMetamaskNotifications() {
         {error && (
           <Box paddingLeft={4} paddingRight={4}>
             <Text as="p" color={TextColor.errorDefault} paddingTop={4}>
-              {t('done')}
+              {t('turnOnMetamaskNotificationsError')}
             </Text>
           </Box>
         )}

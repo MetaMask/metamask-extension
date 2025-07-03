@@ -34,7 +34,7 @@
     "message": "活動紀錄"
   },
   "addAcquiredTokens": {
-    "message": "將您已經擁有的代幣顯示於 MetaMask"
+    "message": "將您已經擁有的代幣顯示於 CryptoBridge"
   },
   "addAlias": {
     "message": "新增化名"
@@ -120,7 +120,7 @@
     "message": "上一頁"
   },
   "backupApprovalInfo": {
-    "message": "在裝置遺失、忘記密碼、需要重新安裝 MetaMask、或是想在另一裝置開啟錢包的情形下，你需要此秘密代碼來復原錢包。"
+    "message": "在裝置遺失、忘記密碼、需要重新安裝 CryptoBridge、或是想在另一裝置開啟錢包的情形下，你需要此秘密代碼來復原錢包。"
   },
   "backupApprovalNotice": {
     "message": "備份你的助憶詞，保護你的錢包與資金。"
@@ -202,7 +202,7 @@
     "message": "手動連結到目前的網站"
   },
   "connectWithMetaMask": {
-    "message": "連結到 MetaMask"
+    "message": "連結到 CryptoBridge"
   },
   "connectedAccountsDescriptionPlural": {
     "message": "您有 $1 個帳戶已連結到這個網站。",
@@ -809,7 +809,7 @@
     "message": "參與 MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "參與 MetaMetrics 來協助我們打造更好的 MetaMask"
+    "message": "參與 MetaMetrics 來協助我們打造更好的 CryptoBridge"
   },
   "password": {
     "message": "密碼"

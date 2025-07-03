@@ -30,7 +30,7 @@
     "message": "aktivitetshistorikk"
   },
   "addAcquiredTokens": {
-    "message": "Legg til sjetongene du har kjøpt med MetaMask"
+    "message": "Legg til sjetongene du har kjøpt med CryptoBridge"
   },
   "addAlias": {
     "message": "Legg til alias "
@@ -91,7 +91,7 @@
     "message": "Tilbake"
   },
   "backupApprovalInfo": {
-    "message": "Denne hemmelige koden behøves for å gjenopprette lommeboken din i tilfelle du mister enheten din, glemmer passordet ditt, trenger å re-installere MetaMask, eller ønsker å få tilgang til lommeboken din på en annen enhet."
+    "message": "Denne hemmelige koden behøves for å gjenopprette lommeboken din i tilfelle du mister enheten din, glemmer passordet ditt, trenger å re-installere CryptoBridge, eller ønsker å få tilgang til lommeboken din på en annen enhet."
   },
   "backupApprovalNotice": {
     "message": "Sikkerhetskopier den hemmelige gjenopprettingskoden for å sikre lommeboken og midlene."
@@ -273,7 +273,7 @@
     "message": "Koble til en hardware-lommebok"
   },
   "hardwareWalletsMsg": {
-    "message": "Velg maskinvarelommeboken som du vil bruke med MetaMask"
+    "message": "Velg maskinvarelommeboken som du vil bruke med CryptoBridge"
   },
   "here": {
     "message": "her",
@@ -293,7 +293,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": "Importerte kontoer blir ikke tilknyttet den opprinnelig opprettede mnemoniske gjenopprettingsfrasen for MetaMask-kontoen din. Finn ut mer om importerte kontoer"
+    "message": "Importerte kontoer blir ikke tilknyttet den opprinnelig opprettede mnemoniske gjenopprettingsfrasen for CryptoBridge-kontoen din. Finn ut mer om importerte kontoer"
   },
   "imported": {
     "message": "Importert",

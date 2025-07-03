@@ -30,7 +30,7 @@
     "message": "Дневник на дейността"
   },
   "addAcquiredTokens": {
-    "message": "Добавете жетоните, които сте придобили с помощта на MetaMask"
+    "message": "Добавете жетоните, които сте придобили с помощта на CryptoBridge"
   },
   "addAlias": {
     "message": "Добавете псевдоним"
@@ -279,7 +279,7 @@
     "message": "Свържете хардуерен портфейл"
   },
   "hardwareWalletsMsg": {
-    "message": "Изберете хардуерен портфейл, който искате да използвате с MetaMask"
+    "message": "Изберете хардуерен портфейл, който искате да използвате с CryptoBridge"
   },
   "here": {
     "message": "тук",
@@ -382,7 +382,7 @@
     "message": "Съобщение"
   },
   "metamaskVersion": {
-    "message": "Версия на MetaMask"
+    "message": "Версия на CryptoBridge"
   },
   "mustSelectOne": {
     "message": "Трябва да изберете поне 1 жетон."
@@ -453,7 +453,7 @@
     "message": "Участвайте в MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Участвайте в MetaMetrics, за да ни помогнете да подобрим MetaMask"
+    "message": "Участвайте в MetaMetrics, за да ни помогнете да подобрим CryptoBridge"
   },
   "password": {
     "message": "Парола"
