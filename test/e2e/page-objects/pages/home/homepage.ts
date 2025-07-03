@@ -3,6 +3,7 @@ import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import { getCleanAppState } from '../../../helpers';
 import HeaderNavbar from '../header-navbar';
+import { toggleStxSetting } from '../../flows/toggle-stx-setting.flow';
 
 class HomePage {
   protected driver: Driver;
@@ -159,6 +160,9 @@ class HomePage {
   }
 
   async startBridgeFlow(): Promise<void> {
+    // disable smart transactions step by step for all bridge flows
+    // we cannot use fixtures because migration 135 overrides the opt in value to true
+    await toggleStxSetting(this.driver);
     await this.driver.clickElement(this.bridgeButton);
   }
 
