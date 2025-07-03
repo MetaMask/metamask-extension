@@ -30783,7 +30783,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.memoize@npm:^4.1.2":
+"lodash.memoize@npm:4.1.2":
   version: 4.1.2
   resolution: "lodash.memoize@npm:4.1.2"
   checksum: 10/192b2168f310c86f303580b53acf81ab029761b9bd9caa9506a019ffea5f3363ea98d7e39e7e11e6b9917066c9d36a09a11f6fe16f812326390d8f3a54a1a6da
@@ -30794,6 +30794,13 @@ __metadata:
   version: 3.0.4
   resolution: "lodash.memoize@npm:3.0.4"
   checksum: 10/fc52e0916b896fa79d6b85fbeaa0e44a381b70f1fcab7acab10188aaeeb2107e21b9b992bff560f405696e0a6e3bb5c08af18955d628a1e8ab6b11df14ff6172
+  languageName: node
+  linkType: hard
+
+"lodash.memoize@patch:lodash.memoize@npm%3A4.1.2#~/.yarn/patches/lodash.memoize-npm-4.1.2-0e6250041f.patch":
+  version: 4.1.2
+  resolution: "lodash.memoize@patch:lodash.memoize@npm%3A4.1.2#~/.yarn/patches/lodash.memoize-npm-4.1.2-0e6250041f.patch::version=4.1.2&hash=33dafa"
+  checksum: 10/64cb8f11ad29e40e5873750991765ac03c95727a86f814a3870d228a5ddfeec55d8c716e15519c5ab1bf4f36e77e1b0e6e96e348b3f2d04281835b756cb4534a
   languageName: node
   linkType: hard
 
