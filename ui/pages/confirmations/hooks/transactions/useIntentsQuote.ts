@@ -1,18 +1,16 @@
-import { useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useConfirmContext } from '../../context/confirm';
+import { useEffect } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { Hex, createProjectLogger } from '@metamask/utils';
+import { QuoteResponse } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
   setIntentQuoteForTransaction,
 } from '../../../../store/actions';
 import { useAsyncResult } from '../../../../hooks/useAsync';
-import { useIntentsNetworkFee } from './useIntentsNetworkFee';
-import { QuoteResponse } from '@metamask/bridge-controller';
-import { useIntentSourceAmounts } from './useIntentSourceAmount';
 import { useIntentsContext } from '../../context/intents/intents';
+import { useConfirmContext } from '../../context/confirm';
+import { useIntentsNetworkFee } from './useIntentsNetworkFee';
+import { useIntentSourceAmounts } from './useIntentSourceAmount';
 import { useIntentsTargets } from './useIntentsTarget';
 
 const log = createProjectLogger('intents');
@@ -27,7 +25,7 @@ export function useIntentsQuote() {
     txParams: { from },
   } = transasctionMeta;
 
-  const { sourceToken, loading, setLoading } = useIntentsContext();
+  const { sourceToken, loading, setLoading, setSuccess } = useIntentsContext();
   const sourceAmounts = useIntentSourceAmounts();
   const targets = useIntentsTargets();
 
@@ -95,6 +93,14 @@ export function useIntentsQuote() {
       setLoading?.(false);
     }
   }, [quotesLoading, gasFeeLoading, loading, setLoading]);
+
+  useEffect(() => {
+    if (finalQuotes?.length) {
+      setSuccess?.(true);
+    } else {
+      setSuccess?.(false);
+    }
+  }, [finalQuotes, setSuccess]);
 
   return {
     networkFee,

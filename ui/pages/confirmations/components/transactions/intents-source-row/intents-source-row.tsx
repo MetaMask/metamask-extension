@@ -19,7 +19,13 @@ import {
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
 import Preloader from '../../../../../components/ui/icon/preloader';
-import { Box, Text } from '../../../../../components/component-library';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../../../components/component-library';
 import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
 import { getFromChains } from '../../../../../ducks/bridge/selectors';
 import { AssetPicker } from '../../../../../components/multichain/asset-picker-amount/asset-picker';
@@ -38,7 +44,7 @@ export function IntentsSourceRow() {
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances();
 
-  const { sourceToken, setSourceToken, loading } = useIntentsContext();
+  const { sourceToken, setSourceToken, loading, success } = useIntentsContext();
   const sourceAmounts = useIntentSourceAmounts();
 
   const sourceTokenChainId = sourceToken?.chainId;
@@ -119,6 +125,12 @@ export function IntentsSourceRow() {
           <div role="progressbar">
             <Preloader size={20} />
           </div>
+        )}
+        {!loading && success && (
+          <Icon name={IconName.CheckBold} size={IconSize.Sm} />
+        )}
+        {!loading && !success && (
+          <Icon name={IconName.Warning} size={IconSize.Sm} />
         )}
         <Text>{sourceAmountFiatFormatted}</Text>
         <Text>{sourceAmountTotal}</Text>

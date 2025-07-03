@@ -19,6 +19,8 @@ type IntentsContextData = {
   setLoading?: (loading: boolean) => void;
   sourceToken?: IntentsToken;
   setSourceToken?: (token: IntentsToken) => void;
+  success?: boolean;
+  setSuccess?: (success: boolean) => void;
 };
 
 export const IntentsContext = createContext<IntentsContextData | undefined>(
@@ -31,6 +33,7 @@ export const IntentsContextProvider: React.FC<{
   const defaultSourceToken = useBestIntentsSource();
   const [sourceToken, setSourceToken] = useState<IntentsToken>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [success, setSuccess] = useState<boolean>(false);
 
   useEffect(() => {
     if (!sourceToken && defaultSourceToken) {
@@ -44,8 +47,10 @@ export const IntentsContextProvider: React.FC<{
       setLoading,
       sourceToken,
       setSourceToken,
+      success,
+      setSuccess,
     }),
-    [sourceToken, setSourceToken, loading, setLoading],
+    [sourceToken, setSourceToken, loading, setLoading, success, setSuccess],
   );
 
   return (

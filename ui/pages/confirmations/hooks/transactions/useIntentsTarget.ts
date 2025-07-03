@@ -1,13 +1,17 @@
 import { toHex } from '@metamask/controller-utils';
-import { useConfirmContext } from '../../context/confirm';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Interface } from '@ethersproject/abi';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
-import { Hex } from '@metamask/utils';
-import { NATIVE_TOKEN_ADDRESS } from '../../../../helpers/constants/intents';
+import { Hex, add0x } from '@metamask/utils';
 import { useMemo } from 'react';
-
-const USDC_ARBITRUM = '0xaf88d065e77c8cc2239327c5edb3a432268e5831' as const;
+import { AssetType } from '@metamask/bridge-controller';
+import { useSelector } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../helpers/constants/intents';
+import { useConfirmContext } from '../../context/confirm';
+import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import { selectTransactionFeeById } from '../../../../selectors';
+import { useTokenFiatRates } from './useTokenFiatRate';
 
 export type IntentsTarget = {
   targetTokenAddress: Hex;
@@ -18,10 +22,55 @@ export function useIntentsTargets() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { txParams } = transactionMeta;
-  const { data } = txParams;
+  const { assetsWithBalance } = useMultichainBalances();
 
-  let targetAmount: Hex = '0x0';
+  const { chainId, id: transactionId, txParams } = transactionMeta;
+  const { data, to, value } = txParams;
+
+  const targets: IntentsTarget[] = [];
+
+  const nativeBalance = assetsWithBalance.find(
+    (asset) => asset.type === AssetType.native && asset.chainId === chainId,
+  );
+
+  const { hexMaximumTransactionFee } = useSelector((state) =>
+    selectTransactionFeeById(state, transactionId),
+  );
+
+  const nativeBalanceRequired = new BigNumber(hexMaximumTransactionFee, 16)
+    .mul(1.5)
+    .shift(-18);
+
+  const nativeFiatRate = useTokenFiatRates(
+    [NATIVE_TOKEN_ADDRESS],
+    chainId,
+  )?.[0];
+
+  const nativeBalanceRequiredFiat = nativeBalanceRequired.mul(
+    nativeFiatRate ?? 1,
+  );
+
+  const nativeBalanceOneDollar = new BigNumber(1).div(nativeFiatRate ?? 1);
+
+  if (
+    new BigNumber(nativeBalance?.balance ?? '0').lessThan(nativeBalanceRequired)
+  ) {
+    targets.push({
+      targetTokenAddress: NATIVE_TOKEN_ADDRESS,
+      targetAmount: add0x(
+        new BigNumber(nativeBalanceRequiredFiat).lessThan(1)
+          ? nativeBalanceOneDollar.shift(18).toString(16)
+          : nativeBalanceRequired.shift(18).toString(16),
+      ),
+    });
+  }
+
+  if (value && value !== '0x0') {
+    targets.push({
+      targetTokenAddress: NATIVE_TOKEN_ADDRESS,
+      targetAmount: value as Hex,
+    });
+  }
 
   try {
     const result = new Interface(abiERC20).decodeFunctionData(
@@ -29,20 +78,15 @@ export function useIntentsTargets() {
       data ?? '0x',
     );
 
-    targetAmount = toHex(result['_value']);
-  } catch {}
+    const targetAmount = toHex(result._value);
 
-  return useMemo(
-    () => [
-      {
-        targetTokenAddress: NATIVE_TOKEN_ADDRESS,
-        targetAmount: toHex('400000000000000'),
-      },
-      {
-        targetTokenAddress: USDC_ARBITRUM,
-        targetAmount,
-      },
-    ],
-    [targetAmount],
-  );
+    targets.push({
+      targetTokenAddress: to as Hex,
+      targetAmount,
+    });
+  } catch {
+    // Intentionally empty
+  }
+
+  return useMemo(() => targets, [JSON.stringify(targets)]);
 }

@@ -1,17 +1,17 @@
 import { shallowEqual, useSelector } from 'react-redux';
+import { Hex, Json } from '@metamask/utils';
+import BigNumber from 'bignumber.js';
+import { useMemo } from 'react';
 import {
   getConfirmationExchangeRates,
   getCurrencyRates,
   getMarketData,
   getTokenExchangeRates,
 } from '../../../../selectors';
-import { Hex, Json } from '@metamask/utils';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import BigNumber from 'bignumber.js';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../helpers/constants/intents';
-import { useMemo } from 'react';
 
 export function useTokenFiatRates(tokenAddresses?: Hex[], chainId?: Hex) {
   const allMarketData = useSelector(getMarketData);

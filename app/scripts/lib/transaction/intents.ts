@@ -1,11 +1,13 @@
 import {
   BridgeController,
+  GenericQuoteRequest,
   QuoteResponse,
   SortOrder,
   selectBridgeQuotes,
 } from '@metamask/bridge-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
 import { MetaMaskReduxState } from '../../metamask-controller';
+import { cloneDeep } from 'lodash';
 
 const log = createProjectLogger('intents-utils');
 
@@ -34,22 +36,18 @@ export async function getBridgeQuotes(
   log('Fetching bridge quotes', requests);
 
   try {
-    let quotes = [];
+    const normalizedRequests: GenericQuoteRequest[] = requests.map(
+      (request) => {
+        const {
+          from,
+          sourceChainId,
+          sourceTokenAddress,
+          sourceTokenAmount,
+          targetChainId,
+          targetTokenAddress,
+        } = request;
 
-    for (const request of requests) {
-      const {
-        from,
-        sourceChainId,
-        sourceTokenAddress,
-        sourceTokenAmount,
-        targetChainId,
-        targetTokenAddress,
-      } = request;
-
-      bridgeController.resetState();
-
-      await bridgeController.updateBridgeQuoteRequestParams(
-        {
+        return {
           walletAddress: from,
           srcChainId: sourceChainId,
           srcTokenAddress: sourceTokenAddress,
@@ -59,66 +57,31 @@ export async function getBridgeQuotes(
           insufficientBal: true,
           destWalletAddress: from,
           slippage: 0.5,
-        },
-        {
-          stx_enabled: false,
-          token_symbol_source: '',
-          token_symbol_destination: '',
-          security_warnings: [],
-        },
+        };
+      },
+    );
+
+    const results = await bridgeController.fetchQuotes(normalizedRequests);
+
+    log('Fetched bridge quotes', results);
+
+    return results.map((quotes) => {
+      if (!quotes?.length) {
+        return undefined;
+      }
+
+      const state = cloneDeep(getState());
+      state.quotes = quotes;
+
+      return (
+        selectBridgeQuotes(state as never, {
+          sortOrder: SortOrder.COST_ASC,
+          selectedQuote: null,
+        }).activeQuote ?? undefined
       );
-
-      log('Waiting for quote', request);
-
-      const activeQuote = await waitForQuoteOrTimeout(
-        getState,
-        targetTokenAddress,
-      );
-
-      quotes.push(activeQuote);
-    }
-
-    bridgeController.resetState();
-
-    log('Quotes', quotes);
-
-    return quotes;
+    });
   } catch (error) {
     log('Error fetching bridge quotes:', error);
     return [];
   }
-}
-
-function waitForQuoteOrTimeout(
-  getState: () => MetaMaskReduxState['metamask'],
-  targetTokenAddress: Hex,
-): Promise<QuoteResponse | undefined> {
-  let pollCount = 0;
-
-  return new Promise((resolve) => {
-    const interval = setInterval(() => {
-      const activeQuote = selectBridgeQuotes(getState() as never, {
-        sortOrder: SortOrder.COST_ASC,
-        selectedQuote: null,
-      }).activeQuote;
-
-      const isMatch =
-        activeQuote?.quote.destAsset.address.toLowerCase() ===
-        targetTokenAddress.toLowerCase();
-
-      if (activeQuote && isMatch) {
-        log('Found active quote', activeQuote);
-        clearInterval(interval);
-        resolve(activeQuote);
-      }
-
-      if (pollCount >= MAX_POLL_COUNT) {
-        log('Polling timed out, no quote found');
-        clearInterval(interval);
-        resolve(undefined);
-      }
-
-      pollCount += 1;
-    }, POLL_INTERVAL);
-  });
 }
