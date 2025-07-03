@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
@@ -8,7 +9,6 @@ import {
   selectBridgeHistoryForAccount,
   selectBridgeHistoryForApprovalTxId,
 } from '../../../ducks/bridge-status/selectors';
-import { BigNumber } from 'bignumber.js';
 
 /**
  * A Bridge transaction group's primaryTransaction contains details of the swap,
