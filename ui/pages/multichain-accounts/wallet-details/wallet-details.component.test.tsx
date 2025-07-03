@@ -188,23 +188,23 @@ jest.mock(
       account: InternalAccount;
       onClick: (account: InternalAccount) => void;
       className: string;
-    }) =>
-      (
-        <div
-          data-testid="mock-account-item"
-          onClick={() => onClick(account)}
-          className={className}
-        >
-          {account.metadata.name}
-        </div>
-      ),
+    }) => (
+      <div
+        data-testid="mock-account-item"
+        onClick={() => onClick(account)}
+        className={className}
+      >
+        {account.metadata.name}
+      </div>
+    ),
 );
 
 jest.mock(
   '../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component',
   () =>
-    ({ value }: { value: string }) =>
-      <div data-testid="mock-currency-display">{value}</div>,
+    ({ value }: { value: string }) => (
+      <div data-testid="mock-currency-display">{value}</div>
+    ),
 );
 
 jest.mock(
