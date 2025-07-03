@@ -63,6 +63,8 @@ export const resetBridgeState = () => {
 };
 
 export const trackUnifiedSwapBridgeEvent = <
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   T extends
     (typeof UnifiedSwapBridgeEventName)[keyof typeof UnifiedSwapBridgeEventName],
 >(
