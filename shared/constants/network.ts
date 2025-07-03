@@ -195,7 +195,6 @@ export const CHAIN_IDS = {
   EDUCHAIN: '0xa3c3',
   ABSTRACT: '0xab5',
   OMNI: '0xa6',
-  XRPLEVM: '0x15f900',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -348,7 +347,6 @@ export const APECHAIN_DISPLAY_NAME = 'ApeChain';
 export const APECHAIN_TESTNET_DISPLAY_NAME = 'ApeChain Testnet';
 export const ABSTRACT_DISPLAY_NAME = 'Abstract';
 export const OMNI_DISPLAY_NAME = 'Omni';
-export const XRPLEVM_DISPLAY_NAME = 'XRPL EVM';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -593,7 +591,6 @@ export const SHAPE_IMAGE_URL = './images/shape.svg';
 export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
 export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.png';
 export const SOLANA_IMAGE_URL = './images/solana-logo.svg';
-export const XRPLEVM_IMAGE_URL = './images/xrplevm.svg';
 export const BITCOIN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const BITCOIN_TESTNET_IMAGE_URL = './images/bitcoin-testnet-logo.svg';
 export const BITCOIN_SIGNET_IMAGE_URL = './images/bitcoin-signet-logo.png';
@@ -1075,7 +1072,6 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_IMAGE_URL,
   [CHAIN_IDS.ABSTRACT]: ABSTRACT_IMAGE_URL,
   [CHAIN_IDS.OMNI]: OMNI_IMAGE_URL,
-  [CHAIN_IDS.XRPLEVM]: XRPLEVM_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1129,8 +1125,6 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.SHAPE_SEPOLIA]: TEST_ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: ETH_TOKEN_IMAGE_URL,
-  [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM]: XRP_TOKEN_IMAGE_URL,
-  [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]: XRP_TOKEN_IMAGE_URL,
   [CHAIN_IDS.LENS]: LENS_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.PLUME]: PLUME_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MATCHAIN]: BNB_TOKEN_IMAGE_URL,
