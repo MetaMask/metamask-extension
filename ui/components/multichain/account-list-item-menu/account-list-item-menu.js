@@ -11,6 +11,7 @@ import {
   getAccountTypeForKeyring,
   getPinnedAccountsList,
   getHiddenAccountsList,
+  getIsMultichainAccountsState1Enabled,
 } from '../../../selectors';
 
 import { MenuItem } from '../../ui/menu';
@@ -56,6 +57,10 @@ export const AccountListItemMenu = ({
   const chainId = useSelector(getCurrentChainId);
 
   const deviceName = useSelector(getHardwareWalletType);
+
+  const isMultichainAccountsState1Enabled = useSelector(
+    getIsMultichainAccountsState1Enabled,
+  );
 
   const { keyring } = account.metadata;
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
@@ -208,7 +213,7 @@ export const AccountListItemMenu = ({
               {isHidden ? t('showAccount') : t('hideAccount')}
             </Text>
           </MenuItem>
-          {isRemovable ? (
+          {isRemovable && !isMultichainAccountsState1Enabled ? (
             <MenuItem
               ref={removeAccountItemRef}
               data-testid="account-list-menu-remove"
