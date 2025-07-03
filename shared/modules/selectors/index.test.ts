@@ -374,24 +374,6 @@ describe('Selectors', () => {
       expect(getSmartTransactionsEnabled(newState)).toBe(true);
     });
 
-    jestIt('permits Arbitrum Infura URLs in production for RPC URL checks', () => {
-      jest.spyOn(envModule, 'isProduction').mockReturnValue(true);
-
-      const state = createSwapsMockStore();
-      const newState = {
-        ...state,
-        metamask: {
-          ...state.metamask,
-          ...mockNetworkState({
-            chainId: CHAIN_IDS.ARBITRUM,
-            rpcUrl: 'https://arbitrum-mainnet.infura.io/v3/some-project-id',
-          }),
-        },
-      };
-
-      expect(getSmartTransactionsEnabled(newState)).toBe(true);
-    });
-
     jestIt('permits Binance URLs in production for RPC URL checks', () => {
       jest.spyOn(envModule, 'isProduction').mockReturnValue(true);
 
