@@ -140,7 +140,7 @@ export default class UnlockPage extends Component {
   handleLoginError = async (error) => {
     const { t } = this.context;
     this.failed_attempts += 1;
-    const { message, data } = error;
+    const { message, data } = error.data.cause;
     let finalErrorMessage = message;
     let finalUnlockDelayPeriod = 0;
     let errorReason;

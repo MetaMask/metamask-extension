@@ -91,7 +91,7 @@ export const ImportSrp = () => {
   async function importWallet() {
     if (isSocialLoginEnabled) {
       const isPasswordOutdated = await dispatch(
-        actions.checkIsSeedlessPasswordOutdated(),
+        actions.checkIsSeedlessPasswordOutdated(true),
       );
       if (isPasswordOutdated) {
         return;
