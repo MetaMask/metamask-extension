@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import { BigNumber } from 'bignumber.js';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
@@ -53,9 +52,9 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
     sourceTokenSymbol:
       bridgeHistoryItem?.quote.srcAsset.symbol ??
       primaryTransaction.sourceTokenSymbol,
-    sourceTokenAmountSent: bridgeHistoryItem?.pricingData?.amountSent
-      ? new BigNumber(bridgeHistoryItem.pricingData.amountSent)
-      : primaryTransaction.sourceTokenAmount,
+    sourceTokenAmountSent:
+      bridgeHistoryItem?.pricingData?.amountSent ??
+      primaryTransaction.sourceTokenAmount,
     destinationTokenSymbol:
       bridgeHistoryItem?.quote.destAsset.symbol ??
       primaryTransaction.destinationTokenSymbol,
