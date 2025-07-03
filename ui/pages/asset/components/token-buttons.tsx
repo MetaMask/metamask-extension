@@ -363,6 +363,7 @@ const TokenButtons = ({
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
+        data-testid="eth-overview-swap"
         disabled={!isSwapsChain}
         round={!displayNewIconButtons}
       />
