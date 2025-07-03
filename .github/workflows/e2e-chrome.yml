@@ -64,17 +64,11 @@ jobs:
 
   test-e2e-chrome-rpc:
     uses: ./.github/workflows/run-e2e.yml
-    strategy:
-      fail-fast: ${{ github.event_name == 'merge_group' }}
-      matrix:
-        index: [0, 1]
     with:
       test-suite-name: test-e2e-chrome-rpc
       build-artifact: build-test-browserify
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:rpc
-      matrix-index: ${{ matrix.index }}
-      matrix-total: ${{ strategy.job-total }}
     secrets:
       DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
       DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
