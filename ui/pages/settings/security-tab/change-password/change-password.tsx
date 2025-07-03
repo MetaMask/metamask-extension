@@ -226,7 +226,7 @@ const ChangePassword = () => {
               marginTop={6}
             >
               <Checkbox
-                inputProps={{ 'data-testid': 'create-password-terms' }}
+                inputProps={{ 'data-testid': 'change-password-terms' }}
                 alignItems={AlignItems.flexStart}
                 isChecked={termsChecked}
                 onChange={() => {
