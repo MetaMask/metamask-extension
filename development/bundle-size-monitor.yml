@@ -1,0 +1,268 @@
+name: Bundle Size Monitor
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+jobs:
+  bundle-size-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Need full history for comparison
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'yarn'
+
+    - name: Enable Corepack
+      run: corepack enable
+
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+
+    - name: Build for analysis
+      run: |
+        yarn build:dev testDev \
+          --apply-lavamoat=false \
+          --browser=chrome \
+          --devtool=source-map \
+          --stats
+
+    - name: Generate bundle analysis
+      run: |
+        chmod +x development/analyze-bundle.sh
+        ./development/analyze-bundle.sh
+
+    - name: Calculate bundle sizes
+      id: bundle-sizes
+      run: |
+        # Calculate current bundle sizes
+        if [ -d "dist/chrome" ]; then
+          TOTAL_JS_SIZE=$(find dist/chrome -name "*.js" -exec cat {} \; | wc -c)
+          TOTAL_CSS_SIZE=$(find dist/chrome -name "*.css" -exec cat {} \; 2>/dev/null | wc -c || echo 0)
+          FILE_COUNT=$(find dist/chrome -name "*.js" | wc -l)
+
+          echo "total_js_size=$TOTAL_JS_SIZE" >> $GITHUB_OUTPUT
+          echo "total_css_size=$TOTAL_CSS_SIZE" >> $GITHUB_OUTPUT
+          echo "file_count=$FILE_COUNT" >> $GITHUB_OUTPUT
+
+          # Format sizes for display
+          JS_SIZE_MB=$(echo "scale=2; $TOTAL_JS_SIZE / 1024 / 1024" | bc)
+          CSS_SIZE_KB=$(echo "scale=1; $TOTAL_CSS_SIZE / 1024" | bc)
+
+          echo "js_size_mb=$JS_SIZE_MB" >> $GITHUB_OUTPUT
+          echo "css_size_kb=$CSS_SIZE_KB" >> $GITHUB_OUTPUT
+        else
+          echo "total_js_size=0" >> $GITHUB_OUTPUT
+          echo "total_css_size=0" >> $GITHUB_OUTPUT
+          echo "file_count=0" >> $GITHUB_OUTPUT
+          echo "js_size_mb=0" >> $GITHUB_OUTPUT
+          echo "css_size_kb=0" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Get baseline bundle size
+      id: baseline
+      run: |
+        # Try to get baseline from main branch
+        if git show main:build-artifacts/bundle-analysis/size-baseline.json 2>/dev/null; then
+          BASELINE_SIZE=$(git show main:build-artifacts/bundle-analysis/size-baseline.json | jq -r '.total_js_size // 0')
+          echo "baseline_size=$BASELINE_SIZE" >> $GITHUB_OUTPUT
+        else
+          # Fallback: use a reasonable default for MetaMask extension
+          echo "baseline_size=3145728" >> $GITHUB_OUTPUT  # 3MB default
+        fi
+
+    - name: Check bundle size limits
+      id: size-check
+      run: |
+        CURRENT_SIZE=${{ steps.bundle-sizes.outputs.total_js_size }}
+        BASELINE_SIZE=${{ steps.baseline.outputs.baseline_size }}
+
+        # Set bundle size limits
+        MAX_SIZE=4194304        # 4MB hard limit
+        WARNING_SIZE=3145728    # 3MB warning limit
+        REGRESSION_THRESHOLD=0.05  # 5% increase threshold
+
+        # Calculate percentage change
+        if [ "$BASELINE_SIZE" -gt 0 ]; then
+          PERCENTAGE_CHANGE=$(echo "scale=2; ($CURRENT_SIZE - $BASELINE_SIZE) / $BASELINE_SIZE" | bc)
+        else
+          PERCENTAGE_CHANGE=0
+        fi
+
+        echo "percentage_change=$PERCENTAGE_CHANGE" >> $GITHUB_OUTPUT
+
+        # Check against limits
+        STATUS="✅ PASS"
+        if [ "$CURRENT_SIZE" -gt "$MAX_SIZE" ]; then
+          STATUS="❌ FAIL - Bundle size exceeds 4MB limit"
+          echo "status=fail" >> $GITHUB_OUTPUT
+        elif [ "$CURRENT_SIZE" -gt "$WARNING_SIZE" ]; then
+          STATUS="⚠️ WARNING - Bundle size exceeds 3MB"
+          echo "status=warning" >> $GITHUB_OUTPUT
+        elif [ "$(echo "$PERCENTAGE_CHANGE > $REGRESSION_THRESHOLD" | bc)" -eq 1 ]; then
+          STATUS="⚠️ WARNING - Bundle size increased by $(echo "$PERCENTAGE_CHANGE * 100" | bc)%"
+          echo "status=warning" >> $GITHUB_OUTPUT
+        else
+          echo "status=pass" >> $GITHUB_OUTPUT
+        fi
+
+        echo "status_message=$STATUS" >> $GITHUB_OUTPUT
+
+    - name: Upload bundle analysis artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: bundle-analysis-${{ github.sha }}
+        path: |
+          build-artifacts/bundle-analysis/
+          build-artifacts/source-map-explorer/
+        retention-days: 30
+
+    - name: Comment on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+
+          // Read analysis results
+          const currentSize = parseInt('${{ steps.bundle-sizes.outputs.total_js_size }}');
+          const baselineSize = parseInt('${{ steps.baseline.outputs.baseline_size }}');
+          const percentageChange = parseFloat('${{ steps.size-check.outputs.percentage_change }}');
+          const status = '${{ steps.size-check.outputs.status }}';
+          const statusMessage = '${{ steps.size-check.outputs.status_message }}';
+
+          // Format sizes
+          const formatSize = (bytes) => {
+            if (bytes >= 1024 * 1024) {
+              return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+            } else if (bytes >= 1024) {
+              return `${(bytes / 1024).toFixed(1)} KB`;
+            }
+            return `${bytes} B`;
+          };
+
+          const changeIndicator = percentageChange > 0 ? '📈' : percentageChange < 0 ? '📉' : '➡️';
+          const changeText = percentageChange !== 0 ? ` (${changeIndicator} ${(percentageChange * 100).toFixed(1)}%)` : '';
+
+          let comment = `
+          ## 📦 Bundle Size Analysis
+
+          ${statusMessage}
+
+          | Metric | Current | Baseline | Change |
+          |--------|---------|----------|--------|
+          | **Total JS Size** | ${formatSize(currentSize)} | ${formatSize(baselineSize)} | ${changeText} |
+          | **File Count** | ${{ steps.bundle-sizes.outputs.file_count }} | - | - |
+          | **CSS Size** | ${{ steps.bundle-sizes.outputs.css_size_kb }} KB | - | - |
+
+          ### Analysis Reports
+          - 📊 [Bundle Analysis Report](../actions/runs/${{ github.run_id }})
+          - 🗺️ Source Map Explorer (see artifacts)
+          - 📈 Size Tracking Data (see artifacts)
+          `;
+
+          if (status === 'fail') {
+            comment += `
+          ### ❌ Bundle Size Check Failed
+          The bundle size exceeds the maximum allowed size. Please optimize your code:
+
+          1. Run \`./development/analyze-bundle.sh\` to analyze the bundle
+          2. Consider using \`node development/optimize-lodash.js --dry-run\` for quick wins
+          3. Review the optimization recommendations in the artifacts
+          `;
+          } else if (status === 'warning') {
+            comment += `
+          ### ⚠️ Bundle Size Warning
+          The bundle size is approaching limits or has increased significantly.
+
+          **Optimization Suggestions:**
+          - Run bundle analysis: \`./development/analyze-bundle.sh\`
+          - Optimize Lodash imports: \`node development/optimize-lodash.js --dry-run\`
+          - Consider code splitting for large components
+          `;
+          } else {
+            comment += `
+          ### ✅ Bundle Size Check Passed
+          Great! The bundle size is within acceptable limits.
+          `;
+          }
+
+          comment += `
+
+          <details>
+          <summary>📋 How to optimize bundle size</summary>
+
+          1. **Quick wins (1-2 weeks):**
+             - Optimize Lodash imports: \`node development/optimize-lodash.js\`
+             - Replace Material-UI with lighter alternatives
+             - Use selective Chart.js imports
+
+          2. **Medium impact (3-6 weeks):**
+             - Upgrade to React 18
+             - Implement code splitting
+             - Add lazy loading for heavy components
+
+          3. **Monitor regularly:**
+             - Run \`./development/analyze-bundle.sh\` weekly
+             - Set up bundle size budgets
+             - Track optimization progress
+          </details>
+          `;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+
+    - name: Fail if bundle size exceeds limits
+      if: steps.size-check.outputs.status == 'fail'
+      run: |
+        echo "Bundle size check failed!"
+        echo "Current size: ${{ steps.bundle-sizes.outputs.js_size_mb }} MB"
+        echo "Maximum allowed: 4 MB"
+        echo ""
+        echo "Please optimize your code before merging."
+        exit 1
+
+  # Job to update baseline on main branch
+  update-baseline:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    needs: bundle-size-analysis
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Download bundle analysis
+      uses: actions/download-artifact@v4
+      with:
+        name: bundle-analysis-${{ github.sha }}
+        path: build-artifacts/
+
+    - name: Commit updated baseline
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
+        if [ -f "build-artifacts/bundle-analysis/size-baseline.json" ]; then
+          mkdir -p build-artifacts/bundle-analysis/
+          cp build-artifacts/bundle-analysis/size-baseline.json build-artifacts/bundle-analysis/
+
+          git add build-artifacts/bundle-analysis/size-baseline.json
+          git commit -m "chore: update bundle size baseline [skip ci]" || echo "No changes to commit"
+          git push
+        fi
