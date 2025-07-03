@@ -36,7 +36,20 @@ const surveyData = {
   },
 };
 
-const createStore = (options = { metametricsEnabled: true }) =>
+const validSrpSessionData = {
+  ENTROPY_SOURCE_ID: {
+    token: {
+      accessToken: 'mock-access-token',
+    },
+  },
+};
+
+const createStore = (
+  options: {
+    metametricsEnabled?: boolean;
+    srpSessionData?: typeof validSrpSessionData;
+  } = { metametricsEnabled: true, srpSessionData: validSrpSessionData },
+) =>
   mockStore({
     user: { basicFunctionality: true },
     metamask: {
@@ -48,10 +61,16 @@ const createStore = (options = { metametricsEnabled: true }) =>
         selectedAccount: '0x123',
         accounts: { '0x123': { address: '0x123' } },
       },
+      srpSessionData: options.srpSessionData,
     },
   });
 
-const renderComponent = (options = { metametricsEnabled: true }) =>
+const renderComponent = (
+  options: {
+    metametricsEnabled?: boolean;
+    srpSessionData?: typeof validSrpSessionData;
+  } = { metametricsEnabled: true, srpSessionData: validSrpSessionData },
+) =>
   renderWithProvider(
     <MetaMetricsContext.Provider value={mockTrackEvent}>
       <SurveyToast />
@@ -149,6 +168,48 @@ describe('SurveyToast', () => {
 
     await waitFor(() => {
       expect(screen.queryByTestId('survey-toast')).toBeNull();
+    });
+  });
+
+  it('should fetch survey data with the correct headers', async () => {
+    mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
+
+    await act(async () => {
+      renderComponent();
+    });
+
+    expect(mockFetchWithCache).toHaveBeenCalledWith({
+      cacheOptions: expect.any(Object),
+      fetchOptions: {
+        headers: {
+          Authorization: `Bearer ${validSrpSessionData.ENTROPY_SOURCE_ID.token.accessToken}`,
+          'x-metamask-clientproduct': 'metamask-extension',
+        },
+        method: 'GET',
+        signal: expect.any(AbortSignal),
+      },
+      functionName: 'fetchSurveys',
+      url: 'https://accounts.api.cx.metamask.io/v1/users/0x123/surveys',
+    });
+
+    await act(async () => {
+      renderComponent({
+        metametricsEnabled: true,
+        srpSessionData: undefined,
+      });
+    });
+
+    expect(mockFetchWithCache).toHaveBeenCalledWith({
+      cacheOptions: expect.any(Object),
+      fetchOptions: {
+        headers: {
+          'x-metamask-clientproduct': 'metamask-extension',
+        },
+        method: 'GET',
+        signal: expect.any(AbortSignal),
+      },
+      functionName: 'fetchSurveys',
+      url: 'https://accounts.api.cx.metamask.io/v1/users/0x123/surveys',
     });
   });
 });
