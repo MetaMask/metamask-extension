@@ -37,6 +37,13 @@ module.exports = function (api) {
                 removeImport: true,
               },
             ],
+            // Strip out all console.* calls in production to reduce bundle size
+            [
+              'transform-remove-console',
+              {
+                exclude: ['error', 'warn'],
+              },
+            ],
           ]
         : []),
 
