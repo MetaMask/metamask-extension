@@ -29,7 +29,7 @@ import { getSeedPhrase } from '../../../store/actions';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
-  SECURITY_ROUTE,
+  REVEAL_SRP_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
 
 export default function RevealRecoveryPhrase({
@@ -75,7 +75,7 @@ export default function RevealRecoveryPhrase({
 
   const returnToPreviousPage = useCallback(() => {
     if (isFromSettingsSecurity) {
-      history.replace(SECURITY_ROUTE);
+      history.replace(REVEAL_SRP_LIST_ROUTE);
     } else {
       history.replace(DEFAULT_ROUTE);
     }
