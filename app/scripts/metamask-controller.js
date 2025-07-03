@@ -73,6 +73,7 @@ import { PermissionLogController } from '@metamask/permission-log-controller';
 
 import { MultichainRouter } from '@metamask/snaps-controllers';
 import {
+  createPreinstalledSnapsMiddleware,
   createSnapsMethodMiddleware,
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
@@ -174,7 +175,10 @@ import {
 } from '@metamask/bridge-status-controller';
 
 import { ErrorReportingService } from '@metamask/error-reporting-service';
-import { RecoveryError } from '@metamask/seedless-onboarding-controller';
+import {
+  RecoveryError,
+  SeedlessOnboardingControllerErrorMessage,
+} from '@metamask/seedless-onboarding-controller';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -261,6 +265,7 @@ import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-s
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
+import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -525,6 +530,9 @@ export default class MetamaskController extends EventEmitter {
 
     // lock to ensure only one vault created at once
     this.createVaultMutex = new Mutex();
+
+    // lock to ensure only one seedless password sync is running at once
+    this.syncSeedlessGlobalPasswordMutex = new Mutex();
 
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
@@ -3524,6 +3532,9 @@ export default class MetamaskController extends EventEmitter {
       getAccountsBySnapId: (snapId) =>
         getAccountsBySnapId(this.getSnapKeyring.bind(this), snapId),
       ///: END:ONLY_INCLUDE_IF
+      checkIsSeedlessPasswordOutdated:
+        this.checkIsSeedlessPasswordOutdated.bind(this),
+      syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -4717,6 +4728,99 @@ export default class MetamaskController extends EventEmitter {
 
       throw error;
     }
+  }
+
+  /**
+   * Sync latest global seedless password and override the current device password with latest global password.
+   * Unlock the vault with the latest global password.
+   *
+   * @param {string} password - latest global seedless password
+   */
+  async syncPasswordAndUnlockWallet(password) {
+    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+    // check if the password is outdated
+    const isPasswordOutdated = isSocialLoginFlow
+      ? await this.seedlessOnboardingController.checkIsPasswordOutdated({
+          skipCache: true,
+        })
+      : false;
+
+    // if the flow is not social login or the password is not outdated,
+    // we will proceed with the normal flow and use the password to unlock the vault
+    if (!isSocialLoginFlow || !isPasswordOutdated) {
+      await this.submitPassword(password);
+      return;
+    }
+
+    const releaseLock = await this.syncSeedlessGlobalPasswordMutex.acquire();
+    try {
+      // verify the password validity first, to check if user is using the correct password
+      await this.keyringController.verifyPassword(password);
+      // if user is able to unlock the vault with the old password,
+      // throw an OutdatedPassword error to let the user to enter the updated password.
+      throw new Error(
+        SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
+      );
+    } catch (e) {
+      if (
+        e.message === SeedlessOnboardingControllerErrorMessage.OutdatedPassword
+      ) {
+        // if the password is outdated, we should throw an error and let the user to enter the updated password.
+        throw e;
+      }
+
+      // recover the current device password
+      const { password: currentDevicePassword } =
+        await this.seedlessOnboardingController.recoverCurrentDevicePassword({
+          globalPassword: password,
+        });
+
+      // use current device password to unlock the keyringController vault
+      await this.submitPassword(currentDevicePassword);
+
+      try {
+        // update seedlessOnboardingController to use latest global password
+        await this.seedlessOnboardingController.syncLatestGlobalPassword({
+          oldPassword: currentDevicePassword,
+          globalPassword: password,
+        });
+
+        // update vault password to global password
+        await this.keyringController.changePassword(password);
+
+        // check password outdated again skip cache to reset the cache after successful syncing
+        await this.seedlessOnboardingController.checkIsPasswordOutdated({
+          skipCache: true,
+        });
+      } catch (err) {
+        // lock app again on error after submitPassword succeeded
+        await this.setLocked();
+        throw err;
+      }
+    } finally {
+      releaseLock();
+    }
+  }
+
+  /**
+   * Checks if the seedless password is outdated.
+   *
+   * @param {boolean} skipCache - whether to skip the cache
+   * @returns {Promise<boolean | undefined>} true if the password is outdated, false otherwise, undefined if the flow is not seedless
+   */
+  async checkIsSeedlessPasswordOutdated(skipCache = false) {
+    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+
+    if (!isSocialLoginFlow) {
+      // this is only available for seedless onboarding flow
+      return undefined;
+    }
+
+    const isPasswordOutdated =
+      await this.seedlessOnboardingController.checkIsPasswordOutdated({
+        skipCache,
+      });
+    return isPasswordOutdated;
   }
 
   /**
@@ -7093,6 +7197,26 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createUnsupportedMethodMiddleware());
 
+    if (subjectType === SubjectType.Snap && isSnapPreinstalled(origin)) {
+      engine.push(
+        createPreinstalledSnapsMiddleware({
+          getPermissions: this.permissionController.getPermissions.bind(
+            this.permissionController,
+            origin,
+          ),
+          getAllEvmAccounts: () =>
+            this.controllerMessenger
+              .call('AccountsController:listAccounts')
+              .map((account) => account.address),
+          grantPermissions: (approvedPermissions) =>
+            this.controllerMessenger.call(
+              'PermissionController:grantPermissions',
+              { approvedPermissions, subject: { origin } },
+            ),
+        }),
+      );
+    }
+
     // Legacy RPC method that needs to be implemented _ahead of_ the permission
     // middleware.
     engine.push(
@@ -7275,6 +7399,9 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:get',
         ),
+        trackError: (error) => {
+          return captureException(error);
+        },
         trackEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
@@ -7365,6 +7492,8 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'NetworkController:getNetworkClientById',
         ),
+        startTrace: trace,
+        endTrace,
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         handleSnapRpcRequest: (args) =>
           this.handleSnapRequest({ ...args, origin }),
