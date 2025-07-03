@@ -20,6 +20,7 @@ import {
   isNativeAddress,
   UnifiedSwapBridgeEventName,
   BRIDGE_DEFAULT_SLIPPAGE,
+  GenericQuoteRequest,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -134,7 +135,7 @@ import {
   fetchAssetMetadata,
   toAssetId,
 } from '../../../../shared/lib/asset-utils';
-import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
@@ -177,7 +178,9 @@ const PrepareBridgePage = () => {
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
-  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const smartTransactionsEnabled = useSelector((state) =>
+    getIsSmartTransaction(state as never, fromChain?.chainId),
+  );
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
@@ -382,7 +385,7 @@ const PrepareBridgePage = () => {
     return isSolanaChainId(toChain.chainId);
   }, [toChain?.chainId]);
 
-  const quoteParams = useMemo(
+  const quoteParams: Partial<GenericQuoteRequest> = useMemo(
     () => ({
       srcTokenAddress: fromToken?.address,
       destTokenAddress: toToken?.address,
@@ -408,6 +411,7 @@ const PrepareBridgePage = () => {
       slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
+      gasIncluded: smartTransactionsEnabled && isSwap,
     }),
     [
       fromToken?.address,
@@ -420,6 +424,8 @@ const PrepareBridgePage = () => {
       selectedAccount?.address,
       selectedDestinationAccount?.address,
       providerConfig?.rpcUrl,
+      smartTransactionsEnabled,
+      isSwap,
     ],
   );
 
@@ -720,9 +726,14 @@ const PrepareBridgePage = () => {
             header: t('yourNetworks'),
           }}
           isMultiselectEnabled={isUnifiedUIEnabled || !isSwap}
-          onMaxButtonClick={(value: string) => {
-            dispatch(setFromTokenInputValue(value));
-          }}
+          onMaxButtonClick={
+            (isSwap && smartTransactionsEnabled) ||
+            !isNativeAddress(fromToken?.address ?? '')
+              ? (value: string) => {
+                  dispatch(setFromTokenInputValue(value));
+                }
+              : undefined
+          }
           // Hides fiat amount string before a token quantity is entered.
           amountInFiat={
             fromAmountInCurrency.valueInCurrency.gt(0)
