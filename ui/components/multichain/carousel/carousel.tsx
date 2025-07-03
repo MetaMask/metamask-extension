@@ -81,9 +81,6 @@ export const Carousel = React.forwardRef(
         if (a.priorityPlacement !== true && b.priorityPlacement === true) {
           return 1;
         }
-        if (a.priorityPlacement === b.priorityPlacement) {
-          return 0;
-        }
 
         if (!useExternalServices) {
           if (a.id === BASIC_FUNCTIONALITY_SLIDE.id) {
