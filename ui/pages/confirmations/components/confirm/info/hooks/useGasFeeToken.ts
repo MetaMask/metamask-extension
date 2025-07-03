@@ -128,7 +128,7 @@ function useFiatTokenValue(
     .shift(-decimals)
     .mul(new BigNumber(rateWei));
 
-  const nativeEth = nativeWei.shift(-18).toString();
+  const nativeEth = nativeWei.shift(-18);
 
   const fiatValue = useEthFiatAmount(nativeEth, {}, true);
 
