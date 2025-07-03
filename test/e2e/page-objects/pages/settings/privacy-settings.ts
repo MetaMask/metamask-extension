@@ -261,6 +261,8 @@ class PrivacySettings {
     await this.driver.clickElement(this.changePasswordButton);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_passwordChangeSuccessToastIsDisplayed(): Promise<void> {
     console.log(
       'Check password change success toast is displayed on privacy settings page',

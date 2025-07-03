@@ -56,6 +56,8 @@ export default class ChangePasswordPage {
     await this.driver.clickElement(this.saveButton);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_passwordChangedWarning(): Promise<void> {
     console.log('Check password changed warning');
     await this.driver.waitForSelector(this.passwordChangedWarning);
