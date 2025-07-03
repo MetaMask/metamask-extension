@@ -211,17 +211,25 @@ describe('Bridge tests', function (this: Suite) {
 
         const assetTypeCheck1 = [
           (req: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             properties: { asset_type: string; token_standard: string };
           }) => req.properties.asset_type === 'TOKEN',
           (req: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             properties: { asset_type: string; token_standard: string };
           }) => req.properties.token_standard === 'ERC20',
         ];
         const assetTypeCheck2 = [
           (req: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             properties: { asset_type: string; token_standard: string };
           }) => req.properties.asset_type === 'NATIVE',
           (req: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             properties: { asset_type: string; token_standard: string };
           }) => req.properties.token_standard === 'NONE',
         ];
