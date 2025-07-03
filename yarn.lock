@@ -1897,17 +1897,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/base64@npm:^1.0.11":
+"@endo/base64@npm:^1.0.11, @endo/base64@npm:^1.0.9":
   version: 1.0.11
   resolution: "@endo/base64@npm:1.0.11"
   checksum: 10/544e776befffa81ac81781a98d7ef8646f07d75096d1a88d616025b844a572875a0b0be6a381c5a2465ddd029fcdac64176b2b0c85d1c2e0cfe7122c84ca23fd
-  languageName: node
-  linkType: hard
-
-"@endo/base64@npm:^1.0.9":
-  version: 1.0.9
-  resolution: "@endo/base64@npm:1.0.9"
-  checksum: 10/6fe798db364dfb63fbc231d8c48409e6e7d850457633e73f0524873d74189cc532123ef496229f6f43644f341cfb857027ccf09668a33bf6227f851520a86324
   languageName: node
   linkType: hard
 
@@ -1956,30 +1949,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/env-options@npm:^1.1.10":
+"@endo/env-options@npm:^1.1.10, @endo/env-options@npm:^1.1.7, @endo/env-options@npm:^1.1.8":
   version: 1.1.10
   resolution: "@endo/env-options@npm:1.1.10"
   checksum: 10/a9facb3ac3b05ff7ccb699c6f2d3896b87e75d5c13a1ad82feb5309bd7a78d51f1155bf35eb02f48a6fdc2436ae6b52a87e6a7d6e6ac843f70233afaf280be40
   languageName: node
   linkType: hard
 
-"@endo/env-options@npm:^1.1.7, @endo/env-options@npm:^1.1.8, @endo/env-options@npm:^1.1.9":
-  version: 1.1.9
-  resolution: "@endo/env-options@npm:1.1.9"
-  checksum: 10/13a7525bc178d1a3d4b588893fe69cf369e0b741dc389e520a8f893635d6f1d0c63790c8a1e739b350b3f347bbd6758b1d382e3d72bb703dedac4a553b51b1ba
-  languageName: node
-  linkType: hard
-
-"@endo/errors@npm:^1.2.10, @endo/errors@npm:^1.2.9":
-  version: 1.2.10
-  resolution: "@endo/errors@npm:1.2.10"
-  dependencies:
-    ses: "npm:^1.12.0"
-  checksum: 10/9285f04c925589aa118cea969d264899179be2f30874639c6e62baa085bda1ca3d02a8e8a57af20026d949e3336893cfc4a53ceaef969f7bc5e7df909ae34ffa
-  languageName: node
-  linkType: hard
-
-"@endo/errors@npm:^1.2.12":
+"@endo/errors@npm:^1.2.10, @endo/errors@npm:^1.2.12, @endo/errors@npm:^1.2.9":
   version: 1.2.12
   resolution: "@endo/errors@npm:1.2.12"
   dependencies:
@@ -2020,13 +1997,6 @@ __metadata:
     "@endo/eventual-send": "npm:^1.3.1"
     "@endo/pass-style": "npm:^1.5.0"
   checksum: 10/fd0f5ebc446d67dd9dd6f5b04256b43589f5810cde28250ee226fcac0732cf0a22aa206d20c4821b08083bdc61d9e7853e616633db3093e48968f22c844e306f
-  languageName: node
-  linkType: hard
-
-"@endo/immutable-arraybuffer@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@endo/immutable-arraybuffer@npm:1.1.0"
-  checksum: 10/0a3d6d3c6aaadb6cc8214d15026c0bb9c8fb375f6d4d1f0c7e15e4b5e7ace3161fe9b169dd5f85202c1ffcbe7cf9c41d0c7bcedf2245b4f8e6bfa2e88f1551dd
   languageName: node
   linkType: hard
 
@@ -39300,23 +39270,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:^1.1.0, ses@npm:^1.12.0, ses@npm:^1.13.1":
+"ses@npm:^1.1.0, ses@npm:^1.12.0, ses@npm:^1.13.0, ses@npm:^1.13.1":
   version: 1.13.1
   resolution: "ses@npm:1.13.1"
   dependencies:
     "@endo/env-options": "npm:^1.1.10"
     "@endo/immutable-arraybuffer": "npm:^1.1.1"
   checksum: 10/7077a5349bebccddb7cdd07f6cca1d8c8af6b36106d34efdf362030c2a4a820f2c4acf3e7ffcc003403312d0833bbc3d4b21c490cd2f198b697cbe375761c159
-  languageName: node
-  linkType: hard
-
-"ses@npm:^1.13.0":
-  version: 1.13.0
-  resolution: "ses@npm:1.13.0"
-  dependencies:
-    "@endo/env-options": "npm:^1.1.9"
-    "@endo/immutable-arraybuffer": "npm:^1.1.0"
-  checksum: 10/c89bd01c206245373974c0c6f0f2436bb1149b7a0771d36707fc428de89e4fef7dcfaba49bc6b08e3497fab0307534e58b5b405f3a8a986b16dc498a6b8a0a04
   languageName: node
   linkType: hard
 
@@ -41808,21 +41768,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-api-utils@npm:^1.0.1":
+"ts-api-utils@npm:^1.0.1, ts-api-utils@npm:^1.3.0":
   version: 1.4.3
   resolution: "ts-api-utils@npm:1.4.3"
   peerDependencies:
     typescript: ">=4.2.0"
   checksum: 10/713c51e7392323305bd4867422ba130fbf70873ef6edbf80ea6d7e9c8f41eeeb13e40e8e7fe7cd321d74e4864777329797077268c9f570464303a1723f1eed39
-  languageName: node
-  linkType: hard
-
-"ts-api-utils@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "ts-api-utils@npm:1.3.0"
-  peerDependencies:
-    typescript: ">=4.2.0"
-  checksum: 10/3ee44faa24410cd649b5c864e068d438aa437ef64e9e4a66a41646a6d3024d3097a695eeb3fb26ee364705d3cb9653a65756d009e6a53badb6066a5f447bf7ed
   languageName: node
   linkType: hard
 

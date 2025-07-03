@@ -790,8 +790,7 @@
       "@metamask/kernel-browser-runtime>@metamask/streams": false,
       "@metamask/kernel-browser-runtime>@metamask/kernel-store>better-sqlite3": false,
       "@metamask/logger>@metamask/streams": false,
-      "@metamask/streams": false,
-      "metamask/kernel-utils": false
+      "@metamask/streams": false
     }
   },
   "packageManager": "yarn@4.9.1",
