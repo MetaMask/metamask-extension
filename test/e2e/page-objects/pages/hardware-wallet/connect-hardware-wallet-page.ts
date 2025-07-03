@@ -18,6 +18,8 @@ class ConnectHardwareWalletPage {
 
   private readonly connectTrezorButton = '[data-testid="connect-trezor-btn"]';
 
+  private readonly connectQRButton = '[data-testid="connect-qr-btn"]';
+
   private readonly continueButton = { text: 'Continue', tag: 'button' };
 
   constructor(driver: Driver) {
@@ -55,6 +57,11 @@ class ConnectHardwareWalletPage {
   async openConnectTrezorPage(): Promise<void> {
     console.log(`Open connect trezor page`);
     await this.driver.clickElement(this.connectTrezorButton);
+    await this.driver.clickElement(this.continueButton);
+  }
+
+  async openConnectQRPage(): Promise<void> {
+    await this.driver.clickElement(this.connectQRButton);
     await this.driver.clickElement(this.continueButton);
   }
 }
