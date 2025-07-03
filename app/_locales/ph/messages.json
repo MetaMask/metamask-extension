@@ -897,18 +897,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "OK"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Palaging panatilihin ang iyong Secret Recovery Phrase sa isang ligtas at lihim na lugar"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Kailangan ulit i-back up ang Secret Recovery Phrase mo?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Huwag kailanman ipaalam sa iba ang iyong Secret Recovery Phrase"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Hindi kailanman hihingin ng MetaMask team ang iyong Secret Recovery Phrase"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Kinokontrol ng iyong Secret Recovery Phrase ang lahat ng iyong account."
   },
@@ -1017,10 +1005,6 @@
   },
   "send": {
     "message": "Magpadala"
-  },
-  "sendSpecifiedTokens": {
-    "message": "Magpadala ng $1",
-    "description": "Symbol of the specified token"
   },
   "settings": {
     "message": "Mga Setting"

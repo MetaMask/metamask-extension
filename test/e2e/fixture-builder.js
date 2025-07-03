@@ -53,7 +53,9 @@ function onboardingFixture() {
       },
       NetworkOrderController: {
         enabledNetworkMap: {
-          '0x539': true,
+          eip155: {
+            [CHAIN_IDS.LOCALHOST]: true,
+          },
         },
       },
       NotificationServicesController: {},
@@ -198,8 +200,9 @@ class FixtureBuilder {
   withEnabledNetworks(data) {
     merge(this.fixture.data.NetworkOrderController, {
       networkOrder: this.fixture.data.NetworkOrderController?.networkOrder,
-      enabledNetworkMap: data,
     });
+    // Replace instead of merge for enabledNetworkMap
+    this.fixture.data.NetworkOrderController.enabledNetworkMap = data;
     return this;
   }
 
@@ -631,6 +634,7 @@ class FixtureBuilder {
   withPermissionControllerConnectedToMultichainTestDapp({
     account = '',
     useLocalhostHostname = false,
+    value = null,
   } = {}) {
     const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
     const subjects = {
@@ -641,7 +645,7 @@ class FixtureBuilder {
             caveats: [
               {
                 type: 'authorizedScopes',
-                value: {
+                value: value ?? {
                   requiredScopes: {},
                   optionalScopes: {
                     'eip155:1337': {
@@ -670,6 +674,7 @@ class FixtureBuilder {
         },
       },
     };
+
     return this.withPermissionController({
       subjects,
     });

@@ -911,9 +911,6 @@
   "bridgeTo": {
     "message": "I-bridge papunta sa"
   },
-  "bridgeToChain": {
-    "message": "I-bridge papunta sa $1"
-  },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Kapag idinagdag mo ang token na ito nang mano-mano, tiyaking alam mo ang mga panganib nito sa mga pondo mo bago ka mag-bridge."
   },
@@ -2228,9 +2225,6 @@
   },
   "floatAmountToken": {
     "message": "Ang halaga ng token ay dapat isang integer"
-  },
-  "followUsOnTwitter": {
-    "message": "I-follow kami sa Twitter"
   },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Tumukoy ng CID gateway"
@@ -4413,18 +4407,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Nakuha ko"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Palaging panatilihin ang iyong Lihim na Parirala sa Pagbawi sa isang ligtas at sikretong lugar"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Kailangang i-backup muli ang iyong Lihim na Parirala sa Pagbawi?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Huwag kailanman ibahagi ang iyong Lihim na Parirala sa Pagbawi sa sinuman"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Hindi kailanman hihingin ng MetaMask team ang iyong Lihim na Parirala sa Pagbawi"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Kinokontrol ng iyong Lihim na Parirala sa Pagbawi ang lahat ng iyong account."
   },
@@ -4795,16 +4777,8 @@
   "sendSelectSendAsset": {
     "message": "Piliin ang asset na ipapadala"
   },
-  "sendSpecifiedTokens": {
-    "message": "Magpadala ng $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Ang pag-click sa button na ito ay kaagad na magpapasimula sa iyong swap na transaksyon. Mangyaring suriin ang detalye ng iyong mga transaksyon bago magpatuloy."
-  },
-  "sendTokenAsToken": {
-    "message": "Ipadala ang $1 bilang $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Ipinapadala ang $1"

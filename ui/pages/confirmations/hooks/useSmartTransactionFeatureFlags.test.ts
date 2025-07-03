@@ -106,7 +106,7 @@ describe('useSmartTransactionFeatureFlags', () => {
   it('does not update feature flags if chain not supported', async () => {
     await runHook({
       smartTransactionsOptInStatus: true,
-      chainId: CHAIN_IDS.ARBITRUM,
+      chainId: CHAIN_IDS.POLYGON,
     });
 
     expect(setSwapsFeatureFlagsMock).not.toHaveBeenCalled();

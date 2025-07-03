@@ -14,6 +14,9 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import {
   Box,
+  Button,
+  ButtonSize,
+  ButtonVariant,
   Checkbox,
   Icon,
   IconName,
@@ -22,14 +25,20 @@ import {
 import { getInternalAccounts } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AccountSelection({
+  closeAccountSelection,
+  onUpdate,
   selectedAccounts = [],
   setSelectedAccounts,
-  closeAccountSelection,
+  wrapped,
 }: {
+  closeAccountSelection: () => void;
+  onUpdate?: () => void;
   selectedAccounts?: Hex[];
   setSelectedAccounts: (accounts: Hex[]) => void;
-  closeAccountSelection: () => void;
+  wrapped: boolean;
 }) {
   const t = useI18nContext();
   const accounts = useSelector(getInternalAccounts);
@@ -82,7 +91,11 @@ export function AccountSelection({
         <IconButton
           Icon={<Icon name={IconName.ArrowLeft} />}
           onClick={closeAccountSelection}
-          className="account-selection__close"
+          className={
+            wrapped
+              ? 'account-selection__close-wrapped'
+              : 'account-selection__close'
+          }
           label=""
           data-testid="account-selection-close"
         />
@@ -130,6 +143,18 @@ export function AccountSelection({
           );
         })}
       </Box>
+      {!wrapped && (
+        <Button
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          onClick={onUpdate}
+          width={BlockSize.Full}
+          marginBottom={2}
+          marginTop={2}
+        >
+          {t('update')}
+        </Button>
+      )}
     </>
   );
 }

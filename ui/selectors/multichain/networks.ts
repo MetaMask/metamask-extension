@@ -7,7 +7,7 @@ import {
 } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
 import { BtcScope, SolScope } from '@metamask/keyring-api';
-import { type CaipChainId, type Hex } from '@metamask/utils';
+import { type CaipChainId, type Hex, parseCaipChainId } from '@metamask/utils';
 
 import {
   type ProviderConfigState,
@@ -21,6 +21,7 @@ import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
   getIsSolanaTestnetSupportEnabled,
+  getEnabledNetworks,
 } from '../selectors';
 import { getInternalAccounts } from '../accounts';
 
@@ -214,4 +215,54 @@ export const getNetworksWithActivity = (state: MultichainNetworkConfigState) =>
 export const getNetworksWithTransactionActivity = createDeepEqualSelector(
   getNetworksWithActivity,
   (networksWithActivity) => networksWithActivity,
+);
+
+export const getEnabledNetworksByNamespace = createDeepEqualSelector(
+  getEnabledNetworks,
+  getSelectedMultichainNetworkChainId,
+  (enabledNetworkMap, currentMultichainChainId) => {
+    const { namespace } = parseCaipChainId(currentMultichainChainId);
+    return enabledNetworkMap[namespace] ?? {};
+  },
+);
+
+export const getEnabledChainIds = createDeepEqualSelector(
+  getNetworkConfigurationsByChainId,
+  getEnabledNetworks,
+  getSelectedMultichainNetworkChainId,
+  (networkConfigurations, enabledNetworks, currentMultichainChainId) => {
+    const { namespace } = parseCaipChainId(currentMultichainChainId);
+
+    // Get enabled networks for the current namespace
+    const networksForNamespace = enabledNetworks[namespace] || {};
+
+    return Object.keys(networkConfigurations).filter(
+      (chainId) => networksForNamespace[chainId],
+    );
+  },
+);
+
+export const getEnabledNetworkClientIds = createDeepEqualSelector(
+  getNetworkConfigurationsByChainId,
+  getEnabledNetworks,
+  getSelectedMultichainNetworkChainId,
+  (networkConfigurations, enabledNetworks, currentMultichainChainId) => {
+    const { namespace } = parseCaipChainId(currentMultichainChainId);
+
+    // Get enabled networks for the current namespace
+    const networksForNamespace = enabledNetworks[namespace as string] || {};
+
+    return Object.entries(networkConfigurations).reduce(
+      (acc, [chainId, network]) => {
+        if (networksForNamespace[chainId]) {
+          acc.push(
+            network.rpcEndpoints[network.defaultRpcEndpointIndex]
+              .networkClientId,
+          );
+        }
+        return acc;
+      },
+      [] as string[],
+    );
+  },
 );
