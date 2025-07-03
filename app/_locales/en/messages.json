@@ -1086,6 +1086,12 @@
   "changePasswordLoadingNote": {
     "message": "This shouldn't take long"
   },
+  "changePasswordWarning": {
+    "message": "Are you sure?"
+  },
+  "changePasswordWarningDescription": {
+    "message": "Changing your password here will lock MetaMask on other devices you’re using. You’ll need to log in again with your new password."
+  },
   "chooseYourNetwork": {
     "message": "Choose your network"
   },
@@ -4181,6 +4187,12 @@
   "password": {
     "message": "Password"
   },
+  "passwordChangedRecently": {
+    "message": "Your password changed"
+  },
+  "passwordChangedRecentlyDescription": {
+    "message": "Enter your new password to stay logged into MetaMask."
+  },
   "passwordNotLongEnough": {
     "message": "Password must have at least 8 characters"
   },
@@ -4192,7 +4204,7 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
-    "message": "If I forget this password, MetaMask can't recover it for me."
+    "message": "If I forget this password, I’ll lose access to my wallet permanently. MetaMask can’t reset it for me."
   },
   "passwordToggleHide": {
     "message": "Hide Password"
@@ -7216,6 +7228,9 @@
   },
   "willApproveAmountForBridgingHardware": {
     "message": "You’ll need to confirm two transactions on your hardware wallet."
+  },
+  "willApproveAmountForSwapping": {
+    "message": "This will approve $1 for swapping."
   },
   "withdrawing": {
     "message": "Withdrawing"
