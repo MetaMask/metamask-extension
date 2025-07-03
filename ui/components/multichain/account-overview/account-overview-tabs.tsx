@@ -153,7 +153,7 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__activity-tab"
             {...tabProps}
           >
-            <TransactionList boxProps={{ paddingTop: 3 }} />
+            <TransactionList boxProps={{ paddingTop: 2 }} />
           </Tab>
         )}
       </Tabs>

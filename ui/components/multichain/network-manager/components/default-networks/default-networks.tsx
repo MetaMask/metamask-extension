@@ -242,6 +242,7 @@ const DefaultNetworks = memo(() => {
           data-testid="additional-network-item"
           className="network-manager__additional-network-item"
           key={network.chainId}
+          style={{ cursor: 'pointer' }}
         >
           <ButtonIcon
             size={ButtonIconSize.Md}
