@@ -82,7 +82,8 @@ export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
   (state: NetworkConfigurationsByChainIdState) =>
     state.metamask.networkConfigurationsByChainId,
   (networkConfigurationsByChainId) =>
-    filterNetworkConfigurationsByWhiteList(networkConfigurationsByChainId),
+    // filterNetworkConfigurationsByWhiteList(networkConfigurationsByChainId),
+    networkConfigurationsByChainId,
 );
 
 export function getSelectedNetworkClientId(

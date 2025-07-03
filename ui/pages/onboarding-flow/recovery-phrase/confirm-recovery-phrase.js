@@ -195,11 +195,11 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
             {t('confirmRecoveryPhraseTitle')}
           </Text>
         </Box>
-        <Box marginBottom={6}>
+        {/* <Box marginBottom={6}>
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
             {t('confirmRecoveryPhraseDetails')}
           </Text>
-        </Box>
+        </Box> */}
         {splitSecretRecoveryPhrase.length > 0 && (
           <RecoveryPhraseChips
             secretRecoveryPhrase={splitSecretRecoveryPhrase}

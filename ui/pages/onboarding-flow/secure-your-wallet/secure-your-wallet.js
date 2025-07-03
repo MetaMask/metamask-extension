@@ -24,7 +24,7 @@ import {
   Button,
   Text,
   ButtonSize,
-  ButtonVariant,
+  // ButtonVariant,
   ButtonLink,
   ButtonLinkSize,
 } from '../../../components/component-library';
@@ -69,16 +69,16 @@ export default function SecureYourWallet() {
     history.push(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
   };
 
-  const handleClickNotRecommended = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletSecuritySkipInitiated,
-      properties: {
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
-    setShowSkipSRPBackupPopover(true);
-  };
+  // const handleClickNotRecommended = () => {
+  //   trackEvent({
+  //     category: MetaMetricsEventCategory.Onboarding,
+  //     event: MetaMetricsEventName.OnboardingWalletSecuritySkipInitiated,
+  //     properties: {
+  //       hd_entropy_index: hdEntropyIndex,
+  //     },
+  //   });
+  //   setShowSkipSRPBackupPopover(true);
+  // };
 
   return (
     <Box
@@ -159,7 +159,7 @@ export default function SecureYourWallet() {
         >
           {t('secureWalletGetStartedButton')}
         </Button>
-        <Button
+        {/* <Button
           data-testid="secure-wallet-later"
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
@@ -167,7 +167,7 @@ export default function SecureYourWallet() {
           onClick={handleClickNotRecommended}
         >
           {t('secureWalletRemindLaterButton')}
-        </Button>
+        </Button> */}
       </Box>
     </Box>
   );

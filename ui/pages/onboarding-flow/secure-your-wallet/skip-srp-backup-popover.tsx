@@ -97,14 +97,14 @@ export default function SkipSRPBackup({
             <Text
               variant={TextVariant.headingMd}
               textAlign={TextAlign.Center}
-              marginTop={4}
+              // marginTop={4}
               as="h3"
             >
               {t('skipAccountSecurity')}
             </Text>
           </Box>
         </ModalHeader>
-        <Box paddingLeft={4} paddingRight={4}>
+        <Box paddingLeft={4} paddingRight={4} paddingTop={4}>
           <Checkbox
             id="skip-srp-backup__checkbox"
             className="skip-srp-backup__checkbox"

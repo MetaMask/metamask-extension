@@ -30,7 +30,7 @@ import {
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+  // ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -222,7 +222,7 @@ export default function CreationSuccessful() {
               data-testid="manage-default-settings"
               borderRadius={BorderRadius.LG}
               width={BlockSize.Full}
-              onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+              onClick={() => history.push(DEFAULT_ROUTE)}
             >
               <Box display={Display.Flex} alignItems={AlignItems.center}>
                 <Icon

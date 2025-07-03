@@ -43,3 +43,8 @@
     flex-grow: 1;
   }
 }
+
+.mm-text-field--blurred {
+  filter: blur(4px);
+  transition: filter 0.2s;
+}

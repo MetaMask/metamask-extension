@@ -9,7 +9,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
-import WhatsNewModal from '../../components/app/whats-new-modal';
+// import WhatsNewModal from '../../components/app/whats-new-modal';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -789,7 +789,7 @@ export default class Home extends PureComponent {
       showRecoveryPhraseReminder,
       // showTermsOfUsePopup,
       showWhatsNewPopup,
-      hideWhatsNewPopup,
+      // hideWhatsNewPopup,
       completedOnboarding,
       onboardedInThisUISession,
       announcementsToShow,
@@ -847,7 +847,7 @@ export default class Home extends PureComponent {
             : null}
           {showMultiRpcEditModal && <MultiRpcEditModal />}
           {displayUpdateModal && <UpdateModal />}
-          {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
+          {/* {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null} */}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
               hasBackedUp={seedPhraseBackedUp}
