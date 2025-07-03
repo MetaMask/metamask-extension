@@ -72,6 +72,7 @@ describe('SmartTransactionsController Init', () => {
     const fullRequest = {
       ...requestMock,
       baseControllerMessenger: mocks.baseControllerMessenger,
+      controllerMessenger: mocks.restrictedMessenger,
       getController: jest.fn((name: string) => {
         switch (name) {
           case 'AccountsController':
@@ -121,6 +122,7 @@ describe('SmartTransactionsController Init', () => {
       getAccountType: jest.fn().mockResolvedValue('EthereumAccount'),
       getDeviceModel: jest.fn().mockResolvedValue('Ledger Nano S'),
       getHardwareTypeForMetric: jest.fn().mockResolvedValue('Ledger'),
+      trace: jest.fn((_, fn) => fn?.()),
       ...options,
     };
 
@@ -184,22 +186,15 @@ describe('SmartTransactionsController Init', () => {
     );
   });
 
-  it('configures messenger with correct permissions', () => {
+  it('passes messenger to controller', () => {
     const { fullRequest, mocks } = buildInitRequest();
     SmartTransactionsControllerInit(fullRequest);
 
-    expect(mocks.baseControllerMessenger.getRestricted).toHaveBeenCalledWith({
-      name: 'SmartTransactionsController',
-      allowedActions: [
-        'NetworkController:getNetworkClientById',
-        'NetworkController:getState',
-      ],
-      allowedEvents: ['NetworkController:stateChange'],
-    });
-
+    // The messenger configuration happens in the initControllers function,
+    // not in SmartTransactionsControllerInit, so we just verify it's passed through
     expect(smartTransactionsControllerClassMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        messenger: mocks.restrictedMessenger,
+        messenger: fullRequest.controllerMessenger,
       }),
     );
   });

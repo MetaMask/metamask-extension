@@ -13,6 +13,7 @@ export const SmartTransactionsControllerInit = ({
   getAccountType,
   getDeviceModel,
   getHardwareTypeForMetric,
+  trace,
 }: any) => {
   const transactionController = getController('TransactionController');
   const metaMetricsController = getController('MetaMetricsController');
@@ -50,9 +51,8 @@ export const SmartTransactionsControllerInit = ({
     getMetaMetricsProps: async () => {
       const accountsController = getController('AccountsController');
       const selectedAddress = accountsController.getSelectedAccount().address;
-      const accountHardwareType = await getHardwareTypeForMetric(
-        selectedAddress,
-      );
+      const accountHardwareType =
+        await getHardwareTypeForMetric(selectedAddress);
       const accountType = await getAccountType(selectedAddress);
       const deviceModel = await getDeviceModel(selectedAddress);
       return {
@@ -61,6 +61,7 @@ export const SmartTransactionsControllerInit = ({
         deviceModel,
       };
     },
+    trace,
   });
 
   return {
