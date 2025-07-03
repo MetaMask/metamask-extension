@@ -40,6 +40,7 @@ import {
 } from '../../../../ducks/send';
 import { getNftImage } from '../../../../helpers/utils/nfts';
 import { NFT } from './types';
+import { getAllNfts } from '../../../../ducks/metamask/metamask';
 
 export type PreviouslyOwnedCollections = {
   collectionName: string;
@@ -71,6 +72,7 @@ export function AssetPickerModalNftTab({
   const { currentlyOwnedNfts } = useNfts({
     overridePopularNetworkFilter: true,
   });
+
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 

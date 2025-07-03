@@ -158,8 +158,13 @@ const DefaultNetworks = memo(() => {
           return null;
         }
 
-        const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
-          getItemCallbacks(network);
+        const {
+          onDelete,
+          onEdit,
+          onDiscoverClick,
+          onRpcConfigEdit,
+          onRpcSelect,
+        } = getItemCallbacks(network);
         const iconSrc = getNetworkIcon(network);
         const isEnabled = Object.keys(enabledNetworksByNamespace).includes(
           hexChainId,
@@ -203,7 +208,7 @@ const DefaultNetworks = memo(() => {
             onDeleteClick={onDelete}
             onEditClick={onEdit}
             onDiscoverClick={onDiscoverClick}
-            onRpcEndpointClick={onRpcConfigEdit}
+            onRpcEndpointClick={onRpcSelect}
           />
         );
       });

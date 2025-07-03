@@ -30,12 +30,14 @@ import AddRpcUrlModal from '../network-list-menu/add-rpc-url-modal/add-rpc-url-m
 import { AddNetwork } from './components/add-network';
 import { NetworkTabs } from './network-tabs';
 import { useNetworkManagerState } from './hooks/useNetworkManagerState';
+import SelectRpcUrlModal from '../network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
 
 // Router content component
 const NetworkManagerRouter = () => {
   const t = useI18nContext();
   const history = useHistory();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const { initialTab } = useNetworkManagerState();
 
@@ -52,6 +54,9 @@ const NetworkManagerRouter = () => {
   const editedNetwork = useMemo((): UpdateNetworkFields | undefined => {
     if (location.pathname === '/add') {
       return undefined;
+    }
+    if (location.pathname === '/select-rpc') {
+      return evmNetworks[editingChainId as keyof typeof evmNetworks];
     }
     return !editingChainId || editCompleted
       ? undefined
@@ -76,7 +81,13 @@ const NetworkManagerRouter = () => {
           ],
           defaultRpcEndpointIndex: networkFormState.rpcUrls.rpcEndpoints.length,
         });
-        history.push('/add');
+
+        // TODO: Handle edit case
+        if (location.pathname === '/edit-rpc') {
+          history.push('/edit');
+        } else {
+          history.push('/add');
+        }
       }
     },
     [history, networkFormState],
@@ -98,7 +109,11 @@ const NetworkManagerRouter = () => {
             defaultBlockExplorerUrlIndex:
               networkFormState.blockExplorers.blockExplorerUrls.length,
           });
-          history.push('/add');
+          if (location.pathname === '/edit-explorer-url') {
+            history.push('/edit');
+          } else {
+            history.push('/add');
+          }
           onComplete?.();
         }
       };
@@ -107,6 +122,7 @@ const NetworkManagerRouter = () => {
   );
 
   const handleClose = () => {
+    dispatch(hideModal());
     history.push('/');
   };
 
@@ -125,6 +141,13 @@ const NetworkManagerRouter = () => {
   return (
     <Switch>
       <Route path="/add">
+        <ModalHeader
+          onClose={handleClose}
+          onBack={handleGoHome}
+          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+        >
+          {t('addNetwork')}
+        </ModalHeader>
         <AddNetwork
           networkFormState={networkFormState}
           network={editedNetwork as UpdateNetworkFields}
@@ -133,7 +156,7 @@ const NetworkManagerRouter = () => {
       <Route path="/add-rpc">
         <ModalHeader
           onClose={handleClose}
-          onBack={handleClose}
+          onBack={handleNewNetwork}
           closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
         >
           {t('addRpcUrl')}
@@ -143,7 +166,7 @@ const NetworkManagerRouter = () => {
       <Route path="/edit-rpc">
         <ModalHeader
           onClose={handleClose}
-          onBack={handleClose}
+          onBack={handleEditOnComplete}
           closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
         >
           {t('addRpcUrl')}
@@ -187,6 +210,16 @@ const NetworkManagerRouter = () => {
           network={editedNetwork as UpdateNetworkFields}
           isEdit={true}
         />
+      </Route>
+      <Route path="/select-rpc">
+        <ModalHeader
+          onClose={handleClose}
+          onBack={handleGoHome}
+          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+        >
+          {t('selectRpcUrl')}
+        </ModalHeader>
+        <SelectRpcUrlModal onNetworkChange={handleClose} />
       </Route>
       <Route path="/">
         <NetworkTabs initialTab={initialTab} />

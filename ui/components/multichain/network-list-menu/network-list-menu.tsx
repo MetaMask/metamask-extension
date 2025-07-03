@@ -571,7 +571,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     network: MultichainNetworkConfiguration,
   ) => {
     const isCurrentNetwork = network.chainId === currentChainId;
-    const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
+    const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
       getItemCallbacks(network);
     const iconSrc = getNetworkIcon(network);
 
@@ -600,7 +600,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         onDeleteClick={onDelete}
         onEditClick={onEdit}
         onDiscoverClick={onDiscoverClick}
-        onRpcEndpointClick={onRpcConfigEdit}
+        onRpcEndpointClick={onRpcSelect}
         disabled={!isNetworkEnabled(network)}
         notSelectable={!canSelectNetwork}
       />
