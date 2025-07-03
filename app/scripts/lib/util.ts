@@ -425,7 +425,7 @@ export function getConversionRatesForNativeAsset({
 }: {
   conversionRates: AssetsRatesState['metamask']['conversionRates'];
   chainId: string;
-}): (AssetConversion & { marketData: FungibleAssetMarketData }) | null {
+}): (AssetConversion & { marketData?: FungibleAssetMarketData }) | null {
   // Return early if conversionRates is falsy
   if (!conversionRates) {
     return null;
