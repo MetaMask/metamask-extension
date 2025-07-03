@@ -40,12 +40,12 @@ const createMessengerMock = () =>
     subscribe: jest.fn(),
     publish: jest.fn(),
     call: jest.fn(),
-  } as unknown as jest.Mocked<DecryptMessageControllerMessenger>);
+  }) as unknown as jest.Mocked<DecryptMessageControllerMessenger>;
 
 const createManagerMessengerMock = () =>
   ({
     subscribe: jest.fn(),
-  } as unknown as jest.Mocked<DecryptMessageManagerMessenger>);
+  }) as unknown as jest.Mocked<DecryptMessageManagerMessenger>;
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -69,7 +69,7 @@ const createDecryptMessageManagerMock = <T>() =>
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any as jest.Mocked<T>);
+  }) as any as jest.Mocked<T>;
 
 describe('DecryptMessageController', () => {
   let decryptMessageController: DecryptMessageController;
@@ -173,9 +173,8 @@ describe('DecryptMessageController', () => {
     );
     getStateMock.mockReturnValue(mockExtState);
 
-    const result = await decryptMessageController.decryptMessage(
-      messageToDecrypt,
-    );
+    const result =
+      await decryptMessageController.decryptMessage(messageToDecrypt);
 
     expect(decryptMessageManagerMock.approveMessage).toBeCalledTimes(1);
     expect(decryptMessageManagerMock.approveMessage).toBeCalledWith(
@@ -244,9 +243,8 @@ describe('DecryptMessageController', () => {
     );
     getStateMock.mockReturnValue(mockExtState);
 
-    const result = await decryptMessageController.decryptMessageInline(
-      messageToDecrypt,
-    );
+    const result =
+      await decryptMessageController.decryptMessageInline(messageToDecrypt);
 
     expect(decryptMessageManagerMock.setResult).toBeCalledTimes(1);
     expect(decryptMessageManagerMock.setResult).toBeCalledWith(
@@ -273,9 +271,8 @@ describe('DecryptMessageController', () => {
     );
     getStateMock.mockReturnValue(mockExtState);
 
-    const result = await decryptMessageController.cancelDecryptMessage(
-      messageIdMock,
-    );
+    const result =
+      await decryptMessageController.cancelDecryptMessage(messageIdMock);
 
     expect(decryptMessageManagerMock.rejectMessage).toBeCalledTimes(1);
     expect(decryptMessageManagerMock.rejectMessage).toBeCalledWith(
