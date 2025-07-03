@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   deleteAccountSyncingDataFromUserStorage,
   syncInternalAccountsWithUserStorage,
+  testGetUserProfileMetaMetricsData,
 } from '../../../store/actions';
 import {
   selectIsAccountSyncingEnabled,
@@ -68,6 +69,7 @@ export const useAccountSyncing = () => {
         return;
       }
       dispatch(syncInternalAccountsWithUserStorage());
+      dispatch(testGetUserProfileMetaMetricsData());
     } catch (e) {
       log.error(e);
     }

@@ -6549,6 +6549,25 @@ export function syncInternalAccountsWithUserStorage(): ThunkAction<
   };
 }
 
+export function testGetUserProfileMetaMetricsData(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      const response = await submitRequestToBackground(
+        'testGetUserProfileMetaMetricsData',
+      );
+      return response;
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
 /**
  * "Locks" account syncing by setting the necessary flags in UserStorageController.
  * This is used to temporarily prevent account syncing from listening to accounts being changed, and the downward sync to happen.
