@@ -20,7 +20,6 @@ import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
-import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from '../shared/constants/state-corruption';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -41,8 +40,9 @@ import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
-import { displayStateCorruptionError } from './helpers/utils/state-corruption-html';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
+
+export { installCriticalErrorListeners } from './helpers/utils/install-critical-error-listeners';
 
 const METHOD_START_UI_SYNC = 'startUISync';
 
@@ -53,14 +53,10 @@ let reduxStore;
 /**
  * Method to update backgroundConnection object use by UI
  *
- * @param container - container to render the UI
- * @param port - port to connect to background
  * @param backgroundConnection - connection object to background
  * @param handleStartUISync - function to call when startUISync notification is received
  */
 export const connectToBackground = (
-  container,
-  port,
   backgroundConnection,
   handleStartUISync,
 ) => {
@@ -71,15 +67,6 @@ export const connectToBackground = (
       reduxStore.dispatch(actions.updateMetamaskState(params[0]));
     } else if (method === METHOD_START_UI_SYNC) {
       handleStartUISync();
-    } else if (method === METHOD_DISPLAY_STATE_CORRUPTION_ERROR) {
-      const { error, hasBackup, currentLocale } = params;
-      displayStateCorruptionError(
-        container,
-        port,
-        error,
-        hasBackup,
-        currentLocale,
-      );
     } else if (method === 'RELOAD') {
       window.location.reload();
     } else {

@@ -21,6 +21,7 @@ import log from 'loglevel';
 // Import to set up global `Promise.withResolvers` polyfill
 import '../../shared/lib/promise-with-resolvers';
 import launchMetaMaskUi, {
+  installCriticalErrorListeners,
   connectToBackground,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
@@ -43,6 +44,9 @@ import metaRPCClientFactory from './lib/metaRPCClientFactory';
 const PHISHING_WARNING_PAGE_TIMEOUT = 1 * 1000; // 1 Second
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 
+/**
+ * @type {HTMLElement}
+ */
 const container = document.getElementById('app-content');
 
 /**
@@ -88,15 +92,14 @@ async function start() {
   // setup stream to background
   const extensionPort = browser.runtime.connect({ name: windowType });
 
+  // Set up error handlers as early as possible to ensure we are ready to
+  // handle any errors that occur at any time
+  installCriticalErrorListeners(container, extensionPort);
+
   const connectionStream = new PortStream(extensionPort);
   const subStreams = connectSubstreams(connectionStream);
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);
-  connectToBackground(
-    container,
-    extensionPort,
-    backgroundConnection,
-    handleStartUISync,
-  );
+  connectToBackground(container, backgroundConnection, handleStartUISync);
 
   async function handleStartUISync() {
     endTrace({ name: TraceName.BackgroundConnect });

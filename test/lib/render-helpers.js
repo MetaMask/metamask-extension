@@ -6,6 +6,7 @@ import { userEvent } from '@testing-library/user-event';
 import { Router } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { createMemoryHistory } from 'history';
+import { noop } from 'lodash';
 import configureStore from '../../ui/store/store';
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
 import { LegacyMetaMetricsProvider } from '../../ui/contexts/metametrics';
@@ -186,9 +187,7 @@ export async function integrationTestRender(extendedRenderOptions) {
     ...renderOptions
   } = extendedRenderOptions;
 
-  connectToBackground(null, null, backgroundConnection, () => {
-    // our lint rules waste so much of my time.
-  });
+  connectToBackground(backgroundConnection, noop);
 
   const store = await setupInitialStore(preloadedState, {
     activeTab,
