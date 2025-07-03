@@ -48,6 +48,7 @@ import {
   setNewTokensImportedError,
   setDataCollectionForMarketing,
   setEditedNetwork,
+  setAccountDetailsAddress,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -72,6 +73,11 @@ import {
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
 import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
+import {
+  getRedirectAfterDefaultPage,
+  clearRedirectAfterDefaultPage,
+} from '../../ducks/history/history';
+
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -93,6 +99,7 @@ const mapStateToProps = (state) => {
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingApprovals = selectPendingApprovalsForNavigation(state);
+  const redirectAfterDefaultPage = getRedirectAfterDefaultPage(state);
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
@@ -179,6 +186,7 @@ const mapStateToProps = (state) => {
     hasAllowedPopupRedirectApprovals,
     showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
     showUpdateModal: getShowUpdateModal(state),
+    redirectAfterDefaultPage,
   };
 };
 
@@ -231,6 +239,10 @@ const mapDispatchToProps = (dispatch) => {
     setBasicFunctionalityModalOpen: () =>
       dispatch(openBasicFunctionalityModal()),
     fetchBuyableChains: () => dispatch(fetchBuyableChains()),
+    clearRedirectAfterDefaultPage: () =>
+      dispatch(clearRedirectAfterDefaultPage()),
+    setAccountDetailsAddress: (address) =>
+      dispatch(setAccountDetailsAddress(address)),
   };
 };
 

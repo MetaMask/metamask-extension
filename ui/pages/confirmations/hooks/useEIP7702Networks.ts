@@ -103,6 +103,17 @@ export const useEIP7702Networks = (address: string) => {
         }
       });
 
+      // Sort by chainIdHex to ensure consistent ordering for comparison
+      networksSupporting7702.sort((a, b) => {
+        if (a.chainIdHex < b.chainIdHex) {
+          return -1;
+        }
+        if (a.chainIdHex > b.chainIdHex) {
+          return 1;
+        }
+        return 0;
+      });
+
       return networksSupporting7702;
     }, [isSupportedKeyringType, networkList, value]);
 

@@ -161,6 +161,9 @@ export default class Home extends PureComponent {
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
     fetchBuyableChains: PropTypes.func.isRequired,
+    redirectAfterDefaultPage: PropTypes.object,
+    clearRedirectAfterDefaultPage: PropTypes.func,
+    setAccountDetailsAddress: PropTypes.func,
   };
 
   state = {
@@ -231,10 +234,35 @@ export default class Home extends PureComponent {
     }
   }
 
+  checkRedirectAfterDefaultPage() {
+    const {
+      redirectAfterDefaultPage,
+      history,
+      clearRedirectAfterDefaultPage,
+      setAccountDetailsAddress,
+    } = this.props;
+
+    if (
+      redirectAfterDefaultPage?.shouldRedirect &&
+      redirectAfterDefaultPage?.path
+    ) {
+      // Set the account details address if provided
+      if (redirectAfterDefaultPage?.address) {
+        setAccountDetailsAddress(redirectAfterDefaultPage.address);
+      }
+
+      history.push(redirectAfterDefaultPage.path);
+      clearRedirectAfterDefaultPage();
+    }
+  }
+
   componentDidMount() {
     this.checkStatusAndNavigate();
 
     this.props.fetchBuyableChains();
+
+    // Check for redirect after default page
+    this.checkRedirectAfterDefaultPage();
   }
 
   static getDerivedStateFromProps(props) {
@@ -272,6 +300,9 @@ export default class Home extends PureComponent {
     } else if (isNotification || hasAllowedPopupRedirectApprovals) {
       this.checkStatusAndNavigate();
     }
+
+    // Check for redirect after default page on updates
+    this.checkRedirectAfterDefaultPage();
   }
 
   onRecoveryPhraseReminderClose = () => {
