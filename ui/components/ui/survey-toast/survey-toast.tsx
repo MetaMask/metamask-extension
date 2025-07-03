@@ -17,6 +17,7 @@ import {
 import { ACCOUNTS_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { setLastViewedUserSurvey } from '../../../store/actions';
 import { Toast } from '../../multichain';
+import { selectSessionData } from '../../../selectors/identity/authentication';
 
 type Survey = {
   url: string;
@@ -36,6 +37,7 @@ export function SurveyToast() {
   const basicFunctionality = useSelector(getUseExternalServices);
   const internalAccount = useSelector(getSelectedInternalAccount);
   const metaMetricsId = useSelector(getMetaMetricsId);
+  const sessionData = useSelector(selectSessionData);
 
   const surveyUrl = useMemo(
     () => `${ACCOUNTS_API_BASE_URL}/v1/users/${metaMetricsId}/surveys`,
@@ -57,6 +59,9 @@ export function SurveyToast() {
             method: 'GET',
             headers: {
               'x-metamask-clientproduct': 'metamask-extension',
+              ...(sessionData?.token.accessToken
+                ? { Authorization: `Bearer ${sessionData?.token.accessToken}` }
+                : {}),
             },
             signal: controller.signal,
           },
@@ -92,6 +97,9 @@ export function SurveyToast() {
     lastViewedUserSurvey,
     basicFunctionality,
     metaMetricsId,
+    surveyUrl,
+    participateInMetaMetrics,
+    sessionData,
     dispatch,
   ]);
 

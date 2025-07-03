@@ -31,6 +31,7 @@ import {
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
@@ -55,7 +56,8 @@ type MessengerActions =
   | RemoteFeatureFlagControllerGetStateAction
   | SwapsControllerSetApproveTxIdAction
   | SwapsControllerSetTradeTxIdAction
-  | TransactionControllerEstimateGasAction;
+  | TransactionControllerEstimateGasAction
+  | AuthenticationControllerGetBearerToken;
 
 type MessengerEvents =
   | TransactionControllerTransactionApprovedEvent
@@ -88,6 +90,7 @@ export function getTransactionControllerMessenger(
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
+      'AuthenticationController:getBearerToken',
     ],
     allowedEvents: [`NetworkController:stateChange`],
   });
@@ -127,6 +130,7 @@ export function getTransactionControllerInitMessenger(
       'SwapsController:setApproveTxId',
       'SwapsController:setTradeTxId',
       'TransactionController:estimateGas',
+      'AuthenticationController:getBearerToken',
     ],
   });
 }
