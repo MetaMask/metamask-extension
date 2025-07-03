@@ -232,6 +232,8 @@ describe('PersistenceManager', () => {
 
       manager.open = jest.fn().mockResolvedValue(undefined);
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       const { request } = navigator.locks;
       const mockCallback = jest.fn();
       const mockLocksRequest = jest

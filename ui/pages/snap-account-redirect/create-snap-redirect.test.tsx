@@ -134,6 +134,8 @@ describe('<SnapAccountRedirect />', () => {
     redirectUrlIcon.click();
 
     expect(mockOnSubmit).toHaveBeenCalled();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(global.platform.openTab).toHaveBeenCalledWith({ url: mockUrl });
   });
 });

@@ -84,6 +84,8 @@ describe('NicknamePopover', () => {
 
     const viewExplorerButton = getByText('View on block explorer');
     fireEvent.click(viewExplorerButton);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: expectedExplorerUrl,
     });
@@ -106,6 +108,8 @@ describe('NicknamePopover', () => {
     const viewExplorerButton = getByText('View on block explorer');
 
     fireEvent.click(viewExplorerButton);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: expectedExplorerUrl,
     });

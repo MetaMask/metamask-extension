@@ -334,6 +334,8 @@ describe('AccountMenu', () => {
       fireEvent.click(addAccountSnapButton);
 
       // Check if `openTab` was called
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(global.platform.openTab).toHaveBeenCalledTimes(1);
     });
   });

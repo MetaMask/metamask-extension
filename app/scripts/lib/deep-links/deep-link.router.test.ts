@@ -54,6 +54,8 @@ describe('DeepLinkRouter', () => {
 
   beforeEach(() => {
     router = new DeepLinkRouter({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       getExtensionURL: new ExtensionPlatform().getExtensionURL,
       getState,
     });
@@ -74,6 +76,8 @@ describe('DeepLinkRouter', () => {
         mockIsManifestV3.mockReturnValue(manifestVersion === 'mv3');
         router.install();
         expect(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+          // eslint-disable-next-line @typescript-eslint/unbound-method
           browser.webRequest.onBeforeRequest.addListener,
         ).toHaveBeenCalledWith(
           expect.any(Function),
@@ -88,6 +92,8 @@ describe('DeepLinkRouter', () => {
     it('should remove the listener for webRequest.onBeforeRequest', () => {
       router.uninstall();
       expect(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         browser.webRequest.onBeforeRequest.removeListener,
       ).toHaveBeenCalledWith(expect.any(Function));
     });
@@ -112,6 +118,8 @@ describe('DeepLinkRouter', () => {
           tabId,
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(browser.tabs.update).toHaveBeenCalledTimes(1);
         // Manifest v2 should return a blocking response (cancel the request),
         expect(response).toEqual(mockIsManifestV3() ? {} : { cancel: true });
@@ -132,6 +140,8 @@ describe('DeepLinkRouter', () => {
           tabId,
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
           url: 'chrome-extension://extension-id/home.html#link?u=%2Fexternal-route%3Fquery%3Dparam',
         });
@@ -157,6 +167,8 @@ describe('DeepLinkRouter', () => {
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         // it should go directly to the internal route
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
           url: 'chrome-extension://extension-id/home.html#internal-route?one=two',
         });
@@ -177,6 +189,8 @@ describe('DeepLinkRouter', () => {
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         // it should NOT go directly to the internal route, but still be shown the interstitial
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
           url: 'chrome-extension://extension-id/home.html#link?u=%2Fexternal-route%3Fquery%3Dparam',
         });
@@ -202,6 +216,8 @@ describe('DeepLinkRouter', () => {
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(parseMock).not.toHaveBeenCalled();
       expect(response).toEqual({});
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(browser.tabs.update).not.toHaveBeenCalled();
     });
 
@@ -217,6 +233,8 @@ describe('DeepLinkRouter', () => {
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(parseMock).not.toHaveBeenCalled();
       expect(response).toEqual({});
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
         url: 'chrome-extension://extension-id/home.html#link?errorCode=404',
       });
@@ -259,6 +277,8 @@ describe('DeepLinkRouter', () => {
         tabId,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
         url: 'https://example.com/internal-route',
       });
@@ -272,6 +292,8 @@ describe('DeepLinkRouter', () => {
         tabId,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
         url: 'chrome-extension://extension-id/home.html#link?errorCode=404',
       });

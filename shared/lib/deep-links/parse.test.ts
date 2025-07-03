@@ -27,6 +27,8 @@ describe('parse', () => {
     const urlStr = 'https://example.com/unknown';
     const result = await parse(new URL(urlStr));
     expect(result).toBe(false);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(log.debug).toHaveBeenCalledWith(
       'No handler found for the pathname:',
       '/unknown',
@@ -43,6 +45,8 @@ describe('parse', () => {
     const urlStr = 'https://example.com/test?foo=bar';
     const result = await parse(new URL(urlStr));
     expect(result).toBe(false);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(log.debug).toHaveBeenCalledWith(
       'Error handling deep link:',
       expect.any(Error),
