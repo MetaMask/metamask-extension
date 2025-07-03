@@ -48,6 +48,7 @@ import {
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
+import { MetaMaskReduxDispatch } from '../../../store/store';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
@@ -59,7 +60,7 @@ export const ImportSrp = () => {
   const t = useI18nContext();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const [srpError, setSrpError] = useState('');
   const [pasteFailed, setPasteFailed] = useState(false);
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState(
@@ -89,9 +90,9 @@ export const ImportSrp = () => {
 
   async function importWallet() {
     if (isSocialLoginEnabled) {
-      const isPasswordOutdated = (await dispatch(
+      const isPasswordOutdated = await dispatch(
         actions.checkIsSeedlessPasswordOutdated(),
-      )) as unknown as boolean;
+      );
       if (isPasswordOutdated) {
         await actions.forceUpdateMetamaskState(dispatch);
         return;
