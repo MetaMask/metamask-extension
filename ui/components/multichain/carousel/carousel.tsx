@@ -75,10 +75,10 @@ export const Carousel = React.forwardRef(
       })
       .sort((a, b) => {
         // Prioritize Contentful Priority slides
-        if (a.priorityPlacement === true) {
+        if (a.priorityPlacement === true && b.priorityPlacement !== true) {
           return -1;
         }
-        if (b.priorityPlacement === true) {
+        if (a.priorityPlacement !== true && b.priorityPlacement === true) {
           return 1;
         }
 

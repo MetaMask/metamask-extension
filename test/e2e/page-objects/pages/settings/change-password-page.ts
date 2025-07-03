@@ -19,6 +19,8 @@ export default class ChangePasswordPage {
   private readonly confirmNewPasswordInput =
     '[data-testid="change-password-confirm-input"]';
 
+  private readonly passwordTerms = '[data-testid="change-password-terms"]';
+
   private readonly saveButton = '[data-testid="change-password-button"]';
 
   private readonly passwordChangedWarning = {
@@ -50,6 +52,17 @@ export default class ChangePasswordPage {
     console.log('Change password');
     await this.driver.fill(this.newPasswordInput, newPassword);
     await this.driver.fill(this.confirmNewPasswordInput, newPassword);
+    await this.driver.clickElement(this.passwordTerms);
     await this.driver.clickElement(this.saveButton);
+  }
+
+  async check_passwordChangedWarning(): Promise<void> {
+    console.log('Check password changed warning');
+    await this.driver.waitForSelector(this.passwordChangedWarning);
+  }
+
+  async confirmChangePasswordWarning(): Promise<void> {
+    console.log('Confirm change password warning');
+    await this.driver.clickElement(this.confirmWarningButton);
   }
 }

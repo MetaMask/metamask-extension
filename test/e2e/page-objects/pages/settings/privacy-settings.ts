@@ -261,6 +261,13 @@ class PrivacySettings {
     await this.driver.clickElement(this.changePasswordButton);
   }
 
+  async check_passwordChangeSuccessToastIsDisplayed(): Promise<void> {
+    console.log(
+      'Check password change success toast is displayed on privacy settings page',
+    );
+    await this.driver.waitForSelector(this.passwordChangeSuccessToast);
+  }
+
   async openRevealSrpQuiz(srpIndex: number = 1): Promise<void> {
     await this.openSrpList();
     // We only pass in the srpIndex when there are multiple SRPs
