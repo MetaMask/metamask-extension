@@ -35,12 +35,12 @@ function createConnectedPorts(uiCount: number) {
 const mockPersistence = (backup: unknown): PersistenceManager =>
   ({
     getBackup: jest.fn().mockResolvedValue(Promise.resolve(backup)),
-  } as unknown as PersistenceManager);
+  }) as unknown as PersistenceManager;
 
 const mockBrokenPersistence = (error: Error): PersistenceManager =>
   ({
     getBackup: jest.fn().mockRejectedValue(error),
-  } as unknown as PersistenceManager);
+  }) as unknown as PersistenceManager;
 
 describe('CorruptionHandler.handleStateCorruptionError', () => {
   let corruptionHandler: CorruptionHandler;
