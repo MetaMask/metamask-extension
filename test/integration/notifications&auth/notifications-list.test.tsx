@@ -127,9 +127,8 @@ describe('Notifications List', () => {
       ).toBeInTheDocument();
 
       // Eth sent notification details
-      const sentToElement = await within(notificationsList).findByText(
-        'Sent to',
-      );
+      const sentToElement =
+        await within(notificationsList).findByText('Sent to');
       expect(sentToElement).toBeInTheDocument();
 
       const addressElement = sentToElement.nextElementSibling;
@@ -173,7 +172,11 @@ describe('Notifications List', () => {
       );
 
       expect(metricsEvent.properties).toMatchObject({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         unread_count: 2,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         read_count: 0,
       });
     });
@@ -198,9 +201,8 @@ describe('Notifications List', () => {
       });
 
       await waitFor(async () => {
-        const notificationsList = await screen.findByTestId(
-          'notifications-list',
-        );
+        const notificationsList =
+          await screen.findByTestId('notifications-list');
         expect(notificationsList).toBeInTheDocument();
 
         expect(notificationsList.childElementCount).toBe(2);

@@ -33,6 +33,7 @@ import {
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
+  getIsUnlocked,
   getUnconnectedAccountAlertEnabledness,
   getUnconnectedAccountAlertShown,
 } from './ducks/metamask/metamask';
@@ -41,6 +42,7 @@ import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { displayStateCorruptionError } from './helpers/utils/state-corruption-html';
+import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 
 const METHOD_START_UI_SYNC = 'startUISync';
 
@@ -241,22 +243,22 @@ async function startApp(metamaskState, opts) {
 }
 
 async function runInitialActions(store) {
-  const state = store.getState();
+  const initialState = store.getState();
 
   // This block autoswitches chains based on the last chain used
   // for a given dapp, when there are no pending confimrations
   // This allows the user to be connected on one chain
   // for one dapp, and automatically change for another
-  const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(state);
+  const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(initialState);
 
   if (networkIdToSwitchTo) {
     await store.dispatch(
       actions.automaticallySwitchNetwork(
         networkIdToSwitchTo,
-        getOriginOfCurrentTab(state),
+        getOriginOfCurrentTab(initialState),
       ),
     );
-  } else if (getSwitchedNetworkDetails(state)) {
+  } else if (getSwitchedNetworkDetails(initialState)) {
     // It's possible that old details could exist if the user
     // opened the toast but then didn't close it
     // Clear out any existing switchedNetworkDetails
@@ -270,6 +272,23 @@ async function runInitialActions(store) {
     const thisPopupId = Date.now();
     global.metamask.id = thisPopupId;
     await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));
+  }
+
+  try {
+    const validateSeedlessPasswordOutdated = async (state) => {
+      const isUnlocked = getIsUnlocked(state);
+      if (isUnlocked) {
+        await store.dispatch(actions.checkIsSeedlessPasswordOutdated());
+      }
+    };
+    await validateSeedlessPasswordOutdated(initialState);
+    // periodically check seedless password outdated when app UI is open
+    setInterval(async () => {
+      const state = store.getState();
+      await validateSeedlessPasswordOutdated(state);
+    }, SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS);
+  } catch (e) {
+    log.error('[Metamask] checkIsSeedlessPasswordOutdated error', e);
   }
 }
 

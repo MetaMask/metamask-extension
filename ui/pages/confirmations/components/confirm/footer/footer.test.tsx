@@ -135,17 +135,17 @@ describe('ConfirmFooter', () => {
       .spyOn(Actions, 'rejectPendingApproval')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockImplementation(() => ({}) as any);
     const updateCustomNonceSpy = jest
       .spyOn(Actions, 'updateCustomNonce')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockImplementation(() => ({}) as any);
     const setNextNonceSpy = jest
       .spyOn(Actions, 'setNextNonce')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockImplementation(() => ({}) as any);
     fireEvent.click(cancelButton);
     expect(rejectSpy).toHaveBeenCalled();
     expect(updateCustomNonceSpy).toHaveBeenCalledWith('');
@@ -159,17 +159,17 @@ describe('ConfirmFooter', () => {
       .spyOn(Actions, 'resolvePendingApproval')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockImplementation(() => ({}) as any);
     const updateCustomNonceSpy = jest
       .spyOn(Actions, 'updateCustomNonce')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockImplementation(() => ({}) as any);
     const setNextNonceSpy = jest
       .spyOn(Actions, 'setNextNonce')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockImplementation(() => ({}) as any);
     fireEvent.click(submitButton);
     expect(resolveSpy).toHaveBeenCalled();
     expect(updateCustomNonceSpy).toHaveBeenCalledWith('');
@@ -197,6 +197,8 @@ describe('ConfirmFooter', () => {
           metamask: {
             signatureSecurityAlertResponses: {
               [mockSecurityAlertId]: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 result_type: BlockaidResultType.Malicious,
               },
             },
