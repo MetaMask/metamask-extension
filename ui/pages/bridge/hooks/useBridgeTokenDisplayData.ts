@@ -54,7 +54,7 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
       bridgeHistoryItem?.quote.srcAsset.symbol ??
       primaryTransaction.sourceTokenSymbol,
     sourceTokenAmountSent: bridgeHistoryItem?.pricingData?.amountSent
-      ? new BigNumber(bridgeHistoryItem.pricingData.amountSent).toFixed(6)
+      ? new BigNumber(bridgeHistoryItem.pricingData.amountSent)
       : primaryTransaction.sourceTokenAmount,
     destinationTokenSymbol:
       bridgeHistoryItem?.quote.destAsset.symbol ??
