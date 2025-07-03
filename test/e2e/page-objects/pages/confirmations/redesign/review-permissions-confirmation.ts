@@ -8,8 +8,16 @@ class ReviewPermissionsConfirmation {
     tag: 'h3',
   };
 
+  private readonly cancelReviewPermissionsButton =
+    '[data-testid="page-container-footer-cancel"]';
+
   private readonly confirmReviewPermissionsButton =
     '[data-testid="page-container-footer-next"]';
+
+  private readonly useEnabledNetworksMessage = {
+    text: 'Use your enabled networks',
+    tag: 'p',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -30,11 +38,36 @@ class ReviewPermissionsConfirmation {
     console.log('Review permissions confirmation page is loaded');
   }
 
+  async clickCancelReviewPermissionsButton(): Promise<void> {
+    console.log('Click cancel review permissions button');
+    await this.driver.clickElement(this.cancelReviewPermissionsButton);
+  }
+
+  async clickConfirmReviewPermissionsButton(): Promise<void> {
+    console.log('Click confirm review permissions button');
+    await this.driver.clickElement(this.confirmReviewPermissionsButton);
+  }
+
   async confirmReviewPermissions(): Promise<void> {
     console.log('Confirm review permissions');
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmReviewPermissionsButton,
     );
+  }
+
+  async check_networkIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Check network ${networkName} is displayed on review permissions confirmation page`,
+    );
+    await this.driver.waitForSelector({
+      text: networkName,
+      tag: 'p',
+    });
+  }
+
+  async check_useEnabledNetworksMessageIsDisplayed(): Promise<void> {
+    console.log('Check use enabled networks message is displayed');
+    await this.driver.waitForSelector(this.useEnabledNetworksMessage);
   }
 }
 

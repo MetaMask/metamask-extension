@@ -156,9 +156,8 @@ class ActivityListPage {
     );
 
     await this.driver.wait(async () => {
-      const transactionActionText = await transactionActions[
-        expectedNumber - 1
-      ].getText();
+      const transactionActionText =
+        await transactionActions[expectedNumber - 1].getText();
       return transactionActionText === expectedAction;
     }, 60000);
 
@@ -235,9 +234,8 @@ class ActivityListPage {
     const transactionAmounts = await this.driver.findElements(
       this.transactionAmountsInActivity,
     );
-    const transactionAmountsText = await transactionAmounts[
-      expectedNumber - 1
-    ].getText();
+    const transactionAmountsText =
+      await transactionAmounts[expectedNumber - 1].getText();
     assert.equal(
       transactionAmountsText,
       expectedAmount,
@@ -318,10 +316,17 @@ class ActivityListPage {
     });
   }
 
-  async check_swapTransactionActivity(swapText: string): Promise<void> {
+  /**
+   * Checks for the presence of a transaction activity item in the activity list by matching the provided text.
+   *
+   * @param txnText - The text to search for within the transaction activity list. (e.g., "Swap SOL to USDC")
+   * @returns A promise that resolves when the transaction activity with the specified text is found.
+   */
+  async check_transactionActivityByText(txnText: string): Promise<void> {
+    console.log(`Check transaction activity with text: ${txnText}`);
     await this.driver.waitForSelector({
-      text: swapText,
-      tag: 'p',
+      text: txnText,
+      css: this.activityListAction,
     });
   }
 }

@@ -175,7 +175,9 @@
   },
   "NetworkOrderController": {
     "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
-    "enabledNetworkMap": { "0x539": "boolean" }
+    "enabledNetworkMap": {
+      "eip155": "object"
+    }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -272,6 +274,7 @@
     },
     "cacheTimestamp": "number"
   },
+  "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "signatureRequests": "object",

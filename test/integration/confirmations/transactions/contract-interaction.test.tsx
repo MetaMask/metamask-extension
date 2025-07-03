@@ -325,14 +325,12 @@ describe('Contract Interaction Confirmation', () => {
     const gasFeesSection = await screen.findByTestId('gas-fee-section');
     expect(gasFeesSection).toBeInTheDocument();
 
-    const editGasFeesRow = await within(gasFeesSection).findByTestId(
-      'edit-gas-fees-row',
-    );
+    const editGasFeesRow =
+      await within(gasFeesSection).findByTestId('edit-gas-fees-row');
     expect(editGasFeesRow).toHaveTextContent(tEn('networkFee') as string);
 
-    const firstGasField = await within(editGasFeesRow).findByTestId(
-      'first-gas-field',
-    );
+    const firstGasField =
+      await within(editGasFeesRow).findByTestId('first-gas-field');
     expect(firstGasField).toHaveTextContent('0.0001');
     expect(editGasFeesRow).toContainElement(
       await screen.findByTestId('edit-gas-fee-icon'),
@@ -343,9 +341,8 @@ describe('Contract Interaction Confirmation', () => {
     );
     expect(gasFeeSpeed).toHaveTextContent(tEn('speed') as string);
 
-    const gasTimingTime = await within(gasFeeSpeed).findByTestId(
-      'gas-timing-time',
-    );
+    const gasTimingTime =
+      await within(gasFeeSpeed).findByTestId('gas-timing-time');
     expect(gasTimingTime).toHaveTextContent('~0 sec');
   });
 

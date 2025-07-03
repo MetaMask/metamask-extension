@@ -88,6 +88,10 @@ PATH_NAME_MAP.set(
   'Reveal Secret Recovery Phrase List Page',
 );
 
+export const SECURITY_PASSWORD_CHANGE_ROUTE =
+  '/settings/security-and-privacy/password-change';
+PATH_NAME_MAP.set(SECURITY_PASSWORD_CHANGE_ROUTE, 'Change Password');
+
 export const BACKUPANDSYNC_ROUTE =
   '/settings/security-and-privacy/backup-and-sync';
 PATH_NAME_MAP.set(BACKUPANDSYNC_ROUTE, 'Backup And Sync Settings Page');
@@ -357,3 +361,6 @@ export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 
 export const DEEP_LINK_ROUTE = '/link';
 PATH_NAME_MAP.set(DEEP_LINK_ROUTE, 'Deep link Redirect Page');
+
+export const WALLET_DETAILS_ROUTE = '/wallet-details/:id';
+PATH_NAME_MAP.set(WALLET_DETAILS_ROUTE, 'Wallet Details Page');
