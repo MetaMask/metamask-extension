@@ -26,9 +26,6 @@ type UseBridgeDefaultToTokenReturnType = {
   defaultToToken: BridgeToken | null;
 };
 
-/**
- * Gets the image for a token based on chain and address
- */
 const getTokenImage = (
   chainId: ChainId | Hex,
   address?: string,
@@ -54,9 +51,6 @@ const getTokenImage = (
   return (assetIdToUse && getAssetImageUrl(assetIdToUse, caipChainId)) ?? '';
 };
 
-/**
- * Creates a properly typed BridgeToken
- */
 const createBridgeToken = (
   tokenData: {
     address: string;
@@ -79,17 +73,6 @@ const createBridgeToken = (
   };
 };
 
-/**
- * UseBridgeDefaultToToken - Determines default destination chain and token
- *
- * Logic:
- * 1. Default destination chain = source chain (same-chain swap by default)
- * 2. If source is native token -> default to USDC
- * 3. If source is USDC (or other stablecoin) -> default to native token
- * 4. Otherwise -> default to common pair (usually USDC)
- *
- * @returns UseBridgeDefaultToTokenReturnType
- */
 function useBridgeDefaultToToken(): UseBridgeDefaultToTokenReturnType {
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
