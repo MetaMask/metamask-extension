@@ -239,6 +239,8 @@ export const MultichainBridgeQuoteCard = () => {
                           price_impact: Number(
                             activeQuote.quote?.priceData?.priceImpact ?? '0',
                           ),
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           gas_included: Boolean(activeQuote.quote?.gasIncluded),
                         },
                       ),
