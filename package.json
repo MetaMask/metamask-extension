@@ -16,6 +16,7 @@
     "start:with-state": "node ./app/scripts/start-with-wallet-state.mjs",
     "start:mv2": "ENABLE_MV3=false yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:flask": "yarn start --build-type flask",
+    "start:beta": "yarn start --build-type beta",
     "start:flask:mv2": "ENABLE_MV3=false yarn start --build-type flask --apply-lavamoat=false --snow=false",
     "start:lavamoat": "yarn build:dev dev --apply-lavamoat=true",
     "dist": "yarn build dist",
