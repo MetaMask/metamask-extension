@@ -41,7 +41,11 @@ describe('useConfirmationAlertActions', () => {
   it('opens portfolio tab if action key is Buy', () => {
     processAlertActionKey(AlertActionKey.Buy);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(global.platform.openTab).toHaveBeenCalledTimes(1);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: EXPECTED_BUY_URL,
     });

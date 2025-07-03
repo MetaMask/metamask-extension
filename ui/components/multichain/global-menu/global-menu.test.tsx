@@ -46,6 +46,8 @@ describe('Global Menu', () => {
     const { getByTestId } = render();
     fireEvent.click(getByTestId('global-menu-support'));
     await waitFor(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(global.platform.openTab).toHaveBeenCalled();
     });
   });
@@ -91,6 +93,8 @@ describe('Global Menu', () => {
       document.querySelector('[data-testid="global-menu-expand"]') as Element,
     );
     await waitFor(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(global.platform.openExtensionInBrowser).toHaveBeenCalled();
     });
   });

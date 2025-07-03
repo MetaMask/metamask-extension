@@ -42,11 +42,17 @@ describe('Approval Utils', () => {
         approvalController,
       });
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(approvalController.reject).toHaveBeenCalledTimes(2);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(approvalController.reject).toHaveBeenCalledWith(
         ID_MOCK,
         providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
       );
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(approvalController.reject).toHaveBeenCalledWith(
         ID_MOCK_2,
         providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
@@ -65,7 +71,11 @@ describe('Approval Utils', () => {
 
       rejectAllApprovals({ approvalController });
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(approvalController.accept).toHaveBeenCalledTimes(1);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(approvalController.accept).toHaveBeenCalledWith(ID_MOCK, null);
     });
 
@@ -82,7 +92,11 @@ describe('Approval Utils', () => {
 
       rejectAllApprovals({ approvalController });
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(approvalController.accept).toHaveBeenCalledTimes(1);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(approvalController.accept).toHaveBeenCalledWith(ID_MOCK, false);
     });
 
@@ -124,7 +138,11 @@ describe('Approval Utils', () => {
         origin,
       });
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(approvalController.reject).toHaveBeenCalledTimes(1);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(approvalController.reject).toHaveBeenCalledWith(
         ID_MOCK,
         providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),

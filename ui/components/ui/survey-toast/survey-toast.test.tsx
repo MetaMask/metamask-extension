@@ -127,6 +127,8 @@ describe('SurveyToast', () => {
 
     fireEvent.click(screen.getByText(surveyData.valid.cta));
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: surveyData.valid.url,
     });

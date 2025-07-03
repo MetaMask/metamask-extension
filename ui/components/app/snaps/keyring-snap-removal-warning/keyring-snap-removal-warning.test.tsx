@@ -145,6 +145,8 @@ describe('Keyring Snap Remove Warning', () => {
     fireEvent.click(accountLink[0]);
 
     await waitFor(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(global.platform.openTab).toHaveBeenCalled();
     });
   });

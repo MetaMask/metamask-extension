@@ -141,6 +141,8 @@ describe('DelegationController:awaitDeleteDelegationEntry', () => {
       txMeta,
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(initMessenger.subscribe).toHaveBeenCalledWith(
       'TransactionController:transactionStatusUpdated',
       expect.any(Function),
@@ -164,6 +166,8 @@ describe('DelegationController:awaitDeleteDelegationEntry', () => {
     });
 
     expect(deleteSpy).toHaveBeenCalledWith(mockHash);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(initMessenger.unsubscribe).toHaveBeenCalled();
   });
 
@@ -184,6 +188,8 @@ describe('DelegationController:awaitDeleteDelegationEntry', () => {
     });
 
     expect(deleteSpy).not.toHaveBeenCalled();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(initMessenger.unsubscribe).toHaveBeenCalled();
   });
 
@@ -215,6 +221,8 @@ describe('DelegationController:awaitDeleteDelegationEntry', () => {
     });
 
     expect(deleteSpy).toHaveBeenCalledWith(mockHash);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(initMessenger.unsubscribe).toHaveBeenCalled();
   });
 
@@ -235,6 +243,8 @@ describe('DelegationController:awaitDeleteDelegationEntry', () => {
     });
 
     expect(deleteSpy).not.toHaveBeenCalled();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(initMessenger.unsubscribe).toHaveBeenCalled();
   });
 });

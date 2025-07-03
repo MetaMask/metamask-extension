@@ -40,6 +40,8 @@ type Route = {
   signed: boolean;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+// eslint-disable-next-line @typescript-eslint/unbound-method
 const { getExtensionURL } = globalThis.platform;
 
 function set404(
