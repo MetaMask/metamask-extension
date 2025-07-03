@@ -259,28 +259,17 @@ async function runInitialActions(store) {
   }
 
   try {
-    let isUnlocked = getIsUnlocked(initialState);
-    if (isUnlocked) {
-      const isPwOutdated = await store.dispatch(
-        actions.checkIsSeedlessPasswordOutdated(),
-      );
-      if (isPwOutdated) {
-        await actions.forceUpdateMetamaskState(store.dispatch);
+    const validateSeedlessPasswordOutdated = async (state) => {
+      const isUnlocked = getIsUnlocked(state);
+      if (isUnlocked) {
+        await store.dispatch(actions.checkIsSeedlessPasswordOutdated());
       }
-    }
-
+    };
+    await validateSeedlessPasswordOutdated(initialState);
     // periodically check seedless password outdated when app UI is open
     setInterval(async () => {
       const state = store.getState();
-      isUnlocked = getIsUnlocked(state);
-      if (isUnlocked) {
-        const isPwOutdated = await store.dispatch(
-          actions.checkIsSeedlessPasswordOutdated(),
-        );
-        if (isPwOutdated) {
-          await actions.forceUpdateMetamaskState(store.dispatch);
-        }
-      }
+      await validateSeedlessPasswordOutdated(state);
     }, SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS);
   } catch (e) {
     log.error('[Metamask] checkIsSeedlessPasswordOutdated error', e);

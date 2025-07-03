@@ -90,13 +90,7 @@ export const ImportSrp = () => {
 
   async function importWallet() {
     if (isSocialLoginEnabled) {
-      const isPasswordOutdated = await dispatch(
-        actions.checkIsSeedlessPasswordOutdated(),
-      );
-      if (isPasswordOutdated) {
-        await actions.forceUpdateMetamaskState(dispatch);
-        return;
-      }
+      await dispatch(actions.checkIsSeedlessPasswordOutdated());
     }
 
     const joinedSrp = secretRecoveryPhrase.join(' ');

@@ -429,6 +429,9 @@ export function checkIsSeedlessPasswordOutdated(
         'checkIsSeedlessPasswordOutdated',
         [skipCache],
       );
+      if (isPasswordOutdated) {
+        await forceUpdateMetamaskState(dispatch);
+      }
       return isPasswordOutdated;
     } catch (error) {
       dispatch(displayWarning(error));
