@@ -164,7 +164,6 @@ describe('createTrustSignalsMiddleware', () => {
       const next = jest.fn();
 
       await middleware(req, res, next);
-      console.log(req.mainFrameOrigin);
 
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
