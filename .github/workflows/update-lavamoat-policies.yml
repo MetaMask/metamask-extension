@@ -100,7 +100,7 @@ jobs:
       matrix:
         # Ensure this is synchronized with the list below in the "commit-updated-policies" job
         # and with the build type list in `builds.yml`
-        build-type: [main, beta, flask]
+        build-type: [main, beta, experimental, flask]
     name: Update LavaMoat ${{ matrix.build-type }} application policy
     runs-on: ubuntu-latest
     needs:
