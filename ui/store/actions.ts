@@ -79,6 +79,7 @@ import {
   getSelectedInternalAccount,
   getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
+  getIsSocialLoginFlow,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -140,6 +141,7 @@ import {
   getUseSmartAccount,
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -282,7 +284,8 @@ export function restoreSocialBackupAndGetSeedPhrase(
     try {
       // get the first seed phrase from the array, this is the oldest seed phrase
       // and we will use it to create the initial vault
-      const [firstSeedPhrase] = await fetchAllSecretData(password);
+      const [firstSeedPhrase, ...remainingSeedPhrases] =
+        await fetchAllSecretData(password);
       if (!firstSeedPhrase) {
         throw new Error('No seed phrase found');
       }
@@ -298,14 +301,81 @@ export function restoreSocialBackupAndGetSeedPhrase(
         encodedSeedPhrase,
       ]);
 
+      // restore the remaining Mnemonics/SeedPhrases to the vault
+      if (remainingSeedPhrases.length > 0) {
+        await restoreSeedPhrasesToVault(remainingSeedPhrases);
+      }
+
       await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
 
       return mnemonic;
     } catch (error) {
-      console.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
+      log.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
       dispatch(hideLoadingIndication());
       dispatch(displayWarning(error.message));
+      throw error;
+    }
+  };
+}
+
+export function syncSeedPhrases(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      await submitRequestToBackground('syncSeedPhrases');
+    } catch (error) {
+      log.error('[syncSeedPhrases] error', error);
+      dispatch(displayWarning(error.message));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Changes the password of the currently unlocked account.
+ *
+ * This function changes the password of the currently unlocked account (Keyring Vault) and
+ * also change the wallet password of the social login account.
+ *
+ * This changes affects the multiple devices sync, i.e. users will have to unlock the account
+ * using new password on any other devices where the account is unlocked.
+ *
+ * @param newPassword - The new password.
+ * @param oldPassword - The old password.
+ */
+export function changePassword(
+  newPassword: string,
+  oldPassword: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
+    const isSocialLoginFlow = getIsSocialLoginFlow(getState());
+    const isSeedlessOnboardingFeatureEnabled =
+      getIsSeedlessOnboardingFeatureEnabled();
+    try {
+      await keyringChangePassword(newPassword);
+      if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
+        try {
+          await socialSyncChangePassword(newPassword, oldPassword);
+        } catch (error) {
+          // revert the keyring password change
+          await keyringChangePassword(oldPassword);
+          throw error;
+        }
+      }
+    } catch (error) {
+      dispatch(displayWarning(error));
       throw error;
     }
   };
@@ -424,6 +494,22 @@ export function importMnemonicToVault(
         return Promise.reject(err);
       });
   };
+}
+
+/**
+ * Restores/syncs multiple seed phrases from the social login flow to the keyring vault.
+ *
+ * @param seedPhrases - The seed phrases.
+ */
+export async function restoreSeedPhrasesToVault(
+  seedPhrases: Uint8Array[],
+): Promise<void> {
+  try {
+    await submitRequestToBackground('restoreSeedPhrasesToVault', [seedPhrases]);
+  } catch (error) {
+    console.error('[restoreSeedPhrasesToVault] error', error);
+    throw error;
+  }
 }
 
 export function generateNewMnemonicAndAddToVault(): ThunkAction<
@@ -588,6 +674,20 @@ export function verifyPassword(password: string): Promise<boolean> {
       resolve(true);
     });
   });
+}
+
+export function socialSyncChangePassword(
+  newPassword: string,
+  currentPassword: string,
+): Promise<void> {
+  return submitRequestToBackground('socialSyncChangePassword', [
+    newPassword,
+    currentPassword,
+  ]);
+}
+
+export function keyringChangePassword(newPassword: string): Promise<void> {
+  return submitRequestToBackground('keyringChangePassword', [newPassword]);
 }
 
 export async function getSeedPhrase(password: string, keyringId: string) {
@@ -3831,9 +3931,8 @@ export async function forceUpdateMetamaskState(
   let pendingPatches: Patch[] | undefined;
 
   try {
-    pendingPatches = await submitRequestToBackground<Patch[]>(
-      'getStatePatches',
-    );
+    pendingPatches =
+      await submitRequestToBackground<Patch[]>('getStatePatches');
   } catch (error) {
     dispatch(displayWarning(error));
     throw error;

@@ -43,6 +43,7 @@ import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenD
 import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
+import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -135,7 +136,7 @@ export function useTransactionDisplayData(transactionGroup) {
 
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
-  const { type, txParamsOriginal } = initialTransaction;
+  const { transferInformation, type, txParamsOriginal } = initialTransaction;
   const { from, to } = initialTransaction.txParams || {};
 
   const isUnifiedSwapTx =
@@ -256,11 +257,19 @@ export function useTransactionDisplayData(transactionGroup) {
         tokenId === transactionDataTokenId,
     );
 
-  const tokenDisplayValue = useTokenDisplayValue(
+  let tokenDisplayValue = useTokenDisplayValue(
     transactionData,
     token,
     isTokenCategory,
   );
+
+  if (transferInformation?.decimals) {
+    tokenDisplayValue = calcTokenAmount(
+      transferInformation.amount,
+      transferInformation.decimals,
+    ).toString(10);
+  }
+
   const tokenFiatAmount = useTokenFiatAmount(
     token?.address,
     tokenDisplayValue,
@@ -310,8 +319,8 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitleContainsOrigin = true;
     primarySuffix = isViewingReceivedTokenFromSwap
       ? currentAsset.symbol
-      : bridgeTokenDisplayData.sourceTokenSymbol ??
-        initialTransaction.sourceTokenSymbol;
+      : (bridgeTokenDisplayData.sourceTokenSymbol ??
+        initialTransaction.sourceTokenSymbol);
     primaryDisplayValue =
       bridgeTokenDisplayData.sourceTokenAmountSent ?? swapTokenValue;
     secondaryDisplayValue =
@@ -483,6 +492,10 @@ export function useTransactionDisplayData(transactionGroup) {
     },
     transactionGroup?.initialTransaction?.chainId,
   );
+
+  if (!recipientAddress && transferInformation) {
+    recipientAddress = to;
+  }
 
   return {
     title,
