@@ -148,7 +148,7 @@ export class LedgerOffscreenBridge
           if (response?.success) {
             resolve(response.payload || response.success);
           } else {
-            // need to process the payload to get the error
+            // Need to process the payload to get the error
             // and then reject with the error
             const error = response?.payload?.error;
 
