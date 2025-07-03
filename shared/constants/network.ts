@@ -641,6 +641,8 @@ export const MAINNET_CHAINS = [
   { chainId: CHAIN_IDS.LINEA_MAINNET, rpcUrl: LINEA_MAINNET_RPC_URL },
 ];
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const typedCapitalize = <K extends string>(k: K): Capitalize<K> =>
   capitalize(k) as Capitalize<typeof k>;
 

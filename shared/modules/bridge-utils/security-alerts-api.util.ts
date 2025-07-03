@@ -186,6 +186,8 @@ export async function fetchTxAlerts({
   const body = {
     method: SolMethod.SignAndSendTransaction,
     encoding: 'base64',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     account_address: Buffer.from(base58.decode(accountAddress)).toString(
       'base64',
     ),
@@ -220,7 +222,8 @@ export async function fetchTxAlerts({
   }
 
   if (respBody.status === 'ERROR') {
-    // eslint-disable-next-line camelcase
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line camelcase, @typescript-eslint/naming-convention
     const { error_details } = respBody;
     return {
       titleId: 'txAlertTitle',
