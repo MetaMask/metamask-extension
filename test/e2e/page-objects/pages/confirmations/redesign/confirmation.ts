@@ -161,6 +161,8 @@ class Confirmation {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_nameIsDisplayed(
     expectedValue: string,
     isSaved: boolean,
@@ -216,6 +218,8 @@ class Confirmation {
     await this.driver.clickElement(this.saveButtonSelector);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_proposedNames(
     value: string,
     options: [string, string][],
