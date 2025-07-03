@@ -13,7 +13,7 @@ import { addPollingTokenToAppState, removePollingTokenFromAppState } from '../st
  *
  * @returns polling token that can be used to stop polling.
  */
-async function deFiStartPolling(): Promise<string> {
+export async function deFiStartPolling(): Promise<string> {
   const pollingToken = await submitRequestToBackground<string>('deFiStartPolling', [
     null,
   ]);
@@ -27,12 +27,12 @@ async function deFiStartPolling(): Promise<string> {
  *
  * @param pollingToken - Poll token received from calling deFiStartPolling
  */
-async function deFiStopPolling(pollingToken: string) {
+export async function deFiStopPolling(pollingToken: string) {
   await submitRequestToBackground('deFiStopPolling', [pollingToken]);
   await removePollingTokenFromAppState(pollingToken);
 }
 
-const useDeFiPolling = () => {
+export const useDeFiPolling = () => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isUnlocked = useSelector(getIsUnlocked);
   const enabled = completedOnboarding && isUnlocked;
@@ -45,5 +45,3 @@ const useDeFiPolling = () => {
 
   return {};
 };
-
-export default useDeFiPolling;
