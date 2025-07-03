@@ -127,9 +127,8 @@ describe('Notifications List', () => {
       ).toBeInTheDocument();
 
       // Eth sent notification details
-      const sentToElement = await within(notificationsList).findByText(
-        'Sent to',
-      );
+      const sentToElement =
+        await within(notificationsList).findByText('Sent to');
       expect(sentToElement).toBeInTheDocument();
 
       const addressElement = sentToElement.nextElementSibling;
@@ -198,9 +197,8 @@ describe('Notifications List', () => {
       });
 
       await waitFor(async () => {
-        const notificationsList = await screen.findByTestId(
-          'notifications-list',
-        );
+        const notificationsList =
+          await screen.findByTestId('notifications-list');
         expect(notificationsList).toBeInTheDocument();
 
         expect(notificationsList.childElementCount).toBe(2);
