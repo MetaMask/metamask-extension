@@ -70,6 +70,7 @@ const createBridgeToken = (
     image: getTokenImage(chainId, tokenData.address, tokenData.assetId),
     balance: '0',
     string: '0',
+    occurrences: 2,
   };
 };
 
