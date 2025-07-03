@@ -1,11 +1,12 @@
 import EventEmitter from 'events';
-import React, { useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useContext, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
   Box,
   Button,
   ButtonSize,
+  Checkbox,
   FormTextField,
   FormTextFieldSize,
   Text,
@@ -29,6 +30,14 @@ import PasswordForm from '../../../../components/app/password-form/password-form
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
 import { setShowPasswordChangeToast } from '../../../../components/app/toast-master/utils';
 import { PasswordChangeToastType } from '../../../../../shared/constants/app-state';
+import { getIsSocialLoginFlow } from '../../../../selectors';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
   VerifyCurrentPassword: 1,
@@ -40,6 +49,8 @@ const ChangePassword = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
+  const trackEvent = useContext(MetaMetricsContext);
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const animationEventEmitter = useRef(new EventEmitter());
   const [step, setStep] = useState(ChangePasswordSteps.VerifyCurrentPassword);
 
@@ -47,7 +58,10 @@ const ChangePassword = () => {
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
     useState(false);
 
+  const [termsChecked, setTermsChecked] = useState(false);
   const [newPassword, setNewPassword] = useState('');
+  const [showChangePasswordWarning, setShowChangePasswordWarning] =
+    useState(false);
 
   const renderMascot = () => {
     if (isFlask()) {
@@ -79,12 +93,9 @@ const ChangePassword = () => {
     }
   };
 
-  const handleSubmitNewPassword = async () => {
-    if (!newPassword) {
-      return;
-    }
-
+  const onChangePassword = async () => {
     try {
+      setShowChangePasswordWarning(false);
       setStep(ChangePasswordSteps.ChangePasswordLoading);
       await dispatch(changePassword(newPassword, currentPassword));
 
@@ -97,6 +108,33 @@ const ChangePassword = () => {
       dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Errored));
     }
   };
+
+  const handleLearnMoreClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.stopPropagation();
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.ExternalLinkClicked,
+      properties: {
+        text: 'Learn More',
+        location: 'change_password',
+        url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
+      },
+    });
+  };
+
+  const createPasswordLink = (
+    <a
+      onClick={handleLearnMoreClick}
+      key="change-password__link-text"
+      href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span className="change-password__link-text">
+        {t('learnMoreUpperCaseWithDot')}
+      </span>
+    </a>
+  );
 
   return (
     <Box padding={4} className="change-password">
@@ -158,19 +196,55 @@ const ChangePassword = () => {
           height={BlockSize.Full}
           onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-            handleSubmitNewPassword();
+            if (isSocialLoginFlow) {
+              setShowChangePasswordWarning(true);
+            } else {
+              onChangePassword();
+            }
           }}
         >
           <Box>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+              marginBottom={4}
+              as="h2"
+            >
+              {isSocialLoginFlow
+                ? t('createPasswordDetailsSocial')
+                : t('createPasswordDetails')}
+            </Text>
             <PasswordForm
               onChange={(password) => setNewPassword(password)}
               pwdInputTestId="change-password-input"
               confirmPwdInputTestId="change-password-confirm-input"
             />
+            <Box
+              className="create-password__terms-container"
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.spaceBetween}
+              marginTop={6}
+            >
+              <Checkbox
+                inputProps={{ 'data-testid': 'change-password-terms' }}
+                alignItems={AlignItems.flexStart}
+                isChecked={termsChecked}
+                onChange={() => {
+                  setTermsChecked(!termsChecked);
+                }}
+                label={
+                  <>
+                    {t('passwordTermsWarning')}
+                    &nbsp;
+                    {createPasswordLink}
+                  </>
+                }
+              />
+            </Box>
           </Box>
           <Button
             type="submit"
-            disabled={!newPassword}
+            disabled={!currentPassword || !newPassword || !termsChecked}
             data-testid="change-password-button"
             block
           >
@@ -195,6 +269,14 @@ const ChangePassword = () => {
             {t('changePasswordLoadingNote')}
           </Text>
         </Box>
+      )}
+      {showChangePasswordWarning && (
+        <ChangePasswordWarning
+          onConfirm={() => {
+            onChangePassword();
+          }}
+          onCancel={() => setShowChangePasswordWarning(false)}
+        />
       )}
     </Box>
   );
