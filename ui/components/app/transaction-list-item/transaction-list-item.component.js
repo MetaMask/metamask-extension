@@ -35,9 +35,6 @@ import {
   BadgeWrapperAnchorElementShape,
   Box,
   Text,
-  Icon,
-  IconName,
-  IconSize,
 } from '../../component-library';
 
 import {
@@ -83,7 +80,7 @@ function TransactionListItemInner({
 }) {
   const t = useI18nContext();
   const history = useHistory();
-  const { hasCancelled, initialTransaction } = transactionGroup;
+  const { hasCancelled } = transactionGroup;
   const [showDetails, setShowDetails] = useState(false);
   const [showCancelEditGasPopover, setShowCancelEditGasPopover] =
     useState(false);

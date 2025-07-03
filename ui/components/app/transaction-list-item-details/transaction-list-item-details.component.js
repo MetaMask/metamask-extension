@@ -19,6 +19,7 @@ import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,

@@ -476,9 +476,7 @@ export default function TransactionList({
     () =>
       groupEvmTransactionsByDate(
         getFilteredTransactionGroups(
-          [
-            ...unfilteredPendingTransactions,
-          ],
+          [...unfilteredPendingTransactions],
           hideTokenTransactions,
           tokenAddress,
           chainId,

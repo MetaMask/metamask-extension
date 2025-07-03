@@ -61,9 +61,7 @@ import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
 import useUpdateSwapsState from '../../../../pages/swaps/hooks/useUpdateSwapsState';
 import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
-import {
-  smartTransactionsListSelector,
-} from '../../../../selectors';
+import { smartTransactionsListSelector } from '../../../../selectors';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
 import { trace, TraceName } from '../../../../../shared/lib/trace';

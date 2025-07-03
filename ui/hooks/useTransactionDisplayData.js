@@ -135,7 +135,7 @@ export function useTransactionDisplayData(transactionGroup) {
 
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
-  const { transferInformation, type, txParamsOriginal } = initialTransaction;
+  const { transferInformation, type } = initialTransaction;
   const { from, to } = initialTransaction.txParams || {};
 
   const isUnifiedSwapTx =
@@ -160,8 +160,8 @@ export function useTransactionDisplayData(transactionGroup) {
   let subtitle;
   let subtitleContainsOrigin = false;
   let recipientAddress = to;
-  let senderAddress = from;
-  let transactionData = initialTransaction?.txParams?.data;
+  const senderAddress = from;
+  const transactionData = initialTransaction?.txParams?.data;
 
   // This value is used to determine whether we should look inside txParams.data
   // to pull out and render token related information

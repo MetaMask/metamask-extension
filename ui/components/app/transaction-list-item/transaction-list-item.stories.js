@@ -7,7 +7,6 @@ import { Provider } from 'react-redux';
 import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-import { REDEEM_DELEGATIONS_SELECTOR } from '../../../../shared/lib/delegation/delegation';
 import TransactionListItem from '.';
 
 /**

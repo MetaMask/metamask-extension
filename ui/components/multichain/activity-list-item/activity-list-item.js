@@ -14,7 +14,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text, Icon, IconName, IconSize } from '../../component-library';
+import { Box, Text } from '../../component-library';
 
 export const ActivityListItem = ({
   topContent,
