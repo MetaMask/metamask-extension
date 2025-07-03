@@ -58,7 +58,7 @@ describe('SimulationSettingsModal', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
-    updateEditableParamsMock.mockReturnValue(async () => ({} as never));
+    updateEditableParamsMock.mockReturnValue(async () => ({}) as never);
   });
 
   describe('renders', () => {
