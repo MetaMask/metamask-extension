@@ -31,11 +31,13 @@ export const loginWithoutBalanceValidation = async (
  * @param driver - The webdriver instance.
  * @param localNode - The local node server instance
  * @param password - The password used to unlock the wallet.
+ * @param value - The balance value to be checked
  */
 export const loginWithBalanceValidation = async (
   driver: Driver,
   localNode?: Ganache | Anvil,
   password?: string,
+  value?: string,
 ) => {
   await loginWithoutBalanceValidation(driver, password);
   const homePage = new HomePage(driver);
@@ -44,6 +46,6 @@ export const loginWithBalanceValidation = async (
   if (localNode) {
     await homePage.check_localNodeBalanceIsDisplayed(localNode);
   } else {
-    await homePage.check_expectedBalanceIsDisplayed();
+    await homePage.check_expectedBalanceIsDisplayed(value);
   }
 };

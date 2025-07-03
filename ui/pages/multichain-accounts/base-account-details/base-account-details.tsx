@@ -1,16 +1,26 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { getUseBlockie } from '../../../selectors';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import {
+  getAccountTypeForKeyring,
+  getHardwareWalletType,
+  getHDEntropyIndex,
+  getUseBlockie,
+  isSolanaAccount,
+} from '../../../selectors';
 import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
   Box,
+  Button,
   ButtonIcon,
   ButtonIconSize,
+  ButtonSize,
+  ButtonVariant,
 } from '../../../components/component-library';
 import {
   Content,
@@ -19,6 +29,7 @@ import {
 } from '../../../components/multichain/pages/page';
 import {
   BackgroundColor,
+  BlockSize,
   IconColor,
 } from '../../../helpers/constants/design-system';
 import {
@@ -31,11 +42,23 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AccountDetailsRow } from '../../../components/multichain-accounts/account-details-row';
 import { EditAccountNameModal } from '../../../components/multichain-accounts/edit-account-name-modal';
-import { setAccountDetailsAddress } from '../../../store/actions';
+import {
+  removeAccount,
+  setAccountDetailsAddress,
+} from '../../../store/actions';
 import {
   getWalletIdAndNameByAccountAddress,
   WalletMetadata,
 } from '../../../selectors/multichain-accounts/account-tree';
+import { KeyringType } from '../../../../shared/constants/keyring';
+import { AccountRemoveModal } from '../../../components/multichain-accounts/account-remove-modal';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { formatAccountType } from '../../../helpers/utils/metrics';
 
 type BaseAccountDetailsProps = {
   children?: React.ReactNode | React.ReactNode[];
@@ -52,6 +75,10 @@ export const BaseAccountDetails = ({
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
+  const chainId = useSelector(getCurrentChainId);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
+  const deviceName = useSelector(getHardwareWalletType);
 
   const {
     metadata: { name },
@@ -68,6 +95,9 @@ export const BaseAccountDetails = ({
     history.push(`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/${address}`);
   };
 
+  const { keyring } = account.metadata;
+  const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
+
   const handleNavigation = useCallback(() => {
     dispatch(setAccountDetailsAddress(''));
     history.push(DEFAULT_ROUTE);
@@ -79,6 +109,40 @@ export const BaseAccountDetails = ({
   ) as WalletMetadata;
 
   const walletRoute = `/wallet-details/${encodeURIComponent(walletId)}`;
+
+  const isRemovable =
+    account.metadata.keyring.type !== KeyringType.hdKeyTree &&
+    !isSolanaAccount(account);
+
+  const [showAccountRemoveModal, setShowAccountRemoveModal] = useState(false);
+
+  const handleAccountRemoveAction = useCallback(() => {
+    dispatch(removeAccount(account.address));
+
+    trackEvent({
+      event: MetaMetricsEventName.AccountRemoved,
+      category: MetaMetricsEventCategory.Accounts,
+      properties: {
+        account_hardware_type: deviceName,
+        chain_id: chainId,
+        account_type: accountType,
+        hd_entropy_index: hdEntropyIndex,
+        caip_chain_id: formatChainIdToCaip(chainId),
+      },
+    });
+
+    dispatch(setAccountDetailsAddress(''));
+    history.push(DEFAULT_ROUTE);
+  }, [
+    dispatch,
+    account.address,
+    trackEvent,
+    deviceName,
+    chainId,
+    accountType,
+    hdEntropyIndex,
+    history,
+  ]);
 
   return (
     <Page
@@ -168,12 +232,34 @@ export const BaseAccountDetails = ({
           />
         </Box>
         {children}
+        {isRemovable && (
+          <Box className="multichain-account-details__remove_account_section">
+            <Button
+              size={ButtonSize.Lg}
+              width={BlockSize.Full}
+              variant={ButtonVariant.Secondary}
+              danger={true}
+              onClick={() => setShowAccountRemoveModal(true)}
+            >
+              {t('removeAccount')}
+            </Button>
+          </Box>
+        )}
         {isEditingAccountName && (
           <EditAccountNameModal
             isOpen={isEditingAccountName}
             onClose={() => setIsEditingAccountName(false)}
             currentAccountName={name}
             address={address}
+          />
+        )}
+        {showAccountRemoveModal && (
+          <AccountRemoveModal
+            isOpen={showAccountRemoveModal}
+            onClose={() => setShowAccountRemoveModal(false)}
+            onSubmit={handleAccountRemoveAction}
+            accountName={account.metadata.name}
+            accountAddress={account.address}
           />
         )}
       </Content>
