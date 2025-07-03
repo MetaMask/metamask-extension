@@ -241,11 +241,11 @@ function getCopyTargets(
             dest: `ocap-kernel/kernel-panel.css`,
           },
           {
-            src: `./app/devtools.html`,
+            src: `./app/ocap-kernel/devtools.html`,
             dest: `ocap-kernel/devtools.html`,
           },
           {
-            src: `./app/kernel-panel.html`,
+            src: `./app/ocap-kernel/kernel-panel.html`,
             dest: `ocap-kernel/kernel-panel.html`,
           },
         ]

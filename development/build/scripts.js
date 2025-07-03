@@ -259,12 +259,21 @@ function createScriptTasks({
     };
 
     // make each bundle run in a separate process
-    const subtasks = [
+    const allSubtasks = [
       standardSubtask,
       contentscriptSubtask,
       disableConsoleSubtask,
       installSentrySubtask,
-    ];
+    ].map((subtask) =>
+      runInChildProcess(subtask, {
+        shouldIncludeSnow,
+        applyLavaMoat,
+        buildType,
+        isLavaMoat,
+        policyOnly,
+        shouldLintFenceFiles,
+      }),
+    );
 
     // task for building devtools and kernel-panel
     if (shouldIncludeOcapKernel) {
@@ -276,19 +285,9 @@ function createScriptTasks({
         `${taskPrefix}:kernel-panel`,
         createKernelPanelBundle({ buildTarget }),
       );
-      subtasks.push(devtoolsSubtask, kernelPanelSubtask);
+      allSubtasks.push(devtoolsSubtask, kernelPanelSubtask);
     }
 
-    const allSubtasks = subtasks.map((subtask) =>
-      runInChildProcess(subtask, {
-        shouldIncludeSnow,
-        applyLavaMoat,
-        buildType,
-        isLavaMoat,
-        policyOnly,
-        shouldLintFenceFiles,
-      }),
-    );
     // make a parent task that runs each task in a child thread
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
@@ -354,8 +353,8 @@ function createScriptTasks({
       browserPlatforms,
       buildTarget,
       buildType,
-      destFilepath: `ocap-kernel/scripts/${label}.js`,
-      entryFilepath: `./app/scripts/${label}.ts`,
+      destFilepath: `ocap-kernel/${label}.js`,
+      entryFilepath: `./app/ocap-kernel/${label}.ts`,
       ignoredFiles,
       label,
       policyOnly,
@@ -378,8 +377,8 @@ function createScriptTasks({
       browserPlatforms,
       buildTarget,
       buildType,
-      destFilepath: `ocap-kernel/scripts/${label}.js`,
-      entryFilepath: `./app/scripts/${label}.ts`,
+      destFilepath: `ocap-kernel/${label}.js`,
+      entryFilepath: `./app/ocap-kernel/${label}.ts`,
       ignoredFiles,
       label,
       policyOnly,
