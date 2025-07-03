@@ -11,6 +11,8 @@ export const folder = `dist/${process.env.SELENIUM_BROWSER}`;
 
 type ManifestType = {
   _flags?: ManifestFlags;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   manifest_version: string;
   /**
    * The public key assigned to the extension's manifest to get consistent id. (For OAuth2 WAF redirect)
