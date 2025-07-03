@@ -87,6 +87,8 @@ class TestDapp {
 
   private readonly erc20WatchAssetButton = '#watchAssets';
 
+  private readonly erc721TokenAddresses = '#erc721TokenAddresses';
+
   private readonly erc721DeployButton = '#deployNFTsButton';
 
   private readonly erc721MintButton = '#mintButton';
@@ -590,6 +592,19 @@ class TestDapp {
 
       return addresses.length === expectedCount;
     }, 10000);
+  }
+
+  /**
+   * Checks the value of a ERC-721 token address once created.
+   *
+   * @param value - The address to be checked
+   */
+  async check_ERC721TokenAddressesValue(value: string) {
+    console.log('Verify ERC-721 token address');
+    await this.driver.waitForSelector({
+      css: this.erc721TokenAddresses,
+      text: value,
+    });
   }
 
   async verify_successSignTypedDataResult(result: string) {
