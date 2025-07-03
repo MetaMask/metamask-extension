@@ -87,6 +87,8 @@ export const MultichainAccountListMenu = ({
   const onAccountTreeItemClick = useCallback(
     (account: MergedInternalAccount) => {
       onClose();
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         category: MetaMetricsEventCategory.Navigation,
         event: MetaMetricsEventName.NavAccountSwitched,

@@ -148,6 +148,8 @@ const TokenButtons = ({
 
   const handleBuyAndSellOnClick = useCallback(() => {
     openBuyCryptoInPdapp();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
@@ -161,6 +163,8 @@ const TokenButtons = ({
   }, [currentChainId, token.symbol, trackEvent, openBuyCryptoInPdapp]);
 
   const handleSendOnClick = useCallback(async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent(
       {
         event: MetaMetricsEventName.NavSendButtonClicked,
@@ -234,6 +238,8 @@ const TokenButtons = ({
   const handleSwapOnClick = useCallback(async () => {
     ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       handleBridgeOnClick(true);
       return;
     }
@@ -247,6 +253,8 @@ const TokenButtons = ({
 
     await setCorrectChain();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       event: MetaMetricsEventName.NavSwapButtonClicked,
       category: MetaMetricsEventCategory.Swaps,

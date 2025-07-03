@@ -53,7 +53,11 @@ export function NotificationsSettingsTypes({
   const onToggleFeatureAnnouncements = async () => {
     setFeatureAnnouncementsEnabled(!featureAnnouncementsEnabled);
     try {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       onChangeFeatureAnnouncements(!featureAnnouncementsEnabled);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         category: MetaMetricsEventCategory.NotificationSettings,
         event: MetaMetricsEventName.NotificationsSettingsUpdated,

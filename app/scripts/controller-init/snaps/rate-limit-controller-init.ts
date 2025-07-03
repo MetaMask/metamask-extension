@@ -80,6 +80,8 @@ export const RateLimitControllerInit: ControllerInitFunction<
             readDate: null,
           };
 
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           initMessenger.call(
             'NotificationServicesController:updateMetamaskNotificationsList',
             // @ts-expect-error: `notification` is not compatible with the

@@ -57,11 +57,15 @@ export class MockttpNotificationTriggerServer {
   };
 
   setupServer = (server: Mockttp) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     server
       .forPost(GET_CONFIG_URL)
       .always()
       .thenCallback((request) => this.getConfig(request));
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     server
       .forPost(UPDATE_CONFIG_URL)
       .always()

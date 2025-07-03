@@ -34,6 +34,8 @@ export default function init() {
     }
 
     // Open the tab
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     openConnectorTab(msg.params.url).then((browserTab) => {
       // Watch for the open window closing before creds are sent back
       const listenInterval = setInterval(() => {

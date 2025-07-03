@@ -215,7 +215,11 @@ export const CoinOverview = ({
       isMetaMetricsEnabled,
       isMarketingEnabled,
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     global.platform.openTab({ url });
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.PortfolioLinkClicked,

@@ -30,6 +30,8 @@ function getWebpackInstance(config: Configuration) {
  * branches of configuration options are reached and applied correctly.
  */
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 describe('webpack.config.test.ts', () => {
   let originalArgv: string[];
   let originalEnv: NodeJS.ProcessEnv;
@@ -78,6 +80,8 @@ ${Object.entries(env)
     return require('../webpack.config.ts').default;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   it('should have the correct defaults', () => {
     const config: Configuration = getWebpackConfig();
     // check that options are valid
@@ -181,6 +185,8 @@ ${Object.entries(env)
     assert(progressPlugin, 'Progress plugin should present');
   });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   it('should apply non-default options', () => {
     const removeUnsupportedFeatures = ['--no-lavamoat'];
     const config: Configuration = getWebpackConfig(
@@ -244,6 +250,8 @@ ${Object.entries(env)
     );
   });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   it('should allow disabling source maps', () => {
     const config: Configuration = getWebpackConfig(['--devtool', 'none']);
     // check that options are valid
@@ -251,6 +259,8 @@ ${Object.entries(env)
     assert.strictEqual(instance.options.devtool, false);
   });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   it('should write the `dry-run` message then call exit(0)', () => {
     const exit = mock.method(process, 'exit', noop, { times: 1 });
     const error = mock.method(console, 'error', noop, { times: 1 });
@@ -267,6 +277,8 @@ ${Object.entries(env)
     assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
   });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   it('should write the `dryRun` message then call exit(0)', () => {
     const exit = mock.method(process, 'exit', noop, { times: 1 });
     const error = mock.method(console, 'error', noop, { times: 1 });
@@ -283,6 +295,8 @@ ${Object.entries(env)
     assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
   });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   it('should enable ReactRefreshPlugin in a development env when `--watch` is specified', () => {
     const config: Configuration = getWebpackConfig(['--watch'], {
       __HMR_READY__: 'true',
@@ -298,6 +312,8 @@ ${Object.entries(env)
   // these tests should be temporary until the below options are supported
   const unsupportedOptions = [['--lavamoat'], ['--manifest_version', '3']];
   for (const args of unsupportedOptions) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it(`should throw on unsupported option \`${args.join('=')}\``, () => {
       assert.throws(
         () => getWebpackConfig(args),

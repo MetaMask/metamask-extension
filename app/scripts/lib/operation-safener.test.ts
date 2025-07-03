@@ -255,6 +255,8 @@ describe('OperationSafener', () => {
     const firstEvacuatePromise = safener.evacuate();
 
     // Start second evacuation
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     safener.evacuate();
 
     expect(logWarnSpy).toHaveBeenCalledWith('already evacuating');

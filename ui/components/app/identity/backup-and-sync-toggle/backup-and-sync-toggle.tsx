@@ -62,6 +62,8 @@ export const BackupAndSyncToggle = () => {
 
   const trackBackupAndSyncToggleEvent = useCallback(
     (newValue: boolean) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
@@ -80,6 +82,8 @@ export const BackupAndSyncToggle = () => {
   // Cascading side effects
   useEffect(() => {
     if (!isBasicFunctionalityEnabled && isBackupAndSyncEnabled) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false);
     }
   }, [

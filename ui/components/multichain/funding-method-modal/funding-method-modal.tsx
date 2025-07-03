@@ -60,6 +60,8 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const handleTransferCryptoClick = useCallback(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       event: MetaMetricsEventName.NavSendButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
@@ -80,6 +82,8 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
       accountAddress,
       'transfer',
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     global.platform.openTab({ url });
   }, [
     metaMetricsId,
@@ -91,6 +95,8 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
   ]);
 
   const handleBuyCryptoClick = useCallback(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,

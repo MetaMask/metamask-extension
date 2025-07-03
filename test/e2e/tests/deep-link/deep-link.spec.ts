@@ -169,6 +169,8 @@ describe('Deep Link', function () {
           // check that the page we want has been loaded!
           const page = new Page(driver);
           console.log('Checking if target page is loaded');
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           page.check_pageIsLoaded();
         },
       );
@@ -198,6 +200,8 @@ describe('Deep Link', function () {
         });
 
         await driver.navigate();
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         homePage.check_pageIsLoaded();
 
         // test unsigned flow

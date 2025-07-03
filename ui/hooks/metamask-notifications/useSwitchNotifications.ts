@@ -137,6 +137,8 @@ export function useAccountSettingsProps(accounts: string[]) {
       return;
     }
     const memoAccounts: string[] = JSON.parse(jsonAccounts);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     update(memoAccounts);
   }, [jsonAccounts, fetchAccountSettings, isEnabled]);
 

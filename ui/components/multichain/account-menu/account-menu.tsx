@@ -249,6 +249,8 @@ export const AccountMenu = ({
     _options: CreateAccountSnapOptions,
     action: ActionMode,
   ) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.AccountAddSelected,
@@ -303,6 +305,8 @@ export const AccountMenu = ({
   );
 
   const onSelectSrp = useCallback(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
@@ -395,6 +399,8 @@ export const AccountMenu = ({
                 startIconName={IconName.Add}
                 startIconProps={{ size: IconSize.Md }}
                 onClick={() => {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
                   trackEvent({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
@@ -483,6 +489,8 @@ export const AccountMenu = ({
                   startIconName={IconName.Wallet}
                   startIconProps={{ size: IconSize.Md }}
                   onClick={() => {
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     trackEvent({
                       category: MetaMetricsEventCategory.Navigation,
                       event:
@@ -505,6 +513,8 @@ export const AccountMenu = ({
                 startIconProps={{ size: IconSize.Md }}
                 data-testid="multichain-account-menu-popover-add-imported-account"
                 onClick={() => {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
                   trackEvent({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
@@ -535,6 +545,8 @@ export const AccountMenu = ({
                 startIconProps={{ size: IconSize.Md }}
                 onClick={() => {
                   onClose();
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
                   trackEvent({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
@@ -566,6 +578,8 @@ export const AccountMenu = ({
                     startIconProps={{ size: IconSize.Md }}
                     onClick={() => {
                       onClose();
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                      // eslint-disable-next-line @typescript-eslint/no-floating-promises
                       trackEvent({
                         category: MetaMetricsEventCategory.Navigation,
                         event: MetaMetricsEventName.AccountAddSelected,
@@ -575,6 +589,8 @@ export const AccountMenu = ({
                           hd_entropy_index: hdEntropyIndex,
                         },
                       });
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                      // eslint-disable-next-line @typescript-eslint/no-floating-promises
                       global.platform.openTab({
                         url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL as string,
                       });

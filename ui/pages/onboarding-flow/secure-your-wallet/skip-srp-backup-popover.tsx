@@ -59,6 +59,8 @@ export default function SkipSRPBackup({
 
   const onSkipSrpBackup = useCallback(async () => {
     await dispatch(setSeedPhraseBackedUp(false));
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletSecuritySkipConfirmed,
@@ -121,6 +123,8 @@ export default function SkipSRPBackup({
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
               onClick={() => {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 trackEvent({
                   category: MetaMetricsEventCategory.Onboarding,
                   event:

@@ -55,6 +55,8 @@ export const useMaxValueRefresher = () => {
   const layer1GasFee = transactionMeta.layer1GasFee as Hex;
 
   useEffect(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     updateTransactionEventFragment(
       {
         properties: {

@@ -76,6 +76,8 @@ const useBridging = () => {
             token_address_source: token.address,
           },
         });
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         trackEvent({
           event: isSwap
             ? MetaMetricsEventName.SwapLinkClicked
@@ -119,11 +121,15 @@ const useBridging = () => {
           isMetaMetricsEnabled,
           isMarketingEnabled,
         );
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         global.platform.openTab({
           url: `${portfolioUrl}${
             portfolioUrlSuffix ?? `&token=${token.address}`
           }`,
         });
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         trackEvent({
           category: MetaMetricsEventCategory.Navigation,
           event: MetaMetricsEventName.BridgeLinkClicked,

@@ -91,6 +91,8 @@ class HeaderNavbar {
     if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
       await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
     } else {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.driver.clickElement(this.threeDotMenuButton);
     }
   }

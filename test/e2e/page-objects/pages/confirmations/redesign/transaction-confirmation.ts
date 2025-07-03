@@ -287,6 +287,8 @@ class TransactionConfirmation extends Confirmation {
             `Expected ${key} '${expectedValue}' in data section ${functionText}.`,
           );
 
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.clickScrollToBottomButton();
         }
       }),

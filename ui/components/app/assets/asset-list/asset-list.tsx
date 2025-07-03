@@ -32,6 +32,8 @@ const TokenListContainer = React.memo(
       (chainId: string, tokenAddress: string) => {
         trace({ name: TraceName.AssetDetails });
         onClickAsset(chainId, tokenAddress);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         trackEvent({
           event: MetaMetricsEventName.TokenScreenOpened,
           category: MetaMetricsEventCategory.Navigation,

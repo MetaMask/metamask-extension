@@ -136,6 +136,8 @@ describe('DelegationController:awaitDeleteDelegationEntry', () => {
   it('subscribes to transaction status updates', () => {
     const txMeta = createMockTransactionMeta({});
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     awaitDeleteDelegationEntry(controller, initMessenger, {
       hash: mockHash,
       txMeta,
@@ -151,6 +153,8 @@ describe('DelegationController:awaitDeleteDelegationEntry', () => {
     const txMeta = createMockTransactionMeta({});
     const deleteSpy = jest.spyOn(controller, 'delete');
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     awaitDeleteDelegationEntry(controller, initMessenger, {
       hash: mockHash,
       txMeta,
@@ -171,6 +175,8 @@ describe('DelegationController:awaitDeleteDelegationEntry', () => {
     const txMeta = createMockTransactionMeta({});
     const deleteSpy = jest.spyOn(controller, 'delete');
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     awaitDeleteDelegationEntry(controller, initMessenger, {
       hash: mockHash,
       txMeta,
@@ -191,6 +197,8 @@ describe('DelegationController:awaitDeleteDelegationEntry', () => {
     const txMeta = createMockTransactionMeta({});
     const deleteSpy = jest.spyOn(controller, 'delete');
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     awaitDeleteDelegationEntry(controller, initMessenger, {
       hash: mockHash,
       txMeta,
@@ -222,6 +230,8 @@ describe('DelegationController:awaitDeleteDelegationEntry', () => {
     const txMeta = createMockTransactionMeta({});
     const deleteSpy = jest.spyOn(controller, 'delete');
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     awaitDeleteDelegationEntry(controller, initMessenger, {
       hash: mockHash,
       txMeta,
