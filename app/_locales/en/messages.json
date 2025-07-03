@@ -7229,6 +7229,9 @@
   "willApproveAmountForBridgingHardware": {
     "message": "You’ll need to confirm two transactions on your hardware wallet."
   },
+  "willApproveAmountForSwapping": {
+    "message": "This will approve $1 for swapping."
+  },
   "withdrawing": {
     "message": "Withdrawing"
   },

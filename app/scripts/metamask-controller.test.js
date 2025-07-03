@@ -669,12 +669,10 @@ describe('MetaMaskController', () => {
       it('can only create new vault on keyringController once', async () => {
         const password = 'a-fake-password';
 
-        const vault1 = await metamaskController.createNewVaultAndKeychain(
-          password,
-        );
-        const vault2 = await metamaskController.createNewVaultAndKeychain(
-          password,
-        );
+        const vault1 =
+          await metamaskController.createNewVaultAndKeychain(password);
+        const vault2 =
+          await metamaskController.createNewVaultAndKeychain(password);
 
         expect(vault1).toStrictEqual(vault2);
       });
@@ -727,9 +725,8 @@ describe('MetaMaskController', () => {
             ]),
           ]);
 
-        const [srpBackup] = await metamaskController.fetchAllSecretData(
-          password,
-        );
+        const [srpBackup] =
+          await metamaskController.fetchAllSecretData(password);
 
         expect(fetchSrpBackupSpy).toHaveBeenCalledWith(password);
         expect(srpBackup.toString('utf8')).toStrictEqual(mockSeedPhrase);
@@ -2000,9 +1997,8 @@ describe('MetaMaskController', () => {
               it('should be unlocked by default', async () => {
                 await metamaskController.connectHardware(device, 0);
 
-                const status = await metamaskController.checkHardwareStatus(
-                  device,
-                );
+                const status =
+                  await metamaskController.checkHardwareStatus(device);
 
                 expect(status).toStrictEqual(true);
               });
@@ -2019,9 +2015,8 @@ describe('MetaMaskController', () => {
               .spyOn(metamaskController.keyringController, 'withKeyring')
               .mockImplementation((_, fn) => fn({ keyring: { type } }));
 
-            const result = await metamaskController.getHardwareTypeForMetric(
-              '0x123',
-            );
+            const result =
+              await metamaskController.getHardwareTypeForMetric('0x123');
 
             expect(result).toBe(HardwareKeyringType[type]);
           },
@@ -3584,9 +3579,8 @@ describe('MetaMaskController', () => {
           )
           .mockReturnValue(tokenData);
 
-        const tokenSymbol = await metamaskController.getTokenSymbol(
-          '0xNotInTokenList',
-        );
+        const tokenSymbol =
+          await metamaskController.getTokenSymbol('0xNotInTokenList');
 
         expect(tokenSymbol).toStrictEqual(tokenData.symbol);
       });
@@ -3626,9 +3620,8 @@ describe('MetaMaskController', () => {
             throw new Error('error');
           });
 
-        const tokenSymbol = await metamaskController.getTokenSymbol(
-          '0xNotInTokenList',
-        );
+        const tokenSymbol =
+          await metamaskController.getTokenSymbol('0xNotInTokenList');
 
         expect(tokenSymbol).toStrictEqual(null);
       });
