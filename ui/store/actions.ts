@@ -389,17 +389,21 @@ export function tryUnlockMetamask(
   return (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     dispatch(unlockInProgress());
-    log.debug(`background.submitPassword`);
+    log.debug(`background.syncPasswordAndUnlockWallet`);
 
     return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod('submitPassword', [password], (error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+      callBackgroundMethod(
+        'syncPasswordAndUnlockWallet',
+        [password],
+        (error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
 
-        resolve();
-      });
+          resolve();
+        },
+      );
     })
       .then(() => {
         dispatch(unlockSucceeded());
@@ -413,6 +417,26 @@ export function tryUnlockMetamask(
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
       });
+  };
+}
+
+export function checkIsSeedlessPasswordOutdated(
+  skipCache = false,
+): ThunkAction<boolean | undefined, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      const isPasswordOutdated = await submitRequestToBackground<boolean>(
+        'checkIsSeedlessPasswordOutdated',
+        [skipCache],
+      );
+      if (isPasswordOutdated) {
+        await forceUpdateMetamaskState(dispatch);
+      }
+      return isPasswordOutdated;
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
+    }
   };
 }
 
@@ -2142,6 +2166,14 @@ export function lockMetamask(): ThunkAction<
     dispatch(showLoadingIndication());
 
     return backgroundSetLocked()
+      .then(() => {
+        // check seedless password outdated when lock app
+        dispatch(checkIsSeedlessPasswordOutdated(true));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      })
       .then(() => forceUpdateMetamaskState(dispatch))
       .catch((error) => {
         dispatch(displayWarning(getErrorMessage(error)));
