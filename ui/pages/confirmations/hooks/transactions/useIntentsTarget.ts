@@ -24,7 +24,7 @@ export function useIntentsTargets() {
 
   const { assetsWithBalance } = useMultichainBalances();
 
-  const { chainId, id: transactionId, txParams } = transactionMeta;
+  const { assets, chainId, id: transactionId, txParams } = transactionMeta;
   const { data, to, value } = txParams;
 
   const targets: IntentsTarget[] = [];
@@ -87,6 +87,13 @@ export function useIntentsTargets() {
   } catch {
     // Intentionally empty
   }
+
+  targets.push(
+    ...(assets?.map((asset) => ({
+      targetTokenAddress: asset.address,
+      targetAmount: asset.amount,
+    })) ?? []),
+  );
 
   return useMemo(() => targets, [JSON.stringify(targets)]);
 }

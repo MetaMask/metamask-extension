@@ -9,6 +9,7 @@ import {
   IsAtomicBatchSupportedResultEntry,
   Log,
   SecurityAlertResponse,
+  TransactionAsset,
   TransactionController,
   TransactionControllerGetStateAction,
   TransactionEnvelopeType,
@@ -17,7 +18,7 @@ import {
   TransactionStatus,
   ValidateSecurityRequest,
 } from '@metamask/transaction-controller';
-import { bytesToHex, Hex, JsonRpcRequest } from '@metamask/utils';
+import { bytesToHex, Hex, Json, JsonRpcRequest } from '@metamask/utils';
 import { Messenger } from '@metamask/base-controller';
 import {
   GetCallsStatusCode,
@@ -57,8 +58,11 @@ export enum AtomicCapabilityStatus {
 
 const VERSION = '2.0.0';
 
+const SUPPORTED_CAPABILITIES = ['auxilaryFunds'];
+
 async function processSingleTransaction({
   addTransaction,
+  assets,
   chainId,
   from,
   networkClientId,
@@ -68,6 +72,7 @@ async function processSingleTransaction({
   validateSecurity,
 }: {
   addTransaction: TransactionController['addTransaction'];
+  assets?: TransactionAsset[];
   chainId: Hex;
   from: Hex;
   networkClientId: string;
@@ -95,6 +100,7 @@ async function processSingleTransaction({
   const batchId = generateBatchId();
 
   await addTransaction(txParams, {
+    assets,
     networkClientId,
     origin,
     securityAlertResponse: { securityAlertId } as SecurityAlertResponse,
@@ -162,10 +168,14 @@ export async function processSendCalls(
   const securityAlertId = generateSecurityAlertId();
   const validateSecurity = validateSecurityHook.bind(null, securityAlertId);
 
+  const assets = (params.capabilities?.auxilaryFunds as Record<string, Json>)
+    ?.assets as TransactionAsset[];
+
   let batchId: Hex;
   if (Object.keys(transactions).length === 1) {
     batchId = await processSingleTransaction({
       addTransaction,
+      assets,
       chainId: dappChainId,
       from,
       networkClientId,
@@ -452,7 +462,11 @@ function validateCapabilities(sendCalls: SendCalls) {
     ...requiredCallCapabilities,
   ];
 
-  if (requiredCapabilities?.length) {
+  if (
+    requiredCapabilities?.some(
+      (capability) => !SUPPORTED_CAPABILITIES.includes(capability),
+    )
+  ) {
     throw new JsonRpcError(
       EIP5792ErrorCode.UnsupportedNonOptionalCapability,
       `Unsupported non-optional capabilities: ${requiredCapabilities.join(
