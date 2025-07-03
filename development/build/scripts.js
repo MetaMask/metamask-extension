@@ -259,7 +259,7 @@ function createScriptTasks({
     };
 
     // make each bundle run in a separate process
-    const allSubtasks = [
+    const subtasks = [
       standardSubtask,
       contentscriptSubtask,
       disableConsoleSubtask,
@@ -276,10 +276,10 @@ function createScriptTasks({
         `${taskPrefix}:kernel-panel`,
         createKernelPanelBundle({ buildTarget }),
       );
-      allSubtasks.push(devtoolsSubtask, kernelPanelSubtask);
+      subtasks.push(devtoolsSubtask, kernelPanelSubtask);
     }
 
-    allSubtasks.map((subtask) =>
+    const allSubtasks = subtasks.map((subtask) =>
       runInChildProcess(subtask, {
         shouldIncludeSnow,
         applyLavaMoat,
