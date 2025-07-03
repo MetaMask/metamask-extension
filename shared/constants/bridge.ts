@@ -129,8 +129,43 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR = {
     name: 'USD Coin',
   },
   [CHAIN_IDS.POLYGON]: {
-    // MATIC -> USDC on Polygon
-    address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+    // POL -> USDT on Polygon
+    address: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+    symbol: 'USDT',
+    decimals: 6,
+    name: 'Tether USD',
+  },
+  [CHAIN_IDS.BSC]: {
+    // BNB -> USDT on BSC
+    address: '0x55d398326f99059ff775485246999027b3197955',
+    symbol: 'USDT',
+    decimals: 18,
+    name: 'Tether USD',
+  },
+  [CHAIN_IDS.AVALANCHE]: {
+    // AVAX -> USDC on Avalanche
+    address: '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USD Coin',
+  },
+  [CHAIN_IDS.ZKSYNC_ERA]: {
+    // ETH -> USDT on zkSync Era
+    address: '0x493257fd37edb34451f62edf8d2a0c418852ba4c',
+    symbol: 'USDT',
+    decimals: 6,
+    name: 'Tether USD',
+  },
+  [CHAIN_IDS.LINEA_MAINNET]: {
+    // ETH -> USDC on Linea
+    address: '0x176211869ca2b568f2a7d4ee941e073a821ee1ff',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USD Coin',
+  },
+  [CHAIN_IDS.SEI]: {
+    // SEI -> USDC on Sei
+    address: '0x3894085Ef7Ff0f0aeDf52E2A2704928d1Ec074F1',
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',
