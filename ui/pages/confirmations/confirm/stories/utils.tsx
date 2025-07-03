@@ -26,6 +26,7 @@ export function ConfirmStoryTemplate(
     metamask: {
       ...metamaskState.metamask,
       useTransactionSimulations: true,
+      domains: metamaskState.metamask?.domains || {},
     },
   });
 

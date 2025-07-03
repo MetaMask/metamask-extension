@@ -152,6 +152,7 @@ describe('Routes Component', () => {
           approvalFlows: [],
           announcements: {},
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          domains: {},
           newPrivacyPolicyToastShownDate: new Date('0'),
           preferences: {
             tokenSortConfig: {

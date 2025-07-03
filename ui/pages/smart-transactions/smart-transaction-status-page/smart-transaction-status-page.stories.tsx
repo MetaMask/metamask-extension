@@ -33,6 +33,7 @@ const storeMock = configureStore({
     ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
     transactions: [TX_MOCK],
     currentNetworkTxList: [TX_MOCK],
+    domains: {},
   },
 });
 

@@ -338,6 +338,7 @@
   "desktopEnabled": false,
   "detectedTokens": [],
   "dismissSeedBackUpReminder": false,
+  "domains": {},
   "enabledNetworkMap": {
     "eip155": {
       "0x1": true,

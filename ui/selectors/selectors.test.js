@@ -320,104 +320,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNetworkToAutomaticallySwitchTo', () => {
-    const SELECTED_ORIGIN = 'https://portfolio.metamask.io';
-    const SELECTED_ORIGIN_NETWORK_ID = NETWORK_TYPES.LINEA_SEPOLIA;
-    const state = {
-      activeTab: {
-        origin: SELECTED_ORIGIN,
-      },
-      metamask: {
-        isUnlocked: true,
-        selectedTabOrigin: SELECTED_ORIGIN,
-        unapprovedDecryptMsgs: [],
-        unapprovedPersonalMsgs: [],
-        unapprovedEncryptionPublicKeyMsgs: [],
-        unapprovedTypedMessages: [],
-        domains: {
-          [SELECTED_ORIGIN]: SELECTED_ORIGIN_NETWORK_ID,
-        },
-        networkConfigurationsByChainId: {
-          [CHAIN_IDS.MAINNET]: {
-            chainId: CHAIN_IDS.MAINNET,
-            defaultRpcEndpointIndex: 0,
-            rpcEndpoints: [
-              {
-                url: 'https://testrpc.com',
-                networkClientId: mockState.metamask.selectedNetworkClientId,
-              },
-            ],
-          },
-        },
-        transactions: [],
-        selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
-        // networkConfigurations:
-        //   mockState.metamask.networkConfigurationsByChainId,
-      },
-    };
-
-    it('should return the network to switch to', () => {
-      const networkToSwitchTo =
-        selectors.getNetworkToAutomaticallySwitchTo(state);
-      expect(networkToSwitchTo).toBe(SELECTED_ORIGIN_NETWORK_ID);
-    });
-
-    it('should return no network to switch to because we are already on it', () => {
-      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
-        ...state,
-        metamask: {
-          ...state.metamask,
-          selectedNetworkClientId: 'linea-sepolia',
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.LINEA_SEPOLIA]: {
-              chainId: CHAIN_IDS.LINEA_SEPOLIA,
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://testrpc.com',
-                  networkClientId: 'linea-sepolia',
-                  type: 'custom',
-                },
-              ],
-            },
-          },
-        },
-      });
-      expect(networkToSwitchTo).toBe(null);
-    });
-
-    it('should return no network to switch to because there are pending transactions', () => {
-      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
-        ...state,
-        metamask: {
-          ...state.metamask,
-          selectedNetworkClientId: NETWORK_TYPES.LINEA_SEPOLIA,
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.LINEA_SEPOLIA]: {
-              chainId: CHAIN_IDS.LINEA_SEPOLIA,
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://testrpc.com',
-                  networkClientId: 'linea-sepolia',
-                  type: 'custom',
-                },
-              ],
-            },
-          },
-          transactions: [
-            {
-              id: 0,
-              chainId: CHAIN_IDS.MAINNET,
-              status: TransactionStatus.approved,
-            },
-          ],
-        },
-      });
-      expect(networkToSwitchTo).toBe(null);
-    });
-  });
-
   describe('#getSuggestedTokens', () => {
     it('returns an empty array if pendingApprovals is undefined', () => {
       expect(selectors.getSuggestedTokens({ metamask: {} })).toStrictEqual([]);
@@ -634,6 +536,7 @@ describe('Selectors', () => {
               chainId: '0x1',
               blockExplorerUrl: 'https://test-block-explorer',
             }),
+            domains: {},
           },
         }),
       ).toStrictEqual({ blockExplorerUrl: 'https://test-block-explorer' });
@@ -669,6 +572,7 @@ describe('Selectors', () => {
           selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
           blockExplorerUrls: [],
           ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA, id: 'sepolia' }),
+          domains: {},
         },
       };
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
@@ -696,6 +600,7 @@ describe('Selectors', () => {
         metamask: {
           ...mockState.metamask,
           ...mockNetworkState({
+            domains: {},
             rpcUrl: 'https://mock-rpc-endpoint.test',
             chainId: '0x9999',
             ticker: 'TST',
@@ -758,6 +663,7 @@ describe('Selectors', () => {
         metamask: {
           ...mockState.metamask,
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          domains: {},
         },
       };
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
@@ -856,6 +762,7 @@ describe('Selectors', () => {
           },
           networkConfigurationsByChainId,
           selectedNetworkClientId: 'mainnet',
+          domains: {},
           multichainNetworkConfigurationsByChainId:
             AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
           selectedMultichainNetworkChainId: 'eip155:1',
@@ -913,6 +820,7 @@ describe('Selectors', () => {
           },
           networkConfigurationsByChainId,
           selectedNetworkClientId: 'mainnet',
+          domains: {},
           multichainNetworkConfigurationsByChainId:
             AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
           selectedMultichainNetworkChainId: 'eip155:1',
@@ -1035,6 +943,7 @@ describe('Selectors', () => {
         metamask: {
           ...mockState.metamask,
           ...mockNetworkState({
+            domains: {},
             chainId: CHAIN_IDS.GOERLI,
             metadata: { EIPS: { 1559: true } },
           }),
@@ -1059,6 +968,7 @@ describe('Selectors', () => {
         metamask: {
           ...mockState.metamask,
           ...mockNetworkState({
+            domains: {},
             chainId: CHAIN_IDS.GOERLI,
             metadata: { EIPS: { 1559: false } },
           }),
@@ -1212,6 +1122,7 @@ describe('Selectors', () => {
     const isOptimismSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
+        domains: {},
         internalAccounts: {
           selectedAccount: '0xabc',
           accounts: { '0xabc': { metadata: { keyring: {} } } },
@@ -1223,6 +1134,7 @@ describe('Selectors', () => {
     const isFantomSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.FANTOM }),
+        domains: {},
         internalAccounts: {
           selectedAccount: '0xabc',
           accounts: { '0xabc': { metadata: { keyring: {} } } },
@@ -1234,6 +1146,7 @@ describe('Selectors', () => {
     const isSolanaSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: MultichainNetworks.SOLANA }),
+        domains: {},
         internalAccounts: {
           selectedAccount: '0xabc',
           accounts: {
@@ -2233,6 +2146,7 @@ describe('#getConnectedSitesList', () => {
             },
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          domains: {},
           networkConfigurationsByChainId: {
             '0x1': {
               chainId: '0x1',
@@ -2262,6 +2176,7 @@ describe('#getConnectedSitesList', () => {
             },
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          domains: {},
           networkConfigurationsByChainId: {
             '0x1': {
               chainId: '0x1',
@@ -2302,6 +2217,7 @@ describe('#getConnectedSitesList', () => {
             },
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          domains: {},
           networkConfigurationsByChainId: {
             [CHAIN_IDS.MAINNET]: {
               chainId: CHAIN_IDS.MAINNET,
@@ -2333,6 +2249,7 @@ describe('#getConnectedSitesList', () => {
             },
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          domains: {},
           networkConfigurationsByChainId: {
             '0xNotPopularNetwork': {
               chainId: '0xNotPopularNetwork',
@@ -2372,6 +2289,7 @@ describe('#getConnectedSitesList', () => {
             },
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          domains: {},
           networkConfigurationsByChainId: {
             [CHAIN_IDS.MAINNET]: {
               chainId: CHAIN_IDS.MAINNET,
@@ -2432,6 +2350,7 @@ describe('#getConnectedSitesList', () => {
             },
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          domains: {},
           networkConfigurationsByChainId: {
             [CHAIN_IDS.MAINNET]: {
               chainId: CHAIN_IDS.MAINNET,
@@ -3025,6 +2944,7 @@ describe('getInternalAccountsSortedByKeyring', () => {
         networkConfigurationsByChainId:
           mockState.metamask.networkConfigurationsByChainId,
         selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
+        domains: {},
       },
     };
 

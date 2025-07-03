@@ -153,6 +153,7 @@ const createBaseMockStore = (account, address) => ({
         isEvm: false,
       },
     } : {},
+    domains: {},
   },
 });
 

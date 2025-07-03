@@ -9,6 +9,7 @@ import {
   type NetworkConfiguration as InternalNetworkConfiguration,
   NetworkConfiguration,
 } from '@metamask/network-controller';
+
 import { createSelector } from 'reselect';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import type { CaipChainId } from '@metamask/utils';
@@ -18,6 +19,8 @@ import {
 } from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
 import { SOLANA_TEST_CHAINS } from '../../constants/multichain/networks';
+import { ORIGIN_METAMASK } from '../../constants/app';
+
 import { createDeepEqualSelector } from './util';
 
 export type NetworkState = {
@@ -43,7 +46,14 @@ export type NetworksMetadataState = {
 };
 
 export type ProviderConfigState = NetworkConfigurationsByChainIdState &
-  SelectedNetworkClientIdState;
+  SelectedNetworkClientIdState & {
+    activeTab?: {
+      origin: string;
+    };
+    metamask: {
+      domains: Record<string, string>;
+    };
+  };
 
 export type MultichainNetworkConfigurationsByChainIdState = {
   metamask: {
@@ -213,37 +223,52 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
  * @param state - Redux state object.
  * @throws `new Error('Provider configuration not found')` If the provider configuration is not found.
  */
-export const getProviderConfig = createSelector(
-  (state: ProviderConfigState) => getNetworkConfigurationsByChainId(state),
-  getSelectedNetworkClientId,
-  (networkConfigurationsByChainId, selectedNetworkClientId) => {
+export const getProviderConfig = createDeepEqualSelector(
+  (state: ProviderConfigState) => ({
+    networkConfigurationsByChainId: getNetworkConfigurationsByChainId(state),
+    selectedNetworkClientId: getSelectedNetworkClientId(state),
+    metamask: state.metamask,
+    activeTabOrigin: state.activeTab?.origin || ORIGIN_METAMASK,
+  }),
+  ({
+    networkConfigurationsByChainId,
+    selectedNetworkClientId,
+    metamask,
+    activeTabOrigin,
+  }) => {
+    const networkClientId = metamask.domains[activeTabOrigin];
+    const networkClientIdToUse = networkClientId || selectedNetworkClientId;
     for (const network of Object.values(networkConfigurationsByChainId)) {
       for (const rpcEndpoint of network.rpcEndpoints) {
-        if (rpcEndpoint.networkClientId === selectedNetworkClientId) {
+        if (rpcEndpoint.networkClientId === networkClientIdToUse) {
           const blockExplorerUrl =
-            network.defaultBlockExplorerUrlIndex === undefined
-              ? undefined
-              : network.blockExplorerUrls?.[
-                  network.defaultBlockExplorerUrlIndex
-                ];
+            network.blockExplorerUrls?.[
+              network.defaultBlockExplorerUrlIndex ?? 0
+            ];
 
-          return {
-            chainId: network.chainId,
-            ticker: network.nativeCurrency,
-            rpcPrefs: { ...(blockExplorerUrl && { blockExplorerUrl }) },
-            type:
-              rpcEndpoint.type === RpcEndpointType.Custom
-                ? 'rpc'
-                : rpcEndpoint.networkClientId,
-            ...(rpcEndpoint.type === RpcEndpointType.Custom && {
-              id: rpcEndpoint.networkClientId,
-              nickname: network.name,
-              rpcUrl: rpcEndpoint.url,
-            }),
-          };
+            const providerConfig = {
+              chainId: network.chainId,
+              ticker: network.nativeCurrency,
+              rpcPrefs: { ...(blockExplorerUrl && { blockExplorerUrl }) },
+              type:
+                rpcEndpoint.type === RpcEndpointType.Custom
+                  ? 'rpc'
+                  : rpcEndpoint.networkClientId,
+              ...(rpcEndpoint.type === RpcEndpointType.Custom && {
+                id: rpcEndpoint.networkClientId,
+                nickname: network.name,
+                rpcUrl: rpcEndpoint.url,
+              }),
+            };
+
+          console.log("providerConfig is: ", JSON.stringify(providerConfig, null, 2));
+
+          return providerConfig;
         }
       }
     }
+
+    console.log("OMFG NO PROVIDER CONFIG!");
     throw new Error('Provider configuration not found');
   },
 );

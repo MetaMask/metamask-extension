@@ -54,6 +54,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
+          domains: {},
         },
       };
 
@@ -83,6 +84,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
+          domains: {},
         },
       };
 
@@ -119,7 +121,7 @@ describe('Transaction Selectors', () => {
       return {
         metamask: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-
+          domains: {},
           featureFlags: {},
           internalAccounts: {
             accounts: {
@@ -345,7 +347,7 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-
+          domains: {},
           featureFlags: {},
           internalAccounts: {
             accounts: {
@@ -400,7 +402,7 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-
+          domains: {},
           featureFlags: {},
           internalAccounts: {
             accounts: {
@@ -488,7 +490,6 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -509,6 +510,7 @@ describe('Transaction Selectors', () => {
           },
           featureFlags: {},
           transactions: [tx1, tx2],
+          domains: {},
         },
       };
 
@@ -589,7 +591,6 @@ describe('Transaction Selectors', () => {
     const state = {
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-
         internalAccounts: {
           accounts: {
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -609,6 +610,7 @@ describe('Transaction Selectors', () => {
           selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
         featureFlags: {},
+        domains: {},
         transactions: [submittedTx, unapprovedTx, approvedTx, confirmedTx],
       },
     };
@@ -1095,6 +1097,7 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           transactions: [],
+          domains: {},
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -1143,6 +1146,7 @@ describe('Transaction Selectors', () => {
     it('filters out incoming transactions for the selected address', () => {
       const state = {
         metamask: {
+          domains: {},
           transactions: [
             {
               id: 1,
@@ -1205,6 +1209,7 @@ describe('Transaction Selectors', () => {
     it('returns only non-incoming transactions for the selected address', () => {
       const state = {
         metamask: {
+          domains: {},
           transactions: [
             {
               id: 1,
@@ -1278,6 +1283,7 @@ describe('Transaction Selectors', () => {
     it('returns an empty array when both unapprovedMessages and incomingTxList are empty', () => {
       const state = {
         metamask: {
+          domains: {},
           unapprovedPersonalMsgs: {},
           transactions: [],
           internalAccounts: {
@@ -1333,6 +1339,7 @@ describe('Transaction Selectors', () => {
 
       const state = {
         metamask: {
+          domains: {},
           unapprovedPersonalMsgs: {
             1: unapprovedMessages[0],
           },
@@ -1391,6 +1398,7 @@ describe('Transaction Selectors', () => {
 
       const state = {
         metamask: {
+          domains: {},
           unapprovedPersonalMsgs: {},
           transactions: incomingTxList,
           internalAccounts: {
@@ -1460,6 +1468,7 @@ describe('Transaction Selectors', () => {
             1: unapprovedMessages[0],
           },
           transactions: incomingTxList,
+          domains: {},
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -1508,6 +1517,7 @@ describe('Transaction Selectors', () => {
           metamask: {
             transactions: [],
             unapprovedPersonalMsgs: {},
+            domains: {},
             internalAccounts: {
               accounts: {
                 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -1563,6 +1573,7 @@ describe('Transaction Selectors', () => {
           metamask: {
             transactions: [],
             unapprovedPersonalMsgs: { 1: subSelectorTxList[0] },
+            domains: {},
             internalAccounts: {
               accounts: {
                 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -1611,6 +1622,7 @@ describe('Transaction Selectors', () => {
     it('returns an empty array when both subSelectorTxList and selectedAddressTxList are empty', () => {
       const state = {
         metamask: {
+          domains: {},
           transactions: [],
           unapprovedPersonalMsgs: {},
           internalAccounts: {
@@ -1668,6 +1680,7 @@ describe('Transaction Selectors', () => {
         metamask: {
           transactions: [],
           unapprovedPersonalMsgs: { 1: subSelectorTxList[0] },
+          domains: {},
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -1716,7 +1729,7 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-
+          domains: {},
           transactions: [
             {
               id: 0,
@@ -1762,6 +1775,7 @@ describe('Transaction Selectors', () => {
     it('returns confirmations from all networks', () => {
       const state = {
         metamask: {
+          domains: {},
           transactions: [
             {
               id: 1,

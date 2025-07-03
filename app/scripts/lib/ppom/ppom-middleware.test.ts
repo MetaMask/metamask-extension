@@ -68,11 +68,14 @@ const createMiddleware = (
     });
   }
 
+  console.log("mock chain ID is: ", chainId);
   const networkController = {
     state: {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       ...mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET }),
+
+      // David, can this even be null?
       ...(chainId === null ? { providerConfig: {} } : undefined),
     },
   };
@@ -83,6 +86,12 @@ const createMiddleware = (
 
   const accountsController = {
     listAccounts: () => [{ address: INTERNAL_ACCOUNT_ADDRESS }],
+  };
+
+  const selectedNetworkController = {
+    state: {
+      domains: {},
+    },
   };
 
   return createPPOMMiddleware(
@@ -99,6 +108,8 @@ const createMiddleware = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     appStateController as any,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    selectedNetworkController as any,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     accountsController as any,
     updateSecurityAlertResponse,
@@ -126,7 +137,7 @@ describe('PPOMMiddleware', () => {
     };
   });
 
-  it('adds checking chain response to confirmation requests while validation is in progress', async () => {
+  it.only('adds checking chain response to confirmation requests while validation is in progress', async () => {
     const updateSecurityAlertResponse = jest.fn();
 
     const middlewareFunction = createMiddleware({

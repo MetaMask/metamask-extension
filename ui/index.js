@@ -23,11 +23,8 @@ import { getCurrentChainId } from '../shared/modules/selectors/networks';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
-  getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getUnapprovedTransactions,
-  getNetworkToAutomaticallySwitchTo,
-  getSwitchedNetworkDetails,
   getAllPermittedAccountsForCurrentTab,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
@@ -173,7 +170,12 @@ export async function setupInitialStore(
     metamaskState.unapprovedEncryptionPublicKeyMsgs,
     metamaskState.unapprovedTypedMessages,
     metamaskState.networkId,
-    getCurrentChainId({ metamask: metamaskState }),
+    getCurrentChainId({
+      metamask: {
+        ...metamaskState,
+        domains: metamaskState.domains || {},
+      },
+    }),
   );
   const numberOfUnapprovedTx = unapprovedTxsAll.length;
   if (numberOfUnapprovedTx > 0) {
@@ -225,8 +227,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
 }
 
 async function runInitialActions(store) {
-  const state = store.getState();
-
+  /*
   // This block autoswitches chains based on the last chain used
   // for a given dapp, when there are no pending confimrations
   // This allows the user to be connected on one chain
@@ -247,6 +248,7 @@ async function runInitialActions(store) {
     // if the user didn't just change the dapp network
     await store.dispatch(actions.clearSwitchedNetworkDetails());
   }
+    */
 
   // Register this window as the current popup
   // and set in background state

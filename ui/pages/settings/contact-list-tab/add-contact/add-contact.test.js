@@ -20,6 +20,7 @@ describe('AddContact component', () => {
   const state = {
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+      domains: {},
     },
   };
   const props = {

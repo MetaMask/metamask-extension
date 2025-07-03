@@ -13,6 +13,7 @@ const renderUseBalance = (fromAddress, stateVariables = {}) => {
   const mockState = {
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
+      domains: {},
       currentCurrency: 'ETH',
       tokenList: {},
       accountsByChainId: {

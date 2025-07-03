@@ -314,6 +314,7 @@ describe('Confirm Transaction Duck', () => {
             },
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          domains: {},
         },
         confirmTransaction: {
           ethTransactionAmount: '1',
@@ -369,6 +370,7 @@ describe('Confirm Transaction Duck', () => {
             },
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
+          domains: {},
           transactions: [
             {
               history: [],

@@ -1,6 +1,6 @@
 import { Nft, NftContract } from '@metamask/assets-controllers';
 import { createSelector } from 'reselect';
-import { NetworkState } from '../../shared/modules/selectors/networks';
+import { ProviderConfigState } from '../../shared/modules/selectors/networks';
 import { getMemoizedCurrentChainId } from './selectors';
 
 export type NftState = {
@@ -66,7 +66,7 @@ export const getNftContractsByAddressByChain = createSelector(
 );
 
 export const getNftContractsByAddressOnCurrentChain = createSelector(
-  (state: NftState & NetworkState) => getMemoizedCurrentChainId(state),
+  (state: NftState & ProviderConfigState) => getMemoizedCurrentChainId(state),
   getNftContractsByAddressByChain,
   (currentChainId, nftContractsByAddressByChain) => {
     return nftContractsByAddressByChain[currentChainId] ?? {};

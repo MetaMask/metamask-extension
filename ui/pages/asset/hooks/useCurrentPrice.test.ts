@@ -11,6 +11,7 @@ describe('useCurrentPrice', () => {
       isUnlocked: true,
       completedOnboarding: true,
       selectedNetworkClientId: 'selectedNetworkClientId',
+      domains: {},
       networkConfigurationsByChainId: {
         '0x1': {
           chainId: '0x1',

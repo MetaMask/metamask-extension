@@ -87,6 +87,7 @@ describe('EthOverview', () => {
   const mockStore = {
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      domains: {},
       remoteFeatureFlags: {
         bridgeConfig: {
           support: true,

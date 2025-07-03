@@ -127,6 +127,7 @@ const createMockState = (
     pinnedAccountsList: [],
     hiddenAccountsList: [],
     connectedAccounts: [],
+    domains: {},
   },
 });
 

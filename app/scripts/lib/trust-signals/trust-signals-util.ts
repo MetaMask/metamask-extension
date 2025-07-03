@@ -1,5 +1,6 @@
 import { NetworkController } from '@metamask/network-controller';
 import { JsonRpcRequest } from '@metamask/utils';
+import { SelectedNetworkController } from '@metamask/selected-network-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
@@ -82,9 +83,13 @@ export function hasValidTypedDataParams(
 
 export function getChainId(
   networkController: NetworkController,
+  selectedNetworkController: SelectedNetworkController,
 ): SupportedEVMChain {
   const chainId = getProviderConfig({
-    metamask: networkController.state,
+    metamask: {
+      ...networkController.state,
+      ...selectedNetworkController.state,
+    },
   })?.chainId;
   if (!chainId) {
     throw new Error('Chain ID not found');

@@ -89,6 +89,7 @@ describe('SmartTransactionsBannerAlert', () => {
         chainId: CHAIN_IDS.MAINNET,
         rpcUrl: 'https://mainnet.infura.io/v3/',
       }),
+      domains: {},
     },
   };
 

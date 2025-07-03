@@ -236,7 +236,7 @@ describe('NetworkListMenu', () => {
     const { queryByText } = render({
       showTestNetworks: false,
       currentChainId: CHAIN_IDS.MAINNET,
-      selectedNetworkClientId: 'testNetworkConfigurationId',
+      selectedNetworkClientId: NETWORK_TYPES.MAINNET,
     });
 
     // Contains Mainnet, Linea Mainnet and the two custom networks
