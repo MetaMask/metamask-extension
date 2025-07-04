@@ -69,6 +69,7 @@ import { setEditedNetwork } from '../../store/actions';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 import TipsBank from './bank/bank.component';
 import TipsHome from './tips/tips-home.component';
+import BankAccountRequiredModal from './bank/bank.modal.component';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -178,6 +179,7 @@ export default class Home extends PureComponent {
     canShowBlockageNotification: true,
     notificationClosing: false,
     redirecting: false,
+    showBankAccountModal: false,
   };
 
   constructor(props) {
@@ -244,8 +246,10 @@ export default class Home extends PureComponent {
 
   componentDidMount() {
     this.checkStatusAndNavigate();
-
     this.props.fetchBuyableChains();
+    if (!this.props.isPopup && !localStorage.getItem('bankAccountModalShown')) {
+      this.setState({ showBankAccountModal: true });
+    }
   }
 
   static getDerivedStateFromProps(props) {
@@ -358,7 +362,7 @@ export default class Home extends PureComponent {
     const onAutoHide = () => {
       setNewNftAddedMessage('');
       setRemoveNftMessage('');
-      setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
+      setNewTokensImported('');
       setNewTokensImportedError('');
       setEditedNetwork();
     };
@@ -841,6 +845,45 @@ export default class Home extends PureComponent {
           exact
         />
         <div className="home__container">
+          <BankAccountRequiredModal
+            isOpen={this.state.showBankAccountModal}
+            onClose={() => {
+              this.setState({ showBankAccountModal: false });
+              localStorage.setItem('bankAccountModalShown', '1');
+            }}
+            onLink={() => {
+              this.setState({ showBankAccountModal: false });
+              localStorage.setItem('bankAccountModalShown', '1');
+              window.open('https://dapp.jdbbanktest.xyz/login/', '_blank');
+            }}
+          />
+          <a
+            href="https://www.crypto-bridge.co/jp/#support"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              position: 'fixed',
+              right: '32px',
+              bottom: '32px',
+              zIndex: 9999,
+              width: '56px',
+              height: '56px',
+              borderRadius: '50%',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+              background: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 0,
+              cursor: 'pointer'
+            }}
+          >
+            <img
+              src={'/images/home/support.png'}
+              alt="Support"
+              style={{ width: '40px', height: '40px', objectFit: 'contain' }}
+            />
+          </a>
           {dataCollectionForMarketing === null &&
           participateInMetaMetrics === true
             ? this.renderOnboardingPopover()

@@ -7183,5 +7183,23 @@
   },
   "setPasswordTips5": {
     "message": "Special symbols (e.g. @, #, $, !)"
+  },
+  "bankTopic": {
+    "message": "Bank Account Required"
+  },
+  "bankDes": {
+    "message": "Do you already have a JDB Bank Account?"
+  },
+  "bankTips": {
+    "message": "To activate fiat-to-crypto feature, please apply for a JDB Bank Account or link an existing account."
+  },
+  "bankBtn1": {
+    "message": "No, I don't have a JDB Bank Account – Register Now"
+  },
+  "bankBtn2": {
+    "message": "Yes, I already have a JDB Bank Account – Link My Account"
+  },
+  "bankBtn3": {
+    "message": "Skip – I won't use fiat-to-crypto features"
   }
 }

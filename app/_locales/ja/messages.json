@@ -6742,5 +6742,23 @@
   },
   "setPasswordTips5": {
     "message": "特殊記号(例:@,#,$,!)"
+  },
+  "bankTopic": {
+    "message": "銀行口座が必要です"
+  },
+  "bankDes": {
+    "message": "すでにJDB銀行口座をお持ちですか？"
+  },
+  "bankTips": {
+    "message": "暗号通貨を購入または販売するには、JDB銀行口座を申請するか、既存の口座をリンクしてください。"
+  },
+  "bankBtn1": {
+    "message": "はい、私のJDBYesアプリ口座をCryptoBridgeにリンクします"
+  },
+  "bankBtn2": {
+    "message": "いいえ、JDBYesアプリに登録します"
+  },
+  "bankBtn3": {
+    "message": "法定通貨で暗号通貨を購入する必要はありません"
   }
 }

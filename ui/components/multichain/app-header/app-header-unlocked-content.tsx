@@ -238,6 +238,17 @@ export const AppHeaderUnlockedContent = ({
               />
             </Box>
           )}
+          {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN && (
+            <ButtonIcon
+              iconName={IconName.Wise}
+              ariaLabel={t('depositWise')}
+              onClick={() => {
+                window.open('https://wise.com/', '_blank');
+              }}
+              size={ButtonIconSize.Sm}
+              data-testid="header-deposit-wise"
+            />
+          )}
           {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
             <ExpandViewButton />
           )}
