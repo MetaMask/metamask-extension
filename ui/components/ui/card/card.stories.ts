@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react';
 import {
   AlignItems,
   BackgroundColor,
@@ -15,8 +16,7 @@ import Card from '.';
 
 const sizeOptions = [undefined, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-export default {
-  title: 'Components/UI/Card',
+const meta: Meta<typeof Card> = {
   component: Card,
   parameters: {
     docs: {
@@ -154,6 +154,10 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <Card {...args}>{args.children}</Card>;
+export default meta;
+type Story = StoryObj<typeof Card>;
 
-DefaultStory.storyName = 'Default';
+export const DefaultStory: Story = {
+  name: 'Default',
+  render: (args) => <Card {...args}>{args.children}</Card>,
+};

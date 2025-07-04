@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from '@storybook/client-api';
 
 import {
@@ -27,8 +27,7 @@ import { Icon, IconName, IconSize } from '../icon';
 import { AvatarAccount, AvatarAccountSize } from '../avatar-account';
 import { Button } from '../button';
 
-export default {
-  title: 'Components/ComponentLibrary/TextField',
+const meta: Meta<typeof TextField> = {
   component: TextField,
   parameters: {
     docs: {
@@ -108,197 +107,216 @@ export default {
   args: {
     placeholder: 'Placeholder...',
   },
-} as Meta<typeof TextField>;
-
-const Template: StoryFn<typeof TextField> = (args) => {
-  const [{ value }, updateArgs] = useArgs();
-  const handleOnChange = (e) => {
-    updateArgs({ value: e.target.value });
-  };
-  return <TextField {...args} value={value} onChange={handleOnChange} />;
 };
 
-export const DefaultStory = Template.bind({});
-DefaultStory.storyName = 'Default';
-DefaultStory.args = { value: '' };
+export default meta;
+type Story = StoryObj<typeof TextField>;
 
-export const SizeStory: StoryFn<typeof TextField> = (args) => {
-  return (
+export const DefaultStory: Story = {
+  name: 'Default',
+  args: { value: '' },
+  render: (args) => {
+    const [{ value }, updateArgs] = useArgs();
+    const handleOnChange = (e) => {
+      updateArgs({ value: e.target.value });
+    };
+    return <TextField {...args} value={value} onChange={handleOnChange} />;
+  },
+};
+
+export const SizeStory: Story = {
+  name: 'Size',
+  render: (args) => {
+    return (
+      <Box
+        display={Display.InlineFlex}
+        flexDirection={FlexDirection.Column}
+        gap={4}
+      >
+        <TextField
+          {...args}
+          placeholder="TextFieldSize.Sm (32px)"
+          size={TextFieldSize.Sm}
+        />
+        <TextField
+          {...args}
+          placeholder="TextFieldSize.Md (40px)"
+          size={TextFieldSize.Md}
+        />
+        <TextField
+          {...args}
+          placeholder="TextFieldSize.Lg (48px)"
+          size={TextFieldSize.Lg}
+        />
+      </Box>
+    );
+  },
+};
+
+export const Type: Story = {
+  render: (args) => (
     <Box
       display={Display.InlineFlex}
       flexDirection={FlexDirection.Column}
       gap={4}
     >
-      <TextField
-        {...args}
-        placeholder="TextFieldSize.Sm (32px)"
-        size={TextFieldSize.Sm}
-      />
-      <TextField
-        {...args}
-        placeholder="TextFieldSize.Md (40px)"
-        size={TextFieldSize.Md}
-      />
-      <TextField
-        {...args}
-        placeholder="TextFieldSize.Lg (48px)"
-        size={TextFieldSize.Lg}
-      />
+      <TextField {...args} placeholder="Default" />
+      <TextField {...args} type={TextFieldType.Password} placeholder="Password" />
+      <TextField {...args} type={TextFieldType.Number} placeholder="Number" />
     </Box>
-  );
-};
-SizeStory.storyName = 'Size';
-
-export const Type = (args) => (
-  <Box
-    display={Display.InlineFlex}
-    flexDirection={FlexDirection.Column}
-    gap={4}
-  >
-    <TextField {...args} placeholder="Default" />
-    <TextField {...args} type={TextFieldType.Password} placeholder="Password" />
-    <TextField {...args} type={TextFieldType.Number} placeholder="Number" />
-  </Box>
-);
-
-export const Truncate = Template.bind({});
-Truncate.args = {
-  placeholder: 'Truncate',
-  value: 'Truncated text when truncate and width is set',
-  truncate: true,
-  style: { width: 240 },
+  ),
 };
 
-export const StartAccessoryEndAccessory = (args) => {
-  const [value, setValue] = useState({
-    search: '',
-    address: '',
-    amount: 1,
-    accountAddress: '0x514910771af9ca656af840dff83e8264ecf986ca',
-  });
-  const handleOnChange = (e) => {
-    setValue({ ...value, [e.target.name]: e.target.value });
-  };
-  const handleTokenPrice = (tokenAmount, priceUSD) => {
-    return tokenAmount * priceUSD;
-  };
-  return (
-    <Box
-      display={Display.InlineFlex}
-      flexDirection={FlexDirection.Column}
-      gap={4}
-    >
-      <TextField
-        {...args}
-        placeholder="Search"
-        value={value.search}
-        name="search"
-        onChange={handleOnChange}
-        startAccessory={
-          <Icon color={IconColor.iconAlternative} name={IconName.Search} />
-        }
-      />
-      <TextField
-        {...args}
-        placeholder="Public address (0x), or ENS"
-        value={value.address}
-        name="address"
-        onChange={handleOnChange}
-        endAccessory={
-          <ButtonIcon
-            iconName={IconName.ScanBarcode}
-            ariaLabel="Scan QR code"
-            iconProps={{ color: IconColor.primaryDefault }}
-          />
-        }
-      />
-      <TextField
-        {...args}
-        placeholder="Enter amount"
-        value={value.amount}
-        name="amount"
-        onChange={handleOnChange}
-        type="number"
-        truncate
-        startAccessory={
-          <Box
-            as="button"
-            style={{ padding: 0 }}
-            backgroundColor={BackgroundColor.transparent}
-            gap={1}
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-          >
-            <AvatarToken
-              name="eth"
-              src="./images/eth_logo.svg"
-              size={AvatarTokenSize.Sm}
-            />
-            <Text>ETH</Text>
-            <Icon
-              name={IconName.ArrowDown}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
-          </Box>
-        }
-        endAccessory={
-          <Text
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
-            style={{ whiteSpace: 'nowrap' }}
-          >
-            = ${handleTokenPrice(value.amount, 1173.58)}
-          </Text>
-        }
-      />
-      <TextField
-        {...args}
-        placeholder="Public address (0x), or ENS"
-        value={value.accountAddress}
-        name="accountAddress"
-        onChange={handleOnChange}
-        truncate
-        startAccessory={
-          value.accountAddress && (
-            <AvatarAccount
-              size={AvatarAccountSize.Sm}
-              address={value.accountAddress}
-            />
-          )
-        }
-        endAccessory={
-          value.accountAddress.length === 42 && (
-            <Icon name={IconName.Check} color={IconColor.successDefault} />
-          )
-        }
-      />
-    </Box>
-  );
+export const Truncate: Story = {
+  args: {
+    placeholder: 'Truncate',
+    value: 'Truncated text when truncate and width is set',
+    truncate: true,
+    style: { width: 240 },
+  },
+  render: (args) => {
+    const [{ value }, updateArgs] = useArgs();
+    const handleOnChange = (e) => {
+      updateArgs({ value: e.target.value });
+    };
+    return <TextField {...args} value={value} onChange={handleOnChange} />;
+  },
 };
 
-export const InputRef = (args) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [value, setValue] = useState('');
-  const handleOnClick = () => {
-    inputRef.current?.focus();
-  };
-  const handleOnChange = (e) => {
-    setValue(e.target.value);
-  };
-  return (
-    <Box display={Display.Flex}>
-      <TextField
-        {...args}
-        inputRef={inputRef}
-        value={value}
-        onChange={handleOnChange}
-      />
-      <Button marginLeft={1} onClick={handleOnClick}>
-        Edit
-      </Button>
-    </Box>
-  );
+export const StartAccessoryEndAccessory: Story = {
+  render: (args) => {
+    const [value, setValue] = useState({
+      search: '',
+      address: '',
+      amount: 1,
+      accountAddress: '0x514910771af9ca656af840dff83e8264ecf986ca',
+    });
+    const handleOnChange = (e) => {
+      setValue({ ...value, [e.target.name]: e.target.value });
+    };
+    const handleTokenPrice = (tokenAmount, priceUSD) => {
+      return tokenAmount * priceUSD;
+    };
+    return (
+      <Box
+        display={Display.InlineFlex}
+        flexDirection={FlexDirection.Column}
+        gap={4}
+      >
+        <TextField
+          {...args}
+          placeholder="Search"
+          value={value.search}
+          name="search"
+          onChange={handleOnChange}
+          startAccessory={
+            <Icon color={IconColor.iconAlternative} name={IconName.Search} />
+          }
+        />
+        <TextField
+          {...args}
+          placeholder="Public address (0x), or ENS"
+          value={value.address}
+          name="address"
+          onChange={handleOnChange}
+          endAccessory={
+            <ButtonIcon
+              iconName={IconName.ScanBarcode}
+              ariaLabel="Scan QR code"
+              iconProps={{ color: IconColor.primaryDefault }}
+            />
+          }
+        />
+        <TextField
+          {...args}
+          placeholder="Enter amount"
+          value={value.amount}
+          name="amount"
+          onChange={handleOnChange}
+          type="number"
+          truncate
+          startAccessory={
+            <Box
+              as="button"
+              style={{ padding: 0 }}
+              backgroundColor={BackgroundColor.transparent}
+              gap={1}
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+            >
+              <AvatarToken
+                name="eth"
+                src="./images/eth_logo.svg"
+                size={AvatarTokenSize.Sm}
+              />
+              <Text>ETH</Text>
+              <Icon
+                name={IconName.ArrowDown}
+                color={IconColor.iconDefault}
+                size={IconSize.Sm}
+              />
+            </Box>
+          }
+          endAccessory={
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+              style={{ whiteSpace: 'nowrap' }}
+            >
+              = ${handleTokenPrice(value.amount, 1173.58)}
+            </Text>
+          }
+        />
+        <TextField
+          {...args}
+          placeholder="Public address (0x), or ENS"
+          value={value.accountAddress}
+          name="accountAddress"
+          onChange={handleOnChange}
+          truncate
+          startAccessory={
+            value.accountAddress && (
+              <AvatarAccount
+                size={AvatarAccountSize.Sm}
+                address={value.accountAddress}
+              />
+            )
+          }
+          endAccessory={
+            value.accountAddress.length === 42 && (
+              <Icon name={IconName.Check} color={IconColor.successDefault} />
+            )
+          }
+        />
+      </Box>
+    );
+  },
+};
+
+export const InputRef: Story = {
+  render: (args) => {
+    const inputRef = useRef<HTMLInputElement>(null);
+    const [value, setValue] = useState('');
+    const handleOnClick = () => {
+      inputRef.current?.focus();
+    };
+    const handleOnChange = (e) => {
+      setValue(e.target.value);
+    };
+    return (
+      <Box display={Display.Flex}>
+        <TextField
+          {...args}
+          inputRef={inputRef}
+          value={value}
+          onChange={handleOnChange}
+        />
+        <Button marginLeft={1} onClick={handleOnClick}>
+          Edit
+        </Button>
+      </Box>
+    );
+  },
 };
 
 const CustomInputComponent: InputComponent = React.forwardRef(
@@ -322,52 +340,121 @@ const CustomInputComponent: InputComponent = React.forwardRef(
   ),
 );
 
-export const InputComponentStory = Template.bind({});
-
-InputComponentStory.storyName = 'InputComponent';
-InputComponentStory.args = {
-  placeholder: 0,
-  type: 'number',
-  size: Size.LG,
-  InputComponent: CustomInputComponent,
-  startAccessory: (
-    <Icon color={IconColor.iconAlternative} name={IconName.Wallet} />
-  ),
-  value: '',
+export const InputComponentStory: Story = {
+  name: 'InputComponent',
+  args: {
+    placeholder: 0,
+    type: 'number',
+    size: Size.LG,
+    InputComponent: CustomInputComponent,
+    startAccessory: (
+      <Icon color={IconColor.iconAlternative} name={IconName.Wallet} />
+    ),
+    value: '',
+  },
+  render: (args) => {
+    const [{ value }, updateArgs] = useArgs();
+    const handleOnChange = (e) => {
+      updateArgs({ value: e.target.value });
+    };
+    return <TextField {...args} value={value} onChange={handleOnChange} />;
+  },
 };
 
-export const AutoComplete = Template.bind({});
-AutoComplete.args = {
-  autoComplete: true,
-  type: 'password',
-  placeholder: 'Enter password',
-  value: '',
+export const AutoComplete: Story = {
+  args: {
+    autoComplete: true,
+    type: 'password',
+    placeholder: 'Enter password',
+    value: '',
+  },
+  render: (args) => {
+    const [{ value }, updateArgs] = useArgs();
+    const handleOnChange = (e) => {
+      updateArgs({ value: e.target.value });
+    };
+    return <TextField {...args} value={value} onChange={handleOnChange} />;
+  },
 };
 
-export const AutoFocus = Template.bind({});
-AutoFocus.args = { autoFocus: true, placeholder: 'AutoFocus', value: '' };
-
-export const DefaultValue = Template.bind({});
-DefaultValue.args = {
-  defaultValue: 'Default value',
+export const AutoFocus: Story = {
+  args: { autoFocus: true, placeholder: 'AutoFocus', value: '' },
+  render: (args) => {
+    const [{ value }, updateArgs] = useArgs();
+    const handleOnChange = (e) => {
+      updateArgs({ value: e.target.value });
+    };
+    return <TextField {...args} value={value} onChange={handleOnChange} />;
+  },
 };
-DefaultValue.args = {
-  value: DefaultValue.args.defaultValue || '',
+
+export const DefaultValue: Story = {
+  args: {
+    defaultValue: 'Default value',
+    value: 'Default value',
+  },
+  render: (args) => {
+    const [{ value }, updateArgs] = useArgs();
+    const handleOnChange = (e) => {
+      updateArgs({ value: e.target.value });
+    };
+    return <TextField {...args} value={value} onChange={handleOnChange} />;
+  },
 };
 
-export const Disabled = Template.bind({});
-Disabled.args = { disabled: true };
+export const Disabled: Story = {
+  args: { disabled: true },
+  render: (args) => {
+    const [{ value }, updateArgs] = useArgs();
+    const handleOnChange = (e) => {
+      updateArgs({ value: e.target.value });
+    };
+    return <TextField {...args} value={value} onChange={handleOnChange} />;
+  },
+};
 
-export const ErrorStory = Template.bind({});
-ErrorStory.args = { error: true, value: '' };
-ErrorStory.storyName = 'Error';
+export const ErrorStory: Story = {
+  name: 'Error',
+  args: { error: true, value: '' },
+  render: (args) => {
+    const [{ value }, updateArgs] = useArgs();
+    const handleOnChange = (e) => {
+      updateArgs({ value: e.target.value });
+    };
+    return <TextField {...args} value={value} onChange={handleOnChange} />;
+  },
+};
 
-export const MaxLength = Template.bind({});
-MaxLength.args = { maxLength: 10, placeholder: 'Max length 10', value: '' };
+export const MaxLength: Story = {
+  args: { maxLength: 10, placeholder: 'Max length 10', value: '' },
+  render: (args) => {
+    const [{ value }, updateArgs] = useArgs();
+    const handleOnChange = (e) => {
+      updateArgs({ value: e.target.value });
+    };
+    return <TextField {...args} value={value} onChange={handleOnChange} />;
+  },
+};
 
-export const ReadOnly = Template.bind({});
-ReadOnly.args = { readOnly: true, value: 'Read only' };
+export const ReadOnly: Story = {
+  args: { readOnly: true, value: 'Read only' },
+  render: (args) => {
+    const [{ value }, updateArgs] = useArgs();
+    const handleOnChange = (e) => {
+      updateArgs({ value: e.target.value });
+    };
+    return <TextField {...args} value={value} onChange={handleOnChange} />;
+  },
+};
 
-export const RequiredStory = Template.bind({});
-RequiredStory.args = { required: true, placeholder: 'Required', value: '' };
-RequiredStory.storyName = 'Required';
+export const RequiredStory: Story = {
+  name: 'Required',
+  args: { required: true, placeholder: 'Required', value: '' },
+  render: (args) => {
+    const [{ value }, updateArgs] = useArgs();
+    const handleOnChange = (e) => {
+      updateArgs({ value: e.target.value });
+    };
+    return <TextField {...args} value={value} onChange={handleOnChange} />;
+  },
+};

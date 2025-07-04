@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import {
   Display,
   FlexDirection,
@@ -14,9 +14,7 @@ import { Icon, IconName, IconSize } from '../icon';
 import { Box } from '../box';
 import { TextField } from '../text-field';
 
-export default {
-  title: 'Components/ComponentLibrary/Label',
-
+const meta: Meta<typeof Label> = {
   component: Label,
   parameters: {
     docs: {
@@ -37,58 +35,65 @@ export default {
   args: {
     children: 'Label',
   },
-} as ComponentMeta<typeof Label>;
+};
 
-const Template: ComponentStory<typeof Label> = (args) => <Label {...args} />;
+export default meta;
+type Story = StoryObj<typeof Label>;
 
-export const DefaultStory = Template.bind({});
-DefaultStory.storyName = 'Default';
+export const DefaultStory: Story = {
+  name: 'Default',
+  render: (args) => <Label {...args} />,
+};
 
-export const Children: ComponentStory<typeof Label> = (args) => (
-  <Box
-    display={Display.InlineFlex}
-    flexDirection={FlexDirection.Column}
-    gap={2}
-  >
-    <Label {...args}>Plain text</Label>
-    <Label {...args} display={Display.Flex} alignItems={AlignItems.flexStart}>
-      Text and icon
-      <Icon
-        color={IconColor.iconAlternative}
-        name={IconName.Info}
-        size={IconSize.Inherit}
-      />
-    </Label>
-    <Label
-      {...args}
+export const Children: Story = {
+  render: (args) => (
+    <Box
       display={Display.InlineFlex}
       flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.flexStart}
+      gap={2}
     >
-      Label that wraps an input
-      <TextField placeholder="Click label to focus" />
-    </Label>
-  </Box>
-);
-
-export const HtmlFor: ComponentStory<typeof Label> = (args) => {
-  const [value, setValue] = useState('');
-  const handleOnChange = (e) => {
-    setValue(e.target.value);
-  };
-  return (
-    <Box display={Display.InlineFlex} flexDirection={FlexDirection.Column}>
-      <Label {...args} />
-      <TextField
-        id="add-network"
-        value={value}
-        onChange={handleOnChange}
-        placeholder="Enter network name"
-      />
+      <Label {...args}>Plain text</Label>
+      <Label {...args} display={Display.Flex} alignItems={AlignItems.flexStart}>
+        Text and icon
+        <Icon
+          color={IconColor.iconAlternative}
+          name={IconName.Info}
+          size={IconSize.Inherit}
+        />
+      </Label>
+      <Label
+        {...args}
+        display={Display.InlineFlex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.flexStart}
+      >
+        Label that wraps an input
+        <TextField placeholder="Click label to focus" />
+      </Label>
     </Box>
-  );
+  ),
 };
-HtmlFor.args = {
-  children: 'Network name',
-  htmlFor: 'add-network',
+
+export const HtmlFor: Story = {
+  args: {
+    children: 'Network name',
+    htmlFor: 'add-network',
+  },
+  render: (args) => {
+    const [value, setValue] = useState('');
+    const handleOnChange = (e) => {
+      setValue(e.target.value);
+    };
+    return (
+      <Box display={Display.InlineFlex} flexDirection={FlexDirection.Column}>
+        <Label {...args} />
+        <TextField
+          id="add-network"
+          value={value}
+          onChange={handleOnChange}
+          placeholder="Enter network name"
+        />
+      </Box>
+    );
+  },
 };

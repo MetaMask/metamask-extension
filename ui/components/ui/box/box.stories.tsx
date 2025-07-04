@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
 import {
   BlockSize,
@@ -40,8 +40,7 @@ const sizeControlOptions = [
 ];
 const marginSizeControlOptions = [...sizeControlOptions, 'auto'];
 
-export default {
-  title: 'Components/UI/Box (deprecated)',
+const meta: Meta<typeof Box> = {
   component: Box,
   parameters: {
     docs: {
@@ -215,48 +214,53 @@ export default {
       table: { category: 'as (root html element)' },
     },
   },
-} as ComponentMeta<typeof Box>;
-
-export const DefaultStory: ComponentStory<typeof Box> = (args) => (
-  <Box {...args} />
-);
-
-DefaultStory.args = {
-  children: 'Box component',
-  display: Display.Flex,
-  justifyContent: JustifyContent.center,
-  alignItems: AlignItems.center,
-  width: BlockSize.Half,
-  height: BlockSize.Half,
-  borderColor: BorderColor.borderDefault,
-  padding: 4,
 };
 
-DefaultStory.storyName = 'Default';
+export default meta;
+type Story = StoryObj<typeof Box>;
 
-export const Margin: ComponentStory<typeof Box> = (args) => {
-  return (
-    <Box borderColor={BorderColor.borderMuted}>
-      <Box
-        {...args}
-        margin={2}
-        padding={4}
-        backgroundColor={BackgroundColor.backgroundAlternative}
-        borderColor={BorderColor.borderMuted}
-      >
-        Static margin
+export const DefaultStory: Story = {
+  name: 'Default',
+  args: {
+    children: 'Box component',
+    display: Display.Flex,
+    justifyContent: JustifyContent.center,
+    alignItems: AlignItems.center,
+    width: BlockSize.Half,
+    height: BlockSize.Half,
+    borderColor: BorderColor.borderDefault,
+    padding: 4,
+  },
+  render: (args) => (
+    <Box {...args} />
+  ),
+};
+
+export const Margin: Story = {
+  render: (args) => {
+    return (
+      <Box borderColor={BorderColor.borderMuted}>
+        <Box
+          {...args}
+          margin={2}
+          padding={4}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          borderColor={BorderColor.borderMuted}
+        >
+          Static margin
+        </Box>
+        <Box
+          {...args}
+          margin={[2, 4, 8, 12]}
+          padding={[4]}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          borderColor={BorderColor.borderMuted}
+        >
+          Responsive margin changes based on breakpoint
+        </Box>
       </Box>
-      <Box
-        {...args}
-        margin={[2, 4, 8, 12]}
-        padding={[4]}
-        backgroundColor={BackgroundColor.backgroundAlternative}
-        borderColor={BorderColor.borderMuted}
-      >
-        Responsive margin changes based on breakpoint
-      </Box>
-    </Box>
-  );
+    );
+  },
 };
 
 export const Padding: ComponentStory<typeof Box> = (args) => {
