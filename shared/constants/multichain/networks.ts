@@ -55,6 +55,9 @@ export const MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME: Record<
 > = {
   [BtcScope.Mainnet]: 'Bitcoin',
   [BtcScope.Testnet]: 'Bitcoin Testnet',
+  [BtcScope.Testnet4]: 'Bitcoin Testnet4',
+  [BtcScope.Signet]: 'Bitcoin Signet',
+  [BtcScope.Regtest]: 'Bitcoin Regtest',
   [SolScope.Mainnet]: 'Solana',
   [SolScope.Testnet]: 'Solana',
   [SolScope.Devnet]: 'Solana',

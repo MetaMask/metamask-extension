@@ -933,10 +933,9 @@ export class PreferencesController extends BaseController<
    */
   setSmartAccountOptInForAccounts(accounts: Hex[] = []): void {
     this.update((state) => {
-      state.preferences.smartAccountOptInForAccounts = [
-        ...state.preferences.smartAccountOptInForAccounts,
-        ...accounts.map((acc) => acc.toLowerCase() as Hex),
-      ];
+      state.preferences.smartAccountOptInForAccounts = accounts.map(
+        (acc) => acc.toLowerCase() as Hex,
+      );
     });
   }
 

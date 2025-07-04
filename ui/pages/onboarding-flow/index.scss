@@ -20,4 +20,8 @@
     background: url('/images/welcome-page.png') no-repeat center top;
     background-color: var(--color-accent02-dark);
   }
+
+  &__x-button__icon {
+    margin-bottom: -6px;
+  }
 }
