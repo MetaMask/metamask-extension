@@ -71,7 +71,7 @@ export function SmartAccountUpdateContent({
   chainId,
 }: {
   selectedAddresses: Hex[];
-  chainId: Hex;
+  chainId?: Hex;
 }) {
   const t = useI18nContext();
   const useBlockie = useSelector(getUseBlockie);

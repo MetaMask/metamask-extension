@@ -4,6 +4,7 @@
   &__container {
     font-size: 12px;
     height: 100%;
+    position: relative;
 
     @media screen and (min-width: design-system.$break-large) {
       width: 85vw;
@@ -22,18 +23,24 @@
     height: 100%;
     width: 100%;
     overflow: auto;
-    position: relative;
+    max-width: 360px;
   }
 
   &__edit {
     position: absolute;
     right: 10px;
-    top: 20px;
+    top: 8px;
   }
 
   &__close {
     position: absolute;
     right: 4px;
+    top: 4px;
+  }
+
+  &__close-left {
+    position: absolute;
+    left: 4px;
     top: 4px;
   }
 }

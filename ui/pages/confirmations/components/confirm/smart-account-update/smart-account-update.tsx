@@ -28,6 +28,7 @@ import { getSmartAccountOptInForAccounts } from '../../../selectors/preferences'
 import { AccountSelection } from '../account-selection';
 import { SmartAccountUpdateContent } from '../smart-account-update-content/smart-account-update-content';
 import { SmartAccountUpdateSuccess } from './smart-account-update-success';
+import { useHistory } from 'react-router-dom';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -35,12 +36,17 @@ export function SmartAccountUpdate() {
   const [acknowledged, setAcknowledged] = useState(false);
   const [accountSelectionVisible, setAccountSelectionVisible] = useState(false);
   const t = useI18nContext();
+  const history = useHistory();
   const smartAccountOptInForAccounts: Hex[] = useSelector(
     getSmartAccountOptInForAccounts,
   );
   const [selectedAccounts, setSelectedAccounts] = useState(() => {
     return smartAccountOptInForAccounts;
   });
+
+  const closeAccountUpdatePage = useCallback(() => {
+    history.replace('/');
+  }, [history]);
 
   const acknowledgeSmartAccountUpgrade = useCallback(() => {
     setSmartAccountOptInForAccounts(selectedAccounts);
@@ -58,19 +64,18 @@ export function SmartAccountUpdate() {
 
   return (
     <Box
+      backgroundColor={BackgroundColor.backgroundDefault}
       display={Display.Flex}
-      backgroundColor={BackgroundColor.overlayDefault}
-      color={TextColor.primaryDefault}
+      justifyContent={JustifyContent.center}
       className="smart-account-update__container"
     >
       <Box
-        backgroundColor={BackgroundColor.backgroundDefault}
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.spaceBetween}
-        padding={4}
         className="smart-account-update__inner"
+        padding={4}
       >
         {accountSelectionVisible && (
           <AccountSelection
@@ -91,6 +96,12 @@ export function SmartAccountUpdate() {
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.spaceBetween}
             >
+              <IconButton
+                Icon={<Icon name={IconName.Close} />}
+                onClick={closeAccountUpdatePage}
+                className="smart-account-update__close-left"
+                label=""
+              />
               <Text
                 color={TextColor.textDefault}
                 variant={TextVariant.headingMd}
