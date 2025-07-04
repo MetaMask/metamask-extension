@@ -1,6 +1,6 @@
 import { shallowEqual, useSelector } from 'react-redux';
 import { Hex, Json } from '@metamask/utils';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import { useMemo } from 'react';
 import {
   getConfirmationExchangeRates,
@@ -8,6 +8,7 @@ import {
   getMarketData,
   getTokenExchangeRates,
 } from '../../../../selectors';
+// eslint-disable-next-line no-restricted-syntax
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
@@ -25,6 +26,7 @@ export function useTokenFiatRates(tokenAddresses?: Hex[], chainId?: Hex) {
     chainId && allMarketData[chainId]
       ? Object.entries(allMarketData[chainId]).reduce<Record<string, Json>>(
           (acc, [address, marketData]) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             acc[address] = (marketData as any)?.price ?? null;
             return acc;
           },

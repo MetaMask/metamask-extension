@@ -11,7 +11,7 @@ import { useTokenFiatAmount } from '../../../../../hooks/useTokenFiatAmount';
 import { Box, Text } from '../../../../../components/component-library';
 import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
 import { useTokenDecimals } from '../../../hooks/transactions/useTokenDecimals';
-import { useIntentsTargets } from '../../../hooks/transactions/useIntentsTarget';
+import { useIntentsTargets } from '../../../hooks/transactions/useIntentsTargets';
 import { useIntentsTargetChainId } from '../../../hooks/transactions/useIntentsTargetChainId';
 import { TokenPill } from '../../confirm/token-pill/token-pill';
 

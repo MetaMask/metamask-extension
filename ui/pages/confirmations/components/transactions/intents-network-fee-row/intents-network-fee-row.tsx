@@ -3,7 +3,7 @@ import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../helpers/constants/intents';
 import { useTokenFiatAmount } from '../../../../../hooks/useTokenFiatAmount';
 import { useIntentsContext } from '../../../context/intents/intents';
-import { useIntentsQuote } from '../../../hooks/transactions/useIntentsQuote';
+import { useIntentsQuotes } from '../../../hooks/transactions/useIntentsQuotes';
 import {
   AlignItems,
   Display,
@@ -15,7 +15,7 @@ import { TokenPill } from '../../confirm/token-pill/token-pill';
 
 export function IntentsNetworkFeeRow() {
   const { sourceToken } = useIntentsContext();
-  const { loading, networkFee } = useIntentsQuote();
+  const { loading, networkFee } = useIntentsQuotes();
 
   const sourceChainId = sourceToken?.chainId;
 

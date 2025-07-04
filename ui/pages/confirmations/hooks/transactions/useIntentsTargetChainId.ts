@@ -1,6 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useConfirmContext } from '../../context/confirm';
 import { Hex } from '@metamask/utils';
+import { useConfirmContext } from '../../context/confirm';
 
 export function useIntentsTargetChainId() {
   const { currentConfirmation: transactionMeta } =

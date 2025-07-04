@@ -2,7 +2,7 @@ import React from 'react';
 import { BigNumber } from 'bignumber.js';
 import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
 import { useIntentsContext } from '../../../context/intents/intents';
-import { useIntentSourceAmounts } from '../../../hooks/transactions/useIntentSourceAmount';
+import { useIntentsSourceAmounts } from '../../../hooks/transactions/useIntentsSourceAmounts';
 import { useTokenFiatAmount } from '../../../../../hooks/useTokenFiatAmount';
 import {
   AlignItems,
@@ -15,7 +15,7 @@ import { TokenPill } from '../../confirm/token-pill/token-pill';
 
 export function IntentsFeeRow() {
   const { sourceToken } = useIntentsContext();
-  const sourceAmounts = useIntentSourceAmounts();
+  const sourceAmounts = useIntentsSourceAmounts();
 
   const sourceChainId = sourceToken?.chainId;
   const sourceTokenAddress = sourceToken?.address;

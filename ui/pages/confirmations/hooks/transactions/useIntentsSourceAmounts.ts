@@ -1,16 +1,16 @@
 import { createProjectLogger } from '@metamask/utils';
-import BigNumber from 'bignumber.js';
-import { useTokenDecimals } from './useTokenDecimals';
-import { useTokenFiatRates } from './useTokenFiatRate';
+import { BigNumber } from 'bignumber.js';
 import { useMemo } from 'react';
 import { useIntentsContext } from '../../context/intents/intents';
+import { useTokenDecimals } from './useTokenDecimals';
+import { useTokenFiatRates } from './useTokenFiatRate';
 import { useIntentsSourceFiat } from './useIntentsSourceFiat';
 
 const log = createProjectLogger('intents');
 
 export type IntentSourceAmounts = ReturnType<typeof useIntentSourceAmounts>;
 
-export function useIntentSourceAmounts() {
+export function useIntentsSourceAmounts() {
   const { sourceToken } = useIntentsContext();
 
   const sourceChainId = sourceToken?.chainId;
@@ -52,7 +52,7 @@ export function useIntentSourceAmounts() {
         sourceFiatRate,
       );
     });
-  }, [sourceDecimals, sourceFiatRate, JSON.stringify(sourceAmounts)]);
+  }, [sourceDecimals, sourceFiatRate, sourceAmounts]);
 }
 
 function calculateSourceAmount(

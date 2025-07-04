@@ -1,4 +1,11 @@
 import React, { useState, useCallback, ReactElement } from 'react';
+import { useSelector } from 'react-redux';
+import { Interface } from '@ethersproject/abi';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { toHex } from '@metamask/controller-utils';
+import { BigNumber } from 'bignumber.js';
+import { add0x } from '@metamask/utils';
 import {
   Box,
   Button,
@@ -18,16 +25,11 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { ButtonSize } from '../../../components/component-library/button/button.types';
-import { useSelector } from 'react-redux';
 import {
   getSelectedAddress,
   selectDefaultRpcEndpointByChainId,
 } from '../../../selectors';
 import { useAddTransaction } from '../../confirmations/hooks/transactions/useAddTransaction';
-import { Interface } from '@ethersproject/abi';
-import { abiERC20 } from '@metamask/metamask-eth-abis';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { toHex } from '@metamask/controller-utils';
 
 const USDC_ARBITRUM = '0xaf88d065e77c8cc2239327c5edb3a432268e5831';
 const HYPERLIQUID_BRIDGE = '0x2df1c51e09aecf9cacb7bc98cb1742757f163df7';
@@ -46,10 +48,13 @@ export function HyperliquidTest() {
 }
 
 function Deposit() {
-  const [amount, setAmount] = useState<number>();
+  const [amount, setAmount] = useState<string>();
   const selectedAddress = useSelector(getSelectedAddress);
   const { addTransaction } = useAddTransaction();
-  const amountHex = toHex(amount ?? 1000000);
+
+  const amountHex = amount
+    ? add0x(new BigNumber(amount).shift(6).toString(16))
+    : toHex(5000000);
 
   const defaultRpc = useSelector((state) =>
     selectDefaultRpcEndpointByChainId(state, CHAIN_IDS.ARBITRUM),
@@ -84,11 +89,11 @@ function Deposit() {
         onClick={handleClick}
       >
         <TextField
-          type={TextFieldType.Number}
+          type={TextFieldType.Text}
           placeholder="Amount"
           marginBottom={2}
           value={amount}
-          onChange={(e) => setAmount(parseInt(e.target.value, 10))}
+          onChange={(e) => setAmount(e.target.value)}
         />
       </TestButton>
     </>
@@ -127,7 +132,7 @@ function TestButton({
         setIsComplete(true);
       }
     }
-  }, [onClick]);
+  }, [expectError, onClick]);
 
   return (
     <Box

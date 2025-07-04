@@ -6,13 +6,10 @@ import {
   selectBridgeQuotes,
 } from '@metamask/bridge-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
-import { MetaMaskReduxState } from '../../metamask-controller';
 import { cloneDeep } from 'lodash';
+import { MetaMaskReduxState } from '../../metamask-controller';
 
 const log = createProjectLogger('intents-utils');
-
-const POLL_INTERVAL = 1000; // 1 Second
-const MAX_POLL_COUNT = 5;
 
 export type BridgeQuoteRequest = {
   from: Hex;

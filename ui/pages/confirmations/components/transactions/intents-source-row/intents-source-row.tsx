@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { BigNumber } from 'bignumber.js';
 import { AssetType, isSolanaChainId } from '@metamask/bridge-controller';
-import { useIntentSourceAmounts } from '../../../hooks/transactions/useIntentSourceAmount';
+import { useIntentsSourceAmounts } from '../../../hooks/transactions/useIntentsSourceAmounts';
 import {
   AssetWithDisplayData,
   ERC20Asset,
@@ -45,7 +45,7 @@ export function IntentsSourceRow() {
     useMultichainBalances();
 
   const { sourceToken, setSourceToken, loading, success } = useIntentsContext();
-  const sourceAmounts = useIntentSourceAmounts();
+  const sourceAmounts = useIntentsSourceAmounts();
 
   const sourceTokenChainId = sourceToken?.chainId;
   const sourceTokenAddress = sourceToken?.address;

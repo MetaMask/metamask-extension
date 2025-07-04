@@ -1,13 +1,13 @@
 import { Hex, createProjectLogger } from '@metamask/utils';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
+import { useMemo } from 'react';
 import {
   INTENTS_FEE,
   INTENTS_SLIPPAGE,
 } from '../../../../helpers/constants/intents';
 import { useTokenDecimals } from './useTokenDecimals';
 import { useTokenFiatRates } from './useTokenFiatRate';
-import { useMemo } from 'react';
-import { useIntentsTargets } from './useIntentsTarget';
+import { useIntentsTargets } from './useIntentsTargets';
 import { useIntentsTargetChainId } from './useIntentsTargetChainId';
 
 const log = createProjectLogger('intents');

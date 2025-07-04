@@ -7,7 +7,7 @@ import { NATIVE_TOKEN_ADDRESS } from '../../../../helpers/constants/intents';
 
 const log = createProjectLogger('intents');
 
-export function useBestIntentsSource() {
+export function useIntentsBestSource() {
   const { sourceAmountFiatTotal } = useIntentsSourceFiat();
 
   const sourceAmountFiatNumber = new BigNumber(

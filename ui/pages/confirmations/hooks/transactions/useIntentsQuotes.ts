@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
 import { QuoteResponse } from '@metamask/bridge-controller';
@@ -10,12 +10,12 @@ import { useAsyncResult } from '../../../../hooks/useAsync';
 import { useIntentsContext } from '../../context/intents/intents';
 import { useConfirmContext } from '../../context/confirm';
 import { useIntentsNetworkFee } from './useIntentsNetworkFee';
-import { useIntentSourceAmounts } from './useIntentSourceAmount';
-import { useIntentsTargets } from './useIntentsTarget';
+import { useIntentsSourceAmounts } from './useIntentsSourceAmounts';
+import { useIntentsTargets } from './useIntentsTargets';
 
 const log = createProjectLogger('intents');
 
-export function useIntentsQuote() {
+export function useIntentsQuotes() {
   const { currentConfirmation: transasctionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -26,14 +26,15 @@ export function useIntentsQuote() {
   } = transasctionMeta;
 
   const { sourceToken, loading, setLoading, setSuccess } = useIntentsContext();
-  const sourceAmounts = useIntentSourceAmounts();
+  const sourceAmounts = useIntentsSourceAmounts();
   const targets = useIntentsTargets();
 
   const sourceChainId = sourceToken?.chainId;
   const sourceTokenAddress = sourceToken?.address;
 
-  const targetTokenAddresses = targets.map(
-    (target) => target.targetTokenAddress,
+  const targetTokenAddresses = useMemo(
+    () => targets.map((target) => target.targetTokenAddress),
+    [targets],
   );
 
   const {
@@ -58,12 +59,12 @@ export function useIntentsQuote() {
 
     return getBridgeQuotes(requests);
   }, [
-    JSON.stringify(sourceAmounts),
+    sourceAmounts,
     sourceChainId,
-    JSON.stringify(sourceTokenAddress),
+    sourceTokenAddress,
     destChainId,
     from,
-    JSON.stringify(targetTokenAddresses),
+    targetTokenAddresses,
   ]);
 
   if (error) {
@@ -82,7 +83,7 @@ export function useIntentsQuote() {
   useEffect(() => {
     log('Saving quotes', transactionId, finalQuotes);
     setIntentQuoteForTransaction(transactionId, finalQuotes ?? null);
-  }, [transactionId, JSON.stringify(finalQuotes)]);
+  }, [transactionId, finalQuotes]);
 
   useEffect(() => {
     if ((quotesLoading || gasFeeLoading) && !loading) {

@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { Hex } from 'viem';
-import { useBestIntentsSource } from '../../hooks/transactions/useBestIntentsSource';
+import { useIntentsBestSource } from '../../hooks/transactions/useIntentsBestSource';
 
 type IntentsToken = {
   chainId: Hex;
@@ -30,7 +30,7 @@ export const IntentsContext = createContext<IntentsContextData | undefined>(
 export const IntentsContextProvider: React.FC<{
   children: ReactElement;
 }> = ({ children }) => {
-  const defaultSourceToken = useBestIntentsSource();
+  const defaultSourceToken = useIntentsBestSource();
   const [sourceToken, setSourceToken] = useState<IntentsToken>();
   const [loading, setLoading] = useState<boolean>(true);
   const [success, setSuccess] = useState<boolean>(false);
