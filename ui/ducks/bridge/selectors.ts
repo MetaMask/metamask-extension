@@ -544,6 +544,8 @@ export const getValidationErrors = createDeepEqualSelector(
     quoteRequest,
     txAlert,
   ) => {
+    const { gasIncluded } = activeQuote?.quote ?? {};
+
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
     const minimumBalanceToUse =
@@ -561,7 +563,13 @@ export const getValidationErrors = createDeepEqualSelector(
       ),
       // Shown prior to fetching quotes
       isInsufficientGasBalance: (balance?: BigNumber) => {
-        if (balance && !activeQuote && validatedSrcAmount && fromToken) {
+        if (
+          balance &&
+          !activeQuote &&
+          validatedSrcAmount &&
+          fromToken &&
+          !gasIncluded
+        ) {
           return isNativeAddress(fromToken.address)
             ? balance.sub(minimumBalanceToUse).lte(validatedSrcAmount)
             : balance.lte(0);
@@ -570,7 +578,13 @@ export const getValidationErrors = createDeepEqualSelector(
       },
       // Shown after fetching quotes
       isInsufficientGasForQuote: (balance?: BigNumber) => {
-        if (balance && activeQuote && fromToken && fromTokenInputValue) {
+        if (
+          balance &&
+          activeQuote &&
+          fromToken &&
+          fromTokenInputValue &&
+          !gasIncluded
+        ) {
           return isNativeAddress(fromToken.address)
             ? balance
                 .sub(activeQuote.totalMaxNetworkFee.amount)

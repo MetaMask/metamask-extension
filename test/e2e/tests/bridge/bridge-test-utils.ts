@@ -162,11 +162,11 @@ async function mockGetTxStatus(mockServer: Mockttp) {
         isExpectedToken: true,
         bridge: 'across',
         srcChain: {
-          chainId: srcChainId,
+          chainId: Number(srcChainId),
           txHash,
         },
         destChain: {
-          chainId: destChainId,
+          chainId: Number(destChainId),
           txHash,
         },
       },

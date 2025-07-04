@@ -125,6 +125,20 @@ class AdvancedSettings {
     );
     stxToggle.sendKeys(Key.ENTER);
   }
+
+  async toggleSmartTransactionsOff(): Promise<void> {
+    try {
+      const stxToggle = await this.driver.findElement(
+        this.smartTransactionsToggle,
+      );
+      await this.driver.findNestedElement(stxToggle, { text: 'On' });
+
+      await this.toggleSmartTransactions();
+      console.log('Smart transactions have been disabled');
+    } catch (e) {
+      console.log('Smart transactions are already disabled');
+    }
+  }
 }
 
 export default AdvancedSettings;
