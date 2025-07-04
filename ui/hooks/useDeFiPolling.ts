@@ -35,7 +35,7 @@ export async function deFiStopPolling(pollingToken: string) {
   await removePollingTokenFromAppState(pollingToken);
 }
 
-export const useDeFiPolling = () => {
+const useDeFiPolling = () => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isUnlocked = useSelector(getIsUnlocked);
   const enabled = completedOnboarding && isUnlocked;
@@ -48,3 +48,5 @@ export const useDeFiPolling = () => {
 
   return {};
 };
+
+export default useDeFiPolling;
