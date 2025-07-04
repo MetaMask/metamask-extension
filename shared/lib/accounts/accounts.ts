@@ -21,6 +21,8 @@ import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 /**
  * Supported non-EVM Snaps.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type SUPPORTED_WALLET_SNAP_ID =
   | typeof SOLANA_WALLET_SNAP_ID
   | typeof BITCOIN_WALLET_SNAP_ID;
@@ -96,7 +98,7 @@ export async function getNextAvailableSnapAccountName(
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-export type WalletSnapOptions = {
+export type CreateAccountSnapOptions = {
   scope?: CaipChainId;
   derivationPath?: DiscoveredAccount['derivationPath'];
   entropySource?: string;
@@ -108,7 +110,7 @@ export type WalletSnapClient = {
   getSnapId(): SnapId;
 
   createAccount(
-    options: WalletSnapOptions,
+    options: CreateAccountSnapOptions,
     internalOptions?: SnapKeyringInternalOptions,
   ): Promise<KeyringAccount>;
 
@@ -128,22 +130,17 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
 
   readonly #snapKeyring: SnapKeyring;
 
-  readonly #scopes: CaipChainId[];
-
   readonly #client: KeyringInternalSnapClient;
 
   readonly #messenger: MultichainWalletSnapClientMessenger;
 
   constructor(
     snapId: SUPPORTED_WALLET_SNAP_ID,
-    scopes: CaipChainId[],
     snapKeyring: SnapKeyring,
     messenger: MultichainWalletSnapClientMessenger,
   ) {
     this.#snapId = snapId;
     this.#snapKeyring = snapKeyring;
-
-    this.#scopes = scopes;
 
     this.#messenger = messenger;
 
@@ -163,7 +160,7 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
   }
 
   async createAccount(
-    { accountNameSuggestion, ...options }: WalletSnapOptions,
+    { accountNameSuggestion, ...options }: CreateAccountSnapOptions,
     internalOptions?: SnapKeyringInternalOptions,
   ): Promise<KeyringAccount> {
     // Automatically name the account if not provided.
@@ -199,24 +196,18 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
     );
   }
 
-  async #discoverAccountsOn(
+  async discoverAccounts(
     entropySource: string,
-    groupIndex: number,
-  ): Promise<DiscoveredAccount[]> {
-    return await this.#client.discoverAccounts(
-      this.#scopes,
-      entropySource,
-      groupIndex,
-    );
-  }
-
-  async discoverAccounts(entropySource: string) {
+    scope: CaipChainId,
+  ): Promise<KeyringAccount[]> {
     const accounts: KeyringAccount[] = [];
 
-    // TODO: Maybe use `Promise.all` or `Promise.allSettled` instead (for now we go sequentially
-    // because of our naming logic).
     for (let index = 0; ; index++) {
-      const discovered = await this.#discoverAccountsOn(entropySource, index);
+      const discovered = await this.#client.discoverAccounts(
+        [scope],
+        entropySource,
+        index,
+      );
 
       // We stop discovering accounts if none got discovered for that index.
       if (discovered.length === 0) {
@@ -227,9 +218,11 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
       // account naming logic.
       for (const { derivationPath } of discovered) {
         try {
-          const options: WalletSnapOptions = {
+          const options: CreateAccountSnapOptions = {
+            scope,
             derivationPath,
             entropySource,
+            synchronize: true,
           };
 
           const account = await this.createAccount(options, {

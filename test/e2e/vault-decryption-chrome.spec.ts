@@ -98,12 +98,13 @@ async function getFileSize(filePath: string): Promise<number> {
  * @param options.filePath - The path to the file.
  * @param options.maxRetries - The maximum number of retries.
  * @param options.minFileSize - The minimum file size in bytes.
- * @returns
+ * @returns Resolves if the file meets the size requirement within the retries.
+ * @throws {Error} If the file does not reach the minimum size after the maximum retries.
  */
 async function waitUntilFileIsWritten({
   driver,
   filePath,
-  maxRetries = 3,
+  maxRetries = 5,
   minFileSize = 1000000,
 }: {
   driver: Driver;
@@ -114,15 +115,19 @@ async function waitUntilFileIsWritten({
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     const fileSize = await getFileSize(filePath);
     if (fileSize > minFileSize) {
-      break;
-    } else {
-      console.log(`File size is too small (${fileSize} bytes)`);
-      if (attempt < maxRetries - 1) {
-        console.log(`Waiting for 2 seconds before retrying...`);
-        await driver.delay(2000);
-      }
+      console.log(`File is ready with size ${fileSize} bytes.`);
+      return;
+    }
+    console.log(`File size is too small (${fileSize} bytes)`);
+    if (attempt < maxRetries - 1) {
+      console.log(`Waiting for 5 seconds before retrying...`);
+      await driver.delay(5000);
     }
   }
+  // If the loop completes without success, throw an error
+  throw new Error(
+    `File did not reach the minimum size of ${minFileSize} bytes after ${maxRetries} retries.`,
+  );
 }
 
 /**
@@ -176,6 +181,7 @@ describe('Vault Decryptor Page', function () {
           driver,
           password: WALLET_PASSWORD,
           needNavigateToNewPage: false,
+          socialLoginEnabled: false,
         });
         // close popover if any (Announcements etc..)
         await closePopoverIfPresent(driver);
@@ -236,6 +242,7 @@ describe('Vault Decryptor Page', function () {
           driver,
           password: WALLET_PASSWORD,
           needNavigateToNewPage: false,
+          socialLoginEnabled: false,
         });
         // close popover if any (Announcements etc..)
         await closePopoverIfPresent(driver);
@@ -264,6 +271,8 @@ describe('Vault Decryptor Page', function () {
 
         // copy log file to a temp location, to avoid reading it while the browser is writting it
         type VaultData = {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           KeyringController: {
             vault: string;
           };

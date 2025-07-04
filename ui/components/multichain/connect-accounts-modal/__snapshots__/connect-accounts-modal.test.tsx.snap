@@ -123,7 +123,7 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
                 </label>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--sm:display-none"
+                class="mm-box mm-box--margin-right-3 mm-box--display-flex mm-box--sm:display-none"
                 data-testid="account-list-item-badge"
               >
                 <button
@@ -300,46 +300,108 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
                     </p>
                   </div>
                   <div
-                    class="mm-box multichain-account-list-item__avatar-currency mm-box--display-flex mm-box--gap-1 mm-box--justify-content-center mm-box--align-items-center"
+                    class="mm-box network-indicator"
                   >
                     <div
-                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+                      class="mm-box"
+                      data-testid="account-network-indicator"
                     >
-                      E
-                    </div>
-                    <div
-                      class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
-                    >
-                      <div
-                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                        data-testid="second-currency-display"
-                        title="0 ETH"
-                      >
-                        <span
-                          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-                          data-testid="account-value-and-suffix"
+                      <div>
+                        <div
+                          aria-describedby="tippy-tooltip-3"
+                          class=""
+                          data-original-title="This can be changed in "Settings > Alerts""
+                          data-tooltipped=""
+                          style="display: inline;"
+                          tabindex="0"
                         >
-                          0
-                        </span>
-                        <span
-                          class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-                        >
-                          ETH
-                        </span>
+                          <div
+                            class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
+                            data-testid="avatar-group"
+                          >
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
+                            >
+                              <div
+                                class="mm-box mm-box--rounded-full"
+                                style="margin-left: 0px;"
+                              >
+                                <div
+                                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                                >
+                                  <img
+                                    alt="Polygon Mainnet logo"
+                                    class="mm-avatar-network__network-image"
+                                    src="./images/pol-token.svg"
+                                  />
+                                </div>
+                              </div>
+                              <div
+                                class="mm-box mm-box--rounded-full"
+                                style="margin-left: -8px;"
+                              >
+                                <div
+                                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                                >
+                                  <img
+                                    alt="Binance Smart Chain logo"
+                                    class="mm-avatar-network__network-image"
+                                    src="./images/bnb.svg"
+                                  />
+                                </div>
+                              </div>
+                              <div
+                                class="mm-box mm-box--rounded-full"
+                                style="margin-left: -8px;"
+                              >
+                                <div
+                                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                                >
+                                  G
+                                </div>
+                              </div>
+                              <div
+                                class="mm-box mm-box--rounded-full"
+                                style="margin-left: -8px;"
+                              >
+                                <div
+                                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                                >
+                                  <img
+                                    alt="Custom Mainnet RPC logo"
+                                    class="mm-avatar-network__network-image"
+                                    src="./images/eth_logo.svg"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              class="mm-box"
+                            >
+                              <p
+                                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                              >
+                                +1
+                              </p>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+              />
             </div>
           </div>
           <div
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
               data-testid="connect-more-accounts-button"
-              data-theme="light"
               disabled=""
             >
               Confirm

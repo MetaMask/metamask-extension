@@ -24,43 +24,43 @@ $font-path: './fonts';
 // Brand Evolution Font Families
 
 @font-face {
-  font-family: 'CentraNo1';
-  src: url('#{$font-path}/CentraNo1/CentraNo1-Book.woff2') format('woff2');
+  font-family: 'Geist';
+  src: url('#{$font-path}/Geist/Geist-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'CentraNo1';
-  src: url('#{$font-path}/CentraNo1/CentraNo1-BookItalic.woff2') format('woff2');
+  font-family: 'Geist';
+  src: url('#{$font-path}/Geist/Geist-RegularItalic.woff2') format('woff2');
   font-weight: 400;
   font-style: italic;
 }
 
 @font-face {
-  font-family: 'CentraNo1';
-  src: url('#{$font-path}/CentraNo1/CentraNo1-Medium.woff2') format('woff2');
+  font-family: 'Geist';
+  src: url('#{$font-path}/Geist/Geist-Medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'CentraNo1';
-  src: url('#{$font-path}/CentraNo1/CentraNo1-MediumItalic.woff2') format('woff2');
+  font-family: 'Geist';
+  src: url('#{$font-path}/Geist/Geist-MediumItalic.woff2') format('woff2');
   font-weight: 500;
   font-style: italic;
 }
 
 @font-face {
-  font-family: 'CentraNo1';
-  src: url('#{$font-path}/CentraNo1/CentraNo1-Bold.woff2') format('woff2');
+  font-family: 'Geist';
+  src: url('#{$font-path}/Geist/Geist-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'CentraNo1';
-  src: url('#{$font-path}/CentraNo1/CentraNo1-BoldItalic.woff2') format('woff2');
+  font-family: 'Geist';
+  src: url('#{$font-path}/Geist/Geist-BoldItalic.woff2') format('woff2');
   font-weight: 700;
   font-style: italic;
 }
@@ -83,7 +83,7 @@ $font-path: './fonts';
 
 @font-face {
   font-family: 'MMPoly';
-  src: url('#{$font-path}/MMPoly/MM_Poly-Variable.woff2') format('woff2');
+  src: url('#{$font-path}/MMPoly/MM_Poly-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
 }

@@ -19,10 +19,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
-import { getSelectedAccount } from '../../../selectors';
+import { getSelectedAccount, getUseExternalServices } from '../../../selectors';
 ///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  BASIC_FUNCTIONALITY_SLIDE,
   getSweepstakesCampaignActive,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
@@ -51,6 +52,7 @@ export const Carousel = React.forwardRef(
     const [selectedIndex, setSelectedIndex] = useState(0);
     const t = useI18nContext();
     const trackEvent = useContext(MetaMetricsContext);
+    const useExternalServices = useSelector(getUseExternalServices);
 
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     const selectedAccount = useSelector(getSelectedAccount);
@@ -66,10 +68,28 @@ export const Carousel = React.forwardRef(
           return false;
         }
         ///: END:ONLY_INCLUDE_IF
-
+        if (slide.id === BASIC_FUNCTIONALITY_SLIDE.id && useExternalServices) {
+          return false;
+        }
         return !slide.dismissed || slide.undismissable;
       })
       .sort((a, b) => {
+        // Prioritize Contentful Priority slides
+        if (a.priorityPlacement === true && b.priorityPlacement !== true) {
+          return -1;
+        }
+        if (a.priorityPlacement !== true && b.priorityPlacement === true) {
+          return 1;
+        }
+
+        if (!useExternalServices) {
+          if (a.id === BASIC_FUNCTIONALITY_SLIDE.id) {
+            return -1;
+          }
+          if (b.id === BASIC_FUNCTIONALITY_SLIDE.id) {
+            return 1;
+          }
+        }
         ///: BEGIN:ONLY_INCLUDE_IF(solana)
         // prioritize Solana slide
         if (a.id === SOLANA_SLIDE.id) {
@@ -149,10 +169,20 @@ export const Carousel = React.forwardRef(
           event: MetaMetricsEventName.BannerNavigated,
           category: MetaMetricsEventCategory.Banner,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             from_banner: previousSlide.id,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             to_banner: nextSlide.id,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             from_banner_title: previousSlide.title,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             to_banner_title: nextSlide.title,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             navigation_method:
               Math.abs(selectedIndex - index) === 1 ? 'swipe' : 'dot',
           },

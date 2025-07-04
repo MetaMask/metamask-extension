@@ -45,8 +45,7 @@ describe('Carousel component e2e tests', function () {
           i++
         ) {
           if (i > 0) {
-            const dots = await driver.findElements('.dot');
-            await dots[i].click();
+            await driver.clickElement(`[aria-label="slide item ${i}"]`);
             await driver.waitForSelector(
               `[data-testid="slide-${slideIds[i]}"]`,
             );
@@ -117,18 +116,12 @@ describe('Carousel component e2e tests', function () {
             `Expected ${remainingSlides} slides remaining`,
           );
           await driver.delay(tinyDelayMs);
-          const dismissButton = await driver.waitForSelector(
-            `[data-testid="slide-${SLIDE_IDS[i]}"] button`,
-          );
-          await dismissButton.click();
-          await driver.wait(async () => {
-            try {
-              const isDisplayed = await dismissButton.isDisplayed();
-              return !isDisplayed;
-            } catch (e) {
-              return true;
-            }
-          }, 1000);
+
+          const dismissButtonSelector = `[data-testid="slide-${SLIDE_IDS[i]}"] button`;
+          await driver.waitForSelector(dismissButtonSelector);
+          await driver.waitForElementToStopMoving(dismissButtonSelector);
+          await driver.clickElementAndWaitToDisappear(dismissButtonSelector);
+
           const slideCountAfterOneDismissed =
             totalSlidesCount - i > MAX_VISIBLE_SLIDES
               ? MAX_VISIBLE_SLIDES
@@ -138,9 +131,8 @@ describe('Carousel component e2e tests', function () {
 
           if (i < slideCountAfterOneDismissed) {
             await driver.wait(async () => {
-              const remainingSlidesAfter = await driver.findElements(
-                '.mm-carousel-slide',
-              );
+              const remainingSlidesAfter =
+                await driver.findElements('.mm-carousel-slide');
 
               return (
                 remainingSlidesAfter.length === slideCountAfterOneDismissed

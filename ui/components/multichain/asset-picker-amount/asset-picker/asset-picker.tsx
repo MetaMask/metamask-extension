@@ -26,9 +26,7 @@ import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-///: END:ONLY_INCLUDE_IF
 import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
 import {
   AssetWithDisplayData,
@@ -95,6 +93,8 @@ export type AssetPickerProps = {
 >;
 
 // A component that lets the user pick from a list of assets.
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AssetPicker({
   children,
   header,
@@ -111,9 +111,7 @@ export function AssetPicker({
   isMultiselectEnabled = false,
   autoFocus = true,
 }: AssetPickerProps) {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const t = useI18nContext();
-  ///: END:ONLY_INCLUDE_IF
 
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
@@ -145,9 +143,9 @@ export function AssetPicker({
   // This is used to determine which tokens to display when isMultiselectEnabled=true
   const [selectedChainIds, setSelectedChainIds] = useState<string[]>(
     isMultiselectEnabled
-      ? allNetworksToUse
+      ? (allNetworksToUse
           ?.map(({ chainId }) => chainId)
-          .sort((a, b) => balanceByChainId[b] - balanceByChainId[a]) ?? []
+          .sort((a, b) => balanceByChainId[b] - balanceByChainId[a]) ?? [])
       : [],
   );
   const [isSelectingNetwork, setIsSelectingNetwork] = useState(false);
@@ -160,11 +158,9 @@ export function AssetPicker({
   }, [networkProps?.network?.chainId]);
 
   const handleAssetPickerTitle = (): string | undefined => {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     if (isDisabled) {
       return t('swapTokenNotAvailable');
     }
-    ///: END:ONLY_INCLUDE_IF
 
     return undefined;
   };

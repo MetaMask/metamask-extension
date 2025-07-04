@@ -190,7 +190,11 @@ const AssetChart = ({
   }, [currentPrice]);
 
   return (
-    <Box borderRadius={BorderRadius.LG}>
+    <Box
+      borderRadius={BorderRadius.LG}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+    >
       <AssetChartPrice
         ref={priceRef}
         loading={loading}
@@ -204,7 +208,7 @@ const AssetChart = ({
         marginTop={4}
         backgroundColor={
           loading && !prices
-            ? BackgroundColor.backgroundMuted
+            ? BackgroundColor.backgroundSection
             : BackgroundColor.transparent
         }
         borderRadius={BorderRadius.LG}

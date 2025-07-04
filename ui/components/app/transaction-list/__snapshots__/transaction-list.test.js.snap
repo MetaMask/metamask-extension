@@ -9,9 +9,8 @@ exports[`TransactionList renders TransactionList component correctly 1`] = `
       class="mm-box mm-box--margin-right-2 mm-box--margin-left-2 mm-box--justify-content-flex-start"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--disabled mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
+        class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
         data-testid="sort-by-popover-toggle"
-        disabled=""
       >
         <span
           class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
@@ -75,12 +74,16 @@ exports[`TransactionList renders TransactionList component correctly 1`] = `
               <div
                 class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--min-width-0"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
-                  data-testid="activity-list-item-action"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
-                  Receive
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+                    data-testid="activity-list-item-action"
+                  >
+                    Received
+                  </p>
+                </div>
                 <div
                   class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
                 >
@@ -94,13 +97,17 @@ exports[`TransactionList renders TransactionList component correctly 1`] = `
               <div
                 class="mm-box activity-list-item__right-content mm-box--display-inline-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--height-min"
               >
-                <p
-                  class="mm-box mm-text activity-list-item__primary-currency mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-right mm-box--color-text-default"
-                  data-testid="transaction-list-item-primary-currency"
-                  title="18.75 GoerliETH"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
-                  18.75 GoerliETH
-                </p>
+                  <p
+                    class="mm-box mm-text activity-list-item__primary-currency mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-right mm-box--color-text-default"
+                    data-testid="transaction-list-item-primary-currency"
+                    title="18.75 GoerliETH"
+                  >
+                    18.75 GoerliETH
+                  </p>
+                </div>
                 <p
                   class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-box--color-text-alternative"
                   data-testid="transaction-list-item-secondary-currency"
@@ -173,12 +180,16 @@ exports[`TransactionList renders TransactionList component with props hideNetwor
               <div
                 class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--min-width-0"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
-                  data-testid="activity-list-item-action"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
-                  Receive
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+                    data-testid="activity-list-item-action"
+                  >
+                    Received
+                  </p>
+                </div>
                 <div
                   class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
                 >
@@ -192,13 +203,17 @@ exports[`TransactionList renders TransactionList component with props hideNetwor
               <div
                 class="mm-box activity-list-item__right-content mm-box--display-inline-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--height-min"
               >
-                <p
-                  class="mm-box mm-text activity-list-item__primary-currency mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-right mm-box--color-text-default"
-                  data-testid="transaction-list-item-primary-currency"
-                  title="18.75 GoerliETH"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
-                  18.75 GoerliETH
-                </p>
+                  <p
+                    class="mm-box mm-text activity-list-item__primary-currency mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-right mm-box--color-text-default"
+                    data-testid="transaction-list-item-primary-currency"
+                    title="18.75 GoerliETH"
+                  >
+                    18.75 GoerliETH
+                  </p>
+                </div>
                 <p
                   class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-box--color-text-alternative"
                   data-testid="transaction-list-item-secondary-currency"
@@ -224,9 +239,8 @@ exports[`TransactionList renders TransactionList component with props hideTokenT
       class="mm-box mm-box--margin-right-2 mm-box--margin-left-2 mm-box--justify-content-flex-start"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--disabled mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
+        class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
         data-testid="sort-by-popover-toggle"
-        disabled=""
       >
         <span
           class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"

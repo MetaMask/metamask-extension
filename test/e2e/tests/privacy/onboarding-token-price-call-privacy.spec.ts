@@ -30,6 +30,11 @@ describe('MetaMask onboarding', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTokenPriceApi,
@@ -85,6 +90,11 @@ describe('MetaMask onboarding', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTokenPriceApi,

@@ -20,7 +20,11 @@ import {
   AlignItems,
 } from '../../../../helpers/constants/design-system';
 
-import { SwapAllowance, TokenInfo, TOKEN_DETAILS } from '../../remote.types';
+import {
+  SwapAllowance,
+  TokenInfo,
+  TOKEN_DETAILS,
+} from '../../../../../shared/lib/remote-mode';
 import { getChainNamesForDisplayByIds } from '../../../../helpers/utils/remote-mode';
 import { SUPPORTED_CHAINS_IDS } from '../../remote.constants';
 
@@ -34,6 +38,8 @@ import { SUPPORTED_CHAINS_IDS } from '../../remote.constants';
  * @param props.onRemove - Callback function triggered when the remove button is clicked
  * @returns A card component displaying swap allowance info
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeSwapAllowanceCard({
   swapAllowance,
   onRemove,

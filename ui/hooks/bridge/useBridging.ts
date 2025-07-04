@@ -10,14 +10,12 @@ import {
 } from '@metamask/bridge-controller';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getDataCollectionForMarketing,
   getIsBridgeChain,
   getIsBridgeEnabled,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   type SwapsEthToken,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -27,17 +25,13 @@ import {
 } from '../../../shared/constants/metametrics';
 
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../helpers/utils/portfolio';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
-///: END:ONLY_INCLUDE_IF
 
 const useBridging = () => {
   const history = useHistory();
@@ -77,8 +71,14 @@ const useBridging = () => {
               location === 'Home'
                 ? MetaMetricsSwapsEventSource.MainView
                 : MetaMetricsSwapsEventSource.TokenView,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id_source: formatChainIdToCaip(providerConfig.chainId),
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol_source: token.symbol,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_address_source: token.address,
           },
         });
@@ -88,9 +88,13 @@ const useBridging = () => {
             : MetaMetricsEventName.BridgeLinkClicked,
           category: MetaMetricsEventCategory.Navigation,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol: token.symbol,
             location,
             text: isSwap ? 'Swap' : 'Bridge',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id: providerConfig.chainId,
           },
         });
@@ -102,7 +106,11 @@ const useBridging = () => {
                 location === 'Home'
                   ? MetaMetricsSwapsEventSource.MainView
                   : MetaMetricsSwapsEventSource.TokenView,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_source: token.symbol,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_destination: null,
             },
           ),
@@ -137,7 +145,11 @@ const useBridging = () => {
             location,
             text: 'Bridge',
             url: portfolioUrl,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id: providerConfig.chainId,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol: token.symbol,
           },
         });

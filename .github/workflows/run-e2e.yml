@@ -48,15 +48,15 @@ jobs:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     runs-on: ubuntu-latest
     container:
-      image: cimg/node:22.15-browsers
-      credentials:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      image: public.ecr.aws/a6f6j9d3/metamask-core/metamask-extension-e2e:v22.15.0
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
+      # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
+      # For a `push` event, the head commit hash is `github.sha`.
+      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
       MATRIX_INDEX: ${{ inputs.matrix-index }}
       MATRIX_TOTAL: ${{ inputs.matrix-total }}
       JOB_NAME: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
@@ -64,11 +64,6 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number || '' }}
       TEST_SUITE_NAME: ${{ inputs.test-suite-name }}
     steps:
-      - name: Install dependencies
-        run: |
-          sudo apt-get update && sudo apt-get install zstd
-          sudo corepack enable
-
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
@@ -77,7 +72,7 @@ jobs:
 
       # not installed by checkout-and-setup when cache is restored
       - name: Install anvil
-        run: yarn foundryup
+        run: yarn mm-foundryup
 
       - name: Download build artifact
         if: ${{ inputs.build-artifact != '' }}
@@ -86,7 +81,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.build-artifact }}
-          path: ./dist/
 
       # if there is a build-command and there is no build artifact, or the specified artifact does not exist, we run the build command
       - run: ${{ inputs.build-command }}

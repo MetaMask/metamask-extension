@@ -10,12 +10,14 @@ import {
 import Card from '../../../../components/ui/card';
 import { Text } from '../../../../components/component-library';
 import { REMOTE_ROUTE } from '../../../../helpers/constants/routes';
-import { DailyAllowance } from '../../remote.types';
+import { DailyAllowance } from '../../../../../shared/lib/remote-mode';
 
 type SendAllowanceBannerProps = {
   allowance: DailyAllowance;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function SendAllowanceBanner({
   allowance,
 }: SendAllowanceBannerProps) {

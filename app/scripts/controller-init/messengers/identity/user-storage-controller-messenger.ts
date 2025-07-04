@@ -18,7 +18,15 @@ import {
   AccountsControllerAccountRenamedEvent,
   AccountsControllerListAccountsAction,
   AccountsControllerUpdateAccountMetadataAction,
+  AccountsControllerUpdateAccountsAction,
 } from '@metamask/accounts-controller';
+import {
+  AddressBookControllerContactUpdatedEvent,
+  AddressBookControllerContactDeletedEvent,
+  AddressBookControllerListAction,
+  AddressBookControllerSetAction,
+  AddressBookControllerDeleteAction,
+} from '@metamask/address-book-controller';
 import {
   NetworkControllerAddNetworkAction,
   NetworkControllerGetStateAction,
@@ -40,12 +48,17 @@ type MessengerActions =
   // Account Syncing
   | AccountsControllerListAccountsAction
   | AccountsControllerUpdateAccountMetadataAction
+  | AccountsControllerUpdateAccountsAction
   | KeyringControllerWithKeyringAction
   // Network Syncing
   | NetworkControllerGetStateAction
   | NetworkControllerAddNetworkAction
   | NetworkControllerRemoveNetworkAction
-  | NetworkControllerUpdateNetworkAction;
+  | NetworkControllerUpdateNetworkAction
+  // Contact Syncing
+  | AddressBookControllerListAction
+  | AddressBookControllerSetAction
+  | AddressBookControllerDeleteAction;
 
 type MessengerEvents =
   | UserStorageControllerStateChangeEvent
@@ -54,6 +67,9 @@ type MessengerEvents =
   // Account Syncing Events
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRenamedEvent
+  // Contact Syncing Events
+  | AddressBookControllerContactUpdatedEvent
+  | AddressBookControllerContactDeletedEvent
   // Network Syncing Events
   | NetworkControllerNetworkRemovedEvent;
 
@@ -87,11 +103,16 @@ export function getUserStorageControllerMessenger(
       // Accounts Controller Requests
       'AccountsController:listAccounts',
       'AccountsController:updateAccountMetadata',
+      'AccountsController:updateAccounts',
       // Network Controller Requests
       'NetworkController:getState',
       'NetworkController:addNetwork',
       'NetworkController:removeNetwork',
       'NetworkController:updateNetwork',
+      // Address Book Controller Requests
+      'AddressBookController:list',
+      'AddressBookController:set',
+      'AddressBookController:delete',
     ],
     allowedEvents: [
       // Keyring Controller Events
@@ -100,6 +121,9 @@ export function getUserStorageControllerMessenger(
       // Accounts Controller Events
       'AccountsController:accountAdded',
       'AccountsController:accountRenamed',
+      // Address Book Controller Events
+      'AddressBookController:contactUpdated',
+      'AddressBookController:contactDeleted',
       // Network Controller Events
       'NetworkController:networkRemoved',
     ],

@@ -1,3 +1,4 @@
+const { setTimeout: asyncSetTimeout } = require('node:timers/promises');
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
 const {
@@ -341,19 +342,25 @@ class Driver {
    * @param {string} [options.state] - specifies the state of the element to wait for.
    * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
    * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
+   * @param {number} [options.waitAtLeastGuard] - minimum milliseconds to wait before passing
    * @returns {Promise<WebElement>} promise resolving when the element meets the state or timeout occurs.
    * @throws {Error} Will throw an error if the element does not reach the specified state within the timeout period.
    */
   async waitForSelector(
     rawLocator,
-    { timeout = this.timeout, state = 'visible' } = {},
+    { timeout = this.timeout, state = 'visible', waitAtLeastGuard = 0 } = {},
   ) {
     // Playwright has a waitForSelector method that will become a shallow
     // replacement for the implementation below. It takes an option options
     // bucket that can include the state attribute to wait for elements that
     // match the selector to be removed from the DOM.
+    assert(timeout > waitAtLeastGuard);
+    if (waitAtLeastGuard > 0) {
+      await this.delay(waitAtLeastGuard);
+    }
+
     let element;
-    if (!['visible', 'detached', 'enabled'].includes(state)) {
+    if (!['visible', 'detached', 'enabled', 'disabled'].includes(state)) {
       throw new Error(`Provided state selector ${state} is not supported`);
     }
     if (state === 'visible') {
@@ -369,6 +376,11 @@ class Driver {
     } else if (state === 'enabled') {
       element = await this.driver.wait(
         until.elementIsEnabled(await this.findElement(rawLocator)),
+        timeout,
+      );
+    } else if (state === 'disabled') {
+      element = await this.driver.wait(
+        until.elementIsDisabled(await this.findElement(rawLocator)),
         timeout,
       );
     }
@@ -552,11 +564,12 @@ class Driver {
    * Finds a visible element on the page using the given locator.
    *
    * @param {string | object} rawLocator - Element locator
+   * @param {number} timeout - Timeout in milliseconds
    * @returns {Promise<WebElement>} A promise that resolves to the found visible element.
    */
-  async findVisibleElement(rawLocator) {
-    const element = await this.findElement(rawLocator);
-    await this.driver.wait(until.elementIsVisible(element), this.timeout);
+  async findVisibleElement(rawLocator, timeout = this.timeout) {
+    const element = await this.findElement(rawLocator, timeout);
+    await this.driver.wait(until.elementIsVisible(element), timeout);
     return wrapElementWithAPI(element, this);
   }
 
@@ -856,24 +869,38 @@ class Driver {
   /**
    * Waits for a condition to be met within a given timeout period.
    *
-   * @param {Function} condition - The condition to wait for. This function should return a boolean indicating whether the condition is met.
+   * @param {() => Promise<boolean>} condition - The condition to wait for. This function must return a boolean indicating whether the condition is met.
    * @param {object} options - Options for the wait.
    * @param {number} options.timeout - The maximum amount of time (in milliseconds) to wait for the condition to be met.
    * @param {number} options.interval - The interval (in milliseconds) between checks for the condition.
    * @returns {Promise<void>} A promise that resolves when the condition is met or the timeout is reached.
    * @throws {Error} Throws an error if the condition is not met within the timeout period.
    */
-  async waitUntil(condition, options) {
-    const { timeout, interval } = options;
-    const endTime = Date.now() + timeout;
+  async waitUntil(condition, { interval, timeout }) {
+    const startTime = Date.now();
+    const endTime = startTime + timeout;
 
-    while (Date.now() < endTime) {
-      if (await condition()) {
-        return true;
+    // Loop indefinitely until condition met or timeout
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const result = await condition();
+      if (result === true) {
+        return; // Condition met
       }
-      await new Promise((resolve) => setTimeout(resolve, interval));
+
+      const currentTime = Date.now();
+      if (currentTime >= endTime) {
+        throw new Error(`Condition not met within ${timeout}ms.`);
+      }
+
+      // Calculate remaining time to ensure we don't overshoot the timeout
+      const remainingTime = endTime - currentTime;
+      const waitTime = Math.min(interval, remainingTime);
+
+      // always yield to the event loop, even for an interval of `0`, to avoid a
+      // macro-task deadlock
+      await asyncSetTimeout(waitTime, null, { ref: false });
     }
-    throw new Error('Condition not met within timeout');
   }
 
   /**
@@ -895,11 +922,12 @@ class Driver {
    * Checks if an element that matches the given locator is present and visible on the page.
    *
    * @param {string | object} rawLocator - Element locator
+   * @param {number} timeout - Timeout in milliseconds
    * @returns {Promise<boolean>} promise that resolves to a boolean indicating whether the element is present and visible.
    */
-  async isElementPresentAndVisible(rawLocator) {
+  async isElementPresentAndVisible(rawLocator, timeout = this.timeout) {
     try {
-      await this.findVisibleElement(rawLocator);
+      await this.findVisibleElement(rawLocator, timeout);
       return true;
     } catch (err) {
       return false;
@@ -1213,7 +1241,7 @@ class Driver {
    *
    * @param {object} options - Parameters for the function.
    * @param {string} options.url - URL to wait for.
-   * @param {int} options.timeout - optional timeout period, defaults to this.timeout.
+   * @param {number} [options.timeout] - optional timeout period, defaults to this.timeout.
    * @returns {Promise<void>} Promise that resolves once the URL matches.
    * @throws {Error} Throws an error if the URL does not match within the timeout period.
    */
@@ -1351,7 +1379,7 @@ class Driver {
   async verboseReportOnFailure(testTitle, error) {
     console.error(
       `Failure on testcase: '${testTitle}', for more information see the ${
-        process.env.CIRCLECI ? 'artifacts tab in CI' : 'test-artifacts folder'
+        process.env.CI ? 'artifacts tab in CI' : 'test-artifacts folder'
       }\n`,
     );
     console.error(`${error}\n`);

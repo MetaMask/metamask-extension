@@ -44,6 +44,8 @@ class SnapInstall {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_messageResultSpan(
     spanSelectorId: string,
     expectedMessage: string,
@@ -55,6 +57,8 @@ class SnapInstall {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -107,6 +111,11 @@ class SnapInstall {
     await this.driver.clickElement(this.okButton);
   }
 
+  async clickFooterConfirmButton() {
+    console.log('Clicking Confirm button');
+    await this.driver.clickElement(this.nextPageButton);
+  }
+
   async updateScrollAndClickConfirmButton() {
     console.log(
       'Clicking on the scroll button and then clicking the confirm button',
@@ -114,10 +123,10 @@ class SnapInstall {
     await this.driver.waitUntil(
       async () => {
         await this.driver.clickElementSafe(this.snapUpdateScrollArea);
-        const isEnabled = await this.driver.findClickableElement(
+        const element = await this.driver.findClickableElement(
           this.nextPageButton,
         );
-        return isEnabled;
+        return Boolean(element);
       },
       { timeout: veryLargeDelayMs, interval: 100 },
     );

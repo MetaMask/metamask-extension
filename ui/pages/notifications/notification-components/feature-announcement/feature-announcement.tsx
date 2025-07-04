@@ -101,6 +101,8 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
               as="div"
               // TODO - we can replace the raw HTML string injection with react components
               dangerouslySetInnerHTML={{
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __html: purify.sanitize(notification.data.longDescription),
               }}
             />

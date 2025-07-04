@@ -3,7 +3,7 @@ import { promises as fs } from 'fs';
 import { strict as assert } from 'assert';
 import { get, has, set, unset, cloneDeep } from 'lodash';
 import { Browser } from 'selenium-webdriver';
-import { format } from 'prettier';
+import prettier from 'prettier';
 import { isObject, Json, JsonRpcResponse } from '@metamask/utils';
 import { Mockttp } from 'mockttp';
 import { SENTRY_UI_STATE } from '../../../../app/scripts/constants/sentry-state';
@@ -143,7 +143,7 @@ async function matchesSnapshot({
       const stringifiedData = JSON.stringify(data);
       // filepath specified so that Prettier can infer which parser to use
       // from the file extension
-      const formattedData = format(stringifiedData, {
+      const formattedData = await prettier.format(stringifiedData, {
         filepath: 'something.json',
       });
       await fs.writeFile(snapshotPath, formattedData, {
@@ -895,17 +895,10 @@ describe('Sentry errors', function () {
       },
       // Part of the AuthenticationController store, but initialized as undefined
       // Only populated once the client is authenticated
-      sessionData: {
-        token: false,
-        profile: true,
-      },
+      srpSessionData: {},
       // This can get erased due to a bug in the app state controller's
       // preferences state change handler
       timeoutMinutes: true,
-      // MMI properties
-      opts: true,
-      store: true,
-      configurationClient: true,
       lastInteractedConfirmationInfo: undefined,
     };
     await withFixtures(

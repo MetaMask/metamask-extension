@@ -54,6 +54,8 @@ const getMetaMaskStateWithUnapprovedContractDeployment = ({
 }) => {
   return {
     ...mockMetaMaskState,
+    participateInMetaMetrics: true,
+    dataCollectionForMarketing: false,
     preferences: {
       ...mockMetaMaskState.preferences,
       showConfirmationAdvancedDetails,
@@ -225,7 +227,11 @@ describe('Contract Deployment Confirmation', () => {
           properties: {
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.Transaction,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             transaction_type: TransactionType.deployContract,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: 0,
           },
         }),
@@ -302,14 +308,12 @@ describe('Contract Deployment Confirmation', () => {
     const gasFeesSection = await screen.findByTestId('gas-fee-section');
     expect(gasFeesSection).toBeInTheDocument();
 
-    const editGasFeesRow = await within(gasFeesSection).findByTestId(
-      'edit-gas-fees-row',
-    );
+    const editGasFeesRow =
+      await within(gasFeesSection).findByTestId('edit-gas-fees-row');
     expect(editGasFeesRow).toHaveTextContent(tEn('networkFee') as string);
 
-    const firstGasField = await within(editGasFeesRow).findByTestId(
-      'first-gas-field',
-    );
+    const firstGasField =
+      await within(editGasFeesRow).findByTestId('first-gas-field');
     expect(firstGasField).toHaveTextContent('0.0001');
     expect(editGasFeesRow).toContainElement(
       await screen.findByTestId('edit-gas-fee-icon'),
@@ -320,9 +324,8 @@ describe('Contract Deployment Confirmation', () => {
     );
     expect(gasFeeSpeed).toHaveTextContent(tEn('speed') as string);
 
-    const gasTimingTime = await within(gasFeeSpeed).findByTestId(
-      'gas-timing-time',
-    );
+    const gasTimingTime =
+      await within(gasFeeSpeed).findByTestId('gas-timing-time');
     expect(gasTimingTime).toHaveTextContent('~0 sec');
   });
 

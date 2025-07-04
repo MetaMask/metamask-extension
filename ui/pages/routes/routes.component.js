@@ -20,7 +20,6 @@ import {
   ImportTokensModal,
 } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
-import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 
 import {
   ASSET_ROUTE,
@@ -53,6 +52,11 @@ import {
   REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
   IMPORT_SRP_ROUTE,
   DEFI_ROUTE,
+  DEEP_LINK_ROUTE,
+  SMART_ACCOUNT_UPDATE,
+  WALLET_DETAILS_ROUTE,
+  ACCOUNT_DETAILS_ROUTE,
+  ACCOUNT_DETAILS_QR_CODE_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -84,18 +88,21 @@ import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
 } from '../../../shared/lib/confirmation.utils';
+import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
+import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
+import { MultichainAccountDetails } from '../multichain-accounts/account-details';
+import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import {
   getConnectingLabel,
   hideAppHeader,
   isConfirmTransactionRoute,
   setTheme,
-  showOnboardingHeader,
   showAppHeader,
 } from './utils';
 
 // Begin Lazy Routes
-const OnboardingFlow = mmLazy(() =>
-  import('../onboarding-flow/onboarding-flow'),
+const OnboardingFlow = mmLazy(
+  () => import('../onboarding-flow/onboarding-flow'),
 );
 const Lock = mmLazy(() => import('../lock'));
 const UnlockPage = mmLazy(() => import('../unlock-page'));
@@ -108,46 +115,54 @@ const NotificationDetails = mmLazy(() => import('../notification-details'));
 const Notifications = mmLazy(() => import('../notifications'));
 const SnapList = mmLazy(() => import('../snaps/snaps-list'));
 const SnapView = mmLazy(() => import('../snaps/snap-view'));
-const ConfirmTransaction = mmLazy(() =>
-  import('../confirmations/confirm-transaction'),
+const ConfirmTransaction = mmLazy(
+  () => import('../confirmations/confirm-transaction'),
 );
 const SendPage = mmLazy(() => import('../../components/multichain/pages/send'));
 const Swaps = mmLazy(() => import('../swaps'));
 const CrossChainSwap = mmLazy(() => import('../bridge'));
-const ConfirmAddSuggestedTokenPage = mmLazy(() =>
-  import('../confirm-add-suggested-token'),
+const ConfirmAddSuggestedTokenPage = mmLazy(
+  () => import('../confirm-add-suggested-token'),
 );
-const ConfirmAddSuggestedNftPage = mmLazy(() =>
-  import('../confirm-add-suggested-nft'),
+const ConfirmAddSuggestedNftPage = mmLazy(
+  () => import('../confirm-add-suggested-nft'),
 );
 const ConfirmationPage = mmLazy(() => import('../confirmations/confirmation'));
-const CreateAccountPage = mmLazy(() =>
-  import('../create-account/create-account.component'),
+const CreateAccountPage = mmLazy(
+  () => import('../create-account/create-account.component'),
 );
-const NftFullImage = mmLazy(() =>
-  import('../../components/app/assets/nfts/nft-details/nft-full-image'),
+const NftFullImage = mmLazy(
+  () => import('../../components/app/assets/nfts/nft-details/nft-full-image'),
 );
 const Asset = mmLazy(() => import('../asset'));
 const DeFiPage = mmLazy(() => import('../defi'));
-const PermissionsPage = mmLazy(() =>
-  import('../../components/multichain/pages/permissions-page/permissions-page'),
+const PermissionsPage = mmLazy(
+  () =>
+    import(
+      '../../components/multichain/pages/permissions-page/permissions-page'
+    ),
 );
-const Connections = mmLazy(() =>
-  import('../../components/multichain/pages/connections'),
+const Connections = mmLazy(
+  () => import('../../components/multichain/pages/connections'),
 );
-const ReviewPermissions = mmLazy(() =>
-  import(
-    '../../components/multichain/pages/review-permissions-page/review-permissions-page'
-  ),
+const ReviewPermissions = mmLazy(
+  () =>
+    import(
+      '../../components/multichain/pages/review-permissions-page/review-permissions-page'
+    ),
 );
 const Home = mmLazy(() => import('../home'));
 
 const RemoteModeOverview = mmLazy(() => import('../remote-mode/overview'));
-const RemoteModeSetupSwaps = mmLazy(() =>
-  import('../remote-mode/setup/setup-swaps'),
+const RemoteModeSetupSwaps = mmLazy(
+  () => import('../remote-mode/setup/setup-swaps'),
 );
-const RemoteModeSetupDailyAllowance = mmLazy(() =>
-  import('../remote-mode/setup/setup-daily-allowance'),
+const RemoteModeSetupDailyAllowance = mmLazy(
+  () => import('../remote-mode/setup/setup-daily-allowance'),
+);
+const DeepLink = mmLazy(() => import('../deep-link/deep-link'));
+const WalletDetails = mmLazy(
+  () => import('../multichain-accounts/wallet-details'),
 );
 // End Lazy Routes
 
@@ -206,6 +221,7 @@ export default class Routes extends Component {
     oldestPendingApproval: PropTypes.object,
     pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
     transactionsMetadata: PropTypes.object.isRequired,
+    isMultichainAccountsState1Enabled: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -297,10 +313,15 @@ export default class Routes extends Component {
           <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
           <Route path={LOCK_ROUTE} component={Lock} exact />
           <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
+          <Route path={DEEP_LINK_ROUTE} component={DeepLink} />
           <RestoreVaultComponent
             path={RESTORE_VAULT_ROUTE}
             component={RestoreVaultPage}
             exact
+          />
+          <Authenticated
+            path={SMART_ACCOUNT_UPDATE}
+            component={SmartAccountUpdate}
           />
           <Authenticated
             // `:keyringId` is optional here, if not provided, this will fallback
@@ -400,6 +421,21 @@ export default class Routes extends Component {
             component={RemoteModeSetupDailyAllowance}
             exact
           />
+          <Authenticated
+            path={WALLET_DETAILS_ROUTE}
+            component={WalletDetails}
+            exact
+          />
+          <Authenticated
+            path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
+            component={MultichainAccountDetails}
+            exact
+          />
+          <Authenticated
+            path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
+            component={AddressQRCode}
+            exact
+          />
 
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
@@ -417,6 +453,15 @@ export default class Routes extends Component {
     return routes;
   }
 
+  renderAccountDetails() {
+    const { accountDetailsAddress, isMultichainAccountsState1Enabled } =
+      this.props;
+    if (!accountDetailsAddress || isMultichainAccountsState1Enabled) {
+      return null;
+    }
+    return <AccountDetails address={accountDetailsAddress} />;
+  }
+
   render() {
     const {
       isLoading,
@@ -432,7 +477,6 @@ export default class Routes extends Component {
       isAccountMenuOpen,
       toggleAccountMenu,
       isNetworkMenuOpen,
-      accountDetailsAddress,
       isImportTokensModalOpen,
       isDeprecatedNetworkModalOpen,
       location,
@@ -484,13 +528,18 @@ export default class Routes extends Component {
       transactionsMetadata[confirmationId]?.type,
     );
 
+    const isShowingDeepLinkRoute = location.pathname === DEEP_LINK_ROUTE;
+
     let isLoadingShown =
       isLoading &&
       completedOnboarding &&
       // In the redesigned screens, we hide the general loading spinner and the
       // loading states are on a component by component basis.
       !isCorrectApprovalType &&
-      !isCorrectTransactionType;
+      !isCorrectTransactionType &&
+      // We don't want to show the loading screen on the deep link route, as it
+      // is already a fullscreen interface.
+      !isShowingDeepLinkRoute;
 
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isLoadingShown =
@@ -504,8 +553,20 @@ export default class Routes extends Component {
       // In the redesigned screens, we hide the general loading spinner and the
       // loading states are on a component by component basis.
       !isCorrectApprovalType &&
-      !isCorrectTransactionType;
+      !isCorrectTransactionType &&
+      // We don't want to show the loading spinner on the deep link route, as it
+      // is already a fullscreen interface.
+      !isShowingDeepLinkRoute;
     ///: END:ONLY_INCLUDE_IF
+
+    const accountListMenu = this.props.isMultichainAccountsState1Enabled ? (
+      <MultichainAccountListMenu
+        onClose={toggleAccountMenu}
+        privacyMode={privacyMode}
+      />
+    ) : (
+      <AccountListMenu onClose={toggleAccountMenu} privacyMode={privacyMode} />
+    );
 
     return (
       <div
@@ -528,20 +589,12 @@ export default class Routes extends Component {
           ? showAppHeader(this.props) && <AppHeader location={location} />
           : !hideAppHeader(this.props) && <AppHeader location={location} />}
         {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
-        {showOnboardingHeader(location) && <OnboardingAppHeader />}
-        {isAccountMenuOpen ? (
-          <AccountListMenu
-            onClose={toggleAccountMenu}
-            privacyMode={privacyMode}
-          />
-        ) : null}
+        {isAccountMenuOpen ? accountListMenu : null}
         {isNetworkMenuOpen ? (
           <NetworkListMenu onClose={networkMenuClose} />
         ) : null}
         <NetworkConfirmationPopover />
-        {accountDetailsAddress ? (
-          <AccountDetails address={accountDetailsAddress} />
-        ) : null}
+        {this.renderAccountDetails()}
         {isImportNftsModalOpen ? (
           <ImportNftsModal onClose={hideImportNftsModal} />
         ) : null}
@@ -566,7 +619,10 @@ export default class Routes extends Component {
         }
         <Box className="main-container-wrapper">
           {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-          {!isLoading && isNetworkLoading && completedOnboarding ? (
+          {!isLoading &&
+          isNetworkLoading &&
+          completedOnboarding &&
+          !isShowingDeepLinkRoute ? (
             <LoadingNetwork />
           ) : null}
           {this.renderRoutes()}

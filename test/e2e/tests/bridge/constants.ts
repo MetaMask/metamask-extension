@@ -1,7 +1,10 @@
 import { type FeatureFlagResponse } from '@metamask/bridge-controller';
 
-export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse = {
+export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
+  minimumVersion: string;
+} = {
   refreshRate: 30000,
+  minimumVersion: '0.0.0',
   maxRefreshCount: 5,
   support: true,
   chains: {
@@ -43,6 +46,10 @@ export const TOP_ASSETS_API_LINEA_MOCK_RESULT = [
   {
     address: '0xa219439258ca9da29e9cc4ce5596924745e12b93',
     symbol: 'USDT',
+  },
+  {
+    address: '0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f',
+    symbol: 'WETH',
   },
 ];
 
@@ -139,6 +146,18 @@ export const FAILED_DEST_TRANSACTION = {
   },
 };
 
+export const MOCK_TOKENS_ARBITRUM = [
+  {
+    symbol: 'DAI',
+    decimals: 18,
+    aggregators: [],
+    occurrences: 1,
+    iconUrl: '',
+    address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
+    name: 'Dai Stablecoin',
+  },
+];
+
 export const MOCK_TOKENS_ETHEREUM = [
   {
     symbol: 'DAI',
@@ -216,6 +235,28 @@ export const MOCK_TOKENS_ETHEREUM = [
     address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     name: 'USDC',
   },
+  {
+    address: '0x3432b6a60d23ca0dfca7761b7ab56459d9c964d0',
+    symbol: 'FXS',
+    decimals: 18,
+    name: 'Frax Share',
+    iconUrl: '',
+    type: 'erc20',
+    aggregators: [],
+    occurrences: 1,
+    erc20Permit: false,
+    storage: {},
+    fees: {},
+  },
+  {
+    symbol: 'WETH',
+    decimals: 18,
+    aggregators: [],
+    occurrences: 1,
+    iconUrl: '',
+    address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    name: 'Wrapped Ether',
+  },
 ];
 
 export const MOCK_TOKENS_LINEA = [
@@ -273,6 +314,35 @@ export const MOCK_TOKENS_LINEA = [
       'https://assets.coingecko.com/coins/images/31271/thumb/usdt.jpeg?1696530095',
     address: '0xa219439258ca9da29e9cc4ce5596924745e12b93',
     name: 'Bridged Tether  Linea ',
+  },
+  {
+    symbol: 'WETH',
+    decimals: 18,
+    aggregators: [
+      'metamask',
+      'coinGecko',
+      'lineaTeam',
+      'lifi',
+      'rubic',
+      'xswap',
+      'rango',
+      'sonarwatch',
+    ],
+    occurrences: 8,
+    iconUrl: '',
+    address: '0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f',
+    name: 'WETH',
+  },
+  {
+    address: '0x0000000000000000000000000000000000000000',
+    symbol: 'ETH',
+    decimals: 18,
+    name: 'Ether',
+    iconUrl: '',
+    type: 'native',
+    aggregators: [],
+    occurrences: 100,
+    erc20Permit: false,
   },
 ];
 

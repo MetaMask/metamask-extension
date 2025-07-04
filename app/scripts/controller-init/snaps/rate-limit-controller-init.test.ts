@@ -36,9 +36,8 @@ describe('RateLimitController', () => {
   });
 
   it('does not store state', () => {
-    const { memStateKey, persistedStateKey } = RateLimitControllerInit(
-      getInitRequestMock(),
-    );
+    const { memStateKey, persistedStateKey } =
+      RateLimitControllerInit(getInitRequestMock());
 
     expect(memStateKey).toBeNull();
     expect(persistedStateKey).toBeNull();

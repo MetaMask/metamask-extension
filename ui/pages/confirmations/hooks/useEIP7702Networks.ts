@@ -1,11 +1,17 @@
 import { CaipChainId, Hex } from '@metamask/utils';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
-import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors';
+import {
+  AccountsState,
+  getMemoizedInternalAccountByAddress,
+  getMultichainNetworkConfigurationsByChainId,
+} from '../../../selectors';
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { isAtomicBatchSupported } from '../../../store/controller-actions/transaction-controller';
 
@@ -16,34 +22,43 @@ export type EIP7702NetworkConfiguration = MultichainNetworkConfiguration & {
 };
 
 export const useEIP7702Networks = (address: string) => {
+  const account = useSelector((state: AccountsState) =>
+    getMemoizedInternalAccountByAddress(state as AccountsState, address),
+  );
+  const keyringType = account?.metadata?.keyring?.type;
+  const isSupportedKeyringType =
+    keyringType &&
+    KEYRING_TYPES_SUPPORTING_7702.includes(keyringType as KeyringTypes);
+
   const [multichainNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
 
-  const [nonTestNetworks, testNetworks] = useMemo(
-    () =>
-      Object.entries(multichainNetworks).reduce(
-        ([nonTestnetsList, testnetsList], [id, network]) => {
-          try {
-            const chainId = network.isEvm
-              ? convertCaipToHexChainId(id as CaipChainId)
-              : id;
-            // This is type casted to string since chainId could be
-            // Hex or CaipChainId.
-            const isTest = (TEST_CHAINS as string[]).includes(chainId);
-            (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
-          } catch (err: unknown) {
-            // console.log(err);
-          }
-          return [nonTestnetsList, testnetsList];
-        },
-        [
-          {} as Record<string, MultichainNetworkConfiguration>,
-          {} as Record<string, MultichainNetworkConfiguration>,
-        ],
-      ),
-    [multichainNetworks],
-  );
+  const [nonTestNetworks = {}, testNetworks = {}] = useMemo(() => {
+    if (!isSupportedKeyringType) {
+      return [];
+    }
+    return Object.entries(multichainNetworks).reduce(
+      ([nonTestnetsList, testnetsList], [id, network]) => {
+        try {
+          const chainId = network.isEvm
+            ? convertCaipToHexChainId(id as CaipChainId)
+            : id;
+          // This is type casted to string since chainId could be
+          // Hex or CaipChainId.
+          const isTest = (TEST_CHAINS as string[]).includes(chainId);
+          (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
+        } catch (err: unknown) {
+          // console.log(err);
+        }
+        return [nonTestnetsList, testnetsList];
+      },
+      [
+        {} as Record<string, MultichainNetworkConfiguration>,
+        {} as Record<string, MultichainNetworkConfiguration>,
+      ],
+    );
+  }, [isSupportedKeyringType, multichainNetworks]);
 
   const networkList = useMemo(
     () => ({ ...nonTestNetworks, ...testNetworks }),
@@ -51,17 +66,21 @@ export const useEIP7702Networks = (address: string) => {
   );
 
   const { pending, value } = useAsyncResult(async () => {
+    if (!isSupportedKeyringType) {
+      return [];
+    }
+
     const chainIds = Object.keys(networkList) as Hex[];
 
     return await isAtomicBatchSupported({
       address: address as Hex,
       chainIds,
     });
-  }, [address, networkList]);
+  }, [address, isSupportedKeyringType, networkList]);
 
   const network7702List: EIP7702NetworkConfiguration[] | undefined =
     useMemo(() => {
-      if (!value) {
+      if (!value || !isSupportedKeyringType) {
         return [];
       }
 
@@ -85,11 +104,11 @@ export const useEIP7702Networks = (address: string) => {
       });
 
       return networksSupporting7702;
-    }, [networkList, value]);
+    }, [isSupportedKeyringType, networkList, value]);
 
   return {
     network7702List,
     networkSupporting7702Present: network7702List?.length > 0,
-    pending,
+    pending: pending && isSupportedKeyringType,
   };
 };

@@ -16,7 +16,15 @@ describe('NFT detection', function () {
     const driverOptions = { mock: true };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+              '0x5': true,
+            },
+          })
+          .build(),
         driverOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: setupAutoDetectMocking,

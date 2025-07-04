@@ -44,7 +44,7 @@ describe('Block Explorer', function () {
 
         // Verify block explorer
         await driver.waitForUrl({
-          url: `https://etherscan.io/address/${DEFAULT_FIXTURE_ACCOUNT}`,
+          url: `https://etherscan.io/address/${DEFAULT_FIXTURE_ACCOUNT}#asset-multichain`,
         });
         await new MockedPage(driver).check_displayedMessage(
           'Empty page by MetaMask',
@@ -74,9 +74,8 @@ describe('Block Explorer', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes, contractRegistry }) => {
-        const contractAddress = await contractRegistry.getContractAddress(
-          smartContract,
-        );
+        const contractAddress =
+          await contractRegistry.getContractAddress(smartContract);
         await loginWithBalanceValidation(driver, localNodes[0]);
 
         // View TST token in block explorer

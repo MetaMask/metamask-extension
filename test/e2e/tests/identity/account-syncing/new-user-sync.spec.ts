@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { withFixtures } from '../../../helpers';
+import { veryLargeDelayMs, withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../../constants';
 import { mockIdentityServices } from '../mocks';
@@ -64,6 +64,10 @@ describe('Account syncing - New User', function () {
             defaultAccountOneName,
           );
 
+          // Wait for the message signing snap to list entropy sources
+          // And for internal accounts to be updated with entropySourceIds and derivationPaths
+          await driver.delay(veryLargeDelayMs);
+
           // Add a second account
           const {
             waitUntilSyncedAccountsNumberEquals,
@@ -82,7 +86,7 @@ describe('Account syncing - New User', function () {
           });
           // Wait for the account AND account name to be synced
           await waitUntilSyncedAccountsNumberEquals(2);
-          await waitUntilEventsEmittedNumberEquals(2);
+          await waitUntilEventsEmittedNumberEquals(1);
 
           // Set SRP to use for retreival
           const headerNavbar = new HeaderNavbar(driver);

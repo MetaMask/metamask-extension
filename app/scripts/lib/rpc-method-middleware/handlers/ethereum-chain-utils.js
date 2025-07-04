@@ -5,6 +5,7 @@ import {
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -174,6 +175,7 @@ export function validateAddEthereumChainParams(params) {
  * @param {Function} hooks.getCaveat - The callback to get the CAIP-25 caveat for the origin.
  * @param {Function} hooks.requestPermittedChainsPermissionIncrementalForOrigin - The callback to add a new chain to the permittedChains-equivalent CAIP-25 permission.
  * @param {Function} hooks.setTokenNetworkFilter - The callback to set the token network filter.
+ * @param {Function} hooks.setEnabledNetworks - The callback to set the enabled networks.
  * @param {Function} hooks.rejectApprovalRequestsForOrigin - The callback to reject all pending approval requests for the origin.
  * @param {Function} hooks.requestUserApproval - The callback to trigger user approval flow.
  * @param {Function} hooks.hasApprovalRequestsForOrigin - Function to check if there are pending approval requests from the origin.
@@ -195,6 +197,7 @@ export async function switchChain(
     getCaveat,
     requestPermittedChainsPermissionIncrementalForOrigin,
     setTokenNetworkFilter,
+    setEnabledNetworks,
     rejectApprovalRequestsForOrigin,
     requestUserApproval,
     hasApprovalRequestsForOrigin,
@@ -243,7 +246,18 @@ export async function switchChain(
     rejectApprovalRequestsForOrigin?.();
 
     await setActiveNetwork(networkClientId);
+
+    // keeping this for backward compatibility in case we need to rollback REMOVE_GNS feature flag
+    // this will keep tokenNetworkFilter in sync with enabledNetworkMap while we roll this feature out
     setTokenNetworkFilter(chainId);
+
+    if (isPrefixedFormattedHexString(chainId)) {
+      setEnabledNetworks(chainId, KnownCaipNamespace.Eip155);
+    } else {
+      const { namespace } = parseCaipChainId(chainId);
+      setEnabledNetworks(chainId, namespace);
+    }
+
     response.result = null;
     return end();
   } catch (error) {

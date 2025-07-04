@@ -12,6 +12,8 @@ class AddTokensModal {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -33,6 +35,8 @@ class AddTokensModal {
    *
    * @param expectedTokenCount - The expected count of suggested tokens.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_SuggestedTokensCount(expectedTokenCount: number) {
     const multipleSuggestedTokens = await this.driver.findElements(
       this.tokenListItem,

@@ -25,6 +25,10 @@ class SelectNetwork {
     testId: 'network-list-item-options-delete',
   };
 
+  private readonly discoverButton = {
+    testId: 'network-list-item-options-discover',
+  };
+
   private readonly editNetworkButton =
     '[data-testid="network-list-item-options-edit"]';
 
@@ -49,6 +53,8 @@ class SelectNetwork {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -68,6 +74,22 @@ class SelectNetwork {
   async clickAddButton(): Promise<void> {
     console.log('Click Add Button');
     await this.driver.clickElementAndWaitToDisappear(this.addNetworkButton);
+  }
+
+  /**
+   * Click the Add button for a popular network.
+   *
+   * @param chainId - The chain ID of the popular network to add.
+   */
+  async clickAddButtonForPopularNetwork(chainId: string): Promise<void> {
+    console.log('Click Add Button for Popular Network');
+    await this.driver.clickElementAndWaitToDisappear({
+      text: 'Add',
+      css: `[data-testid="test-add-button"]`,
+      parent: {
+        css: `[data-testid="popular-network-${chainId}"]`,
+      },
+    });
   }
 
   async clickCloseButton(): Promise<void> {
@@ -149,6 +171,8 @@ class SelectNetwork {
    * @param networkName - The name of the network to check.
    * @param shouldBeDisplayed - Whether the network should be displayed. Defaults to true.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_networkOptionIsDisplayed(
     networkName: string,
     shouldBeDisplayed: boolean = true,
@@ -166,6 +190,8 @@ class SelectNetwork {
     }
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_networkRPCNumber(expectedNumber: number): Promise<void> {
     console.log(
       `Wait for ${expectedNumber} RPC URLs to be displayed in select network dialog`,
@@ -177,11 +203,55 @@ class SelectNetwork {
     console.log(`${expectedNumber} RPC URLs found in select network dialog`);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_rpcIsSelected(rpcName: string): Promise<void> {
     console.log(`Check RPC ${rpcName} is selected in network dialog`);
     await this.driver.waitForSelector({
       text: rpcName,
       tag: 'button',
+    });
+  }
+
+  async clickDiscoverButton(): Promise<void> {
+    console.log('Click Discover button in network options');
+    await this.driver.clickElement(this.discoverButton);
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_chainInformationIsDisplayed(information: string): Promise<void> {
+    console.log(`Check chain information is displayed: ${information}`);
+    await this.driver.waitForSelector({
+      text: information,
+    });
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_discoverButtonIsVisible(): Promise<void> {
+    console.log('Check Discover button is visible in network options');
+    await this.driver.waitForSelector(this.discoverButton);
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_popularNetworkIsDisplayed({
+    chainId,
+    networkName,
+  }: {
+    chainId: string;
+    networkName: string;
+  }): Promise<void> {
+    console.log(
+      `Check if ${networkName} is displayed in popular network options`,
+    );
+    await this.driver.waitForSelector({
+      text: networkName,
+      tag: 'p',
+      parent: {
+        css: `[data-testid="popular-network-${chainId}"]`,
+      },
     });
   }
 }

@@ -4,6 +4,13 @@
 ; This variable is required
 INFURA_PROJECT_ID=00000000000
 
+; Set this to `true` to enable Seedless onboarding (Social login flow)
+SEEDLESS_ONBOARDING_ENABLED='false'
+
+; These variables are required for OAuth Service
+GOOGLE_CLIENT_ID=
+APPLE_CLIENT_ID=
+
 ; This variable is not required but it's necessary for the storybook
 ; to render stories that use onchain data.
 INFURA_STORYBOOK_PROJECT_ID=

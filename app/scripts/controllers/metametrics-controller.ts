@@ -157,6 +157,8 @@ export type MetaMaskState = {
   theme: string;
   participateInMetaMetrics: boolean;
   dataCollectionForMarketing: boolean;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ShowNativeTokenAsMainBalance: boolean;
   useNftDetection: PreferencesControllerState['useNftDetection'];
   openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
@@ -164,6 +166,8 @@ export type MetaMaskState = {
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
   tokenSortConfig: PreferencesControllerState['preferences']['tokenSortConfig'];
   names: NameControllerState['names'];
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   security_providers: string[];
   addressBook: AddressBookControllerState['addressBook'];
   currentCurrency: string;
@@ -171,14 +175,7 @@ export type MetaMaskState = {
     privacyMode: PreferencesControllerState['preferences']['privacyMode'];
     tokenNetworkFilter: string[];
   };
-  sessionData: AuthenticationControllerState['sessionData'];
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  custodyAccountDetails: {
-    [address: string]: {
-      custodianName: string;
-    };
-  };
-  ///: END:ONLY_INCLUDE_IF
+  srpSessionData: AuthenticationControllerState['srpSessionData'];
   keyrings: { type: string; accounts: string[] }[];
   multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
 };
@@ -359,10 +356,6 @@ export default class MetaMetricsController extends BaseController<
 
   #environment: MetaMetricsControllerOptions['environment'];
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  #selectedAddress: PreferencesControllerState['selectedAddress'];
-  ///: END:ONLY_INCLUDE_IF
-
   #segment: MetaMetricsControllerOptions['segment'];
 
   /**
@@ -412,10 +405,6 @@ export default class MetaMetricsController extends BaseController<
       environment === 'production' ? version : `${version}-${environment}`;
     this.#extension = extension;
     this.#environment = environment;
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.#selectedAddress = preferencesControllerState.selectedAddress;
-    ///: END:ONLY_INCLUDE_IF
 
     const abandonedFragments = omitBy(state.fragments, 'persist');
 
@@ -896,7 +885,11 @@ export default class MetaMetricsController extends BaseController<
         properties: {
           params,
           locale: this.locale,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: this.chainId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: environmentType,
         },
         context: this.#buildContext(referrer, page),
@@ -1068,23 +1061,10 @@ export default class MetaMetricsController extends BaseController<
     referrer: MetaMetricsContext['referrer'],
     page: MetaMetricsContext['page'] = METAMETRICS_BACKGROUND_PAGE_OBJECT,
   ): MetaMetricsContext {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const mmiProps: {
-      extensionId?: string;
-    } = {};
-
-    if (this.#extension?.runtime?.id) {
-      mmiProps.extensionId = this.#extension.runtime.id;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     return {
       app: {
         name: 'MetaMask Extension',
         version: this.version,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        ...mmiProps,
-        ///: END:ONLY_INCLUDE_IF
       },
       userAgent: window.navigator.userAgent,
       page,
@@ -1115,21 +1095,6 @@ export default class MetaMetricsController extends BaseController<
       referrer,
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
     } = rawPayload;
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const mmiProps: {
-      extensionId?: string;
-      accountAddress?: string;
-    } = {};
-
-    if (this.#extension?.runtime?.id) {
-      mmiProps.extensionId = this.#extension.runtime.id;
-    }
-
-    if (this.#selectedAddress) {
-      mmiProps.accountAddress = this.#selectedAddress;
-    }
-    ///: END:ONLY_INCLUDE_IF
 
     let chainId;
     if (
@@ -1164,11 +1129,12 @@ export default class MetaMetricsController extends BaseController<
         currency,
         category,
         locale: this.locale,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: environmentType,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        ...mmiProps,
-        ///: END:ONLY_INCLUDE_IF
       },
       context: this.#buildContext(referrer, page),
     };
@@ -1184,13 +1150,6 @@ export default class MetaMetricsController extends BaseController<
   _buildUserTraitsObject(
     metamaskState: MetaMaskState,
   ): Partial<MetaMetricsUserTraits> | null {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const mmiAccountAddress =
-      metamaskState.custodyAccountDetails &&
-      Object.keys(metamaskState.custodyAccountDetails).length
-        ? Object.keys(metamaskState.custodyAccountDetails)[0]
-        : null;
-    ///: END:ONLY_INCLUDE_IF
     const { traits } = this.state;
 
     const currentTraits = {
@@ -1242,11 +1201,6 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]:
         metamaskState.ShowNativeTokenAsMainBalance,
       [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      [MetaMetricsUserTrait.MmiExtensionId]: this.#extension?.runtime?.id,
-      [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress ?? null,
-      [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
-      ///: END:ONLY_INCLUDE_IF
       [MetaMetricsUserTrait.SecurityProviders]:
         metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
       [MetaMetricsUserTrait.PetnameAddressCount]:
@@ -1262,8 +1216,9 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
         metamaskState.preferences.tokenNetworkFilter || {},
       ),
-      [MetaMetricsUserTrait.ProfileId]:
-        metamaskState.sessionData?.profile?.profileId,
+      [MetaMetricsUserTrait.ProfileId]: Object.entries(
+        metamaskState.srpSessionData || {},
+      )?.[0]?.[1]?.profile?.profileId,
     };
 
     if (!this.previousUserTraits && metamaskState.participateInMetaMetrics) {

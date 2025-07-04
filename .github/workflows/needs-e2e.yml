@@ -56,6 +56,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Get changed files with git diff
         run: yarn tsx .github/scripts/git-diff-default-branch.ts

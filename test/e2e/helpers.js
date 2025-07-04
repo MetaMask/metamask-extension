@@ -383,11 +383,6 @@ async function withFixtures(options, testSuite) {
       }
     }
 
-    // Add information to the end of the error message that should surface in the "Tests" tab of CircleCI
-    if (process.env.CIRCLE_NODE_INDEX) {
-      error.message += `\n  (Ran on CircleCI Node ${process.env.CIRCLE_NODE_INDEX} of ${process.env.CIRCLE_NODE_TOTAL}, Job ${process.env.CIRCLE_JOB})`;
-    }
-
     throw error;
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
@@ -436,6 +431,7 @@ async function withFixtures(options, testSuite) {
 
 const WINDOW_TITLES = Object.freeze({
   ExtensionInFullScreenView: 'MetaMask',
+  ExtensionUpdating: 'MetaMask Updating',
   InstalledExtensions: 'Extensions',
   Dialog: 'MetaMask Dialog',
   Phishing: 'MetaMask Phishing Detection',

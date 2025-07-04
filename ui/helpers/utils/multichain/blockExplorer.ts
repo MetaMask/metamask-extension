@@ -1,4 +1,3 @@
-import { getAccountLink } from '@metamask/etherscan-link';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { MultichainNetwork } from '../../../selectors/multichain';
 // TODO: Remove restricted import
@@ -19,11 +18,8 @@ export const getMultichainAccountUrl = (
 ): string => {
   const { namespace } = parseCaipChainId(network.chainId);
   if (namespace === KnownCaipNamespace.Eip155) {
-    return getAccountLink(
-      normalizeSafeAddress(address),
-      network.network.chainId,
-      network.network?.rpcPrefs,
-    );
+    const normalizedAddress = normalizeSafeAddress(address);
+    return `https://etherscan.io/address/${normalizedAddress}#asset-multichain`;
   }
 
   // We're in a non-EVM context, so we assume we can use format URLs instead.

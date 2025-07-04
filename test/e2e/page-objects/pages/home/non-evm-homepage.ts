@@ -13,6 +13,10 @@ class NonEvmHomepage extends HomePage {
   protected readonly balanceDiv =
     '[data-testid="coin-overview__primary-currency"]';
 
+  protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(amount: string = ''): Promise<void> {
     await super.check_pageIsLoaded();
     await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
@@ -27,13 +31,27 @@ class NonEvmHomepage extends HomePage {
     }
   }
 
-  protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
+  /**
+   * Clicks the bridge button on the non-EVM account homepage.
+   */
+  async clickOnBridgeButton(): Promise<void> {
+    await this.driver.waitForSelector(this.bridgeButton);
+    await this.driver.clickElement(this.bridgeButton);
+  }
+
+  /**
+   * Clicks the swap button on the non-EVM account homepage.
+   */
+  async clickOnSwapButton(): Promise<void> {
+    await this.driver.waitForSelector(this.swapButton);
+    await this.driver.clickElement(this.swapButton);
+  }
 
   /**
    * Clicks the send button on the non-EVM account homepage.
    */
   async clickOnSendButton(): Promise<void> {
-    await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
+    await this.driver.waitForSelector(this.sendButton);
     await this.driver.clickElement(this.sendButton);
   }
 
@@ -43,39 +61,34 @@ class NonEvmHomepage extends HomePage {
    * @param balance
    * @param token
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_getBalance(
     balance: string,
     token: string = 'SOL',
   ): Promise<void> {
-    await this.driver.wait(async () => {
-      try {
-        await this.driver.waitForSelector(
-          {
-            text: balance,
-            tag: 'span',
-          },
-          { timeout: 1000 },
-        );
-        return true;
-      } catch (e) {
-        console.log('Error in check_getBalance', e);
-        await this.driver.refresh();
-        return false;
-      }
-    }, 30000);
+    await this.driver.waitForSelector(
+      {
+        text: balance,
+        tag: 'span',
+      },
+      { timeout: 30000 },
+    );
+
     await this.driver.waitForSelector(
       {
         text: token,
         tag: 'span',
       },
-      { timeout: 60000 },
+      { timeout: 30000 },
     );
-    await this.driver.refresh();
   }
 
   /**
    * Checks if the receive button is enabled on a non-evm account homepage.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_isReceiveButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.waitForSelector(this.receiveButton, { timeout: 5000 });
@@ -90,6 +103,8 @@ class NonEvmHomepage extends HomePage {
   /**
    * Checks if the buy/sell button is enabled on a non-evm account homepage.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_ifBuySellButtonIsClickable(): Promise<boolean> {
     try {
       await this.driver.waitForSelector(this.buySellButton, { timeout: 5000 });

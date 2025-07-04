@@ -131,6 +131,8 @@ type AssetPickerModalProps = {
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AssetPickerModal({
   header,
   isOpen,
@@ -623,6 +625,7 @@ export function AssetPickerModal({
             <AvatarToken
               borderRadius={BorderRadius.full}
               src={sendingAsset.image}
+              name={sendingAsset.symbol}
               size={AvatarTokenSize.Xs}
             />
             <Text variant={TextVariant.bodySm}>

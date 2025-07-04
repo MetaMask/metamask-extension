@@ -1,7 +1,8 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { merge } from 'lodash';
+import { BtcScope } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -30,6 +31,7 @@ const mockNonEvmAccount = {
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
   address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
   type: 'bip122:p2wpkh',
+  scopes: [BtcScope.Mainnet],
 };
 
 const mockSnap = {
@@ -133,6 +135,7 @@ describe('AccountListItem', () => {
       ),
     ).toBeInTheDocument();
     expect(document.querySelector('[title="0.006 ETH"]')).toBeInTheDocument();
+    expect(screen.getByTestId('account-network-indicator')).toBeInTheDocument();
 
     expect(container).toMatchSnapshot('evm-account-list-item');
   });
@@ -155,6 +158,7 @@ describe('AccountListItem', () => {
     expect(
       document.querySelector('[title="$100,000.00 USD"]'),
     ).toBeInTheDocument();
+    expect(screen.getByTestId('account-network-indicator')).toBeInTheDocument();
 
     expect(container).toMatchSnapshot('non-EVM-account-list-item');
   });
@@ -164,6 +168,21 @@ describe('AccountListItem', () => {
     expect(
       document.querySelector('.multichain-account-list-item--selected'),
     ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('account-list-item-selected-indicator'),
+    ).toBeInTheDocument();
+  });
+
+  it('does not render selection indicator if showSelectionIndicator is false', async () => {
+    render({ selected: true, showSelectionIndicator: false });
+    expect(
+      document.querySelector('.multichain-account-list-item--selected'),
+    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('account-list-item-selected-indicator'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('renders the account name tooltip for long names', () => {
@@ -292,80 +311,6 @@ describe('AccountListItem', () => {
 
   describe('Multichain Behaviour', () => {
     describe('currency display', () => {
-      it('renders tokens for EVM account', () => {
-        const { container } = render(
-          {
-            account: mockAccount,
-          },
-          {
-            metamask: {
-              ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
-              preferences: {
-                showFiatInTestnets: false,
-              },
-            },
-          },
-        );
-
-        const firstCurrencyDisplay = container.querySelector(
-          '[data-testid="first-currency-display"]',
-        );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
-        const avatarGroup = container.querySelector(
-          '[data-testid="avatar-group"]',
-        );
-
-        const expectedBalance = '0.006';
-
-        expect(firstCurrencyDisplay).toBeInTheDocument();
-        expect(firstCurrencyDisplay.firstChild.textContent).toContain(
-          expectedBalance,
-        );
-        expect(firstCurrencyDisplay.lastChild.textContent).toContain('ETH');
-        expect(secondCurrencyDisplay.textContent).toContain('');
-        expect(avatarGroup).not.toBeInTheDocument();
-      });
-
-      it('renders tokens for non-EVM account', () => {
-        const { container } = render(
-          {
-            account: mockNonEvmAccount,
-          },
-          {
-            metamask: {
-              preferences: {
-                showFiatInTestnets: false,
-              },
-              accountsAssets: {
-                [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
-              },
-            },
-          },
-        );
-
-        const firstCurrencyDisplay = container.querySelector(
-          '[data-testid="first-currency-display"]',
-        );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
-        const avatarGroup = container.querySelector(
-          '[data-testid="avatar-group"]',
-        );
-
-        const expectedBalance = '$100,000.00';
-
-        expect(firstCurrencyDisplay).toBeInTheDocument();
-        expect(firstCurrencyDisplay.firstChild.textContent).toContain(
-          expectedBalance,
-        );
-        expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
-        expect(secondCurrencyDisplay.textContent).toContain('BTC');
-        expect(avatarGroup).not.toBeInTheDocument();
-      });
-
       it('renders fiat for EVM account', () => {
         const { container } = render(
           {
@@ -388,12 +333,6 @@ describe('AccountListItem', () => {
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',
         );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
-        const avatarGroup = container.querySelector(
-          '[data-testid="avatar-group"]',
-        );
 
         const expectedBalance = '$3.31';
 
@@ -402,8 +341,6 @@ describe('AccountListItem', () => {
           expectedBalance,
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
-        expect(secondCurrencyDisplay.textContent).toContain('');
-        expect(avatarGroup).not.toBeInTheDocument();
       });
 
       it('renders fiat and native balance for non-EVM account', () => {
@@ -426,12 +363,6 @@ describe('AccountListItem', () => {
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',
         );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
-        const avatarGroup = container.querySelector(
-          '[data-testid="avatar-group"]',
-        );
 
         const expectedBalance = '$100,000.00';
 
@@ -440,9 +371,98 @@ describe('AccountListItem', () => {
           expectedBalance,
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
-        expect(secondCurrencyDisplay.textContent).toContain('1BTC');
-        expect(avatarGroup).not.toBeInTheDocument();
       });
+    });
+  });
+  describe('Account labels', () => {
+    it('renders the SRP pill for account when multi SRP are present in state', () => {
+      const { container } = render(
+        {
+          account: {
+            ...mockAccount,
+            metadata: {
+              ...mockAccount.metadata,
+              snap: {
+                id: mockSnap.id,
+              },
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            balance: '0x0',
+          },
+        },
+        {
+          metamask: {
+            keyrings: [
+              {
+                type: 'HD Key Tree',
+                accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                metadata: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                  name: '',
+                },
+              },
+              {
+                type: 'HD Key Tree',
+                accounts: ['0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b'],
+                metadata: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                  name: '',
+                },
+              },
+            ],
+          },
+        },
+      );
+
+      const tag = container.querySelector('.mm-tag');
+      expect(tag.textContent).toBe('SRP #1');
+    });
+
+    it('does not render the any account label when explicitly disabled', () => {
+      const { container } = render(
+        {
+          showAccountLabels: false,
+          account: {
+            ...mockAccount,
+            metadata: {
+              ...mockAccount.metadata,
+              snap: {
+                id: mockSnap.id,
+              },
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            balance: '0x0',
+          },
+        },
+        {
+          metamask: {
+            keyrings: [
+              {
+                type: 'HD Key Tree',
+                accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                metadata: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                  name: '',
+                },
+              },
+              {
+                type: 'HD Key Tree',
+                accounts: ['0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b'],
+                metadata: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                  name: '',
+                },
+              },
+            ],
+          },
+        },
+      );
+
+      expect(container.querySelector('.mm-tag')).not.toBeInTheDocument();
     });
   });
 });

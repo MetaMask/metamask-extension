@@ -40,6 +40,20 @@ class MockStream extends Duplex {
   }
 }
 
+const createMockPort = () => {
+  // Minimal chrome.runtime.Port‐like stub
+  const listeners: (() => void)[] = [];
+  return {
+    onDisconnect: {
+      addListener: (fn: () => void) => listeners.push(fn),
+      // helper used by tests
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      _trigger: () => listeners.forEach((fn) => fn()),
+    },
+  };
+};
+
 describe('CAIP Stream', () => {
   describe('createCaipStream', () => {
     it('pipes and unwraps a caip-348 message from source stream to the substream', async () => {
@@ -91,6 +105,27 @@ describe('CAIP Stream', () => {
       sourceStream.destroy();
 
       await expect(promise).resolves.toBe(undefined);
+    });
+
+    it('does not emit an error on “Premature close” after graceful shutdown', async () => {
+      const sourceStream = new MockStream();
+      const mockPort = createMockPort();
+      (sourceStream as unknown as { _port: typeof mockPort })._port = mockPort;
+
+      const providerStream = createCaipStream(sourceStream);
+
+      const errorSpy = jest.fn();
+      providerStream.on('error', errorSpy);
+
+      // Trigger disconnect
+      (
+        mockPort as unknown as { onDisconnect: { _trigger: () => void } }
+      ).onDisconnect._trigger();
+
+      // Give the event loop a tick to propagate potential errors
+      await new Promise((r) => setImmediate(r));
+
+      expect(errorSpy).not.toHaveBeenCalled();
     });
   });
 });

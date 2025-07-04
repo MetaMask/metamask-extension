@@ -2,7 +2,6 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/user-storage';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { mockIdentityServices } from '../identity/mocks';
 import { completeOnboardFlowIdentity } from '../identity/flows';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import {
@@ -15,6 +14,8 @@ import {
 } from '../../page-objects/flows/notifications.flow';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import { Driver } from '../../webdriver/driver';
+import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
+import { mockIdentityServices } from '../identity/mocks';
 import { mockNotificationServices } from './mocks';
 
 describe('Enable Notifications - With Accounts Syncing On', function () {
@@ -42,6 +43,7 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
      */
     it('syncs notification settings on next onboarding after enabling for the first time', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();
+      const triggerServer = new MockttpNotificationTriggerServer();
       const mockedAccountsResponse = await getAccountsSyncMockResponse();
 
       // First device setup
@@ -52,7 +54,6 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (server: Mockttp) => {
-            // Using previously synced accounts to avoid having to add accounts manually, therefore, making the tests run quicker
             userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.accounts,
               server,
@@ -61,10 +62,7 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
               },
             );
             return [
-              await mockNotificationServices(
-                server,
-                userStorageMockttpController,
-              ),
+              await mockNotificationServices(server, triggerServer),
               await mockIdentityServices(server, userStorageMockttpController),
             ];
           },
@@ -103,10 +101,7 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
               server,
             );
             return [
-              await mockNotificationServices(
-                server,
-                userStorageMockttpController,
-              ),
+              await mockNotificationServices(server, triggerServer),
               await mockIdentityServices(server, userStorageMockttpController),
             ];
           },

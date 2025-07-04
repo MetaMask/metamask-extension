@@ -68,8 +68,7 @@ exports[`Develop options tab should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
-            data-theme="light"
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           >
             Reset
           </button>
@@ -109,8 +108,7 @@ exports[`Develop options tab should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
-            data-theme="light"
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           >
             Reset
           </button>
@@ -228,8 +226,7 @@ exports[`Develop options tab should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
-            data-theme="light"
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           >
             Reset
           </button>
@@ -280,8 +277,7 @@ exports[`Develop options tab should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
-            data-theme="light"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           >
             Generate UI Error
           </button>
@@ -323,8 +319,7 @@ exports[`Develop options tab should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
-            data-theme="light"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           >
             Generate Background Error
           </button>
@@ -366,8 +361,7 @@ exports[`Develop options tab should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
-            data-theme="light"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           >
             Generate Trace
           </button>
@@ -405,9 +399,8 @@ exports[`Develop options tab should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
             data-testid="developer-options-generate-page-crash-button"
-            data-theme="light"
           >
             Generate A Page Crash
           </button>

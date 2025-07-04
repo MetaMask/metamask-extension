@@ -168,9 +168,8 @@ async function expectTransactionDetailsMatchReceipt(
     throw new Error('No user operation hash found');
   }
 
-  const receipt = await bundlerServer.getUserOperationReceipt(
-    userOperationHash,
-  );
+  const receipt =
+    await bundlerServer.getUserOperationReceipt(userOperationHash);
 
   if (!receipt) {
     throw new Error('No user operation receipt found');

@@ -91,7 +91,11 @@ describe('Import Wallet Events', () => {
           event: MetaMetricsEventName.OnboardingWalletCreationComplete,
           properties: {
             method: FirstTimeFlowType.import,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             is_profile_syncing_enabled: true,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: 0,
           },
         }),
@@ -113,7 +117,7 @@ describe('Import Wallet Events', () => {
     });
 
     await waitForElementByText(
-      `Pin MetaMask on your browser so it's accessible and easy to view transaction confirmations.`,
+      `Access your MetaMask wallet with 1 click by clicking on the extension.`,
     );
 
     await clickElementById(pinExtensionDoneBtnId);

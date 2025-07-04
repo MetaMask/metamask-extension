@@ -23,6 +23,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Create bug report issue on planning repo
         if: steps.extract_version.outputs.version

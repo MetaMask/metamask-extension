@@ -34,8 +34,13 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
     decodedTransferValue &&
     exchangeRate.times(decodedTransferValue, 10).toNumber();
 
-  const fiatDisplayValue =
-    fiatValue && fiatFormatter(fiatValue, { shorten: true });
+  const isNonZeroSmallValue =
+    fiatValue &&
+    new BigNumber(String(fiatValue)).greaterThan(new BigNumber(0)) &&
+    new BigNumber(String(fiatValue)).lt(new BigNumber(0.01));
+  const fiatDisplayValue = isNonZeroSmallValue
+    ? `< ${fiatFormatter(0.01, { shorten: true })}`
+    : fiatValue && fiatFormatter(fiatValue, { shorten: true });
 
   const displayTransferValue = formatAmount(
     locale,

@@ -12,6 +12,8 @@ const convertETHToHexGwei = (eth: number) => convertToHexValue(eth * 10 ** 18);
 
 const defaultOptions = {
   blockTime: 2,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   network_id: 1337,
   port: 8545,
   vmErrorsOnRPCResponse: false,

@@ -29,6 +29,11 @@ describe('Send ERC20', function () {
               },
             },
           })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         localNodeOptions: [

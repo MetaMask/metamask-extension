@@ -1,6 +1,5 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { act } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
 import { SEND_STAGES } from '../../ducks/send';
@@ -8,7 +7,7 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
-import { renderWithProvider } from '../../../test/jest';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockSendState from '../../../test/data/mock-send-state.json';
 import mockState from '../../../test/data/mock-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
@@ -62,13 +61,6 @@ jest.mock('react-redux', () => {
   };
 });
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: jest.fn(),
-  }),
-}));
-
 jest.mock('../../ducks/send', () => ({
   ...jest.requireActual('../../ducks/send'),
   resetSendState: () => ({ type: 'XXX' }),
@@ -100,19 +92,21 @@ jest.mock('../../hooks/useMultiPolling', () => ({
   default: jest.fn(),
 }));
 
-const render = async (route, state) => {
+const mockIntersectionObserver = jest.fn();
+mockIntersectionObserver.mockReturnValue({
+  observe: () => null,
+  unobserve: () => null,
+  disconnect: () => null,
+});
+window.IntersectionObserver = mockIntersectionObserver;
+
+const render = (pathname, state) => {
   const store = configureMockStore(middlewares)({
     ...mockSendState,
     ...state,
   });
 
-  let result;
-
-  await act(
-    async () => (result = renderWithProvider(<Routes />, store, route)),
-  );
-
-  return result;
+  return renderWithProvider(<Routes />, store, pathname);
 };
 
 describe('Routes Component', () => {
@@ -144,7 +138,7 @@ describe('Routes Component', () => {
   });
 
   describe('render during send flow', () => {
-    it('should render when send transaction is not active', async () => {
+    it('should render when send transaction is not active', () => {
       const state = {
         ...mockSendState,
         metamask: {
@@ -165,7 +159,11 @@ describe('Routes Component', () => {
               order: 'dsc',
               sortCallback: 'stringNumeric',
             },
-            tokenNetworkFilter: {},
+          },
+          enabledNetworkMap: {
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
           },
           tokenBalances: {
             '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
@@ -179,7 +177,7 @@ describe('Routes Component', () => {
           currentLocale: 'en',
         },
       };
-      const { getByTestId } = await render(undefined, state);
+      const { getByTestId } = render(undefined, state);
       expect(getByTestId('account-menu-icon')).not.toBeDisabled();
     });
   });
@@ -333,51 +331,49 @@ describe('toast display', () => {
     },
   });
 
-  it('renders toastContainer on default route', async () => {
-    await render([DEFAULT_ROUTE], getToastDisplayTestState(new Date('9999')));
+  it('renders toastContainer on default route', () => {
+    render(DEFAULT_ROUTE, getToastDisplayTestState(new Date('9999')));
     const toastContainer = document.querySelector('.toasts-container');
     expect(toastContainer).toBeInTheDocument();
   });
 
-  it('does not render toastContainer on confirmation route', async () => {
-    await render(
-      [CONFIRMATION_V_NEXT_ROUTE],
-      getToastDisplayTestState(new Date(0)),
-    );
+  it('does not render toastContainer on confirmation route', () => {
+    render(CONFIRMATION_V_NEXT_ROUTE, getToastDisplayTestState(new Date(0)));
     const toastContainer = document.querySelector('.toasts-container');
+
     expect(toastContainer).not.toBeInTheDocument();
   });
 
-  it('does not render toastContainer if the account is connected', async () => {
-    const { queryByTestId } = await render(
-      [DEFAULT_ROUTE],
+  it('does not render toastContainer if the account is connected', () => {
+    const { queryByTestId } = render(
+      DEFAULT_ROUTE,
       getToastConnectAccountDisplayTestState(mockNonEvmAccount.id),
     );
     const toastContainer = queryByTestId('connect-account-toast');
     expect(toastContainer).not.toBeInTheDocument();
   });
 
-  it('does not render toastContainer if the unconnected account is non-EVM', async () => {
-    const { queryByTestId } = await render(
-      [DEFAULT_ROUTE],
+  it('does not render toastContainer if the unconnected account is non-EVM', () => {
+    const { queryByTestId } = render(
+      DEFAULT_ROUTE,
       getToastConnectAccountDisplayTestState(mockNonEvmAccount.id),
     );
     const toastContainer = queryByTestId('connect-account-toast');
     expect(toastContainer).not.toBeInTheDocument();
   });
 
-  it('does render toastContainer if the unconnected selected account is EVM', async () => {
-    const { getByTestId } = await render(
-      [DEFAULT_ROUTE],
+  it('does render toastContainer if the unconnected selected account is EVM', () => {
+    const { getByTestId } = render(
+      DEFAULT_ROUTE,
       getToastConnectAccountDisplayTestState(mockAccount2.id),
     );
     const toastContainer = getByTestId('connect-account-toast');
     expect(toastContainer).toBeInTheDocument();
   });
 
-  it('does render toastContainer if the unconnected selected account is Solana', async () => {
-    const { getByTestId } = await render(
-      [DEFAULT_ROUTE],
+  it('does render toastContainer if the unconnected selected account is Solana', () => {
+    const { getByTestId } = render(
+      DEFAULT_ROUTE,
       getToastConnectAccountDisplayTestState(mockSolanaAccount.id),
     );
     const toastContainer = getByTestId('connect-account-toast');

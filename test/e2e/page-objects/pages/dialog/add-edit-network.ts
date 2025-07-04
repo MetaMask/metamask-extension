@@ -4,6 +4,20 @@ import { Driver } from '../../../webdriver/driver';
 class AddEditNetworkModal {
   private driver: Driver;
 
+  private readonly addExplorerUrlButton = {
+    text: 'Add a block explorer URL',
+    tag: 'button',
+  };
+
+  private readonly addExplorerUrlInput = {
+    testId: 'explorer-url-input',
+  };
+
+  private readonly addExplorerUrlTitle = {
+    text: 'Add a block explorer URL',
+    tag: 'h4',
+  };
+
   private readonly addRpcUrlButton = {
     text: 'Add RPC URL',
     tag: 'button',
@@ -16,7 +30,15 @@ class AddEditNetworkModal {
   private readonly chainIdInputError =
     '[data-testid="network-form-chain-id-error"]';
 
+  private readonly confirmAddExplorerUrlButton = {
+    text: 'Add URL',
+    tag: 'button',
+  };
+
   private readonly currencySymbolInputField = '#nativeCurrency';
+
+  private readonly currencySymbolWarning =
+    '[data-testid="network-form-ticker-suggestion"]';
 
   private readonly editModalRpcDropDownButton =
     '[data-testid="test-add-rpc-drop-down"]';
@@ -24,6 +46,10 @@ class AddEditNetworkModal {
   private readonly editModalSaveButton = {
     text: 'Save',
     tag: 'button',
+  };
+
+  private readonly explorerUrlInputDropDownButton = {
+    testId: 'test-explorer-drop-down',
   };
 
   private readonly networkNameInputField = {
@@ -34,6 +60,8 @@ class AddEditNetworkModal {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -49,6 +77,24 @@ class AddEditNetworkModal {
       throw e;
     }
     console.log('Edit network dialog is loaded');
+  }
+
+  /**
+   * Add an explorer URL to the network.
+   *
+   * @param explorerUrl - The URL of the explorer to add.
+   */
+  async addExplorerUrl(explorerUrl: string): Promise<void> {
+    console.log(`Add explorer URL ${explorerUrl}`);
+    await this.driver.findScrollToAndClickElement(
+      this.explorerUrlInputDropDownButton,
+    );
+    await this.driver.clickElement(this.addExplorerUrlButton);
+    await this.driver.waitForSelector(this.addExplorerUrlTitle);
+    await this.driver.fill(this.addExplorerUrlInput, explorerUrl);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmAddExplorerUrlButton,
+    );
   }
 
   /**
@@ -125,6 +171,8 @@ class AddEditNetworkModal {
    *
    * @param shouldBeEnabled - Whether the chain id input field should be enabled. Defaults to true.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_chainIdInputFieldIsEnabled(
     shouldBeEnabled: boolean = true,
   ): Promise<void> {
@@ -142,6 +190,8 @@ class AddEditNetworkModal {
    *
    * @param errorMessage - The error message to check.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_chainIdInputErrorMessageIsDisplayed(
     errorMessage: string,
   ): Promise<void> {
@@ -154,12 +204,28 @@ class AddEditNetworkModal {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_currencySymbolWarningIsDisplayed(
+    warningMessage: string,
+  ): Promise<void> {
+    console.log(
+      `Check that currency symbol warning ${warningMessage} is displayed`,
+    );
+    await this.driver.waitForSelector({
+      text: warningMessage,
+      css: this.currencySymbolWarning,
+    });
+  }
+
   /**
    * Check if an RPC is displayed or not in the RPC list in the edit network modal.
    *
    * @param rpcName - The name of the RPC to check.
    * @param shouldBeDisplayed - Whether the RPC should be displayed or not, default is true.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_rpcIsDisplayed(
     rpcName: string,
     shouldBeDisplayed: boolean = true,
@@ -181,6 +247,22 @@ class AddEditNetworkModal {
         tag: 'p',
       });
     }
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_saveButtonIsEnabled(): Promise<boolean> {
+    console.log('Check if save button is enabled on add/edit network modal');
+    try {
+      await this.driver.findClickableElement(this.editModalSaveButton, {
+        timeout: 1000,
+      });
+    } catch (e) {
+      console.log('Save button not enabled', e);
+      return false;
+    }
+    console.log('Save button is enabled');
+    return true;
   }
 }
 

@@ -18,11 +18,14 @@ import {
   DEFAULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   ONBOARDING_ROUTE,
-  ONBOARDING_UNLOCK_ROUTE,
   PERMISSIONS,
   REVIEW_PERMISSIONS,
   SEND_ROUTE,
   SNAPS_VIEW_ROUTE,
+  DEEP_LINK_ROUTE,
+  WALLET_DETAILS_ROUTE,
+  ACCOUNT_DETAILS_ROUTE,
+  ACCOUNT_DETAILS_QR_CODE_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -56,25 +59,6 @@ function onConfirmPage(props) {
   return Boolean(
     matchPath(location.pathname, {
       path: CONFIRM_TRANSACTION_ROUTE,
-      exact: false,
-    }),
-  );
-}
-
-function onInitializationUnlockPage(props) {
-  const { location } = props;
-  return Boolean(
-    matchPath(location.pathname, {
-      path: ONBOARDING_UNLOCK_ROUTE,
-      exact: true,
-    }),
-  );
-}
-
-export function showOnboardingHeader(location) {
-  return Boolean(
-    matchPath(location.pathname, {
-      path: ONBOARDING_ROUTE,
       exact: false,
     }),
   );
@@ -119,6 +103,17 @@ export function hideAppHeader(props) {
     return true;
   }
 
+  const isDeepLinksPage = Boolean(
+    matchPath(location.pathname, {
+      path: DEEP_LINK_ROUTE,
+      exact: false,
+    }),
+  );
+
+  if (isDeepLinksPage) {
+    return true;
+  }
+
   const isInitializing = Boolean(
     matchPath(location.pathname, {
       path: ONBOARDING_ROUTE,
@@ -126,7 +121,7 @@ export function hideAppHeader(props) {
     }),
   );
 
-  if (isInitializing && !onInitializationUnlockPage(props)) {
+  if (isInitializing) {
     return true;
   }
 
@@ -190,6 +185,16 @@ export function hideAppHeader(props) {
     return true;
   }
 
+  const isWalletDetailsPage = Boolean(
+    matchPath(location.pathname, {
+      path: WALLET_DETAILS_ROUTE,
+      exact: false,
+    }),
+  );
+  if (isWalletDetailsPage) {
+    return true;
+  }
+
   const isSnapsHome = Boolean(
     matchPath(location.pathname, {
       path: SNAPS_VIEW_ROUTE,
@@ -218,6 +223,28 @@ export function hideAppHeader(props) {
   );
 
   if (isAssetsPage) {
+    return true;
+  }
+
+  const isMultichainAccountDetailsPage = Boolean(
+    matchPath(location.pathname, {
+      path: ACCOUNT_DETAILS_ROUTE,
+      exact: false,
+    }),
+  );
+
+  if (isMultichainAccountDetailsPage) {
+    return true;
+  }
+
+  const isMultichainAccountDetailsQRCodePage = Boolean(
+    matchPath(location.pathname, {
+      path: ACCOUNT_DETAILS_QR_CODE_ROUTE,
+      exact: false,
+    }),
+  );
+
+  if (isMultichainAccountDetailsQRCodePage) {
     return true;
   }
 

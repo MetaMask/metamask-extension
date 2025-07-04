@@ -11,6 +11,7 @@ import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const infuraSepoliaUrl =
   'https://sepolia.infura.io/v3/00000000000000000000000000000000';
@@ -62,6 +63,12 @@ describe('Settings', function () {
           .withConversionRateEnabled()
           .withShowFiatTestnetEnabled()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .withEnabledNetworks({
+            eip155: {
+              [CHAIN_IDS.SEPOLIA]: true,
+              [CHAIN_IDS.LOCALHOST]: true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfuraResponses,

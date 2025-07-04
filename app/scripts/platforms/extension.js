@@ -8,13 +8,14 @@ import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getURLHostName } from '../../../ui/helpers/utils/util';
-import { t } from '../translate';
+import { t } from '../../../shared/lib/translate';
 
 export default class ExtensionPlatform {
   //
   // Public
   //
   reload() {
+    // TODO: should this be a safe reload via the `WriteManager`?
     browser.runtime.reload();
   }
 
@@ -57,6 +58,14 @@ export default class ExtensionPlatform {
     return browser.runtime.getManifest().version;
   }
 
+  /**
+   * Returns the absolute URL of the extension's home.html page, optionally with
+   * a route and query string.
+   *
+   * @param {string | null} route
+   * @param {string | null} queryString
+   * @returns { string }
+   */
   getExtensionURL(route = null, queryString = null) {
     let extensionURL = browser.runtime.getURL('home.html');
 
@@ -71,6 +80,12 @@ export default class ExtensionPlatform {
     return extensionURL;
   }
 
+  /**
+   *
+   * @param {string | null} route
+   * @param {string | null} queryString
+   * @param {boolean} [keepWindowOpen] - defaults to false
+   */
   openExtensionInBrowser(
     route = null,
     queryString = null,
@@ -175,19 +190,11 @@ export default class ExtensionPlatform {
   async _showFailedTransaction(txMeta, errorMessage) {
     const nonce = parseInt(txMeta.txParams.nonce, 16);
     const title = t('notificationTransactionFailedTitle');
-    let message = t(
+    const message = t(
       'notificationTransactionFailedMessage',
       nonce,
       errorMessage || txMeta.error.message,
     );
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    if (isNaN(nonce)) {
-      message = t(
-        'notificationTransactionFailedMessageMMI',
-        errorMessage || txMeta.error.message,
-      );
-    }
-    ///: END:ONLY_INCLUDE_IF
     await this._showNotification(title, message);
   }
 

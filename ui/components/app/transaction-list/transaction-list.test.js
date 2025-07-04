@@ -1,6 +1,9 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { CompatRouter } from 'react-router-dom-v5-compat';
 import { TransactionType } from '@metamask/transaction-controller';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -21,9 +24,31 @@ import {
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  startIncomingTransactionPolling,
+  stopIncomingTransactionPolling,
+} from '../../../store/controller-actions/transaction-controller';
 import TransactionList, {
   filterTransactionsByToken,
 } from './transaction-list.component';
+
+jest.mock('../../../store/controller-actions/transaction-controller');
+// Mock FEATURED_NETWORK_CHAIN_IDS to include Goerli
+jest.mock('../../../../shared/constants/network', () => ({
+  ...jest.requireActual('../../../../shared/constants/network'),
+  FEATURED_NETWORK_CHAIN_IDS: [
+    '0x1',
+    '0x5',
+    '0x89',
+    '0xa',
+    '0xa4b1',
+    '0xa86a',
+    '0x38',
+    '0x144',
+    '0x324',
+  ],
+}));
 
 const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
   address: '0xefga64466f257793eaa52fcfff5066894b76a149',
@@ -33,11 +58,20 @@ const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
 const defaultState = {
   metamask: {
     ...mockState.metamask,
+    enabledNetworkMap: {
+      eip155: {
+        [CHAIN_IDS.GOERLI]: true,
+      },
+    },
     transactions: [MOCK_TRANSACTION_BY_TYPE[TransactionType.incoming]],
     internalAccounts: {
       accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
       selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
     },
+    multichainNetworkConfigurationsByChainId:
+      AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+    selectedMultichainNetworkChainId: 'eip155:5',
+    isEvmSelected: true,
   },
 };
 
@@ -176,14 +210,26 @@ const mockTrackEvent = jest.fn();
 const render = (state = defaultState) => {
   const store = configureStore(state);
   return renderWithProvider(
-    <MetaMetricsContext.Provider value={mockTrackEvent}>
-      <TransactionList />
-    </MetaMetricsContext.Provider>,
+    <MemoryRouter>
+      <CompatRouter>
+        <MetaMetricsContext.Provider value={mockTrackEvent}>
+          <TransactionList />
+        </MetaMetricsContext.Provider>
+      </CompatRouter>
+    </MemoryRouter>,
     store,
   );
 };
 
 describe('TransactionList', () => {
+  const startIncomingTransactionPollingMock = jest.mocked(
+    startIncomingTransactionPolling,
+  );
+
+  const stopIncomingTransactionPollingMock = jest.mocked(
+    stopIncomingTransactionPolling,
+  );
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -196,9 +242,13 @@ describe('TransactionList', () => {
   it('renders TransactionList component with props hideNetworkFilter correctly', () => {
     const store = configureStore(defaultState);
     const { container } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <TransactionList hideNetworkFilter />
-      </MetaMetricsContext.Provider>,
+      <MemoryRouter>
+        <CompatRouter>
+          <MetaMetricsContext.Provider value={mockTrackEvent}>
+            <TransactionList hideNetworkFilter />
+          </MetaMetricsContext.Provider>
+        </CompatRouter>
+      </MemoryRouter>,
       store,
     );
     expect(container).toMatchSnapshot();
@@ -214,9 +264,13 @@ describe('TransactionList', () => {
     };
     const store = configureStore(defaultState2);
     const { container } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <TransactionList hideTokenTransactions />
-      </MetaMetricsContext.Provider>,
+      <MemoryRouter>
+        <CompatRouter>
+          <MetaMetricsContext.Provider value={mockTrackEvent}>
+            <TransactionList hideTokenTransactions />
+          </MetaMetricsContext.Provider>
+        </CompatRouter>
+      </MemoryRouter>,
       store,
     );
     expect(container).toMatchSnapshot();
@@ -232,7 +286,7 @@ describe('TransactionList', () => {
 
     // The activity list item has a status of "Confirmed" and a type of "Send"
     expect(getByText('Confirmed')).toBeInTheDocument();
-    expect(getByText('Send')).toBeInTheDocument();
+    expect(getByText('Sent')).toBeInTheDocument();
     expect(getByText('-1.2 BTC')).toBeInTheDocument();
 
     // A BTC activity list item exists
@@ -266,9 +320,13 @@ describe('TransactionList', () => {
     const store = configureStore(defaultState);
 
     const { queryByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <TransactionList tokenChainId="0x89" />
-      </MetaMetricsContext.Provider>,
+      <MemoryRouter>
+        <CompatRouter>
+          <MetaMetricsContext.Provider value={mockTrackEvent}>
+            <TransactionList tokenChainId="0x89" />
+          </MetaMetricsContext.Provider>
+        </CompatRouter>
+      </MemoryRouter>,
       store,
     );
     expect(
@@ -317,9 +375,13 @@ describe('TransactionList', () => {
     const store = configureStore(defaultState2);
 
     const { queryByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <TransactionList tokenChainId="0xe708" />
-      </MetaMetricsContext.Provider>,
+      <MemoryRouter>
+        <CompatRouter>
+          <MetaMetricsContext.Provider value={mockTrackEvent}>
+            <TransactionList tokenChainId="0xe708" />
+          </MetaMetricsContext.Provider>
+        </CompatRouter>
+      </MemoryRouter>,
       store,
     );
     expect(
@@ -343,6 +405,26 @@ describe('TransactionList', () => {
       name: 'View on block explorer',
     });
     expect(viewOnExplorerBtn).toBeInTheDocument();
+  });
+
+  it('starts incoming transaction polling on mount', () => {
+    render();
+    expect(startIncomingTransactionPollingMock).toHaveBeenCalled();
+  });
+
+  it('stops incoming transaction polling on mount', () => {
+    render();
+    expect(stopIncomingTransactionPollingMock).toHaveBeenCalled();
+  });
+
+  it('stops incoming transaction polling on unmount', () => {
+    const { unmount } = render();
+
+    const count = stopIncomingTransactionPollingMock.mock.calls.length;
+
+    unmount();
+
+    expect(stopIncomingTransactionPollingMock).toHaveBeenCalledTimes(count + 1);
   });
 
   describe('keepOnlyNonEvmTransactionsForToken', () => {

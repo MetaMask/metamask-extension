@@ -45,6 +45,7 @@
       }
     }
   },
+  "addressSecurityAlertResponses": {},
   "advancedGasFee": {
     "0xaa36a7": {
       "maxBaseFee": "75",
@@ -337,6 +338,13 @@
   "desktopEnabled": false,
   "detectedTokens": [],
   "dismissSeedBackUpReminder": false,
+  "enabledNetworkMap": {
+    "eip155": {
+      "0x1": true,
+      "0x5": true,
+      "0xaa36a7": true
+    }
+  },
   "ensEntries": {},
   "ensResolutionsByAddress": {},
   "featureFlags": {},

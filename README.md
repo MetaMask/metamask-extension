@@ -51,7 +51,6 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
   - If you are using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) (recommended) running `nvm use` will automatically choose the right node version for you.
 - Enable Corepack by executing the command `corepack enable` within the metamask-extension project. Corepack is a utility included with Node.js by default. It manages Yarn on a per-project basis, using the version specified by the `packageManager` property in the project's package.json file. Please note that modern releases of [Yarn](https://yarnpkg.com/getting-started/install) are not intended to be installed globally or via npm.
 - Duplicate `.metamaskrc.dist` within the root and rename it to `.metamaskrc` by running `cp .metamaskrc{.dist,}`.
-
   - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura API Key](https://docs.infura.io/networks/ethereum/how-to/secure-a-project/project-id).
     - If you don't have an Infura account, you can create one for free on the [Infura website](https://app.infura.io/register).
   - If debugging MetaMetrics, you'll need to add a value for `SEGMENT_WRITE_KEY` [Segment write key](https://segment.com/docs/connections/find-writekey/), see [Developing on MetaMask - Segment](./development/README.md#segment).
@@ -71,7 +70,6 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
 
 - Run `yarn install` to install the dependencies.
 - Build the project to the `./dist/` folder with `yarn dist` (for Chromium-based browsers) or `yarn dist:mv2` (for Firefox)
-
   - Optionally, to create a development build you can instead run `yarn start` (for Chromium-based browsers) or `yarn start:mv2` (for Firefox)
   - Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
   - See the [build system readme](./development/build/README.md) for build system usage information.
@@ -142,12 +140,11 @@ Our e2e test suite can be run on either Firefox or Chrome. Here's how to get sta
 
 Before running e2e tests, ensure you've run `yarn install` to download dependencies. Next, you'll need a test build. You have 3 options:
 
-1. Use `yarn download-builds:test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder. This method is fast and convenient for standard testing.
+1. Use `yarn download-builds --build-type test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder. This method is fast and convenient for standard testing.
 2. Create a custom test build: for testing against different build types, use `yarn build:test`. This command allows you to generate test builds for various types, including:
    - `yarn build:test` for main build
    - `yarn build:test:flask` for flask build
    - `yarn build:test:mv2` for mv2 build
-   - `yarn build:test:mmi` for mmi build
 3. Start a test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes. This option is ideal for iterative testing and development. This command also allows you to generate test builds for various types, including:
    - `yarn start:test` for main build
    - `yarn start:test:flask` for flask build

@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
+const { escapeRegExp } = require('lodash');
 
 const {
-  ACCOUNTS_DEV_API_BASE_URL,
   ACCOUNTS_PROD_API_BASE_URL,
 } = require('../../shared/constants/accounts');
 const {
@@ -11,13 +11,10 @@ const {
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
-const {
-  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-  MOCK_META_METRICS_ID,
-} = require('./constants');
+const { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 
-const { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
+const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -41,6 +38,10 @@ const CHAIN_ID_NETWORKS_PATH =
 const CLIENT_SIDE_DETECTION_BLOCKLIST_PATH =
   'test/e2e/mock-response-data/client-side-detection-blocklist.json';
 const ON_RAMP_CONTENT_PATH = 'test/e2e/mock-response-data/on-ramp-content.json';
+const TEST_DAPP_STYLES_1_PATH =
+  'test/e2e/mock-response-data/test-dapp-styles-1.txt';
+const TEST_DAPP_STYLES_2_PATH =
+  'test/e2e/mock-response-data/test-dapp-styles-2.txt';
 const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
 
 const snapsExecutionEnvBasePath = path.dirname(
@@ -69,11 +70,13 @@ const snapsExecutionEnvJs = fs.readFileSync(snapsExecutionEnvJsPath, 'utf-8');
 
 const blocklistedHosts = [
   'arbitrum-mainnet.infura.io',
-  'goerli.infura.io',
-  'mainnet.infura.io',
-  'sepolia.infura.io',
+  'bsc-dataseed.binance.org',
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
+  'testnet-rpc.monad.xyz',
+  'carrot.megaeth.com',
+  'mainnet.infura.io',
+  'sepolia.infura.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
@@ -86,6 +89,7 @@ const emptyHtmlPage = () => `<!DOCTYPE html>
 <head>
     <meta charset="utf-8">
     <title>E2E Test Page</title>
+    <link rel="icon" href="data:image/png;base64,iVBORw0KGgo=">
   </head>
   <body data-testid="empty-page-body">
     Empty page by MetaMask
@@ -152,10 +156,7 @@ async function setupMocking(
         return {
           url: 'http://localhost:8545',
         };
-      } else if (
-        ALLOWLISTED_URLS.includes(url) ||
-        ALLOWLISTED_HOSTS.includes(host)
-      ) {
+      } else if (ALLOWLISTED_URLS.includes(url)) {
         // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
         console.log('Request going to a live server ============', url);
         return {};
@@ -283,8 +284,9 @@ async function setupMocking(
       };
     });
 
+  const targetChainId = chainId === 1337 ? 1 : chainId;
   await server
-    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/gasPrices`)
+    .forGet(`${GAS_API_BASE_URL}/networks/${targetChainId}/gasPrices`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -409,51 +411,23 @@ async function setupMocking(
       };
     });
 
-  [
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-fd20/surveys`,
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/test-metrics-id/surveys`,
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/invalid-metrics-id/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-fd20/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/test-metrics-id/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/invalid-metrics-id/surveys`,
-  ].forEach(
-    async (url) =>
-      await server.forGet(url).thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            userId: '0x123',
-            surveys: {},
-          },
-        };
-      }),
-  );
-
-  let surveyCallCount = 0;
-  [
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
-  ].forEach(
-    async (url) =>
-      await server.forGet(url).thenCallback(() => {
-        const surveyId = surveyCallCount > 2 ? 2 : surveyCallCount;
-        surveyCallCount += 1;
-        return {
-          statusCode: 200,
-          json: {
-            userId: '0x123',
-            surveys: {
-              url: 'https://example.com',
-              description: `Test survey ${surveyId}`,
-              cta: 'Take survey',
-              id: surveyId,
-            },
-          },
-        };
-      }),
-  );
+  // Surveys
+  await server
+    .forGet(
+      new RegExp(
+        `${escapeRegExp(ACCOUNTS_PROD_API_BASE_URL)}/v1/users/[^/]+/surveys`,
+        'u',
+      ),
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          userId: '0x123',
+          surveys: {},
+        },
+      };
+    });
 
   await server
     .forGet(`https://token.api.cx.metamask.io/tokens/${chainId}`)
@@ -940,6 +914,31 @@ async function setupMocking(
         statusCode: 200,
         body: snapsExecutionEnvJs,
         headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
+      };
+    });
+
+  // Test Dapp Styles
+  const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);
+  const TEST_DAPP_STYLES_2 = fs.readFileSync(TEST_DAPP_STYLES_2_PATH);
+  await server
+    .forGet(
+      'https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.14.1/css/mdb.min.css',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: TEST_DAPP_STYLES_1,
+      };
+    });
+
+  await server
+    .forGet(
+      'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: TEST_DAPP_STYLES_2,
       };
     });
 

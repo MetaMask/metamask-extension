@@ -19,7 +19,10 @@ import {
   BorderRadius,
   AlignItems,
 } from '../../../../helpers/constants/design-system';
-import { DailyAllowance, TOKEN_DETAILS } from '../../remote.types';
+import {
+  DailyAllowance,
+  TOKEN_DETAILS,
+} from '../../../../../shared/lib/remote-mode';
 
 /**
  * A card component that displays and manages a single daily allowance entry in remote mode.
@@ -30,6 +33,8 @@ import { DailyAllowance, TOKEN_DETAILS } from '../../remote.types';
  * @param props.onRemove - Callback function triggered when the allowance is removed
  * @returns A card component displaying the daily allowance information
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeDailyAllowanceCard({
   dailyAllowance,
   onRemove,
