@@ -188,6 +188,8 @@ async function start(): Promise<void> {
         benchmarkResults[platform][buildType] = benchmark;
       } catch (error) {
         console.error(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `Error encountered processing benchmark data for '${platform}': '${error}'`,
         );
       }
@@ -295,6 +297,8 @@ async function start(): Promise<void> {
 
       commentBody += `${benchmarkBody}`;
     } catch (error) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       console.error(`Error constructing benchmark results: '${error}'`);
     }
   } else {
@@ -371,6 +375,8 @@ async function start(): Promise<void> {
 
     commentBody += sizeDiffBody;
   } catch (error) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.error(`Error constructing bundle size diffs results: '${error}'`);
   }
 
@@ -466,6 +472,8 @@ async function runBenchmarkGate(
       }
     }
   } catch (error) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.error(`Error encountered fetching benchmark gate data: '${error}'`);
   }
 

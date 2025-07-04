@@ -163,6 +163,8 @@ describe('Deep Link', function () {
               Page = SwapPage;
               break;
             default: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
               throw new Error(`Unknown route: ${route}`);
             }
           }
