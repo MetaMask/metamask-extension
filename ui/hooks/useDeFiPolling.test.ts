@@ -1,5 +1,9 @@
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
-import { deFiStartPolling, deFiStopPolling, useDeFiPolling } from './useDeFiPolling';
+import {
+  deFiStartPolling,
+  deFiStopPolling,
+  useDeFiPolling,
+} from './useDeFiPolling';
 
 let mockPromises: Promise<string>[];
 

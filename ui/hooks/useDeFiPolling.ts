@@ -3,10 +3,12 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
-import useMultiPolling from './useMultiPolling';
 import { submitRequestToBackground } from '../store/background-connection';
-import { addPollingTokenToAppState, removePollingTokenFromAppState } from '../store/actions';
-
+import {
+  addPollingTokenToAppState,
+  removePollingTokenFromAppState,
+} from '../store/actions';
+import useMultiPolling from './useMultiPolling';
 
 /**
  * Informs the DeFiPositionsController that the UI requires defi positions polling
@@ -14,9 +16,10 @@ import { addPollingTokenToAppState, removePollingTokenFromAppState } from '../st
  * @returns polling token that can be used to stop polling.
  */
 export async function deFiStartPolling(): Promise<string> {
-  const pollingToken = await submitRequestToBackground<string>('deFiStartPolling', [
-    null,
-  ]);
+  const pollingToken = await submitRequestToBackground<string>(
+    'deFiStartPolling',
+    [null],
+  );
 
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
