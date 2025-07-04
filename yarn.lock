@@ -1948,17 +1948,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/env-options@npm:^1.1.10":
+"@endo/env-options@npm:^1.1.10, @endo/env-options@npm:^1.1.7, @endo/env-options@npm:^1.1.8":
   version: 1.1.10
   resolution: "@endo/env-options@npm:1.1.10"
   checksum: 10/a9facb3ac3b05ff7ccb699c6f2d3896b87e75d5c13a1ad82feb5309bd7a78d51f1155bf35eb02f48a6fdc2436ae6b52a87e6a7d6e6ac843f70233afaf280be40
-  languageName: node
-  linkType: hard
-
-"@endo/env-options@npm:^1.1.7, @endo/env-options@npm:^1.1.8":
-  version: 1.1.9
-  resolution: "@endo/env-options@npm:1.1.9"
-  checksum: 10/13a7525bc178d1a3d4b588893fe69cf369e0b741dc389e520a8f893635d6f1d0c63790c8a1e739b350b3f347bbd6758b1d382e3d72bb703dedac4a553b51b1ba
   languageName: node
   linkType: hard
 
@@ -4900,9 +4893,9 @@ __metadata:
   linkType: hard
 
 "@ledgerhq/errors@npm:^6.19.1":
-  version: 6.19.1
-  resolution: "@ledgerhq/errors@npm:6.19.1"
-  checksum: 10/8265c6d73c314a4aabbe060ec29e2feebb4e904fe811bf7a9c53cde08e713dcbceded9d927ebb2f0ffc47a7b16524379d4a7e9aa3d61945b8a832be7cd5cf69b
+  version: 6.22.0
+  resolution: "@ledgerhq/errors@npm:6.22.0"
+  checksum: 10/6bea0c5fbb07c4f20fbc5083856646708c195c6d138dcbeed1f08f88c97536fd5059959a724332c45f17b8944aa8d8e68d850f43b33bf5b2f30d901c593e2930
   languageName: node
   linkType: hard
 
@@ -5944,8 +5937,8 @@ __metadata:
   linkType: hard
 
 "@metamask/eth-ledger-bridge-keyring@npm:^11.0.3":
-  version: 11.0.3
-  resolution: "@metamask/eth-ledger-bridge-keyring@npm:11.0.3"
+  version: 11.1.1
+  resolution: "@metamask/eth-ledger-bridge-keyring@npm:11.1.1"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -5953,7 +5946,7 @@ __metadata:
     "@ledgerhq/hw-app-eth": "npm:^6.42.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     hdkey: "npm:^2.1.0"
-  checksum: 10/0a0f3a6a95e849c3cd8350f96eff27cbfec2e595223858f65c842e805cced382d3d7a06fce5d00aa1d97d071d8b71cb255185716573345f0670a9c0c8f941639
+  checksum: 10/c3e9093cafd438280a52d54f35f8b76435e44ed64d0e6a159914ff47b59c19bafa8fb85f3dd1bf9c1932cf501c2c00419398c1c75f17e4d5f4220471e8bde91d
   languageName: node
   linkType: hard
 
@@ -7123,8 +7116,8 @@ __metadata:
   linkType: hard
 
 "@metamask/smart-transactions-controller@npm:^16.4.0":
-  version: 16.4.0
-  resolution: "@metamask/smart-transactions-controller@npm:16.4.0"
+  version: 16.5.0
+  resolution: "@metamask/smart-transactions-controller@npm:16.5.0"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
@@ -7146,7 +7139,7 @@ __metadata:
       optional: true
     "@metamask/approval-controller":
       optional: true
-  checksum: 10/3826ab830c1dc8e15bea4850a6e93a0308ce279dd7e91adbc0a7453ba7ef5e014edee261ed024b3e68ee114086cd95655de18209b275dc83c6477afa5e961f46
+  checksum: 10/c7d6ebc850613d8c8416ffbb4392274d0fc298fa45b6f7e00cdd5cf3902906e690b20dfcc180b1a8259df9a7906afaffc2521566cfce078c9b1ffde655bdf8e7
   languageName: node
   linkType: hard
 
