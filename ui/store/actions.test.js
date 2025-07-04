@@ -295,10 +295,11 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('calls submitPassword', async () => {
+    it('calls syncPasswordAndUnlockWallet', async () => {
       const store = mockStore();
 
-      const submitPassword = background.submitPassword.resolves();
+      const syncPasswordAndUnlockWallet =
+        background.syncPasswordAndUnlockWallet.resolves();
 
       setBackgroundConnection(background);
 
@@ -311,15 +312,15 @@ describe('Actions', () => {
 
       await store.dispatch(actions.tryUnlockMetamask());
 
-      expect(submitPassword.callCount).toStrictEqual(1);
+      expect(syncPasswordAndUnlockWallet.callCount).toStrictEqual(1);
 
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('errors on submitPassword will fail', async () => {
+    it('errors on syncPasswordAndUnlockWallet will fail', async () => {
       const store = mockStore();
 
-      background.submitPassword.rejects(new Error('error'));
+      background.syncPasswordAndUnlockWallet.rejects(new Error('error'));
 
       setBackgroundConnection(background);
 
