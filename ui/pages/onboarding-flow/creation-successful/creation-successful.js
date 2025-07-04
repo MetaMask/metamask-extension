@@ -22,7 +22,7 @@ import {
   ButtonLinkSize,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { getFirstTimeFlowType, getHDEntropyIndex } from '../../../selectors';
 import {
   MetaMetricsEventCategory,
@@ -127,7 +127,7 @@ export default function CreationSuccessful() {
         hd_entropy_index: hdEntropyIndex,
       },
     });
-    history.push(DEFAULT_ROUTE);
+    history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
   }, [
     firstTimeFlowType,
     isBackupAndSyncEnabled,
