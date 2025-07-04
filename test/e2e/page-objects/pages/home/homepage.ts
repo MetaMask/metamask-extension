@@ -78,7 +78,8 @@ class HomePage {
     testId: 'account-overview__asset-tab',
   };
 
-  private readonly closeSurveyToastBannerButton = '[data-testid="survey-toast-banner-base"] [aria-label="Close"] span'
+  private readonly closeSurveyToastBannerButton =
+    '[data-testid="survey-toast-banner-base"] [aria-label="Close"] span';
 
   private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
 
