@@ -1,7 +1,8 @@
 import { Suite } from 'mocha';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { withSolanaAccountSnap } from './common-solana';
 
 describe('Solana network', function (this: Suite) {
@@ -40,16 +41,12 @@ describe('Solana network', function (this: Suite) {
         // Linea, still as the selected network in the network-controller
         // but not in the UI, should be removed from the network-controller
         await headerNavbar.clickSwitchNetworkDropDown();
-        await driver.clickElement(
-          '[data-testid="network-list-item-options-button-eip155:59144"]',
-        );
-        await driver.clickElement(
-          '[data-testid="network-list-item-options-delete"]',
-        );
-        await driver.clickElement({ text: 'Delete', tag: 'button' });
+        const selectNetworkDialog = new SelectNetwork(driver);
+        await selectNetworkDialog.deleteNetwork('eip155:59144');
 
         // Lastly, switch to an EVM account and validate the Ethereum
         // Mainnet is the selected network
+        await headerNavbar.check_pageIsLoaded();
         await headerNavbar.openAccountMenu();
         const accountMenu = new AccountListPage(driver);
         await accountMenu.switchToAccount('Account 1');
