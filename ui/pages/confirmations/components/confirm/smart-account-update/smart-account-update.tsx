@@ -97,10 +97,11 @@ export function SmartAccountUpdate() {
               justifyContent={JustifyContent.spaceBetween}
             >
               <IconButton
-                Icon={<Icon name={IconName.Close} />}
+                Icon={<Icon name={IconName.ArrowLeft} />}
                 onClick={closeAccountUpdatePage}
                 className="smart-account-update__close-left"
                 label=""
+                data-testid="smart-account-update-close"
               />
               <Text
                 color={TextColor.textDefault}

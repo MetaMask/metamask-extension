@@ -21,6 +21,14 @@ jest.mock('../../../../../store/actions', () => ({
   setSmartAccountOptInForAccounts: jest.fn(),
 }));
 
+const mockReplace = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    replace: mockReplace,
+  }),
+}));
+
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -83,5 +91,20 @@ describe('SmartAccountUpdate', () => {
 
     fireEvent.click(getByTestId('smart-account-update-edit'));
     expect(getByText('Edit accounts')).toBeInTheDocument();
+  });
+
+  it('call history.replace when close button is clicked', () => {
+    const mockStore = configureMockStore([])(
+      getMockConfirmStateForTransaction(
+        upgradeAccountConfirmation as Confirmation,
+      ),
+    );
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <SmartAccountUpdate />,
+      mockStore,
+    );
+
+    fireEvent.click(getByTestId('smart-account-update-close'));
+    expect(mockReplace).toHaveBeenCalled();
   });
 });
