@@ -235,7 +235,7 @@ export const NetworkListItem = ({
 
       {renderButton()}
       {showEndAccessory
-        ? (endAccessory ?? (
+        ? endAccessory ?? (
             <NetworkListItemMenu
               anchorElement={networkListItemMenuElement}
               isOpen={networkOptionsMenuOpen}
@@ -244,7 +244,7 @@ export const NetworkListItem = ({
               onDiscoverClick={onDiscoverClick}
               onClose={() => setNetworkOptionsMenuOpen(false)}
             />
-          ))
+          )
         : null}
     </Box>
   );

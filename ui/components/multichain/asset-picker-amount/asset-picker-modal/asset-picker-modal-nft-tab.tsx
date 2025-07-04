@@ -40,7 +40,6 @@ import {
 } from '../../../../ducks/send';
 import { getNftImage } from '../../../../helpers/utils/nfts';
 import { NFT } from './types';
-import { getAllNfts } from '../../../../ducks/metamask/metamask';
 
 export type PreviouslyOwnedCollections = {
   collectionName: string;

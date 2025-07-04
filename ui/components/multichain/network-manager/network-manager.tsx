@@ -27,10 +27,10 @@ import {
 } from '../../component-library';
 import AddBlockExplorerModal from '../network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import AddRpcUrlModal from '../network-list-menu/add-rpc-url-modal/add-rpc-url-modal';
+import { SelectRpcUrlModal } from '../network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
 import { AddNetwork } from './components/add-network';
 import { NetworkTabs } from './network-tabs';
 import { useNetworkManagerState } from './hooks/useNetworkManagerState';
-import SelectRpcUrlModal from '../network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
 
 // Router content component
 const NetworkManagerRouter = () => {
