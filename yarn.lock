@@ -6068,19 +6068,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-trezor-keyring@npm:@metamask-previews/eth-trezor-keyring@8.0.0-c8d2139":
-  version: 8.0.0-c8d2139
-  resolution: "@metamask-previews/eth-trezor-keyring@npm:8.0.0-c8d2139"
+"@metamask/eth-trezor-keyring@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/eth-trezor-keyring@npm:9.0.0"
   dependencies:
     "@ethereumjs/tx": "npm:^5.4.0"
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/utils": "npm:^11.1.0"
     "@trezor/connect-plugin-ethereum": "npm:^9.0.5"
-    "@trezor/connect-web": "npm:~9.6.0"
+    "@trezor/connect-web": "npm:^9.6.0"
     hdkey: "npm:^2.1.0"
     tslib: "npm:^2.6.2"
-  checksum: 10/35066b2a8cedcb49f20b40e17c57a4bcd0f6230da6e9d16cb9b32f5456b8643cd7ef23adfaec0fd622d112b502a6ef95a062e6c268026524662619651980b9a4
+  checksum: 10/910c6abd6604f513dea4550aae93f72c8d74f8bb2d247f7ff916982faab0959917e050800729678651e622c206fdb8b7a4f652436f2914aeb2ac3d58d00278c5
   languageName: node
   linkType: hard
 
@@ -32061,7 +32061,7 @@ __metadata:
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^13.0.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
-    "@metamask/eth-trezor-keyring": "npm:^8.0.0"
+    "@metamask/eth-trezor-keyring": "npm:^9.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/foundryup": "npm:^1.0.0"
