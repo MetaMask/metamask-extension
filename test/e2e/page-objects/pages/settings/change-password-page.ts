@@ -19,6 +19,8 @@ export default class ChangePasswordPage {
   private readonly confirmNewPasswordInput =
     '[data-testid="change-password-confirm-input"]';
 
+  private readonly passwordTerms = '[data-testid="change-password-terms"]';
+
   private readonly saveButton = '[data-testid="change-password-button"]';
 
   private readonly passwordChangedWarning = {
@@ -33,6 +35,8 @@ export default class ChangePasswordPage {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     console.log('Check change password page is loaded');
     await this.driver.waitForSelector(this.changePasswordPageTitle);
@@ -48,6 +52,19 @@ export default class ChangePasswordPage {
     console.log('Change password');
     await this.driver.fill(this.newPasswordInput, newPassword);
     await this.driver.fill(this.confirmNewPasswordInput, newPassword);
+    await this.driver.clickElement(this.passwordTerms);
     await this.driver.clickElement(this.saveButton);
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_passwordChangedWarning(): Promise<void> {
+    console.log('Check password changed warning');
+    await this.driver.waitForSelector(this.passwordChangedWarning);
+  }
+
+  async confirmChangePasswordWarning(): Promise<void> {
+    console.log('Confirm change password warning');
+    await this.driver.clickElement(this.confirmWarningButton);
   }
 }

@@ -21,6 +21,8 @@ import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 /**
  * Supported non-EVM Snaps.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type SUPPORTED_WALLET_SNAP_ID =
   | typeof SOLANA_WALLET_SNAP_ID
   | typeof BITCOIN_WALLET_SNAP_ID;

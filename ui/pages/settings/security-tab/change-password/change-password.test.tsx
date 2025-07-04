@@ -86,6 +86,7 @@ describe('ChangePassword', () => {
 
     const changePasswordButton = getByTestId('change-password-button');
     const changePasswordInput = getByTestId('change-password-input');
+    const checkTerms = getByTestId('change-password-terms');
     const changePasswordConfirmInput = getByTestId(
       'change-password-confirm-input',
     );
@@ -94,6 +95,8 @@ describe('ChangePassword', () => {
     expect(changePasswordConfirmInput).toBeInTheDocument();
     expect(changePasswordButton).toBeInTheDocument();
     expect(changePasswordButton).toBeDisabled();
+
+    fireEvent.click(checkTerms);
 
     fireEvent.change(changePasswordInput, {
       target: { value: mockNewPassword },
