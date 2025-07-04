@@ -9,6 +9,7 @@ import IconButton from '../../../../../components/ui/icon-button/icon-button-rou
 import {
   BlockSize,
   Display,
+  FontWeight,
   JustifyContent,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -93,7 +94,7 @@ export function AccountSelection({
           label=""
           data-testid="account-selection-close"
         />
-        <Text variant={TextVariant.headingMd}>
+        <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
           {t('smartAccountEditAccounts')}
         </Text>
       </Box>

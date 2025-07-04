@@ -79,7 +79,7 @@ export function SmartAccountUpdateContent({
   return (
     <>
       <img
-        width="80%"
+        width="100%"
         src="./images/smart-transactions/smart-account-update.svg"
       />
       <Text fontWeight={FontWeight.Bold} variant={TextVariant.headingLg}>

@@ -5500,8 +5500,11 @@
   "smartAccountSameAccount": {
     "message": "Same account, smarter features."
   },
-  "smartAccountSplashTitle": {
+  "smartAccountSplashInfo": {
     "message": "Smart accounts"
+  },
+  "smartAccountSplashTitle": {
+    "message": "Use smart account?"
   },
   "smartAccountUpdateSuccessMessage": {
     "message": "Your account will be updated to smart account with your next transaction."

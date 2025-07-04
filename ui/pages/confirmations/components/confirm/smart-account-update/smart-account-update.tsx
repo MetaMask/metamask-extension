@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Hex } from '@metamask/utils';
+import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import {
@@ -17,6 +18,7 @@ import {
   BlockSize,
   Display,
   FlexDirection,
+  FontWeight,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -28,7 +30,6 @@ import { getSmartAccountOptInForAccounts } from '../../../selectors/preferences'
 import { AccountSelection } from '../account-selection';
 import { SmartAccountUpdateContent } from '../smart-account-update-content/smart-account-update-content';
 import { SmartAccountUpdateSuccess } from './smart-account-update-success';
-import { useHistory } from 'react-router-dom';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -105,7 +106,8 @@ export function SmartAccountUpdate() {
               />
               <Text
                 color={TextColor.textDefault}
-                variant={TextVariant.headingMd}
+                variant={TextVariant.headingSm}
+                fontWeight={FontWeight.Bold}
               >
                 {t('smartAccountSplashInfo')}
               </Text>
