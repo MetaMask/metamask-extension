@@ -270,10 +270,7 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
-  }
-
-  &__button:not(:last-child) {
-    margin-right: 16px;
+    gap: 16px;
   }
 }
 

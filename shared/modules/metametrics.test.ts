@@ -12,6 +12,8 @@ const txHash =
   '0x0302b75dfb9fd9eb34056af031efcaee2a8cbd799ea054a85966165cd82a7356';
 const address = '0x1678a085c290ebd122dc42cba69373b5953b831d';
 const providerResultStub = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   eth_getCode: '0x123',
 };
 const { provider } = createTestProviderTools({
@@ -73,6 +75,8 @@ const createTransactionMeta = () => {
     hash: txHash,
     error: null,
     swapMetaData: {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_included: true,
     },
   };
@@ -109,9 +113,17 @@ describe('getSmartTransactionMetricsProperties', () => {
     );
 
     expect(result).toStrictEqual({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_included: true,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       is_smart_transaction: true,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       smart_transaction_proxied: true,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       smart_transaction_timed_out: true,
     });
   });
@@ -130,6 +142,8 @@ describe('getSmartTransactionMetricsProperties', () => {
     );
 
     expect(result).toStrictEqual({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       is_smart_transaction: false,
     });
   });
@@ -153,7 +167,11 @@ describe('getSmartTransactionMetricsProperties', () => {
     );
 
     expect(result).toStrictEqual({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       is_smart_transaction: true,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_included: true,
     });
   });

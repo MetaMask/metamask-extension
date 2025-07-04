@@ -114,7 +114,7 @@ const useLatestBalance = (
     if (isSolanaChainId(chainId) && decimals) {
       const caipAssetType = isNativeAddress(address)
         ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL
-        : token.assetId ?? token.address;
+        : (token.assetId ?? token.address);
       return Numeric.from(
         nonEvmBalances?.[caipAssetType]?.amount ?? token?.string,
         10,

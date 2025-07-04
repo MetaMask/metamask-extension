@@ -911,9 +911,6 @@
   "bridgeTo": {
     "message": "Γέφυρα σε"
   },
-  "bridgeToChain": {
-    "message": "Διασύνδεση στο $1"
-  },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Εάν προσθέσατε αυτό το token μη αυτόματα, βεβαιωθείτε ότι γνωρίζετε τους κινδύνους για τα κεφάλαιά σας πριν από τη διασύνδεση."
   },
@@ -2228,9 +2225,6 @@
   },
   "floatAmountToken": {
     "message": "Η ποσότητα των Τokens πρέπει να είναι ακέραιος αριθμός"
-  },
-  "followUsOnTwitter": {
-    "message": "Ακολουθήστε μας στο Twitter"
   },
   "forbiddenIpfsGateway": {
     "message": "Απαγορευμένη πύλη IPFS: Παρακαλώ καθορίστε μια πύλη CID"
@@ -4413,18 +4407,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Το κατάλαβα"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Διατηρείτε πάντα τη Μυστική Φράση Ανάκτησης σε ασφαλές και μυστικό μέρος."
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Χρειάζεται να δημιουργήσετε ξανά αντίγραφο ασφαλείας της Μυστικής σας Φράσης Ανάκτησης;"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Ποτέ μην μοιράζεστε τη Μυστική σας Φράση Ανάκτησης με κανέναν"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Η ομάδα του MetaMask δεν θα ζητήσει ποτέ τη Μυστική σας Φράση Ανάκτησης"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Η Μυστική σας Φράση Ανάκτησης ελέγχει όλους τους λογαριασμούς σας."
   },
@@ -4795,16 +4777,8 @@
   "sendSelectSendAsset": {
     "message": "Επιλέξτε περιουσιακό στοιχείο για αποστολή"
   },
-  "sendSpecifiedTokens": {
-    "message": "Αποστολή $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Κάνοντας κλικ σε αυτό το κουμπί θα ξεκινήσει αμέσως η συναλλαγή ανταλλαγής. Ελέγξτε τις λεπτομέρειες της συναλλαγής σας πριν συνεχίσετε."
-  },
-  "sendTokenAsToken": {
-    "message": "Στείλατε $1 ως $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Αποστολή $1"

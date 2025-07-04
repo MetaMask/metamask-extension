@@ -524,6 +524,16 @@ export function getIsPrimarySeedPhraseBackedUp(state) {
 }
 
 /**
+ * Retrieves the outdated status of the seedless password.
+ *
+ * @param {object} state - The Redux state object.
+ * @returns {boolean} True if the seedless password is considered outdated, false otherwise.
+ */
+export function getIsSeedlessPasswordOutdated(state) {
+  return Boolean(state.metamask.passwordOutdatedCache?.isExpiredPwd);
+}
+
+/**
  * Given the redux state object and an address, finds a keyring that contains that address, if one exists
  *
  * @param {object} state - the redux state object

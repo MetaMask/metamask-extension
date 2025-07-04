@@ -22,6 +22,8 @@ type StepIndicatorProps = {
  * @param props.currentStep - The current step number in the process
  * @param props.totalSteps - The total number of steps in the process
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function StepIndicator({
   currentStep,
   totalSteps,

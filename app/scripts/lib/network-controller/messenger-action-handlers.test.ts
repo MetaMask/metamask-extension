@@ -75,7 +75,11 @@ describe('onRpcEndpointUnavailable', () => {
             category: 'Network',
             event: 'RPC Service Unavailable',
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               chain_id_caip: 'eip155:11155111',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               rpc_endpoint_url: 'some-subdomain.infura.io',
             },
           });
@@ -124,7 +128,11 @@ describe('onRpcEndpointUnavailable', () => {
             category: 'Network',
             event: 'RPC Service Unavailable',
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               chain_id_caip: 'eip155:11155111',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               rpc_endpoint_url: 'endpoint.url',
             },
           });
@@ -253,7 +261,11 @@ describe('onRpcEndpointDegraded', () => {
           category: 'Network',
           event: 'RPC Service Degraded',
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id_caip: 'eip155:11155111',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             rpc_endpoint_url: 'some-subdomain.infura.io',
           },
         });
@@ -279,7 +291,11 @@ describe('onRpcEndpointDegraded', () => {
           category: 'Network',
           event: 'RPC Service Degraded',
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id_caip: 'eip155:11155111',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             rpc_endpoint_url: 'endpoint.url',
           },
         });

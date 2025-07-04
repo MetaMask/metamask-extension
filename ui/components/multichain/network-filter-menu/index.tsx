@@ -69,7 +69,7 @@ export const NetworkFilterComponent = ({
         ellipsis
       >
         {isTokenNetworkFilterEqualCurrentNetwork
-          ? currentNetworkConfig?.nickname ?? t('currentNetwork')
+          ? (currentNetworkConfig?.nickname ?? t('currentNetwork'))
           : t('popularNetworks')}
       </ButtonBase>
 

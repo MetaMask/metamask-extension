@@ -5,6 +5,8 @@ import {
   ErrorObject,
   MethodObject,
 } from '@open-rpc/meta-schema';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import _ from 'lodash';
 import { Driver } from '../webdriver/driver';
 import { WINDOW_TITLES, switchToOrOpenDapp } from '../helpers';
@@ -32,6 +34,8 @@ export class MultichainAuthorizationConfirmationErrors implements Rule {
     return 'Multichain Authorization Confirmation Rule';
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async afterRequest(__: unknown, call: Call) {
     await new Promise((resolve, reject) => {
       addToQueue({
@@ -68,6 +72,8 @@ export class MultichainAuthorizationConfirmationErrors implements Rule {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   getCalls(__: unknown, method: MethodObject) {
     const calls: Call[] = [];
     const isMethodAllowed = this.only ? this.only.includes(method.name) : true;

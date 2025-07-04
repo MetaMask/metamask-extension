@@ -20,7 +20,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
 import {
-  getRequestedCaip25CaveatValue,
+  getCaip25CaveatValueFromPermissions,
   getCaip25PermissionsResponse,
 } from '../../../pages/permissions-connect/connect-page/utils';
 import { TemplateAlertContextProvider } from '../../../pages/confirmations/confirmation/alerts/TemplateAlertContext';
@@ -150,7 +150,7 @@ export default class PermissionPageContainer extends Component {
       (selectedAccount) => selectedAccount.address,
     );
 
-    const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
+    const requestedCaip25CaveatValue = getCaip25CaveatValueFromPermissions(
       _request.permissions,
     );
 

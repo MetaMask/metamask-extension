@@ -128,7 +128,11 @@ describe('Permit Confirmation', () => {
           properties: {
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.SignatureConfirmation,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: 0,
           },
         }),
@@ -319,6 +323,8 @@ describe('Permit Confirmation', () => {
       expect.arrayContaining([
         expect.objectContaining({
           properties: expect.objectContaining({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             external_link_clicked: 'security_alert_support_link',
           }),
         }),

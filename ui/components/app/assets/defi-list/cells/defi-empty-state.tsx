@@ -16,6 +16,8 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../../../helpers/utils/portfolio';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function DeFiEmptyStateMessage({
   primaryText,
   secondaryText,

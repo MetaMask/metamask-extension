@@ -176,6 +176,8 @@ export const FEATURE_FLAGS_API_MOCK_RESULT = [
       mobileActive: false,
       extensionActive: false,
     },
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     updated_at: '2022-03-17T15:54:00.360Z',
   },
 ];

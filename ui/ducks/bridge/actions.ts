@@ -13,6 +13,7 @@ import {
   setDestTokenExchangeRates,
   setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
+  setTxAlerts,
 } from './bridge';
 
 const {
@@ -40,6 +41,7 @@ export {
   setSelectedQuote,
   setWasTxDeclined,
   setSlippage,
+  setTxAlerts,
 };
 
 const callBridgeControllerMethod = (
@@ -61,7 +63,10 @@ export const resetBridgeState = () => {
 };
 
 export const trackUnifiedSwapBridgeEvent = <
-  T extends (typeof UnifiedSwapBridgeEventName)[keyof typeof UnifiedSwapBridgeEventName],
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  T extends
+    (typeof UnifiedSwapBridgeEventName)[keyof typeof UnifiedSwapBridgeEventName],
 >(
   eventName: T,
   propertiesFromClient: Pick<RequiredEventContextFromClient, T>[T],

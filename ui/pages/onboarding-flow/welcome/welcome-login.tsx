@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React, { useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import classnames from 'classnames';
 import Mascot from '../../../components/ui/mascot';
 import {
@@ -19,18 +19,23 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
+import LoginOptions from './login-options';
+import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 
-type WelcomeLoginProps = {
-  onCreate: () => void;
-  onImport: () => void;
-};
-
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function WelcomeLogin({
-  onCreate,
-  onImport,
-}: WelcomeLoginProps) {
+  onLogin,
+}: {
+  onLogin: (loginType: LoginType, loginOption: string) => Promise<void>;
+}) {
   const t = useI18nContext();
-  const [eventEmitter] = useState(new EventEmitter());
+  const animationEventEmitter = useRef(new EventEmitter());
+  const [showLoginOptions, setShowLoginOptions] = useState(false);
+  const [loginOption, setLoginOption] = useState<LoginOptionType | null>(null);
+  const isSeedlessOnboardingFeatureEnabled =
+    getIsSeedlessOnboardingFeatureEnabled();
 
   const renderMascot = () => {
     if (isFlask()) {
@@ -44,9 +49,25 @@ export default function WelcomeLogin({
       );
     }
     return (
-      <Mascot animationEventEmitter={eventEmitter} width="268" height="268" />
+      <Mascot
+        animationEventEmitter={animationEventEmitter.current}
+        width="268"
+        height="268"
+      />
     );
   };
+
+  const handleLogin = useCallback(
+    async (loginType: LoginType) => {
+      if (!loginOption) {
+        return;
+      }
+      setShowLoginOptions(false);
+      await onLogin(loginType, loginOption);
+    },
+    [loginOption, onLogin],
+  );
+
   return (
     <Box
       display={Display.Flex}
@@ -91,7 +112,13 @@ export default function WelcomeLogin({
           width={BlockSize.Full}
           size={ButtonBaseSize.Lg}
           className="welcome-login__create-button"
-          onClick={onCreate}
+          onClick={async () => {
+            setShowLoginOptions(true);
+            setLoginOption(LOGIN_OPTION.NEW);
+            if (!isSeedlessOnboardingFeatureEnabled) {
+              await onLogin(LOGIN_TYPE.SRP, LOGIN_OPTION.NEW);
+            }
+          }}
         >
           {t('onboardingCreateWallet')}
         </ButtonBase>
@@ -101,11 +128,30 @@ export default function WelcomeLogin({
           size={ButtonBaseSize.Lg}
           backgroundColor={BackgroundColor.transparent}
           className="welcome-login__import-button"
-          onClick={onImport}
+          onClick={async () => {
+            setShowLoginOptions(true);
+            setLoginOption(LOGIN_OPTION.EXISTING);
+            if (!isSeedlessOnboardingFeatureEnabled) {
+              await onLogin(LOGIN_TYPE.SRP, LOGIN_OPTION.EXISTING);
+            }
+          }}
         >
-          {t('onboardingImportWallet')}
+          {isSeedlessOnboardingFeatureEnabled
+            ? t('onboardingImportWallet')
+            : t('onboardingSrpImport')}
         </ButtonBase>
       </Box>
+      {isSeedlessOnboardingFeatureEnabled &&
+        showLoginOptions &&
+        loginOption && (
+          <LoginOptions
+            loginOption={loginOption}
+            onClose={() => {
+              setLoginOption(null);
+            }}
+            handleLogin={handleLogin}
+          />
+        )}
     </Box>
   );
 }

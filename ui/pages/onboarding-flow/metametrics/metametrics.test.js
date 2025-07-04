@@ -46,6 +46,10 @@ describe('Onboarding Metametrics Component', () => {
     metamask: {
       firstTimeFlowType: FirstTimeFlowType.create,
       participateInMetaMetrics: '',
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
     },
   };
 

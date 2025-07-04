@@ -158,7 +158,11 @@ export const GlobalMenu = ({
         category: MetaMetricsEventCategory.NotificationsActivationFlow,
         event: MetaMetricsEventName.NotificationsActivated,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           action_type: 'started',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_profile_syncing_enabled: isBackupAndSyncEnabled,
         },
       });
@@ -173,7 +177,11 @@ export const GlobalMenu = ({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationsMenuOpened,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         unread_count: notificationsUnreadCount,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         read_count: notificationsReadCount,
       },
     });

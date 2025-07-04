@@ -11,6 +11,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
     >
       <div
         class="mm-box multichain-account-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
+        data-testid="account-list-item-selected-indicator"
       />
       <div
         class="mm-box mm-box--margin-right-3 mm-box--display-flex mm-box--sm:display-none"

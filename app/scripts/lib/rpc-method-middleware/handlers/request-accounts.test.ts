@@ -191,8 +191,14 @@ describe('requestEthereumAccountsHandler', () => {
           category: 'inpage_provider',
           event: 'Dapp Viewed',
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             is_first_visit: true,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             number_of_accounts: 3,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             number_of_accounts_connected: 2,
           },
           referrer: {

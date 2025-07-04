@@ -5,7 +5,11 @@ import { stripHexPrefix } from '../modules/hexstring-utils';
 import fetchWithCache from './fetch-with-cache';
 
 type FourByteResult = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   created_at: string;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   text_signature: string;
 };
 
