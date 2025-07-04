@@ -129,18 +129,30 @@ import { SelectRpcUrlModal } from './select-rpc-url-modal/select-rpc-url-modal';
 import AddBlockExplorerModal from './add-block-explorer-modal/add-block-explorer-modal';
 import AddNonEvmAccountModal from './add-non-evm-account/add-non-evm-account';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export enum ACTION_MODE {
   // Displays the search box and network list
   LIST,
   // Displays the form to add or edit a network
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ADD_EDIT,
   // Displays the page for adding an additional RPC URL
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ADD_RPC,
   // Displays the page for adding an additional explorer URL
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ADD_EXPLORER_URL,
   // Displays the page for selecting an RPC URL
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SELECT_RPC,
   // Add account for non EVM networks
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ADD_NON_EVM_ACCOUNT,
 }
 
@@ -304,6 +316,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [focusSearch, setFocusSearch] = useState(false);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const searchNetworks = <T,>(networks: T[], query: string) =>
     searchQuery === ''
       ? networks
@@ -439,8 +453,14 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       category: MetaMetricsEventCategory.Network,
       properties: {
         location: 'Network Menu',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: currentChainIdToTrack,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         from_network: currentChainIdToTrack,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         to_network: chainIdToTrack,
       },
     });
