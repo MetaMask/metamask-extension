@@ -12,28 +12,17 @@ import {
   AlignItems,
   JustifyContent,
   FlexDirection,
-  BorderRadius,
   BlockSize,
-  FontWeight,
   TextColor,
-  IconColor,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
   Text,
-  IconName,
-  IconSize,
-  ButtonBase,
-  Icon,
   ButtonLink,
   ButtonLinkSize,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  // ONBOARDING_PRIVACY_SETTINGS_ROUTE,
-  ONBOARDING_PIN_EXTENSION_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getFirstTimeFlowType, getHDEntropyIndex } from '../../../selectors';
 import {
   MetaMetricsEventCategory,
@@ -129,11 +118,6 @@ export default function CreationSuccessful() {
   }, [isWalletReady]);
 
   const onDone = useCallback(() => {
-    if (isFromReminderParam) {
-      history.push(DEFAULT_ROUTE);
-      return;
-    }
-
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletCreationComplete,
@@ -143,7 +127,7 @@ export default function CreationSuccessful() {
         hd_entropy_index: hdEntropyIndex,
       },
     });
-    history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+    history.push(DEFAULT_ROUTE);
   }, [
     firstTimeFlowType,
     isBackupAndSyncEnabled,
@@ -210,41 +194,6 @@ export default function CreationSuccessful() {
             {renderDetails2}
           </Text>
         </Box>
-        {!isFromReminderParam && (
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.flexStart}
-            className="creation-successful__settings-actions"
-            gap={4}
-          >
-            <ButtonBase
-              data-testid="manage-default-settings"
-              borderRadius={BorderRadius.LG}
-              width={BlockSize.Full}
-              onClick={() => history.push(DEFAULT_ROUTE)}
-            >
-              <Box display={Display.Flex} alignItems={AlignItems.center}>
-                <Icon
-                  name={IconName.Setting}
-                  size={IconSize.Md}
-                  marginInlineEnd={3}
-                />
-                <Text
-                  variant={TextVariant.bodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('manageDefaultSettings')}
-                </Text>
-              </Box>
-              <Icon
-                name={IconName.ArrowRight}
-                color={IconColor.iconAlternative}
-                size={IconSize.Sm}
-              />
-            </ButtonBase>
-          </Box>
-        )}
       </Box>
 
       <Box

@@ -7162,5 +7162,26 @@
   },
   "noticesModalItem2Desc":{
     "message":"Account 2 received 10 USDT"
+  },
+  "setPassword": {
+    "message": "Set Password"
+  },
+  "setPasswordTips": {
+    "message": "Your Password must include:"
+  },
+  "setPasswordTips1": {
+    "message": "At least 8 characters"
+  },
+  "setPasswordTips2": {
+    "message": "Uppercase letters (A–Z)"
+  },
+  "setPasswordTips3": {
+    "message": "Lowercase letters (a–z)"
+  },
+  "setPasswordTips4": {
+    "message": "Numbers (0–9)"
+  },
+  "setPasswordTips5": {
+    "message": "Special symbols (e.g. @, #, $, !)"
   }
 }

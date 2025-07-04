@@ -36,13 +36,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
-  ONBOARDING_COMPLETION_ROUTE,
-  ONBOARDING_METAMETRICS,
+  DEFAULT_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
-import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 const QUIZ_WORDS_COUNT = 3;
@@ -86,8 +82,6 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     ? '/?isFromReminder=true'
     : '';
 
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [matching, setMatching] = useState(false);
   const [quizWords, setQuizWords] = useState(
     generateQuizWords(splitSecretRecoveryPhrase),
   );
@@ -98,11 +92,6 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       history.push(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
     }
   }, [history, secretRecoveryPhrase, isFromReminderParam]);
-
-  const resetQuizWords = useCallback(() => {
-    const newQuizWords = generateQuizWords(splitSecretRecoveryPhrase);
-    setQuizWords(newQuizWords);
-  }, [splitSecretRecoveryPhrase]);
 
   const handleQuizInput = useCallback(
     (inputValue) => {
@@ -120,12 +109,6 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     [splitSecretRecoveryPhrase],
   );
 
-  const onContinue = useCallback(() => {
-    const isMatching = answerSrp === secretRecoveryPhrase;
-    setMatching(isMatching);
-    setShowConfirmModal(true);
-  }, [answerSrp, secretRecoveryPhrase]);
-
   const handleConfirmedPhrase = useCallback(() => {
     dispatch(setSeedPhraseBackedUp(true));
     trackEvent({
@@ -136,13 +119,12 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       },
     });
 
-    const nextRoute =
-      getBrowserName() === PLATFORM_FIREFOX || isFromReminderParam
-        ? ONBOARDING_COMPLETION_ROUTE
-        : ONBOARDING_METAMETRICS;
+    history.push(DEFAULT_ROUTE);
+  }, [dispatch, hdEntropyIndex, history, trackEvent]);
 
-    history.push(`${nextRoute}${isFromReminderParam}`);
-  }, [dispatch, hdEntropyIndex, history, trackEvent, isFromReminderParam]);
+  const onContinue = useCallback(() => {
+    handleConfirmedPhrase();
+  }, [handleConfirmedPhrase]);
 
   return (
     <Box
@@ -154,16 +136,6 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       data-testid="confirm-recovery-phrase"
     >
       <Box>
-        {showConfirmModal && (
-          <ConfirmSrpModal
-            isError={!matching}
-            onContinue={handleConfirmedPhrase}
-            onClose={() => {
-              resetQuizWords();
-              setShowConfirmModal(false);
-            }}
-          />
-        )}
         <Box
           justifyContent={JustifyContent.flexStart}
           marginBottom={4}
@@ -195,11 +167,6 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
             {t('confirmRecoveryPhraseTitle')}
           </Text>
         </Box>
-        {/* <Box marginBottom={6}>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {t('confirmRecoveryPhraseDetails')}
-          </Text>
-        </Box> */}
         {splitSecretRecoveryPhrase.length > 0 && (
           <RecoveryPhraseChips
             secretRecoveryPhrase={splitSecretRecoveryPhrase}

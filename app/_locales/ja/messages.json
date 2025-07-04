@@ -6721,5 +6721,26 @@
   },
   "startNow": {
     "message": "今出発"
+  },
+  "setPassword": {
+    "message": "設定パスワード"
+  },
+  "setPasswordTips": {
+    "message": "パスワードには以下を含める必要があります。"
+  },
+  "setPasswordTips1": {
+    "message": "最低8字"
+  },
+  "setPasswordTips2": {
+    "message": "大文字(A-Z)"
+  },
+  "setPasswordTips3": {
+    "message": "(a-z小文字の手紙類を手渡す)"
+  },
+  "setPasswordTips4": {
+    "message": "数(頭)"
+  },
+  "setPasswordTips5": {
+    "message": "特殊記号(例:@,#,$,!)"
   }
 }

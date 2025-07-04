@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useContext, useCallback } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -41,8 +41,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const t = useI18nContext();
   const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const [phraseRevealed, setPhraseRevealed] = useState(false);
-  const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
+  const [showSrpDetailsModal, setShowSrpDetailsModal] = React.useState(false);
   const searchParams = new URLSearchParams(search);
   const isFromReminderParam = searchParams.get('isFromReminder')
     ? '/?isFromReminder=true'
@@ -132,18 +131,6 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
         </Box>
         <RecoveryPhraseChips
           secretRecoveryPhrase={secretRecoveryPhrase.split(' ')}
-          phraseRevealed={phraseRevealed}
-          revealPhrase={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event:
-                MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
-              properties: {
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
-            setPhraseRevealed(true);
-          }}
         />
       </Box>
       <Box width={BlockSize.Full}>
@@ -153,7 +140,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
           size={ButtonSize.Lg}
           data-testid="recovery-phrase-continue"
           className="recovery-phrase__footer--button"
-          disabled={!phraseRevealed}
+          disabled={false}
           onClick={() => {
             trackEvent({
               category: MetaMetricsEventCategory.Onboarding,

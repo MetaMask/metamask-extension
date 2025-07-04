@@ -6,9 +6,6 @@ import {
   Button,
   ButtonBase,
   ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
   Text,
   TextField,
 } from '../../../components/component-library';
@@ -21,7 +18,6 @@ import {
   FlexDirection,
   BlockSize,
   BorderRadius,
-  IconColor,
   JustifyContent,
   AlignItems,
   BackgroundColor,
@@ -29,8 +25,6 @@ import {
 
 export default function RecoveryPhraseChips({
   secretRecoveryPhrase,
-  phraseRevealed = true,
-  revealPhrase,
   confirmPhase,
   quizWords = [],
   setInputValue,
@@ -41,10 +35,14 @@ export default function RecoveryPhraseChips({
     if (!quizWords.length) return [];
     return quizWords.map((quizWord) => {
       const correctWord = secretRecoveryPhrase[quizWord.index];
-      const otherWords = secretRecoveryPhrase.filter((w, idx) => idx !== quizWord.index);
+      const otherWords = secretRecoveryPhrase.filter(
+        (w, idx) => idx !== quizWord.index,
+      );
       const shuffled = [...otherWords].sort(() => Math.random() - 0.5);
       const distractors = shuffled.slice(0, 2);
-      const options = [correctWord, ...distractors].sort(() => Math.random() - 0.5);
+      const options = [correctWord, ...distractors].sort(
+        () => Math.random() - 0.5,
+      );
       return {
         index: quizWord.index,
         options,
@@ -53,13 +51,16 @@ export default function RecoveryPhraseChips({
     });
   }, [quizWords, secretRecoveryPhrase]);
 
-  const [userSelections, setUserSelections] = useState(Array(quizWords.length).fill(''));
+  const [userSelections, setUserSelections] = useState(
+    Array(quizWords.length).fill(''),
+  );
 
-  const quizAnswers = useMemo(() =>
-    quizWords.map((quizWord, idx) => ({
-      index: quizWord.index,
-      word: userSelections[idx] || '',
-    })),
+  const quizAnswers = useMemo(
+    () =>
+      quizWords.map((quizWord, idx) => ({
+        index: quizWord.index,
+        word: userSelections[idx] || '',
+      })),
     [quizWords, userSelections],
   );
 
@@ -88,7 +89,9 @@ export default function RecoveryPhraseChips({
               <Box display={Display.Flex} gap={2}>
                 {group.options.map((option) => {
                   const selected = userSelections[groupIdx] === option;
-                  const canClick = (!isGroupAnswered && !selected) || (isGroupAnswered && selected);
+                  const canClick =
+                    (!isGroupAnswered && !selected) ||
+                    (isGroupAnswered && selected);
                   return (
                     <ButtonBase
                       key={option}
@@ -97,14 +100,14 @@ export default function RecoveryPhraseChips({
                       })}
                       style={{
                         border: selected
-                          ? '2px solid #0376c9'
+                          ? '2px solid var(--brand-colors-purple)'
                           : '1px solid #d6d9dc',
-                        background: selected ? '#eaf6ff' : '#fff',
+                        background: '#fff',
                         minWidth: 120,
                         minHeight: 40,
                         fontWeight: selected ? 600 : 400,
                         opacity: !canClick ? 0.5 : 1,
-                        cursor: !canClick ? 'not-allowed' : 'pointer',
+                        cursor: 'pointer',
                       }}
                       disabled={!canClick}
                       onClick={() => {
@@ -229,14 +232,13 @@ export default function RecoveryPhraseChips({
           data-testid="recovery-phrase-chips"
           data-recovery-phrase={secretRecoveryPhrase.join(':')}
           data-quiz-words={JSON.stringify(quizWords)}
-          className={classnames('recovery-phrase__chips', {
-            'recovery-phrase__chips--hidden': !phraseRevealed,
-          })}
+          className={classnames('recovery-phrase__chips')}
         >
           {phrasesToDisplay.map((word, index) => {
             const isQuizWord = indicesToCheck.includes(index);
             const wordToDisplay = isQuizWord
-              ? legacyQuizAnswers.find((answer) => answer.index === index)?.word || ''
+              ? legacyQuizAnswers.find((answer) => answer.index === index)
+                  ?.word || ''
               : word;
             return (
               <TextField
@@ -262,10 +264,7 @@ export default function RecoveryPhraseChips({
                 }
                 type={confirmPhase && !isQuizWord ? 'password' : 'text'}
                 readOnly
-                disabled={
-                  (confirmPhase && !isQuizWord) ||
-                  (!confirmPhase && !phraseRevealed)
-                }
+                disabled={confirmPhase && !isQuizWord}
                 onClick={() => {
                   if (!confirmPhase) {
                     return;
@@ -282,59 +281,6 @@ export default function RecoveryPhraseChips({
             );
           })}
         </Box>
-
-        {!phraseRevealed && (
-          <Box
-            width={BlockSize.Full}
-            height={BlockSize.Full}
-            className="recovery-phrase__secret-blocker-container"
-          >
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-              borderRadius={BorderRadius.SM}
-              width={BlockSize.Full}
-              height={BlockSize.Full}
-              paddingTop={2}
-              paddingBottom={9}
-              paddingInline={0}
-              className="recovery-phrase__secret-blocker"
-            />
-            <Box
-              as="button"
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-              backgroundColor={BackgroundColor.transparent}
-              height={BlockSize.Full}
-              width={BlockSize.Full}
-              gap={2}
-              className="recovery-phrase__secret-blocker-text"
-              onClick={() => {
-                revealPhrase?.();
-              }}
-              data-testid="recovery-phrase-reveal"
-            >
-              <Icon
-                name={IconName.EyeSlash}
-                color={IconColor.iconDefault}
-                size={IconSize.Md}
-              />
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textDefault}
-                fontWeight={FontWeight.Medium}
-              >
-                {t('tapToReveal')}
-              </Text>
-              <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
-                {t('tapToRevealNote')}
-              </Text>
-            </Box>
-          </Box>
-        )}
       </Box>
       {quizWords.length === 3 && (
         <Box display={Display.Flex} gap={2} width={BlockSize.Full}>

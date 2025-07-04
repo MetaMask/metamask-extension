@@ -7,7 +7,6 @@ import {
   JustifyContent,
   AlignItems,
   TextVariant,
-  TextColor,
   BlockSize,
   IconColor,
   Display,
@@ -18,7 +17,6 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../../../helpers/constants/routes';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   getFirstTimeFlowType,
   getCurrentKeyring,
@@ -38,7 +36,6 @@ import {
   ButtonIconSize,
   ButtonSize,
   ButtonVariant,
-  Checkbox,
   IconName,
   Text,
 } from '../../../components/component-library';
@@ -55,9 +52,16 @@ export default function CreatePassword({
 }) {
   const t = useI18nContext();
   const [password, setPassword] = useState('');
-  const [termsChecked, setTermsChecked] = useState(false);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
+  const [passwordRules, setPasswordRules] = useState({
+    length: false,
+    upper: false,
+    lower: false,
+    number: false,
+    special: false,
+  });
+
   const history = useHistory();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
@@ -79,6 +83,22 @@ export default function CreatePassword({
     analyticsIframeQuery,
   )}`;
 
+  const checkPasswordRules = (pwd) => {
+    return {
+      length: pwd.length >= 8,
+      upper: /[A-Z]/.test(pwd),
+      lower: /[a-z]/.test(pwd),
+      number: /[0-9]/.test(pwd),
+      special: /[@#$!]/.test(pwd),
+    };
+  };
+
+  useEffect(() => {
+    setPasswordRules(checkPasswordRules(password));
+  }, [password]);
+
+  const isPasswordValid = Object.values(passwordRules).every(Boolean);
+
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
       if (firstTimeFlowType === FirstTimeFlowType.import) {
@@ -93,19 +113,6 @@ export default function CreatePassword({
     firstTimeFlowType,
     newAccountCreationInProgress,
   ]);
-
-  const handleLearnMoreClick = (event) => {
-    event.stopPropagation();
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.ExternalLinkClicked,
-      properties: {
-        text: 'Learn More',
-        location: 'create_password',
-        url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
-      },
-    });
-  };
 
   const handleWalletImport = async () => {
     trackEvent({
@@ -193,20 +200,6 @@ export default function CreatePassword({
     }
   };
 
-  const createPasswordLink = (
-    <a
-      onClick={handleLearnMoreClick}
-      key="create-password__link-text"
-      href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <span className="create-password__link-text">
-        {t('learnMoreUpperCaseWithDot')}
-      </span>
-    </a>
-  );
-
   return (
     <Box
       display={Display.Flex}
@@ -237,58 +230,36 @@ export default function CreatePassword({
             onClick={() => history.goBack()}
             ariaLabel={t('back')}
           />
-          <Text
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
-            as="span"
-          >
-            {t('stepOf', [
-              firstTimeFlowType === FirstTimeFlowType.import ? 2 : 1,
-              firstTimeFlowType === FirstTimeFlowType.import ? 2 : 3,
-            ])}
+          <Text variant={TextVariant.headingLg} as="h2">
+            {t('setPassword')}
           </Text>
         </Box>
         <Box className="create-password__form">
-          <Box
-            justifyContent={JustifyContent.flexStart}
-            marginBottom={4}
-            width={BlockSize.Full}
-            marginTop={50}
-          >
-            <Text variant={TextVariant.headingLg} as="h2">
-              {t('createPassword')}
+          <Box marginBottom={3}>
+            <Text variant={TextVariant.bodyMd} as="div">
+              {t('setPasswordTips')}
             </Text>
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              as="h2"
-            >
-              {t('createPasswordDetails')}
-            </Text>
+            <ul style={{ margin: '8px 0 0 0', padding: 0, fontSize: '14px' }}>
+              <li style={{ color: passwordRules.length ? 'green' : '#171717' }}>
+                {passwordRules.length ? '✔' : '✖'} {t('setPasswordTips1')}
+              </li>
+              <li style={{ color: passwordRules.upper ? 'green' : '#171717' }}>
+                {passwordRules.upper ? '✔' : '✖'} {t('setPasswordTips2')}
+              </li>
+              <li style={{ color: passwordRules.lower ? 'green' : '#171717' }}>
+                {passwordRules.lower ? '✔' : '✖'} {t('setPasswordTips3')}
+              </li>
+              <li style={{ color: passwordRules.number ? 'green' : '#171717' }}>
+                {passwordRules.number ? '✔' : '✖'} {t('setPasswordTips4')}
+              </li>
+              <li
+                style={{ color: passwordRules.special ? 'green' : '#171717' }}
+              >
+                {passwordRules.special ? '✔' : '✖'} {t('setPasswordTips5')}
+              </li>
+            </ul>
           </Box>
           <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
-          <Box
-            className="create-password__terms-container"
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.spaceBetween}
-            marginTop={6}
-          >
-            <Checkbox
-              inputProps={{ 'data-testid': 'create-password-terms' }}
-              alignItems={AlignItems.flexStart}
-              isChecked={termsChecked}
-              onChange={() => {
-                setTermsChecked(!termsChecked);
-              }}
-              label={
-                <>
-                  {t('passwordTermsWarning')}
-                  &nbsp;
-                  {createPasswordLink}
-                </>
-              }
-            />
-          </Box>
         </Box>
       </Box>
       <Box>
@@ -298,7 +269,7 @@ export default function CreatePassword({
           width={BlockSize.Full}
           size={ButtonSize.Lg}
           className="create-password__form--submit-button"
-          disabled={!password || !termsChecked}
+          disabled={!isPasswordValid}
         >
           {t('createPasswordCreate')}
         </Button>
