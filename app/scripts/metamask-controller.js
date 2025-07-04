@@ -4179,8 +4179,13 @@ export default class MetamaskController extends EventEmitter {
       getBalancesInSingleCall: (...args) =>
         this.assetsContractController.getBalancesInSingleCall(...args),
 
-      fetchNativeBalances: (...args) =>
-        this.assetsContractController.fetchNativeBalances(...args),
+      // fetchNativeBalances: (...args) =>
+      //   this.assetsContractController.fetchNativeBalances(...args),
+
+      getERC20BalancesForMultipleAddresses: (...args) =>
+        this.assetsContractController.getERC20BalancesForMultipleAddresses(
+          ...args,
+        ),
 
       // Authentication Controller
       performSignIn: authenticationController.performSignIn.bind(

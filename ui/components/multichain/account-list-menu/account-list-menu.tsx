@@ -39,11 +39,13 @@ import {
   getDefaultHomeActiveTabName,
   getUpdatedAndSortedAccounts,
   getHiddenAccountsList,
+  getTokenList,
 } from '../../../selectors';
 import {
   detectNfts,
-  fetchNativeBalances,
+  // fetchNativeBalances,
   setSelectedAccount,
+  getERC20BalancesForMultipleAddresses,
 } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
@@ -123,7 +125,10 @@ export const AccountListMenu = ({
     [accounts],
   );
 
-  console.log('accountsAddresses ......', accountsAddresses);
+  const tokenList = useSelector(getTokenList);
+
+  const tokenAddresses = Object.keys(tokenList);
+  const tokenAddresses2 = tokenAddresses.slice(0, 50);
 
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
@@ -144,24 +149,30 @@ export const AccountListMenu = ({
 
   const networkClientId = useSelector(getSelectedNetworkClientId);
 
-  console.log('networkClientId ......', networkClientId);
-
   useEffect(() => {
     const fetchBalances = async () => {
-      // const addresses = [
-      //   '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-      //   '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe',
-      //   '0xF977814e90dA44bFA03b6295A0616a897441aceC',
-      // ];
-      const result = await fetchNativeBalances(
-        accountsAddresses,
-        networkClientId,
-      );
-      console.log('result *************', result);
+      const addresses = ['0xdAC17F958D2ee523a2206206994597C13D831ec7']; // USDT
+      try {
+        const result = await getERC20BalancesForMultipleAddresses(
+          tokenAddresses2,
+          accountsAddresses,
+          networkClientId,
+        );
+
+        console.log('result *************', result);
+      } catch (error) {
+        console.log('error *************', error);
+      }
+
+      // const result = await fetchNativeBalances(
+      //   accountsAddresses,
+      //   networkClientId,
+      // );
+      // console.log('result *************', result);
     };
 
     fetchBalances();
-  }, [accountsAddresses, networkClientId]);
+  }, [accountsAddresses, networkClientId, tokenAddresses]);
 
   const [searchQuery, setSearchQuery] = useState('');
 
