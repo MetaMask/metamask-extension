@@ -294,19 +294,29 @@ export const NetworksForm = ({
                 ? rpcUrls?.defaultRpcEndpointIndex
                 : undefined,
           };
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+          // eslint-disable-next-line @typescript-eslint/await-thenable
           await dispatch(updateNetwork(networkPayload, options));
           if (Object.keys(tokenNetworkFilter).length === 1) {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+            // eslint-disable-next-line @typescript-eslint/await-thenable
             await dispatch(
               setTokenNetworkFilter({
                 [existingNetwork.chainId]: true,
               }),
             );
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+            // eslint-disable-next-line @typescript-eslint/await-thenable
             await dispatch(
               setEnabledNetworks([existingNetwork.chainId], namespace),
             );
           }
         } else {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+          // eslint-disable-next-line @typescript-eslint/await-thenable
           await dispatch(addNetwork(networkPayload));
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+          // eslint-disable-next-line @typescript-eslint/await-thenable
           await dispatch(
             setEnabledNetworks([networkPayload.chainId], namespace),
           );

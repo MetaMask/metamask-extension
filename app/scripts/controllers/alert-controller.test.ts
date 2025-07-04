@@ -73,6 +73,8 @@ async function withController<ReturnValue>(
     ...alertControllerOptions,
   });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+  // eslint-disable-next-line @typescript-eslint/await-thenable
   return await fn({
     controller,
     messenger,

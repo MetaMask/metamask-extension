@@ -170,6 +170,8 @@ const WalletDetails = () => {
   const handleCreateEthereumAccount = async (): Promise<boolean> => {
     trace({ name: TraceName.AddAccount });
     try {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(addNewAccount(keyringId));
       return true;
     } catch (error) {

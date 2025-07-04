@@ -257,6 +257,8 @@ describe('Ducks - Bridge', () => {
           '0x0000000000000000000000000000000000000000': 0.356628,
         });
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await mockStore.dispatch(
         setDestTokenExchangeRates({
           chainId: CHAIN_IDS.LINEA_MAINNET,
@@ -302,6 +304,8 @@ describe('Ducks - Bridge', () => {
           '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359': 0.999881,
         });
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await mockStore.dispatch(
         setDestTokenExchangeRates({
           chainId: CHAIN_IDS.LINEA_MAINNET,

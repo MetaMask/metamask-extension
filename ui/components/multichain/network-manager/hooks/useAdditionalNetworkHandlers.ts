@@ -31,6 +31,8 @@ export const useAdditionalNetworkHandlers = () => {
   const handleAdditionalNetworkClick = useCallback(
     async (network: UpdateNetworkFields) => {
       dispatch(hideModal());
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(
         requestUserApproval({
           origin: ORIGIN_METAMASK,
@@ -64,6 +66,8 @@ export const useAdditionalNetworkHandlers = () => {
       const filteredPopularNetworks = enabledNetworksArray.filter((key) =>
         FEATURED_NETWORK_CHAIN_IDS.includes(key as `0x${string}`),
       );
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(
         setEnabledNetworks(
           [...filteredPopularNetworks, network.chainId],
