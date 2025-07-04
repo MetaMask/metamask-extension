@@ -54,7 +54,7 @@ type InferTransactionTypeResult = {
   getCodeResponse: string | null | undefined;
 };
 
-type DataMessageParam = Object | string | number | boolean | JsonRpcParams;
+type DataMessageParam = object | string | number | boolean | JsonRpcParams;
 
 const erc20Interface = new Interface(abiERC20);
 const erc721Interface = new Interface(abiERC721);
@@ -328,7 +328,7 @@ function extractLargeMessageValue(dataToParse: string): string | undefined {
  * @returns
  */
 export const parseTypedDataMessage = (dataToParse: DataMessageParam) => {
-  if(typeof dataToParse === 'object') {
+  if (typeof dataToParse === 'object') {
     return dataToParse;
   }
 
