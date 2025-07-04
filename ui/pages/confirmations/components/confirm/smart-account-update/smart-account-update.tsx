@@ -47,7 +47,11 @@ const ListItem = ({
   title: string;
   description: ReactElement;
 }) => (
-  <Box display={Display.Flex} alignItems={AlignItems.flexStart}>
+  <Box
+    display={Display.Flex}
+    alignItems={AlignItems.flexStart}
+    className="smart-account-update__list-item"
+  >
     <img width="24px" src={imgSrc} />
     <Box
       display={Display.Flex}
@@ -216,38 +220,44 @@ export function SmartAccountUpdate({
                 </Box>
               </Box>
             )}
-            <ListItem
-              imgSrc="./images/speedometer.svg"
-              title={t('smartAccountBetterTransaction')}
-              description={t('smartAccountBetterTransactionDescription')}
-            />
-            <ListItem
-              imgSrc="./images/petrol-pump.svg"
-              title={t('smartAccountPayToken')}
-              description={t('smartAccountPayTokenDescription')}
-            />
-            <ListItem
-              imgSrc="./images/sparkle.svg"
-              title={t('smartAccountSameAccount')}
-              description={
-                <>
-                  <Text
-                    color={TextColor.textAlternative}
-                    variant={TextVariant.bodyMd}
-                    fontWeight={FontWeight.Normal}
-                  >
-                    {t('smartAccountFeaturesDescription')}{' '}
-                    <ButtonLink
-                      size={ButtonLinkSize.Inherit}
-                      href={ZENDESK_URLS.ACCOUNT_UPGRADE}
-                      externalLink
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              alignItems={AlignItems.flexStart}
+            >
+              <ListItem
+                imgSrc="./images/speedometer.svg"
+                title={t('smartAccountBetterTransaction')}
+                description={t('smartAccountBetterTransactionDescription')}
+              />
+              <ListItem
+                imgSrc="./images/petrol-pump.svg"
+                title={t('smartAccountPayToken')}
+                description={t('smartAccountPayTokenDescription')}
+              />
+              <ListItem
+                imgSrc="./images/sparkle.svg"
+                title={t('smartAccountSameAccount')}
+                description={
+                  <>
+                    <Text
+                      color={TextColor.textAlternative}
+                      variant={TextVariant.bodyMd}
+                      fontWeight={FontWeight.Normal}
                     >
-                      {t('learnMoreUpperCaseWithDot')}
-                    </ButtonLink>
-                  </Text>
-                </>
-              }
-            />
+                      {t('smartAccountFeaturesDescription')}{' '}
+                      <ButtonLink
+                        size={ButtonLinkSize.Inherit}
+                        href={ZENDESK_URLS.ACCOUNT_UPGRADE}
+                        externalLink
+                      >
+                        {t('learnMoreUpperCaseWithDot')}
+                      </ButtonLink>
+                    </Text>
+                  </>
+                }
+              />
+            </Box>
             {wrapped && (
               <Button
                 variant={ButtonVariant.Secondary}

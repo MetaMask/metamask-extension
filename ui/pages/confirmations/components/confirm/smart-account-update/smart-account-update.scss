@@ -20,13 +20,17 @@
 
   &__container-wrapped {
     font-size: 12px;
-    position: fixed;
+    position: absolute;
     height: 100%;
     width: 100%;
     z-index: design-system.$modal-z-index;
 
     @media screen and (min-width: design-system.$break-small) {
-      max-width: 360px;
+      max-width: 85vw;
+    }
+
+    @media screen and (min-width: design-system.$break-midpoint) {
+      max-width: 80vw;
     }
   }
 
@@ -52,17 +56,16 @@
   }
 
   &__acc-avatar {
-    margin-right: -36px;
-  }
-
-  &__request-for {
-    margin-left: -36px;
-    width: 140px;
+    margin-right: -8px;
   }
 
   &__close {
     position: absolute;
     right: 4px;
     top: 4px;
+  }
+
+  &__list-item {
+    max-width: 480px;
   }
 }

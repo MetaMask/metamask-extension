@@ -1,6 +1,7 @@
 @use "design-system";
 
 .confirm_wrapper {
+  position: relative;
   $width-screen-sm-min: 85vw;
   $width-screen-md-min: 80vw;
   $width-screen-lg-min: 62vw;
