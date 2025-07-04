@@ -76,6 +76,7 @@ import {
   getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
   getEnabledNetworksByNamespace,
+  isGlobalNetworkSelectorRemoved,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -555,6 +556,20 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
               );
             }
           : undefined,
+        onRpcSelect: () => {
+          if (isGlobalNetworkSelectorRemoved) {
+            history.push('/select-rpc', {
+              chainId: hexChainId,
+            });
+          } else {
+            setActionMode(ACTION_MODE.SELECT_RPC);
+            dispatch(
+              setEditedNetwork({
+                chainId: hexChainId,
+              }),
+            );
+          }
+        },
       };
     },
     [

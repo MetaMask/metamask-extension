@@ -33,7 +33,7 @@ export const SelectRpcUrlModal = ({
 }) => {
   const dispatch = useDispatch();
   const location = useLocation();
-  const { chainId } = location.state;
+  const chainId = location.state?.chainId;
 
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,

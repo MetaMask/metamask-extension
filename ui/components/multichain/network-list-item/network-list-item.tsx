@@ -209,6 +209,7 @@ export const NetworkListItem = ({
             alignItems={AlignItems.center}
             data-testid={`network-rpc-name-button-${chainId}`}
             onClick={(e: React.MouseEvent) => {
+              console.log('rpcEndpoint ++++++++++++++++++++q', rpcEndpoint);
               e.stopPropagation();
               onRpcEndpointClick?.();
             }}
