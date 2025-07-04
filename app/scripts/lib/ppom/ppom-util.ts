@@ -242,11 +242,7 @@ function normalizeSignatureRequest(request: PPOMRequest): PPOMRequest {
     return request;
   }
 
-  const dataMessageParam = request.params[1];
-  const typedDataMessage =
-    typeof dataMessageParam === 'object'
-      ? dataMessageParam
-      : parseTypedDataMessage(String(dataMessageParam));
+  const typedDataMessage = parseTypedDataMessage(request.params[1]);
 
   const sanitizedMessageRecursively = sanitizeMessageRecursively(
     typedDataMessage.message,
