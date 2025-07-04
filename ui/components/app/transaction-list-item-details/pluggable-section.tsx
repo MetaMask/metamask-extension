@@ -2,22 +2,22 @@
 import React from 'react';
 import { ReactComponentLike } from 'prop-types';
 import { SnapsSection } from './snaps-section';
-import { TransactionGroup } from '../transaction-list-item/transaction-list-item.stories';
+import { TransactionMeta } from '../../../../app/scripts/background';
 
 // Components to be plugged into transaction details can be added to the array below
 const pluggedInSections: ReactComponentLike[] = [SnapsSection];
 
 const TransactionDetailsPluggableSection = ({
-  transactionGroup,
+  transactionMeta,
 }: {
-  transactionGroup: TransactionGroup;
+  transactionMeta: TransactionMeta;
 }) => {
   return (
     <>
       {pluggedInSections.map((Section, index) => (
         <Section
           key={`transaction-section-${index}`}
-          transactionGroup={transactionGroup}
+          transactionMeta={transactionMeta}
         />
       ))}
     </>

@@ -146,6 +146,16 @@ export default class TransactionListItemDetails extends PureComponent {
     const { recipientAddress, tryReverseResolveAddress } = this.props;
 
     // publish transaction controller event
+    if (global.platform?.getApi) {
+      const api = global.platform.getApi();
+      api.publishActivityItemViewed(
+        this.props.transactionGroup.primaryTransaction.transactionMeta,
+      );
+    }
+
+    if (recipientAddress) {
+      tryReverseResolveAddress(recipientAddress);
+    }
 
     if (recipientAddress) {
       tryReverseResolveAddress(recipientAddress);
@@ -176,7 +186,7 @@ export default class TransactionListItemDetails extends PureComponent {
       primaryTransaction: transaction,
       initialTransaction: { type },
     } = transactionGroup;
-    const { chainId, hash } = transaction;
+    const { chainId, hash, transactionMeta } = transaction;
 
     return (
       <Popover title={title} onClose={onClose}>
@@ -330,9 +340,7 @@ export default class TransactionListItemDetails extends PureComponent {
             </div>
           </div>
         </div>
-        <TransactionDetailsPluggableSection
-          transactionGroup={transactionGroup}
-        />
+        <TransactionDetailsPluggableSection transactionMeta={transactionMeta} />
       </Popover>
     );
   }

@@ -1435,7 +1435,7 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:networkDidChange',
           'PreferencesController:stateChange',
           'TokenListController:stateChange',
-          'TransactionController:transactionConfirmed',
+          'TransactionController:transactionConfirmed'
         ],
       });
 
@@ -3895,6 +3895,7 @@ export default class MetamaskController extends EventEmitter {
         onboardingController.completeOnboarding.bind(onboardingController),
       setFirstTimeFlowType:
         onboardingController.setFirstTimeFlowType.bind(onboardingController),
+      publishActivityItemViewed: this.publishActivityItemViewed.bind(this),
 
       // alert controller
       setAlertEnabledness:
@@ -8474,6 +8475,13 @@ export default class MetamaskController extends EventEmitter {
       method: 'eth_getCode',
       params: [address],
     });
+  }
+
+  publishActivityItemViewed(transactionMeta) {
+    this.controllerMessenger.publish(
+      'TransactionController:activityItemViewed',
+      { transactionMeta }
+    );
   }
 
   async _onAccountChange(newAddress) {
