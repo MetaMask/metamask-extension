@@ -23,6 +23,7 @@ import {
   TransactionControllerTransactionRejectedEvent,
   TransactionControllerTransactionSubmittedEvent,
   TransactionControllerUnapprovedTransactionAddedEvent,
+  TransactionControllerActivityItemViewedEvent,
 } from '@metamask/transaction-controller';
 import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
@@ -68,6 +69,7 @@ type MessengerEvents =
   | TransactionControllerTransactionSubmittedEvent
   | TransactionControllerPostTransactionBalanceUpdatedEvent
   | TransactionControllerUnapprovedTransactionAddedEvent
+  | TransactionControllerActivityItemViewedEvent
   | NetworkControllerStateChangeEvent
   | SmartTransactionsControllerSmartTransactionEvent;
 
@@ -109,6 +111,7 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:transactionSubmitted',
       'TransactionController:postTransactionBalanceUpdated',
       'TransactionController:unapprovedTransactionAdded',
+      'TransactionController:activityItemViewed',
       'SmartTransactionsController:smartTransaction',
     ],
     allowedActions: [

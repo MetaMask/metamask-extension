@@ -8,6 +8,7 @@ import { GetPermissions } from '@metamask/permission-controller';
 import {
   TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionControllerTransactionStatusUpdatedEvent,
+  TransactionControllerActivityItemViewedEvent,
 } from '@metamask/transaction-controller';
 import { SignatureStateChange } from '@metamask/signature-controller';
 
@@ -20,6 +21,7 @@ type Actions =
 type Events =
   | TransactionControllerUnapprovedTransactionAddedEvent
   | TransactionControllerTransactionStatusUpdatedEvent
+  | TransactionControllerActivityItemViewedEvent
   | SignatureStateChange;
 
 export type SnapInsightsControllerMessenger = ReturnType<
@@ -47,6 +49,7 @@ export function getSnapInsightsControllerMessenger(
     ],
     allowedEvents: [
       'TransactionController:unapprovedTransactionAdded',
+      'TransactionController:activityItemViewed',
       'TransactionController:transactionStatusUpdated',
       'SignatureController:stateChange',
     ],

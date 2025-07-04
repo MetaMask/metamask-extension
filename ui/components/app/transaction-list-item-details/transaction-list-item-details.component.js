@@ -1,3 +1,5 @@
+// kylan - relevant file for transaction insights
+
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
@@ -141,6 +143,8 @@ export default class TransactionListItemDetails extends PureComponent {
 
   componentDidMount() {
     const { recipientAddress, tryReverseResolveAddress } = this.props;
+
+    // publish transaction controller event
 
     if (recipientAddress) {
       tryReverseResolveAddress(recipientAddress);
