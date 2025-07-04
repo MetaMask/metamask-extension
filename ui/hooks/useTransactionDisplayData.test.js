@@ -117,7 +117,6 @@ const expectedResults = [
     primaryCurrency: '+1 ABC',
     senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
     recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
-    secondaryCurrency: undefined,
     isPending: false,
     displayedStatusKey: TransactionStatus.confirmed,
   },
@@ -350,7 +349,7 @@ describe('useTransactionDisplayData', () => {
         );
       });
 
-      it(`should return a secondaryCurrency of ${expected.secondaryCurrency}`, () => {
+      it(`should return a secondaryCurrency of ${expected.secondaryCurrency} for ${transactionGroup.primaryTransaction.type}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
