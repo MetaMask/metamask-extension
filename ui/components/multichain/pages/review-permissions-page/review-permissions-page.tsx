@@ -9,7 +9,6 @@ import {
   KnownCaipNamespace,
 } from '@metamask/utils';
 import { uniq } from 'lodash';
-import { isCaipAccountIdInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import {
   AlignItems,
   BlockSize,
@@ -27,13 +26,11 @@ import {
   getUpdatedAndSortedAccountsWithCaipAccountId,
 } from '../../../../selectors';
 import {
-  addPermittedAccounts,
-  addPermittedChains,
   hidePermittedNetworkToast,
   removePermissionsFor,
-  removePermittedAccount,
-  removePermittedChain,
   requestAccountsAndChainPermissionsWithId,
+  setPermittedAccounts,
+  setPermittedChains,
 } from '../../../../store/actions';
 import {
   AvatarFavicon,
@@ -156,13 +153,7 @@ export const ReviewPermissions = () => {
       return;
     }
 
-    dispatch(addPermittedChains(activeTabOrigin, chainIds));
-
-    connectedChainIds.forEach((chainId: string) => {
-      if (!chainIds.includes(chainId)) {
-        dispatch(removePermittedChain(activeTabOrigin, chainId));
-      }
-    });
+    dispatch(setPermittedChains(activeTabOrigin, chainIds));
 
     setShowNetworkToast(true);
   };
@@ -199,27 +190,7 @@ export const ReviewPermissions = () => {
       return;
     }
 
-    const parsedCaipAccountIds = caipAccountIds.map((caipAccountId) => {
-      return parseCaipAccountId(caipAccountId);
-    });
-
-    const addresses = parsedCaipAccountIds.map(({ address }) => address);
-
-    // TODO: we should refactor addPermittedAccounts to accept CaipAccountIds
-    dispatch(addPermittedAccounts(activeTabOrigin, addresses));
-
-    connectedAccountAddresses.forEach((connectedAddress: CaipAccountId) => {
-      const includesCaipAccountId = isCaipAccountIdInPermittedAccountIds(
-        connectedAddress,
-        caipAccountIds,
-      );
-
-      if (!includesCaipAccountId) {
-        const { address } = parseCaipAccountId(connectedAddress);
-        // TODO: we should refactor removePermittedAccount to accept CaipAccountIds
-        dispatch(removePermittedAccount(activeTabOrigin, address));
-      }
-    });
+    dispatch(setPermittedAccounts(activeTabOrigin, caipAccountIds));
 
     setShowAccountToast(true);
   };

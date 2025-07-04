@@ -59,6 +59,8 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
     }),
     TEST_GAS_FEE_FLOWS:
       isDevBuild && variables.getMaybe('TEST_GAS_FEE_FLOWS') === true,
+    DEEP_LINK_HOST: variables.getMaybe('DEEP_LINK_HOST'),
+    DEEP_LINK_PUBLIC_KEY: variables.getMaybe('DEEP_LINK_PUBLIC_KEY'),
   });
 };
 
@@ -66,7 +68,6 @@ const BUILD_TYPES_TO_SVG_LOGO_PATH = {
   main: './app/images/logo/metamask-fox.svg',
   beta: './app/build-types/beta/images/logo/metamask-fox.svg',
   flask: './app/build-types/flask/images/logo/metamask-fox.svg',
-  mmi: './app/build-types/mmi/images/logo/mmi-logo.svg',
 };
 
 /**

@@ -67,7 +67,7 @@ function writePrBodyAndInfoToFile(prInfo: PRInfo) {
   const labels = prInfo.labels.map((label) => label.name).join(', ');
   const updatedPrBody = `PR labels: {${labels}}\nPR base: {${
     prInfo.base.ref
-  }}\n${prInfo.body.trim()}`;
+  }}\n${prInfo.body?.trim()}`;
   fs.writeFileSync(prBodyPath, updatedPrBody);
   core.info(`PR body and info saved to ${prBodyPath}`);
 }

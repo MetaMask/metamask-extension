@@ -83,7 +83,12 @@ ui/components/component-library      @MetaMask/design-system-engineers
 # Accounts team is responsible for code related with snap management accounts
 # Slack handle: @accounts-team-devs | Slack channel: #metamask-accounts-team
 
-app/scripts/lib/snap-keyring         @MetaMask/accounts-engineers
+app/scripts/lib/snap-keyring                        @MetaMask/accounts-engineers
+
+# Multichain Accounts
+# This feature is owned by the multichain account tiger team
+# Slack handle: @multichain-accounts-devs | Slack channel: #metamask-bip44-team
+**/multichain-accounts/**                           @MetaMask/accounts-engineers
 
 # Swaps-Bridge team to own code for the swaps folder
 ui/pages/swaps                                        @MetaMask/swaps-engineers
@@ -106,11 +111,22 @@ app/scripts/constants/snaps.ts       @MetaMask/snaps-devs
 ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/snaps-devs
 
 # Wallet UX
-ui/components/multichain              @MetaMask/wallet-ux
 ui/components/app/whats-new-popup     @MetaMask/wallet-ux
 ui/css                                @MetaMask/wallet-ux
 ui/pages/home                         @MetaMask/wallet-ux
-ui/pages/onboarding-flow              @MetaMask/wallet-ux
+ui/components/multichain/             @MetaMask/wallet-ux
+
+# Co-owned by accounts and wallet-ux
+ui/components/multichain/multi-srp/              @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-picker/         @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-details/        @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-overview/       @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-list-item/      @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-list-menu/      @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-list-item-menu/ @MetaMask/accounts-engineers @MetaMask/wallet-ux
+
+# Web3Auth / Onboarding
+ui/pages/onboarding-flow              @MetaMask/web3auth
 
 # Confirmations team to own code for confirmations on UI.
 app/scripts/controller-init/confirmations                         @MetaMask/confirmations

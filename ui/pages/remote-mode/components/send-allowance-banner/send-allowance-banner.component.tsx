@@ -10,7 +10,7 @@ import {
 import Card from '../../../../components/ui/card';
 import { Text } from '../../../../components/component-library';
 import { REMOTE_ROUTE } from '../../../../helpers/constants/routes';
-import { DailyAllowance } from '../../remote.types';
+import { DailyAllowance } from '../../../../../shared/lib/remote-mode';
 
 type SendAllowanceBannerProps = {
   allowance: DailyAllowance;

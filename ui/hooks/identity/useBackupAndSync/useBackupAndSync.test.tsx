@@ -14,7 +14,11 @@ describe('useBackupAndSync()', () => {
 
     const { result } = renderHookWithProviderTyped(
       () => useBackupAndSync(),
-      {},
+      {
+        metamask: {
+          keyrings: [],
+        },
+      },
       undefined,
       MetamaskIdentityProvider,
     );

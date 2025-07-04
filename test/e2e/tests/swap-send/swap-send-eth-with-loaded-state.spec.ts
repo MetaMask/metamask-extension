@@ -208,6 +208,9 @@ describe('Swap-Send ETH', function () {
         {
           fixtures: new FixtureBuilder()
             .withNetworkControllerOnMainnet()
+            .withEnabledNetworks({
+              '0x1': true, // Ethereum Mainnet
+            })
             .withTokensController({
               allTokens: {
                 '0x1': {

@@ -73,7 +73,7 @@ export default class PermissionPageContainerContent extends PureComponent {
         height={BlockSize.Full}
         paddingLeft={4}
         paddingRight={4}
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        backgroundColor={BackgroundColor.backgroundDefault}
       >
         <Box
           display={Display.Flex}

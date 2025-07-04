@@ -3,7 +3,7 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import configureMockStore from 'redux-mock-store';
 import { Provider, useSelector } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import { REMOTE_MODES } from '../remote.types';
+import { REMOTE_MODES } from '../../../../shared/lib/remote-mode';
 import * as selectors from '../../../selectors';
 import * as networkSelectors from '../../../../shared/modules/selectors/networks';
 import { createDelegation } from '../../../../shared/lib/delegation';
