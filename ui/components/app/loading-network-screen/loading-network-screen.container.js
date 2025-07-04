@@ -61,6 +61,9 @@ const mapDispatchToProps = (dispatch) => {
     showNetworkDropdown: () => {
       return dispatch(actions.toggleNetworkMenu());
     },
+    showNetworkManager: () => {
+      dispatch(actions.showModal({ name: 'NETWORK_MANAGER' }));
+    },
   };
 };
 
