@@ -5255,7 +5255,7 @@ export default class MetamaskController extends EventEmitter {
       if (btcAccounts.length === 0) {
         await this._addSnapAccount(entropySource, btcClient, {
           scope: btcScope,
-          synchronize: true,
+          synchronize: false,
         });
       }
       ///: END:ONLY_INCLUDE_IF
