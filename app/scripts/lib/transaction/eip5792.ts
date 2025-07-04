@@ -436,12 +436,12 @@ function validateSendCallsChainId(
     );
   }
 
-  if (!chainBatchSupport) {
-    throw new JsonRpcError(
-      EIP5792ErrorCode.UnsupportedChainId,
-      `EIP-7702 not supported on chain: ${dappChainId}`,
-    );
-  }
+  // if (!chainBatchSupport) {
+  //   throw new JsonRpcError(
+  //     EIP5792ErrorCode.UnsupportedChainId,
+  //     `EIP-7702 not supported on chain: ${dappChainId}`,
+  //   );
+  // }
 }
 
 function validateCapabilities(sendCalls: SendCalls) {

@@ -40,8 +40,8 @@ function useTargets() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { assets, id: transactionId, txParams } = transactionMeta;
-  const { data, to, value } = txParams;
+  const { assets, id: transactionId, txParams } = transactionMeta ?? {};
+  const { data, to, value } = txParams ?? {};
 
   const gasTarget = useGasTarget(transactionId);
   const valueTarget = useValueTarget(value);
@@ -141,6 +141,9 @@ function getPartialTargets(
     );
 
     if (!asset?.balance) {
+      acc.push({
+        ...target,
+      });
       return acc;
     }
 

@@ -29,6 +29,8 @@ export function useIntentsQuotes() {
   const sourceAmounts = useIntentsSourceAmounts();
   const targets = useIntentsTargets();
 
+  log('Targets', targets, transactionId);
+
   const sourceChainId = sourceToken?.chainId;
   const sourceTokenAddress = sourceToken?.address;
 
@@ -59,12 +61,12 @@ export function useIntentsQuotes() {
 
     return getBridgeQuotes(requests);
   }, [
-    sourceAmounts,
+    JSON.stringify(sourceAmounts),
     sourceChainId,
     sourceTokenAddress,
     destChainId,
     from,
-    targetTokenAddresses,
+    JSON.stringify(targetTokenAddresses)
   ]);
 
   if (error) {

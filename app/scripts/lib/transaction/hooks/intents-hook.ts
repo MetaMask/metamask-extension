@@ -4,15 +4,14 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { createProjectLogger } from '@metamask/utils';
-import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import {
-  QuoteMetadata,
   QuoteResponse,
   StatusTypes,
   TxData,
 } from '@metamask/bridge-controller';
 import { BridgeStatusController } from '@metamask/bridge-status-controller';
 import { cloneDeep } from 'lodash';
+import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 
 const log = createProjectLogger('intents-publish-hook');
 
