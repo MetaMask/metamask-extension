@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 
-import { AccountDetailsRow } from '../account-details-row/account-details-row';
+import { AccountDetailsRow } from '../account-details-row';
 import {
   ButtonIcon,
   ButtonIconSize,

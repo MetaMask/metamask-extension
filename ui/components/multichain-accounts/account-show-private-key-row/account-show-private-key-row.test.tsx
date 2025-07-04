@@ -15,25 +15,33 @@ jest.mock('../../../store/actions', () => ({
   hideWarning: () => ({ type: 'MOCK_HIDE_WARNING' }),
 }));
 
-jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string) => key,
-}));
-
 jest.mock('../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: ({ isOpen, onClose, setShowHoldToReveal, setShowPrivateKey }: {
+  default: ({
+    isOpen,
+    onClose,
+    setShowHoldToReveal,
+    setShowPrivateKey,
+  }: {
     isOpen: boolean;
     onClose: () => void;
-    setShowHoldToReveal?: (val: boolean) => void;
-    setShowPrivateKey?: (val: boolean) => void;
+    setShowHoldToReveal?: (value: boolean) => void;
+    setShowPrivateKey?: (value: boolean) => void;
   }) =>
     isOpen ? (
       <div data-testid="hold-to-reveal-modal">
         <button
           onClick={() => {
-            if (setShowHoldToReveal) setShowHoldToReveal(false);
-            if (setShowPrivateKey) setShowPrivateKey(true);
-            if (onClose) onClose();
+            if (setShowHoldToReveal) {
+              setShowHoldToReveal(false);
+            }
+            if (setShowPrivateKey) {
+              setShowPrivateKey(true);
+            }
+            if (onClose) {
+              onClose();
+            }
           }}
           data-testid="close-hold-to-reveal"
         >
@@ -43,28 +51,45 @@ jest.mock('../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal', () => ({
     ) : null,
 }));
 
-jest.mock('../../multichain/account-details/account-details-authenticate', () => ({
-  AccountDetailsAuthenticate: ({ onCancel, setPrivateKey, setShowHoldToReveal }: any) => (
-    <div data-testid="account-details-authenticate">
-      <input data-testid="password-input" placeholder="Password" />
-      <button
-        onClick={() => {
-          setPrivateKey('mock-private-key');
-          setShowHoldToReveal(true);
-        }}
-        data-testid="authenticate-button"
-      >
-        Authenticate
-      </button>
-      <button onClick={onCancel} data-testid="cancel-button">
-        Cancel
-      </button>
-    </div>
-  ),
-}));
+jest.mock(
+  '../../multichain/account-details/account-details-authenticate',
+  () => ({
+    AccountDetailsAuthenticate: ({
+      onCancel,
+      setPrivateKey,
+      setShowHoldToReveal,
+    }: {
+      onCancel: () => void;
+      setPrivateKey: (key: string) => void;
+      setShowHoldToReveal: (show: boolean) => void;
+    }) => (
+      <div data-testid="account-details-authenticate">
+        <input data-testid="password-input" placeholder="Password" />
+        <button
+          onClick={() => {
+            setPrivateKey('mock-private-key');
+            setShowHoldToReveal(true);
+          }}
+          data-testid="authenticate-button"
+        >
+          Authenticate
+        </button>
+        <button onClick={onCancel} data-testid="cancel-button">
+          Cancel
+        </button>
+      </div>
+    ),
+  }),
+);
 
 jest.mock('../../multichain/account-details/account-details-key', () => ({
-  AccountDetailsKey: ({ onClose, privateKey }: any) => (
+  AccountDetailsKey: ({
+    onClose,
+    privateKey,
+  }: {
+    onClose: () => void;
+    privateKey: string;
+  }) => (
     <div data-testid="account-details-key">
       <div data-testid="private-key-display">{privateKey}</div>
       <button onClick={onClose} data-testid="close-private-key">
@@ -107,8 +132,8 @@ describe('AccountShowPrivateKeyRow', () => {
         store,
       );
 
-      expect(screen.getByText('privateKey')).toBeInTheDocument();
-      expect(screen.getByLabelText('next')).toBeInTheDocument();
+      expect(screen.getByText('Private key')).toBeInTheDocument();
+      expect(screen.getByLabelText('Next')).toBeInTheDocument();
     });
 
     it('does not render for non-exportable account (hardware)', () => {
@@ -166,13 +191,15 @@ describe('AccountShowPrivateKeyRow', () => {
         store,
       );
 
-      const row = screen.getByText('privateKey').closest('div');
+      const row = screen.getByText('Private key').closest('div');
       if (row) {
         fireEvent.click(row);
       }
 
-      expect(screen.getByText('showPrivateKey')).toBeInTheDocument();
-      expect(screen.getByTestId('account-details-authenticate')).toBeInTheDocument();
+      expect(screen.getByText('Show private key')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('account-details-authenticate'),
+      ).toBeInTheDocument();
     });
 
     it('closes modal when close button is clicked', () => {
@@ -187,16 +214,16 @@ describe('AccountShowPrivateKeyRow', () => {
       );
 
       // Open modal
-      const row = screen.getByText('privateKey').closest('div');
+      const row = screen.getByText('Private key').closest('div');
       if (row) {
         fireEvent.click(row);
       }
 
       // Close modal
-      const closeButton = screen.getByLabelText('close');
+      const closeButton = screen.getByLabelText('Close');
       fireEvent.click(closeButton);
 
-      expect(screen.queryByText('showPrivateKey')).not.toBeInTheDocument();
+      expect(screen.queryByText('Show private key')).not.toBeInTheDocument();
     });
 
     it('closes modal when cancel button is clicked', () => {
@@ -211,7 +238,7 @@ describe('AccountShowPrivateKeyRow', () => {
       );
 
       // Open modal
-      const row = screen.getByText('privateKey').closest('div');
+      const row = screen.getByText('Private key').closest('div');
       if (row) {
         fireEvent.click(row);
       }
@@ -237,7 +264,7 @@ describe('AccountShowPrivateKeyRow', () => {
       );
 
       // Open modal
-      const row = screen.getByText('privateKey').closest('div');
+      const row = screen.getByText('Private key').closest('div');
       if (row) {
         fireEvent.click(row);
       }
@@ -258,7 +285,7 @@ describe('AccountShowPrivateKeyRow', () => {
         ...MOCK_ACCOUNT_EOA,
         metadata: {
           ...MOCK_ACCOUNT_EOA.metadata,
-          keyring: undefined as any,
+          keyring: { type: '' },
         },
       };
 
@@ -269,7 +296,7 @@ describe('AccountShowPrivateKeyRow', () => {
         store,
       );
 
-      expect(screen.getByText('privateKey')).toBeInTheDocument();
+      expect(screen.getByText('Private key')).toBeInTheDocument();
     });
   });
 });
