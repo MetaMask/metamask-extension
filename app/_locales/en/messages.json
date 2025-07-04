@@ -4583,7 +4583,7 @@
     "message": "Privacy policy"
   },
   "privateKey": {
-    "message": "Private Key",
+    "message": "Private key",
     "description": "select this type of file to use to import an account"
   },
   "privateKeyCopyWarning": {
