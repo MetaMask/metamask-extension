@@ -62,9 +62,24 @@ describe('Splash', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
         upgradeAccountConfirmation as Confirmation,
+        {
+          metamask: {
+            preferences: {
+              smartAccountOptInForAccounts: [],
+            },
+            internalAccounts: {
+              accounts: {
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                  address: '0x8a0bbcd42cf79e7cee834e7808eb2fef1cebdb87',
+                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                },
+              },
+            },
+          },
+        },
       ),
     );
-    const { getAllByRole, container } = renderWithConfirmContextProvider(
+    const { container, getAllByRole } = renderWithConfirmContextProvider(
       <SmartAccountUpdateSplash />,
       mockStore,
     );
@@ -127,6 +142,7 @@ describe('Splash', () => {
           metamask: {
             preferences: {
               smartAccountOptIn: true,
+              smartAccountOptInForAccounts: [],
             },
             internalAccounts: {
               accounts: {
@@ -152,7 +168,7 @@ describe('Splash', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('does not render is splash page is acknowledged for account', () => {
+  it('does not render if splash page is acknowledged for account', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
         {
@@ -161,6 +177,10 @@ describe('Splash', () => {
         } as Confirmation,
         {
           metamask: {
+            preferences: {
+              smartAccountOptIn: true,
+              smartAccountOptInForAccounts: [],
+            },
             upgradeSplashPageAcknowledgedForAccounts: [
               (upgradeAccountConfirmation as TransactionMeta).txParams.from,
             ],
@@ -174,20 +194,5 @@ describe('Splash', () => {
     );
 
     expect(container.firstChild).toBeNull();
-  });
-
-  it('open account selection when pencil icon is clicked', () => {
-    const mockStore = configureMockStore([])(
-      getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
-      ),
-    );
-    const { getByText, getByTestId } = renderWithConfirmContextProvider(
-      <SmartAccountUpdateSplash />,
-      mockStore,
-    );
-
-    fireEvent.click(getByTestId('smart-account-update-edit'));
-    expect(getByText('Edit accounts')).toBeInTheDocument();
   });
 });

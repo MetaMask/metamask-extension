@@ -32,13 +32,11 @@ export function AccountSelection({
   onUpdate,
   selectedAccounts = [],
   setSelectedAccounts,
-  wrapped,
 }: {
   closeAccountSelection: () => void;
   onUpdate?: () => void;
   selectedAccounts?: Hex[];
   setSelectedAccounts: (accounts: Hex[]) => void;
-  wrapped: boolean;
 }) {
   const t = useI18nContext();
   const accounts = useSelector(getInternalAccounts);
@@ -91,11 +89,7 @@ export function AccountSelection({
         <IconButton
           Icon={<Icon name={IconName.ArrowLeft} />}
           onClick={closeAccountSelection}
-          className={
-            wrapped
-              ? 'account-selection__close-wrapped'
-              : 'account-selection__close'
-          }
+          className="account-selection__close"
           label=""
           data-testid="account-selection-close"
         />
@@ -143,18 +137,16 @@ export function AccountSelection({
           );
         })}
       </Box>
-      {!wrapped && (
-        <Button
-          variant={ButtonVariant.Primary}
-          size={ButtonSize.Lg}
-          onClick={onUpdate}
-          width={BlockSize.Full}
-          marginBottom={2}
-          marginTop={2}
-        >
-          {t('update')}
-        </Button>
-      )}
+      <Button
+        variant={ButtonVariant.Primary}
+        size={ButtonSize.Lg}
+        onClick={onUpdate}
+        width={BlockSize.Full}
+        marginBottom={2}
+        marginTop={2}
+      >
+        {t('update')}
+      </Button>
     </>
   );
 }
