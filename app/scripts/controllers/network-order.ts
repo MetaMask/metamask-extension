@@ -193,6 +193,12 @@ export class NetworkOrderController extends BaseController<
    * @param networkId - The CaipChainId of the currently selected network
    */
   setEnabledNetworks(chainIds: string | string[], networkId: CaipChainId) {
+    if (!networkId) {
+      throw new Error('networkId is required to set enabled networks');
+    }
+    if (!chainIds) {
+      throw new Error('chainIds is required to set enabled networks');
+    }
     const ids = Array.isArray(chainIds) ? chainIds : [chainIds];
 
     this.update((state) => {

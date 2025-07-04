@@ -31,6 +31,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   addNetwork,
+  setActiveNetwork,
   setEditedNetwork,
   setEnabledNetworks,
   setTokenNetworkFilter,
@@ -71,6 +72,7 @@ import {
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
 import {
   getIsRpcFailoverEnabled,
+  getNetworkConfigurationIdByChainId,
   getTokenNetworkFilter,
 } from '../../../../selectors';
 import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
@@ -98,6 +100,9 @@ export const NetworksForm = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const networkConfigurationIdsByChainId = useSelector(
+    getNetworkConfigurationIdByChainId,
+  );
   const scrollableRef = useRef<HTMLDivElement>(null);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
@@ -307,6 +312,15 @@ export const NetworksForm = ({
           }
         } else {
           await dispatch(addNetwork(networkPayload));
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          if (networkConfigurationIdsByChainId?.[chainIdHex]) {
+            const networkClientId =
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              networkConfigurationIdsByChainId?.[chainIdHex];
+            await dispatch(setActiveNetwork(networkClientId));
+          }
           await dispatch(
             setEnabledNetworks([networkPayload.chainId], namespace),
           );

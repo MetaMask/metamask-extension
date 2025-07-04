@@ -17,7 +17,6 @@ import { useNetworkFormState } from '../../../pages/settings/networks-tab/networ
 import {
   getEditedNetwork,
   getMultichainNetworkConfigurationsByChainId,
-  getSelectedMultichainNetworkConfiguration,
 } from '../../../selectors';
 import { hideModal } from '../../../store/actions';
 import {
@@ -37,19 +36,8 @@ const NetworkManagerRouter = () => {
   const t = useI18nContext();
   const history = useHistory();
   const location = useLocation();
-  const currentMultichainNetwork = useSelector(
-    getSelectedMultichainNetworkConfiguration,
-  );
 
-  const { isNetworkInDefaultNetworkTab } = useNetworkManagerState();
-
-  const isDefaultNetworkSelected = isNetworkInDefaultNetworkTab(
-    currentMultichainNetwork,
-  );
-
-  const initialTab = useMemo(() => {
-    return isDefaultNetworkSelected ? 'networks' : 'custom-networks';
-  }, [isDefaultNetworkSelected]);
+  const { initialTab } = useNetworkManagerState();
 
   const handleNewNetwork = () => {
     history.push('/add');
@@ -136,10 +124,26 @@ const NetworkManagerRouter = () => {
 
   return (
     <Switch>
+      <Route path="/add">
+        <AddNetwork
+          networkFormState={networkFormState}
+          network={editedNetwork as UpdateNetworkFields}
+        />
+      </Route>
       <Route path="/add-rpc">
         <ModalHeader
           onClose={handleClose}
-          onBack={handleNewNetwork}
+          onBack={handleClose}
+          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+        >
+          {t('addRpcUrl')}
+        </ModalHeader>
+        <AddRpcUrlModal onAdded={handleAddRPC} />
+      </Route>
+      <Route path="/edit-rpc">
+        <ModalHeader
+          onClose={handleClose}
+          onBack={handleClose}
           closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
         >
           {t('addRpcUrl')}
