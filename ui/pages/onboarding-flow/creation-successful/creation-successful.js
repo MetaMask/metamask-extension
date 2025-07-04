@@ -18,8 +18,8 @@ import {
 import {
   Box,
   Text,
-  ButtonLink,
-  ButtonLinkSize,
+  // ButtonLink,
+  // ButtonLinkSize,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
@@ -33,7 +33,7 @@ import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
-import { LottieAnimation } from '../../../components/component-library/lottie-animation';
+// import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 
 export default function CreationSuccessful() {
   const history = useHistory();
@@ -43,8 +43,8 @@ export default function CreationSuccessful() {
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
-  const learnMoreLink =
-    'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
+  // const learnMoreLink =
+  //   'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
@@ -74,48 +74,48 @@ export default function CreationSuccessful() {
     return t('walletReadyLoseSrpRemind');
   }, [isWalletReady, isFromReminderParam, t]);
 
-  const renderDetails2 = useMemo(() => {
-    if (isWalletReady || isFromReminderParam) {
-      return t('walletReadyLearn', [
-        <ButtonLink
-          key="walletReadyLearn"
-          size={ButtonLinkSize.Inherit}
-          textProps={{
-            variant: TextVariant.bodyMd,
-            alignItems: AlignItems.flexStart,
-          }}
-          as="a"
-          href={learnMoreLink}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t('learnHow')}
-        </ButtonLink>,
-      ]);
-    }
+  // const renderDetails2 = useMemo(() => {
+  //   if (isWalletReady || isFromReminderParam) {
+  //     return t('walletReadyLearn', [
+  //       <ButtonLink
+  //         key="walletReadyLearn"
+  //         size={ButtonLinkSize.Inherit}
+  //         textProps={{
+  //           variant: TextVariant.bodyMd,
+  //           alignItems: AlignItems.flexStart,
+  //         }}
+  //         as="a"
+  //         href={learnMoreLink}
+  //         target="_blank"
+  //         rel="noopener noreferrer"
+  //       >
+  //         {t('learnHow')}
+  //       </ButtonLink>,
+  //     ]);
+  //   }
 
-    return t('walletReadyLearnRemind');
-  }, [isWalletReady, isFromReminderParam, t]);
+  //   return t('walletReadyLearnRemind');
+  // }, [isWalletReady, isFromReminderParam, t]);
 
-  const renderFox = useMemo(() => {
-    if (isWalletReady) {
-      return (
-        <LottieAnimation
-          path="images/animations/fox/celebrating.lottie.json"
-          loop
-          autoplay
-        />
-      );
-    }
+  // const renderFox = useMemo(() => {
+  //   if (isWalletReady) {
+  //     return (
+  //       <LottieAnimation
+  //         path="images/animations/fox/celebrating.lottie.json"
+  //         loop
+  //         autoplay
+  //       />
+  //     );
+  //   }
 
-    return (
-      <LottieAnimation
-        path="images/animations/fox/celebrating.lottie.json"
-        loop
-        autoplay
-      />
-    );
-  }, [isWalletReady]);
+  //   return (
+  //     <LottieAnimation
+  //       path="images/animations/fox/celebrating.lottie.json"
+  //       loop
+  //       autoplay
+  //     />
+  //   );
+  // }, [isWalletReady]);
 
   const onDone = useCallback(() => {
     trackEvent({
@@ -172,11 +172,8 @@ export default function CreationSuccessful() {
             alignItems={AlignItems.center}
             marginBottom={6}
           >
-            <Box
-              display={Display.Flex}
-              style={{ width: '144px', height: '144px' }}
-            >
-              {renderFox}
+            <Box display={Display.Flex}>
+              <img src="images/cryptobridge/logo-3d.png" width="240" />
             </Box>
           </Box>
           <Text
@@ -186,13 +183,13 @@ export default function CreationSuccessful() {
           >
             {renderDetails1}
           </Text>
-          <Text
+          {/* <Text
             variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
             marginBottom={6}
           >
             {renderDetails2}
-          </Text>
+          </Text> */}
         </Box>
       </Box>
 
