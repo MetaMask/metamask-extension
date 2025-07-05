@@ -12,7 +12,7 @@ import {
   FlexDirection,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_REVEAL_SRP_ROUTE } from '../../../helpers/constants/routes';
 import {
   Box,
   ButtonLink,
@@ -36,7 +36,7 @@ export default function RecoveryPhraseReminder({ onConfirm }) {
   const history = useHistory();
 
   const handleBackUp = () => {
-    const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
+    const backUpSRPRoute = `${ONBOARDING_REVEAL_SRP_ROUTE}/?isFromReminder=true`;
     history.push(backUpSRPRoute);
   };
 

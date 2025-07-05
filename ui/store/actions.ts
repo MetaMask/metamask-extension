@@ -714,7 +714,7 @@ export function keyringChangePassword(newPassword: string): Promise<void> {
   return submitRequestToBackground('keyringChangePassword', [newPassword]);
 }
 
-export async function getSeedPhrase(password: string, keyringId: string) {
+export async function getSeedPhrase(password: string, keyringId?: string) {
   const encodedSeedPhrase = await submitRequestToBackground<string>(
     'getSeedPhrase',
     [password, keyringId],
