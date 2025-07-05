@@ -48,6 +48,8 @@ const maskedBackgroundFields = [
   'CurrencyController.currencyRates.SepoliaETH.conversionDate',
   'CurrencyController.currencyRates.MegaETH.conversionDate',
   'CurrencyController.currencyRates.MON.conversionDate',
+  // PhishingController cache data is dynamic and changes between runs
+  'PhishingController.urlScanCache',
 ];
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
