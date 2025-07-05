@@ -78,6 +78,8 @@ async function buildScssPipeline(src, dest, devMode) {
           'ui/css/',
           'node_modules/',
         ],
+        // Conditionally compress CSS output based on devMode flag
+        outputStyle: devMode ? 'expanded' : 'compressed',
         functions: {
           // Tell sass where to find the font-awesome font files
           // update this location in static.js if it changes
