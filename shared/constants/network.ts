@@ -182,6 +182,7 @@ export const CHAIN_IDS = {
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
   MEGAETH_TESTNET: '0x18c6',
+  XRPLEVM: '0x15f900',
   XRPLEVM_TESTNET: '0x161c28',
   LENS: '0xe8',
   PLUME: '0x18232',
@@ -194,7 +195,6 @@ export const CHAIN_IDS = {
   EDUCHAIN: '0xa3c3',
   ABSTRACT: '0xab5',
   OMNI: '0xa6',
-  XRPLEVM: '0x15f900',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -267,6 +267,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   MODE: '0x868b',
   SHAPE_SEPOLIA: '0x2b03',
   SHAPE: '0x168',
+  XRPLEVM: '0x15f900',
   XRPLEVM_TESTNET: '0x161c28',
   SOPHON: '0xc3b8',
   SOPHON_TESTNET: '0x1fa72e78',
@@ -330,6 +331,7 @@ export const MODE_SEPOLIA_DISPLAY_NAME = 'Mode Sepolia';
 export const MODE_DISPLAY_NAME = 'Mode Mainnet';
 export const SHAPE_SEPOLIA_DISPLAY_NAME = 'Shape Sepolia';
 export const SHAPE_DISPLAY_NAME = 'Shape';
+export const XRPLEVM_DISPLAY_NAME = 'XRPL EVM';
 export const XRPLEVM_TESTNET_DISPLAY_NAME = 'XRPL EVM Testnet';
 export const LENS_DISPLAY_NAME = 'Lens';
 export const PLUME_DISPLAY_NAME = 'Plume';
@@ -345,7 +347,6 @@ export const APECHAIN_DISPLAY_NAME = 'ApeChain';
 export const APECHAIN_TESTNET_DISPLAY_NAME = 'ApeChain Testnet';
 export const ABSTRACT_DISPLAY_NAME = 'Abstract';
 export const OMNI_DISPLAY_NAME = 'Omni';
-export const XRPLEVM_DISPLAY_NAME = 'XRPL EVM';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -491,8 +492,8 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   MODE: 'ETH',
   SHAPE: 'ETH',
   SHAPE_SEPOLIA: 'ETH',
-  XRPLEVM_TESTNET: 'XRP',
   XRPLEVM: 'XRP',
+  XRPLEVM_TESTNET: 'XRP',
   SOPHON: 'SOPH',
 } as const;
 
@@ -1051,9 +1052,11 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: UNICHAIN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: UNICHAIN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM]: XRPLEVM_IMAGE_URL,
   [MultichainNetworks.BITCOIN]: BITCOIN_IMAGE_URL,
   [MultichainNetworks.BITCOIN_TESTNET]: BITCOIN_TESTNET_IMAGE_URL,
   [MultichainNetworks.BITCOIN_SIGNET]: BITCOIN_SIGNET_IMAGE_URL,
+
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]: XRPLEVM_TESTNET_IMAGE_URL,
   [CHAIN_IDS.LENS]: LENS_IMAGE_URL,
   [CHAIN_IDS.PLUME]: PLUME_IMAGE_URL,
@@ -1069,7 +1072,6 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_IMAGE_URL,
   [CHAIN_IDS.ABSTRACT]: ABSTRACT_IMAGE_URL,
   [CHAIN_IDS.OMNI]: OMNI_IMAGE_URL,
-  [CHAIN_IDS.XRPLEVM]: XRPLEVM_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
