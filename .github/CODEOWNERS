@@ -63,6 +63,7 @@ development/circular-deps.jsonc      @MetaMask/extension-security-team @HowardBr
 # Design System to own code for the component-library folder
 # Slack handle: @metamask-design-system-team | Slack channel: #metamask-design-system
 ui/components/component-library      @MetaMask/design-system-engineers
+tailwind.config.js                   @MetaMask/design-system-engineers
 
 # The Notifications team is responsible for code related to notifications
 
