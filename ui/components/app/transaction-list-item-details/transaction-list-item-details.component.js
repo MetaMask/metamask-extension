@@ -8,7 +8,7 @@ import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipien
 import Disclosure from '../../ui/disclosure';
 import TransactionActivityLog from '../transaction-activity-log';
 import TransactionBreakdown from '../transaction-breakdown';
-import Button from '../../ui/button';
+import { Button, ButtonVariant } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
@@ -180,7 +180,7 @@ export default class TransactionListItemDetails extends PureComponent {
             <div className="transaction-list-item-details__header-buttons">
               {showSpeedUp && (
                 <Button
-                  type="primary"
+                  variant={ButtonVariant.Primary}
                   onClick={this.handleRetry}
                   className="transaction-list-item-details__header-button-rounded-button"
                   data-testid="speedup-button"
@@ -222,7 +222,7 @@ export default class TransactionListItemDetails extends PureComponent {
             <div className="transaction-list-item-details__tx-hash">
               <div>
                 <Button
-                  type="link"
+                  variant={ButtonVariant.Link}
                   onClick={this.handleBlockExplorerClick}
                   disabled={!hash}
                 >
@@ -238,7 +238,7 @@ export default class TransactionListItemDetails extends PureComponent {
                   title={justCopied ? t('copiedExclamation') : null}
                 >
                   <Button
-                    type="link"
+                    variant={ButtonVariant.Link}
                     onClick={this.handleCopyTxId}
                     disabled={!hash}
                   >

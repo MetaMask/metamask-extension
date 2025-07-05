@@ -9,7 +9,7 @@ import {
 } from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import CreateNewVault from '../../components/app/create-new-vault';
-import Button from '../../components/ui/button';
+import { Button, ButtonVariant } from '../../components/component-library';
 import Box from '../../components/ui/box';
 import { Text } from '../../components/component-library';
 import { TextVariant, TextColor } from '../../helpers/constants/design-system';
@@ -94,7 +94,7 @@ class RestoreVaultPage extends Component {
             <Text color={TextColor.textDefault} marginTop={4} marginBottom={4}>
               {t('resetWalletUsingSRP', [
                 <Button
-                  type="link"
+                  variant={ButtonVariant.Link}
                   target="_blank"
                   rel="noopener noreferrer"
                   href={ZENDESK_URLS.ADD_MISSING_ACCOUNTS}
@@ -104,7 +104,7 @@ class RestoreVaultPage extends Component {
                   {t('reAddAccounts')}
                 </Button>,
                 <Button
-                  type="link"
+                  variant={ButtonVariant.Link}
                   target="_blank"
                   rel="noopener noreferrer"
                   href={ZENDESK_URLS.IMPORT_ACCOUNTS}
@@ -114,7 +114,7 @@ class RestoreVaultPage extends Component {
                   {t('reAdded')}
                 </Button>,
                 <Button
-                  type="link"
+                  variant={ButtonVariant.Link}
                   target="_blank"
                   rel="noopener noreferrer"
                   href={ZENDESK_URLS.ADD_CUSTOM_TOKENS}

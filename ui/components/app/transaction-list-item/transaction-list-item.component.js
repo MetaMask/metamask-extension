@@ -38,6 +38,8 @@ import {
   Icon,
   IconName,
   IconSize,
+  Button,
+  ButtonVariant,
 } from '../../component-library';
 
 import {
@@ -57,7 +59,6 @@ import {
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
-import Button from '../../ui/button';
 import AdvancedGasFeePopover from '../../../pages/confirmations/components/advanced-gas-fee-popover';
 import CancelButton from '../cancel-button';
 import EditGasFeePopover from '../../../pages/confirmations/components/edit-gas-fee-popover';
@@ -274,7 +275,7 @@ function TransactionListItemInner({
     return (
       <Button
         data-testid="speed-up-button"
-        type="primary"
+        variant={ButtonVariant.Primary}
         onClick={hasCancelled ? cancelTransaction : retryTransaction}
         style={hasCancelled ? { width: 'auto' } : null}
       >
