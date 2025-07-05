@@ -64,7 +64,7 @@ describe('NetworkConstants', () => {
       const [bscRpc] = FEATURED_RPCS.filter(
         (rpc) => rpc.chainId === CHAIN_IDS.BSC,
       );
-      expect(bscRpc.rpcEndpoints[0].url).not.toContain('infura.io');
+      expect(bscRpc.rpcEndpoints[0].url).toContain('infura.io');
     });
 
     it('optimism entry should use Infura', () => {
