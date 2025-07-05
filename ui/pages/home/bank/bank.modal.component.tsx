@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Box,
-  Button,
   Modal,
   ModalBody,
   ModalFooter,
@@ -67,39 +66,56 @@ const BankAccountRequiredModal: React.FC<BankAccountRequiredModalProps> = ({
           </Box>
         </ModalBody>
         <ModalFooter flexDirection={FlexDirection.Column} gap={2}>
-          <Button
-            type="primary"
-            block
-            style={{ marginBottom: 8, outline: 'none' }}
+          <div
             onClick={onLink}
+            style={{
+              height: '40px',
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'var(--color-primary-default)',
+              cursor: 'pointer',
+              borderRadius: '12px',
+              color: 'white',
+            }}
           >
             {t('bankBtn1')}
-          </Button>
-          <Button
-            block
-            className="bank-btn2"
-            style={{
-              marginBottom: 8,
-              background: '#EDEDED',
-              color: '#171717',
-              outline: 'none',
-            }}
+          </div>
+          <div
             onClick={onLink}
+            style={{
+              height: '40px',
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: '#EDEDED',
+              cursor: 'pointer',
+              borderRadius: '12px',
+              color: '#171717',
+              marginTop: '16px',
+            }}
           >
             {t('bankBtn2')}
-          </Button>
-          <Button
-            block
-            className="bank-btn3"
+          </div>
+          <div
             onClick={onClose}
             style={{
-              color: '#6F6F6F',
+              height: '40px',
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               background: 'none',
-              outline: 'none',
+              cursor: 'pointer',
+              borderRadius: '12px',
+              color: '#6F6F6F',
+              marginTop: '16px',
             }}
           >
             {t('bankBtn3')}
-          </Button>
+          </div>
         </ModalFooter>
       </ModalContent>
     </Modal>
