@@ -240,6 +240,8 @@ declare class Chrome {
   runtime: Runtime;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 type SentryObject = Sentry & {
   getMetaMetricsEnabled: () => Promise<boolean>;
 };
@@ -288,6 +290,8 @@ type StateHooks = {
 export declare global {
   var platform: ExtensionPlatform;
   // Sentry is undefined in dev, so use optional chaining
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   var sentry: SentryObject | undefined;
 
   var chrome: Chrome;
