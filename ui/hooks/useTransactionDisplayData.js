@@ -53,7 +53,6 @@ import { useTokenData } from './useTokenData';
 import { useSwappedTokenValue } from './useSwappedTokenValue';
 import { useCurrentAsset } from './useCurrentAsset';
 import useBridgeChainInfo from './bridge/useBridgeChainInfo';
-import { useRemoteModeTransaction } from './useRemoteModeTransaction';
 
 /**
  *  There are seven types of transaction entries that are currently differentiated in the design:
@@ -136,7 +135,7 @@ export function useTransactionDisplayData(transactionGroup) {
 
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
-  const { transferInformation, type, txParamsOriginal } = initialTransaction;
+  const { transferInformation, type } = initialTransaction;
   const { from, to } = initialTransaction.txParams || {};
 
   const isUnifiedSwapTx =
@@ -157,24 +156,12 @@ export function useTransactionDisplayData(transactionGroup) {
   const primaryValue = primaryTransaction.txParams?.value;
   const date = formatDateWithYearContext(initialTransaction.time);
 
-  const { isRemoteModeActivity } = useRemoteModeTransaction({
-    transaction: initialTransaction,
-  });
-
   let prefix = '-';
   let subtitle;
   let subtitleContainsOrigin = false;
   let recipientAddress = to;
-  let senderAddress = from;
-  let transactionData = initialTransaction?.txParams?.data;
-  let remoteSignerAddress = null;
-
-  if (isRemoteModeActivity) {
-    recipientAddress = txParamsOriginal?.to;
-    senderAddress = txParamsOriginal?.from;
-    remoteSignerAddress = initialTransaction?.txParams?.from;
-    transactionData = txParamsOriginal?.data;
-  }
+  const senderAddress = from;
+  const transactionData = initialTransaction?.txParams?.data;
 
   // This value is used to determine whether we should look inside txParams.data
   // to pull out and render token related information
@@ -465,7 +452,7 @@ export function useTransactionDisplayData(transactionGroup) {
     );
   }
 
-  const detailsTitle = isRemoteModeActivity ? `Remote ${title}` : title;
+  const detailsTitle = title;
 
   const primaryCurrencyPreferences = useUserPreferencedCurrency(
     PRIMARY,
@@ -524,6 +511,5 @@ export function useTransactionDisplayData(transactionGroup) {
     isPending,
     isSubmitted,
     detailsTitle,
-    remoteSignerAddress,
   };
 }

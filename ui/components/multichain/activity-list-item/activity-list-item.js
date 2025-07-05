@@ -14,7 +14,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text, Icon, IconName, IconSize } from '../../component-library';
+import { Box, Text } from '../../component-library';
 
 export const ActivityListItem = ({
   topContent,
@@ -27,7 +27,6 @@ export const ActivityListItem = ({
   onClick,
   className,
   'data-testid': dataTestId,
-  isRemoteModeItem,
 }) => {
   const primaryClassName = classnames('activity-list-item', className, {
     'activity-list-item--single-content-row': !(subtitle || children),
@@ -94,13 +93,6 @@ export const ActivityListItem = ({
               >
                 {title}
               </Text>
-              {isRemoteModeItem && (
-                <Icon
-                  name={IconName.RemoteMode}
-                  size={IconSize.Md}
-                  color={TextColor.textAlternative}
-                />
-              )}
             </Box>
             {subtitle && (
               <Text
@@ -184,8 +176,4 @@ ActivityListItem.propTypes = {
    * Test ID for this component
    */
   'data-testid': PropTypes.string,
-  /**
-   * Whether the item is a remote mode item
-   */
-  isRemoteModeItem: PropTypes.bool,
 };

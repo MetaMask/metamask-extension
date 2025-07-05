@@ -24,13 +24,6 @@ import {
   nonceSortedPendingTransactionsSelector,
   nonceSortedPendingTransactionsSelectorAllChains,
 } from '../../../selectors/transactions';
-import {
-  remoteModeNonceSortedCompletedTransactionsSelector,
-  remoteModeNonceSortedCompletedTransactionsSelectorAllChains,
-  remoteModeNonceSortedPendingTransactionsSelector,
-  remoteModeNonceSortedPendingTransactionsSelectorAllChains,
-  getIsRemoteModeEnabled,
-} from '../../../selectors/remote-mode';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getCurrentNetwork,
@@ -420,52 +413,6 @@ export default function TransactionList({
     unfilteredCompletedTransactionsAllChains,
   ]);
 
-  const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
-
-  const unfilteredRemoteModePendingTransactionsCurrentChain = useSelector(
-    remoteModeNonceSortedPendingTransactionsSelector,
-  );
-
-  const unfilteredRemoteModePendingTransactionsAllChains = useSelector(
-    remoteModeNonceSortedPendingTransactionsSelectorAllChains,
-  );
-
-  const unfilteredRemoteModePendingTransactions = useMemo(() => {
-    if (!isRemoteModeEnabled) {
-      return [];
-    }
-    return isTokenNetworkFilterEqualCurrentNetwork
-      ? unfilteredRemoteModePendingTransactionsCurrentChain
-      : unfilteredRemoteModePendingTransactionsAllChains;
-  }, [
-    isRemoteModeEnabled,
-    isTokenNetworkFilterEqualCurrentNetwork,
-    unfilteredRemoteModePendingTransactionsAllChains,
-    unfilteredRemoteModePendingTransactionsCurrentChain,
-  ]);
-
-  const unfilteredRemoteModeCompletedTransactionsAllChains = useSelector(
-    remoteModeNonceSortedCompletedTransactionsSelectorAllChains,
-  );
-
-  const unfilteredRemoteModeCompletedTransactionsCurrentChain = useSelector(
-    remoteModeNonceSortedCompletedTransactionsSelector,
-  );
-
-  const unfilteredRemoteModeCompletedTransactions = useMemo(() => {
-    if (!isRemoteModeEnabled) {
-      return [];
-    }
-    return isTokenNetworkFilterEqualCurrentNetwork
-      ? unfilteredRemoteModeCompletedTransactionsCurrentChain
-      : unfilteredRemoteModeCompletedTransactionsAllChains;
-  }, [
-    isTokenNetworkFilterEqualCurrentNetwork,
-    unfilteredRemoteModeCompletedTransactionsAllChains,
-    unfilteredRemoteModeCompletedTransactionsCurrentChain,
-    isRemoteModeEnabled,
-  ]);
-
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -515,10 +462,7 @@ export default function TransactionList({
     () =>
       groupEvmTransactionsByDate(
         getFilteredTransactionGroups(
-          [
-            ...unfilteredPendingTransactions,
-            ...unfilteredRemoteModePendingTransactions,
-          ],
+          [...unfilteredPendingTransactions],
           hideTokenTransactions,
           tokenAddress,
           chainId,
@@ -526,7 +470,6 @@ export default function TransactionList({
       ),
     [
       unfilteredPendingTransactions,
-      unfilteredRemoteModePendingTransactions,
       hideTokenTransactions,
       tokenAddress,
       chainId,
@@ -537,10 +480,7 @@ export default function TransactionList({
     () =>
       groupEvmTransactionsByDate(
         getFilteredTransactionGroupsAllChains(
-          [
-            ...enabledNetworksFilteredCompletedTransactions,
-            ...unfilteredRemoteModeCompletedTransactions,
-          ],
+          [...enabledNetworksFilteredCompletedTransactions],
           hideTokenTransactions,
           tokenAddress,
         ),
@@ -549,7 +489,6 @@ export default function TransactionList({
       hideTokenTransactions,
       tokenAddress,
       enabledNetworksFilteredCompletedTransactions,
-      unfilteredRemoteModeCompletedTransactions,
     ],
   );
 
