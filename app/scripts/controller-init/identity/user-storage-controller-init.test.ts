@@ -49,6 +49,7 @@ describe('UserStorageControllerInit', () => {
     expect(UserStorageControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.UserStorageController,
+      trace: expect.any(Function),
       config: {
         accountSyncing: {
           maxNumberOfAccountsToAdd: 100,
