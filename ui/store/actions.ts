@@ -3760,6 +3760,7 @@ export function setPreference(
             return;
           }
           resolve(updatedPreferences as TemporaryPreferenceFlagDef);
+          forceUpdateMetamaskState(dispatch);
         },
       );
     });
