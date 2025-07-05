@@ -32,6 +32,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
+  DOWNLOAD_MOBILE_APP_SLIDE,
 } from './constants';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
@@ -88,6 +89,8 @@ export const useCarouselManagement = ({
       undismissable: hasZeroBalance,
     };
 
+    // TODO: Check when to show this slide
+    defaultSlides.push(DOWNLOAD_MOBILE_APP_SLIDE);
     if (!isSolanaAddress(selectedAccount.address)) {
       defaultSlides.push(SMART_ACCOUNT_UPGRADE_SLIDE);
     }
@@ -102,7 +105,7 @@ export const useCarouselManagement = ({
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     defaultSlides.push(SOLANA_SLIDE);
     ///: END:ONLY_INCLUDE_IF
-    defaultSlides.splice(hasZeroBalance ? 0 : 2, 0, fundSlide);
+    defaultSlides.splice(hasZeroBalance ? 0 : 3, 0, fundSlide);
 
     if (isRemoteModeEnabled) {
       defaultSlides.unshift(REMOTE_MODE_SLIDE);
