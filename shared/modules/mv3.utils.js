@@ -1,7 +1,10 @@
 /* eslint-disable import/unambiguous -- Not an external module and not of concern */
 
 const runtimeManifest =
-  global.chrome?.runtime.getManifest() || global.browser?.runtime.getManifest();
+  (global.chrome?.runtime.getManifest &&
+    global.chrome?.runtime.getManifest()) ??
+  (global.browser?.runtime.getManifest &&
+    global.browser?.runtime.getManifest());
 
 /**
  * A boolean indicating whether the manifest of the current extension is set to manifest version 3.
