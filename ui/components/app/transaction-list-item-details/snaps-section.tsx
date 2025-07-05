@@ -1,16 +1,19 @@
 import React from 'react';
-import { useInsightSnaps } from '../../../../../../hooks/snaps/useInsightSnaps';
-import { Box } from '../../../../../../components/component-library';
+import { useInsightSnaps } from '../../../hooks/snaps/useInsightSnaps';
+import { Box } from '../../../components/component-library';
 import {
   Display,
   FlexDirection,
-} from '../../../../../../helpers/constants/design-system';
-import { useConfirmContext } from '../../../../context/confirm';
+} from '../../../helpers/constants/design-system';
 import { SnapInsight } from './snap-insight';
+import { TransactionMeta } from '../../../../app/scripts/background';
 
-export const SnapsSection = () => {
-  const { currentConfirmation } = useConfirmContext();
-  const { data } = useInsightSnaps(currentConfirmation?.id);
+export const SnapsSection = ({
+  transactionMeta,
+}: {
+  transactionMeta: TransactionMeta;
+}) => {
+  const { data } = useInsightSnaps(transactionMeta.id);
 
   if (data.length === 0) {
     return null;
