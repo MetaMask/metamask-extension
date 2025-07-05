@@ -233,6 +233,21 @@ function getCopyTargets(
             pattern: '*',
             dest: 'ocap-kernel/',
           },
+          {
+            src: getPathInsideNodeModules(
+              '@metamask/kernel-ui',
+              'dist/styles.css',
+            ),
+            dest: `ocap-kernel/kernel-panel.css`,
+          },
+          {
+            src: `./app/ocap-kernel/devtools.html`,
+            dest: `ocap-kernel/devtools.html`,
+          },
+          {
+            src: `./app/ocap-kernel/kernel-panel.html`,
+            dest: `ocap-kernel/kernel-panel.html`,
+          },
         ]
       : []),
   ];
