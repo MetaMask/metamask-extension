@@ -9,6 +9,7 @@ import IconButton from '../../../../../components/ui/icon-button/icon-button-rou
 import {
   BlockSize,
   Display,
+  FontWeight,
   JustifyContent,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -32,13 +33,11 @@ export function AccountSelection({
   onUpdate,
   selectedAccounts = [],
   setSelectedAccounts,
-  wrapped,
 }: {
   closeAccountSelection: () => void;
   onUpdate?: () => void;
   selectedAccounts?: Hex[];
   setSelectedAccounts: (accounts: Hex[]) => void;
-  wrapped: boolean;
 }) {
   const t = useI18nContext();
   const accounts = useSelector(getInternalAccounts);
@@ -91,15 +90,11 @@ export function AccountSelection({
         <IconButton
           Icon={<Icon name={IconName.ArrowLeft} />}
           onClick={closeAccountSelection}
-          className={
-            wrapped
-              ? 'account-selection__close-wrapped'
-              : 'account-selection__close'
-          }
+          className="account-selection__close"
           label=""
           data-testid="account-selection-close"
         />
-        <Text variant={TextVariant.headingMd}>
+        <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
           {t('smartAccountEditAccounts')}
         </Text>
       </Box>
@@ -143,18 +138,16 @@ export function AccountSelection({
           );
         })}
       </Box>
-      {!wrapped && (
-        <Button
-          variant={ButtonVariant.Primary}
-          size={ButtonSize.Lg}
-          onClick={onUpdate}
-          width={BlockSize.Full}
-          marginBottom={2}
-          marginTop={2}
-        >
-          {t('update')}
-        </Button>
-      )}
+      <Button
+        variant={ButtonVariant.Primary}
+        size={ButtonSize.Lg}
+        onClick={onUpdate}
+        width={BlockSize.Full}
+        marginBottom={2}
+        marginTop={2}
+      >
+        {t('update')}
+      </Button>
     </>
   );
 }
