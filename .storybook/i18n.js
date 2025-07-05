@@ -9,9 +9,27 @@ export const I18nProvider = (props) => {
   const { currentLocale, current, en } = props;
 
   const t = useMemo(() => {
-    return (key, ...args) =>
-      getMessage(currentLocale, current, key, ...args) ||
-      getMessage(currentLocale, en, key, ...args);
+    return (key, ...args) => {
+      // Ensure we have valid locale data
+      const safeCurrentLocale = currentLocale || 'en';
+      const safeCurrent = current || {};
+      const safeEn = en || {};
+
+      try {
+        const result = getMessage(safeCurrentLocale, safeCurrent, key, ...args) ||
+                      getMessage(safeCurrentLocale, safeEn, key, ...args);
+
+        // If getMessage returns null or undefined, return a fallback
+        if (result === null || result === undefined) {
+          return `[${key}]`;
+        }
+
+        return result;
+      } catch (error) {
+        console.warn(`Translation error for key "${key}":`, error);
+        return `[${key}]`;
+      }
+    };
   }, [currentLocale, current, en]);
 
   return (

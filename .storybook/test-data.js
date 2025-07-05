@@ -1892,6 +1892,11 @@ const state = {
     },
     basicEstimateIsLoading: false,
   },
+  localeMessages: {
+    currentLocale: 'en',
+    current: {},
+    en: {},
+  },
 };
 
 export const networkList = [

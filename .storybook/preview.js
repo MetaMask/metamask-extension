@@ -107,7 +107,17 @@ export const getNewState = (state, props) => {
   return Object.assign(state, props);
 };
 
-export const store = configureStore(testData);
+// Populate localeMessages in test data with actual locale data
+const populatedTestData = {
+  ...testData,
+  localeMessages: {
+    currentLocale: 'en',
+    current: allLocales.en || {},
+    en: allLocales.en || {},
+  },
+};
+
+export const store = configureStore(populatedTestData);
 const proxiedBackground = new Proxy(
   {},
   {
@@ -130,7 +140,7 @@ const metamaskDecorator = (story, context) => {
   const isDark = theme === 'dark' || (theme === 'both' && systemPrefersDark);
 
   const currentLocale = context.globals.locale;
-  const current = allLocales[currentLocale];
+  const current = allLocales[currentLocale] || allLocales.en || {};
 
   useEffect(() => {
     const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -145,6 +155,17 @@ const metamaskDecorator = (story, context) => {
     }
   }, [isDark]);
 
+  // Update Redux store with current locale data
+  useEffect(() => {
+    store.dispatch({
+      type: 'SET_CURRENT_LOCALE',
+      payload: {
+        messages: current,
+        locale: currentLocale,
+      },
+    });
+  }, [currentLocale, current]);
+
   return (
     <Provider store={store}>
       <MemoryRouter>
@@ -158,9 +179,9 @@ const metamaskDecorator = (story, context) => {
               }}
             >
               <I18nProvider
-                currentLocale={currentLocale}
-                current={current}
-                en={allLocales.en}
+                currentLocale={currentLocale || 'en'}
+                current={current || {}}
+                en={allLocales.en || {}}
               >
                 <LegacyI18nProvider>{story()}</LegacyI18nProvider>
               </I18nProvider>
