@@ -6712,5 +6712,8 @@
   },
   "yourWalletIsReady": {
     "message": "您的钱包已准备就绪"
+  },
+  "depositWise": {
+    "message": "通过 Wise 充值"
   }
 }

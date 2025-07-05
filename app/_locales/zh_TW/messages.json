@@ -1287,5 +1287,8 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "您的助憶詞"
+  },
+  "depositWise": {
+    "message": "透過 Wise 充值"
   }
 }

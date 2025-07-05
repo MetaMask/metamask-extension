@@ -45,7 +45,10 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { ENVIRONMENT_TYPE_FULLSCREEN, ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
@@ -230,7 +233,7 @@ export const AppHeaderUnlockedContent = ({
         justifyContent={JustifyContent.flexEnd}
         style={{ marginLeft: 'auto' }}
       >
-        <Box display={Display.Flex} gap={4}>
+        <Box display={Display.Flex} gap={4} alignItems={AlignItems.center}>
           {showConnectedStatus && (
             <Box ref={menuRef}>
               <ConnectedStatusIndicator
@@ -239,15 +242,21 @@ export const AppHeaderUnlockedContent = ({
             </Box>
           )}
           {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN && (
-            <ButtonIcon
-              iconName={IconName.Wise}
-              ariaLabel={t('depositWise')}
+            <ButtonBase
+              startIconName={IconName.Wise}
               onClick={() => {
                 window.open('https://wise.com/', '_blank');
               }}
-              size={ButtonIconSize.Sm}
+              size={ButtonBaseSize.Sm}
+              backgroundColor={BackgroundColor.transparent}
+              borderRadius={BorderRadius.LG}
+              paddingLeft={2}
+              paddingRight={2}
               data-testid="header-deposit-wise"
-            />
+              style={{ border: '1px solid #E2E2E2', width: '180px' }}
+            >
+              {t('depositWise')}
+            </ButtonBase>
           )}
           {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
             <ExpandViewButton />
@@ -258,7 +267,8 @@ export const AppHeaderUnlockedContent = ({
             ref={menuRef}
             display={Display.Flex}
             justifyContent={JustifyContent.flexEnd}
-            width={BlockSize.Full}
+            width={getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? undefined : BlockSize.Full}
+            style={getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? { width: 'auto' } : undefined}
           >
             {!accountOptionsMenuOpen && (
               <Box

@@ -7201,5 +7201,8 @@
   },
   "bankBtn3": {
     "message": "Skip – I won't use fiat-to-crypto features"
+  },
+  "noTrastions": {
+    "message": "No transactions yet"
   }
 }
