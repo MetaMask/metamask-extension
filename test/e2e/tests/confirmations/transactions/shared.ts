@@ -397,3 +397,19 @@ export async function confirmApproveTransaction(driver: Driver) {
     '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
   );
 }
+
+/**
+ * Creates an ERC20 approve transaction by clicking the approve button on the test dapp
+ */
+export async function createERC20ApproveTransaction(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+  await driver.clickElement('#approveTokens');
+}
+
+/**
+ * Waits for the approve transaction confirmation window to open
+ */
+export async function waitForApproveTransactionWindow(driver: Driver) {
+  await driver.waitUntilXWindowHandles(3);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+}
