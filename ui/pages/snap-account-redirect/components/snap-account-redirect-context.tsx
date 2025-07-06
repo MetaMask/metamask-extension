@@ -1,11 +1,11 @@
 import React from 'react';
 import {
-  BannerAlert,
-  BannerAlertSeverity,
+  // BannerAlert,
+  // BannerAlertSeverity,
   Box,
-  Button,
-  ButtonSize,
-  ButtonVariant,
+  // Button,
+  // ButtonSize,
+  // ButtonVariant,
   Text,
 } from '../../../components/component-library';
 import type { SnapAccountRedirectProps } from '../snap-account-redirect';
@@ -28,8 +28,8 @@ const SnapAccountRedirectContent = ({
   onSubmit,
 }: SnapAccountRedirectProps) => {
   const t = useI18nContext();
-  const learnMoreAboutBlockedUrls =
-    'https://support.metamask.io/troubleshooting/deceptive-site-ahead-when-trying-to-connect-to-a-site/';
+  // const learnMoreAboutBlockedUrls =
+  //   'https://support.metamask.io/troubleshooting/deceptive-site-ahead-when-trying-to-connect-to-a-site/';
 
   return (
     <Box
@@ -52,7 +52,7 @@ const SnapAccountRedirectContent = ({
         >
           {t('snapAccountRedirectFinishSigningTitle')}
         </Text>
-        {isBlockedUrl ? (
+        {/* {isBlockedUrl ? (
           <Box display={Display.Flex} paddingLeft={4} paddingRight={4}>
             <BannerAlert
               severity={BannerAlertSeverity.Danger}
@@ -76,7 +76,7 @@ const SnapAccountRedirectContent = ({
               </Text>
             </BannerAlert>
           </Box>
-        ) : null}
+        ) : null} */}
         {isBlockedUrl === false ? (
           <Text
             data-testid="snap-account-redirect-content-description"

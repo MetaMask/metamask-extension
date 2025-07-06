@@ -30,4 +30,41 @@
     top: -9999px;
     left: -9999px;
   }
+
+  // 密码规则列表样式
+  &__rules-list {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+  }
+
+  &__rule-item {
+    list-style: none;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__rule-icon {
+    font-size: 16px;
+
+    &--valid {
+      color: var(--color-success-default);
+    }
+
+    &--invalid {
+      color: var(--color-text-default);
+    }
+  }
+
+  &__rule-text {
+    &--valid {
+      color: var(--color-success-default);
+    }
+
+    &--invalid {
+      color: var(--color-text-default);
+    }
+  }
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
-import { ButtonLink, Text, Box } from '../../../../component-library';
+// import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
+// import { ButtonLink, Text, Box } from '../../../../component-library';
 import {
   Display,
   FlexDirection,
@@ -23,12 +23,12 @@ export default class TokenListPlaceholder extends Component {
         flexDirection={FlexDirection.Column}
         textAlign={TextAlign.Center}
       >
-        <Text color={TextColor.textAlternative}>
+        <Text color={TextColor.textAlternative} textAlign={TextAlign.Center}>
           {this.context.t('addAcquiredTokens')}
         </Text>
-        <ButtonLink href={ZENDESK_URLS.ADD_CUSTOM_TOKENS} externalLink>
+        {/* <ButtonLink href={ZENDESK_URLS.ADD_CUSTOM_TOKENS} externalLink>
           {this.context.t('learnMoreUpperCase')}
-        </ButtonLink>
+        </ButtonLink> */}
       </Box>
     );
   }

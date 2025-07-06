@@ -19,10 +19,10 @@ import {
 } from '../../../../shared/modules/selectors/networks';
 import {
   getInternalAccounts,
-  getIsDynamicTokenListAvailable,
+  // getIsDynamicTokenListAvailable,
   getIsTokenDetectionInactiveOnMainnet,
   getIsTokenDetectionSupported,
-  getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+  // getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getSelectedInternalAccount,
   getTokenDetectionSupportNetworkByChainId,
   getCurrentNetwork,
@@ -82,7 +82,7 @@ import {
   SECURITY_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+// import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   isValidHexAddress,
   toChecksumHexAddress,
@@ -181,12 +181,12 @@ export const ImportTokensModal = ({ onClose }) => {
   const nativeCurrency = useSelector(getNativeCurrency);
 
   // Custom token stuff
-  const tokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
-    getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  );
-  const isDynamicTokenListAvailable = useSelector(
-    getIsDynamicTokenListAvailable,
-  );
+  // const tokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
+  //   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+  // );
+  // const isDynamicTokenListAvailable = useSelector(
+  //   getIsDynamicTokenListAvailable,
+  // );
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
   const chainId = useSelector(getCurrentChainId);
@@ -843,7 +843,7 @@ export const ImportTokensModal = ({ onClose }) => {
                 ) : (
                   <Box paddingTop={4}>
                     <Box className="import-tokens-modal__custom-token-form__container">
-                      {tokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
+                      {/* {tokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
                         <Box paddingLeft={4} paddingRight={4}>
                           <BannerAlert severity={Severity.Warning}>
                             <Text variant={TextVariant.bodyMd}>
@@ -904,7 +904,7 @@ export const ImportTokensModal = ({ onClose }) => {
                             </Text>
                           </BannerAlert>
                         </Box>
-                      )}
+                      )} */}
                       <NetworkSelectorCustomImport
                         title={
                           selectedNetworkForCustomImport

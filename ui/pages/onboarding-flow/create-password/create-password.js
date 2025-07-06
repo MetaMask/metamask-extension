@@ -54,13 +54,6 @@ export default function CreatePassword({
   const [password, setPassword] = useState('');
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
-  const [passwordRules, setPasswordRules] = useState({
-    length: false,
-    upper: false,
-    lower: false,
-    number: false,
-    special: false,
-  });
 
   const history = useHistory();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
@@ -82,22 +75,6 @@ export default function CreatePassword({
   const analyticsIframeUrl = `https://start.metamask.io/?${new URLSearchParams(
     analyticsIframeQuery,
   )}`;
-
-  const checkPasswordRules = (pwd) => {
-    return {
-      length: pwd.length >= 8,
-      upper: /[A-Z]/.test(pwd),
-      lower: /[a-z]/.test(pwd),
-      number: /[0-9]/.test(pwd),
-      special: /[@#$!]/.test(pwd),
-    };
-  };
-
-  useEffect(() => {
-    setPasswordRules(checkPasswordRules(password));
-  }, [password]);
-
-  const isPasswordValid = Object.values(passwordRules).every(Boolean);
 
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
@@ -235,30 +212,6 @@ export default function CreatePassword({
           </Text>
         </Box>
         <Box className="create-password__form">
-          <Box marginBottom={3}>
-            <Text variant={TextVariant.bodyMd} as="div">
-              {t('setPasswordTips')}
-            </Text>
-            <ul style={{ margin: '8px 0 0 0', padding: 0, fontSize: '14px' }}>
-              <li style={{ color: passwordRules.length ? 'green' : '#171717' }}>
-                {passwordRules.length ? '✔' : '✖'} {t('setPasswordTips1')}
-              </li>
-              <li style={{ color: passwordRules.upper ? 'green' : '#171717' }}>
-                {passwordRules.upper ? '✔' : '✖'} {t('setPasswordTips2')}
-              </li>
-              <li style={{ color: passwordRules.lower ? 'green' : '#171717' }}>
-                {passwordRules.lower ? '✔' : '✖'} {t('setPasswordTips3')}
-              </li>
-              <li style={{ color: passwordRules.number ? 'green' : '#171717' }}>
-                {passwordRules.number ? '✔' : '✖'} {t('setPasswordTips4')}
-              </li>
-              <li
-                style={{ color: passwordRules.special ? 'green' : '#171717' }}
-              >
-                {passwordRules.special ? '✔' : '✖'} {t('setPasswordTips5')}
-              </li>
-            </ul>
-          </Box>
           <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
         </Box>
       </Box>
@@ -269,7 +222,7 @@ export default function CreatePassword({
           width={BlockSize.Full}
           size={ButtonSize.Lg}
           className="create-password__form--submit-button"
-          disabled={!isPasswordValid}
+          disabled={!password}
         >
           {t('createPasswordCreate')}
         </Button>

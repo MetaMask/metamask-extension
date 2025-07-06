@@ -5,9 +5,9 @@ import classnames from 'classnames';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import {
   BannerAlert,
-  Button,
-  ButtonLinkSize,
-  ButtonVariant,
+  // Button,
+  // ButtonLinkSize,
+  // ButtonVariant,
   Text,
 } from '../../components/component-library';
 import {
@@ -22,7 +22,7 @@ import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getTokens } from '../../ducks/metamask/metamask';
-import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
+// import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import {
   resolvePendingApproval,
@@ -52,15 +52,15 @@ function getTokenName(name, symbol) {
  * @returns {boolean} Returns true when the list of suggestedTokens contains an entry with
  *          an address that matches an existing token.
  */
-function hasDuplicateAddress(suggestedTokens, tokens) {
-  const duplicate = suggestedTokens.find(({ requestData: { asset } }) => {
-    const dupe = tokens.find(({ address }) => {
-      return isEqualCaseInsensitive(address, asset?.address);
-    });
-    return Boolean(dupe);
-  });
-  return Boolean(duplicate);
-}
+// function hasDuplicateAddress(suggestedTokens, tokens) {
+//   const duplicate = suggestedTokens.find(({ requestData: { asset } }) => {
+//     const dupe = tokens.find(({ address }) => {
+//       return isEqualCaseInsensitive(address, asset?.address);
+//     });
+//     return Boolean(dupe);
+//   });
+//   return Boolean(duplicate);
+// }
 
 /**
  * @param {Array} suggestedTokens - a list of assets suggested to add to the user's wallet
@@ -101,26 +101,26 @@ const ConfirmAddSuggestedToken = () => {
   const trackEvent = useContext(MetaMetricsContext);
   const approvalId = suggestedTokens[0]?.id;
 
-  const knownTokenBannerAlert = useMemo(() => {
-    return (
-      hasDuplicateAddress(suggestedTokens, tokens) && (
-        <BannerAlert severity={Severity.Warning} marginTop={4}>
-          {t('knownTokenWarning', [
-            <Button
-              variant={ButtonVariant.Link}
-              key="confirm-add-suggested-token-duplicate-warning"
-              className="confirm-add-suggested-token__link"
-              externalLink
-              size={ButtonLinkSize.Inherit}
-              href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
-            >
-              {t('learnScamRisk')}
-            </Button>,
-          ])}
-        </BannerAlert>
-      )
-    );
-  }, [suggestedTokens, tokens, t]);
+  // const knownTokenBannerAlert = useMemo(() => {
+  //   return (
+  //     hasDuplicateAddress(suggestedTokens, tokens) && (
+  //       <BannerAlert severity={Severity.Warning} marginTop={4}>
+  //         {t('knownTokenWarning', [
+  //           <Button
+  //             variant={ButtonVariant.Link}
+  //             key="confirm-add-suggested-token-duplicate-warning"
+  //             className="confirm-add-suggested-token__link"
+  //             externalLink
+  //             size={ButtonLinkSize.Inherit}
+  //             href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
+  //           >
+  //             {t('learnScamRisk')}
+  //           </Button>,
+  //         ])}
+  //       </BannerAlert>
+  //     )
+  //   );
+  // }, [suggestedTokens, tokens, t]);
 
   const reusedTokenNameBannerAlert = useMemo(() => {
     return (
@@ -190,7 +190,7 @@ const ConfirmAddSuggestedToken = () => {
         <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
           {t('likeToImportTokens')}
         </Text>
-        {knownTokenBannerAlert}
+        {/* {knownTokenBannerAlert} */}
         {reusedTokenNameBannerAlert}
       </div>
       <div className="page-container__content">

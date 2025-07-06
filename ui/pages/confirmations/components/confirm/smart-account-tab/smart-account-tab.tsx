@@ -1,32 +1,32 @@
 import React from 'react';
 import { Hex } from '@metamask/utils';
 
-import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
+// import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import {
   AlignItems,
   Display,
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
 import {
-  BannerAlert,
-  BannerAlertSeverity,
+  // BannerAlert,
+  // BannerAlertSeverity,
   Box,
-  ButtonLink,
-  ButtonLinkSize,
-  Text,
+  // ButtonLink,
+  // ButtonLinkSize,
+  // Text,
 } from '../../../../../components/component-library';
 import Preloader from '../../../../../components/ui/icon/preloader';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+// import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useEIP7702Networks } from '../../../hooks/useEIP7702Networks';
 import { AccountNetwork } from './account-network/account-network';
 
 export const SmartAccountTab = ({ address }: { address: Hex }) => {
-  const t = useI18nContext();
+  // const t = useI18nContext();
   const { network7702List, pending } = useEIP7702Networks(address);
 
   return (
     <>
-      <BannerAlert
+      {/* <BannerAlert
         title={t('smartAccountUpgradeBannerTitle')}
         severity={BannerAlertSeverity.Info}
         marginTop={4}
@@ -34,7 +34,7 @@ export const SmartAccountTab = ({ address }: { address: Hex }) => {
         <>
           <Text>{t('smartAccountUpgradeBannerDescription')}</Text>
         </>
-      </BannerAlert>
+      </BannerAlert> */}
       {pending && (
         <Box
           paddingTop={12}

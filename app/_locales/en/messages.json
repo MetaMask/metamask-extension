@@ -2641,7 +2641,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAWallet": {
-    "message": "Import a wallet"
+    "message": "Import wallet"
   },
   "importAccountError": {
     "message": "Error importing account."

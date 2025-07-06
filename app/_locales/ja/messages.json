@@ -6763,5 +6763,8 @@
   },
   "noTrastions": {
     "message": "まだ取引がありません"
+  },
+  "importAWallet": {
+    "message": "ウォレットをインポート"
   }
 }

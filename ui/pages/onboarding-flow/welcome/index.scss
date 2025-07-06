@@ -33,11 +33,11 @@
 }
 
 .welcome-login {
-  min-height: calc(100% - 16px);
-  max-height: 728px;
+  max-height: 660px;
   width: 400px;
   background-color: var(--brand-colors-white);
   border-radius: 12px;
+  margin: 0;
   // margin-top: 0;
 
   // box-shadow: var(--shadow-size-md) var(--color-shadow-default);
