@@ -20,6 +20,7 @@ import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
 } from './account-overview-tabs';
+import { CopyIcon } from '../../app/confirm/info/row/copy-icon';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
@@ -101,7 +102,23 @@ const AccountOverviewNetworkPicker = () => {
         data-testid="account-overview-network-picker"
         style={{ backgroundColor: 'transparent' }}
       />
-      <div style={{ fontSize: '14px' }}>{shortenedAddress}</div>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '4px',
+        position: 'relative'
+      }}>
+        <div style={{ fontSize: '14px' }}>{shortenedAddress}</div>
+        {internalAccount && (
+          <CopyIcon
+            copyText={normalizeSafeAddress(internalAccount.address)}
+            style={{
+              position: 'static',
+              cursor: 'pointer',
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 };
