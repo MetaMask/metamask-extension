@@ -30,7 +30,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 import { getNetworkIcon } from '../../../../shared/modules/network.utils';
-import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
+// import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
 import { AppHeaderLockedContent } from './app-header-locked-content';
@@ -100,7 +100,7 @@ export const AppHeader = ({ location }) => {
 
   return (
     <>
-      {isUnlocked && !popupStatus ? <MultichainMetaFoxLogo /> : null}
+      {/* {isUnlocked && !popupStatus ? <MultichainMetaFoxLogo /> : null} */}
       <AppHeaderContainer isUnlocked={isUnlocked} popupStatus={popupStatus}>
         <>
           <Box

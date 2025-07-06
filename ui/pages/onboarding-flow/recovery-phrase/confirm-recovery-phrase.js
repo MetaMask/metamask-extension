@@ -26,6 +26,7 @@ import {
   IconColor,
   Display,
   FlexDirection,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
@@ -168,12 +169,46 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
           </Text>
         </Box>
         {splitSecretRecoveryPhrase.length > 0 && (
-          <RecoveryPhraseChips
-            secretRecoveryPhrase={splitSecretRecoveryPhrase}
-            quizWords={quizWords}
-            confirmPhase
-            setInputValue={handleQuizInput}
-          />
+          <>
+            <RecoveryPhraseChips
+              secretRecoveryPhrase={splitSecretRecoveryPhrase}
+              quizWords={quizWords}
+              confirmPhase
+              setInputValue={handleQuizInput}
+            />
+            <Box marginTop={4}>
+              {[
+                'seedPhraseReviewDetails',
+                'seedPhraseReviewDetails1',
+                'seedPhraseReviewDetails2',
+                'seedPhraseReviewDetails3',
+                'seedPhraseReviewDetails4',
+              ].map((key) => (
+                <Box
+                  key={key}
+                  display={Display.Flex}
+                  alignItems={AlignItems.flexStart}
+                >
+                  <Text
+                    style={{
+                      color: '#D92D20',
+                      marginRight: 8,
+                      fontSize: 18,
+                      lineHeight: '22px',
+                    }}
+                  >
+                    •
+                  </Text>
+                  <Text
+                    variant={TextVariant.bodyMd}
+                    style={{ color: '#D92D20' }}
+                  >
+                    {t(key)}
+                  </Text>
+                </Box>
+              ))}
+            </Box>
+          </>
         )}
       </Box>
       <Box width={BlockSize.Full}>

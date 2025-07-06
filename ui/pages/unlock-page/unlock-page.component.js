@@ -264,7 +264,7 @@ export default class UnlockPage extends Component {
             width={BlockSize.Full}
             alignItems={AlignItems.center}
           >
-            <Box
+            {/* <Box
               marginTop={6}
               marginBottom={isBeta() || isFlask() ? 6 : 0}
               className="unlock-page__mascot-container"
@@ -275,7 +275,12 @@ export default class UnlockPage extends Component {
                   {t('beta')}
                 </Box>
               ) : null}
-            </Box>
+            </Box> */}
+            <img
+              src="./images/cryptobridge/logo-3d.png"
+              width="308"
+              height="240"
+            />
             <Text
               data-testid="unlock-page-title"
               as="h1"

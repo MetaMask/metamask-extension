@@ -4957,11 +4957,24 @@
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
   },
   "seedPhraseReviewDetails": {
-    "message": "This is your $1. Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. $2",
+    "message": "Never share your Secret Recovery Phrase with anyone. Anyone with access to this phrase can control your funds. $2",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
+  },
+  "seedPhraseReviewDetails1": {
+    "message": "Do not save your Secret Recovery Phrase anywhere online or on your phone, as these are vulnerable to hacker attacks.. $2",
     "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
   },
   "seedPhraseReviewDetails2": {
-    "message": "Don’t share it with anyone, ever."
+    "message": "Write it down on a piece of paper and store it in a safe, offline location.",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
+  },
+  "seedPhraseReviewDetails3": {
+    "message": "CryptoBridge staff will never ask you for this phrase.",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
+  },
+  "seedPhraseReviewDetails4": {
+    "message": "Please make sure to save your Secret Recovery Phrase securely — you may need it to import your wallet again in future updated versions.",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
   },
   "seedPhraseReviewTitle": {
     "message": "Save your Secret Recovery Phrase"

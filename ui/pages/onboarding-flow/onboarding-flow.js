@@ -190,15 +190,17 @@ export default function OnboardingFlow() {
           welcomePageState === WelcomePageState.Login,
       })}
     >
-      <Box
-        className="onboarding-flow--welcome-login__service"
-        type="link"
-        as="a"
-        href="https://www.crypto-bridge.co/jp/#support"
-        target="_blank"
-      >
-        <img src="./images/cryptobridge/service.svg" width="20" height="20" />
-      </Box>
+      {!isPopup && (
+        <Box
+          className="onboarding-flow--welcome-login__service"
+          type="link"
+          as="a"
+          href="https://www.crypto-bridge.co/jp/#support"
+          target="_blank"
+        >
+          <img src="./images/cryptobridge/service.svg" width="20" height="20" />
+        </Box>
+      )}
       {!isPopup && <OnboardingAppHeader pageState={welcomePageState} />}
       <RevealSRPModal
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
@@ -220,7 +222,7 @@ export default function OnboardingFlow() {
         marginInline="auto"
         borderColor={BorderColor.borderMuted}
         style={{
-          maxWidth: isWelcomeAndUnlockPage ? 'none' : '446px',
+          maxWidth: isWelcomeAndUnlockPage ? 'none' : '584px',
           minHeight: isWelcomeAndUnlockPage ? 'auto' : '627px',
           height:
             pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? '100%' : 'auto',

@@ -75,7 +75,7 @@ import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-r
 ///: END:ONLY_INCLUDE_IF
 
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
-import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
+// import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
@@ -547,7 +547,7 @@ export default class Routes extends Component {
         {process.env.REMOVE_GNS
           ? showAppHeader(this.props) && <AppHeader location={location} />
           : !hideAppHeader(this.props) && <AppHeader location={location} />}
-        {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
+        {/* {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />} */}
         {isAccountMenuOpen ? accountListMenu : null}
         {isNetworkMenuOpen ? (
           <NetworkListMenu onClose={networkMenuClose} />

@@ -105,33 +105,38 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
             {t('seedPhraseReviewTitle')}
           </Text>
         </Box>
-        <Box marginBottom={6}>
-          <Text
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
-            marginBottom={6}
-          >
-            {t('seedPhraseReviewDetails', [
-              <ButtonLink
-                key="seedPhraseReviewDetails"
-                size={ButtonLinkSize.Inherit}
-                onClick={handleOnShowSrpDetailsModal}
-              >
-                {t('secretRecoveryPhrase')}
-              </ButtonLink>,
-              <Text
-                key="seedPhraseReviewDetails2"
-                fontWeight={FontWeight.Medium}
-                color={TextColor.textAlternative}
-              >
-                {t('seedPhraseReviewDetails2')}
-              </Text>,
-            ])}
-          </Text>
-        </Box>
         <RecoveryPhraseChips
           secretRecoveryPhrase={secretRecoveryPhrase.split(' ')}
         />
+        <Box>
+          {[
+            'seedPhraseReviewDetails',
+            'seedPhraseReviewDetails1',
+            'seedPhraseReviewDetails2',
+            'seedPhraseReviewDetails3',
+            'seedPhraseReviewDetails4',
+          ].map((key) => (
+            <Box
+              key={key}
+              display={Display.Flex}
+              alignItems={AlignItems.flexStart}
+            >
+              <Text
+                style={{
+                  color: '#D92D20',
+                  marginRight: 8,
+                  fontSize: 18,
+                  lineHeight: '22px',
+                }}
+              >
+                •
+              </Text>
+              <Text variant={TextVariant.bodyMd} style={{ color: '#D92D20' }}>
+                {t(key)}
+              </Text>
+            </Box>
+          ))}
+        </Box>
       </Box>
       <Box width={BlockSize.Full}>
         <Button

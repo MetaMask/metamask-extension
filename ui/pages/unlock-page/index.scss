@@ -1,7 +1,7 @@
 @use "design-system";
 
 .unlock-page {
-  max-width: 446px;
+  max-width: 584px;
 
   @include design-system.screen-sm-min {
     margin: 12px auto auto;
