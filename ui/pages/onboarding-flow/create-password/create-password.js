@@ -224,7 +224,7 @@ export default function CreatePassword({
           className="create-password__form--submit-button"
           disabled={!password}
         >
-          {t('createPasswordCreate')}
+          {t('setPassword')}
         </Button>
       </Box>
       {shouldInjectMetametricsIframe ? (

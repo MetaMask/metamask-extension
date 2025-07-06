@@ -1210,7 +1210,7 @@
     "message": "Select the missing words in the correct order."
   },
   "confirmRecoveryPhraseTitle": {
-    "message": "Confirm your Secret Recovery Phrase"
+    "message": "Verify Your Secret Recovery Phrase"
   },
   "confirmSimulationApprove": {
     "message": "You approve"
@@ -4977,7 +4977,7 @@
     "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
   },
   "seedPhraseReviewTitle": {
-    "message": "Save your Secret Recovery Phrase"
+    "message": "Save Your Secret Recovery Phrase"
   },
   "select": {
     "message": "Select"
