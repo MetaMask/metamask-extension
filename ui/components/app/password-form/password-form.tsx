@@ -37,7 +37,6 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
-  // 密码规则定义
   const passwordRules: PasswordRule[] = [
     {
       id: 'length',
@@ -73,7 +72,6 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
 
   const [rules, setRules] = useState<PasswordRule[]>(passwordRules);
 
-  // 检查密码规则
   const checkPasswordRules = useCallback(
     (pwd: string) => {
       return passwordRules.map((rule) => ({

@@ -270,14 +270,6 @@ export const AppHeaderUnlockedContent = ({
             width={getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? undefined : BlockSize.Full}
             style={getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? { width: 'auto' } : undefined}
           >
-            {!accountOptionsMenuOpen && (
-              <Box
-                style={{ position: 'relative' }}
-                onClick={() => handleMainMenuOpened()}
-              >
-                {/* <NotificationsTagCounter noLabel /> 这里已被 NotificationsButton 替代 */}
-              </Box>
-            )}
             <ButtonIcon
               iconName={IconName.Menu}
               data-testid="account-options-menu-button"
