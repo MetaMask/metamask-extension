@@ -47,6 +47,8 @@ const createManagerMessengerMock = () =>
     subscribe: jest.fn(),
   }) as unknown as jest.Mocked<DecryptMessageManagerMessenger>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const createDecryptMessageManagerMock = <T>() =>
   ({
     getUnapprovedMessages: jest.fn(),

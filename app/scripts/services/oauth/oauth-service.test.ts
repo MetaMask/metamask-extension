@@ -17,7 +17,8 @@ const MOCK_JWT_TOKEN =
   'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN3bmFtOTA5QGdtYWlsLmNvbSIsInN1YiI6InN3bmFtOTA5QGdtYWlsLmNvbSIsImlzcyI6Im1ldGFtYXNrIiwiYXVkIjoibWV0YW1hc2siLCJpYXQiOjE3NDUyMDc1NjYsImVhdCI6MTc0NTIwNzg2NiwiZXhwIjoxNzQ1MjA3ODY2fQ.nXRRLB7fglRll7tMzFFCU0u7Pu6EddqEYf_DMyRgOENQ6tJ8OLtVknNf83_5a67kl_YKHFO-0PEjvJviPID6xg';
 const MOCK_NONCE = 'mocked-nonce';
 const MOCK_STATE = JSON.stringify({
-  // eslint-disable-next-line camelcase
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line camelcase, @typescript-eslint/naming-convention
   client_redirect_back_uri: MOCK_REDIRECT_URI,
   nonce: MOCK_NONCE,
 });
@@ -73,7 +74,11 @@ describe('OAuthService - startOAuthLogin', () => {
       jest.fn(() => {
         return Promise.resolve({
           json: jest.fn().mockResolvedValue({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             verifier_id: MOCK_USER_ID,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             id_token: MOCK_JWT_TOKEN,
           }),
         });
@@ -165,8 +170,14 @@ describe('OAuthService - getNewRefreshToken', () => {
       jest.fn(() => {
         return Promise.resolve({
           json: jest.fn().mockResolvedValue({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             id_token: 'MOCK_NEW_JWT_TOKEN',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             refresh_token: 'MOCK_NEW_REFRESH_TOKEN',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             revoke_token: 'MOCK_NEW_REVOKE_TOKEN',
           }),
         });
@@ -199,10 +210,18 @@ describe('OAuthService - getNewRefreshToken', () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           client_id: DEFAULT_GOOGLE_CLIENT_ID,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           login_provider: AuthConnection.Google,
           network: oauthConfig.web3AuthNetwork,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           refresh_token: 'MOCK_REFRESH_TOKEN',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           grant_type: 'refresh_token',
         }),
       },
@@ -219,7 +238,11 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
           json: jest.fn().mockResolvedValue({
             success: true,
             message: 'Token revoked successfully',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             new_refresh_token: 'MOCK_NEW_REFRESH_TOKEN',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             new_revoke_token: 'MOCK_NEW_REVOKE_TOKEN',
           }),
         });
@@ -252,6 +275,8 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           revoke_token: 'MOCK_REVOKE_TOKEN',
         }),
       },

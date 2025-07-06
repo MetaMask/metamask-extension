@@ -92,6 +92,8 @@ export const SrpList = ({
                 category: MetaMetricsEventCategory.Accounts,
                 event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
                 properties: {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   button_type: 'srp_select',
                 },
               });
@@ -125,6 +127,8 @@ export const SrpList = ({
                         event:
                           MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
                         properties: {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           button_type: 'details',
                         },
                       });

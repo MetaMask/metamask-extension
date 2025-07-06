@@ -25,6 +25,8 @@ export const EditGasIconButton = ({
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     updateTransactionEventFragment({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_edit_attempted: 'basic',
     });
     openModal('editGasFee');

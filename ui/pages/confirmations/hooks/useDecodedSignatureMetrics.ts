@@ -42,6 +42,8 @@ export function useDecodedSignatureMetrics(supportedByDecodingAPI: boolean) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       updateSignatureEventFragment({
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           decoding_response: DecodingResponseType.InProgress,
         },
       });
@@ -53,9 +55,17 @@ export function useDecodedSignatureMetrics(supportedByDecodingAPI: boolean) {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     updateSignatureEventFragment({
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_change_types: decodingChangeTypes,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_description: decodingData?.error?.message ?? null,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_latency: loadingTime ?? null,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_response: decodingResponse,
       },
     });

@@ -125,10 +125,20 @@ export const BaseAccountDetails = ({
       event: MetaMetricsEventName.AccountRemoved,
       category: MetaMetricsEventCategory.Accounts,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_hardware_type: deviceName,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: accountType,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         caip_chain_id: formatChainIdToCaip(chainId),
       },
     });
@@ -189,11 +199,6 @@ export const BaseAccountDetails = ({
                 marginLeft={2}
               />
             }
-            style={{
-              marginBottom: '1px',
-              borderTopLeftRadius: '8px',
-              borderTopRightRadius: '8px',
-            }}
           />
           <AccountDetailsRow
             label={t('address')}
@@ -208,9 +213,6 @@ export const BaseAccountDetails = ({
                 marginLeft={2}
               />
             }
-            style={{
-              marginBottom: '1px',
-            }}
           />
           <AccountDetailsRow
             label={t('wallet')}
@@ -227,10 +229,6 @@ export const BaseAccountDetails = ({
                 marginLeft={2}
               />
             }
-            style={{
-              borderBottomLeftRadius: '8px',
-              borderBottomRightRadius: '8px',
-            }}
           />
         </Box>
         {children}

@@ -355,7 +355,9 @@ const CrossChainSwapTxDetails = () => {
                     {bridgeHistoryItem && (
                       <AvatarToken
                         size={AvatarTokenSize.Xs}
-                        src={bridgeHistoryItem?.quote.srcAsset.iconUrl}
+                        src={
+                          bridgeHistoryItem?.quote.srcAsset.iconUrl ?? undefined
+                        }
                         name={bridgeHistoryItem?.quote.srcAsset.symbol}
                       />
                     )}
@@ -364,7 +366,10 @@ const CrossChainSwapTxDetails = () => {
                     {bridgeHistoryItem && (
                       <AvatarToken
                         size={AvatarTokenSize.Xs}
-                        src={bridgeHistoryItem?.quote.destAsset.iconUrl}
+                        src={
+                          bridgeHistoryItem?.quote.destAsset.iconUrl ??
+                          undefined
+                        }
                         name={bridgeHistoryItem?.quote.destAsset.symbol}
                       />
                     )}

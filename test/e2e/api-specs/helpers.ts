@@ -91,6 +91,8 @@ export const createCaip27DriverTransport = (
   // use externally_connectable to communicate with the extension
   // https://developer.chrome.com/docs/extensions/mv3/messaging/
   return async (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __: string,
     method: string,
     params: unknown[] | Record<string, unknown>,
@@ -180,6 +182,8 @@ export const createMultichainDriverTransport = (
   // use externally_connectable to communicate with the extension
   // https://developer.chrome.com/docs/extensions/mv3/messaging/
   return async (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __: string,
     method: string,
     params: unknown[] | Record<string, unknown>,
@@ -256,6 +260,8 @@ export const createMultichainDriverTransport = (
 
 export const createDriverTransport = (driver: Driver) => {
   return async (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __: string,
     method: string,
     params: unknown[] | Record<string, unknown>,

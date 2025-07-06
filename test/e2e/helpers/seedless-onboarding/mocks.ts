@@ -23,6 +23,8 @@ function generateMockJwtToken(userId: string) {
 
 // Mock OAuth Service and Authentication Server
 export class OAuthMockttpService {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly AUTH_SERVER_TOKEN_PATH =
     'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/token';
 
@@ -37,8 +39,14 @@ export class OAuthMockttpService {
     return {
       statusCode: 200,
       json: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         access_token: 'mock-access-token',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         id_token: idToken,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         expires_in: 3600,
       },
     };
