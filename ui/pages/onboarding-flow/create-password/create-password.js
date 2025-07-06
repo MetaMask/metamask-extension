@@ -192,7 +192,7 @@ export default function CreatePassword({
       <Box className="create-password__container">
         <Box
           display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
+          // justifyContent={JustifyContent.spaceBetween}
           flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
           marginBottom={4}
