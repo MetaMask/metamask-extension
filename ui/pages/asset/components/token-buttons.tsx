@@ -255,6 +255,8 @@ const TokenButtons = ({
 
     // Check if unified UI is enabled and route to bridge page for swaps
     if (isUnifiedUIEnabled) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       handleBridgeOnClick(true); // true indicates it's a swap
       return;
     }
