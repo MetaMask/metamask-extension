@@ -6723,25 +6723,25 @@
     "message": "今出発"
   },
   "setPassword": {
-    "message": "設定パスワード"
+    "message": "パスワード設定"
   },
   "setPasswordTips": {
     "message": "パスワードには以下を含める必要があります。"
   },
   "setPasswordTips1": {
-    "message": "最低8字"
+    "message": "8文字以上であること"
   },
   "setPasswordTips2": {
-    "message": "大文字(A-Z)"
+    "message": "英大文字（A～Z）を含むこと"
   },
   "setPasswordTips3": {
-    "message": "(a-z小文字の手紙類を手渡す)"
+    "message": "英小文字（a～z）を含むこ"
   },
   "setPasswordTips4": {
-    "message": "数(頭)"
+    "message": "数字（0～9）を含むこと"
   },
   "setPasswordTips5": {
-    "message": "特殊記号(例:@,#,$,!)"
+    "message": "記号（例：@、#、$、! など）を含むこと"
   },
   "bankTopic": {
     "message": "銀行口座が必要です"
@@ -6766,5 +6766,11 @@
   },
   "importAWallet": {
     "message": "ウォレットをインポート"
+  },
+  "createPasswordCreate": {
+    "message": "パスワードを設定"
+  },
+  "newPasswordCreate": {
+    "message": "パスワードを設定"
   }
 }
