@@ -112,6 +112,7 @@ const BankAccountRequiredModal: React.FC<BankAccountRequiredModalProps> = ({
               borderRadius: '12px',
               color: '#6F6F6F',
               marginTop: '16px',
+              borderTop: '1px solid #E2E2E2',
             }}
           >
             {t('bankBtn3')}
