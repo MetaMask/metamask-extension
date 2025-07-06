@@ -3,7 +3,10 @@ import { SeverityLevel } from '@metamask/snaps-sdk';
 import { getSnapInsights } from '../../selectors';
 
 export function useInsightSnaps(id) {
-  const insight = useSelector((state) => getSnapInsights(state, id));
+  const insight = useSelector((state) => {
+    console.log('kylan useInsightSnaps state', state);
+    return getSnapInsights(state, id);
+  });
 
   const data = insight ? Object.values(insight) : [];
 

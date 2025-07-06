@@ -1,6 +1,7 @@
 export const EndowmentPermissions = Object.freeze({
   'endowment:network-access': 'endowment:network-access',
   'endowment:transaction-insight': 'endowment:transaction-insight',
+  'endowment:activity-item-insight': 'endowment:activity-item-insight',
   'endowment:cronjob': 'endowment:cronjob',
   'endowment:ethereum-provider': 'endowment:ethereum-provider',
   'endowment:rpc': 'endowment:rpc',

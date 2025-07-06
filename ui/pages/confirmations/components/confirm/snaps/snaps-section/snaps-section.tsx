@@ -8,7 +8,8 @@ import {
 import { useConfirmContext } from '../../../../context/confirm';
 import { SnapInsight } from './snap-insight';
 
-export const SnapsSection = () => {
+export const SnapsSection = (props) => {
+  console.log('kylan snaps-section.tsx props', props); // not receiving transactionMeta
   const { currentConfirmation } = useConfirmContext();
   const { data } = useInsightSnaps(currentConfirmation?.id);
 

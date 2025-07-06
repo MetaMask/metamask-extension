@@ -23,6 +23,7 @@ import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import RemoteSignerInformation from '../../../pages/remote-mode/components/remote-signer-information';
 import TransactionDetailsPluggableSection from './pluggable-section';
+import { submitRequestToBackground } from '../../../store/background-connection';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -142,16 +143,21 @@ export default class TransactionListItemDetails extends PureComponent {
     });
   };
 
+  async publishActivityItemViewed() {
+    // publish transaction controller event
+    console.log(
+      'kylan transaction-list-item-details->publishActivityItemViewed, this.props.transactionGroup.primaryTransaction',
+      this.props.transactionGroup.primaryTransaction,
+    );
+    await submitRequestToBackground('publishActivityItemViewed', [
+      this.props.transactionGroup.primaryTransaction,
+    ]);
+  }
+
   componentDidMount() {
     const { recipientAddress, tryReverseResolveAddress } = this.props;
 
-    // publish transaction controller event
-    if (global.platform?.getApi) {
-      const api = global.platform.getApi();
-      api.publishActivityItemViewed(
-        this.props.transactionGroup.primaryTransaction.transactionMeta,
-      );
-    }
+    this.publishActivityItemViewed();
 
     if (recipientAddress) {
       tryReverseResolveAddress(recipientAddress);
@@ -186,8 +192,7 @@ export default class TransactionListItemDetails extends PureComponent {
       primaryTransaction: transaction,
       initialTransaction: { type },
     } = transactionGroup;
-    const { chainId, hash, transactionMeta } = transaction;
-
+    const { chainId, hash } = transaction;
     return (
       <Popover title={title} onClose={onClose}>
         <div className="transaction-list-item-details">
@@ -340,7 +345,7 @@ export default class TransactionListItemDetails extends PureComponent {
             </div>
           </div>
         </div>
-        <TransactionDetailsPluggableSection transactionMeta={transactionMeta} />
+        <TransactionDetailsPluggableSection />
       </Popover>
     );
   }

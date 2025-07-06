@@ -7329,11 +7329,16 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:getPermitted',
           origin,
         ),
-        requestPermissions: async (requestedPermissions) =>
-          await this.permissionController.requestPermissions(
+        requestPermissions: async (requestedPermissions) => {
+          console.log(
+            'kylan metamask-controller->requestPermissions',
+            requestedPermissions,
+          );
+          return await this.permissionController.requestPermissions(
             { origin },
             requestedPermissions,
-          ),
+          );
+        },
         getPermissions: this.permissionController.getPermissions.bind(
           this.permissionController,
           origin,
@@ -8480,7 +8485,7 @@ export default class MetamaskController extends EventEmitter {
   publishActivityItemViewed(transactionMeta) {
     this.controllerMessenger.publish(
       'TransactionController:activityItemViewed',
-      { transactionMeta }
+      { transactionMeta },
     );
   }
 

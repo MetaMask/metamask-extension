@@ -6,14 +6,11 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { SnapInsight } from './snap-insight';
-import { TransactionMeta } from '../../../../app/scripts/background';
 
-export const SnapsSection = ({
-  transactionMeta,
-}: {
-  transactionMeta: TransactionMeta;
-}) => {
-  const { data } = useInsightSnaps(transactionMeta.id);
+export const SnapsSection = (props) => {
+  console.log('kylan snaps-section.tsx props', props); // not receiving transactionMeta
+  const { data } = useInsightSnaps(props?.transactionMeta?.id);
+  console.log('kylan snaps-section.tsx data', data);
 
   if (data.length === 0) {
     return null;
