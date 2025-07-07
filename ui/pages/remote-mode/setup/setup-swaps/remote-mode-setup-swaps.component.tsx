@@ -89,6 +89,8 @@ const TOTAL_STEPS = 2;
  *
  * @returns The rendered component
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeSetupSwaps() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -265,7 +267,7 @@ export default function RemoteModeSetupSwaps() {
               />
             )}
             <Card
-              backgroundColor={BackgroundColor.backgroundMuted}
+              backgroundColor={BackgroundColor.backgroundSection}
               marginBottom={4}
             >
               <Box>
@@ -327,7 +329,7 @@ export default function RemoteModeSetupSwaps() {
               </Box>
             </Card>
             <Card
-              backgroundColor={BackgroundColor.backgroundMuted}
+              backgroundColor={BackgroundColor.backgroundSection}
               marginBottom={2}
             >
               <Box marginBottom={2}>
@@ -429,7 +431,7 @@ export default function RemoteModeSetupSwaps() {
                   Add
                 </Button>
               </Box>
-              <Box backgroundColor={BackgroundColor.backgroundMuted}>
+              <Box backgroundColor={BackgroundColor.backgroundSection}>
                 <Box marginTop={2}>
                   {swapAllowance.map((allowance) => (
                     <RemoteModeSwapAllowanceCard
@@ -462,7 +464,7 @@ export default function RemoteModeSetupSwaps() {
         return (
           <>
             <Card
-              backgroundColor={BackgroundColor.backgroundMuted}
+              backgroundColor={BackgroundColor.backgroundSection}
               marginTop={2}
               marginBottom={4}
             >
