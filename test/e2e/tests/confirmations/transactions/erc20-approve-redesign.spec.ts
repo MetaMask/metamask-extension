@@ -98,7 +98,9 @@ async function assertApproveDetails(driver: Driver) {
   await waitForApproveTransactionWindow(driver);
 
   // Create the ERC20 approve confirmation page object
-  const erc20ApproveConfirmation = new ERC20ApproveTransactionConfirmation(driver);
+  const erc20ApproveConfirmation = new ERC20ApproveTransactionConfirmation(
+    driver,
+  );
 
   // Verify the page is loaded
   await erc20ApproveConfirmation.check_pageIsLoaded();

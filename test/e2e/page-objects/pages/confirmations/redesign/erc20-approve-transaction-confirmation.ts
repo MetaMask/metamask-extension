@@ -117,6 +117,7 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
 
   /**
    * Verifies the spending cap amount is displayed
+   *
    * @param expectedAmount - The expected spending cap amount to verify
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
