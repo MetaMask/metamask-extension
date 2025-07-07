@@ -26,8 +26,10 @@ export const switchToNetworkFlow = async (
     await selectNetworkDialog.toggleShowTestNetwork();
   }
   await selectNetworkDialog.selectNetworkName(networkName);
-  if (!networkName.includes('Bitcoin')) // If a bitcoin account for the selected network does not exist previously, a modal will be displayed to create the account, so skip this
+  if (!networkName.includes('Bitcoin')) {
+    // If a bitcoin account for the selected network does not exist previously, a modal will be displayed to create the account, so skip this
     await headerNavbar.check_currentSelectedNetwork(networkName);
+  }
 };
 
 /**

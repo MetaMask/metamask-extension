@@ -1,13 +1,13 @@
 import { Driver } from '../../../webdriver/driver';
 
 class ModalPage {
-
   protected driver: Driver;
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_modalTitle(title: string): Promise<void> {
     try {
       await this.driver.waitForSelector({
@@ -20,6 +20,7 @@ class ModalPage {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_modalContent(content: string): Promise<void> {
     try {
       await this.driver.waitForSelector({
@@ -27,7 +28,10 @@ class ModalPage {
         text: content,
       });
     } catch (e) {
-      console.log(`Timeout while waiting for modal with content "${content}"`, e);
+      console.log(
+        `Timeout while waiting for modal with content "${content}"`,
+        e,
+      );
       throw e;
     }
   }
@@ -39,6 +43,5 @@ class ModalPage {
     });
   }
 }
-
 
 export default ModalPage;

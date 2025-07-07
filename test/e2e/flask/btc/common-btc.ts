@@ -13,7 +13,7 @@ import {
   mockInitialFullScan,
   mockRampsDynamicFeatureFlag,
 } from './mocks';
-import { mockPriceMulti } from './mocks/min-api';
+import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
 
 export async function withBtcAccountSnap(
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
@@ -45,6 +45,7 @@ export async function withBtcAccountSnap(
         // See: UAT_RAMP_API_BASE_URL
         await mockRampsDynamicFeatureFlag(mockServer, 'uat-api'),
         await mockPriceMulti(mockServer),
+        await mockPriceMultiBtcAndSol(mockServer),
       ],
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {

@@ -294,6 +294,7 @@ class AccountListPage {
    * @param options.accountType - The type of account to add (Ethereum, Bitcoin, or Solana)
    * @param [options.accountName] - Optional custom name for the new account
    * @param [options.srpIndex] - Optional SRP index for the new account
+   * @param options.fromModal
    * @throws {Error} If the specified account type is not supported
    * @example
    * // Add a new Ethereum account with default name

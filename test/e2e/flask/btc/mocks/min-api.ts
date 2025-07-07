@@ -9,10 +9,25 @@ export const mockPriceMulti = (mockServer: Mockttp) =>
       fsyms: 'btc',
     })
     .thenJson(200, {
-      "BTC": {
-          "USD": 109784.68
+      BTC: {
+        USD: 109784.68,
       },
-      "SOL": {
-          "USD": 154.82
-      }
-  });
+      SOL: {
+        USD: 154.82,
+      },
+    });
+
+export const mockPriceMultiBtcAndSol = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(`${PRICE_API_URL}/data/pricemulti`)
+    .withQuery({
+      fsyms: 'btc,sol',
+    })
+    .thenJson(200, {
+      BTC: {
+        USD: 109784.68,
+      },
+      SOL: {
+        USD: 154.82,
+      },
+    });
