@@ -62,6 +62,8 @@ export const AddressQRCode = () => {
       category: MetaMetricsEventCategory.Accounts,
       properties: {
         location: metricsLocation,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
       },
     });

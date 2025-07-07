@@ -47,8 +47,8 @@ export type TokenPayload = {
     balance?: string;
     string?: string;
     image?: string;
-    iconUrl?: string;
-    icon?: string;
+    iconUrl?: string | null;
+    icon?: string | null;
     assetId?: string;
   } | null;
 };
