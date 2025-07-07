@@ -1,7 +1,7 @@
+import NetworkSwitchModalConfirmation from '../../page-objects/pages/dialog/network-switch-modal-confirmation';
+import SelectNetwork from '../../page-objects/pages/dialog/select-network';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { Driver } from '../../webdriver/driver';
-import HeaderNavbar from '../pages/header-navbar';
-import SelectNetwork from '../pages/dialog/select-network';
-import NetworkSwitchModalConfirmation from '../pages/dialog/network-switch-modal-confirmation';
 
 /**
  * Switches to a specified network in the header bar.
