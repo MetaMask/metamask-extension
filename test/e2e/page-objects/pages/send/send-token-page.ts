@@ -122,13 +122,7 @@ class SendTokenPage {
 
   async checkAccountValueAndSuffix(value: string): Promise<void> {
     console.log(`Checking if account value and suffix is ${value}`);
-    const element = await this.driver.waitForSelector(this.assetValue);
-    const text = await element.getText();
-    assert.equal(
-      text,
-      value,
-      `Expected account value and suffix to be ${value}, got ${text}`,
-    );
+    await this.driver.waitForSelector({ css: this.assetValue, text: value }); // Failure
     console.log(`Account value and suffix is ${value}`);
   }
 
