@@ -96,9 +96,6 @@
       "seedPhraseBackedUp": true
     },
     "PermissionController": { "subjects": "object" },
-    "PhishingController": {
-      "urlScanCache": "object"
-    },
     "PreferencesController": {
       "advancedGasFee": null,
       "currentLocale": "en",
