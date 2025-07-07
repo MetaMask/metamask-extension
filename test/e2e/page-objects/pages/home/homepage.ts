@@ -43,6 +43,10 @@ class HomePage {
     testId: 'asset-list-control-bar-action-button',
   };
 
+  private readonly importTokensOption = {
+    testId: 'importTokens',
+  };
+
   private readonly loadingOverlay = {
     text: 'Connecting to Localhost 8545',
   };
@@ -162,6 +166,12 @@ class HomePage {
     console.log(`Refresh the ERC20 token list`);
     await this.driver.clickElement(this.erc20TokenDropdown);
     await this.driver.clickElement(this.refreshErc20Tokens);
+  }
+
+  async openImportTokensModal(): Promise<void> {
+    console.log(`Open import tokens modal`);
+    await this.driver.clickElement(this.erc20TokenDropdown);
+    await this.driver.clickElement(this.importTokensOption);
   }
 
   async startSendFlow(): Promise<void> {
