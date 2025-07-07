@@ -175,9 +175,7 @@
   },
   "NetworkOrderController": {
     "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
-    "enabledNetworkMap": {
-      "eip155": "object"
-    }
+    "enabledNetworkMap": { "eip155": "object" }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -214,9 +212,7 @@
     "permissionHistory": "object",
     "permissionActivityLog": "object"
   },
-  "PhishingController": {
-    "urlScanCache": "object"
-  },
+  "PhishingController": { "urlScanCache": "string" },
   "PreferencesController": {
     "selectedAddress": "string",
     "useBlockie": false,
@@ -360,10 +356,10 @@
     "isBackupAndSyncEnabled": true,
     "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
+    "isContactSyncingEnabled": true,
+    "isContactSyncingInProgress": "boolean",
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
     "isAccountSyncingReadyToBeDispatched": "boolean",
-    "isAccountSyncingInProgress": "boolean",
-    "isContactSyncingEnabled": true,
-    "isContactSyncingInProgress": "boolean"
+    "isAccountSyncingInProgress": "boolean"
   }
 }
