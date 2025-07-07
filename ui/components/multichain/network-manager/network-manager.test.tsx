@@ -97,7 +97,13 @@ const mockNetworkConfigurations = {
 };
 
 describe('NetworkManager Component', () => {
-  const renderNetworkManager = () => {
+  const renderNetworkManager = ({
+    enabledNetworks,
+  }: {
+    enabledNetworks?: {
+      eip155?: Record<string, boolean>;
+    };
+  }) => {
     const store = configureStore({
       ...mockState,
       metamask: {
@@ -110,15 +116,7 @@ describe('NetworkManager Component', () => {
           type: 'rpc',
           ticker: 'ETH',
         },
-        enabledNetworkMap: {
-          eip155: {
-            '0x1': true,
-            '0xa': true,
-            '0xa4b1': true,
-            '0xa86a': true,
-            '0x2105': true,
-          },
-        },
+        enabledNetworkMap: enabledNetworks,
       },
     });
     return renderWithProvider(<NetworkManager />, store);
@@ -129,14 +127,24 @@ describe('NetworkManager Component', () => {
   });
 
   it('renders correctly when open', () => {
-    renderNetworkManager();
+    renderNetworkManager({
+      enabledNetworks: {
+        eip155: {
+          '0x1': true,
+          '0xa': true,
+          '0xa4b1': true,
+          '0xa86a': true,
+          '0x2105': true,
+        },
+      },
+    });
 
     // Verify tabs are rendered
     expect(screen.getByText('Default')).toBeInTheDocument();
     expect(screen.getByText('Custom')).toBeInTheDocument();
 
     // Verify default tab content is rendered
-    expect(screen.getByText('Select all')).toBeInTheDocument();
+    expect(screen.getByText('Deselect all')).toBeInTheDocument();
     expect(screen.getByText('Arbitrum One')).toBeInTheDocument();
     expect(screen.getByText('Optimism')).toBeInTheDocument();
     expect(screen.getByText('Avalanche')).toBeInTheDocument();
@@ -144,7 +152,13 @@ describe('NetworkManager Component', () => {
   });
 
   it('switches tab when tab is clicked', () => {
-    renderNetworkManager();
+    renderNetworkManager({
+      enabledNetworks: {
+        eip155: {
+          '0x1': true,
+        },
+      },
+    });
 
     // Verify that Default tab is active by default
     expect(screen.getByText('Default')).toBeInTheDocument();

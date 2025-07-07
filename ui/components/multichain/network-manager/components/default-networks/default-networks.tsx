@@ -120,7 +120,37 @@ const DefaultNetworks = memo(() => {
     dispatch(setActiveNetwork(finalNetworkClientId));
   }, [dispatch, evmNetworks, namespace, orderedNetworks]);
 
+  const deselectAllDefaultNetworks = useCallback(() => {
+    dispatch(setEnabledNetworks([], namespace));
+  }, [dispatch, namespace]);
+
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+
+  const allPopularNetworksSelected = useMemo(() => {
+    const enabledFeaturedNetworksCount = Object.keys(enabledNetworks).filter(
+      (chainId) =>
+        FEATURED_NETWORK_CHAIN_IDS.includes(chainId as `0x${string}`),
+    ).length;
+
+    console.log('enabledNetworks *************', enabledNetworks);
+
+    const addedFeaturedNetworksCount = Object.keys(evmNetworks).filter(
+      (chainId) =>
+        FEATURED_NETWORK_CHAIN_IDS.includes(chainId as `0x${string}`),
+    ).length;
+
+    console.log(
+      'addedFeaturedNetworksCount *************',
+      addedFeaturedNetworksCount,
+    );
+
+    // All popular networks are selected if we have more than one enabled
+    // and all added featured networks are enabled
+    return (
+      enabledFeaturedNetworksCount > 1 &&
+      enabledFeaturedNetworksCount === addedFeaturedNetworksCount
+    );
+  }, [enabledNetworks, evmNetworks]);
 
   // Memoize the network change handler to avoid recreation
   const handleNetworkChangeCallback = useCallback(
@@ -277,9 +307,15 @@ const DefaultNetworks = memo(() => {
           paddingTop={4}
           paddingLeft={4}
         >
-          <ButtonLink onClick={selectAllDefaultNetworks}>
-            {t('selectAll')}
-          </ButtonLink>
+          {allPopularNetworksSelected ? (
+            <ButtonLink onClick={deselectAllDefaultNetworks}>
+              {t('deselectAll')}
+            </ButtonLink>
+          ) : (
+            <ButtonLink onClick={selectAllDefaultNetworks}>
+              {t('selectAll')}
+            </ButtonLink>
+          )}
         </Box>
         {networkListItems}
         {isEvmNetworkSelected && (
