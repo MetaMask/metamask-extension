@@ -111,7 +111,6 @@ import {
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
-import { SOLANA_USDC_ASSET } from '../../../../shared/constants/bridge';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -574,14 +573,21 @@ const PrepareBridgePage = () => {
     });
   }, []);
 
-  // Set the default destination token for swaps (only when unified UI is disabled)
+  const { defaultToChainId, defaultToToken } = useBridgeDefaultToToken();
+
   useEffect(() => {
-    // Only set default token when unified UI is disabled (preserve existing behavior)
-    if (!isUnifiedUIEnabled && isSwap && fromChain && !toToken) {
-      dispatch(setToChainId(fromChain.chainId));
-      dispatch(setToToken(SOLANA_USDC_ASSET));
+    // Only set default chain if user hasn't already selected one
+    if (!toChain && defaultToChainId && fromChain) {
+      dispatch(setToChainId(defaultToChainId));
     }
-  }, [isSwap, dispatch, fromChain, toToken, isUnifiedUIEnabled]);
+  }, [defaultToChainId, toChain, fromChain, dispatch]);
+
+  useEffect(() => {
+    // Only set default token if user hasn't already selected one and we have a destination chain
+    if (!toToken && defaultToToken && toChain) {
+      dispatch(setToToken(defaultToToken));
+    }
+  }, [defaultToToken, toToken, toChain, dispatch]);
 
   // Edge-case fix: if user lands with USDC selected for both sides on Solana,
   // switch destination to SOL (native asset).
@@ -592,22 +598,30 @@ const PrepareBridgePage = () => {
       !isSolanaChainId(fromChain.chainId) ||
       !fromToken?.address ||
       !toToken?.address ||
-      fromAssetsPageFixAppliedRef.current // Prevent multiple applications of the fix as it's only needed initially.
+      fromAssetsPageFixAppliedRef.current || // Prevent multiple applications of the fix as it's only needed initially.
+      !defaultToToken // Add check for defaultToToken
     ) {
       return;
     }
 
     const isBothUsdc =
       fromToken.address.toLowerCase() ===
-        SOLANA_USDC_ASSET.address.toLowerCase() &&
-      toToken.address.toLowerCase() === SOLANA_USDC_ASSET.address.toLowerCase();
+        defaultToToken.address.toLowerCase() &&
+      toToken.address.toLowerCase() === defaultToToken.address.toLowerCase();
 
     if (isBothUsdc) {
       const solNativeAsset = getNativeAssetForChainId(fromChain.chainId);
       dispatch(setToToken(solNativeAsset));
       fromAssetsPageFixAppliedRef.current = true;
     }
-  }, [isSwap, fromChain?.chainId, fromToken?.address, toToken?.address]);
+  }, [
+    isSwap,
+    fromChain?.chainId,
+    fromToken?.address,
+    toToken?.address,
+    defaultToToken,
+    dispatch,
+  ]);
 
   const occurrences = Number(
     toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,
@@ -635,22 +649,6 @@ const PrepareBridgePage = () => {
     }
     return isSwap ? t('swapSwapTo') : t('bridgeTo');
   };
-
-  const { defaultToChainId, defaultToToken } = useBridgeDefaultToToken();
-
-  useEffect(() => {
-    // Only set default chain if user hasn't already selected one
-    if (!toChain && defaultToChainId && fromChain) {
-      dispatch(setToChainId(defaultToChainId));
-    }
-  }, [defaultToChainId, toChain, fromChain, dispatch]);
-
-  useEffect(() => {
-    // Only set default token if user hasn't already selected one and we have a destination chain
-    if (!toToken && defaultToToken && toChain) {
-      dispatch(setToToken(defaultToToken));
-    }
-  }, [defaultToToken, toToken, toChain, dispatch]);
 
   return (
     <>
@@ -1111,7 +1109,7 @@ const PrepareBridgePage = () => {
             isEvm &&
             toToken &&
             toTokenIsNotNative &&
-            toToken.address !== SOLANA_USDC_ASSET.address &&
+            (!defaultToToken || toToken.address !== defaultToToken.address) &&
             occurrences < 2 && (
               <BannerAlert
                 severity={BannerAlertSeverity.Warning}

@@ -88,6 +88,9 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
 
 export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
 
+/**
+ * @deprecated Use defaultToToken from useBridgeDefaultToToken hook instead
+ */
 export const SOLANA_USDC_ASSET = {
   address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
   assetId:
@@ -99,7 +102,17 @@ export const SOLANA_USDC_ASSET = {
   chainId: MultichainNetworks.SOLANA,
 };
 
-export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR = {
+export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
+  Record<
+    AllowedBridgeChainIds,
+    {
+      address: string;
+      symbol: string;
+      decimals: number;
+      name: string;
+    }
+  >
+> = {
   [CHAIN_IDS.MAINNET]: {
     // ETH -> USDC on mainnet
     address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -177,14 +190,4 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR = {
     decimals: 6,
     name: 'USD Coin',
   },
-} as const;
-
-// Default destination chains for common bridge routes
-export const BRIDGE_DEFAULT_DESTINATION_CHAINS = {
-  [CHAIN_IDS.MAINNET]: CHAIN_IDS.ARBITRUM, // Mainnet -> Arbitrum
-  [CHAIN_IDS.ARBITRUM]: CHAIN_IDS.MAINNET, // Arbitrum -> Mainnet
-  [CHAIN_IDS.OPTIMISM]: CHAIN_IDS.MAINNET, // Optimism -> Mainnet
-  [CHAIN_IDS.BASE]: CHAIN_IDS.MAINNET, // Base -> Mainnet
-  [CHAIN_IDS.POLYGON]: CHAIN_IDS.MAINNET, // Polygon -> Mainnet
-  [MultichainNetworks.SOLANA]: CHAIN_IDS.MAINNET, // Solana -> Mainnet
 } as const;
