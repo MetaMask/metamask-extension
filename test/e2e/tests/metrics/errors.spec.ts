@@ -67,6 +67,13 @@ const removedBackgroundFields = [
   'PPOMController.versionInfo',
   // This property is timing-dependent
   'MetaMetricsController.latestNonAnonymousEventTimestamp',
+  // PhishingController properties (except urlScanCache which is masked)
+  'PhishingController.c2DomainBlocklistLastFetched',
+  'PhishingController.hotlistLastFetched',
+  'PhishingController.phishingLists',
+  'PhishingController.stalelistLastFetched',
+  'PhishingController.whitelist',
+  'PhishingController.listState',
 ];
 
 const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
