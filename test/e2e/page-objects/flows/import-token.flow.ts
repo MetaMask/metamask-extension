@@ -1,8 +1,8 @@
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../helpers';
 import HomePage from '../pages/home/homepage';
-import ImportTokensModal from '../pages/import-tokens-modal';
-import AssetList from '../pages/asset-list';
+import { ImportTokensModal } from '../pages/import-tokens-modal';
+import { AssetList } from '../pages/asset-list';
 
 /**
  * Configuration for importing a custom token
@@ -23,7 +23,7 @@ export async function importTestToken(
   tokenConfig: TokenImportConfig,
 ): Promise<void> {
   console.log(
-    `Starting custom token import for contract: ${tokenConfig.contractAddress}`,
+    `Starting token import for ${tokenConfig.contractAddress} on chain ${tokenConfig.networkChainId}`,
   );
 
   // Switch to MetaMask window
@@ -71,20 +71,15 @@ export async function verifyTokenInAssetList(
  *
  * @param driver - The WebDriver instance
  * @param contractAddress - The contract address of the token
- * @param networkChainId - The network chain ID
- * @param tokenSymbol - The token symbol to verify
+ * @param networkChainId - The chain ID of the network
+ * @param tokenSymbol - The symbol of the token to verify
  */
-export async function importAndVerifyTestToken(
+export async function importAndVerifyToken(
   driver: Driver,
   contractAddress: string,
   networkChainId: string,
   tokenSymbol: string,
 ): Promise<void> {
-  const tokenConfig: TokenImportConfig = {
-    contractAddress,
-    networkChainId,
-  };
-
-  await importTestToken(driver, tokenConfig);
+  await importTestToken(driver, { contractAddress, networkChainId });
   await verifyTokenInAssetList(driver, tokenSymbol);
 }
