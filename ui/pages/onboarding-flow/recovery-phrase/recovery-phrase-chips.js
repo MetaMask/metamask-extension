@@ -84,7 +84,7 @@ export default function RecoveryPhraseChips({
                 fontWeight={FontWeight.Medium}
                 marginBottom={2}
               >
-                {`Word #${group.index + 1}`}
+                {`${t('word')} #${group.index + 1}`}
               </Text>
               <Box display={Display.Flex} gap={2}>
                 {group.options.map((option) => {

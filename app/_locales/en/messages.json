@@ -1488,7 +1488,7 @@
     "message": "CryptoBridge password"
   },
   "createPasswordCreate": {
-    "message": "Create password"
+    "message": "Set Password"
   },
   "createPasswordDetails": {
     "message": "Unlocks CryptoBridge on this device only."
@@ -4893,7 +4893,7 @@
     "message": "Secure wallet"
   },
   "secureWalletGetStartedButton": {
-    "message": "Get started"
+    "message": "View My Secret Recovery Phrase"
   },
   "secureWalletRemindLaterButton": {
     "message": "Remind me later"
@@ -7217,5 +7217,8 @@
   },
   "noTrastions": {
     "message": "No transactions yet"
+  },
+  "word": {
+    "message": "Word"
   }
 }

@@ -1381,7 +1381,7 @@
     "description": "$1 represents the name of the snap"
   },
   "continue": {
-    "message": "続行"
+    "message": "次へ"
   },
   "contract": {
     "message": "コントラクト"
@@ -4725,6 +4725,29 @@
   "seedPhraseReq": {
     "message": "シークレットリカバリーフレーズは、12、15、18、21、24語で構成されます"
   },
+  "seedPhraseReviewDetails": {
+    "message": "シークレットリカバリーフレーズは絶対に他人と共有しないでください。このフレーズにアクセスできる人は、あなたの資金を管理することができます。",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
+  },
+  "seedPhraseReviewDetails1": {
+    "message": "このシークレットリカバリーフレーズをオンラインやスマートフォンに保存しないでください。これらはハッカー攻撃に対して脆弱です。",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
+  },
+  "seedPhraseReviewDetails2": {
+    "message": "紙に書き留め、オフラインの安全な場所に保管してください。",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
+  },
+  "seedPhraseReviewDetails3": {
+    "message": "CryptoBridge のスタッフがこのフレーズを尋ねることは決してありません。",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
+  },
+  "seedPhraseReviewDetails4": {
+    "message": "将来、ウォレットを再インポートする必要がある場合に備えて、このシークレットリカバリーフレーズを安全に保管してください。",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
+  },
+  "seedPhraseReviewTitle": {
+    "message": "シークレットリカバリーフレーズを保存する"
+  },
   "select": {
     "message": "選択"
   },
@@ -6750,16 +6773,16 @@
     "message": "すでにJDB銀行口座をお持ちですか？"
   },
   "bankTips": {
-    "message": "暗号通貨を購入または販売するには、JDB銀行口座を申請するか、既存の口座をリンクしてください。"
+    "message": "法定通貨から仮想通貨への機能を有効にするには、JDB銀行口座の登録または連携が必要です。"
   },
   "bankBtn1": {
-    "message": "はい、私のJDBYesアプリ口座をCryptoBridgeにリンクします"
+    "message": "はい、すでに持っています – 口座を連携する"
   },
   "bankBtn2": {
-    "message": "いいえ、JDBYesアプリに登録します"
+    "message": "いいえ、持っていません – 今すぐ登録"
   },
   "bankBtn3": {
-    "message": "法定通貨で暗号通貨を購入する必要はありません"
+    "message": "スキップ – 法定通貨機能は使いません"
   },
   "noTrastions": {
     "message": "まだ取引がありません"
@@ -6772,5 +6795,11 @@
   },
   "newPasswordCreate": {
     "message": "パスワードを設定"
+  },
+  "confirmRecoveryPhraseTitle": {
+    "message": "シークレットリカバリーフレーズの確認"
+  },
+  "word": {
+    "message": "単語"
   }
 }
