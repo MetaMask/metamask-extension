@@ -414,6 +414,5 @@ export async function createERC20ApproveTransaction(driver: Driver) {
  * @param driver - The WebDriver instance
  */
 export async function waitForApproveTransactionWindow(driver: Driver) {
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }
