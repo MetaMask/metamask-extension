@@ -400,6 +400,8 @@ export async function confirmApproveTransaction(driver: Driver) {
 
 /**
  * Creates an ERC20 approve transaction by clicking the approve button on the test dapp
+ *
+ * @param driver - The WebDriver instance
  */
 export async function createERC20ApproveTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -408,6 +410,8 @@ export async function createERC20ApproveTransaction(driver: Driver) {
 
 /**
  * Waits for the approve transaction confirmation window to open
+ *
+ * @param driver - The WebDriver instance
  */
 export async function waitForApproveTransactionWindow(driver: Driver) {
   await driver.waitUntilXWindowHandles(3);

@@ -1,132 +1,118 @@
 import { Driver } from '../../webdriver/driver';
-import HomePage from '../pages/home/homepage';
-import HeaderNavbar from '../pages/header-navbar';
 
-const WINDOW_TITLES = {
-  ExtensionInFullScreenView: 'MetaMask',
+/**
+ * Configuration for importing a custom token
+ */
+type TokenImportConfig = {
+  contractAddress: string;
+  networkChainId: string;
 };
 
 /**
- * Interface for token import configuration
- */
-export interface TokenImportConfig {
-  contractAddress: string;
-  networkChainId?: string; // e.g., '0x539' for local testnet
-  networkName?: string;    // Optional network name for verification
-}
-
-/**
- * Imports a custom ERC20 token using the MetaMask UI
+ * Import a custom token by navigating through the token import flow
  *
- * @param driver - The webdriver instance
- * @param tokenConfig - Configuration object containing token details
+ * @param driver - The WebDriver instance
+ * @param tokenConfig - Configuration for the token to import
  */
-export const importCustomToken = async (
+export async function importTestToken(
   driver: Driver,
   tokenConfig: TokenImportConfig,
-): Promise<void> => {
-  console.log(`Starting custom token import for contract: ${tokenConfig.contractAddress}`);
+): Promise<void> {
+  console.log(
+    `Starting custom token import for contract: ${tokenConfig.contractAddress}`,
+  );
 
-  // Ensure we're on the MetaMask main window
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  // Switch to MetaMask window
+  await driver.switchToWindowWithTitle('MetaMask');
 
-  // Click the asset list control bar action button (+ icon)
-  await driver.clickElement('[data-testid="asset-list-control-bar-action-button"]');
-
-  // Click Import Tokens option
+  // Navigate to import tokens
+  await driver.clickElement(
+    '[data-testid="asset-list-control-bar-action-button"]',
+  );
   await driver.clickElement('[data-testid="importTokens"]');
 
-  // Wait for the import tokens modal to load and click Custom token tab
+  // Select custom token tab
   await driver.waitForSelector({
     css: '.import-tokens-modal__button-tab',
     text: 'Custom token',
   });
-
   await driver.clickElement({
     css: '.import-tokens-modal__button-tab',
     text: 'Custom token',
   });
 
-  // If a specific network is specified, select it
-  if (tokenConfig.networkChainId) {
-    console.log(`Selecting network with chain ID: ${tokenConfig.networkChainId}`);
-    await driver.clickElement('[data-testid="test-import-tokens-drop-down-custom-import"]');
-    await driver.clickElement(`[data-testid="select-network-item-${tokenConfig.networkChainId}"]`);
-  }
+  // Select network
+  console.log(`Selecting network with chain ID: ${tokenConfig.networkChainId}`);
+  await driver.clickElement(
+    '[data-testid="test-import-tokens-drop-down-custom-import"]',
+  );
+  await driver.clickElement(
+    `[data-testid="select-network-item-${tokenConfig.networkChainId}"]`,
+  );
 
-  // Fill in the contract address
+  // Fill contract address
   console.log(`Filling contract address: ${tokenConfig.contractAddress}`);
   await driver.fill(
     '[data-testid="import-tokens-modal-custom-address"]',
     tokenConfig.contractAddress,
   );
 
-  // Click Next button and wait for it to disappear (indicating validation success)
+  // Click Next
   await driver.clickElementAndWaitToDisappear({
     css: '[data-testid="import-tokens-button-next"]',
     text: 'Next',
   });
 
-  // Click Import button to complete the import
+  // Import token
   await driver.clickElement({
     css: '[data-testid="import-tokens-modal-import-button"]',
     text: 'Import',
   });
 
   console.log('Custom token import completed successfully');
-};
+}
 
 /**
- * Simplified token import for common test scenarios with predefined test token
+ * Verify that a token appears in the asset list
  *
- * @param driver - The webdriver instance
- * @param contractAddress - The token contract address
+ * @param driver - The WebDriver instance
+ * @param tokenSymbol - The symbol of the token to verify
  */
-export const importTestToken = async (
-  driver: Driver,
-  contractAddress: string,
-): Promise<void> => {
-  const tokenConfig: TokenImportConfig = {
-    contractAddress,
-    networkChainId: '0x539', // Default to local test network
-  };
-
-  await importCustomToken(driver, tokenConfig);
-};
-
-/**
- * Verifies that a token has been successfully imported by checking if it appears in the token list
- *
- * @param driver - The webdriver instance
- * @param tokenSymbol - The symbol of the imported token (e.g., 'TST', 'HST')
- */
-export const verifyTokenImported = async (
+export async function verifyTokenInAssetList(
   driver: Driver,
   tokenSymbol: string,
-): Promise<void> => {
-  console.log(`Verifying token ${tokenSymbol} has been imported`);
+): Promise<void> {
+  console.log(`Verifying token ${tokenSymbol} appears in asset list`);
 
-  // Check if the token appears in the asset list
-  await driver.waitForSelector({
-    css: '[data-testid="multichain-token-list-item"]',
-    text: tokenSymbol,
-  });
+  // Wait for the token to appear in the asset list
+  await driver.waitForSelector(
+    `[data-testid="asset-list-item-${tokenSymbol}"]`,
+  );
 
-  console.log(`Token ${tokenSymbol} successfully imported and visible in asset list`);
-};
+  console.log(
+    `Token ${tokenSymbol} successfully imported and visible in asset list`,
+  );
+}
 
 /**
- * Complete flow that imports a token and verifies it was imported successfully
+ * Complete token import process including verification
  *
- * @param driver - The webdriver instance
- * @param tokenConfig - Configuration object containing token details
- * @param expectedSymbol - The expected token symbol to verify after import
+ * @param driver - The WebDriver instance
+ * @param contractAddress - The contract address of the token
+ * @param networkChainId - The network chain ID
+ * @param tokenSymbol - The token symbol to verify
  */
-export const importAndVerifyToken = async (
+export async function importAndVerifyTestToken(
   driver: Driver,
-  tokenConfig: TokenImportConfig,
-  expectedSymbol: string,
-): Promise<void> => {
-  await importCustomToken(driver, tokenConfig);
-  await verifyTokenImported(driver, expectedSymbol);
-};
+  contractAddress: string,
+  networkChainId: string,
+  tokenSymbol: string,
+): Promise<void> {
+  const tokenConfig: TokenImportConfig = {
+    contractAddress,
+    networkChainId,
+  };
+
+  await importTestToken(driver, tokenConfig);
+  await verifyTokenInAssetList(driver, tokenSymbol);
+}

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+
 import { Driver } from '../../../webdriver/driver';
 import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/erc20-approve-transaction-confirmation';
 import { importTestToken } from '../../../page-objects/flows/import-token.flow';
@@ -82,7 +82,10 @@ async function mocks(server: MockttpServer) {
 
 async function importTST(driver: Driver) {
   // Use the new token import flow
-  await importTestToken(driver, '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947');
+  await importTestToken(driver, {
+    contractAddress: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+    networkChainId: '0x539',
+  });
 }
 
 async function createERC20ApproveTransaction(driver: Driver) {

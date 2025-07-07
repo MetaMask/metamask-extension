@@ -144,29 +144,36 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
   }
 
   /**
-   * Verifies all advanced details sections are displayed after expanding advanced details
+   * Verify advanced details sections are displayed after expanding
+   *
+   * This method checks for the presence of all key advanced detail sections
+   * that should be visible after expanding the advanced details section.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_advancedDetails(): Promise<void> {
+  async verifyAdvancedDetailsSections(): Promise<void> {
     console.log('Verify all advanced details sections are displayed');
     await this.driver.waitForSelector(this.spenderSection);
     await this.driver.waitForSelector(this.requestFromSection);
     await this.driver.waitForSelector(this.interactingWithSection);
     await this.driver.waitForSelector(this.methodSection);
-    // Also verify the spending cap section appears in advanced details
     await this.driver.waitForSelector(this.spendingCapSection);
   }
 
   /**
-   * Expands advanced details and verifies all sections are displayed
+   * Complete flow to expand advanced details and verify all sections
    */
   async expandAndVerifyAdvancedDetails(): Promise<void> {
     console.log('Expanding advanced details and verifying all sections');
-    // Add a delay as mentioned in the original test
+
+    // Small delay to ensure UI is ready
     await this.driver.delay(1000);
-    await this.clickAdvancedDetailsButton();
-    await this.check_advancedDetails();
+
+    // Expand the advanced details section
+    await this.driver.clickElement(
+      '[data-testid="header-advanced-details-button"]',
+    );
+
+    // Verify all sections are displayed
+    await this.verifyAdvancedDetailsSections();
   }
 
   /**
