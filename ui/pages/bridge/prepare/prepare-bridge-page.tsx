@@ -372,6 +372,7 @@ const PrepareBridgePage = () => {
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
   const isSolanaSwap = useSelector(getIsSolanaSwap);
+  const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
   const isDestinationSolana = useMemo(() => {
     if (!toChain?.chainId) {
@@ -448,6 +449,15 @@ const PrepareBridgePage = () => {
   }, []);
 
   useEffect(() => {
+    // Don't fetch quotes if destination address is required but missing
+    // Typically occurs when the user switches the destination account.
+    const needsDestinationAddress =
+      isSolanaBridgeEnabled && isToOrFromSolana && !selectedDestinationAccount;
+
+    if (needsDestinationAddress) {
+      return;
+    }
+
     dispatch(setSelectedQuote(null));
     debouncedUpdateQuoteRequestInController(quoteParams, {
       stx_enabled: smartTransactionsEnabled,
@@ -456,7 +466,7 @@ const PrepareBridgePage = () => {
       security_warnings: [],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [quoteParams]);
+  }, [quoteParams, isSolanaBridgeEnabled, isToOrFromSolana]);
 
   const trackInputEvent = useCallback(
     (
@@ -613,8 +623,6 @@ const PrepareBridgePage = () => {
   );
   const toTokenIsNotNative =
     toToken?.address && !isNativeAddress(toToken?.address);
-
-  const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
   const [showBlockExplorerToast, setShowBlockExplorerToast] = useState(false);
   const [blockExplorerToken, setBlockExplorerToken] =
