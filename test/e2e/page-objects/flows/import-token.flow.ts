@@ -1,4 +1,5 @@
 import { Driver } from '../../webdriver/driver';
+import { WINDOW_TITLES } from '../../helpers';
 
 /**
  * Configuration for importing a custom token
@@ -23,7 +24,7 @@ export async function importTestToken(
   );
 
   // Switch to MetaMask window
-  await driver.switchToWindowWithTitle('MetaMask');
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
   // Navigate to import tokens
   await driver.clickElement(
