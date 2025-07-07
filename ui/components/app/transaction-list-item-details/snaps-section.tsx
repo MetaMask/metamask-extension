@@ -7,9 +7,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import { SnapInsight } from './snap-insight';
 
-export const SnapsSection = (props) => {
-  console.log('kylan snaps-section.tsx props', props); // not receiving transactionMeta
-  const { data } = useInsightSnaps(props?.transactionMeta?.id);
+export const SnapsSection = ({ transactionMeta }) => {
+  console.log('kylan snaps-section.tsx transactionMeta', transactionMeta); // not receiving transactionMeta
+  const { data } = useInsightSnaps(transactionMeta?.id);
   console.log('kylan snaps-section.tsx data', data);
 
   if (data.length === 0) {

@@ -345,7 +345,7 @@ export default class TransactionListItemDetails extends PureComponent {
             </div>
           </div>
         </div>
-        <TransactionDetailsPluggableSection />
+        <TransactionDetailsPluggableSection transactionMeta={transaction} />
       </Popover>
     );
   }
