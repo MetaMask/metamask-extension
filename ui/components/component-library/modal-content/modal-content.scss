@@ -29,7 +29,7 @@
 
   &__dialog {
     --modal-content-size: var(--size, 360px);
-
+    min-height: 400px;
     max-height: 100%;
     box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
 

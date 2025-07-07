@@ -108,7 +108,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
         <RecoveryPhraseChips
           secretRecoveryPhrase={secretRecoveryPhrase.split(' ')}
         />
-        <Box>
+        <Box marginTop={4}>
           {[
             'seedPhraseReviewDetails',
             'seedPhraseReviewDetails1',
