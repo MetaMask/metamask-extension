@@ -4,8 +4,8 @@ import { getSnapInsights } from '../../selectors';
 
 export function useInsightSnaps(id) {
   const insight = useSelector((state) => {
-    console.log('kylan useInsightSnaps state', state);
-    return getSnapInsights(state, id);
+    const result = getSnapInsights(state, id);
+    return result;
   });
 
   const data = insight ? Object.values(insight) : [];
