@@ -36,7 +36,7 @@ jobs:
 
       - name: Set empty fallback password
         if: steps.configure.outcome != 'success'
-        run: echo "ECR_PASSWORD=" >> "$GITHUB_ENV"
+        run: echo "ECR_PASSWORD=dummy" >> "$GITHUB_ENV"
 
       - name: Set output from env
         id: set-output

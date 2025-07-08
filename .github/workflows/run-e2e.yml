@@ -39,9 +39,9 @@ on:
         description: The path to the test artifacts
     secrets:
       CONTAINER_REGISTRY_USERNAME:
-        required: false
+        required: true
       CONTAINER_REGISTRY_TOKEN:
-        required: false
+        required: true
 
 jobs:
   run-e2e:
