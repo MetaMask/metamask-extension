@@ -12,7 +12,7 @@ import SetApprovalForAllTransactionConfirmation from '../../page-objects/pages/c
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
 describe('Ledger Hardware', function (this: Suite) {
-  it('can perform all actions on an ERC-721 token', async function () {
+  it('can perform actions on an ERC-721 token', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -36,7 +36,7 @@ describe('Ledger Hardware', function (this: Suite) {
           '1208925.8196',
         );
 
-        // deploy
+        // deploy action
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
         await testDappPage.check_pageIsLoaded();
@@ -50,7 +50,7 @@ describe('Ledger Hardware', function (this: Suite) {
           '0xcB17707e0623251182A654BEdaE16429C78A7424',
         );
 
-        // mint
+        // mint action
         await testDappPage.clickERC721MintButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const mintConfirmation = new TransactionConfirmation(driver);
@@ -68,7 +68,7 @@ describe('Ledger Hardware', function (this: Suite) {
         await activityListPage.check_transactionActivityByText('Deposit');
         await activityListPage.check_waitForTransactionStatus('confirmed');
 
-        // approve
+        // approve action
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDappPage.clickERC721ApproveButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
