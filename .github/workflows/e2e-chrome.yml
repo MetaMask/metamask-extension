@@ -18,7 +18,7 @@ jobs:
   prepare-ecr-auth:
     runs-on: ubuntu-latest
     outputs:
-      ecr_password: ${{ steps.login.outputs.password }}
+      ecr_password: ${{ steps.set-output.outputs.password }}
     steps:
       - name: Configure AWS credentials
         id: configure
@@ -28,13 +28,21 @@ jobs:
           role-to-assume: ${{ inputs.container-registry-role }}
           aws-region: us-east-1
 
-      - name: Get ECR public login password
+      - name: Try to get ECR login password
+        id: login-success
         if: steps.configure.outcome == 'success'
-        run: echo "password=$(aws ecr-public get-login-password --region us-east-1)" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "ECR_PASSWORD=$(aws ecr-public get-login-password --region us-east-1)" >> $GITHUB_ENV
 
-      - name: Set empty password fallback
+      - name: Set empty fallback password
         if: steps.configure.outcome != 'success'
-        run: echo "password=" >> "$GITHUB_OUTPUT"
+        run: echo "ECR_PASSWORD=" >> $GITHUB_ENV
+
+      - name: Set output from env
+        id: set-output
+        run: echo "password=$ECR_PASSWORD" >> "$GITHUB_OUTPUT"
+        env:
+          ECR_PASSWORD: ${{ env.ECR_PASSWORD }}
 
   test-e2e-chrome-browserify:
     needs: prepare-ecr-auth
