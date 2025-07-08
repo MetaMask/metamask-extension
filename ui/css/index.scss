@@ -1,6 +1,7 @@
 /*
   MetaMask design system imports
 */
+@import './tailwind';
 @import './utilities/fonts.scss';
 @import './utilities/colors.scss';
 @import './utilities/opacity.scss';
@@ -12,7 +13,6 @@
 @import '../pages/pages';
 @import './errors.scss';
 @import './loading.scss';
-@import './tailwind';
 
 /*
   ITCSS
