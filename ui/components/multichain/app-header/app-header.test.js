@@ -147,11 +147,6 @@ describe('App Header', () => {
         );
         fireEvent.click(settingsButton);
 
-        const settingsMenu = container.querySelector(
-          '[data-testid="global-menu"]',
-        );
-        fireEvent.click(settingsMenu);
-
         const globalMenuSupportButton = container.querySelector(
           '[data-testid="global-menu-support"]',
         );
