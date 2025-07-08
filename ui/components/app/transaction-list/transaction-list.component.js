@@ -385,6 +385,20 @@ export default function TransactionList({
     getSelectedMultichainNetworkChainId,
   );
 
+  console.log('enabledNetworksByNamespace', enabledNetworksByNamespace);
+
+  const unfilteredCompletedTransactions = useMemo(() => {
+    return isTokenNetworkFilterEqualCurrentNetwork ||
+      overrideFilterForCurrentChain
+      ? unfilteredCompletedTransactionsCurrentChain
+      : unfilteredCompletedTransactionsAllChains;
+  }, [
+    isTokenNetworkFilterEqualCurrentNetwork,
+    unfilteredCompletedTransactionsAllChains,
+    unfilteredCompletedTransactionsCurrentChain,
+    overrideFilterForCurrentChain,
+  ]);
+
   const enabledNetworksFilteredCompletedTransactions = useMemo(() => {
     if (!enabledNetworksByNamespace || !currentMultichainChainId) {
       return unfilteredCompletedTransactionsAllChains;
@@ -417,6 +431,8 @@ export default function TransactionList({
   }, [
     enabledNetworksByNamespace,
     currentMultichainChainId,
+    isTokenNetworkFilterEqualCurrentNetwork,
+    unfilteredCompletedTransactionsCurrentChain,
     unfilteredCompletedTransactionsAllChains,
   ]);
 
@@ -429,6 +445,8 @@ export default function TransactionList({
   const unfilteredRemoteModePendingTransactionsAllChains = useSelector(
     remoteModeNonceSortedPendingTransactionsSelectorAllChains,
   );
+
+  console.log('isRemoteModeEnabled', isRemoteModeEnabled);
 
   const unfilteredRemoteModePendingTransactions = useMemo(() => {
     if (!isRemoteModeEnabled) {
@@ -465,6 +483,11 @@ export default function TransactionList({
     unfilteredRemoteModeCompletedTransactionsCurrentChain,
     isRemoteModeEnabled,
   ]);
+
+  console.log(
+    'unfilteredRemoteModeCompletedTransactions',
+    unfilteredRemoteModeCompletedTransactionsCurrentChain,
+  );
 
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -538,7 +561,9 @@ export default function TransactionList({
       groupEvmTransactionsByDate(
         getFilteredTransactionGroupsAllChains(
           [
-            ...enabledNetworksFilteredCompletedTransactions,
+            ...(isGlobalNetworkSelectorRemoved
+              ? enabledNetworksFilteredCompletedTransactions
+              : unfilteredCompletedTransactions),
             ...unfilteredRemoteModeCompletedTransactions,
           ],
           hideTokenTransactions,
@@ -549,6 +574,7 @@ export default function TransactionList({
       hideTokenTransactions,
       tokenAddress,
       enabledNetworksFilteredCompletedTransactions,
+      unfilteredCompletedTransactions,
       unfilteredRemoteModeCompletedTransactions,
     ],
   );
