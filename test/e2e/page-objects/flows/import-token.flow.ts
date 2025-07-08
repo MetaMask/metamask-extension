@@ -10,10 +10,11 @@ import { AssetList } from '../pages/asset-list';
 type TokenImportConfig = {
   contractAddress: string;
   networkChainId: string;
+  tokenSymbol: string;
 };
 
 /**
- * Import a custom token using proper POM pattern
+ * Import a custom token using proper POM pattern and verify it appears in the asset list
  *
  * @param driver - The WebDriver instance
  * @param tokenConfig - Configuration for the token to import
@@ -42,7 +43,17 @@ export async function importTestToken(
     tokenConfig.networkChainId,
   );
 
+  // Wait for the import modal to close
+  await driver.assertElementNotPresent('.import-tokens-modal');
+
   console.log('Custom token import completed successfully');
+
+  // Navigate to tokens tab to see the imported token
+  await homePage.goToTokensTab();
+
+  // Verify token appears in asset list
+  const assetList = new AssetList(driver);
+  await assetList.verifyTokenIsVisible(tokenConfig.tokenSymbol);
 }
 
 /**
@@ -59,9 +70,5 @@ export async function importAndVerifyToken(
   networkChainId: string,
   tokenSymbol: string,
 ): Promise<void> {
-  await importTestToken(driver, { contractAddress, networkChainId });
-
-  // Use AssetList page object directly
-  const assetList = new AssetList(driver);
-  await assetList.verifyTokenIsVisible(tokenSymbol);
+  await importTestToken(driver, { contractAddress, networkChainId, tokenSymbol });
 }

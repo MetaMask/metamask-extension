@@ -85,6 +85,7 @@ async function importTST(driver: Driver) {
   await importTestToken(driver, {
     contractAddress: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
     networkChainId: '0x539',
+    tokenSymbol: 'TST',
   });
 }
 
