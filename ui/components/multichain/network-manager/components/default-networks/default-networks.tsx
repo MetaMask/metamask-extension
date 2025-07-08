@@ -132,17 +132,10 @@ const DefaultNetworks = memo(() => {
         FEATURED_NETWORK_CHAIN_IDS.includes(chainId as `0x${string}`),
     ).length;
 
-    console.log('enabledNetworks *************', enabledNetworks);
-
     const addedFeaturedNetworksCount = Object.keys(evmNetworks).filter(
       (chainId) =>
         FEATURED_NETWORK_CHAIN_IDS.includes(chainId as `0x${string}`),
     ).length;
-
-    console.log(
-      'addedFeaturedNetworksCount *************',
-      addedFeaturedNetworksCount,
-    );
 
     // All popular networks are selected if we have more than one enabled
     // and all added featured networks are enabled
