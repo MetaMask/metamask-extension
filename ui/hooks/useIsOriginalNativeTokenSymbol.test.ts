@@ -19,7 +19,7 @@ const arrangeMocks = () => {
   const createMockProviderConfig = () =>
     ({
       ticker: 'ETH',
-    } as MultichainSelectorsModule.MultichainNetwork['network']);
+    }) as MultichainSelectorsModule.MultichainNetwork['network'];
   const mockGetMultichainCurrentNetwork = jest
     .spyOn(MultichainSelectorsModule, 'getMultichainCurrentNetwork')
     .mockReturnValue(createMockProviderConfig());

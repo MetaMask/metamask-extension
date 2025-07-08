@@ -1,9 +1,8 @@
 import { strict as assert } from 'assert';
+import { By } from 'selenium-webdriver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import {
   clickCancelButton,
   clickConfirmButton,
@@ -126,19 +125,16 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
             await driver.delay(largeDelayMs);
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            // Look for the permission to be set to Devnet
-            const connectAccountConfirmation = new ConnectAccountConfirmation(
-              driver,
+            // Confirm connection
+            await driver.clickElement({ text: 'Connect', tag: 'button' });
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+            // Look for the target chain to be set to Devnet
+            const permission = await driver.findElement(
+              By.xpath("//p[contains(text(), 'Solana Devnet')]"),
             );
-            await connectAccountConfirmation.check_pageIsLoaded();
-            await connectAccountConfirmation.goToPermissionsTab();
-            await connectAccountConfirmation.openEditNetworksModal();
-            const networkPermissionSelectModal =
-              new NetworkPermissionSelectModal(driver);
-            await networkPermissionSelectModal.check_pageIsLoaded();
-            await networkPermissionSelectModal.check_networkStatus([
-              'Solana Devnet',
-            ]);
+
+            assert.ok(permission);
           },
         );
       });

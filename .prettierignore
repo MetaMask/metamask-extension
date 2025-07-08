@@ -8,6 +8,7 @@ node_modules/**/*
 /changed-files/**/*
 /coverage/**/*
 /development/chromereload.js
+/development/circular-deps.jsonc
 /development/ts-migration-dashboard/filesToConvert.json
 /development/ts-migration-dashboard/build/**
 /dist/**/*
@@ -16,4 +17,4 @@ node_modules/**/*
 /test-artifacts/**/*
 /test/test-results/**/*
 /test/e2e/send-eth-with-private-key-test/**/*
-/CHANGELOG.md
+CHANGELOG*.md

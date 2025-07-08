@@ -74,9 +74,8 @@ describe('Block Explorer', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes, contractRegistry }) => {
-        const contractAddress = await contractRegistry.getContractAddress(
-          smartContract,
-        );
+        const contractAddress =
+          await contractRegistry.getContractAddress(smartContract);
         await loginWithBalanceValidation(driver, localNodes[0]);
 
         // View TST token in block explorer

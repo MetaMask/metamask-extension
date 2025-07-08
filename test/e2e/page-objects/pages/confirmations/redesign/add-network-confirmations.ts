@@ -14,6 +14,8 @@ class AddNetworkConfirmation {
   /**
    * @param networkName - The name of the network to check for in the confirmation page
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(networkName: string): Promise<void> {
     try {
       await this.driver.waitForSelector({
@@ -52,6 +54,8 @@ class AddNetworkConfirmation {
   /**
    * Checks if the approve button is enabled on add network confirmation page.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_isApproveButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.approveButton, {
@@ -65,6 +69,8 @@ class AddNetworkConfirmation {
     return true;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_warningMessageIsDisplayed(message: string) {
     console.log(
       `Checking if warning message ${message} is displayed on add network confirmation page`,

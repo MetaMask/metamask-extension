@@ -17,6 +17,8 @@ import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/conf
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useNestedTransactionLabels } from '../../hooks/useNestedTransactionLabels';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NestedTransactionData() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { nestedTransactions } = currentConfirmation ?? {};
@@ -38,6 +40,8 @@ export function NestedTransactionData() {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function NestedTransaction({
   index,
   nestedTransaction,

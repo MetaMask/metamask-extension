@@ -15,6 +15,7 @@ import {
   EXPECTED_EVENT_TYPES,
 } from '../bridge/bridge-test-utils';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import { disableStxSetting } from '../../page-objects/flows/toggle-stx-setting.flow';
 
 const quote = {
   amount: '25',
@@ -36,6 +37,10 @@ describe('Bridge tests', function (this: Suite) {
       ),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
+        // disable smart transactions step by step for all bridge flows
+        // we cannot use fixtures because migration 135 overrides the opt in value to true
+        await disableStxSetting(driver);
+
         const homePage = new HomePage(driver);
         await homePage.check_expectedBalanceIsDisplayed('24');
 
@@ -211,17 +216,25 @@ describe('Bridge tests', function (this: Suite) {
 
         const assetTypeCheck1 = [
           (req: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             properties: { asset_type: string; token_standard: string };
           }) => req.properties.asset_type === 'TOKEN',
           (req: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             properties: { asset_type: string; token_standard: string };
           }) => req.properties.token_standard === 'ERC20',
         ];
         const assetTypeCheck2 = [
           (req: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             properties: { asset_type: string; token_standard: string };
           }) => req.properties.asset_type === 'NATIVE',
           (req: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             properties: { asset_type: string; token_standard: string };
           }) => req.properties.token_standard === 'NONE',
         ];

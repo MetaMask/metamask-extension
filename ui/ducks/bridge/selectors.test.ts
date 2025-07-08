@@ -495,6 +495,7 @@ describe('Bridge selectors', () => {
       });
 
       const recommendedQuoteMetadata = {
+        includedTxFees: null,
         adjustedReturn: {
           usd: '13.84343712858974048',
           valueInCurrency: '13.84343712858974048',
@@ -611,6 +612,7 @@ describe('Bridge selectors', () => {
       const result = getBridgeQuotes(state as never);
 
       const recommendedQuoteMetadata = {
+        includedTxFees: null,
         adjustedReturn: {
           valueInCurrency: '13.843437128589739081572',
           usd: '39.080515131939180597564',
@@ -741,6 +743,7 @@ describe('Bridge selectors', () => {
       const result = getBridgeQuotes(state as never);
 
       const recommendedQuoteMetadata = {
+        includedTxFees: null,
         adjustedReturn: {
           valueInCurrency: '13.84343712858974048',
           usd: '13.8244357717948096',
@@ -1294,7 +1297,10 @@ describe('Bridge selectors', () => {
         bridgeSliceOverrides: {
           toChainId: formatChainIdToCaip('0x89'),
           fromToken: { address: zeroAddress(), symbol: 'ETH' },
-          toToken: { address: zeroAddress(), symbol: 'TEST' },
+          toToken: {
+            address: zeroAddress(),
+            symbol: 'TEST',
+          },
           fromTokenInputValue: '1',
           fromTokenExchangeRate: 2524.25,
           toTokenExchangeRate: 0.61,
@@ -1336,6 +1342,10 @@ describe('Bridge selectors', () => {
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee
           .valueInCurrency,
       ).toBe('2.52456519372708012');
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.toTokenAmount
+          .valueInCurrency,
+      ).toBe('14.90773022');
       expect(
         getBridgeQuotes(state as never).activeQuote?.adjustedReturn
           .valueInCurrency,

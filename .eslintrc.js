@@ -207,6 +207,65 @@ module.exports = {
             ignoreRestSiblings: true,
           },
         ],
+        // This rule temporarily applies the latest `@typescript-eslint/naming-convention` config found in `@metamask/eslint-config`.
+        // TODO: Remove once `@metamask/eslint-config` is updated to `^14.0.0`.
+        '@typescript-eslint/naming-convention': [
+          'error',
+          {
+            selector: 'default',
+            format: ['camelCase'],
+            leadingUnderscore: 'allow',
+            trailingUnderscore: 'forbid',
+          },
+          { selector: 'enumMember', format: ['PascalCase'] },
+          {
+            selector: 'import',
+            format: ['camelCase', 'PascalCase', 'snake_case', 'UPPER_CASE'],
+          },
+          {
+            selector: 'interface',
+            format: ['PascalCase'],
+            custom: { regex: '^I[A-Z]', match: false },
+          },
+          {
+            selector: 'objectLiteralMethod',
+            format: ['camelCase', 'PascalCase', 'UPPER_CASE'],
+          },
+          {
+            selector: 'objectLiteralProperty',
+            format: ['camelCase', 'PascalCase', 'UPPER_CASE'],
+          },
+          { selector: 'typeLike', format: ['PascalCase'] },
+          {
+            selector: 'typeParameter',
+            format: ['PascalCase'],
+            custom: { regex: '^.{3,}', match: true },
+          },
+          {
+            selector: 'variable',
+            format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
+            leadingUnderscore: 'allow',
+          },
+          {
+            selector: 'parameter',
+            format: ['camelCase', 'PascalCase'],
+            leadingUnderscore: 'allow',
+          },
+          {
+            selector: [
+              'classProperty',
+              'objectLiteralProperty',
+              'typeProperty',
+              'classMethod',
+              'objectLiteralMethod',
+              'typeMethod',
+              'accessor',
+              'enumMember',
+            ],
+            format: null,
+            modifiers: ['requiresQuotes'],
+          },
+        ],
       },
       settings: {
         'import/resolver': {

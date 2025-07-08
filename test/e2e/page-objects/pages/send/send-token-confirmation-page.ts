@@ -17,6 +17,8 @@ class SendTokenConfirmPage {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_nftTransfer(options: {
     sender: string;
     recipient: string;
@@ -46,6 +48,8 @@ class SendTokenConfirmPage {
     console.log('NFT transfer details are displayed correctly');
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_tokenTransfer(options: {
     sender: string;
     recipient: string;
@@ -83,6 +87,8 @@ class SendTokenConfirmPage {
     console.log('Token transfer details are correct');
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     console.log('Checking if Send Token Confirmation page is loaded');
     await this.driver.waitForSelector(this.recipientAddress, {

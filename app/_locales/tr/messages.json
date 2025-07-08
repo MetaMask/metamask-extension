@@ -2226,9 +2226,6 @@
   "floatAmountToken": {
     "message": "Token miktarı tam sayı olmalıdır"
   },
-  "followUsOnTwitter": {
-    "message": "Bizi Twitter'da takip edin"
-  },
   "forbiddenIpfsGateway": {
     "message": "Yasaklı IPFS Ağ Geçidi: Lütfen bir CID ağ geçidi belirtin"
   },

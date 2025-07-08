@@ -24,13 +24,6 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
   variables,
   version,
 }) {
-  const { googleClientId, appleClientId } = getGoogleAndAppleClientId({
-    buildType,
-    variables,
-    environment,
-    testing: isTestBuild,
-  });
-
   variables.set({
     DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
     EIP_4337_ENTRYPOINT: isTestBuild
@@ -68,8 +61,21 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
       isDevBuild && variables.getMaybe('TEST_GAS_FEE_FLOWS') === true,
     DEEP_LINK_HOST: variables.getMaybe('DEEP_LINK_HOST'),
     DEEP_LINK_PUBLIC_KEY: variables.getMaybe('DEEP_LINK_PUBLIC_KEY'),
-    GOOGLE_CLIENT_ID: googleClientId,
-    APPLE_CLIENT_ID: appleClientId,
+    SEEDLESS_ONBOARDING_ENABLED: isTestBuild
+      ? 'true'
+      : variables.getMaybe('SEEDLESS_ONBOARDING_ENABLED'),
+    GOOGLE_CLIENT_ID: getGoogleClientId({
+      buildType,
+      variables,
+      environment,
+      testing: isTestBuild,
+    }),
+    APPLE_CLIENT_ID: getAppleClientId({
+      buildType,
+      variables,
+      environment,
+      testing: isTestBuild,
+    }),
   });
 };
 
@@ -147,7 +153,7 @@ function getInfuraProjectId({ buildType, variables, environment, testing }) {
 }
 
 /**
- * Get the Google and Apple client IDs for the current build.
+ * Get the Google client ID for the current build.
  *
  * @param {object} options - The Google and Apple client IDs options.
  * @param {string} options.buildType - The current build type.
@@ -156,41 +162,72 @@ function getInfuraProjectId({ buildType, variables, environment, testing }) {
  * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
  * @returns {object} The Google and Apple client IDs.
  */
-function getGoogleAndAppleClientId({
-  buildType,
-  variables,
-  environment,
-  testing,
-}) {
-  const isSeedlessOnboardingEnabled = variables.get(
-    'SEEDLESS_ONBOARDING_ENABLED',
-  );
+function getGoogleClientId({ buildType, variables, environment, testing }) {
+  const isSeedlessOnboardingEnabled =
+    variables.get('SEEDLESS_ONBOARDING_ENABLED')?.toString() === 'true';
   if (
     testing ||
     environment !== ENVIRONMENT.PRODUCTION ||
     !isSeedlessOnboardingEnabled
   ) {
-    return {
-      googleClientId: variables.get('GOOGLE_CLIENT_ID'),
-      appleClientId: variables.get('APPLE_CLIENT_ID'),
-    };
+    if (
+      isSeedlessOnboardingEnabled &&
+      !variables.isDefined('GOOGLE_CLIENT_ID')
+    ) {
+      throw new Error(
+        'GOOGLE_CLIENT_ID is not set for seedless onboarding enabled build',
+      );
+    }
+    return variables.get('GOOGLE_CLIENT_ID');
   }
 
   const googleClientIdReference = variables.get('GOOGLE_CLIENT_ID_REF');
-  const appleClientIdReference = variables.get('APPLE_CLIENT_ID_REF');
   assert(
     typeof googleClientIdReference === 'string' &&
       googleClientIdReference.length > 0,
     `Build type "${buildType}" has improperly set GOOGLE_CLIENT_ID_REF in builds.yml. Current value: "${googleClientIdReference}"`,
   );
+  const googleClientId = variables.get(googleClientIdReference);
+  return googleClientId;
+}
+
+/**
+ * Get the Apple OAuth2 client ID for the current build.
+ *
+ * @param {object} options - The Apple client ID options.
+ * @param {string} options.buildType - The current build type.
+ * @param {keyof ENVIRONMENT} options.environment - The current build environment.
+ * @param {boolean} options.testing - Whether this is a test build or not.
+ * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
+ * @returns {string} The Apple client ID.
+ */
+function getAppleClientId({ buildType, variables, environment, testing }) {
+  const isSeedlessOnboardingEnabled =
+    variables.get('SEEDLESS_ONBOARDING_ENABLED')?.toString() === 'true';
+  if (
+    testing ||
+    environment !== ENVIRONMENT.PRODUCTION ||
+    !isSeedlessOnboardingEnabled
+  ) {
+    if (
+      isSeedlessOnboardingEnabled &&
+      !variables.isDefined('APPLE_CLIENT_ID')
+    ) {
+      throw new Error(
+        'APPLE_CLIENT_ID is not set for seedless onboarding enabled build',
+      );
+    }
+    return variables.get('APPLE_CLIENT_ID');
+  }
+
+  const appleClientIdReference = variables.get('APPLE_CLIENT_ID_REF');
   assert(
     typeof appleClientIdReference === 'string' &&
       appleClientIdReference.length > 0,
     `Build type "${buildType}" has improperly set APPLE_CLIENT_ID_REF in builds.yml. Current value: "${appleClientIdReference}"`,
   );
-  const googleClientId = variables.get(googleClientIdReference);
   const appleClientId = variables.get(appleClientIdReference);
-  return { googleClientId, appleClientId };
+  return appleClientId;
 }
 
 /**

@@ -25,6 +25,8 @@ export const signatureRequestSIWE = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'b826df20-2eda-41bf-becf-6a100141a8be',
   },
@@ -63,6 +65,8 @@ export const SignatureRequestSIWEWithResources = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'b826df20-2eda-41bf-becf-6a100141a8be',
   },

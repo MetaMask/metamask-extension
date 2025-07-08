@@ -5,6 +5,8 @@
 
   .wallet-details-page__rows-container {
     .wallet-details-page__row {
+      margin-bottom: 1px;
+
       &:first-of-type {
         border-top-left-radius: 8px;
         border-top-right-radius: 8px;

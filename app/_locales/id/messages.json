@@ -2226,9 +2226,6 @@
   "floatAmountToken": {
     "message": "Jumlah token harus berupa bilangan bulat"
   },
-  "followUsOnTwitter": {
-    "message": "Ikuti kami di Twitter"
-  },
   "forbiddenIpfsGateway": {
     "message": "Gateway IPFS Terlarang: Tentukan gateway CID"
   },

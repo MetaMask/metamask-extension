@@ -37,6 +37,8 @@ describe('useTrustSignals', () => {
   describe('useTrustSignal', () => {
     it('returns the first result from useTrustSignals', () => {
       getAddressSecurityAlertResponseMock.mockReturnValue({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         result_type: ResultType.Malicious,
         label: TRUST_LABEL_MOCK,
       });
@@ -54,6 +56,8 @@ describe('useTrustSignals', () => {
     describe('Ethereum addresses with security alert responses', () => {
       it('returns malicious state for malicious addresses', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.Malicious,
           label: TRUST_LABEL_MOCK,
         });
@@ -81,6 +85,8 @@ describe('useTrustSignals', () => {
 
       it('returns warning state for warning addresses', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.Warning,
           label: WARNING_LABEL_MOCK,
         });
@@ -103,6 +109,8 @@ describe('useTrustSignals', () => {
 
       it('returns verified state for trusted addresses', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.Trusted,
           label: VERIFIED_LABEL_MOCK,
         });
@@ -125,6 +133,8 @@ describe('useTrustSignals', () => {
 
       it('returns unknown state for benign addresses', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.Benign,
           label: 'Benign Address',
         });
@@ -147,6 +157,8 @@ describe('useTrustSignals', () => {
 
       it('returns unknown state for error result type', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.ErrorResult,
           label: 'Error occurred',
         });
@@ -190,6 +202,8 @@ describe('useTrustSignals', () => {
 
       it('handles missing label gracefully', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.Trusted,
         });
 
@@ -254,10 +268,14 @@ describe('useTrustSignals', () => {
       it('handles multiple requests correctly', () => {
         getAddressSecurityAlertResponseMock
           .mockReturnValueOnce({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: ResultType.Malicious,
             label: TRUST_LABEL_MOCK,
           })
           .mockReturnValueOnce({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: ResultType.Trusted,
             label: VERIFIED_LABEL_MOCK,
           });
@@ -309,6 +327,8 @@ describe('useTrustSignals', () => {
     describe('Edge cases', () => {
       it('handles mixed address types in multiple requests', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.Malicious,
           label: TRUST_LABEL_MOCK,
         });

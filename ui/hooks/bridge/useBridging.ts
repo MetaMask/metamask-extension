@@ -71,8 +71,14 @@ const useBridging = () => {
               location === 'Home'
                 ? MetaMetricsSwapsEventSource.MainView
                 : MetaMetricsSwapsEventSource.TokenView,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id_source: formatChainIdToCaip(providerConfig.chainId),
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol_source: token.symbol,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_address_source: token.address,
           },
         });
@@ -82,9 +88,13 @@ const useBridging = () => {
             : MetaMetricsEventName.BridgeLinkClicked,
           category: MetaMetricsEventCategory.Navigation,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol: token.symbol,
             location,
             text: isSwap ? 'Swap' : 'Bridge',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id: providerConfig.chainId,
           },
         });
@@ -96,7 +106,11 @@ const useBridging = () => {
                 location === 'Home'
                   ? MetaMetricsSwapsEventSource.MainView
                   : MetaMetricsSwapsEventSource.TokenView,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_source: token.symbol,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_destination: null,
             },
           ),
@@ -131,7 +145,11 @@ const useBridging = () => {
             location,
             text: 'Bridge',
             url: portfolioUrl,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id: providerConfig.chainId,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol: token.symbol,
           },
         });

@@ -29,6 +29,7 @@
     "isLoading": "boolean",
     "isNftStillFetchingIndication": "boolean",
     "showNftDetectionEnablementToast": "boolean",
+    "showPasswordChangeToast": null,
     "loadingMessage": "undefined",
     "warning": "string",
     "buyView": "object",
@@ -368,6 +369,7 @@
     "accountTree": "object",
     "encryptionKey": "string",
     "encryptionSalt": "string",
+    "socialBackupsMetadata": "object",
     "srpSessionData": "object"
   },
   "ramps": "object",

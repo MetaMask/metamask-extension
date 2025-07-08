@@ -2226,9 +2226,6 @@
   "floatAmountToken": {
     "message": "Token-Betrag muss eine ganze Zahl sein"
   },
-  "followUsOnTwitter": {
-    "message": "Folgen Sie uns auf Twitter."
-  },
   "forbiddenIpfsGateway": {
     "message": "Verbotene IPFS-Gateway: Bitte geben Sie ein CID-Gateway an."
   },

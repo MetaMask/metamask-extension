@@ -1,6 +1,5 @@
 import browser from 'webextension-polyfill';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { getPlatform } from '../../lib/util';
+import { mockWebAuthenticator } from '../../../../test/e2e/helpers/seedless-onboarding/mocks';
 import { WebAuthenticator } from './types';
 import { base64urlencode } from './utils';
 
@@ -62,31 +61,15 @@ function getRedirectURL(): string {
   return identityAPI.getRedirectURL();
 }
 
-async function requestIdentityPermission(): Promise<boolean> {
-  const isFirefox = getPlatform() === PLATFORM_FIREFOX;
-  if (isFirefox) {
-    // in Firefox, 'identity' permission is not supported with the runtime permission request.
-    // so we have to set 'identity' permission as required permission, in the firefox manifest.json file
-    // since, the 'identity' was requested as installation permission, we don't need to re-request it here.
-    // However, we still need to check if the permission is granted, coz the existing extension users might not have the permission.
-    const grantedPermissions = browser.permissions;
-    console.log('grantedPermissions', grantedPermissions);
-    return grantedPermissions.contains({ permissions: ['identity'] });
+export function webAuthenticatorFactory(): WebAuthenticator {
+  if (process.env.IN_TEST) {
+    return mockWebAuthenticator();
   }
 
-  // for other browsers, we can request the permission at runtime
-  const permissionGranted = await chrome.permissions.request({
-    permissions: ['identity'],
-  });
-  return permissionGranted;
-}
-
-export function webAuthenticatorFactory(): WebAuthenticator {
   return {
     launchWebAuthFlow,
     generateCodeVerifierAndChallenge,
     generateNonce,
     getRedirectURL,
-    requestIdentityPermission,
   };
 }

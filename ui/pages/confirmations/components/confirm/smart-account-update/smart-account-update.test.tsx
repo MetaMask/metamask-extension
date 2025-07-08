@@ -11,6 +11,8 @@ import { setSmartAccountOptInForAccounts } from '../../../../../store/actions';
 import { SmartAccountUpdate } from './smart-account-update';
 
 jest.mock('../../../../../hooks/useMultiPolling', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));

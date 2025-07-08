@@ -36,6 +36,8 @@ class ConnectAccountConfirmation {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -83,6 +85,8 @@ class ConnectAccountConfirmation {
     await editButtons[1].click();
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_isConfirmButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.confirmConnectButton, {

@@ -299,7 +299,7 @@ export const BridgeInputGroup = ({
             }}
           >
             {formatTokenAmount(locale, balanceAmount.toString(), token.symbol)}
-            {onMaxButtonClick && !isNativeAddress(token.address) && (
+            {onMaxButtonClick && (
               <ButtonLink
                 variant={TextVariant.bodyMd}
                 onClick={() => onMaxButtonClick(balanceAmount.toFixed())}

@@ -2226,9 +2226,6 @@
   "floatAmountToken": {
     "message": "Η ποσότητα των Τokens πρέπει να είναι ακέραιος αριθμός"
   },
-  "followUsOnTwitter": {
-    "message": "Ακολουθήστε μας στο Twitter"
-  },
   "forbiddenIpfsGateway": {
     "message": "Απαγορευμένη πύλη IPFS: Παρακαλώ καθορίστε μια πύλη CID"
   },

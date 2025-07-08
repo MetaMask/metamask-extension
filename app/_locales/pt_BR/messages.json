@@ -742,9 +742,6 @@
     "message": "Eu aceito os riscos",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
   },
-  "followUsOnTwitter": {
-    "message": "Siga-nos no Twitter"
-  },
   "forbiddenIpfsGateway": {
     "message": "Gateway IPFS proibido: especifique um gateway de CID"
   },

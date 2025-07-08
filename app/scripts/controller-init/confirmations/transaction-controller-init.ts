@@ -96,8 +96,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       isEnabled: () =>
         preferencesController().state.useExternalServices &&
         onboardingController().state.completedOnboarding,
-      queryEntireHistory: false,
-      updateTransactions: false,
+      updateTransactions: true,
     },
     isAutomaticGasFeeUpdateEnabled: () => true,
     isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {

@@ -1,142 +1,132 @@
-import { execSync } from 'child_process';
-import util from 'util';
-import {
-  getJobsByWorkflowId,
-  getPipelineId,
-  getWorkflowId,
-} from '../.github/scripts/shared/circle-artifacts';
-const exec = util.promisify(require('node:child_process').exec);
+import { execSync } from 'node:child_process';
+import unzipper from 'unzipper';
+import { version } from '../package.json';
+import { program, Option } from 'commander';
 
-function getGitBranch() {
-  const gitOutput = execSync('git status').toString();
+const getBranch = () => {
+  try {
+    return execSync('git symbolic-ref --short HEAD').toString().trim();
+  } catch (error) {
+    return 'main';
+  }
+};
 
-  const branchRegex = /On branch (?<branch>.*)\n/;
-  return gitOutput.match(branchRegex)?.groups?.branch || 'main';
+interface DownloadBuildsArgs {
+  owner: string;
+  repository: string;
+  workflowId: string;
+  branch: string;
+  buildType: string;
+  githubToken: string;
+  awsCloudfrontUrl: string;
 }
 
-async function getBuilds(branch: string, jobNames: string[]) {
-  const pipelineId = await getPipelineId(branch);
-  const workflowId = await getWorkflowId(pipelineId);
-  const jobs = await getJobsByWorkflowId(workflowId);
-  let builds = [] as any[];
+program
+  .addOption(
+    new Option('-o, --owner <string>', 'owner of the repository')
+      .default('metamask')
+      .env('OWNER'),
+  )
+  .addOption(
+    new Option('-r, --repository <string>', 'repository name')
+      .default('metamask-extension')
+      .env('REPOSITORY'),
+  )
+  .addOption(
+    new Option('-w, --workflow-id <string>', 'workflow id')
+      .default('main.yml')
+      .env('WORKFLOW_ID'),
+  )
+  .addOption(
+    new Option('-b, --branch <string>', 'branch name')
+      .default(getBranch())
+      .env('BRANCH'),
+  )
+  .addOption(
+    new Option('-t, --build-type <string>', 'build type')
+      .default('main')
+      .env('BUILD_TYPE')
+      .choices(['main', 'beta', 'flask', 'test', 'test-flask']),
+  )
+  .addOption(
+    new Option('-g, --github-token <string>', 'github token')
+      .default('')
+      .env('GITHUB_TOKEN'),
+  )
+  .addOption(
+    new Option('-a, --aws-cloudfront-url <string>', 'aws cloudfront url')
+      .default('https://diuv6g5fj9pvx.cloudfront.net')
+      .env('AWS_CLOUDFRONT_URL'),
+  )
+  .action(async (args: DownloadBuildsArgs) => {
+    const { Octokit } = await import('octokit');
 
-  for (const jobName of jobNames) {
-    const jobId = jobs.find((job: any) => job.name === jobName).job_number;
+    console.log('Downloading latest builds from');
+    console.log(`- Branch: ${args.branch}`);
+    console.log(`- Build type: ${args.buildType}`);
 
-    console.log(`jobName: ${jobName}, jobId: ${jobId}`);
+    const github = new Octokit({ auth: args.githubToken });
 
-    // Using the CircleCI API version 1.1 here, because this endpoint recently started requiring Authorization in v2
-    const response = await fetch(
-      `https://circleci.com/api/v1.1/project/gh/MetaMask/metamask-extension/${jobId}/artifacts`,
+    const runs = await github.rest.actions.listWorkflowRuns({
+      owner: args.owner,
+      repo: args.repository,
+      workflow_id: args.workflowId,
+      branch: args.branch,
+      status: 'success',
+      per_page: 1,
+    });
+
+    const latestRun = runs.data.workflow_runs.at(0);
+
+    if (!latestRun)
+      throw new Error(`No successful builds found on branch '${args.branch}'`);
+
+    console.log(`- Run number: ${latestRun.id}`);
+
+    const HOST_URL = `${args.awsCloudfrontUrl}/${args.repository}/${latestRun.id}`;
+
+    const buildMap = {
+      main: {
+        chrome: `${HOST_URL}/build-dist-browserify/builds/metamask-chrome-${version}.zip`,
+        firefox: `${HOST_URL}/build-dist-mv2-browserify/builds/metamask-firefox-${version}.zip`,
+      },
+      beta: {
+        chrome: `${HOST_URL}/build-beta-browserify/builds/metamask-beta-chrome-${version}-beta.0.zip`,
+        firefox: `${HOST_URL}/build-beta-mv2-browserify/builds/metamask-beta-firefox-${version}-beta.0.zip`,
+      },
+      flask: {
+        chrome: `${HOST_URL}/build-flask-browserify/builds/metamask-flask-chrome-${version}-flask.0.zip`,
+        firefox: `${HOST_URL}/build-flask-mv2-browserify/builds/metamask-flask-firefox-${version}-flask.0.zip`,
+      },
+      test: {
+        chrome: `${HOST_URL}/build-test-browserify/builds/metamask-chrome-${version}.zip`,
+        firefox: `${HOST_URL}/build-test-mv2-browserify/builds/metamask-firefox-${version}.zip`,
+      },
+      'test-flask': {
+        chrome: `${HOST_URL}/build-test-flask-browserify/builds/metamask-flask-chrome-${version}-flask.0.zip`,
+        firefox: `${HOST_URL}/build-test-flask-mv2-browserify/builds/metamask-flask-firefox-${version}-flask.0.zip`,
+      },
+    };
+
+    const builds: { chrome: string; firefox: string } | undefined =
+      buildMap[args.buildType];
+
+    if (!builds)
+      throw new Error(`No builds found for build type '${args.buildType}'`);
+
+    console.log(`Downloading build for chrome from ${builds.chrome}`);
+    console.log(`Downloading build for firefox from ${builds.firefox}`);
+
+    await Promise.all(
+      Object.entries(builds).map(async ([platform, url]) => {
+        const artifact = await fetch(url);
+        const buffer = Buffer.from(await artifact.arrayBuffer());
+        const zip = await unzipper.Open.buffer(buffer);
+        await zip.extract({ path: `dist/${platform}` });
+      }),
     );
 
-    const artifacts = await response.json();
+    console.log('Builds downloaded and unzipped successfully.');
+  });
 
-    if (
-      !artifacts ||
-      artifacts.length === 0 ||
-      artifacts.message === 'Not Found'
-    ) {
-      return [];
-    }
-
-    builds = builds.concat(
-      artifacts.filter((artifact: any) => artifact.path.endsWith('.zip')),
-    );
-  }
-
-  return builds;
-}
-
-function getVersionNumber(builds: any[]) {
-  for (const build of builds) {
-    const versionRegex = /metamask-chrome-(?<version>\d+\.\d+\.\d+).zip/;
-
-    const versionNumber = build.path.match(versionRegex)?.groups?.version;
-
-    if (versionNumber) {
-      return versionNumber;
-    }
-  }
-}
-
-async function downloadBuilds(builds: any[]) {
-  if (!builds || builds.length === 0) {
-    console.log(
-      'No builds found on CircleCI for the current branch, you will have to build the Extension yourself',
-    );
-    return false;
-  }
-
-  const buildPromises = [] as Promise<any>[];
-
-  for (const build of builds) {
-    if (
-      build.path.startsWith('builds/') ||
-      build.path.startsWith('builds-test/')
-    ) {
-      const { url } = build;
-
-      console.log('downloading', build.path);
-
-      buildPromises.push(exec(`curl -L --create-dirs -o ${build.path} ${url}`));
-    }
-  }
-
-  await Promise.all(buildPromises);
-
-  console.log('downloads complete');
-
-  return true;
-}
-
-function unzipBuilds(folder: 'builds' | 'builds-test', versionNumber: string) {
-  if (!versionNumber) {
-    return;
-  }
-
-  if (process.platform === 'win32') {
-    execSync(`rmdir /s /q dist & mkdir dist\\chrome & mkdir dist\\firefox`);
-  } else {
-    execSync('rm -rf dist && mkdir -p dist');
-  }
-
-  for (const browser of ['chrome', 'firefox']) {
-    if (process.platform === 'win32') {
-      execSync(
-        `tar -xf ${folder}/metamask-${browser}-${versionNumber}.zip -C dist/${browser}`,
-      );
-    } else {
-      execSync(
-        `unzip ${folder}/metamask-${browser}-${versionNumber}.zip -d dist/${browser}`,
-      );
-    }
-  }
-
-  console.log(`unzipped ${folder} into ./dist`);
-}
-
-async function main(jobNames: string[]) {
-  const branch = process.env.CIRCLE_BRANCH || getGitBranch();
-
-  const builds = await getBuilds(branch, jobNames);
-
-  console.log('builds', builds);
-
-  const downloadWorked = await downloadBuilds(builds);
-
-  if (downloadWorked) {
-    const versionNumber = getVersionNumber(builds);
-    const folder = builds[0].path.split('/')[0];
-
-    unzipBuilds(folder, versionNumber);
-  }
-}
-
-let args = process.argv.slice(2);
-
-if (!args || args.length === 0) {
-  args = ['prep-build'];
-}
-
-main(args);
+program.parse();

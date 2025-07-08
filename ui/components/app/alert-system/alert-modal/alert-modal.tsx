@@ -104,6 +104,8 @@ function getSeverityStyle(severity?: Severity) {
   }
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function AlertHeader({
   selectedAlert,
   customTitle,
@@ -138,6 +140,8 @@ function AlertHeader({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function BlockaidAlertDetails() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
@@ -177,6 +181,8 @@ function BlockaidAlertDetails() {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function AlertDetails({
   selectedAlert,
   customDetails,
@@ -224,6 +230,8 @@ function AlertDetails({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AcknowledgeCheckboxBase({
   selectedAlert,
   onCheckboxClick,
@@ -264,6 +272,8 @@ export function AcknowledgeCheckboxBase({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function AcknowledgeButton({
   onAcknowledgeClick,
   isConfirmed,
@@ -291,6 +301,8 @@ function AcknowledgeButton({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function ActionButton({
   action,
   onClose,
@@ -334,6 +346,8 @@ function ActionButton({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AlertModal({
   ownerId,
   onAcknowledgeClick,

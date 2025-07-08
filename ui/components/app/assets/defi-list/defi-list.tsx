@@ -34,6 +34,8 @@ type DefiListProps = {
   onClick: (chainId: string, protocolId: string) => void;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function DefiList({ onClick }: DefiListProps) {
   const t = useI18nContext();
   const { networkFilter } = useNetworkFilter();

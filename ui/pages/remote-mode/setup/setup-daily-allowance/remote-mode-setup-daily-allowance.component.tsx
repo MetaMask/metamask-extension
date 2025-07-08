@@ -85,6 +85,8 @@ const DAILY_ETH_LIMIT = 10;
  *
  * @returns The rendered component
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeSetupDailyAllowance() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);

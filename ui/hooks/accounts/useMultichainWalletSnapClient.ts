@@ -31,6 +31,8 @@ export enum WalletClientType {
   Solana = 'solana-wallet-snap',
 }
 
+export const EVM_WALLET_TYPE = 'evm' as const;
+
 const WALLET_SNAP_MAP: Record<WalletClientType, { id: SnapId; name: string }> =
   {
     [WalletClientType.Bitcoin]: {
@@ -97,19 +99,8 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
     options: CreateAccountSnapOptions,
     internalOptions?: SnapKeyringInternalOptions,
   ): Promise<KeyringAccount> {
-    const snapOptions =
-      this.#snapId === BITCOIN_WALLET_SNAP_ID
-        ? { ...options, synchronize: true }
-        : options;
-
     // This will trigger the Snap account creation flow (+ account renaming)
-    const account = await createSnapAccount(
-      this.#snapId,
-      snapOptions,
-      internalOptions,
-    );
-
-    return account;
+    return await createSnapAccount(this.#snapId, options, internalOptions);
   }
 
   async getNextAvailableAccountName(

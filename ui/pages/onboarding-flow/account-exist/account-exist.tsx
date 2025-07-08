@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
   ButtonSize,
@@ -22,17 +23,44 @@ import {
   ButtonIconSize,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_WELCOME_ROUTE,
+  ONBOARDING_UNLOCK_ROUTE,
+} from '../../../helpers/constants/routes';
+import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import {
+  resetOAuthLoginState,
+  setFirstTimeFlowType,
+} from '../../../store/actions';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AccountExist() {
   const history = useHistory();
+  const dispatch = useDispatch();
   const t = useI18nContext();
-  // TODO: get account email from controllers
-  const accountEmail = 'username@gmail.com';
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const userSocialLoginEmail = useSelector(getSocialLoginEmail);
 
-  const onDone = () => {
-    history.push(UNLOCK_ROUTE);
+  const onLoginWithDifferentMethod = async () => {
+    // clear the social login state
+    await dispatch(resetOAuthLoginState());
+    // reset the first time flow type
+    await dispatch(setFirstTimeFlowType(null));
+    history.replace(ONBOARDING_WELCOME_ROUTE);
   };
+
+  const onDone = async () => {
+    await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
+    history.replace(ONBOARDING_UNLOCK_ROUTE);
+  };
+
+  useEffect(() => {
+    if (firstTimeFlowType !== FirstTimeFlowType.socialCreate) {
+      history.replace(ONBOARDING_WELCOME_ROUTE);
+    }
+  }, [firstTimeFlowType, history]);
 
   return (
     <Box
@@ -95,7 +123,7 @@ export default function AccountExist() {
             />
           </Box>
           <Text variant={TextVariant.bodyMd} marginBottom={6}>
-            {t('accountAlreadyExistsLoginDescription', [accountEmail])}
+            {t('accountAlreadyExistsLoginDescription', [userSocialLoginEmail])}
           </Text>
         </Box>
       </Box>
@@ -106,6 +134,7 @@ export default function AccountExist() {
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         width={BlockSize.Full}
+        gap={4}
       >
         <Button
           data-testid="onboarding-complete-done"
@@ -115,6 +144,15 @@ export default function AccountExist() {
           onClick={onDone}
         >
           {t('accountAlreadyExistsLogin')}
+        </Button>
+        <Button
+          data-testid="account-exist-login-with-different-method"
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          width={BlockSize.Full}
+          onClick={onLoginWithDifferentMethod}
+        >
+          {t('useDifferentLoginMethod')}
         </Button>
       </Box>
     </Box>

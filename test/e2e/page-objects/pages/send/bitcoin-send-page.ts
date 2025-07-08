@@ -17,10 +17,24 @@ class BitcoinSendPage {
     testId: 'confirm-snap-footer-button',
   };
 
+  private readonly assetPicker = {
+    tag: 'label',
+    text: 'Asset',
+  };
+
+  private readonly amountField = {
+    tag: 'label',
+    text: 'Amount',
+  };
+
+  private readonly clearRecipientButton = '#clearRecipient';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.recipientInput);
@@ -56,6 +70,68 @@ class BitcoinSendPage {
     console.log('Select max amount on send bitcoin screen');
     await this.driver.waitForSelector(this.amountInput, { timeout: 10000 });
     await this.driver.clickElement(this.maxAmountButton);
+  }
+
+  async checkAssetPickerIsDisplayed() {
+    console.log('Check asset picker is displayed on send bitcoin screen');
+    try {
+      await this.driver.waitForSelector(this.assetPicker, { timeout: 1000 });
+      return true;
+    } catch (e) {
+      console.log('Timeout while waiting for asset picker to be displayed', e);
+      return false;
+    }
+  }
+
+  async checkAmountFieldIsDisplayed() {
+    console.log('Check amount field is displayed on send bitcoin screen');
+    try {
+      await this.driver.waitForSelector(this.amountField, { timeout: 1000 });
+      return true;
+    } catch (e) {
+      console.log('Timeout while waiting for amount field to be displayed', e);
+      return false;
+    }
+  }
+
+  async checkAddressFieldValidationError(error: string) {
+    console.log(
+      'Check invalid BTC address is displayed on send bitcoin screen',
+    );
+    await this.driver.waitForSelector({
+      tag: 'p',
+      text: error,
+    });
+  }
+
+  async checkContinueButtonIsDisabled() {
+    try {
+      const continueButton = await this.driver.waitForSelector(
+        this.continueButton,
+        { timeout: 1000 },
+      );
+      const isDisabled = await continueButton.getAttribute('disabled');
+      console.log('Is disabled', isDisabled);
+      return isDisabled === 'true';
+    } catch (error) {
+      console.error('Error checking if Continue button is enabled:', error);
+      return false; // Return false if an error occurs
+    }
+  }
+
+  async checkAmountValidationError(error: string) {
+    console.log(
+      'Check amount validation error is displayed on send bitcoin screen',
+    );
+    await this.driver.waitForSelector({
+      tag: 'p',
+      text: error,
+    });
+  }
+
+  async clearRecipientAddress() {
+    console.log('Clear recipient address on send bitcoin screen');
+    await this.driver.clickElement(this.clearRecipientButton);
   }
 }
 

@@ -38,9 +38,8 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
       },
 
       async ({ driver, contractRegistry, localNodes }) => {
-        const contractAddress = await contractRegistry.getContractAddress(
-          smartContract,
-        );
+        const contractAddress =
+          await contractRegistry.getContractAddress(smartContract);
         await logInWithBalanceValidation(driver, localNodes[0]);
 
         await openDapp(driver, contractAddress, DAPP_URL);

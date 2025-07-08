@@ -37,6 +37,8 @@ import Tooltip from '../../../../../../../components/ui/tooltip';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -161,6 +163,8 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function Title({ noMargin, text }: { noMargin?: boolean; text: string }) {
   return (
     <Text
@@ -175,6 +179,8 @@ function Title({ noMargin, text }: { noMargin?: boolean; text: string }) {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function NativeToggle({
   isFuture,
   onChange,
@@ -228,6 +234,8 @@ function NativeToggle({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function NativeToggleOption({
   children,
   isSelected,

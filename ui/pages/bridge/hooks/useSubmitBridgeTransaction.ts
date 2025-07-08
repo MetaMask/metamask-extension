@@ -14,10 +14,13 @@ import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import {
-  getSmartTransactionsEnabled,
+  getIsSmartTransaction,
   isHardwareWallet,
 } from '../../../../shared/modules/selectors';
-import { getShouldUseSnapConfirmation } from '../../../ducks/bridge/selectors';
+import {
+  getFromChain,
+  getShouldUseSnapConfirmation,
+} from '../../../ducks/bridge/selectors';
 import useSnapConfirmation from './useSnapConfirmation';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
@@ -64,7 +67,11 @@ export default function useSubmitBridgeTransaction() {
   // This redirects to the confirmation page if an unapproved snap confirmation exists
   useSnapConfirmation();
 
-  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const fromChain = useSelector(getFromChain);
+  const smartTransactionsEnabled = useSelector((state) =>
+    getIsSmartTransaction(state as never, fromChain?.chainId),
+  );
+
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {

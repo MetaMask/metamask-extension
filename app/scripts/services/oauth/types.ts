@@ -59,15 +59,6 @@ export type WebAuthenticator = {
    * @returns The nonce string.
    */
   generateNonce: () => string;
-
-  /**
-   * Request the identity permission from the user.
-   *
-   * OAuth2 authentication requires the identity permission to be granted.
-   *
-   * @returns Whether the identity permission is granted.
-   */
-  requestIdentityPermission: () => Promise<boolean>;
 };
 
 export type LoginHandlerOptions = {
@@ -120,18 +111,24 @@ export type OAuthServiceOptions = {
  * - jwt_tokens: Record<string, string> - the JWT Tokens issued from the Web3Auth Authentication Server
  */
 export type AuthTokenResponse = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   id_token: string;
 
   /**
    * The refresh token issued from the Web3Auth Authentication Server.
    * This is used to refresh the JWT Token.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   refresh_token: string;
 
   /**
    * The revoke token issued from the Web3Auth Authentication Server.
-   * This is used to revoke the Refresh Token.
+   * This is used to revoke the JWT Token.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   revoke_token: string;
   indexes: number[];
   endpoints: Record<string, string>;

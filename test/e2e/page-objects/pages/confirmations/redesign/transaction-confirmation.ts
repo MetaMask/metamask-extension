@@ -71,14 +71,20 @@ class TransactionConfirmation extends Confirmation {
       '[data-testid="confirmation__token-details-section"]';
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_walletInitiatedHeadingTitle() {
     await this.driver.waitForSelector(this.walletInitiatedHeadingTitle);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_dappInitiatedHeadingTitle() {
     await this.driver.waitForSelector(this.dappInitiatedHeadingTitle);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_gasFee(amountToken: string) {
     await this.driver.findElement({
       css: this.gasFeeText,
@@ -86,6 +92,8 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_gasFeeFiat(amountFiat: string) {
     await this.driver.findElement({
       css: this.gasFeeFiatText,
@@ -93,6 +101,8 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_gasFeeSymbol(symbol: string) {
     await this.driver.waitForSelector({
       css: this.gasFeeTokenPill,
@@ -100,6 +110,8 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_gasFeeTokenFee(amountFiat: string) {
     await this.driver.findElement({
       css: this.gasFeeTokenFeeText,
@@ -112,6 +124,8 @@ class TransactionConfirmation extends Confirmation {
    *
    * @param account - The sender account to check.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_isSenderAccountDisplayed(account: string): Promise<boolean> {
     console.log(
       `Checking sender account ${account} on transaction confirmation page.`,
@@ -125,6 +139,8 @@ class TransactionConfirmation extends Confirmation {
     );
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_networkIsDisplayed(network: string): Promise<void> {
     console.log(
       `Checking network ${network} is displayed on transaction confirmation page.`,
@@ -291,6 +307,18 @@ class TransactionConfirmation extends Confirmation {
         }
       }),
     );
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_sendAmount(amount: string) {
+    console.log(
+      `Checking send amount ${amount} on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector({
+      text: amount,
+      tag: 'h2',
+    });
   }
 }
 

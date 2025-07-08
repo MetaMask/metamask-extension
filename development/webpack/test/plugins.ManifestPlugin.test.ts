@@ -65,11 +65,9 @@ describe('ManifestPlugin', () => {
         zip,
       } = testCase;
       const context = join(__dirname, `fixtures/ManifestPlugin/${fixture}`);
-      const baseManifest = require(join(
-        context,
-        `manifest/v${manifestVersion}`,
-        '_base.json',
-      ));
+      const baseManifest = require(
+        join(context, `manifest/v${manifestVersion}`, '_base.json'),
+      );
       const expectedAssets = getExpectedAssets(zip, browsers, files);
       const validateManifest = getValidateManifest(testCase, baseManifest);
 
@@ -92,10 +90,14 @@ describe('ManifestPlugin', () => {
         compilation.options.context = context;
         const manifestPlugin = new ManifestPlugin({
           browsers,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           manifest_version: manifestVersion,
           version: '1.0.0.0',
           versionName: '1.0.0',
           description,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           web_accessible_resources: webAccessibleResources,
           ...getZipOptions(zip),
         });
@@ -225,6 +227,8 @@ describe('ManifestPlugin', () => {
       test: [true, false],
     };
     const manifestMatrix = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       content_scripts: [
         undefined,
         [],
@@ -298,9 +302,13 @@ describe('ManifestPlugin', () => {
   describe('manifest flags in development mode', () => {
     const emptyTestManifest = {} as chrome.runtime.Manifest;
     const notEmptyTestManifest = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       _flags: { remoteFeatureFlags: { testFlag: false, testFlag2: 'value1' } },
     } as unknown as chrome.runtime.Manifest;
     const mockFlags = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       _flags: { remoteFeatureFlags: { testFlag: true } },
       key: MANIFEST_DEV_KEY,
     };
@@ -352,6 +360,8 @@ describe('ManifestPlugin', () => {
       assert.deepStrictEqual(
         transformed,
         {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           _flags: {
             remoteFeatureFlags: {
               testFlag2: 'value1',

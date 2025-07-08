@@ -3,12 +3,17 @@ import {
   LegacyTransaction,
   TransactionFactory,
 } from '@ethereumjs/tx';
-import { signTypedData, SignTypedDataVersion } from '@metamask/eth-sig-util';
+import {
+  signTypedData,
+  SignTypedDataVersion,
+  personalSign,
+} from '@metamask/eth-sig-util';
 import {
   bigIntToHex,
   bytesToBigInt,
   bytesToHex,
   remove0x,
+  add0x,
 } from '@metamask/utils';
 import { rlp } from 'ethereumjs-util';
 import { utils as EthersUtils } from 'ethers';
@@ -235,6 +240,7 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
         chainId: parsedChainId,
         networkId: parsedChainId,
       },
+      chainId: parsedChainId,
       // Ensure hardfork is appropriate for the transaction type
       hardfork: txType === 2 ? 'london' : 'muirGlacier',
     });
@@ -298,6 +304,22 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
       version: SignTypedDataVersion.V4,
     });
     // signTypedData returns an hex, we need to split it into rsv format
+    const { r, s, v } = EthersUtils.splitSignature(signature);
+
+    // Split signature adds 0x prefixes for r and s, we need to strip them.
+    return {
+      r: remove0x(r),
+      s: remove0x(s),
+      v,
+    };
+  }
+
+  async deviceSignMessage(params) {
+    const { message } = params;
+    const signature = personalSign({
+      privateKey: KNOWN_PRIVATE_KEYS[0],
+      data: add0x(message),
+    });
     const { r, s, v } = EthersUtils.splitSignature(signature);
 
     // Split signature adds 0x prefixes for r and s, we need to strip them.
