@@ -21,10 +21,10 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
 
   private methodSection: RawLocator;
 
+  private headerAdvancedDetailsButton: string;
+
   constructor(driver: Driver) {
     super(driver);
-
-    this.driver = driver;
 
     // Main title and description
     this.spendingCapRequestTitle = {
@@ -73,6 +73,8 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
       css: 'p',
       text: 'Method',
     };
+
+    this.headerAdvancedDetailsButton = '[data-testid="header-advanced-details-button"]';
   }
 
   /**
@@ -165,13 +167,11 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
   async expandAndVerifyAdvancedDetails(): Promise<void> {
     console.log('Expanding advanced details and verifying all sections');
 
-    // Small delay to ensure UI is ready
-    await this.driver.delay(1000);
+    // Wait for the advanced details button to be ready
+    await this.driver.waitForSelector(this.headerAdvancedDetailsButton);
 
     // Expand the advanced details section
-    await this.driver.clickElement(
-      '[data-testid="header-advanced-details-button"]',
-    );
+    await this.driver.clickElement(this.headerAdvancedDetailsButton);
 
     // Verify all sections are displayed
     await this.verifyAdvancedDetailsSections();
