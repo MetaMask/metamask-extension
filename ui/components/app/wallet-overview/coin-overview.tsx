@@ -41,6 +41,7 @@ import {
   getParticipateInMetaMetrics,
   SwapsEthToken,
   getEnabledNetworksByNamespace,
+  isGlobalNetworkSelectorRemoved,
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
 
@@ -121,8 +122,9 @@ export const LegacyAggregatedBalance = ({
     formattedTokensWithBalancesPerChain,
   );
 
-  const showNativeTokenAsMain =
-    showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1;
+  const showNativeTokenAsMain = isGlobalNetworkSelectorRemoved
+    ? showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1
+    : showNativeTokenAsMainBalance;
 
   const isNotAggregatedFiatBalance =
     !shouldShowFiat || showNativeTokenAsMain || isTestnet;

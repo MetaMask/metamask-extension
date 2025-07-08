@@ -31,6 +31,7 @@ import {
   getEnabledNetworksByNamespace,
   getPreferences,
   getSelectedInternalAccount,
+  isGlobalNetworkSelectorRemoved,
 } from '../../../selectors';
 import {
   getMultichainNetwork,
@@ -63,8 +64,9 @@ export const AggregatedBalance = ({
   );
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
 
-  const showNativeTokenAsMain =
-    showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1;
+  const showNativeTokenAsMain = isGlobalNetworkSelectorRemoved
+    ? showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1
+    : showNativeTokenAsMainBalance;
 
   const multichainNativeTokenBalance = useSelector((state) =>
     getMultichainNativeTokenBalance(state, selectedAccount),
