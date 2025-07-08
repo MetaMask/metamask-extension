@@ -434,3 +434,16 @@ jobs:
       GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
       SPREADSHEET_ID: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
       SHEET_NAME: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}
+
+  log-merge-group-success:
+    name: Log merge group success
+    # Only run this job if the merge group event succeeds, skip on forks
+    if: ${{ github.event_name == 'merge_group' && success() && !github.event.repository.fork }}
+    needs:
+      - all-jobs-pass
+    uses: MetaMask/github-tools/.github/workflows/log-merge-group-success.yml@add-log-merge-group-success
+    secrets:
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+      GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+      SPREADSHEET_ID: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
+      SHEET_NAME: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}
