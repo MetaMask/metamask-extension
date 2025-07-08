@@ -112,6 +112,7 @@ export default class InfoTab extends PureComponent {
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"
+            data-testid="info-tab-support-center-button"
             onClick={() => this.props.setShowSupportDataConsentModal(true)}
           >
             {t('supportCenter')}
