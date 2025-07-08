@@ -105,6 +105,8 @@ describe('PermissionDetailsModal', () => {
       },
       permissionHistory: {
         'https://remix.ethereum.org': {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_accounts: {
             accounts: {
               '0x7250739de134d33ec7ab1ee592711e15098c9d2d': 1586359844192,

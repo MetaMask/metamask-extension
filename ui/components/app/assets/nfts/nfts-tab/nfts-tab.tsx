@@ -44,6 +44,8 @@ import { sortAssets } from '../../util/sort';
 import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 import PulseLoader from '../../../../ui/pulse-loader';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NftsTab() {
   const history = useHistory();
   const useNftDetection = useSelector(getUseNftDetection);
@@ -72,6 +74,8 @@ export default function NftsTab() {
       event: MetaMetricsEventName.EmptyNftsBannerDisplayed,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
         locale: currentLocale,
         network: nickname,

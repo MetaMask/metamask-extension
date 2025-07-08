@@ -1,9 +1,12 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_CONFIRM_SRP_ROUTE,
+  ONBOARDING_REVEAL_SRP_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   Text,
   Box,
@@ -55,6 +58,16 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
     queryParams.set('isFromSettingsSecurity', isFromSettingsSecurity);
   }
   const nextRouteQueryString = queryParams.toString();
+
+  useEffect(() => {
+    if (!secretRecoveryPhrase) {
+      history.replace(
+        `${ONBOARDING_REVEAL_SRP_ROUTE}/${
+          nextRouteQueryString ? `?${nextRouteQueryString}` : ''
+        }`,
+      );
+    }
+  }, [history, secretRecoveryPhrase, nextRouteQueryString]);
 
   const trackEvent = useContext(MetaMetricsContext);
 

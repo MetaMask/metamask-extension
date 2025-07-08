@@ -1719,9 +1719,11 @@ export default class MetamaskController extends EventEmitter {
         });
       },
       addTransactionFn: (...args) => this.txController.addTransaction(...args),
+      addTransactionBatchFn: (...args) =>
+        this.txController.addTransactionBatch(...args),
       estimateGasFeeFn: (...args) => this.txController.estimateGasFee(...args),
-      addUserOperationFromTransactionFn: (...args) =>
-        this.userOperationController.addUserOperationFromTransaction(...args),
+      updateTransactionFn: (...args) =>
+        this.txController.updateTransaction(...args),
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       },
@@ -5253,7 +5255,7 @@ export default class MetamaskController extends EventEmitter {
       if (btcAccounts.length === 0) {
         await this._addSnapAccount(entropySource, btcClient, {
           scope: btcScope,
-          synchronize: true,
+          synchronize: false,
         });
       }
       ///: END:ONLY_INCLUDE_IF
