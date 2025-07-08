@@ -20,7 +20,7 @@ const {
 } = require('../../../../app/scripts/controllers/permissions');
 const { CaveatTypes } = require('../../../../shared/constants/permissions');
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
+const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs
@@ -525,6 +525,9 @@ describe('Request-queue UI changes', function () {
         if (isGlobalNetworkSelectorRemoved) {
           await driver.clickElement('[data-testid="sort-by-networks"]');
           await driver.clickElement({
+            text: 'Default',
+          });
+          await driver.clickElement({
             text: 'Ethereum Mainnet',
             tag: 'p',
           });
@@ -727,6 +730,9 @@ describe('Request-queue UI changes', function () {
 
         if (isGlobalNetworkSelectorRemoved) {
           await driver.clickElement('[data-testid="sort-by-networks"]');
+          await driver.clickElement({
+            text: 'Default',
+          });
           // Check if Ethereum Mainnet is selected (checkbox is checked)
           const networkRow = await driver.findElement({
             css: '.multichain-network-list-item',
@@ -821,6 +827,9 @@ describe('Request-queue UI changes', function () {
 
         if (isGlobalNetworkSelectorRemoved) {
           await driver.clickElement('[data-testid="sort-by-networks"]');
+          await driver.clickElement({
+            text: 'Default',
+          });
           await driver.waitForSelector({
             text: 'Ethereum Mainnet',
             tag: 'p',
