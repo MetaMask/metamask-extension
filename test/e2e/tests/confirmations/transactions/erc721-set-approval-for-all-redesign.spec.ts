@@ -2,8 +2,9 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { Anvil } from '../../../seeder/anvil';
 import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/set-approval-for-all-transaction-confirmation';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
@@ -18,10 +19,15 @@ describe('Confirmation Redesign ERC721 setApprovalForAll', function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.legacy,
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await createTransactionAssertDetailsAndConfirm(
             driver,
             contractRegistry,
+            localNodes ? localNodes[0] : undefined,
           );
         },
         mocks,
@@ -33,10 +39,15 @@ describe('Confirmation Redesign ERC721 setApprovalForAll', function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await createTransactionAssertDetailsAndConfirm(
             driver,
             contractRegistry,
+            localNodes ? localNodes[0] : undefined,
           );
         },
         mocks,
@@ -53,8 +64,9 @@ async function mocks(server: Mockttp) {
 async function createTransactionAssertDetailsAndConfirm(
   driver: Driver,
   contractRegistry?: ContractAddressRegistry,
+  localNode?: Anvil,
 ) {
-  await loginWithBalanceValidation(driver);
+  await loginWithBalanceValidation(driver, localNode);
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry

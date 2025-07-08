@@ -16,7 +16,7 @@ const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 
 export type TestSuiteArguments = {
   driver: Driver;
-  localNodes?: Anvil[] | Ganache[] | undefined;
+  localNodes?: Anvil[] | undefined;
   contractRegistry?: ContractAddressRegistry;
   mockedEndpoint?: MockedEndpoint | MockedEndpoint[];
 };

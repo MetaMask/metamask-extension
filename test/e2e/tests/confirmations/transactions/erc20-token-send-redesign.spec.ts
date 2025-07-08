@@ -1,13 +1,10 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL } from '../../../constants';
-import {
-  unlockWallet,
-  veryLargeDelayMs,
-  WINDOW_TITLES,
-} from '../../../helpers';
+import { veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
@@ -96,7 +93,7 @@ async function createWalletInitiatedTransactionAndAssertDetails(
   driver: Driver,
   contractRegistry?: ContractAddressRegistry,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
@@ -142,7 +139,7 @@ async function createDAppInitiatedTransactionAndAssertDetails(
   driver: Driver,
   contractRegistry?: ContractAddressRegistry,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
