@@ -23,6 +23,10 @@
     margin-bottom: 1rem;
   }
 
+  &__link-text {
+    color: var(--color-primary-default);
+  }
+
   @include design-system.screen-sm-max {
     height: 100%;
   }

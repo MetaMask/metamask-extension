@@ -31,6 +31,8 @@ import {
   getSocialLoginType,
 } from '../../../../selectors';
 import Card from '../../../../components/ui/card';
+import { useSyncSRPs } from '../../../../hooks/social-sync/useSyncSRPs';
+import Spinner from '../../../../components/ui/spinner';
 
 export const RevealSrpList = () => {
   const t = useI18nContext();
@@ -40,6 +42,7 @@ export const RevealSrpList = () => {
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
   const socialLoginEmail = useSelector(getSocialLoginEmail);
+  const { loading: syncSRPsLoading } = useSyncSRPs();
 
   const onSrpActionComplete = (keyringId: string, triggerBackup?: boolean) => {
     if (triggerBackup) {
@@ -146,11 +149,32 @@ export const RevealSrpList = () => {
         >
           {t('securitySrpLabel')}
         </Text>
-        <SrpList
-          onActionComplete={onSrpActionComplete}
-          hideShowAccounts={false}
-          isSettingsPage={true}
-        />
+        {syncSRPsLoading && (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.center}
+            marginTop={12}
+          >
+            <Spinner className="change-password__spinner" />
+            <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
+              {t('syncingSeedPhrases')}
+            </Text>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+            >
+              {t('syncingSeedPhrasesNote')}
+            </Text>
+          </Box>
+        )}
+        {!syncSRPsLoading && (
+          <SrpList
+            onActionComplete={onSrpActionComplete}
+            hideShowAccounts={false}
+            isSettingsPage={true}
+          />
+        )}
       </Box>
       {srpQuizModalVisible && selectedKeyringId && (
         <SRPQuizModal

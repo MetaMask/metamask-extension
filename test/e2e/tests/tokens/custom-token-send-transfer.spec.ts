@@ -95,9 +95,8 @@ describe('Transfer custom tokens', function () {
           testSpecificMock: mocks,
         },
         async ({ driver, contractRegistry }) => {
-          const contractAddress = await contractRegistry.getContractAddress(
-            smartContract,
-          );
+          const contractAddress =
+            await contractRegistry.getContractAddress(smartContract);
           await unlockWallet(driver);
 
           const testDapp = new TestDapp(driver);
@@ -163,9 +162,8 @@ describe('Transfer custom tokens', function () {
           testSpecificMock: mocks,
         },
         async ({ driver, contractRegistry }) => {
-          const contractAddress = await contractRegistry.getContractAddress(
-            smartContract,
-          );
+          const contractAddress =
+            await contractRegistry.getContractAddress(smartContract);
           await unlockWallet(driver);
 
           const testDapp = new TestDapp(driver);

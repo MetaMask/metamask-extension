@@ -54,7 +54,10 @@ import {
   hideWhatsNewPopup,
   openBasicFunctionalityModal,
 } from '../../ducks/app/app';
-import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
+import {
+  getIsSeedlessPasswordOutdated,
+  getWeb3ShimUsageAlertEnabledness,
+} from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { fetchBuyableChains } from '../../ducks/ramps';
 // TODO: Remove restricted import
@@ -187,6 +190,7 @@ const mapStateToProps = (state) => {
     showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
     showUpdateModal: getShowUpdateModal(state),
     redirectAfterDefaultPage,
+    isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
   };
 };
 
