@@ -29,7 +29,7 @@ jobs:
         id: login-success
         if: steps.configure.outcome == 'success'
         run: |
-          echo "ECR_PASSWORD=$(aws ecr-public get-login-password --region us-east-1)" >> $GITHUB_ENV
+          echo "ECR_PASSWORD=$(aws ecr-public get-login-password --region us-east-1)" >> "$GITHUB_ENV"
 
       - name: Set empty fallback password
         if: steps.configure.outcome != 'success'
