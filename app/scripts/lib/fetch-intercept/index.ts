@@ -1,16 +1,16 @@
-interface Interceptor {
+type Interceptor = {
   request?: (
     ...args: Parameters<typeof fetch>
   ) => Parameters<typeof fetch> | Promise<Parameters<typeof fetch>>;
-  requestError?: (error: any) => any;
+  requestError?: (error: unknown) => void | Promise<void>;
   response?: (response: Response) => Response | Promise<Response>;
-  responseError?: (error: any) => any;
-}
+  responseError?: (error: unknown) => void | Promise<void>;
+};
 
-interface FetchWithAuthAPI {
+type FetchWithAuthAPI = {
   register: (interceptor: Interceptor) => () => void;
   clear: () => void;
-}
+};
 
 function attach(): FetchWithAuthAPI {
   const interceptors: Interceptor[] = [];
@@ -21,16 +21,16 @@ function attach(): FetchWithAuthAPI {
   };
 
   return {
-    register: function (interceptor: Interceptor) {
-      interceptors.push(interceptor);
+    register(newInterceptor: Interceptor) {
+      interceptors.push(newInterceptor);
       return () => {
-        const index = interceptors.indexOf(interceptor);
+        const index = interceptors.indexOf(newInterceptor);
         if (index >= 0) {
           interceptors.splice(index, 1);
         }
       };
     },
-    clear: function () {
+    clear() {
       interceptors.length = 0;
     },
   };
@@ -67,9 +67,15 @@ async function interceptor(
 
   try {
     response = await originalFetch(request);
-    (response as any).request = request;
-  } catch (error: any) {
-    error.request = request;
+    Object.defineProperty(response, 'request', {
+      value: request,
+      writable: false,
+      enumerable: false,
+    });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      (error as Error & { request?: Request }).request = request;
+    }
     throw error;
   }
 
