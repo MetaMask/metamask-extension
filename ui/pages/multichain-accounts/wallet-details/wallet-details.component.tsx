@@ -199,6 +199,8 @@ const WalletDetails = () => {
       }
       ///: END:ONLY_INCLUDE_IF
       else {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         console.error(`Unsupported client type: ${clientType}`);
         return false;
       }
