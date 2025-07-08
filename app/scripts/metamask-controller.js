@@ -5562,9 +5562,17 @@ export default class MetamaskController extends EventEmitter {
     // Optimistically called to not block MetaMask login due to
     // Ledger Keyring GitHub downtime
     if (completedOnboarding) {
-      if (password && isSocialLoginFlow) {
-        // unlock the seedless onboarding vault
-        await this.seedlessOnboardingController.submitPassword(password);
+      if (isSocialLoginFlow) {
+        if (password) {
+          // unlock the seedless onboarding vault
+          await this.seedlessOnboardingController.submitPassword(password);
+        }
+        if (encryptionKey) {
+          // store the keyring encryption key in the seedless onboarding controller
+          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
+            encryptionKey,
+          );
+        }
       }
 
       this.#withKeyringForDevice(
