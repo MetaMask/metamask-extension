@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import '@testing-library/jest-dom';
 import browser from 'webextension-polyfill';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -25,6 +25,7 @@ jest.mock('webextension-polyfill', () => ({
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
+  useDispatch: () => jest.fn(),
 }));
 
 describe('ErrorPage', () => {
@@ -148,6 +149,7 @@ describe('ErrorPage', () => {
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
+      // mockStore,
     );
     const tryAgainButton = getByTestId('error-page-try-again-button');
     fireEvent.click(tryAgainButton);
@@ -167,6 +169,10 @@ describe('ErrorPage', () => {
       'error-page-contact-support-button',
     );
     fireEvent.click(contactSupportButton);
-    expect(getByTestId('visit-support-data-consent-modal')).toBeInTheDocument();
+    waitFor(() =>
+      expect(
+        getByTestId('visit-support-data-consent-modal'),
+      ).toBeInTheDocument(),
+    );
   });
 });

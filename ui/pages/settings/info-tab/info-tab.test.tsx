@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import InfoTab from '.';
@@ -46,9 +46,11 @@ describe('InfoTab', () => {
     it('should trigger support modal when click support link', () => {
       const supportLink = getByText('Visit our support center');
       fireEvent.click(supportLink);
-      expect(
-        getByTestId('visit-support-data-consent-modal'),
-      ).toBeInTheDocument();
+      waitFor(() =>
+        expect(
+          getByTestId('visit-support-data-consent-modal'),
+        ).toBeInTheDocument(),
+      );
     });
 
     it('should have correct href for "Visit our website" link', () => {
