@@ -721,8 +721,11 @@ export const getIsUnifiedUIEnabled = createSelector(
       ? Boolean(
           'isSingleSwapBridgeButtonEnabled' in
             bridgeFeatureFlags.chains[caipChainId]
-            ? (bridgeFeatureFlags.chains[caipChainId]
-                .isSingleSwapBridgeButtonEnabled as unknown as boolean)
+            ? (
+                bridgeFeatureFlags.chains[caipChainId] as {
+                  isSingleSwapBridgeButtonEnabled: boolean;
+                }
+              ).isSingleSwapBridgeButtonEnabled
             : false,
         )
       : false;
