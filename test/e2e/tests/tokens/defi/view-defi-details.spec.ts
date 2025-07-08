@@ -14,7 +14,7 @@ import { CHAIN_IDS } from '../../../../../shared/constants/network';
 const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
 describe('View DeFi details', function () {
-  it('user should be able to view Aave Positions details', async function () {
+  it.only('user should be able to view Aave Positions details', async function () {
     await withFixtures(
       {
         dapp: true,

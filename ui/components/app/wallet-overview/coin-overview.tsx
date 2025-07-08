@@ -139,6 +139,19 @@ export const LegacyAggregatedBalance = ({
   if (!balanceToDisplay) {
     return <Spinner className="loading-overlay__spinner" />;
   }
+
+  /**
+   * Determines the currency display type based on network configuration.
+   * Returns SECONDARY for multi-network setups when global network selector is removed,
+   * otherwise returns PRIMARY for single network or legacy configurations.
+   */
+  const getCurrencyDisplayType = (): typeof PRIMARY | typeof SECONDARY => {
+    const isMultiNetwork = Object.keys(enabledNetworks).length > 1;
+    return isGlobalNetworkSelectorRemoved && isMultiNetwork
+      ? SECONDARY
+      : PRIMARY;
+  };
+
   return (
     <>
       <UserPreferencedCurrencyDisplay
@@ -149,7 +162,7 @@ export const LegacyAggregatedBalance = ({
         })}
         data-testid={`${classPrefix}-overview__primary-currency`}
         value={balanceToDisplay}
-        type={Object.keys(enabledNetworks).length === 1 ? PRIMARY : SECONDARY}
+        type={getCurrencyDisplayType()}
         ethNumberOfDecimals={4}
         hideTitle
         shouldCheckShowNativeToken
