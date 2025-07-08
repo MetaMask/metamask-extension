@@ -1,12 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL } from '../../../constants';
-import {
-  unlockWallet,
-  veryLargeDelayMs,
-  WINDOW_TITLES,
-} from '../../../helpers';
+import { veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
@@ -208,7 +205,7 @@ async function createERC721WalletInitiatedTransactionAndAssertDetails(
   driver: Driver,
   contractRegistry?: ContractAddressRegistry,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
@@ -255,7 +252,7 @@ async function createERC721DAppInitiatedTransactionAndAssertDetails(
   driver: Driver,
   contractRegistry?: ContractAddressRegistry,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
@@ -290,7 +287,7 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
   driver: Driver,
   contractRegistry?: ContractAddressRegistry,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
 
   const homePage = new HomePage(driver);
   await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
