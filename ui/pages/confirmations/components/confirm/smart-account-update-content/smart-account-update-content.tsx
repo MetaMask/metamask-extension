@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import { Hex } from '@metamask/utils';
+import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
 
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
@@ -26,7 +27,6 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getUseBlockie } from '../../../../../selectors';
 import Name from '../../../../../components/app/name';
-import { NameType } from '@metamask/name-controller';
 
 const ListItem = ({
   imgSrc,
@@ -66,13 +66,13 @@ const ListItem = ({
   </Box>
 );
 
-export function SmartAccountUpdateContent({
+export const SmartAccountUpdateContent = ({
   selectedAddresses,
   chainId,
 }: {
   selectedAddresses: Hex[];
   chainId?: Hex;
-}) {
+}) => {
   const t = useI18nContext();
   const useBlockie = useSelector(getUseBlockie);
 
@@ -165,4 +165,4 @@ export function SmartAccountUpdateContent({
       </Box>
     </>
   );
-}
+};

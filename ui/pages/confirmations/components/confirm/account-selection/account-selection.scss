@@ -1,12 +1,6 @@
 @use "design-system";
 
 .account-selection {
-  &__close {
-    position: absolute;
-    left: 4px;
-    top: 4px;
-  }
-
   &__select {
     align-self: center;
   }
@@ -15,5 +9,25 @@
     height: 84%;
     overflow: auto;
     width: 100%;
+  }
+
+  &__top-section {
+    width: 100vw;
+
+    @media screen and (min-width: design-system.$break-large) {
+      width: 85vw;
+    }
+
+    @media screen and (min-width: 768px) {
+      width: 80vw;
+    }
+
+    @media screen and (min-width: 1280px) {
+      width: 62vw;
+    }
+  }
+
+  &__update {
+    min-height: 48px;
   }
 }

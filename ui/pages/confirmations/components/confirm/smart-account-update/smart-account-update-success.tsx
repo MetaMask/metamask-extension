@@ -19,6 +19,7 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -61,7 +62,11 @@ export function SmartAccountUpdateSuccess() {
       >
         {t('smartAccountUpdateSuccessTitle')}
       </Text>
-      <Text color={TextColor.textDefault} variant={TextVariant.bodyMd}>
+      <Text
+        color={TextColor.textDefault}
+        textAlign={TextAlign.Center}
+        variant={TextVariant.bodyMd}
+      >
         {t('smartAccountUpdateSuccessMessage')}
       </Text>
       <ButtonLink

@@ -93,14 +93,14 @@ export function SmartAccountUpdate() {
           <>
             <Box
               display={Display.Flex}
-              flexDirection={FlexDirection.Column}
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.spaceBetween}
+              width={BlockSize.Full}
+              className="smart-account-update__top-section"
             >
               <IconButton
                 Icon={<Icon name={IconName.ArrowLeft} />}
                 onClick={closeAccountUpdatePage}
-                className="smart-account-update__close-left"
                 label=""
                 data-testid="smart-account-update-close"
               />
@@ -115,7 +115,6 @@ export function SmartAccountUpdate() {
                 Icon={<Icon name={IconName.Edit} />}
                 onClick={showAccountSelectionVisible}
                 label=""
-                className="smart-account-update__edit"
                 data-testid="smart-account-update-edit"
               />
             </Box>
@@ -126,6 +125,7 @@ export function SmartAccountUpdate() {
               size={ButtonSize.Lg}
               variant={ButtonVariant.Primary}
               width={BlockSize.Full}
+              className="smart-account-update__update"
             >
               {t('smartAccountAccept')}
             </Button>

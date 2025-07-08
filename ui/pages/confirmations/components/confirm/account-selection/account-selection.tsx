@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import AccountListItem from '../../../../../components/multichain/account-list-item/account-list-item';
 import IconButton from '../../../../../components/ui/icon-button/icon-button-round';
 import {
+  AlignItems,
   BlockSize,
   Display,
   FontWeight,
@@ -86,17 +87,22 @@ export function AccountSelection({
 
   return (
     <>
-      <Box marginBottom={2}>
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        className="account-selection__top-section"
+        justifyContent={JustifyContent.spaceBetween}
+      >
         <IconButton
           Icon={<Icon name={IconName.ArrowLeft} />}
           onClick={closeAccountSelection}
-          className="account-selection__close"
           label=""
           data-testid="account-selection-close"
         />
-        <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
+        <Text fontWeight={FontWeight.Bold} variant={TextVariant.headingSm}>
           {t('smartAccountEditAccounts')}
         </Text>
+        <div />
       </Box>
       <Box
         display={Display.Flex}
@@ -144,7 +150,8 @@ export function AccountSelection({
         onClick={onUpdate}
         width={BlockSize.Full}
         marginBottom={2}
-        marginTop={2}
+        marginTop={4}
+        className="account-selection__update"
       >
         {t('update')}
       </Button>
