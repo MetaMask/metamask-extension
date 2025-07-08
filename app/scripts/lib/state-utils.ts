@@ -5,18 +5,7 @@ import { Snap } from '@metamask/snaps-utils';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type FlattenedUIState = Record<string, any>;
 
-const REMOVE_KEYS = [
-  'snapStates',
-  'unencryptedSnapStates',
-  'vault',
-  // Phishing controller properties to exclude
-  'phishingLists',
-  'whitelist',
-  'hotlistLastFetched',
-  'stalelistLastFetched',
-  'c2DomainBlocklistLastFetched',
-  'listState',
-];
+const REMOVE_KEYS = ['snapStates', 'unencryptedSnapStates', 'vault'];
 
 export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
   const newState = { ...state };
@@ -25,7 +14,7 @@ export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
     delete newState[key];
   }
 
-  // Handle PhishingController state - only keep urlScanCache
+  // only keep urlScanCache for PhishingController
   if (newState.PhishingController) {
     const { urlScanCache } = newState.PhishingController;
     newState.PhishingController = { urlScanCache };
