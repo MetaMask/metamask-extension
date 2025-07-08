@@ -67,6 +67,8 @@ export const SocialButton = React.forwardRef(
   },
 );
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function LoginOptions({
   onClose,
   loginOption,
@@ -77,8 +79,6 @@ export default function LoginOptions({
   handleLogin: (loginType: LoginType) => void;
 }) {
   const t = useI18nContext();
-  // TODO: enable apple login once it's deployed securely.
-  const shouldDisableAppleLogin = true;
 
   return (
     <Modal
@@ -136,7 +136,6 @@ export default function LoginOptions({
             }
             marginBottom={2}
             onClick={() => handleLogin(LOGIN_TYPE.APPLE)}
-            disabled={shouldDisableAppleLogin}
           />
           <Box
             alignItems={AlignItems.center}

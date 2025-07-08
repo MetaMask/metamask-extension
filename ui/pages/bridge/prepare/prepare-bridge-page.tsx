@@ -20,6 +20,7 @@ import {
   isNativeAddress,
   UnifiedSwapBridgeEventName,
   BRIDGE_DEFAULT_SLIPPAGE,
+  GenericQuoteRequest,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -134,7 +135,7 @@ import {
   fetchAssetMetadata,
   toAssetId,
 } from '../../../../shared/lib/asset-utils';
-import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
@@ -177,7 +178,9 @@ const PrepareBridgePage = () => {
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
-  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const smartTransactionsEnabled = useSelector((state) =>
+    getIsSmartTransaction(state as never, fromChain?.chainId),
+  );
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
@@ -185,6 +188,8 @@ const PrepareBridgePage = () => {
   const quoteRequest = useSelector(getQuoteRequest);
   const {
     isLoading,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     activeQuote: activeQuote_,
     isQuoteGoingToRefresh,
     quotesRefreshCount,
@@ -380,7 +385,7 @@ const PrepareBridgePage = () => {
     return isSolanaChainId(toChain.chainId);
   }, [toChain?.chainId]);
 
-  const quoteParams = useMemo(
+  const quoteParams: Partial<GenericQuoteRequest> = useMemo(
     () => ({
       srcTokenAddress: fromToken?.address,
       destTokenAddress: toToken?.address,
@@ -406,6 +411,7 @@ const PrepareBridgePage = () => {
       slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
+      gasIncluded: smartTransactionsEnabled && isSwap,
     }),
     [
       fromToken?.address,
@@ -418,6 +424,8 @@ const PrepareBridgePage = () => {
       selectedAccount?.address,
       selectedDestinationAccount?.address,
       providerConfig?.rpcUrl,
+      smartTransactionsEnabled,
+      isSwap,
     ],
   );
 
@@ -433,11 +441,23 @@ const PrepareBridgePage = () => {
     trackCrossChainSwapsEvent({
       event: MetaMetricsEventName.ActionPageViewed,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id_source: formatChainIdToCaip(fromChain?.chainId ?? ''),
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol_source: fromToken?.symbol ?? '',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_address_source: fromToken?.address ?? '',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id_destination: formatChainIdToCaip(toChain?.chainId ?? ''),
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol_destination: toToken?.symbol ?? '',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_address_destination: toToken?.address ?? '',
       },
     });
@@ -450,9 +470,17 @@ const PrepareBridgePage = () => {
   useEffect(() => {
     dispatch(setSelectedQuote(null));
     debouncedUpdateQuoteRequestInController(quoteParams, {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       stx_enabled: smartTransactionsEnabled,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_symbol_source: fromToken?.symbol ?? '',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_symbol_destination: toToken?.symbol ?? '',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       security_warnings: [],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -698,9 +726,14 @@ const PrepareBridgePage = () => {
             header: t('yourNetworks'),
           }}
           isMultiselectEnabled={isUnifiedUIEnabled || !isSwap}
-          onMaxButtonClick={(value: string) => {
-            dispatch(setFromTokenInputValue(value));
-          }}
+          onMaxButtonClick={
+            (isSwap && smartTransactionsEnabled) ||
+            !isNativeAddress(fromToken?.address ?? '')
+              ? (value: string) => {
+                  dispatch(setFromTokenInputValue(value));
+                }
+              : undefined
+          }
           // Hides fiat amount string before a token quantity is entered.
           amountInFiat={
             fromAmountInCurrency.valueInCurrency.gt(0)
@@ -778,23 +811,37 @@ const PrepareBridgePage = () => {
                     trackUnifiedSwapBridgeEvent(
                       UnifiedSwapBridgeEventName.InputSourceDestinationFlipped,
                       {
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_symbol_source: toToken?.symbol ?? null,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_symbol_destination: fromToken?.symbol ?? null,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_address_source:
                           toAssetId(
                             toToken.address ?? '',
                             formatChainIdToCaip(toToken.chainId ?? ''),
                           ) ??
                           getNativeAssetForChainId(toChain.chainId)?.assetId,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_address_destination:
                           toAssetId(
                             fromToken.address ?? '',
                             formatChainIdToCaip(fromToken.chainId ?? ''),
                           ) ?? null,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         chain_id_source: formatChainIdToCaip(toChain.chainId),
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         chain_id_destination: fromChain?.chainId
                           ? formatChainIdToCaip(fromChain?.chainId)
                           : null,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         security_warnings: [],
                       },
                     ),
@@ -991,9 +1038,17 @@ const PrepareBridgePage = () => {
                   srcTokenBalance={srcTokenBalance}
                   onFetchNewQuotes={() => {
                     debouncedUpdateQuoteRequestInController(quoteParams, {
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       stx_enabled: smartTransactionsEnabled,
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       token_symbol_source: fromToken?.symbol ?? '',
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       token_symbol_destination: toToken?.symbol ?? '',
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       security_warnings: [], // TODO populate security warnings
                     });
                   }}

@@ -60,6 +60,8 @@ class Confirmation {
     this.scrollToBottomButton = '.confirm-scroll-to-bottom__button';
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -127,6 +129,8 @@ class Confirmation {
     await this.driver.clickElement(this.previousPageButton);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageNumbers(
     currentPage: number,
     totalPages: number,
@@ -157,6 +161,8 @@ class Confirmation {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_nameIsDisplayed(
     expectedValue: string,
     isSaved: boolean,
@@ -212,6 +218,8 @@ class Confirmation {
     await this.driver.clickElement(this.saveButtonSelector);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_proposedNames(
     value: string,
     options: [string, string][],

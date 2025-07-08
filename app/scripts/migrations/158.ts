@@ -7,6 +7,8 @@ export type VersionedData = {
     version: number;
   };
   data: {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     UserStorageController?: Partial<UserStorageControllerState> & {
       // These properties are not in the UserStorageControllerState type anymore
       isProfileSyncingEnabled?: boolean;
