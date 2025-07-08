@@ -163,6 +163,7 @@ export default class Home extends PureComponent {
     setBasicFunctionalityModalOpen: PropTypes.func,
     fetchBuyableChains: PropTypes.func.isRequired,
     isSeedlessPasswordOutdated: PropTypes.bool,
+    isSocialLoginEnabled: PropTypes.bool,
   };
 
   state = {
@@ -344,6 +345,7 @@ export default class Home extends PureComponent {
       setNewTokensImportedError,
       clearNewNetworkAdded,
       clearEditedNetwork,
+      isSocialLoginEnabled,
     } = this.props;
 
     const onAutoHide = () => {
@@ -573,7 +575,7 @@ export default class Home extends PureComponent {
           checkboxTooltipText={t('canToggleInSettings')}
         />
       ) : null,
-      shouldShowSeedPhraseReminder ? (
+      !isSocialLoginEnabled && shouldShowSeedPhraseReminder ? (
         <HomeNotification
           key="show-seed-phrase-reminder"
           descriptionText={t('backupApprovalNotice')}
@@ -788,6 +790,7 @@ export default class Home extends PureComponent {
       showMultiRpcModal,
       showUpdateModal,
       isSeedlessPasswordOutdated,
+      isSocialLoginEnabled,
     } = this.props;
 
     if (forgottenPassword) {
@@ -840,7 +843,9 @@ export default class Home extends PureComponent {
           {showMultiRpcEditModal && <MultiRpcEditModal />}
           {displayUpdateModal && <UpdateModal />}
           {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
-          {!showWhatsNew && showRecoveryPhraseReminder ? (
+          {!showWhatsNew &&
+          showRecoveryPhraseReminder &&
+          !isSocialLoginEnabled ? (
             <RecoveryPhraseReminder
               onConfirm={this.onRecoveryPhraseReminderClose}
             />

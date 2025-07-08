@@ -28,6 +28,7 @@ import {
   getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
   getShowUpdateModal,
+  getIsSocialLoginFlow,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -183,6 +184,7 @@ const mapStateToProps = (state) => {
     showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
     showUpdateModal: getShowUpdateModal(state),
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
+    isSocialLoginEnabled: getIsSocialLoginFlow(state),
   };
 };
 
