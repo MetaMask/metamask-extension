@@ -95,6 +95,8 @@ class TestDapp {
 
   private readonly erc721RevokeSetApprovalForAllButton = '#revokeButton';
 
+  private readonly erc721ApproveButton = '#approveButton';
+
   private readonly erc721SetApprovalForAllButton = '#setApprovalForAllButton';
 
   private readonly erc721TransferFromButton = '#transferFromButton';
@@ -832,6 +834,10 @@ class TestDapp {
 
   async clickERC721RevokeSetApprovalForAllButton() {
     await this.driver.clickElement(this.erc721RevokeSetApprovalForAllButton);
+  }
+
+  async clickERC721ApproveButton() {
+    await this.driver.clickElement(this.erc721ApproveButton);
   }
 
   async clickERC721SetApprovalForAllButton() {
