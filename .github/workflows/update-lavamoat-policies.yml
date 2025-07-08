@@ -100,7 +100,7 @@ jobs:
       matrix:
         # Ensure this is synchronized with the list below in the "commit-updated-policies" job
         # and with the build type list in `builds.yml`
-        build-type: [main, beta, flask]
+        build-type: [main, beta, experimental, flask]
     name: Update LavaMoat ${{ matrix.build-type }} application policy
     runs-on: ubuntu-latest
     needs:
@@ -166,7 +166,7 @@ jobs:
           path: lavamoat/build-system
           key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
-      # One restore step per build type: [main, beta, flask]
+      # One restore step per build type: [main, beta, experimental, flask]
       # Ensure this is synchronized with the list above in the "update-lavamoat-webapp-policy" job
       # and with the build type list in `builds.yml`
       - name: Restore main application policy
@@ -186,6 +186,12 @@ jobs:
         with:
           path: lavamoat/browserify/flask
           key: cache-flask-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+      - name: Restore experimental application policy
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/browserify/experimental
+          key: cache-experimental-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
       - name: Check whether there are policy changes
         id: policy-changes

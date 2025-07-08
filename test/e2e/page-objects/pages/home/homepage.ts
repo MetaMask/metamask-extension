@@ -72,9 +72,14 @@ class HomePage {
     testId: 'refreshList',
   };
 
+  private readonly surveyToast = '[data-testid="survey-toast"]';
+
   private readonly tokensTab = {
     testId: 'account-overview__asset-tab',
   };
+
+  private readonly closeSurveyToastBannerButton =
+    '[data-testid="survey-toast-banner-base"] [aria-label="Close"] span';
 
   private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
 
@@ -97,6 +102,15 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
+  }
+
+  async closeSurveyToast(surveyName: string): Promise<void> {
+    console.log(`Close survey toast for ${surveyName}`);
+    await this.driver.waitForSelector({
+      css: this.surveyToast,
+      text: surveyName,
+    });
+    await this.driver.clickElement(this.closeSurveyToastBannerButton);
   }
 
   async closeUseNetworkNotificationModal(): Promise<void> {
@@ -364,6 +378,13 @@ class HomePage {
   ): Promise<void> {
     await this.driver.waitForSelector({
       text: `Secret Recovery Phrase ${srpNumber} imported`,
+    });
+  }
+
+  async checkNoSurveyToastIsDisplayed(): Promise<void> {
+    console.log('Check no survey toast is displayed on homepage');
+    await this.driver.assertElementNotPresent(this.surveyToast, {
+      timeout: 5000,
     });
   }
 
