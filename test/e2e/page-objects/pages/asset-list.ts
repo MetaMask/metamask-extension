@@ -110,43 +110,6 @@ export class AssetList {
 
     return [];
   }
-
-  /**
-   * Clicks on a specific token in the asset list
-   *
-   * @param tokenSymbol - The symbol of the token to click
-   */
-  async clickToken(tokenSymbol: string): Promise<void> {
-    console.log(`Clicking token ${tokenSymbol} in asset list`);
-
-    // Try primary selector first
-    try {
-      const tokenElements = await this.driver.findElements(AssetList.selectors.tokenListItem);
-
-      for (const element of tokenElements) {
-        const text = await element.getText();
-        if (text.includes(tokenSymbol)) {
-          await element.click();
-          return;
-        }
-      }
-    } catch (error) {
-      console.log(`Primary selector failed for clicking, trying fallback: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-
-    // Try fallback selector
-    const fallbackElements = await this.driver.findElements(AssetList.selectors.fallbackTokenListItem);
-
-    for (const element of fallbackElements) {
-      const text = await element.getText();
-      if (text.includes(tokenSymbol)) {
-        await element.click();
-        return;
-      }
-    }
-
-    throw new Error(`Token "${tokenSymbol}" not found in token list`);
-  }
 }
 
 export default AssetList;
