@@ -235,7 +235,6 @@ export default class SecurityTab extends PureComponent {
             <div className="settings-page__content-item-col">
               <Button
                 data-testid="reveal-seed-words"
-                type="danger"
                 size={ButtonSize.Lg}
                 onClick={(event) => {
                   event.preventDefault();
@@ -289,21 +288,29 @@ export default class SecurityTab extends PureComponent {
           {t('securityChangePasswordTitle')}
         </div>
         <div className="settings-page__content-padded">
-          <div className="settings-page__content-description">
-            {t('securityChangePasswordDescription')}
-          </div>
-          <Button
-            data-testid="change-password-button"
-            width={BlockSize.Full}
-            size={ButtonSize.Lg}
-            marginTop={4}
-            block
-            onClick={() => {
-              history.push(SECURITY_PASSWORD_CHANGE_ROUTE);
-            }}
+          <Box
+            className="settings-page__content-row"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={4}
           >
-            {t('securityChangePassword')}
-          </Button>
+            <div className="settings-page__content-item">
+              <div className="settings-page__content-description">
+                {t('securityChangePasswordDescription')}
+              </div>
+            </div>
+            <div className="settings-page__content-item-col">
+              <Button
+                data-testid="change-password-button"
+                size={ButtonSize.Lg}
+                onClick={() => {
+                  history.push(SECURITY_PASSWORD_CHANGE_ROUTE);
+                }}
+              >
+                {t('securityChangePassword')}
+              </Button>
+            </div>
+          </Box>
         </div>
       </>
     );

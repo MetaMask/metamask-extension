@@ -399,7 +399,7 @@ const PasswordChangeToast = () => {
   return (
     showPasswordChangeToast !== null && (
       <Toast
-        data-testid={
+        dataTestId={
           showPasswordChangeToast === PasswordChangeToastType.Success
             ? 'password-change-toast-success'
             : 'password-change-toast-error'
