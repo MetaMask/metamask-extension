@@ -51,6 +51,7 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { SnapIcon } from '../../components/app/snaps/snap-icon';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
+import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
@@ -76,8 +77,10 @@ class SettingsPage extends PureComponent {
     initialBreadCrumbKey: PropTypes.string,
     initialBreadCrumbRoute: PropTypes.string,
     isAddressEntryPage: PropTypes.bool,
+    isPasswordChangePage: PropTypes.bool,
     isPopup: PropTypes.bool,
     isRevealSrpListPage: PropTypes.bool,
+    isSeedlessPasswordOutdated: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
     settingsPageSnaps: PropTypes.array,
@@ -128,12 +131,14 @@ class SettingsPage extends PureComponent {
       currentPath,
       mostRecentOverviewPage,
       addNewNetwork,
+      isPasswordChangePage,
       isRevealSrpListPage,
+      isSeedlessPasswordOutdated,
     } = this.props;
 
     const { t } = this.context;
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-    const isSearchHidden = isRevealSrpListPage;
+    const isSearchHidden = isRevealSrpListPage || isPasswordChangePage;
 
     return (
       <div
@@ -144,6 +149,7 @@ class SettingsPage extends PureComponent {
           },
         )}
       >
+        {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
         <Box
           className="settings-page__header"
           padding={4}
@@ -235,9 +241,9 @@ class SettingsPage extends PureComponent {
 
   renderSearch() {
     const { isSearchList, searchText, searchResults } = this.state;
-    const { isRevealSrpListPage } = this.props;
+    const { isRevealSrpListPage, isPasswordChangePage } = this.props;
 
-    if (isRevealSrpListPage) {
+    if (isRevealSrpListPage || isPasswordChangePage) {
       return null;
     }
 
