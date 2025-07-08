@@ -26,6 +26,8 @@ import {
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function PasswordOutdatedModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();

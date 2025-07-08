@@ -1,11 +1,12 @@
-const {
-  ACCOUNTS_PROD_API_BASE_URL,
-} = require('../../../../shared/constants/accounts');
-const { MOCK_META_METRICS_ID } = require('../../constants');
-const { withFixtures, unlockWallet } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
+import { MockttpServer } from 'mockttp';
+import { ACCOUNTS_PROD_API_BASE_URL } from '../../../../shared/constants/accounts';
+import { MOCK_META_METRICS_ID } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import Homepage from '../../page-objects/pages/home/homepage';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-async function mockSurveys(mockServer) {
+async function mockSurveys(mockServer: MockttpServer) {
   await mockServer
     .forGet(
       `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
@@ -60,30 +61,14 @@ describe('Test Survey', function () {
           })
           .build(),
         testSpecificMock: mockSurveys,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        async function checkForToast(surveyId) {
-          await driver.findElement('[data-testid="survey-toast"]');
-          await driver.waitForSelector({
-            css: '[data-testid="survey-toast-banner-base"] p',
-            text: `Test survey ${surveyId}`,
-          });
-          await driver.clickElement(
-            '[data-testid="survey-toast-banner-base"] [aria-label="Close"]',
-          );
-        }
-
-        async function checkForNoToast() {
-          await driver.assertElementNotPresent('[data-testid="survey-toast"]');
-        }
-
-        await unlockWallet(driver);
-        await checkForToast(1);
-        await driver.refresh();
-        await checkForToast(2);
-        await driver.refresh();
-        await checkForNoToast();
+        await loginWithBalanceValidation(driver);
+        const homePage = new Homepage(driver);
+        await homePage.closeSurveyToast('Test survey 1');
+        await homePage.closeSurveyToast('Test survey 2');
+        await homePage.checkNoSurveyToastIsDisplayed();
       },
     );
   });

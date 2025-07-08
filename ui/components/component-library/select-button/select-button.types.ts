@@ -112,9 +112,13 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
   caretIconProps?: IconProps<'span'>;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type SelectButtonProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, SelectButtonStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type SelectButtonComponent = <C extends React.ElementType = 'div'>(
   props: SelectButtonProps<C>,
 ) => React.ReactElement | null;
