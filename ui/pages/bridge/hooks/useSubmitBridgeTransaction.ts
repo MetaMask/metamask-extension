@@ -17,9 +17,7 @@ import {
   getIsSmartTransaction,
   isHardwareWallet,
 } from '../../../../shared/modules/selectors';
-import {
-  getFromChain
-} from '../../../ducks/bridge/selectors';
+import { getFromChain } from '../../../ducks/bridge/selectors';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
 const APPROVAL_TX_ERROR = 'Approve transaction failed';
