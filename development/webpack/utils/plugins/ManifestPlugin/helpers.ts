@@ -100,40 +100,20 @@ export function transformManifest(
     transforms.push(addTabsPermission);
   }
 
-  function addManifestKeyAndPermissions(
-    browserManifest: chrome.runtime.Manifest,
-    browser?: string,
-  ) {
+  function addManifestKey(browserManifest: chrome.runtime.Manifest) {
     if (!browserManifest.key) {
       browserManifest.key = MANIFEST_DEV_KEY;
-    }
-
-    if (browser === 'firefox') {
-      // Firefox requires the identity as the installation permission
-      if (browserManifest.permissions?.includes('identity')) {
-        throw new Error(
-          "manifest contains 'identity' already; this transform should be removed.",
-        );
-      } else {
-        browserManifest.permissions?.push('identity');
-      }
-    } else if (browserManifest.optional_permissions?.includes('identity')) {
-      throw new Error(
-        "manifest contains 'identity' already; this transform should be removed.",
-      );
-    } else {
-      browserManifest.optional_permissions?.push('identity');
     }
   }
 
   if (isDevelopment || args.test) {
-    transforms.push(addManifestKeyAndPermissions);
+    transforms.push(addManifestKey);
   }
 
   return transforms.length
-    ? (browserManifest: chrome.runtime.Manifest, browser: string) => {
+    ? (browserManifest: chrome.runtime.Manifest, _browser: string) => {
         const manifestClone = structuredClone(browserManifest);
-        transforms.forEach((transform) => transform(manifestClone, browser));
+        transforms.forEach((transform) => transform(manifestClone));
         return manifestClone;
       }
     : undefined;

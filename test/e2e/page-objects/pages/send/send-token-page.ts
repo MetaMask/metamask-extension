@@ -22,6 +22,11 @@ class SendTokenPage {
     tag: 'button',
   };
 
+  private readonly confirmButton = {
+    text: 'Confirm',
+    tag: 'button',
+  };
+
   private readonly cancelButton = {
     text: 'Cancel',
     tag: 'button',
@@ -70,6 +75,15 @@ class SendTokenPage {
 
   private readonly fiatFeeField = '[data-testid="native-currency"]';
 
+  private readonly tokenGasFeeDropdown =
+    '[data-testid="selected-gas-fee-token-arrow"]';
+
+  private readonly tokenGasFeeSymbol =
+    '[data-testid="gas-fee-token-list-item-symbol"]';
+
+  private readonly viewActivityButton =
+    '[data-testid="smart-transaction-status-page-footer-close-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -79,6 +93,8 @@ class SendTokenPage {
     return this.driver.findElements(this.tokenListButton);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -136,6 +152,14 @@ class SendTokenPage {
     console.log('Continue button clicked successfully');
   }
 
+  async clickConfirmButton(): Promise<void> {
+    await this.driver.clickElement(this.confirmButton);
+  }
+
+  async clickViewActivity(): Promise<void> {
+    await this.driver.clickElement(this.viewActivityButton);
+  }
+
   async fillAmount(amount: string): Promise<void> {
     console.log(`Fill amount input with ${amount} on send token screen`);
     const inputAmount = await this.driver.waitForSelector(this.inputAmount);
@@ -150,6 +174,17 @@ class SendTokenPage {
     );
   }
 
+  async selectTokenFee(tokenSymbol: string): Promise<void> {
+    console.log(`Select token ${tokenSymbol} to pay for the fees`);
+    await this.driver.clickElement(this.tokenGasFeeDropdown);
+    await this.driver.clickElement({
+      css: this.tokenGasFeeSymbol,
+      text: tokenSymbol,
+    });
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_networkChange(networkName: string): Promise<void> {
     const toastTextElement = await this.driver.findElement(this.toastText);
     const toastText = await toastTextElement.getText();
@@ -283,6 +318,8 @@ class SendTokenPage {
    * @param address - The Ethereum address to which the ENS domain is expected to resolve.
    * @returns A promise that resolves if the ENS domain can be successfully used as a recipient address on the send token screen.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_ensAddressAsRecipient(
     ensDomain: string,
     address: string,
@@ -309,6 +346,8 @@ class SendTokenPage {
    * @param address - The Ethereum address to which the ENS domain is expected to resolve.
    * @returns A promise that resolves if the ENS domain successfully resolves to the specified address on send token screen.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_ensAddressResolution(
     ensDomain: string,
     address: string,
@@ -333,6 +372,8 @@ class SendTokenPage {
    * @returns A promise that resolves if the warning message matches the expected text.
    * @throws Assertion error if the warning message does not match the expected text.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_warningMessage(warningText: string): Promise<void> {
     console.log(`Checking if warning message "${warningText}" is displayed`);
     await this.driver.waitForSelector({
@@ -351,6 +392,8 @@ class SendTokenPage {
    * @returns A promise that resolves when the check is complete.
    * @throws AssertionError if the displayed token symbol does not match the expected value.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_tokenSymbolInAssetPicker(
     tokenSymbol: string,
     tokenId?: string,

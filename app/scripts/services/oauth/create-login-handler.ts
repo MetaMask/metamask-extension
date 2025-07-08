@@ -31,6 +31,8 @@ export function createLoginHandler(
         oAuthClientId: config.appleClientId,
       });
     default:
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw new Error(`Invalid social login provider: ${authConnection}`);
   }
 }

@@ -18,7 +18,7 @@ describe('FormattedCounter', () => {
   it('should render and start triggering the countdown', async () => {
     await act(async () => {
       render(
-        <FormattedCounter remainingTime={10} unlock={mockUnlockCallback} />,
+        <FormattedCounter startFrom={10} onCountdownEnd={mockUnlockCallback} />,
       );
 
       // speed up the countdown

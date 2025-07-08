@@ -65,7 +65,9 @@ const selectDevnet = async (driver: Driver): Promise<void> => {
 
   const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
   await networkPermissionSelectModal.check_pageIsLoaded();
-  await networkPermissionSelectModal.selectNetwork('Solana Devnet');
+  await networkPermissionSelectModal.selectNetwork({
+    networkName: 'Solana Devnet',
+  });
   await networkPermissionSelectModal.clickConfirmEditButton();
 };
 
