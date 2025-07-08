@@ -212,7 +212,8 @@ export const MultichainBridgeQuoteCard = () => {
               color={TextColor.textAlternative}
             >
               <Text variant={TextVariant.bodyMd}>
-                {t('rateIncludesMMFee', [BRIDGE_MM_FEE_RATE])}
+                {activeQuote.quote.gasIncluded ? t('rateIncludesMMFeeAndGas', [BRIDGE_MM_FEE_RATE]) : t('rateIncludesMMFee', [BRIDGE_MM_FEE_RATE])}
+
               </Text>
               <ButtonLink
                 variant={TextVariant.bodyMd}
