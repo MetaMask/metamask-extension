@@ -4851,6 +4851,8 @@ export default class MetamaskController extends EventEmitter {
 
         // update vault password to global password
         await this.keyringController.changePassword(password);
+        // sync the new keyring encryption key after keyring chagnePassword to the seedless onboarding controller
+        await this.socialSyncKeyringEncryptionKey();
 
         // check password outdated again skip cache to reset the cache after successful syncing
         await this.seedlessOnboardingController.checkIsPasswordOutdated({
