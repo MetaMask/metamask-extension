@@ -39,7 +39,6 @@ describe('AccountSelection', () => {
         selectedAccounts={[]}
         setSelectedAccounts={noop}
         closeAccountSelection={noop}
-        wrapped={false}
       />,
       mockStore,
     );
@@ -81,7 +80,6 @@ describe('AccountSelection', () => {
         selectedAccounts={[]}
         setSelectedAccounts={noop}
         closeAccountSelection={noop}
-        wrapped={false}
       />,
       mockStore,
     );
@@ -104,7 +102,6 @@ describe('AccountSelection', () => {
         selectedAccounts={[]}
         setSelectedAccounts={noop}
         closeAccountSelection={mockCloseAccountSelection}
-        wrapped={false}
       />,
       mockStore,
     );
@@ -124,7 +121,6 @@ describe('AccountSelection', () => {
         selectedAccounts={[]}
         setSelectedAccounts={mocksetSelectedAccounts}
         closeAccountSelection={noop}
-        wrapped={false}
       />,
       mockStore,
     );
@@ -145,7 +141,6 @@ describe('AccountSelection', () => {
         selectedAccounts={ALL_ACCOUNTS}
         setSelectedAccounts={mocksetSelectedAccounts}
         closeAccountSelection={noop}
-        wrapped={false}
       />,
       mockStore,
     );
@@ -167,7 +162,6 @@ describe('AccountSelection', () => {
         setSelectedAccounts={noop}
         closeAccountSelection={noop}
         onUpdate={mockOnUpdate}
-        wrapped={false}
       />,
       mockStore,
     );
