@@ -246,7 +246,7 @@ jobs:
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
     with:
-      container-registry-role: 'arn:aws:iam::363762752069:role/consensys-ecr-public-pull-role'
+      container-registry-role: ${{ vars.CONTAINER_REGISTRY_AWS_IAM_ROLE }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
@@ -257,7 +257,7 @@ jobs:
       - build-test-flask-mv2-browserify
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     with:
-      container-registry-role: 'arn:aws:iam::363762752069:role/consensys-ecr-public-pull-role'
+      container-registry-role: ${{ vars.CONTAINER_REGISTRY_AWS_IAM_ROLE }}
     uses: ./.github/workflows/e2e-firefox.yml
 
   build-storybook:
