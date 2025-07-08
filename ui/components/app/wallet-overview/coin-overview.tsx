@@ -28,7 +28,7 @@ import {
 import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
-import { PRIMARY } from '../../../helpers/constants/common';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
   getPreferences,
   getShouldHideZeroBalanceTokens,
@@ -40,6 +40,7 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   SwapsEthToken,
+  getEnabledNetworksByNamespace,
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
 
@@ -97,6 +98,8 @@ export const LegacyAggregatedBalance = ({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+
   const allChainIDs = useSelector(getChainIdsToPoll) as string[];
   const shouldShowFiat = useMultichainSelector(
     getMultichainShouldShowFiat,
@@ -118,8 +121,11 @@ export const LegacyAggregatedBalance = ({
     formattedTokensWithBalancesPerChain,
   );
 
+  const showNativeTokenAsMain =
+    showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1;
+
   const isNotAggregatedFiatBalance =
-    !shouldShowFiat || showNativeTokenAsMainBalance || isTestnet;
+    !shouldShowFiat || showNativeTokenAsMain || isTestnet;
 
   let balanceToDisplay;
   if (isNotAggregatedFiatBalance) {
@@ -141,12 +147,12 @@ export const LegacyAggregatedBalance = ({
         })}
         data-testid={`${classPrefix}-overview__primary-currency`}
         value={balanceToDisplay}
-        type={PRIMARY}
+        type={Object.keys(enabledNetworks).length === 1 ? PRIMARY : SECONDARY}
         ethNumberOfDecimals={4}
         hideTitle
         shouldCheckShowNativeToken
         isAggregatedFiatOverviewBalance={
-          !showNativeTokenAsMainBalance && !isTestnet && shouldShowFiat
+          !showNativeTokenAsMain && !isTestnet && shouldShowFiat
         }
         privacyMode={privacyMode}
       />
@@ -177,6 +183,8 @@ export const CoinOverview = ({
   isSwapsChain,
   isSigningEnabled,
 }: CoinOverviewProps) => {
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+
   // Pre-conditions
   if (isSwapsChain && defaultSwapsToken === undefined) {
     throw new Error('defaultSwapsToken is required');
@@ -276,7 +284,8 @@ export const CoinOverview = ({
       return renderNonEvmView();
     }
 
-    return showNativeTokenAsMainBalance
+    return showNativeTokenAsMainBalance &&
+      Object.keys(enabledNetworks).length === 1
       ? renderNativeTokenView()
       : renderAggregatedView();
   };
