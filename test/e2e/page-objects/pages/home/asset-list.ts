@@ -362,11 +362,15 @@ class AssetListPage {
     );
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_buySellButtonIsPresent(): Promise<void> {
     console.log(`Verify the buy/sell button is displayed`);
     await this.driver.waitForSelector(this.buySellButton);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_multichainTokenListButtonIsPresent(): Promise<void> {
     console.log(`Verify the multichain-token-list-button is displayed`);
     await this.driver.waitForSelector(this.tokenListItem);

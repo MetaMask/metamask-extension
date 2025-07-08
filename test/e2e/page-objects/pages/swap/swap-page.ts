@@ -258,6 +258,8 @@ class SwapPage {
     await this.driver.clickElementAndWaitToDisappear(this.submitSwapButton);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_prepareSwapBalanceMessage(balanceAmount: string): Promise<void> {
     console.log('Check swap balance prepare message');
     await this.driver.waitForSelector({
