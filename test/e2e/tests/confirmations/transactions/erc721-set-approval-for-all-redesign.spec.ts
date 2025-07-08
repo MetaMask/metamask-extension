@@ -27,7 +27,7 @@ describe('Confirmation Redesign ERC721 setApprovalForAll', function () {
           await createTransactionAssertDetailsAndConfirm(
             driver,
             contractRegistry,
-            localNodes ? localNodes[0] : undefined,
+            localNodes?.[0],
           );
         },
         mocks,
@@ -47,7 +47,7 @@ describe('Confirmation Redesign ERC721 setApprovalForAll', function () {
           await createTransactionAssertDetailsAndConfirm(
             driver,
             contractRegistry,
-            localNodes ? localNodes[0] : undefined,
+            localNodes?.[0],
           );
         },
         mocks,

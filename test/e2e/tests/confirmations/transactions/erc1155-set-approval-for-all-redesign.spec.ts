@@ -42,7 +42,7 @@ describe('Confirmation Redesign ERC1155 setApprovalForAll', function () {
           await createTransactionAssertDetailsAndConfirm(
             driver,
             contractRegistry,
-            localNodes ? localNodes[0] : undefined,
+            localNodes?.[0],
           );
         },
         mocks,

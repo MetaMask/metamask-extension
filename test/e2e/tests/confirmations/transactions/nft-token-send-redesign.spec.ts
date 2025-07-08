@@ -38,7 +38,7 @@ describe('Confirmation Redesign Token Send', function () {
             await createERC721WalletInitiatedTransactionAndAssertDetails(
               driver,
               contractRegistry,
-              localNodes ? localNodes[0] : undefined,
+              localNodes?.[0],
             );
           },
           erc721Mocks,
@@ -58,7 +58,7 @@ describe('Confirmation Redesign Token Send', function () {
             await createERC721WalletInitiatedTransactionAndAssertDetails(
               driver,
               contractRegistry,
-              localNodes ? localNodes[0] : undefined,
+              localNodes?.[0],
             );
           },
           erc721Mocks,
@@ -80,7 +80,7 @@ describe('Confirmation Redesign Token Send', function () {
             await createERC721DAppInitiatedTransactionAndAssertDetails(
               driver,
               contractRegistry,
-              localNodes ? localNodes[0] : undefined,
+              localNodes?.[0],
             );
           },
           erc721Mocks,
@@ -100,7 +100,7 @@ describe('Confirmation Redesign Token Send', function () {
             await createERC721DAppInitiatedTransactionAndAssertDetails(
               driver,
               contractRegistry,
-              localNodes ? localNodes[0] : undefined,
+              localNodes?.[0],
             );
           },
           erc721Mocks,
@@ -124,7 +124,7 @@ describe('Confirmation Redesign Token Send', function () {
             await createERC1155WalletInitiatedTransactionAndAssertDetails(
               driver,
               contractRegistry,
-              localNodes ? localNodes[0] : undefined,
+              localNodes?.[0],
             );
           },
           erc1155Mocks,
@@ -144,7 +144,7 @@ describe('Confirmation Redesign Token Send', function () {
             await createERC1155WalletInitiatedTransactionAndAssertDetails(
               driver,
               contractRegistry,
-              localNodes ? localNodes[0] : undefined,
+              localNodes?.[0],
             );
           },
           erc1155Mocks,

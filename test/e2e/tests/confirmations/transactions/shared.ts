@@ -2,7 +2,6 @@
 import { MockedEndpoint, MockttpServer } from 'mockttp';
 import { largeDelayMs, veryLargeDelayMs } from '../../../helpers';
 import { Anvil } from '../../../seeder/anvil';
-import { Ganache } from '../../../seeder/ganache';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { Mockttp } from '../../../mock-e2e';
