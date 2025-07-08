@@ -214,6 +214,10 @@ class SettingsPage extends PureComponent {
             {this.renderContent()}
           </div>
         </div>
+        <VisitSupportDataConsentModal
+          isOpen={this.props.showSupportDataConsentModal}
+          onClose={() => this.props.setShowSupportDataConsentModal(false)}
+        />
       </div>
     );
   }
@@ -518,10 +522,6 @@ class SettingsPage extends PureComponent {
               lastFetchedConversionDate={this.state.lastFetchedConversionDate}
             />
           )}
-        />
-        <VisitSupportDataConsentModal
-          isOpen={this.props.showSupportDataConsentModal}
-          onClose={() => this.props.setShowSupportDataConsentModal(false)}
         />
       </Switch>
     );
