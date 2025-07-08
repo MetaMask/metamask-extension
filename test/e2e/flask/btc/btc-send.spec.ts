@@ -1,5 +1,5 @@
-import { Suite } from 'mocha';
 import { strict as assert } from 'assert';
+import { Suite } from 'mocha';
 import { DEFAULT_BTC_BALANCE, DEFAULT_BTC_FEE_RATE } from '../../constants';
 import BitcoinSendPage from '../../page-objects/pages/send/bitcoin-send-page';
 import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
@@ -22,21 +22,30 @@ describe('BTC Account - Send', function (this: Suite) {
       assert.equal(await bitcoinSendPage.checkAssetPickerIsDisplayed(), false);
       assert.equal(await bitcoinSendPage.checkAmountFieldIsDisplayed(), false);
       await bitcoinSendPage.fillRecipientAddress('invalidBTCAddress');
-      await bitcoinSendPage.checkAddressFieldValidationError('Invalid Bitcoin address');
+      await bitcoinSendPage.checkAddressFieldValidationError(
+        'Invalid Bitcoin address',
+      );
       assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
       await bitcoinSendPage.fillRecipientAddress(recipientAddress);
       assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
       await bitcoinSendPage.fillAmount('50');
-      await bitcoinSendPage.checkAmountValidationError('Funds are insufficient to cover amount plus fee');
+      await bitcoinSendPage.checkAmountValidationError(
+        'Funds are insufficient to cover amount plus fee',
+      );
       assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
       await bitcoinSendPage.fillAmount('0');
-      await bitcoinSendPage.checkAmountValidationError('Amount below dust limit');
+      await bitcoinSendPage.checkAmountValidationError(
+        'Amount below dust limit',
+      );
       assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
       await bitcoinSendPage.fillAmount('0.1');
-      await driver.delay(1000)
-      assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), false);
+      await driver.delay(1000);
+      assert.equal(
+        await bitcoinSendPage.checkContinueButtonIsDisabled(),
+        false,
+      );
       await bitcoinSendPage.clearRecipientAddress();
-      await driver.delay(1000)
+      await driver.delay(1000);
       assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
     }, this.test?.fullTitle());
   });
@@ -58,7 +67,6 @@ describe('BTC Account - Send', function (this: Suite) {
       await bitcoinSendPage.check_pageIsLoaded();
       await bitcoinSendPage.fillRecipientAddress(recipientAddress);
       await bitcoinSendPage.fillAmount(sendAmount);
-      await driver.delay(100000000);
       await bitcoinSendPage.clickContinueButton();
 
       // ------------------------------------------------------------------------------
