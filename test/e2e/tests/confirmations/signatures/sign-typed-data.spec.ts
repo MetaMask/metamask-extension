@@ -105,23 +105,15 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
 async function assertInfoValues(driver: Driver) {
   const signTypedData = new SignTypedData(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   signTypedData.verifySignTypedDataMessage();
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   signTypedData.verifyOrigin();
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.waitUntilXWindowHandles(2);
   const testDapp = new TestDapp(driver);
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   testDapp.check_successSignTypedData(publicAddress);
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  testDapp.verify_successSignTypedDataResult(
+  testDapp.verifySuccessSignTypedDataResult(
     '0x32791e3c41d40dd5bbfb42e66cf80ca354b0869ae503ad61cd19ba68e11d4f0d2e42a5835b0bfd633596b6a7834ef7d36033633a2479dacfdb96bda360d51f451b',
   );
 }
