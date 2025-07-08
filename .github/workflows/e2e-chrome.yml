@@ -21,14 +21,20 @@ jobs:
       ecr_password: ${{ steps.login.outputs.password }}
     steps:
       - name: Configure AWS credentials
+        id: configure
+        continue-on-error: true
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ inputs.container-registry-role }}
           aws-region: us-east-1
 
       - name: Get ECR public login password
-        id: login
+        if: steps.configure.outcome == 'success'
         run: echo "password=$(aws ecr-public get-login-password --region us-east-1)" >> "$GITHUB_OUTPUT"
+
+      - name: Set empty password fallback
+        if: steps.configure.outcome != 'success'
+        run: echo "password=" >> "$GITHUB_OUTPUT"
 
   test-e2e-chrome-browserify:
     needs: prepare-ecr-auth
