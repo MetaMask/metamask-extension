@@ -49,7 +49,7 @@ describe('Send NFTs', function () {
         await sendToPage.clickAssetPickerButton();
         const assetPicker = new AssetPicker(driver);
         await assetPicker.openNftAssetPicker();
-        await assetPicker.check_noNftInfoIsDisplayed();
+        await assetPicker.checkNoNftInfoIsDisplayed();
       },
     );
   });
@@ -85,7 +85,7 @@ describe('Send NFTs', function () {
         await sendToPage.clickAssetPickerButton();
         const assetPicker = new AssetPicker(driver);
         await assetPicker.openNftAssetPicker();
-        await assetPicker.check_nftNameIsDisplayed('Test Dapp NFTs #1');
+        await assetPicker.checkNftNameIsDisplayed('Test Dapp NFTs #1');
       },
     );
   });

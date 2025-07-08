@@ -62,7 +62,7 @@ class AssetPicker {
    *
    * @param nftName - The name of the NFT to check for.
    */
-  async check_nftNameIsDisplayed(nftName: string): Promise<void> {
+  async checkNftNameIsDisplayed(nftName: string): Promise<void> {
     console.log(`Check that NFT item ${nftName} is displayed in asset picker`);
     await this.driver.waitForSelector({
       tag: 'p',
@@ -70,7 +70,7 @@ class AssetPicker {
     });
   }
 
-  async check_noNftInfoIsDisplayed(): Promise<void> {
+  async checkNoNftInfoIsDisplayed(): Promise<void> {
     console.log('Check that no NFT info is displayed on asset picker');
     await this.driver.waitForSelector(this.noNftInfo);
   }
