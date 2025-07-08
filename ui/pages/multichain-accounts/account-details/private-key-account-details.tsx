@@ -17,13 +17,13 @@ export const PrivateKeyAccountDetails = ({
 }: PrivateKeyAccountDetailsProps) => {
   return (
     <BaseAccountDetails address={address} account={account}>
+      <Box className="multichain-account-details__section">
+        <AccountShowPrivateKeyRow account={account} />
+      </Box>
       <SmartContractAccountToggleSection
         address={address}
         returnToPage={ACCOUNT_DETAILS_ROUTE}
       />
-      <Box className="multichain-account-details__section">
-        <AccountShowPrivateKeyRow account={account} />
-      </Box>
     </BaseAccountDetails>
   );
 };
