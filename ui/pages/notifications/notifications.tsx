@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useContext, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
@@ -18,7 +18,7 @@ import { NotificationsPage } from '../../components/multichain';
 import { Content, Header } from '../../components/multichain/pages/page';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { useUnreadNotificationsCounter } from '../../hooks/metamask-notifications/useCounter';
-import { getNotifySnaps } from '../../selectors';
+import { getNotifySnaps, getThirdPartyNotifySnaps } from '../../selectors';
 import {
   selectIsFeatureAnnouncementsEnabled,
   selectIsMetamaskNotificationsEnabled,
@@ -29,9 +29,18 @@ import {
   Display,
   JustifyContent,
 } from '../../helpers/constants/design-system';
-import { deleteExpiredNotifications } from '../../store/actions';
-import { NotificationsList, TAB_KEYS } from './notifications-list';
+import {
+  deleteExpiredNotifications,
+  showConfirmTurnOnMetamaskNotifications,
+} from '../../store/actions';
+import { selectIsBackupAndSyncEnabled } from '../../selectors/identity/backup-and-sync';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { NewFeatureTag } from './NewFeatureTag';
+import { NotificationsList, TAB_KEYS } from './notifications-list';
 
 export type Notification = NotificationServicesController.Types.INotification;
 
@@ -157,6 +166,66 @@ export default function Notifications() {
   useEffect(() => {
     dispatch(deleteExpiredNotifications());
   }, [dispatch]);
+
+  const trackEvent = useContext(MetaMetricsContext);
+
+  // Track if modal was dismissed in this session to avoid re-showing
+  const modalDismissedRef = useRef(false);
+
+  const isMetamaskNotificationsEnabled = useSelector(
+    selectIsMetamaskNotificationsEnabled,
+  );
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
+
+  // Check if the turn on notifications modal is currently open
+  const currentModalName = useSelector((state: any) => state.appState.modal.modalState?.name);
+  const isModalAlreadyOpen = currentModalName === 'TURN_ON_METAMASK_NOTIFICATIONS';
+
+  let hasThirdPartyNotifySnaps = false;
+  hasThirdPartyNotifySnaps = useSelector(getThirdPartyNotifySnaps).length > 0;
+console.log(useSelector(getThirdPartyNotifySnaps));
+  useEffect(() => {
+    const shouldShowEnableModal =
+      !hasThirdPartyNotifySnaps &&
+      !isMetamaskNotificationsEnabled &&
+      !isModalAlreadyOpen &&
+      !modalDismissedRef.current &&
+      !isLoading &&
+      !error;
+
+    if (shouldShowEnableModal) {
+      trackEvent({
+        category: MetaMetricsEventCategory.NotificationsActivationFlow,
+        event: MetaMetricsEventName.NotificationsActivated,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          action_type: 'started',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_profile_syncing_enabled: isBackupAndSyncEnabled,
+        },
+      });
+      dispatch(showConfirmTurnOnMetamaskNotifications());
+    }
+  }, [
+    dispatch,
+    hasThirdPartyNotifySnaps,
+    isMetamaskNotificationsEnabled,
+    isModalAlreadyOpen,
+    isLoading,
+    error,
+    isBackupAndSyncEnabled,
+    // Removed trackEvent from dependencies to prevent unnecessary re-renders
+  ]);
+
+  // Track when modal is dismissed
+  useEffect(() => {
+    if (currentModalName !== 'TURN_ON_METAMASK_NOTIFICATIONS' && modalDismissedRef.current === false) {
+      // Modal was closed, mark as dismissed for this session
+      modalDismissedRef.current = true;
+    }
+  }, [currentModalName]);
 
   return (
     <NotificationsPage>
