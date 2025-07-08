@@ -76,10 +76,10 @@ class BitcoinSendPage {
     console.log('Check asset picker is displayed on send bitcoin screen');
     try {
       await this.driver.waitForSelector(this.assetPicker, { timeout: 1000 });
-      return true
+      return true;
     } catch (e) {
       console.log('Timeout while waiting for asset picker to be displayed', e);
-      return false
+      return false;
     }
   }
 
@@ -95,7 +95,9 @@ class BitcoinSendPage {
   }
 
   async checkAddressFieldValidationError(error: string) {
-    console.log('Check invalid BTC address is displayed on send bitcoin screen');
+    console.log(
+      'Check invalid BTC address is displayed on send bitcoin screen',
+    );
     await this.driver.waitForSelector({
       tag: 'p',
       text: error,
@@ -104,7 +106,10 @@ class BitcoinSendPage {
 
   async checkContinueButtonIsDisabled() {
     try {
-      const continueButton = await this.driver.waitForSelector(this.continueButton);
+      const continueButton = await this.driver.waitForSelector(
+        this.continueButton,
+        { timeout: 1000 },
+      );
       const isDisabled = await continueButton.getAttribute('disabled');
       console.log('Is disabled', isDisabled);
       return isDisabled === 'true';
@@ -115,7 +120,9 @@ class BitcoinSendPage {
   }
 
   async checkAmountValidationError(error: string) {
-    console.log('Check amount validation error is displayed on send bitcoin screen');
+    console.log(
+      'Check amount validation error is displayed on send bitcoin screen',
+    );
     await this.driver.waitForSelector({
       tag: 'p',
       text: error,
