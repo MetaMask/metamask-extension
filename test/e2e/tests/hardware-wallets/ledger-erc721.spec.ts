@@ -96,10 +96,10 @@ describe('Ledger Hardware', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+        await homePage.goToActivityList();
         await activityListPage.check_transactionActivityByText(
           'Approve TDN with no spend limit',
         );
-        await homePage.goToActivityList();
         await activityListPage.check_waitForTransactionStatus('confirmed');
       },
     );
