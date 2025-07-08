@@ -1,14 +1,8 @@
-import { useSelector } from 'react-redux';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../ducks/metamask/metamask';
-import { submitRequestToBackground } from '../store/background-connection';
 import {
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
-} from '../store/actions';
-import useMultiPolling from './useMultiPolling';
+} from '../../store/actions';
+import { submitRequestToBackground } from '../../store/background-connection';
 
 /**
  * Informs the DeFiPositionsController that the UI requires defi positions polling
@@ -34,19 +28,3 @@ export async function deFiStopPolling(pollingToken: string) {
   await submitRequestToBackground('deFiStopPolling', [pollingToken]);
   await removePollingTokenFromAppState(pollingToken);
 }
-
-const useDeFiPolling = () => {
-  const completedOnboarding = useSelector(getCompletedOnboarding);
-  const isUnlocked = useSelector(getIsUnlocked);
-  const enabled = completedOnboarding && isUnlocked;
-
-  useMultiPolling({
-    startPolling: deFiStartPolling,
-    stopPollingByPollingToken: deFiStopPolling,
-    input: enabled ? [null] : [],
-  });
-
-  return {};
-};
-
-export default useDeFiPolling;

@@ -1,14 +1,13 @@
-import { renderHookWithProvider } from '../../test/lib/render-helpers';
-import useDeFiPolling, {
-  deFiStartPolling,
-  deFiStopPolling,
-} from './useDeFiPolling';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+
+import useDeFiPolling from './useDeFiPolling';
+import { deFiStartPolling, deFiStopPolling } from './defiPollingActions';
 
 let mockPromises: Promise<string>[];
 
-jest.mock('../store/actions', () => ({
+jest.mock('./defiPollingActions', () => ({
   deFiStartPolling: jest.fn().mockImplementation(() => {
-    const promise = Promise.resolve(`detection`);
+    const promise = Promise.resolve('detection');
     mockPromises.push(promise);
     return promise;
   }),
