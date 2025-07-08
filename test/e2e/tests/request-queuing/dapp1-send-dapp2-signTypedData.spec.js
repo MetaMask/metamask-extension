@@ -63,7 +63,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         // Open and connect to Dapp Two
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
-        await driver.clickElement('#connectButton');
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
