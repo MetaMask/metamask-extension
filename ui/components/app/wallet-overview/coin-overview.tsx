@@ -147,9 +147,14 @@ export const LegacyAggregatedBalance = ({
    */
   const getCurrencyDisplayType = (): typeof PRIMARY | typeof SECONDARY => {
     const isMultiNetwork = Object.keys(enabledNetworks).length > 1;
-    return isGlobalNetworkSelectorRemoved && isMultiNetwork
-      ? SECONDARY
-      : PRIMARY;
+
+    if (isGlobalNetworkSelectorRemoved) {
+      if (isMultiNetwork && showNativeTokenAsMainBalance) {
+        return SECONDARY;
+      }
+      return PRIMARY;
+    }
+    return PRIMARY;
   };
 
   return (

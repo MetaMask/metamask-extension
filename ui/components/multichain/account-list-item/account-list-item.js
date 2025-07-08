@@ -179,6 +179,14 @@ const AccountListItem = ({
         : multichainAggregatedBalance;
   }
 
+  console.log(
+    'balanceToTranslate *************',
+    balanceToTranslate,
+    account.balance,
+    totalFiatBalance,
+    account.address,
+  );
+
   // If this is the selected item in the Account menu,
   // scroll the item into view
   const itemRef = useRef(null);
