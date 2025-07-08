@@ -20,12 +20,12 @@ export class AssetList {
   }
 
   /**
-   * Verifies that a token with the given symbol appears in the asset list
+   * Checks that a token with the given symbol appears in the asset list
    * Uses the same reliable approach as the working AssetListPage
    *
-   * @param tokenSymbol - The symbol of the token to verify (e.g., 'TST', 'HST')
+   * @param tokenSymbol - The symbol of the token to check (e.g., 'TST', 'HST')
    */
-  async verifyTokenIsVisible(tokenSymbol: string): Promise<void> {
+  async checkTokenSymbol(tokenSymbol: string): Promise<void> {
     console.log(`Verifying token ${tokenSymbol} is visible in asset list`);
 
     // First attempt - direct check

@@ -53,7 +53,7 @@ export async function importTestToken(
 
   // Verify token appears in asset list
   const assetList = new AssetList(driver);
-  await assetList.verifyTokenIsVisible(tokenConfig.tokenSymbol);
+  await assetList.checkTokenSymbol(tokenConfig.tokenSymbol);
 }
 
 /**
