@@ -3696,6 +3696,7 @@ export function setFeatureFlag(
           }
           notificationType && dispatch(showModal({ name: notificationType }));
           resolve(updatedFeatureFlags as TemporaryFeatureFlagDef);
+          forceUpdateMetamaskState(dispatch);
         },
       );
     });
