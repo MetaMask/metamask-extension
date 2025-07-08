@@ -663,7 +663,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
-    // The modal should show multiple alerts including the malicious origin alert
+    // The modal should show multiple alerts including the malicious origin alerts
     const modalAlerts = await screen.findAllByText(/malicious|low fee/iu);
     expect(modalAlerts.length).toBeGreaterThan(0);
   });
