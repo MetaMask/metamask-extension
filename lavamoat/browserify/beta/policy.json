@@ -2143,8 +2143,10 @@
         "@metamask/base-controller": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": true,
         "@metamask/utils": true,
+        "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-walletconnect>@walletconnect/solana-adapter>@walletconnect/utils>@noble/ciphers": true,
         "viem>ox>@noble/curves": true,
-        "@metamask/name-controller>async-mutex": true
+        "@metamask/name-controller>async-mutex": true,
+        "browserify>buffer": true
       }
     },
     "@metamask/selected-network-controller": {
@@ -2530,6 +2532,13 @@
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@noble/ciphers": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-walletconnect>@walletconnect/solana-adapter>@walletconnect/utils>@noble/ciphers": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true,
