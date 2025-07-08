@@ -79,7 +79,7 @@ describe('Ledger Hardware', function (this: Suite) {
         );
         await homePage.goToActivityList();
         await activityListPage.check_transactionActivityByText(
-          'Approve token spending cap',
+          'Approve TDN spending cap',
         );
         await activityListPage.check_waitForTransactionStatus('confirmed');
 
