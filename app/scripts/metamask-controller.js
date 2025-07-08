@@ -4901,20 +4901,28 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // 1. fetch all seed phrases
-    const [rootSRP, ...otherSRPs] =
-      await this.seedlessOnboardingController.fetchAllSeedPhrases();
-    if (!rootSRP) {
+    const [rootSecret, ...otherSecrets] =
+      await this.seedlessOnboardingController.fetchAllSecretData();
+    if (!rootSecret) {
       throw new Error('No root SRP found');
     }
 
-    for (const srp of otherSRPs) {
+    for (const secret of otherSecrets) {
+      // TODO: skip private key secret for now, need to handle import private key later
+      if (secret.type !== SecretType.Mnemonic) {
+        continue;
+      }
+
       // Get the SRP hash, and find the hash in the local state
       const srpHash =
-        this.seedlessOnboardingController.getSeedPhraseBackupHash(srp);
+        this.seedlessOnboardingController.getSecretDataBackupState(secret.data);
+
       if (!srpHash) {
         // If SRP is not in the local state, import it to the vault
         // convert the seed phrase to a mnemonic (string)
-        const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(srp);
+        const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
+          secret.data,
+        );
         const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
 
         // import the new mnemonic to the current vault
@@ -4944,15 +4952,19 @@ export default class MetamaskController extends EventEmitter {
       this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
 
     if (syncWithSocial) {
-      await this.seedlessOnboardingController.addNewSeedPhraseBackup(
+      await this.seedlessOnboardingController.addNewSecretData(
         seedPhraseAsUint8Array,
-        keyringId,
+        SecretType.Mnemonic,
+        {
+          keyringId,
+        },
       );
     } else {
       // Do not sync the seed phrase to the server, only update the local state
       this.seedlessOnboardingController.updateBackupMetadataState({
         keyringId,
-        seedPhrase: seedPhraseAsUint8Array,
+        data: seedPhraseAsUint8Array,
+        type: SecretType.Mnemonic,
       });
     }
   }
