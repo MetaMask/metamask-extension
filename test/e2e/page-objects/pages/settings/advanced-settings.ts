@@ -44,6 +44,8 @@ class AdvancedSettings {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -122,6 +124,20 @@ class AdvancedSettings {
       this.smartTransactionsToggle,
     );
     stxToggle.sendKeys(Key.ENTER);
+  }
+
+  async toggleSmartTransactionsOff(): Promise<void> {
+    try {
+      const stxToggle = await this.driver.findElement(
+        this.smartTransactionsToggle,
+      );
+      await this.driver.findNestedElement(stxToggle, { text: 'On' });
+
+      await this.toggleSmartTransactions();
+      console.log('Smart transactions have been disabled');
+    } catch (e) {
+      console.log('Smart transactions are already disabled');
+    }
   }
 }
 

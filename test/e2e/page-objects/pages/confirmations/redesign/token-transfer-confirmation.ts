@@ -66,14 +66,20 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
 
   // Check Methods
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_interactingWithParagraph() {
     await this.driver.waitForSelector(this.interactingWithParagraph);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_networkFeeParagraph() {
     await this.driver.waitForSelector(this.networkFeeParagraph);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_networkParagraph() {
     await this.driver.waitForSelector(this.networkParagraph);
   }
@@ -88,6 +94,8 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
    * @example
    * await tokenTransferTransactionConfirmation.check_tokenTransferPageIsLoaded('10', 'ETH', '0.01');
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_tokenTransferPageIsLoaded(
     transferAmount: string,
     symbol: string,

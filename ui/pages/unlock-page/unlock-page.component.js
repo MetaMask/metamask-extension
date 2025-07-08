@@ -158,6 +158,10 @@ export default class UnlockPage extends Component {
         errorReason = 'too_many_login_attempts';
         finalUnlockDelayPeriod = data.remainingTime;
         break;
+      case SeedlessOnboardingControllerErrorMessage.OutdatedPassword:
+        finalErrorMessage = t('passwordChangedRecently');
+        errorReason = 'outdated_password';
+        break;
       default:
         finalErrorMessage = message;
         break;

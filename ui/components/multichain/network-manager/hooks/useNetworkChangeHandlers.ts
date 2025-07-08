@@ -34,18 +34,30 @@ import {
 } from '../../../../selectors';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export enum ACTION_MODE {
   // Displays the search box and network list
   LIST,
   // Displays the form to add or edit a network
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ADD_EDIT,
   // Displays the page for adding an additional RPC URL
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ADD_RPC,
   // Displays the page for adding an additional explorer URL
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ADD_EXPLORER_URL,
   // Displays the page for selecting an RPC URL
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SELECT_RPC,
   // Add account for non EVM networks
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ADD_NON_EVM_ACCOUNT,
 }
 
@@ -132,10 +144,13 @@ export const useNetworkChangeHandlers = () => {
       if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
         dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
       } else {
-        const allOpts = Object.keys(evmNetworks).reduce((acc, id) => {
-          acc[id] = true;
-          return acc;
-        }, {} as Record<string, boolean>);
+        const allOpts = Object.keys(evmNetworks).reduce(
+          (acc, id) => {
+            acc[id] = true;
+            return acc;
+          },
+          {} as Record<string, boolean>,
+        );
         dispatch(setTokenNetworkFilter(allOpts));
       }
 
@@ -216,8 +231,14 @@ export const useNetworkChangeHandlers = () => {
         category: MetaMetricsEventCategory.Network,
         properties: {
           location: 'Network Menu',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: currentChainIdToTrack,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           from_network: currentChainIdToTrack,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           to_network: chainIdToTrack,
         },
       });

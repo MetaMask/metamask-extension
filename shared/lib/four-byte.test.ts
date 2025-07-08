@@ -74,6 +74,8 @@ describe('Four Byte', () => {
       });
       nock('https://www.4byte.directory:443', { encodedQueryParams: true })
         .get('/api/v1/signatures/')
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         .query({ hex_signature: '0xa22cb465' })
         .reply(200, {
           count: 2,
@@ -82,16 +84,32 @@ describe('Four Byte', () => {
           results: [
             {
               id: 841519,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               created_at: '2022-06-12T00:50:19.305588Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               text_signature: 'niceFunctionHerePlzClick943230089(address,bool)',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               hex_signature: '0xa22cb465',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               bytes_signature: '¢,´e',
             },
             {
               id: 29659,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               created_at: '2018-04-11T21:47:39.980645Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               text_signature: 'setApprovalForAll(address,bool)',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               hex_signature: '0xa22cb465',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               bytes_signature: '¢,´e',
             },
           ],

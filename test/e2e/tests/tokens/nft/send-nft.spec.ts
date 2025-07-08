@@ -1,18 +1,16 @@
-import {
-  clickNestedButton,
-  openActionMenuAndStartSendFlow,
-  withFixtures,
-} from '../../../helpers';
+import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilder from '../../../fixture-builder';
-import Homepage from '../../../page-objects/pages/home/homepage';
-import NftListPage from '../../../page-objects/pages/home/nft-list';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
 import { Anvil } from '../../../seeder/anvil';
 import NetworkManager from '../../../page-objects/pages/network-manager';
+
+import AssetPicker from '../../../page-objects/pages/asset-picker';
+import Homepage from '../../../page-objects/pages/home/homepage';
+import NftListPage from '../../../page-objects/pages/home/nft-list';
+import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
@@ -35,20 +33,22 @@ describe('Send NFTs', function () {
         localNodes: Anvil[];
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
-        const nftListPage = new NftListPage(driver);
         const networkManager = new NetworkManager(driver);
+        const homepage = new Homepage(driver);
 
         if (isGlobalNetworkSelectorRemoved) {
           await networkManager.openNetworkManager();
           await networkManager.checkCustomNetworkIsSelected('eip155:1337');
           await networkManager.closeNetworkManager();
         } else {
-          await new HeaderNavbar(driver).check_currentSelectedNetwork(
+          await homepage.headerNavbar.check_currentSelectedNetwork(
             'Localhost 8545',
           );
         }
 
-        await new Homepage(driver).goToNftTab();
+        await homepage.goToNftTab();
+        const nftListPage = new NftListPage(driver);
+        await nftListPage.check_pageIsLoaded();
 
         if (isGlobalNetworkSelectorRemoved) {
           await networkManager.openNetworkManager();
@@ -57,14 +57,20 @@ describe('Send NFTs', function () {
           await networkManager.closeNetworkManager();
         } else {
           await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+          await homepage.headerNavbar.check_currentSelectedNetwork(
+            'Ethereum Mainnet',
+          );
         }
 
-        await openActionMenuAndStartSendFlow(driver);
-        await clickNestedButton(driver, 'Account 1');
-        await driver.clickElement('[data-testid="asset-picker-button"]');
-        await clickNestedButton(driver, 'NFTs');
+        await homepage.startSendFlow();
 
-        await nftListPage.check_noNftInfoIsDisplayed();
+        const sendToPage = new SendTokenPage(driver);
+        await sendToPage.check_pageIsLoaded();
+        await sendToPage.selectRecipientAccount('Account 1');
+        await sendToPage.clickAssetPickerButton();
+        const assetPicker = new AssetPicker(driver);
+        await assetPicker.openNftAssetPicker();
+        await assetPicker.checkNoNftInfoIsDisplayed();
       },
     );
   });
@@ -85,27 +91,31 @@ describe('Send NFTs', function () {
         localNodes: Anvil[];
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
-        const nftListPage = new NftListPage(driver);
         const networkManager = new NetworkManager(driver);
+        const homepage = new Homepage(driver);
 
         if (isGlobalNetworkSelectorRemoved) {
           await networkManager.openNetworkManager();
           await networkManager.checkCustomNetworkIsSelected('eip155:1337');
           await networkManager.closeNetworkManager();
         } else {
-          await new HeaderNavbar(driver).check_currentSelectedNetwork(
+          await homepage.headerNavbar.check_currentSelectedNetwork(
             'Localhost 8545',
           );
         }
 
-        await new Homepage(driver).goToNftTab();
+        await homepage.goToNftTab();
+        const nftListPage = new NftListPage(driver);
+        await nftListPage.check_pageIsLoaded();
+        await homepage.startSendFlow();
 
-        await openActionMenuAndStartSendFlow(driver);
-        await clickNestedButton(driver, 'Account 1');
-        await driver.clickElement('[data-testid="asset-picker-button"]');
-        await clickNestedButton(driver, 'NFTs');
-
-        await nftListPage.check_nftNameIsDisplayed('Test Dapp NFTs #1');
+        const sendToPage = new SendTokenPage(driver);
+        await sendToPage.check_pageIsLoaded();
+        await sendToPage.selectRecipientAccount('Account 1');
+        await sendToPage.clickAssetPickerButton();
+        const assetPicker = new AssetPicker(driver);
+        await assetPicker.openNftAssetPicker();
+        await assetPicker.checkNftNameIsDisplayed('Test Dapp NFTs #1');
       },
     );
   });
