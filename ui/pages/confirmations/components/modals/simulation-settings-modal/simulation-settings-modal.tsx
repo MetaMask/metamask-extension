@@ -35,7 +35,11 @@ import {
 import { selectEnableEnforcedSimulations } from '../../../selectors';
 import { ConfirmMetamaskState } from '../../../types/confirm';
 
-export function SimulationSettingsModal({ onClose }: { onClose?: () => void }) {
+export const SimulationSettingsModal = ({
+  onClose,
+}: {
+  onClose?: () => void;
+}) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { containerTypes, id: transactionId } = currentConfirmation || {};
@@ -141,9 +145,9 @@ export function SimulationSettingsModal({ onClose }: { onClose?: () => void }) {
       </ModalContent>
     </Modal>
   );
-}
+};
 
-function Section({ children }: { children: React.ReactNode | string }) {
+const Section = ({ children }: { children: React.ReactNode | string }) => {
   return (
     <Box
       display={Display.Flex}
@@ -156,4 +160,4 @@ function Section({ children }: { children: React.ReactNode | string }) {
       {children}
     </Box>
   );
-}
+};
