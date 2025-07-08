@@ -4758,7 +4758,7 @@ export default class MetamaskController extends EventEmitter {
         keyringId,
       );
 
-      await this.socialSyncKeyringEncryptionKey();
+      await this.syncKeyringEncryptionKey();
     } catch (error) {
       log.error('[createSeedPhraseBackup] error', error);
       throw error;
@@ -4852,7 +4852,7 @@ export default class MetamaskController extends EventEmitter {
         // update vault password to global password
         await this.keyringController.changePassword(password);
         // sync the new keyring encryption key after keyring chagnePassword to the seedless onboarding controller
-        await this.socialSyncKeyringEncryptionKey();
+        await this.syncKeyringEncryptionKey();
 
         // check password outdated again skip cache to reset the cache after successful syncing
         await this.seedlessOnboardingController.checkIsPasswordOutdated({
@@ -4868,12 +4868,12 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async socialSyncKeyringEncryptionKey() {
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-    if (!isSocialLoginFlow) {
-      return;
-    }
-
+  /**
+   * Syncs the keyring encryption key with the seedless onboarding controller.
+   *
+   * @returns {Promise<void>}
+   */
+  async syncKeyringEncryptionKey() {
     // store the keyring encryption key in the seedless onboarding controller
     const keyringEncryptionKey =
       await this.keyringController.exportEncryptionKey();
@@ -5234,7 +5234,7 @@ export default class MetamaskController extends EventEmitter {
             type: SecretType.Mnemonic,
           });
 
-          await this.socialSyncKeyringEncryptionKey();
+          await this.syncKeyringEncryptionKey();
         }
       }
     } finally {
