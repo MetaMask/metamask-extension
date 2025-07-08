@@ -5547,6 +5547,10 @@ export default class MetamaskController extends EventEmitter {
       await this.keyringController.submitEncryptionKey(encryptionKey);
     } else {
       await this.keyringController.submitPassword(password);
+      if (completedOnboarding && isSocialLoginFlow) {
+        // unlock the seedless onboarding vault
+        await this.seedlessOnboardingController.submitPassword(password);
+      }
     }
 
     try {
@@ -5559,24 +5563,11 @@ export default class MetamaskController extends EventEmitter {
     // Force account-tree refresh after all accounts have been updated.
     this.accountWalletController.init();
 
-    // This must be set as soon as possible to communicate to the
-    // keyring's iframe and have the setting initialized properly
-    // Optimistically called to not block MetaMask login due to
-    // Ledger Keyring GitHub downtime
     if (completedOnboarding) {
-      if (isSocialLoginFlow) {
-        if (password) {
-          // unlock the seedless onboarding vault
-          await this.seedlessOnboardingController.submitPassword(password);
-        }
-        if (encryptionKey) {
-          // store the keyring encryption key in the seedless onboarding controller
-          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
-            encryptionKey,
-          );
-        }
-      }
-
+      // This must be set as soon as possible to communicate to the
+      // keyring's iframe and have the setting initialized properly
+      // Optimistically called to not block MetaMask login due to
+      // Ledger Keyring GitHub downtime
       this.#withKeyringForDevice(
         { name: HardwareDeviceNames.ledger },
         async (keyring) => this.setLedgerTransportPreference(keyring),
