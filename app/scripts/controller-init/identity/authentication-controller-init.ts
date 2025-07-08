@@ -30,15 +30,13 @@ export const AuthenticationControllerInit: ControllerInitFunction<
     },
   });
 
-  // Automatically authenticate all requests to Accounts API
+  // Automatically authenticate all requests to these URLs with the bearer token.
   const ACCOUNTS_API_URL = 'https://accounts.api.cx.metamask.io';
   const URLS_TO_AUTHENTICATE = [ACCOUNTS_API_URL];
   fetchIntercept.register({
     request: async (input, init = {}) => {
-      if (
-        typeof input === 'string' &&
-        URLS_TO_AUTHENTICATE.some((url) => input.startsWith(url))
-      ) {
+      const inputURL = typeof input === 'string' ? input : input.toString();
+      if (URLS_TO_AUTHENTICATE.some((url) => inputURL.startsWith(url))) {
         // Get the bearer token from the controller
         const token = await controller.getBearerToken();
 

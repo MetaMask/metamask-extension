@@ -41,11 +41,7 @@ async function interceptor(
   interceptors: Interceptor[],
   ...args: Parameters<typeof fetch>
 ): Promise<Response> {
-  const reversedInterceptors = interceptors.reduce(
-    (array: Interceptor[], interceptor: Interceptor) =>
-      [interceptor].concat(array),
-    [],
-  );
+  const reversedInterceptors = interceptors.toReversed();
 
   let currentArgs: Parameters<typeof fetch> = args;
 
