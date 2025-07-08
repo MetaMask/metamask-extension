@@ -37,9 +37,10 @@ jobs:
 
       - name: Set output from env
         id: set-output
-        run: echo "password=$ECR_PASSWORD" >> "$GITHUB_OUTPUT"
+        run: echo "password=${ECR_PASSWORD}" >> "${GITHUB_OUTPUT}"
         env:
           ECR_PASSWORD: ${{ env.ECR_PASSWORD }}
+
 
   test-e2e-firefox-browserify:
     needs: prepare-ecr-auth
