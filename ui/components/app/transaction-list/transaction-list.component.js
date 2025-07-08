@@ -385,8 +385,6 @@ export default function TransactionList({
     getSelectedMultichainNetworkChainId,
   );
 
-  console.log('enabledNetworksByNamespace', enabledNetworksByNamespace);
-
   const unfilteredCompletedTransactions = useMemo(() => {
     return isTokenNetworkFilterEqualCurrentNetwork ||
       overrideFilterForCurrentChain
@@ -446,8 +444,6 @@ export default function TransactionList({
     remoteModeNonceSortedPendingTransactionsSelectorAllChains,
   );
 
-  console.log('isRemoteModeEnabled', isRemoteModeEnabled);
-
   const unfilteredRemoteModePendingTransactions = useMemo(() => {
     if (!isRemoteModeEnabled) {
       return [];
@@ -483,11 +479,6 @@ export default function TransactionList({
     unfilteredRemoteModeCompletedTransactionsCurrentChain,
     isRemoteModeEnabled,
   ]);
-
-  console.log(
-    'unfilteredRemoteModeCompletedTransactions',
-    unfilteredRemoteModeCompletedTransactionsCurrentChain,
-  );
 
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
