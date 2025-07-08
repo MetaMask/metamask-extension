@@ -49,7 +49,7 @@ export default function PrivateKeyImportView({
         size={TextFieldSize.Lg}
         autoFocus
         helpText={warning}
-        error
+        error={Boolean(warning)}
         label={t('pastePrivateKey')}
         value={privateKey}
         onChange={(event) => setPrivateKey(event.target.value)}

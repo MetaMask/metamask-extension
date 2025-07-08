@@ -9,6 +9,7 @@ import {
   WebHIDConnectedStatuses,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
+import { PasswordChangeToastType } from '../../../shared/constants/app-state';
 
 type AppState = {
   customNonceValue: string;
@@ -50,6 +51,7 @@ type AppState = {
   };
   showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
+  showSupportDataConsentModal: boolean;
   keyringRemovalSnapModal: {
     snapName: string;
     result: 'success' | 'failure' | 'none';
@@ -125,6 +127,7 @@ type AppState = {
   isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
   showNewSrpAddedToast: boolean;
+  showPasswordChangeToast: PasswordChangeToastType | null;
 };
 
 export type AppSliceState = {
@@ -223,6 +226,8 @@ const initialState: AppState = {
   isAccessedFromDappConnectedSitePopover: false,
   errorInSettings: null,
   showNewSrpAddedToast: false,
+  showPasswordChangeToast: null,
+  showSupportDataConsentModal: false,
 };
 
 export default function reduceApp(
@@ -754,6 +759,18 @@ export default function reduceApp(
         showNewSrpAddedToast: action.payload,
       };
 
+    case actionConstants.SET_SHOW_PASSWORD_CHANGE_TOAST:
+      return {
+        ...appState,
+        showPasswordChangeToast: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL:
+      return {
+        ...appState,
+        showSupportDataConsentModal: action.payload,
+      };
+
     default:
       return appState;
   }
@@ -863,6 +880,10 @@ export function getLedgerWebHidConnectedStatus(
 
 export function getLedgerTransportStatus(state: AppSliceState): string | null {
   return state.appState.ledgerTransportStatus;
+}
+
+export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
+  return state.appState.showSupportDataConsentModal;
 }
 
 export function openDeleteMetaMetricsDataModal(): Action {

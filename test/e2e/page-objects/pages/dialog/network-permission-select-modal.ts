@@ -23,6 +23,8 @@ class NetworkPermissionSelectModal {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -45,13 +47,21 @@ class NetworkPermissionSelectModal {
   }
 
   /**
-   * Selects a network on the network permission select modal
+   * Selects or deselects a network on the network permission select modal
    *
-   * @param networkName - The name of the network to select
+   * @param options - The options object
+   * @param options.networkName - The name of the network to select or deselect
+   * @param options.shouldBeSelected - Whether the network should be selected (true) or deselected (false). Defaults to true
    */
-  async selectNetwork(networkName: string): Promise<void> {
+  async selectNetwork({
+    networkName,
+    shouldBeSelected = true,
+  }: {
+    networkName: string;
+    shouldBeSelected?: boolean;
+  }): Promise<void> {
     console.log(
-      `Selecting network ${networkName} on network permission select modal`,
+      `Selecting network ${networkName} on network permission select modal. Should be selected: ${shouldBeSelected}`,
     );
     const networkItems = await this.driver.findElements(this.networkListItems);
     for (const networkItem of networkItems) {
@@ -62,7 +72,9 @@ class NetworkPermissionSelectModal {
       if (network === networkName) {
         const checkbox = await networkItem.findElement(By.css(this.checkBox));
         const isChecked = await checkbox.isSelected();
-        if (!isChecked) {
+        if (shouldBeSelected && !isChecked) {
+          await checkbox.click();
+        } else if (!shouldBeSelected && isChecked) {
           await checkbox.click();
         }
         break;
@@ -103,6 +115,8 @@ class NetworkPermissionSelectModal {
    *
    * @param expectedSelectedNetworks - Array of network names that should be selected
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_networkStatus(expectedSelectedNetworks: string[]): Promise<void> {
     console.log(
       'Validating network selection in edit network permission modal',
