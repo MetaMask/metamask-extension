@@ -83,10 +83,15 @@ describe('Confirmation Redesign ERC20 Token Send', function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await createDAppInitiatedTransactionAndAssertDetails(
             driver,
             contractRegistry,
+            localNodes?.[0],
           );
         },
         mocks,
