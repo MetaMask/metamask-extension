@@ -12,6 +12,8 @@ class MockedPage {
    *
    * @param message - The message to check if it is displayed on the mocked page.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_displayedMessage(message: string): Promise<void> {
     console.log('Checking if message is displayed on mocked page', message);
     await this.driver.waitForSelector({

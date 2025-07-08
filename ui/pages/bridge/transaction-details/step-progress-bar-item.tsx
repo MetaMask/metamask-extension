@@ -40,6 +40,8 @@ type StepsProgressBarItemProps = {
  * @param options.isEdgeComplete - Whether the edge is complete
  * @param options.children - The description of the step to be rendered
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function StepProgressBarItem({
   stepStatus,
   isLastItem,
