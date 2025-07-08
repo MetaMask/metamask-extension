@@ -35,6 +35,21 @@ import {
 import { selectEnableEnforcedSimulations } from '../../../selectors';
 import { ConfirmMetamaskState } from '../../../types/confirm';
 
+const Section = ({ children }: { children: React.ReactNode | string }) => {
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      borderRadius={BorderRadius.MD}
+      padding={2}
+      gap={2}
+    >
+      {children}
+    </Box>
+  );
+};
+
 export const SimulationSettingsModal = ({
   onClose,
 }: {
@@ -144,20 +159,5 @@ export const SimulationSettingsModal = ({
         </ModalBody>
       </ModalContent>
     </Modal>
-  );
-};
-
-const Section = ({ children }: { children: React.ReactNode | string }) => {
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      borderRadius={BorderRadius.MD}
-      padding={2}
-      gap={2}
-    >
-      {children}
-    </Box>
   );
 };
