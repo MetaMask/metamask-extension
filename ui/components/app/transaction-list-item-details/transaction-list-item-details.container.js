@@ -9,6 +9,8 @@ import {
   getInternalAccounts,
   getIsCustomNetwork,
   getRpcPrefsForCurrentProvider,
+  getSelectedAddress,
+  getSelectedInternalAccount,
 } from '../../../selectors';
 import { tryReverseResolveAddress } from '../../../store/actions';
 import TransactionListItemDetails from './transaction-list-item-details.component';
@@ -18,6 +20,8 @@ const mapStateToProps = (state, ownProps) => {
   const addressBook = getAddressBook(state);
   const accounts = getInternalAccounts(state);
   const recipientName = getAccountName(accounts, recipientAddress);
+  const selectedAccount = getSelectedInternalAccount(state);
+  const selectedAddress = getSelectedAddress(state);
 
   const getNickName = (address) => {
     const entry = addressBook.find((contact) => {
@@ -37,6 +41,8 @@ const mapStateToProps = (state, ownProps) => {
     isCustomNetwork,
     blockExplorerLinkText: getBlockExplorerLinkText(state),
     recipientName,
+    selectedAccount,
+    selectedAddress,
   };
 };
 

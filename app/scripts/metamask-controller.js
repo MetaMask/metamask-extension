@@ -1435,7 +1435,7 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:networkDidChange',
           'PreferencesController:stateChange',
           'TokenListController:stateChange',
-          'TransactionController:transactionConfirmed'
+          'TransactionController:transactionConfirmed',
         ],
       });
 
@@ -8482,10 +8482,10 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  publishActivityItemViewed(transactionMeta) {
+  publishActivityItemViewed({ transaction, selectedAddress, selectedAccount }) {
     this.controllerMessenger.publish(
       'TransactionController:activityItemViewed',
-      { transactionMeta },
+      { transactionMeta: transaction, selectedAddress, selectedAccount },
     );
   }
 

@@ -61,6 +61,8 @@ export default class TransactionListItemDetails extends PureComponent {
     chainId: PropTypes.string,
     networkConfiguration: PropTypes.object,
     remoteSignerAddress: PropTypes.string,
+    selectedAccount: PropTypes.object,
+    selectedAddress: PropTypes.string,
   };
 
   state = {
@@ -144,14 +146,17 @@ export default class TransactionListItemDetails extends PureComponent {
   };
 
   async publishActivityItemViewed() {
-    // publish transaction controller event
-    console.log(
-      'kylan transaction-list-item-details->publishActivityItemViewed, this.props.transactionGroup.primaryTransaction',
-      this.props.transactionGroup.primaryTransaction,
-    );
-    await submitRequestToBackground('publishActivityItemViewed', [
-      this.props.transactionGroup.primaryTransaction,
-    ]);
+    const {
+      selectedAccount,
+      selectedAddress,
+      transactionGroup: { primaryTransaction },
+    } = this.props;
+    const payload = {
+      transaction: primaryTransaction,
+      selectedAccount,
+      selectedAddress,
+    };
+    await submitRequestToBackground('publishActivityItemViewed', [payload]);
   }
 
   componentDidMount() {
