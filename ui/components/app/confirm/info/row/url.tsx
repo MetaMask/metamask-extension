@@ -48,7 +48,6 @@ const HttpWarning = () => (
 );
 
 export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
-  let urlObject;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handlePillClick = useCallback(
     () => setIsModalOpen(true),
@@ -61,15 +60,7 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
 
   const originTrustSignals = useOriginTrustSignals(url);
 
-  try {
-    urlObject = new URL(url);
-  } catch (e) {
-    console.log(`ConfirmInfoRowUrl: new URL(url) cannot parse ${url}`);
-  }
-
-  const isHTTP = urlObject?.protocol === 'http:';
-  const urlWithoutProtocol = url?.replace(/https?:\/\//u, '');
-
+  // Check if it's a Snap ID first to avoid unnecessary processing
   if (isSnapId(url)) {
     return (
       <>
@@ -82,6 +73,16 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
       </>
     );
   }
+
+  let urlObject;
+  try {
+    urlObject = new URL(url);
+  } catch (e) {
+    console.log(`ConfirmInfoRowUrl: new URL(url) cannot parse ${url}`);
+  }
+
+  const isHTTP = urlObject?.protocol === 'http:';
+  const urlWithoutProtocol = url?.replace(/https?:\/\//u, '');
 
   const renderIcon = () => {
     // Priority 1: Malicious
