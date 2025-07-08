@@ -5547,7 +5547,7 @@ export default class MetamaskController extends EventEmitter {
       await this.keyringController.submitEncryptionKey(encryptionKey);
     } else {
       await this.keyringController.submitPassword(password);
-      if (completedOnboarding && isSocialLoginFlow) {
+      if (isSocialLoginFlow) {
         // unlock the seedless onboarding vault
         await this.seedlessOnboardingController.submitPassword(password);
       }
