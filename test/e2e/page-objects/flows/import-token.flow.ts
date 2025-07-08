@@ -46,27 +46,6 @@ export async function importTestToken(
 }
 
 /**
- * Verify that a token appears in the asset list using proper POM pattern
- *
- * @param driver - The WebDriver instance
- * @param tokenSymbol - The symbol of the token to verify
- */
-export async function verifyTokenInAssetList(
-  driver: Driver,
-  tokenSymbol: string,
-): Promise<void> {
-  console.log(`Verifying token ${tokenSymbol} appears in asset list`);
-
-  // Use AssetList page object to verify token
-  const assetList = new AssetList(driver);
-  await assetList.verifyTokenIsVisible(tokenSymbol);
-
-  console.log(
-    `Token ${tokenSymbol} successfully imported and visible in asset list`,
-  );
-}
-
-/**
  * Complete token import process including verification using proper POM pattern
  *
  * @param driver - The WebDriver instance
@@ -81,5 +60,8 @@ export async function importAndVerifyToken(
   tokenSymbol: string,
 ): Promise<void> {
   await importTestToken(driver, { contractAddress, networkChainId });
-  await verifyTokenInAssetList(driver, tokenSymbol);
+
+  // Use AssetList page object directly
+  const assetList = new AssetList(driver);
+  await assetList.verifyTokenIsVisible(tokenSymbol);
 }
