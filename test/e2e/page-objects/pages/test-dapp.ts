@@ -647,7 +647,7 @@ class TestDapp {
    *
    * @param value - The address to be checked
    */
-  async check_ERC721TokenAddressesValue(value: string) {
+  async checkERC721TokenAddressesValue(value: string) {
     console.log('Verify ERC-721 token address');
     await this.driver.waitForSelector({
       css: this.erc721TokenAddresses,
@@ -655,7 +655,7 @@ class TestDapp {
     });
   }
 
-  async verify_successSignTypedDataResult(result: string) {
+  async verifySuccessSignTypedDataResult(result: string) {
     await this.driver.waitForSelector({
       css: this.signTypedDataResult,
       text: result.toLowerCase(),

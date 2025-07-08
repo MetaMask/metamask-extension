@@ -46,7 +46,7 @@ describe('Ledger Hardware', function (this: Suite) {
         await createContractModal.check_pageIsLoaded();
         await createContractModal.clickConfirm();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDappPage.check_ERC721TokenAddressesValue(
+        await testDappPage.checkERC721TokenAddressesValue(
           '0xcB17707e0623251182A654BEdaE16429C78A7424',
         );
 
