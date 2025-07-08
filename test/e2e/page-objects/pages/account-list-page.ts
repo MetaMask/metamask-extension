@@ -294,6 +294,7 @@ class AccountListPage {
    * @param options.accountType - The type of account to add (Ethereum, Bitcoin, or Solana)
    * @param [options.accountName] - Optional custom name for the new account
    * @param [options.srpIndex] - Optional SRP index for the new account
+   * @param options.fromModal
    * @throws {Error} If the specified account type is not supported
    * @example
    * // Add a new Ethereum account with default name
@@ -306,30 +307,33 @@ class AccountListPage {
     accountType,
     accountName,
     srpIndex,
+    fromModal = false,
   }: {
     accountType: ACCOUNT_TYPE;
     accountName?: string;
     srpIndex?: number;
+    fromModal?: boolean;
   }) {
     console.log(`Adding new account of type: ${ACCOUNT_TYPE[accountType]}`);
-    await this.driver.clickElement(this.createAccountButton);
-    let addAccountButton;
-    switch (accountType) {
-      case ACCOUNT_TYPE.Ethereum:
-        addAccountButton = this.addEthereumAccountButton;
-        break;
-      case ACCOUNT_TYPE.Bitcoin:
-        addAccountButton = this.addBtcAccountButton;
-        break;
-      case ACCOUNT_TYPE.Solana:
-        addAccountButton = this.addSolanaAccountButton;
-        break;
-      default:
-        throw new Error('Account type not supported');
+    if (!fromModal) {
+      await this.driver.clickElement(this.createAccountButton);
+      let addAccountButton;
+      switch (accountType) {
+        case ACCOUNT_TYPE.Ethereum:
+          addAccountButton = this.addEthereumAccountButton;
+          break;
+        case ACCOUNT_TYPE.Bitcoin:
+          addAccountButton = this.addBtcAccountButton;
+          break;
+        case ACCOUNT_TYPE.Solana:
+          addAccountButton = this.addSolanaAccountButton;
+          break;
+        default:
+          throw new Error('Account type not supported');
+      }
+
+      await this.driver.clickElement(addAccountButton);
     }
-
-    await this.driver.clickElement(addAccountButton);
-
     // Run if there are multiple srps
     if (accountType === ACCOUNT_TYPE.Ethereum && srpIndex) {
       const srpName = `Secret Recovery Phrase ${srpIndex.toString()}`;
