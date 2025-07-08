@@ -4757,6 +4757,8 @@ export default class MetamaskController extends EventEmitter {
         seedPhrase,
         keyringId,
       );
+
+      await this.socialSyncKeyringEncryptionKey();
     } catch (error) {
       log.error('[createSeedPhraseBackup] error', error);
       throw error;
@@ -4832,19 +4834,18 @@ export default class MetamaskController extends EventEmitter {
         throw e;
       }
 
-      // recover the current device password
-      const { password: currentDevicePassword } =
-        await this.seedlessOnboardingController.recoverCurrentDevicePassword({
-          globalPassword: password,
-        });
-
-      // use current device password to unlock the keyringController vault
-      await this.submitPassword(currentDevicePassword);
+      // recover the keyring encryption key
+      await this.seedlessOnboardingController.submitGlobalPassword({
+        globalPassword: password,
+      });
+      const keyringEncryptionKey =
+        await this.seedlessOnboardingController.loadKeyringEncryptionKey();
+      // use encryption key to unlock the keyring vault
+      await this.submitEncryptionKey(keyringEncryptionKey);
 
       try {
         // update seedlessOnboardingController to use latest global password
         await this.seedlessOnboardingController.syncLatestGlobalPassword({
-          oldPassword: currentDevicePassword,
           globalPassword: password,
         });
 
@@ -4863,6 +4864,20 @@ export default class MetamaskController extends EventEmitter {
     } finally {
       releaseLock();
     }
+  }
+
+  async socialSyncKeyringEncryptionKey() {
+    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+    if (!isSocialLoginFlow) {
+      return;
+    }
+
+    // store the keyring encryption key in the seedless onboarding controller
+    const keyringEncryptionKey =
+      await this.keyringController.exportEncryptionKey();
+    await this.seedlessOnboardingController.storeKeyringEncryptionKey(
+      keyringEncryptionKey,
+    );
   }
 
   /**
@@ -5216,6 +5231,8 @@ export default class MetamaskController extends EventEmitter {
             data: seedPhraseAsUint8Array,
             type: SecretType.Mnemonic,
           });
+
+          await this.socialSyncKeyringEncryptionKey();
         }
       }
     } finally {
@@ -5494,13 +5511,41 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} password - The user's password
    */
   async submitPassword(password) {
+    await this.submitPasswordOrEncryptionKey({ password });
+  }
+
+  /**
+   * Submits the user's encryption key and attempts to unlock the vault.
+   * Also synchronizes the preferencesController, to ensure its schema
+   * is up to date with known accounts once the vault is decrypted.
+   *
+   * @param {string} encryptionKey - The user's encryption key
+   */
+  async submitEncryptionKey(encryptionKey) {
+    await this.submitPasswordOrEncryptionKey({ encryptionKey });
+  }
+
+  /**
+   * Attempts to unlock the vault using either the user's password or encryption
+   * key. Also synchronizes the preferencesController, to ensure its schema is
+   * up to date with known accounts once the vault is decrypted.
+   *
+   * @param {object} params - The function parameters.
+   * @param {string} params.password - The user's password.
+   * @param {string} params.encryptionKey - The user's encryption key.
+   */
+  async submitPasswordOrEncryptionKey({ password, encryptionKey }) {
     const { completedOnboarding } = this.onboardingController.state;
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
 
     // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
     await this.offscreenPromise;
 
-    await this.keyringController.submitPassword(password);
+    if (encryptionKey) {
+      await this.keyringController.submitEncryptionKey(encryptionKey);
+    } else {
+      await this.keyringController.submitPassword(password);
+    }
 
     try {
       await this.blockTracker.checkForLatestBlock();
@@ -5517,7 +5562,7 @@ export default class MetamaskController extends EventEmitter {
     // Optimistically called to not block MetaMask login due to
     // Ledger Keyring GitHub downtime
     if (completedOnboarding) {
-      if (isSocialLoginFlow) {
+      if (password && isSocialLoginFlow) {
         // unlock the seedless onboarding vault
         await this.seedlessOnboardingController.submitPassword(password);
       }
@@ -5554,7 +5599,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Submits a user's encryption key to log the user in via login token
    */
-  async submitEncryptionKey() {
+  async submitEncryptionKeyFromSessionStorage() {
     try {
       const { loginToken, loginSalt } =
         await this.extension.storage.session.get(['loginToken', 'loginSalt']);
