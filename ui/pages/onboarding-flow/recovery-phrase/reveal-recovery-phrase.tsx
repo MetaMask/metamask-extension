@@ -128,6 +128,8 @@ export default function RevealRecoveryPhrase({
           as="form"
           onSubmit={(e: FormEvent<HTMLElement>) => {
             e.preventDefault();
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             onSubmit(password);
           }}
         >
