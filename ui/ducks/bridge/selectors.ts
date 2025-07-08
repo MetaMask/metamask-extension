@@ -705,9 +705,8 @@ export const getIsUnifiedUIEnabled = createSelector(
 
     const caipChainId = formatChainIdToCaip(chainId);
 
-    // TODO remove this when bridge-controller's types are updated
-    return bridgeFeatureFlags?.chains?.[caipChainId] ? Boolean(
-       'isSingleSwapBridgeButtonEnabled' in bridgeFeatureFlags.chains[caipChainId] ? bridgeFeatureFlags.chains[caipChainId].isSingleSwapBridgeButtonEnabled : false,
-    ) : false;
+    return Boolean(
+      bridgeFeatureFlags?.chains?.[caipChainId]?.isUnifiedUIEnabled,
+    );
   },
 );
