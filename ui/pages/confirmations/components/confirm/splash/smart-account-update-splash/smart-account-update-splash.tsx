@@ -52,10 +52,12 @@ export function SmartAccountUpdateSplash() {
   );
   const keyringType = account?.metadata?.keyring?.type;
   const acknowledgeSmartAccountUpgrade = useCallback(() => {
-    setSmartAccountOptInForAccounts([
-      ...smartAccountOptInForAccounts,
-      from as Hex,
-    ]);
+    if (!smartAccountOptInForAccounts.includes(from as Hex)) {
+      setSmartAccountOptInForAccounts([
+        ...smartAccountOptInForAccounts,
+        from as Hex,
+      ]);
+    }
     setAcknowledged(true);
   }, [setAcknowledged, smartAccountOptInForAccounts, from]);
 

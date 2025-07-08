@@ -40,7 +40,7 @@ const ListItem = ({
   <Box
     display={Display.Flex}
     alignItems={AlignItems.flexStart}
-    className="smart-account-update__list-item"
+    className="smart-account-update-content__list-item"
   >
     <img width="24px" src={imgSrc} />
     <Box
