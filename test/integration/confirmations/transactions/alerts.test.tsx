@@ -570,7 +570,6 @@ describe('Contract Interaction Confirmation Alerts', () => {
     );
     fireEvent.click(acknowledgmentCheckbox);
 
-    expect(await screen.findByTestId('alert-modal-button')).toBeInTheDocument();
     const alertModalConfirmButton = await screen.findByTestId(
       'alert-modal-button',
     );
@@ -616,7 +615,6 @@ describe('Contract Interaction Confirmation Alerts', () => {
       'This has been identified as suspicious. We recommend not interacting with this site.',
     );
 
-    expect(await screen.findByTestId('alert-modal-button')).toBeInTheDocument();
     const alertModalConfirmButton = await screen.findByTestId(
       'alert-modal-button',
     );
