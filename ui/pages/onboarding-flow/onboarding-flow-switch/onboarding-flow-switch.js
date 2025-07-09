@@ -25,6 +25,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app'; // eslint-disable-line no-unused-vars
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getIsParticipateInMetaMetricsSet } from '../../../selectors';
 ///: END:ONLY_INCLUDE_IF
 
 export default function OnboardingFlowSwitch() {
@@ -33,13 +34,24 @@ export default function OnboardingFlowSwitch() {
   const isInitialized = useSelector(getIsInitialized);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const isUnlocked = useSelector(getIsUnlocked);
+  const isParticipateInMetaMetricsSet = useSelector(
+    getIsParticipateInMetaMetricsSet,
+  );
 
   if (completedOnboarding) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 
   if (seedPhraseBackedUp !== null) {
-    return <Redirect to={{ pathname: ONBOARDING_COMPLETION_ROUTE }} />;
+    return (
+      <Redirect
+        to={{
+          pathname: isParticipateInMetaMetricsSet
+            ? ONBOARDING_COMPLETION_ROUTE
+            : ONBOARDING_METAMETRICS,
+        }}
+      />
+    );
   }
 
   if (isUnlocked) {
