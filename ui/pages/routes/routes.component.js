@@ -101,8 +101,8 @@ import {
 } from './utils';
 
 // Begin Lazy Routes
-const OnboardingFlow = mmLazy(() =>
-  import('../onboarding-flow/onboarding-flow'),
+const OnboardingFlow = mmLazy(
+  () => import('../onboarding-flow/onboarding-flow'),
 );
 const Lock = mmLazy(() => import('../lock'));
 const UnlockPage = mmLazy(() => import('../unlock-page'));
@@ -115,50 +115,54 @@ const NotificationDetails = mmLazy(() => import('../notification-details'));
 const Notifications = mmLazy(() => import('../notifications'));
 const SnapList = mmLazy(() => import('../snaps/snaps-list'));
 const SnapView = mmLazy(() => import('../snaps/snap-view'));
-const ConfirmTransaction = mmLazy(() =>
-  import('../confirmations/confirm-transaction'),
+const ConfirmTransaction = mmLazy(
+  () => import('../confirmations/confirm-transaction'),
 );
 const SendPage = mmLazy(() => import('../../components/multichain/pages/send'));
 const Swaps = mmLazy(() => import('../swaps'));
 const CrossChainSwap = mmLazy(() => import('../bridge'));
-const ConfirmAddSuggestedTokenPage = mmLazy(() =>
-  import('../confirm-add-suggested-token'),
+const ConfirmAddSuggestedTokenPage = mmLazy(
+  () => import('../confirm-add-suggested-token'),
 );
-const ConfirmAddSuggestedNftPage = mmLazy(() =>
-  import('../confirm-add-suggested-nft'),
+const ConfirmAddSuggestedNftPage = mmLazy(
+  () => import('../confirm-add-suggested-nft'),
 );
 const ConfirmationPage = mmLazy(() => import('../confirmations/confirmation'));
-const CreateAccountPage = mmLazy(() =>
-  import('../create-account/create-account.component'),
+const CreateAccountPage = mmLazy(
+  () => import('../create-account/create-account.component'),
 );
-const NftFullImage = mmLazy(() =>
-  import('../../components/app/assets/nfts/nft-details/nft-full-image'),
+const NftFullImage = mmLazy(
+  () => import('../../components/app/assets/nfts/nft-details/nft-full-image'),
 );
 const Asset = mmLazy(() => import('../asset'));
 const DeFiPage = mmLazy(() => import('../defi'));
-const PermissionsPage = mmLazy(() =>
-  import('../../components/multichain/pages/permissions-page/permissions-page'),
+const PermissionsPage = mmLazy(
+  () =>
+    import(
+      '../../components/multichain/pages/permissions-page/permissions-page'
+    ),
 );
-const Connections = mmLazy(() =>
-  import('../../components/multichain/pages/connections'),
+const Connections = mmLazy(
+  () => import('../../components/multichain/pages/connections'),
 );
-const ReviewPermissions = mmLazy(() =>
-  import(
-    '../../components/multichain/pages/review-permissions-page/review-permissions-page'
-  ),
+const ReviewPermissions = mmLazy(
+  () =>
+    import(
+      '../../components/multichain/pages/review-permissions-page/review-permissions-page'
+    ),
 );
 const Home = mmLazy(() => import('../home'));
 
 const RemoteModeOverview = mmLazy(() => import('../remote-mode/overview'));
-const RemoteModeSetupSwaps = mmLazy(() =>
-  import('../remote-mode/setup/setup-swaps'),
+const RemoteModeSetupSwaps = mmLazy(
+  () => import('../remote-mode/setup/setup-swaps'),
 );
-const RemoteModeSetupDailyAllowance = mmLazy(() =>
-  import('../remote-mode/setup/setup-daily-allowance'),
+const RemoteModeSetupDailyAllowance = mmLazy(
+  () => import('../remote-mode/setup/setup-daily-allowance'),
 );
 const DeepLink = mmLazy(() => import('../deep-link/deep-link'));
-const WalletDetails = mmLazy(() =>
-  import('../multichain-accounts/wallet-details'),
+const WalletDetails = mmLazy(
+  () => import('../multichain-accounts/wallet-details'),
 );
 // End Lazy Routes
 
