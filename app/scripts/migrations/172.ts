@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 171;
+export const version = 172;
 
 /**
  * This migration deletes the preference `smartAccountOptInForAccounts`.
