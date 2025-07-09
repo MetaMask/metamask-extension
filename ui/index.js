@@ -51,7 +51,7 @@ log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 /**
  * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
  */
-let reduxStore = Promise.withResolvers();
+const reduxStore = Promise.withResolvers();
 
 /**
  * Method to update backgroundConnection object use by UI
@@ -65,9 +65,10 @@ export const connectToBackground = (
 ) => {
   setBackgroundConnection(backgroundConnection);
   backgroundConnection.onNotification(async (data) => {
-    const { method, params } = data;
+    const { method } = data;
     if (method === 'sendUpdate') {
-      (await reduxStore.promise).dispatch(actions.updateMetamaskState(params[0]));
+      const store = await reduxStore.promise;
+  store.dispatch(actions.updateMetamaskState(data.params[0]));
     } else if (method === METHOD_START_UI_SYNC) {
       handleStartUISync();
     } else {
