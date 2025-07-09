@@ -19,7 +19,6 @@ export const switchToNetworkFlow = async (
   const headerNavbar = new HeaderNavbar(driver);
   await headerNavbar.check_pageIsLoaded();
   await headerNavbar.clickSwitchNetworkDropDown();
-
   const selectNetworkDialog = new SelectNetwork(driver);
   await selectNetworkDialog.check_pageIsLoaded();
   if (toggleShowTestNetwork) {
