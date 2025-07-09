@@ -9,7 +9,6 @@ import {
   ButtonIconSize,
   ButtonSize,
   ButtonVariant,
-  Icon,
   IconName,
   Text,
 } from '../../../../../components/component-library';
@@ -77,11 +76,13 @@ export function SmartAccountUpdate() {
                 size={ButtonIconSize.Sm}
                 ariaLabel="back"
                 className="smart-account-update__back-btn"
+                data-testid="smart-account-update-close"
               />
               <Text
                 color={TextColor.textDefault}
                 variant={TextVariant.headingSm}
                 fontWeight={FontWeight.Bold}
+                className="smart-account-update__title"
               >
                 {t('smartAccountSplashInfo')}
               </Text>

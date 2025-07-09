@@ -6,7 +6,7 @@ import {
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
-import { Hex, Json } from '@metamask/utils';
+import { Json } from '@metamask/utils';
 import {
   BaseController,
   ControllerGetStateAction,

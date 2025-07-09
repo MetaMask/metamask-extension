@@ -42,13 +42,29 @@
 
   &__back-btn {
     position: absolute;
-    top: 20px;
+    top: 10px;
     left: 20px;
+
+    @media screen and (min-width: design-system.$break-large) {
+      top: 20px;
+    }
   }
 
   &__close-btn {
     position: absolute;
-    top: 20px;
+    top: 10px;
     right: 20px;
+
+    @media screen and (min-width: design-system.$break-large) {
+      top: 20px;
+    }
+  }
+
+  &__title {
+    margin-top: 10px;
+
+    @media screen and (min-width: design-system.$break-large) {
+      margin-top: 0;
+    }
   }
 }

@@ -6,9 +6,9 @@ import { useHistory } from 'react-router-dom';
 import {
   showModal,
   removeSlide,
+  setAccountDetailsAddress,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   setSelectedAccount,
-  setAccountDetailsAddress,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import { Carousel } from '..';

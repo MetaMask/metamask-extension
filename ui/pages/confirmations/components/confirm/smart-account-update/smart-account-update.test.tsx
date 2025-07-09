@@ -78,21 +78,6 @@ describe('SmartAccountUpdate', () => {
     expect(getByText('Successful!')).toBeDefined();
   });
 
-  it('open account selection when pencil icon is clicked', () => {
-    const mockStore = configureMockStore([])(
-      getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
-      ),
-    );
-    const { getByText, getByTestId } = renderWithConfirmContextProvider(
-      <SmartAccountUpdate />,
-      mockStore,
-    );
-
-    fireEvent.click(getByTestId('smart-account-update-edit'));
-    expect(getByText('Edit accounts')).toBeInTheDocument();
-  });
-
   it('call history.replace when close button is clicked', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
