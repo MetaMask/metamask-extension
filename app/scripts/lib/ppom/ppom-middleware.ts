@@ -5,6 +5,7 @@ import {
   NetworkController,
 } from '@metamask/network-controller';
 import {
+  Hex,
   Json,
   JsonRpcParams,
   JsonRpcRequest,
@@ -113,7 +114,7 @@ export function createPPOMMiddleware<
             ppomController,
             request: req,
             securityAlertId,
-            chainId,
+            chainId: chainId as Hex,
             updateSecurityAlertResponse,
           }),
       );
