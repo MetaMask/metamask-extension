@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { InternalAccountWithBalance } from '../../../../selectors';
 import { useMultichainAccountTotalFiatBalance } from '../../../../hooks/useMultichainAccountTotalFiatBalance';
 import {
@@ -19,6 +20,8 @@ import {
 } from '../../../component-library';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
+import { getMultichainAggregatedBalance } from '../../../../selectors/assets';
+import { getPreferences } from '../../../../selectors';
 
 type SrpListItemProps = {
   account: InternalAccountWithBalance;
@@ -26,6 +29,21 @@ type SrpListItemProps = {
 
 export const SrpListItem = ({ account }: SrpListItemProps) => {
   const { totalFiatBalance } = useMultichainAccountTotalFiatBalance(account);
+  const multichainAggregatedBalance = useSelector((state) =>
+    getMultichainAggregatedBalance(state, account),
+  );
+  const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
+
+  const balance = useMemo(() => {
+    if (showNativeTokenAsMainBalance) {
+      return multichainAggregatedBalance;
+    }
+    return totalFiatBalance;
+  }, [
+    showNativeTokenAsMainBalance,
+    multichainAggregatedBalance,
+    totalFiatBalance,
+  ]);
 
   return (
     <Box
@@ -61,7 +79,7 @@ export const SrpListItem = ({ account }: SrpListItemProps) => {
       <Text variant={TextVariant.bodySm}>
         <UserPreferencedCurrencyDisplay
           account={account}
-          value={totalFiatBalance}
+          value={balance}
           type="PRIMARY"
           ethNumberOfDecimals={4}
           hideTitle
