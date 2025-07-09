@@ -158,7 +158,7 @@
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/custom-gas.js",
     "ui/selectors/index.js",
-    "ui/selectors/selectors.js",
+
   ],
   [
     "ui/components/component-library/index.ts",
