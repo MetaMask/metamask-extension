@@ -609,7 +609,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                   accounts={allAccounts}
                   defaultSelectedAccountAddresses={selectedCaipAccountAddresses}
                   onClose={handleCloseEditAccountsModal}
-                  onSubmit={setSelectedCaipAccountAddresses}
+                  onSubmit={handleCaipAccountAddressesSelected}
                 />
               )}
             </Box>
