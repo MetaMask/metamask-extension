@@ -620,10 +620,14 @@ export default class Routes extends Component {
         <Box className="main-container-wrapper">
           {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading &&
+          isUnlocked &&
           isNetworkLoading &&
           completedOnboarding &&
           !isShowingDeepLinkRoute ? (
-            <LoadingNetwork />
+            <LoadingNetwork
+              history={this.props.history}
+              location={this.props.location}
+            />
           ) : null}
           {this.renderRoutes()}
         </Box>
