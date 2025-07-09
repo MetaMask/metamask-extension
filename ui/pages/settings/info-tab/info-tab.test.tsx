@@ -43,10 +43,10 @@ describe('InfoTab', () => {
       );
     });
 
-    it('should trigger support modal when click support link', () => {
+    it('should trigger support modal when click support link', async () => {
       const supportLink = getByText('Visit our support center');
       fireEvent.click(supportLink);
-      waitFor(() =>
+      await waitFor(() =>
         expect(
           getByTestId('visit-support-data-consent-modal'),
         ).toBeInTheDocument(),

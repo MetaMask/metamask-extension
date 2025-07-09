@@ -45,7 +45,7 @@ describe('SettingsPage', () => {
     expect(queryByPlaceholderText('Search')).toBeInTheDocument();
   });
 
-  it('should trigger support modal when click support link', () => {
+  it('should trigger support modal when click support link', async () => {
     const { queryByTestId } = renderWithProvider(
       <Settings {...props} />,
       mockStore,
@@ -56,7 +56,7 @@ describe('SettingsPage', () => {
     expect(supportLink).toBeInTheDocument();
     fireEvent.click(supportLink);
 
-    waitFor(() =>
+    await waitFor(() =>
       expect(
         queryByTestId('visit-support-data-consent-modal'),
       ).toBeInTheDocument(),
