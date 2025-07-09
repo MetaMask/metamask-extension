@@ -91,6 +91,7 @@ import { ImportAccount } from '../import-account';
 import { SrpList } from '../multi-srp/srp-list';
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { createNextMultichainAccount } from '../../../store/actions';
 
 // TODO: Should we use an enum for this instead?
 export const ACTION_MODES = {
@@ -112,6 +113,7 @@ export const ACTION_MODES = {
   // Displays the add account form controls (for solana account)
   ADD_SOLANA: 'add-solana',
   ///: END:ONLY_INCLUDE_IF
+  ADD_MULTICHAIN_ACCOUNT: 'add-multichain-account',
   // Displays the import account form controls
   IMPORT: 'import',
   CREATE_SRP: 'create-srp',
@@ -164,6 +166,8 @@ export const getActionTitle = (
     case ACTION_MODES.ADD_SOLANA:
       return t('addAccountFromNetwork', [t('networkNameSolana')]);
     ///: END:ONLY_INCLUDE_IF
+    case ACTION_MODES.ADD_MULTICHAIN_ACCOUNT:
+      return 'Add multichain account';
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');
     case ACTION_MODES.CREATE_SRP:
@@ -463,6 +467,24 @@ export const AccountMenu = ({
                 </Box>
               )
               ///: END:ONLY_INCLUDE_IF
+            }
+            {
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Add}
+                  startIconProps={{ size: IconSize.Md }}
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                  onClick={async () => {
+                    console.log('ui: createNextMltichainAccount');
+                    await createNextMultichainAccount();
+                  }}
+                  data-testid="multichain-account-menu-popover-add-multichain-account"
+                >
+                  {'Add multichain account'}
+                </ButtonLink>
+              </Box>
             }
 
             <Text

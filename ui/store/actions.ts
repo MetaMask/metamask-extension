@@ -6516,6 +6516,10 @@ export async function decodeTransactionData({
   ]);
 }
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+export async function createNextMultichainAccount(): Promise<void> {
+  return await submitRequestToBackground<void>('createNextMultichainAccount');
+}
+
 export async function multichainUpdateBalance(
   accountId: string,
 ): Promise<void> {

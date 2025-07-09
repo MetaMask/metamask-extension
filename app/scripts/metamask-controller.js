@@ -4307,6 +4307,18 @@ export default class MetamaskController extends EventEmitter {
       ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+      // MultichainAccountController
+      createNextMultichainAccount: async () => {
+        // Create account on the primary wallet for now.
+        const [keyring] = this.keyringController.state.keyrings;
+
+        return await this.multichainAccountController.createNextMultichainAccount(
+          {
+            entropySource: keyring.metadata.id,
+          },
+        );
+      },
+
       // MultichainBalancesController
       multichainUpdateBalance: (accountId) =>
         this.multichainBalancesController.updateBalance(accountId),
