@@ -377,7 +377,6 @@ const PrepareBridgePage = () => {
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
   const isSolanaSwap = useSelector(getIsSolanaSwap);
-  const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
   const isDestinationSolana = useMemo(() => {
     if (!toChain?.chainId) {
@@ -642,6 +641,8 @@ const PrepareBridgePage = () => {
   );
   const toTokenIsNotNative =
     toToken?.address && !isNativeAddress(toToken?.address);
+
+  const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
   const [showBlockExplorerToast, setShowBlockExplorerToast] = useState(false);
   const [blockExplorerToken, setBlockExplorerToken] =
