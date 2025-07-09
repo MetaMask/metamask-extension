@@ -68,7 +68,7 @@ export const connectToBackground = (
     const { method } = data;
     if (method === 'sendUpdate') {
       const store = await reduxStore.promise;
-  store.dispatch(actions.updateMetamaskState(data.params[0]));
+      store.dispatch(actions.updateMetamaskState(data.params[0]));
     } else if (method === METHOD_START_UI_SYNC) {
       handleStartUISync();
     } else {
