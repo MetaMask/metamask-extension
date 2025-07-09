@@ -2,12 +2,11 @@ import { type Hex, JsonRpcResponseStruct } from '@metamask/utils';
 import { detectSIWE, SIWEMessage } from '@metamask/controller-utils';
 
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-import { mockNetworkState } from '../../../../test/stub/networks';
+import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
 import {
   generateSecurityAlertId,
@@ -15,7 +14,6 @@ import {
   validateRequestWithPPOM,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
-import { flushPromises } from '../../../../test/lib/timer-helpers';
 
 jest.mock('./ppom-util');
 jest.mock('@metamask/controller-utils', () => ({

@@ -85,10 +85,10 @@ export async function processSendCalls(
   const { networkClientId, origin } = req;
   const transactions = calls.map((call) => ({ params: call }));
 
-  const chainId = messenger.call(
+  const { chainId } = messenger.call(
     'NetworkController:getNetworkClientById',
     networkClientId,
-  ).configuration.chainId;
+  ).configuration;
 
   const from =
     paramFrom ??
