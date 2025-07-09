@@ -760,7 +760,7 @@ const PrepareBridgePage = () => {
         <Column
           height={BlockSize.Full}
           paddingTop={8}
-          backgroundColor={BackgroundColor.backgroundAlternativeSoft}
+          backgroundColor={BackgroundColor.backgroundMuted}
           style={{
             position: 'relative',
           }}
@@ -768,7 +768,7 @@ const PrepareBridgePage = () => {
           <Box
             className="prepare-bridge-page__switch-tokens"
             display={Display.Flex}
-            backgroundColor={BackgroundColor.backgroundAlternativeSoft}
+            backgroundColor={BackgroundColor.backgroundMuted}
             style={{
               position: 'absolute',
               top: 'calc(-20px + 1px)',
@@ -796,7 +796,7 @@ const PrepareBridgePage = () => {
               data-testid="switch-tokens"
               ariaLabel="switch-tokens"
               iconName={IconName.Arrow2Down}
-              color={IconColor.iconAlternativeSoft}
+              color={IconColor.iconAlternative}
               disabled={
                 isSwitchingTemporarilyDisabled ||
                 !isValidQuoteRequest(quoteRequest, false) ||
@@ -982,7 +982,7 @@ const PrepareBridgePage = () => {
               <>
                 <Text
                   textAlign={TextAlign.Center}
-                  color={TextColor.textAlternativeSoft}
+                  color={TextColor.textAlternative}
                 >
                   {t('swapFetchingQuotes')}
                 </Text>
@@ -1064,7 +1064,7 @@ const PrepareBridgePage = () => {
                 activeQuote.quote.srcAsset?.symbol ? (
                   <Row justifyContent={JustifyContent.center} gap={1}>
                     <Text
-                      color={TextColor.textAlternativeSoft}
+                      color={TextColor.textAlternative}
                       variant={TextVariant.bodyXs}
                       textAlign={TextAlign.Center}
                     >

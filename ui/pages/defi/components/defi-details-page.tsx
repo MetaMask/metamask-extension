@@ -127,7 +127,7 @@ const DeFiPage = () => {
       <Box paddingLeft={4} paddingBottom={4}>
         <SensitiveText
           data-testid="defi-details-page-market-value"
-          className="mm-box--color-text-alternative-soft"
+          className="mm-box--color-text-alternative"
           ellipsis
           variant={TextVariant.inherit}
           isHidden={privacyMode}

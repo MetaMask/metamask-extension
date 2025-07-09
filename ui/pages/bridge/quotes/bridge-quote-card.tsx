@@ -159,7 +159,7 @@ export const BridgeQuoteCard = () => {
             <Row>
               <Text
                 variant={TextVariant.bodyMdMedium}
-                color={TextColor.textAlternativeSoft}
+                color={TextColor.textAlternative}
               >
                 {t('bridging')}
               </Text>
@@ -214,7 +214,7 @@ export const BridgeQuoteCard = () => {
                 color={
                   isEstimatedReturnLow
                     ? TextColor.warningDefault
-                    : TextColor.textAlternativeSoft
+                    : TextColor.textAlternative
                 }
               >
                 {t('networkFee')}
@@ -286,7 +286,7 @@ export const BridgeQuoteCard = () => {
                   color={
                     isEstimatedReturnLow
                       ? IconColor.warningDefault
-                      : IconColor.iconAlternativeSoft
+                      : IconColor.iconAlternative
                   }
                   name={IconName.SwapVertical}
                   size={IconSize.Md}
@@ -302,7 +302,7 @@ export const BridgeQuoteCard = () => {
             <Row>
               <Text
                 variant={TextVariant.bodyMdMedium}
-                color={TextColor.textAlternativeSoft}
+                color={TextColor.textAlternative}
               >
                 {t('time')}
               </Text>
@@ -317,16 +317,14 @@ export const BridgeQuoteCard = () => {
             <Row justifyContent={JustifyContent.flexStart} gap={2}>
               <Text
                 variant={TextVariant.bodyMd}
-                color={TextColor.textAlternativeSoft}
+                color={TextColor.textAlternative}
               >
                 {t('rateIncludesMMFee', [BRIDGE_MM_FEE_RATE])}
               </Text>
-              <Text color={TextColor.textAlternativeSoft}>
-                {t('bulletpoint')}
-              </Text>
+              <Text color={TextColor.textAlternative}>{t('bulletpoint')}</Text>
               <ButtonLink
                 variant={TextVariant.bodyMd}
-                color={TextColor.textAlternativeSoft}
+                color={TextColor.textAlternative}
                 href={TERMS_OF_USE_LINK}
                 externalLink
                 style={{ textDecoration: 'underline' }}

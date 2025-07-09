@@ -209,7 +209,7 @@ export const BridgeCTAButton = ({
       <Text
         variant={TextVariant.bodyMd}
         textAlign={TextAlign.Center}
-        color={TextColor.textAlternativeSoft}
+        color={TextColor.textAlternative}
       >
         {label ? t(label) : ''}
       </Text>

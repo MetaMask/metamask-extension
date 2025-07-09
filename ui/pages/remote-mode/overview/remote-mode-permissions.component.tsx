@@ -98,7 +98,7 @@ export default function RemoteModePermissions({
 
   return (
     <Box>
-      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternativeSoft}>
+      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
         Remote Mode lets you use your hardware wallet without plugging it
         in.{' '}
       </Text>

@@ -145,7 +145,7 @@ export const SimulationSettingsModal = ({
             </Box>
             <Text
               variant={TextVariant.bodyMd}
-              color={TextColor.textAlternativeSoft}
+              color={TextColor.textAlternative}
             >
               {t('simulationSettingsModalEnforceToggleDescription')}
             </Text>
