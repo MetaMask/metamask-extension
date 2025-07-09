@@ -216,7 +216,7 @@ export class NetworkOrderController extends BaseController<
       state.enabledNetworkMap[networkId] = enabledNetworks;
     });
 
-    this._switchToEnabledNetworkIfNeeded(ids);
+    this.#switchToEnabledNetworkIfNeeded(ids);
   }
 
   /**
@@ -225,7 +225,7 @@ export class NetworkOrderController extends BaseController<
    *
    * @param chainIds - Array of enabled chain IDs
    */
-  private _switchToEnabledNetworkIfNeeded(chainIds: string[]) {
+  #switchToEnabledNetworkIfNeeded(chainIds: string[]) {
     // Early return if no enabled networks
     if (chainIds.length === 0) {
       return;
