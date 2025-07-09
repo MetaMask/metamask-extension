@@ -36,23 +36,19 @@
     }
   }
 
-  &__top-section {
-    width: 100vw;
-
-    @media screen and (min-width: design-system.$break-large) {
-      width: 85vw;
-    }
-
-    @media screen and (min-width: 768px) {
-      width: 80vw;
-    }
-
-    @media screen and (min-width: 1280px) {
-      width: 62vw;
-    }
-  }
-
   &__update {
     min-height: 48px;
+  }
+
+  &__back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+  }
+
+  &__close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
   }
 }

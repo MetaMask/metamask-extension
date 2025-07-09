@@ -1,13 +1,7 @@
 import React, { ReactElement } from 'react';
-import { Hex } from '@metamask/utils';
-import { NameType } from '@metamask/name-controller';
-import { useSelector } from 'react-redux';
 
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   Box,
   ButtonLink,
   ButtonLinkSize,
@@ -15,18 +9,13 @@ import {
 } from '../../../../../components/component-library';
 import {
   AlignItems,
-  BlockSize,
-  BorderColor,
   Display,
   FlexDirection,
   FontWeight,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getUseBlockie } from '../../../../../selectors';
-import Name from '../../../../../components/app/name';
 
 const ListItem = ({
   imgSrc,
@@ -66,15 +55,8 @@ const ListItem = ({
   </Box>
 );
 
-export const SmartAccountUpdateContent = ({
-  selectedAddresses,
-  chainId,
-}: {
-  selectedAddresses: Hex[];
-  chainId?: Hex;
-}) => {
+export const SmartAccountUpdateContent = () => {
   const t = useI18nContext();
-  const useBlockie = useSelector(getUseBlockie);
 
   return (
     <>
@@ -85,46 +67,6 @@ export const SmartAccountUpdateContent = ({
       <Text fontWeight={FontWeight.Bold} variant={TextVariant.headingLg}>
         {t('smartAccountSplashTitle')}
       </Text>
-      {selectedAddresses?.length > 0 && (
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-          width={BlockSize.Full}
-        >
-          <Text
-            color={TextColor.textAlternative}
-            marginInlineEnd={2}
-            variant={TextVariant.bodyMd}
-          >
-            {t('smartAccountRequestFor')}
-          </Text>
-          {selectedAddresses.length === 1 && chainId ? (
-            <Name
-              value={selectedAddresses[0]}
-              type={NameType.ETHEREUM_ADDRESS}
-              variation={chainId}
-            />
-          ) : (
-            <Box display={Display.Flex}>
-              {selectedAddresses.map((address) => (
-                <AvatarAccount
-                  borderColor={BorderColor.transparent}
-                  className="smart-account-update-content__acc-avatar"
-                  size={AvatarAccountSize.Sm}
-                  address={address}
-                  variant={
-                    useBlockie
-                      ? AvatarAccountVariant.Blockies
-                      : AvatarAccountVariant.Jazzicon
-                  }
-                  marginInlineEnd={2}
-                />
-              ))}
-            </Box>
-          )}
-        </Box>
-      )}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}

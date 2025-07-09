@@ -15,6 +15,10 @@
     @media screen and (min-width: design-system.$break-midpoint) {
       max-width: 80vw;
     }
+
+    @media screen and (min-width: 1280px) {
+      width: 62vw;
+    }
   }
 
   &__inner {

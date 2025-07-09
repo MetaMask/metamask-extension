@@ -10,7 +10,7 @@ import { upgradeAccountConfirmation } from '../../../../../../../test/data/confi
 import { Confirmation } from '../../../../types/confirm';
 import {
   rejectPendingApproval,
-  setSmartAccountOptInForAccounts,
+  setSmartAccountOptIn,
 } from '../../../../../../store/actions';
 import { SmartAccountUpdateSplash } from './smart-account-update-splash';
 
@@ -31,7 +31,7 @@ jest.mock('../../../../../../hooks/useMultiPolling', () => ({
 jest.mock('../../../../../../store/actions', () => ({
   setAccountDetailsAddress: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
-  setSmartAccountOptInForAccounts: jest.fn(),
+  setSmartAccountOptIn: jest.fn(),
 }));
 
 const mockDispatch = jest.fn();
@@ -65,7 +65,7 @@ describe('Splash', () => {
         {
           metamask: {
             preferences: {
-              smartAccountOptInForAccounts: [],
+              smartAccountOptIn: false,
             },
             internalAccounts: {
               accounts: {
@@ -93,7 +93,7 @@ describe('Splash', () => {
     );
 
     expect(container.firstChild).toBeNull();
-    expect(setSmartAccountOptInForAccounts).toHaveBeenCalledTimes(1);
+    expect(setSmartAccountOptIn).toHaveBeenCalledTimes(1);
   });
 
   it('reject confirmation if user does not accept', async () => {
@@ -142,7 +142,6 @@ describe('Splash', () => {
           metamask: {
             preferences: {
               smartAccountOptIn: true,
-              smartAccountOptInForAccounts: [],
             },
             internalAccounts: {
               accounts: {
@@ -179,7 +178,6 @@ describe('Splash', () => {
           metamask: {
             preferences: {
               smartAccountOptIn: true,
-              smartAccountOptInForAccounts: [],
             },
             upgradeSplashPageAcknowledgedForAccounts: [
               (upgradeAccountConfirmation as TransactionMeta).txParams.from,

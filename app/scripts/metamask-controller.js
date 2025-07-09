@@ -3649,10 +3649,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setManageInstitutionalWallets.bind(
           preferencesController,
         ),
-      setSmartAccountOptInForAccounts:
-        preferencesController.setSmartAccountOptInForAccounts.bind(
-          preferencesController,
-        ),
 
       // AccountsController
       setSelectedInternalAccount: (id) => {

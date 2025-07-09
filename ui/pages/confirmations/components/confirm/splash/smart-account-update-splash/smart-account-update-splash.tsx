@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import { Hex } from '@metamask/utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
 import {
@@ -24,12 +23,9 @@ import {
   TextColor,
 } from '../../../../../../helpers/constants/design-system';
 import { isHardwareKeyring } from '../../../../../../helpers/utils/hardware';
-import { setSmartAccountOptInForAccounts } from '../../../../../../store/actions';
+import { setSmartAccountOptIn } from '../../../../../../store/actions';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import {
-  getSmartAccountOptInForAccounts,
-  getUseSmartAccount,
-} from '../../../../selectors/preferences';
+import { getUseSmartAccount } from '../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
 import { SmartAccountUpdateContent } from '../../smart-account-update-content/smart-account-update-content';
@@ -41,30 +37,22 @@ export function SmartAccountUpdateSplash() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { handleRejectUpgrade } = useSmartAccountActions();
   const smartAccountOptIn = useSelector(getUseSmartAccount);
-  const smartAccountOptInForAccounts: Hex[] = useSelector(
-    getSmartAccountOptInForAccounts,
-  );
-  const { txParams, origin, chainId } = currentConfirmation ?? {};
+  const { txParams, origin } = currentConfirmation ?? {};
   const { from } = txParams;
   const [acknowledged, setAcknowledged] = useState(false);
   const account = useSelector((state: AccountsState) =>
     getMemoizedInternalAccountByAddress(state as AccountsState, from),
   );
+  const dispatch = useDispatch();
   const keyringType = account?.metadata?.keyring?.type;
   const acknowledgeSmartAccountUpgrade = useCallback(() => {
-    if (!smartAccountOptInForAccounts.includes(from as Hex)) {
-      setSmartAccountOptInForAccounts([
-        ...smartAccountOptInForAccounts,
-        from as Hex,
-      ]);
-    }
+    dispatch(setSmartAccountOptIn(true));
     setAcknowledged(true);
-  }, [setAcknowledged, smartAccountOptInForAccounts, from]);
+  }, [setAcknowledged, from]);
 
   if (
     !currentConfirmation ||
     origin === ORIGIN_METAMASK ||
-    smartAccountOptInForAccounts?.includes(from.toLowerCase() as Hex) ||
     (smartAccountOptIn && !isHardwareKeyring(keyringType)) ||
     acknowledged
   ) {
@@ -87,10 +75,7 @@ export function SmartAccountUpdateSplash() {
         padding={4}
         className="smart-account-update-splash__inner"
       >
-        <SmartAccountUpdateContent
-          selectedAddresses={[from as Hex]}
-          chainId={chainId}
-        />
+        <SmartAccountUpdateContent />
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}

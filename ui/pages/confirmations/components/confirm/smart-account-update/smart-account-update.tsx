@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react';
-import { Hex } from '@metamask/utils';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
 import {
   Box,
   Button,
+  ButtonIcon,
+  ButtonIconSize,
   ButtonSize,
   ButtonVariant,
   Icon,
@@ -23,45 +24,27 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { setSmartAccountOptInForAccounts } from '../../../../../store/actions';
+import { setSmartAccountOptIn } from '../../../../../store/actions';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import IconButton from '../../../../../components/ui/icon-button/icon-button-round';
-import { getSmartAccountOptInForAccounts } from '../../../selectors/preferences';
-import { AccountSelection } from '../account-selection';
-import { SmartAccountUpdateContent } from '../smart-account-update-content/smart-account-update-content';
+import { SmartAccountUpdateContent } from '../smart-account-update-content';
 import { SmartAccountUpdateSuccess } from './smart-account-update-success';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function SmartAccountUpdate() {
   const [acknowledged, setAcknowledged] = useState(false);
-  const [accountSelectionVisible, setAccountSelectionVisible] = useState(false);
   const t = useI18nContext();
   const history = useHistory();
-  const smartAccountOptInForAccounts: Hex[] = useSelector(
-    getSmartAccountOptInForAccounts,
-  );
-  const [selectedAccounts, setSelectedAccounts] = useState(() => {
-    return smartAccountOptInForAccounts;
-  });
+  const dispatch = useDispatch();
 
   const closeAccountUpdatePage = useCallback(() => {
     history.replace('/');
   }, [history]);
 
   const acknowledgeSmartAccountUpgrade = useCallback(() => {
-    setSmartAccountOptInForAccounts(selectedAccounts);
+    dispatch(setSmartAccountOptIn(true));
     setAcknowledged(true);
-    setAccountSelectionVisible(false);
-  }, [setAcknowledged, selectedAccounts]);
-
-  const showAccountSelectionVisible = useCallback(() => {
-    setAccountSelectionVisible(true);
-  }, [setAccountSelectionVisible]);
-
-  const hideAccountSelectionVisible = useCallback(() => {
-    setAccountSelectionVisible(false);
-  }, [setAccountSelectionVisible]);
+  }, [setAcknowledged]);
 
   return (
     <Box
@@ -78,31 +61,22 @@ export function SmartAccountUpdate() {
         className="smart-account-update__inner"
         padding={4}
       >
-        {accountSelectionVisible && (
-          <AccountSelection
-            closeAccountSelection={hideAccountSelectionVisible}
-            onUpdate={acknowledgeSmartAccountUpgrade}
-            selectedAccounts={selectedAccounts}
-            setSelectedAccounts={setSelectedAccounts}
-          />
-        )}
-        {!accountSelectionVisible && acknowledged && (
+        {acknowledged ? (
           <SmartAccountUpdateSuccess />
-        )}
-        {!accountSelectionVisible && !acknowledged && (
+        ) : (
           <>
             <Box
               display={Display.Flex}
               alignItems={AlignItems.center}
-              justifyContent={JustifyContent.spaceBetween}
+              justifyContent={JustifyContent.center}
               width={BlockSize.Full}
-              className="smart-account-update__top-section"
             >
-              <IconButton
-                Icon={<Icon name={IconName.ArrowLeft} />}
+              <ButtonIcon
+                iconName={IconName.ArrowLeft}
                 onClick={closeAccountUpdatePage}
-                label=""
-                data-testid="smart-account-update-close"
+                size={ButtonIconSize.Sm}
+                ariaLabel="back"
+                className="smart-account-update__back-btn"
               />
               <Text
                 color={TextColor.textDefault}
@@ -111,14 +85,8 @@ export function SmartAccountUpdate() {
               >
                 {t('smartAccountSplashInfo')}
               </Text>
-              <IconButton
-                Icon={<Icon name={IconName.Edit} />}
-                onClick={showAccountSelectionVisible}
-                label=""
-                data-testid="smart-account-update-edit"
-              />
             </Box>
-            <SmartAccountUpdateContent selectedAddresses={selectedAccounts} />
+            <SmartAccountUpdateContent />
             <Button
               marginTop={4}
               onClick={acknowledgeSmartAccountUpgrade}
