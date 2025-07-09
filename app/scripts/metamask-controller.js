@@ -1792,9 +1792,8 @@ export default class MetamaskController extends EventEmitter {
       getMetaMetricsProps: async () => {
         const selectedAddress =
           this.accountsController.getSelectedAccount().address;
-        const accountHardwareType = await this.getHardwareTypeForMetric(
-          selectedAddress,
-        );
+        const accountHardwareType =
+          await this.getHardwareTypeForMetric(selectedAddress);
         const accountType = await this.getAccountType(selectedAddress);
         const deviceModel = await this.getDeviceModel(selectedAddress);
         return {
@@ -5700,9 +5699,8 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'hardware' | 'imported' | 'snap' | 'MetaMask'}
    */
   async getAccountType(address) {
-    const keyringType = await this.keyringController.getAccountKeyringType(
-      address,
-    );
+    const keyringType =
+      await this.keyringController.getAccountKeyringType(address);
     switch (keyringType) {
       case KeyringType.trezor:
       case KeyringType.oneKey:
