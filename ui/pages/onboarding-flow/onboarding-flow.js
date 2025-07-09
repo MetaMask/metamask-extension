@@ -259,6 +259,7 @@ export default function OnboardingFlow() {
         }
         borderRadius={BorderRadius.LG}
         marginTop={pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? 0 : 3}
+        marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
         marginInline="auto"
         borderColor={BorderColor.borderMuted}
       >
