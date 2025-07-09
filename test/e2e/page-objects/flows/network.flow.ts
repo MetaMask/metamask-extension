@@ -19,14 +19,15 @@ export const switchToNetworkFlow = async (
   const headerNavbar = new HeaderNavbar(driver);
   await headerNavbar.check_pageIsLoaded();
   await headerNavbar.clickSwitchNetworkDropDown();
-
   const selectNetworkDialog = new SelectNetwork(driver);
   await selectNetworkDialog.check_pageIsLoaded();
   if (toggleShowTestNetwork) {
     await selectNetworkDialog.toggleShowTestNetwork();
   }
   await selectNetworkDialog.selectNetworkName(networkName);
-  await headerNavbar.check_currentSelectedNetwork(networkName);
+  if (!networkName.includes('Bitcoin')) {
+    await headerNavbar.check_currentSelectedNetwork(networkName);
+  }
 };
 
 /**

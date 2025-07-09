@@ -357,7 +357,7 @@ export function getMultichainDefaultToken(
 ) {
   const symbol = getMultichainIsEvm(state, account)
     ? // We fallback to 'ETH' to keep original behavior of `getSwapsDefaultToken`
-      getProviderConfig(state)?.ticker ?? 'ETH'
+      (getProviderConfig(state)?.ticker ?? 'ETH')
     : getMultichainProviderConfig(state, account).ticker;
 
   return { symbol };

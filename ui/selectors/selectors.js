@@ -148,7 +148,7 @@ import {
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
 
-export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
+export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
 /** `appState` slice selectors */
 
@@ -1447,7 +1447,7 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const networks = isGlobalNetworkSelectorRemoved
-    ? enabledNetworks?.[namespace] ?? {}
+    ? (enabledNetworks?.[namespace] ?? {})
     : tokenNetworkFilter;
 
   if (
