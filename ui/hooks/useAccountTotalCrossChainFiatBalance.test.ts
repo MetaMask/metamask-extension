@@ -6,7 +6,7 @@ import {
 import {
   getCrossChainTokenExchangeRates,
   getCrossChainMetaMaskCachedBalances,
-  getEnabledNetworksByNamespace,
+  getEnabledNetworks,
 } from '../selectors';
 import {
   getCurrentCurrency,
@@ -26,7 +26,7 @@ jest.mock('react-redux', () => ({
 jest.mock('../selectors', () => ({
   getCrossChainTokenExchangeRates: jest.fn(),
   getCrossChainMetaMaskCachedBalances: jest.fn(),
-  getEnabledNetworksByNamespace: jest.fn(),
+  getEnabledNetworks: jest.fn(),
 }));
 jest.mock('../ducks/metamask/metamask', () => ({
   getCurrentCurrency: jest.fn(),
@@ -51,9 +51,7 @@ const mockGetCrossChainTokenExchangeRates = jest.mocked(
 const mockGetCrossChainMetaMaskCachedBalances = jest.mocked(
   getCrossChainMetaMaskCachedBalances,
 );
-const mockGetEnabledNetworksByNamespace = jest.mocked(
-  getEnabledNetworksByNamespace,
-);
+const mockGetEnabledNetworks = jest.mocked(getEnabledNetworks);
 
 const mockUseTokenBalances = jest.fn().mockReturnValue({
   tokenBalances: {
@@ -198,9 +196,14 @@ describe('useAccountTotalCrossChainFiatBalance', () => {
       mockCachedBalances(),
     );
 
-    mockGetEnabledNetworksByNamespace.mockReturnValue({
-      '0x1': {},
-      '0xe708': {},
+    mockGetEnabledNetworks.mockReturnValue({
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+      },
+      solana: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+      },
     });
 
     jest.clearAllMocks();
