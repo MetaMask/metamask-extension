@@ -149,13 +149,14 @@ describe('ErrorPage', () => {
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
+      // mockStore,
     );
     const tryAgainButton = getByTestId('error-page-try-again-button');
     fireEvent.click(tryAgainButton);
     expect(browser.runtime.reload).toHaveBeenCalled();
   });
 
-  it('should open the support consent modal when the "Contact Support" button is clicked', async () => {
+  it('should open the support consent modal when the "Contact Support" button is clicked', () => {
     window.open = jest.fn();
 
     const { getByTestId } = renderWithProvider(
@@ -168,7 +169,7 @@ describe('ErrorPage', () => {
       'error-page-contact-support-button',
     );
     fireEvent.click(contactSupportButton);
-    await waitFor(() =>
+    waitFor(() =>
       expect(
         getByTestId('visit-support-data-consent-modal'),
       ).toBeInTheDocument(),
