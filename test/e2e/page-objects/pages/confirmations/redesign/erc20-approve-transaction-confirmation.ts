@@ -74,7 +74,8 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
       text: 'Method',
     };
 
-    this.headerAdvancedDetailsButton = '[data-testid="header-advanced-details-button"]';
+    this.headerAdvancedDetailsButton =
+      '[data-testid="header-advanced-details-button"]';
   }
 
   /**

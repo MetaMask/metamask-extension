@@ -2,7 +2,7 @@ import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../helpers';
 import HomePage from '../pages/home/homepage';
 import { ImportTokensModal } from '../pages/import-tokens-modal';
-import { AssetList } from '../pages/asset-list';
+import AssetListPage from '../pages/home/asset-list';
 
 /**
  * Configuration for importing a custom token
@@ -51,9 +51,9 @@ export async function importTestToken(
   // Navigate to tokens tab to see the imported token
   await homePage.goToTokensTab();
 
-  // Verify token appears in asset list
-  const assetList = new AssetList(driver);
-  await assetList.checkTokenSymbol(tokenConfig.tokenSymbol);
+  // Verify token appears in asset list using existing AssetListPage
+  const assetListPage = new AssetListPage(driver);
+  await assetListPage.check_tokenExistsInList(tokenConfig.tokenSymbol);
 }
 
 /**
@@ -70,5 +70,9 @@ export async function importAndVerifyToken(
   networkChainId: string,
   tokenSymbol: string,
 ): Promise<void> {
-  await importTestToken(driver, { contractAddress, networkChainId, tokenSymbol });
+  await importTestToken(driver, {
+    contractAddress,
+    networkChainId,
+    tokenSymbol,
+  });
 }

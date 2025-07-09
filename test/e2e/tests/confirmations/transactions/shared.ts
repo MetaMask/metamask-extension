@@ -414,4 +414,6 @@ export async function createERC20ApproveTransaction(driver: Driver) {
  */
 export async function waitForApproveTransactionWindow(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  // Wait for the redesigned confirmation dialog to be fully loaded
+  await driver.waitForSelector('[data-testid="confirm-footer-button"]');
 }
