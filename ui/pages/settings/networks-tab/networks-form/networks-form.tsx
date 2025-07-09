@@ -101,9 +101,6 @@ export const NetworksForm = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const networkConfigurationIdsByChainId = useSelector(
-    getNetworkConfigurationIdByChainId,
-  );
   const scrollableRef = useRef<HTMLDivElement>(null);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
@@ -739,7 +736,7 @@ export const NetworksForm = ({
           size={ButtonPrimarySize.Lg}
           width={BlockSize.Full}
         >
-          {t('save') + 'salim'}
+          {t('save')}
         </ButtonPrimary>
       </Box>
     </Box>
