@@ -68,6 +68,8 @@ export async function showAccountCreationDialog(
     return confirmationResult;
   } catch (e) {
     throw new Error(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       `Error occurred while showing account creation dialog.\n${e}`,
     );
   }
@@ -100,6 +102,8 @@ export async function showAccountNameSuggestionDialog(
     )) as { success: boolean; name?: string };
     return confirmationResult;
   } catch (e) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`Error occurred while showing name account dialog.\n${e}`);
   }
 }
@@ -303,10 +307,18 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
         event,
         category: MetaMetricsEventCategory.Accounts,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: MetaMetricsEventAccountType.Snap,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: snapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: snapName,
           ...(event === MetaMetricsEventName.AccountAdded && {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             is_suggested_name: defaultAccountNameChosen,
           }),
         },
@@ -465,8 +477,14 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
         event,
         category: MetaMetricsEventCategory.Accounts,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: MetaMetricsEventAccountType.Snap,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: snapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: snapName,
         },
       });

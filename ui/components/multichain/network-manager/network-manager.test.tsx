@@ -110,6 +110,15 @@ describe('NetworkManager Component', () => {
           type: 'rpc',
           ticker: 'ETH',
         },
+        enabledNetworkMap: {
+          eip155: {
+            '0x1': true,
+            '0xa': true,
+            '0xa4b1': true,
+            '0xa86a': true,
+            '0x2105': true,
+          },
+        },
       },
     });
     return renderWithProvider(<NetworkManager />, store);
@@ -138,6 +147,7 @@ describe('NetworkManager Component', () => {
     renderNetworkManager();
 
     // Verify that Default tab is active by default
+    expect(screen.getByText('Default')).toBeInTheDocument();
     expect(screen.getByText('Select all')).toBeInTheDocument();
 
     // Click on Custom tab

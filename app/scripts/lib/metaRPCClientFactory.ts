@@ -42,6 +42,8 @@ type JsonRpcApiResponse<Api extends FunctionRegistry<Api>> = {
  * The shape for the object that provides our list of functions that can be
  * called on the RPC client.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type FunctionRegistry<T> = {
   [K in keyof T]: T[K] extends (...args: infer A) => infer R
     ? A extends Json[] // every param must be Json
@@ -83,6 +85,8 @@ function isError<Api extends FunctionRegistry<Api>>(
  * @param obj - The object to check.
  * @returns True if the property is in the object, false otherwise.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function propertyIn<T extends object>(
   property: PropertyKey,
   obj: T,

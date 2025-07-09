@@ -317,12 +317,17 @@ export function useTransactionDisplayData(transactionGroup) {
     ]);
     subtitle = origin;
     subtitleContainsOrigin = true;
+    const symbolFromTx =
+      bridgeTokenDisplayData.sourceTokenSymbol ??
+      initialTransaction.sourceTokenSymbol;
     primarySuffix = isViewingReceivedTokenFromSwap
       ? currentAsset.symbol
-      : bridgeTokenDisplayData.sourceTokenSymbol ??
-        initialTransaction.sourceTokenSymbol;
-    primaryDisplayValue =
+      : symbolFromTx;
+    const value =
       bridgeTokenDisplayData.sourceTokenAmountSent ?? swapTokenValue;
+    primaryDisplayValue = value
+      ? formatAmount(locale, new BigNumber(value))
+      : undefined;
     secondaryDisplayValue =
       bridgeTokenDisplayData.displayCurrencyAmount ?? swapTokenFiatAmount;
     if (isNegative) {
