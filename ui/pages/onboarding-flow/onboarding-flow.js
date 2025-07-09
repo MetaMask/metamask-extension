@@ -219,9 +219,10 @@ export default function OnboardingFlow() {
     return await dispatch(createNewVaultAndRestore(password, srp));
   };
 
-  const isWelcomeAndUnlockPage =
+  const isFullPage =
     pathname === ONBOARDING_WELCOME_ROUTE ||
-    pathname === ONBOARDING_UNLOCK_ROUTE;
+    pathname === ONBOARDING_UNLOCK_ROUTE ||
+    ONBOARDING_EXPERIMENTAL_AREA;
 
   return (
     <Box
@@ -246,14 +247,12 @@ export default function OnboardingFlow() {
       {!isPopup && <OnboardingAppHeader pageState={welcomePageState} />}
       <Box
         className={classnames('onboarding-flow__container', {
-          'onboarding-flow__container--welcome': isWelcomeAndUnlockPage,
+          'onboarding-flow__container--full': isFullPage,
           'onboarding-flow__container--popup': isPopup,
         })}
         width={BlockSize.Full}
         borderStyle={
-          isWelcomeAndUnlockPage || isPopup
-            ? BorderStyle.none
-            : BorderStyle.solid
+          isFullPage || isPopup ? BorderStyle.none : BorderStyle.solid
         }
         borderRadius={BorderRadius.LG}
         marginTop={pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? 0 : 3}
