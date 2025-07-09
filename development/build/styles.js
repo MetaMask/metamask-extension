@@ -11,6 +11,7 @@ const tailwindcss = require('tailwindcss');
 const pipeline = pify(require('readable-stream').pipeline);
 const sass = require('sass-embedded');
 const gulpSass = require('gulp-sass')(sass);
+const tailwindConfig = require('../../tailwind.config');
 const { TASKS } = require('./constants');
 const { createTask } = require('./task');
 
@@ -86,7 +87,7 @@ async function buildScssPipeline(src, dest, devMode) {
         },
       }).on('error', gulpSass.logError),
       postcss([
-        tailwindcss(),
+        tailwindcss(tailwindConfig),
         autoprefixer(),
         rtlcss(),
         discardFonts(['woff2']),
