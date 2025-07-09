@@ -8,8 +8,8 @@ import {
 import {
   getCrossChainTokenExchangeRates,
   getCrossChainMetaMaskCachedBalances,
-  getEnabledNetworksByNamespace,
   isGlobalNetworkSelectorRemoved,
+  getEnabledNetworks,
 } from '../selectors';
 import {
   getValueFromWeiHex,
@@ -39,7 +39,11 @@ export const useAccountTotalCrossChainFiatBalance = (
 ) => {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
-  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const selectedEnabledNetworks = useSelector(getEnabledNetworks);
+  const enabledNetworksByNamespace = useMemo(
+    () => Object.assign({}, ...Object.values(selectedEnabledNetworks)),
+    [selectedEnabledNetworks],
+  );
 
   const currencyRates = useSelector(getCurrencyRates);
   const currentCurrency = useSelector(getCurrentCurrency);
