@@ -4,54 +4,23 @@ import { isEqual } from 'lodash';
 import {
   isNativeAddress,
   getNativeAssetForChainId,
-  formatChainIdToCaip,
-  formatChainIdToHex,
-  isSolanaChainId,
   ChainId,
 } from '@metamask/bridge-controller';
 import type { Hex } from '@metamask/utils';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
-import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
-import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import {
   getFromChain,
   getToChain,
   getFromToken,
 } from '../../ducks/bridge/selectors';
-import type { BridgeToken } from '../../ducks/bridge/types';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import type { TokenPayload } from '../../ducks/bridge/types';
 
 type UseBridgeDefaultToTokenReturnType = {
   defaultToChainId: ChainId | Hex | null;
-  defaultToToken: BridgeToken | null;
+  defaultToToken: TokenPayload['payload'] | null;
 };
 
-const getTokenImage = (
-  chainId: ChainId | Hex,
-  address?: string,
-  assetId?: string,
-): string => {
-  const caipChainId = formatChainIdToCaip(chainId);
-
-  // Native asset images
-  if (!address || isNativeAddress(address)) {
-    if (isSolanaChainId(chainId)) {
-      return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId] || '';
-    }
-    const hexChainId = formatChainIdToHex(chainId);
-    return (
-      CHAIN_ID_TOKEN_IMAGE_MAP[
-        hexChainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-      ] || ''
-    );
-  }
-
-  // Non-native asset images
-  const assetIdToUse = assetId ?? toAssetId(address, caipChainId);
-  return (assetIdToUse && getAssetImageUrl(assetIdToUse, caipChainId)) ?? '';
-};
-
-const createBridgeToken = (
+const createBridgeTokenPayload = (
   tokenData: {
     address: string;
     symbol: string;
@@ -60,16 +29,12 @@ const createBridgeToken = (
     assetId?: string;
   },
   chainId: ChainId | Hex,
-): BridgeToken => {
+): TokenPayload['payload'] | null => {
   return {
     address: tokenData.address,
     symbol: tokenData.symbol,
     decimals: tokenData.decimals,
     chainId,
-    image: getTokenImage(chainId, tokenData.address, tokenData.assetId),
-    balance: '0',
-    string: '0',
-    occurrences: 2,
   };
 };
 
@@ -104,7 +69,7 @@ function useBridgeDefaultToToken(): UseBridgeDefaultToTokenReturnType {
         ];
 
       if (commonPair) {
-        return createBridgeToken(commonPair, targetChainId);
+        return createBridgeTokenPayload(commonPair, targetChainId);
       }
     }
 
@@ -120,19 +85,19 @@ function useBridgeDefaultToToken(): UseBridgeDefaultToTokenReturnType {
     ) {
       const nativeAsset = getNativeAssetForChainId(targetChainId);
       if (nativeAsset) {
-        return createBridgeToken(nativeAsset, targetChainId);
+        return createBridgeTokenPayload(nativeAsset, targetChainId);
       }
     }
 
     // For any other token, default to USDC
     if (commonPair) {
-      return createBridgeToken(commonPair, targetChainId);
+      return createBridgeTokenPayload(commonPair, targetChainId);
     }
 
     // Last resort: native token
     const nativeAsset = getNativeAssetForChainId(targetChainId);
     if (nativeAsset) {
-      return createBridgeToken(nativeAsset, targetChainId);
+      return createBridgeTokenPayload(nativeAsset, targetChainId);
     }
 
     return null;
