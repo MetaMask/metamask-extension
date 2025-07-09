@@ -388,3 +388,8 @@ env:
   - SEEDLESS_ONBOARDING_ENABLED: 'false'
   - GOOGLE_CLIENT_ID: ''
   - APPLE_CLIENT_ID: ''
+
+  # Snaps
+  # This should only be used for local testing, and should not be enabled in any
+  # production builds (including beta and Flask).
+  - FORCE_PREINSTALLED_SNAPS: 'false'
