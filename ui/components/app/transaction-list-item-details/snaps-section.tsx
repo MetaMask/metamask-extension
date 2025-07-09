@@ -1,16 +1,14 @@
 import React from 'react';
 import { useInsightSnaps } from '../../../hooks/snaps/useInsightSnaps';
-import { Box } from '../../../components/component-library';
+import { Box } from '../../component-library';
 import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { SnapInsight } from './snap-insight';
 
-export const SnapsSection = ({ transactionMeta }) => {
-  console.log('kylan snaps-section.tsx transactionMeta', transactionMeta); // not receiving transactionMeta
-  const { data } = useInsightSnaps(transactionMeta?.id);
-  console.log('kylan snaps-section.tsx data', data);
+export const SnapsSection = ({ transactionId }: { transactionId: string }) => {
+  const { data } = useInsightSnaps(transactionId);
 
   if (data.length === 0) {
     return null;

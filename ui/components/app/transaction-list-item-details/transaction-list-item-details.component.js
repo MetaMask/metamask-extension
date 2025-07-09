@@ -22,8 +22,8 @@ import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import RemoteSignerInformation from '../../../pages/remote-mode/components/remote-signer-information';
-import TransactionDetailsPluggableSection from './pluggable-section';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import TransactionDetailsPluggableSection from './pluggable-section';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -350,7 +350,7 @@ export default class TransactionListItemDetails extends PureComponent {
             </div>
           </div>
         </div>
-        <TransactionDetailsPluggableSection transactionMeta={transaction} />
+        <TransactionDetailsPluggableSection transactionId={transaction.id} />
       </Popover>
     );
   }
