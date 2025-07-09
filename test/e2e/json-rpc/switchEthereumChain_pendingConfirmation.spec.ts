@@ -1,4 +1,4 @@
-import { withFixtures, DAPP_URL, WINDOW_TITLES } from '../helpers';
+import { withFixtures, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
 import NetworkSwitchAlertModal from '../page-objects/pages/dialog/network-switch-alert-modal';
@@ -37,10 +37,10 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        const dappOne = new TestDapp(driver);
-        await dappOne.openTestDappPage({ url: DAPP_URL });
-        await dappOne.check_pageIsLoaded();
-        await dappOne.clickPersonalSign();
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
+        await testDapp.clickPersonalSign();
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({
@@ -77,11 +77,11 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
         await networkSwitchAlertModal.check_pageIsLoaded();
         await networkSwitchAlertModal.clickGotItButton();
 
-        await driver.switchToWindowWithUrl(DAPP_URL);
-        await dappOne.check_pageIsLoaded();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.check_pageIsLoaded();
 
         // Wait for chain id element to change, there's a page reload.
-        await dappOne.check_networkIsConnected('0x53a');
+        await testDapp.check_networkIsConnected('0x53a');
       },
     );
   });
@@ -119,10 +119,10 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        const dappOne = new TestDapp(driver);
-        await dappOne.openTestDappPage({ url: DAPP_URL });
-        await dappOne.check_pageIsLoaded();
-        await dappOne.clickPersonalSign();
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
+        await testDapp.clickPersonalSign();
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({
@@ -157,11 +157,11 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
         await networkSwitchAlertModal.check_pageIsLoaded();
         await networkSwitchAlertModal.clickGotItButton();
 
-        await driver.switchToWindowWithUrl(DAPP_URL);
-        await dappOne.check_pageIsLoaded();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.check_pageIsLoaded();
 
         // Wait for chain id element to change, there's a page reload.
-        await dappOne.check_networkIsConnected('0x53a');
+        await testDapp.check_networkIsConnected('0x53a');
       },
     );
   });
