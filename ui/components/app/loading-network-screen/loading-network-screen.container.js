@@ -10,7 +10,6 @@ import {
   getProviderConfig,
   isNetworkLoading,
 } from '../../../../shared/modules/selectors/networks';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import LoadingNetworkScreen from './loading-network-screen.component';
 
 const DEPRECATED_TEST_NET_CHAINIDS = ['0x3', '0x2a', '0x4'];
