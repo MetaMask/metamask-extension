@@ -55,24 +55,3 @@ export async function importTestToken(
   const assetListPage = new AssetListPage(driver);
   await assetListPage.check_tokenExistsInList(tokenConfig.tokenSymbol);
 }
-
-/**
- * Complete token import process including verification using proper POM pattern
- *
- * @param driver - The WebDriver instance
- * @param contractAddress - The contract address of the token
- * @param networkChainId - The chain ID of the network
- * @param tokenSymbol - The symbol of the token to verify
- */
-export async function importAndVerifyToken(
-  driver: Driver,
-  contractAddress: string,
-  networkChainId: string,
-  tokenSymbol: string,
-): Promise<void> {
-  await importTestToken(driver, {
-    contractAddress,
-    networkChainId,
-    tokenSymbol,
-  });
-}
