@@ -111,7 +111,7 @@ export const ImportSrp = () => {
 
       // Clear the secret recovery phrase after importing
       setSecretRecoveryPhrase(Array(defaultNumberOfWords).fill(''));
-      
+
       // Track the event with the discovered accounts
       trackEvent({
         event:

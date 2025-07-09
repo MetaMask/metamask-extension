@@ -5311,16 +5311,16 @@ export default class MetamaskController extends EventEmitter {
           solScope,
         );
 
-      discoveredAccounts.solana = solanaAccounts.length;
+        discoveredAccounts.solana = solanaAccounts.length;
 
-      // If none accounts got discovered, we still create the first (default) one.
-      if (solanaAccounts.length === 0) {
-        await this._addSnapAccount(entropySource, solanaClient, {
-          scope: solScope,
-        });
+        // If none accounts got discovered, we still create the first (default) one.
+        if (solanaAccounts.length === 0) {
+          await this._addSnapAccount(entropySource, solanaClient, {
+            scope: solScope,
+          });
+        }
+        ///: END:ONLY_INCLUDE_IF
       }
-      ///: END:ONLY_INCLUDE_IF
-
       return discoveredAccounts;
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
