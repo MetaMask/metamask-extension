@@ -21,7 +21,7 @@ We try to ensure certain criteria are met before deploying:
 
 Version can be automatically incremented by creating a branch with the name `Version-vX.Y.Z`, where `X`, `Y`, and `Z` are numbers. Branches should be created off of the main branch. [Branches can be created on GitHub.](https://help.github.com/en/articles/creating-and-deleting-branches-within-your-repository)
 
-Once a version branch has been created, a build on CircleCI will create a Pull Request for the release with the app manifest and changelog versions bumped.
+Once a version branch has been created, a build on CI will create a Pull Request for the release with the app manifest and changelog versions bumped.
 
 ## Preparing for Sensitive Changes
 
