@@ -22,10 +22,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  doesAddressRequireLedgerHidConnection,
-  getUseTransactionSimulations,
-} from '../../../../../selectors';
+import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
@@ -37,8 +34,7 @@ import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
-import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported';
-import { useInsufficientBalanceAlerts } from '../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
+import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import OriginThrottleModal from './origin-throttle-modal';
 
 export type OnCancelHandler = ({
@@ -167,21 +163,7 @@ const Footer = () => {
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
 
-  const simulationData = currentConfirmation?.simulationData;
-
-  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const isSimulationEnabled = useSelector(getUseTransactionSimulations);
-
-  const hasInsufficientNative = Boolean(
-    useInsufficientBalanceAlerts({ ignoreGasFeeToken: true }).length,
-  );
-
-  const canSkipSimulationChecks = !isSimulationEnabled || !isGaslessSupported;
-
-  const hasSimulationFinished =
-    canSkipSimulationChecks ||
-    !hasInsufficientNative ||
-    Boolean(simulationData);
+  const { isGaslessLoading } = useIsGaslessLoading();
 
   const { from } = getConfirmationSender(currentConfirmation);
   const { shouldThrottleOrigin } = useOriginThrottling();
@@ -202,7 +184,7 @@ const Footer = () => {
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
     hardwareWalletRequiresConnection ||
-    !hasSimulationFinished;
+    isGaslessLoading;
 
   const rejectApproval = useCallback(
     ({ location }: { location?: MetaMetricsEventLocation } = {}) => {

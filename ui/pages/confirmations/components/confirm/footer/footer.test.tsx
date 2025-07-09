@@ -29,8 +29,10 @@ import { SignatureRequestType } from '../../../types/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
+import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import Footer from './footer';
 
+jest.mock('../../../hooks/gas/useIsGaslessLoading');
 jest.mock('../../../hooks/alerts/transactions/useInsufficientBalanceAlerts');
 jest.mock('../../../hooks/gas/useIsGaslessSupported');
 jest.mock('react-redux', () => ({
@@ -71,18 +73,16 @@ describe('ConfirmFooter', () => {
   const useInsufficientBalanceAlertsMock = jest.mocked(
     useInsufficientBalanceAlerts,
   );
+  const useIsGaslessLoadingMock = jest.mocked(useIsGaslessLoading);
 
   beforeEach(() => {
     mockUseOriginThrottling.mockReturnValue({
       shouldThrottleOrigin: false,
     });
 
-    useIsGaslessSupportedMock.mockReturnValue({
-      isSmartTransaction: false,
-      isSupported: false,
+    useIsGaslessLoadingMock.mockReturnValue({
+      isGaslessLoading: false,
     });
-
-    useInsufficientBalanceAlertsMock.mockReturnValue([]);
   });
 
   it('should match snapshot with signature confirmation', () => {
@@ -189,26 +189,16 @@ describe('ConfirmFooter', () => {
       expect(confirmButton).toBeDisabled();
     });
 
-    it('when simulation is enabled but not finished', () => {
-      useIsGaslessSupportedMock.mockReturnValue({
-        isSmartTransaction: true,
-        isSupported: true,
-      });
-      useInsufficientBalanceAlertsMock.mockReturnValue(ALERT_MOCK);
-      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: {
-          ...genUnapprovedContractInteractionConfirmation(),
-          simulationData: undefined, // No simulation data
-        },
-        isScrollToBottomCompleted: true,
-        setIsScrollToBottomCompleted: () => undefined,
+    it('disables confirm button when gas fee tokens are still loading', () => {
+      useIsGaslessLoadingMock.mockReturnValue({
+        isGaslessLoading: true,
       });
 
       const mockState2 = {
         ...getMockContractInteractionConfirmState(),
         metamask: {
           ...getMockContractInteractionConfirmState().metamask,
-          useTransactionSimulations: true, // Simulations enabled
+          useTransactionSimulations: true,
         },
         appState: {
           ...getMockContractInteractionConfirmState().appState,
