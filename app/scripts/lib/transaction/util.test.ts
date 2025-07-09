@@ -399,6 +399,8 @@ describe('Transaction Utils', () => {
           ...TRANSACTION_OPTIONS_MOCK,
           securityAlertResponse: {
             reason: BlockaidReason.inProgress,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: BlockaidResultType.Loading,
             securityAlertId: SECURITY_ALERT_ID_MOCK,
           },

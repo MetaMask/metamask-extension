@@ -13,10 +13,16 @@ export abstract class BaseLoginHandler {
   // This prompt value is used to force the user to select an account before OAuth login
   protected readonly prompt = 'select_account';
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   protected readonly CODE_CHALLENGE_METHOD = 'S256';
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   protected readonly AUTH_SERVER_TOKEN_PATH = '/api/v1/oauth/token';
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   protected readonly AUTH_SERVER_REVOKE_PATH = '/api/v1/oauth/revoke';
 
   constructor(options: LoginHandlerOptions) {
@@ -87,10 +93,18 @@ export abstract class BaseLoginHandler {
   async refreshAuthToken(refreshToken: string): Promise<AuthTokenResponse> {
     const { web3AuthNetwork } = this.options;
     const requestData = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id: this.options.oAuthClientId,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       login_provider: this.authConnection,
       network: web3AuthNetwork,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       refresh_token: refreshToken,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       grant_type: 'refresh_token', // specify refresh token flow
     };
     const res = await this.requestAuthToken(JSON.stringify(requestData));
@@ -103,10 +117,16 @@ export abstract class BaseLoginHandler {
    * @param revokeToken - The revoke token from the Web3Auth Authentication Server.
    */
   async revokeRefreshToken(revokeToken: string): Promise<{
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     refresh_token: string;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     revoke_token: string;
   }> {
     const requestData = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       revoke_token: revokeToken,
     };
 
@@ -123,7 +143,11 @@ export abstract class BaseLoginHandler {
 
     const data = await res.json();
     return {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       refresh_token: data.new_refresh_token,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       revoke_token: data.new_revoke_token,
     };
   }

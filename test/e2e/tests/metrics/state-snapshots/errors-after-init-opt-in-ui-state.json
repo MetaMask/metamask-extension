@@ -29,6 +29,7 @@
     "isLoading": "boolean",
     "isNftStillFetchingIndication": "boolean",
     "showNftDetectionEnablementToast": "boolean",
+    "showPasswordChangeToast": null,
     "loadingMessage": "undefined",
     "warning": "string",
     "buyView": "object",
@@ -66,7 +67,8 @@
     "isMultiRpcOnboarding": "boolean",
     "isAccessedFromDappConnectedSitePopover": "boolean",
     "errorInSettings": null,
-    "showNewSrpAddedToast": "boolean"
+    "showNewSrpAddedToast": "boolean",
+    "showSupportDataConsentModal": "boolean"
   },
   "bridge": "object",
   "confirmAlerts": "object",

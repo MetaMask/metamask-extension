@@ -88,6 +88,10 @@ PATH_NAME_MAP.set(
   'Reveal Secret Recovery Phrase List Page',
 );
 
+export const SECURITY_PASSWORD_CHANGE_ROUTE =
+  '/settings/security-and-privacy/password-change';
+PATH_NAME_MAP.set(SECURITY_PASSWORD_CHANGE_ROUTE, 'Change Password');
+
 export const BACKUPANDSYNC_ROUTE =
   '/settings/security-and-privacy/backup-and-sync';
 PATH_NAME_MAP.set(BACKUPANDSYNC_ROUTE, 'Backup And Sync Settings Page');
@@ -332,6 +336,7 @@ PATH_NAME_MAP.set(SWAPS_ERROR_ROUTE, 'Swaps Error Page');
 export const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
 
 export const ONBOARDING_ROUTE = '/onboarding';
+export const ONBOARDING_REVEAL_SRP_ROUTE = '/onboarding/reveal-recovery-phrase';
 export const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
 export const ONBOARDING_CONFIRM_SRP_ROUTE =
   '/onboarding/confirm-recovery-phrase';

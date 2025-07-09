@@ -163,6 +163,8 @@ describe('Deep Link', function () {
               Page = SwapPage;
               break;
             default: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
               throw new Error(`Unknown route: ${route}`);
             }
           }
@@ -229,8 +231,14 @@ describe('Deep Link', function () {
         // (may or not be processed by the deep link router, but we aren't
         // concerned with that in this test)
         const extraParams = {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           utm_medium: '123',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           attribution_id: '456',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           random_param: '789',
         };
         // these should all be forwarded to the swap page
