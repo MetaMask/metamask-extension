@@ -4,7 +4,6 @@ import FixtureBuilder from '../../../fixture-builder';
 import { Driver } from '../../../webdriver/driver';
 import { switchToNetworkFromSendFlow } from '../../../page-objects/flows/network.flow';
 import { Anvil } from '../../../seeder/anvil';
-import NetworkManager from '../../../page-objects/pages/network-manager';
 
 import AssetPicker from '../../../page-objects/pages/asset-picker';
 import Homepage from '../../../page-objects/pages/home/homepage';
@@ -31,20 +30,11 @@ describe('Send NFTs', function () {
         localNodes: Anvil[];
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
-        const networkManager = new NetworkManager(driver);
         const homepage = new Homepage(driver);
 
-        await networkManager.openNetworkManager();
-        await networkManager.checkCustomNetworkIsSelected('eip155:1337');
-        await networkManager.closeNetworkManager();
-
-        await homepage.goToNftTab();
-        const nftListPage = new NftListPage(driver);
-        await nftListPage.check_pageIsLoaded();
-
         await new Homepage(driver).goToNftTab();
-
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
+
         await homepage.startSendFlow();
 
         const sendToPage = new SendTokenPage(driver);
@@ -74,12 +64,7 @@ describe('Send NFTs', function () {
         localNodes: Anvil[];
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
-        const networkManager = new NetworkManager(driver);
         const homepage = new Homepage(driver);
-
-        await networkManager.openNetworkManager();
-        await networkManager.checkCustomNetworkIsSelected('eip155:1337');
-        await networkManager.closeNetworkManager();
         await homepage.goToNftTab();
         const nftListPage = new NftListPage(driver);
         await nftListPage.check_pageIsLoaded();

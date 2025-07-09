@@ -1,3 +1,4 @@
+/* eslint-disable mocha/no-skipped-tests */
 import { MockttpServer } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
 import { unlockWallet, WINDOW_TITLES, withFixtures } from '../../helpers';

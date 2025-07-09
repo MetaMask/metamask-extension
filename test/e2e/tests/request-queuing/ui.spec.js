@@ -23,8 +23,6 @@ const {
   switchToNetworkFromSendFlow,
 } = require('../../page-objects/flows/network.flow');
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
-
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs
 // with a "NoSuchWindowError: Browsing context has been discarded" whenever
@@ -205,13 +203,10 @@ describe('Request-queue UI changes', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await driver.clickElement('[data-testid="sort-by-networks"]');
-        await driver.clickElement({
-          text: 'Custom',
-          tag: 'button',
+        await driver.findElement({
+          css: '[data-testid="sort-by-networks"]',
+          text: 'Localhost 8546',
         });
-        await driver.clickElement('[data-testid="Localhost 8546"]');
-        await driver.clickElement('[data-testid="modal-header-close-button"]');
 
         // Go to the first dapp, ensure it uses localhost
         await selectDappClickSend(driver, DAPP_URL);
@@ -337,25 +332,9 @@ describe('Request-queue UI changes', function () {
         // Wait for transaction to be completed on final confirmation
         await driver.delay(veryLargeDelayMs);
 
-        if (!IS_FIREFOX) {
-          // Start on the last joined network, whose send transaction was just confirmed
-          if (isGlobalNetworkSelectorRemoved) {
-            await driver.clickElement('[data-testid="sort-by-networks"]');
-            await driver.clickElement({
-              text: 'Custom',
-              tag: 'button',
-            });
-            await driver.clickElement('[data-testid="Localhost 7777"]');
-            await driver.clickElement(
-              '[data-testid="modal-header-close-button"]',
-            );
-          }
-          await validateBalanceAndActivity(driver, '24.9998');
-        }
-
         // Switch to second network, ensure full balance
-        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
         await validateBalanceAndActivity(driver, '25', 0);
+        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
 
         // Switch to first network, whose send transaction was just confirmed
         await switchToNetworkFromSendFlow(driver, 'Localhost 8545');
