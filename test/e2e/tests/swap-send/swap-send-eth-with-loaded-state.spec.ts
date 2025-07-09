@@ -312,7 +312,7 @@ describe('Swap-Send ETH', function () {
 
           await swapSendPage.submitSwap();
           await swapSendPage.verifyHistoryEntry(
-            'Send ETH as WETH',
+            'Sent ETH as WETH',
             'Confirmed',
             '-10 ETH',
             '',

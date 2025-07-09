@@ -17,6 +17,8 @@ import {
 import Tooltip from '../../../../../components/ui/tooltip';
 import { isBatchTransaction } from '../../../../../../shared/lib/transactions.utils';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NestedTransactionTag() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();

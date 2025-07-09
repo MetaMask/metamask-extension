@@ -10,6 +10,8 @@ import { mockNoDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
 import { switchToNetworkFromSendFlow } from '../../../page-objects/flows/network.flow';
 
+const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
+
 describe('Check DeFi empty state when no defi positions', function () {
   it('user should be able to view empty', async function () {
     await withFixtures(
@@ -34,7 +36,9 @@ describe('Check DeFi empty state when no defi positions', function () {
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
 
         // check emtry state still present
-        await defiTab.openNetworksFilterAndClickPopularNetworks();
+        if (!isGlobalNetworkSelectorRemoved) {
+          await defiTab.openNetworksFilterAndClickPopularNetworks();
+        }
         await defiTab.check_noPositionsMessageIsDisplayed();
       },
     );

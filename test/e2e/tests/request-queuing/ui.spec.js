@@ -23,6 +23,8 @@ const {
   switchToNetworkFromSendFlow,
 } = require('../../page-objects/flows/network.flow');
 
+const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
+
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs
 // with a "NoSuchWindowError: Browsing context has been discarded" whenever
@@ -145,14 +147,14 @@ async function validateBalanceAndActivity(
     text: expectedBalance,
   });
 
-  // Ensure there's an activity entry of "Send" and "Confirmed"
+  // Ensure there's an activity entry of "Sent" and "Confirmed"
   if (expectedActivityEntries) {
     await driver.clickElement('[data-testid="account-overview__activity-tab"]');
     assert.equal(
       (
         await driver.findElements({
           css: '[data-testid="activity-list-item-action"]',
-          text: 'Send',
+          text: 'Sent',
         })
       ).length,
       expectedActivityEntries,
@@ -199,14 +201,17 @@ describe('Request-queue UI changes', function () {
         // Open the second dapp and switch chains
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x53a');
 
-        // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.findElement({
-          css: '[data-testid="sort-by-networks"]',
-          text: 'Localhost 8546',
+
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Custom',
+          tag: 'button',
         });
+        await driver.clickElement('[data-testid="Localhost 8546"]');
+        await driver.clickElement('[data-testid="modal-header-close-button"]');
 
         // Go to the first dapp, ensure it uses localhost
         await selectDappClickSend(driver, DAPP_URL);
@@ -334,6 +339,17 @@ describe('Request-queue UI changes', function () {
 
         if (!IS_FIREFOX) {
           // Start on the last joined network, whose send transaction was just confirmed
+          if (isGlobalNetworkSelectorRemoved) {
+            await driver.clickElement('[data-testid="sort-by-networks"]');
+            await driver.clickElement({
+              text: 'Custom',
+              tag: 'button',
+            });
+            await driver.clickElement('[data-testid="Localhost 7777"]');
+            await driver.clickElement(
+              '[data-testid="modal-header-close-button"]',
+            );
+          }
           await validateBalanceAndActivity(driver, '24.9998');
         }
 
@@ -599,6 +615,12 @@ describe('Request-queue UI changes', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+              '0x539': true,
+            },
+          })
           .build(),
         localNodeOptions: [
           {
@@ -666,7 +688,12 @@ describe('Request-queue UI changes', function () {
         driverOptions: { timeOut: 30000 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
-
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+              '0x539': true,
+            },
+          })
           .build(),
         localNodeOptions: [
           {

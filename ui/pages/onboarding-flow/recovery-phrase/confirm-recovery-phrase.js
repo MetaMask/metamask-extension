@@ -38,7 +38,7 @@ import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
-  ONBOARDING_REVIEW_SRP_ROUTE,
+  ONBOARDING_REVEAL_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
@@ -103,8 +103,8 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
 
   useEffect(() => {
     if (!secretRecoveryPhrase) {
-      history.push(
-        `${ONBOARDING_REVIEW_SRP_ROUTE}${
+      history.replace(
+        `${ONBOARDING_REVEAL_SRP_ROUTE}/${
           nextRouteQueryString ? `?${nextRouteQueryString}` : ''
         }`,
       );
@@ -153,7 +153,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         ? ONBOARDING_COMPLETION_ROUTE
         : ONBOARDING_METAMETRICS;
 
-    history.push(
+    history.replace(
       `${nextRoute}${nextRouteQueryString ? `?${nextRouteQueryString}` : ''}`,
     );
   }, [
@@ -170,6 +170,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
+      height={BlockSize.Full}
       gap={6}
       className="recovery-phrase recovery-phrase__confirm"
       data-testid="confirm-recovery-phrase"

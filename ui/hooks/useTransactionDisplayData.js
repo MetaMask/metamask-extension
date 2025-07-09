@@ -43,6 +43,7 @@ import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenD
 import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
+import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -135,7 +136,7 @@ export function useTransactionDisplayData(transactionGroup) {
 
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
-  const { type, txParamsOriginal } = initialTransaction;
+  const { transferInformation, type, txParamsOriginal } = initialTransaction;
   const { from, to } = initialTransaction.txParams || {};
 
   const isUnifiedSwapTx =
@@ -256,11 +257,19 @@ export function useTransactionDisplayData(transactionGroup) {
         tokenId === transactionDataTokenId,
     );
 
-  const tokenDisplayValue = useTokenDisplayValue(
+  let tokenDisplayValue = useTokenDisplayValue(
     transactionData,
     token,
     isTokenCategory,
   );
+
+  if (transferInformation?.decimals) {
+    tokenDisplayValue = calcTokenAmount(
+      transferInformation.amount,
+      transferInformation.decimals,
+    ).toString(10);
+  }
+
   const tokenFiatAmount = useTokenFiatAmount(
     token?.address,
     tokenDisplayValue,
@@ -308,12 +317,17 @@ export function useTransactionDisplayData(transactionGroup) {
     ]);
     subtitle = origin;
     subtitleContainsOrigin = true;
+    const symbolFromTx =
+      bridgeTokenDisplayData.sourceTokenSymbol ??
+      initialTransaction.sourceTokenSymbol;
     primarySuffix = isViewingReceivedTokenFromSwap
       ? currentAsset.symbol
-      : bridgeTokenDisplayData.sourceTokenSymbol ??
-        initialTransaction.sourceTokenSymbol;
-    primaryDisplayValue =
+      : symbolFromTx;
+    const value =
       bridgeTokenDisplayData.sourceTokenAmountSent ?? swapTokenValue;
+    primaryDisplayValue = value
+      ? formatAmount(locale, new BigNumber(value))
+      : undefined;
     secondaryDisplayValue =
       bridgeTokenDisplayData.displayCurrencyAmount ?? swapTokenFiatAmount;
     if (isNegative) {
@@ -330,7 +344,7 @@ export function useTransactionDisplayData(transactionGroup) {
     recipientAddress = initialTransaction.swapAndSendRecipient;
 
     category = TransactionGroupCategory.swapAndSend;
-    title = t('sendTokenAsToken', [
+    title = t('sentTokenAsToken', [
       initialTransaction.sourceTokenSymbol,
       initialTransaction.destinationTokenSymbol,
     ]);
@@ -405,7 +419,7 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.incoming) {
     category = TransactionGroupCategory.receive;
-    title = t('receive');
+    title = t('received');
     prefix = '';
     subtitle = t('fromAddress', [shortenAddress(senderAddress)]);
   } else if (
@@ -413,7 +427,7 @@ export function useTransactionDisplayData(transactionGroup) {
     type === TransactionType.tokenMethodTransfer
   ) {
     category = TransactionGroupCategory.send;
-    title = t('sendSpecifiedTokens', [
+    title = t('sentSpecifiedTokens', [
       token?.symbol || nft?.name || t('token'),
     ]);
     recipientAddress = getTokenAddressParam(tokenData);
@@ -425,7 +439,7 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TransactionType.simpleSend) {
     category = TransactionGroupCategory.send;
-    title = t('send');
+    title = t('sent');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TransactionType.bridgeApproval) {
     title = t('bridgeApproval');
@@ -435,7 +449,7 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitleContainsOrigin = true;
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
   } else if (type === TransactionType.bridge) {
-    title = destChainName ? t('bridgeToChain', [destChainName]) : t('bridge');
+    title = destChainName ? t('bridgedToChain', [destChainName]) : t('bridged');
     category = bridgeTokenDisplayData.category;
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
     primaryDisplayValue = formatAmount(
@@ -483,6 +497,10 @@ export function useTransactionDisplayData(transactionGroup) {
     },
     transactionGroup?.initialTransaction?.chainId,
   );
+
+  if (!recipientAddress && transferInformation) {
+    recipientAddress = to;
+  }
 
   return {
     title,

@@ -7,6 +7,7 @@ import TokenList from '../../page-objects/pages/token-list';
 import ConfirmAlertModal from '../../page-objects/pages/dialog/confirm-alert';
 import { WALLET_ADDRESS } from '../confirmations/signatures/signature-helpers';
 import { Driver } from '../../webdriver/driver';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 // Network configuration type
 type NetworkConfig = {
@@ -54,6 +55,12 @@ networkConfigs.forEach((config) => {
           fixtures: config
             .fixtureMethod(new FixtureBuilder())
             .withPermissionControllerConnectedToTestDapp()
+            .withEnabledNetworks({
+              eip155: {
+                [CHAIN_IDS.MONAD_TESTNET]: true,
+                [CHAIN_IDS.MEGAETH_TESTNET]: true,
+              },
+            })
             .build(),
           title: this.test?.fullTitle(),
         },

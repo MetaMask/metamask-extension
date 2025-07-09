@@ -302,6 +302,7 @@ describe.skip('Swap', function () {
           await swapPage.dismissManualTokenWarning();
           await driver.delay(1500);
           await swapPage.submitSwap();
+          await swapPage.waitForTransactionToComplete();
 
           await homePage.check_expectedTokenBalanceIsDisplayed(
             testCase.expectedWethBalance,

@@ -908,9 +908,6 @@
   "bridgeTo": {
     "message": "Puentear hacia"
   },
-  "bridgeToChain": {
-    "message": "Puentear hacia $1"
-  },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Si agregó este token manualmente, asegúrese de que conoce los riesgos para sus fondos antes de puentear."
   },
@@ -2222,9 +2219,6 @@
   },
   "floatAmountToken": {
     "message": "La cantidad de tokens debe ser un número entero"
-  },
-  "followUsOnTwitter": {
-    "message": "Síganos en Twitter"
   },
   "forbiddenIpfsGateway": {
     "message": "Puerta de enlace de IPFS prohibida: especifique una puerta de enlace de CID"
@@ -4774,16 +4768,8 @@
   "sendSelectSendAsset": {
     "message": "Seleccione el activo a enviar"
   },
-  "sendSpecifiedTokens": {
-    "message": "Enviar $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Al hacer clic en este botón se iniciará inmediatamente su transacción de canje. Revise los detalles de la transacción antes de continuar."
-  },
-  "sendTokenAsToken": {
-    "message": "Enviar $1 como $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Enviando $1"
