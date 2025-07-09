@@ -546,6 +546,7 @@ export const getValidationErrors = createDeepEqualSelector(
       isTxAlertPresent: Boolean(txAlert),
       isNoQuotesAvailable: Boolean(
         !activeQuote &&
+          isValidQuoteRequest(quoteRequest, true) &&
           quotesLastFetchedMs &&
           !isLoading &&
           quotesRefreshCount > 0,
