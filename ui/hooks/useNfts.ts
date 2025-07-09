@@ -58,7 +58,7 @@ export function useNfts({
     trace({ name: TraceName.LoadCollectibles });
     const nftList =
       isTokenNetworkFilterEqualCurrentNetwork || overridePopularNetworkFilter
-        ? allUserNfts?.[chainId] ?? []
+        ? (allUserNfts?.[chainId] ?? [])
         : allUserNfts;
 
     endTrace({ name: TraceName.LoadCollectibles });
