@@ -31,8 +31,8 @@ class NetworkSwitchAlertModal {
   }
 
   async clickGotItButton(): Promise<void> {
-    console.log('Click got it button');
-    await this.driver.clickElementAndWaitToDisappear(this.gotItButton);
+    console.log('Click got it button and wait for window to close');
+    await this.driver.clickElementAndWaitForWindowToClose(this.gotItButton);
   }
 
   async clickShowPendingConfirmationButton(): Promise<void> {
