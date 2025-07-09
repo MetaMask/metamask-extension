@@ -41,7 +41,6 @@ import {
   getShowTermsOfUse,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import RevealSRPModal from '../../components/app/reveal-SRP-modal';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   MetaMetricsEventCategory,
@@ -218,12 +217,6 @@ export default function OnboardingFlow() {
     return await dispatch(createNewVaultAndRestore(password, srp));
   };
 
-  const showPasswordModalToAllowSRPReveal =
-    pathname === `${ONBOARDING_REVIEW_SRP_ROUTE}/` &&
-    completedOnboarding &&
-    !secretRecoveryPhrase &&
-    isFromReminder;
-
   let isFullPage =
     pathname === ONBOARDING_WELCOME_ROUTE ||
     pathname === ONBOARDING_UNLOCK_ROUTE;
@@ -253,11 +246,6 @@ export default function OnboardingFlow() {
       })}
     >
       {!isPopup && <OnboardingAppHeader pageState={welcomePageState} />}
-      <RevealSRPModal
-        setSecretRecoveryPhrase={setSecretRecoveryPhrase}
-        onClose={() => history.goBack()}
-        isOpen={showPasswordModalToAllowSRPReveal}
-      />
       <Box
         className={classnames('onboarding-flow__container', {
           'onboarding-flow__container--full': isFullPage,
