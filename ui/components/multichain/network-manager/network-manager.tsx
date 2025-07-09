@@ -82,7 +82,6 @@ const NetworkManagerRouter = () => {
           defaultRpcEndpointIndex: networkFormState.rpcUrls.rpcEndpoints.length,
         });
 
-        // TODO: Handle edit case
         if (location.pathname === '/edit-rpc') {
           history.push('/edit');
         } else {
