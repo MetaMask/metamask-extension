@@ -1043,7 +1043,10 @@ export default class MetamaskController extends EventEmitter {
 
     const networkOrderMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkOrderController',
-      allowedEvents: ['NetworkController:stateChange'],
+      allowedEvents: [
+        'NetworkController:stateChange',
+        'NetworkController:networkRemoved',
+      ],
     });
 
     let initialNetworkOrderControllerState;
