@@ -226,6 +226,11 @@ export class NetworkOrderController extends BaseController<
    * @param chainIds - Array of enabled chain IDs
    */
   private _switchToEnabledNetworkIfNeeded(chainIds: string[]) {
+    // Early return if no enabled networks
+    if (chainIds.length === 0) {
+      return;
+    }
+
     const { selectedNetworkClientId, networkConfigurationsByChainId } =
       this.messagingSystem.call('NetworkController:getState');
 
@@ -233,8 +238,8 @@ export class NetworkOrderController extends BaseController<
       networkConfigurationsByChainId,
     ).find(
       (network) =>
-        network.rpcEndpoints[network.defaultRpcEndpointIndex]
-          .networkClientId === selectedNetworkClientId,
+        network.rpcEndpoints?.[network.defaultRpcEndpointIndex]
+          ?.networkClientId === selectedNetworkClientId,
     )?.chainId;
 
     const networkConf = Object.values(networkConfigurationsByChainId).find(
