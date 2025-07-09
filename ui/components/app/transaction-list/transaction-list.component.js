@@ -494,9 +494,9 @@ export default function TransactionList({
     () =>
       groupEvmTransactionsByDate(
         getFilteredTransactionGroupsAllChains(
-          (isGlobalNetworkSelectorRemoved
+          isGlobalNetworkSelectorRemoved
             ? enabledNetworksFilteredCompletedTransactions
-            : unfilteredCompletedTransactions),
+            : unfilteredCompletedTransactions,
           hideTokenTransactions,
           tokenAddress,
         ),
