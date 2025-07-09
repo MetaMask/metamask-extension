@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { InternalAccountWithBalance } from '../../../../selectors';
+import {
+  InternalAccountWithBalance,
+  getPreferences,
+} from '../../../../selectors';
 import { useMultichainAccountTotalFiatBalance } from '../../../../hooks/useMultichainAccountTotalFiatBalance';
 import {
   Display,
@@ -21,7 +24,6 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { getMultichainAggregatedBalance } from '../../../../selectors/assets';
-import { getPreferences } from '../../../../selectors';
 
 type SrpListItemProps = {
   account: InternalAccountWithBalance;
@@ -36,9 +38,9 @@ export const SrpListItem = ({ account }: SrpListItemProps) => {
 
   const balance = useMemo(() => {
     if (showNativeTokenAsMainBalance) {
-      return multichainAggregatedBalance;
+      return totalFiatBalance;
     }
-    return totalFiatBalance;
+    return multichainAggregatedBalance.toString();
   }, [
     showNativeTokenAsMainBalance,
     multichainAggregatedBalance,
