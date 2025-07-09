@@ -54,6 +54,9 @@ class AssetListPage {
 
   private readonly networksToggle = '[data-testid="sort-by-networks"]';
 
+  private readonly popularNetworks =
+    '[data-testid="network-filter-all__button"]';
+
   private readonly priceChart = '[data-testid="asset-price-chart"]';
 
   private readonly sortByAlphabetically =
@@ -329,6 +332,21 @@ class AssetListPage {
         interval: 100,
       },
     );
+  }
+
+  async openNetworksFilterAndClickPopularNetworks(): Promise<void> {
+    console.log(`Opening the network filter and click popular networks`);
+    await this.driver.clickElement(this.networksToggle);
+    await this.driver.waitUntil(
+      async () => {
+        return Boolean(await this.driver.findElement(this.allNetworksOption));
+      },
+      {
+        timeout: 5000,
+        interval: 100,
+      },
+    );
+    await this.driver.clickElement(this.popularNetworks);
   }
 
   /**

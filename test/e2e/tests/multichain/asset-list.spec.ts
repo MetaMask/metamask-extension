@@ -48,8 +48,7 @@ describe('Multichain Asset List', function (this: Suite) {
         await assetListPage.check_tokenItemNumber(4);
         await assetListPage.openNetworksFilter();
         await assetListPage.clickCurrentNetworkOption();
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
+        await assetListPage.openNetworksFilterAndClickPopularNetworks();
         await assetListPage.check_tokenItemNumber(4);
         assert.equal(
           await assetListPage.getNetworksFilterLabel(),
