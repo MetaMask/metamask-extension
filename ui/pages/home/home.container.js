@@ -28,7 +28,6 @@ import {
   getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
   getShowUpdateModal,
-  getIsSocialLoginFlow,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
