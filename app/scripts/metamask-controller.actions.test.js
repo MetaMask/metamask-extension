@@ -599,7 +599,7 @@ describe('MetaMaskController', function () {
           .spyOn(metamaskController.keyringController, 'changePassword')
           .mockResolvedValue();
         jest
-          .spyOn(metamaskController, 'socialSyncKeyringEncryptionKey')
+          .spyOn(metamaskController, 'syncKeyringEncryptionKey')
           .mockResolvedValue();
 
         metamaskController.syncSeedlessGlobalPasswordMutex.acquire.mockResolvedValue(
@@ -635,9 +635,7 @@ describe('MetaMaskController', function () {
         expect(
           metamaskController.keyringController.changePassword,
         ).toHaveBeenCalledWith(password);
-        expect(
-          metamaskController.socialSyncKeyringEncryptionKey,
-        ).toHaveBeenCalled();
+        expect(metamaskController.syncKeyringEncryptionKey).toHaveBeenCalled();
         expect(
           metamaskController.seedlessOnboardingController
             .checkIsPasswordOutdated,
@@ -766,7 +764,7 @@ describe('MetaMaskController', function () {
           .spyOn(metamaskController.keyringController, 'changePassword')
           .mockResolvedValue();
         jest
-          .spyOn(metamaskController, 'socialSyncKeyringEncryptionKey')
+          .spyOn(metamaskController, 'syncKeyringEncryptionKey')
           .mockResolvedValue();
         jest
           .spyOn(
