@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<TransactionDetails /> does not render component for transaction details 1`] = `
+exports[`Transaction Details <TransactionDetails /> does not render component for transaction details 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -9,7 +9,7 @@ exports[`<TransactionDetails /> does not render component for transaction detail
 </div>
 `;
 
-exports[`<TransactionDetails /> renders component for transaction details 1`] = `
+exports[`Transaction Details <TransactionDetails /> renders component for transaction details 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -62,10 +62,10 @@ exports[`<TransactionDetails /> renders component for transaction details 1`] = 
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="transaction-details-recipient-row"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -97,58 +97,21 @@ exports[`<TransactionDetails /> renders component for transaction details 1`] = 
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          class="mm-box mm-box--display-flex"
         >
           <div
-            class=""
+            class="name name__clickable name__missing"
           >
-            <div
-              class="identicon"
-              style="height: 16px; width: 16px; border-radius: 8px;"
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 98);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#018E82"
-                    height="16"
-                    transform="translate(0.09338133124744565 -0.04490608666778058) rotate(456.7 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FB187B"
-                    height="16"
-                    transform="translate(-6.3240369287990985 -1.0053822898747908) rotate(305.5 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#237CE1"
-                    height="16"
-                    transform="translate(4.0809955633515935 -14.427164334848008) rotate(395.8 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+              0x88AA6...A5125
+            </p>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0x88AA6...A5125
-          </p>
         </div>
       </div>
     </div>

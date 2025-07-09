@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
@@ -39,10 +40,12 @@ import { SignatureRequestType } from '../../../types/confirm';
 import { isSignatureTransactionType } from '../../../utils/confirm';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import Identicon from '../../../../../components/ui/identicon';
+import { getHDEntropyIndex } from '../../../../../selectors/selectors';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 const HeaderInfo = () => {
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
 
@@ -60,12 +63,22 @@ const HeaderInfo = () => {
   const eventProps = isSignature
     ? {
         location: MetaMetricsEventLocation.SignatureConfirmation,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         signature_type: (currentConfirmation as SignatureRequestType)?.msgParams
           ?.signatureMethod,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: hdEntropyIndex,
       }
     : {
         location: MetaMetricsEventLocation.Transaction,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         transaction_type: currentConfirmation?.type,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: hdEntropyIndex,
       };
 
   function trackAccountModalOpened() {

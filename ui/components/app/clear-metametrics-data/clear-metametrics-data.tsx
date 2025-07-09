@@ -32,6 +32,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ClearMetaMetricsData() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -117,6 +119,8 @@ export default function ClearMetaMetricsData() {
               size={ButtonSize.Lg}
               width={BlockSize.Half}
               variant={ButtonVariant.Primary}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={deleteMetaMetricsData}
               danger
             >

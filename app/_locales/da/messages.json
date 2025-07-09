@@ -257,20 +257,8 @@
   "gasLimit": {
     "message": "Gas-grænse"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Gasgrænse er den maksimale mængde gasenheder, du er villig til at bruge."
-  },
   "gasLimitTooLow": {
     "message": "Brændstofgrænsen skal være mindst 21000"
-  },
-  "gasPrice": {
-    "message": "Brændstofpris (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Ekstremt Lav Brændstofspris"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Brændstofpris specificerer den mængde Ether, du er villig til at betale for hver brændstofenhed."
   },
   "gasUsed": {
     "message": "Gas brugt"
@@ -309,9 +297,6 @@
   "import": {
     "message": "Importer",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importer konto"
   },
   "importAccountMsg": {
     "message": "Importerede konti vil ikke blive forbundet med din oprindeligt oprettede seed-sætning for din MetaMask-konto. Få mere at vide om importerede konti"
@@ -626,9 +611,6 @@
   "terms": {
     "message": "Brugsbetingelser"
   },
-  "tips": {
-    "message": "Donationer"
-  },
   "to": {
     "message": "Til"
   },
@@ -701,9 +683,6 @@
   "unlock": {
     "message": "Lås op"
   },
-  "unlockMessage": {
-    "message": "Det decentraliserede internet venter"
-  },
   "urlErrorMsg": {
     "message": "Links kræver det rette HTTP/HTTPS-præfix."
   },
@@ -727,8 +706,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Din private seed-sætning"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nul brændstofpris på fremskynding"
   }
 }

@@ -71,6 +71,11 @@ const renderComponent = (tokens = []) => {
     metamask: {
       pendingApprovals: PENDING_APPROVALS,
       tokens,
+      allTokens: {
+        '0x5': {
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [...tokens],
+        },
+      },
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
       internalAccounts: {
@@ -91,7 +96,21 @@ const renderComponent = (tokens = []) => {
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
+      networkConfigurationsByChainId: {
+        '0x5': {
+          nativeCurrency: 'ETH',
+          chainId: '0x5',
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'goerli',
+            },
+          ],
+        },
+      },
+      selectedNetworkClientId: 'goerli',
     },
+
     history: {
       mostRecentOverviewPage: '/',
     },

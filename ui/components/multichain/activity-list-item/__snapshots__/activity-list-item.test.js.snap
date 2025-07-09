@@ -13,12 +13,16 @@ exports[`ActivityListItem should match snapshot with no props 1`] = `
         class="mm-box activity-list-item__content-container mm-box--display-inline-flex mm-box--justify-content-space-between mm-box--width-full"
       >
         <div
-          class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column"
+          class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--min-width-0"
         >
-          <p
-            class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
-            data-testid="activity-list-item-action"
-          />
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+              data-testid="activity-list-item-action"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -48,21 +52,25 @@ exports[`ActivityListItem should match snapshot with props 1`] = `
       >
         <span
           class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
-          style="mask-image: url('./images/icons/custody.svg');"
+          style="mask-image: url('./images/icons/accessibility.svg');"
         />
       </div>
       <div
         class="mm-box activity-list-item__content-container mm-box--display-inline-flex mm-box--justify-content-space-between mm-box--width-full"
       >
         <div
-          class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column"
+          class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--min-width-0"
         >
-          <p
-            class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
-            data-testid="activity-list-item-action"
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
-            Hello World
-          </p>
+            <p
+              class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+              data-testid="activity-list-item-action"
+            >
+              Hello World
+            </p>
+          </div>
           <div
             class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
           >

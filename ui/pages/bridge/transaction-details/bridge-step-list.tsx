@@ -1,13 +1,8 @@
 import React from 'react';
-import { NetworkConfiguration } from '@metamask/network-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import { StatusTypes } from '@metamask/bridge-controller';
 import { Box } from '../../../components/component-library';
-import {
-  BridgeHistoryItem,
-  StatusTypes,
-  Step,
-} from '../../../../shared/types/bridge-status';
 import { formatDate } from '../../../helpers/utils/util';
 import BridgeStepDescription, {
   getStepStatus,
@@ -32,17 +27,19 @@ const getTime = (
 type BridgeStepsProps = {
   bridgeHistoryItem?: BridgeHistoryItem;
   srcChainTxMeta?: TransactionMeta;
-  networkConfigurationsByChainId: Record<Hex, NetworkConfiguration>;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function BridgeStepList({
   bridgeHistoryItem,
   srcChainTxMeta,
-  networkConfigurationsByChainId,
 }: BridgeStepsProps) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const steps = bridgeHistoryItem?.quote.steps || [];
   const stepStatuses = steps.map((step) =>
-    getStepStatus({ bridgeHistoryItem, step: step as Step, srcChainTxMeta }),
+    getStepStatus({ bridgeHistoryItem, step, srcChainTxMeta }),
   );
 
   return (
@@ -72,7 +69,11 @@ export default function BridgeStepList({
           getTime(
             i,
             i === steps.length - 1,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             bridgeHistoryItem?.startTime || srcChainTxMeta?.time,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             bridgeHistoryItem?.estimatedProcessingTimeInSeconds || 0,
           ),
           'hh:mm a',
@@ -87,7 +88,6 @@ export default function BridgeStepList({
           >
             <BridgeStepDescription
               step={step}
-              networkConfigurationsByChainId={networkConfigurationsByChainId}
               stepStatus={displayedStepStatus}
               time={time}
             />

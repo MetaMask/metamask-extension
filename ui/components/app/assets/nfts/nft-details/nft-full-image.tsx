@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
-import { getCurrentNetwork, getIpfsGateway } from '../../../../../selectors';
+import { Nft } from '@metamask/assets-controllers';
+import { toHex } from '@metamask/controller-utils';
+import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import { getIpfsGateway } from '../../../../../selectors';
 
 import {
   Box,
@@ -13,7 +15,7 @@ import {
 import { NftItem } from '../../../../multichain/nft-item';
 import { Content, Header, Page } from '../../../../multichain/pages/page';
 
-import { getNfts } from '../../../../../ducks/metamask/metamask';
+import { getAllNfts } from '../../../../../ducks/metamask/metamask';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import {
   Display,
@@ -23,27 +25,57 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
+import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { isWebUrl } from '../../../../../../app/scripts/lib/util';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import { getImageForChainId } from '../../../../../selectors/multichain';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NftFullImage() {
   const t = useI18nContext();
   const { asset, id } = useParams<{ asset: string; id: string }>();
-  const nfts = useSelector(getNfts);
+  const allNfts = useSelector(getAllNfts);
+  const nfts = Object.values(allNfts).flat() as Nft[];
   const nft = nfts.find(
     ({ address, tokenId }: { address: string; tokenId: string }) =>
       // @ts-expect-error TODO: Fix this type error by handling undefined parameters
       isEqualCaseInsensitive(address, asset) && id === tokenId.toString(),
   );
 
-  const { image, imageOriginal, name, tokenId } = nft;
+  const {
+    image: _image,
+    imageOriginal,
+    tokenURI,
+    name,
+    tokenId,
+    chainId,
+    description,
+  } = nft as Nft;
+  const { image: imageFromTokenURI } = useFetchNftDetailsFromTokenURI(tokenURI);
+  const image = getNftImage(_image);
 
   const ipfsGateway = useSelector(getIpfsGateway);
-  const currentChain = useSelector(getCurrentNetwork);
+  const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
+  const nftChainNetwork = nftNetworkConfigs[toHex(chainId?.toString() ?? '')];
+  const nftChainImage = getImageForChainId(toHex(chainId?.toString() ?? ''));
   const nftImageURL = useGetAssetImageUrl(imageOriginal ?? image, ipfsGateway);
 
-  const nftImageAlt = getNftImageAlt(nft);
+  const nftImageAlt = getNftImageAlt({
+    name,
+    tokenId,
+    description,
+  });
   const nftSrcUrl = imageOriginal ?? image;
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
-  const isImageHosted = image?.startsWith('https:');
+
+  const isImageHosted =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    (image && isWebUrl(image)) ||
+    (imageFromTokenURI && isWebUrl(imageFromTokenURI));
   const history = useHistory();
 
   const [visible, setVisible] = useState(false);
@@ -75,18 +107,19 @@ export default function NftFullImage() {
           <Box
             display={Display.Flex}
             justifyContent={JustifyContent.center}
-            paddingTop={4}
+            paddingBottom={12}
           >
             <Box>
               <NftItem
-                src={isImageHosted ? image : nftImageURL}
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                src={isImageHosted ? image || imageFromTokenURI : nftImageURL}
                 alt={nftImageAlt}
-                name={name}
+                name={name ?? ''}
                 tokenId={tokenId}
-                networkName={currentChain.nickname ?? ''}
-                networkSrc={currentChain.rpcPrefs?.imageUrl}
+                networkName={nftChainNetwork?.name ?? ''}
+                networkSrc={nftChainImage}
                 isIpfsURL={isIpfsURL}
-                badgeWrapperClassname="badge-wrapper"
               />
             </Box>
           </Box>

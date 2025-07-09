@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { SECOND } from '../../shared/constants/time';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 
 /**
  * Evaluates whether the transaction is eligible to be sped up, and registers
@@ -11,10 +13,20 @@ import { SECOND } from '../../shared/constants/time';
  */
 export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
   const { transactions, hasRetried } = transactionGroup;
+  const currentChainId = useSelector(getCurrentChainId);
+
   const [earliestTransaction = {}] = transactions;
+
+  const matchCurrentChainId = earliestTransaction.chainId === currentChainId;
+
   const { submittedTime } = earliestTransaction;
   const [speedUpEnabled, setSpeedUpEnabled] = useState(() => {
-    return Date.now() - submittedTime > 5000 && isEarliestNonce && !hasRetried;
+    return (
+      Date.now() - submittedTime > 5000 &&
+      isEarliestNonce &&
+      !hasRetried &&
+      matchCurrentChainId
+    );
   });
   useEffect(() => {
     // because this hook is optimized to only run on changes we have to
@@ -29,10 +41,13 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
       if (Date.now() - submittedTime > SECOND * 5) {
         setSpeedUpEnabled(true);
       } else {
-        timeoutId = setTimeout(() => {
-          setSpeedUpEnabled(true);
-          clearTimeout(timeoutId);
-        }, 5001 - (Date.now() - submittedTime));
+        timeoutId = setTimeout(
+          () => {
+            setSpeedUpEnabled(true);
+            clearTimeout(timeoutId);
+          },
+          5001 - (Date.now() - submittedTime),
+        );
       }
     }
     // Anytime the effect is re-ran, make sure to remove a previously set timeout

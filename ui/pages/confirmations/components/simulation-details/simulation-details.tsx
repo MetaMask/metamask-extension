@@ -1,14 +1,24 @@
 import {
   SimulationError,
   SimulationErrorCode,
+  TransactionContainerType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import React from 'react';
-import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
+import InlineAlert from '../../../../components/app/alert-system/inline-alert';
+import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
+import {
+  ConfirmInfoAlertRow,
+  getAlertTextColors,
+} from '../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
 import {
   Box,
+  ButtonIcon,
+  ButtonIconSize,
   Icon,
   IconName,
   IconSize,
@@ -18,6 +28,7 @@ import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.c
 import Tooltip from '../../../../components/ui/tooltip';
 import {
   AlignItems,
+  BlockSize,
   BorderColor,
   BorderRadius,
   Display,
@@ -27,15 +38,27 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { selectTransactionMetadata } from '../../../../selectors';
+import { SimulationSettingsModal } from '../modals/simulation-settings-modal/simulation-settings-modal';
+import { selectConfirmationAdvancedDetailsOpen } from '../../selectors/preferences';
+import { useIsEnforcedSimulationsSupported } from '../../hooks/transactions/useIsEnforcedSimulationsSupported';
 import { BalanceChangeList } from './balance-change-list';
+import { BalanceChange } from './types';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
+
+export type StaticRow = {
+  label: string;
+  balanceChanges: BalanceChange[];
+};
 
 export type SimulationDetailsProps = {
   enableMetrics?: boolean;
   isTransactionsRedesign?: boolean;
   metricsOnly?: boolean;
+  staticRows?: StaticRow[];
   transaction: TransactionMeta;
 };
 
@@ -100,18 +123,69 @@ const EmptyContent: React.FC = () => {
 
 const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
   const t = useI18nContext();
+  const isEnforcedSimulationsSupported = useIsEnforcedSimulationsSupported();
+
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
+
+  const transactionMetadata = useSelector((state) =>
+    selectTransactionMetadata(state, transactionId),
+  );
+
+  const isEnforced = transactionMetadata?.containerTypes?.includes(
+    TransactionContainerType.EnforcedSimulations,
+  );
+
+  const label = isEnforced
+    ? t('simulationDetailsTitleEnforced')
+    : t('simulationDetailsTitle');
+
+  const tooltip = isEnforced
+    ? t('simulationDetailsTitleTooltipEnforced')
+    : t('simulationDetailsTitleTooltip');
+
+  const [settingsModalVisible, setSettingsModalVisible] =
+    useState<boolean>(false);
+
+  const showSettingsIcon =
+    showAdvancedDetails && isEnforcedSimulationsSupported;
 
   return (
-    <ConfirmInfoAlertRow
-      alertKey={RowAlertKey.Resimulation}
-      label={t('simulationDetailsTitle')}
-      ownerId={transactionId}
-      tooltip={t('simulationDetailsTitleTooltip')}
-      style={{
-        paddingLeft: 0,
-        paddingRight: 0,
-      }}
-    />
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      justifyContent={JustifyContent.spaceBetween}
+      width={BlockSize.Full}
+      alignItems={AlignItems.center}
+    >
+      <ConfirmInfoAlertRow
+        alertKey={RowAlertKey.Resimulation}
+        label={label}
+        ownerId={transactionId}
+        tooltip={tooltip}
+        tooltipIcon={isEnforced && IconName.SecurityTick}
+        tooltipIconColor={isEnforced && IconColor.infoDefault}
+        style={{
+          paddingLeft: 0,
+          paddingRight: 0,
+        }}
+      />
+      {showSettingsIcon && (
+        <ButtonIcon
+          iconName={IconName.Setting}
+          size={ButtonIconSize.Sm}
+          color={IconColor.iconMuted}
+          ariaLabel="simulation-settings"
+          onClick={() => setSettingsModalVisible(true)}
+        />
+      )}
+      {settingsModalVisible && (
+        <SimulationSettingsModal
+          onClose={() => setSettingsModalVisible(false)}
+        />
+      )}
+    </Box>
   );
 };
 
@@ -243,6 +317,49 @@ const SimulationDetailsLayout: React.FC<{
     </Box>
   );
 
+const BalanceChangesAlert = ({ transactionId }: { transactionId: string }) => {
+  const { getFieldAlerts } = useAlerts(transactionId);
+  const fieldAlerts = getFieldAlerts(RowAlertKey.EstimatedChangesStatic);
+  const selectedAlertSeverity = fieldAlerts[0]?.severity;
+  const selectedAlertKey = fieldAlerts[0]?.key;
+
+  const { trackInlineAlertClicked } = useAlertMetrics();
+
+  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
+
+  const handleModalClose = () => {
+    setAlertModalVisible(false);
+  };
+
+  const handleInlineAlertClick = () => {
+    setAlertModalVisible(true);
+    trackInlineAlertClicked(selectedAlertKey);
+  };
+
+  return (
+    <>
+      {fieldAlerts.length > 0 && (
+        <Box marginLeft={1}>
+          <InlineAlert
+            onClick={handleInlineAlertClick}
+            severity={selectedAlertSeverity}
+          />
+        </Box>
+      )}
+      {alertModalVisible && (
+        <MultipleAlertModal
+          alertKey={selectedAlertKey}
+          ownerId={transactionId}
+          onFinalAcknowledgeClick={handleModalClose}
+          onClose={handleModalClose}
+          showCloseIcon={false}
+          skipAlertNavigation={true}
+        />
+      )}
+    </>
+  );
+};
+
 /**
  * Preview of a transaction's effects using simulation data.
  *
@@ -252,17 +369,23 @@ const SimulationDetailsLayout: React.FC<{
  * @param props.isTransactionsRedesign - Whether or not the component is being
  * used inside the transaction redesign flow.
  * @param props.metricsOnly - Whether to only track metrics and not render the UI.
+ * @param props.staticRows - Optional static rows to display.
  */
 export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   transaction,
   enableMetrics = false,
   isTransactionsRedesign = false,
   metricsOnly = false,
+  staticRows = [],
 }: SimulationDetailsProps) => {
   const t = useI18nContext();
   const { chainId, id: transactionId, simulationData } = transaction;
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const loading = !simulationData || balanceChangesResult.pending;
+
+  const hasStaticData =
+    staticRows?.length > 0 &&
+    staticRows.some((row) => row.balanceChanges?.length > 0);
 
   useSimulationMetrics({
     enableMetrics,
@@ -271,6 +394,10 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     simulationData,
     transactionId,
   });
+
+  const { getFieldAlerts } = useAlerts(transactionId);
+  const fieldAlerts = getFieldAlerts(RowAlertKey.EstimatedChangesStatic);
+  const selectedAlertSeverity = fieldAlerts[0]?.severity;
 
   if (metricsOnly) {
     return null;
@@ -292,12 +419,13 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     [
       SimulationErrorCode.ChainNotSupported,
       SimulationErrorCode.Disabled,
-    ].includes(error?.code as SimulationErrorCode)
+    ].includes(error?.code as SimulationErrorCode) &&
+    !hasStaticData
   ) {
     return null;
   }
 
-  if (error) {
+  if (error && !hasStaticData) {
     const inHeaderProp = error.code !== SimulationErrorCode.Reverted && {
       inHeader: <ErrorContent error={error} />,
     };
@@ -316,7 +444,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   }
 
   const balanceChanges = balanceChangesResult.value;
-  const empty = balanceChanges.length === 0;
+  const empty = balanceChanges.length === 0 && !hasStaticData;
   if (empty) {
     return (
       <SimulationDetailsLayout
@@ -329,12 +457,24 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
 
   const outgoing = balanceChanges.filter((bc) => bc.amount.isNegative());
   const incoming = balanceChanges.filter((bc) => !bc.amount.isNegative());
+
   return (
     <SimulationDetailsLayout
       isTransactionsRedesign={isTransactionsRedesign}
       transactionId={transactionId}
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
+        {staticRows.map((staticRow, index) => (
+          <>
+            <BalanceChangeList
+              key={index}
+              heading={staticRow.label}
+              balanceChanges={staticRow.balanceChanges}
+              labelColor={getAlertTextColors(selectedAlertSeverity)}
+            />
+            <BalanceChangesAlert transactionId={transactionId} />
+          </>
+        ))}
         <BalanceChangeList
           heading={t('simulationDetailsOutgoingHeading')}
           balanceChanges={outgoing}

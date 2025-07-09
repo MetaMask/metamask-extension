@@ -1,0 +1,392 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SnapUIAddressInput renders the matched address info in a disabled state 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="mm-box snap-ui-renderer__matched-account-info mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+            style="height: 48px; opacity: 0.5; cursor: not-allowed;"
+          >
+            <div
+              style="display: flex;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"
+              >
+                <svg
+                  height="24"
+                  width="24"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#18CDF2"
+                    height="24"
+                    transform="translate(-0.786295127845455 -2.478213052095374) rotate(328.9 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#035E56"
+                    height="24"
+                    transform="translate(-13.723846281624033 7.94434640381145) rotate(176.2 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F26602"
+                    height="24"
+                    transform="translate(12.500881513667943 -10.653854792247811) rotate(468.9 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+              style="flex: 1; min-width: 0;"
+            >
+              <div
+                class="mm-box mm-box--gap-2 mm-box--flex-direction-column"
+                style="min-width: 0; flex: 1;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
+                >
+                  Test Account
+                </p>
+                <p
+                  class="mm-box mm-text mm-text--body-xs mm-text--ellipsis mm-box--color-text-default"
+                >
+                  0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc
+                </p>
+              </div>
+            </div>
+            <span
+              class="mm-box snap-ui-renderer__matched-account-info__clear-button mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+              style="mask-image: url('./images/icons/close.svg'); cursor: not-allowed; flex-shrink: 0;"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddressInput renders with an invalid CAIP Account ID 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="false"
+              id="input"
+              type="text"
+              value="https://foobar.baz/foobar"
+            />
+            <span
+              class="mm-box snap-ui-renderer__address-input__clear-button mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+              style="mask-image: url('./images/icons/close.svg'); cursor: pointer;"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddressInput will not render avatar when displayAvatar is false 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="false"
+              id="input"
+              type="text"
+              value="0xabcd5d886577d5081b0c52e242ef29e70be3e7bc"
+            />
+            <span
+              class="mm-box snap-ui-renderer__address-input__clear-button mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+              style="mask-image: url('./images/icons/close.svg'); cursor: pointer;"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddressInput will render 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="false"
+              id="input"
+              type="text"
+              value=""
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddressInput will render a matched address name 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="mm-box snap-ui-renderer__matched-account-info mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+            style="height: 48px; opacity: 1; cursor: auto;"
+          >
+            <div
+              style="display: flex;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"
+              >
+                <svg
+                  height="24"
+                  width="24"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#18CDF2"
+                    height="24"
+                    transform="translate(-0.786295127845455 -2.478213052095374) rotate(328.9 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#035E56"
+                    height="24"
+                    transform="translate(-13.723846281624033 7.94434640381145) rotate(176.2 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F26602"
+                    height="24"
+                    transform="translate(12.500881513667943 -10.653854792247811) rotate(468.9 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+              style="flex: 1; min-width: 0;"
+            >
+              <div
+                class="mm-box mm-box--gap-2 mm-box--flex-direction-column"
+                style="min-width: 0; flex: 1;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
+                >
+                  Test Account
+                </p>
+                <p
+                  class="mm-box mm-text mm-text--body-xs mm-text--ellipsis mm-box--color-text-default"
+                >
+                  0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc
+                </p>
+              </div>
+            </div>
+            <span
+              class="mm-box snap-ui-renderer__matched-account-info__clear-button mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+              style="mask-image: url('./images/icons/close.svg'); cursor: pointer; flex-shrink: 0;"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddressInput will render avatar when displayAvatar is true 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+          >
+            <div
+              style="display: flex;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(242, 202, 2);"
+              >
+                <svg
+                  height="24"
+                  width="24"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#03405E"
+                    height="24"
+                    transform="translate(-5.1032274517898335 -4.005457853807921) rotate(369.5 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#FAA200"
+                    height="24"
+                    transform="translate(4.654017159434154 -10.422671895325516) rotate(387.5 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#016F8E"
+                    height="24"
+                    transform="translate(-16.380316861028035 -8.91841489898652) rotate(241.5 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="false"
+              id="input"
+              type="text"
+              value="0xabcd5d886577d5081b0c52e242ef29e70be3e7bc"
+            />
+            <span
+              class="mm-box snap-ui-renderer__address-input__clear-button mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+              style="mask-image: url('./images/icons/close.svg'); cursor: pointer;"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;

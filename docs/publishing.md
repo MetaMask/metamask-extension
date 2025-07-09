@@ -8,7 +8,6 @@ The below diagram outlines our process for design, development, and release. Bui
 
 <img width="664" alt="mm-dev-process" src="https://user-images.githubusercontent.com/1016190/56308059-36906000-60fb-11e9-8e61-6655bca0c54f.png">
 
-
 ## Preparation
 
 We try to ensure certain criteria are met before deploying:
@@ -22,7 +21,7 @@ We try to ensure certain criteria are met before deploying:
 
 Version can be automatically incremented by creating a branch with the name `Version-vX.Y.Z`, where `X`, `Y`, and `Z` are numbers. Branches should be created off of the main branch. [Branches can be created on GitHub.](https://help.github.com/en/articles/creating-and-deleting-branches-within-your-repository)
 
-Once a version branch has been created, a build on CircleCI will create a Pull Request for the release with the app manifest and changelog versions bumped.
+Once a version branch has been created, a build on CI will create a Pull Request for the release with the app manifest and changelog versions bumped.
 
 ## Preparing for Sensitive Changes
 

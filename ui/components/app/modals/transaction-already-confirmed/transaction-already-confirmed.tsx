@@ -24,6 +24,8 @@ import {
 import { I18nContext } from '../../../../contexts/i18n';
 import { MetaMaskReduxState } from '../../../../store/store';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function TransactionAlreadyConfirmed() {
   const {
     hideModal,
@@ -33,7 +35,7 @@ export default function TransactionAlreadyConfirmed() {
   const dispatch = useDispatch();
   const transaction: TransactionMeta = useSelector(
     (state: MetaMaskReduxState) =>
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (getTransaction as any)(state, originalTransactionId),
   );
@@ -42,7 +44,7 @@ export default function TransactionAlreadyConfirmed() {
   const viewTransaction = () => {
     // TODO: Fix getBlockExplorerLink arguments compatible with the actual controller types
     const blockExplorerLink = getBlockExplorerLink(
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transaction as any,
       rpcPrefs,

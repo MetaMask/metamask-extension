@@ -2,9 +2,11 @@ import React from 'react';
 import { act } from '@testing-library/react';
 import * as reactRouterUtils from 'react-router-dom-v5-compat';
 import { zeroAddress } from 'ethereumjs-util';
+import { userEvent } from '@testing-library/user-event';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
-import { createBridgeMockStore } from '../../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createTestProviderTools } from '../../../../test/stub/provider';
 import PrepareBridgePage from './prepare-bridge-page';
@@ -133,7 +135,7 @@ describe('PrepareBridgePage', () => {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
         },
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
         quoteRequest: {
@@ -200,12 +202,73 @@ describe('PrepareBridgePage', () => {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
         },
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET),
       },
     });
 
     expect(() =>
       renderWithProvider(<PrepareBridgePage />, configureStore(mockStore)),
     ).toThrow();
+  });
+
+  it('should validate src amount on change', async () => {
+    jest
+      .spyOn(reactRouterUtils, 'useSearchParams')
+      .mockReturnValue([{ get: () => null }] as never);
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        extensionConfig: {
+          chains: {
+            [CHAIN_IDS.MAINNET]: {
+              isActiveSrc: true,
+              isActiveDest: false,
+            },
+          },
+        },
+      },
+    });
+    const { getByTestId } = renderWithProvider(
+      <PrepareBridgePage />,
+      configureStore(mockStore),
+    );
+
+    expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();
+
+    act(() => {
+      fireEvent.change(getByTestId('from-amount'), {
+        target: { value: '2abc.123456123456123456' },
+      });
+    });
+    expect(getByTestId('from-amount').closest('input')).toHaveValue(
+      '2.123456123456123456',
+    );
+
+    act(() => {
+      fireEvent.change(getByTestId('from-amount'), {
+        target: { value: '2abc,131.1212' },
+      });
+    });
+    expect(getByTestId('from-amount').closest('input')).toHaveValue(
+      '2131.1212',
+    );
+
+    act(() => {
+      fireEvent.change(getByTestId('from-amount'), {
+        target: { value: '2abc,131.123456123456123456123456' },
+      });
+    });
+    expect(getByTestId('from-amount').closest('input')).toHaveValue(
+      '2131.123456123456123456123456',
+    );
+
+    act(() => {
+      fireEvent.change(getByTestId('from-amount'), {
+        target: { value: '2abc.131.123456123456123456123456' },
+      });
+    });
+    expect(getByTestId('from-amount').closest('input')).toHaveValue('2.131');
+
+    userEvent.paste('2abc.131.123456123456123456123456');
+    expect(getByTestId('from-amount').closest('input')).toHaveValue('2.131');
   });
 });

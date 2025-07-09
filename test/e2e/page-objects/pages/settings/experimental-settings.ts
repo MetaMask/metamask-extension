@@ -1,5 +1,4 @@
 import { Driver } from '../../../webdriver/driver';
-import messages from '../../../../../app/_locales/en/messages.json';
 
 class ExperimentalSettings {
   private readonly driver: Driver;
@@ -7,9 +6,6 @@ class ExperimentalSettings {
   // Locators
   private readonly addAccountSnapToggle =
     '[data-testid="add-account-snap-toggle-div"]';
-
-  private readonly addBitcoinAccountToggle =
-    '[data-testid="bitcoin-support-toggle-div"]';
 
   private readonly experimentalPageTitle = {
     text: 'Experimental',
@@ -26,6 +22,8 @@ class ExperimentalSettings {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.experimentalPageTitle);
@@ -46,15 +44,6 @@ class ExperimentalSettings {
       this.watchAccountToggleState,
     );
     return toggleInput.isSelected();
-  }
-
-  async toggleBitcoinAccount(): Promise<void> {
-    console.log('Toggle Add new Bitcoin account on experimental setting page');
-    await this.driver.waitForSelector({
-      text: messages.bitcoinSupportToggleTitle.message,
-      tag: 'span',
-    });
-    await this.driver.clickElement(this.addBitcoinAccountToggle);
   }
 
   async toggleAddAccountSnap(): Promise<void> {

@@ -254,20 +254,8 @@
   "gasLimit": {
     "message": "গ্যাসের সীমা"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "গ্যাসের সীমা হল আপনি যে পরিমাণ গ্যাস খরচ করতে চান তার সর্বোচ্চ ইউনিটের পরিমাণ।"
-  },
   "gasLimitTooLow": {
     "message": "গ্যাসের সীমা অবশ্যই অন্তত 21000 এ থাকতে হবে"
-  },
-  "gasPrice": {
-    "message": "গ্যাসের মূল্য (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "গ্যাসের মূল্য অত্যন্ত কম"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "গ্যাসের মূল্য আপনি প্রতি একক গ্যাসের জন্য যে পরিমাণ ইথার প্রদান করতে চান সেটি নির্দেশ করে।"
   },
   "gasUsed": {
     "message": "গ্যাস ব্যবহার করা হয়েছে"
@@ -309,9 +297,6 @@
   "import": {
     "message": "আমদানি",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "অ্যাকাউন্ট আমদানি করুন"
   },
   "importAccountMsg": {
     "message": "আমদানি করা অ্যাকাউন্টগুলি আপনার গোড়ায় তৈরি করা MetaMask অ্যাকাউন্ট সীডফ্রেজের সাথে সংযুক্ত হবে না। আমদানি করা অ্যাকাউন্টগুলি সম্পর্কে আরও জানুন "
@@ -641,9 +626,6 @@
   "terms": {
     "message": "ব্যবহারের শর্তাবলী"
   },
-  "tips": {
-    "message": "অর্থসাহায্য এবং পরামর্শ"
-  },
   "to": {
     "message": "প্রতি"
   },
@@ -722,9 +704,6 @@
   "unlock": {
     "message": "আনলক"
   },
-  "unlockMessage": {
-    "message": "ছড়িয়ে ছিটিয়ে থাকা ওয়েব অপেক্ষা করছে"
-  },
   "urlErrorMsg": {
     "message": "URI গুলির যথাযথ HTTP/HTTPS প্রেফিক্সের প্রয়োজন।"
   },
@@ -748,8 +727,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "আপনার ব্যক্তিগত সীড ফ্রেজ"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "স্পীড আপ এ শূণ্য গ্যাসের মূল্য"
   }
 }

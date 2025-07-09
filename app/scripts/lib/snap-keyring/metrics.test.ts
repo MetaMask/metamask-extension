@@ -4,7 +4,8 @@ describe('getSnapAndHardwareInfoForMetrics', () => {
   let getAccountType: jest.Mock;
   let getDeviceModel: jest.Mock;
   let getHardwareTypeForMetric: jest.Mock;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let messenger: any;
 
@@ -72,10 +73,20 @@ describe('getSnapAndHardwareInfoForMetrics', () => {
       'AccountsController:getSelectedAccount',
     );
     expect(result).toEqual({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       account_type: 'accountType',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       device_model: 'deviceModel',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       account_hardware_type: 'hardwareType',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       account_snap_type: undefined,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       account_snap_version: undefined,
     });
   });
@@ -131,10 +142,20 @@ describe('getSnapAndHardwareInfoForMetrics', () => {
       'snapId',
     );
     expect(result).toEqual({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       account_type: 'accountType',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       device_model: 'deviceModel',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       account_hardware_type: 'hardwareType',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       account_snap_type: 'snapId',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       account_snap_version: 'snapVersion',
     });
   });

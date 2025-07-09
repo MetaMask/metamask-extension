@@ -1,4 +1,7 @@
-import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import {
+  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerGetStateAction,
+} from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/base-controller';
 import {
@@ -8,6 +11,8 @@ import {
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
 import {
+  TransactionControllerEstimateGasAction,
+  TransactionControllerGetStateAction,
   TransactionControllerMessenger,
   TransactionControllerPostTransactionBalanceUpdatedEvent,
   TransactionControllerTransactionApprovedEvent,
@@ -21,19 +26,40 @@ import {
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
 import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import {
+  KeyringControllerSignEip7702AuthorizationAction,
+  KeyringControllerSignTypedMessageAction,
+} from '@metamask/keyring-controller';
+import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
 } from '../../controllers/swaps/swaps.types';
+import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
+import {
+  InstitutionalSnapControllerPublishHookAction,
+  InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
+} from './accounts/institutional-snap-controller-messenger';
 
 type MessengerActions =
   | ApprovalControllerActions
   | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerGetStateAction
+  | AppStateControllerGetStateAction
+  | DelegationControllerSignDelegationAction
+  | InstitutionalSnapControllerPublishHookAction
+  | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
+  | KeyringControllerSignEip7702AuthorizationAction
+  | KeyringControllerSignTypedMessageAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetEIP1559CompatibilityAction
   | NetworkControllerGetNetworkClientByIdAction
+  | RemoteFeatureFlagControllerGetStateAction
   | SwapsControllerSetApproveTxIdAction
-  | SwapsControllerSetTradeTxIdAction;
+  | SwapsControllerSetTradeTxIdAction
+  | TransactionControllerEstimateGasAction
+  | TransactionControllerGetStateAction;
 
 type MessengerEvents =
   | TransactionControllerTransactionApprovedEvent
@@ -60,9 +86,12 @@ export function getTransactionControllerMessenger(
     name: 'TransactionController',
     allowedActions: [
       'AccountsController:getSelectedAccount',
+      'AccountsController:getState',
       `ApprovalController:addRequest`,
+      'KeyringController:signEip7702Authorization',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
+      'RemoteFeatureFlagController:getState',
     ],
     allowedEvents: [`NetworkController:stateChange`],
   });
@@ -87,13 +116,23 @@ export function getTransactionControllerInitMessenger(
       'SmartTransactionsController:smartTransaction',
     ],
     allowedActions: [
+      'ApprovalController:acceptRequest',
       'ApprovalController:addRequest',
       'ApprovalController:endFlow',
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
+      'AppStateController:getState',
+      'DelegationController:signDelegation',
+      'InstitutionalSnapController:beforeCheckPendingTransactionHook',
+      'InstitutionalSnapController:publishHook',
+      'KeyringController:signEip7702Authorization',
+      'KeyringController:signTypedMessage',
       'NetworkController:getEIP1559Compatibility',
+      'RemoteFeatureFlagController:getState',
       'SwapsController:setApproveTxId',
       'SwapsController:setTradeTxId',
+      'TransactionController:estimateGas',
+      'TransactionController:getState',
     ],
   });
 }

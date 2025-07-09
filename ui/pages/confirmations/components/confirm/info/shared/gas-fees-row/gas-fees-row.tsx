@@ -62,13 +62,13 @@ export const GasFeesRow = ({
           {nativeFee}
         </Text>
         {(!isTestnet || showFiatInTestnets) &&
-        fiatFeeWith18SignificantDigits ? (
-          <Tooltip title={fiatFeeWith18SignificantDigits}>
+          (fiatFeeWith18SignificantDigits ? (
+            <Tooltip title={fiatFeeWith18SignificantDigits}>
+              <Text color={TextColor.textAlternative}>{fiatFee}</Text>
+            </Tooltip>
+          ) : (
             <Text color={TextColor.textAlternative}>{fiatFee}</Text>
-          </Tooltip>
-        ) : (
-          <Text color={TextColor.textAlternative}>{fiatFee}</Text>
-        )}
+          ))}
       </Box>
     </ConfirmInfoRow>
   );

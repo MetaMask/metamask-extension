@@ -30,7 +30,6 @@ import {
   getPreferences,
   selectConversionRateByChainId,
 } from '../../../../../../../selectors';
-import { getMultichainNetwork } from '../../../../../../../selectors/multichain';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
@@ -57,11 +56,13 @@ const NativeSendHeading = () => {
       .times(nativeAssetTransferValue, 10)
       .toNumber();
   const fiatFormatter = useFiatFormatter();
-  const fiatDisplayValue =
-    fiatValue && fiatFormatter(fiatValue, { shorten: true });
-
-  const multichainNetwork = useSelector(getMultichainNetwork);
-  const ticker = multichainNetwork?.network?.ticker;
+  const isNonZeroSmallValue =
+    fiatValue &&
+    new BigNumber(String(fiatValue)).lt(new BigNumber(0.01)) &&
+    new BigNumber(String(fiatValue)).greaterThan(new BigNumber(0));
+  const fiatDisplayValue = isNonZeroSmallValue
+    ? `< ${fiatFormatter(0.01, { shorten: true })}`
+    : fiatValue && fiatFormatter(fiatValue, { shorten: true });
 
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
@@ -101,7 +102,7 @@ const NativeSendHeading = () => {
         color={TextColor.inherit}
         marginTop={3}
       >
-        {`${roundedTransferValue} ${ticker}`}
+        {`${roundedTransferValue} ${nativeCurrency}`}
       </Text>
     ) : (
       <Tooltip title={transferValue} position="right">
@@ -110,7 +111,7 @@ const NativeSendHeading = () => {
           color={TextColor.inherit}
           marginTop={3}
         >
-          {`${roundedTransferValue} ${ticker}`}
+          {`${roundedTransferValue} ${nativeCurrency}`}
         </Text>
       </Tooltip>
     );

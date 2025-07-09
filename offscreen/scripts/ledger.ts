@@ -49,7 +49,8 @@ function setupMessageListeners(iframe: HTMLIFrameElement) {
       msg: {
         target: string;
         action: LedgerAction;
-        // TODO: Replace `any` with type
+
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         params: any;
       },
@@ -96,7 +97,7 @@ function setupMessageListeners(iframe: HTMLIFrameElement) {
 export default async function init() {
   return new Promise<void>((resolve) => {
     const iframe = document.createElement('iframe');
-    iframe.src = 'https://metamask.github.io/ledger-iframe-bridge/8.0.3/';
+    iframe.src = 'https://metamask.github.io/ledger-iframe-bridge/9.0.1/';
     iframe.allow = 'hid';
     iframe.onload = () => {
       setupMessageListeners(iframe);

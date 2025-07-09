@@ -13,6 +13,7 @@ import {
   IconName,
 } from '../../../components/component-library';
 import { Color } from '../../../helpers/constants/design-system';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
 
 const AssetOptions = ({
   onRemove,
@@ -26,6 +27,7 @@ const AssetOptions = ({
   const history = useHistory();
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
   const ref = useRef(false);
+  const isEvm = useSelector(getMultichainIsEvm);
 
   const routeToAddBlockExplorerUrl = () => {
     history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
@@ -35,6 +37,8 @@ const AssetOptions = ({
     setAssetOptionsOpen(false);
     onClickBlockExplorer();
   };
+
+  const shouldShowHideTokenButton = isEvm && !isNativeAsset;
 
   return (
     <div ref={ref}>
@@ -68,7 +72,7 @@ const AssetOptions = ({
                 : [t('blockExplorerAssetAction')],
             )}
           </MenuItem>
-          {isNativeAsset ? null : (
+          {shouldShowHideTokenButton && (
             <MenuItem
               iconName={IconName.Trash}
               data-testid="asset-options__hide"

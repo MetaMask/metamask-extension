@@ -80,8 +80,8 @@ export default class DomainInput extends Component {
     } = this.props;
     const input = value.trim();
 
-    onChange(input);
     if (internalSearch) {
+      onChange(input);
       return null;
     }
 
@@ -92,9 +92,14 @@ export default class DomainInput extends Component {
         !isBurnAddress(input) &&
         isValidHexAddress(input, { mixedCaseUseChecksum: true })
       ) {
-        onValidAddressTyped(addHexPrefix(input));
+        const hexInput = addHexPrefix(input);
+        onChange(hexInput);
+        onValidAddressTyped(hexInput);
+      } else {
+        onChange(input);
       }
     } else {
+      onChange(input);
       lookupDomainName(input);
     }
 

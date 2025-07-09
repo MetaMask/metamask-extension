@@ -20,6 +20,7 @@
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
+        "default": "Alt+Shift+M",
         "windows": "Alt+Shift+M",
         "mac": "Alt+Shift+M",
         "chromeos": "Alt+Shift+M",
@@ -57,6 +58,7 @@
   },
   "manifest_version": 2,
   "name": "__MSG_appName__",
+  "optional_permissions": ["clipboardRead"],
   "permissions": [
     "storage",
     "unlimitedStorage",
@@ -69,7 +71,8 @@
     "webRequest",
     "webRequestBlocking",
     "*://*.eth/",
-    "notifications"
+    "notifications",
+    "identity"
   ],
   "short_name": "__MSG_appName__"
 }

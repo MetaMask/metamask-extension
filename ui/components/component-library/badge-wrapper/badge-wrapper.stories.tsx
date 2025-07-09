@@ -11,18 +11,6 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box/box';
-
-import {
-  AvatarAccount,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  Icon,
-  IconName,
-  IconSize,
-  Tag,
-} from '..';
 import {
   BadgeWrapperAnchorElementShape,
   BadgeWrapperPosition,
@@ -31,6 +19,13 @@ import {
 import README from './README.mdx';
 
 import { BadgeWrapper } from './badge-wrapper';
+import { AvatarNetwork, AvatarNetworkSize } from '../avatar-network';
+import { AvatarAccount } from '../avatar-account';
+import { AvatarToken } from '../avatar-token';
+
+import Box from '../../ui/box/box';
+import { Icon, IconName, IconSize } from '../icon';
+import { Tag } from '../tag';
 
 export default {
   title: 'Components/ComponentLibrary/BadgeWrapper',

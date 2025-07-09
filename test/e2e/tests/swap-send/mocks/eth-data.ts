@@ -22,9 +22,7 @@ export const SWAP_SEND_QUOTES_RESPONSE_ETH_TST = [
       gasMultiplier: 1,
     },
     fee: 0.875,
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    approvalNeeded: null as any,
+    approvalNeeded: null,
     priceSlippage: {
       bucket: null,
       calculationError: null,
@@ -60,9 +58,7 @@ export const SWAP_SEND_QUOTES_RESPONSE_ETH_TST = [
       gasMultiplier: 1,
     },
     fee: 0.875,
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    approvalNeeded: null as any,
+    approvalNeeded: null,
     priceSlippage: {
       bucket: null,
       calculationError: null,

@@ -38,7 +38,9 @@ import {
   ControllerStateChangeEvent,
   RestrictedMessenger,
 } from '@metamask/base-controller';
+import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import { AddressBookControllerState } from '@metamask/address-book-controller';
+import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -72,6 +74,7 @@ import Analytics from '../lib/segment/analytics';
 import { ENVIRONMENT } from '../../../development/build/constants';
 ///: END:ONLY_INCLUDE_IF
 
+import { KeyringType } from '../../../shared/constants/keyring';
 import type {
   PreferencesControllerState,
   PreferencesControllerGetStateAction,
@@ -154,6 +157,8 @@ export type MetaMaskState = {
   theme: string;
   participateInMetaMetrics: boolean;
   dataCollectionForMarketing: boolean;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ShowNativeTokenAsMainBalance: boolean;
   useNftDetection: PreferencesControllerState['useNftDetection'];
   openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
@@ -161,6 +166,8 @@ export type MetaMaskState = {
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
   tokenSortConfig: PreferencesControllerState['preferences']['tokenSortConfig'];
   names: NameControllerState['names'];
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   security_providers: string[];
   addressBook: AddressBookControllerState['addressBook'];
   currentCurrency: string;
@@ -168,13 +175,9 @@ export type MetaMaskState = {
     privacyMode: PreferencesControllerState['preferences']['privacyMode'];
     tokenNetworkFilter: string[];
   };
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  custodyAccountDetails: {
-    [address: string]: {
-      custodianName: string;
-    };
-  };
-  ///: END:ONLY_INCLUDE_IF
+  srpSessionData: AuthenticationControllerState['srpSessionData'];
+  keyrings: { type: string; accounts: string[] }[];
+  multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
 };
 
 /**
@@ -209,10 +212,6 @@ const controllerMetadata = {
     persist: true,
     anonymous: false,
   },
-  previousUserTraits: {
-    persist: true,
-    anonymous: false,
-  },
   dataCollectionForMarketing: {
     persist: true,
     anonymous: false,
@@ -237,7 +236,6 @@ const controllerMetadata = {
  * @property fragments - Object keyed by UUID with stored fragments as values.
  * @property eventsBeforeMetricsOptIn - Array of queued events added before a user opts into metrics.
  * @property traits - Traits that are not derived from other state keys.
- * @property previousUserTraits - The user traits the last time they were computed.
  * @property dataCollectionForMarketing - Flag to determine if data collection for marketing is enabled.
  * @property marketingCampaignCookieId - The marketing campaign cookie id.
  * @property segmentApiCalls - Object keyed by messageId with segment event type and payload as values.
@@ -249,7 +247,6 @@ export type MetaMetricsControllerState = {
   fragments: Record<string, MetaMetricsEventFragment>;
   eventsBeforeMetricsOptIn: MetaMetricsEventPayload[];
   traits: MetaMetricsUserTraits;
-  previousUserTraits?: MetaMetricsUserTraits;
   dataCollectionForMarketing: boolean | null;
   marketingCampaignCookieId: string | null;
   segmentApiCalls: Record<
@@ -336,7 +333,6 @@ export const getDefaultMetaMetricsControllerState =
     latestNonAnonymousEventTimestamp: 0,
     eventsBeforeMetricsOptIn: [],
     traits: {},
-    previousUserTraits: {},
     fragments: {},
     segmentApiCalls: {},
   });
@@ -352,15 +348,13 @@ export default class MetaMetricsController extends BaseController<
 
   locale: string;
 
+  previousUserTraits?: MetaMetricsUserTraits;
+
   version: MetaMetricsControllerOptions['version'];
 
   #extension: MetaMetricsControllerOptions['extension'];
 
   #environment: MetaMetricsControllerOptions['environment'];
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  #selectedAddress: PreferencesControllerState['selectedAddress'];
-  ///: END:ONLY_INCLUDE_IF
 
   #segment: MetaMetricsControllerOptions['segment'];
 
@@ -412,10 +406,6 @@ export default class MetaMetricsController extends BaseController<
     this.#extension = extension;
     this.#environment = environment;
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.#selectedAddress = preferencesControllerState.selectedAddress;
-    ///: END:ONLY_INCLUDE_IF
-
     const abandonedFragments = omitBy(state.fragments, 'persist');
 
     this.messagingSystem.subscribe(
@@ -445,6 +435,8 @@ export default class MetaMetricsController extends BaseController<
 
     // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
     if (isManifestV3) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       Object.values(state.segmentApiCalls || {}).forEach(
         ({ eventType, payload }) => {
           try {
@@ -498,6 +490,8 @@ export default class MetaMetricsController extends BaseController<
    */
   #getCurrentChainId(networkClientId?: NetworkClientId): Hex {
     const selectedNetworkClientId =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       networkClientId ||
       this.messagingSystem.call('NetworkController:getState')
         .selectedNetworkClientId;
@@ -541,15 +535,17 @@ export default class MetaMetricsController extends BaseController<
   createEventFragment(
     options: Omit<MetaMetricsEventFragment, 'id'>,
   ): MetaMetricsEventFragment {
-    if (!options.successEvent || !options.category) {
+    if (!options.successEvent) {
       throw new Error(
-        `Must specify success event and category. Success event was: ${
+        `Must specify success event. Success event was: ${
           options.event
-        }. Category was: ${options.category}. Payload keys were: ${Object.keys(
-          options,
-        )}. ${
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        }. Payload keys were: ${Object.keys(options)}. ${
           typeof options.properties === 'object'
-            ? `Payload property keys were: ${Object.keys(options.properties)}`
+            ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `Payload property keys were: ${Object.keys(options.properties)}`
             : ''
         }`,
       );
@@ -792,6 +788,8 @@ export default class MetaMetricsController extends BaseController<
     // this.extension not currently defined in tests
     if (this.#extension && this.#extension.runtime) {
       this.#extension.runtime.setUninstallURL(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `${EXTENSION_UNINSTALL_URL}?${queryString}`,
       );
     }
@@ -893,7 +891,11 @@ export default class MetaMetricsController extends BaseController<
         properties: {
           params,
           locale: this.locale,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: this.chainId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: environmentType,
         },
         context: this.#buildContext(referrer, page),
@@ -989,15 +991,17 @@ export default class MetaMetricsController extends BaseController<
    */
   #validatePayload(payload: MetaMetricsEventPayload): void {
     // event and category are required fields for all payloads
-    if (!payload.event || !payload.category) {
+    if (!payload.event) {
       throw new Error(
-        `Must specify event and category. Event was: ${
+        `Must specify event. Event was: ${
           payload.event
-        }. Category was: ${payload.category}. Payload keys were: ${Object.keys(
-          payload,
-        )}. ${
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        }. Payload keys were: ${Object.keys(payload)}. ${
           typeof payload.properties === 'object'
-            ? `Payload property keys were: ${Object.keys(payload.properties)}`
+            ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `Payload property keys were: ${Object.keys(payload.properties)}`
             : ''
         }`,
       );
@@ -1067,23 +1071,10 @@ export default class MetaMetricsController extends BaseController<
     referrer: MetaMetricsContext['referrer'],
     page: MetaMetricsContext['page'] = METAMETRICS_BACKGROUND_PAGE_OBJECT,
   ): MetaMetricsContext {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const mmiProps: {
-      extensionId?: string;
-    } = {};
-
-    if (this.#extension?.runtime?.id) {
-      mmiProps.extensionId = this.#extension.runtime.id;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     return {
       app: {
         name: 'MetaMask Extension',
         version: this.version,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        ...mmiProps,
-        ///: END:ONLY_INCLUDE_IF
       },
       userAgent: window.navigator.userAgent,
       page,
@@ -1115,20 +1106,22 @@ export default class MetaMetricsController extends BaseController<
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
     } = rawPayload;
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const mmiProps: {
-      extensionId?: string;
-      accountAddress?: string;
-    } = {};
-
-    if (this.#extension?.runtime?.id) {
-      mmiProps.extensionId = this.#extension.runtime.id;
+    let chainId;
+    if (
+      properties &&
+      'chain_id_caip' in properties &&
+      typeof properties.chain_id_caip === 'string'
+    ) {
+      chainId = null;
+    } else if (
+      properties &&
+      'chain_id' in properties &&
+      typeof properties.chain_id === 'string'
+    ) {
+      chainId = properties.chain_id;
+    } else {
+      chainId = this.chainId;
     }
-
-    if (this.#selectedAddress) {
-      mmiProps.accountAddress = this.#selectedAddress;
-    }
-    ///: END:ONLY_INCLUDE_IF
 
     return {
       event,
@@ -1146,16 +1139,12 @@ export default class MetaMetricsController extends BaseController<
         currency,
         category,
         locale: this.locale,
-        chain_id:
-          properties &&
-          'chain_id' in properties &&
-          typeof properties.chain_id === 'string'
-            ? properties.chain_id
-            : this.chainId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: chainId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: environmentType,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        ...mmiProps,
-        ///: END:ONLY_INCLUDE_IF
       },
       context: this.#buildContext(referrer, page),
     };
@@ -1171,20 +1160,15 @@ export default class MetaMetricsController extends BaseController<
   _buildUserTraitsObject(
     metamaskState: MetaMaskState,
   ): Partial<MetaMetricsUserTraits> | null {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const mmiAccountAddress =
-      metamaskState.custodyAccountDetails &&
-      Object.keys(metamaskState.custodyAccountDetails).length
-        ? Object.keys(metamaskState.custodyAccountDetails)[0]
-        : null;
-    ///: END:ONLY_INCLUDE_IF
-    const { traits, previousUserTraits } = this.state;
+    const { traits } = this.state;
 
     const currentTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
         Object.values(metamaskState.addressBook).map(size),
       ),
       [MetaMetricsUserTrait.InstallDateExt]:
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         traits[MetaMetricsUserTrait.InstallDateExt] || '',
       [MetaMetricsUserTrait.LedgerConnectionType]:
         metamaskState.ledgerTransportType,
@@ -1196,6 +1180,13 @@ export default class MetaMetricsController extends BaseController<
       )
         .filter(({ nativeCurrency }) => !nativeCurrency)
         .map(({ chainId }) => chainId),
+      // caip-2 formatted
+      [MetaMetricsUserTrait.ChainIdList]: [
+        ...Object.keys(metamaskState.networkConfigurationsByChainId).map(
+          (hexChainId) => `eip155:${parseInt(hexChainId, 16)}`,
+        ),
+        ...Object.keys(metamaskState.multichainNetworkConfigurationsByChainId), // the state here is already caip-2 formatted
+      ],
       [MetaMetricsUserTrait.NftAutodetectionEnabled]:
         metamaskState.useNftDetection,
       [MetaMetricsUserTrait.NumberOfAccounts]: Object.values(
@@ -1209,6 +1200,9 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
         metamaskState.allTokens,
       ),
+      [MetaMetricsUserTrait.NumberOfHDEntropies]:
+        this.#getNumberOfHDEntropies(metamaskState) ??
+        this.previousUserTraits?.number_of_hd_entropies,
       [MetaMetricsUserTrait.OpenSeaApiEnabled]: metamaskState.openSeaEnabled,
       [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
@@ -1217,11 +1211,6 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]:
         metamaskState.ShowNativeTokenAsMainBalance,
       [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      [MetaMetricsUserTrait.MmiExtensionId]: this.#extension?.runtime?.id,
-      [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress ?? null,
-      [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
-      ///: END:ONLY_INCLUDE_IF
       [MetaMetricsUserTrait.SecurityProviders]:
         metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
       [MetaMetricsUserTrait.PetnameAddressCount]:
@@ -1237,24 +1226,30 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
         metamaskState.preferences.tokenNetworkFilter || {},
       ),
+      [MetaMetricsUserTrait.ProfileId]: Object.entries(
+        metamaskState.srpSessionData || {},
+      )?.[0]?.[1]?.profile?.profileId,
     };
 
-    if (!previousUserTraits) {
-      this.update((state) => {
-        state.previousUserTraits = currentTraits;
-      });
+    if (!this.previousUserTraits && metamaskState.participateInMetaMetrics) {
+      this.previousUserTraits = currentTraits;
       return currentTraits;
     }
 
-    if (previousUserTraits && !isEqual(previousUserTraits, currentTraits)) {
+    if (
+      this.previousUserTraits &&
+      !isEqual(this.previousUserTraits, currentTraits)
+    ) {
       const updates = pickBy(currentTraits, (v, k) => {
-        // @ts-expect-error It's okay that `k` may not be a key of `previousUserTraits`, because we assume `isEqual` can handle it
-        const previous = previousUserTraits[k];
+        // @ts-expect-error It's okay that `k` may not be a key of `this.previousUserTraits`, because we assume `isEqual` can handle it
+        const previous = this.previousUserTraits[k];
         return !isEqual(previous, v);
       });
-      this.update((state) => {
-        state.previousUserTraits = currentTraits;
-      });
+
+      if (metamaskState.participateInMetaMetrics) {
+        this.previousUserTraits = currentTraits;
+      }
+
       return updates;
     }
 
@@ -1329,6 +1324,19 @@ export default class MetaMetricsController extends BaseController<
     return Object.values(allTokens).reduce((result, accountsByChain) => {
       return result + sum(Object.values(accountsByChain).map(size));
     }, 0);
+  }
+
+  /**
+   * Returns the number of HD Entropies the user has.
+   *
+   * @param metamaskState
+   */
+  #getNumberOfHDEntropies(metamaskState: MetaMaskState): number {
+    return (
+      metamaskState.keyrings?.filter(
+        (keyring) => keyring.type === KeyringType.hdKeyTree,
+      ).length ?? 0
+    );
   }
 
   /**
@@ -1420,6 +1428,8 @@ export default class MetaMetricsController extends BaseController<
       metaMetricsId: metaMetricsIdOverride,
       matomoEvent,
       flushImmediately,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     } = options || {};
     let idType: 'userId' | 'anonymousId' = 'userId';
     let idValue = this.state.metaMetricsId;
@@ -1506,6 +1516,8 @@ export default class MetaMetricsController extends BaseController<
       return;
     }
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const messageId = payload.messageId || generateRandomId();
     let timestamp = new Date();
     if (payload.timestamp) {

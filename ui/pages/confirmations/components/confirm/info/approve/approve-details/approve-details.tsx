@@ -19,6 +19,7 @@ import {
 import { getIsRevokeSetApprovalForAll } from '../../utils';
 import { useIsNFT } from '../hooks/use-is-nft';
 import { useTokenTransactionData } from '../../hooks/useTokenTransactionData';
+import { NetworkRow } from '../../shared/network-row/network-row';
 
 const Spender = ({
   isSetApprovalForAll = false,
@@ -77,6 +78,7 @@ export const ApproveDetails = ({
   return (
     <ConfirmInfoSection data-testid="confirmation__approve-details">
       <Spender isSetApprovalForAll={isSetApprovalForAll} />
+      <NetworkRow isShownWithAlertsOnly />
       <OriginRow />
       <SigningInWithRow />
       {showAdvancedDetails && (

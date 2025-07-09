@@ -13,10 +13,17 @@ export default class MetaFoxLogo extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     src: PropTypes.string,
     ///: END:ONLY_INCLUDE_IF
+    theme: PropTypes.string,
   };
 
   static defaultProps = {
     onClick: undefined,
+    unsetIconHeight: false,
+    isOnboarding: false,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    src: undefined,
+    ///: END:ONLY_INCLUDE_IF
+    theme: undefined,
   };
 
   render() {
@@ -27,13 +34,16 @@ export default class MetaFoxLogo extends PureComponent {
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       src,
       ///: END:ONLY_INCLUDE_IF
+      theme,
     } = this.props;
+
     const iconProps = unsetIconHeight ? {} : { height: 42, width: 42 };
 
     iconProps.src = './images/logo/metamask-fox.svg';
 
     let renderHorizontalLogo = () => (
       <MetaFoxHorizontalLogo
+        theme={theme}
         className={classnames({
           'app-header__metafox-logo--horizontal': !isOnboarding,
           'onboarding-app-header__metafox-logo--horizontal': isOnboarding,

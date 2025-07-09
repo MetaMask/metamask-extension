@@ -1,23 +1,19 @@
 import React from 'react';
 import classnames from 'classnames';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  Icon,
-  IconName,
-  IconSize,
-  TextField,
-  TextFieldType,
-} from '..';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { TextFieldProps } from '../text-field/text-field.types';
+import { TextFieldProps, TextFieldType } from '../text-field/text-field.types';
 import { PolymorphicRef } from '../box';
+import { TextField } from '../text-field';
+import { ButtonIcon, ButtonIconSize } from '../button-icon';
+import { Icon, IconName, IconSize } from '../icon';
 import {
   TextFieldSearchProps,
   TextFieldSearchComponent,
 } from './text-field-search.types';
 
 export const TextFieldSearch: TextFieldSearchComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'input'>(
     {
       className = '',

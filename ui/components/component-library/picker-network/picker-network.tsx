@@ -8,23 +8,19 @@ import {
   BackgroundColor,
   Display,
 } from '../../../helpers/constants/design-system';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  IconName,
-  Icon,
-  IconSize,
-  Text,
-} from '..';
-import { BoxProps, PolymorphicRef } from '../box';
+import { Text } from '../text';
+import { Box, BoxProps, PolymorphicRef } from '../box';
 import { AvatarGroup } from '../../multichain/avatar-group';
+import { AvatarNetwork, AvatarNetworkSize } from '../avatar-network';
+import { Icon, IconName, IconSize } from '../icon';
 import {
   PickerNetworkComponent,
   PickerNetworkProps,
 } from './picker-network.types';
 
 export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'button'>(
     {
       className = '',

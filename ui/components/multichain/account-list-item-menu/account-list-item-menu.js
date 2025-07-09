@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -10,6 +11,7 @@ import {
   getAccountTypeForKeyring,
   getPinnedAccountsList,
   getHiddenAccountsList,
+  getIsMultichainAccountsState1Enabled,
 } from '../../../selectors';
 
 import { MenuItem } from '../../ui/menu';
@@ -33,6 +35,7 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 const METRICS_LOCATION = 'Account Options';
 
@@ -48,11 +51,16 @@ export const AccountListItemMenu = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const dispatch = useDispatch();
 
   const chainId = useSelector(getCurrentChainId);
 
   const deviceName = useSelector(getHardwareWalletType);
+
+  const isMultichainAccountsState1Enabled = useSelector(
+    getIsMultichainAccountsState1Enabled,
+  );
 
   const { keyring } = account.metadata;
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
@@ -128,6 +136,12 @@ export const AccountListItemMenu = ({
   };
 
   const handleHidding = (address) => {
+    // If the account is already hidden, we do not add it again
+    // TODO: The controller should handle this logic
+    if (hiddenAccountList.includes(address)) {
+      return;
+    }
+
     const updatedHiddenAccountList = [...hiddenAccountList, address];
     if (pinnedAccountList.includes(address)) {
       handleUnpinning(address);
@@ -199,7 +213,7 @@ export const AccountListItemMenu = ({
               {isHidden ? t('showAccount') : t('hideAccount')}
             </Text>
           </MenuItem>
-          {isRemovable ? (
+          {isRemovable && !isMultichainAccountsState1Enabled ? (
             <MenuItem
               ref={removeAccountItemRef}
               data-testid="account-list-menu-remove"
@@ -217,6 +231,8 @@ export const AccountListItemMenu = ({
                     account_hardware_type: deviceName,
                     chain_id: chainId,
                     account_type: accountType,
+                    hd_entropy_index: hdEntropyIndex,
+                    caip_chain_id: formatChainIdToCaip(chainId),
                   },
                 });
                 onClose();

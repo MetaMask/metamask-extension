@@ -100,9 +100,6 @@
   "gasLimitTooLow": {
     "message": "२१००० - गैस की सीमा कम से कम 21000 होनी चाहिए"
   },
-  "gasPrice": {
-    "message": "गैस मूल्य (जीडब्ल्यूईआई),(GWEI)"
-  },
   "here": {
     "message": "यहां",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -116,9 +113,6 @@
   "import": {
     "message": "आयात",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "खाता आयात"
   },
   "importAccountMsg": {
     "message": "आयात किए गए खाते आपके मूल रूप से बनाए गए मेटामास्क अकाउंट सीडफ्रेज से संबद्ध नहीं होंगे। आयात किए गए खातों के बारे में और जानें"

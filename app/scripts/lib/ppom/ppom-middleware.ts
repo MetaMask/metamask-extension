@@ -13,9 +13,9 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import { AppStateController } from '../../controllers/app-state-controller';
-import { SECURITY_ALERT_RESPONSE_CHECKING_CHAIN } from '../../../../shared/constants/security-provider';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import { trace, TraceContext, TraceName } from '../../../../shared/lib/trace';
+import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -118,18 +118,18 @@ export function createPPOMMiddleware<
           }),
       );
 
-      const securityAlertResponseCheckingChain: SecurityAlertResponse = {
-        ...SECURITY_ALERT_RESPONSE_CHECKING_CHAIN,
+      const securityAlertResponseLoading: SecurityAlertResponse = {
+        ...LOADING_SECURITY_ALERT_RESPONSE,
         securityAlertId,
       };
 
       if (SIGNING_METHODS.includes(req.method)) {
         appStateController.addSignatureSecurityAlertResponse(
-          securityAlertResponseCheckingChain,
+          securityAlertResponseLoading,
         );
       }
 
-      req.securityAlertResponse = securityAlertResponseCheckingChain;
+      req.securityAlertResponse = securityAlertResponseLoading;
     } catch (error) {
       req.securityAlertResponse = handlePPOMError(
         error,

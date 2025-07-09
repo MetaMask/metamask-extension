@@ -3,8 +3,8 @@ import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
-import { getManifestFlags } from './manifestFlags';
 import { filterEvents } from './sentry-filter-events';
 
 const projectLogger = createProjectLogger('sentry');
@@ -25,7 +25,6 @@ const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
 const RELEASE = process.env.METAMASK_VERSION;
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
-const SENTRY_DSN_MMI = process.env.SENTRY_MMI_DSN;
 /* eslint-enable prefer-destructuring */
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
@@ -126,10 +125,10 @@ function getTracesSampleRate(sentryTarget) {
     return flags.sentry.tracesSampleRate;
   }
 
-  if (flags.circleci) {
+  if (flags.ci) {
     // Report very frequently on main branch, and never on other branches
     // (Unless you use a `flags = {"sentry": {"tracesSampleRate": x.xx}}` override)
-    if (flags.circleci.branch === 'main') {
+    if (flags.ci.branch === 'main') {
       return 0.015;
     }
     return 0;
@@ -139,23 +138,23 @@ function getTracesSampleRate(sentryTarget) {
     return 1.0;
   }
 
-  return 0.01;
+  return 0.0075;
 }
 
 /**
- * Get CircleCI tags passed from the test environment, through manifest.json,
+ * Get CI tags passed from the test environment, through manifest.json,
  * and give them to the Sentry client.
  */
-function setCircleCiTags() {
-  const { circleci } = getManifestFlags();
+function setCITags() {
+  const { ci } = getManifestFlags();
 
-  if (circleci?.enabled) {
-    Sentry.setTag('circleci.enabled', circleci.enabled);
-    Sentry.setTag('circleci.branch', circleci.branch);
-    Sentry.setTag('circleci.buildNum', circleci.buildNum);
-    Sentry.setTag('circleci.job', circleci.job);
-    Sentry.setTag('circleci.nodeIndex', circleci.nodeIndex);
-    Sentry.setTag('circleci.prNumber', circleci.prNumber);
+  if (ci?.enabled) {
+    Sentry.setTag('ci.enabled', ci.enabled);
+    Sentry.setTag('ci.branch', ci.branch);
+    Sentry.setTag('ci.commitHash', ci.commitHash);
+    Sentry.setTag('ci.job', ci.job);
+    Sentry.setTag('ci.matrixIndex', ci.matrixIndex);
+    Sentry.setTag('ci.prNumber', ci.prNumber);
   }
 }
 
@@ -253,10 +252,6 @@ function getSentryTarget() {
     return SENTRY_DSN_DEV;
   }
 
-  if (METAMASK_BUILD_TYPE === 'mmi') {
-    return SENTRY_DSN_MMI;
-  }
-
   if (!SENTRY_DSN) {
     throw new Error(
       `Missing SENTRY_DSN environment variable in production environment`,
@@ -275,10 +270,7 @@ function getSentryTarget() {
 async function getMetaMetricsEnabled() {
   const flags = getManifestFlags();
 
-  if (
-    METAMASK_BUILD_TYPE === 'mmi' ||
-    (flags.circleci && flags.sentry.forceEnable)
-  ) {
+  if (flags.ci && flags.sentry.forceEnable) {
     return true;
   }
 
@@ -333,7 +325,7 @@ function setSentryClient() {
   Sentry.registerSpanErrorInstrumentation();
   Sentry.init(clientOptions);
 
-  setCircleCiTags();
+  setCITags();
 
   addDebugListeners();
 

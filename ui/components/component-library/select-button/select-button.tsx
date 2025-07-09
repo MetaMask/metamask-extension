@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import classnames from 'classnames';
 import { SelectContext } from '../select-wrapper';
-import type { PolymorphicRef } from '../box';
-import { Box, Icon, IconName, IconSize, Label, Text } from '..';
+import { Box, type PolymorphicRef } from '../box';
+import { Text } from '../text';
 import type { TextProps } from '../text';
 import {
   AlignItems,
@@ -16,6 +16,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { Label } from '../label';
+import { Icon, IconName, IconSize } from '../icon';
 import {
   SelectButtonProps,
   SelectButtonComponent,
@@ -33,6 +35,8 @@ const isPlainObject = (obj: unknown) => {
 };
 
 export const SelectButton: SelectButtonComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       className = '',
@@ -70,6 +74,8 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
       uncontrolledValue = '',
       defaultValue = '',
       placeholder = '',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     } = selectContext || {};
 
     const contentToRender =
@@ -136,6 +142,8 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
           className,
         )}
         ref={ref}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         disabled={isDisabled || isDisabledProp || disabled}
         as="button"
         onClick={isWithinSelectWrapper ? toggleUncontrolledOpen : undefined}

@@ -1,9 +1,7 @@
-import { Hex } from '@metamask/utils';
 import {
   SecurityAlertResponse,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { CHAIN_IDS } from './network';
 
 export enum SecurityProvider {
   Blockaid = 'blockaid',
@@ -29,36 +27,64 @@ export const SECURITY_PROVIDER_CONFIG: Readonly<SecurityProviderConfig> = {
 /** The reason, also referred to as the attack type, provided in the PPOM Response  */
 export enum BlockaidReason {
   /** Approval for a malicious spender  */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   approvalFarming = 'approval_farming',
   /** Malicious signature on Blur order  */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   blurFarming = 'blur_farming',
   /** A known malicious site invoked that transaction  */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   maliciousDomain = 'malicious_domain',
   /** Malicious signature on a Permit order  */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   permitFarming = 'permit_farming',
   /** Direct theft of native assets (ETH/MATIC/AVAX/ etc …)  */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   rawNativeTokenTransfer = 'raw_native_token_transfer',
   /** Malicious raw signature from the user   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   rawSignatureFarming = 'raw_signature_farming',
   /** Malicious signature on a Seaport order  */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   seaportFarming = 'seaport_farming',
   /** setApprovalForAll for a malicious operator  */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   setApprovalForAll = 'set_approval_for_all',
   /** Malicious signature on other type of trade order (Zero-X / Rarible / etc..)   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   tradeOrderFarming = 'trade_order_farming',
   /** Direct theft of assets using transfer  */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   transferFarming = 'transfer_farming',
   /** Direct theft of assets using transferFrom  */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   transferFromFarming = 'transfer_from_farming',
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   other = 'other',
 
   // MetaMask defined reasons
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   errored = 'Error',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   notApplicable = 'NotApplicable',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   inProgress = 'validation_in_progress',
-  checkingChain = 'CheckingChain',
-  chainNotSupported = 'ChainNotSupported',
 }
 
 export enum BlockaidResultType {
@@ -77,23 +103,6 @@ export const FALSE_POSITIVE_REPORT_BASE_URL =
 
 export const SECURITY_PROVIDER_UTM_SOURCE = 'metamask-ppom';
 
-export const SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST: Hex[] = [
-  CHAIN_IDS.ARBITRUM,
-  CHAIN_IDS.AVALANCHE,
-  CHAIN_IDS.BASE,
-  CHAIN_IDS.BSC,
-  CHAIN_IDS.LINEA_MAINNET,
-  CHAIN_IDS.MAINNET,
-  CHAIN_IDS.OPBNB,
-  CHAIN_IDS.OPTIMISM,
-  CHAIN_IDS.POLYGON,
-  CHAIN_IDS.SEPOLIA,
-  CHAIN_IDS.ZKSYNC_ERA,
-  CHAIN_IDS.SCROLL,
-  CHAIN_IDS.BERACHAIN,
-  CHAIN_IDS.METACHAIN_ONE,
-];
-
 export const SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES = [
   TransactionType.swap,
   TransactionType.swapApproval,
@@ -103,20 +112,11 @@ export const SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES = [
 ];
 
 export const LOADING_SECURITY_ALERT_RESPONSE: SecurityAlertResponse = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: BlockaidResultType.Loading,
   reason: BlockaidReason.inProgress,
 };
-
-export const SECURITY_ALERT_RESPONSE_CHECKING_CHAIN: SecurityAlertResponse = {
-  result_type: BlockaidResultType.Loading,
-  reason: BlockaidReason.checkingChain,
-};
-
-export const SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED: SecurityAlertResponse =
-  {
-    result_type: BlockaidResultType.Benign,
-    reason: BlockaidReason.chainNotSupported,
-  };
 
 export enum SecurityAlertSource {
   /** Validation performed remotely using the Security Alerts API. */

@@ -3,25 +3,34 @@ import { Driver } from '../../webdriver/driver';
 class TokenOverviewPage {
   private driver: Driver;
 
+  private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
+
   private readonly receiveButton = {
     text: 'Receive',
-    css: '.icon-button',
+    css: '.icon-button-round',
   };
 
   private readonly sendButton = {
     text: 'Send',
-    css: '.icon-button',
+    css: '.icon-button-round',
   };
 
   private readonly swapButton = {
     text: 'Swap',
-    css: '.icon-button',
+    css: '.icon-button-round',
+  };
+
+  private readonly viewAssetInExplorerButton = {
+    text: 'View Asset in explorer',
+    tag: 'div',
   };
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -48,6 +57,17 @@ class TokenOverviewPage {
 
   async clickSwap(): Promise<void> {
     await this.driver.clickElement(this.swapButton);
+  }
+
+  /**
+   * This method opens the asset in explorer.
+   */
+  async viewAssetInExplorer(): Promise<void> {
+    console.log('Viewing asset in explorer');
+    await this.driver.clickElement(this.assetOptionsButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.viewAssetInExplorerButton,
+    );
   }
 }
 

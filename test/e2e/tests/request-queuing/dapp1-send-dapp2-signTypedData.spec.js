@@ -2,14 +2,15 @@ const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   openDapp,
-  unlockWallet,
   DAPP_URL,
   DAPP_ONE_URL,
   regularDelayMs,
-  defaultGanacheOptions,
   WINDOW_TITLES,
   largeDelayMs,
 } = require('../../helpers');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
   it('should queue signTypedData tx after eth_sendTransaction confirmation and signTypedData confirmation should target the correct network after eth_sendTransaction is confirmed', async function () {
@@ -19,39 +20,39 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
+          .withNetworkControllerTripleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-            {
+          },
+          {
+            type: 'anvil',
+            options: {
               port: 7777,
               chainId: 1000,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open and connect Dapp One
         await openDapp(driver, undefined, DAPP_URL);
 
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
 
-        await driver.delay(regularDelayMs);
-
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElementAndWaitForWindowToClose({
@@ -62,15 +63,11 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         // Open and connect to Dapp Two
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
 
-        await driver.delay(regularDelayMs);
-
-        await driver.waitUntilXWindowHandles(4);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
         });
@@ -119,7 +116,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // eth_sendTransaction request
         await driver.clickElement('#sendButton');
-        await driver.waitUntilXWindowHandles(3);
+        await driver.waitUntilXWindowHandles(4);
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
@@ -127,6 +124,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.clickElement('#signTypedData');
 
         await driver.waitUntilXWindowHandles(4);
+        await driver.delay(regularDelayMs);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.

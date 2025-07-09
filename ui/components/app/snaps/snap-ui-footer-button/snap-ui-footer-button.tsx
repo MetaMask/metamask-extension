@@ -90,6 +90,7 @@ export const SnapUIFooterButton: FunctionComponent<
         alignItems: AlignItems.center,
         flexDirection: FlexDirection.Row,
       }}
+      data-testid={`${name}-snap-footer-button`}
       data-theme={null}
       danger={snapVariant === 'destructive'}
     >

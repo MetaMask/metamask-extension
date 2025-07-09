@@ -251,20 +251,8 @@
   "gasLimit": {
     "message": "Limit paliva"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Limit GAS je maximálne množstvo jednotiek GAS, ktoré ste ochotní minúť."
-  },
   "gasLimitTooLow": {
     "message": "Limit paliva musí být alespoň 21000"
-  },
-  "gasPrice": {
-    "message": "Cena paliva (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Cena za GAS je mimoriadne nízka"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Cena za GAS určuje množstvo Ether, ktoré ste ochotní zaplatiť za každú jednotku GAS."
   },
   "gasUsed": {
     "message": "GAS použitý"
@@ -299,9 +287,6 @@
   },
   "history": {
     "message": "História"
-  },
-  "importAccount": {
-    "message": "Import účtu"
   },
   "importAccountMsg": {
     "message": "Importované účty nebudou spojeny s vaší původní MetaMaskovou klíčovou frází. Zjistěte více o importovaných účtech "
@@ -616,9 +601,6 @@
   "terms": {
     "message": "Podmínky použití"
   },
-  "tips": {
-    "message": "Príspevky"
-  },
   "to": {
     "message": "Komu"
   },
@@ -694,9 +676,6 @@
   "unlock": {
     "message": "Odomknúť"
   },
-  "unlockMessage": {
-    "message": "Decentralizovaný web čaká"
-  },
   "urlErrorMsg": {
     "message": "URI vyžadují korektní HTTP/HTTPS prefix."
   },
@@ -720,8 +699,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Vaša súkromná seed fráza"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nulová cena za GAS pri zrýchlení"
   }
 }

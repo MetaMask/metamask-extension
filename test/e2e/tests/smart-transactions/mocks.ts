@@ -1,5 +1,5 @@
 import { MockttpServer } from 'mockttp';
-import { mockEthDaiTrade } from '../swaps/shared';
+import { mockEthDaiTrade, mockEthUsdcGasIncludedTrade } from '../swaps/shared';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 
@@ -10,6 +10,11 @@ const TRANSACTION_HASH =
 
 const BLOCK_HASH =
   '0xe90b92d004a9c22c32c50c628bbd93f22e3468ec4ffc62422d68cf6370f59f1d';
+
+const FIRST_SEND_TRANSACTION_HASH =
+  '0xc3c29d758eedafcba70f44333d1659117d293d0a06d5404f5919d05141d02427';
+const SECOND_SEND_TRANSACTION_HASH =
+  '0x5f87bf1e29d3325113d0a1ad033befac747e800699abf8172e26113bb3c615d9';
 
 const GET_FEES_RESPONSE = {
   blockNumber: 20728974,
@@ -252,6 +257,228 @@ const GET_TRANSACTION_BY_HASH_RESPONSE = {
   },
 };
 
+export const SWAP_TEST_GAS_INCLUDED_TRADES_MOCK = [
+  {
+    trade: {
+      data: '0x5f575529000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080a885ca75f83800000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000001c616972737761704c696768743446656544796e616d696346697865640000000000000000000000000000000000000000000000000000000000000000000001a000000000000000000000000000000000000000000000000000000197804ee7f8000000000000000000000000000000000000000000000000000000006852006d000000000000000000000000111bb8c3542f2b92fb41b8d913c01d3788431111000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000055f65840000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007f8853faede5ba000000000000000000000000000000000000000000000000000000000000001cc2a8c346b853e4f9369ed915366bd5d72840ad9858667d01abb9c9b829130bb829ad977f3aed189f4e35c82d57e2ce14cb1d35412d434f6fccf86d573a83c06400000000000000000000000000000000000000000000000000012031cf88127e000000000000000000000000e3478b0bb1a5084567c319096437924948be196400000000000000000000000000000000000000000000000000000000000000000112',
+      from: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      value: '36214089599809592',
+      to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
+    },
+    hasRoute: false,
+    sourceAmount: '36688236655602688',
+    destinationAmount: '90137988',
+    error: null,
+    sourceToken: '0x0000000000000000000000000000000000000000',
+    destinationToken: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    maxGas: 281910,
+    averageGas: 207378,
+    estimatedRefund: 48904,
+    sufficientFundsForGas: true,
+    isGasIncludedTrade: true,
+    tradeTxFees: {
+      gasLimit: '0x44d36',
+      fees: [
+        {
+          maxFeePerGas: '0x61fd7c4e',
+          maxPriorityFeePerGas: '0x3b9aca01',
+          gas: '0x3e91a',
+          balanceNeeded: '0x83d6f3e01689ec',
+          currentBalance: '0x8257c1c14aec00',
+          error: '',
+          tokenFees: [
+            {
+              token: {
+                address: '0x0000000000000000000000000000000000000000',
+                symbol: 'ETH',
+                decimals: 18,
+              },
+              balanceNeededToken: '0x1af3bf6d4f3c8',
+              currentBalanceToken: '0x0',
+              rateWei: '0xde0b6b3a7640000',
+              error: 'Not enough funds',
+              feeRecipient: '0xe3478b0bb1a5084567c319096437924948be1964',
+              totalGas: '0x44ac2',
+              isDelegationFee: false,
+            },
+          ],
+        },
+      ],
+      feeEstimate: 326090823134436,
+      baseFeePerGas: 572446561,
+      maxFeeEstimate: 491279448271092,
+    },
+    approvalNeeded: null,
+    fetchTime: 1303,
+    aggregator: 'airswapV4',
+    aggType: 'RFQ',
+    fee: 0.875,
+    quoteRefreshSeconds: 30,
+    gasMultiplier: 1.1,
+    sourceTokenRate: 1,
+    destinationTokenRate: 0.0003973863887874334,
+    priceSlippage: {
+      ratio: 1.0113354012421507,
+      calculationError: '',
+      bucket: 'low',
+      sourceAmountInUSD: 92.3464929563513,
+      destinationAmountInUSD: 90.119780126424,
+      sourceAmountInNativeCurrency: 0.03668823665560269,
+      destinationAmountInNativeCurrency: 0.03581960954388501,
+      sourceAmountInETH: 0.03668823665560269,
+      destinationAmountInETH: 0.03581960954388501,
+    },
+    signature:
+      '0x4ffe7a1746b98fdddf87b936a26e89f29e548e7eda92ebb2bd659b6693e8edf27a9e7f5eb65cbd8e1ddea6458edd4d9e724fd39c7561daaf3c45006347886dfd1c',
+    sigExpiration: 1750204645423,
+  },
+];
+
+const TRANSACTION_SIMULATION_RESPONSE = {
+  jsonrpc: '2.0',
+  result: {
+    transactions: [
+      {
+        return: '0x',
+        status: '0x1',
+        gasUsed: '0x523f',
+        gasLimit: '0x52e4',
+        fees: [
+          {
+            maxFeePerGas: '0x77c882ec',
+            maxPriorityFeePerGas: '0x3b9aca04',
+            gas: '0x52e4',
+            balanceNeeded: '0x23adbb58458514',
+            currentBalance: '0x512dc1cd5f29c5',
+            error: '',
+            tokenFees: [
+              {
+                token: {
+                  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                  symbol: 'USDC',
+                  decimals: 6,
+                },
+                balanceNeededToken: '0x9a0c8',
+                currentBalanceToken: '0x4939709',
+                serviceFee: '0x27f04',
+                rateWei: '0x166d379dff854',
+                error: '',
+                feeRecipient: '0xe3478b0bb1a5084567c319096437924948be1964',
+                transferEstimate: '0xb1e4',
+                totalGas: '0x16670',
+                isDelegationFee: false,
+              },
+              {
+                token: {
+                  address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+                  symbol: 'DAI',
+                  decimals: 18,
+                },
+                balanceNeededToken: '0x7c2be6d16736c71',
+                currentBalanceToken: '0x1182a0f168e59322',
+                serviceFee: '0x20314ecdfe50942',
+                rateWei: '0x166c44b2f0798',
+                error: '',
+                feeRecipient: '0xe3478b0bb1a5084567c319096437924948be1964',
+                transferEstimate: '0x8912',
+                totalGas: '0x13d9e',
+                isDelegationFee: false,
+              },
+              {
+                token: {
+                  address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+                  symbol: 'wETH',
+                  decimals: 18,
+                },
+                balanceNeededToken: '0xc812eb43c251',
+                currentBalanceToken: '0xb7a37bcf66059',
+                serviceFee: '0x33defa9fca15',
+                rateWei: '0xde0b6b3a7640000',
+                error: '',
+                feeRecipient: '0xe3478b0bb1a5084567c319096437924948be1964',
+                transferEstimate: '0x8831',
+                totalGas: '0x13cbd',
+                isDelegationFee: false,
+              },
+            ],
+          },
+        ],
+        stateDiff: {
+          post: {
+            '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1': {
+              nonce: '0x2',
+            },
+          },
+          pre: {
+            '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1': {
+              balance: '0x512dc1cd5f29c5',
+              nonce: '0x1',
+            },
+          },
+        },
+        callTrace: {
+          from: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+          to: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+          type: 'CALL',
+          gas: '0x1dcd6500',
+          gasUsed: '0x523f',
+          value: '0x2386f26fc10000',
+          input: '0x',
+          output: '0x',
+          error: '',
+          calls: null,
+        },
+        feeEstimate: 34326107063180,
+        baseFeePerGas: 630306675,
+      },
+    ],
+    blockNumber: '0x15ae883',
+    id: '56a61257-4843-42f6-9668-dd9e5260536f',
+  },
+  id: '14',
+};
+
+const SEND_TRANSACTION_RECEIPT = (txHash: string) => {
+  return {
+    jsonrpc: '2.0',
+    id: 7409514442667716,
+    result: {
+      blockHash: BLOCK_HASH,
+      blockNumber: '0x15afc03',
+      contractAddress: null,
+      cumulativeGasUsed: '0x1ee780',
+      effectiveGasPrice: '0xa33f9084',
+      from: '0xb0da5965d43369968574d399dbe6374683773a65',
+      gasUsed: '0xb05c',
+      logs: [
+        {
+          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          blockHash: BLOCK_HASH,
+          blockNumber: '0x15afc03',
+          data: '0x000000000000000000000000000000000000000000000000000000000010ad5a',
+          logIndex: '0x36',
+          removed: false,
+          topics: [
+            '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+            '0x000000000000000000000000b0da5965d43369968574d399dbe6374683773a65',
+            '0x000000000000000000000000e3478b0bb1a5084567c319096437924948be1964',
+          ],
+          transactionHash: txHash,
+          transactionIndex: '0x1d',
+        },
+      ],
+      logsBloom:
+        '0x00000000000000000000010000000000000000000000000000000000000804000000000000000000000000000000000000000000000000000000000000000000000000000000000008000008000000000000000000000000000000000000000000000000000000000000000000000000900000000000000000000010000000000000000000000000000000000000000000000000010000000000000000000000000000000000200000000000000000000000000000000100000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+      status: '0x1',
+      to: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      transactionHash:
+        '0x5b45a6ee3aeee3659e456e3deff679d945e501f92a608aeb252be4a6023058c7',
+      transactionIndex: '0x1d',
+      type: '0x2',
+    },
+  };
+};
+
 const GET_BLOCK_BY_HASH_RESPONSE = {
   id: 2901696354742565,
   jsonrpc: '2.0',
@@ -262,6 +489,112 @@ const GET_BLOCK_BY_HASH_RESPONSE = {
 };
 
 export async function mockSmartTransactionRequests(mockServer: MockttpServer) {
+  await mockSmartTransactionRequestsBase(mockServer);
+
+  await mockEthDaiTrade(mockServer);
+
+  await mockServer
+    .forPost(
+      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
+    )
+    .once()
+    .thenJson(200, { uuid: STX_UUID });
+}
+
+export async function mockChooseGasFeeTokenRequests(mockServer: MockttpServer) {
+  await mockSmartTransactionRequestsBase(mockServer);
+
+  await mockServer
+    .forJsonRpcRequest({
+      method: 'eth_getTransactionReceipt',
+      params: [FIRST_SEND_TRANSACTION_HASH],
+    })
+    .thenJson(200, SEND_TRANSACTION_RECEIPT(FIRST_SEND_TRANSACTION_HASH));
+
+  await mockServer
+    .forJsonRpcRequest({
+      method: 'eth_getTransactionReceipt',
+      params: [SECOND_SEND_TRANSACTION_HASH],
+    })
+    .thenJson(200, SEND_TRANSACTION_RECEIPT(SECOND_SEND_TRANSACTION_HASH));
+
+  await mockServer
+    .forJsonRpcRequest({
+      method: 'eth_getBlockByHash',
+      params: [BLOCK_HASH],
+    })
+    .thenJson(200, GET_BLOCK_BY_HASH_RESPONSE);
+
+  await mockServer
+    .forPost('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io')
+    .thenJson(200, TRANSACTION_SIMULATION_RESPONSE);
+
+  await mockServer
+    .forPost(
+      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
+    )
+    .once()
+    .thenJson(200, { uuid: STX_UUID });
+}
+
+export async function mockGasIncludedTransactionRequests(
+  mockServer: MockttpServer,
+) {
+  await mockSmartTransactionRequestsBase(mockServer);
+
+  await mockEthUsdcGasIncludedTrade(mockServer);
+
+  await mockServer
+    .forPost(
+      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
+    )
+    .once()
+    .thenJson(200, { uuid: STX_UUID });
+}
+
+export async function mockSmartTransactionBatchRequests(
+  mockServer: MockttpServer,
+  {
+    error = false,
+    transactionHashes,
+  }: {
+    error?: boolean;
+    transactionHashes: string[];
+  },
+) {
+  await mockSmartTransactionRequestsBase(mockServer);
+
+  const submitStatusCode = error ? 500 : 200;
+
+  const submitResponse = error
+    ? {}
+    : { uuid: STX_UUID, txHashes: transactionHashes };
+
+  await mockServer
+    .forPost(
+      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
+    )
+    .once()
+    .thenJson(submitStatusCode, submitResponse);
+
+  for (const transactionHash of transactionHashes) {
+    await mockServer
+      .forJsonRpcRequest({
+        method: 'eth_getTransactionReceipt',
+        params: [transactionHash],
+      })
+      .thenJson(200, GET_TRANSACTION_RECEIPT_RESPONSE);
+
+    await mockServer
+      .forJsonRpcRequest({
+        method: 'eth_getTransactionByHash',
+        params: [transactionHash],
+      })
+      .thenJson(200, GET_TRANSACTION_BY_HASH_RESPONSE);
+  }
+}
+
+async function mockSmartTransactionRequestsBase(mockServer: MockttpServer) {
   await mockMultiNetworkBalancePolling(mockServer);
 
   await mockServerJsonRpc(mockServer, [
@@ -270,18 +603,9 @@ export async function mockSmartTransactionRequests(mockServer: MockttpServer) {
     ['eth_chainId', { result: `0x1` }],
   ]);
 
-  await mockEthDaiTrade(mockServer);
-
   await mockServer
     .forPost('https://transaction.api.cx.metamask.io/networks/1/getFees')
     .thenJson(200, GET_FEES_RESPONSE);
-
-  await mockServer
-    .forPost(
-      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
-    )
-    .once()
-    .thenJson(200, { uuid: STX_UUID });
 
   await mockServer
     .forGet('https://transaction.api.cx.metamask.io/networks/1/batchStatus')

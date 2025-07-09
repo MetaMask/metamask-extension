@@ -78,6 +78,7 @@ describe('PersonalSign Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
@@ -97,7 +98,11 @@ describe('PersonalSign Confirmation', () => {
 
     await act(async () => {
       await integrationTestRender({
-        preloadedState: mockedMetaMaskState,
+        preloadedState: {
+          ...mockedMetaMaskState,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
+        },
         backgroundConnection: backgroundConnectionMocked,
       });
     });
@@ -153,7 +158,12 @@ describe('PersonalSign Confirmation', () => {
           properties: {
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.SignatureConfirmation,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             signature_type: ApprovalType.PersonalSign,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: 0,
           },
         }),
       ]),

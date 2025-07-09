@@ -3,7 +3,7 @@ import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { Caip25EndowmentPermissionName } from '@metamask/multichain';
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
@@ -55,14 +55,14 @@ const mapStateToProps = (state, ownProps) => {
     (req) => req.metadata.id === permissionsRequestId,
   );
 
-  const { metadata = {}, isLegacySwitchEthereumChain } =
-    permissionsRequest || {};
+  const { metadata = {}, diff = {} } = permissionsRequest || {};
   const { origin } = metadata;
   const nativeCurrency = getNativeCurrency(state);
 
+  const isRequestApprovalPermittedChains = Boolean(diff?.permissionDiffMap);
   const isRequestingAccounts = Boolean(
     permissionsRequest?.permissions?.[Caip25EndowmentPermissionName] &&
-      !isLegacySwitchEthereumChain,
+      !isRequestApprovalPermittedChains,
   );
 
   const targetSubjectMetadata = getTargetSubjectMetadata(state, origin) ?? {

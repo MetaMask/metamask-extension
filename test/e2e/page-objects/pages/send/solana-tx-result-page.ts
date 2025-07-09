@@ -17,6 +17,8 @@ class SolanaTxresultPage {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_isViewTransactionLinkDisplayed() {
     try {
       await this.driver.findClickableElement(this.viewTransactionLink);
@@ -27,6 +29,8 @@ class SolanaTxresultPage {
     }
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_TransactionStatus(sent: boolean): Promise<boolean> {
     const statusText = sent ? 'Sent' : 'Transaction failed';
     try {
@@ -41,12 +45,15 @@ class SolanaTxresultPage {
     }
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_TransactionStatusText(
     amount: string,
     sent: boolean,
+    tokenName: string = 'SOL',
   ): Promise<boolean> {
     const displayedText = sent
-      ? `${amount}  was successfully sent`
+      ? `${amount} ${tokenName} was successfully sent`
       : `Unable to send ${amount}`;
     const txStatusText = {
       text: displayedText,

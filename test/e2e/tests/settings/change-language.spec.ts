@@ -12,8 +12,12 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const selectors = {
-  labelSpanish: { tag: 'p', text: 'Idioma actual' },
-  currentLanguageLabel: { tag: 'p', text: 'Current language' },
+  currentLanguageDansk: { tag: 'p', text: 'Nuværende sprog' },
+  currentLanguageDeutsch: { tag: 'p', text: 'Aktuelle Sprache' },
+  currentLanguageEnglish: { tag: 'p', text: 'Current language' },
+  currentLanguageMagyar: { tag: 'p', text: 'Aktuális nyelv' },
+  currentLanguageSpanish: { tag: 'p', text: 'Idioma actual' },
+  currentLanguageवर्तमान: { tag: 'p', text: 'वर्तमान भाषा' },
   advanceText: { text: 'Avanceret', tag: 'div' },
   waterText: '[placeholder="Søg"]',
   headerTextDansk: { text: 'Indstillinger', tag: 'h3' },
@@ -41,7 +45,7 @@ describe('Settings - general tab', function (this: Suite) {
         // Change language to Spanish and validate that the word has changed correctly
         await generalSettings.changeLanguage('Español');
         const isLanguageLabelChanged = await driver.isElementPresent(
-          selectors.labelSpanish,
+          selectors.currentLanguageSpanish,
         );
         assert.equal(isLanguageLabelChanged, true, 'Language did not change');
 
@@ -49,7 +53,7 @@ describe('Settings - general tab', function (this: Suite) {
         await driver.refresh();
         await generalSettings.check_pageIsLoaded();
         assert.equal(
-          await driver.isElementPresent(selectors.labelSpanish),
+          await driver.isElementPresent(selectors.currentLanguageSpanish),
           true,
           'Language did not change after refresh',
         );
@@ -57,7 +61,7 @@ describe('Settings - general tab', function (this: Suite) {
         // Change language back to English and validate that the word has changed correctly
         await generalSettings.changeLanguage('English');
         const isLabelTextChanged = await driver.isElementPresent(
-          selectors.currentLanguageLabel,
+          selectors.currentLanguageEnglish,
         );
         assert.equal(isLabelTextChanged, true, 'Language did not change');
       },
@@ -78,6 +82,11 @@ describe('Settings - general tab', function (this: Suite) {
 
         // Select "Dansk" language
         await generalSettings.changeLanguage('Dansk');
+        const isLanguageLabelChanged = await driver.isElementPresent(
+          selectors.currentLanguageDansk,
+        );
+        assert.equal(isLanguageLabelChanged, true, 'Language did not change');
+
         await driver.clickElement(selectors.advanceText);
         const advancedSettings = new AdvancedSettings(driver);
         await advancedSettings.check_pageIsLoaded();
@@ -129,6 +138,11 @@ describe('Settings - general tab', function (this: Suite) {
 
         // Select "Deutsch" language
         await generalSettings.changeLanguage('Deutsch');
+        const isLanguageLabelChanged = await driver.isElementPresent(
+          selectors.currentLanguageDeutsch,
+        );
+        assert.equal(isLanguageLabelChanged, true, 'Language did not change');
+
         await new SettingsPage(driver).closeSettingsPage();
 
         const homepage = new Homepage(driver);
@@ -170,6 +184,12 @@ describe('Settings - general tab', function (this: Suite) {
 
         // Select "मानक हिन्दी" language
         await generalSettings.changeLanguage('मानक हिन्दी');
+
+        const isLabelTextChanged = await driver.isElementPresent(
+          selectors.currentLanguageवर्तमान,
+        );
+        assert.equal(isLabelTextChanged, true, 'Language did not change');
+
         await new SettingsPage(driver).closeSettingsPage();
         const homepage = new Homepage(driver);
         await homepage.check_pageIsLoaded();
@@ -212,6 +232,11 @@ describe('Settings - general tab', function (this: Suite) {
 
         // Select "Magyar" language
         await generalSettings.changeLanguage('Magyar');
+        const isLabelTextChanged = await driver.isElementPresent(
+          selectors.currentLanguageMagyar,
+        );
+        assert.equal(isLabelTextChanged, true, 'Language did not change');
+
         await new SettingsPage(driver).closeSettingsPage();
         const homepage = new Homepage(driver);
         await homepage.check_pageIsLoaded();

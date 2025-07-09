@@ -55,7 +55,7 @@ describe('isBlockedUrl', () => {
     [1, true],
     [0, true],
     [-1, true],
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ])('"%s" is blocked: %s', async (url: any, expected: boolean) => {
     const result = await isBlockedUrl(

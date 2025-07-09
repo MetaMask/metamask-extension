@@ -1,12 +1,14 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Content-Security-Policy', function (this: Suite) {
-  it('opening a restricted website should still load the extension', async function () {
+  // TODO: Re-enable this after fixing the CSP override feature. See #31094
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('opening a restricted website should still load the extension', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -27,11 +29,10 @@ describe('Content-Security-Policy', function (this: Suite) {
           ],
         },
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         const isExtensionLoaded: boolean = await driver.executeScript(

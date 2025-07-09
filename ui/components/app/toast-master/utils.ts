@@ -1,7 +1,12 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { ReactFragment } from 'react';
-import { SHOW_NFT_DETECTION_ENABLEMENT_TOAST } from '../../../store/actionConstants';
+import {
+  SET_SHOW_NEW_SRP_ADDED_TOAST,
+  SET_SHOW_PASSWORD_CHANGE_TOAST,
+  SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
+} from '../../../store/actionConstants';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import { PasswordChangeToastType } from '../../../../shared/constants/app-state';
 
 /**
  * Returns true if the privacy policy toast was shown either never, or less than a day ago.
@@ -10,7 +15,7 @@ import { submitRequestToBackground } from '../../../store/background-connection'
  * @returns true if the privacy policy toast was shown either never, or less than a day ago
  */
 export function getIsPrivacyToastRecent(
-  newPrivacyPolicyToastShownDate?: number,
+  newPrivacyPolicyToastShownDate?: number | null,
 ): boolean {
   if (!newPrivacyPolicyToastShownDate) {
     return true;
@@ -60,10 +65,26 @@ export function setSurveyLinkLastClickedOrClosed(time: number) {
 // May move this to a different file after discussion with team
 export function submitRequestToBackgroundAndCatch(
   method: string,
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args?: any[],
 ) {
   submitRequestToBackground(method, args)?.catch((error) => {
     console.error('Error caught in submitRequestToBackground', error);
   });
+}
+
+export function setShowNewSrpAddedToast(value: boolean) {
+  return {
+    type: SET_SHOW_NEW_SRP_ADDED_TOAST,
+    payload: value,
+  };
+}
+
+export function setShowPasswordChangeToast(value: PasswordChangeToastType) {
+  return {
+    type: SET_SHOW_PASSWORD_CHANGE_TOAST,
+    payload: value,
+  };
 }

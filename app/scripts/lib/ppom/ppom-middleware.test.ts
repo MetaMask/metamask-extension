@@ -12,7 +12,6 @@ import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
 import {
   generateSecurityAlertId,
   handlePPOMError,
-  isChainSupported,
   validateRequestWithPPOM,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
@@ -28,6 +27,8 @@ const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
 
 const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
   securityAlertId: SECURITY_ALERT_ID_MOCK,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: BlockaidResultType.Malicious,
   reason: BlockaidReason.permitFarming,
 };
@@ -43,7 +44,7 @@ const createMiddleware = (
     chainId?: Hex | null;
     error?: Error;
     securityAlertsEnabled?: boolean;
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updateSecurityAlertResponse?: any;
   } = {
@@ -71,6 +72,8 @@ const createMiddleware = (
 
   const networkController = {
     state: {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       ...mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET }),
       ...(chainId === null ? { providerConfig: {} } : undefined),
     },
@@ -85,18 +88,19 @@ const createMiddleware = (
   };
 
   return createPPOMMiddleware(
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ppomController as any,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     preferenceController as any,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     networkController as any,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     appStateController as any,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     accountsController as any,
     updateSecurityAlertResponse,
@@ -106,7 +110,6 @@ const createMiddleware = (
 describe('PPOMMiddleware', () => {
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
   const handlePPOMErrorMock = jest.mocked(handlePPOMError);
-  const isChainSupportedMock = jest.mocked(isChainSupported);
   const detectSIWEMock = jest.mocked(detectSIWE);
 
   beforeEach(() => {
@@ -114,7 +117,6 @@ describe('PPOMMiddleware', () => {
 
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
     handlePPOMErrorMock.mockReturnValue(SECURITY_ALERT_RESPONSE_MOCK);
-    isChainSupportedMock.mockResolvedValue(true);
     detectSIWEMock.mockReturnValue({ isSIWEMessage: false } as SIWEMessage);
 
     globalThis.sentry = {
@@ -145,9 +147,7 @@ describe('PPOMMiddleware', () => {
       () => undefined,
     );
 
-    expect(req.securityAlertResponse?.reason).toBe(
-      BlockaidReason.checkingChain,
-    );
+    expect(req.securityAlertResponse?.reason).toBe(BlockaidReason.inProgress);
     expect(req.securityAlertResponse?.result_type).toBe(
       BlockaidResultType.Loading,
     );

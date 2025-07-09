@@ -4,9 +4,10 @@ import { it as jestIt } from '@jest/globals';
 import { createSwapsMockStore } from '../../../test/jest';
 import { CHAIN_IDS } from '../../constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
+import * as envModule from '../environment';
 import {
   getSmartTransactionsOptInStatusForMetrics,
-  getCurrentChainSupportsSmartTransactions,
+  getChainSupportsSmartTransactions,
   getSmartTransactionsEnabled,
   getIsSmartTransaction,
   getSmartTransactionsPreferenceEnabled,
@@ -122,12 +123,12 @@ describe('Selectors', () => {
     });
   });
 
-  describe('getCurrentChainSupportsSmartTransactions', () => {
+  describe('getChainSupportsSmartTransactions', () => {
     jestIt(
       'should return true if the chain ID is allowed for smart transactions',
       () => {
         const state = createMockState();
-        const result = getCurrentChainSupportsSmartTransactions(state);
+        const result = getChainSupportsSmartTransactions(state);
         expect(result).toBe(true);
       },
     );
@@ -143,8 +144,34 @@ describe('Selectors', () => {
             ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
           },
         };
-        const result = getCurrentChainSupportsSmartTransactions(newState);
+        const result = getChainSupportsSmartTransactions(newState);
         expect(result).toBe(false);
+      },
+    );
+
+    jestIt(
+      'should prioritize provided chainId parameter over state chainId',
+      () => {
+        const state = createMockState(); // Has allowed chain ID
+        // Should be false for non-allowed chain ID regardless of state
+        expect(
+          getChainSupportsSmartTransactions(state, CHAIN_IDS.POLYGON),
+        ).toBe(false);
+
+        const nonSupportedState = {
+          ...state,
+          metamask: {
+            ...state.metamask,
+            ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+          },
+        };
+        // Should be true for allowed chain ID regardless of state
+        expect(
+          getChainSupportsSmartTransactions(
+            nonSupportedState,
+            CHAIN_IDS.MAINNET,
+          ),
+        ).toBe(true);
       },
     );
   });
@@ -162,8 +189,7 @@ describe('Selectors', () => {
       'returns false if feature flag is disabled, not a HW and is Ethereum network',
       () => {
         const state = createSwapsMockStore();
-        state.metamask.swapsState.swapsFeatureFlags.smartTransactions.extensionActive =
-          false;
+        state.metamask.swapsState.swapsFeatureFlags.smartTransactions.extensionActive = false;
         expect(getSmartTransactionsEnabled(state)).toBe(false);
       },
     );
@@ -303,6 +329,130 @@ describe('Selectors', () => {
         '36eb02e0-7925-47f0-859f-076608f09b69';
       expect(getSmartTransactionsEnabled(state)).toBe(false);
     });
+
+    jestIt('prioritizes provided chainId parameter over state chainId', () => {
+      const state = createSwapsMockStore(); // Ethereum network (supported)
+
+      // Should be false for Polygon chainId regardless of state
+      expect(getSmartTransactionsEnabled(state, CHAIN_IDS.POLYGON)).toBe(false);
+
+      // Should be true for BSC chainId (supported) regardless of state
+      const polygonState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.POLYGON },
+            {
+              chainId: CHAIN_IDS.BSC,
+              rpcUrl: 'https://bsc-dataseed.binance.org/',
+            },
+          ),
+        },
+      };
+      expect(getSmartTransactionsEnabled(polygonState, CHAIN_IDS.BSC)).toBe(
+        true,
+      );
+    });
+
+    // RPC URL checking tests
+    jestIt('permits Infura URLs in production for RPC URL checks', () => {
+      jest.spyOn(envModule, 'isProduction').mockReturnValue(true);
+
+      const state = createSwapsMockStore();
+      const newState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.MAINNET,
+            rpcUrl: 'https://mainnet.infura.io/v3/some-project-id',
+          }),
+        },
+      };
+
+      expect(getSmartTransactionsEnabled(newState)).toBe(true);
+    });
+
+    jestIt('permits Binance URLs in production for RPC URL checks', () => {
+      jest.spyOn(envModule, 'isProduction').mockReturnValue(true);
+
+      const state = createSwapsMockStore();
+      const newState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.BSC,
+            rpcUrl: 'https://bsc-dataseed.binance.org/',
+          }),
+        },
+      };
+
+      expect(getSmartTransactionsEnabled(newState)).toBe(true);
+    });
+
+    jestIt('rejects other URLs in production for RPC URL checks', () => {
+      jest.spyOn(envModule, 'isProduction').mockReturnValue(true);
+
+      const state = createSwapsMockStore();
+      const newState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.BSC,
+            rpcUrl: 'https://bsc-dataseed1.defibit.io/',
+          }),
+        },
+      };
+
+      expect(getSmartTransactionsEnabled(newState)).toBe(false);
+    });
+
+    jestIt('allows any URL in non-production for RPC URL checks', () => {
+      jest.spyOn(envModule, 'isProduction').mockReturnValue(false);
+
+      const state = createSwapsMockStore();
+      const newState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.BSC,
+            rpcUrl: 'https://some-random-rpc.example.com',
+          }),
+        },
+      };
+
+      expect(getSmartTransactionsEnabled(newState)).toBe(true);
+    });
+
+    jestIt(
+      'prioritizes provided chainId parameter over state chainId for RPC URL checks',
+      () => {
+        jest.spyOn(envModule, 'isProduction').mockReturnValue(false);
+
+        // Set up a state with a chain ID that should be skipped, but a non-acceptable RPC URL
+        const state = createSwapsMockStore();
+        const stateWithCustomRpc = {
+          ...state,
+          metamask: {
+            ...state.metamask,
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.MAINNET,
+              rpcUrl: 'https://some-random-rpc.example.com',
+            }),
+          },
+        };
+
+        // When we pass CHAIN_IDS.BSC which is in the skip list, it should work
+        // regardless of the RPC URL in the state
+        expect(
+          getSmartTransactionsEnabled(stateWithCustomRpc, CHAIN_IDS.BSC),
+        ).toBe(true);
+      },
+    );
   });
 
   describe('getIsSmartTransaction', () => {
@@ -359,6 +509,33 @@ describe('Selectors', () => {
       };
       const result = getIsSmartTransaction(newState);
       expect(result).toBe(false);
+    });
+
+    jestIt('prioritizes provided chainId parameter over state chainId', () => {
+      const state = createMockState(); // Has enabled smart transactions
+
+      // Should be false for non-supported chain ID despite state supporting it
+      expect(getIsSmartTransaction(state, CHAIN_IDS.POLYGON)).toBe(false);
+
+      // Create a state with Polygon (non-supported) chain ID
+      const nonSupportedState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.POLYGON },
+            {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcUrl: 'https://mainnet.infura.io/v3/',
+            },
+          ),
+        },
+      };
+
+      // Should be true for supported chain ID despite state not supporting it
+      expect(getIsSmartTransaction(nonSupportedState, CHAIN_IDS.MAINNET)).toBe(
+        true,
+      );
     });
   });
 });

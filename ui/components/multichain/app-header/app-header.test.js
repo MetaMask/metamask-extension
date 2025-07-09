@@ -8,7 +8,10 @@ import { SEND_STAGES } from '../../../ducks/send';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { mockNetworkState } from '../../../../test/stub/networks';
+import {
+  mockNetworkState,
+  mockMultichainNetworkState,
+} from '../../../../test/stub/networks';
 import { AppHeader } from '.';
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
@@ -35,6 +38,7 @@ const render = ({
     metamask: {
       ...mockState.metamask,
       ...mockNetworkState(network),
+      ...mockMultichainNetworkState(),
       isUnlocked: isUnlocked ?? true,
     },
     activeTab: {
@@ -132,6 +136,59 @@ describe('App Header', () => {
       fireEvent.click(connectionPickerButton);
 
       expect(mockUseHistory).toHaveBeenCalled();
+    });
+
+    describe('Global menu support button', () => {
+      beforeEach(() => {
+        const { container } = render();
+
+        const settingsButton = container.querySelector(
+          '[data-testid="account-options-menu-button"]',
+        );
+        fireEvent.click(settingsButton);
+
+        const globalMenuSupportButton = container.querySelector(
+          '[data-testid="global-menu-support"]',
+        );
+        fireEvent.click(globalMenuSupportButton);
+      });
+
+      it('can open the visit support data consent modal', async () => {
+        await waitFor(() => {
+          const supportDataConsentModal = document.querySelector(
+            '[data-testid="visit-support-data-consent-modal"]',
+          );
+          expect(supportDataConsentModal).toBeInTheDocument();
+        });
+      });
+
+      it('opens the support site when "Confirm" button is clicked', async () => {
+        const spy = jest.spyOn(window, 'open');
+
+        const acceptButton = document.querySelector(
+          '[data-testid="visit-support-data-consent-modal-accept-button"]',
+        );
+        expect(acceptButton).toBeInTheDocument();
+        fireEvent.click(acceptButton);
+
+        await waitFor(() => {
+          expect(spy).toHaveBeenCalled();
+        });
+      });
+
+      it(`opens the support site when "Don't share" button is clicked`, async () => {
+        const spy = jest.spyOn(window, 'open');
+
+        const rejectButton = document.querySelector(
+          '[data-testid="visit-support-data-consent-modal-reject-button"]',
+        );
+        expect(rejectButton).toBeInTheDocument();
+        fireEvent.click(rejectButton);
+
+        await waitFor(() => {
+          expect(spy).toHaveBeenCalled();
+        });
+      });
     });
   });
 

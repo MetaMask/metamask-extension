@@ -34,7 +34,8 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
    *   endAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
    * }
    */
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   placeholder?: any;
   /*
@@ -47,7 +48,8 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
    *   endAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
    * }
    */
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value?: any;
   /*
@@ -60,7 +62,8 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
    *   endAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
    * }
    */
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   defaultValue?: any;
   /*
@@ -109,9 +112,13 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
   caretIconProps?: IconProps<'span'>;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type SelectButtonProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, SelectButtonStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type SelectButtonComponent = <C extends React.ElementType = 'div'>(
   props: SelectButtonProps<C>,
 ) => React.ReactElement | null;

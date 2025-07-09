@@ -9,7 +9,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
     />
     <div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+        class="mm-box confirm-add-suggested-nft page-container confirm-add-suggested-nft--has-app-header-multichain mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
       >
         <div
           class="mm-box confirm-add-suggested-nft__header mm-box--padding-bottom-2"
@@ -159,7 +159,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="mm-box confirm-add-suggested-nft__content"
+          class="mm-box page-container__content confirm-add-suggested-nft__content"
         >
           <div
             class="mm-box confirm-add-suggested-nft__card mm-box--padding-2 mm-box--rounded-md"
@@ -206,13 +206,13 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
         >
           <footer>
             <button
-              class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button page-container__footer-button__cancel mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
               data-testid="page-container-footer-cancel"
             >
               Cancel
             </button>
             <button
-              class="button btn--rounded btn-primary page-container__footer-button"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
               data-testid="page-container-footer-next"
             >
               Add NFT
@@ -224,7 +224,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
   </body>,
   "container": <div>
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+      class="mm-box confirm-add-suggested-nft page-container confirm-add-suggested-nft--has-app-header-multichain mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
     >
       <div
         class="mm-box confirm-add-suggested-nft__header mm-box--padding-bottom-2"
@@ -374,7 +374,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
         </p>
       </div>
       <div
-        class="mm-box confirm-add-suggested-nft__content"
+        class="mm-box page-container__content confirm-add-suggested-nft__content"
       >
         <div
           class="mm-box confirm-add-suggested-nft__card mm-box--padding-2 mm-box--rounded-md"
@@ -421,13 +421,13 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
       >
         <footer>
           <button
-            class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button page-container__footer-button__cancel mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
             data-testid="page-container-footer-cancel"
           >
             Cancel
           </button>
           <button
-            class="button btn--rounded btn-primary page-container__footer-button"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
             data-testid="page-container-footer-next"
           >
             Add NFT

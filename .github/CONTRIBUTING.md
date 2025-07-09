@@ -11,6 +11,7 @@ There are also plenty of open issues we'd love help with. Search the [`good firs
 If you're picking up a bounty or an existing issue, feel free to ask clarifying questions on the issue as you go about your work.
 
 ### Submitting a pull request
+
 When you're done with your project / bugfix / feature and ready to submit a PR, there are a couple guidelines we ask you to follow:
 
 - [ ] **Make sure you followed our [`coding guidelines`](https://github.com/MetaMask/metamask-extension/blob/main/.github/guidelines/CODING_GUIDELINES.md)**: These guidelines aim to maintain consistency and readability across the codebase. They help ensure that the code is easy to understand, maintain, and modify, which is particularly important when working with multiple contributors.
@@ -33,7 +34,7 @@ When you're done with your project / bugfix / feature and ready to submit a PR, 
     - perf: A code change that improves performance
     - test: Adding missing tests or correcting existing tests
     - build: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
-    - ci: Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)
+    - ci: Changes to our CI configuration files and scripts (example scopes: Travis, GitHub Actions, BrowserStack, SauceLabs)
     - chore: Other changes that don't modify src or test files
     - revert: Reverts a previous commit
 

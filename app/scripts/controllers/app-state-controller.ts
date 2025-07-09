@@ -33,6 +33,11 @@ import {
   CarouselSlide,
 } from '../../../shared/constants/app-state';
 import type {
+  ThrottledOrigins,
+  ThrottledOrigin,
+} from '../../../shared/types/origin-throttling';
+import { ScanAddressResponse } from '../lib/trust-signals/types';
+import type {
   Preferences,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -59,16 +64,20 @@ export type AppStateControllerState = {
   currentPopupId?: number;
   onboardingDate: number | null;
   lastViewedUserSurvey: number | null;
+  isRampCardClosed: boolean;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
   // This key is only used for checking if the user had set advancedGasFee
   // prior to Migration 92.3 where we split out the setting to support
   // multiple networks.
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
   qrHardware: Json;
   nftsDropdownState: Json;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
+  addressSecurityAlertResponses: Record<string, ScanAddressResponse>;
   // States used for displaying the changed network toast
   switchedNetworkDetails: Record<string, string> | null;
   switchedNetworkNeverShowMessage: boolean;
@@ -76,10 +85,13 @@ export type AppStateControllerState = {
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   termsOfUseLastAgreed?: number;
   snapsInstallPrivacyWarningShown?: boolean;
-  interactiveReplacementToken?: { url: string; oldRefreshToken: string };
-  noteToTraderMessage?: string;
-  custodianDeepLink?: { fromAddress: string; custodyId: string };
   slides: CarouselSlide[];
+  throttledOrigins: ThrottledOrigins;
+  isUpdateAvailable: boolean;
+  updateModalLastDismissedAt: number | null;
+  lastUpdatedAt: number | null;
+  enableEnforcedSimulations: boolean;
+  enableEnforcedSimulationsForTransactions: Record<string, boolean>;
 };
 
 const controllerName = 'AppStateController';
@@ -151,6 +163,7 @@ type AppStateControllerInitState = Partial<
     | 'qrHardware'
     | 'nftsDropdownState'
     | 'signatureSecurityAlertResponses'
+    | 'addressSecurityAlertResponses'
     | 'switchedNetworkDetails'
     | 'currentExtensionPopupId'
   >
@@ -185,12 +198,21 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   onboardingDate: null,
   lastViewedUserSurvey: null,
+  isRampCardClosed: false,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   surveyLinkLastClickedOrClosed: null,
   switchedNetworkNeverShowMessage: false,
   slides: [],
+  throttledOrigins: {},
+  isUpdateAvailable: false,
+  updateModalLastDismissedAt: null,
+  lastUpdatedAt: null,
+  enableEnforcedSimulations: true,
+  enableEnforcedSimulationsForTransactions: {},
   ...getInitialStateOverrides(),
 });
 
@@ -199,6 +221,7 @@ function getInitialStateOverrides() {
     qrHardware: {},
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
+    addressSecurityAlertResponses: {},
     switchedNetworkDetails: null,
     currentExtensionPopupId: 0,
   };
@@ -285,6 +308,10 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
+  isRampCardClosed: {
+    persist: true,
+    anonymous: true,
+  },
   newPrivacyPolicyToastClickedOrClosed: {
     persist: true,
     anonymous: true,
@@ -293,6 +320,8 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: {
     persist: true,
     anonymous: true,
@@ -310,6 +339,10 @@ const controllerMetadata = {
     anonymous: true,
   },
   signatureSecurityAlertResponses: {
+    persist: false,
+    anonymous: true,
+  },
+  addressSecurityAlertResponses: {
     persist: false,
     anonymous: true,
   },
@@ -337,20 +370,32 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
-  interactiveReplacementToken: {
-    persist: true,
-    anonymous: true,
-  },
-  noteToTraderMessage: {
-    persist: true,
-    anonymous: true,
-  },
-  custodianDeepLink: {
-    persist: true,
-    anonymous: true,
-  },
   slides: {
     persist: true,
+    anonymous: true,
+  },
+  throttledOrigins: {
+    persist: false,
+    anonymous: true,
+  },
+  isUpdateAvailable: {
+    persist: false,
+    anonymous: true,
+  },
+  updateModalLastDismissedAt: {
+    persist: true,
+    anonymous: true,
+  },
+  lastUpdatedAt: {
+    persist: true,
+    anonymous: true,
+  },
+  enableEnforcedSimulations: {
+    persist: true,
+    anonymous: true,
+  },
+  enableEnforcedSimulationsForTransactions: {
+    persist: false,
     anonymous: true,
   },
 };
@@ -392,6 +437,8 @@ export class AppStateController extends BaseController<
     });
 
     this.#extension = extension;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     this.#onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.#timer = null;
 
@@ -528,6 +575,12 @@ export class AppStateController extends BaseController<
     });
   }
 
+  setRampCardClosed(): void {
+    this.update((state) => {
+      state.isRampCardClosed = true;
+    });
+  }
+
   setNewPrivacyPolicyToastClickedOrClosed(): void {
     this.update((state) => {
       state.newPrivacyPolicyToastClickedOrClosed = true;
@@ -541,34 +594,27 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Updates slides by adding new slides that don't already exist in state
+   * Replaces slides in state with new slides. If a slide with the same id
+   * already exists, it will be merged with the new slide.
    *
-   * @param slides - Array of new slides to add
+   * @param slides - Array of new slides
    */
   updateSlides(slides: CarouselSlide[]): void {
     this.update((state) => {
       const currentSlides = state.slides || [];
 
-      // Updates the undismissable property for slides that already exist in state
-      const updatedCurrentSlides = currentSlides.map((currentSlide) => {
-        const matchingNewSlide = slides.find((s) => s.id === currentSlide.id);
-        if (matchingNewSlide) {
+      const newSlides = slides.map((slide) => {
+        const existingSlide = currentSlides.find((s) => s.id === slide.id);
+        if (existingSlide) {
           return {
-            ...currentSlide,
-            undismissable: matchingNewSlide.undismissable,
+            ...existingSlide,
+            ...slide,
           };
         }
-        return currentSlide;
+        return slide;
       });
 
-      // Adds new slides that don't already exist in state
-      const newSlides = slides.filter((newSlide) => {
-        return !currentSlides.some(
-          (currentSlide) => currentSlide.id === newSlide.id,
-        );
-      });
-
-      state.slides = [...updatedCurrentSlides, ...newSlides];
+      state.slides = [...newSlides];
     });
   }
 
@@ -639,6 +685,39 @@ export class AppStateController extends BaseController<
    */
   setLastActiveTime(): void {
     this.#resetTimer();
+  }
+
+  /**
+   * Set whether or not there is an update available
+   *
+   * @param isUpdateAvailable - Whether or not there is an update available
+   */
+  setIsUpdateAvailable(isUpdateAvailable: boolean): void {
+    this.update((state) => {
+      state.isUpdateAvailable = isUpdateAvailable;
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has dismissed the update modal
+   *
+   * @param updateModalLastDismissedAt - timestamp of the last time the user has dismissed the update modal.
+   */
+  setUpdateModalLastDismissedAt(updateModalLastDismissedAt: number): void {
+    this.update((state) => {
+      state.updateModalLastDismissedAt = updateModalLastDismissedAt;
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has updated
+   *
+   * @param lastUpdatedAt - timestamp of the last time the user has updated
+   */
+  setLastUpdatedAt(lastUpdatedAt: number): void {
+    this.update((state) => {
+      state.lastUpdatedAt = lastUpdatedAt;
+    });
   }
 
   /**
@@ -929,56 +1008,6 @@ export class AppStateController extends BaseController<
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  /**
-   * Set the interactive replacement token with a url and the old refresh token
-   *
-   * @param opts
-   * @param opts.url
-   * @param opts.oldRefreshToken
-   */
-  showInteractiveReplacementTokenBanner({
-    url,
-    oldRefreshToken,
-  }: {
-    url: string;
-    oldRefreshToken: string;
-  }): void {
-    this.update((state) => {
-      state.interactiveReplacementToken = {
-        url,
-        oldRefreshToken,
-      };
-    });
-  }
-
-  /**
-   * Set the setCustodianDeepLink with the fromAddress and custodyId
-   *
-   * @param opts
-   * @param opts.fromAddress
-   * @param opts.custodyId
-   */
-  setCustodianDeepLink({
-    fromAddress,
-    custodyId,
-  }: {
-    fromAddress: string;
-    custodyId: string;
-  }): void {
-    this.update((state) => {
-      state.custodianDeepLink = { fromAddress, custodyId };
-    });
-  }
-
-  setNoteToTraderMessage(message: string): void {
-    this.update((state) => {
-      state.noteToTraderMessage = message;
-    });
-  }
-
-  ///: END:ONLY_INCLUDE_IF
-
   getSignatureSecurityAlertResponse(
     securityAlertId: string,
   ): SecurityAlertResponse {
@@ -995,6 +1024,22 @@ export class AppStateController extends BaseController<
         ] = securityAlertResponse;
       });
     }
+  }
+
+  getAddressSecurityAlertResponse(
+    address: string,
+  ): ScanAddressResponse | undefined {
+    return this.state.addressSecurityAlertResponses[address.toLowerCase()];
+  }
+
+  addAddressSecurityAlertResponse(
+    address: string,
+    addressSecurityAlertResponse: ScanAddressResponse,
+  ): void {
+    this.update((state) => {
+      state.addressSecurityAlertResponses[address.toLowerCase()] =
+        addressSecurityAlertResponse;
+    });
   }
 
   /**
@@ -1074,5 +1119,33 @@ export class AppStateController extends BaseController<
     }
 
     this.#approvalRequestId = null;
+  }
+
+  getThrottledOriginState(origin: string): ThrottledOrigin {
+    return this.state.throttledOrigins[origin];
+  }
+
+  updateThrottledOriginState(
+    origin: string,
+    throttledOriginState: ThrottledOrigin,
+  ): void {
+    this.update((state) => {
+      state.throttledOrigins[origin] = throttledOriginState;
+    });
+  }
+
+  setEnableEnforcedSimulations(enabled: boolean): void {
+    this.update((state) => {
+      state.enableEnforcedSimulations = enabled;
+    });
+  }
+
+  setEnableEnforcedSimulationsForTransaction(
+    transactionId: string,
+    enabled: boolean,
+  ): void {
+    this.update((state) => {
+      state.enableEnforcedSimulationsForTransactions[transactionId] = enabled;
+    });
   }
 }

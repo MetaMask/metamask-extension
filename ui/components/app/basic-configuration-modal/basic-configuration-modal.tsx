@@ -12,7 +12,11 @@ import {
   FontWeight,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { toggleExternalServices } from '../../../store/actions';
+import {
+  setDataCollectionForMarketing,
+  setParticipateInMetaMetrics,
+  toggleExternalServices,
+} from '../../../store/actions';
 import {
   ModalOverlay,
   ModalContent,
@@ -37,20 +41,22 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getUseExternalServices } from '../../../selectors';
 import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
+import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import {
   hideBasicFunctionalityModal,
   onboardingToggleBasicFunctionalityOff,
 } from '../../../ducks/app/app';
 import { ONBOARDING_PRIVACY_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function BasicConfigurationModal() {
   const t = useI18nContext();
   const [hasAgreed, setHasAgreed] = useState(false);
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -111,6 +117,30 @@ export function BasicConfigurationModal() {
               ? t('basicConfigurationModalDisclaimerOff')
               : t('basicConfigurationModalDisclaimerOn')}
           </Text>
+          {isExternalServicesEnabled ? (
+            <Text variant={TextVariant.bodySm}>
+              {t('basicConfigurationModalDisclaimerOffAdditionalText', [
+                <Text
+                  key="basic-functionality-related-features-1"
+                  variant={TextVariant.bodySmBold}
+                  as="span"
+                >
+                  {t(
+                    'basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst',
+                  )}
+                </Text>,
+                <Text
+                  key="basic-functionality-related-features-2"
+                  variant={TextVariant.bodySmBold}
+                  as="span"
+                >
+                  {t(
+                    'basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast',
+                  )}
+                </Text>,
+              ])}
+            </Text>
+          ) : null}
           {isExternalServicesEnabled && (
             <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
               <Checkbox
@@ -135,6 +165,7 @@ export function BasicConfigurationModal() {
               size={ButtonSize.Lg}
               width={BlockSize.Half}
               variant={ButtonVariant.Secondary}
+              data-testid="basic-configuration-modal-cancel-button"
               onClick={closeModal}
             >
               {t('cancel')}
@@ -144,33 +175,61 @@ export function BasicConfigurationModal() {
               disabled={!hasAgreed && isExternalServicesEnabled}
               width={BlockSize.Half}
               variant={ButtonVariant.Primary}
+              data-testid="basic-configuration-modal-toggle-button"
               onClick={() => {
                 const event = onboardingFlow
                   ? {
                       category: MetaMetricsEventCategory.Onboarding,
                       event: MetaMetricsEventName.SettingsUpdated,
                       properties: {
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         settings_group: 'onboarding_advanced_configuration',
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         settings_type: 'basic_functionality',
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         old_value: true,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         new_value: false,
-                        was_profile_syncing_on: isProfileSyncingEnabled,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        was_profile_syncing_on: isBackupAndSyncEnabled,
                       },
                     }
                   : {
                       category: MetaMetricsEventCategory.Settings,
                       event: MetaMetricsEventName.SettingsUpdated,
                       properties: {
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         settings_group: 'security_privacy',
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         settings_type: 'basic_functionality',
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         old_value: isExternalServicesEnabled,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         new_value: !isExternalServicesEnabled,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         was_notifications_on: isMetamaskNotificationsEnabled,
-                        was_profile_syncing_on: isProfileSyncingEnabled,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        was_profile_syncing_on: isBackupAndSyncEnabled,
                       },
                     };
 
                 trackEvent(event);
+
+                if (isExternalServicesEnabled || onboardingFlow) {
+                  dispatch(setParticipateInMetaMetrics(false));
+                  dispatch(setDataCollectionForMarketing(false));
+                }
 
                 if (onboardingFlow) {
                   dispatch(hideBasicFunctionalityModal());

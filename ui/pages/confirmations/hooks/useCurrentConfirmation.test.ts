@@ -41,10 +41,14 @@ const TRANSACTION_MOCK = {
   type: TransactionType.contractInteraction,
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function arrayToIdMap<T>(array: T[]): Record<string, T> {
   return array.reduce(
     (acc, item) => ({
       ...acc,
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       [(item as any).id]: item,
     }),
@@ -57,6 +61,7 @@ function buildState({
   pendingApprovals,
   transaction,
 }: {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   message?: Partial<AbstractMessage & { msgParams: any }>;
   pendingApprovals?: Partial<ApprovalRequest<Record<string, Json>>>[];
@@ -153,15 +158,6 @@ describe('useCurrentConfirmation', () => {
     const currentConfirmation = runHook({
       pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
       transaction: { ...TRANSACTION_MOCK, type: TransactionType.cancel },
-    });
-
-    expect(currentConfirmation).toBeUndefined();
-  });
-
-  it('returns undefined if transaction has incorrect chain ID', () => {
-    const currentConfirmation = runHook({
-      pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
-      transaction: { ...TRANSACTION_MOCK, chainId: '0x123' },
     });
 
     expect(currentConfirmation).toBeUndefined();

@@ -49,6 +49,8 @@ const REFRESH_INTERVAL = 30;
  * @param options0
  * @param options0.scrollRef - ref to scroll to quote on quote load
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function QuoteCard({ scrollRef }: QuoteCardProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -64,7 +66,11 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
   const [timeLeft, setTimeLeft] = useState<number | undefined>(undefined);
 
   const { formattedEthGasFee, formattedFiatGasFee } = useEthFeeData(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     (bestQuote?.gasParams.maxGas || 0) +
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       Number(hexToDecimal(bestQuote?.approvalNeeded?.gas || '0x0')),
   );
 
@@ -90,6 +96,8 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
           event: MetaMetricsEventName.sendSwapQuoteReceived,
           category: MetaMetricsEventCategory.Send,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             is_first_fetch: isQuoteJustLoaded,
           },
           sensitiveProperties: {

@@ -1,7 +1,10 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getOpenSeaEnabled } from '../../../../../selectors';
+import {
+  getAllChainsToPoll,
+  getOpenSeaEnabled,
+} from '../../../../../selectors';
 import {
   detectNfts,
   setOpenSeaEnabled,
@@ -10,10 +13,13 @@ import {
 import { BannerAlert } from '../../../../component-library';
 import { setShowNftDetectionEnablementToast } from '../../../toast-master/utils';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NFTsDetectionNoticeNFTsTab() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const isDisplayNFTMediaToggleEnabled = useSelector(getOpenSeaEnabled);
+  const allChainIds = useSelector(getAllChainsToPoll);
 
   return (
     <BannerAlert
@@ -28,14 +34,10 @@ export default function NFTsDetectionNoticeNFTsTab() {
         // Show toast
         dispatch(setShowNftDetectionEnablementToast(true));
         // dispatch action to detect nfts
-        dispatch(detectNfts());
+        dispatch(detectNfts(allChainIds));
       }}
     >
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        t('newNFTDetectedInNFTsTabMessage')
-        ///: END:ONLY_INCLUDE_IF
-      }
+      {t('newNFTDetectedInNFTsTabMessage')}
     </BannerAlert>
   );
 }

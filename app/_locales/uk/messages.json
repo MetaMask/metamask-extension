@@ -257,20 +257,8 @@
   "gasLimit": {
     "message": "Ліміт газу"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ліміт газу – максимальна кількість одиниць газу, яку ви бажаєте витратити."
-  },
   "gasLimitTooLow": {
     "message": "Ліміт газу має бути не менше 21000"
-  },
-  "gasPrice": {
-    "message": "Ціна на пальне (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Ціна газу дуже низька"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Ціна на пальне визначає кількість Ether, яку ви готові заплатити за кожну одиницю пального."
   },
   "gasUsed": {
     "message": "Пального використано"
@@ -312,9 +300,6 @@
   "import": {
     "message": "Імпортувати",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Імпортувати обліковий запис"
   },
   "importAccountMsg": {
     "message": "Імпортовані облікові записи не будуть пов'язані з вашою первісно створеною початковою фразою облікового запису MetaMask. Дізнайтесь більше про імпортовані облікові записи"
@@ -647,9 +632,6 @@
   "terms": {
     "message": "Умови використання"
   },
-  "tips": {
-    "message": "Чайові"
-  },
   "to": {
     "message": "Кому"
   },
@@ -728,9 +710,6 @@
   "unlock": {
     "message": "Розблокувати"
   },
-  "unlockMessage": {
-    "message": "Децентралізована мережа очікує"
-  },
   "urlErrorMsg": {
     "message": "URIs вимагають відповідного префікса HTTP/HTTPS."
   },
@@ -754,8 +733,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Ваша секретна seed-фраза"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Ціна пального на прискорення - нуль"
   }
 }

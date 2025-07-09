@@ -167,6 +167,7 @@ describe('Contract Interaction Confirmation', () => {
     const MINT_NFT_HEX_SIG = '0x3b4b1381';
     mock4byte(MINT_NFT_HEX_SIG);
     mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
@@ -191,7 +192,11 @@ describe('Contract Interaction Confirmation', () => {
 
     await act(async () => {
       await integrationTestRender({
-        preloadedState: mockedMetaMaskState,
+        preloadedState: {
+          ...mockedMetaMaskState,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
+        },
         backgroundConnection: backgroundConnectionMocked,
       });
     });
@@ -244,7 +249,12 @@ describe('Contract Interaction Confirmation', () => {
             properties: {
               action: 'Confirm Screen',
               location: MetaMetricsEventLocation.Transaction,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               transaction_type: TransactionType.contractInteraction,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hd_entropy_index: 0,
             },
           }),
         ]),
@@ -319,15 +329,13 @@ describe('Contract Interaction Confirmation', () => {
     const gasFeesSection = await screen.findByTestId('gas-fee-section');
     expect(gasFeesSection).toBeInTheDocument();
 
-    const editGasFeesRow = await within(gasFeesSection).findByTestId(
-      'edit-gas-fees-row',
-    );
+    const editGasFeesRow =
+      await within(gasFeesSection).findByTestId('edit-gas-fees-row');
     expect(editGasFeesRow).toHaveTextContent(tEn('networkFee') as string);
 
-    const firstGasField = await within(editGasFeesRow).findByTestId(
-      'first-gas-field',
-    );
-    expect(firstGasField).toHaveTextContent('0.0001 SepoliaETH');
+    const firstGasField =
+      await within(editGasFeesRow).findByTestId('first-gas-field');
+    expect(firstGasField).toHaveTextContent('0.0001');
     expect(editGasFeesRow).toContainElement(
       await screen.findByTestId('edit-gas-fee-icon'),
     );
@@ -337,14 +345,15 @@ describe('Contract Interaction Confirmation', () => {
     );
     expect(gasFeeSpeed).toHaveTextContent(tEn('speed') as string);
 
-    const gasTimingTime = await within(gasFeeSpeed).findByTestId(
-      'gas-timing-time',
-    );
+    const gasTimingTime =
+      await within(gasFeeSpeed).findByTestId('gas-timing-time');
     expect(gasTimingTime).toHaveTextContent('~0 sec');
   });
 
   it('sets the preference showConfirmationAdvancedDetails to true when advanced details button is clicked', async () => {
     mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       createMockImplementation({ setPreference: {} }),
     );
 
@@ -384,6 +393,8 @@ describe('Contract Interaction Confirmation', () => {
 
   it('displays the advanced transaction details section', async () => {
     mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       createMockImplementation({ setPreference: {} }),
     );
 
@@ -429,7 +440,7 @@ describe('Contract Interaction Confirmation', () => {
     const maxFee = await screen.findByTestId('gas-fee-details-max-fee');
     expect(gasFeesSection).toContainElement(maxFee);
     expect(maxFee).toHaveTextContent(tEn('maxFee') as string);
-    expect(maxFee).toHaveTextContent('0.0023 SepoliaETH');
+    expect(maxFee).toHaveTextContent('0.0023');
 
     const nonceSection = await screen.findByTestId(
       'advanced-details-nonce-section',
@@ -490,5 +501,49 @@ describe('Contract Interaction Confirmation', () => {
     const bodyText = tEn('blockaidDescriptionTransferFarming') as string;
     expect(await screen.findByText(headingText)).toBeInTheDocument();
     expect(await screen.findByText(bodyText)).toBeInTheDocument();
+  });
+
+  it('tracks external link clicked in transaction metrics', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithMaliciousUnapprovedContractInteraction(
+        account.address,
+      );
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    fireEvent.click(await screen.findByTestId('disclosure'));
+    expect(
+      await screen.findByTestId('alert-provider-report-link'),
+    ).toBeInTheDocument();
+
+    fireEvent.click(await screen.findByTestId('alert-provider-report-link'));
+
+    fireEvent.click(await screen.findByTestId('confirm-footer-cancel-button'));
+
+    expect(
+      mockedBackgroundConnection.submitRequestToBackground,
+    ).toHaveBeenCalledWith(
+      'updateEventFragment',
+      expect.arrayContaining([
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            external_link_clicked: 'security_alert_support_link',
+          }),
+        }),
+      ]),
+    );
   });
 });

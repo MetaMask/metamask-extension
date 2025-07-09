@@ -5,6 +5,9 @@ class OnboardingMetricsPage {
 
   private readonly iAgreeButton = '[data-testid="metametrics-i-agree"]';
 
+  private readonly dataCollectionForMarketingCheckbox =
+    '[data-testid="metametrics-data-collection-checkbox"]';
+
   private readonly metametricsMessage = {
     text: 'Help us improve MetaMask',
     tag: 'h2',
@@ -16,6 +19,8 @@ class OnboardingMetricsPage {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -38,6 +43,10 @@ class OnboardingMetricsPage {
 
   async clickIAgreeButton(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.iAgreeButton);
+  }
+
+  async clickDataCollectionForMarketingCheckbox(): Promise<void> {
+    await this.driver.clickElement(this.dataCollectionForMarketingCheckbox);
   }
 }
 

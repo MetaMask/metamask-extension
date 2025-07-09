@@ -1,15 +1,11 @@
 import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  defaultGanacheOptions,
-  unlockWallet,
-  withFixtures,
-  largeDelayMs,
-} from '../../helpers';
+import { withFixtures, largeDelayMs } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Token List Sorting', function () {
   const mainnetChainId = CHAIN_IDS.MAINNET;
@@ -18,8 +14,7 @@ describe('Token List Sorting', function () {
 
   const testFixtures = {
     fixtures: new FixtureBuilder({ inputChainId: mainnetChainId }).build(),
-    ganacheOptions: {
-      ...defaultGanacheOptions,
+    localNodeOptions: {
       chainId: parseInt(mainnetChainId, 16),
     },
   };
@@ -31,13 +26,14 @@ describe('Token List Sorting', function () {
         title: (this as Context).test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
 
         await homePage.check_pageIsLoaded();
-        await assetListPage.importCustomToken(
+        await assetListPage.importCustomTokenByChain(
+          CHAIN_IDS.MAINNET,
           customTokenAddress,
           customTokenSymbol,
         );

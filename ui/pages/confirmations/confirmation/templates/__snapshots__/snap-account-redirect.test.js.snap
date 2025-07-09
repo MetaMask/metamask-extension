@@ -6,7 +6,7 @@ exports[`snap-account-redirect confirmation should match snapshot 1`] = `
     class="confirmation-page"
   >
     <div
-      class="mm-box confirmation-page__content mm-box--padding-4"
+      class="mm-box confirmation-page__content mm-box--padding-0"
       style="overflow-y: auto;"
     >
       <div
@@ -49,7 +49,7 @@ exports[`snap-account-redirect confirmation should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--height-full"
+          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--height-full"
         >
           <div
             class="mm-box mm-box--padding-top-4 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
@@ -58,7 +58,7 @@ exports[`snap-account-redirect confirmation should match snapshot 1`] = `
               class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--align-items-center"
             >
               <h2
-                class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--color-text-default"
+                class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-bottom-2 mm-box--color-text-default"
                 data-testid="snap-account-redirect-content-title"
               >
                 Finish signing
@@ -143,13 +143,13 @@ exports[`snap-account-redirect confirmation should match snapshot 1`] = `
         style="border-top: 0;"
       >
         <button
-          class="button btn--rounded btn-secondary"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
           data-testid="confirmation-cancel-button"
         >
           Close
         </button>
         <button
-          class="button btn--rounded btn-primary"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           data-testid="confirmation-submit-button"
         >
           Go to site

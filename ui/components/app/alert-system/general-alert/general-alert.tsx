@@ -31,6 +31,8 @@ export type GeneralAlertProps = {
   children?: React.ReactNode;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function ReportLink({
   reportUrl,
   provider,
@@ -45,6 +47,7 @@ function ReportLink({
     <Text marginTop={1} display={Display.Flex}>
       {t('somethingDoesntLookRight', [
         <ButtonLink
+          data-testid="alert-provider-report-link"
           key={`security-provider-button-supporturl-${provider}`}
           size={ButtonLinkSize.Inherit}
           href={reportUrl ?? ZENDESK_URLS.SUPPORT_URL}
@@ -58,6 +61,8 @@ function ReportLink({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function AlertDetails({
   details,
   reportUrl,
@@ -103,6 +108,8 @@ function AlertDetails({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function GeneralAlert({
   description,
   details,

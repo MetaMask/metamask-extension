@@ -1,4 +1,3 @@
-
 <!--
 Please submit this PR as a draft initially.
 Do not mark it as "Ready for review" until the template has been completely filled out, and PR status checks have passed at least once.
@@ -13,6 +12,22 @@ Write a short description of the changes included in this pull request, also inc
 -->
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/MetaMask/metamask-extension/pull/PR?quickstart=1)
+
+## **Changelog**
+
+<!--
+If this PR is not End-User-Facing and should not show up in the CHANGELOG, you can choose to either:
+1. Write `CHANGELOG entry: null`
+2. Label with `no-changelog`
+
+If this PR is End-User-Facing, please write a short User-Facing description in the past tense like:
+`CHANGELOG entry: Added a new tab for users to see their NFTs`
+`CHANGELOG entry: Fixed a bug that was causing some NFTs to flicker`
+
+(This helps the Release Engineer do their job more quickly and accurately)
+-->
+
+CHANGELOG entry:
 
 ## **Related issues**
 

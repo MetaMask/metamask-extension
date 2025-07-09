@@ -145,9 +145,6 @@
   "gasLimitTooLow": {
     "message": "எரிவாயு வரம்பு குறைந்தது 21000 ஆக இருக்க வேண்டும்"
   },
-  "gasPrice": {
-    "message": "எரிவாயு விலை (GWEI)"
-  },
   "here": {
     "message": "இங்கே",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -164,9 +161,6 @@
   "import": {
     "message": "இறக்குமதி செய்",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "கணக்கை இறக்குமதி செய்க"
   },
   "importAccountMsg": {
     "message": " இறக்குமதி செய்யப்பட்ட கணக்கு உங்கள் முதலில் உருவாக்கப்பட்ட மெட்டாமாஸ்க் கணக்கு விதை மூலம் தொடர்புடையதாக இருக்காது. இறக்குமதி செய்யப்பட்ட கணக்குகள் பற்றி மேலும் அறிக "

@@ -257,20 +257,8 @@
   "gasLimit": {
     "message": "محدوده گاز"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "محدوده گاز حد اکثر تعداد واحدات گاز است که میخواهید مصرف نمایید."
-  },
   "gasLimitTooLow": {
     "message": "حدود گاز باید حد اقل 21000 باشد"
-  },
-  "gasPrice": {
-    "message": "قیمت گاز (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "قیمت گاز خیلی کم است"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "قیمت گاز مبلغ ایتر را که تصمیم پرداخت برای هر واحد گاز را داشته باشید، مشخص میکند."
   },
   "gasUsed": {
     "message": "گاز استفاده شد"
@@ -312,9 +300,6 @@
   "import": {
     "message": "وارد کردن",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "وارد سازی حساب"
   },
   "importAccountMsg": {
     "message": "حساب های وارد شده با عبارت بازیاب حساب MetaMask ایجاد شده اصلی تان یکجا نمیباشد. در مورد حساب های وارد شده بیشتر بدانید"
@@ -647,9 +632,6 @@
   "terms": {
     "message": "شرایط استفاده"
   },
-  "tips": {
-    "message": "انعام"
-  },
   "to": {
     "message": "به"
   },
@@ -728,9 +710,6 @@
   "unlock": {
     "message": "باز کردن قفل"
   },
-  "unlockMessage": {
-    "message": "وب غیر متمرکز شده انتظار میکشد"
-  },
   "urlErrorMsg": {
     "message": "URl ها نیازمند پیشوند مناسب HTTP/HTTPS اند."
   },
@@ -754,8 +733,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "عبارت بازیاب شخصی شما"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "قیمت صفر گاز بسوی سرعت"
   }
 }

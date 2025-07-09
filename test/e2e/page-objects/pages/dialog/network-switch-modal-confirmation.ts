@@ -10,10 +10,14 @@ class NetworkSwitchModalConfirmation {
     tag: 'h3',
   };
 
+  private readonly seeDetailsButton = { tag: 'a', text: 'See details' };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -33,6 +37,36 @@ class NetworkSwitchModalConfirmation {
   async clickApproveButton(): Promise<void> {
     console.log('Click Approve Button');
     await this.driver.clickElementAndWaitToDisappear(this.submitButton);
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_networkInformationIsDisplayed({
+    currencySymbol,
+    networkURL,
+    chainId,
+    networkName,
+    blockExplorerURL,
+  }: {
+    currencySymbol: string;
+    networkURL: string;
+    chainId: string;
+    networkName: string;
+    blockExplorerURL: string;
+  }): Promise<void> {
+    console.log(
+      'Check network information is correctly displayed on network switch modal',
+    );
+    await this.driver.waitForMultipleSelectors([
+      { text: networkURL, tag: 'dd' },
+      { text: currencySymbol, tag: 'dd' },
+    ]);
+    await this.driver.clickElement(this.seeDetailsButton);
+    await this.driver.waitForMultipleSelectors([
+      { text: chainId, tag: 'dd' },
+      { text: networkName, tag: 'dd' },
+      { text: blockExplorerURL, tag: 'dd' },
+    ]);
   }
 }
 

@@ -257,20 +257,8 @@
   "gasLimit": {
     "message": "Ograničenje goriva"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ograničenje za gorivo predstavlja najveći broj jedinica goriva koje ste spremi potrošiti."
-  },
   "gasLimitTooLow": {
     "message": "Ograničenje za gorivo mora biti najmanje 21000"
-  },
-  "gasPrice": {
-    "message": "Cijena goriva (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Iznimno niska cijena goriva"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Cijena goriva odnosi se na vrijednost Ether koju ste spremni platiti za svaku jedinicu goriva."
   },
   "gasUsed": {
     "message": "Upotrijebljeno gorivo"
@@ -312,9 +300,6 @@
   "import": {
     "message": "Uvezi",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Uvezi račun"
   },
   "importAccountMsg": {
     "message": "Uvezeni se računi ne pridružuju vašoj izvorno stvorenoj početnoj rečenici za MetaMask. Saznajte više o uvezenim računima"
@@ -644,9 +629,6 @@
   "terms": {
     "message": "Odredbe uporabe"
   },
-  "tips": {
-    "message": "Napojnice"
-  },
   "to": {
     "message": "Primatelj"
   },
@@ -722,9 +704,6 @@
   "unlock": {
     "message": "Otključaj"
   },
-  "unlockMessage": {
-    "message": "Decentralizirani internet čeka"
-  },
   "urlErrorMsg": {
     "message": "URI-jevima se zahtijeva prikladan prefiks HTTP/HTTPS."
   },
@@ -748,8 +727,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Vaša privatna početna rečenica"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nulta cijena goriva kod ubrzavanja"
   }
 }

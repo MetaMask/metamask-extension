@@ -22,6 +22,7 @@ import {
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getSelectedAccount,
+  getHDEntropyIndex,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -41,6 +42,7 @@ import {
 export const HiddenAccountList = ({ onClose }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const dispatch = useDispatch();
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
@@ -119,6 +121,7 @@ export const HiddenAccountList = ({ onClose }) => {
                       event: MetaMetricsEventName.NavAccountSwitched,
                       properties: {
                         location: 'Main Menu',
+                        hd_entropy_index: hdEntropyIndex,
                       },
                     });
                     dispatch(setSelectedAccount(account.address));
@@ -130,7 +133,7 @@ export const HiddenAccountList = ({ onClose }) => {
                   connectedAvatar={connectedSite?.iconUrl}
                   menuType={AccountListItemMenuTypes.Account}
                   isPinned={Boolean(account.pinned)}
-                  isHidden={Boolean(account.hidden)}
+                  isHidden
                 />
               </Box>
             );

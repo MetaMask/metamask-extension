@@ -1,11 +1,14 @@
+import { BtcScope, SolScope } from '@metamask/keyring-api';
 import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
+import { KnownCaipNamespace } from '@metamask/utils';
 import {
   NetworkControllerStateChangeEvent,
   NetworkState,
 } from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import type { CaipChainId, CaipNamespace, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
-import { TEST_CHAINS } from '../../../shared/constants/network';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 
 // Unique name for the controller
 const controllerName = 'NetworkOrderController';
@@ -14,12 +17,18 @@ const controllerName = 'NetworkOrderController';
  * Information about an ordered network.
  */
 export type NetworksInfo = {
-  networkId: Hex; // The network's chain id
+  networkId: CaipChainId; // The network's chain id
 };
+
+export type EnabledNetworksByChainId = Record<
+  CaipNamespace,
+  Record<string, boolean>
+>;
 
 // State shape for NetworkOrderController
 export type NetworkOrderControllerState = {
   orderedNetworkList: NetworksInfo[];
+  enabledNetworkMap: EnabledNetworksByChainId;
 };
 
 // Describes the structure of a state change event
@@ -50,11 +59,25 @@ export type NetworkOrderControllerMessenger = RestrictedMessenger<
 // Default state for the controller
 const defaultState: NetworkOrderControllerState = {
   orderedNetworkList: [],
+  enabledNetworkMap: {
+    [KnownCaipNamespace.Eip155]: {
+      [CHAIN_IDS.MAINNET]: true,
+      [CHAIN_IDS.LINEA_MAINNET]: true,
+      [CHAIN_IDS.BASE]: true,
+    },
+    [KnownCaipNamespace.Solana]: {
+      [SolScope.Mainnet]: true,
+    },
+  },
 };
 
 // Metadata for the controller state
 const metadata = {
   orderedNetworkList: {
+    persist: true,
+    anonymous: true,
+  },
+  enabledNetworkMap: {
     persist: true,
     anonymous: true,
   },
@@ -112,10 +135,15 @@ export class NetworkOrderController extends BaseController<
   }: NetworkState) {
     this.update((state) => {
       // Filter out testnets, which are in the state but not orderable
-      const chainIds = Object.keys(networkConfigurationsByChainId).filter(
+      const hexChainIds = Object.keys(networkConfigurationsByChainId).filter(
         (chainId) =>
           !TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number]),
       ) as Hex[];
+      const chainIds: CaipChainId[] = hexChainIds.map(toEvmCaipChainId);
+      const nonEvmChainIds: CaipChainId[] = [
+        BtcScope.Mainnet,
+        SolScope.Mainnet,
+      ];
 
       const newNetworks = chainIds
         .filter(
@@ -128,7 +156,14 @@ export class NetworkOrderController extends BaseController<
 
       state.orderedNetworkList = state.orderedNetworkList
         // Filter out deleted networks
-        .filter(({ networkId }) => chainIds.includes(networkId))
+        .filter(
+          ({ networkId }) =>
+            chainIds.includes(networkId) ||
+            // Since Bitcoin and Solana are not part of the @metamask/network-controller, we have
+            // to add a second check to make sure it is not filtered out.
+            // TODO: Update this logic to @metamask/multichain-network-controller once all networks are migrated.
+            nonEvmChainIds.includes(networkId),
+        )
         // Append new networks to the end
         .concat(newNetworks);
     });
@@ -140,11 +175,37 @@ export class NetworkOrderController extends BaseController<
    * @param networkList - The list of networks to update in the state.
    */
 
-  updateNetworksList(chainIds: Hex[]) {
+  updateNetworksList(chainIds: CaipChainId[]) {
     this.update((state) => {
       state.orderedNetworkList = chainIds.map((chainId) => ({
         networkId: chainId,
       }));
+    });
+  }
+
+  /**
+   * Sets the enabled networks in the controller state.
+   * This method updates the enabledNetworkMap to mark specified networks as enabled.
+   * It can handle both a single chain ID or an array of chain IDs.
+   *
+   * @param chainIds - A single CaipChainId (e.g. 'eip155:1') or an array of chain IDs
+   * to be enabled. All other networks will be implicitly disabled.
+   * @param networkId - The CaipChainId of the currently selected network
+   */
+  setEnabledNetworks(chainIds: string | string[], networkId: CaipChainId) {
+    if (!networkId) {
+      throw new Error('networkId is required to set enabled networks');
+    }
+    if (!chainIds) {
+      throw new Error('chainIds is required to set enabled networks');
+    }
+    const ids = Array.isArray(chainIds) ? chainIds : [chainIds];
+
+    this.update((state) => {
+      const enabledNetworks = Object.fromEntries(ids.map((id) => [id, true]));
+
+      // Add the enabled networks to the mapping for the specified network type
+      state.enabledNetworkMap[networkId] = enabledNetworks;
     });
   }
 }

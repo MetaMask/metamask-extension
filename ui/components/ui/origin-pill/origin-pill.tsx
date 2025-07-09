@@ -16,9 +16,16 @@ import { AvatarFavicon, Box, Text } from '../../component-library';
 type OriginPillProps = {
   origin: string;
   dataTestId: string;
+  style?: React.CSSProperties;
 };
 
-export default function OriginPill({ origin, dataTestId }: OriginPillProps) {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export default function OriginPill({
+  origin,
+  dataTestId,
+  style,
+}: OriginPillProps) {
   const subjectMetadata = useSelector(getSubjectMetadata);
 
   const { iconUrl: siteImage = '' } = subjectMetadata[origin] || {};
@@ -37,6 +44,7 @@ export default function OriginPill({ origin, dataTestId }: OriginPillProps) {
       borderRadius={BorderRadius.pill}
       borderWidth={1}
       data-testid={dataTestId}
+      style={style}
     >
       <AvatarFavicon
         src={siteImage}

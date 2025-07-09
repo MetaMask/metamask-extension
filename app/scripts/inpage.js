@@ -35,7 +35,17 @@ import log from 'loglevel';
 import { v4 as uuid } from 'uuid';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/initializeInpageProvider';
+import ObjectMultiplex from '@metamask/object-multiplex';
+import { pipeline } from 'readable-stream';
+
+import {
+  getMultichainClient,
+  getDefaultTransport,
+} from '@metamask/multichain-api-client';
+import { registerSolanaWalletStandard } from '@metamask/solana-wallet-standard';
+
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import { METAMASK_EIP_1193_PROVIDER } from './constants/stream';
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -56,8 +66,17 @@ if (shouldInjectProvider()) {
     target: CONTENT_SCRIPT,
   });
 
+  const mux = new ObjectMultiplex();
+  pipeline(metamaskStream, mux, metamaskStream, (error) => {
+    let warningMsg = `Lost connection to "${METAMASK_EIP_1193_PROVIDER}".`;
+    if (error?.stack) {
+      warningMsg += `\n${error.stack}`;
+    }
+    console.warn(warningMsg);
+  });
+
   initializeProvider({
-    connectionStream: metamaskStream,
+    connectionStream: mux.createStream(METAMASK_EIP_1193_PROVIDER),
     logger: log,
     shouldShimWeb3: true,
     providerInfo: {
@@ -66,5 +85,13 @@ if (shouldInjectProvider()) {
       icon: process.env.METAMASK_BUILD_ICON,
       rdns: process.env.METAMASK_BUILD_APP_ID,
     },
+  });
+
+  const multichainClient = getMultichainClient({
+    transport: getDefaultTransport(),
+  });
+  registerSolanaWalletStandard({
+    client: multichainClient,
+    walletName: process.env.METAMASK_BUILD_NAME,
   });
 }

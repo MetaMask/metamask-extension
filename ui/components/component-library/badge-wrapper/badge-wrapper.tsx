@@ -2,9 +2,8 @@ import React from 'react';
 import classnames from 'classnames';
 
 import { Display } from '../../../helpers/constants/design-system';
-import { Box } from '..';
-import type { BoxProps, PolymorphicRef } from '..';
 
+import { Box, type BoxProps, type PolymorphicRef } from '../box';
 import {
   BadgeWrapperPosition,
   BadgeWrapperAnchorElementShape,
@@ -13,6 +12,8 @@ import {
 } from './badge-wrapper.types';
 
 export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       children,
@@ -42,6 +43,8 @@ export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
             [`mm-badge-wrapper__badge-container--${anchorElementShape}-${position}`]:
               !positionObj,
           },
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           badgeContainerProps?.className || '',
         )}
         style={{ ...positionObj }}

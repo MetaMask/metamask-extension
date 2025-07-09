@@ -13,22 +13,42 @@ export enum TraceName {
   AccountOverviewAssetListTab = 'Account Overview Asset List Tab',
   AccountOverviewNftsTab = 'Account Overview Nfts Tab',
   AccountOverviewActivityTab = 'Account Overview Activity Tab',
+  AccountOverviewDeFiTab = 'Account Overview DeFi Tab',
+  AssetDetails = 'Asset Details',
   BackgroundConnect = 'Background Connect',
+  BridgeBalancesUpdated = 'Bridge Balances Updated',
+  BridgeViewLoaded = 'Bridge View Loaded',
+  ConnectPage = 'Connect Page',
+  CreateAccount = 'Create Account',
   DeveloperTest = 'Developer Test',
+  DisconnectAllModal = 'Disconnect All Modal',
   FirstRender = 'First Render',
   GetState = 'Get State',
+  ImportNfts = 'Import Nfts',
+  ImportTokens = 'Import Tokens',
   InitialActions = 'Initial Actions',
   LazyLoadComponent = 'Lazy Load Component',
   LoadScripts = 'Load Scripts',
   Middleware = 'Middleware',
   NestedTest1 = 'Nested Test 1',
   NestedTest2 = 'Nested Test 2',
+  NetworkList = 'Network List',
   NotificationDisplay = 'Notification Display',
   PPOMValidation = 'PPOM Validation',
+  ReceiveModal = 'Receive Modal',
+  SendCompleted = 'Send Completed',
   SetupStore = 'Setup Store',
   Signature = 'Signature',
+  SwapQuotesFetched = 'Swap Quotes Fetched',
+  SwapViewLoaded = 'Swap View Loaded',
   Transaction = 'Transaction',
   UIStartup = 'UI Startup',
+  RevealSeed = 'Reveal Seed',
+  ImportSrp = 'Import Srp',
+  AddAccount = 'Add Account',
+  LoadCollectibles = 'Load Collectibles',
+  GetAssetHistoricalPrices = 'Get Asset Historical Prices',
+  OnFinishedTransaction = 'On Finished Transaction',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');
@@ -57,6 +77,8 @@ export type TraceContext = unknown;
 /**
  * A callback function that can be traced.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TraceCallback<T> = (context?: TraceContext) => T;
 
 /**
@@ -117,6 +139,8 @@ export type EndTraceRequest = {
   timestamp?: number;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function trace<T>(request: TraceRequest, fn: TraceCallback<T>): T;
 
 export function trace(request: TraceRequest): TraceContext;
@@ -131,6 +155,8 @@ export function trace(request: TraceRequest): TraceContext;
  * @param fn - The optional callback to record the duration of.
  * @returns The context of the trace, or the result of the callback if provided.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function trace<T>(
   request: TraceRequest,
   fn?: TraceCallback<T>,
@@ -169,6 +195,8 @@ export function endTrace(request: EndTraceRequest) {
   logTrace(pendingRequest, startTime, endTime);
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
   const { name } = request;
 
@@ -228,6 +256,8 @@ function startTrace(request: TraceRequest): TraceContext {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
@@ -314,6 +344,8 @@ function initSpan(_span: Sentry.Span, request: TraceRequest) {
   }
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function tryCatchMaybePromise<T>(
   tryFn: () => T,
   catchFn: (error: unknown) => void,
@@ -343,6 +375,8 @@ function tryCatchMaybePromise<T>(
   return undefined;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function sentryStartSpan<T>(
   spanOptions: StartSpanOptions,
   callback: (span: Sentry.Span | null) => T,
@@ -356,6 +390,8 @@ function sentryStartSpan<T>(
   return actual(spanOptions, callback);
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function sentryStartSpanManual<T>(
   spanOptions: StartSpanOptions,
   callback: (span: Sentry.Span | null) => T,
@@ -369,6 +405,8 @@ function sentryStartSpanManual<T>(
   return actual(spanOptions, callback);
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function sentryWithIsolationScope<T>(callback: (scope: Sentry.Scope) => T): T {
   const actual = globalThis.sentry?.withIsolationScope;
 

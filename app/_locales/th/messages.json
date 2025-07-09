@@ -133,9 +133,6 @@
   "gasLimitTooLow": {
     "message": "วงเงินแก็สต้องอย่างน้อย 21000"
   },
-  "gasPrice": {
-    "message": "ราคาแก๊ส (GWEI)"
-  },
   "general": {
     "message": "ทั่วไป"
   },
@@ -152,9 +149,6 @@
   "import": {
     "message": "นำเข้า",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "นำเข้าบัญชี"
   },
   "importAccountMsg": {
     "message": "บัญชีที่นำเข้าจะไม่ถูกรวมกับบัญชีที่สร้างด้วยคำเเริ่มต้นบนเมต้ามาร์สในตอนแรก เรียนรู้เพิ่มเติมเกี่ยวกับบัญชีที่นำเข้า"

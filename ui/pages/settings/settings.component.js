@@ -22,6 +22,9 @@ import {
   DEFAULT_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   SNAP_SETTINGS_ROUTE,
+  REVEAL_SRP_LIST_ROUTE,
+  BACKUPANDSYNC_ROUTE,
+  SECURITY_PASSWORD_CHANGE_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -48,6 +51,7 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { SnapIcon } from '../../components/app/snaps/snap-icon';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
+import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
@@ -57,6 +61,9 @@ import DeveloperOptionsTab from './developer-options-tab';
 import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
+import { RevealSrpList } from './security-tab/reveal-srp-list';
+import BackupAndSyncTab from './backup-and-sync-tab';
+import ChangePassword from './security-tab/change-password';
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -70,10 +77,12 @@ class SettingsPage extends PureComponent {
     initialBreadCrumbKey: PropTypes.string,
     initialBreadCrumbRoute: PropTypes.string,
     isAddressEntryPage: PropTypes.bool,
+    isPasswordChangePage: PropTypes.bool,
     isPopup: PropTypes.bool,
+    isRevealSrpListPage: PropTypes.bool,
+    isSeedlessPasswordOutdated: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
-    remoteFeatureFlags: PropTypes.object.isRequired,
     settingsPageSnaps: PropTypes.array,
     snapSettingsTitle: PropTypes.string,
     toggleNetworkMenu: PropTypes.func.isRequired,
@@ -122,24 +131,36 @@ class SettingsPage extends PureComponent {
       currentPath,
       mostRecentOverviewPage,
       addNewNetwork,
+      isPasswordChangePage,
+      isRevealSrpListPage,
+      isSeedlessPasswordOutdated,
     } = this.props;
 
-    const { searchResults, isSearchList, searchText } = this.state;
     const { t } = this.context;
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+    const isSearchHidden = isRevealSrpListPage || isPasswordChangePage;
 
     return (
       <div
-        className={classnames('main-container settings-page', {
-          'settings-page--selected': currentPath !== SETTINGS_ROUTE,
-        })}
+        className={classnames(
+          'main-container main-container--has-shadow settings-page',
+          {
+            'settings-page--selected': currentPath !== SETTINGS_ROUTE,
+          },
+        )}
       >
+        {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
         <Box
           className="settings-page__header"
           padding={4}
           paddingBottom={[2, 4]}
         >
-          <div className="settings-page__header__title-container">
+          <div
+            className={classnames('settings-page__header__title-container', {
+              'settings-page__header__title-container--hide-search':
+                isSearchHidden,
+            })}
+          >
             {isPopup && (
               <>
                 {currentPath === SETTINGS_ROUTE ? (
@@ -163,27 +184,7 @@ class SettingsPage extends PureComponent {
               </>
             )}
             {this.renderTitle()}
-            <Box
-              className="settings-page__header__title-container__search"
-              display={[Display.Block]}
-            >
-              <SettingsSearch
-                onSearch={({ searchQuery = '', results = [] }) => {
-                  this.setState({
-                    isSearchList: searchQuery !== '',
-                    searchResults: results,
-                    searchText: searchQuery,
-                  });
-                }}
-                settingsRoutesList={getSettingsRoutes()}
-              />
-              {isSearchList && searchText.length >= 3 && (
-                <SettingsSearchList
-                  results={searchResults}
-                  onClickSetting={(setting) => this.handleClickSetting(setting)}
-                />
-              )}
-            </Box>
+            {this.renderSearch()}
             <ButtonIcon
               className="settings-page__header__title-container__close-button"
               iconName={IconName.Close}
@@ -235,6 +236,39 @@ class SettingsPage extends PureComponent {
           {titleText}
         </Text>
       </div>
+    );
+  }
+
+  renderSearch() {
+    const { isSearchList, searchText, searchResults } = this.state;
+    const { isRevealSrpListPage, isPasswordChangePage } = this.props;
+
+    if (isRevealSrpListPage || isPasswordChangePage) {
+      return null;
+    }
+
+    return (
+      <Box
+        className="settings-page__header__title-container__search"
+        display={[Display.Block]}
+      >
+        <SettingsSearch
+          onSearch={({ searchQuery = '', results = [] }) => {
+            this.setState({
+              isSearchList: searchQuery !== '',
+              searchResults: results,
+              searchText: searchQuery,
+            });
+          }}
+          settingsRoutesList={getSettingsRoutes()}
+        />
+        {isSearchList && searchText.length >= 3 && (
+          <SettingsSearchList
+            results={searchResults}
+            onClickSetting={(setting) => this.handleClickSetting(setting)}
+          />
+        )}
+      </Box>
     );
   }
 
@@ -335,13 +369,18 @@ class SettingsPage extends PureComponent {
         key: ADVANCED_ROUTE,
       },
       {
+        content: t('backupAndSync'),
+        icon: <Icon name={IconName.SecurityTime} />,
+        key: BACKUPANDSYNC_ROUTE,
+      },
+      {
         content: t('contacts'),
         icon: <Icon name={IconName.Book} />,
         key: CONTACT_LIST_ROUTE,
       },
       {
         content: t('securityAndPrivacy'),
-        icon: <i className="fa fa-lock" />,
+        icon: <Icon name={IconName.Lock} />,
         key: SECURITY_ROUTE,
       },
       {
@@ -410,18 +449,13 @@ class SettingsPage extends PureComponent {
             />
           )}
         />
-        <Route
-          exact
-          path={ABOUT_US_ROUTE}
-          render={() => (
-            <InfoTab remoteFeatureFlags={this.props.remoteFeatureFlags} />
-          )}
-        />
+        <Route exact path={ABOUT_US_ROUTE} render={() => <InfoTab />} />
         <Route
           path={`${SNAP_SETTINGS_ROUTE}/:snapId`}
           component={SnapSettingsRenderer}
         />
         <Route exact path={ADVANCED_ROUTE} component={AdvancedTab} />
+        <Route exact path={BACKUPANDSYNC_ROUTE} component={BackupAndSyncTab} />
         <Route
           exact
           path={ADD_NETWORK_ROUTE}
@@ -467,6 +501,12 @@ class SettingsPage extends PureComponent {
           exact
           path={`${CONTACT_VIEW_ROUTE}/:id`}
           component={ContactListTab}
+        />
+        <Route exact path={REVEAL_SRP_LIST_ROUTE} component={RevealSrpList} />
+        <Route
+          exact
+          path={SECURITY_PASSWORD_CHANGE_ROUTE}
+          component={ChangePassword}
         />
         <Route
           render={(routeProps) => (

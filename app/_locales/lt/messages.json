@@ -257,20 +257,8 @@
   "gasLimit": {
     "message": "Dujų apribojimas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Dujų apribojimas yra maksimalus dujų vienetų, kuriuos pageidaujate išleisti, skaičius."
-  },
   "gasLimitTooLow": {
     "message": "Dujų apribojimas turi būti bent 21000"
-  },
-  "gasPrice": {
-    "message": "Dujų kaina (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Dujų kaina ypatingai maža"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Dujų kaina nurodo eterių sumą, kurią pageidaujate sumokėti už kiekvieną dujų vienetą."
   },
   "gasUsed": {
     "message": "Sunaudotos dujos"
@@ -312,9 +300,6 @@
   "import": {
     "message": "Importuoti",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importuoti paskyrą"
   },
   "importAccountMsg": {
     "message": "Importuotos paskyros nebus susietos su pirmiau sukurta „MetaMask“ paskyros atkūrimo fraze. Sužinokite daugiau apie importuotas paskyras"
@@ -647,9 +632,6 @@
   "terms": {
     "message": "Naudojimo sąlygos"
   },
-  "tips": {
-    "message": "Arbatpinigiai"
-  },
   "to": {
     "message": "Iki"
   },
@@ -728,9 +710,6 @@
   "unlock": {
     "message": "Atrakinti"
   },
-  "unlockMessage": {
-    "message": "Laukiančios decentralizuotos svetainės"
-  },
   "urlErrorMsg": {
     "message": "URI reikia atitinkamo HTTP/HTTPS priešdėlio."
   },
@@ -754,8 +733,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Jūsų asmeninė atkūrimo frazė"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nustatykite nulinę dujų kainą greitėjant"
   }
 }

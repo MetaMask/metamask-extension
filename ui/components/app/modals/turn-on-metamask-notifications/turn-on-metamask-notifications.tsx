@@ -13,8 +13,8 @@ import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../../../selectors/identity/profile-syncing';
-import { useCreateNotifications } from '../../../../hooks/metamask-notifications/useNotifications';
+import { selectIsBackupAndSyncEnabled } from '../../../../selectors/identity/backup-and-sync';
+import { useEnableNotifications } from '../../../../hooks/metamask-notifications/useNotifications';
 import { NOTIFICATIONS_ROUTE } from '../../../../helpers/constants/routes';
 
 import {
@@ -36,6 +36,8 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function TurnOnMetamaskNotifications() {
   const { hideModal } = useModalProps();
   const history = useHistory();
@@ -49,13 +51,13 @@ export default function TurnOnMetamaskNotifications() {
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
   const [isLoading, setIsLoading] = useState<boolean>(
     isUpdatingMetamaskNotifications,
   );
 
-  const { createNotifications, error } = useCreateNotifications();
+  const { enableNotifications, error } = useEnableNotifications();
 
   const handleTurnOnNotifications = async () => {
     setIsLoading(true);
@@ -63,11 +65,15 @@ export default function TurnOnMetamaskNotifications() {
       category: MetaMetricsEventCategory.NotificationsActivationFlow,
       event: MetaMetricsEventName.NotificationsActivated,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         is_profile_syncing_enabled: true,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         action_type: 'activated',
       },
     });
-    await createNotifications();
+    await enableNotifications();
   };
 
   const handleHideModal = () => {
@@ -78,7 +84,11 @@ export default function TurnOnMetamaskNotifications() {
           category: MetaMetricsEventCategory.NotificationsActivationFlow,
           event: MetaMetricsEventName.NotificationsActivated,
           properties: {
-            is_profile_syncing_enabled: isProfileSyncingEnabled,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_profile_syncing_enabled: isBackupAndSyncEnabled,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             action_type: 'dismissed',
           },
         });
@@ -93,7 +103,7 @@ export default function TurnOnMetamaskNotifications() {
       hideModal();
       listNotifications();
     }
-  }, [isNotificationEnabled, error]);
+  }, [isNotificationEnabled, error, history, hideModal, listNotifications]);
 
   const privacyLink = (
     <Text
@@ -147,6 +157,8 @@ export default function TurnOnMetamaskNotifications() {
         </ModalBody>
         <ModalFooter
           paddingTop={4}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={() => handleTurnOnNotifications()}
           containerProps={{
             flexDirection: FlexDirection.Column,
