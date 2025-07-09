@@ -13,15 +13,8 @@ import {
   JustifyContent,
   FlexDirection,
   BlockSize,
-  IconColor,
 } from '../../../helpers/constants/design-system';
-import {
-  Box,
-  Text,
-  IconName,
-  ButtonIcon,
-  ButtonIconSize,
-} from '../../../components/component-library';
+import { Box, Text } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -79,20 +72,6 @@ export default function AccountNotFound() {
       height={BlockSize.Full}
     >
       <Box>
-        <Box
-          justifyContent={JustifyContent.flexStart}
-          marginBottom={4}
-          width={BlockSize.Full}
-        >
-          <ButtonIcon
-            iconName={IconName.ArrowLeft}
-            color={IconColor.iconDefault}
-            size={ButtonIconSize.Md}
-            data-testid="create-password-back-button"
-            onClick={() => history.goBack()}
-            ariaLabel="back"
-          />
-        </Box>
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}

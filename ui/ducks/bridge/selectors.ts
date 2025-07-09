@@ -250,17 +250,6 @@ export const getQuoteRequest = (state: BridgeAppState) => {
   return quoteRequest;
 };
 
-export const getShouldUseSnapConfirmation = createSelector(
-  getBridgeFeatureFlags,
-  getFromChain,
-  (extensionConfig, fromChain) =>
-    Boolean(
-      fromChain &&
-        extensionConfig.chains[formatChainIdToCaip(fromChain.chainId)]
-          ?.isSnapConfirmationEnabled,
-    ),
-);
-
 export const getQuoteRefreshRate = createSelector(
   getBridgeFeatureFlags,
   getFromChain,
@@ -716,8 +705,18 @@ export const getIsUnifiedUIEnabled = createSelector(
 
     const caipChainId = formatChainIdToCaip(chainId);
 
-    return Boolean(
-      bridgeFeatureFlags?.chains?.[caipChainId]?.isUnifiedUIEnabled,
-    );
+    // TODO remove this when bridge-controller's types are updated
+    return bridgeFeatureFlags?.chains?.[caipChainId]
+      ? Boolean(
+          'isSingleSwapBridgeButtonEnabled' in
+            bridgeFeatureFlags.chains[caipChainId]
+            ? (
+                bridgeFeatureFlags.chains[caipChainId] as unknown as {
+                  isSingleSwapBridgeButtonEnabled: boolean;
+                }
+              ).isSingleSwapBridgeButtonEnabled
+            : false,
+        )
+      : false;
   },
 );

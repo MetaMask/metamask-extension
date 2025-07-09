@@ -31,6 +31,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   addNetwork,
+  setActiveNetwork,
   setEditedNetwork,
   setEnabledNetworks,
   setTokenNetworkFilter,
@@ -71,6 +72,7 @@ import {
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
 import {
   getIsRpcFailoverEnabled,
+  getNetworkConfigurationIdByChainId,
   getTokenNetworkFilter,
 } from '../../../../selectors';
 import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
@@ -98,6 +100,9 @@ export const NetworksForm = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const networkConfigurationIdsByChainId = useSelector(
+    getNetworkConfigurationIdByChainId,
+  );
   const scrollableRef = useRef<HTMLDivElement>(null);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
@@ -294,29 +299,28 @@ export const NetworksForm = ({
                 ? rpcUrls?.defaultRpcEndpointIndex
                 : undefined,
           };
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
-          // eslint-disable-next-line @typescript-eslint/await-thenable
           await dispatch(updateNetwork(networkPayload, options));
           if (Object.keys(tokenNetworkFilter).length === 1) {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
-            // eslint-disable-next-line @typescript-eslint/await-thenable
             await dispatch(
               setTokenNetworkFilter({
                 [existingNetwork.chainId]: true,
               }),
             );
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
-            // eslint-disable-next-line @typescript-eslint/await-thenable
             await dispatch(
               setEnabledNetworks([existingNetwork.chainId], namespace),
             );
           }
         } else {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
-          // eslint-disable-next-line @typescript-eslint/await-thenable
           await dispatch(addNetwork(networkPayload));
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
-          // eslint-disable-next-line @typescript-eslint/await-thenable
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          if (networkConfigurationIdsByChainId?.[chainIdHex]) {
+            const networkClientId =
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              networkConfigurationIdsByChainId?.[chainIdHex];
+            await dispatch(setActiveNetwork(networkClientId));
+          }
           await dispatch(
             setEnabledNetworks([networkPayload.chainId], namespace),
           );
