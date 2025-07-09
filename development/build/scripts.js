@@ -360,7 +360,7 @@ function createScriptTasks({
       policyOnly,
       shouldLintFenceFiles,
       version,
-      applyLavaMoat: false, // DevTools doesn't need LavaMoat
+      applyLavaMoat,
     });
   }
 
@@ -384,7 +384,7 @@ function createScriptTasks({
       policyOnly,
       shouldLintFenceFiles,
       version,
-      applyLavaMoat: false, // DevTools doesn't need LavaMoat
+      applyLavaMoat,
     });
   }
 
