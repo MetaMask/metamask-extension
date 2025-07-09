@@ -9,6 +9,7 @@ import {
   getCrossChainTokenExchangeRates,
   getCrossChainMetaMaskCachedBalances,
   getEnabledNetworksByNamespace,
+  isGlobalNetworkSelectorRemoved,
 } from '../selectors';
 import {
   getValueFromWeiHex,
@@ -58,20 +59,23 @@ export const useAccountTotalCrossChainFiatBalance = (
   );
 
   const filteredBalances = useMemo(() => {
-    return formattedTokensWithBalancesPerChain
-      .map((balances) => {
-        if (
-          Object.keys(enabledNetworksByNamespace).includes(
-            balances.chainId.toString(),
-          )
-        ) {
-          return balances;
-        }
-        return null;
-      })
-      .filter(
-        (balance): balance is FormattedTokensWithBalances => balance !== null,
-      );
+    if (isGlobalNetworkSelectorRemoved) {
+      return formattedTokensWithBalancesPerChain
+        .map((balances) => {
+          if (
+            Object.keys(enabledNetworksByNamespace).includes(
+              balances.chainId.toString(),
+            )
+          ) {
+            return balances;
+          }
+          return null;
+        })
+        .filter(
+          (balance): balance is FormattedTokensWithBalances => balance !== null,
+        );
+    }
+    return formattedTokensWithBalancesPerChain;
   }, [formattedTokensWithBalancesPerChain, enabledNetworksByNamespace]);
 
   const tokenFiatBalancesCrossChains = useMemo(
