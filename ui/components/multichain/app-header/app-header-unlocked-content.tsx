@@ -35,7 +35,10 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { toggleAccountMenu } from '../../../store/actions';
+import {
+  setShowSupportDataConsentModal,
+  toggleAccountMenu,
+} from '../../../store/actions';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenu } from '../global-menu';
@@ -57,6 +60,8 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
+import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
+import { getShowSupportDataConsentModal } from '../../../ducks/app/app';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
@@ -93,6 +98,10 @@ export const AppHeaderUnlockedContent = ({
   const [copied, handleCopy, resetCopyState] = useCopyToClipboard(MINUTE, {
     expireClipboard: false,
   });
+
+  const showSupportDataConsentModal = useSelector(
+    getShowSupportDataConsentModal,
+  );
 
   // Reset copy state when a switching accounts
   useEffect(() => {
@@ -267,6 +276,10 @@ export const AppHeaderUnlockedContent = ({
           anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
           closeMenu={() => setAccountOptionsMenuOpen(false)}
+        />
+        <VisitSupportDataConsentModal
+          isOpen={showSupportDataConsentModal}
+          onClose={() => dispatch(setShowSupportDataConsentModal(false))}
         />
       </Box>
     </>

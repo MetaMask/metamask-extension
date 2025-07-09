@@ -23,7 +23,7 @@ const {
   switchToNetworkFromSendFlow,
 } = require('../../page-objects/flows/network.flow');
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
+const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs
@@ -653,11 +653,26 @@ describe('Request-queue UI changes', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.waitForSelector({
-          css: '[data-testid="sort-by-networks"]',
+
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Default',
+        });
+        // Check if Ethereum Mainnet is selected (checkbox is checked)
+        const networkRow = await driver.findElement({
+          css: '.multichain-network-list-item',
           text: 'Ethereum Mainnet',
         });
 
+        const checkedCheckbox = await driver.findNestedElement(
+          networkRow,
+          'input.mm-checkbox__input--checked[type="checkbox"][checked]',
+        );
+        // Verify the checkbox is found (network is enabled)
+        assert.ok(
+          checkedCheckbox,
+          'Ethereum Mainnet checkbox should be checked',
+        );
         // Kill local node servers
         await localNodes[0].quit();
         await localNodes[1].quit();
@@ -726,11 +741,32 @@ describe('Request-queue UI changes', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.findElement({
-          css: '[data-testid="sort-by-networks"]',
+
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Default',
+        });
+        await driver.waitForSelector({
+          text: 'Ethereum Mainnet',
+          tag: 'p',
+        });
+
+        // Check if Ethereum Mainnet is selected (checkbox is checked)
+        const networkRow = await driver.findElement({
+          css: '.multichain-network-list-item',
           text: 'Ethereum Mainnet',
         });
 
+        const checkedCheckbox = await driver.findNestedElement(
+          networkRow,
+          'input.mm-checkbox__input--checked[type="checkbox"][checked]',
+        );
+
+        // Verify the checkbox is found (network is enabled)
+        assert.ok(
+          checkedCheckbox,
+          'Ethereum Mainnet checkbox should be checked',
+        );
 
         // Kill local node servers
         await localNodes[0].quit();

@@ -57,6 +57,7 @@ describe('Solana network', function (this: Suite) {
 
         // Lastly, switch to an EVM account and validate the Ethereum
         // Mainnet is the selected network
+        await headerNavbar.check_pageIsLoaded();
         await headerNavbar.openAccountMenu();
         const accountMenu = new AccountListPage(driver);
         await accountMenu.switchToAccount('Account 1');
