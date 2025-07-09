@@ -219,10 +219,13 @@ export default function OnboardingFlow() {
     return await dispatch(createNewVaultAndRestore(password, srp));
   };
 
-  const isFullPage =
+  let isFullPage =
     pathname === ONBOARDING_WELCOME_ROUTE ||
-    pathname === ONBOARDING_UNLOCK_ROUTE ||
-    ONBOARDING_EXPERIMENTAL_AREA;
+    pathname === ONBOARDING_UNLOCK_ROUTE;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  isFullPage = isFullPage || pathname === ONBOARDING_EXPERIMENTAL_AREA;
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Box
