@@ -142,6 +142,7 @@ describe('Ducks - Bridge', () => {
         toTokenExchangeRate: null,
         fromTokenExchangeRate: null,
         wasTxDeclined: false,
+        txAlert: null,
         toTokenUsdExchangeRate: null,
       });
     });
@@ -162,9 +163,17 @@ describe('Ducks - Bridge', () => {
             destTokenAddress: undefined,
           },
           {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             stx_enabled: false,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol_source: 'ETH',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol_destination: 'ETH',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             security_warnings: [],
           },
         ) as never,
@@ -178,9 +187,17 @@ describe('Ducks - Bridge', () => {
           destTokenAddress: undefined,
         },
         {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           stx_enabled: false,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol_source: 'ETH',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol_destination: 'ETH',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           security_warnings: [],
         },
       );
@@ -218,6 +235,7 @@ describe('Ducks - Bridge', () => {
         sortOrder: 'cost_ascending',
         toChainId: null,
         toToken: null,
+        txAlert: null,
         toTokenExchangeRate: null,
         wasTxDeclined: false,
         toTokenUsdExchangeRate: null,

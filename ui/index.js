@@ -20,7 +20,6 @@ import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
-import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from '../shared/constants/state-corruption';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -33,6 +32,7 @@ import {
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
+  getIsUnlocked,
   getUnconnectedAccountAlertEnabledness,
   getUnconnectedAccountAlertShown,
 } from './ducks/metamask/metamask';
@@ -40,36 +40,37 @@ import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
-import { displayStateCorruptionError } from './helpers/utils/state-corruption-html';
+import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
+
+export { installCriticalStartupErrorListeners } from './helpers/utils/install-critical-error-listeners';
 
 const METHOD_START_UI_SYNC = 'startUISync';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
-let reduxStore;
+/**
+ * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
+ */
+const reduxStore = Promise.withResolvers();
 
 /**
  * Method to update backgroundConnection object use by UI
  *
- * @param container - container to render the UI
  * @param backgroundConnection - connection object to background
  * @param handleStartUISync - function to call when startUISync notification is received
  */
 export const connectToBackground = (
-  container,
   backgroundConnection,
   handleStartUISync,
 ) => {
   setBackgroundConnection(backgroundConnection);
-  backgroundConnection.onNotification((data) => {
-    const { method, params } = data;
+  backgroundConnection.onNotification(async (data) => {
+    const { method } = data;
     if (method === 'sendUpdate') {
-      reduxStore.dispatch(actions.updateMetamaskState(params[0]));
+      const store = await reduxStore.promise;
+      store.dispatch(actions.updateMetamaskState(data.params[0]));
     } else if (method === METHOD_START_UI_SYNC) {
       handleStartUISync();
-    } else if (method === METHOD_DISPLAY_STATE_CORRUPTION_ERROR) {
-      const { error, currentLocale } = params;
-      displayStateCorruptionError(container, error, currentLocale);
     } else {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
@@ -168,7 +169,7 @@ export async function setupInitialStore(metamaskState, activeTab) {
   }
 
   const store = configureStore(draftInitialState);
-  reduxStore = store;
+  reduxStore.resolve(store);
 
   const unapprovedTxs = getUnapprovedTransactions(metamaskState);
 
@@ -231,22 +232,22 @@ async function startApp(metamaskState, opts) {
 }
 
 async function runInitialActions(store) {
-  const state = store.getState();
+  const initialState = store.getState();
 
   // This block autoswitches chains based on the last chain used
   // for a given dapp, when there are no pending confimrations
   // This allows the user to be connected on one chain
   // for one dapp, and automatically change for another
-  const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(state);
+  const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(initialState);
 
   if (networkIdToSwitchTo) {
     await store.dispatch(
       actions.automaticallySwitchNetwork(
         networkIdToSwitchTo,
-        getOriginOfCurrentTab(state),
+        getOriginOfCurrentTab(initialState),
       ),
     );
-  } else if (getSwitchedNetworkDetails(state)) {
+  } else if (getSwitchedNetworkDetails(initialState)) {
     // It's possible that old details could exist if the user
     // opened the toast but then didn't close it
     // Clear out any existing switchedNetworkDetails
@@ -260,6 +261,23 @@ async function runInitialActions(store) {
     const thisPopupId = Date.now();
     global.metamask.id = thisPopupId;
     await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));
+  }
+
+  try {
+    const validateSeedlessPasswordOutdated = async (state) => {
+      const isUnlocked = getIsUnlocked(state);
+      if (isUnlocked) {
+        await store.dispatch(actions.checkIsSeedlessPasswordOutdated());
+      }
+    };
+    await validateSeedlessPasswordOutdated(initialState);
+    // periodically check seedless password outdated when app UI is open
+    setInterval(async () => {
+      const state = store.getState();
+      await validateSeedlessPasswordOutdated(state);
+    }, SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS);
+  } catch (e) {
+    log.error('[Metamask] checkIsSeedlessPasswordOutdated error', e);
   }
 }
 
