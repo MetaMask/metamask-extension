@@ -189,9 +189,7 @@ export async function integrationTestRender(extendedRenderOptions) {
 
   connectToBackground(backgroundConnection, noop);
 
-  const store = await setupInitialStore(preloadedState, {
-    activeTab,
-  });
+  const store = await setupInitialStore(preloadedState, activeTab);
 
   return {
     ...render(<Root store={store} />, { ...renderOptions }),
