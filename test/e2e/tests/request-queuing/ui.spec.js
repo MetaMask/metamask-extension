@@ -731,6 +731,7 @@ describe('Request-queue UI changes', function () {
           text: 'Ethereum Mainnet',
         });
 
+
         // Kill local node servers
         await localNodes[0].quit();
         await localNodes[1].quit();
