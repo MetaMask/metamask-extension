@@ -1478,7 +1478,11 @@ const addAppInstalledEvent = () => {
 function handleOnInstalled(details) {
   if (details.reason === 'install') {
     onInstall();
-  } else if (details.reason === 'update') {
+  } else if (
+    details.reason === 'update' &&
+    details.previousVersion &&
+    details.previousVersion !== platform.getVersion()
+  ) {
     onUpdate();
   }
 }
