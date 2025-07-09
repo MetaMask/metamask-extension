@@ -897,18 +897,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "OK"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Palaging panatilihin ang iyong Secret Recovery Phrase sa isang ligtas at lihim na lugar"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Kailangan ulit i-back up ang Secret Recovery Phrase mo?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Huwag kailanman ipaalam sa iba ang iyong Secret Recovery Phrase"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Hindi kailanman hihingin ng MetaMask team ang iyong Secret Recovery Phrase"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Kinokontrol ng iyong Secret Recovery Phrase ang lahat ng iyong account."
   },
@@ -985,12 +973,6 @@
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Isulat ito at itabi sa maraming tagong lugar."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Ilagay sa safe-deposit box."
-  },
   "seedPhraseIntroTitle": {
     "message": "I-secure ang iyong wallet"
   },
@@ -1023,10 +1005,6 @@
   },
   "send": {
     "message": "Magpadala"
-  },
-  "sendSpecifiedTokens": {
-    "message": "Magpadala ng $1",
-    "description": "Symbol of the specified token"
   },
   "settings": {
     "message": "Mga Setting"
@@ -1355,9 +1333,6 @@
   "termsOfService": {
     "message": "Mga Tuntunin ng Serbisyo"
   },
-  "tips": {
-    "message": "Mga Tip"
-  },
   "to": {
     "message": "Para kay/sa"
   },
@@ -1452,9 +1427,6 @@
   },
   "unlock": {
     "message": "I-unlock"
-  },
-  "unlockMessage": {
-    "message": "Naghihintay ang decentralized web"
   },
   "unrecognizedChain": {
     "message": "Hindi kinikilala ang custom na network na ito. Inirerekomenda naming $1 ka bago magpatuloy",

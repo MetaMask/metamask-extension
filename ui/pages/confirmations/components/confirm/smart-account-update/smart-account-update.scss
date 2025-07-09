@@ -1,0 +1,68 @@
+@use "design-system";
+
+.smart-account-update {
+  &__container {
+    font-size: 12px;
+    height: 100%;
+
+    @media screen and (min-width: design-system.$break-large) {
+      width: 85vw;
+    }
+
+    @media screen and (min-width: 768px) {
+      width: 80vw;
+    }
+
+    @media screen and (min-width: 1280px) {
+      width: 62vw;
+    }
+  }
+
+  &__container-wrapped {
+    font-size: 12px;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    z-index: design-system.$modal-z-index;
+
+    @media screen and (min-width: design-system.$break-small) {
+      max-width: 360px;
+    }
+  }
+
+  &__inner {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    position: relative;
+  }
+
+  &__inner-wrapped {
+    border-radius: 6px;
+    margin: 16px;
+    height: calc(100% - 32px);
+    width: calc(100% - 32px);
+    overflow: auto;
+  }
+
+  &__edit {
+    position: absolute;
+    right: 10px;
+    top: 20px;
+  }
+
+  &__acc-avatar {
+    margin-right: -36px;
+  }
+
+  &__request-for {
+    margin-left: -36px;
+    width: 140px;
+  }
+
+  &__close {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+  }
+}

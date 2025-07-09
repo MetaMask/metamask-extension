@@ -5,7 +5,13 @@ import { Driver } from '../../../webdriver/driver';
 class SendTokenPage {
   private driver: Driver;
 
+  private readonly accountPickerButton =
+    '[data-testid="send-page-account-picker"]';
+
   private readonly assetPickerButton = '[data-testid="asset-picker-button"]';
+
+  private readonly backButton =
+    '[data-testid="wallet-initiated-header-back-button"]';
 
   private readonly contactsButton = { css: 'button', text: 'Contacts' };
 
@@ -13,6 +19,11 @@ class SendTokenPage {
 
   private readonly continueButton = {
     text: 'Continue',
+    tag: 'button',
+  };
+
+  private readonly confirmButton = {
+    text: 'Confirm',
     tag: 'button',
   };
 
@@ -26,13 +37,22 @@ class SendTokenPage {
   private readonly ensResolvedName =
     '[data-testid="multichain-send-page__recipient__item__title"]';
 
+  private readonly hexInput = '[data-testid="send-hex-textarea"]';
+
   private readonly assetValue = '[data-testid="account-value-and-suffix"]';
+
+  private readonly assetPickerSymbol =
+    '[data-testid="asset-picker-button"] .asset-picker__symbol';
 
   private readonly inputAmount = '[data-testid="currency-input"]';
 
   private readonly inputNFTAmount = '[data-testid="nft-input"]';
 
   private readonly inputRecipient = '[data-testid="ens-input"]';
+
+  private readonly nftTab = { css: 'button', text: 'NFTs' };
+
+  private readonly nftListItem = '[data-testid="nft-wrapper"]';
 
   private readonly recipientAccount =
     '.multichain-account-list-item__account-name__button';
@@ -44,6 +64,8 @@ class SendTokenPage {
 
   private readonly toastText = '.toast-text';
 
+  private readonly tokenTab = { css: 'button', text: 'Tokens' };
+
   private readonly warning =
     '[data-testid="send-warning"] .mm-box--min-width-0 span';
 
@@ -52,6 +74,15 @@ class SendTokenPage {
   private readonly gasFeeField = '[data-testid="first-gas-field"]';
 
   private readonly fiatFeeField = '[data-testid="native-currency"]';
+
+  private readonly tokenGasFeeDropdown =
+    '[data-testid="selected-gas-fee-token-arrow"]';
+
+  private readonly tokenGasFeeSymbol =
+    '[data-testid="gas-fee-token-list-item-symbol"]';
+
+  private readonly viewActivityButton =
+    '[data-testid="smart-transaction-status-page-footer-close-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -62,6 +93,8 @@ class SendTokenPage {
     return this.driver.findElements(this.tokenListButton);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -82,9 +115,25 @@ class SendTokenPage {
     await this.driver.clickElement(this.assetPickerButton);
   }
 
+  async clickAccountPickerButton() {
+    console.log('Clicking on account picker button on send token screen');
+    await this.driver.clickElement(this.accountPickerButton);
+  }
+
   async clickSecondTokenListButton() {
     const elements = await this.driver.findElements(this.tokenListButton);
     await elements[1].click();
+  }
+
+  async clickOnAssetPicker(
+    driver: Driver,
+    location: 'src' | 'dest' = 'src',
+  ): Promise<void> {
+    console.log('Clicking on asset picker button');
+    const isDest = location === 'dest';
+    const buttons = await driver.findElements(this.assetPickerButton);
+    const indexOfButtonToClick = isDest ? 1 : 0;
+    await buttons[indexOfButtonToClick].click();
   }
 
   async checkAccountValueAndSuffix(value: string): Promise<void> {
@@ -104,7 +153,17 @@ class SendTokenPage {
   }
 
   async clickContinueButton(): Promise<void> {
-    await this.driver.clickElement(this.continueButton);
+    console.log('Clicking on Continue button on send token screen');
+    await this.driver.clickElement(this.continueButton, 3);
+    console.log('Continue button clicked successfully');
+  }
+
+  async clickConfirmButton(): Promise<void> {
+    await this.driver.clickElement(this.confirmButton);
+  }
+
+  async clickViewActivity(): Promise<void> {
+    await this.driver.clickElement(this.viewActivityButton);
   }
 
   async fillAmount(amount: string): Promise<void> {
@@ -121,6 +180,17 @@ class SendTokenPage {
     );
   }
 
+  async selectTokenFee(tokenSymbol: string): Promise<void> {
+    console.log(`Select token ${tokenSymbol} to pay for the fees`);
+    await this.driver.clickElement(this.tokenGasFeeDropdown);
+    await this.driver.clickElement({
+      css: this.tokenGasFeeSymbol,
+      text: tokenSymbol,
+    });
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_networkChange(networkName: string): Promise<void> {
     const toastTextElement = await this.driver.findElement(this.toastText);
     const toastText = await toastTextElement.getText();
@@ -129,6 +199,32 @@ class SendTokenPage {
       `You're now using ${networkName}`,
       'Toast text is correct',
     );
+  }
+
+  async chooseNFTToSend(index = 0, timeout = 10000): Promise<void> {
+    console.log(`Choosing NFT to send at index ${index}`);
+    const nfts = await this.driver.findElements(this.nftListItem);
+    if (nfts.length === 0) {
+      throw new Error('No NFTs found to select');
+    }
+
+    const element = nfts[index];
+    await element.click();
+    // @ts-expect-error - The waitForElementState method is not typed correctly in the driver.
+    await element.waitForElementState('hidden', timeout);
+    console.log(`NFT at index ${index} selected successfully`);
+  }
+
+  async chooseTokenToSend(tokenName: string): Promise<void> {
+    console.log(`Choosing token to send: ${tokenName}`);
+    await this.driver.clickElement(
+      {
+        text: tokenName,
+        css: `${this.tokenListButton} p`,
+      },
+      3,
+    );
+    console.log(`Token ${tokenName} selected successfully`);
   }
 
   async fillNFTAmount(amount: string) {
@@ -147,12 +243,39 @@ class SendTokenPage {
     await this.driver.pasteIntoField(this.inputRecipient, recipientAddress);
   }
 
+  async fillHexInput(hex: string): Promise<void> {
+    console.log(`Filling hex input with: ${hex}`);
+    await this.driver.pasteIntoField(this.hexInput, hex);
+  }
+
+  async getHexInputValue(): Promise<string> {
+    console.log('Getting value from hex input');
+    const hexInputElement = await this.driver.waitForSelector(this.hexInput);
+    this.driver.waitForNonEmptyElement(hexInputElement);
+    const value = await hexInputElement.getAttribute('value');
+    console.log(`Hex input value: ${value}`);
+    return value;
+  }
+
   async clickMaxAmountButton(): Promise<void> {
     await this.driver.clickElement(this.maxAmountButton);
   }
 
+  async chooseAssetTypeToSend(assetType: 'token' | 'nft'): Promise<void> {
+    console.log(`Choosing asset type to send: ${assetType}`);
+    if (assetType === 'nft') {
+      await this.driver.clickElement(this.nftTab);
+    } else {
+      await this.driver.clickElement(this.tokenTab);
+    }
+  }
+
   async goToNextScreen(): Promise<void> {
     await this.driver.clickElement(this.continueButton);
+  }
+
+  async goToPreviousScreen(): Promise<void> {
+    await this.driver.clickElement(this.backButton);
   }
 
   async validateSendFees(): Promise<void> {
@@ -201,6 +324,8 @@ class SendTokenPage {
    * @param address - The Ethereum address to which the ENS domain is expected to resolve.
    * @returns A promise that resolves if the ENS domain can be successfully used as a recipient address on the send token screen.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_ensAddressAsRecipient(
     ensDomain: string,
     address: string,
@@ -227,6 +352,8 @@ class SendTokenPage {
    * @param address - The Ethereum address to which the ENS domain is expected to resolve.
    * @returns A promise that resolves if the ENS domain successfully resolves to the specified address on send token screen.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_ensAddressResolution(
     ensDomain: string,
     address: string,
@@ -251,6 +378,8 @@ class SendTokenPage {
    * @returns A promise that resolves if the warning message matches the expected text.
    * @throws Assertion error if the warning message does not match the expected text.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_warningMessage(warningText: string): Promise<void> {
     console.log(`Checking if warning message "${warningText}" is displayed`);
     await this.driver.waitForSelector({
@@ -258,6 +387,44 @@ class SendTokenPage {
       text: warningText,
     });
     console.log('Warning message validation successful');
+  }
+
+  /**
+   * Checks if the specified token symbol is displayed in the asset picker.
+   * Optionally verifies that the token ID is also displayed.
+   *
+   * @param tokenSymbol - The symbol of the token to check for (e.g., "ETH", "DAI").
+   * @param tokenId - (Optional) The token ID to verify is displayed alongside the symbol. (e.g., "1", "2345")
+   * @returns A promise that resolves when the check is complete.
+   * @throws AssertionError if the displayed token symbol does not match the expected value.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_tokenSymbolInAssetPicker(
+    tokenSymbol: string,
+    tokenId?: string,
+  ): Promise<void> {
+    console.log(`Checking if token symbol "${tokenSymbol}" is displayed`);
+    const assetPickerSymbol = await this.driver.waitForSelector(
+      this.assetPickerSymbol,
+    );
+    this.driver.waitForNonEmptyElement(assetPickerSymbol);
+    const text = await assetPickerSymbol.getText();
+    assert.equal(
+      text,
+      tokenSymbol,
+      `Expected token symbol to be ${tokenSymbol}, got ${text}`,
+    );
+
+    if (tokenId) {
+      const id = `#${tokenId}`;
+      await this.driver.waitForSelector({ css: 'p', text: id });
+      console.log(
+        `Token ID "${id}" is displayed successfully for ${tokenSymbol}`,
+      );
+    }
+
+    console.log(`Token symbol "${tokenSymbol}" is displayed successfully`);
   }
 }
 

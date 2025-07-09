@@ -5,7 +5,7 @@ import {
   type UpdateNetworkFields,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { Hex, isStrictHexString } from '@metamask/utils';
+import { Hex, isStrictHexString, parseCaipChainId } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -31,7 +31,9 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   addNetwork,
+  setActiveNetwork,
   setEditedNetwork,
+  setEnabledNetworks,
   setTokenNetworkFilter,
   showDeprecatedNetworkModal,
   toggleNetworkMenu,
@@ -70,9 +72,11 @@ import {
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
 import {
   getIsRpcFailoverEnabled,
+  getNetworkConfigurationIdByChainId,
   getTokenNetworkFilter,
 } from '../../../../selectors';
 import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
+import { getSelectedMultichainNetworkChainId } from '../../../../selectors/multichain/networks';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -81,15 +85,24 @@ export const NetworksForm = ({
   existingNetwork,
   onRpcAdd,
   onBlockExplorerAdd,
+  toggleNetworkMenuAfterSubmit = true,
+  onComplete,
+  onEdit,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   existingNetwork?: UpdateNetworkFields;
   onRpcAdd: () => void;
   onBlockExplorerAdd: () => void;
+  toggleNetworkMenuAfterSubmit?: boolean;
+  onComplete?: () => void;
+  onEdit?: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const networkConfigurationIdsByChainId = useSelector(
+    getNetworkConfigurationIdByChainId,
+  );
   const scrollableRef = useRef<HTMLDivElement>(null);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
@@ -128,6 +141,11 @@ export const NetworksForm = ({
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
 
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
+  const { namespace } = parseCaipChainId(currentMultichainChainId);
+
   const templateInfuraRpc = (endpoint: string) =>
     endpoint.endsWith('{infuraProjectId}')
       ? endpoint.replace('{infuraProjectId}', infuraProjectId ?? '')
@@ -137,8 +155,8 @@ export const NetworksForm = ({
   useEffect(() => {
     const chainIdHex = chainId ? toHex(chainId) : undefined;
     const expectedName = chainIdHex
-      ? NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
-        safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name
+      ? (NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
+        safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name)
       : undefined;
 
     const mismatch = expectedName && expectedName !== name;
@@ -158,11 +176,11 @@ export const NetworksForm = ({
   useEffect(() => {
     const chainIdHex = chainId ? toHex(chainId) : undefined;
     const expectedSymbol = chainIdHex
-      ? CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
+      ? (CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
           chainIdHex as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
         ] ??
         safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)
-          ?.nativeCurrency?.symbol
+          ?.nativeCurrency?.symbol)
       : undefined;
 
     const mismatch = expectedSymbol && expectedSymbol !== ticker;
@@ -288,23 +306,48 @@ export const NetworksForm = ({
                 [existingNetwork.chainId]: true,
               }),
             );
+            await dispatch(
+              setEnabledNetworks([existingNetwork.chainId], namespace),
+            );
           }
         } else {
           await dispatch(addNetwork(networkPayload));
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          if (networkConfigurationIdsByChainId?.[chainIdHex]) {
+            const networkClientId =
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              networkConfigurationIdsByChainId?.[chainIdHex];
+            await dispatch(setActiveNetwork(networkClientId));
+          }
+          await dispatch(
+            setEnabledNetworks([networkPayload.chainId], namespace),
+          );
         }
 
         trackEvent({
           event: MetaMetricsEventName.CustomNetworkAdded,
           category: MetaMetricsEventCategory.Network,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             block_explorer_url:
               blockExplorers?.blockExplorerUrls?.[
                 blockExplorers?.defaultBlockExplorerUrlIndex ?? -1
               ],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id: chainIdHex,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             network_name: name,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             source_connection_method:
               MetaMetricsNetworkEventSource.CustomNetworkForm,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol: ticker,
           },
           sensitiveProperties: {
@@ -327,7 +370,8 @@ export const NetworksForm = ({
     } catch (e) {
       console.error(e);
     } finally {
-      dispatch(toggleNetworkMenu());
+      toggleNetworkMenuAfterSubmit && dispatch(toggleNetworkMenu());
+      onComplete?.();
     }
   };
 
@@ -555,6 +599,7 @@ export const NetworksForm = ({
                         chainId: chainIdHex,
                       }),
                     );
+                    onEdit?.();
                   }
                 }}
               >

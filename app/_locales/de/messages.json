@@ -68,13 +68,6 @@
     "message": "Ich habe die $1 gelesen und stimme ihnen zu.",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Greifen Sie mit Ihrer geheimen Wiederherstellungsphrase auf Ihre Wallet zu."
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask kann Ihr Passwort nicht wiederherstellen. Wir verwenden Ihre geheime Wiederherstellungsphrase, um Ihr Eigentum zu bestätigen, Ihre Wallet wiederherzustellen und ein neues Passwort festzulegen. Geben Sie zunächst die geheime Wiederherstellungsphrase ein, die Sie erhalten haben, als Sie Ihre Wallet erstellt haben. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Zugriff auf Ihre Kamera …"
   },
@@ -917,9 +910,6 @@
   },
   "bridgeTo": {
     "message": "Bridge nach"
-  },
-  "bridgeToChain": {
-    "message": "Bridge nach $1"
   },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Wenn Sie dieses Token manuell hinzugefügt haben, stellen Sie sicher, dass Sie sich der Risiken für Ihre Gelder bewusst sind, bevor Sie bridgen."
@@ -2236,9 +2226,6 @@
   "floatAmountToken": {
     "message": "Token-Betrag muss eine ganze Zahl sein"
   },
-  "followUsOnTwitter": {
-    "message": "Folgen Sie uns auf Twitter."
-  },
   "forbiddenIpfsGateway": {
     "message": "Verbotene IPFS-Gateway: Bitte geben Sie ein CID-Gateway an."
   },
@@ -2398,9 +2385,6 @@
   },
   "hideAdvancedDetails": {
     "message": "Erweiterte Details verbergen"
-  },
-  "hideSeedPhrase": {
-    "message": "Seed-Phrase verbergen"
   },
   "hideSentitiveInfo": {
     "message": "Sensible Informationen verbergen"
@@ -4423,18 +4407,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Verstanden"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Bewahren Sie Ihre geheime Wiederherstellungsphrase immer an einem sicheren und geheimen Ort auf."
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Möchten Sie erneut ein Backup Ihrer geheimen Wiederherstellungsphrase erstellen?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Teilen Sie niemals Ihre geheime Wiederherstellungsphrase mit jemandem."
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Das MetaMask-Team wird Sie niemals nach Ihrer geheimen Wiederherstellungsphrase fragen."
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Ihre geheime Wiederherstellungsphrase kontrolliert alle Ihre Konten."
   },
@@ -4622,9 +4594,6 @@
   "revealSensitiveContent": {
     "message": "Sensible Inhalte offenlegen"
   },
-  "revealTheSeedPhrase": {
-    "message": "Seed-Phrase anzeigen"
-  },
   "review": {
     "message": "Überprüfen"
   },
@@ -4732,29 +4701,11 @@
   "seeDetails": {
     "message": "Details anzeigen"
   },
-  "seedPhraseConfirm": {
-    "message": "Geheime Wiederherstellungsphrase bestätigen"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Geheime Wiederherstellungsphrase bestätigen"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Aufschreiben und an mehreren geheimen Orten aufbewahren"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "In einem Schließfach aufbewahren"
-  },
   "seedPhraseIntroTitle": {
     "message": "Sichern Sie Ihre Wallet"
   },
   "seedPhraseReq": {
     "message": "Geheime Wiederherstellungsphrasen bestehen aus 12, 15, 18, 21 oder 24 Wörtern."
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Schreiben Sie diese geheime Wiederherstellungsphrase mit 12 Wörtern auf und bewahren Sie sie an einem Ort auf, auf den nur Sie Zugriff haben."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Schreiben Sie sich Ihre geheime Wiederherstellungsphrase auf."
   },
   "select": {
     "message": "Auswählen"
@@ -4826,16 +4777,8 @@
   "sendSelectSendAsset": {
     "message": "Wählen Sie das zu sendende Asset"
   },
-  "sendSpecifiedTokens": {
-    "message": "$1 senden",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Wenn Sie auf diese Schaltfläche klicken, wird Ihre Swap-Transaktion sofort eingeleitet. Bevor Sie fortfahren, überprüfen Sie bitte Ihre Transaktionsdetails."
-  },
-  "sendTokenAsToken": {
-    "message": "$1 als $2 senden",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Senden von $1"
@@ -6159,9 +6102,6 @@
   "time": {
     "message": "Zeit"
   },
-  "tips": {
-    "message": "Tipps"
-  },
   "tipsForUsingAWallet": {
     "message": "Tipps zur Verwendung einer Wallet"
   },
@@ -6452,9 +6392,6 @@
   },
   "unlock": {
     "message": "Entsperren"
-  },
-  "unlockMessage": {
-    "message": "Das dezentrale Web erwartet Sie"
   },
   "unpin": {
     "message": "Lösen"

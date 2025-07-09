@@ -188,6 +188,8 @@ async function start(): Promise<void> {
         benchmarkResults[platform][buildType] = benchmark;
       } catch (error) {
         console.error(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `Error encountered processing benchmark data for '${platform}': '${error}'`,
         );
       }
@@ -295,6 +297,8 @@ async function start(): Promise<void> {
 
       commentBody += `${benchmarkBody}`;
     } catch (error) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       console.error(`Error constructing benchmark results: '${error}'`);
     }
   } else {
@@ -324,18 +328,24 @@ async function start(): Promise<void> {
       common: prBundleSizeStats.common.size,
     };
 
-    const devSizes = Object.keys(prSizes).reduce((sizes, part) => {
-      sizes[part as keyof typeof prSizes] =
-        devBundleSizeStats[MERGE_BASE_COMMIT_HASH][part] || 0;
-      return sizes;
-    }, {} as Record<keyof typeof prSizes, number>);
+    const devSizes = Object.keys(prSizes).reduce(
+      (sizes, part) => {
+        sizes[part as keyof typeof prSizes] =
+          devBundleSizeStats[MERGE_BASE_COMMIT_HASH][part] || 0;
+        return sizes;
+      },
+      {} as Record<keyof typeof prSizes, number>,
+    );
 
-    const diffs = Object.keys(prSizes).reduce((output, part) => {
-      output[part] =
-        prSizes[part as keyof typeof prSizes] -
-        devSizes[part as keyof typeof prSizes];
-      return output;
-    }, {} as Record<string, number>);
+    const diffs = Object.keys(prSizes).reduce(
+      (output, part) => {
+        output[part] =
+          prSizes[part as keyof typeof prSizes] -
+          devSizes[part as keyof typeof prSizes];
+        return output;
+      },
+      {} as Record<string, number>,
+    );
 
     const sizeDiffRows = Object.keys(diffs).map(
       (part) =>
@@ -365,11 +375,13 @@ async function start(): Promise<void> {
 
     commentBody += sizeDiffBody;
   } catch (error) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.error(`Error constructing bundle size diffs results: '${error}'`);
   }
 
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody });
-  const POST_COMMENT_URI = `https://api.github.com/repos/metamask/metamask-extension/issues/${PR_NUMBER}/comments`;
+  const POST_COMMENT_URI = `https://api.github.com/repos/${OWNER}/${REPOSITORY}/issues/${PR_NUMBER}/comments`;
   console.log(`Announcement:\n${commentBody}`);
 
   if (PR_COMMENT_TOKEN) {
@@ -460,6 +472,8 @@ async function runBenchmarkGate(
       }
     }
   } catch (error) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.error(`Error encountered fetching benchmark gate data: '${error}'`);
   }
 

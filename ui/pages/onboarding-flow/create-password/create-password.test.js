@@ -5,18 +5,16 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import initializedMockState from '../../../../test/data/mock-send-state.json';
 import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import CreatePassword from './create-password';
 
-const mockHistoryPush = jest.fn();
 const mockHistoryReplace = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
-    push: mockHistoryPush,
     replace: mockHistoryReplace,
   }),
 }));
@@ -59,9 +57,7 @@ describe('Onboarding Create Password', () => {
       const mockStore = configureMockStore()(importFirstTimeFlowState);
 
       renderWithProvider(<CreatePassword />, mockStore);
-      expect(mockHistoryReplace).toHaveBeenCalledWith(
-        ONBOARDING_COMPLETION_ROUTE,
-      );
+      expect(mockHistoryReplace).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
     });
   });
 
@@ -335,7 +331,7 @@ describe('Onboarding Create Password', () => {
       expect(mockCreateNewAccount).toHaveBeenCalledWith(password);
 
       await waitFor(() => {
-        expect(mockHistoryPush).toHaveBeenCalledWith(
+        expect(mockHistoryReplace).toHaveBeenCalledWith(
           ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
         );
       });
@@ -397,9 +393,7 @@ describe('Onboarding Create Password', () => {
       );
 
       await waitFor(() => {
-        expect(mockHistoryPush).toHaveBeenCalledWith(
-          ONBOARDING_COMPLETION_ROUTE,
-        );
+        expect(mockHistoryReplace).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
       });
     });
   });

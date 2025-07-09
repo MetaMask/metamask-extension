@@ -12,15 +12,21 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { matchPath, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { captureException, captureMessage } from '@sentry/browser';
 
 import { omit } from 'lodash';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../app/scripts/lib/util';
-import { PATH_NAME_MAP } from '../helpers/constants/routes';
+import { PATH_NAME_MAP, getPaths } from '../helpers/constants/routes';
 import { MetaMetricsContextProp } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
+import { getParticipateInMetaMetrics } from '../selectors';
+import {
+  generateActionId,
+  submitRequestToBackground,
+} from '../store/background-connection';
 
 import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
 
@@ -54,11 +60,10 @@ export const MetaMetricsContext = createContext(() => {
   );
 });
 
-const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP);
-
 export function MetaMetricsProvider({ children }) {
   const location = useLocation();
   const context = useSegmentContext();
+  const isMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
   // Sometimes we want to track context properties inside the event's "properties" object.
   const addContextPropsIntoEventProperties = useCallback(
@@ -82,18 +87,26 @@ export function MetaMetricsProvider({ children }) {
    * @type {UITrackEventMethod}
    */
   const trackEvent = useCallback(
-    (payload, options) => {
+    async (payload, options) => {
       addContextPropsIntoEventProperties(payload, options);
-      trackMetaMetricsEvent(
-        {
-          ...payload,
-          environmentType: getEnvironmentType(),
-          ...context,
-        },
-        options,
-      );
+
+      const fullPayload = {
+        ...payload,
+        environmentType: getEnvironmentType(),
+        ...context,
+      };
+
+      if (isMetricsEnabled) {
+        // If metrics are enabled, track immediately
+        trackMetaMetricsEvent(fullPayload, options);
+      } else {
+        // If metrics are not enabled, buffer the event
+        await submitRequestToBackground('addEventBeforeMetricsOptIn', [
+          { ...fullPayload, actionId: generateActionId() },
+        ]);
+      }
     },
-    [addContextPropsIntoEventProperties, context],
+    [addContextPropsIntoEventProperties, context, isMetricsEnabled],
   );
 
   // Used to prevent double tracking page calls
@@ -108,7 +121,7 @@ export function MetaMetricsProvider({ children }) {
   useEffect(() => {
     const environmentType = getEnvironmentType();
     const match = matchPath(location.pathname, {
-      path: PATHS_TO_CHECK,
+      path: getPaths(),
       exact: true,
       strict: true,
     });
@@ -135,7 +148,7 @@ export function MetaMetricsProvider({ children }) {
       // in the event that we are dealing with the initial load of the
       // homepage
       const { path, params } = match;
-      const name = PATH_NAME_MAP[path];
+      const name = PATH_NAME_MAP.get(path);
       trackMetaMetricsPage(
         {
           name,

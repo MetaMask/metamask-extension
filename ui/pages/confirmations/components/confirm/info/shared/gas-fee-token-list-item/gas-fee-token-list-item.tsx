@@ -3,6 +3,8 @@ import { GasFeeToken } from '@metamask/transaction-controller';
 import classnames from 'classnames';
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import {
   Box,
   Icon,
@@ -24,10 +26,7 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import {
-  NATIVE_TOKEN_ADDRESS,
-  useGasFeeToken,
-} from '../../hooks/useGasFeeToken';
+import { useGasFeeToken } from '../../hooks/useGasFeeToken';
 import { getCurrentCurrency } from '../../../../../../../ducks/metamask/metamask';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
 
@@ -38,6 +37,8 @@ export type GasFeeTokenListItemProps = {
   warning?: string;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function GasFeeTokenListItem({
   isSelected,
   onClick,
@@ -75,6 +76,8 @@ export function GasFeeTokenListItem({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function ListItem({
   image,
   leftPrimary,
@@ -161,6 +164,8 @@ function ListItem({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function WarningIndicator({ text }: { text: string }) {
   return (
     <Box
@@ -184,6 +189,8 @@ function WarningIndicator({ text }: { text: string }) {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function SelectedIndicator() {
   return (
     <Box

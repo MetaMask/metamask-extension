@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL } from '../../../constants';
-import {
-  unlockWallet,
-  veryLargeDelayMs,
-  WINDOW_TITLES,
-} from '../../../helpers';
+import { veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
+import { Anvil } from '../../../seeder/anvil';
 import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -32,10 +30,15 @@ describe('Confirmation Redesign Token Send', function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.legacy,
-          async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          async ({
+            driver,
+            contractRegistry,
+            localNodes,
+          }: TestSuiteArguments) => {
             await createERC721WalletInitiatedTransactionAndAssertDetails(
               driver,
               contractRegistry,
+              localNodes?.[0],
             );
           },
           erc721Mocks,
@@ -47,10 +50,15 @@ describe('Confirmation Redesign Token Send', function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.feeMarket,
-          async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          async ({
+            driver,
+            contractRegistry,
+            localNodes,
+          }: TestSuiteArguments) => {
             await createERC721WalletInitiatedTransactionAndAssertDetails(
               driver,
               contractRegistry,
+              localNodes?.[0],
             );
           },
           erc721Mocks,
@@ -64,10 +72,15 @@ describe('Confirmation Redesign Token Send', function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.legacy,
-          async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          async ({
+            driver,
+            contractRegistry,
+            localNodes,
+          }: TestSuiteArguments) => {
             await createERC721DAppInitiatedTransactionAndAssertDetails(
               driver,
               contractRegistry,
+              localNodes?.[0],
             );
           },
           erc721Mocks,
@@ -79,10 +92,15 @@ describe('Confirmation Redesign Token Send', function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.feeMarket,
-          async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          async ({
+            driver,
+            contractRegistry,
+            localNodes,
+          }: TestSuiteArguments) => {
             await createERC721DAppInitiatedTransactionAndAssertDetails(
               driver,
               contractRegistry,
+              localNodes?.[0],
             );
           },
           erc721Mocks,
@@ -98,10 +116,15 @@ describe('Confirmation Redesign Token Send', function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.legacy,
-          async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          async ({
+            driver,
+            contractRegistry,
+            localNodes,
+          }: TestSuiteArguments) => {
             await createERC1155WalletInitiatedTransactionAndAssertDetails(
               driver,
               contractRegistry,
+              localNodes?.[0],
             );
           },
           erc1155Mocks,
@@ -113,10 +136,15 @@ describe('Confirmation Redesign Token Send', function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.feeMarket,
-          async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          async ({
+            driver,
+            contractRegistry,
+            localNodes,
+          }: TestSuiteArguments) => {
             await createERC1155WalletInitiatedTransactionAndAssertDetails(
               driver,
               contractRegistry,
+              localNodes?.[0],
             );
           },
           erc1155Mocks,
@@ -138,6 +166,8 @@ async function erc1155Mocks(server: Mockttp) {
 async function mockedERC7214BytesNFTTokenSend(mockServer: Mockttp) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0x23b872dd' })
     .always()
     .thenCallback(() => ({
@@ -148,10 +178,18 @@ async function mockedERC7214BytesNFTTokenSend(mockServer: Mockttp) {
         previous: null,
         results: [
           {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             bytes_signature: '#rÝ',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             created_at: '2016-07-09T03:58:28.927638Z',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             hex_signature: '0x23b872dd',
             id: 147,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             text_signature: 'transferFrom(address,address,uint256)',
           },
         ],
@@ -162,6 +200,8 @@ async function mockedERC7214BytesNFTTokenSend(mockServer: Mockttp) {
 async function mockedERC11554BytesNFTTokenSend(mockServer: Mockttp) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0xf242432a' })
     .always()
     .thenCallback(() => ({
@@ -172,10 +212,18 @@ async function mockedERC11554BytesNFTTokenSend(mockServer: Mockttp) {
         previous: null,
         results: [
           {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             bytes_signature: 'òBC*',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             created_at: '2018-08-29T20:16:41.650553Z',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             hex_signature: '0xf242432a',
             id: 93843,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             text_signature:
               'safeTransferFrom(address,address,uint256,uint256,bytes)',
           },
@@ -187,8 +235,9 @@ async function mockedERC11554BytesNFTTokenSend(mockServer: Mockttp) {
 async function createERC721WalletInitiatedTransactionAndAssertDetails(
   driver: Driver,
   contractRegistry?: ContractAddressRegistry,
+  localNode?: Anvil,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver, localNode);
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
@@ -234,8 +283,9 @@ async function createERC721WalletInitiatedTransactionAndAssertDetails(
 async function createERC721DAppInitiatedTransactionAndAssertDetails(
   driver: Driver,
   contractRegistry?: ContractAddressRegistry,
+  localNode?: Anvil,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver, localNode);
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
@@ -269,8 +319,12 @@ async function createERC721DAppInitiatedTransactionAndAssertDetails(
 async function createERC1155WalletInitiatedTransactionAndAssertDetails(
   driver: Driver,
   contractRegistry?: ContractAddressRegistry,
+  localNode?: Anvil,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver, localNode);
+
+  const homePage = new HomePage(driver);
+  await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
@@ -297,7 +351,7 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
   await watchAssetConfirmation.clickFooterConfirmButton();
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await new HomePage(driver).goToNftTab();
+  await homePage.goToNftTab();
   await new NFTListPage(driver).clickNFTIconOnActivityList();
 
   const nftDetailsPage = new NFTDetailsPage(driver);

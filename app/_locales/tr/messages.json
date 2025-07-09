@@ -68,13 +68,6 @@
     "message": "$1 bölümünü okudum ve kabul ediyorum",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Gizli Kurtarma İfadenizle cüzdanınıza erişin"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask şifrenizi kurtaramaz. Sahipliğinizi doğrulamak, cüzdanınızı yenilemek ve yeni bir şifre belirlemek için Gizli Kurtarma İfadenizi kullanırız. İlk olarak, cüzdanınızı oluştururken size verilmiş olan Gizli Kurtarma İfadenizi girin. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Kameranıza erişim sağlanıyor..."
   },
@@ -917,9 +910,6 @@
   },
   "bridgeTo": {
     "message": "Şuraya köprü:"
-  },
-  "bridgeToChain": {
-    "message": "Şuraya köprü: $1"
   },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Bu token'ı manuel olarak eklediyseniz köprü yapmadan önce paranıza gelebilecek risklerin farkında olduğunuzdan emin olun."
@@ -2236,9 +2226,6 @@
   "floatAmountToken": {
     "message": "Token miktarı tam sayı olmalıdır"
   },
-  "followUsOnTwitter": {
-    "message": "Bizi Twitter'da takip edin"
-  },
   "forbiddenIpfsGateway": {
     "message": "Yasaklı IPFS Ağ Geçidi: Lütfen bir CID ağ geçidi belirtin"
   },
@@ -2398,9 +2385,6 @@
   },
   "hideAdvancedDetails": {
     "message": "Gelişmiş bilgileri gizle"
-  },
-  "hideSeedPhrase": {
-    "message": "Anahtar cümleyi gizle"
   },
   "hideSentitiveInfo": {
     "message": "Hassas bilgileri gizle"
@@ -4423,18 +4407,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Anladım"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Gizli Kurtarma İfadenizi her zaman güvende ve gizli bir yerde tutun"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Gizli Kurtarma İfadenizi yeniden yedeklemeniz mi gerekiyor?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Gizli Kurtarma İfadenizi asla başkasıyla paylaşmayın"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMask ekibi sizden asla Gizli Kurtarma İfadenizi istemeyecektir"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Gizli Kurtarma İfadeniz tüm hesaplarınızı kontrol eder."
   },
@@ -4622,9 +4594,6 @@
   "revealSensitiveContent": {
     "message": "Hassas içeriği açığa çıkar"
   },
-  "revealTheSeedPhrase": {
-    "message": "Anahtar cümleyi göster"
-  },
   "review": {
     "message": "İncele"
   },
@@ -4732,29 +4701,11 @@
   "seeDetails": {
     "message": "Ayrıntılara bakın"
   },
-  "seedPhraseConfirm": {
-    "message": "Gizli Kurtarma İfadesini Onayla"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Gizli Kurtarma İfadesini Onayla"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Birden fazla gizli yerde not ederek saklayın"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Bir kasada saklayın"
-  },
   "seedPhraseIntroTitle": {
     "message": "Cüzdanınızı koruyun"
   },
   "seedPhraseReq": {
     "message": "Gizli Kurtarma İfadeleri 12, 15, 18, 21 veya 24 kelimeden oluşur"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Bu 12 kelimelik Gizli Kurtarma İfadesini not ederek güvendiğiniz ve sadece sizin erişim sağlayabileceğiniz bir yerde saklayın."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Gizli Kurtarma İfadenizi not edin"
   },
   "select": {
     "message": "Seç"
@@ -4826,16 +4777,8 @@
   "sendSelectSendAsset": {
     "message": "Gönderilecek varlıkları seçin"
   },
-  "sendSpecifiedTokens": {
-    "message": "$1 Gönder",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Bu düğmeye tıklandığında swap işleminiz anında başlatılır. İlerlemeden önce lütfen işlem ayrıntılarınızı inceleyin."
-  },
-  "sendTokenAsToken": {
-    "message": "$2 olarak $1 gönder",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "$1 gönderiliyor"
@@ -6159,9 +6102,6 @@
   "time": {
     "message": "Zaman"
   },
-  "tips": {
-    "message": "İpuçları"
-  },
   "tipsForUsingAWallet": {
     "message": "Cüzdan kullanma ipuçları"
   },
@@ -6452,9 +6392,6 @@
   },
   "unlock": {
     "message": "Kilidini Aç"
-  },
-  "unlockMessage": {
-    "message": "Merkeziyetsiz web sizi bekliyor"
   },
   "unpin": {
     "message": "Sabitlemeyi kaldır"
