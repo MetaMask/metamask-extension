@@ -54,6 +54,7 @@ import {
   openBasicFunctionalityModal,
 } from '../../ducks/app/app';
 import {
+  getIsPrimarySeedPhraseBackedUp,
   getIsSeedlessPasswordOutdated,
   getWeb3ShimUsageAlertEnabledness,
 } from '../../ducks/metamask/metamask';
@@ -183,6 +184,7 @@ const mapStateToProps = (state) => {
     showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
     showUpdateModal: getShowUpdateModal(state),
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
+    isPrimarySeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
   };
 };
 
