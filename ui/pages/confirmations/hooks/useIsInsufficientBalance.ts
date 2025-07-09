@@ -1,7 +1,7 @@
-import { useInsufficientBalanceAlerts } from "./alerts/transactions/useInsufficientBalanceAlerts";
+import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 
 export function useIsInsufficientBalance() {
-return Boolean(
+  return Boolean(
     useInsufficientBalanceAlerts({ ignoreGasFeeToken: true }).length,
   );
 }

@@ -1,10 +1,10 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useIsGaslessLoading } from './useIsGaslessLoading';
 import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../context/confirm';
-import { useIsGaslessSupported } from './useIsGaslessSupported';
 import { getUseTransactionSimulations } from '../../../../selectors';
 import { useIsInsufficientBalance } from '../useIsInsufficientBalance';
+import { useIsGaslessSupported } from './useIsGaslessSupported';
+import { useIsGaslessLoading } from './useIsGaslessLoading';
 
 jest.mock('../../context/confirm');
 jest.mock('./useIsGaslessSupported');
@@ -36,15 +36,20 @@ describe('useIsGaslessLoading', () => {
     simulationData?: object | null;
   }) => {
     mockedUseSelector.mockImplementation((selector) => {
-      if (selector === getUseTransactionSimulations) return simulationEnabled;
+      if (selector === getUseTransactionSimulations) {
+        return simulationEnabled;
+      }
       return false;
     });
 
     mockedUseConfirmContext.mockReturnValue({
       currentConfirmation: simulationData ? { simulationData } : {},
-    } as any);
+    } as unknown as ReturnType<typeof useConfirmContext>);
 
-    mockedUseIsGaslessSupported.mockReturnValue({ isSupported: gaslessSupported, isSmartTransaction: true });
+    mockedUseIsGaslessSupported.mockReturnValue({
+      isSupported: gaslessSupported,
+      isSmartTransaction: true,
+    });
     mockedUseIsInsufficientBalance.mockReturnValue(insufficientBalance);
   };
 
