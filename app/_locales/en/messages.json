@@ -2216,6 +2216,9 @@
   "enterYourPassword": {
     "message": "Enter your password"
   },
+  "enterYourPasswordContinue": {
+    "message": "Enter password to continue"
+  },
   "enterYourPasswordSocialLoginFlow": {
     "message": "Enter Metamask Password"
   },
@@ -4583,7 +4586,7 @@
     "message": "Privacy policy"
   },
   "privateKey": {
-    "message": "Private Key",
+    "message": "Private key",
     "description": "select this type of file to use to import an account"
   },
   "privateKeyCopyWarning": {
@@ -5370,6 +5373,15 @@
   },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
+  },
+  "simulationSettingsModalEnforceToggle": {
+    "message": "Enforce balance changes"
+  },
+  "simulationSettingsModalEnforceToggleDescription": {
+    "message": "To keep your money safe, this transaction won't go through if the balance changes or the slippage tolerance isn't met."
+  },
+  "simulationSettingsModalTitle": {
+    "message": "Transaction settings"
   },
   "simulationsSettingDescription": {
     "message": "Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome. $1"
