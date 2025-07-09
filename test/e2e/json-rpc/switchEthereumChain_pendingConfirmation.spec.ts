@@ -77,7 +77,7 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
         await networkSwitchAlertModal.check_pageIsLoaded();
         await networkSwitchAlertModal.clickGotItButton();
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await driver.switchToWindowWithUrl(DAPP_URL);
         await dappOne.check_pageIsLoaded();
 
         // Wait for chain id element to change, there's a page reload.
@@ -157,7 +157,7 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
         await networkSwitchAlertModal.check_pageIsLoaded();
         await networkSwitchAlertModal.clickGotItButton();
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await driver.switchToWindowWithUrl(DAPP_URL);
         await dappOne.check_pageIsLoaded();
 
         // Wait for chain id element to change, there's a page reload.
