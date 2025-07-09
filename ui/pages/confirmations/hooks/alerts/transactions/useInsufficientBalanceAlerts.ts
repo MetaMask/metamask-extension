@@ -32,7 +32,7 @@ export function useInsufficientBalanceAlerts({
     id: transactionId,
     chainId,
     selectedGasFeeToken,
-    simulationData,
+    gasFeeTokens,
   } = currentConfirmation ?? {};
 
   const batchTransactionValues =
@@ -71,12 +71,12 @@ export function useInsufficientBalanceAlerts({
   });
 
   const canSkipSimulationChecks = ignoreGasFeeToken || !isSimulationEnabled;
-  const hasSimulationFinished =
-    canSkipSimulationChecks || Boolean(simulationData);
+  const hasGaslessSimulationFinished =
+    canSkipSimulationChecks || Boolean(gasFeeTokens);
 
   const showAlert =
     insufficientBalance &&
-    hasSimulationFinished &&
+    hasGaslessSimulationFinished &&
     (ignoreGasFeeToken || !selectedGasFeeToken);
 
   return useMemo(() => {
