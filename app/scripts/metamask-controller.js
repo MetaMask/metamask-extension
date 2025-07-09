@@ -1450,6 +1450,7 @@ export default class MetamaskController extends EventEmitter {
           'TokenListController:getState',
           'TokensController:getState',
           'TokensController:addDetectedTokens',
+          'AuthenticationController:getBearerToken',
         ],
         allowedEvents: [
           'AccountsController:selectedEvmAccountChange',

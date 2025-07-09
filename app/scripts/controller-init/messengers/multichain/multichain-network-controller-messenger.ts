@@ -10,6 +10,7 @@ import {
   type NetworkControllerGetSelectedChainIdAction,
   type NetworkControllerFindNetworkClientIdByChainIdAction,
 } from '@metamask/network-controller';
+import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
 
 type Actions =
   | NetworkControllerGetStateAction
@@ -17,7 +18,8 @@ type Actions =
   | NetworkControllerRemoveNetworkAction
   | NetworkControllerGetSelectedChainIdAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
-  | AccountsControllerListMultichainAccountsAction;
+  | AccountsControllerListMultichainAccountsAction
+  | AuthenticationControllerGetBearerToken;
 
 type Events = AccountsControllerSelectedAccountChangeEvent;
 
@@ -44,6 +46,7 @@ export function getMultichainNetworkControllerMessenger(
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getSelectedChainId',
       'AccountsController:listMultichainAccounts',
+      'AuthenticationController:getBearerToken',
     ],
     allowedEvents: ['AccountsController:selectedAccountChange'],
   });
