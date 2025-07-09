@@ -2468,6 +2468,12 @@ export function showConfTxPage({ id }: Partial<TransactionMeta> = {}) {
   };
 }
 
+export function setShowSupportDataConsentModal(show: boolean) {
+  return {
+    type: actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL,
+    payload: show,
+  };
+}
 export function addToken(
   {
     address,
@@ -3546,6 +3552,8 @@ export function displayWarning(payload: unknown): PayloadAction<string> {
   }
   return {
     type: actionConstants.DISPLAY_WARNING,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     payload: `${payload}`,
   };
 }

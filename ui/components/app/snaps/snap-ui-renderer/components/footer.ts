@@ -67,6 +67,8 @@ export const footer: UIComponentFactory<FooterElement> = ({
     } as UIComponentParams<ButtonElement>);
     return {
       element: 'SnapUIFooterButton',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       key: `snap-footer-button-${buttonMapped.props?.name ?? index}`,
       props: {
         ...buttonMapped.props,

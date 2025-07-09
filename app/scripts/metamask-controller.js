@@ -140,6 +140,7 @@ import {
   hexToBigInt,
   toCaipChainId,
   parseCaipAccountId,
+  KnownCaipNamespace,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -1043,9 +1044,31 @@ export default class MetamaskController extends EventEmitter {
       name: 'NetworkOrderController',
       allowedEvents: ['NetworkController:stateChange'],
     });
+
+    let initialNetworkOrderControllerState;
+    if (
+      process.env.METAMASK_DEBUG &&
+      process.env.METAMASK_ENVIRONMENT === 'development' &&
+      !process.env.IN_TEST
+    ) {
+      initialNetworkOrderControllerState = {
+        orderedNetworkList: [],
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            [CHAIN_IDS.SEPOLIA]: true,
+          },
+          [KnownCaipNamespace.Solana]: {
+            [SolScope.Mainnet]: true,
+          },
+        },
+      };
+    } else {
+      initialNetworkOrderControllerState = initState.NetworkOrderController;
+    }
+
     this.networkOrderController = new NetworkOrderController({
       messenger: networkOrderMessenger,
-      state: initState.NetworkOrderController,
+      state: initialNetworkOrderControllerState,
     });
 
     const accountOrderMessenger = this.controllerMessenger.getRestricted({
@@ -3411,6 +3434,7 @@ export default class MetamaskController extends EventEmitter {
       userStorageController,
       notificationServicesController,
       notificationServicesPushController,
+      deFiPositionsController,
     } = this;
 
     return {
@@ -4195,6 +4219,12 @@ export default class MetamaskController extends EventEmitter {
         tokenBalancesController.stopPollingByPollingToken.bind(
           tokenBalancesController,
         ),
+      deFiStartPolling: deFiPositionsController.startPolling.bind(
+        deFiPositionsController,
+      ),
+      deFiStopPolling: deFiPositionsController.stopPollingByPollingToken.bind(
+        deFiPositionsController,
+      ),
 
       // GasFeeController
       gasFeeStartPolling: gasFeeController.startPolling.bind(gasFeeController),
