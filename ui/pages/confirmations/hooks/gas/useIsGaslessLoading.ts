@@ -9,21 +9,20 @@ export function useIsGaslessLoading() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { simulationData } = transactionMeta ?? {};
+  const { gasFeeTokens } = transactionMeta ?? {};
 
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);
 
   const hasInsufficientNative = useIsInsufficientBalance();
 
-  const canSkipSimulationChecks = !isSimulationEnabled || !isGaslessSupported;
-
-  const isGaslessLoading =
-    canSkipSimulationChecks ||
-    !hasInsufficientNative ||
-    Boolean(simulationData);
+  if (!isSimulationEnabled || !isGaslessSupported || !hasInsufficientNative) {
+    return {
+      isGaslessLoading: false,
+    };
+  }
 
   return {
-    isGaslessLoading,
+    isGaslessLoading: !gasFeeTokens,
   };
 }

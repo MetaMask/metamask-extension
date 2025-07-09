@@ -28,12 +28,12 @@ describe('useIsGaslessLoading', () => {
     simulationEnabled,
     gaslessSupported,
     insufficientBalance,
-    simulationData,
+    gasFeeTokens,
   }: {
     simulationEnabled: boolean;
     gaslessSupported: boolean;
     insufficientBalance: boolean;
-    simulationData?: object | null;
+    gasFeeTokens?: object | null;
   }) => {
     mockedUseSelector.mockImplementation((selector) => {
       if (selector === getUseTransactionSimulations) {
@@ -43,17 +43,18 @@ describe('useIsGaslessLoading', () => {
     });
 
     mockedUseConfirmContext.mockReturnValue({
-      currentConfirmation: simulationData ? { simulationData } : {},
+      currentConfirmation: gasFeeTokens ? { gasFeeTokens } : {},
     } as unknown as ReturnType<typeof useConfirmContext>);
 
     mockedUseIsGaslessSupported.mockReturnValue({
       isSupported: gaslessSupported,
       isSmartTransaction: true,
     });
+
     mockedUseIsInsufficientBalance.mockReturnValue(insufficientBalance);
   };
 
-  it('returns true if simulation is disabled', () => {
+  it('returns false if simulation is disabled', () => {
     setup({
       simulationEnabled: false,
       gaslessSupported: true,
@@ -61,10 +62,10 @@ describe('useIsGaslessLoading', () => {
     });
 
     const { result } = renderHook(() => useIsGaslessLoading());
-    expect(result.current.isGaslessLoading).toBe(true);
+    expect(result.current.isGaslessLoading).toBe(false);
   });
 
-  it('returns true if gasless is not supported', () => {
+  it('returns false if gasless is not supported', () => {
     setup({
       simulationEnabled: true,
       gaslessSupported: false,
@@ -72,10 +73,10 @@ describe('useIsGaslessLoading', () => {
     });
 
     const { result } = renderHook(() => useIsGaslessLoading());
-    expect(result.current.isGaslessLoading).toBe(true);
+    expect(result.current.isGaslessLoading).toBe(false);
   });
 
-  it('returns true if no insufficient balance', () => {
+  it('returns false if there is no insufficient balance', () => {
     setup({
       simulationEnabled: true,
       gaslessSupported: true,
@@ -83,30 +84,42 @@ describe('useIsGaslessLoading', () => {
     });
 
     const { result } = renderHook(() => useIsGaslessLoading());
-    expect(result.current.isGaslessLoading).toBe(true);
+    expect(result.current.isGaslessLoading).toBe(false);
   });
 
-  it('returns true if simulation data is present', () => {
+  it('returns true if gas fee tokens are undefined (still loading)', () => {
     setup({
       simulationEnabled: true,
       gaslessSupported: true,
       insufficientBalance: true,
-      simulationData: { tokenBalanceChanges: [] },
+      gasFeeTokens: undefined, // this triggers loading
     });
 
     const { result } = renderHook(() => useIsGaslessLoading());
     expect(result.current.isGaslessLoading).toBe(true);
   });
 
-  it('returns false if all checks fail', () => {
+  it('returns false if gas fee tokens are present', () => {
     setup({
       simulationEnabled: true,
       gaslessSupported: true,
       insufficientBalance: true,
-      simulationData: null,
+      gasFeeTokens: { tokenA: '0x123' },
     });
 
     const { result } = renderHook(() => useIsGaslessLoading());
     expect(result.current.isGaslessLoading).toBe(false);
+  });
+
+  it('returns true if gas fee tokens is null', () => {
+    setup({
+      simulationEnabled: true,
+      gaslessSupported: true,
+      insufficientBalance: true,
+      gasFeeTokens: null,
+    });
+
+    const { result } = renderHook(() => useIsGaslessLoading());
+    expect(result.current.isGaslessLoading).toBe(true);
   });
 });
