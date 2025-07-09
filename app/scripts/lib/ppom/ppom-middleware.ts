@@ -1,6 +1,9 @@
 import { AccountsController } from '@metamask/accounts-controller';
 import { PPOMController } from '@metamask/ppom-validator';
-import { NetworkController } from '@metamask/network-controller';
+import {
+  NetworkClientId,
+  NetworkController,
+} from '@metamask/network-controller';
 import {
   Json,
   JsonRpcParams,
@@ -13,7 +16,6 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import { AppStateController } from '../../controllers/app-state-controller';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import { trace, TraceContext, TraceName } from '../../../../shared/lib/trace';
 import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
 import {
@@ -34,6 +36,7 @@ export type PPOMMiddlewareRequest<
 > = Required<JsonRpcRequest<Params>> & {
   securityAlertResponse?: SecurityAlertResponse | undefined;
   traceContext?: TraceContext;
+  networkClientId: NetworkClientId;
 };
 
 /**
@@ -73,12 +76,9 @@ export function createPPOMMiddleware<
       const { securityAlertsEnabled } = preferencesController.state;
 
       const { chainId } =
-        getProviderConfig({
-          metamask: networkController.state,
-        }) ?? {};
-      if (!chainId) {
-        return;
-      }
+        networkController.getNetworkConfigurationByNetworkClientId(
+          req.networkClientId,
+        )!;
 
       if (
         !securityAlertsEnabled ||

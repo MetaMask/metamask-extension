@@ -15,6 +15,7 @@ import {
   validateRequestWithPPOM,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
+import { flushPromises } from '../../../../test/lib/timer-helpers';
 
 jest.mock('./ppom-util');
 jest.mock('@metamask/controller-utils', () => ({
@@ -37,6 +38,8 @@ const REQUEST_MOCK = {
   params: [],
   id: '',
   jsonrpc: '2.0' as const,
+  origin: 'test.com',
+  networkClientId: 'networkClientId',
 };
 
 const createMiddleware = (
@@ -71,12 +74,9 @@ const createMiddleware = (
   }
 
   const networkController = {
-    state: {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      ...mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET }),
-      ...(chainId === null ? { providerConfig: {} } : undefined),
-    },
+    getNetworkConfigurationByNetworkClientId: jest
+      .fn()
+      .mockReturnValue({ chainId: chainId || CHAIN_IDS.MAINNET }),
   };
 
   const appStateController = {
@@ -87,7 +87,7 @@ const createMiddleware = (
     listAccounts: () => [{ address: INTERNAL_ACCOUNT_ADDRESS }],
   };
 
-  return createPPOMMiddleware(
+  const middlewareFunction = createPPOMMiddleware(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ppomController as any,
@@ -105,6 +105,7 @@ const createMiddleware = (
     accountsController as any,
     updateSecurityAlertResponse,
   );
+  return { middlewareFunction, networkController };
 };
 
 describe('PPOMMiddleware', () => {
@@ -128,10 +129,35 @@ describe('PPOMMiddleware', () => {
     };
   });
 
+  it('gets the network configuration for the request networkClientId', async () => {
+    const { middlewareFunction, networkController } = createMiddleware();
+
+    const req = {
+      ...REQUEST_MOCK,
+      method: 'eth_sendTransaction',
+      securityAlertResponse: undefined,
+    };
+
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct.TYPE },
+      () => undefined,
+    );
+
+    await flushPromises();
+
+    expect(
+      networkController.getNetworkConfigurationByNetworkClientId,
+    ).toHaveBeenCalledTimes(1);
+    expect(
+      networkController.getNetworkConfigurationByNetworkClientId,
+    ).toHaveBeenCalledWith('networkClientId');
+  });
+
   it('adds checking chain response to confirmation requests while validation is in progress', async () => {
     const updateSecurityAlertResponse = jest.fn();
 
-    const middlewareFunction = createMiddleware({
+    const { middlewareFunction } = createMiddleware({
       updateSecurityAlertResponse,
     });
 
@@ -154,7 +180,7 @@ describe('PPOMMiddleware', () => {
   });
 
   it('does not do validation if the user has not enabled the preference', async () => {
-    const middlewareFunction = createMiddleware({
+    const { middlewareFunction } = createMiddleware({
       securityAlertsEnabled: false,
     });
 
@@ -172,7 +198,7 @@ describe('PPOMMiddleware', () => {
   });
 
   it('does not do validation when request is not for confirmation method', async () => {
-    const middlewareFunction = createMiddleware();
+    const { middlewareFunction } = createMiddleware();
 
     const req = {
       ...REQUEST_MOCK,
@@ -191,7 +217,7 @@ describe('PPOMMiddleware', () => {
   });
 
   it('does not do validation when request is send to users own account', async () => {
-    const middlewareFunction = createMiddleware();
+    const { middlewareFunction } = createMiddleware();
 
     const req = {
       ...REQUEST_MOCK,
@@ -211,7 +237,7 @@ describe('PPOMMiddleware', () => {
   });
 
   it('does not do validation for SIWE signature', async () => {
-    const middlewareFunction = createMiddleware({
+    const { middlewareFunction } = createMiddleware({
       securityAlertsEnabled: true,
     });
 
@@ -239,7 +265,7 @@ describe('PPOMMiddleware', () => {
   });
 
   it('calls next method', async () => {
-    const middlewareFunction = createMiddleware();
+    const { middlewareFunction } = createMiddleware();
     const nextMock = jest.fn();
 
     await middlewareFunction(
@@ -257,7 +283,7 @@ describe('PPOMMiddleware', () => {
 
     const nextMock = jest.fn();
 
-    const middlewareFunction = createMiddleware({ error });
+    const { middlewareFunction } = createMiddleware({ error });
 
     const req = {
       ...REQUEST_MOCK,
