@@ -219,9 +219,13 @@ export default function OnboardingFlow() {
     return await dispatch(createNewVaultAndRestore(password, srp));
   };
 
-  const isWelcomeAndUnlockPage =
+  let isFullPage =
     pathname === ONBOARDING_WELCOME_ROUTE ||
     pathname === ONBOARDING_UNLOCK_ROUTE;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  isFullPage = isFullPage || pathname === ONBOARDING_EXPERIMENTAL_AREA;
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Box
@@ -246,17 +250,18 @@ export default function OnboardingFlow() {
       {!isPopup && <OnboardingAppHeader pageState={welcomePageState} />}
       <Box
         className={classnames('onboarding-flow__container', {
-          'onboarding-flow__container--welcome': isWelcomeAndUnlockPage,
+          'onboarding-flow__container--full': isFullPage,
           'onboarding-flow__container--popup': isPopup,
         })}
         width={BlockSize.Full}
         borderStyle={
-          isWelcomeAndUnlockPage || isPopup
-            ? BorderStyle.none
-            : BorderStyle.solid
+          isFullPage || isPopup ? BorderStyle.none : BorderStyle.solid
         }
         borderRadius={BorderRadius.LG}
         marginTop={pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? 0 : 3}
+        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+        marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
+        ///: END:ONLY_INCLUDE_IF
         marginInline="auto"
         borderColor={BorderColor.borderMuted}
       >
