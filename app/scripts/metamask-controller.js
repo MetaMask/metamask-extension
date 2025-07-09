@@ -413,6 +413,7 @@ import {
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
+import { MultichainAccountControllerInit } from './controller-init/multichain/multichain-account-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1923,6 +1924,7 @@ export default class MetamaskController extends EventEmitter {
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
+      MultichainAccountController: MultichainAccountControllerInit,
       ///: END:ONLY_INCLUDE_IF
       MultichainNetworkController: MultichainNetworkControllerInit,
       AuthenticationController: AuthenticationControllerInit,
@@ -1972,6 +1974,8 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainTransactionsController;
     this.multichainAssetsRatesController =
       controllersByName.MultichainAssetsRatesController;
+    this.multichainAccountController =
+      controllersByName.MultichainAccountController;
     ///: END:ONLY_INCLUDE_IF
     this.tokenRatesController = controllersByName.TokenRatesController;
     this.multichainNetworkController =
@@ -5038,6 +5042,8 @@ export default class MetamaskController extends EventEmitter {
     }
 
     await this.accountsController.updateAccounts();
+    // Init multichain accounts after creating internal accounts.
+    this.multichainAccountController.init();
     // Force account-tree refresh after all accounts have been updated.
     this.accountWalletController.init();
 

@@ -50,6 +50,7 @@ import {
 import {
   getAccountTreeControllerMessenger,
   getAccountTreeControllerInitMessenger,
+  getMultichainAccountControllerMessenger,
 } from './accounts';
 
 export const CONTROLLER_MESSENGERS = {
@@ -159,6 +160,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   WebSocketService: {
     getMessenger: getWebSocketServiceMessenger,
+    getInitMessenger: noop,
+  },
+  MultichainAccountController: {
+    getMessenger: getMultichainAccountControllerMessenger,
     getInitMessenger: noop,
   },
 } as const;
