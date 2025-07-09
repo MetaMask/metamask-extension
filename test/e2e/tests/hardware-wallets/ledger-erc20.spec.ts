@@ -53,7 +53,7 @@ describe('Ledger Hardware', function (this: Suite) {
         await testDappPage.clickERC20WatchAssetButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const watchAssetConfirmation = new WatchAssetConfirmation(driver);
-        await watchAssetConfirmation.clickFooterConfirmButton();
+        await watchAssetConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -82,7 +82,7 @@ describe('Ledger Hardware', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDappPage.clickApproveTokens();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await txConfirmation.clickFooterConfirmButton();
+        await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -96,7 +96,7 @@ describe('Ledger Hardware', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDappPage.clickERC20IncreaseAllowanceButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await txConfirmation.clickFooterConfirmButton();
+        await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

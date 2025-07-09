@@ -815,6 +815,10 @@ class TestDapp {
     await this.driver.clickElement(this.erc20CreateTokenButton);
   }
 
+  async clickERC20IncreaseAllowanceButton() {
+    await this.driver.clickElement(this.erc20IncreaseTokensAllowanceButton);
+  }
+
   async clickERC20TokenTransferButton() {
     await this.driver.waitForSelector(this.erc20TokenTransferButton, {
       state: 'enabled',
@@ -824,10 +828,6 @@ class TestDapp {
 
   async clickERC20WatchAssetButton() {
     await this.driver.clickElement(this.erc20WatchAssetButton);
-  }
-
-  async clickERC20IncreaseAllowanceButton() {
-    await this.driver.clickElement(this.erc20IncreaseTokensAllowanceButton);
   }
 
   async clickERC721DeployButton() {
