@@ -12,9 +12,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
   ONBOARDING_WELCOME_ROUTE, // eslint-disable-line no-unused-vars
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
-  ONBOARDING_METAMETRICS, // eslint-disable-line no-unused-vars
-  ///: END:ONLY_INCLUDE_IF
+  ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -25,8 +23,8 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app'; // eslint-disable-line no-unused-vars
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
-import { getIsParticipateInMetaMetricsSet } from '../../../selectors';
 ///: END:ONLY_INCLUDE_IF
+import { getIsParticipateInMetaMetricsSet } from '../../../selectors';
 
 export default function OnboardingFlowSwitch() {
   /* eslint-disable prefer-const */
