@@ -65,8 +65,7 @@ class GeneralSettings {
     );
     await this.check_noLoadingOverlaySpinner();
     // We use send keys, because clicking the dropdown causes flakiness, if it's not auto closed after selecting the language
-    const dropdown =
-      await this.driver.findElement(this.selectLanguageField);
+    const dropdown = await this.driver.findElement(this.selectLanguageField);
     await dropdown.sendKeys(languageToSelect);
     await this.check_noLoadingOverlaySpinner();
   }
