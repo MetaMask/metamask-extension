@@ -469,15 +469,6 @@ const PrepareBridgePage = () => {
   }, []);
 
   useEffect(() => {
-    // Don't fetch quotes if destination address is required but missing
-    // Typically occurs when the user switches the destination account.
-    const needsDestinationAddress =
-      isSolanaBridgeEnabled && isToOrFromSolana && !selectedDestinationAccount;
-
-    if (needsDestinationAddress) {
-      return;
-    }
-
     dispatch(setSelectedQuote(null));
     debouncedUpdateQuoteRequestInController(quoteParams, {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -494,7 +485,7 @@ const PrepareBridgePage = () => {
       security_warnings: [],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [quoteParams, isSolanaBridgeEnabled, isToOrFromSolana]);
+  }, [quoteParams]);
 
   const trackInputEvent = useCallback(
     (
