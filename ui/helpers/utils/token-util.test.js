@@ -159,15 +159,17 @@ describe('getAssetDetails', () => {
     expect(result.symbol).toStrictEqual('MTK');
   });
 
-  it('throws an error with the token address if token data cannot be parsed', () => {
+  it('throws an error with the token address if token data cannot be parsed', async () => {
     const tokenAddress = '0xAddrEssToken';
-    const currentUserAddress = '0xAccountAddress';
+    const currentUserAddress = '0xAccouNtAddress';
     const transactionData = '0xTransactionData';
 
-    parseStandardTokenTransactionData.mockReturnValue(null);
+    parseStandardTokenTransactionData.mockReturnValue(undefined);
 
-    expect(() =>
+    await expect(
       getAssetDetails(tokenAddress, currentUserAddress, transactionData, []),
-    ).toThrow(`Unable to detect valid token data for token: 0xAddrEssToken`);
+    ).rejects.toThrow(
+      `Unable to detect valid token data for token: 0xAddrEssToken`,
+    );
   });
 });
