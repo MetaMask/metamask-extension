@@ -5593,7 +5593,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:^34.0.0":
+"@metamask/bridge-status-controller@npm:34.0.0":
   version: 34.0.0
   resolution: "@metamask/bridge-status-controller@npm:34.0.0"
   dependencies:
@@ -5613,6 +5613,29 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^58.0.0
   checksum: 10/21fd09989adbb85f9b0b409589af47310b319a4175d8063ec1a48abe31cc55416eaa9cdd42eec8b03092f665970c47f0d98f4f8201cb937b424d3c380b8d1f95
+  languageName: node
+  linkType: hard
+
+"@metamask/bridge-status-controller@patch:@metamask/bridge-status-controller@npm%3A34.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-34.0.0-0b1d95ade1.patch":
+  version: 34.0.0
+  resolution: "@metamask/bridge-status-controller@patch:@metamask/bridge-status-controller@npm%3A34.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-34.0.0-0b1d95ade1.patch::version=34.0.0&hash=24174a"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/controller-utils": "npm:^11.10.0"
+    "@metamask/keyring-api": "npm:^18.0.0"
+    "@metamask/polling-controller": "npm:^14.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.2.0"
+    bignumber.js: "npm:^9.1.2"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/accounts-controller": ^31.0.0
+    "@metamask/bridge-controller": ^34.0.0
+    "@metamask/gas-fee-controller": ^24.0.0
+    "@metamask/network-controller": ^24.0.0
+    "@metamask/snaps-controllers": ^14.0.0
+    "@metamask/transaction-controller": ^58.0.0
+  checksum: 10/30de489affc16fe95700ad39f49a6c300ffa52a049aa1068a41da4a694214a294d75804281d292d7e2d5cb9ed4e4e4392a08fc8edf7f7b92eca1b95b67ab85ec
   languageName: node
   linkType: hard
 
@@ -31714,7 +31737,7 @@ __metadata:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.17.0"
     "@metamask/bridge-controller": "npm:^34.0.0"
-    "@metamask/bridge-status-controller": "npm:^34.0.0"
+    "@metamask/bridge-status-controller": "patch:@metamask/bridge-status-controller@npm%3A34.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-34.0.0-0b1d95ade1.patch"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^0.8.0"

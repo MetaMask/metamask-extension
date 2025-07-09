@@ -250,17 +250,6 @@ export const getQuoteRequest = (state: BridgeAppState) => {
   return quoteRequest;
 };
 
-export const getShouldUseSnapConfirmation = createSelector(
-  getBridgeFeatureFlags,
-  getFromChain,
-  (extensionConfig, fromChain) =>
-    Boolean(
-      fromChain &&
-        extensionConfig.chains[formatChainIdToCaip(fromChain.chainId)]
-          ?.isSnapConfirmationEnabled,
-    ),
-);
-
 export const getQuoteRefreshRate = createSelector(
   getBridgeFeatureFlags,
   getFromChain,
