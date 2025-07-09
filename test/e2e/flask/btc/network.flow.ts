@@ -18,7 +18,7 @@ export const switchToNetworkFlow = async (
   console.log(`Switch to network ${networkName} in header bar`);
   const headerNavbar = new HeaderNavbar(driver);
   await headerNavbar.check_pageIsLoaded();
-  await headerNavbar.clickSwitchNetworkDropDown();
+  // await headerNavbar.clickSwitchNetworkDropDown();
 
   const selectNetworkDialog = new SelectNetwork(driver);
   await selectNetworkDialog.check_pageIsLoaded();
@@ -47,7 +47,7 @@ export const searchAndSwitchToNetworkFlow = async (
   );
   const headerNavbar = new HeaderNavbar(driver);
   await headerNavbar.check_pageIsLoaded();
-  await headerNavbar.clickSwitchNetworkDropDown();
+  // await headerNavbar.clickSwitchNetworkDropDown();
 
   const selectNetworkDialog = new SelectNetwork(driver);
   await selectNetworkDialog.check_pageIsLoaded();

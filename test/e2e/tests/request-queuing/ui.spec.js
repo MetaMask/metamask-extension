@@ -333,8 +333,8 @@ describe('Request-queue UI changes', function () {
         await driver.delay(veryLargeDelayMs);
 
         // Switch to second network, ensure full balance
-        await validateBalanceAndActivity(driver, '25', 0);
         await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
+        await validateBalanceAndActivity(driver, '25', 0);
 
         // Switch to first network, whose send transaction was just confirmed
         await switchToNetworkFromSendFlow(driver, 'Localhost 8545');
