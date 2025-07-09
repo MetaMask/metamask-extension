@@ -48,7 +48,10 @@ const METHOD_START_UI_SYNC = 'startUISync';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
-let reduxStore;
+/**
+ * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
+ */
+let reduxStore = Promise.withResolvers();
 
 /**
  * Method to update backgroundConnection object use by UI
@@ -61,10 +64,10 @@ export const connectToBackground = (
   handleStartUISync,
 ) => {
   setBackgroundConnection(backgroundConnection);
-  backgroundConnection.onNotification((data) => {
+  backgroundConnection.onNotification(async (data) => {
     const { method, params } = data;
     if (method === 'sendUpdate') {
-      reduxStore.dispatch(actions.updateMetamaskState(params[0]));
+      (await reduxStore.promise).dispatch(actions.updateMetamaskState(params[0]));
     } else if (method === METHOD_START_UI_SYNC) {
       handleStartUISync();
     } else {
@@ -165,7 +168,7 @@ export async function setupInitialStore(metamaskState, activeTab) {
   }
 
   const store = configureStore(draftInitialState);
-  reduxStore = store;
+  reduxStore.resolve(store);
 
   const unapprovedTxs = getUnapprovedTransactions(metamaskState);
 
