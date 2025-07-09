@@ -41,7 +41,7 @@ export const useAccountTotalCrossChainFiatBalance = (
 
   const selectedEnabledNetworks = useSelector(getEnabledNetworks);
   const enabledNetworksByNamespace = useMemo(
-    () => Object.assign({}, ...Object.values(selectedEnabledNetworks)),
+    () => Object.assign({}, ...Object.values(selectedEnabledNetworks ?? {})),
     [selectedEnabledNetworks],
   );
 
