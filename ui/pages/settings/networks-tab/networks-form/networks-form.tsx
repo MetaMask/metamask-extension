@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   type UpdateNetworkFields,
+  NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { Hex, isStrictHexString, parseCaipChainId } from '@metamask/utils';
@@ -311,16 +312,16 @@ export const NetworksForm = ({
             );
           }
         } else {
-          await dispatch(addNetwork(networkPayload));
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          if (networkConfigurationIdsByChainId?.[chainIdHex]) {
-            const networkClientId =
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              networkConfigurationIdsByChainId?.[chainIdHex];
-            await dispatch(setActiveNetwork(networkClientId));
-          }
+          const addedNetworkConfiguration = (await dispatch(
+            addNetwork(networkPayload),
+          )) as unknown as NetworkConfiguration;
+
+          const networkClientId =
+            addedNetworkConfiguration?.rpcEndpoints?.[
+              addedNetworkConfiguration.defaultRpcEndpointIndex
+            ]?.networkClientId;
+
+          await dispatch(setActiveNetwork(networkClientId));
           await dispatch(
             setEnabledNetworks([networkPayload.chainId], namespace),
           );
@@ -738,7 +739,7 @@ export const NetworksForm = ({
           size={ButtonPrimarySize.Lg}
           width={BlockSize.Full}
         >
-          {t('save')}
+          {t('save') + 'salim'}
         </ButtonPrimary>
       </Box>
     </Box>
