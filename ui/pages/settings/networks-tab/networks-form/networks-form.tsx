@@ -73,7 +73,6 @@ import {
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
 import {
   getIsRpcFailoverEnabled,
-  getNetworkConfigurationIdByChainId,
   getTokenNetworkFilter,
 } from '../../../../selectors';
 import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
