@@ -71,13 +71,11 @@ export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
   (networkConfigurationsByChainId) => networkConfigurationsByChainId,
 );
 
-export const getSelectedNetworkClientId = createSelector(
-  [
-    (state: SelectedNetworkClientIdState) =>
-      state.metamask.selectedNetworkClientId,
-  ],
-  (selectedNetworkClientId) => selectedNetworkClientId,
-);
+export function getSelectedNetworkClientId(
+  state: SelectedNetworkClientIdState,
+) {
+  return state.metamask.selectedNetworkClientId;
+}
 
 /**
  * Combines and returns network configurations for all chains (EVM and not) by caip chain id.
@@ -262,19 +260,14 @@ export function getNetworkConfigurations(
  *
  * @param state - Redux state object.
  */
-export const isNetworkLoading = createSelector(
-  [
-    getSelectedNetworkClientId,
-    (state: NetworkState) => state.metamask.networksMetadata,
-  ],
-  (selectedNetworkClientId, networksMetadata) => {
-    return (
-      selectedNetworkClientId &&
-      networksMetadata[selectedNetworkClientId]?.status !==
-        NetworkStatus.Available
-    );
-  },
-);
+export function isNetworkLoading(state: NetworkState) {
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
+  return (
+    selectedNetworkClientId &&
+    state.metamask.networksMetadata[selectedNetworkClientId].status !==
+      NetworkStatus.Available
+  );
+}
 
 export function getInfuraBlocked(
   state: SelectedNetworkClientIdState & NetworksMetadataState,
