@@ -78,7 +78,7 @@ export function createPPOMMiddleware<
       const { chainId } =
         networkController.getNetworkConfigurationByNetworkClientId(
           req.networkClientId,
-        )!;
+        ) ?? {};
 
       if (
         !securityAlertsEnabled ||
