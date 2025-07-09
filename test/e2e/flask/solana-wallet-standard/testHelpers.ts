@@ -41,7 +41,7 @@ const onboardSolanaAccount = async (driver: Driver): Promise<void> => {
   console.log('onboarding a new solana account');
 
   const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
-  await connectAccountConfirmation.check_isCreateSolanaAccountButtonVisible();
+  await connectAccountConfirmation.check_isCreateSolanaAccountModalButtonVisible();
   await connectAccountConfirmation.createCreateSolanaAccountFromModal();
 };
 

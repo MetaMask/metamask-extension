@@ -111,9 +111,9 @@ class ConnectAccountConfirmation {
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_isCreateSolanaAccountButtonVisible(): Promise<boolean> {
+  async check_isCreateSolanaAccountModalButtonVisible(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.createSolanaAccountButton, {
+      await this.driver.findClickableElement(this.createSolanaAccountModalButton, {
         timeout: 1000,
       });
     } catch (e) {
