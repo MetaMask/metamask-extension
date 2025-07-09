@@ -12,6 +12,7 @@ import {
 import {
   hideModal,
   requestUserApproval,
+  setActiveNetwork,
   setEnabledNetworks,
 } from '../../../../store/actions';
 import {
@@ -70,6 +71,7 @@ export const useAdditionalNetworkHandlers = () => {
           namespace,
         ),
       );
+      await dispatch(setActiveNetwork(network.chainId));
     },
     [dispatch, enabledNetworksByNamespace, namespace],
   );

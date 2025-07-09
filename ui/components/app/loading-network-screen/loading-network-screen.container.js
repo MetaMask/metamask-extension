@@ -69,29 +69,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { history, location, ...restOwnProps } = ownProps;
-
-  const onDisplayed = () => {
-    // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
-    let redirectTo = DEFAULT_ROUTE;
-    if (location.state?.from?.pathname) {
-      const search = location.state.from.search || '';
-      redirectTo = location.state.from.pathname + search;
-    }
-    history.push(redirectTo);
-  };
-
-  return {
-    ...stateProps,
-    ...dispatchProps,
-    ...restOwnProps,
-    onDisplayed,
-  };
-};
-
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-  mergeProps,
 )(LoadingNetworkScreen);
