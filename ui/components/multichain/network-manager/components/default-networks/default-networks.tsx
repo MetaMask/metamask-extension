@@ -277,9 +277,11 @@ const DefaultNetworks = memo(() => {
           paddingTop={4}
           paddingLeft={4}
         >
-          <ButtonLink onClick={selectAllDefaultNetworks}>
-            {t('selectAll')}
-          </ButtonLink>
+          {isEvmNetworkSelected ? (
+            <ButtonLink onClick={selectAllDefaultNetworks}>
+              {t('selectAll')}
+            </ButtonLink>
+          ) : null}
         </Box>
         {networkListItems}
         {isEvmNetworkSelected && (
