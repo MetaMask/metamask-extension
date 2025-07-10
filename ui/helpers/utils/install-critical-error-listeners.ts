@@ -1,6 +1,5 @@
 import type browser from 'webextension-polyfill';
-import { isObject } from 'lodash';
-import { hasProperty } from '@metamask/utils';
+import { isObject, hasProperty } from '@metamask/utils';
 import log from 'loglevel';
 import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from '../../../shared/constants/state-corruption';
 import type { ErrorLike } from '../../../shared/constants/errors';
