@@ -42,7 +42,7 @@ import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 
-export { installCriticalStartupErrorListeners } from './helpers/utils/install-critical-error-listeners';
+export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-listeners';
 
 const METHOD_START_UI_SYNC = 'startUISync';
 

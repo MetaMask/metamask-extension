@@ -5,23 +5,37 @@ import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from '../../../shared/constants
 import type { ErrorLike } from '../../../shared/constants/errors';
 import { displayStateCorruptionError } from './state-corruption-html';
 
-/**
- * Connects error listeners to the provided port to handle state corruption errors.
- * This function listens for messages from the background script and displays
- * a state corruption error if the appropriate message is received.
- *
- * Critical error messages are transferred over a raw browser `Port`, not with
- * `PortStream` wrapper. We want to be as close to the "metal" as possible here,
- * it minimize abstractions that could cause further issues.
- *
- * @param container - The container element to display the error in.
- * @param port - The port to listen for messages on.
- */
-export function installCriticalStartupErrorListeners(
-  container: HTMLElement,
-  port: browser.Runtime.Port,
-) {
-  port.onMessage.addListener((message) => {
+type Message = {
+  data: {
+    method: string;
+    params?: Record<string, unknown> | unknown[];
+  };
+};
+
+export class CriticalStartupErrorHandler {
+  #port: browser.Runtime.Port;
+
+  #container: HTMLElement;
+
+  /**
+   * Creates an instance of CriticalStartupErrorHandler.
+   * This class listens for critical startup errors from the background script
+   * and displays appropriate error messages in the UI.
+   *
+   * @param port - The port to listen for messages on.
+   * @param container - The container element to display the error in.
+   */
+  constructor(port: browser.Runtime.Port, container: HTMLElement) {
+    this.#port = port;
+    this.#container = container;
+  }
+
+  /**
+   * Handles incoming messages from the background script.
+   *
+   * @param message - The message received from the background script.
+   */
+  #handler = (message: Message) => {
     if (!isObject(message) || !hasProperty(message, 'data')) {
       // Ignore messages that are not objects or do not have a 'data' property,
       // they're likely for some other purpose
@@ -54,12 +68,32 @@ export function installCriticalStartupErrorListeners(
         currentLocale?: string;
       };
       displayStateCorruptionError(
-        container,
-        port,
+        this.#container,
+        this.#port,
         error,
         hasBackup,
         currentLocale,
       );
     }
-  });
+  };
+
+  /**
+   * Connects error listeners to the provided port to handle state corruption errors.
+   * This function listens for messages from the background script and displays
+   * a state corruption error if the appropriate message is received.
+   *
+   * Critical error messages are transferred over a raw browser `Port`, not with
+   * `PortStream` wrapper. We want to be as close to the "metal" as possible here,
+   * it minimize abstractions that could cause further issues.
+   */
+  install() {
+    this.#port.onMessage.addListener(this.#handler);
+  }
+
+  /**
+   * Uninstalls the error listeners from the port.
+   */
+  uninstall() {
+    this.#port.onMessage.removeListener(this.#handler);
+  }
 }

@@ -21,7 +21,7 @@ import log from 'loglevel';
 // Import to set up global `Promise.withResolvers` polyfill
 import '../../shared/lib/promise-with-resolvers';
 import launchMetaMaskUi, {
-  installCriticalStartupErrorListeners,
+  CriticalStartupErrorHandler,
   connectToBackground,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
@@ -94,7 +94,11 @@ async function start() {
 
   // Set up error handlers as early as possible to ensure we are ready to
   // handle any errors that occur at any time
-  installCriticalStartupErrorListeners(container, extensionPort);
+  const criticalErrorHandler = new CriticalStartupErrorHandler(
+    extensionPort,
+    container,
+  );
+  criticalErrorHandler.install();
 
   const connectionStream = new PortStream(extensionPort);
   const subStreams = connectSubstreams(connectionStream);
@@ -103,6 +107,11 @@ async function start() {
 
   async function handleStartUISync() {
     endTrace({ name: TraceName.BackgroundConnect });
+
+    // this means we've received a message from the background, and so
+    // background startup has succeed, so we don't need to listen for error
+    // messages anymore
+    criticalErrorHandler.uninstall();
 
     // Only after startUiSync has started can we set up the provider connection
     // The provider connection *must* be set up before the UI is initialized, as
