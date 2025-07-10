@@ -87,6 +87,9 @@ class TestDapp {
 
   private readonly erc20WatchAssetButton = '#watchAssets';
 
+  private readonly erc20IncreaseTokensAllowanceButton =
+    '#increaseTokenAllowance';
+
   private readonly erc721TokenAddresses = '#erc721TokenAddresses';
 
   private readonly erc721DeployButton = '#deployNFTsButton';
@@ -812,7 +815,14 @@ class TestDapp {
     await this.driver.clickElement(this.erc20CreateTokenButton);
   }
 
+  async clickERC20IncreaseAllowanceButton() {
+    await this.driver.clickElement(this.erc20IncreaseTokensAllowanceButton);
+  }
+
   async clickERC20TokenTransferButton() {
+    await this.driver.waitForSelector(this.erc20TokenTransferButton, {
+      state: 'enabled',
+    });
     await this.driver.clickElement(this.erc20TokenTransferButton);
   }
 

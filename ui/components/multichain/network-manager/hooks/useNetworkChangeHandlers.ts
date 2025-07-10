@@ -31,8 +31,8 @@ import {
   getPermittedEVMChainsForSelectedTab,
   getPreferences,
   getSelectedMultichainNetworkChainId,
+  isGlobalNetworkSelectorRemoved,
 } from '../../../../selectors';
-import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/useAccountCreationOnNetworkChange';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -79,10 +79,9 @@ export const useNetworkChangeHandlers = () => {
   const permittedAccountAddresses = useSelector((state) =>
     getPermittedEVMAccountsForSelectedTab(state, selectedTabOrigin),
   );
+
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const allChainIds = useSelector(getAllChainsToPoll);
-
-  const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   // This value needs to be tracked in case the user changes to a Non EVM
   // network and there is no account created for that network. This will
@@ -98,8 +97,6 @@ export const useNetworkChangeHandlers = () => {
       const hexChainId = convertCaipToHexChainId(chainId);
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
-
-      dispatch(setActiveNetwork(finalNetworkClientId));
 
       const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
 
@@ -133,6 +130,28 @@ export const useNetworkChangeHandlers = () => {
             namespace,
           ),
         );
+      }
+
+      const isDeselecting = Object.keys(enabledNetworksByNamespace).some(
+        (key) => key === hexChainId,
+      );
+
+      if (isGlobalNetworkSelectorRemoved && isDeselecting) {
+        const firstEnabledNetwork = enabledNetworkKeys[0];
+
+        const firstEnabledNetworkConfig = firstEnabledNetwork
+          ? evmNetworks[firstEnabledNetwork as keyof typeof evmNetworks]
+          : null;
+        const firstEnabledNetworkClientId =
+          firstEnabledNetworkConfig?.rpcEndpoints?.[
+            firstEnabledNetworkConfig.defaultRpcEndpointIndex
+          ]?.networkClientId;
+
+        dispatch(
+          setActiveNetwork(firstEnabledNetworkClientId || finalNetworkClientId),
+        );
+      } else {
+        dispatch(setActiveNetwork(finalNetworkClientId));
       }
 
       dispatch(updateCustomNonce(''));
@@ -192,39 +211,10 @@ export const useNetworkChangeHandlers = () => {
   const handleNonEvmNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
       const { namespace } = parseCaipChainId(chainId);
-      const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
-
-      if (enabledNetworkKeys.includes(chainId)) {
-        dispatch(setEnabledNetworks([], namespace));
-      } else {
-        if (hasAnyAccountsInNetwork(chainId)) {
-          dispatch(setActiveNetwork(chainId));
-          dispatch(setEnabledNetworks([chainId], namespace));
-          return;
-        }
-
-        if (enabledNetworkKeys.includes(chainId)) {
-          const filteredEnabledNetworks = enabledNetworkKeys.filter(
-            (key: string) => key !== chainId,
-          );
-          dispatch(
-            setEnabledNetworks(
-              filteredEnabledNetworks as CaipChainId[],
-              namespace,
-            ),
-          );
-        } else {
-          dispatch(
-            setEnabledNetworks(
-              [...enabledNetworkKeys, chainId] as CaipChainId[],
-              namespace,
-            ),
-          );
-        }
-        setActionMode(ACTION_MODE.ADD_NON_EVM_ACCOUNT);
-      }
+      dispatch(setActiveNetwork(chainId));
+      dispatch(setEnabledNetworks([chainId], namespace));
     },
-    [enabledNetworksByNamespace, dispatch, hasAnyAccountsInNetwork],
+    [dispatch],
   );
 
   const getMultichainNetworkConfigurationOrThrow = useCallback(
