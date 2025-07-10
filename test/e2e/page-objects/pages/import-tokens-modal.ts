@@ -49,7 +49,7 @@ export class ImportTokensModal {
   async selectNetwork(chainId: string): Promise<void> {
     await this.driver.clickElement(ImportTokensModal.selectors.networkDropdown);
     await this.driver.clickElement(
-      `${ImportTokensModal.selectors.networkItemPrefix}${chainId}"]`,
+      `${ImportTokensModal.selectors.networkItemPrefix}${chainId}'"]`,
     );
   }
 
