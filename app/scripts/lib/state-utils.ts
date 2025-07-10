@@ -5,19 +5,22 @@ import { Snap } from '@metamask/snaps-utils';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type FlattenedUIState = Record<string, any>;
 
-const REMOVE_KEYS = ['snapStates', 'unencryptedSnapStates', 'vault'];
+const REMOVE_KEYS = [
+  'snapStates',
+  'unencryptedSnapStates',
+  'vault',
+  'phishingLists',
+  'whitelist',
+  'hotlistLastFetched',
+  'stalelistLastFetched',
+  'c2DomainBlocklistLastFetched',
+];
 
 export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
   const newState = { ...state };
 
   for (const key of REMOVE_KEYS) {
     delete newState[key];
-  }
-
-  // only keep urlScanCache for PhishingController
-  if (newState.PhishingController) {
-    const { urlScanCache } = newState.PhishingController;
-    newState.PhishingController = { urlScanCache };
   }
 
   sanitizeSnapData(newState);
