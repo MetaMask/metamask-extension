@@ -5,8 +5,10 @@ import {
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
+import { Messenger } from '@metamask/base-controller';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import { applyTransactionContainers } from '../containers/util';
+import { AppStateControllerGetStateAction } from '../../../controllers/app-state-controller';
 import { EnforceSimulationHook } from './enforce-simulation-hook';
 
 jest.mock('../containers/util');
@@ -41,11 +43,13 @@ const TRANSACTION_META_MOCK: TransactionMeta = {
 };
 
 describe('EnforceSimulationHook', () => {
-  const messenger = {} as TransactionControllerInitMessenger;
+  let messenger: TransactionControllerInitMessenger;
 
   const applyTransactionContainersMock = jest.mocked(
     applyTransactionContainers,
   );
+
+  const getAppControllerStateMock = jest.fn();
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -54,6 +58,27 @@ describe('EnforceSimulationHook', () => {
 
     applyTransactionContainersMock.mockResolvedValue({
       updateTransaction: jest.fn(),
+    });
+
+    const baseMessenger = new Messenger<
+      AppStateControllerGetStateAction,
+      never
+    >();
+
+    baseMessenger.registerActionHandler(
+      'AppStateController:getState',
+      getAppControllerStateMock,
+    );
+
+    messenger = baseMessenger.getRestricted({
+      name: 'TransactionControllerInitMessenger',
+      allowedActions: ['AppStateController:getState'],
+      allowedEvents: [],
+    });
+
+    getAppControllerStateMock.mockReturnValue({
+      enableEnforcedSimulations: true,
+      enableEnforcedSimulationsForTransactions: {},
     });
   });
 
@@ -167,6 +192,44 @@ describe('EnforceSimulationHook', () => {
             ...TRANSACTION_META_MOCK,
             containerTypes: [TransactionContainerType.EnforcedSimulations],
           },
+        })) ?? {};
+
+      expect(updateTransaction).toBeUndefined();
+    });
+
+    it('disabled due to default in app state', async () => {
+      const hook = new EnforceSimulationHook({
+        messenger,
+      }).getAfterSimulateHook();
+
+      getAppControllerStateMock.mockReturnValue({
+        enableEnforcedSimulations: false,
+        enableEnforcedSimulationsForTransactions: {},
+      });
+
+      const { updateTransaction } =
+        (await hook({
+          transactionMeta: TRANSACTION_META_MOCK,
+        })) ?? {};
+
+      expect(updateTransaction).toBeUndefined();
+    });
+
+    it('disabled due to override in app state', async () => {
+      const hook = new EnforceSimulationHook({
+        messenger,
+      }).getAfterSimulateHook();
+
+      getAppControllerStateMock.mockReturnValue({
+        enableEnforcedSimulations: true,
+        enableEnforcedSimulationsForTransactions: {
+          [TRANSACTION_META_MOCK.id]: false,
+        },
+      });
+
+      const { updateTransaction } =
+        (await hook({
+          transactionMeta: TRANSACTION_META_MOCK,
         })) ?? {};
 
       expect(updateTransaction).toBeUndefined();
