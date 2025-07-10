@@ -11,6 +11,10 @@ type MessengerActions =
 
 type MessengerEvents = NetworkControllerStateChangeEvent;
 
+export type SmartTransactionsControllerMessenger = ReturnType<
+  typeof getSmartTransactionsControllerMessenger
+>;
+
 export function getSmartTransactionsControllerMessenger(
   messenger: Messenger<MessengerActions, MessengerEvents>,
 ) {
@@ -22,8 +26,4 @@ export function getSmartTransactionsControllerMessenger(
     ],
     allowedEvents: ['NetworkController:stateChange'],
   });
-}
-
-export function getSmartTransactionsControllerInitMessenger() {
-  return undefined;
 }

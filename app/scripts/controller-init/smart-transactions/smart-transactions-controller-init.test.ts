@@ -1,13 +1,44 @@
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
 import { Messenger } from '@metamask/base-controller';
-import type { Hex } from '@metamask/utils';
+import type { AccountsController } from '@metamask/accounts-controller';
+import type { TransactionController } from '@metamask/transaction-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
-import { getFeatureFlagsByChainId } from '../../../../shared/modules/selectors';
+import type {
+  BaseRestrictedControllerMessenger,
+  ControllerInitRequest,
+} from '../types';
+import type { SmartTransactionsControllerMessenger } from '../messengers/smart-transactions-controller-messenger';
+import { ControllerFlatState } from '../controller-list';
 import { SmartTransactionsControllerInit } from './smart-transactions-controller-init';
+import type {
+  MetaMetricsEventPayload,
+  MetaMetricsEventOptions,
+} from '../../../../shared/constants/metametrics';
 
 jest.mock('@metamask/smart-transactions-controller');
+
+// Define mock types for the dependencies
+type MockAccountsController = Pick<AccountsController, 'getSelectedAccount'>;
+type MockTransactionController = Pick<
+  TransactionController,
+  | 'getNonceLock'
+  | 'confirmExternalTransaction'
+  | 'getTransactions'
+  | 'updateTransaction'
+>;
+
+type TestInitRequest =
+  ControllerInitRequest<SmartTransactionsControllerMessenger> & {
+    getStateUI: () => { metamask: ControllerFlatState };
+    getGlobalNetworkClientId: () => string;
+    getAccountType: (address: string) => Promise<string>;
+    getDeviceModel: (address: string) => Promise<string>;
+    getHardwareTypeForMetric: (address: string) => Promise<string>;
+    trace: jest.Mock;
+    trackEvent: jest.Mock;
+  };
 
 describe('SmartTransactionsController Init', () => {
   const smartTransactionsControllerClassMock = jest.mocked(
@@ -29,25 +60,21 @@ describe('SmartTransactionsController Init', () => {
       registerEventHandler: jest.fn(),
       clearEventHandlers: jest.fn(),
       clearActionHandlers: jest.fn(),
-    };
+    } as unknown as BaseRestrictedControllerMessenger;
 
     baseControllerMessenger.getRestricted = jest
       .fn()
       .mockReturnValue(restrictedMessenger);
 
-    const accountsController = {
+    const accountsController: MockAccountsController = {
       getSelectedAccount: jest.fn().mockReturnValue({ address: '0x123' }),
     };
 
-    const transactionController = {
-      getNonceLock: jest.fn(),
+    const transactionController: MockTransactionController = {
+      getNonceLock: jest.fn().mockResolvedValue({ releaseLock: jest.fn() }),
       confirmExternalTransaction: jest.fn(),
-      getTransactions: jest.fn(),
+      getTransactions: jest.fn().mockReturnValue([]),
       updateTransaction: jest.fn(),
-    };
-
-    const metaMetricsController = {
-      trackEvent: jest.fn(),
     };
 
     return {
@@ -55,7 +82,6 @@ describe('SmartTransactionsController Init', () => {
       restrictedMessenger,
       accountsController,
       transactionController,
-      metaMetricsController,
     };
   }
 
@@ -65,22 +91,21 @@ describe('SmartTransactionsController Init', () => {
    * @param options - Custom options to override defaults
    * @returns A complete init request object
    */
-  function buildInitRequest(options: Record<string, unknown> = {}) {
+  function buildInitRequest(options: Partial<TestInitRequest> = {}) {
     const mocks = buildMockDependencies();
     const requestMock = buildControllerInitRequestMock();
 
     const fullRequest = {
       ...requestMock,
       baseControllerMessenger: mocks.baseControllerMessenger,
-      controllerMessenger: mocks.restrictedMessenger,
+      controllerMessenger:
+        mocks.restrictedMessenger as SmartTransactionsControllerMessenger,
       getController: jest.fn((name: string) => {
         switch (name) {
           case 'AccountsController':
             return mocks.accountsController;
           case 'TransactionController':
             return mocks.transactionController;
-          case 'MetaMetricsController':
-            return mocks.metaMetricsController;
           default:
             return {};
         }
@@ -88,12 +113,33 @@ describe('SmartTransactionsController Init', () => {
       persistedState: {
         SmartTransactionsController: {
           smartTransactionsState: {
+            smartTransactions: {},
+            userOptIn: true,
+            userOptInV2: true,
             liveness: true,
+            fees: {
+              approvalTxFees: null,
+              tradeTxFees: null,
+            },
+            feesByChainId: {},
+            livenessByChainId: {},
           },
         },
       },
       getStateUI: jest.fn().mockReturnValue({
         metamask: {
+          internalAccounts: {
+            selectedAccount: 'account-id',
+            accounts: {
+              'account-id': {
+                id: 'account-id',
+                address: '0x123',
+                metadata: {
+                  name: 'Test Account',
+                },
+              },
+            },
+          },
           preferences: {
             smartTransactionsOptInStatus: true,
           },
@@ -116,15 +162,34 @@ describe('SmartTransactionsController Init', () => {
               extensionReturnTxHashAsap: false,
             },
           },
+          swapsState: {
+            swapsFeatureFlags: {
+              ethereum: {
+                extensionActive: true,
+                mobileActive: false,
+                smartTransactions: {
+                  expectedDeadline: 45,
+                  maxDeadline: 150,
+                  extensionReturnTxHashAsap: false,
+                },
+              },
+              smartTransactions: {
+                mobileActive: false,
+                extensionActive: true,
+                extensionReturnTxHashAsap: false,
+              },
+            },
+          },
         },
       }),
       getGlobalNetworkClientId: jest.fn().mockReturnValue('mainnet'),
       getAccountType: jest.fn().mockResolvedValue('EthereumAccount'),
       getDeviceModel: jest.fn().mockResolvedValue('Ledger Nano S'),
       getHardwareTypeForMetric: jest.fn().mockResolvedValue('Ledger'),
-      trace: jest.fn((_, fn) => fn?.()),
+      trace: jest.fn((_request, fn) => fn?.()),
+      trackEvent: jest.fn(),
       ...options,
-    };
+    } as TestInitRequest;
 
     return { fullRequest, mocks };
   }
@@ -144,8 +209,6 @@ describe('SmartTransactionsController Init', () => {
     const { fullRequest } = buildInitRequest();
     SmartTransactionsControllerInit(fullRequest);
 
-    // Since we're not mocking getAllowedSmartTransactionsChainIds anymore,
-    // we'll get the real chain IDs from the actual implementation
     const expectedChainIds = getAllowedSmartTransactionsChainIds();
 
     expect(smartTransactionsControllerClassMock).toHaveBeenCalledWith(
@@ -169,8 +232,16 @@ describe('SmartTransactionsController Init', () => {
   it('initializes with persisted state', () => {
     const persistedState = {
       smartTransactionsState: {
+        smartTransactions: {},
+        userOptIn: true,
+        userOptInV2: true,
         liveness: true,
-        fees: {},
+        fees: {
+          approvalTxFees: null,
+          tradeTxFees: null,
+        },
+        feesByChainId: {},
+        livenessByChainId: {},
       },
     };
     const { fullRequest } = buildInitRequest({
@@ -187,7 +258,7 @@ describe('SmartTransactionsController Init', () => {
   });
 
   it('passes messenger to controller', () => {
-    const { fullRequest, mocks } = buildInitRequest();
+    const { fullRequest } = buildInitRequest();
     SmartTransactionsControllerInit(fullRequest);
 
     // The messenger configuration happens in the initControllers function,
@@ -199,24 +270,23 @@ describe('SmartTransactionsController Init', () => {
     );
   });
 
-  it('configures getNonceLock correctly', () => {
+  it('configures getNonceLock correctly', async () => {
     const { fullRequest, mocks } = buildInitRequest();
     SmartTransactionsControllerInit(fullRequest);
 
     const constructorCall =
       smartTransactionsControllerClassMock.mock.calls[0][0];
-    // Type assertion to avoid TypeScript errors
-    const getNonceLock = constructorCall.getNonceLock as (
-      address: string,
-    ) => unknown;
+    const { getNonceLock } = constructorCall;
 
     const address = '0xtest';
-    getNonceLock(address);
+    const networkClientId = 'mainnet';
+    const result = await getNonceLock(address, networkClientId);
 
     expect(mocks.transactionController.getNonceLock).toHaveBeenCalledWith(
       address,
       'mainnet',
     );
+    expect(result).toHaveProperty('releaseLock');
   });
 
   it('configures confirmExternalTransaction correctly', () => {
@@ -225,13 +295,11 @@ describe('SmartTransactionsController Init', () => {
 
     const constructorCall =
       smartTransactionsControllerClassMock.mock.calls[0][0];
-    // Type assertion to avoid TypeScript errors
-    const confirmExternalTransaction =
-      constructorCall.confirmExternalTransaction as (
-        ...args: unknown[]
-      ) => unknown;
+    const { confirmExternalTransaction } = constructorCall;
 
-    const args = ['arg1', 'arg2'];
+    const args = ['arg1', 'arg2'] as unknown as Parameters<
+      TransactionController['confirmExternalTransaction']
+    >;
     confirmExternalTransaction(...args);
 
     expect(
@@ -240,22 +308,28 @@ describe('SmartTransactionsController Init', () => {
   });
 
   it('configures trackMetaMetricsEvent correctly', () => {
-    const { fullRequest, mocks } = buildInitRequest();
+    const { fullRequest } = buildInitRequest();
     SmartTransactionsControllerInit(fullRequest);
 
     const constructorCall =
       smartTransactionsControllerClassMock.mock.calls[0][0];
-    // Type assertion to avoid TypeScript errors
+
+    expect(typeof constructorCall.trackMetaMetricsEvent).toBe('function');
+
     const trackMetaMetricsEvent = constructorCall.trackMetaMetricsEvent as (
-      event: unknown,
-    ) => unknown;
+      payload: MetaMetricsEventPayload,
+      options?: MetaMetricsEventOptions,
+    ) => void;
 
-    const eventArgs = { event: 'test', properties: {} };
-    trackMetaMetricsEvent(eventArgs);
+    const testPayload: MetaMetricsEventPayload = {
+      event: 'TestEvent',
+      category: 'TestCategory',
+      properties: { test: true },
+    };
 
-    expect(mocks.metaMetricsController.trackEvent).toHaveBeenCalledWith(
-      eventArgs,
-    );
+    trackMetaMetricsEvent(testPayload);
+
+    expect(fullRequest.trackEvent).toHaveBeenCalledWith(testPayload);
   });
 
   it('configures getTransactions correctly', () => {
@@ -264,12 +338,9 @@ describe('SmartTransactionsController Init', () => {
 
     const constructorCall =
       smartTransactionsControllerClassMock.mock.calls[0][0];
-    // Type assertion to avoid TypeScript errors
-    const getTransactions = constructorCall.getTransactions as (
-      ...args: unknown[]
-    ) => unknown;
+    const { getTransactions } = constructorCall;
 
-    const args = [{ status: 'submitted' }];
+    const args = [] as Parameters<TransactionController['getTransactions']>;
     getTransactions(...args);
 
     expect(mocks.transactionController.getTransactions).toHaveBeenCalledWith(
@@ -283,16 +354,19 @@ describe('SmartTransactionsController Init', () => {
 
     const constructorCall =
       smartTransactionsControllerClassMock.mock.calls[0][0];
-    // Type assertion to avoid TypeScript errors
-    const updateTransaction = constructorCall.updateTransaction as (
-      ...args: unknown[]
-    ) => unknown;
+    const { updateTransaction } = constructorCall;
 
-    const args = ['txId', { status: 'confirmed' }];
-    updateTransaction(...args);
+    const transactionMeta = {
+      id: 'txId',
+      status: 'confirmed' as const,
+    } as Parameters<TransactionController['updateTransaction']>[0];
+
+    const note = 'test note';
+    updateTransaction(transactionMeta, note);
 
     expect(mocks.transactionController.updateTransaction).toHaveBeenCalledWith(
-      ...args,
+      transactionMeta,
+      note,
     );
   });
 
@@ -303,17 +377,16 @@ describe('SmartTransactionsController Init', () => {
 
       const constructorCall =
         smartTransactionsControllerClassMock.mock.calls[0][0];
-      // Type assertion to avoid TypeScript errors
-      const getFeatureFlags = constructorCall.getFeatureFlags as () => unknown;
+      const { getFeatureFlags } = constructorCall;
 
-      const result = getFeatureFlags() as any;
+      const result = getFeatureFlags();
 
       expect(fullRequest.getStateUI).toHaveBeenCalled();
-      // The actual getFeatureFlagsByChainId will be called with the state
-      // We can check that the result has the expected structure
       expect(result).toHaveProperty('smartTransactions');
-      expect(result.smartTransactions).toHaveProperty('mobileActive');
       expect(result.smartTransactions).toHaveProperty('extensionActive');
+      expect(result.smartTransactions).toHaveProperty('mobileActive');
+      expect(result.smartTransactions).toHaveProperty('expectedDeadline');
+      expect(result.smartTransactions).toHaveProperty('maxDeadline');
       expect(result.smartTransactions).toHaveProperty(
         'extensionReturnTxHashAsap',
       );
@@ -338,7 +411,7 @@ describe('SmartTransactionsController Init', () => {
                 ],
               },
             },
-            // No featureFlags property to test null case
+            // No swapsState to test null case
           },
         }),
       });
@@ -347,35 +420,12 @@ describe('SmartTransactionsController Init', () => {
 
       const constructorCall =
         smartTransactionsControllerClassMock.mock.calls[0][0];
-      // Type assertion to avoid TypeScript errors
-      const getFeatureFlags = constructorCall.getFeatureFlags as () => unknown;
+      const { getFeatureFlags } = constructorCall;
 
       const result = getFeatureFlags();
 
-      // Check for default values
-      if (
-        result &&
-        typeof result === 'object' &&
-        'smartTransactions' in result
-      ) {
-        const flags = result as {
-          smartTransactions: {
-            mobileActive: boolean;
-            extensionActive: boolean;
-            extensionReturnTxHashAsap: boolean;
-          };
-        };
-        expect(flags.smartTransactions).toBeDefined();
-      } else {
-        // If null is returned, the controller should handle it with defaults
-        expect(result).toEqual({
-          smartTransactions: {
-            mobileActive: false,
-            extensionActive: false,
-            extensionReturnTxHashAsap: false,
-          },
-        });
-      }
+      // When getFeatureFlagsByChainId returns null, the result should be null
+      expect(result).toBeNull();
     });
   });
 
@@ -386,9 +436,7 @@ describe('SmartTransactionsController Init', () => {
 
       const constructorCall =
         smartTransactionsControllerClassMock.mock.calls[0][0];
-      // Type assertion to avoid TypeScript errors
-      const getMetaMetricsProps =
-        constructorCall.getMetaMetricsProps as () => Promise<unknown>;
+      const { getMetaMetricsProps } = constructorCall;
 
       const result = await getMetaMetricsProps();
 
@@ -401,23 +449,49 @@ describe('SmartTransactionsController Init', () => {
 
     it('uses selected account address for metrics', async () => {
       const selectedAddress = '0xselected';
-      const { fullRequest, mocks } = buildInitRequest();
-
-      mocks.accountsController.getSelectedAccount.mockReturnValue({
-        address: selectedAddress,
+      const { fullRequest } = buildInitRequest({
+        getStateUI: jest.fn().mockReturnValue({
+          metamask: {
+            internalAccounts: {
+              selectedAccount: 'selected-account-id',
+              accounts: {
+                'selected-account-id': {
+                  id: 'selected-account-id',
+                  address: selectedAddress,
+                  metadata: {
+                    name: 'Selected Account',
+                  },
+                },
+              },
+            },
+            preferences: {
+              smartTransactionsOptInStatus: true,
+            },
+            swapsState: {
+              swapsFeatureFlags: {
+                ethereum: {
+                  extensionActive: true,
+                  mobileActive: false,
+                },
+                smartTransactions: {
+                  mobileActive: false,
+                  extensionActive: true,
+                  extensionReturnTxHashAsap: false,
+                },
+              },
+            },
+          },
+        }),
       });
 
       SmartTransactionsControllerInit(fullRequest);
 
       const constructorCall =
         smartTransactionsControllerClassMock.mock.calls[0][0];
-      // Type assertion to avoid TypeScript errors
-      const getMetaMetricsProps =
-        constructorCall.getMetaMetricsProps as () => Promise<unknown>;
+      const { getMetaMetricsProps } = constructorCall;
 
       await getMetaMetricsProps();
 
-      expect(mocks.accountsController.getSelectedAccount).toHaveBeenCalled();
       expect(fullRequest.getHardwareTypeForMetric).toHaveBeenCalledWith(
         selectedAddress,
       );

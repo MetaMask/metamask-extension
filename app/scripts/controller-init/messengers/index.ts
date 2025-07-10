@@ -52,10 +52,7 @@ import {
   getAccountTreeControllerInitMessenger,
 } from './accounts';
 import { getSeedlessOnboardingControllerMessenger } from './seedless-onboarding';
-import {
-  getSmartTransactionsControllerMessenger,
-  getSmartTransactionsControllerInitMessenger,
-} from './smart-transactions-controller-messenger';
+import { getSmartTransactionsControllerMessenger } from './smart-transactions-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -172,6 +169,6 @@ export const CONTROLLER_MESSENGERS = {
   },
   SmartTransactionsController: {
     getMessenger: getSmartTransactionsControllerMessenger,
-    getInitMessenger: getSmartTransactionsControllerInitMessenger,
+    getInitMessenger: noop,
   },
 } as const;

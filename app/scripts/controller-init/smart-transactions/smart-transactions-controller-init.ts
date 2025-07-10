@@ -1,56 +1,91 @@
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
 import type { Hex } from '@metamask/utils';
+import { TransactionController } from '@metamask/transaction-controller';
+import type { TraceCallback } from '@metamask/controller-utils';
 import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
 import { getFeatureFlagsByChainId } from '../../../../shared/modules/selectors';
+import { type ProviderConfigState } from '../../../../shared/modules/selectors/networks';
+import { type FeatureFlagsMetaMaskState } from '../../../../shared/modules/selectors/feature-flags';
+import type {
+  MetaMetricsEventPayload,
+  MetaMetricsEventOptions,
+} from '../../../../shared/constants/metametrics';
+import type { FeatureFlags } from '../../lib/smart-transaction/smart-transactions';
+import { ControllerInitFunction, ControllerInitRequest } from '../types';
+import { SmartTransactionsControllerMessenger } from '../messengers/smart-transactions-controller-messenger';
+import { ControllerFlatState } from '../controller-list';
 
-export const SmartTransactionsControllerInit = ({
-  controllerMessenger,
-  getController,
-  persistedState,
-  getStateUI,
-  getGlobalNetworkClientId,
-  getAccountType,
-  getDeviceModel,
-  getHardwareTypeForMetric,
-  trace,
-}: any) => {
-  const transactionController = getController('TransactionController');
-  const metaMetricsController = getController('MetaMetricsController');
+type SmartTransactionsControllerInitRequest =
+  ControllerInitRequest<SmartTransactionsControllerMessenger> & {
+    getStateUI: () => { metamask: ControllerFlatState };
+    getGlobalNetworkClientId: () => string;
+    getAccountType: (address: string) => Promise<string>;
+    getDeviceModel: (address: string) => Promise<string>;
+    getHardwareTypeForMetric: (address: string) => Promise<string>;
+    trace: TraceCallback;
+    trackEvent: (
+      payload: MetaMetricsEventPayload,
+      options?: MetaMetricsEventOptions,
+    ) => void;
+  };
+
+export const SmartTransactionsControllerInit: ControllerInitFunction<
+  SmartTransactionsController,
+  SmartTransactionsControllerMessenger
+> = (request) => {
+  const {
+    controllerMessenger,
+    getController,
+    persistedState,
+    getStateUI,
+    getGlobalNetworkClientId,
+    getAccountType,
+    getDeviceModel,
+    getHardwareTypeForMetric,
+    trace,
+    trackEvent,
+  } = request as SmartTransactionsControllerInitRequest;
+
+  const transactionController = getController(
+    'TransactionController',
+  ) as TransactionController;
 
   const smartTransactionsController = new SmartTransactionsController({
     supportedChainIds: getAllowedSmartTransactionsChainIds() as Hex[],
     clientId: ClientId.Extension,
     getNonceLock: (address: string) =>
       transactionController.getNonceLock(address, getGlobalNetworkClientId()),
-    confirmExternalTransaction: (...args: any[]) =>
+    confirmExternalTransaction: (...args) =>
       transactionController.confirmExternalTransaction(...args),
-    trackMetaMetricsEvent: metaMetricsController.trackEvent.bind(
-      metaMetricsController,
-    ),
+    trackMetaMetricsEvent: trackEvent as ConstructorParameters<
+      typeof SmartTransactionsController
+    >[0]['trackMetaMetricsEvent'],
     state: persistedState.SmartTransactionsController,
-    messenger: controllerMessenger,
-    getTransactions: (...args: any[]) =>
+    // TODO: Type mismatch due to different BaseController versions, need to update this in the STX controller first.
+    messenger: controllerMessenger as any,
+    getTransactions: (...args) =>
       transactionController.getTransactions(...args),
-    updateTransaction: (...args: any[]) =>
+    updateTransaction: (...args) =>
       transactionController.updateTransaction(...args),
     getFeatureFlags: () => {
       const state = getStateUI();
-      const flags = getFeatureFlagsByChainId(state);
-      // Return a default value if flags is null
-      return (
-        flags || {
-          smartTransactions: {
-            mobileActive: false,
-            extensionActive: false,
-            extensionReturnTxHashAsap: false,
-          },
-        }
-      );
+      return getFeatureFlagsByChainId(
+        state as unknown as ProviderConfigState & FeatureFlagsMetaMaskState,
+      ) as unknown as FeatureFlags;
     },
     getMetaMetricsProps: async () => {
-      const accountsController = getController('AccountsController');
-      const selectedAddress = accountsController.getSelectedAccount().address;
+      const { metamask } = getStateUI();
+      const { internalAccounts } = metamask as Pick<
+        ControllerFlatState,
+        'internalAccounts'
+      >;
+      const selectedAccountId = internalAccounts?.selectedAccount;
+      const selectedAccount = selectedAccountId
+        ? internalAccounts?.accounts?.[selectedAccountId]
+        : null;
+      const selectedAddress = selectedAccount?.address ?? '';
+
       const accountHardwareType =
         await getHardwareTypeForMetric(selectedAddress);
       const accountType = await getAccountType(selectedAddress);
