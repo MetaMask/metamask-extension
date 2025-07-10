@@ -12,8 +12,8 @@ import {
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import AccountDetailsModal from '../../../page-objects/pages/dialog/account-details-modal';
-import { arrangeTestUtils } from './helpers';
 import { E2E_SRP } from '../../../default-fixture';
+import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Adding and Renaming Accounts', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
