@@ -1,5 +1,12 @@
 const path = require('path');
 
+const ReactCompilerConfig = {
+  target: '17',
+  sources: (filename) => {
+    return filename.indexOf('ui/') !== -1;
+  },
+};
+
 module.exports = function (api) {
   api.cache(false);
   return {
@@ -10,6 +17,7 @@ module.exports = function (api) {
       browsers: ['chrome >= 89', 'firefox >= 89'],
     },
     plugins: [
+      ['babel-plugin-react-compiler', ReactCompilerConfig],
       // `browserify` is old and busted, and doesn't support `??=` (and other
       // logical assignment operators). This plugin lets us target es2020-level
       // browsers (except we do still end up with transpiled logical assignment

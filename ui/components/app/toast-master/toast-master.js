@@ -247,12 +247,12 @@ function SwitchedNetworkToast() {
   function getMessage() {
     if (hasOrigin) {
       return t('switchedNetworkToastMessage', [
-        switchedNetworkDetails.nickname,
-        getURLHost(switchedNetworkDetails.origin),
+        switchedNetworkDetails?.nickname,
+        getURLHost(switchedNetworkDetails?.origin),
       ]);
     }
     return t('switchedNetworkToastMessageNoOrigin', [
-      switchedNetworkDetails.nickname,
+      switchedNetworkDetails?.nickname,
     ]);
   }
 
