@@ -74,6 +74,8 @@ async function withController<ReturnValue>(
   });
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+  // Fix test infrastructure - remove await from synchronous method calls
+  // This method returns string, not Promise. The withController function should be synchronous.
   // eslint-disable-next-line @typescript-eslint/await-thenable
   return await fn({
     controller,
