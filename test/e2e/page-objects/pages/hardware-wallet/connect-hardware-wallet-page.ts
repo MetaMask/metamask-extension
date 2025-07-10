@@ -47,7 +47,7 @@ class ConnectHardwareWalletPage {
   }
 
   async clickConnectLedgerButton(): Promise<void> {
-    console.log(`Click connect ledger button`);
+    console.log(`Click connect Ledger button`);
     await this.driver.clickElement(this.connectLedgerButton);
   }
 
@@ -63,7 +63,7 @@ class ConnectHardwareWalletPage {
   }
 
   async checkFirefoxNotSupportedIsDisplayed(): Promise<void> {
-    console.log(`Check firefox not supported message is displayed`);
+    console.log('Check "Firefox Not Supported" message is displayed');
     await this.driver.waitForSelector({
       text: 'Firefox Not Supported',
     });
