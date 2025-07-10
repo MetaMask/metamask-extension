@@ -9,9 +9,6 @@ type ArrangeMocksMetamaskStateOverrides = {
   useExternalServices: boolean;
   isSignedIn: boolean;
   completedOnboarding: boolean;
-  isBackupAndSyncEnabled: boolean;
-  participateInMetaMetrics: boolean;
-  isNotificationServicesEnabled: boolean;
 };
 
 const arrangeMockState = (
@@ -39,16 +36,10 @@ const prerequisitesStateKeys = [
   'completedOnboarding',
 ];
 
-const authDependentFeaturesStateKeys = [
-  'isBackupAndSyncEnabled',
-  'participateInMetaMetrics',
-  'isNotificationServicesEnabled',
-];
-
 const shouldAutoSignInTestCases: ArrangeMocksMetamaskStateOverrides[] = [];
 const shouldNotAutoSignInTestCases: ArrangeMocksMetamaskStateOverrides[] = [];
 
-// We generate all possible combinations of the prerequisites and auth-dependent features here
+// We generate all possible combinations of the prerequisites here
 const generateCombinations = (keys: string[]) => {
   const result: ArrangeMocksMetamaskStateOverrides[] = [];
   const total = 2 ** keys.length;
@@ -65,42 +56,27 @@ const generateCombinations = (keys: string[]) => {
 };
 
 const prerequisiteCombinations = generateCombinations(prerequisitesStateKeys);
-const authDependentCombinations = generateCombinations(
-  authDependentFeaturesStateKeys,
-);
 
-prerequisiteCombinations.forEach((prerequisiteState) => {
-  authDependentCombinations.forEach((authDependentState) => {
-    const combinedState = {
-      ...prerequisiteState,
-      ...authDependentState,
-    };
-    if (
-      combinedState.isUnlocked &&
-      combinedState.useExternalServices &&
-      combinedState.completedOnboarding &&
-      !combinedState.isSignedIn &&
-      authDependentFeaturesStateKeys.some(
-        (key) => combinedState[key as keyof ArrangeMocksMetamaskStateOverrides],
-      )
-    ) {
-      shouldAutoSignInTestCases.push(combinedState);
-    } else {
-      shouldNotAutoSignInTestCases.push(combinedState);
-    }
-  });
+prerequisiteCombinations.forEach((combinedState) => {
+  if (
+    combinedState.isUnlocked &&
+    combinedState.useExternalServices &&
+    combinedState.completedOnboarding &&
+    !combinedState.isSignedIn
+  ) {
+    shouldAutoSignInTestCases.push(combinedState);
+  } else {
+    shouldNotAutoSignInTestCases.push(combinedState);
+  }
 });
 
 describe('useAutoSignIn', () => {
   it('should initialize correctly', () => {
     const state = arrangeMockState({
       isUnlocked: false,
-      isBackupAndSyncEnabled: false,
       isSignedIn: false,
       completedOnboarding: false,
-      participateInMetaMetrics: false,
       useExternalServices: false,
-      isNotificationServicesEnabled: false,
     });
     arrangeMocks();
     const hook = renderHookWithProviderTyped(

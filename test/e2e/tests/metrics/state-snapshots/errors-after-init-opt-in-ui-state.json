@@ -67,7 +67,8 @@
     "isMultiRpcOnboarding": "boolean",
     "isAccessedFromDappConnectedSitePopover": "boolean",
     "errorInSettings": null,
-    "showNewSrpAddedToast": "boolean"
+    "showNewSrpAddedToast": "boolean",
+    "showSupportDataConsentModal": "boolean"
   },
   "bridge": "object",
   "confirmAlerts": "object",
@@ -370,7 +371,9 @@
     "encryptionKey": "string",
     "encryptionSalt": "string",
     "socialBackupsMetadata": "object",
-    "srpSessionData": "object"
+    "srpSessionData": "object",
+    "enableEnforcedSimulations": true,
+    "enableEnforcedSimulationsForTransactions": "object"
   },
   "ramps": "object",
   "send": "object",

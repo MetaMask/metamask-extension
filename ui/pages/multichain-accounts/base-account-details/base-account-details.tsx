@@ -197,11 +197,6 @@ export const BaseAccountDetails = ({
                 marginLeft={2}
               />
             }
-            style={{
-              marginBottom: '1px',
-              borderTopLeftRadius: '8px',
-              borderTopRightRadius: '8px',
-            }}
           />
           <AccountDetailsRow
             label={t('address')}
@@ -216,9 +211,6 @@ export const BaseAccountDetails = ({
                 marginLeft={2}
               />
             }
-            style={{
-              marginBottom: '1px',
-            }}
           />
           <AccountDetailsRow
             label={t('wallet')}
@@ -235,10 +227,6 @@ export const BaseAccountDetails = ({
                 marginLeft={2}
               />
             }
-            style={{
-              borderBottomLeftRadius: '8px',
-              borderBottomRightRadius: '8px',
-            }}
           />
         </Box>
         {children}
