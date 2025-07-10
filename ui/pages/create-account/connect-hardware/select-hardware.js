@@ -49,6 +49,8 @@ import {
 // the case of Firefox, this will depend on the Trezor bridge software
 const isUSBSupported = !process.env.IN_TEST && window.navigator.usb;
 
+const isFirefox = getBrowserName() === 'Firefox';
+
 const LEDGER_FIREFOX_NOT_SUPPORTED_URL =
   'https://support.metamask.io/more-web3/wallets/how-to-connect-a-trezor-or-ledger-hardware-wallet/';
 
@@ -192,7 +194,7 @@ export default class SelectHardware extends Component {
           !this.state.selectedDevice ||
           this.state.trezorRequestDevicePending ||
           (this.state.selectedDevice === HardwareDeviceNames.ledger &&
-            getBrowserName() === 'Firefox')
+            isFirefox)
         }
       >
         {this.context.t('continue')}
@@ -274,7 +276,7 @@ export default class SelectHardware extends Component {
         alignItems={AlignItems.center}
       >
         {this.state.selectedDevice === HardwareDeviceNames.ledger &&
-          getBrowserName() !== 'Firefox' && (
+          !isFirefox && (
             <Box>
               <BannerAlert
                 marginTop={6}
@@ -289,7 +291,7 @@ export default class SelectHardware extends Component {
             </Box>
           )}
         {this.state.selectedDevice === HardwareDeviceNames.ledger &&
-          getBrowserName() === 'Firefox' && (
+          isFirefox && (
             <Box>
               <BannerAlert
                 marginTop={6}
