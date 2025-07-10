@@ -5392,9 +5392,6 @@
   "simulationSettingsModalEnforceSlippage": {
     "message": "Slippage tolerance"
   },
-  "simulationSettingsModalEnforceSlippageCustom": {
-    "message": "Custom"
-  },
   "simulationSettingsModalEnforceSlippageDescription": {
     "message": "Set a difference you're comfortable with for balance changes. Transactions won't go through if the difference is higher."
   },
