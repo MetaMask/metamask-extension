@@ -23,6 +23,7 @@ import {
   ONBOARDING_ACCOUNT_NOT_FOUND,
   SECURITY_ROUTE,
   ONBOARDING_REVEAL_SRP_ROUTE,
+  ONBOARDING_ERROR_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -93,6 +94,7 @@ import { WelcomePageState } from './welcome/types';
 import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
+import OnboardingError from './onboarding-error/onboarding-error';
 
 const TWITTER_URL = 'https://twitter.com/MetaMask';
 
@@ -221,7 +223,8 @@ export default function OnboardingFlow() {
 
   let isFullPage =
     pathname === ONBOARDING_WELCOME_ROUTE ||
-    pathname === ONBOARDING_UNLOCK_ROUTE;
+    pathname === ONBOARDING_UNLOCK_ROUTE ||
+    pathname === ONBOARDING_ERROR_ROUTE;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   isFullPage = isFullPage || pathname === ONBOARDING_EXPERIMENTAL_AREA;
@@ -266,6 +269,7 @@ export default function OnboardingFlow() {
         borderColor={BorderColor.borderMuted}
       >
         <Switch>
+          <Route path={ONBOARDING_ERROR_ROUTE} component={OnboardingError} />
           <Route path={ONBOARDING_ACCOUNT_EXIST} component={AccountExist} />
           <Route
             path={ONBOARDING_ACCOUNT_NOT_FOUND}

@@ -1487,8 +1487,14 @@
   "coolWallet": {
     "message": "CoolWallet"
   },
+  "copied": {
+    "message": "Copied"
+  },
   "copiedExclamation": {
     "message": "Copied."
+  },
+  "copy": {
+    "message": "Copy"
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
@@ -5200,6 +5206,9 @@
   "sendNoContactsTitle": {
     "message": "You don't have any contacts yet"
   },
+  "sendReport": {
+    "message": "Send report"
+  },
   "sendSelectReceiveAsset": {
     "message": "Select asset to receive"
   },
@@ -5225,6 +5234,23 @@
   },
   "sent": {
     "message": "Sent"
+  },
+  "sentryErrorError": {
+    "message": "Error: $1",
+    "description": "The $1 error message"
+  },
+  "sentryErrorNote": {
+    "message": "Send us an error report to help fix the problem and improve MetaMask. It will be confidential and anonymous."
+  },
+  "sentryErrorReport": {
+    "message": "Error message report:"
+  },
+  "sentryErrorTitle": {
+    "message": "An error occurred"
+  },
+  "sentryErrorView": {
+    "message": "View: $1",
+    "description": "The $1 view type"
   },
   "sentSpecifiedTokens": {
     "message": "Sent $1",
