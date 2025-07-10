@@ -1,8 +1,9 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import '@testing-library/jest-dom';
 import browser from 'webextension-polyfill';
 import { fireEvent } from '@testing-library/react';
+import * as actionConstants from '../../store/actionConstants';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -25,10 +26,13 @@ jest.mock('webextension-polyfill', () => ({
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 describe('ErrorPage', () => {
   const useSelectorMock = useSelector as jest.Mock;
+  const useDispatchMock = useDispatch as jest.Mock;
+  const dispatchMock = jest.fn();
   const mockTrackEvent = jest.fn();
   const MockError = new Error(
     "Cannot read properties of undefined (reading 'message')",
@@ -48,6 +52,7 @@ describe('ErrorPage', () => {
       }
       return undefined;
     });
+    useDispatchMock.mockReturnValue(dispatchMock);
     (useI18nContext as jest.Mock).mockImplementation(mockI18nContext);
     jest.useFakeTimers();
   });
@@ -155,8 +160,6 @@ describe('ErrorPage', () => {
   });
 
   it('should open the support consent modal when the "Contact Support" button is clicked', () => {
-    window.open = jest.fn();
-
     const { getByTestId } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <ErrorPage error={MockError} />
@@ -167,6 +170,9 @@ describe('ErrorPage', () => {
       'error-page-contact-support-button',
     );
     fireEvent.click(contactSupportButton);
-    expect(getByTestId('visit-support-data-consent-modal')).toBeInTheDocument();
+    expect(dispatchMock).toHaveBeenCalledWith({
+      type: actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL,
+      payload: true,
+    });
   });
 });
