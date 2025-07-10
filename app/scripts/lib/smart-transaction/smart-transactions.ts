@@ -33,10 +33,8 @@ import {
   ORIGIN_METAMASK,
 } from '../../../../shared/constants/app';
 import {
-  getChainSupportsSmartTransactions,
   getFeatureFlagsByChainId,
   getIsSmartTransaction,
-  getSmartTransactionsPreferenceEnabled,
   isHardwareWallet,
 } from '../../../../shared/modules/selectors';
 import { ControllerFlatState } from '../../controller-init/controller-list';

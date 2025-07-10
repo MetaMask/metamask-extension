@@ -5733,9 +5733,8 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'hardware' | 'imported' | 'snap' | 'MetaMask'}
    */
   async getAccountType(address) {
-    const keyringType = await this.keyringController.getAccountKeyringType(
-      address,
-    );
+    const keyringType =
+      await this.keyringController.getAccountKeyringType(address);
     switch (keyringType) {
       case KeyringType.trezor:
       case KeyringType.oneKey:

@@ -11,11 +11,11 @@ import type {
 } from '../types';
 import type { SmartTransactionsControllerMessenger } from '../messengers/smart-transactions-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
-import { SmartTransactionsControllerInit } from './smart-transactions-controller-init';
 import type {
   MetaMetricsEventPayload,
   MetaMetricsEventOptions,
 } from '../../../../shared/constants/metametrics';
+import { SmartTransactionsControllerInit } from './smart-transactions-controller-init';
 
 jest.mock('@metamask/smart-transactions-controller');
 

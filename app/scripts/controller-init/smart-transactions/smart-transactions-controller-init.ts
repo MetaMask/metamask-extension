@@ -62,7 +62,7 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
       typeof SmartTransactionsController
     >[0]['trackMetaMetricsEvent'],
     state: persistedState.SmartTransactionsController,
-    // TODO: Type mismatch due to different BaseController versions, need to update this in the STX controller first.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any Type mismatch due to different BaseController versions, need to update this in the STX controller first.
     messenger: controllerMessenger as any,
     getTransactions: (...args) =>
       transactionController.getTransactions(...args),
