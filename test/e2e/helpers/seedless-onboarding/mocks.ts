@@ -116,6 +116,8 @@ export class OAuthMockttpService {
         return this.onPostToken(this.AUTH_SERVER_TOKEN_PATH, request, options);
       });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     server
       .forPost(this.AUTH_SERVER_REVOKE_TOKEN_PATH)
       .always()

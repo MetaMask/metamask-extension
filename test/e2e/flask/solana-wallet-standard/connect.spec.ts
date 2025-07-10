@@ -36,9 +36,13 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const header = await testDapp.getHeader();
 
           const connectionStatus = await header.getConnectionStatus();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(connectionStatus);
 
           const account = await header.getAccount();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(account, account1Short);
         },
       );

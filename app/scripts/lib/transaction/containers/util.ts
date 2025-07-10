@@ -106,6 +106,8 @@ export async function applyTransactionContainersExisting({
 
   updateTransaction(newTransactionMeta);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   updateEditableParams(transactionId, {
     containerTypes,
     data: newTransactionMeta.txParams.data,
