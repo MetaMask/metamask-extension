@@ -23,7 +23,12 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
   SeedlessOnboardingController<EncryptionKey>,
   SeedlessOnboardingControllerMessenger
 > = (request) => {
-  const { controllerMessenger, persistedState } = request;
+  const {
+    controllerMessenger,
+    persistedState,
+    refreshOAuthToken,
+    revokeAndGetNewRefreshToken,
+  } = request;
 
   const encryptor = encryptorFactory(600_000);
 
@@ -33,6 +38,8 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
     messenger: controllerMessenger,
     state: persistedState.SeedlessOnboardingController,
     network,
+    refreshJWTToken: refreshOAuthToken,
+    revokeRefreshToken: revokeAndGetNewRefreshToken,
     encryptor: {
       decrypt: (key, encryptedData) => encryptor.decrypt(key, encryptedData),
       decryptWithDetail: (key, encryptedData) =>
