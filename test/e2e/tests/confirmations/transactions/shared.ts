@@ -6,6 +6,7 @@ import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { Mockttp } from '../../../mock-e2e';
 import TestDapp from '../../../page-objects/pages/test-dapp';
+import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/erc20-approve-transaction-confirmation';
 
 const {
   logInWithBalanceValidation,
@@ -417,5 +418,6 @@ export async function createERC20ApproveTransaction(driver: Driver) {
 export async function waitForApproveTransactionWindow(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   // Wait for the redesigned confirmation dialog to be fully loaded
-  await driver.waitForSelector('[data-testid="confirm-footer-button"]');
+  const confirmationPage = new ERC20ApproveTransactionConfirmation(driver);
+  await confirmationPage.check_pageIsLoaded();
 }
