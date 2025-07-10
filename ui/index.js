@@ -70,7 +70,7 @@ export const connectToBackground = (
       const store = await reduxStore.promise;
       store.dispatch(actions.updateMetamaskState(data.params[0]));
     } else if (method === METHOD_START_UI_SYNC) {
-      handleStartUISync();
+      await handleStartUISync();
     } else {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
