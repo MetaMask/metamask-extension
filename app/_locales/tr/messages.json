@@ -5051,9 +5051,6 @@
   "smartAccountReject": {
     "message": "Akıllı hesap kullanma"
   },
-  "smartAccountRequestFor": {
-    "message": "Talep et:"
-  },
   "smartAccountSameAccount": {
     "message": "Aynı hesap, daha akıllı özellikler."
   },

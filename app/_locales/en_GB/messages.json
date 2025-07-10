@@ -5503,9 +5503,6 @@
   "smartAccountBetterTransactionDescription": {
     "message": "Save time and money by processing transactions together."
   },
-  "smartAccountEditAccounts": {
-    "message": "Edit accounts"
-  },
   "smartAccountFeaturesDescription": {
     "message": "Keep the same account address, and you can switch back anytime."
   },
@@ -5521,14 +5518,11 @@
   "smartAccountReject": {
     "message": "Don’t use smart account"
   },
-  "smartAccountRequestFor": {
-    "message": "Request for"
-  },
   "smartAccountSameAccount": {
     "message": "Same account, smarter features."
   },
   "smartAccountSplashInfo": {
-    "message": "Why use a smart account?"
+    "message": "Smart accounts"
   },
   "smartAccountSplashTitle": {
     "message": "Use smart account?"
