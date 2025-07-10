@@ -1,13 +1,9 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { withFixtures } from '../../../helpers';
+import { withFixtures, unlockWallet } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import { ACCOUNT_TYPE } from '../../../constants';
-import {
-  IDENTITY_TEAM_PASSWORD,
-  IDENTITY_TEAM_SEED_PHRASE,
-} from '../constants';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
@@ -15,8 +11,6 @@ import {
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
-import { completeOnboardFlowIdentity } from '../flows';
 import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
@@ -54,7 +48,9 @@ describe('Account syncing - Add Account', function () {
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          fixtures: new FixtureBuilder()
+            .withBackupAndSyncSettings()
+            .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(
@@ -69,7 +65,7 @@ describe('Account syncing - Add Account', function () {
           },
         },
         async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver);
+          await unlockWallet(driver);
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -111,7 +107,9 @@ describe('Account syncing - Add Account', function () {
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          fixtures: new FixtureBuilder()
+            .withBackupAndSyncSettings()
+            .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(
@@ -122,7 +120,7 @@ describe('Account syncing - Add Account', function () {
           },
         },
         async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver);
+          await unlockWallet(driver);
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -162,7 +160,9 @@ describe('Account syncing - Add Account', function () {
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          fixtures: new FixtureBuilder()
+            .withBackupAndSyncSettings()
+            .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(
@@ -177,7 +177,7 @@ describe('Account syncing - Add Account', function () {
           },
         },
         async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver);
+          await unlockWallet(driver);
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -212,7 +212,9 @@ describe('Account syncing - Add Account', function () {
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          fixtures: new FixtureBuilder()
+            .withBackupAndSyncSettings()
+            .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(
@@ -223,11 +225,7 @@ describe('Account syncing - Add Account', function () {
           },
         },
         async ({ driver }) => {
-          await completeImportSRPOnboardingFlow({
-            driver,
-            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
-            password: IDENTITY_TEAM_PASSWORD,
-          });
+          await unlockWallet(driver);
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
           await homePage.check_expectedBalanceIsDisplayed('0');

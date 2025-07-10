@@ -1880,6 +1880,25 @@ class FixtureBuilder {
     });
   }
 
+  withBackupAndSyncSettings(options = {}) {
+    const {
+      isProfileSyncingEnabled = true,
+      isAccountSyncingEnabled = true,
+      isProfileSyncingUpdateLoading = false,
+      isAccountSyncingUpdateLoading = false,
+      hasAccountSyncingSyncedAtLeastOnce = false,
+    } = options;
+
+    merge(this.fixture.data.UserStorageController, {
+      isProfileSyncingEnabled,
+      isAccountSyncingEnabled,
+      isProfileSyncingUpdateLoading,
+      isAccountSyncingUpdateLoading,
+      hasAccountSyncingSyncedAtLeastOnce,
+    });
+    return this;
+  }
+
   build() {
     this.fixture.meta = {
       version: FIXTURE_STATE_METADATA_VERSION,

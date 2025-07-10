@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { withFixtures } from '../../../helpers';
+import { withFixtures, unlockWallet } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import { ACCOUNT_TYPE } from '../../../constants';
@@ -11,7 +11,7 @@ import {
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
-import { completeOnboardFlowIdentity } from '../flows';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import {
   accountsToMockForAccountsSync,
@@ -45,7 +45,11 @@ describe('Backup and Sync Settings', function () {
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          fixtures: new FixtureBuilder()
+            .withBackupAndSyncSettings({
+              hasAccountSyncingSyncedAtLeastOnce: false,
+            })
+            .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(
@@ -60,7 +64,19 @@ describe('Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver);
+          await unlockWallet(driver);
+
+          // Wait for initial sync process to complete (like onboarding flow does)
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+
+          // Then wait for specific number of accounts to be synced
+          const { waitUntilSyncedAccountsNumberEquals } = arrangeTestUtils(
+            driver,
+            userStorageMockttpController,
+          );
+          await waitUntilSyncedAccountsNumberEquals(mockedAccountSyncResponse.length);
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -111,7 +127,11 @@ describe('Backup and Sync Settings', function () {
       // Launch a new instance to verify the change wasn't synced
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          fixtures: new FixtureBuilder()
+            .withBackupAndSyncSettings({
+              hasAccountSyncingSyncedAtLeastOnce: false,
+            })
+            .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(
@@ -122,7 +142,19 @@ describe('Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver);
+          await unlockWallet(driver);
+
+          // Wait for initial sync process to complete (like onboarding flow does)
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+
+          // Then wait for specific number of accounts to be synced
+          const { waitUntilSyncedAccountsNumberEquals } = arrangeTestUtils(
+            driver,
+            userStorageMockttpController,
+          );
+          await waitUntilSyncedAccountsNumberEquals(mockedAccountSyncResponse.length);
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();

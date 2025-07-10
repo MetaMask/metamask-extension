@@ -4,7 +4,6 @@ import { veryLargeDelayMs, withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../../constants';
 import { mockIdentityServices } from '../mocks';
-import { IDENTITY_TEAM_PASSWORD } from '../constants';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
@@ -12,40 +11,38 @@ import {
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
-import SettingsPage from '../../../page-objects/pages/settings/settings-page';
-import {
-  completeNewWalletFlowIdentity,
-  completeOnboardFlowIdentity,
-} from '../flows';
 import { arrangeTestUtils } from './helpers';
+import { unlockWallet } from '../../../helpers';
 
 describe('Account syncing - New User', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
 
   describe('from inside MetaMask', function () {
-    it('syncs after new wallet creation', async function () {
+    it('syncs accounts between two instances using default fixture wallet', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();
-      let walletSrp: string;
 
       const defaultAccountOneName = 'Account 1';
       const secondAccountName = 'My Second Account';
 
+      const sharedMockSetup = (server: Mockttp) => {
+        userStorageMockttpController.setupPath(
+          USER_STORAGE_FEATURE_NAMES.accounts,
+          server,
+        );
+        return mockIdentityServices(server, userStorageMockttpController);
+      };
+
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          fixtures: new FixtureBuilder()
+            .withBackupAndSyncSettings()
+            .build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
-              USER_STORAGE_FEATURE_NAMES.accounts,
-              server,
-            );
-
-            return mockIdentityServices(server, userStorageMockttpController);
-          },
+          testSpecificMock: sharedMockSetup,
         },
         async ({ driver }) => {
-          await completeNewWalletFlowIdentity(driver);
+          // Use fixture (already onboarded) + unlock wallet (login via vault)
+          await unlockWallet(driver);
           const homePage = new HomePage(driver);
           await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
@@ -88,41 +85,21 @@ describe('Account syncing - New User', function () {
           await waitUntilSyncedAccountsNumberEquals(2);
           await waitUntilEventsEmittedNumberEquals(1);
 
-          // Set SRP to use for retreival
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.check_pageIsLoaded();
-          await headerNavbar.openSettingsPage();
-          const settingsPage = new SettingsPage(driver);
-          await settingsPage.check_pageIsLoaded();
-          await settingsPage.goToPrivacySettings();
-
-          const privacySettings = new PrivacySettings(driver);
-          await privacySettings.check_pageIsLoaded();
-          await privacySettings.openRevealSrpQuiz();
-          await privacySettings.completeRevealSrpQuiz();
-          await privacySettings.fillPasswordToRevealSrp(IDENTITY_TEAM_PASSWORD);
-          walletSrp = await privacySettings.getSrpInRevealSrpDialog();
-          if (!walletSrp) {
-            throw new Error('Wallet SRP was not set');
-          }
+          // No need to extract SRP - using same fixture wallet in both phases
         },
       );
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          fixtures: new FixtureBuilder()
+            .withBackupAndSyncSettings()
+            .build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
-              USER_STORAGE_FEATURE_NAMES.accounts,
-              server,
-            );
-            return mockIdentityServices(server, userStorageMockttpController);
-          },
+          testSpecificMock: sharedMockSetup,
         },
         async ({ driver }) => {
-          // Onboard with import flow using SRP from new account created above
-          await completeOnboardFlowIdentity(driver, walletSrp);
+          // Use fixture (already onboarded) + unlock wallet (login via vault)
+          await unlockWallet(driver);
 
           // Open account menu and validate the 2 accounts have been retrieved
           const header = new HeaderNavbar(driver);

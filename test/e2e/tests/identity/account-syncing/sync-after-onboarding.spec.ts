@@ -1,12 +1,11 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { withFixtures } from '../../../helpers';
+import { withFixtures, unlockWallet } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import { completeOnboardFlowIdentity } from '../flows';
 import { ACCOUNT_TYPE } from '../../../constants';
 import {
   accountsToMockForAccountsSync,
@@ -39,7 +38,9 @@ describe('Account syncing - Onboarding', function () {
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          fixtures: new FixtureBuilder()
+            .withBackupAndSyncSettings()
+            .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(
@@ -53,7 +54,7 @@ describe('Account syncing - Onboarding', function () {
           },
         },
         async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver);
+          await unlockWallet(driver);
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
