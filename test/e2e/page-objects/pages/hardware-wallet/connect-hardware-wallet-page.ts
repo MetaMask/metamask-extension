@@ -73,7 +73,7 @@ class ConnectHardwareWalletPage {
       text: 'Continue',
       tag: 'button',
     });
-    const isDisabled = await continueButton.getAttribute('disabled');
+    const isDisabled = (await continueButton.getAttribute('disabled')) !== null;
     if (!isDisabled) {
       throw new Error('Continue button should be disabled in Firefox');
     }
