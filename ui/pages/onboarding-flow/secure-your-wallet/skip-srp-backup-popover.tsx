@@ -39,6 +39,7 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { TraceName, bufferedEndTrace } from '../../../../shared/lib/trace';
 
 type SkipSRPBackupProps = {
   onClose: () => void;
@@ -70,6 +71,8 @@ export default function SkipSRPBackup({
         hd_entropy_index: hdEntropyIndex,
       },
     });
+    bufferedEndTrace({ name: TraceName.OnboardingNewSrpCreateWallet });
+    bufferedEndTrace({ name: TraceName.OnboardingJourneyOverall });
 
     if (
       getBrowserName() === PLATFORM_FIREFOX ||

@@ -249,7 +249,14 @@ import {
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
-import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import {
+  trace,
+  endTrace,
+  bufferedEndTrace,
+  bufferedTrace,
+  TraceName,
+  TraceOperation,
+} from '../../shared/lib/trace';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
@@ -1796,8 +1803,9 @@ export default class MetamaskController extends EventEmitter {
       getMetaMetricsProps: async () => {
         const selectedAddress =
           this.accountsController.getSelectedAccount().address;
-        const accountHardwareType =
-          await this.getHardwareTypeForMetric(selectedAddress);
+        const accountHardwareType = await this.getHardwareTypeForMetric(
+          selectedAddress,
+        );
         const accountType = await this.getAccountType(selectedAddress);
         const deviceModel = await this.getDeviceModel(selectedAddress);
         return {
@@ -4738,7 +4746,12 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} keyringId - The keyring id of the backup seed phrase.
    */
   async createSeedPhraseBackup(password, encodedSeedPhrase, keyringId) {
+    let createSeedPhraseBackupSuccess = false;
     try {
+      bufferedTrace({
+        name: TraceName.OnboardingCreateKeyAndBackupSrp,
+        op: TraceOperation.OnboardingSecurityOp,
+      });
       const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
       const seedPhrase =
@@ -4749,9 +4762,27 @@ export default class MetamaskController extends EventEmitter {
         seedPhrase,
         keyringId,
       );
+      createSeedPhraseBackupSuccess = true;
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+
+      bufferedTrace({
+        name: TraceName.OnboardingCreateKeyAndBackupSrpError,
+        op: TraceOperation.OnboardingError,
+        tags: { errorMessage },
+      });
+      bufferedEndTrace({
+        name: TraceName.OnboardingCreateKeyAndBackupSrpError,
+      });
+
       log.error('[createSeedPhraseBackup] error', error);
       throw error;
+    } finally {
+      bufferedEndTrace({
+        name: TraceName.OnboardingCreateKeyAndBackupSrp,
+        data: { success: createSeedPhraseBackupSuccess },
+      });
     }
   }
 
@@ -4762,11 +4793,17 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<Buffer[]>} The seed phrase.
    */
   async fetchAllSecretData(password) {
+    let fetchAllSeedPhrasesSuccess = false;
     try {
+      bufferedTrace({
+        name: TraceName.OnboardingFetchSrps,
+        op: TraceOperation.OnboardingSecurityOp,
+      });
       // fetch all seed phrases
       // seedPhrases are sorted by creation date, the latest seed phrase is the first one in the array
       const allSeedPhrases =
         await this.seedlessOnboardingController.fetchAllSeedPhrases(password);
+      fetchAllSeedPhrasesSuccess = true;
 
       if (allSeedPhrases.length === 0) {
         return null;
@@ -4776,6 +4813,18 @@ export default class MetamaskController extends EventEmitter {
         this._convertEnglishWordlistIndicesToCodepoints(phrase),
       );
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+
+      bufferedTrace({
+        name: TraceName.OnboardingFetchSrpsError,
+        op: TraceOperation.OnboardingError,
+        tags: { errorMessage },
+      });
+      bufferedEndTrace({
+        name: TraceName.OnboardingFetchSrpsError,
+      });
+
       log.error(
         'Error while fetching and restoring seed phrase metadata.',
         error,
@@ -4786,6 +4835,11 @@ export default class MetamaskController extends EventEmitter {
       }
 
       throw error;
+    } finally {
+      bufferedEndTrace({
+        name: TraceName.OnboardingFetchSrps,
+        data: { success: fetchAllSeedPhrasesSuccess },
+      });
     }
   }
 
@@ -4837,6 +4891,7 @@ export default class MetamaskController extends EventEmitter {
       // use current device password to unlock the keyringController vault
       await this.submitPassword(currentDevicePassword);
 
+      let changePasswordSuccess = false;
       try {
         // update seedlessOnboardingController to use latest global password
         await this.seedlessOnboardingController.syncLatestGlobalPassword({
@@ -4844,17 +4899,37 @@ export default class MetamaskController extends EventEmitter {
           globalPassword: password,
         });
 
+        bufferedTrace({
+          name: TraceName.OnboardingResetPassword,
+          op: TraceOperation.OnboardingSecurityOp,
+        });
         // update vault password to global password
         await this.keyringController.changePassword(password);
+        changePasswordSuccess = true;
 
         // check password outdated again skip cache to reset the cache after successful syncing
         await this.seedlessOnboardingController.checkIsPasswordOutdated({
           skipCache: true,
         });
       } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Unknown error';
+
+        bufferedTrace({
+          name: TraceName.OnboardingResetPasswordError,
+          op: TraceOperation.OnboardingError,
+          tags: { errorMessage },
+        });
+        bufferedEndTrace({ name: TraceName.OnboardingResetPasswordError });
+
         // lock app again on error after submitPassword succeeded
         await this.setLocked();
         throw err;
+      } finally {
+        bufferedEndTrace({
+          name: TraceName.OnboardingResetPassword,
+          data: { success: changePasswordSuccess },
+        });
       }
     } finally {
       releaseLock();
@@ -4940,10 +5015,37 @@ export default class MetamaskController extends EventEmitter {
       this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
 
     if (syncWithSocial) {
-      await this.seedlessOnboardingController.addNewSeedPhraseBackup(
-        seedPhraseAsUint8Array,
-        keyringId,
-      );
+      let addNewSeedPhraseBackupSuccess = false;
+      try {
+        bufferedTrace({
+          name: TraceName.OnboardingAddSrp,
+          op: TraceOperation.OnboardingSecurityOp,
+        });
+        await this.seedlessOnboardingController.addNewSeedPhraseBackup(
+          seedPhraseAsUint8Array,
+          keyringId,
+        );
+        addNewSeedPhraseBackupSuccess = true;
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Unknown error';
+
+        bufferedTrace({
+          name: TraceName.OnboardingAddSrpError,
+          op: TraceOperation.OnboardingError,
+          tags: { errorMessage },
+        });
+        bufferedEndTrace({
+          name: TraceName.OnboardingAddSrpError,
+        });
+
+        throw err;
+      } finally {
+        bufferedEndTrace({
+          name: TraceName.OnboardingAddSrp,
+          data: { success: addNewSeedPhraseBackupSuccess },
+        });
+      }
     } else {
       // Do not sync the seed phrase to the server, only update the local state
       this.seedlessOnboardingController.updateBackupMetadataState({
@@ -5721,8 +5823,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'hardware' | 'imported' | 'snap' | 'MetaMask'}
    */
   async getAccountType(address) {
-    const keyringType =
-      await this.keyringController.getAccountKeyringType(address);
+    const keyringType = await this.keyringController.getAccountKeyringType(
+      address,
+    );
     switch (keyringType) {
       case KeyringType.trezor:
       case KeyringType.oneKey:

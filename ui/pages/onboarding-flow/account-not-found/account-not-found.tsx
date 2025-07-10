@@ -27,6 +27,13 @@ import {
   resetOAuthLoginState,
   setFirstTimeFlowType,
 } from '../../../store/actions';
+import {
+  bufferedEndTrace,
+  bufferedTrace,
+  TraceName,
+  TraceOperation,
+} from '../../../../shared/lib/trace';
+import { useSentryTrace } from '../../../contexts/sentry-trace';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -36,6 +43,7 @@ export default function AccountNotFound() {
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
+  const { onboardingParentContext } = useSentryTrace();
 
   const onLoginWithDifferentMethod = async () => {
     // clear the social login state
@@ -45,6 +53,12 @@ export default function AccountNotFound() {
   };
 
   const onCreateNewAccount = () => {
+    bufferedTrace({
+      name: TraceName.OnboardingNewSocialCreateWallet,
+      op: TraceOperation.OnboardingUserJourney,
+      tags: { source: 'account_status_redirect' },
+      parentContext: onboardingParentContext.current,
+    });
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
     history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
   };
@@ -54,7 +68,21 @@ export default function AccountNotFound() {
       // if the onboarding flow is not social import, redirect to the welcome page
       history.replace(ONBOARDING_WELCOME_ROUTE);
     }
-  }, [firstTimeFlowType, history]);
+    if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+      bufferedTrace({
+        name: TraceName.OnboardingExistingSocialAccountNotFound,
+        op: TraceOperation.OnboardingUserJourney,
+        parentContext: onboardingParentContext.current,
+      });
+    }
+    return () => {
+      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+        bufferedEndTrace({
+          name: TraceName.OnboardingExistingSocialAccountNotFound,
+        });
+      }
+    };
+  }, [firstTimeFlowType, history, onboardingParentContext]);
 
   return (
     <Box

@@ -16,6 +16,7 @@ import {
 import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useSentryTrace } from '../../../contexts/sentry-trace';
 import { setFirstTimeFlowType, startOAuthLogin } from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
@@ -27,6 +28,12 @@ import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/module
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import {
+  bufferedTrace,
+  bufferedEndTrace,
+  TraceName,
+  TraceOperation,
+} from '../../../../shared/lib/trace';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
 import {
@@ -52,6 +59,7 @@ export default function OnboardingWelcome({
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
+  const { onboardingParentContext } = useSentryTrace();
 
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
@@ -93,9 +101,14 @@ export default function OnboardingWelcome({
         account_type: MetaMetricsEventAccountType.Default,
       },
     });
+    bufferedTrace({
+      name: TraceName.OnboardingNewSrpCreateWallet,
+      op: TraceOperation.OnboardingUserJourney,
+      parentContext: onboardingParentContext.current,
+    });
 
     history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
-  }, [dispatch, history, trackEvent]);
+  }, [dispatch, history, trackEvent, onboardingParentContext]);
 
   const onImportClick = useCallback(async () => {
     setIsLoggingIn(true);
@@ -107,19 +120,51 @@ export default function OnboardingWelcome({
         account_type: MetaMetricsEventAccountType.Imported,
       },
     });
+    bufferedTrace({
+      name: TraceName.OnboardingExistingSrpImport,
+      op: TraceOperation.OnboardingUserJourney,
+      parentContext: onboardingParentContext.current,
+    });
 
     history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
-  }, [dispatch, history, trackEvent]);
+  }, [dispatch, history, trackEvent, onboardingParentContext]);
 
   const handleSocialLogin = useCallback(
     async (socialConnectionType) => {
       if (isSeedlessOnboardingFeatureEnabled) {
+        bufferedTrace({
+          name: TraceName.OnboardingSocialLoginAttempt,
+          op: TraceOperation.OnboardingUserJourney,
+          tags: { provider: socialConnectionType },
+          parentContext: onboardingParentContext.current,
+        });
         const isNewUser = await dispatch(startOAuthLogin(socialConnectionType));
+        bufferedEndTrace({ name: TraceName.OnboardingSocialLoginAttempt });
         return isNewUser;
       }
       return true;
     },
-    [dispatch, isSeedlessOnboardingFeatureEnabled],
+    [dispatch, isSeedlessOnboardingFeatureEnabled, onboardingParentContext],
+  );
+
+  const handleSocialLoginError = useCallback(
+    (error, socialConnectionType) => {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+
+      bufferedTrace({
+        name: TraceName.OnboardingSocialLoginError,
+        op: TraceOperation.OnboardingError,
+        tags: { provider: socialConnectionType, errorMessage },
+        parentContext: onboardingParentContext.current,
+      });
+      bufferedEndTrace({ name: TraceName.OnboardingSocialLoginError });
+      bufferedEndTrace({
+        name: TraceName.OnboardingSocialLoginAttempt,
+        data: { success: false },
+      });
+    },
+    [onboardingParentContext],
   );
 
   const onSocialLoginCreateClick = useCallback(
@@ -138,15 +183,29 @@ export default function OnboardingWelcome({
           },
         });
         if (isNewUser) {
+          bufferedTrace({
+            name: TraceName.OnboardingNewSocialCreateWallet,
+            op: TraceOperation.OnboardingUserJourney,
+            parentContext: onboardingParentContext.current,
+          });
           history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
         } else {
           history.replace(ONBOARDING_ACCOUNT_EXIST);
         }
+      } catch (error) {
+        handleSocialLoginError(error, socialConnectionType);
       } finally {
         setIsLoggingIn(false);
       }
     },
-    [dispatch, handleSocialLogin, trackEvent, history],
+    [
+      dispatch,
+      handleSocialLogin,
+      trackEvent,
+      history,
+      onboardingParentContext,
+      handleSocialLoginError,
+    ],
   );
 
   const onSocialLoginImportClick = useCallback(
@@ -168,13 +227,27 @@ export default function OnboardingWelcome({
         if (isNewUser) {
           history.push(ONBOARDING_ACCOUNT_NOT_FOUND);
         } else {
+          bufferedTrace({
+            name: TraceName.OnboardingExistingSocialLogin,
+            op: TraceOperation.OnboardingUserJourney,
+            parentContext: onboardingParentContext.current,
+          });
           history.push(ONBOARDING_UNLOCK_ROUTE);
         }
+      } catch (error) {
+        handleSocialLoginError(error, socialConnectionType);
       } finally {
         setIsLoggingIn(false);
       }
     },
-    [dispatch, handleSocialLogin, trackEvent, history],
+    [
+      dispatch,
+      handleSocialLogin,
+      trackEvent,
+      history,
+      onboardingParentContext,
+      handleSocialLoginError,
+    ],
   );
 
   const handleLoginError = useCallback((error) => {

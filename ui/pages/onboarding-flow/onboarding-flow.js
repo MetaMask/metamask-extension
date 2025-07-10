@@ -42,6 +42,9 @@ import {
   getShowTermsOfUse,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useSentryTrace } from '../../contexts/sentry-trace';
+import Button from '../../components/ui/button';
+import RevealSRPModal from '../../components/app/reveal-SRP-modal';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   MetaMetricsEventCategory,
@@ -77,6 +80,11 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
+import {
+  TraceName,
+  TraceOperation,
+  bufferedTrace,
+} from '../../../shared/lib/trace';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -121,6 +129,7 @@ export default function OnboardingFlow() {
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
+  const { updateOnboardingParentContext } = useSentryTrace();
 
   // If the user has not agreed to the terms of use, we show the banner
   // Otherwise, we show the login page
@@ -176,6 +185,14 @@ export default function OnboardingFlow() {
     isPrimarySeedPhraseBackedUp,
     isFromSettingsSecurity,
   ]);
+
+  useEffect(() => {
+    const trace = bufferedTrace({
+      name: TraceName.OnboardingJourneyOverall,
+      op: TraceOperation.OnboardingUserJourney,
+    });
+    updateOnboardingParentContext(trace);
+  }, [updateOnboardingParentContext]);
 
   const handleCreateNewAccount = async (password) => {
     let newSecretRecoveryPhrase;

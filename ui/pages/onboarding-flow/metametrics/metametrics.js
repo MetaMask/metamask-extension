@@ -49,7 +49,6 @@ import {
   ButtonSize,
 } from '../../../components/component-library';
 import { submitRequestToBackground } from '../../../store/background-connection';
-
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 
