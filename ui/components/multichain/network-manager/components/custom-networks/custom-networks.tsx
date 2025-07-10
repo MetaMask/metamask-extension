@@ -84,7 +84,7 @@ export const CustomNetworks = React.memo(() => {
         hexChainId,
       );
 
-      const { onDelete, onEdit, onRpcConfigEdit } = getItemCallbacks(network);
+      const { onDelete, onEdit, onRpcSelect } = getItemCallbacks(network);
 
       return (
         <NetworkListItem
@@ -103,7 +103,7 @@ export const CustomNetworks = React.memo(() => {
           onDeleteClick={onDelete}
           onEditClick={onEdit}
           selected={isEnabled}
-          onRpcEndpointClick={onRpcConfigEdit}
+          onRpcEndpointClick={onRpcSelect}
           disabled={!isNetworkEnabled(network)}
         />
       );

@@ -158,7 +158,7 @@ const DefaultNetworks = memo(() => {
           return null;
         }
 
-        const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
+        const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
           getItemCallbacks(network);
         const iconSrc = getNetworkIcon(network);
         const isEnabled = Object.keys(enabledNetworksByNamespace).includes(
@@ -203,7 +203,7 @@ const DefaultNetworks = memo(() => {
             onDeleteClick={onDelete}
             onEditClick={onEdit}
             onDiscoverClick={onDiscoverClick}
-            onRpcEndpointClick={onRpcConfigEdit}
+            onRpcEndpointClick={onRpcSelect}
           />
         );
       });
