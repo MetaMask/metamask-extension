@@ -1,9 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  InternalAccountWithBalance,
-  getPreferences,
-} from '../../../../selectors';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { InternalAccountWithBalance } from '../../../../selectors';
 import { useMultichainAccountTotalFiatBalance } from '../../../../hooks/useMultichainAccountTotalFiatBalance';
 import {
   Display,
@@ -31,21 +29,17 @@ type SrpListItemProps = {
 
 export const SrpListItem = ({ account }: SrpListItemProps) => {
   const { totalFiatBalance } = useMultichainAccountTotalFiatBalance(account);
+  const isEvmAccount = isEvmAccountType(account.type);
   const multichainAggregatedBalance = useSelector((state) =>
     getMultichainAggregatedBalance(state, account),
   );
-  const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
 
   const balance = useMemo(() => {
-    if (showNativeTokenAsMainBalance) {
+    if (isEvmAccount) {
       return totalFiatBalance;
     }
     return multichainAggregatedBalance.toString();
-  }, [
-    showNativeTokenAsMainBalance,
-    multichainAggregatedBalance,
-    totalFiatBalance,
-  ]);
+  }, [isEvmAccount, multichainAggregatedBalance, totalFiatBalance]);
 
   return (
     <Box
