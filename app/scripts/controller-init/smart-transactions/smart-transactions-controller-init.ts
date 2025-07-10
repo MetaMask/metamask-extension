@@ -86,6 +86,14 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
         : null;
       const selectedAddress = selectedAccount?.address ?? '';
 
+      if (!selectedAddress) {
+        return {
+          accountHardwareType: undefined,
+          accountType: undefined,
+          deviceModel: undefined,
+        };
+      }
+
       const accountHardwareType =
         await getHardwareTypeForMetric(selectedAddress);
       const accountType = await getAccountType(selectedAddress);
