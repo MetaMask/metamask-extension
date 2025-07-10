@@ -363,7 +363,7 @@ module.exports = {
           jsx: true,
         },
       },
-      plugins: ['react'],
+      plugins: ['react', 'tailwindcss'],
       rules: {
         'react/no-unused-prop-types': 'warn',
         'react/no-unused-state': 'warn',
@@ -378,6 +378,15 @@ module.exports = {
         'react/no-children-prop': 'off',
         'react/jsx-key': 'warn', // TODO - increase this into 'error' level
         'react-hooks/rules-of-hooks': 'warn', // TODO - increase this into 'error' level
+
+        // Tailwind CSS rules - same as design system
+        'tailwindcss/classnames-order': 'error',
+        'tailwindcss/enforces-negative-arbitrary-values': 'error',
+        'tailwindcss/enforces-shorthand': 'error',
+        'tailwindcss/no-arbitrary-value': 'off', // There are legitimate reasons to use arbitrary values but we should specifically error on static colors
+        'tailwindcss/no-custom-classname': 'error',
+        'tailwindcss/no-contradicting-classname': 'error',
+        'tailwindcss/no-unnecessary-arbitrary-value': 'error',
       },
       settings: {
         react: {
@@ -387,6 +396,11 @@ module.exports = {
           // LavaMoat policy for all of React, in the build system. That's a
           // no-go, so we grab it from React's package.json.
           version: reactVersion,
+        },
+        tailwindcss: {
+          callees: ['twMerge'],
+          config: 'tailwind.config.js',
+          classRegex: ['^(class(Name)?)$'],
         },
       },
     },
