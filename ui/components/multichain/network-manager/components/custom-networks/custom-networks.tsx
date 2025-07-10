@@ -35,6 +35,7 @@ import {
   getEnabledNetworksByNamespace,
   getMultichainNetworkConfigurationsByChainId,
   getOrderedNetworksList,
+  getShowTestNetworks,
 } from '../../../../../selectors';
 
 export const CustomNetworks = React.memo(() => {
@@ -44,6 +45,7 @@ export const CustomNetworks = React.memo(() => {
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
+  const showTestnets = useSelector(getShowTestNetworks);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   const { nonTestNetworks, testNetworks } = useNetworkManagerState();
@@ -184,7 +186,7 @@ export const CustomNetworks = React.memo(() => {
     <>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         {renderedCustomNetworks}
-        {renderedTestNetworks.length > 0 && (
+        {showTestnets && renderedTestNetworks.length > 0 && (
           <>
             <Text
               variant={TextVariant.bodyMdMedium}
