@@ -87,6 +87,8 @@ describe('useUpdateSwapsState', () => {
       metadata: 'someMetadata',
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await renderHook(() => useUpdateSwapsState());
 
     expect(fetchTokens).toHaveBeenCalledWith(mockState.getCurrentChainId);
@@ -125,6 +127,8 @@ describe('useUpdateSwapsState', () => {
 
     mockState.checkNetworkAndAccountSupports1559 = false;
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await renderHook(() => useUpdateSwapsState());
 
     expect(fetchTokens).toHaveBeenCalledWith(mockState.getCurrentChainId);
@@ -162,6 +166,8 @@ describe('useUpdateSwapsState', () => {
   });
 
   it('should dispatch prepareToLeaveSwaps on unmount', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     const { unmount } = await renderHook(() => useUpdateSwapsState());
 
     unmount();

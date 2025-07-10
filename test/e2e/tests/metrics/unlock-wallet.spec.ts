@@ -47,6 +47,8 @@ describe('Unlock wallet', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const events = await getEventPayloads(driver, mockedEndpoint);
         const sortedEvents = sortEventsByTime(events);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await assert.equal(sortedEvents.length, 3);
         assertBatchValue(sortedEvents[0], 'Home', '/');
         assertBatchValue(sortedEvents[1], 'Unlock Page', '/unlock');

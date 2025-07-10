@@ -28,6 +28,8 @@ export function useBackupAndSync(): {
     async (feature: keyof typeof BACKUPANDSYNC_FEATURES, enabled: boolean) => {
       setError(null);
       try {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(
           setIsBackupAndSyncFeatureEnabledAction(feature, enabled),
         );

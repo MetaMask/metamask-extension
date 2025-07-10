@@ -215,6 +215,8 @@ async function main(): Promise<void> {
   let changedOrNewTests: string[] = [];
   if (process.env.GITHUB_ACTION) {
     ({ myTestList, changedOrNewTests } =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await runningOnGitHubActions(testPaths));
   } else {
     myTestList = testPaths;
