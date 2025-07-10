@@ -5042,9 +5042,6 @@
   "smartAccountReject": {
     "message": "Ne pas utiliser un compte intelligent"
   },
-  "smartAccountRequestFor": {
-    "message": "Demande de"
-  },
   "smartAccountSameAccount": {
     "message": "Même compte, mais des fonctionnalités plus intelligentes."
   },

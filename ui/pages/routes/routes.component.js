@@ -617,6 +617,7 @@ export default class Routes extends Component {
         <Box className="main-container-wrapper">
           {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading &&
+          isUnlocked &&
           isNetworkLoading &&
           completedOnboarding &&
           !isShowingDeepLinkRoute ? (

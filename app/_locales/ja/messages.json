@@ -5042,9 +5042,6 @@
   "smartAccountReject": {
     "message": "スマートアカウントを使用しない"
   },
-  "smartAccountRequestFor": {
-    "message": "要求の対象アカウント:"
-  },
   "smartAccountSameAccount": {
     "message": "同じアカウントでよりスマートな機能。"
   },

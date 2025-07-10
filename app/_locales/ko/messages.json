@@ -5042,9 +5042,6 @@
   "smartAccountReject": {
     "message": "스마트 계정을 사용하지 마세요"
   },
-  "smartAccountRequestFor": {
-    "message": "요청 계정:"
-  },
   "smartAccountSameAccount": {
     "message": "같은 계정, 더 스마트한 기능."
   },

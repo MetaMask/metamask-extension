@@ -2357,6 +2357,21 @@ export function getOrderedNetworksList(state) {
   return state.metamask.orderedNetworkList;
 }
 
+/**
+ *
+ * @param state
+ * @returns { Record<string, Record<string, boolean>> }
+ * @example
+ * {
+ *     "eip155": {
+ *         "0x1": true,
+ *         "0xe708": true,
+ *     },
+ *     "solana": {
+ *         "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": true
+ *     }
+ * }
+ */
 export function getEnabledNetworks(state) {
   return state.metamask.enabledNetworkMap;
 }

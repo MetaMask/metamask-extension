@@ -4,6 +4,8 @@ import { useHistory } from 'react-router-dom';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import {
   Box,
+  ButtonIcon,
+  ButtonIconSize,
   ButtonLink,
   ButtonLinkSize,
   Icon,
@@ -18,6 +20,7 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -42,11 +45,12 @@ export function SmartAccountUpdateSuccess() {
       justifyContent={JustifyContent.center}
       height={BlockSize.TenTwelfths}
     >
-      <IconButton
-        Icon={<Icon name={IconName.Close} />}
+      <ButtonIcon
+        iconName={IconName.Close}
         onClick={closeAccountUpdatePage}
-        className="smart-account-update__close"
-        label=""
+        size={ButtonIconSize.Sm}
+        ariaLabel="close"
+        className="smart-account-update__close-btn"
       />
       <Icon
         name={IconName.CheckBold}
@@ -61,7 +65,11 @@ export function SmartAccountUpdateSuccess() {
       >
         {t('smartAccountUpdateSuccessTitle')}
       </Text>
-      <Text color={TextColor.textDefault} variant={TextVariant.bodyMd}>
+      <Text
+        color={TextColor.textDefault}
+        textAlign={TextAlign.Center}
+        variant={TextVariant.bodyMd}
+      >
         {t('smartAccountUpdateSuccessMessage')}
       </Text>
       <ButtonLink

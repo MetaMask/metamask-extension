@@ -5042,9 +5042,6 @@
   "smartAccountReject": {
     "message": "Μην χρησιμοποιείτε έξυπνο λογαριασμό"
   },
-  "smartAccountRequestFor": {
-    "message": "Ζητήστε για"
-  },
   "smartAccountSameAccount": {
     "message": "Ίδιος λογαριασμός, πιο έξυπνες λειτουργίες."
   },

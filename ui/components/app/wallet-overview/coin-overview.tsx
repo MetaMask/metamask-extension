@@ -28,7 +28,7 @@ import {
 import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
-import { PRIMARY } from '../../../helpers/constants/common';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
   getPreferences,
   getShouldHideZeroBalanceTokens,
@@ -40,6 +40,8 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   SwapsEthToken,
+  getEnabledNetworksByNamespace,
+  isGlobalNetworkSelectorRemoved,
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
 
@@ -97,6 +99,8 @@ export const LegacyAggregatedBalance = ({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+
   const allChainIDs = useSelector(getChainIdsToPoll) as string[];
   const shouldShowFiat = useMultichainSelector(
     getMultichainShouldShowFiat,
@@ -118,8 +122,12 @@ export const LegacyAggregatedBalance = ({
     formattedTokensWithBalancesPerChain,
   );
 
+  const showNativeTokenAsMain = isGlobalNetworkSelectorRemoved
+    ? showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1
+    : showNativeTokenAsMainBalance;
+
   const isNotAggregatedFiatBalance =
-    !shouldShowFiat || showNativeTokenAsMainBalance || isTestnet;
+    !shouldShowFiat || showNativeTokenAsMain || isTestnet;
 
   let balanceToDisplay;
   if (isNotAggregatedFiatBalance) {
@@ -131,6 +139,24 @@ export const LegacyAggregatedBalance = ({
   if (!balanceToDisplay) {
     return <Spinner className="loading-overlay__spinner" />;
   }
+
+  /**
+   * Determines the currency display type based on network configuration.
+   * Returns SECONDARY for multi-network setups when global network selector is removed,
+   * otherwise returns PRIMARY for single network or legacy configurations.
+   */
+  const getCurrencyDisplayType = (): typeof PRIMARY | typeof SECONDARY => {
+    const isMultiNetwork = Object.keys(enabledNetworks).length > 1;
+
+    if (isGlobalNetworkSelectorRemoved) {
+      if (isMultiNetwork && showNativeTokenAsMainBalance) {
+        return SECONDARY;
+      }
+      return PRIMARY;
+    }
+    return PRIMARY;
+  };
+
   return (
     <>
       <UserPreferencedCurrencyDisplay
@@ -141,12 +167,12 @@ export const LegacyAggregatedBalance = ({
         })}
         data-testid={`${classPrefix}-overview__primary-currency`}
         value={balanceToDisplay}
-        type={PRIMARY}
+        type={getCurrencyDisplayType()}
         ethNumberOfDecimals={4}
         hideTitle
         shouldCheckShowNativeToken
         isAggregatedFiatOverviewBalance={
-          !showNativeTokenAsMainBalance && !isTestnet && shouldShowFiat
+          !showNativeTokenAsMain && !isTestnet && shouldShowFiat
         }
         privacyMode={privacyMode}
       />
@@ -177,6 +203,8 @@ export const CoinOverview = ({
   isSwapsChain,
   isSigningEnabled,
 }: CoinOverviewProps) => {
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+
   // Pre-conditions
   if (isSwapsChain && defaultSwapsToken === undefined) {
     throw new Error('defaultSwapsToken is required');
@@ -276,7 +304,8 @@ export const CoinOverview = ({
       return renderNonEvmView();
     }
 
-    return showNativeTokenAsMainBalance
+    return showNativeTokenAsMainBalance &&
+      Object.keys(enabledNetworks).length === 1
       ? renderNativeTokenView()
       : renderAggregatedView();
   };

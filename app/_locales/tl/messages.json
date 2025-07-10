@@ -5042,9 +5042,6 @@
   "smartAccountReject": {
     "message": "Huwag gumamit ng smart account"
   },
-  "smartAccountRequestFor": {
-    "message": "Humiling ng"
-  },
   "smartAccountSameAccount": {
     "message": "Parehong account, mas mahuhusay na feature."
   },
