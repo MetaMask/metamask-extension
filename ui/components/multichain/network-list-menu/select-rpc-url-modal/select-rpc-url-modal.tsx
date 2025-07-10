@@ -41,6 +41,11 @@ export const SelectRpcUrlModal = ({
   const networkConfigurationToUse =
     networkConfiguration ?? evmNetworks[chainId as keyof typeof evmNetworks];
 
+  // Handle case where both networkConfiguration and chainId are undefined
+  if (!networkConfigurationToUse) {
+    return null;
+  }
+
   const image =
     CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
       networkConfigurationToUse.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
