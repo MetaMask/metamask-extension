@@ -178,8 +178,9 @@ export class SwapPage {
     await this.page.waitForTimeout(1000);
     const regex = new RegExp(`^${symbol}$`, 'u');
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // Fix test pattern - remove await from Locator method calls. Playwright Locator methods can be used without await when values are already resolved
     // eslint-disable-next-line @typescript-eslint/await-thenable
-    const searchItem = await this.tokenList.filter({ hasText: regex });
+    const searchItem = this.tokenList.filter({ hasText: regex });
     await searchItem.click({ timeout: 5000 });
   }
 }
