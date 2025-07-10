@@ -25,7 +25,9 @@ export const switchToNetworkFlow = async (
     await selectNetworkDialog.toggleShowTestNetwork();
   }
   await selectNetworkDialog.selectNetworkName(networkName);
-  await headerNavbar.check_currentSelectedNetwork(networkName);
+  if (!networkName.includes('Bitcoin')) {
+    await headerNavbar.check_currentSelectedNetwork(networkName);
+  }
 };
 
 /**

@@ -39,26 +39,26 @@ class RestoreVaultPage extends Component {
 
   handleImport = async (password, seedPhrase) => {
     const {
-      // eslint-disable-next-line no-shadow
-      createNewVaultAndRestore,
+      createNewVaultAndRestore: propsCreateNewVaultAndRestore,
+      setFirstTimeFlowType: propsSetFirstTimeFlowType,
+      resetOAuthLoginState: propsResetOAuthLoginState,
       leaveImportSeedScreenState,
       history,
-      // eslint-disable-next-line no-shadow
-      isSocialLoginFlow,
+      isSocialLoginFlow: propsIsSocialLoginFlow,
     } = this.props;
 
     leaveImportSeedScreenState();
 
-    if (isSocialLoginFlow) {
+    if (propsIsSocialLoginFlow) {
       // reset oauth and onboarding state
-      await this.props.resetOAuthLoginState();
+      await propsResetOAuthLoginState();
     }
 
     // update the first time flow type to restore
-    await this.props.setFirstTimeFlowType(FirstTimeFlowType.restore);
+    await propsSetFirstTimeFlowType(FirstTimeFlowType.restore);
 
     // import the seed phrase and create a new vault
-    await createNewVaultAndRestore(password, seedPhrase);
+    await propsCreateNewVaultAndRestore(password, seedPhrase);
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Retention,
       event: MetaMetricsEventName.WalletRestored,
