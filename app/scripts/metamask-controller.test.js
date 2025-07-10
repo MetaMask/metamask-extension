@@ -536,7 +536,10 @@ describe('MetaMaskController', () => {
     describe('#getAddTransactionRequest', () => {
       it('formats the transaction for submission', () => {
         const transactionParams = { from: '0xa', to: '0xb' };
-        const transactionOptions = { foo: true };
+        const transactionOptions = {
+          foo: true,
+          networkClientId: NETWORK_CONFIGURATION_ID_1,
+        };
         const result = metamaskController.getAddTransactionRequest({
           transactionParams,
           transactionOptions,
@@ -545,7 +548,7 @@ describe('MetaMaskController', () => {
           internalAccounts:
             metamaskController.accountsController.listAccounts(),
           dappRequest: undefined,
-          networkClientId: undefined,
+          networkClientId: NETWORK_CONFIGURATION_ID_1,
           selectedAccount:
             metamaskController.accountsController.getAccountByAddress(
               transactionParams.from,
@@ -562,7 +565,10 @@ describe('MetaMaskController', () => {
       });
       it('passes through any additional params to the object', () => {
         const transactionParams = { from: '0xa', to: '0xb' };
-        const transactionOptions = { foo: true };
+        const transactionOptions = {
+          foo: true,
+          networkClientId: NETWORK_CONFIGURATION_ID_1,
+        };
         const result = metamaskController.getAddTransactionRequest({
           transactionParams,
           transactionOptions,
