@@ -14,7 +14,8 @@ class MultichainAccountDetailsPage {
 
   private readonly accountNameRow = '.multichain-account-details__row'; // First row is account name
 
-  private readonly accountAddressRow = '.multichain-account-details__row'; // Second row is address
+  private readonly accountAddressRow =
+    '.multichain-account-details__row:nth-of-type(2)'; // Second row is address
 
   private readonly accountNavigationButton =
     '.multichain-account-details__row:nth-of-type(2) [aria-label="Next"]';
@@ -64,8 +65,6 @@ class MultichainAccountDetailsPage {
   };
 
   // QR Code and address display
-  private readonly qrCodeButton = '[aria-label="Next"]'; // First "Next" button is address
-
   private readonly qrCodeImage = '.qr-code';
 
   private readonly copyAddressButton = '[data-testid="address-copy-button-text"]';
@@ -283,7 +282,7 @@ class MultichainAccountDetailsPage {
    */
   async navigateToQrCode(): Promise<void> {
     console.log('Navigate to QR code view');
-    await this.driver.clickElement(this.qrCodeButton);
+    await this.driver.clickElement(this.accountNavigationButton);
     await this.driver.delay(largeDelayMs);
   }
 
@@ -292,42 +291,6 @@ class MultichainAccountDetailsPage {
    */
   async checkQrCodeIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.qrCodeImage);
-  }
-
-  /**
-   * Show SRP (Seed Recovery Phrase)
-   */
-  async showSrp(): Promise<void> {
-    console.log('Show SRP');
-    await this.driver.clickElement(this.showSrpButton);
-    await this.driver.delay(largeDelayMs);
-  }
-
-  /**
-   * Show private key
-   */
-  async showPrivateKey(): Promise<void> {
-    console.log('Show private key');
-    await this.driver.clickElement(this.showPrivateKeyButton);
-    await this.driver.delay(largeDelayMs);
-  }
-
-  /**
-   * Export SRP
-   */
-  async exportSrp(): Promise<void> {
-    console.log('Export SRP');
-    await this.driver.clickElement(this.exportSrpButton);
-    await this.driver.delay(largeDelayMs);
-  }
-
-  /**
-   * Export private key
-   */
-  async exportPrivateKey(): Promise<void> {
-    console.log('Export private key');
-    await this.driver.clickElement(this.exportPrivateKeyButton);
-    await this.driver.delay(largeDelayMs);
   }
 
   /**
@@ -367,58 +330,6 @@ class MultichainAccountDetailsPage {
   }
 
   /**
-   * Check if error message is displayed
-   */
-  async checkErrorMessagePresent(): Promise<boolean> {
-    try {
-      await this.driver.findElement(this.errorMessage);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  /**
-   * Check if loading spinner is displayed
-   */
-  async checkLoadingSpinnerPresent(): Promise<boolean> {
-    try {
-      await this.driver.findElement(this.loadingSpinner);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  /**
-   * Check if account-specific feature buttons are present
-   */
-  async checkAccountSpecificFeatures(): Promise<{
-    hasSrp: boolean;
-    hasPrivateKey: boolean;
-    hasExportSrp: boolean;
-    hasExportPrivateKey: boolean;
-  }> {
-    const hasSrp = await this.driver.isElementPresent(this.showSrpButton);
-    const hasPrivateKey = await this.driver.isElementPresent(
-      this.showPrivateKeyButton,
-    );
-    const hasExportSrp = await this.driver.isElementPresent(
-      this.exportSrpButton,
-    );
-    const hasExportPrivateKey = await this.driver.isElementPresent(
-      this.exportPrivateKeyButton,
-    );
-
-    return {
-      hasSrp,
-      hasPrivateKey,
-      hasExportSrp,
-      hasExportPrivateKey,
-    };
-  }
-
-  /**
    * Verify account details match expected values
    *
    * @param expectedName
@@ -430,7 +341,6 @@ class MultichainAccountDetailsPage {
     expectedAddress: string,
     expectedWalletName: string,
   ): Promise<void> {
-    console.log('Verify account details match expected values');
     const actualName = await this.getAccountName();
     const actualAddress = await this.getAccountAddress();
     const actualWalletName = await this.getWalletName();
@@ -440,13 +350,11 @@ class MultichainAccountDetailsPage {
         `Expected account name "${expectedName}" but got "${actualName}"`,
       );
     }
-
-    if (!actualAddress.includes(expectedAddress.substring(0, 6))) {
+    if (actualAddress !== expectedAddress) {
       throw new Error(
-        `Expected account address to contain "${expectedAddress.substring(0, 6)}" but got "${actualAddress}"`,
+        `Expected account address "${expectedAddress}" but got "${actualAddress}"`,
       );
     }
-
     if (actualWalletName !== expectedWalletName) {
       throw new Error(
         `Expected wallet name "${expectedWalletName}" but got "${actualWalletName}"`,
