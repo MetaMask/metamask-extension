@@ -214,7 +214,7 @@
     "permissionHistory": "object",
     "permissionActivityLog": "object"
   },
-  "PhishingController": { "urlScanCache": "string" },
+  "PhishingController": { "urlScanCache": "object" },
   "PreferencesController": {
     "selectedAddress": "string",
     "useBlockie": false,
