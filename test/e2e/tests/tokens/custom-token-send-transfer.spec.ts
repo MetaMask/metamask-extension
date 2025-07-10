@@ -31,8 +31,8 @@ describe('Transfer custom tokens', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: mocks,
         },
-        async ({ driver, localNodes }) => {
-          await loginWithBalanceValidation(driver, localNodes[0]);
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
 
           const homePage = new HomePage(driver);
           const assetListPage = new AssetListPage(driver);
