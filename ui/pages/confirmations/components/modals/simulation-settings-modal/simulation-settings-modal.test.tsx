@@ -197,17 +197,13 @@ describe('SimulationSettingsModal', () => {
       );
     });
 
-    it('updates slippage if custom', async () => {
+    it('updates slippage', async () => {
       const { getByTestId } = render({
         metamaskState: {
           enableEnforcedSimulations: true,
           enableEnforcedSimulationsForTransactions: {},
           enforcedSimulationsSlippage: 10,
         },
-      });
-
-      await act(async () => {
-        getByTestId('simulation-settings-modal-slippage-custom').click();
       });
 
       await act(async () => {
@@ -225,31 +221,6 @@ describe('SimulationSettingsModal', () => {
       expect(
         setEnforcedSimulationsSlippageForTransactionMock,
       ).toHaveBeenCalledWith(TRANSACTION_ID_MOCK, 20);
-    });
-
-    it('updates slippage if default', async () => {
-      const { getByTestId } = render({
-        metamaskState: {
-          enableEnforcedSimulations: true,
-          enableEnforcedSimulationsForTransactions: {},
-          enforcedSimulationsSlippage: 15,
-          enforcedSimulationsSlippageForTransactions: {
-            [TRANSACTION_ID_MOCK]: 20,
-          },
-        },
-      });
-
-      await act(async () => {
-        getByTestId('simulation-settings-modal-slippage-default').click();
-      });
-
-      await act(async () => {
-        getByTestId('simulation-settings-modal-update').click();
-      });
-
-      expect(
-        setEnforcedSimulationsSlippageForTransactionMock,
-      ).toHaveBeenCalledWith(TRANSACTION_ID_MOCK, 15);
     });
   });
 });

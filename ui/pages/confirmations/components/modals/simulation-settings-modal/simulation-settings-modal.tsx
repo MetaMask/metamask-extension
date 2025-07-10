@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   TransactionContainerType,
   TransactionMeta,
@@ -7,8 +7,6 @@ import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
-  BlockSize,
-  BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
@@ -39,7 +37,6 @@ import {
 } from '../../../../../store/actions';
 import {
   selectEnableEnforcedSimulations,
-  selectEnforcedSimulationsDefaultSlippage,
   selectEnforcedSimulationsSlippage,
 } from '../../../selectors';
 import { ConfirmMetamaskState } from '../../../types/confirm';
@@ -59,138 +56,13 @@ const Section = ({ children }: { children: React.ReactNode | string }) => {
   );
 };
 
-export const SimulationSettingsModal = ({
-  onClose,
-}: {
-  onClose?: () => void;
-}) => {
-  const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { containerTypes, id: transactionId } = currentConfirmation || {};
-
-  const isEnforcedSimulationsEnabled = useSelector(
-    (state: ConfirmMetamaskState) =>
-      selectEnableEnforcedSimulations(state, transactionId),
-  );
-
-  const isEnforcedSimulationApplied = containerTypes?.includes(
-    TransactionContainerType.EnforcedSimulations,
-  );
-
-  const [enabled, setEnabled] = useState(isEnforcedSimulationsEnabled);
-  const [updatedSlippage, setUpdatedSlippage] = useState<number>();
-
-  const handleUpdateSlippage = useCallback(async () => {
-    if (updatedSlippage === undefined) {
-      return false;
-    }
-
-    await setEnforcedSimulationsSlippageForTransaction(
-      transactionId,
-      updatedSlippage,
-    );
-
-    return true;
-  }, [transactionId, updatedSlippage]);
-
-  const handleDisable = useCallback(async () => {
-    await setEnableEnforcedSimulationsForTransaction(transactionId, false);
-
-    const newContainerTypes = (containerTypes ?? []).filter(
-      (type) => type !== TransactionContainerType.EnforcedSimulations,
-    );
-
-    await applyTransactionContainersExisting(transactionId, newContainerTypes);
-  }, [containerTypes, transactionId]);
-
-  const handleEnable = useCallback(async () => {
-    const newContainerTypes = [
-      ...(containerTypes ?? []),
-      TransactionContainerType.EnforcedSimulations,
-    ];
-
-    await applyTransactionContainersExisting(transactionId, newContainerTypes);
-    await setEnableEnforcedSimulationsForTransaction(transactionId, true);
-  }, [containerTypes, transactionId]);
-
-  const handleUpdateClick = useCallback(async () => {
-    const slippageUpdated = await handleUpdateSlippage();
-
-    if (!enabled && isEnforcedSimulationApplied) {
-      await handleDisable();
-    }
-
-    if (enabled && !isEnforcedSimulationApplied) {
-      await handleEnable();
-    }
-
-    if (enabled && isEnforcedSimulationApplied && slippageUpdated) {
-      await applyTransactionContainersExisting(
-        transactionId,
-        containerTypes ?? [],
-      );
-    }
-
-    onClose?.();
-  }, [
-    containerTypes,
-    enabled,
-    handleDisable,
-    handleEnable,
-    handleUpdateSlippage,
-    isEnforcedSimulationApplied,
-    onClose,
-    transactionId,
-  ]);
-
-  return (
-    <Modal
-      isOpen={true}
-      onClose={
-        onClose ??
-        (() => {
-          // Intentionally empty
-        })
-      }
-      isClosedOnOutsideClick={false}
-      isClosedOnEscapeKey={false}
-    >
-      <ModalOverlay data-testid="modal-overlay" />
-      <ModalContent size={ModalContentSize.Md}>
-        <ModalHeader onClose={onClose}>
-          {t('simulationSettingsModalTitle')}
-        </ModalHeader>
-        <ModalBody
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={3}
-        >
-          <EnforceToggle enabled={enabled} onChange={setEnabled} />
-          {enabled && (
-            <Slippage
-              transactionId={transactionId}
-              onChange={setUpdatedSlippage}
-            />
-          )}
-          <ButtonPrimary
-            onClick={handleUpdateClick}
-            data-testid="simulation-settings-modal-update"
-          >
-            {t('update')}
-          </ButtonPrimary>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
-  );
-};
-
-function EnforceToggle({
+const EnforceToggle = ({
   enabled,
   onChange,
 }: {
   enabled: boolean;
   onChange?: (value: boolean) => void;
-}) {
+}) => {
   const t = useI18nContext();
 
   return (
@@ -216,125 +88,161 @@ function EnforceToggle({
       </Text>
     </Section>
   );
-}
+};
 
-function Slippage({
+const Slippage = ({
   onChange,
-  transactionId,
+  slippage,
 }: {
-  onChange?: (slippage: number | undefined) => void;
-  transactionId: string;
-}) {
+  onChange?: (slippage: number) => void;
+  slippage: number;
+}) => {
   const t = useI18nContext();
-  const defaultSlippage = useSelector(selectEnforcedSimulationsDefaultSlippage);
-
-  const savedSlippage = useSelector((state: ConfirmMetamaskState) =>
-    selectEnforcedSimulationsSlippage(state, transactionId),
-  );
-
-  const [customSlippage, setCustomSlippage] = useState(savedSlippage);
-
-  const [isCustomSlippage, setIsCustomSlippage] = useState(
-    savedSlippage !== defaultSlippage,
-  );
-
-  const handleCustomSlippageChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = event.target;
-      const parsedValue = parseInt(value, 10);
-      setCustomSlippage(parsedValue);
-    },
-    [],
-  );
-
-  const handleDefaultSlippageClick = useCallback(() => {
-    setIsCustomSlippage(false);
-  }, []);
-
-  const handleCustomSlippageClick = useCallback(() => {
-    setIsCustomSlippage(true);
-  }, []);
-
-  const slippage = isCustomSlippage ? customSlippage : defaultSlippage;
-  const changeValue = slippage === savedSlippage ? undefined : slippage;
-
-  useEffect(() => {
-    onChange?.(changeValue);
-  }, [changeValue, onChange]);
 
   return (
     <Section>
       <Text variant={TextVariant.bodyMdMedium}>
         {t('simulationSettingsModalEnforceSlippage')}
       </Text>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={2}>
-        <Pill
-          dataTestId="simulation-settings-modal-slippage-default"
-          text={`${defaultSlippage}%`}
-          isSelected={!isCustomSlippage}
-          onClick={handleDefaultSlippageClick}
-        />
-        <Pill
-          dataTestId="simulation-settings-modal-slippage-custom"
-          text={t('simulationSettingsModalEnforceSlippageCustom')}
-          isSelected={isCustomSlippage}
-          onClick={handleCustomSlippageClick}
-        />
-      </Box>
-      {isCustomSlippage && (
-        <TextField
-          data-testid="simulation-settings-modal-slippage-custom-input"
-          type={TextFieldType.Number}
-          onChange={handleCustomSlippageChange}
-          value={customSlippage}
-          endAccessory={'%'}
-        />
-      )}
+      <TextField
+        data-testid="simulation-settings-modal-slippage-custom-input"
+        type={TextFieldType.Number}
+        onChange={(e) => onChange?.(Number(e.target.value))}
+        value={slippage}
+        endAccessory={'%'}
+      />
       <Text variant={TextVariant.bodyMd} color={TextColor.textAlternativeSoft}>
         {t('simulationSettingsModalEnforceSlippageDescription')}
       </Text>
     </Section>
   );
+};
+
+function useSimulationSettings() {
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { containerTypes, id: transactionId } = currentConfirmation || {};
+
+  const isEnforcedSimulationsEnabled = useSelector(
+    (state: ConfirmMetamaskState) =>
+      selectEnableEnforcedSimulations(state, transactionId),
+  );
+
+  const isEnforcedSimulationApplied = containerTypes?.includes(
+    TransactionContainerType.EnforcedSimulations,
+  );
+
+  const savedSlippage = useSelector((state: ConfirmMetamaskState) =>
+    selectEnforcedSimulationsSlippage(state, transactionId),
+  );
+
+  const [enabled, setEnabled] = useState(isEnforcedSimulationsEnabled);
+  const [slippage, setSlippage] = useState<number>(savedSlippage);
+
+  const updateSettings = useCallback(async () => {
+    const slippageUpdated = slippage !== savedSlippage;
+    const isEnabled = enabled && !isEnforcedSimulationApplied;
+    const isDisabled = !enabled && isEnforcedSimulationApplied;
+
+    if (slippageUpdated) {
+      await setEnforcedSimulationsSlippageForTransaction(
+        transactionId,
+        slippage,
+      );
+    }
+
+    const newContainerTypes = [...(containerTypes ?? [])];
+
+    if (isEnabled) {
+      newContainerTypes.push(TransactionContainerType.EnforcedSimulations);
+    }
+
+    if (isDisabled) {
+      newContainerTypes.splice(
+        newContainerTypes.indexOf(TransactionContainerType.EnforcedSimulations),
+        1,
+      );
+
+      await setEnableEnforcedSimulationsForTransaction(transactionId, false);
+    }
+
+    if (
+      newContainerTypes.length !== containerTypes?.length ||
+      slippageUpdated
+    ) {
+      await applyTransactionContainersExisting(
+        transactionId,
+        newContainerTypes,
+      );
+    }
+
+    if (isEnabled) {
+      await setEnableEnforcedSimulationsForTransaction(transactionId, true);
+    }
+  }, [
+    containerTypes,
+    enabled,
+    isEnforcedSimulationApplied,
+    savedSlippage,
+    slippage,
+    transactionId,
+  ]);
+
+  return {
+    enabled,
+    setEnabled,
+    slippage,
+    setSlippage,
+    updateSettings,
+  };
 }
 
-function Pill({
-  dataTestId,
-  isSelected = false,
-  onClick,
-  text,
+export const SimulationSettingsModal = ({
+  onClose,
 }: {
-  dataTestId?: string;
-  isSelected?: boolean;
-  onClick?: () => void;
-  text: string;
-}) {
+  onClose?: () => void;
+}) => {
+  const t = useI18nContext();
+
+  const { enabled, setEnabled, slippage, setSlippage, updateSettings } =
+    useSimulationSettings();
+
+  const handleUpdateClick = useCallback(async () => {
+    await updateSettings();
+    onClose?.();
+  }, [updateSettings, onClose]);
+
   return (
-    <Box
-      data-testid={dataTestId}
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-      backgroundColor={
-        isSelected
-          ? BackgroundColor.primaryMuted
-          : BackgroundColor.backgroundAlternative
+    <Modal
+      isOpen={true}
+      onClose={
+        onClose ??
+        (() => {
+          // Intentionally empty
+        })
       }
-      borderRadius={BorderRadius.pill}
-      borderColor={
-        isSelected ? BorderColor.primaryDefault : BorderColor.borderMuted
-      }
-      paddingInline={5}
-      width={BlockSize.Min}
-      onClick={onClick}
+      isClosedOnOutsideClick={false}
+      isClosedOnEscapeKey={false}
     >
-      <Text
-        variant={TextVariant.bodySm}
-        color={
-          isSelected ? TextColor.primaryDefault : TextColor.textAlternativeSoft
-        }
-      >
-        {text}
-      </Text>
-    </Box>
+      <ModalOverlay data-testid="modal-overlay" />
+      <ModalContent size={ModalContentSize.Md}>
+        <ModalHeader onClose={onClose}>
+          {t('simulationSettingsModalTitle')}
+        </ModalHeader>
+        <ModalBody
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={3}
+        >
+          <EnforceToggle enabled={enabled} onChange={setEnabled} />
+          {enabled && <Slippage slippage={slippage} onChange={setSlippage} />}
+          <ButtonPrimary
+            onClick={handleUpdateClick}
+            data-testid="simulation-settings-modal-update"
+          >
+            {t('update')}
+          </ButtonPrimary>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
-}
+};
