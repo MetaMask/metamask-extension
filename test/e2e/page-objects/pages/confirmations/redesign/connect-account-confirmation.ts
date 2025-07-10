@@ -113,9 +113,12 @@ class ConnectAccountConfirmation {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_isCreateSolanaAccountModalButtonVisible(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.createSolanaAccountModalButton, {
-        timeout: 1000,
-      });
+      await this.driver.findClickableElement(
+        this.createSolanaAccountModalButton,
+        {
+          timeout: 1000,
+        },
+      );
     } catch (e) {
       console.log('Create Solana account button not enabled', e);
       return false;
