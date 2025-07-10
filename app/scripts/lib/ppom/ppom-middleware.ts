@@ -81,6 +81,10 @@ export function createPPOMMiddleware<
           req.networkClientId,
         ) ?? {};
 
+      if (!chainId) {
+        throw Error('ChainID not found for networkClientId');
+      }
+
       if (
         !securityAlertsEnabled ||
         !CONFIRMATION_METHODS.includes(req.method)
