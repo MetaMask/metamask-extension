@@ -5,10 +5,20 @@ import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  loginWithBalanceValidation,
+  loginWithoutBalanceValidation,
+} from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
 
-const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+export const FEATURE_FLAGS_URL =
+  'https://client-config.api.cx.metamask.io/v1/flags';
+
+export enum AccountType {
+  MultiSRP = 'multi-srp',
+  SSK = 'ssk',
+  HardwareWallet = 'hardware-wallet',
+}
 
 export const mockMultichainAccountsFeatureFlag = (mockServer: Mockttp) =>
   mockServer
@@ -38,21 +48,43 @@ export async function withMultichainAccountsDesignEnabled(
   {
     title,
     testSpecificMock = mockMultichainAccountsFeatureFlag,
+    accountType = AccountType.MultiSRP,
   }: {
     title?: string;
     testSpecificMock?: (mockServer: Mockttp) => Promise<MockedEndpoint>;
+    accountType?: AccountType;
   },
   test: (driver: Driver) => Promise<void>,
 ) {
+  let fixture;
+
+  switch (accountType) {
+    case AccountType.MultiSRP:
+      fixture = new FixtureBuilder().withKeyringControllerMultiSRP().build();
+      break;
+    case AccountType.SSK:
+      fixture = new FixtureBuilder().withKeyringControllerMultiSRP().build();
+      break;
+    case AccountType.HardwareWallet:
+      fixture = new FixtureBuilder().withLedgerAccount().build();
+      break;
+    default:
+      fixture = new FixtureBuilder().withKeyringControllerMultiSRP().build();
+  }
+
   await withFixtures(
     {
-      fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
+      fixtures: fixture,
       testSpecificMock,
       title,
       dapp: true,
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
-      await loginWithBalanceValidation(driver);
+      if (accountType === AccountType.HardwareWallet) {
+        await loginWithoutBalanceValidation(driver);
+      } else {
+        await loginWithBalanceValidation(driver);
+      }
       const homePage = new HomePage(driver);
       await homePage.check_pageIsLoaded();
       const headerNavbar = new HeaderNavbar(driver);
