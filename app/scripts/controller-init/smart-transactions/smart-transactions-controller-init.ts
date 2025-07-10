@@ -54,7 +54,7 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
   const smartTransactionsController = new SmartTransactionsController({
     supportedChainIds: getAllowedSmartTransactionsChainIds() as Hex[],
     clientId: ClientId.Extension,
-    getNonceLock: (address: string, networkClientId: string) =>
+    getNonceLock: (address: string, networkClientId?: string) =>
       transactionController.getNonceLock(
         address,
         networkClientId || getGlobalNetworkClientId(),
