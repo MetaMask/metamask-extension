@@ -52,13 +52,13 @@ export async function importTestToken(
  * @param driver - The WebDriver instance
  * @param contractAddress - The contract address of the token
  * @param networkChainId - The chain ID of the network
- * @param tokenSymbol - The symbol of the token (unused in original approach)
+ * @param _tokenSymbol - The symbol of the token (unused in original approach)
  */
 export async function importAndVerifyToken(
   driver: Driver,
   contractAddress: string,
   networkChainId: string,
-  tokenSymbol: string,
+  _tokenSymbol: string,
 ): Promise<void> {
   // Just import the token - no verification step
   // This matches the original working behavior where Firefox tests worked fine
@@ -66,5 +66,7 @@ export async function importAndVerifyToken(
 
   // Original approach didn't verify token appears in UI
   // The subsequent ERC20 approve transaction would fail if import didn't work
-  console.log(`Token import completed - no verification needed (original approach)`);
+  console.log(
+    'Token import completed - no verification needed (original approach)',
+  );
 }
