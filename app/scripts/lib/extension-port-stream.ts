@@ -3,6 +3,8 @@
 import type { Json } from '@metamask/utils';
 import { Duplex, type DuplexOptions } from 'readable-stream';
 import type { Runtime } from 'webextension-polyfill';
+import { getPlatform } from './util';
+import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
 
 let _randomCounter = 0 | 0;
 /**
@@ -76,8 +78,19 @@ export type Options = {
 
 /**
  * The default chunk size for the stream.
+ *
+ * Chromium has a maximum message size of 64 MB.
+ *
+ * FireFox's doesn't really have a maximum limit (I've tested it up to 2 GB), but
+ * it does limit the size of the strings you can send to 1 GB per string.
+ *
+ * So we can just send messages on FireFox without chunking.
+ *
+ * Chrome limit: 64 * 1024 * 1024 - 1 (64 MB - 1 byte)
+ * Firefox limit: 0 (no chunking, send as is)
  */
-export const CHUNK_SIZE = 8 * 1024 * 1024; // 8 MB (< any browser cap)
+export const CHUNK_SIZE =
+  getPlatform() === PLATFORM_FIREFOX ? 0 : 64 * 1024 * 1024 - 1;
 
 enum S {
   Id,
