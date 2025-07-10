@@ -71,7 +71,6 @@ const removedBackgroundFields = [
   'PhishingController.phishingLists',
   'PhishingController.stalelistLastFetched',
   'PhishingController.whitelist',
-  'PhishingController.listState',
 ];
 
 const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
