@@ -2747,6 +2747,7 @@
         "@metamask/name-controller>async-mutex": true,
         "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": true,
+        "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-walletconnect>@walletconnect/solana-adapter>@walletconnect/utils>@noble/ciphers": true,
         "@metamask/utils": true,
         "viem>ox>@noble/curves": true
       }
@@ -3213,6 +3214,13 @@
     "@metamask/test-bundler>@ethersproject/networks": {
       "packages": {
         "ethers>@ethersproject/logger": true
+      }
+    },
+    "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-walletconnect>@walletconnect/solana-adapter>@walletconnect/utils>@noble/ciphers": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@metamask/transaction-controller": {
