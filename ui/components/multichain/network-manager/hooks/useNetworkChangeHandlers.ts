@@ -95,6 +95,7 @@ export const useNetworkChangeHandlers = () => {
     (chainId: CaipChainId) => {
       const { namespace } = parseCaipChainId(chainId);
       const hexChainId = convertCaipToHexChainId(chainId);
+      // const hexCurrentChainId = convertCaipToHexChainId(currentChainId);
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
