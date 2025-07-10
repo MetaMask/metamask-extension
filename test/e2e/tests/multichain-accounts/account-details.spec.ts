@@ -52,7 +52,9 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           }
 
           const address = await accountDetailsPage.getAccountAddress();
-          if (!address.includes(account1.address.toLowerCase().substring(0, 6))) {
+          if (
+            !address.includes(account1.address.toLowerCase().substring(0, 6))
+          ) {
             throw new Error(
               `Expected address to contain "${account1.address.toLowerCase().substring(0, 6)}" but got "${address}"`,
             );
@@ -144,9 +146,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.addNewImportedAccount(
-            TEST_PRIVATE_KEY,
-          );
+          await accountListPage.addNewImportedAccount(TEST_PRIVATE_KEY);
           await driver.clickElement('[data-testid="account-menu-icon"]');
           await accountListPage.openAccountDetailsModal(importedAccount.name);
 
@@ -158,7 +158,9 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           await accountDetailsPage.clickRemoveAccountConfirmButton();
 
           await driver.clickElement('[data-testid="account-menu-icon"]');
-          await accountListPage.check_accountIsNotDisplayedInAccountList(importedAccount.name);
+          await accountListPage.check_accountIsNotDisplayedInAccountList(
+            importedAccount.name,
+          );
         },
       );
     });
@@ -210,7 +212,11 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
 
           const modalAddress =
             await accountDetailsPage.getAddressFromShareModal();
-          if (!modalAddress.includes(account1.address.toLowerCase().substring(0, 6))) {
+          if (
+            !modalAddress.includes(
+              account1.address.toLowerCase().substring(0, 6),
+            )
+          ) {
             throw new Error(
               `Expected address to contain "${account1.address.toLowerCase().substring(0, 6)}" but got "${modalAddress}"`,
             );

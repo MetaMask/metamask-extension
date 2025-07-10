@@ -50,7 +50,10 @@ class MultichainAccountDetailsPage {
     '[data-testid="account-export-private-key-button"]';
 
   // Account removal
-  private readonly removeAccountButton = { tag: 'button',text: 'Remove account' };
+  private readonly removeAccountButton = {
+    tag: 'button',
+    text: 'Remove account',
+  };
 
   private readonly removeAccountModal = '.modal-container'; // Modal container
 
@@ -67,7 +70,8 @@ class MultichainAccountDetailsPage {
   // QR Code and address display
   private readonly qrCodeImage = '.qr-code';
 
-  private readonly copyAddressButton = '[data-testid="address-copy-button-text"]';
+  private readonly copyAddressButton =
+    '[data-testid="address-copy-button-text"]';
 
   private readonly viewOnEtherscanButton = {
     tag: 'button',
