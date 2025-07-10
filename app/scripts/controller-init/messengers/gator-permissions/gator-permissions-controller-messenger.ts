@@ -22,10 +22,15 @@ export function getGatorPermissionsControllerMessenger(
 
 export function getGatorPermissionsControllerInitMessenger(
   messenger: Messenger<AllowedActions, AllowedEvents>,
-) {
+): GatorPermissionsControllerMessenger {
   return messenger.getRestricted({
     name: 'GatorPermissionsControllerInit',
-    allowedEvents: [],
-    allowedActions: [],
+    allowedEvents: [
+    ],
+    allowedActions: [
+      'AuthenticationController:isSignedIn',
+      'AuthenticationController:performSignIn',
+      'UserStorageController:performGetStorageAllFeatureEntries',
+    ],
   });
 }

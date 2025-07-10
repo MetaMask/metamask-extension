@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   AlignItems,
   BackgroundColor,
@@ -22,11 +21,9 @@ import {
 } from '../../../component-library';
 
 export const PermissionListItem = ({ total, name, onClick }) => {
-  const t = useI18nContext();
-
   return (
     <Box
-      data-testid="asset-list-item"
+      data-testid="permission-list-item"
       as="button"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
@@ -64,7 +61,7 @@ export const PermissionListItem = ({ total, name, onClick }) => {
           color={TextColor.textAlternative}
           variant={TextVariant.bodyMd}
         >
-          {total} {t('accountsSmallCase')} •&nbsp;
+          {total}
         </Text>
         <Icon
           display={Display.Flex}

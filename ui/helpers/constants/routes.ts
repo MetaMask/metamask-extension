@@ -166,6 +166,23 @@ PATH_NAME_MAP.set(PERMISSIONS, 'Permissions');
 export const SITES = '/sites';
 PATH_NAME_MAP.set(SITES, 'Sites');
 
+export const TOKEN_STREAMS_ROUTE = '/gator-permissions/token-streams';
+PATH_NAME_MAP.set(TOKEN_STREAMS_ROUTE, 'Token Streams');
+
+export const REVIEW_TOKEN_STREAMS_ROUTE = '/review-token-streams/:chainId';
+PATH_NAME_MAP.set(REVIEW_TOKEN_STREAMS_ROUTE, 'Review Token Streams');
+
+export const TOKEN_SUBSCRIPTIONS_ROUTE =
+  '/gator-permissions/token-subscriptions';
+PATH_NAME_MAP.set(TOKEN_SUBSCRIPTIONS_ROUTE, 'Token Subscriptions');
+
+export const REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE =
+  '/review-token-subscriptions/:chainId';
+PATH_NAME_MAP.set(
+  REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE,
+  'Review Token Subscriptions',
+);
+
 export const REVIEW_PERMISSIONS = '/review-permissions';
 
 export const CONNECT_ROUTE = '/connect';

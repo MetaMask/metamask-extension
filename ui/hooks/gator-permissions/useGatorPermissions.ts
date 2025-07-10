@@ -11,7 +11,6 @@ export function useGatorPermissions() {
     let cancelled = false;
     async function fetchGatorPermissions() {
       try {
-        console.log('useGatorPermissions: fetchGatorPermissions start');
         setError(undefined);
         setLoading(true);
 

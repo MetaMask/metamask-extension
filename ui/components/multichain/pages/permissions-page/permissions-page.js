@@ -23,9 +23,14 @@ import {
   TextVariant,
   AlignItems,
 } from '../../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE, SITES } from '../../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  SITES,
+  TOKEN_STREAMS_ROUTE,
+  TOKEN_SUBSCRIPTIONS_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
-import { getGatorPermissions } from '../../../../selectors/gator-permissions/gator-permissions';
+import { getGatorPermissionsList } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionListItem } from './permission-list-item';
 
 export const PermissionsPage = () => {
@@ -33,8 +38,6 @@ export const PermissionsPage = () => {
   const history = useHistory();
   const headerRef = useRef();
   const [totalConnections, setTotalConnections] = useState(0);
-  const [totalSpendingCapPermissions, setTotalSpendingCapPermissions] =
-    useState(0);
   const [totalTokenStreamsPermissions, setTotalTokenStreamsPermissions] =
     useState(0);
   const [
@@ -46,7 +49,7 @@ export const PermissionsPage = () => {
   const sitesConnectionsList = useSelector(
     getConnectedSitesListWithNetworkInfo,
   );
-  const gatorPermissionsList = useSelector(getGatorPermissions);
+  const gatorPermissionsList = useSelector(getGatorPermissionsList);
 
   // Use the hook to fetch gator permissions on component mount
   const { loading: gatorPermissionsLoading, error: gatorPermissionsError } =
@@ -54,28 +57,27 @@ export const PermissionsPage = () => {
 
   useEffect(() => {
     const totalSites = Object.keys(sitesConnectionsList).length;
-    const totalSpendingCap =
-      gatorPermissionsList['native-token-stream'].length || 0;
-    const totalTokenStreams =
-      gatorPermissionsList['erc20-token-stream'].length || 0;
+    const nativeTokenStream =
+      Object.values(gatorPermissionsList['native-token-stream']).flat()
+        .length || 0;
+    const erc20TokenStream =
+      Object.values(gatorPermissionsList['erc20-token-stream']).flat().length ||
+      0;
     const totalTokenSubscriptions =
-      gatorPermissionsList['native-token-periodic'].length || 0;
+      Object.values(gatorPermissionsList['native-token-periodic']).flat()
+        .length || 0;
+    const totalTokenStreams = nativeTokenStream + erc20TokenStream;
 
     setTotalConnections(totalSites);
-    setTotalSpendingCapPermissions(totalSpendingCap);
     setTotalTokenStreamsPermissions(totalTokenStreams);
     setTotalTokenSubscriptionsPermissions(totalTokenSubscriptions);
     setTotalPermissions(
-      totalConnections +
-        totalSpendingCap +
-        totalTokenStreams +
-        totalTokenSubscriptions,
+      totalConnections + totalTokenStreams + totalTokenSubscriptions,
     );
   }, [
     sitesConnectionsList,
     gatorPermissionsList,
     totalConnections,
-    totalSpendingCapPermissions,
     totalTokenStreamsPermissions,
     totalTokenSubscriptionsPermissions,
   ]);
@@ -85,16 +87,14 @@ export const PermissionsPage = () => {
       case 'sites':
         history.push(SITES);
         break;
-      case 'spending-cap':
-        history.push(SITES);
-        break;
       case 'token-streams':
-        history.push(SITES);
+        history.push(TOKEN_STREAMS_ROUTE);
         break;
       case 'token-subscriptions':
-        history.push(SITES);
+        history.push(TOKEN_SUBSCRIPTIONS_ROUTE);
         break;
       default:
+        console.error('Invalid asset type:', assetType);
         break;
     }
   };
@@ -121,11 +121,6 @@ export const PermissionsPage = () => {
         )}
 
         {/* Assets */}
-        <PermissionListItem
-          total={totalSpendingCapPermissions}
-          name="Spending Cap"
-          onClick={() => handleAssetClick('spending-cap')}
-        />
         <PermissionListItem
           total={totalTokenStreamsPermissions}
           name="Token Streams"

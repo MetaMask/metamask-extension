@@ -1,0 +1,7 @@
+.multichain-gator-asset-item-list {
+  &:hover,
+  &:focus-within,
+  &:active {
+    background-color: var(--color-background-default-hover);
+  }
+}

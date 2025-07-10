@@ -41,6 +41,10 @@ import {
   CONNECTIONS,
   PERMISSIONS,
   SITES,
+  TOKEN_STREAMS_ROUTE,
+  REVIEW_TOKEN_STREAMS_ROUTE,
+  TOKEN_SUBSCRIPTIONS_ROUTE,
+  REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE,
   REVIEW_PERMISSIONS,
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
@@ -132,7 +136,27 @@ const PermissionsPage = mmLazy(() =>
   import('../../components/multichain/pages/permissions-page/permissions-page'),
 );
 const SitesPage = mmLazy(() =>
-  import('../../components/multichain/pages/sites-page/sites.page'),
+  import('../../components/multichain/pages/sites-page/sites-page'),
+);
+const TokenStreamsPage = mmLazy(() =>
+  import(
+    '../../components/multichain/pages/gator-permissions-page/token-streams/token-streams-page'
+  ),
+);
+const ReviewTokenStreamsPage = mmLazy(() =>
+  import(
+    '../../components/multichain/pages/gator-permissions-page/token-streams/review-token-streams-page'
+  ),
+);
+const TokenSubscriptionsPage = mmLazy(() =>
+  import(
+    '../../components/multichain/pages/gator-permissions-page/token-subscriptions/token-subscriptions-page'
+  ),
+);
+const ReviewTokenSubscriptionsPage = mmLazy(() =>
+  import(
+    '../../components/multichain/pages/gator-permissions-page/token-subscriptions/review-token-subscriptions-page'
+  ),
 );
 const Connections = mmLazy(() =>
   import('../../components/multichain/pages/connections'),
@@ -383,6 +407,26 @@ export default class Routes extends Component {
           />
           <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
           <Authenticated path={SITES} component={SitesPage} exact />
+          <Authenticated
+            path={TOKEN_STREAMS_ROUTE}
+            component={TokenStreamsPage}
+            exact
+          />
+          <Authenticated
+            path={`${REVIEW_TOKEN_STREAMS_ROUTE}/:chainId`}
+            component={ReviewTokenStreamsPage}
+            exact
+          />
+          <Authenticated
+            path={TOKEN_SUBSCRIPTIONS_ROUTE}
+            component={TokenSubscriptionsPage}
+            exact
+          />
+          <Authenticated
+            path={`${REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE}/:chainId`}
+            component={ReviewTokenSubscriptionsPage}
+            exact
+          />
           <Authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             component={ReviewPermissions}
