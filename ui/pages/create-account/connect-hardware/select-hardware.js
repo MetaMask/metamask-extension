@@ -37,6 +37,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 
 // Not all browsers have usb support. In particular, Firefox does
 // not support usb. More information on that can be found here:
@@ -49,7 +50,7 @@ import {
 // the case of Firefox, this will depend on the Trezor bridge software
 const isUSBSupported = !process.env.IN_TEST && window.navigator.usb;
 
-const isFirefox = getBrowserName() === 'Firefox';
+const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 const LEDGER_FIREFOX_NOT_SUPPORTED_URL =
   'https://support.metamask.io/more-web3/wallets/how-to-connect-a-trezor-or-ledger-hardware-wallet/';
