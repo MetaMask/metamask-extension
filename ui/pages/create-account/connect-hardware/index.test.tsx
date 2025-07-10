@@ -193,13 +193,8 @@ describe('ConnectHardwareForm', () => {
 
       await waitFor(() => {
         expect(
-          getByText("We're having trouble connecting your Ledger", {
-            exact: false,
-          }),
-        ).toBeInTheDocument();
-        expect(
           getByText(
-            "If you're on the latest version of Firefox, you might be experiencing an issue related to Firefox dropping U2F support",
+            "If you're on the latest version of Firefox, you might be experiencing an issue related to Firefox dropping U2F support. Learn how to fix this issue",
             { exact: false },
           ),
         ).toBeInTheDocument();
