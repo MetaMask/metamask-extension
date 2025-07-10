@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures, unlockWallet } from '../../../helpers';
@@ -21,7 +20,8 @@ describe('Account syncing - Unsupported Account types', function () {
   const IMPORTED_ACCOUNT_NAME = 'Account 3';
 
   // Test private key from the mobile tests
-  const IMPORTED_PRIVATE_KEY = '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9';
+  const IMPORTED_PRIVATE_KEY =
+    '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9';
 
   /**
    * This test verifies that imported accounts are not synced to user storage:
@@ -42,9 +42,7 @@ describe('Account syncing - Unsupported Account types', function () {
     // Phase 1: Create regular accounts and import a private key account
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withBackupAndSyncSettings()
-          .build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -64,10 +62,10 @@ describe('Account syncing - Unsupported Account types', function () {
         );
 
         // Set up event counter to track sync operations
-        const { prepareEventsEmittedCounter, waitUntilSyncedAccountsNumberEquals } = arrangeTestUtils(
-          driver,
-          userStorageMockttpController,
-        );
+        const {
+          prepareEventsEmittedCounter,
+          waitUntilSyncedAccountsNumberEquals,
+        } = arrangeTestUtils(driver, userStorageMockttpController);
         const { waitUntilEventsEmittedNumberEquals } =
           prepareEventsEmittedCounter(
             UserStorageMockttpControllerEvents.PUT_SINGLE,
@@ -109,9 +107,7 @@ describe('Account syncing - Unsupported Account types', function () {
     // Phase 2: Login to fresh instance and verify only regular accounts persist
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withBackupAndSyncSettings()
-          .build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },

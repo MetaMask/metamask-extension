@@ -1,7 +1,6 @@
-import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { withFixtures, unlockWallet } from '../../../helpers';
+import { withFixtures, unlockWallet, WALLET_PASSWORD } from '../../../helpers';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
@@ -14,7 +13,6 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import AccountDetailsModal from '../../../page-objects/pages/dialog/account-details-modal';
 import { arrangeTestUtils } from './helpers';
-import { WALLET_PASSWORD } from '../../../helpers';
 import { E2E_SRP } from '../../../default-fixture';
 
 describe('Account syncing - Adding and Renaming Accounts', function () {
@@ -45,9 +43,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
     // Phase 1: Add a new account and verify it syncs
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withBackupAndSyncSettings()
-          .build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -67,10 +63,10 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         );
 
         // Set up event counter to track sync operations
-        const { prepareEventsEmittedCounter, waitUntilSyncedAccountsNumberEquals } = arrangeTestUtils(
-          driver,
-          userStorageMockttpController,
-        );
+        const {
+          prepareEventsEmittedCounter,
+          waitUntilSyncedAccountsNumberEquals,
+        } = arrangeTestUtils(driver, userStorageMockttpController);
         const { waitUntilEventsEmittedNumberEquals } =
           prepareEventsEmittedCounter(
             UserStorageMockttpControllerEvents.PUT_SINGLE,
@@ -102,9 +98,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
     // Phase 2: Login to fresh instance, verify account persists, rename and add more accounts
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withBackupAndSyncSettings()
-          .build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -126,11 +120,11 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
           ADDED_ACCOUNT_NAME,
         );
 
-                // Set up event counter to track sync operations
-        const { prepareEventsEmittedCounter, waitUntilSyncedAccountsNumberEquals } = arrangeTestUtils(
-          driver,
-          userStorageMockttpController,
-        );
+        // Set up event counter to track sync operations
+        const {
+          prepareEventsEmittedCounter,
+          waitUntilSyncedAccountsNumberEquals,
+        } = arrangeTestUtils(driver, userStorageMockttpController);
         const { waitUntilEventsEmittedNumberEquals } =
           prepareEventsEmittedCounter(
             UserStorageMockttpControllerEvents.PUT_SINGLE,

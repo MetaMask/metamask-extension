@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures, unlockWallet } from '../../../helpers';
@@ -42,9 +41,7 @@ describe('Account syncing - Multiple SRPs', function () {
     // Phase 1: Add a second account to the first SRP
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withBackupAndSyncSettings()
-          .build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -64,10 +61,10 @@ describe('Account syncing - Multiple SRPs', function () {
         );
 
         // Set up event counter to track sync operations
-        const { prepareEventsEmittedCounter, waitUntilSyncedAccountsNumberEquals } = arrangeTestUtils(
-          driver,
-          userStorageMockttpController,
-        );
+        const {
+          prepareEventsEmittedCounter,
+          waitUntilSyncedAccountsNumberEquals,
+        } = arrangeTestUtils(driver, userStorageMockttpController);
         const { waitUntilEventsEmittedNumberEquals } =
           prepareEventsEmittedCounter(
             UserStorageMockttpControllerEvents.PUT_SINGLE,
@@ -96,7 +93,9 @@ describe('Account syncing - Multiple SRPs', function () {
 
         // Import second SRP (this will automatically create the third account)
         await header.openAccountMenu();
-        await accountListPage.startImportSecretPhrase(IDENTITY_TEAM_SEED_PHRASE_2);
+        await accountListPage.startImportSecretPhrase(
+          IDENTITY_TEAM_SEED_PHRASE_2,
+        );
 
         // Wait for the import to complete and sync
         await waitUntilSyncedAccountsNumberEquals(3);
@@ -129,9 +128,7 @@ describe('Account syncing - Multiple SRPs', function () {
     // Phase 2: Login to fresh instance, import second SRP and verify all accounts persist
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withBackupAndSyncSettings()
-          .build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -144,7 +141,9 @@ describe('Account syncing - Multiple SRPs', function () {
         // Import the second SRP to get access to all accounts
         await header.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.startImportSecretPhrase(IDENTITY_TEAM_SEED_PHRASE_2);
+        await accountListPage.startImportSecretPhrase(
+          IDENTITY_TEAM_SEED_PHRASE_2,
+        );
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
@@ -161,7 +160,9 @@ describe('Account syncing - Multiple SRPs', function () {
         ];
 
         for (const accountName of visibleAccounts) {
-          await accountListPage.check_accountDisplayedInAccountList(accountName);
+          await accountListPage.check_accountDisplayedInAccountList(
+            accountName,
+          );
         }
 
         // Verify we have exactly 4 accounts

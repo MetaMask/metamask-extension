@@ -1,7 +1,6 @@
-import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { withFixtures, unlockWallet } from '../../../helpers';
+import { withFixtures, unlockWallet, WALLET_PASSWORD } from '../../../helpers';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockInfuraAndAccountSync, mockIdentityServices } from '../mocks';
@@ -12,10 +11,8 @@ import {
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HomePage from '../../../page-objects/pages/home/homepage';
-import { arrangeTestUtils } from './helpers';
-import { WALLET_PASSWORD } from '../../../helpers';
 import { E2E_SRP } from '../../../default-fixture';
+import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Accounts with Balances', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -46,9 +43,7 @@ describe('Account syncing - Accounts with Balances', function () {
     // Phase 1: Create and sync accounts
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withBackupAndSyncSettings()
-          .build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: phase1MockSetup,
       },
@@ -66,10 +61,10 @@ describe('Account syncing - Accounts with Balances', function () {
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
 
         // Set up event counter to track sync operations
-        const { prepareEventsEmittedCounter, waitUntilSyncedAccountsNumberEquals } = arrangeTestUtils(
-          driver,
-          userStorageMockttpController,
-        );
+        const {
+          prepareEventsEmittedCounter,
+          waitUntilSyncedAccountsNumberEquals,
+        } = arrangeTestUtils(driver, userStorageMockttpController);
         const { waitUntilEventsEmittedNumberEquals } =
           prepareEventsEmittedCounter(
             UserStorageMockttpControllerEvents.PUT_SINGLE,
@@ -127,7 +122,9 @@ describe('Account syncing - Accounts with Balances', function () {
         const visibleAccounts = ['Account 1', 'Account 2', 'Account 3'];
 
         for (const accountName of visibleAccounts) {
-          await accountListPage.check_accountDisplayedInAccountList(accountName);
+          await accountListPage.check_accountDisplayedInAccountList(
+            accountName,
+          );
         }
       },
     );

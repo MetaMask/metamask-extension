@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures, unlockWallet } from '../../../helpers';
@@ -42,9 +41,7 @@ describe('Account syncing - Settings Toggle', function () {
     // Phase 1: Initial setup and account creation with sync enabled
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withBackupAndSyncSettings()
-          .build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -64,10 +61,10 @@ describe('Account syncing - Settings Toggle', function () {
         );
 
         // Set up event listener to track sync operations
-        const { prepareEventsEmittedCounter, waitUntilSyncedAccountsNumberEquals } = arrangeTestUtils(
-          driver,
-          userStorageMockttpController,
-        );
+        const {
+          prepareEventsEmittedCounter,
+          waitUntilSyncedAccountsNumberEquals,
+        } = arrangeTestUtils(driver, userStorageMockttpController);
         const { waitUntilEventsEmittedNumberEquals } =
           prepareEventsEmittedCounter(
             UserStorageMockttpControllerEvents.PUT_SINGLE,
@@ -126,9 +123,7 @@ describe('Account syncing - Settings Toggle', function () {
     // Phase 3: Fresh app instance to verify sync persistence
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withBackupAndSyncSettings()
-          .build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },

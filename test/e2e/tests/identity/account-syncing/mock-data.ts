@@ -1,6 +1,6 @@
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { IDENTITY_TEAM_STORAGE_KEY } from '../constants';
 import { createEncryptedResponse } from '../../../helpers/identity/user-storage/generateEncryptedData';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 
 /**
  * Mock account data for testing account syncing
@@ -22,6 +22,7 @@ export const accountsToMockForAccountsSync = [
 
 /**
  * Generates encrypted mock response for account syncing tests
+ *
  * @returns Array of encrypted account data
  */
 export async function getAccountsSyncMockResponse() {
