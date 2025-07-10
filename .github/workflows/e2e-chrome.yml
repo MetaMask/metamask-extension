@@ -8,10 +8,6 @@ on:
     secrets:
       PR_COMMENT_TOKEN:
         required: true
-      DOCKER_HUB_USERNAME:
-        required: true
-      DOCKER_HUB_TOKEN:
-        required: true
 
 jobs:
   test-e2e-chrome-browserify:
@@ -28,9 +24,6 @@ jobs:
       test-command: yarn test:e2e:chrome
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-webpack:
     uses: ./.github/workflows/run-e2e.yml
@@ -47,9 +40,6 @@ jobs:
       test-command: yarn test:e2e:chrome:webpack
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-multiple-providers:
     uses: ./.github/workflows/run-e2e.yml
@@ -58,9 +48,6 @@ jobs:
       build-artifact: build-test-browserify
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:multi-provider
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-rpc:
     uses: ./.github/workflows/run-e2e.yml
@@ -69,9 +56,6 @@ jobs:
       build-artifact: build-test-browserify
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:rpc
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-flask:
     uses: ./.github/workflows/run-e2e.yml
@@ -86,9 +70,6 @@ jobs:
       test-command: yarn test:e2e:chrome:flask
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-vault-decryption:
     uses: ./.github/workflows/run-e2e.yml
@@ -96,9 +77,6 @@ jobs:
       test-suite-name: test-e2e-chrome-vault-decryption
       build-artifact: build-dist-browserify
       test-command: yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-api-specs:
     uses: ./.github/workflows/run-e2e.yml
@@ -108,9 +86,6 @@ jobs:
       build-command: yarn build:test
       test-command: yarn test:api-specs
       test-artifacts-path: html-report
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-api-specs-alert-on-failure:
     needs:
@@ -152,9 +127,6 @@ jobs:
       build-command: yarn build:test:flask
       test-command: yarn test:api-specs-multichain
       test-artifacts-path: html-report-multichain
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-api-specs-multichain-alert-on-failure:
     needs:

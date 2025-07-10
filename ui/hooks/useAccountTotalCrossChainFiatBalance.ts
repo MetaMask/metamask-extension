@@ -8,7 +8,8 @@ import {
 import {
   getCrossChainTokenExchangeRates,
   getCrossChainMetaMaskCachedBalances,
-  getEnabledNetworksByNamespace,
+  isGlobalNetworkSelectorRemoved,
+  getEnabledNetworks,
 } from '../selectors';
 import {
   getValueFromWeiHex,
@@ -38,7 +39,11 @@ export const useAccountTotalCrossChainFiatBalance = (
 ) => {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
-  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const selectedEnabledNetworks = useSelector(getEnabledNetworks);
+  const enabledNetworksByNamespace = useMemo(
+    () => Object.assign({}, ...Object.values(selectedEnabledNetworks ?? {})),
+    [selectedEnabledNetworks],
+  );
 
   const currencyRates = useSelector(getCurrencyRates);
   const currentCurrency = useSelector(getCurrentCurrency);
@@ -58,20 +63,23 @@ export const useAccountTotalCrossChainFiatBalance = (
   );
 
   const filteredBalances = useMemo(() => {
-    return formattedTokensWithBalancesPerChain
-      .map((balances) => {
-        if (
-          Object.keys(enabledNetworksByNamespace).includes(
-            balances.chainId.toString(),
-          )
-        ) {
-          return balances;
-        }
-        return null;
-      })
-      .filter(
-        (balance): balance is FormattedTokensWithBalances => balance !== null,
-      );
+    if (isGlobalNetworkSelectorRemoved) {
+      return formattedTokensWithBalancesPerChain
+        .map((balances) => {
+          if (
+            Object.keys(enabledNetworksByNamespace).includes(
+              balances.chainId.toString(),
+            )
+          ) {
+            return balances;
+          }
+          return null;
+        })
+        .filter(
+          (balance): balance is FormattedTokensWithBalances => balance !== null,
+        );
+    }
+    return formattedTokensWithBalancesPerChain;
   }, [formattedTokensWithBalancesPerChain, enabledNetworksByNamespace]);
 
   const tokenFiatBalancesCrossChains = useMemo(

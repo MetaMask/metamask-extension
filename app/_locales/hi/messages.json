@@ -5051,9 +5051,6 @@
   "smartAccountReject": {
     "message": "स्मार्ट अकाउंट का उपयोग न करें"
   },
-  "smartAccountRequestFor": {
-    "message": "इसके लिए अनुरोध करें"
-  },
   "smartAccountSameAccount": {
     "message": "वही अकाउंट, और स्मार्ट फीचर्स।"
   },

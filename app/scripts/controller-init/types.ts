@@ -205,6 +205,21 @@ export type ControllerInitRequest<
    * Generated using the callback specified in `getInitMessengerCallback`.
    */
   initMessenger: InitMessengerType;
+
+  /**
+   * Refresh the OAuth token.
+   */
+  refreshOAuthToken: () => Promise<{
+    idTokens: string[];
+  }>;
+
+  /**
+   * Revoke the current OAuth refresh token and get a new one.
+   */
+  revokeAndGetNewRefreshToken: () => Promise<{
+    newRefreshToken: string;
+    newRevokeToken: string;
+  }>;
 };
 
 /**

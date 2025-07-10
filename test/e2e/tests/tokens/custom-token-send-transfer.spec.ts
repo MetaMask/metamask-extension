@@ -1,14 +1,9 @@
 import { Mockttp } from 'mockttp';
 import { mockedSourcifyTokenSend } from '../confirmations/helpers';
-import {
-  withFixtures,
-  openDapp,
-  WINDOW_TITLES,
-  unlockWallet,
-  logInWithBalanceValidation,
-} from '../../helpers';
+import { openDapp, WINDOW_TITLES, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -37,7 +32,7 @@ describe('Transfer custom tokens', function () {
           testSpecificMock: mocks,
         },
         async ({ driver }) => {
-          await logInWithBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           const homePage = new HomePage(driver);
           const assetListPage = new AssetListPage(driver);
@@ -94,10 +89,10 @@ describe('Transfer custom tokens', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: mocks,
         },
-        async ({ driver, contractRegistry }) => {
+        async ({ driver, contractRegistry, localNodes }) => {
           const contractAddress =
             await contractRegistry.getContractAddress(smartContract);
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver, localNodes[0]);
 
           const testDapp = new TestDapp(driver);
           const homePage = new HomePage(driver);
@@ -161,10 +156,10 @@ describe('Transfer custom tokens', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: mocks,
         },
-        async ({ driver, contractRegistry }) => {
+        async ({ driver, contractRegistry, localNodes }) => {
           const contractAddress =
             await contractRegistry.getContractAddress(smartContract);
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver, localNodes[0]);
 
           const testDapp = new TestDapp(driver);
           const homePage = new HomePage(driver);

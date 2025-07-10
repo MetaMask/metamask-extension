@@ -28,13 +28,17 @@ export class OAuthMockttpService {
   readonly AUTH_SERVER_TOKEN_PATH =
     'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/token';
 
-  mockAuthServerToken(_overrides?: {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly AUTH_SERVER_REVOKE_TOKEN_PATH =
+    'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/revoke';
+
+  mockAuthServerToken(overrides?: {
     statusCode?: number;
     json?: Record<string, unknown>;
     userEmail?: string;
   }) {
-    const userEmail =
-      _overrides?.userEmail || `e2e-user-${crypto.randomUUID()}`;
+    const userEmail = overrides?.userEmail || `e2e-user-${crypto.randomUUID()}`;
     const idToken = generateMockJwtToken(userEmail);
     return {
       statusCode: 200,
@@ -48,11 +52,17 @@ export class OAuthMockttpService {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         expires_in: 3600,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        refresh_token: 'mock-refresh-token',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        revoke_token: 'mock-revoke-token',
       },
     };
   }
 
-  onPost(
+  onPostToken(
     _path: string,
     _request: Pick<CompletedRequest, 'path' | 'body'>,
     overrides?: {
@@ -61,6 +71,27 @@ export class OAuthMockttpService {
     },
   ) {
     return this.mockAuthServerToken(overrides);
+  }
+
+  mockAuthServerRevokeToken() {
+    return {
+      statusCode: 200,
+      json: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        refresh_token: 'new-mock-refresh-token',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        revoke_token: 'new-mock-revoke-token',
+      },
+    };
+  }
+
+  onPostRevokeToken(
+    _path: string,
+    _request: Pick<CompletedRequest, 'path' | 'body'>,
+  ) {
+    return this.mockAuthServerRevokeToken();
   }
 
   /**
@@ -80,7 +111,17 @@ export class OAuthMockttpService {
       .forPost(this.AUTH_SERVER_TOKEN_PATH)
       .always()
       .thenCallback((request) => {
-        return this.onPost(this.AUTH_SERVER_TOKEN_PATH, request, options);
+        return this.onPostToken(this.AUTH_SERVER_TOKEN_PATH, request, options);
+      });
+
+    server
+      .forPost(this.AUTH_SERVER_REVOKE_TOKEN_PATH)
+      .always()
+      .thenCallback((request) => {
+        return this.onPostRevokeToken(
+          this.AUTH_SERVER_REVOKE_TOKEN_PATH,
+          request,
+        );
       });
   }
 }

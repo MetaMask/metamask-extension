@@ -5051,9 +5051,6 @@
   "smartAccountReject": {
     "message": "Không sử dụng tài khoản thông minh"
   },
-  "smartAccountRequestFor": {
-    "message": "Yêu cầu cho"
-  },
   "smartAccountSameAccount": {
     "message": "Tài khoản giữ nguyên, tính năng thông minh hơn."
   },

@@ -272,10 +272,14 @@ describe('Actions', () => {
 
       const socialSyncChangePasswordStub = sinon.stub().resolves();
       const keyringChangePasswordStub = sinon.stub().resolves();
+      const exportEncryptionKeyStub = sinon.stub().resolves('encryption-key');
+      const storeKeyringEncryptionKeyStub = sinon.stub().resolves();
 
       background.getApi.returns({
         socialSyncChangePassword: socialSyncChangePasswordStub,
         keyringChangePassword: keyringChangePasswordStub,
+        exportEncryptionKey: exportEncryptionKeyStub,
+        storeKeyringEncryptionKey: storeKeyringEncryptionKeyStub,
       });
       setBackgroundConnection(background.getApi());
 
@@ -286,6 +290,10 @@ describe('Actions', () => {
       ).toStrictEqual(true);
       expect(
         keyringChangePasswordStub.calledOnceWith(newPassword),
+      ).toStrictEqual(true);
+      expect(exportEncryptionKeyStub.callCount).toStrictEqual(1);
+      expect(
+        storeKeyringEncryptionKeyStub.calledOnceWith('encryption-key'),
       ).toStrictEqual(true);
     });
   });

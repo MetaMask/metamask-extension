@@ -5051,9 +5051,6 @@
   "smartAccountReject": {
     "message": "Не использовать смарт-счет"
   },
-  "smartAccountRequestFor": {
-    "message": "Запрос на"
-  },
   "smartAccountSameAccount": {
     "message": "Один и тот же счет, более умные функции."
   },
