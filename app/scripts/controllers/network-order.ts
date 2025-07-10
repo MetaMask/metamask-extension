@@ -1,6 +1,10 @@
 import { BtcScope, SolScope } from '@metamask/keyring-api';
 import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
-import { KnownCaipNamespace } from '@metamask/utils';
+import {
+  isCaipChainId,
+  KnownCaipNamespace,
+  parseCaipChainId,
+} from '@metamask/utils';
 import {
   NetworkControllerSetActiveNetworkAction,
   NetworkControllerStateChangeEvent,
@@ -60,7 +64,9 @@ type AllowedActions =
 export type NetworkOrderControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   NetworkOrderControllerMessengerActions | AllowedActions,
-  NetworkOrderStateChange | NetworkControllerStateChangeEvent,
+  | NetworkOrderStateChange
+  | NetworkControllerStateChangeEvent
+  | NetworkControllerNetworkRemovedEvent,
   AllowedActions['type'],
   | NetworkOrderStateChange['type']
   | NetworkControllerStateChangeEvent['type']
@@ -133,6 +139,13 @@ export class NetworkOrderController extends BaseController<
         this.onNetworkControllerStateChange(networkControllerState);
       },
     );
+
+    this.messagingSystem.subscribe(
+      'NetworkController:networkRemoved',
+      (removedNetwork) => {
+        this.onNetworkRemoved(removedNetwork.chainId);
+      },
+    );
   }
 
   /**
@@ -178,6 +191,24 @@ export class NetworkOrderController extends BaseController<
         // Append new networks to the end
         .concat(newNetworks);
     });
+  }
+
+  onNetworkRemoved(networkId: Hex) {
+    const caipId: CaipChainId = isCaipChainId(networkId)
+      ? networkId
+      : toEvmCaipChainId(networkId);
+
+    const { namespace } = parseCaipChainId(caipId);
+
+    if (namespace === (KnownCaipNamespace.Eip155 as string)) {
+      this.update((state) => {
+        delete state.enabledNetworkMap[namespace][networkId];
+      });
+    } else {
+      this.update((state) => {
+        delete state.enabledNetworkMap[namespace][caipId];
+      });
+    }
   }
 
   /**
