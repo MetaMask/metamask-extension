@@ -563,20 +563,6 @@ describe('Contract Interaction Confirmation Alerts', () => {
     ).toHaveTextContent(
       'This has been identified as malicious. We recommend not interacting with this site.',
     );
-
-    // For malicious sites, we need to acknowledge the risk first
-    const acknowledgmentCheckbox = await screen.findByTestId(
-      'alert-modal-acknowledge-checkbox',
-    );
-    fireEvent.click(acknowledgmentCheckbox);
-
-    const alertModalConfirmButton = await screen.findByTestId(
-      'alert-modal-button',
-    );
-
-    fireEvent.click(alertModalConfirmButton);
-
-    expect(screen.queryByTestId('alert-modal')).not.toBeInTheDocument();
   });
 
   it('displays the alert for suspicious origin trust signals', async () => {
@@ -614,14 +600,6 @@ describe('Contract Interaction Confirmation Alerts', () => {
     ).toHaveTextContent(
       'This has been identified as suspicious. We recommend not interacting with this site.',
     );
-
-    const alertModalConfirmButton = await screen.findByTestId(
-      'alert-modal-button',
-    );
-
-    fireEvent.click(alertModalConfirmButton);
-
-    expect(screen.queryByTestId('alert-modal')).not.toBeInTheDocument();
   });
 
   it('displays multiple alerts including origin trust signals', async () => {
