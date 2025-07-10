@@ -52,14 +52,38 @@ export async function withMultichainAccountsDesignEnabled(
       dapp: true,
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
-      await loginWithBalanceValidation(driver);
-      const homePage = new HomePage(driver);
-      await homePage.check_pageIsLoaded();
-      const headerNavbar = new HeaderNavbar(driver);
-      await headerNavbar.openAccountMenu();
-      const accountListPage = new AccountListPage(driver);
-      await accountListPage.check_pageIsLoaded();
-      await test(driver);
+      try {
+        await loginWithBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
+        await test(driver);
+      } finally {
+        await driver.driver.close();
+      }
     },
   );
+}
+
+const DUMMY_PRIVATE_KEY =
+  '0x1111111111111111111111111111111111111111111111111111111111111111';
+
+export async function withImportedAccount(
+  options: {
+    title?: string;
+    testSpecificMock?: (mockServer: Mockttp) => Promise<MockedEndpoint>;
+    privateKey?: string;
+  },
+  test: (driver: Driver) => Promise<void>,
+) {
+  await withMultichainAccountsDesignEnabled(options, async (driver) => {
+    const accountListPage = new AccountListPage(driver);
+    await accountListPage.addNewImportedAccount(
+      options.privateKey ?? DUMMY_PRIVATE_KEY,
+    );
+    await test(driver);
+  });
 }
