@@ -394,10 +394,6 @@ function getValues(pendingApproval, t, actions, history, data) {
           nickname: pendingApproval.requestData.chainName,
         });
 
-        await actions.setActiveNetwork(
-          addedNetwork.rpcEndpoints[0].networkClientId,
-        );
-
         const locationPath = document.location.hash.replace('#', '/');
         const isOnboardingRoute =
           locationPath === ONBOARDING_PRIVACY_SETTINGS_ROUTE;
