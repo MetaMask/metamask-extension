@@ -4,8 +4,8 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { NetworkManager } from './network-manager';
 import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
+import { NetworkManager } from './network-manager';
 
 // Mock the store actions
 jest.mock('../../../store/actions', () => ({
