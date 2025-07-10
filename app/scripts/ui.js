@@ -336,7 +336,6 @@ async function setupProviderConnection(connectionStream) {
   connectionStream.on('error', console.error.bind(console));
   providerStream.on('error', console.error.bind(console));
 
-  return await providerStream.initialize().then(() => {
-    global.ethereumProvider = providerStream;
-  });
+  await providerStream.initialize();
+  global.ethereumProvider = providerStream;
 }
