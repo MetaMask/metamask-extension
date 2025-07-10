@@ -145,7 +145,7 @@ export default class TransactionListItemDetails extends PureComponent {
     });
   };
 
-  async publishActivityItemViewed() {
+  async publishTransactionDetailsViewed() {
     const {
       selectedAccount,
       selectedAddress,
@@ -156,13 +156,15 @@ export default class TransactionListItemDetails extends PureComponent {
       selectedAccount,
       selectedAddress,
     };
-    await submitRequestToBackground('publishActivityItemViewed', [payload]);
+    await submitRequestToBackground('publishTransactionDetailsViewed', [
+      payload,
+    ]);
   }
 
   componentDidMount() {
     const { recipientAddress, tryReverseResolveAddress } = this.props;
 
-    this.publishActivityItemViewed();
+    this.publishTransactionDetailsViewed();
 
     if (recipientAddress) {
       tryReverseResolveAddress(recipientAddress);

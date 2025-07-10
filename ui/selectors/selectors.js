@@ -2262,12 +2262,13 @@ export const getSignatureInsightSnaps = createDeepEqualSelector(
   },
 );
 
-export const getActivityItemInsightSnaps = createDeepEqualSelector(
+export const getTransactionDetailsInsightSnaps = createDeepEqualSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
     return Object.values(snaps).filter(
-      ({ id }) => subjects[id]?.permissions['endowment:activity-item-insight'],
+      ({ id }) =>
+        subjects[id]?.permissions['endowment:transaction-details-insight'],
     );
   },
 );

@@ -3895,7 +3895,7 @@ export default class MetamaskController extends EventEmitter {
         onboardingController.completeOnboarding.bind(onboardingController),
       setFirstTimeFlowType:
         onboardingController.setFirstTimeFlowType.bind(onboardingController),
-      publishActivityItemViewed: this.publishActivityItemViewed.bind(this),
+      publishTransactionDetailsViewed: this.publishTransactionDetailsViewed.bind(this),
 
       // alert controller
       setAlertEnabledness:
@@ -8482,9 +8482,9 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  publishActivityItemViewed({ transaction, selectedAddress, selectedAccount }) {
+  publishTransactionDetailsViewed({ transaction, selectedAddress, selectedAccount }) {
     this.controllerMessenger.publish(
-      'TransactionController:activityItemViewed',
+      'TransactionController:transactionDetailsViewed',
       { transactionMeta: transaction, selectedAddress, selectedAccount },
     );
   }
