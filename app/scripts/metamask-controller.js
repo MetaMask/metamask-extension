@@ -425,6 +425,7 @@ import { AccountTreeControllerInit } from './controller-init/accounts/account-tr
 import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
+import { applyTransactionContainersExisting } from './lib/transaction/containers/util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1043,6 +1044,11 @@ export default class MetamaskController extends EventEmitter {
     const networkOrderMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkOrderController',
       allowedEvents: ['NetworkController:stateChange'],
+      allowedActions: [
+        'NetworkController:getState',
+        'NetworkController:getNetworkClientById',
+        'NetworkController:setActiveNetwork',
+      ],
     });
 
     let initialNetworkOrderControllerState;
@@ -3814,6 +3820,14 @@ export default class MetamaskController extends EventEmitter {
         ),
       updateSlides: appStateController.updateSlides.bind(appStateController),
       removeSlide: appStateController.removeSlide.bind(appStateController),
+      setEnableEnforcedSimulations:
+        appStateController.setEnableEnforcedSimulations.bind(
+          appStateController,
+        ),
+      setEnableEnforcedSimulationsForTransaction:
+        appStateController.setEnableEnforcedSimulationsForTransaction.bind(
+          appStateController,
+        ),
 
       // EnsController
       tryReverseResolveAddress:
@@ -4403,10 +4417,20 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsDataDeletionController.updateDataDeletionTaskStatus.bind(
           this.metaMetricsDataDeletionController,
         ),
+
       // Other
       endTrace,
       isRelaySupported,
       requestSafeReload: this.requestSafeReload.bind(this),
+      applyTransactionContainersExisting: (transactionId, containerTypes) =>
+        applyTransactionContainersExisting({
+          containerTypes,
+          messenger: this.controllerMessenger,
+          transactionId,
+          updateEditableParams: this.txController.updateEditableParams.bind(
+            this.txController,
+          ),
+        }),
     };
   }
 
@@ -6383,11 +6407,16 @@ export default class MetamaskController extends EventEmitter {
     dappRequest,
     ...otherParams
   }) {
+    const networkClientId =
+      dappRequest?.networkClientId ?? transactionOptions?.networkClientId;
+    const { chainId } =
+      this.networkController.getNetworkConfigurationByNetworkClientId(
+        networkClientId,
+      );
     return {
       internalAccounts: this.accountsController.listAccounts(),
       dappRequest,
-      networkClientId:
-        dappRequest?.networkClientId ?? transactionOptions?.networkClientId,
+      networkClientId,
       selectedAccount: this.accountsController.getAccountByAddress(
         transactionParams.from,
       ),
@@ -6395,7 +6424,7 @@ export default class MetamaskController extends EventEmitter {
       transactionOptions,
       transactionParams,
       userOperationController: this.userOperationController,
-      chainId: this.#getGlobalChainId(),
+      chainId,
       ppomController: this.ppomController,
       securityAlertsEnabled:
         this.preferencesController.state?.securityAlertsEnabled,
