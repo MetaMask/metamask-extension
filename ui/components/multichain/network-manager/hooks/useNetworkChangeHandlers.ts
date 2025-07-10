@@ -31,6 +31,7 @@ import {
   getPermittedEVMChainsForSelectedTab,
   getPreferences,
   getSelectedMultichainNetworkChainId,
+  isGlobalNetworkSelectorRemoved,
 } from '../../../../selectors';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
@@ -78,6 +79,7 @@ export const useNetworkChangeHandlers = () => {
   const permittedAccountAddresses = useSelector((state) =>
     getPermittedEVMAccountsForSelectedTab(state, selectedTabOrigin),
   );
+
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const allChainIds = useSelector(getAllChainsToPoll);
 
@@ -93,11 +95,8 @@ export const useNetworkChangeHandlers = () => {
     (chainId: CaipChainId) => {
       const { namespace } = parseCaipChainId(chainId);
       const hexChainId = convertCaipToHexChainId(chainId);
-      // const hexCurrentChainId = convertCaipToHexChainId(currentChainId);
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
-
-      dispatch(setActiveNetwork(finalNetworkClientId));
 
       const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
 
@@ -131,6 +130,28 @@ export const useNetworkChangeHandlers = () => {
             namespace,
           ),
         );
+      }
+
+      const isDeselecting = Object.keys(enabledNetworksByNamespace).some(
+        (key) => key === hexChainId,
+      );
+
+      if (isGlobalNetworkSelectorRemoved && isDeselecting) {
+        const firstEnabledNetwork = enabledNetworkKeys[0];
+
+        const firstEnabledNetworkConfig = firstEnabledNetwork
+          ? evmNetworks[firstEnabledNetwork as keyof typeof evmNetworks]
+          : null;
+        const firstEnabledNetworkClientId =
+          firstEnabledNetworkConfig?.rpcEndpoints?.[
+            firstEnabledNetworkConfig.defaultRpcEndpointIndex
+          ]?.networkClientId;
+
+        dispatch(
+          setActiveNetwork(firstEnabledNetworkClientId || finalNetworkClientId),
+        );
+      } else {
+        dispatch(setActiveNetwork(finalNetworkClientId));
       }
 
       dispatch(updateCustomNonce(''));

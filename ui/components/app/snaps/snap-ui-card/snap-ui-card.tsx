@@ -32,6 +32,7 @@ export const SnapUICard: FunctionComponent<SnapUICardProps> = ({
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.center}
+      gap={2}
     >
       <Box
         display={Display.Flex}

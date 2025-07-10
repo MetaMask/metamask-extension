@@ -13,6 +13,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
+import tailwindcss from 'tailwindcss';
 
 const context = join(__dirname, '../../app');
 const browsersListPath = join(context, '../.browserslistrc');
@@ -65,6 +66,7 @@ const config = {
             options: {
               postcssOptions: {
                 plugins: [
+                  tailwindcss(),
                   autoprefixer({ overrideBrowserslist: browsersListQuery }),
                   rtlCss({ processEnv: false }),
                 ],
@@ -88,6 +90,8 @@ const config = {
                 // charset placement, as described here:
                 // https://github.com/webpack-contrib/css-loader/issues/1212
                 charset: false,
+                // Always compress for integration tests to avoid ENOBUFS errors
+                outputStyle: 'compressed',
                 // The order of includePaths is important; prefer our own
                 // folders over `node_modules`
                 includePaths: [
