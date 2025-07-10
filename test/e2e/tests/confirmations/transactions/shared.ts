@@ -5,6 +5,7 @@ import { Anvil } from '../../../seeder/anvil';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { Mockttp } from '../../../mock-e2e';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 
 const {
   logInWithBalanceValidation,
@@ -404,7 +405,8 @@ export async function confirmApproveTransaction(driver: Driver) {
  */
 export async function createERC20ApproveTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#approveTokens');
+  const testDapp = new TestDapp(driver);
+  await testDapp.clickApproveTokens();
 }
 
 /**
