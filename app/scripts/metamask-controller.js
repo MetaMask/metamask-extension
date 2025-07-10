@@ -5322,8 +5322,8 @@ export default class MetamaskController extends EventEmitter {
             scope: solScope,
           });
         }
-        ///: END:ONLY_INCLUDE_IF
       }
+      ///: END:ONLY_INCLUDE_IF
       return discoveredAccounts;
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
