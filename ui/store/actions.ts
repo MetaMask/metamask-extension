@@ -1347,9 +1347,15 @@ export function removeSlide(
   };
 }
 
-export function setSmartAccountOptInForAccounts(accounts: Hex[]): void {
+export async function setEnableEnforcedSimulationsForTransaction(
+  transactionId: string,
+  enable: boolean,
+): void {
   try {
-    submitRequestToBackground('setSmartAccountOptInForAccounts', [accounts]);
+    await submitRequestToBackground(
+      'setEnableEnforcedSimulationsForTransaction',
+      [transactionId, enable],
+    );
   } catch (error) {
     logErrorWithMessage(error);
     throw error;
