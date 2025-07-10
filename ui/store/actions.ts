@@ -1350,15 +1350,6 @@ export function removeSlide(
   };
 }
 
-export function setSmartAccountOptInForAccounts(accounts: Hex[]): void {
-  try {
-    submitRequestToBackground('setSmartAccountOptInForAccounts', [accounts]);
-  } catch (error) {
-    logErrorWithMessage(error);
-    throw error;
-  }
-}
-
 export async function setEnableEnforcedSimulationsForTransaction(
   transactionId: string,
   enable: boolean,
