@@ -1,6 +1,7 @@
 import { Suite } from 'mocha';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain-account-details-page';
+import MultichainWalletDetailsPage from '../../page-objects/pages/multichain-wallet-details-page';
 import { Driver } from '../../webdriver/driver';
 import { withMultichainAccountsDesignEnabled } from './common';
 
@@ -181,13 +182,8 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
 
           await accountDetailsPage.clickWalletRow();
 
-          const walletDetailsHeader = await driver.findElement({
-            css: 'h4',
-            text: 'Wallet details',
-          });
-          if (!walletDetailsHeader) {
-            throw new Error('Wallet details header not found');
-          }
+          const walletDetailsPage = new MultichainWalletDetailsPage(driver);
+          await walletDetailsPage.checkPageIsLoaded();
         },
       );
     });
@@ -234,11 +230,11 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
+          await driver.setClipboardPermission();
           await accountListPage.openAccountDetailsModal(account1.name);
 
           const accountDetailsPage = new MultichainAccountDetailsPage(driver);
           await accountDetailsPage.checkPageIsLoaded();
-          await driver.setClipboardPermission();
 
           await accountDetailsPage.clickAddressNavigationButton();
 

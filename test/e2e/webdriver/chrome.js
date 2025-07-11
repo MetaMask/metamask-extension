@@ -110,8 +110,23 @@ class ChromeDriver {
     const extensionId = await chromeDriver.getExtensionIdByName('MetaMask');
     const extensionUrl = `chrome-extension://${extensionId}`;
 
-    // We need to rebuild the options and driver with the extension ID
-    // to grant clipboard permissions.
+    return {
+      driver,
+      extensionId,
+      extensionUrl,
+      args,
+      service,
+    };
+  }
+
+  static async rebuildWithClipboardPermissions({
+    driver: oldDriver,
+    extensionId,
+    extensionUrl,
+    args,
+    service,
+  }) {
+    await oldDriver.quit();
     const newOptions = new chrome.Options().addArguments(args);
     newOptions.setAcceptInsecureCerts(true);
     newOptions.setUserPreferences({

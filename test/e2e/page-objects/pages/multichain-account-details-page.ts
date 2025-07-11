@@ -18,7 +18,7 @@ class MultichainAccountDetailsPage {
     '.multichain-account-details__row:nth-of-type(2)'; // Second row is address
 
   private readonly accountNavigationButton =
-    '.multichain-account-details__row:nth-of-type(2) [aria-label="Next"]';
+    '[data-testid="account-address-navigation-button"]';
 
   // Account name editing
   private readonly editAccountNameButton = '[aria-label="Edit"]';
@@ -35,7 +35,7 @@ class MultichainAccountDetailsPage {
     '[data-testid="account-details-row-value-wallet"]'; // Wallet text
 
   private readonly walletNavigationButton =
-    '.multichain-account-details__row:nth-of-type(3) [aria-label="Next"]';
+    '[data-testid="wallet-details-link"]';
 
   // Account-specific features
   private readonly showSrpButton = '[data-testid="account-show-srp-button"]';
@@ -55,7 +55,10 @@ class MultichainAccountDetailsPage {
     text: 'Remove account',
   };
 
-  private readonly removeAccountModal = '.modal-container'; // Modal container
+  private readonly removeAccountModalHeader = {
+    tag: 'h4',
+    text: 'Remove account',
+  };
 
   private readonly removeAccountConfirmButton = {
     css: '.mm-modal-footer__button',
@@ -316,7 +319,7 @@ class MultichainAccountDetailsPage {
     console.log('Remove account');
     await this.driver.clickElement(this.removeAccountButton);
     await this.driver.delay(largeDelayMs);
-    await this.driver.waitForSelector(this.removeAccountModal);
+    await this.driver.waitForSelector(this.removeAccountModalHeader);
     await this.driver.clickElement(this.removeAccountConfirmButton);
     await this.driver.delay(largeDelayMs);
   }
@@ -328,7 +331,7 @@ class MultichainAccountDetailsPage {
     console.log('Cancel account removal');
     await this.driver.clickElement(this.removeAccountButton);
     await this.driver.delay(largeDelayMs);
-    await this.driver.waitForSelector(this.removeAccountModal);
+    await this.driver.waitForSelector(this.removeAccountModalHeader);
     await this.driver.clickElement(this.removeAccountCancelButton);
     await this.driver.delay(largeDelayMs);
   }
