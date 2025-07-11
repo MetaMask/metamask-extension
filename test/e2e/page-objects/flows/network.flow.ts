@@ -4,7 +4,6 @@ import SelectNetwork from '../pages/dialog/select-network';
 import NetworkSwitchModalConfirmation from '../pages/dialog/network-switch-modal-confirmation';
 import SendTokenPage from '../pages/send/send-token-page';
 import HomePage from '../pages/home/homepage';
-import AssetListPage from '../pages/home/asset-list';
 
 /**
  * Search for a network in the select network dialog and switches to it.
@@ -34,12 +33,8 @@ export const searchAndSwitchToNetworkFromGlobalMenuFlow = async (
   await networkSwitchModalConfirmation.check_pageIsLoaded();
   await networkSwitchModalConfirmation.clickApproveButton();
 
-  const assetList = new AssetListPage(driver);
   await headerNavbar.check_pageIsLoaded();
   await driver.delay(1000);
-  await assetList.openNetworksFilter();
-  await assetList.clickCurrentNetworkOption();
-  // await assetList.check_networkFilterText(networkName);
 };
 
 export const switchToNetworkFromSendFlow = async (

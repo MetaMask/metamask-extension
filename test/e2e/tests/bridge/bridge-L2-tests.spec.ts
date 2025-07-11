@@ -6,6 +6,7 @@ import {
   switchToNetworkFromSendFlow,
 } from '../../page-objects/flows/network.flow';
 import { disableStxSetting } from '../../page-objects/flows/toggle-stx-setting.flow';
+import NetworkManager from '../../page-objects/pages/network-manager';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
 import { bridgeTransaction, getBridgeL2Fixtures } from './bridge-test-utils';
 
@@ -22,13 +23,23 @@ describe('Bridge tests', function (this: Suite) {
         await disableStxSetting(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed();
 
-        // Add Arbitrum One and make it the current network
+        // Add Arbitrum One
         await searchAndSwitchToNetworkFromGlobalMenuFlow(
           driver,
           'Arbitrum One',
         );
+
+        // Check only linea mainnet so balances are shown in ETH not USD (from multiple networks)
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectAllNetworks();
+        await networkManager.deselectNetwork('eip155:1'); // Deselect Ethereum
+        await networkManager.deselectNetwork('eip155:8453'); // Deselect Base
+        await networkManager.deselectNetwork('eip155:42161'); // Deselect Arbitrum
+        await networkManager.closeNetworkManager();
+
+        await homePage.check_expectedBalanceIsDisplayed();
 
         await bridgeTransaction(
           driver,
