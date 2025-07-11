@@ -108,54 +108,11 @@ class ChromeDriver {
     const driver = builder.build();
     const chromeDriver = new ChromeDriver(driver);
     const extensionId = await chromeDriver.getExtensionIdByName('MetaMask');
-    const extensionUrl = `chrome-extension://${extensionId}`;
 
     return {
       driver,
       extensionId,
-      extensionUrl,
-      args,
-      service,
-    };
-  }
-
-  static async rebuildWithClipboardPermissions({
-    driver: oldDriver,
-    extensionId,
-    extensionUrl,
-    args,
-    service,
-  }) {
-    await oldDriver.quit();
-    const newOptions = new chrome.Options().addArguments(args);
-    newOptions.setAcceptInsecureCerts(true);
-    newOptions.setUserPreferences({
-      'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
-      'profile.content_settings.exceptions.clipboard': {
-        [`${extensionUrl},*`]: {
-          setting: 1,
-        },
-      },
-    });
-    newOptions.setBrowserVersion('126');
-    if (process.env.SELENIUM_USE_SYSTEM_DN) {
-      newOptions.setLocalState({
-        'dns_over_https.mode': 'off',
-        'dns_over_https.templates': '',
-      });
-    }
-
-    const newBuilder = new Builder()
-      .forBrowser('chrome')
-      .setChromeOptions(newOptions)
-      .setChromeService(service);
-
-    const newDriver = newBuilder.build();
-
-    return {
-      driver: newDriver,
-      extensionId,
-      extensionUrl,
+      extensionUrl: `chrome-extension://${extensionId}`,
     };
   }
 

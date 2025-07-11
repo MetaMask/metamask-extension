@@ -230,7 +230,6 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
-          await driver.setClipboardPermission();
           await accountListPage.openAccountDetailsModal(account1.name);
 
           const accountDetailsPage = new MultichainAccountDetailsPage(driver);
@@ -238,11 +237,13 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
 
           await accountDetailsPage.clickAddressNavigationButton();
 
-          await accountDetailsPage.clickCopyAddressButton();
+          const copyButton = await driver.findElement(
+            '[data-testid="address-copy-button-text"]',
+          );
 
-          const copiedAddress = (await driver.executeScript(
-            'return navigator.clipboard.readText()',
-          )) as string;
+          const copiedAddress = await copyButton.getAttribute(
+            'data-clipboard-text',
+          );
 
           if (copiedAddress !== account1.address) {
             throw new Error(
@@ -269,27 +270,19 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
 
           await accountDetailsPage.clickAddressNavigationButton();
 
-          const originalTab = await driver.driver.getWindowHandle();
-          await accountDetailsPage.clickViewOnEtherscanButton();
+          const viewOnExplorerButton = await driver.findElement({
+            css: 'button',
+            text: 'View on explorer',
+          });
 
-          const tabs = await driver.getAllWindowHandles();
-          const newTab = tabs.find((tab) => tab !== originalTab);
+          const explorerLink =
+            await viewOnExplorerButton.getAttribute('data-testid');
 
-          if (!newTab) {
-            throw new Error('New tab not found');
-          }
-
-          await driver.switchToWindow(newTab);
-
-          const newTabUrl = await driver.getCurrentUrl();
-          if (!newTabUrl.includes('etherscan.io')) {
+          if (!explorerLink.includes('etherscan.io')) {
             throw new Error(
-              `Expected new tab URL to include "etherscan.io" but got "${newTabUrl}"`,
+              `Expected link to include "etherscan.io" but got "${explorerLink}"`,
             );
           }
-
-          await driver.driver.close();
-          await driver.switchToWindow(originalTab);
         },
       );
     });
