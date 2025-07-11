@@ -135,7 +135,13 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
-import { EndTraceRequest, trace, TraceName } from '../../shared/lib/trace';
+import {
+  EndTraceRequest,
+  trace,
+  TraceName,
+  TraceOperation,
+  TraceRequest,
+} from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import {
@@ -176,10 +182,14 @@ export function goHome() {
  * and authenticate the user with the Seedless Onboarding Services.
  *
  * @param authConnection - The authentication connection to use (google | apple).
+ * @param bufferedTrace - The buffered trace function from MetaMetrics context.
+ * @param bufferedEndTrace - The buffered end trace function from MetaMetrics context.
  * @returns The social login result.
  */
 export function startOAuthLogin(
   authConnection: AuthConnection,
+  bufferedTrace?: (request: TraceRequest) => void,
+  bufferedEndTrace?: (request: EndTraceRequest) => void,
 ): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());

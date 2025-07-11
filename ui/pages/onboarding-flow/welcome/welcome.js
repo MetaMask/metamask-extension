@@ -132,7 +132,13 @@ export default function OnboardingWelcome({
           tags: { provider: socialConnectionType },
           parentContext: onboardingParentContext.current,
         });
-        const isNewUser = await dispatch(startOAuthLogin(socialConnectionType));
+        const isNewUser = await dispatch(
+          startOAuthLogin(
+            socialConnectionType,
+            bufferedTrace,
+            bufferedEndTrace,
+          ),
+        );
         bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginAttempt });
         return isNewUser;
       }
