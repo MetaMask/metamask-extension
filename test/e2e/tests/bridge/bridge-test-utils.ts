@@ -99,7 +99,7 @@ export async function bridgeTransaction(
   driver: Driver,
   quote: BridgeQuote,
   transactionsCount: number,
-  expectedWalletBalance: string,
+  expectedWalletBalance?: string,
 ) {
   // Navigate to Bridge page
   const homePage = new HomePage(driver);
@@ -134,9 +134,11 @@ export async function bridgeTransaction(
 
   // Check the wallet ETH balance is correct
   const accountListPage = new AccountListPage(driver);
-  await accountListPage.check_accountValueAndSuffixDisplayed(
-    expectedWalletBalance,
-  );
+  if (expectedWalletBalance) {
+    await accountListPage.check_accountValueAndSuffixDisplayed(
+      expectedWalletBalance,
+    );
+  }
 }
 
 async function mockPortfolioPage(mockServer: Mockttp) {

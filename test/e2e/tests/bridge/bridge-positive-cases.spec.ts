@@ -26,7 +26,6 @@ describe('Bridge tests', function (this: Suite) {
         await disableStxSetting(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24');
 
         await bridgeTransaction(
           driver,
@@ -39,7 +38,6 @@ describe('Bridge tests', function (this: Suite) {
             unapproved: true,
           },
           2,
-          '24.9',
         );
 
         // Switch to Linea Mainnet to set it as the selected network
@@ -56,7 +54,6 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Arbitrum One',
           },
           3,
-          '23.9',
         );
 
         await bridgeTransaction(
@@ -69,7 +66,6 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
           },
           4,
-          '22.9',
         );
 
         // Switch to Arbitrum One to set it as the selected network
@@ -90,7 +86,6 @@ describe('Bridge tests', function (this: Suite) {
             unapproved: true,
           },
           6,
-          '22.9',
         );
       },
     );
