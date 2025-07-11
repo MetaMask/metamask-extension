@@ -80,7 +80,9 @@ type AssetPickerAmountProps = OverridingUnion<
 >;
 
 type NetworkOption =
-  | NetworkConfiguration
+  | (NetworkConfiguration & {
+      nickname?: string;
+    })
   | AddNetworkFields
   | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
 

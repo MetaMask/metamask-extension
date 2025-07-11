@@ -542,6 +542,7 @@ export function AssetPickerModal({
             selectedNetwork.chainId as keyof typeof NETWORK_TO_NAME_MAP
           ]) ??
         selectedNetwork?.name ??
+        selectedNetwork?.nickname ??
         t('bridgeSelectNetwork')
       );
     }
