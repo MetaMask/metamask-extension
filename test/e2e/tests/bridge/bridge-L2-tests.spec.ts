@@ -1,12 +1,10 @@
 import { Suite } from 'mocha';
 import { unlockWallet, withFixtures } from '../../helpers';
-import HomePage from '../../page-objects/pages/home/homepage';
 import {
   searchAndSwitchToNetworkFromGlobalMenuFlow,
   switchToNetworkFromSendFlow,
 } from '../../page-objects/flows/network.flow';
 import { disableStxSetting } from '../../page-objects/flows/toggle-stx-setting.flow';
-import NetworkManager from '../../page-objects/pages/network-manager';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
 import { bridgeTransaction, getBridgeL2Fixtures } from './bridge-test-utils';
 
