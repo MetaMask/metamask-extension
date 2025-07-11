@@ -1,11 +1,10 @@
-import { act } from 'react-dom/test-utils';
+import { GasFeeToken } from '@metamask/transaction-controller';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
+import { useIsInsufficientBalance } from '../useIsInsufficientBalance';
 import { useIsGaslessLoading } from './useIsGaslessLoading';
 import { useIsGaslessSupported } from './useIsGaslessSupported';
-import { useIsInsufficientBalance } from '../useIsInsufficientBalance';
-import { GasFeeToken } from '@metamask/transaction-controller';
 
 jest.mock('./useIsGaslessSupported');
 jest.mock('../useIsInsufficientBalance');
@@ -35,7 +34,6 @@ async function runHook({
     getMockConfirmStateForTransaction(
       genUnapprovedContractInteractionConfirmation({
         gasFeeTokens,
-
       }),
       { metamask: { useTransactionSimulations: simulationEnabled } },
     ),
