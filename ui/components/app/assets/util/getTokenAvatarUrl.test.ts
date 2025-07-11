@@ -13,7 +13,7 @@ describe('getTokenAvatarUrl', () => {
     const result = getTokenAvatarUrl(token);
 
     expect(result).toBe(
-      'https://raw.githubusercontent.com/MetaMask/metamask-mobile/main/app/images/eth-logo-new.png',
+      'https://raw.githubusercontent.com/MetaMask/metamask-extension/main/app/images/eth_logo.svg',
     );
   });
 
