@@ -1754,16 +1754,11 @@ export async function withSolanaAccountSnap(
     }) => {
       await loginWithBalanceValidation(driver);
 
-      await driver.delay(5000);
-
       const headerComponent = new HeaderNavbar(driver);
       const assetList = new AssetListPage(driver);
       const accountListPage = new AccountListPage(driver);
 
-      console.log('HERE 1');
-
       for (let i = 1; i <= numberOfAccounts; i++) {
-        console.log('HERE 2');
         await headerComponent.openAccountMenu();
         await accountListPage.addAccount({
           accountType: ACCOUNT_TYPE.Solana,
@@ -1774,10 +1769,7 @@ export async function withSolanaAccountSnap(
         await assetList.check_networkFilterText('Solana');
       }
 
-      console.log('HERE 3');
-
       if (numberOfAccounts > 0) {
-        console.log('HERE 4');
         await headerComponent.check_accountLabel(`Solana ${numberOfAccounts}`);
       }
 
