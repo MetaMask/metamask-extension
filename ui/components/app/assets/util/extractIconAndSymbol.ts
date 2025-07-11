@@ -25,7 +25,7 @@ export const extractUniqueIconAndSymbols = (
                   (token) =>
                     token?.tokens?.map((underlying) => ({
                       symbol: underlying?.symbol || '',
-                      avatarValue: underlying
+                      avatarValue: underlying?.iconUrl
                         ? getTokenAvatarUrl(underlying)
                         : '',
                     })) || [],
