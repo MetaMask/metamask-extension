@@ -65,10 +65,10 @@ describe('Remove ERC1155 NFT', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withNetworkControllerOnLinea()
+          .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
             eip155: {
-              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.MAINNET]: true,
             },
           })
           .build(),

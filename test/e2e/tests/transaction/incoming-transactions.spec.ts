@@ -8,7 +8,6 @@ import FixtureBuilder from '../../fixture-builder';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
 
 const TIMESTAMP_MOCK = 1234;
 
@@ -107,11 +106,7 @@ describe('Incoming Transactions', function () {
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
         const homepage = new HomePage(driver);
-        const assetList = new AssetListPage(driver);
         await homepage.goToActivityList();
-
-        await assetList.clickNetworkSelectorDropdown();
-        await assetList.clickCurrentNetworkOptionOnActivityList();
 
         const activityList = new ActivityListPage(driver);
         await activityList.check_confirmedTxNumberDisplayedInActivity(2);
