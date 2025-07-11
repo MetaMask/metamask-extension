@@ -95,7 +95,7 @@ export default function OnboardingWelcome({
         account_type: MetaMetricsEventAccountType.Default,
       },
     });
-    bufferedTrace({
+    bufferedTrace?.({
       name: TraceName.OnboardingNewSrpCreateWallet,
       op: TraceOperation.OnboardingUserJourney,
       parentContext: onboardingParentContext.current,
@@ -114,7 +114,7 @@ export default function OnboardingWelcome({
         account_type: MetaMetricsEventAccountType.Imported,
       },
     });
-    bufferedTrace({
+    bufferedTrace?.({
       name: TraceName.OnboardingExistingSrpImport,
       op: TraceOperation.OnboardingUserJourney,
       parentContext: onboardingParentContext.current,
@@ -126,14 +126,14 @@ export default function OnboardingWelcome({
   const handleSocialLogin = useCallback(
     async (socialConnectionType) => {
       if (isSeedlessOnboardingFeatureEnabled) {
-        bufferedTrace({
+        bufferedTrace?.({
           name: TraceName.OnboardingSocialLoginAttempt,
           op: TraceOperation.OnboardingUserJourney,
           tags: { provider: socialConnectionType },
           parentContext: onboardingParentContext.current,
         });
         const isNewUser = await dispatch(startOAuthLogin(socialConnectionType));
-        bufferedEndTrace({ name: TraceName.OnboardingSocialLoginAttempt });
+        bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginAttempt });
         return isNewUser;
       }
       return true;
@@ -152,14 +152,14 @@ export default function OnboardingWelcome({
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
-      bufferedTrace({
+      bufferedTrace?.({
         name: TraceName.OnboardingSocialLoginError,
         op: TraceOperation.OnboardingError,
         tags: { provider: socialConnectionType, errorMessage },
         parentContext: onboardingParentContext.current,
       });
-      bufferedEndTrace({ name: TraceName.OnboardingSocialLoginError });
-      bufferedEndTrace({
+      bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginError });
+      bufferedEndTrace?.({
         name: TraceName.OnboardingSocialLoginAttempt,
         data: { success: false },
       });
@@ -183,7 +183,7 @@ export default function OnboardingWelcome({
           },
         });
         if (isNewUser) {
-          bufferedTrace({
+          bufferedTrace?.({
             name: TraceName.OnboardingNewSocialCreateWallet,
             op: TraceOperation.OnboardingUserJourney,
             parentContext: onboardingParentContext.current,
@@ -228,7 +228,7 @@ export default function OnboardingWelcome({
         if (isNewUser) {
           history.push(ONBOARDING_ACCOUNT_NOT_FOUND);
         } else {
-          bufferedTrace({
+          bufferedTrace?.({
             name: TraceName.OnboardingExistingSocialLogin,
             op: TraceOperation.OnboardingUserJourney,
             parentContext: onboardingParentContext.current,

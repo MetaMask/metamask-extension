@@ -114,10 +114,10 @@ class UnlockPage extends Component {
   }
 
   componentDidMount() {
-    this.passwordLoginAttemptTraceCtx = this.context.bufferedTrace({
+    this.passwordLoginAttemptTraceCtx = this.context.bufferedTrace?.({
       name: TraceName.OnboardingPasswordLoginAttempt,
       op: TraceOperation.OnboardingUserJourney,
-      parentContext: this.props.onboardingParentContext.current,
+      parentContext: this.props.onboardingParentContext?.current,
     });
   }
 
@@ -176,14 +176,14 @@ class UnlockPage extends Component {
     let errorReason;
 
     // Check if we are in the onboarding flow
-    if (this.props.onboardingParentContext.current) {
-      this.context.bufferedTrace({
+    if (this.props.onboardingParentContext?.current) {
+      this.context.bufferedTrace?.({
         name: TraceName.OnboardingPasswordLoginError,
         op: TraceOperation.OnboardingError,
         tags: { errorMessage: message },
         parentContext: this.props.onboardingParentContext.current,
       });
-      this.context.bufferedEndTrace({
+      this.context.bufferedEndTrace?.({
         name: TraceName.OnboardingPasswordLoginError,
       });
     }

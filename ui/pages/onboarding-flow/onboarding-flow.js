@@ -180,7 +180,7 @@ export default function OnboardingFlow() {
   ]);
 
   useEffect(() => {
-    const trace = bufferedTrace({
+    const trace = bufferedTrace?.({
       name: TraceName.OnboardingJourneyOverall,
       op: TraceOperation.OnboardingUserJourney,
     });

@@ -213,13 +213,13 @@ export default function CreatePassword({
   };
 
   useEffect(() => {
-    bufferedTrace({
+    bufferedTrace?.({
       name: TraceName.OnboardingPasswordSetupAttempt,
       op: TraceOperation.OnboardingUserJourney,
       parentContext: onboardingParentContext.current,
     });
     return () => {
-      bufferedEndTrace({ name: TraceName.OnboardingPasswordSetupAttempt });
+      bufferedEndTrace?.({ name: TraceName.OnboardingPasswordSetupAttempt });
     };
   }, [onboardingParentContext, bufferedTrace, bufferedEndTrace]);
 
@@ -237,13 +237,13 @@ export default function CreatePassword({
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error';
 
-    bufferedTrace({
+    bufferedTrace?.({
       name: TraceName.OnboardingPasswordSetupError,
       op: TraceOperation.OnboardingUserJourney,
       parentContext: onboardingParentContext.current,
       tags: { errorMessage },
     });
-    bufferedEndTrace({ name: TraceName.OnboardingPasswordSetupError });
+    bufferedEndTrace?.({ name: TraceName.OnboardingPasswordSetupError });
 
     console.error(error);
   };
