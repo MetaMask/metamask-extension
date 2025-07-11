@@ -46,6 +46,10 @@ import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-contr
 import { AccountTreeController } from '@metamask/account-tree-controller';
 import { SeedlessOnboardingController } from '@metamask/seedless-onboarding-controller';
 import { EncryptionKey } from '@metamask/browser-passworder';
+import {
+  WebSocketService as BackendWebSocketService,
+  AccountActivityService,
+} from '@metamask/backend-platform';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -93,7 +97,9 @@ export type Controller =
   | AssetsContractController
   | AccountTreeController
   | WebSocketService
-  | MultichainAccountService;
+  | MultichainAccountService
+  | BackendWebSocketService
+  | AccountActivityService;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.

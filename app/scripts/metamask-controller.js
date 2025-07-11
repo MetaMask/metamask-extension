@@ -406,7 +406,6 @@ import {
   SnapInsightsControllerInit,
   SnapInterfaceControllerInit,
   SnapsRegistryInit,
-  WebSocketServiceInit,
 } from './controller-init/snaps';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
@@ -428,6 +427,10 @@ import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
 import { MultichainAccountServiceInit } from './controller-init/multichain/multichain-account-service-init';
+import {
+  WebSocketServiceInit,
+  AccountActivityServiceInit,
+} from './controller-init/backend-platform';
 import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
@@ -1023,6 +1026,7 @@ export default class MetamaskController extends EventEmitter {
         'TokensController:stateChange',
         'NetworkController:stateChange',
         'KeyringController:accountRemoved',
+        'AccountActivityService:balanceUpdated',
       ],
     });
 
@@ -1978,6 +1982,7 @@ export default class MetamaskController extends EventEmitter {
       DelegationController: DelegationControllerInit,
       AccountTreeController: AccountTreeControllerInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
+      AccountActivityService: AccountActivityServiceInit,
     };
 
     const {
@@ -2035,6 +2040,8 @@ export default class MetamaskController extends EventEmitter {
     this.accountTreeController = controllersByName.AccountTreeController;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
+    this.webSocketService = controllersByName.WebSocketService;
+    this.accountActivityService = controllersByName.AccountActivityService;
 
     this.notificationServicesController.init();
     this.snapController.init();
@@ -9447,4 +9454,6 @@ export default class MetamaskController extends EventEmitter {
       initRequest,
     });
   }
+
+
 }

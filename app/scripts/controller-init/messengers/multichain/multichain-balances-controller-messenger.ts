@@ -11,6 +11,7 @@ import {
   MultichainAssetsControllerGetStateAction,
 } from '@metamask/assets-controllers';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
+import { AccountActivityServiceBalanceUpdatedEvent } from '@metamask/backend-platform';
 
 type Actions =
   | AccountsControllerListMultichainAccountsAction
@@ -22,7 +23,8 @@ type Events =
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent
   | AccountsControllerAccountBalancesUpdatesEvent
-  | MultichainAssetsControllerAccountAssetListUpdatedEvent;
+  | MultichainAssetsControllerAccountAssetListUpdatedEvent
+  | AccountActivityServiceBalanceUpdatedEvent;
 
 export type MultichainBalancesControllerMessenger = ReturnType<
   typeof getMultichainBalancesControllerMessenger
@@ -45,6 +47,7 @@ export function getMultichainBalancesControllerMessenger(
       'AccountsController:accountRemoved',
       'AccountsController:accountBalancesUpdated',
       'MultichainAssetsController:accountAssetListUpdated',
+      'AccountActivityService:balanceUpdated',
     ],
     allowedActions: [
       'AccountsController:listMultichainAccounts',
