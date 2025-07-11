@@ -31,7 +31,7 @@ export async function getAccountsSyncMockResponse() {
       createEncryptedResponse({
         data: account,
         storageKey: IDENTITY_TEAM_STORAGE_KEY,
-        path: `${USER_STORAGE_FEATURE_NAMES.accounts}.${account.i}`,
+        path: `${USER_STORAGE_FEATURE_NAMES.accounts}.${account.a}`,
       }),
     ),
   );
