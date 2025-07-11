@@ -153,7 +153,13 @@ describe('MetaMask onboarding', function () {
       await arrange();
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withEnabledNetworks({
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
           mockApis(
