@@ -86,7 +86,7 @@ const AssetListControlBar = ({
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const navigate = useNavigate();
   const popoverRef = useRef<HTMLDivElement>(null);
   const useNftDetection = useSelector(getUseNftDetection);
@@ -277,8 +277,8 @@ const AssetListControlBar = ({
     ) {
       const chainId = Object.keys(enabledNetworksByNamespace)[0];
       return isStrictHexString(chainId)
-        ? (allNetworks[chainId]?.name ?? t('currentNetwork'))
-        : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
+        ? allNetworks[chainId]?.name ?? t('currentNetwork')
+        : currentMultichainNetwork.network.nickname ?? t('currentNetwork');
     }
 
     if (

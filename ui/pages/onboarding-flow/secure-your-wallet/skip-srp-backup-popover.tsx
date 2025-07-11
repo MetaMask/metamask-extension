@@ -57,7 +57,8 @@ export default function SkipSRPBackup({
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedEndTrace } = trackEvent;
   const history = useHistory();
 
   const onSkipSrpBackup = useCallback(async () => {

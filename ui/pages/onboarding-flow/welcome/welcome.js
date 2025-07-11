@@ -83,8 +83,8 @@ export default function OnboardingWelcome({
     firstTimeFlowType,
     newAccountCreationInProgress,
   ]);
-  const { trackEvent, bufferedTrace, bufferedEndTrace } =
-    useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedTrace, bufferedEndTrace } = trackEvent;
 
   const onCreateClick = useCallback(async () => {
     setIsLoggingIn(true);

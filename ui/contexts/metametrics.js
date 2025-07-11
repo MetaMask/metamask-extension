@@ -61,12 +61,9 @@ import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
  */
 
 /**
- * @typedef {{
- *   trackEvent: UITrackEventMethod,
+ * @typedef {UITrackEventMethod & {
  *   bufferedTrace: UITraceMethod,
- *   bufferedEndTrace: UIEndTraceMethod,
- *   flushBufferedTraces: () => Promise<void>,
- *   discardBufferedTraces: () => Promise<void>
+ *   bufferedEndTrace: UIEndTraceMethod
  * }} MetaMetricsContextValue
  */
 
@@ -202,14 +199,13 @@ export function MetaMetricsProvider({ children }) {
     previousMatch.current = match?.path;
   }, [location, context]);
 
-  const contextValue = {
-    trackEvent,
-    bufferedTrace,
-    bufferedEndTrace,
-  };
+  // For backwards compatibility, attach the new methods as properties to trackEvent
+  const trackEventWithMethods = trackEvent;
+  trackEventWithMethods.bufferedTrace = bufferedTrace;
+  trackEventWithMethods.bufferedEndTrace = bufferedEndTrace;
 
   return (
-    <MetaMetricsContext.Provider value={contextValue}>
+    <MetaMetricsContext.Provider value={trackEventWithMethods}>
       {children}
     </MetaMetricsContext.Provider>
   );
@@ -238,10 +234,11 @@ export class LegacyMetaMetricsProvider extends Component {
   };
 
   getChildContext() {
+    const trackEventWithMethods = this.context;
     return {
-      trackEvent: this.context.trackEvent,
-      bufferedTrace: this.context.bufferedTrace,
-      bufferedEndTrace: this.context.bufferedEndTrace,
+      trackEvent: trackEventWithMethods,
+      bufferedTrace: trackEventWithMethods.bufferedTrace,
+      bufferedEndTrace: trackEventWithMethods.bufferedEndTrace,
     };
   }
 

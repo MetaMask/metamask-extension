@@ -70,8 +70,8 @@ export default function CreatePassword({
   const history = useHistory();
   const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const { trackEvent, bufferedTrace, bufferedEndTrace } =
-    useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedTrace, bufferedEndTrace } = trackEvent;
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
