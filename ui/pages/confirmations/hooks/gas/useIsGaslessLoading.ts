@@ -16,13 +16,8 @@ export function useIsGaslessLoading() {
 
   const hasInsufficientNative = useIsInsufficientBalance();
 
-  if (!isSimulationEnabled || !isGaslessSupported || !hasInsufficientNative) {
-    return {
-      isGaslessLoading: false,
-    };
-  }
+  const isGaslessLoading = isSimulationEnabled && isGaslessSupported
+      && hasInsufficientNative && !gasFeeTokens;
 
-  return {
-    isGaslessLoading: !gasFeeTokens,
-  };
+  return { isGaslessLoading };
 }

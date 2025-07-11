@@ -1,125 +1,114 @@
-import { renderHook } from '@testing-library/react-hooks';
-import { useSelector } from 'react-redux';
-import { useConfirmContext } from '../../context/confirm';
-import { getUseTransactionSimulations } from '../../../../selectors';
-import { useIsInsufficientBalance } from '../useIsInsufficientBalance';
-import { useIsGaslessSupported } from './useIsGaslessSupported';
+import { act } from 'react-dom/test-utils';
+import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { useIsGaslessLoading } from './useIsGaslessLoading';
+import { useIsGaslessSupported } from './useIsGaslessSupported';
+import { useIsInsufficientBalance } from '../useIsInsufficientBalance';
+import { GasFeeToken } from '@metamask/transaction-controller';
 
-jest.mock('../../context/confirm');
 jest.mock('./useIsGaslessSupported');
 jest.mock('../useIsInsufficientBalance');
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
-}));
 
-const mockedUseConfirmContext = jest.mocked(useConfirmContext);
 const mockedUseIsGaslessSupported = jest.mocked(useIsGaslessSupported);
 const mockedUseIsInsufficientBalance = jest.mocked(useIsInsufficientBalance);
-const mockedUseSelector = useSelector as jest.Mock;
+
+async function runHook({
+  simulationEnabled,
+  gaslessSupported,
+  insufficientBalance,
+  gasFeeTokens,
+}: {
+  simulationEnabled: boolean;
+  gaslessSupported: boolean;
+  insufficientBalance: boolean;
+  gasFeeTokens?: GasFeeToken[];
+}) {
+  mockedUseIsGaslessSupported.mockReturnValue({
+    isSupported: gaslessSupported,
+    isSmartTransaction: true,
+  });
+  mockedUseIsInsufficientBalance.mockReturnValue(insufficientBalance);
+
+  const { result } = renderHookWithConfirmContextProvider(
+    useIsGaslessLoading,
+    getMockConfirmStateForTransaction(
+      genUnapprovedContractInteractionConfirmation({
+        gasFeeTokens,
+
+      }),
+      { metamask: { useTransactionSimulations: simulationEnabled } },
+    ),
+  );
+
+  return result.current;
+}
 
 describe('useIsGaslessLoading', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  const setup = ({
-    simulationEnabled,
-    gaslessSupported,
-    insufficientBalance,
-    gasFeeTokens,
-  }: {
-    simulationEnabled: boolean;
-    gaslessSupported: boolean;
-    insufficientBalance: boolean;
-    gasFeeTokens?: object | null;
-  }) => {
-    mockedUseSelector.mockImplementation((selector) => {
-      if (selector === getUseTransactionSimulations) {
-        return simulationEnabled;
-      }
-      return false;
-    });
-
-    mockedUseConfirmContext.mockReturnValue({
-      currentConfirmation: gasFeeTokens ? { gasFeeTokens } : {},
-    } as unknown as ReturnType<typeof useConfirmContext>);
-
-    mockedUseIsGaslessSupported.mockReturnValue({
-      isSupported: gaslessSupported,
-      isSmartTransaction: true,
-    });
-
-    mockedUseIsInsufficientBalance.mockReturnValue(insufficientBalance);
-  };
-
-  it('returns false if simulation is disabled', () => {
-    setup({
+  it('returns false if simulation is disabled', async () => {
+    const result = await runHook({
       simulationEnabled: false,
       gaslessSupported: true,
       insufficientBalance: true,
     });
 
-    const { result } = renderHook(() => useIsGaslessLoading());
-    expect(result.current.isGaslessLoading).toBe(false);
+    expect(result.isGaslessLoading).toBe(false);
   });
 
-  it('returns false if gasless is not supported', () => {
-    setup({
+  it('returns false if gasless is not supported', async () => {
+    const result = await runHook({
       simulationEnabled: true,
       gaslessSupported: false,
       insufficientBalance: true,
     });
 
-    const { result } = renderHook(() => useIsGaslessLoading());
-    expect(result.current.isGaslessLoading).toBe(false);
+    expect(result.isGaslessLoading).toBe(false);
   });
 
-  it('returns false if there is no insufficient balance', () => {
-    setup({
+  it('returns false if there is no insufficient balance', async () => {
+    const result = await runHook({
       simulationEnabled: true,
       gaslessSupported: true,
       insufficientBalance: false,
     });
 
-    const { result } = renderHook(() => useIsGaslessLoading());
-    expect(result.current.isGaslessLoading).toBe(false);
+    expect(result.isGaslessLoading).toBe(false);
   });
 
-  it('returns true if gas fee tokens are undefined (still loading)', () => {
-    setup({
+  it('returns true if gas fee tokens are undefined (still loading)', async () => {
+    const result = await runHook({
       simulationEnabled: true,
       gaslessSupported: true,
       insufficientBalance: true,
       gasFeeTokens: undefined, // this triggers loading
     });
 
-    const { result } = renderHook(() => useIsGaslessLoading());
-    expect(result.current.isGaslessLoading).toBe(true);
+    expect(result.isGaslessLoading).toBe(true);
   });
 
-  it('returns false if gas fee tokens are present', () => {
-    setup({
+  it('returns false if gas fee tokens are present', async () => {
+    const result = await runHook({
       simulationEnabled: true,
       gaslessSupported: true,
       insufficientBalance: true,
-      gasFeeTokens: { tokenA: '0x123' },
+      gasFeeTokens: [{ tokenA: '0x123' }] as unknown as GasFeeToken[],
     });
 
-    const { result } = renderHook(() => useIsGaslessLoading());
-    expect(result.current.isGaslessLoading).toBe(false);
+    expect(result.isGaslessLoading).toBe(false);
   });
 
-  it('returns true if gas fee tokens is null', () => {
-    setup({
+  it('returns false if gas fee tokens is an empty array', async () => {
+    const result = await runHook({
       simulationEnabled: true,
       gaslessSupported: true,
       insufficientBalance: true,
-      gasFeeTokens: null,
+      gasFeeTokens: [],
     });
 
-    const { result } = renderHook(() => useIsGaslessLoading());
-    expect(result.current.isGaslessLoading).toBe(true);
+    expect(result.isGaslessLoading).toBe(false);
   });
 });
