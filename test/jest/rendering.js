@@ -14,10 +14,12 @@ import {
 
 // Mock MetaMetrics context for tests
 const createMockTrackEvent = () => {
-  const mockTrackEvent = () => Promise.resolve();
-  mockTrackEvent.bufferedTrace = () => Promise.resolve();
-  mockTrackEvent.bufferedEndTrace = () => Promise.resolve();
-  mockTrackEvent.onboardingParentContext = { current: {} };
+  const mockTrackEvent = jest.fn().mockResolvedValue();
+  Object.assign(mockTrackEvent, {
+    bufferedTrace: jest.fn().mockResolvedValue(),
+    bufferedEndTrace: jest.fn().mockResolvedValue(),
+    onboardingParentContext: { current: {} },
+  });
   return mockTrackEvent;
 };
 

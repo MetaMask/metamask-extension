@@ -20,9 +20,11 @@ import Root from '../../ui/pages';
 // Mock MetaMetrics context for tests
 const createMockTrackEvent = () => {
   const mockTrackEvent = () => Promise.resolve();
-  mockTrackEvent.bufferedTrace = () => Promise.resolve();
-  mockTrackEvent.bufferedEndTrace = () => Promise.resolve();
-  mockTrackEvent.onboardingParentContext = { current: {} };
+  Object.assign(mockTrackEvent, {
+    bufferedTrace: () => Promise.resolve(),
+    bufferedEndTrace: () => Promise.resolve(),
+    onboardingParentContext: { current: {} },
+  });
   return mockTrackEvent;
 };
 
