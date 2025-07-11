@@ -245,7 +245,12 @@ import {
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
-import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import {
+  trace,
+  endTrace,
+  TraceName,
+  TraceOperation,
+} from '../../shared/lib/trace';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
@@ -1141,6 +1146,12 @@ export default class MetamaskController extends EventEmitter {
         appleClientId: process.env.APPLE_CLIENT_ID,
       },
       webAuthenticator: webAuthenticatorFactory(),
+      bufferedTrace: this.metaMetricsController.bufferedTrace.bind(
+        this.metaMetricsController,
+      ),
+      bufferedEndTrace: this.metaMetricsController.bufferedEndTrace.bind(
+        this.metaMetricsController,
+      ),
     });
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
@@ -4138,6 +4149,14 @@ export default class MetamaskController extends EventEmitter {
           metaMetricsController,
         ),
 
+      // Buffered Trace API that checks consent and handles buffering/immediate execution
+      bufferedTrace: metaMetricsController.bufferedTrace.bind(
+        metaMetricsController,
+      ),
+      bufferedEndTrace: metaMetricsController.bufferedEndTrace.bind(
+        metaMetricsController,
+      ),
+
       // ApprovalController
       rejectAllPendingApprovals: this.rejectAllPendingApprovals.bind(this),
       rejectPendingApproval: this.rejectPendingApproval,
@@ -4695,7 +4714,12 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} keyringId - The keyring id of the backup seed phrase.
    */
   async createSeedPhraseBackup(password, encodedSeedPhrase, keyringId) {
+    let createSeedPhraseBackupSuccess = false;
     try {
+      this.metaMetricsController.bufferedTrace?.({
+        name: TraceName.OnboardingCreateKeyAndBackupSrp,
+        op: TraceOperation.OnboardingSecurityOp,
+      });
       const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
       const seedPhrase =
@@ -4706,11 +4730,29 @@ export default class MetamaskController extends EventEmitter {
         seedPhrase,
         keyringId,
       );
+      createSeedPhraseBackupSuccess = true;
 
       await this.syncKeyringEncryptionKey();
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+
+      this.metaMetricsController.bufferedTrace?.({
+        name: TraceName.OnboardingCreateKeyAndBackupSrpError,
+        op: TraceOperation.OnboardingError,
+        tags: { errorMessage },
+      });
+      this.metaMetricsController.bufferedEndTrace?.({
+        name: TraceName.OnboardingCreateKeyAndBackupSrpError,
+      });
+
       log.error('[createSeedPhraseBackup] error', error);
       throw error;
+    } finally {
+      this.metaMetricsController.bufferedEndTrace?.({
+        name: TraceName.OnboardingCreateKeyAndBackupSrp,
+        data: { success: createSeedPhraseBackupSuccess },
+      });
     }
   }
 
@@ -4721,16 +4763,34 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<Buffer[]>} The seed phrase.
    */
   async fetchAllSecretData(password) {
+    let fetchAllSeedPhrasesSuccess = false;
     try {
+      this.metaMetricsController.bufferedTrace?.({
+        name: TraceName.OnboardingFetchSrps,
+        op: TraceOperation.OnboardingSecurityOp,
+      });
       // fetch all seed phrases
       // seedPhrases are sorted by creation date, the latest seed phrase is the first one in the array
       const allSeedPhrases =
         await this.seedlessOnboardingController.fetchAllSecretData(password);
+      fetchAllSeedPhrasesSuccess = true;
 
       return allSeedPhrases.map((phrase) =>
         this._convertEnglishWordlistIndicesToCodepoints(phrase.data),
       );
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+
+      this.metaMetricsController.bufferedTrace?.({
+        name: TraceName.OnboardingFetchSrpsError,
+        op: TraceOperation.OnboardingError,
+        tags: { errorMessage },
+      });
+      this.metaMetricsController.bufferedEndTrace?.({
+        name: TraceName.OnboardingFetchSrpsError,
+      });
+
       log.error(
         'Error while fetching and restoring seed phrase metadata.',
         error,
@@ -4741,6 +4801,11 @@ export default class MetamaskController extends EventEmitter {
       }
 
       throw error;
+    } finally {
+      this.metaMetricsController.bufferedEndTrace?.({
+        name: TraceName.OnboardingFetchSrps,
+        data: { success: fetchAllSeedPhrasesSuccess },
+      });
     }
   }
 
@@ -4792,14 +4857,20 @@ export default class MetamaskController extends EventEmitter {
       // use encryption key to unlock the keyring vault
       await this.submitEncryptionKey(keyringEncryptionKey);
 
+      let changePasswordSuccess = false;
       try {
         // update seedlessOnboardingController to use latest global password
         await this.seedlessOnboardingController.syncLatestGlobalPassword({
           globalPassword: password,
         });
 
+        this.metaMetricsController.bufferedTrace?.({
+          name: TraceName.OnboardingResetPassword,
+          op: TraceOperation.OnboardingSecurityOp,
+        });
         // update vault password to global password
         await this.keyringController.changePassword(password);
+        changePasswordSuccess = true;
         // sync the new keyring encryption key after keyring changePassword to the seedless onboarding controller
         await this.syncKeyringEncryptionKey();
 
@@ -4808,9 +4879,26 @@ export default class MetamaskController extends EventEmitter {
           skipCache: true,
         });
       } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Unknown error';
+
+        this.metaMetricsController.bufferedTrace?.({
+          name: TraceName.OnboardingResetPasswordError,
+          op: TraceOperation.OnboardingError,
+          tags: { errorMessage },
+        });
+        this.metaMetricsController.bufferedEndTrace?.({
+          name: TraceName.OnboardingResetPasswordError,
+        });
+
         // lock app again on error after submitPassword succeeded
         await this.setLocked();
         throw err;
+      } finally {
+        this.metaMetricsController.bufferedEndTrace?.({
+          name: TraceName.OnboardingResetPassword,
+          data: { success: changePasswordSuccess },
+        });
       }
     } finally {
       releaseLock();
@@ -4918,13 +5006,40 @@ export default class MetamaskController extends EventEmitter {
       this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
 
     if (syncWithSocial) {
-      await this.seedlessOnboardingController.addNewSecretData(
-        seedPhraseAsUint8Array,
-        SecretType.Mnemonic,
-        {
-          keyringId,
-        },
-      );
+      let addNewSeedPhraseBackupSuccess = false;
+      try {
+        this.metaMetricsController.bufferedTrace?.({
+          name: TraceName.OnboardingAddSrp,
+          op: TraceOperation.OnboardingSecurityOp,
+        });
+        await this.seedlessOnboardingController.addNewSecretData(
+          seedPhraseAsUint8Array,
+          SecretType.Mnemonic,
+          {
+            keyringId,
+          },
+        );
+        addNewSeedPhraseBackupSuccess = true;
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Unknown error';
+
+        this.metaMetricsController.bufferedTrace?.({
+          name: TraceName.OnboardingAddSrpError,
+          op: TraceOperation.OnboardingError,
+          tags: { errorMessage },
+        });
+        this.metaMetricsController.bufferedEndTrace?.({
+          name: TraceName.OnboardingAddSrpError,
+        });
+
+        throw err;
+      } finally {
+        this.metaMetricsController.bufferedEndTrace?.({
+          name: TraceName.OnboardingAddSrp,
+          data: { success: addNewSeedPhraseBackupSuccess },
+        });
+      }
     } else {
       // Do not sync the seed phrase to the server, only update the local state
       this.seedlessOnboardingController.updateBackupMetadataState({

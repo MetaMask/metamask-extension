@@ -171,6 +171,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
+    tracesBeforeMetricsOptIn: false,
     fragments: false,
     metaMetricsId: true,
     participateInMetaMetrics: true,

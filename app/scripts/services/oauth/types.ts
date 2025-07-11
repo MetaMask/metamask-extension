@@ -100,6 +100,15 @@ export type OAuthServiceOptions = {
    * The WebAuthenticator to use for the OAuth login.
    */
   webAuthenticator: WebAuthenticator;
+
+  /**
+   * Buffered trace methods that handle consent checking
+   */
+  bufferedTrace: (
+    request: Record<string, unknown>,
+    fn?: (context?: unknown) => unknown,
+  ) => unknown;
+  bufferedEndTrace: (request: Record<string, unknown>) => void;
 };
 
 /**

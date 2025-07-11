@@ -455,6 +455,7 @@
   "tokenList": {},
   "tokens": [],
   "tokensChainsCache": {},
+  "tracesBeforeMetricsOptIn": [],
   "traits": {},
   "transactions": [],
   "trezorModel": null,

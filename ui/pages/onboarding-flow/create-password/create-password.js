@@ -52,6 +52,7 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { resetOAuthLoginState } from '../../../store/actions';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
@@ -69,6 +70,8 @@ export default function CreatePassword({
   const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
+    trackEvent;
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
@@ -141,6 +144,9 @@ export default function CreatePassword({
 
     await importWithRecoveryPhrase(password, secretRecoveryPhrase);
 
+    bufferedEndTrace?.({ name: TraceName.OnboardingExistingSrpImport });
+    bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
+
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletImported,
@@ -180,6 +186,11 @@ export default function CreatePassword({
       await createNewAccount(password);
     }
 
+    if (isSocialLoginFlow) {
+      bufferedEndTrace?.({ name: TraceName.OnboardingNewSocialCreateWallet });
+      bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
+    }
+
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletSetupCompleted,
@@ -201,6 +212,17 @@ export default function CreatePassword({
     }
   };
 
+  useEffect(() => {
+    bufferedTrace?.({
+      name: TraceName.OnboardingPasswordSetupAttempt,
+      op: TraceOperation.OnboardingUserJourney,
+      parentContext: onboardingParentContext?.current,
+    });
+    return () => {
+      bufferedEndTrace?.({ name: TraceName.OnboardingPasswordSetupAttempt });
+    };
+  }, [onboardingParentContext, bufferedTrace, bufferedEndTrace]);
+
   const handleBackClick = (event) => {
     event.preventDefault();
     // reset the social login state
@@ -209,6 +231,21 @@ export default function CreatePassword({
     firstTimeFlowType === FirstTimeFlowType.import
       ? history.replace(ONBOARDING_IMPORT_WITH_SRP_ROUTE)
       : history.replace(ONBOARDING_WELCOME_ROUTE);
+  };
+
+  const handlePasswordSetupError = (error) => {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+
+    bufferedTrace?.({
+      name: TraceName.OnboardingPasswordSetupError,
+      op: TraceOperation.OnboardingUserJourney,
+      parentContext: onboardingParentContext.current,
+      tags: { errorMessage },
+    });
+    bufferedEndTrace?.({ name: TraceName.OnboardingPasswordSetupError });
+
+    console.error(error);
   };
 
   const handleCreatePassword = async (event) => {
@@ -230,6 +267,7 @@ export default function CreatePassword({
         await handleCreateNewWallet();
       }
     } catch (error) {
+      handlePasswordSetupError(error);
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletSetupFailure,

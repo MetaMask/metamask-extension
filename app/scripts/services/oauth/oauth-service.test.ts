@@ -63,6 +63,9 @@ const mockWebAuthenticator: WebAuthenticator = {
   generateNonce: generateNonceSpy,
 };
 
+const mockBufferedTrace = jest.fn();
+const mockBufferedEndTrace = jest.fn();
+
 describe('OAuthService - startOAuthLogin', () => {
   beforeAll(() => {
     process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
@@ -96,6 +99,8 @@ describe('OAuthService - startOAuthLogin', () => {
     const oauthService = new OAuthService({
       env: oauthEnv,
       webAuthenticator: mockWebAuthenticator,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Google);
@@ -124,6 +129,8 @@ describe('OAuthService - startOAuthLogin', () => {
     const oauthService = new OAuthService({
       env: oauthEnv,
       webAuthenticator: mockWebAuthenticator,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Apple);
@@ -155,6 +162,8 @@ describe('OAuthService - startOAuthLogin', () => {
         ...mockWebAuthenticator,
         generateNonce: jest.fn().mockReturnValue(Math.random().toString()),
       },
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
     });
 
     await expect(
@@ -191,6 +200,8 @@ describe('OAuthService - getNewRefreshToken', () => {
     const oauthService = new OAuthService({
       env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
     });
 
     const result = await oauthService.getNewRefreshToken({
@@ -254,6 +265,8 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
     const oauthService = new OAuthService({
       env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
     });
     const oauthConfig = getOAuthConfig();
 
