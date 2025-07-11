@@ -328,14 +328,13 @@ function extractLargeMessageValue(dataToParse: string): string | undefined {
  * @returns
  */
 export const parseTypedDataMessage = (dataToParse: DataMessageParam) => {
-  if (typeof dataToParse === 'object') {
-    return dataToParse;
-  }
+  const result =
+    typeof dataToParse === 'object'
+      ? dataToParse
+      : JSON.parse(String(dataToParse));
 
-  const dataToParseString = String(dataToParse);
-  const result = JSON.parse(dataToParseString);
+  const messageValue = extractLargeMessageValue(String(dataToParse));
 
-  const messageValue = extractLargeMessageValue(dataToParseString);
   if (result.message?.value) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
