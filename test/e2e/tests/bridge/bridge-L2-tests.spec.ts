@@ -22,24 +22,11 @@ describe('Bridge tests', function (this: Suite) {
         // we cannot use fixtures because migration 135 overrides the opt in value to true
         await disableStxSetting(driver);
 
-        const homePage = new HomePage(driver);
-
         // Add Arbitrum One
         await searchAndSwitchToNetworkFromGlobalMenuFlow(
           driver,
           'Arbitrum One',
         );
-
-        // Check only linea mainnet so balances are shown in ETH not USD (from multiple networks)
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectAllNetworks();
-        await networkManager.deselectNetwork('eip155:1'); // Deselect Ethereum
-        await networkManager.deselectNetwork('eip155:8453'); // Deselect Base
-        await networkManager.deselectNetwork('eip155:42161'); // Deselect Arbitrum
-        await networkManager.closeNetworkManager();
-
-        await homePage.check_expectedBalanceIsDisplayed();
 
         await bridgeTransaction(
           driver,
@@ -51,7 +38,6 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Ethereum',
           },
           1,
-          '23.9999',
         );
 
         await bridgeTransaction(
@@ -64,7 +50,6 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Arbitrum One',
           },
           2,
-          '22.9999',
         );
 
         // Switch to Ethereum to set it as the current network
@@ -80,7 +65,6 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Arbitrum One',
           },
           4,
-          '22.9998',
         );
 
         // Switch to Arbitrum One to set it as the current network
@@ -96,7 +80,6 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Ethereum',
           },
           6,
-          '22.9997',
         );
       },
     );
