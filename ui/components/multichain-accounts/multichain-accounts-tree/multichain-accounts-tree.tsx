@@ -148,6 +148,7 @@ export const MultichainAccountsTree = ({
             return [
               <Box
                 key={`account-group-${groupId}`}
+                marginBottom={4}
                 style={{
                   borderBottom: '1px solid var(--color-border-muted)',
                 }}

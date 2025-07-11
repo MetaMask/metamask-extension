@@ -87,11 +87,18 @@ class TestDapp {
 
   private readonly erc20WatchAssetButton = '#watchAssets';
 
+  private readonly erc20IncreaseTokensAllowanceButton =
+    '#increaseTokenAllowance';
+
+  private readonly erc721TokenAddresses = '#erc721TokenAddresses';
+
   private readonly erc721DeployButton = '#deployNFTsButton';
 
   private readonly erc721MintButton = '#mintButton';
 
   private readonly erc721RevokeSetApprovalForAllButton = '#revokeButton';
+
+  private readonly erc721ApproveButton = '#approveButton';
 
   private readonly erc721SetApprovalForAllButton = '#setApprovalForAllButton';
 
@@ -638,9 +645,20 @@ class TestDapp {
     }, 10000);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async verify_successSignTypedDataResult(result: string) {
+  /**
+   * Checks the value of a ERC-721 token address once created.
+   *
+   * @param value - The address to be checked
+   */
+  async checkERC721TokenAddressesValue(value: string) {
+    console.log('Verify ERC-721 token address');
+    await this.driver.waitForSelector({
+      css: this.erc721TokenAddresses,
+      text: value,
+    });
+  }
+
+  async verifySuccessSignTypedDataResult(result: string) {
     await this.driver.waitForSelector({
       css: this.signTypedDataResult,
       text: result.toLowerCase(),
@@ -797,7 +815,14 @@ class TestDapp {
     await this.driver.clickElement(this.erc20CreateTokenButton);
   }
 
+  async clickERC20IncreaseAllowanceButton() {
+    await this.driver.clickElement(this.erc20IncreaseTokensAllowanceButton);
+  }
+
   async clickERC20TokenTransferButton() {
+    await this.driver.waitForSelector(this.erc20TokenTransferButton, {
+      state: 'enabled',
+    });
     await this.driver.clickElement(this.erc20TokenTransferButton);
   }
 
@@ -819,6 +844,10 @@ class TestDapp {
 
   async clickERC721RevokeSetApprovalForAllButton() {
     await this.driver.clickElement(this.erc721RevokeSetApprovalForAllButton);
+  }
+
+  async clickERC721ApproveButton() {
+    await this.driver.clickElement(this.erc721ApproveButton);
   }
 
   async clickERC721SetApprovalForAllButton() {

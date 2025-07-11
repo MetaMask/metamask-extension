@@ -85,10 +85,10 @@ export async function processSendCalls(
   const { networkClientId, origin } = req;
   const transactions = calls.map((call) => ({ params: call }));
 
-  const dappChainId = messenger.call(
+  const { chainId } = messenger.call(
     'NetworkController:getNetworkClientById',
     networkClientId,
-  ).configuration.chainId;
+  ).configuration;
 
   const from =
     paramFrom ??
@@ -101,7 +101,7 @@ export async function processSendCalls(
   if (Object.keys(transactions).length === 1) {
     batchId = await processSingleTransaction({
       addTransaction,
-      chainId: dappChainId,
+      chainId,
       from,
       networkClientId,
       origin,
@@ -114,7 +114,7 @@ export async function processSendCalls(
     batchId = await processMultipleTransaction({
       addTransactionBatch,
       isAtomicBatchSupported,
-      chainId: dappChainId,
+      chainId,
       from,
       getDismissSmartAccountSuggestionEnabled,
       messenger,
