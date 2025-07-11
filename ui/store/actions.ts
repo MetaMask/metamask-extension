@@ -328,16 +328,12 @@ export function syncSeedPhrases(): ThunkAction<
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
     try {
       await submitRequestToBackground('syncSeedPhrases');
     } catch (error) {
       log.error('[syncSeedPhrases] error', error);
       dispatch(displayWarning(error.message));
       throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }
