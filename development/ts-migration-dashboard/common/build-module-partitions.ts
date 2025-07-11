@@ -276,8 +276,8 @@ function buildModulesWithLevels(
       if (existingDependencyModule === undefined) {
         existingDependencyModule = {
           id: dependencyModuleId,
-          dependents: [currentModule],
-          dependencies: [],
+          dependents: [],
+          dependencies: [currentModule],
           level: currentModule.level + 1,
           isExternal: Boolean(npmPackageMatch),
           hasBeenConverted: /\.tsx?$/u.test(dependencyModuleId),
@@ -296,19 +296,19 @@ function buildModulesWithLevels(
       }
 
       if (
-        !existingDependencyModule.dependents.some(
+        !existingDependencyModule.dependencies.some(
           (m) => m.id === currentModule.id,
         )
       ) {
-        existingDependencyModule.dependents.push(currentModule);
+        existingDependencyModule.dependencies.push(currentModule);
       }
 
       if (
-        !currentModule.dependencies.some(
+        !currentModule.dependents.some(
           (m) => m.id === existingDependencyModule.id,
         )
       ) {
-        currentModule.dependencies.push(existingDependencyModule);
+        currentModule.dependents.push(existingDependencyModule);
       }
     }
     if (dependencyModulesToFill.length > 0) {
