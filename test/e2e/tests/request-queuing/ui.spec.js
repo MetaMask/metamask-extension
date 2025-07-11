@@ -19,9 +19,6 @@ const {
   PermissionNames,
 } = require('../../../../app/scripts/controllers/permissions');
 const { CaveatTypes } = require('../../../../shared/constants/permissions');
-const {
-  switchToNetworkFromSendFlow,
-} = require('../../page-objects/flows/network.flow');
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs
@@ -203,10 +200,13 @@ describe('Request-queue UI changes', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await driver.findElement({
-          css: '[data-testid="sort-by-networks"]',
-          text: 'Localhost 8546',
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Custom',
+          tag: 'button',
         });
+        await driver.clickElement('[data-testid="Localhost 8546"]');
+        await driver.clickElement('[data-testid="modal-header-close-button"]');
 
         // Go to the first dapp, ensure it uses localhost
         await selectDappClickSend(driver, DAPP_URL);
@@ -237,6 +237,14 @@ describe('Request-queue UI changes', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleNode()
+          .withPreferencesController({
+            preferences: { showTestNetworks: true },
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x539': true,
+            },
+          })
           .build(),
         localNodeOptions: [
           {
@@ -332,12 +340,38 @@ describe('Request-queue UI changes', function () {
         // Wait for transaction to be completed on final confirmation
         await driver.delay(veryLargeDelayMs);
 
-        // Switch to second network, ensure full balance
-        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
+        if (!IS_FIREFOX) {
+          // Start on the last joined network, whose send transaction was just confirmed
+          await driver.clickElement('[data-testid="sort-by-networks"]');
+          await driver.clickElement({
+            text: 'Custom',
+            tag: 'button',
+          });
+          await driver.clickElement('[data-testid="Localhost 7777"]');
+          await driver.clickElement(
+            '[data-testid="modal-header-close-button"]',
+          );
+          await validateBalanceAndActivity(driver, '24.9998');
+        }
+
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Custom',
+          tag: 'button',
+        });
+        await driver.clickElement('[data-testid="Localhost 8546"]');
+        await driver.clickElement('[data-testid="modal-header-close-button"]');
+
         await validateBalanceAndActivity(driver, '25', 0);
 
-        // Switch to first network, whose send transaction was just confirmed
-        await switchToNetworkFromSendFlow(driver, 'Localhost 8545');
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Custom',
+          tag: 'button',
+        });
+        await driver.clickElement('[data-testid="Localhost 8545"]');
+        await driver.clickElement('[data-testid="modal-header-close-button"]');
+
         await validateBalanceAndActivity(driver, '24.9998');
       },
     );
@@ -385,11 +419,11 @@ describe('Request-queue UI changes', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-
-        await driver.clickElement('[data-testid="global-menu-networks"]');
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Custom',
+          tag: 'button',
+        });
 
         const networkRow = await driver.findElement({
           css: '.multichain-network-list-item',
@@ -423,8 +457,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it('should signal from UI to dapp the network change if switched from send flow', async function () {
+  it('should signal from UI to dapp the network change', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -449,15 +482,22 @@ describe('Request-queue UI changes', function () {
         await openPopupWithActiveTabOrigin(driver, DAPP_URL);
 
         // Switch to mainnet
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Default',
+        });
+        await driver.clickElement({
+          text: 'Ethereum Mainnet',
+          tag: 'p',
+        });
 
         // Switch back to the Dapp tab
         await driver.switchToWindowWithUrl(DAPP_URL);
 
-        // Check to make sure the dapp network doesn't changed
+        // Check to make sure the dapp network changed
         await driver.waitForSelector({
           css: '[id="chainId"]',
-          text: '0x539',
+          text: '0x1',
         });
       },
     );
@@ -500,11 +540,9 @@ describe('Request-queue UI changes', function () {
         // Open the popup with shimmed activeTabOrigin
         await openPopupWithActiveTabOrigin(driver, DAPP_URL);
 
-        // Ensure network was reset to original
-        await driver.findElement({
-          css: '[data-testid="sort-by-networks"]',
-          text: 'Localhost 8545',
-        });
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // Ensure toast is shown to the user
         await driver.findElement({
@@ -571,12 +609,6 @@ describe('Request-queue UI changes', function () {
         // Reject the confirmation
         await driver.clickElement({ css: 'button', text: 'Cancel' });
 
-        // Wait for network to automatically change to localhost
-        await driver.waitForSelector({
-          css: '[data-testid="sort-by-popover-toggle"]',
-          text: 'Localhost 8545',
-        });
-
         // Ensure toast is shown to the user
         await driver.waitForSelector({
           css: '.toast-text',
@@ -632,10 +664,28 @@ describe('Request-queue UI changes', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.findElement({
-          css: '[data-testid="sort-by-networks"]',
+
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Default',
+        });
+        // Check if Ethereum Mainnet is selected (checkbox is checked)
+        const networkRow = await driver.findElement({
+          css: '.multichain-network-list-item',
           text: 'Ethereum Mainnet',
         });
+
+        const checkedCheckbox = await driver.findNestedElement(
+          networkRow,
+          'input.mm-checkbox__input--checked[type="checkbox"][checked]',
+        );
+
+        // Verify the checkbox is found (network is enabled)
+        assert.ok(
+          checkedCheckbox,
+          'Ethereum Mainnet checkbox should be checked',
+        );
+
         // Kill local node servers
         await localNodes[0].quit();
         await localNodes[1].quit();
@@ -704,10 +754,33 @@ describe('Request-queue UI changes', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.findElement({
-          css: '[data-testid="sort-by-networks"]',
+
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Default',
+        });
+        await driver.waitForSelector({
+          text: 'Ethereum Mainnet',
+          tag: 'p',
+        });
+
+        // Check if Ethereum Mainnet is selected (checkbox is checked)
+        const networkRow = await driver.findElement({
+          css: '.multichain-network-list-item',
           text: 'Ethereum Mainnet',
         });
+
+        const checkedCheckbox = await driver.findNestedElement(
+          networkRow,
+          'input.mm-checkbox__input--checked[type="checkbox"][checked]',
+        );
+
+        // Verify the checkbox is found (network is enabled)
+        assert.ok(
+          checkedCheckbox,
+          'Ethereum Mainnet checkbox should be checked',
+        );
+
         // Kill local node servers
         await localNodes[0].quit();
         await localNodes[1].quit();

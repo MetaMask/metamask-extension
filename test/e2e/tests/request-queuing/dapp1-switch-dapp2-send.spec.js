@@ -155,7 +155,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
     );
   });
 
-  it.only('should queue send tx after switch network confirmation and transaction should target the correct network after switch is cancelled.', async function () {
+  it('should queue send tx after switch network confirmation and transaction should target the correct network after switch is cancelled.', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -166,9 +166,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           .withSelectedNetworkControllerPerDomain()
           .withEnabledNetworks({
             eip155: {
-              '0x539': true,
               '0x53a': true,
-              '0x3e8': true,
             },
           })
           .build(),
@@ -260,7 +258,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x53a' }],
+          params: [{ chainId: '0x539' }],
         });
 
         // Initiate switchEthereumChain on Dapp One
@@ -299,7 +297,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-
 
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
