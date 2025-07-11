@@ -266,7 +266,6 @@ export function withMetaMetrics(WrappedComponent) {
     return (
       <WrappedComponent
         {...props}
-        // Pass the entire context as individual props for class components
         trackEvent={metaMetricsContext}
         bufferedTrace={metaMetricsContext.bufferedTrace}
         bufferedEndTrace={metaMetricsContext.bufferedEndTrace}

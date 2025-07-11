@@ -38,8 +38,8 @@ export default function AccountNotFound() {
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
-  const { onboardingParentContext } = useContext(MetaMetricsContext);
-  const { bufferedTrace, bufferedEndTrace } = useContext(MetaMetricsContext);
+  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
+    useContext(MetaMetricsContext);
 
   const onLoginWithDifferentMethod = async () => {
     // clear the social login state

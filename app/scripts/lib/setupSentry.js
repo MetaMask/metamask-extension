@@ -232,7 +232,7 @@ function getSentryTarget() {
  *
  * @returns `true` if MetaMetrics is enabled, `false` otherwise.
  */
-export async function getMetaMetricsEnabled() {
+async function getMetaMetricsEnabled() {
   const flags = getManifestFlags();
 
   if (flags.ci && flags.sentry.forceEnable) {

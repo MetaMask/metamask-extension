@@ -189,7 +189,10 @@ export type EndTraceRequest = {
   data?: Record<string, number | string | boolean>;
 };
 
-export function trace<T>(request: TraceRequest, fn: TraceCallback<T>): T;
+export function trace<ResultType>(
+  request: TraceRequest,
+  fn: TraceCallback<ResultType>,
+): ResultType;
 
 export function trace(request: TraceRequest): TraceContext;
 
@@ -250,7 +253,10 @@ export function endTrace(request: EndTraceRequest): void {
   logTrace(pendingRequest, startTime, endTime);
 }
 
-function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
+function traceCallback<ResultType>(
+  request: TraceRequest,
+  fn: TraceCallback<ResultType>,
+): ResultType {
   const { name } = request;
 
   const callback = (span: Sentry.Span | null) => {
@@ -263,7 +269,7 @@ function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
       initSpan(span, request);
     }
 
-    return tryCatchMaybePromise<T>(
+    return tryCatchMaybePromise<ResultType>(
       () => fn(span),
       (currentError) => {
         error = currentError;
@@ -273,7 +279,7 @@ function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
         const end = Date.now();
         logTrace(request, start, end, error);
       },
-    ) as T;
+    ) as ResultType;
   };
 
   return startSpan(request, (spanOptions) =>

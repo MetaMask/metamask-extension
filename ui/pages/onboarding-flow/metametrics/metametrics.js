@@ -105,6 +105,8 @@ export default function OnboardingMetametrics() {
           location: 'onboarding_metametrics',
         },
       });
+    } catch (error) {
+      log.error('onConfirm::error', error);
     } finally {
       history.push(nextRouteByBrowser);
     }

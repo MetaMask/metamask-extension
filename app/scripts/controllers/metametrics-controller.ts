@@ -1096,13 +1096,12 @@ export default class MetaMetricsController extends BaseController<
    * @param fn - Optional callback function to trace
    * @returns The result of the trace callback or undefined if buffered
    */
-  bufferedTrace<T>(
+  bufferedTrace<TraceResultType>(
     request: TraceRequest,
-    fn?: TraceCallback<T>,
-  ): T | undefined {
+    fn?: TraceCallback<TraceResultType>,
+  ): TraceResultType | undefined {
     if (this.state.participateInMetaMetrics) {
-      // If metrics are enabled, trace immediately
-      return fn ? trace(request, fn) : (trace(request) as T);
+      return fn ? trace(request, fn) : (trace(request) as TraceResultType);
     }
 
     // Extract parent trace name if parentContext exists
@@ -1134,7 +1133,6 @@ export default class MetaMetricsController extends BaseController<
    */
   bufferedEndTrace(request: EndTraceRequest): void {
     if (this.state.participateInMetaMetrics) {
-      // If metrics are enabled, end trace immediately
       endTrace(request);
     } else {
       this.addTraceBeforeMetricsOptIn({
