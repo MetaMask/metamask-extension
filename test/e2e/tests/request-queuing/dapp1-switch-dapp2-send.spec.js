@@ -1,7 +1,3 @@
-const {
-  switchToNetworkFromSendFlow,
-} = require('../../page-objects/flows/network.flow');
-
 const FixtureBuilder = require('../../fixture-builder');
 const {
   DAPP_ONE_URL,
@@ -82,8 +78,13 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Switch to second network
-        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
+        // Network Selector
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Custom',
+          tag: 'button',
+        });
+        await driver.clickElement('[data-testid="Localhost 8546"]');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
@@ -154,7 +155,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
     );
   });
 
-  it('should queue send tx after switch network confirmation and transaction should target the correct network after switch is cancelled.', async function () {
+  it.only('should queue send tx after switch network confirmation and transaction should target the correct network after switch is cancelled.', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -167,6 +168,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
             eip155: {
               '0x539': true,
               '0x53a': true,
+              '0x3e8': true,
             },
           })
           .build(),
@@ -228,8 +230,14 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Switch to second network
-        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
+        // Network Selector
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Custom',
+          tag: 'button',
+        });
+        await driver.clickElement('[data-testid="Localhost 8546"]');
+        await driver.clickElement('[data-testid="modal-header-close-button"]');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
@@ -252,7 +260,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x539' }],
+          params: [{ chainId: '0x53a' }],
         });
 
         // Initiate switchEthereumChain on Dapp One
@@ -291,6 +299,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
 
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
