@@ -3,8 +3,8 @@
 import type { Json } from '@metamask/utils';
 import { Duplex, type DuplexOptions } from 'readable-stream';
 import type { Runtime } from 'webextension-polyfill';
-import { getPlatform } from './util';
 import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
+import { getPlatform } from './util';
 
 let _randomCounter = 0 | 0;
 /**
