@@ -14,21 +14,56 @@ import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { Mockttp } from '../../mock-e2e';
 
 const NETWORK_NAME_MAINNET = 'Ethereum Mainnet';
 const LINEA_NAME_MAINNET = 'Linea Mainnet';
 const POLYGON_NAME_MAINNET = 'Polygon';
 const BALANCE_AMOUNT = '24.9978';
 
+async function mockSwapSetup(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forGet('https://min-api.cryptocompare.com/data/pricemulti')
+      .withQuery({ fsyms: 'ETH,POL', tsyms: 'usd' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: { ETH: { USD: 2966.53 }, POL: { USD: 0.2322 } },
+      })),
+  ];
+}
 function buildFixtures(title: string, chainId: number = 1337) {
   return {
     fixtures: new FixtureBuilder()
-      .withPermissionControllerConnectedToTestDapp()
       .withNetworkControllerOnPolygon()
       .withTokensControllerERC20({ chainId })
+      .withEnabledNetworks({
+        eip155: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.POLYGON]: true,
+          [CHAIN_IDS.LINEA_MAINNET]: true,
+        },
+      })
       .build(),
+    localNodeOptions: [
+      {
+        type: 'anvil',
+        options: {
+          chainId: 1,
+        },
+      },
+      {
+        type: 'anvil',
+        options: {
+          port: 8546,
+          chainId: 137,
+        },
+      },
+    ],
     smartContract: SMART_CONTRACTS.HST,
     title,
+    testSpecificMock: mockSwapSetup,
   };
 }
 
@@ -112,7 +147,7 @@ describe('Multichain Asset List', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24.9978', 'ETH');
+        await homePage.check_expectedBalanceIsDisplayed('24.9978', 'POL');
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
