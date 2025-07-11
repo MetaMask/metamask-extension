@@ -9,9 +9,16 @@ import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
 import { RecipientRow } from '../../shared/transaction-details/transaction-details';
 import { TransactionData } from '../../shared/transaction-data/transaction-data';
-import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowText,
+} from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useNestedTransactionLabels } from '../../hooks/useNestedTransactionLabels';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NestedTransactionData() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { nestedTransactions } = currentConfirmation ?? {};
@@ -33,6 +40,8 @@ export function NestedTransactionData() {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function NestedTransaction({
   index,
   nestedTransaction,
@@ -40,7 +49,8 @@ function NestedTransaction({
   index: number;
   nestedTransaction: BatchTransactionParams;
 }) {
-  const { data, to } = nestedTransaction;
+  const t = useI18nContext();
+  const { data, to, value } = nestedTransaction;
 
   const label = useNestedTransactionLabels({
     nestedTransactions: [nestedTransaction],
@@ -54,7 +64,19 @@ function NestedTransaction({
         content={
           <>
             {to && <RecipientRow recipient={to} />}
-            {data && to && <TransactionData data={data} to={to} noPadding />}
+            {value && (
+              <ConfirmInfoRow label={t('amount')}>
+                <ConfirmInfoRowCurrency value={value} />
+              </ConfirmInfoRow>
+            )}
+            {data && to && (
+              <TransactionData
+                data={data}
+                to={to}
+                noPadding
+                nestedTransactionIndex={index}
+              />
+            )}
           </>
         }
       >

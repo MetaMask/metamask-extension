@@ -19,6 +19,8 @@ class ResetPasswordPage {
     this.restoreButton = '[data-testid="create-new-vault-submit-button"]';
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -58,7 +60,7 @@ class ResetPasswordPage {
     console.log('Waiting for seed phrase input to not be visible');
     await this.driver.waitForSelector(this.seedPhraseInput, {
       state: 'detached',
-      timeout: 20000,
+      timeout: 30000,
     });
   }
 }

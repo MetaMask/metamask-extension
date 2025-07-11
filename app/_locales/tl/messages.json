@@ -68,13 +68,6 @@
     "message": "Nabasa ko at sumasang-ayon ako sa $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "I-access ang iyong wallet gamit ang iyong Lihim na Parirala sa Pagbawi"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "Hindi mababawi ng MetaMask ang iyong password. Gagamitin namin ang iyong Lihim na Parirala sa Pagbawi upang patunayan ang iyong pagmamay-ari, ibalik ang iyong wallet at mag-set up ng bagong password. Una, ilagay ang Lihim na Parirala sa Pagbawi na ibinigay sa iyo noong ginawa mo ang iyong wallet. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Ina-access ang iyong camera..."
   },
@@ -917,9 +910,6 @@
   },
   "bridgeTo": {
     "message": "I-bridge papunta sa"
-  },
-  "bridgeToChain": {
-    "message": "I-bridge papunta sa $1"
   },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Kapag idinagdag mo ang token na ito nang mano-mano, tiyaking alam mo ang mga panganib nito sa mga pondo mo bago ka mag-bridge."
@@ -2236,9 +2226,6 @@
   "floatAmountToken": {
     "message": "Ang halaga ng token ay dapat isang integer"
   },
-  "followUsOnTwitter": {
-    "message": "I-follow kami sa Twitter"
-  },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Tumukoy ng CID gateway"
   },
@@ -2398,9 +2385,6 @@
   },
   "hideAdvancedDetails": {
     "message": "Itago ang mga advanced na detalye"
-  },
-  "hideSeedPhrase": {
-    "message": "Itago ang pariralang binhi"
   },
   "hideSentitiveInfo": {
     "message": "Itago ang sensitibong impormasyon"
@@ -4423,18 +4407,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Nakuha ko"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Palaging panatilihin ang iyong Lihim na Parirala sa Pagbawi sa isang ligtas at sikretong lugar"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Kailangang i-backup muli ang iyong Lihim na Parirala sa Pagbawi?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Huwag kailanman ibahagi ang iyong Lihim na Parirala sa Pagbawi sa sinuman"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Hindi kailanman hihingin ng MetaMask team ang iyong Lihim na Parirala sa Pagbawi"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Kinokontrol ng iyong Lihim na Parirala sa Pagbawi ang lahat ng iyong account."
   },
@@ -4622,9 +4594,6 @@
   "revealSensitiveContent": {
     "message": "Ipakita ang sensitibong content"
   },
-  "revealTheSeedPhrase": {
-    "message": "Ibunyag ang pariralang binhi"
-  },
   "review": {
     "message": "Suriin"
   },
@@ -4732,29 +4701,11 @@
   "seeDetails": {
     "message": "Tingnan ang mga detalye"
   },
-  "seedPhraseConfirm": {
-    "message": "Kumpirmahin ang Lihim na Parirala sa Pagbawi"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Kumpirmahin ang Lihim na Parirala sa Pagbawi"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Isulat at itago sa iba't ibang sikretong lugar"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Itago sa safe deposit box"
-  },
   "seedPhraseIntroTitle": {
     "message": "I-secure ang wallet mo"
   },
   "seedPhraseReq": {
     "message": "Ang mga Lihim na Parirala sa Pagbawi ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Isulat ang 12 salita ng Lihim na Parirala sa Pagbawi at i-save sa lugar na pinagkakatiwalaan mo at ikaw lang ang makaka-access."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Isulat ang iyong Lihim na Parirala sa Pagbawi"
   },
   "select": {
     "message": "Piliin ang"
@@ -4826,16 +4777,8 @@
   "sendSelectSendAsset": {
     "message": "Piliin ang asset na ipapadala"
   },
-  "sendSpecifiedTokens": {
-    "message": "Magpadala ng $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Ang pag-click sa button na ito ay kaagad na magpapasimula sa iyong swap na transaksyon. Mangyaring suriin ang detalye ng iyong mga transaksyon bago magpatuloy."
-  },
-  "sendTokenAsToken": {
-    "message": "Ipadala ang $1 bilang $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Ipinapadala ang $1"
@@ -5107,9 +5050,6 @@
   },
   "smartAccountReject": {
     "message": "Huwag gumamit ng smart account"
-  },
-  "smartAccountRequestFor": {
-    "message": "Humiling ng"
   },
   "smartAccountSameAccount": {
     "message": "Parehong account, mas mahuhusay na feature."
@@ -6159,9 +6099,6 @@
   "time": {
     "message": "Oras"
   },
-  "tips": {
-    "message": "Mga Tip"
-  },
   "tipsForUsingAWallet": {
     "message": "Mga tip sa paggamit ng wallet"
   },
@@ -6452,9 +6389,6 @@
   },
   "unlock": {
     "message": "I-unlock"
-  },
-  "unlockMessage": {
-    "message": "Naghihintay ang desentralisadong web"
   },
   "unpin": {
     "message": "I-unpin"

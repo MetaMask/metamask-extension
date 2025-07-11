@@ -68,13 +68,6 @@
     "message": "Saya telah membaca dan menyetujui $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Akses dompet Anda dengan Frasa Pemulihan Rahasia"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask tidak dapat memulihkan kata sandi Anda. Kami akan menggunakan Frasa Pemulihan Rahasia untuk memvalidasi kepemilikan Anda, memulihkan dompet Anda, dan mengatur kata sandi baru. Pertama, masukkan Frasa Pemulihan Rahasia yang diberikan saat membuat dompet. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Mengakses kamera Anda..."
   },
@@ -917,9 +910,6 @@
   },
   "bridgeTo": {
     "message": "Bridge ke"
-  },
-  "bridgeToChain": {
-    "message": "Bridge ke $1"
   },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Jika menambahkan token ini secara manual, pastikan Anda mengetahui risiko terhadap dana Anda sebelum menggunakan bridge."
@@ -2236,9 +2226,6 @@
   "floatAmountToken": {
     "message": "Jumlah token harus berupa bilangan bulat"
   },
-  "followUsOnTwitter": {
-    "message": "Ikuti kami di Twitter"
-  },
   "forbiddenIpfsGateway": {
     "message": "Gateway IPFS Terlarang: Tentukan gateway CID"
   },
@@ -2398,9 +2385,6 @@
   },
   "hideAdvancedDetails": {
     "message": "Sembunyikan detail lanjutan"
-  },
-  "hideSeedPhrase": {
-    "message": "Sembunyikan frasa seed"
   },
   "hideSentitiveInfo": {
     "message": "Sembunyikan informasi sensitif"
@@ -4423,18 +4407,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Mengerti"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Jaga selalu Frasa Pemulihan Rahasia Anda di tempat yang aman dan rahasia"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Perlu mencadangkan Frasa Pemulihan Rahasia Anda lagi?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Jangan membagikan Frasa Pemulihan Rahasia Anda kepada siapa pun"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Tim MetaMask tidak akan pernah meminta Frasa Pemulihan Rahasia Anda"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Frasa Pemulihan Rahasia Anda mengendalikan semua akun Anda."
   },
@@ -4622,9 +4594,6 @@
   "revealSensitiveContent": {
     "message": "Tampilkan konten sensitif"
   },
-  "revealTheSeedPhrase": {
-    "message": "Ungkap frasa seed"
-  },
   "review": {
     "message": "Tinjau"
   },
@@ -4732,29 +4701,11 @@
   "seeDetails": {
     "message": "Lihat detailnya"
   },
-  "seedPhraseConfirm": {
-    "message": "Konfirmasikan Frasa Pemulihan Rahasia"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Konfirmasikan Frasa Pemulihan Rahasia"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Tulis dan simpan di beberapa tempat rahasia"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Simpan di kotak deposit yang aman"
-  },
   "seedPhraseIntroTitle": {
     "message": "Amankan dompet Anda"
   },
   "seedPhraseReq": {
     "message": "Frasa Pemulihan Rahasia berisi 12, 15, 18, 21, atau 24 kata"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Tuliskan Frasa Pemulihan Rahasia 12 kata ini, simpan di tempat yang aman dan hanya Anda yang dapat mengaksesnya."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Tuliskan Frasa Pemulihan Rahasia Anda"
   },
   "select": {
     "message": "Pilih"
@@ -4826,16 +4777,8 @@
   "sendSelectSendAsset": {
     "message": "Pilih aset yang akan dikirim"
   },
-  "sendSpecifiedTokens": {
-    "message": "Kirim $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Mengklik tombol ini akan langsung memulai transaksi swap. Tinjau detail transaksi sebelum melanjutkan."
-  },
-  "sendTokenAsToken": {
-    "message": "Kirim $1 sebagai $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Mengirim $1"
@@ -5107,9 +5050,6 @@
   },
   "smartAccountReject": {
     "message": "Jangan gunakan akun cerdas"
-  },
-  "smartAccountRequestFor": {
-    "message": "Permintaan untuk"
   },
   "smartAccountSameAccount": {
     "message": "Akun sama, fitur lebih cerdas."
@@ -6159,9 +6099,6 @@
   "time": {
     "message": "Waktu"
   },
-  "tips": {
-    "message": "Kiat"
-  },
   "tipsForUsingAWallet": {
     "message": "Tip menggunakan dompet"
   },
@@ -6452,9 +6389,6 @@
   },
   "unlock": {
     "message": "Buka"
-  },
-  "unlockMessage": {
-    "message": "Web terdesentralisasi menunggu"
   },
   "unpin": {
     "message": "Batal semat"

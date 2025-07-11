@@ -110,7 +110,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       </span>
       <span>
         <p
-          class="mm-box mm-text mm-text--body-sm mm-text--font-weight-medium mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
         >
           We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features).
         </p>
@@ -134,18 +134,17 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       </span>
     </p>
     <div
-      class="mm-box onboarding-metametrics__buttons mm-box--margin-top-6 mm-box--margin-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
+      class="mm-box onboarding-metametrics__buttons mm-box--margin-top-6 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
         data-testid="metametrics-no-thanks"
       >
         No thanks
       </button>
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
         data-testid="metametrics-i-agree"
-        data-theme="light"
       >
         I agree
       </button>
@@ -264,7 +263,7 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
       </span>
       <span>
         <p
-          class="mm-box mm-text mm-text--body-sm mm-text--font-weight-medium mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
         >
           We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features).
         </p>
@@ -288,18 +287,17 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
       </span>
     </p>
     <div
-      class="mm-box onboarding-metametrics__buttons mm-box--margin-top-6 mm-box--margin-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
+      class="mm-box onboarding-metametrics__buttons mm-box--margin-top-6 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
         data-testid="metametrics-no-thanks"
       >
         No thanks
       </button>
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
         data-testid="metametrics-i-agree"
-        data-theme="light"
       >
         I agree
       </button>

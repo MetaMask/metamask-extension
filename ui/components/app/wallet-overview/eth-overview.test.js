@@ -85,6 +85,9 @@ describe('EthOverview', () => {
   };
 
   const mockStore = {
+    appState: {
+      confirmationExchangeRates: {},
+    },
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       remoteFeatureFlags: {
@@ -114,8 +117,10 @@ describe('EthOverview', () => {
         tokenNetworkFilter: {},
       },
       enabledNetworkMap: {
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.SEPOLIA]: true,
+        eip155: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.SEPOLIA]: true,
+        },
       },
       useExternalServices: true,
       useCurrencyRateCheck: true,
@@ -277,6 +282,9 @@ describe('EthOverview', () => {
 
     it('should open the Bridge URI when clicking on Bridge button on supported network', async () => {
       const mockedStore = configureMockStore([thunk])({
+        appState: {
+          confirmationExchangeRates: {},
+        },
         ...store,
         metamask: {
           ...mockStore.metamask,

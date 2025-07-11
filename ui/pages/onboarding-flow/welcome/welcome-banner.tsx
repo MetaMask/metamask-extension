@@ -9,7 +9,6 @@ import {
 } from '../../../components/component-library';
 import {
   BlockSize,
-  FontWeight,
   TextTransform,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -17,6 +16,8 @@ import TermsOfUsePopup from '../../../components/app/terms-of-use-popup';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setTermsOfUseLastAgreed } from '../../../store/actions';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function WelcomeBanner({ onAccept }: { onAccept: () => void }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -42,7 +43,6 @@ export default function WelcomeBanner({ onAccept }: { onAccept: () => void }) {
         </Text>
         <Text
           variant={TextVariant.bodyLgMedium}
-          fontWeight={FontWeight.Normal}
           className="welcome-banner__description"
           marginBottom={6}
         >
@@ -54,7 +54,7 @@ export default function WelcomeBanner({ onAccept }: { onAccept: () => void }) {
           size={ButtonBaseSize.Lg}
           onClick={() => setShowTermsOfUse(true)}
           endIconName={IconName.Arrow2Right}
-          fontWeight={FontWeight.Medium}
+          textTransform={TextTransform.Uppercase}
         >
           {t('welcomeGetStarted')}
         </ButtonBase>

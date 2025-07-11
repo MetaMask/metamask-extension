@@ -17,19 +17,13 @@ import {
   EthereumSignTypedDataTypes,
 } from '@trezor/connect-web';
 import type { Provider } from '@metamask/network-controller';
+import * as Browser from 'webextension-polyfill';
 import {
   OffscreenCommunicationTarget,
   TrezorAction,
 } from '../shared/constants/offscreen-communication';
 import type { Preferences } from '../app/scripts/controllers/preferences-controller';
-
-declare class Platform {
-  openTab: (opts: { url: string }) => void;
-
-  closeCurrentWindow: () => void;
-
-  openExtensionInBrowser?: (_1?, _1?, condition?: boolean) => void;
-}
+import type ExtensionPlatform from '../app/scripts/platforms/extension';
 
 declare class MessageSender {
   documentId?: string;
@@ -45,10 +39,19 @@ declare class MessageSender {
   url?: string;
 }
 
+type SerializedLedgerError = {
+  message: string;
+  name?: string;
+  stack?: string;
+  // from TransportStatusError
+  statusCode?: number;
+  statusText?: string;
+};
+
 export type LedgerIframeMissingResponse = {
   success: false;
   payload: {
-    error: Error;
+    error: SerializedLedgerError;
   };
 };
 
@@ -67,6 +70,8 @@ type ResponseType =
  * input values so that the correct type can be inferred in the callback
  * method
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type sendMessage = {
   (
     extensionId: string,
@@ -81,6 +86,8 @@ type sendMessage = {
     options?: Record<string, unknown>,
     callback?: (response: Record<string, unknown>) => void,
   ): void;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <T extends EthereumSignTypedDataTypes>(
     message: {
       target: OffscreenCommunicationTarget.trezorOffscreen;
@@ -157,7 +164,7 @@ type sendMessage = {
         v: number;
         s: string;
         r: string;
-        error?: Error;
+        error?: SerializedLedgerError;
       };
     }) => void,
   ): Promise<{ v: number; s: string; r: string }>;
@@ -173,7 +180,7 @@ type sendMessage = {
         publicKey: string;
         address: string;
         chainCode?: string;
-        error?: Error;
+        error?: SerializedLedgerError;
       };
     }) => void,
   ): Promise<{ publicKey: string; address: string; chainCode?: string }>;
@@ -190,7 +197,10 @@ type sendMessage = {
       target: OffscreenCommunicationTarget.ledgerOffscreen;
       action: LedgerAction.makeApp;
     },
-    callback: (response: { success: boolean; error?: Error }) => void,
+    callback: (response: {
+      success: boolean;
+      error?: SerializedLedgerError;
+    }) => void,
   ): Promise<boolean>;
   (
     message: {
@@ -276,7 +286,7 @@ type StateHooks = {
 };
 
 export declare global {
-  var platform: Platform;
+  var platform: ExtensionPlatform;
   // Sentry is undefined in dev, so use optional chaining
   var sentry: SentryObject | undefined;
 
@@ -286,9 +296,12 @@ export declare global {
 
   var stateHooks: StateHooks;
 
+  var browser: Browser;
+
   namespace jest {
     // The interface is being used for declaration merging, which is an acceptable exception to this rule.
-    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/naming-convention
     interface Matchers<R> {
       toBeFulfilled(): Promise<R>;
       toNeverResolve(): Promise<R>;
@@ -298,6 +311,8 @@ export declare global {
   /**
    * Unions T with U; U's properties will override T's properties
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   type OverridingUnion<T, U> = Omit<T, keyof U> & U;
 
   function setPreference(key: keyof Preferences, value: boolean);
@@ -310,6 +325,8 @@ export declare global {
 // esnext
 
 export declare global {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   type PromiseWithResolvers<T> = {
     promise: Promise<T>;
     resolve: (value: T | PromiseLike<T>) => void;
@@ -332,6 +349,8 @@ export declare global {
      * const { promise, resolve, reject } = Promise.withResolvers<T>();
      * ```
      */
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     withResolvers<T>(): PromiseWithResolvers<T>;
   }
 }

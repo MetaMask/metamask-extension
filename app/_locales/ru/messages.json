@@ -68,13 +68,6 @@
     "message": "Я прочитал(-а) $1 и согласен(-на) с ними",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Получайте доступ к кошельку с помощью секретной фразы для восстановления"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask не может восстановить ваш пароль. Мы используем вашу cекретную фразу для восстановления, чтобы подтвердить ваше право собственности, восстановить ваш кошелек и установить новый пароль. Сначала введите секретную фразу для восстановления, которую вы получили при создании кошелька. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Доступ к камере..."
   },
@@ -917,9 +910,6 @@
   },
   "bridgeTo": {
     "message": "Мост в"
-  },
-  "bridgeToChain": {
-    "message": "Мост к $1"
   },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Если вы добавили этот токен вручную. Убедитесь, что вы осознаете риски для своих средств, прежде чем использовать мост."
@@ -2236,9 +2226,6 @@
   "floatAmountToken": {
     "message": "Сумма токена должна быть целым числом"
   },
-  "followUsOnTwitter": {
-    "message": "Подпишитесь на нас в Twitter"
-  },
   "forbiddenIpfsGateway": {
     "message": "Запрещенный шлюз IPFS. Укажите шлюз CID"
   },
@@ -2398,9 +2385,6 @@
   },
   "hideAdvancedDetails": {
     "message": "Скрыть дополнительные сведения"
-  },
-  "hideSeedPhrase": {
-    "message": "Скрыть сид-фразу"
   },
   "hideSentitiveInfo": {
     "message": "Скрыть конфиденциальную информацию"
@@ -4423,18 +4407,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Понятно"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Всегда храните свою секретную фразу для восстановления в надежном и потайном месте."
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Хотите снова сделать резервную копию секретной фразы для восстановления?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Никогда никому не сообщайте никому свою секретную фразу для восстановления."
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Команда MetaMask никогда неожиданно не запросит вашу секретную фразу для восстановления"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Ваша секретная фраза для восстановления контролирует все ваши счета."
   },
@@ -4622,9 +4594,6 @@
   "revealSensitiveContent": {
     "message": "Показать конфиденциальный контент"
   },
-  "revealTheSeedPhrase": {
-    "message": "Показать сид-фразу"
-  },
   "review": {
     "message": "Проверить"
   },
@@ -4732,29 +4701,11 @@
   "seeDetails": {
     "message": "См. подробности"
   },
-  "seedPhraseConfirm": {
-    "message": "Подтвердите секретную фразу для восстановления"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Подтвердите секретную фразу для восстановления"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Запишите и храните в нескольких секретных местах."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Храните в банковской ячейке."
-  },
   "seedPhraseIntroTitle": {
     "message": "Защитите свой кошелек"
   },
   "seedPhraseReq": {
     "message": "Секретные фразы для восстановления содержат 12, 15, 18, 21 или 24 слова"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Запишите эту секретную фразу для восстановления из 12 слов и сохраните ее в надежном месте, доступном только вам."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Запишите секретную фразу для восстановления"
   },
   "select": {
     "message": "Выбрать"
@@ -4826,16 +4777,8 @@
   "sendSelectSendAsset": {
     "message": "Выберите актив для отправки"
   },
-  "sendSpecifiedTokens": {
-    "message": "Отправить $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Нажатие этой кнопки немедленно инициирует транзакцию обмена. Прежде чем продолжить, проверьте детали транзакции."
-  },
-  "sendTokenAsToken": {
-    "message": "Отправить $1 как $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Идет отправка $1"
@@ -5107,9 +5050,6 @@
   },
   "smartAccountReject": {
     "message": "Не использовать смарт-счет"
-  },
-  "smartAccountRequestFor": {
-    "message": "Запрос на"
   },
   "smartAccountSameAccount": {
     "message": "Один и тот же счет, более умные функции."
@@ -6159,9 +6099,6 @@
   "time": {
     "message": "Время"
   },
-  "tips": {
-    "message": "Советы"
-  },
   "tipsForUsingAWallet": {
     "message": "Советы по использованию кошелька"
   },
@@ -6452,9 +6389,6 @@
   },
   "unlock": {
     "message": "Разблокировать"
-  },
-  "unlockMessage": {
-    "message": "Децентрализованная сеть ждет вас"
   },
   "unpin": {
     "message": "Открепить"

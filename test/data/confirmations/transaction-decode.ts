@@ -588,11 +588,19 @@ export const SOURCIFY_RESPONSE_NESTED = {
 export const FOUR_BYTE_RESPONSE = {
   results: [
     {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       created_at: '2022-09-01T00:00:00.000Z',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       text_signature: 'someFunction(address,uint256)',
     },
     {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       created_at: '2021-09-01T00:00:00.000Z',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       text_signature: 'someOtherFunction(address,uint256)',
     },
   ],
@@ -601,7 +609,11 @@ export const FOUR_BYTE_RESPONSE = {
 export const FOUR_BYTE_RESPONSE_NESTED = {
   results: [
     {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       created_at: '2022-09-01T00:00:00.000Z',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       text_signature:
         'permit(address,((address,uint160,uint48,uint48)[],address,uint256),bytes)',
     },

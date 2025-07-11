@@ -1,0 +1,13 @@
+.multichain-account-menu-popover {
+  &__dialog {
+    max-height: 100%;
+  }
+
+  .popover-content {
+    border-radius: 0;
+  }
+
+  &__list {
+    overflow: auto;
+  }
+}

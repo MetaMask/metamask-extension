@@ -11,6 +11,7 @@ import type {
   MultichainBalancesControllerState,
   MultichainAssetsRatesControllerState,
   MultichainAssetsControllerState,
+  DeFiPositionsControllerState,
 } from '@metamask/assets-controllers';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
@@ -114,6 +115,8 @@ export type ControllerStatePropertiesEnumerated = {
   isRampCardClosed: AppStateControllerState['isRampCardClosed'];
   newPrivacyPolicyToastClickedOrClosed: AppStateControllerState['newPrivacyPolicyToastClickedOrClosed'];
   newPrivacyPolicyToastShownDate: AppStateControllerState['newPrivacyPolicyToastShownDate'];
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: AppStateControllerState['hadAdvancedGasFeesSetPriorToMigration92_3'];
   qrHardware: AppStateControllerState['qrHardware'];
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
@@ -127,11 +130,12 @@ export type ControllerStatePropertiesEnumerated = {
   termsOfUseLastAgreed?: AppStateControllerState['termsOfUseLastAgreed'];
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];
   slides: AppStateControllerState['slides'];
-  upgradeSplashPageAcknowledgedForAccounts: AppStateControllerState['upgradeSplashPageAcknowledgedForAccounts'];
   isUpdateAvailable: AppStateControllerState['isUpdateAvailable'];
   updateModalLastDismissedAt: AppStateControllerState['updateModalLastDismissedAt'];
   lastUpdatedAt: AppStateControllerState['lastUpdatedAt'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
+  enableEnforcedSimulations: AppStateControllerState['enableEnforcedSimulations'];
+  enableEnforcedSimulationsForTransactions: AppStateControllerState['enableEnforcedSimulationsForTransactions'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
   quotesInitialLoadTime: BridgeControllerState['quotesInitialLoadTime'];
@@ -147,6 +151,8 @@ export type ControllerStatePropertiesEnumerated = {
   currencyRates: CurrencyRateState['currencyRates'];
   unapprovedDecryptMsgs: DecryptMessageControllerState['unapprovedDecryptMsgs'];
   unapprovedDecryptMsgCount: DecryptMessageControllerState['unapprovedDecryptMsgCount'];
+  allDeFiPositions: DeFiPositionsControllerState['allDeFiPositions'];
+  allDeFiPositionsCount: DeFiPositionsControllerState['allDeFiPositionsCount'];
   unapprovedEncryptionPublicKeyMsgs: EncryptionPublicKeyControllerState['unapprovedEncryptionPublicKeyMsgs'];
   unapprovedEncryptionPublicKeyMsgCount: EncryptionPublicKeyControllerState['unapprovedEncryptionPublicKeyMsgCount'];
   ensResolutionsByAddress: EnsControllerState['ensResolutionsByAddress'];
@@ -298,6 +304,8 @@ export type ControllerStatePropertiesEnumerated = {
   isAccountSyncingReadyToBeDispatched: UserStorageController.UserStorageControllerState['isAccountSyncingReadyToBeDispatched'];
   isAccountSyncingInProgress: UserStorageController.UserStorageControllerState['isAccountSyncingInProgress'];
   hasNetworkSyncingSyncedAtLeastOnce?: UserStorageController.UserStorageControllerState['hasNetworkSyncingSyncedAtLeastOnce'];
+  isContactSyncingEnabled: UserStorageController.UserStorageControllerState['isContactSyncingEnabled'];
+  isContactSyncingInProgress: UserStorageController.UserStorageControllerState['isContactSyncingInProgress'];
 };
 
 type ControllerStateTypesMerged = AccountsControllerState &
@@ -315,6 +323,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
   CronjobControllerState &
   CurrencyRateState &
   DecryptMessageControllerState &
+  DeFiPositionsControllerState &
   EncryptionPublicKeyControllerState &
   EnsControllerState & {
     // This is necessary due to the nested unions and intersections in the `GasFeeState` type definition
@@ -358,6 +367,8 @@ type ControllerStateTypesMerged = AccountsControllerState &
   UserOperationControllerState &
   UserStorageController.UserStorageControllerState;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type IsEquivalent<A, B> = [A, B] extends [B, A] ? true : false;
 
 /**
@@ -366,11 +377,12 @@ export type IsEquivalent<A, B> = [A, B] extends [B, A] ? true : false;
  *
  * Evaluates to `never` if the type definition is wrong or incomplete.
  */
-export type FlattenedBackgroundStateProxy = IsEquivalent<
-  ControllerStatePropertiesEnumerated,
-  ControllerStateTypesMerged
-> extends true
-  ? { isInitialized: boolean } & {
-      [P in keyof ControllerStatePropertiesEnumerated]: ControllerStatePropertiesEnumerated[P];
-    }
-  : never;
+export type FlattenedBackgroundStateProxy =
+  IsEquivalent<
+    ControllerStatePropertiesEnumerated,
+    ControllerStateTypesMerged
+  > extends true
+    ? { isInitialized: boolean } & {
+        [P in keyof ControllerStatePropertiesEnumerated]: ControllerStatePropertiesEnumerated[P];
+      }
+    : never;

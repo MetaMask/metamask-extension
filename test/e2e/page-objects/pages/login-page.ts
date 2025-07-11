@@ -10,7 +10,9 @@ class LoginPage {
 
   private welcomeBackMessage: object;
 
-  private forgotPasswordButton: object;
+  private forgotPasswordButton: string;
+
+  private resetPasswordModalButton: string;
 
   private incorrectPasswordMessage: { css: string; text: string };
 
@@ -22,16 +24,19 @@ class LoginPage {
       css: '[data-testid="unlock-page-title"]',
       text: 'Welcome back',
     };
-    this.forgotPasswordButton = {
-      text: 'Forgot password?',
-      tag: 'a',
-    };
+    this.forgotPasswordButton = '[data-testid="unlock-forgot-password-button"]';
+
+    this.resetPasswordModalButton =
+      '[data-testid="reset-password-modal-button"]';
+
     this.incorrectPasswordMessage = {
-      css: '.MuiFormHelperText-root.Mui-error.MuiFormHelperText-filled',
-      text: 'Incorrect password',
+      css: '[data-testid="unlock-page-help-text"]',
+      text: 'Password is incorrect. Please try again.',
     };
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -57,6 +62,8 @@ class LoginPage {
     await this.driver.clickElement(this.unlockButton);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_incorrectPasswordMessageIsDisplayed(): Promise<void> {
     console.log('Checking if incorrect password message is displayed');
     const isDisplayed = await this.driver.waitForSelector(
@@ -70,6 +77,9 @@ class LoginPage {
   async gotoResetPasswordPage(): Promise<void> {
     console.log('Navigating to reset password page');
     await this.driver.clickElement(this.forgotPasswordButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.resetPasswordModalButton,
+    );
   }
 }
 

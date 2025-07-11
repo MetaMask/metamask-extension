@@ -68,6 +68,7 @@
             "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
           },
           "destAsset": {
+            "assetId": "asset:0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
             "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "chainId": 1,
             "symbol": "USDC",
@@ -102,6 +103,7 @@
             "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
           },
           "destAsset": {
+            "assetId": "asset:0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
             "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
             "chainId": 42161,
             "symbol": "USDC",
@@ -146,6 +148,7 @@
       "destChainId": 42161,
       "destTokenAmount": "3104601473",
       "destAsset": {
+        "assetId": "asset:0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
         "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
         "chainId": 42161,
         "symbol": "USDC",
@@ -196,6 +199,7 @@
             "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
           },
           "destAsset": {
+            "assetId": "asset:0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
             "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "chainId": 1,
             "symbol": "USDC",
