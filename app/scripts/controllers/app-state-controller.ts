@@ -70,6 +70,8 @@ export type AppStateControllerState = {
   // This key is only used for checking if the user had set advancedGasFee
   // prior to Migration 92.3 where we split out the setting to support
   // multiple networks.
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
   qrHardware: Json;
   nftsDropdownState: Json;
@@ -85,7 +87,6 @@ export type AppStateControllerState = {
   snapsInstallPrivacyWarningShown?: boolean;
   slides: CarouselSlide[];
   throttledOrigins: ThrottledOrigins;
-  upgradeSplashPageAcknowledgedForAccounts: string[];
   isUpdateAvailable: boolean;
   updateModalLastDismissedAt: number | null;
   lastUpdatedAt: number | null;
@@ -198,12 +199,13 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   isRampCardClosed: false,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   surveyLinkLastClickedOrClosed: null,
   switchedNetworkNeverShowMessage: false,
   slides: [],
   throttledOrigins: {},
-  upgradeSplashPageAcknowledgedForAccounts: [],
   isUpdateAvailable: false,
   updateModalLastDismissedAt: null,
   lastUpdatedAt: null,
@@ -314,6 +316,8 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: {
     persist: true,
     anonymous: true,
@@ -368,10 +372,6 @@ const controllerMetadata = {
   },
   throttledOrigins: {
     persist: false,
-    anonymous: true,
-  },
-  upgradeSplashPageAcknowledgedForAccounts: {
-    persist: true,
     anonymous: true,
   },
   isUpdateAvailable: {
@@ -673,21 +673,6 @@ export class AppStateController extends BaseController<
    */
   setLastActiveTime(): void {
     this.#resetTimer();
-  }
-
-  /**
-   * Add account to list of accounts for which user has acknowledged
-   * smart account upgrade splash page.
-   *
-   * @param account
-   */
-  setSplashPageAcknowledgedForAccount(account: string): void {
-    this.update((state) => {
-      state.upgradeSplashPageAcknowledgedForAccounts = [
-        ...state.upgradeSplashPageAcknowledgedForAccounts,
-        account.toLowerCase(),
-      ];
-    });
   }
 
   /**

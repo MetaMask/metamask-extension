@@ -58,6 +58,8 @@ const MOCK_STATE: TestState = {
     },
     permissionHistory: {
       'https://test.dapp': {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         eth_accounts: {
           accounts: {
             '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1596681857076,
@@ -138,10 +140,13 @@ describe('MultichainAccountListMenu', () => {
     jest.clearAllMocks();
   });
 
-  it('displays important controls', () => {
-    const { getByText } = render();
+  it('displays important elements', () => {
+    const { getByText, getByTestId } = render();
 
     expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
+    expect(
+      getByTestId('multichain-account-menu-search-bar'),
+    ).toBeInTheDocument();
     expect(document.querySelector('[aria-label="Back"]')).toStrictEqual(null);
   });
 

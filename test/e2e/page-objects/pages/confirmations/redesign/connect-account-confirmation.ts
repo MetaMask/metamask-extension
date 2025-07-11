@@ -3,6 +3,10 @@ import { Driver } from '../../../../webdriver/driver';
 class ConnectAccountConfirmation {
   driver: Driver;
 
+  private readonly cancelConnectButton = {
+    testId: 'cancel-btn',
+  };
+
   private readonly confirmConnectButton = {
     testId: 'confirm-btn',
   };
@@ -32,6 +36,8 @@ class ConnectAccountConfirmation {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -46,6 +52,13 @@ class ConnectAccountConfirmation {
       throw e;
     }
     console.log(`Connect Account confirmation page is loaded`);
+  }
+
+  async cancelConnect(): Promise<void> {
+    console.log('Cancel connection on Connect Account confirmation page');
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.cancelConnectButton,
+    );
   }
 
   async confirmConnect(): Promise<void> {
@@ -72,6 +85,8 @@ class ConnectAccountConfirmation {
     await editButtons[1].click();
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_isConfirmButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.confirmConnectButton, {

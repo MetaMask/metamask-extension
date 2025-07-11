@@ -2,6 +2,8 @@ import { AssetType } from '@metamask/bridge-controller';
 import { Delegation } from './delegation';
 
 export enum TokenSymbol {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SEPOLIA_ETH = 'SepoliaETH',
   ETH = 'ETH',
   USDC = 'USDC',
@@ -20,8 +22,12 @@ export type TokenInfo = {
   decimals: number;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export enum REMOTE_MODES {
   SWAP = 'swap',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   DAILY_ALLOWANCE = 'daily-allowance',
 }
 

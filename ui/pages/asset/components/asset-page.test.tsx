@@ -26,6 +26,8 @@ jest.mock('../../../store/actions', () => ({
   tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
+jest.mock('../../../store/controller-actions/transaction-controller');
+
 // Mock the price chart
 jest.mock('react-chartjs-2', () => ({ Line: () => null }));
 
@@ -47,6 +49,8 @@ jest.mock('../../../../shared/constants/network', () => ({
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));
@@ -99,7 +103,9 @@ describe('AssetPage', () => {
       },
       useCurrencyRateCheck: true,
       preferences: {},
-      enabledNetworkMap: {},
+      enabledNetworkMap: {
+        eip155: {},
+      },
       internalAccounts: {
         accounts: {
           [selectedAccountAddress]: {

@@ -125,10 +125,10 @@ function getTracesSampleRate(sentryTarget) {
     return flags.sentry.tracesSampleRate;
   }
 
-  if (flags.circleci) {
+  if (flags.ci) {
     // Report very frequently on main branch, and never on other branches
     // (Unless you use a `flags = {"sentry": {"tracesSampleRate": x.xx}}` override)
-    if (flags.circleci.branch === 'main') {
+    if (flags.ci.branch === 'main') {
       return 0.015;
     }
     return 0;
@@ -142,19 +142,19 @@ function getTracesSampleRate(sentryTarget) {
 }
 
 /**
- * Get CircleCI tags passed from the test environment, through manifest.json,
+ * Get CI tags passed from the test environment, through manifest.json,
  * and give them to the Sentry client.
  */
-function setCircleCiTags() {
-  const { circleci } = getManifestFlags();
+function setCITags() {
+  const { ci } = getManifestFlags();
 
-  if (circleci?.enabled) {
-    Sentry.setTag('circleci.enabled', circleci.enabled);
-    Sentry.setTag('circleci.branch', circleci.branch);
-    Sentry.setTag('circleci.buildNum', circleci.buildNum);
-    Sentry.setTag('circleci.job', circleci.job);
-    Sentry.setTag('circleci.nodeIndex', circleci.nodeIndex);
-    Sentry.setTag('circleci.prNumber', circleci.prNumber);
+  if (ci?.enabled) {
+    Sentry.setTag('ci.enabled', ci.enabled);
+    Sentry.setTag('ci.branch', ci.branch);
+    Sentry.setTag('ci.commitHash', ci.commitHash);
+    Sentry.setTag('ci.job', ci.job);
+    Sentry.setTag('ci.matrixIndex', ci.matrixIndex);
+    Sentry.setTag('ci.prNumber', ci.prNumber);
   }
 }
 
@@ -270,7 +270,7 @@ function getSentryTarget() {
 async function getMetaMetricsEnabled() {
   const flags = getManifestFlags();
 
-  if (flags.circleci && flags.sentry.forceEnable) {
+  if (flags.ci && flags.sentry.forceEnable) {
     return true;
   }
 
@@ -325,7 +325,7 @@ function setSentryClient() {
   Sentry.registerSpanErrorInstrumentation();
   Sentry.init(clientOptions);
 
-  setCircleCiTags();
+  setCITags();
 
   addDebugListeners();
 

@@ -75,15 +75,21 @@ type Props = {
   redirectToOverview?: boolean;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type CreateAccountProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, Props>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type CreateAccountComponent = <C extends React.ElementType = 'form'>(
   props: CreateAccountProps<C>,
 ) => React.ReactElement | null;
 
 export const CreateAccount: CreateAccountComponent = React.memo(
   React.forwardRef(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     <C extends React.ElementType = 'form'>(
       {
         getNextAvailableAccountName,
@@ -155,10 +161,18 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               category: MetaMetricsEventCategory.Accounts,
               event: MetaMetricsEventName.AccountAdded,
               properties: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 account_type: MetaMetricsEventAccountType.Default,
                 location: 'Home',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 hd_entropy_index: hdEntropyIndex,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 chain_id_caip: scope,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 is_suggested_name:
                   !trimmedAccountName ||
                   trimmedAccountName === defaultAccountName,
@@ -180,9 +194,15 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                 category: MetaMetricsEventCategory.Accounts,
                 event: MetaMetricsEventName.AccountImportFailed,
                 properties: {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   account_type: MetaMetricsEventAccountType.Imported,
                   error: message,
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   hd_entropy_index: hdEntropyIndex,
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   chain_id_caip: scope,
                 },
               });
@@ -191,9 +211,15 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                 category: MetaMetricsEventCategory.Accounts,
                 event: MetaMetricsEventName.AccountAddFailed,
                 properties: {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   account_type: MetaMetricsEventAccountType.Default,
                   error: message,
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   hd_entropy_index: hdEntropyIndex,
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   chain_id_caip: scope,
                 },
               });

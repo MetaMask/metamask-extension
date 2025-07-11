@@ -2,6 +2,8 @@ import 'navigator.locks';
 import log from 'loglevel';
 import { OperationSafener } from './operation-safener';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const mockLocksRequest = jest.fn().mockImplementation((_, __, callback) => {
   try {
     return callback();

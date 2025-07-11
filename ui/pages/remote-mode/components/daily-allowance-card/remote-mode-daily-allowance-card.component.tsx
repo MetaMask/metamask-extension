@@ -33,6 +33,8 @@ import {
  * @param props.onRemove - Callback function triggered when the allowance is removed
  * @returns A card component displaying the daily allowance information
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeDailyAllowanceCard({
   dailyAllowance,
   onRemove,

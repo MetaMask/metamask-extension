@@ -6,6 +6,7 @@ import {
   JustifyContent,
   AlignItems,
   TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 type AccountDetailsRowProps = {
@@ -31,9 +32,28 @@ export const AccountDetailsRow = ({
       paddingRight={4}
       alignItems={AlignItems.center}
     >
-      <Text color={TextColor.textDefault}>{label}</Text>
-      <Box display={Display.Flex} alignItems={AlignItems.center}>
-        <Text color={TextColor.textAlternative}>{value}</Text>
+      <Text
+        color={TextColor.textDefault}
+        variant={TextVariant.bodyMdMedium}
+        paddingRight={12}
+      >
+        {label}
+      </Text>
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        style={{ minWidth: 0, flex: 1, justifyContent: 'flex-end' }}
+      >
+        <Text
+          color={TextColor.textAlternative}
+          variant={TextVariant.bodyMdMedium}
+          ellipsis
+          style={{
+            maxWidth: '150px',
+          }}
+        >
+          {value}
+        </Text>
         {endAccessory}
       </Box>
     </Box>

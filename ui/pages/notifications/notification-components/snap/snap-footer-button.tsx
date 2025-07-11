@@ -28,8 +28,14 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
         category: MetaMetricsEventCategory.NotificationInteraction,
         event: MetaMetricsEventName.NotificationDetailClicked,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           notification_id: props.notification.id,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           notification_type: props.notification.type,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           clicked_item: isExternal ? 'external_link' : 'internal_link',
         },
       });

@@ -32,7 +32,7 @@ import {
   selectERC20TokensByChain,
   getTokenNetworkFilter,
   getAllTokens,
-  getEnabledNetworks,
+  getEnabledNetworksByNamespace,
 } from '../../../selectors';
 import {
   addImportedTokens,
@@ -157,9 +157,11 @@ export const ImportTokensModal = ({ onClose }) => {
   const [actionMode, setActionMode] = useState(ACTION_MODES.CUSTOM_IMPORT);
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
-  const enabledNetworks = useSelector(getEnabledNetworks);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const [networkFilter, setNetworkFilter] = useState(
-    isGlobalNetworkSelectorRemoved ? enabledNetworks : tokenNetworkFilter,
+    isGlobalNetworkSelectorRemoved
+      ? enabledNetworksByNamespace
+      : tokenNetworkFilter,
   );
 
   // Determine if we should show the search tab

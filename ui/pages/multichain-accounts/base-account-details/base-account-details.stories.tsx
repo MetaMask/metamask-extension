@@ -2,6 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { EthAccountType, SolAccountType } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import configureStore from '../../../store/store';
 import { Box } from '../../../components/component-library';
 import { BaseAccountDetails } from './base-account-details';
@@ -26,8 +27,9 @@ const MOCK_ETH_ACCOUNT = {
     'eth_signTypedData_v3',
     'eth_signTypedData_v4',
   ],
+  scopes: ['eip155:1'],
   type: EthAccountType.Eoa,
-};
+} as InternalAccount;
 
 // Mock Solana Account
 const MOCK_SOLANA_ACCOUNT = {
@@ -53,22 +55,101 @@ const MOCK_SOLANA_ACCOUNT = {
     'solana_signAllTransactions',
     'solana_signMessage',
   ],
+  scopes: ['solana:mainnet'] as const,
   type: SolAccountType.DataAccount,
-};
+} as InternalAccount;
 
 // Minimal mock store data
-const createBaseMockStore = (account, address) => ({
+const createBaseMockStore = (account, address, walletName = 'Mock Wallet') => ({
   appState: {
     accountDetailsAddress: address,
   },
+  activeTab: {
+    id: 1,
+    title: 'Test Dapp',
+    origin: 'https://test-dapp.com',
+    protocol: 'https:',
+    url: 'https://test-dapp.com',
+  },
   metamask: {
+    useBlockie: false,
     internalAccounts: {
       accounts: {
-        [account.id]: account,
+        [account.id]: {
+          ...account,
+          address,
+        },
       },
       selectedAccount: account.id,
     },
-    useBlockie: false,
+    accountTree: {
+      wallets: {
+        'mock-wallet-id': {
+          id: 'mock-wallet-id',
+          metadata: {
+            name: walletName,
+          },
+          groups: {
+            'mock-wallet-id:default': {
+              id: 'mock-wallet-id:default',
+              metadata: {
+                name: 'Default',
+              },
+              accounts: [account.id],
+            },
+          },
+        },
+      },
+    },
+    networkConfigurationsByChainId: {
+      '0x1': {
+        chainId: '0x1',
+        name: 'Ethereum Mainnet',
+        nativeCurrency: 'ETH',
+        blockExplorerUrls: ['https://etherscan.io'],
+        rpcEndpoints: [
+          {
+            url: 'https://mainnet.infura.io/v3/your-project-id',
+            type: 'infura',
+            networkClientId: 'mainnet',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        defaultBlockExplorerUrlIndex: 0,
+      },
+    },
+    selectedNetworkClientId: 'mainnet',
+    accountsByChainId: {
+      '0x1': {
+        [address]: {
+          balance: '0x0',
+          address,
+        },
+      },
+    },
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: [address],
+        index: 0,
+        metadata: {
+          id: 'mock-hd-keyring-id',
+          name: 'HD Key Tree',
+        },
+      },
+    ],
+    permissionHistory: {
+      'https://test-dapp.com': {
+        eth_accounts: {
+          accounts: {
+            [address]: Date.now(),
+          },
+        },
+      },
+    },
+    pinnedAccountsList: [],
+    hiddenAccountsList: [],
+    connectedAccounts: [],
   },
 });
 
@@ -117,8 +198,11 @@ export default {
 // Ethereum Account Story
 export const EthereumAccount = {
   render: () => (
-    <StoryWrapper mockStore={createBaseMockStore(MOCK_ETH_ACCOUNT, MOCK_ETH_ACCOUNT.address)}>
-      <BaseAccountDetails />
+    <StoryWrapper mockStore={createBaseMockStore(MOCK_ETH_ACCOUNT, MOCK_ETH_ACCOUNT.address, 'My Ethereum Wallet')}>
+      <BaseAccountDetails
+        address={MOCK_ETH_ACCOUNT.address}
+        account={MOCK_ETH_ACCOUNT}
+      />
     </StoryWrapper>
   ),
 };
@@ -126,8 +210,11 @@ export const EthereumAccount = {
 // Solana Account Story
 export const SolanaAccount = {
   render: () => (
-    <StoryWrapper mockStore={createBaseMockStore(MOCK_SOLANA_ACCOUNT, MOCK_SOLANA_ACCOUNT.address)}>
-      <BaseAccountDetails />
+    <StoryWrapper mockStore={createBaseMockStore(MOCK_SOLANA_ACCOUNT, MOCK_SOLANA_ACCOUNT.address, 'My Solana Wallet')}>
+      <BaseAccountDetails
+        address={MOCK_SOLANA_ACCOUNT.address}
+        account={MOCK_SOLANA_ACCOUNT}
+      />
     </StoryWrapper>
   ),
 };
