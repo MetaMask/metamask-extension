@@ -98,7 +98,7 @@ export default function OnboardingWelcome({
     bufferedTrace?.({
       name: TraceName.OnboardingNewSrpCreateWallet,
       op: TraceOperation.OnboardingUserJourney,
-      parentContext: onboardingParentContext.current,
+      parentContext: onboardingParentContext?.current,
     });
 
     history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
@@ -117,7 +117,7 @@ export default function OnboardingWelcome({
     bufferedTrace?.({
       name: TraceName.OnboardingExistingSrpImport,
       op: TraceOperation.OnboardingUserJourney,
-      parentContext: onboardingParentContext.current,
+      parentContext: onboardingParentContext?.current,
     });
 
     history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
@@ -130,7 +130,7 @@ export default function OnboardingWelcome({
           name: TraceName.OnboardingSocialLoginAttempt,
           op: TraceOperation.OnboardingUserJourney,
           tags: { provider: socialConnectionType },
-          parentContext: onboardingParentContext.current,
+          parentContext: onboardingParentContext?.current,
         });
         const isNewUser = await dispatch(
           startOAuthLogin(
