@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -28,6 +27,17 @@ async function mockSwapSetup(mockServer: Mockttp) {
         statusCode: 200,
         json: { ETH: { USD: 2966.53 }, POL: { USD: 0.2322 } },
       })),
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/137/tokens')
+      .thenJson(200, {
+        tokens: [
+          { symbol: 'ETH', name: 'Ethereum', address: '0x0000000000000000000000000000000000000000' },
+          { symbol: 'POL', name: 'Polygon', address: '0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947' },
+          { symbol: 'TST', name: 'Test Token', address: '0x1234567890abcdef1234567890abcdef12345678' },
+          { symbol: 'DAI', name: 'Dai Stablecoin', address: '0x6b175474e89094c44da98b954eedeac495271d0f' },
+          { symbol: 'USDC', name: 'USD Coin', address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
+        ],
+      }),
   ];
 }
 function buildFixtures(title: string, chainId: number = 1337) {
@@ -68,10 +78,10 @@ describe('Multichain Asset List', function (this: Suite) {
   it('persists the preferred asset list preference when changing networks', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
-      async ({ driver }: { driver: Driver }) => {
+      async ({ driver, localNodes }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24.9978', 'POL');
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
@@ -92,10 +102,10 @@ describe('Multichain Asset List', function (this: Suite) {
   it('allows clicking into the asset details page of native token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
-      async ({ driver }: { driver: Driver }) => {
+      async ({ driver, localNodes }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24.9978', 'ETH');
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
@@ -111,10 +121,10 @@ describe('Multichain Asset List', function (this: Suite) {
   it('switches networks when clicking on send for a token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string, 1337),
-      async ({ driver }: { driver: Driver }) => {
+      async ({ driver, localNodes }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24.9978', 'ETH');
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
@@ -141,10 +151,10 @@ describe('Multichain Asset List', function (this: Suite) {
   it('switches networks when clicking on swap for a token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string, 137),
-      async ({ driver }: { driver: Driver }) => {
+      async ({ driver, localNodes }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24.9978', 'POL');
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
@@ -161,10 +171,10 @@ describe('Multichain Asset List', function (this: Suite) {
   it('shows correct asset and balance when swapping on a different chain', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
-      async ({ driver }: { driver: Driver }) => {
+      async ({ driver, localNodes }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24.9978', 'POL');
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         const assetListPage = new AssetListPage(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
