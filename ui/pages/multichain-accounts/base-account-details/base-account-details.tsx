@@ -209,6 +209,7 @@ export const BaseAccountDetails = ({
                 ariaLabel={t('next')}
                 onClick={handleShowAddress}
                 marginLeft={2}
+                data-testid="account-address-navigation-button"
               />
             }
           />
@@ -225,6 +226,7 @@ export const BaseAccountDetails = ({
                   history.push(walletRoute);
                 }}
                 marginLeft={2}
+                data-testid="wallet-details-link"
               />
             }
           />
