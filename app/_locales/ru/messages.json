@@ -5003,12 +5003,6 @@
   "slideMultiSrpTitle": {
     "message": "Добавьте несколько секретных фраз для восстановления"
   },
-  "slideRemoteModeDescription": {
-    "message": "Используйте свой холодный кошелек по беспроводной сети"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Холодное хранилище, быстрый доступ"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "Один и тот же адрес, более умные функции"
   },
