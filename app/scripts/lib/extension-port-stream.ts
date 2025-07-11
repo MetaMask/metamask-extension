@@ -139,7 +139,7 @@ const maybeParseChunkFrame = (input: unknown): ChunkFrame | false => {
     if (cc >= 48 && cc <= 57) {
       // '0'..'9'
       const digit = cc ^ 48; // character "0" is actually `0`
-      value = (value << 3) + (value << 1) + digit;
+      value = ((value << 3) + (value << 1) + digit) | 0;
       hasDigit = true;
       continue;
     }
