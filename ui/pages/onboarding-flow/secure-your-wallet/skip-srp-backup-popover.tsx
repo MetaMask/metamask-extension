@@ -72,8 +72,8 @@ export default function SkipSRPBackup({
         hd_entropy_index: hdEntropyIndex,
       },
     });
-    bufferedEndTrace({ name: TraceName.OnboardingNewSrpCreateWallet });
-    bufferedEndTrace({ name: TraceName.OnboardingJourneyOverall });
+    bufferedEndTrace?.({ name: TraceName.OnboardingNewSrpCreateWallet });
+    bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
 
     if (
       getBrowserName() === PLATFORM_FIREFOX ||

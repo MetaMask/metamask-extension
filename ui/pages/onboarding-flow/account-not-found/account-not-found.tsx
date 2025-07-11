@@ -49,11 +49,11 @@ export default function AccountNotFound() {
   };
 
   const onCreateNewAccount = () => {
-    bufferedTrace({
+    bufferedTrace?.({
       name: TraceName.OnboardingNewSocialCreateWallet,
       op: TraceOperation.OnboardingUserJourney,
       tags: { source: 'account_status_redirect' },
-      parentContext: onboardingParentContext.current,
+      parentContext: onboardingParentContext?.current,
     });
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
     history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
@@ -65,15 +65,15 @@ export default function AccountNotFound() {
       history.replace(ONBOARDING_WELCOME_ROUTE);
     }
     if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-      bufferedTrace({
+      bufferedTrace?.({
         name: TraceName.OnboardingExistingSocialAccountNotFound,
         op: TraceOperation.OnboardingUserJourney,
-        parentContext: onboardingParentContext.current,
+        parentContext: onboardingParentContext?.current,
       });
     }
     return () => {
       if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-        bufferedEndTrace({
+        bufferedEndTrace?.({
           name: TraceName.OnboardingExistingSocialAccountNotFound,
         });
       }

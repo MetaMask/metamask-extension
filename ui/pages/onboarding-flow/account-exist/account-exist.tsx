@@ -49,11 +49,11 @@ export default function AccountExist() {
   };
 
   const onDone = async () => {
-    bufferedTrace({
+    bufferedTrace?.({
       name: TraceName.OnboardingExistingSocialLogin,
       op: TraceOperation.OnboardingUserJourney,
       tags: { source: 'account_status_redirect' },
-      parentContext: onboardingParentContext.current,
+      parentContext: onboardingParentContext?.current,
     });
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
     history.replace(ONBOARDING_UNLOCK_ROUTE);
@@ -64,15 +64,17 @@ export default function AccountExist() {
       history.replace(ONBOARDING_WELCOME_ROUTE);
     }
     if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-      bufferedTrace({
+      bufferedTrace?.({
         name: TraceName.OnboardingNewSocialAccountExists,
         op: TraceOperation.OnboardingUserJourney,
-        parentContext: onboardingParentContext.current,
+        parentContext: onboardingParentContext?.current,
       });
     }
     return () => {
       if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        bufferedEndTrace({ name: TraceName.OnboardingNewSocialAccountExists });
+        bufferedEndTrace?.({
+          name: TraceName.OnboardingNewSocialAccountExists,
+        });
       }
     };
   }, [

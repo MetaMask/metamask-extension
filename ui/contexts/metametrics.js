@@ -63,9 +63,9 @@ import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
 
 /**
  * @typedef {UITrackEventMethod & {
- *   bufferedTrace: UITraceMethod,
- *   bufferedEndTrace: UIEndTraceMethod,
- *   onboardingParentContext: React.MutableRefObject<Span | null>
+ *   bufferedTrace?: UITraceMethod,
+ *   bufferedEndTrace?: UIEndTraceMethod,
+ *   onboardingParentContext?: React.MutableRefObject<Span | null>
  * }} MetaMetricsContextValue
  */
 
