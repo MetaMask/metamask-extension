@@ -1613,7 +1613,11 @@ export async function withSolanaAccountSnap(
   }
 
   if (withFixtureBuilder) {
-    fixtures = withFixtureBuilder(fixtures);
+    fixtures = withFixtureBuilder(fixtures).withEnabledNetworks({
+      solana: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+      },
+    });
   }
 
   await withFixtures(
