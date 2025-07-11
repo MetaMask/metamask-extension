@@ -1,10 +1,5 @@
 name: Stable Branch Sync
 
-permissions:
-  pull-requests: write
-  contents: write
-  issues: write
-
 on:
   push:
     branches:
