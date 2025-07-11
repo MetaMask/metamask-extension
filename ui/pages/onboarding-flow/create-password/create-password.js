@@ -216,7 +216,7 @@ export default function CreatePassword({
     bufferedTrace?.({
       name: TraceName.OnboardingPasswordSetupAttempt,
       op: TraceOperation.OnboardingUserJourney,
-      parentContext: onboardingParentContext.current,
+      parentContext: onboardingParentContext?.current,
     });
     return () => {
       bufferedEndTrace?.({ name: TraceName.OnboardingPasswordSetupAttempt });

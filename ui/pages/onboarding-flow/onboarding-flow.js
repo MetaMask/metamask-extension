@@ -184,7 +184,9 @@ export default function OnboardingFlow() {
       name: TraceName.OnboardingJourneyOverall,
       op: TraceOperation.OnboardingUserJourney,
     });
-    onboardingParentContext.current = trace;
+    if (onboardingParentContext) {
+      onboardingParentContext.current = trace;
+    }
   }, [onboardingParentContext, bufferedTrace]);
 
   const handleCreateNewAccount = async (password) => {
