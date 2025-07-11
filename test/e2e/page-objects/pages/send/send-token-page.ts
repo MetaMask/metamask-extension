@@ -190,6 +190,7 @@ class SendTokenPage {
       css: this.toastText,
       text: `You're now using ${networkName}`,
     });
+    console.log(`Network changed to ${networkName} successfully`);
   }
 
   async chooseNFTToSend(index = 0, timeout = 10000): Promise<void> {

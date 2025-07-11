@@ -27,17 +27,6 @@ async function mockSwapSetup(mockServer: Mockttp) {
         statusCode: 200,
         json: { ETH: { USD: 2966.53 }, POL: { USD: 0.2322 } },
       })),
-    await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/137/tokens')
-      .thenJson(200, {
-        tokens: [
-          { symbol: 'ETH', name: 'Ethereum', address: '0x0000000000000000000000000000000000000000' },
-          { symbol: 'POL', name: 'Polygon', address: '0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947' },
-          { symbol: 'TST', name: 'Test Token', address: '0x1234567890abcdef1234567890abcdef12345678' },
-          { symbol: 'DAI', name: 'Dai Stablecoin', address: '0x6b175474e89094c44da98b954eedeac495271d0f' },
-          { symbol: 'USDC', name: 'USD Coin', address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
-        ],
-      }),
   ];
 }
 function buildFixtures(title: string, chainId: number = 1337) {
