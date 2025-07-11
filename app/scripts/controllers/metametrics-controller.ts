@@ -257,6 +257,7 @@ const controllerMetadata = {
  * @property latestNonAnonymousEventTimestamp - The timestamp at which last non anonymous event is tracked.
  * @property fragments - Object keyed by UUID with stored fragments as values.
  * @property eventsBeforeMetricsOptIn - Array of queued events added before a user opts into metrics.
+ * @property tracesBeforeMetricsOptIn - Array of queued traces added before a user opts into metrics.
  * @property traits - Traits that are not derived from other state keys.
  * @property dataCollectionForMarketing - Flag to determine if data collection for marketing is enabled.
  * @property marketingCampaignCookieId - The marketing campaign cookie id.
