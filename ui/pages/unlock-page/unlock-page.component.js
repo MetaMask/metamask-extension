@@ -36,7 +36,7 @@ import {
 import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
-import { withSentryTrace } from '../../contexts/sentry-trace';
+import { withMetaMetrics } from '../../contexts/metametrics';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
@@ -464,4 +464,4 @@ class UnlockPage extends Component {
   }
 }
 
-export default withSentryTrace(UnlockPage);
+export default withMetaMetrics(UnlockPage);

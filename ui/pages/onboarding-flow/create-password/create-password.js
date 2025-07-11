@@ -53,7 +53,6 @@ import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils
 import { resetOAuthLoginState } from '../../../store/actions';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
-import { useSentryTrace } from '../../../contexts/sentry-trace';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
@@ -71,7 +70,8 @@ export default function CreatePassword({
   const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
-  const { bufferedTrace, bufferedEndTrace } = trackEvent;
+  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
+    trackEvent;
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
@@ -92,8 +92,6 @@ export default function CreatePassword({
   const analyticsIframeUrl = `https://start.metamask.io/?${new URLSearchParams(
     analyticsIframeQuery,
   )}`;
-
-  const { onboardingParentContext } = useSentryTrace();
 
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {

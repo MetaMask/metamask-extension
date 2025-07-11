@@ -9,6 +9,7 @@ import React, {
   useEffect,
   useRef,
   useCallback,
+  useContext,
 } from 'react';
 import PropTypes from 'prop-types';
 import { matchPath, useLocation } from 'react-router-dom';
@@ -63,7 +64,8 @@ import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
 /**
  * @typedef {UITrackEventMethod & {
  *   bufferedTrace: UITraceMethod,
- *   bufferedEndTrace: UIEndTraceMethod
+ *   bufferedEndTrace: UIEndTraceMethod,
+ *   onboardingParentContext: React.MutableRefObject<Span | null>
  * }} MetaMetricsContextValue
  */
 
@@ -82,6 +84,9 @@ export function MetaMetricsProvider({ children }) {
   const location = useLocation();
   const context = useSegmentContext();
   const isMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+
+  /** @type {React.MutableRefObject<Span | null>} */
+  const onboardingParentContext = useRef(null);
 
   // Sometimes we want to track context properties inside the event's "properties" object.
   const addContextPropsIntoEventProperties = useCallback(
@@ -203,6 +208,7 @@ export function MetaMetricsProvider({ children }) {
   const trackEventWithMethods = trackEvent;
   trackEventWithMethods.bufferedTrace = bufferedTrace;
   trackEventWithMethods.bufferedEndTrace = bufferedEndTrace;
+  trackEventWithMethods.onboardingParentContext = onboardingParentContext;
 
   return (
     <MetaMetricsContext.Provider value={trackEventWithMethods}>
@@ -245,4 +251,33 @@ export class LegacyMetaMetricsProvider extends Component {
   render() {
     return this.props.children;
   }
+}
+
+/**
+ * HOC for class components to access MetaMetricsContext
+ *
+ * @param {React.ComponentType} WrappedComponent - Component to wrap
+ * @returns {React.ComponentType} Wrapped component with MetaMetrics context
+ */
+export function withMetaMetrics(WrappedComponent) {
+  const WithMetaMetrics = (props) => {
+    const metaMetricsContext = useContext(MetaMetricsContext);
+
+    return (
+      <WrappedComponent
+        {...props}
+        // Pass the entire context as individual props for class components
+        trackEvent={metaMetricsContext}
+        bufferedTrace={metaMetricsContext.bufferedTrace}
+        bufferedEndTrace={metaMetricsContext.bufferedEndTrace}
+        onboardingParentContext={metaMetricsContext.onboardingParentContext}
+      />
+    );
+  };
+
+  WithMetaMetrics.displayName = `withMetaMetrics(${
+    WrappedComponent.displayName || WrappedComponent.name || 'Component'
+  })`;
+
+  return WithMetaMetrics;
 }

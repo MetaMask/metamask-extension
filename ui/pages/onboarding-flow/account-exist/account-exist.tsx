@@ -27,7 +27,6 @@ import {
   setFirstTimeFlowType,
 } from '../../../store/actions';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
-import { useSentryTrace } from '../../../contexts/sentry-trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -38,7 +37,7 @@ export default function AccountExist() {
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
-  const { onboardingParentContext } = useSentryTrace();
+  const { onboardingParentContext } = useContext(MetaMetricsContext);
   const { bufferedTrace, bufferedEndTrace } = useContext(MetaMetricsContext);
 
   const onLoginWithDifferentMethod = async () => {

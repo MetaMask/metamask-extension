@@ -16,7 +16,6 @@ import {
 import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { useSentryTrace } from '../../../contexts/sentry-trace';
 import { setFirstTimeFlowType, startOAuthLogin } from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
@@ -54,8 +53,6 @@ export default function OnboardingWelcome({
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
-  const { onboardingParentContext } = useSentryTrace();
-
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
   useEffect(() => {
@@ -84,7 +81,8 @@ export default function OnboardingWelcome({
     newAccountCreationInProgress,
   ]);
   const trackEvent = useContext(MetaMetricsContext);
-  const { bufferedTrace, bufferedEndTrace } = trackEvent;
+  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
+    trackEvent;
 
   const onCreateClick = useCallback(async () => {
     setIsLoggingIn(true);

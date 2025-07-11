@@ -42,7 +42,6 @@ import {
   getShowTermsOfUse,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import { useSentryTrace } from '../../contexts/sentry-trace';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   MetaMetricsEventCategory,
@@ -112,7 +111,7 @@ export default function OnboardingFlow() {
     'isFromSettingsSecurity',
   );
   const trackEvent = useContext(MetaMetricsContext);
-  const { bufferedTrace } = trackEvent;
+  const { bufferedTrace, onboardingParentContext } = trackEvent;
   const isUnlocked = useSelector(getIsUnlocked);
   const showTermsOfUse = useSelector(getShowTermsOfUse);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
@@ -124,7 +123,6 @@ export default function OnboardingFlow() {
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
-  const { updateOnboardingParentContext } = useSentryTrace();
 
   // If the user has not agreed to the terms of use, we show the banner
   // Otherwise, we show the login page
@@ -186,8 +184,8 @@ export default function OnboardingFlow() {
       name: TraceName.OnboardingJourneyOverall,
       op: TraceOperation.OnboardingUserJourney,
     });
-    updateOnboardingParentContext(trace);
-  }, [updateOnboardingParentContext, bufferedTrace]);
+    onboardingParentContext.current = trace;
+  }, [onboardingParentContext, bufferedTrace]);
 
   const handleCreateNewAccount = async (password) => {
     let newSecretRecoveryPhrase;
