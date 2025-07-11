@@ -957,11 +957,6 @@ class Driver {
     await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
 
-  async setClipboardPermission() {
-    await this.driver.setPermission('clipboard-read', 'granted');
-    await this.driver.setPermission('clipboard-write', 'granted');
-  }
-
   // Navigation
 
   /**
