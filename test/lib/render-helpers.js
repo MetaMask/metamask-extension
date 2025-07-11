@@ -23,7 +23,7 @@ const createMockTrackEvent = () => {
   Object.assign(mockTrackEvent, {
     bufferedTrace: () => Promise.resolve(),
     bufferedEndTrace: () => Promise.resolve(),
-    onboardingParentContext: { current: {} },
+    onboardingParentContext: { current: null },
   });
   return mockTrackEvent;
 };

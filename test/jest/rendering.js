@@ -18,7 +18,7 @@ const createMockTrackEvent = () => {
   Object.assign(mockTrackEvent, {
     bufferedTrace: jest.fn().mockResolvedValue(),
     bufferedEndTrace: jest.fn().mockResolvedValue(),
-    onboardingParentContext: { current: {} },
+    onboardingParentContext: { current: null },
   });
   return mockTrackEvent;
 };
