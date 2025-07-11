@@ -3,10 +3,7 @@ import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  loginWithoutBalanceValidation,
-  loginWithBalanceValidation,
-} from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
@@ -163,13 +160,11 @@ describe('Multichain Asset List', function (this: Suite) {
   });
   it('shows correct asset and balance when swapping on a different chain', async function () {
     await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        title: this.test?.fullTitle(),
-      },
+      buildFixtures(this.test?.fullTitle() as string),
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
+        await homePage.check_expectedBalanceIsDisplayed('24.9978', 'POL');
         const headerNavbar = new HeaderNavbar(driver);
         const assetListPage = new AssetListPage(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
@@ -177,7 +172,7 @@ describe('Multichain Asset List', function (this: Suite) {
         const swapPage = new SwapPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
-        await assetListPage.check_tokenItemNumber(1);
+        await assetListPage.check_tokenItemNumber(4);
         await assetListPage.clickOnAsset('Ethereum');
         await homePage.goToSwapTab();
         await sendPage.check_networkChange(NETWORK_NAME_MAINNET);
