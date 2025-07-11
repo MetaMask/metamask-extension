@@ -36,9 +36,13 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const header = await testDapp.getHeader();
 
           const connectionStatus = await header.getConnectionStatus();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(connectionStatus);
 
           const account = await header.getAccount();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(account, account1Short);
         },
       );
@@ -61,9 +65,13 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const header = await testDapp.getHeader();
 
           const connectionStatus = await header.getConnectionStatus();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(connectionStatus);
 
           const account = await header.getAccount();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(account, account1Short);
         },
       );
@@ -102,6 +110,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           // Verify we're not connected
           const connectionStatus = await header.getConnectionStatus();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertDisconnected(connectionStatus);
 
           // 2. Connect again
@@ -110,9 +120,13 @@ describe('Solana Wallet Standard - e2e tests', function () {
           // Verify successful connection
           const connectionStatusAfterConnect =
             await header.getConnectionStatus();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(connectionStatusAfterConnect);
 
           const account = await header.getAccount();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(account, account1Short);
         },
       );
@@ -165,6 +179,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           // Verify we're not connected
           const connectionStatus = await header.getConnectionStatus();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertDisconnected(connectionStatus);
         },
       );
@@ -184,15 +200,21 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const header = await testDapp.getHeader();
 
           const connectionStatus = await header.getConnectionStatus();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(connectionStatus);
 
           const account = await header.getAccount();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(account, account1Short);
 
           await header.disconnect();
 
           const connectionStatusAfterDisconnect =
             await header.getConnectionStatus();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertDisconnected(connectionStatusAfterDisconnect);
         },
       );
@@ -218,6 +240,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
           // Check that we're connected to the last selected account
           const header = await testDapp.getHeader();
           const account = await header.getAccount();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(account, account2Short);
 
           // Switch to the first account
@@ -229,6 +253,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           // Check that we're connected to the first account
           const account2 = await header.getAccount();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(account2, account1Short);
         },
       );
@@ -255,6 +281,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
           // Check that we're connected to the second account
           const header = await testDapp.getHeader();
           let account = await header.getAccount();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(account, account2Short);
 
           // Now switch to the first account
@@ -266,6 +294,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           // Check that we're still connected to the second account
           account = await header.getAccount();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(account, account2Short);
 
           // Switch back to the second account
@@ -277,6 +307,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           // Check that we're still connected to the second account
           account = await header.getAccount();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(account, account2Short);
         },
       );
@@ -297,12 +329,16 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           const header = await testDapp.getHeader();
           const account = await header.getAccount();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(account, account1Short);
 
           await driver.refresh();
 
           await testDapp.check_pageIsLoaded();
           const accountAfterRefresh = await header.getAccount();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(accountAfterRefresh, account1Short);
         },
       );
@@ -328,6 +364,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await testDapp.check_pageIsLoaded();
           const header = await testDapp.getHeader();
           const account = await header.getAccount();
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           assertConnected(account, account2Short);
         },
       );

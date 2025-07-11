@@ -165,6 +165,8 @@ export const Carousel = React.forwardRef(
 
       // Only track navigation when there's an actual change
       if (selectedIndex !== index) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         trackEvent({
           event: MetaMetricsEventName.BannerNavigated,
           category: MetaMetricsEventCategory.Banner,
@@ -268,6 +270,8 @@ export const Carousel = React.forwardRef(
                     return;
                   }
                   if (slide.href) {
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     global.platform.openTab({ url: slide.href });
                   }
                   onClick?.(slide.id);

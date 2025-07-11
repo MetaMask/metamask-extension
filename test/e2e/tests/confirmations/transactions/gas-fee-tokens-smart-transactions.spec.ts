@@ -32,7 +32,11 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
           hardfork: 'london',
         },
         testSpecificMock: (mockServer: MockttpServer) => {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           mockSimulationResponse(mockServer);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           mockSmartTransactionBatchRequests(mockServer, {
             transactionHashes: [TRANSACTION_HASH, TRANSACTION_HASH_2],
           });
@@ -89,7 +93,11 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
           hardfork: 'london',
         },
         testSpecificMock: (mockServer: MockttpServer) => {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           mockSimulationResponse(mockServer);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           mockSmartTransactionBatchRequests(mockServer, {
             transactionHashes: [TRANSACTION_HASH, TRANSACTION_HASH_2],
             error: true,

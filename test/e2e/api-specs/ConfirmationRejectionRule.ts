@@ -39,6 +39,8 @@ export class ConfirmationsRejectRule implements Rule {
 
   async beforeRequest(_: unknown, call: Call) {
     await new Promise((resolve, reject) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       addToQueue({
         name: 'beforeRequest',
         resolve,
@@ -109,6 +111,8 @@ export class ConfirmationsRejectRule implements Rule {
 
   async afterRequest(_: unknown, call: Call) {
     await new Promise((resolve, reject) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       addToQueue({
         name: 'afterRequest',
         resolve,
@@ -183,6 +187,8 @@ export class ConfirmationsRejectRule implements Rule {
 
   async afterResponse(_: unknown, call: Call) {
     await new Promise((resolve, reject) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       addToQueue({
         name: 'afterResponse',
         resolve,

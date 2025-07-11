@@ -127,6 +127,8 @@ export const AppHeaderUnlockedContent = ({
     origin !== browser.runtime.id;
 
   const handleMainMenuOpened = () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       event: MetaMetricsEventName.NavMainMenuOpened,
       category: MetaMetricsEventCategory.Navigation,
@@ -208,6 +210,8 @@ export const AppHeaderUnlockedContent = ({
               onClick={() => {
                 dispatch(toggleAccountMenu());
 
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 trackEvent({
                   event: MetaMetricsEventName.NavAccountMenuOpened,
                   category: MetaMetricsEventCategory.Navigation,

@@ -217,6 +217,8 @@ const AssetListControlBar = ({
 
   const handleTokenImportModal = () => {
     dispatch(showImportTokensModal());
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.TokenImportButtonClicked,
@@ -235,6 +237,8 @@ const AssetListControlBar = ({
   const handleRefresh = () => {
     dispatch(detectTokens());
     closePopover();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Tokens,
       event: MetaMetricsEventName.TokenListRefreshed,
@@ -255,6 +259,8 @@ const AssetListControlBar = ({
     }
     // loop through allNetworkClientIds and call checkAndUpdateAllNftsOwnershipStatus for each one
     allNetworkClientIds.forEach((networkClientId) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       checkAndUpdateAllNftsOwnershipStatus(networkClientId);
     });
   };

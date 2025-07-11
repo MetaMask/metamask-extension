@@ -551,10 +551,14 @@ function MultichainBridgeTransactionDetailsModal({
             size={ButtonSize.Md}
             variant={ButtonVariant.Link}
             onClick={() => {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
               global.platform.openTab({
                 url: getTransactionUrl(id, chain),
               });
 
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
               trackEvent({
                 event: MetaMetricsEventName.ExternalLinkClicked,
                 category: MetaMetricsEventCategory.Navigation,

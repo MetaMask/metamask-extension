@@ -19,6 +19,8 @@ describe('Editing Confirm Transaction', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         new HomePage(driver).goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.check_completedTxNumberDisplayedInActivity();

@@ -72,6 +72,8 @@ export class SwapPage {
     // Enter source token
     const native = await this.page.$(`text=/${options.from}/`);
     if (!native && options.from) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.swapFromDropDown.click();
       await this.selectTokenFromList(options.from);
     }

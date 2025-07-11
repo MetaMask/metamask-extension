@@ -328,6 +328,8 @@ export class UserStorageMockttpController {
       server,
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.paths
       .get(path)
       ?.server.forGet(pathRegexps[path])
@@ -335,6 +337,8 @@ export class UserStorageMockttpController {
       .thenCallback((request) =>
         this.onGet(path, request, overrides?.getStatusCode),
       );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.paths
       .get(path)
       ?.server.forPut(pathRegexps[path])
@@ -342,6 +346,8 @@ export class UserStorageMockttpController {
       .thenCallback((request) =>
         this.onPut(path, request, overrides?.putStatusCode),
       );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.paths
       .get(path)
       ?.server.forDelete(pathRegexps[path])

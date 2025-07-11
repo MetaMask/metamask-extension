@@ -460,10 +460,14 @@ function compareDecodingAPIResponse(
 export async function clickHeaderInfoBtn(driver: Driver) {
   const confirmation = new Confirmation(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   confirmation.clickHeaderAccountDetailsButton();
 }
 
 export async function assertHeaderInfoBalance() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
 }
 
@@ -480,6 +484,8 @@ export async function assertPastedAddress() {
 }
 
 export async function assertRejectedSignature() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   testDapp.assertUserRejectedRequest();
 }
 

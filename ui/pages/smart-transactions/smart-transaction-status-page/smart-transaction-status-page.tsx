@@ -140,6 +140,8 @@ const PortfolioSmartTransactionStatusUrl = ({
     if (!isSmartTransactionPending || isWiderThanNotificationWidth) {
       onCloseExtension();
     }
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     global.platform.openTab({
       url: portfolioSmartTransactionStatusUrl,
     });

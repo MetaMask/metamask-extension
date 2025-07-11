@@ -126,6 +126,8 @@ const useHistoricalPricesEvm = ({
 
     setLoading(true);
     const timePeriod = fromIso8601DurationToPriceApiTimePeriod(timeRange);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     fetchWithCache({
       url: `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timePeriod}`,
       cacheOptions: { cacheRefreshTime: 5 * MINUTE },
@@ -214,6 +216,8 @@ const useHistoricalPricesNonEvm = ({
       }
     };
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     fetchPrices();
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
