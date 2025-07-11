@@ -397,9 +397,10 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
       result.push({
         ...baseDescription,
         label: t('permission_transactionDetailsInsightOrigin'),
-        description: t('permission_transactionDetailsInsightOriginDescription', [
-          getSnapNameComponent(subjectName),
-        ]),
+        description: t(
+          'permission_transactionDetailsInsightOriginDescription',
+          [getSnapNameComponent(subjectName)],
+        ),
         leftIcon: IconName.Explore,
       });
     }

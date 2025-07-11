@@ -7155,7 +7155,7 @@ __metadata:
 
 "@metamask/snaps-controllers@file:../snaps/packages/snaps-controllers::locator=metamask-crx%40workspace%3A.":
   version: 14.0.2
-  resolution: "@metamask/snaps-controllers@file:../snaps/packages/snaps-controllers#../snaps/packages/snaps-controllers::hash=d6d062&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/snaps-controllers@file:../snaps/packages/snaps-controllers#../snaps/packages/snaps-controllers::hash=31a3af&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/approval-controller": "npm:^7.1.3"
     "@metamask/base-controller": "npm:^8.0.1"
@@ -7190,13 +7190,13 @@ __metadata:
   peerDependenciesMeta:
     "@metamask/snaps-execution-environments":
       optional: true
-  checksum: 10/394ff0640c95ccece57356f20c9357253354b22fe03ca7d9f82c75b50f6d02792f2f5eae7ea532ca1385340909059ef8ad494ee51ce939e12299a3e108ef09de
+  checksum: 10/42337f95ef7d79d0518210cccef20233092b602fc44b4603096bc15e881282f7c7cd04d7ee6e4574356d5aa14cf4d410c376aae8ba4eab908a24e1e55182e23f
   languageName: node
   linkType: hard
 
 "@metamask/snaps-execution-environments@file:../snaps/packages/snaps-execution-environments::locator=metamask-crx%40workspace%3A.":
   version: 10.0.0
-  resolution: "@metamask/snaps-execution-environments@file:../snaps/packages/snaps-execution-environments#../snaps/packages/snaps-execution-environments::hash=99206f&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/snaps-execution-environments@file:../snaps/packages/snaps-execution-environments#../snaps/packages/snaps-execution-environments::hash=a97004&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/object-multiplex": "npm:^2.1.0"
@@ -7208,7 +7208,7 @@ __metadata:
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.4.2"
     readable-stream: "npm:^3.6.2"
-  checksum: 10/3abd3b5e40a9b76cce5560b487dad3e1c3608bcadfbff03426c4279dd762b9c80cb9b62855e73f7581fbea38e1fd505b0606b9bcf4685cda4a5b3c2501559bfc
+  checksum: 10/0c2735ed628cfd4b1d0334417ce4a27ffd61399e66f0882421886d36e23d1a28dc17903af1d03e32758aebf7aa20f4da883d563ef270b08cd610d1c5560da7ec
   languageName: node
   linkType: hard
 
@@ -7224,9 +7224,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-rpc-methods@file:../snaps-rpc-methods::locator=%40metamask%2Fsnaps-controllers%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-controllers%23..%2Fsnaps%2Fpackages%2Fsnaps-controllers%3A%3Ahash%3Dd6d062%26locator%3Dmetamask-crx%2540workspace%253A.":
+"@metamask/snaps-rpc-methods@file:../snaps-rpc-methods::locator=%40metamask%2Fsnaps-controllers%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-controllers%23..%2Fsnaps%2Fpackages%2Fsnaps-controllers%3A%3Ahash%3D31a3af%26locator%3Dmetamask-crx%2540workspace%253A.":
   version: 13.3.0
-  resolution: "@metamask/snaps-rpc-methods@file:../snaps-rpc-methods#../snaps-rpc-methods::hash=8195ed&locator=%40metamask%2Fsnaps-controllers%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-controllers%23..%2Fsnaps%2Fpackages%2Fsnaps-controllers%3A%3Ahash%3Dd6d062%26locator%3Dmetamask-crx%2540workspace%253A."
+  resolution: "@metamask/snaps-rpc-methods@file:../snaps-rpc-methods#../snaps-rpc-methods::hash=22f083&locator=%40metamask%2Fsnaps-controllers%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-controllers%23..%2Fsnaps%2Fpackages%2Fsnaps-controllers%3A%3Ahash%3D31a3af%26locator%3Dmetamask-crx%2540workspace%253A."
   dependencies:
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/permission-controller": "npm:^11.0.6"
@@ -7236,13 +7236,13 @@ __metadata:
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.4.2"
     "@noble/hashes": "npm:^1.7.1"
-  checksum: 10/9c92803e60f43f9c1bf3b840895c8d8713bc19e82791a16df88ad7d87b9f68174d739e3a6cf9959c614c42df1a5e9c0d3714b9431fc37e711cd184312e292cdf
+  checksum: 10/e06a2f3e1571285650e3e7433b514f1133c640d4fce0fb24d4cfeeb6b51d2ec443bea7a7365976bedbca6ed9f353d08e8af6e15f80f9c822b2408f332cea3c3a
   languageName: node
   linkType: hard
 
 "@metamask/snaps-rpc-methods@file:../snaps/packages/snaps-rpc-methods::locator=metamask-crx%40workspace%3A.":
   version: 13.3.0
-  resolution: "@metamask/snaps-rpc-methods@file:../snaps/packages/snaps-rpc-methods#../snaps/packages/snaps-rpc-methods::hash=8195ed&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/snaps-rpc-methods@file:../snaps/packages/snaps-rpc-methods#../snaps/packages/snaps-rpc-methods::hash=22f083&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/permission-controller": "npm:^11.0.6"
@@ -7252,26 +7252,26 @@ __metadata:
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.4.2"
     "@noble/hashes": "npm:^1.7.1"
-  checksum: 10/9c92803e60f43f9c1bf3b840895c8d8713bc19e82791a16df88ad7d87b9f68174d739e3a6cf9959c614c42df1a5e9c0d3714b9431fc37e711cd184312e292cdf
+  checksum: 10/e06a2f3e1571285650e3e7433b514f1133c640d4fce0fb24d4cfeeb6b51d2ec443bea7a7365976bedbca6ed9f353d08e8af6e15f80f9c822b2408f332cea3c3a
   languageName: node
   linkType: hard
 
 "@metamask/snaps-sdk@file:../snaps/packages/snaps-sdk::locator=metamask-crx%40workspace%3A.":
   version: 9.1.0
-  resolution: "@metamask/snaps-sdk@file:../snaps/packages/snaps-sdk#../snaps/packages/snaps-sdk::hash=cbde6d&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/snaps-sdk@file:../snaps/packages/snaps-sdk#../snaps/packages/snaps-sdk::hash=86e2f6&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/providers": "npm:^22.1.0"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.4.2"
-  checksum: 10/ed6abceaf3a41ce15b2e0b175bdc9735f71d4557f1ce4af382b1d7c667cb8d747d2bd3ea483af3bb08f125d7bc347dcccca3cafba4a27d85a0e75d4959c2a3b3
+  checksum: 10/afd87fddca350029fd73c97cb7f657a4d97b6c7a93b58b8ad8544a1738d527087f624a346cac6bbd4eb3eed937ffcfeeae53f28ce45b168f2fbe3c039952eb7d
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@file:../snaps-utils::locator=%40metamask%2Fsnaps-controllers%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-controllers%23..%2Fsnaps%2Fpackages%2Fsnaps-controllers%3A%3Ahash%3Dd6d062%26locator%3Dmetamask-crx%2540workspace%253A.":
+"@metamask/snaps-utils@file:../snaps-utils::locator=%40metamask%2Fsnaps-controllers%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-controllers%23..%2Fsnaps%2Fpackages%2Fsnaps-controllers%3A%3Ahash%3D31a3af%26locator%3Dmetamask-crx%2540workspace%253A.":
   version: 11.0.0
-  resolution: "@metamask/snaps-utils@file:../snaps-utils#../snaps-utils::hash=06108c&locator=%40metamask%2Fsnaps-controllers%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-controllers%23..%2Fsnaps%2Fpackages%2Fsnaps-controllers%3A%3Ahash%3Dd6d062%26locator%3Dmetamask-crx%2540workspace%253A."
+  resolution: "@metamask/snaps-utils@file:../snaps-utils#../snaps-utils::hash=6939a7&locator=%40metamask%2Fsnaps-controllers%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-controllers%23..%2Fsnaps%2Fpackages%2Fsnaps-controllers%3A%3Ahash%3D31a3af%26locator%3Dmetamask-crx%2540workspace%253A."
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
@@ -7297,13 +7297,13 @@ __metadata:
     semver: "npm:^7.5.4"
     ses: "npm:^1.13.1"
     validate-npm-package-name: "npm:^5.0.0"
-  checksum: 10/98cb1f79b889069e9f1d03b5b60d7d0e099ad160421632e96e7eeafe510a4bdfe4e48bd4f28b87f31d6c89377ebc8953fcb5a15bb0a66ac0ecb4fb3e5f876e95
+  checksum: 10/645ffe5a59afd5f7e493164f6488810adfe79102cdaedcabccc54d4055eaaa65e2c28655fc5d1fe0bb2f7f7a8a20d0b70ac49566a4cd5734c5d2575821d1d24b
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@file:../snaps-utils::locator=%40metamask%2Fsnaps-execution-environments%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-execution-environments%23..%2Fsnaps%2Fpackages%2Fsnaps-execution-environments%3A%3Ahash%3D99206f%26locator%3Dmetamask-crx%2540workspace%253A.":
+"@metamask/snaps-utils@file:../snaps-utils::locator=%40metamask%2Fsnaps-execution-environments%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-execution-environments%23..%2Fsnaps%2Fpackages%2Fsnaps-execution-environments%3A%3Ahash%3Da97004%26locator%3Dmetamask-crx%2540workspace%253A.":
   version: 11.0.0
-  resolution: "@metamask/snaps-utils@file:../snaps-utils#../snaps-utils::hash=06108c&locator=%40metamask%2Fsnaps-execution-environments%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-execution-environments%23..%2Fsnaps%2Fpackages%2Fsnaps-execution-environments%3A%3Ahash%3D99206f%26locator%3Dmetamask-crx%2540workspace%253A."
+  resolution: "@metamask/snaps-utils@file:../snaps-utils#../snaps-utils::hash=6939a7&locator=%40metamask%2Fsnaps-execution-environments%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-execution-environments%23..%2Fsnaps%2Fpackages%2Fsnaps-execution-environments%3A%3Ahash%3Da97004%26locator%3Dmetamask-crx%2540workspace%253A."
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
@@ -7329,13 +7329,13 @@ __metadata:
     semver: "npm:^7.5.4"
     ses: "npm:^1.13.1"
     validate-npm-package-name: "npm:^5.0.0"
-  checksum: 10/98cb1f79b889069e9f1d03b5b60d7d0e099ad160421632e96e7eeafe510a4bdfe4e48bd4f28b87f31d6c89377ebc8953fcb5a15bb0a66ac0ecb4fb3e5f876e95
+  checksum: 10/645ffe5a59afd5f7e493164f6488810adfe79102cdaedcabccc54d4055eaaa65e2c28655fc5d1fe0bb2f7f7a8a20d0b70ac49566a4cd5734c5d2575821d1d24b
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@file:../snaps-utils::locator=%40metamask%2Fsnaps-rpc-methods%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-rpc-methods%23..%2Fsnaps%2Fpackages%2Fsnaps-rpc-methods%3A%3Ahash%3D8195ed%26locator%3Dmetamask-crx%2540workspace%253A.":
+"@metamask/snaps-utils@file:../snaps-utils::locator=%40metamask%2Fsnaps-rpc-methods%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-rpc-methods%23..%2Fsnaps%2Fpackages%2Fsnaps-rpc-methods%3A%3Ahash%3D22f083%26locator%3Dmetamask-crx%2540workspace%253A.":
   version: 11.0.0
-  resolution: "@metamask/snaps-utils@file:../snaps-utils#../snaps-utils::hash=06108c&locator=%40metamask%2Fsnaps-rpc-methods%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-rpc-methods%23..%2Fsnaps%2Fpackages%2Fsnaps-rpc-methods%3A%3Ahash%3D8195ed%26locator%3Dmetamask-crx%2540workspace%253A."
+  resolution: "@metamask/snaps-utils@file:../snaps-utils#../snaps-utils::hash=6939a7&locator=%40metamask%2Fsnaps-rpc-methods%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-rpc-methods%23..%2Fsnaps%2Fpackages%2Fsnaps-rpc-methods%3A%3Ahash%3D22f083%26locator%3Dmetamask-crx%2540workspace%253A."
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
@@ -7361,13 +7361,13 @@ __metadata:
     semver: "npm:^7.5.4"
     ses: "npm:^1.13.1"
     validate-npm-package-name: "npm:^5.0.0"
-  checksum: 10/98cb1f79b889069e9f1d03b5b60d7d0e099ad160421632e96e7eeafe510a4bdfe4e48bd4f28b87f31d6c89377ebc8953fcb5a15bb0a66ac0ecb4fb3e5f876e95
+  checksum: 10/645ffe5a59afd5f7e493164f6488810adfe79102cdaedcabccc54d4055eaaa65e2c28655fc5d1fe0bb2f7f7a8a20d0b70ac49566a4cd5734c5d2575821d1d24b
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@file:../snaps-utils::locator=%40metamask%2Fsnaps-rpc-methods%40file%3A..%2Fsnaps-rpc-methods%23..%2Fsnaps-rpc-methods%3A%3Ahash%3D8195ed%26locator%3D%2540metamask%252Fsnaps-controllers%2540file%253A..%252Fsnaps%252Fpackages%252Fsnaps-controllers%2523..%252Fsnaps%252Fpackages%252Fsnaps-controllers%253A%253Ahash%253Dd6d062%2526locator%253Dmetamask-crx%252540workspace%25253A.":
+"@metamask/snaps-utils@file:../snaps-utils::locator=%40metamask%2Fsnaps-rpc-methods%40file%3A..%2Fsnaps-rpc-methods%23..%2Fsnaps-rpc-methods%3A%3Ahash%3D22f083%26locator%3D%2540metamask%252Fsnaps-controllers%2540file%253A..%252Fsnaps%252Fpackages%252Fsnaps-controllers%2523..%252Fsnaps%252Fpackages%252Fsnaps-controllers%253A%253Ahash%253D31a3af%2526locator%253Dmetamask-crx%252540workspace%25253A.":
   version: 11.0.0
-  resolution: "@metamask/snaps-utils@file:../snaps-utils#../snaps-utils::hash=06108c&locator=%40metamask%2Fsnaps-rpc-methods%40file%3A..%2Fsnaps-rpc-methods%23..%2Fsnaps-rpc-methods%3A%3Ahash%3D8195ed%26locator%3D%2540metamask%252Fsnaps-controllers%2540file%253A..%252Fsnaps%252Fpackages%252Fsnaps-controllers%2523..%252Fsnaps%252Fpackages%252Fsnaps-controllers%253A%253Ahash%253Dd6d062%2526locator%253Dmetamask-crx%252540workspace%25253A."
+  resolution: "@metamask/snaps-utils@file:../snaps-utils#../snaps-utils::hash=6939a7&locator=%40metamask%2Fsnaps-rpc-methods%40file%3A..%2Fsnaps-rpc-methods%23..%2Fsnaps-rpc-methods%3A%3Ahash%3D22f083%26locator%3D%2540metamask%252Fsnaps-controllers%2540file%253A..%252Fsnaps%252Fpackages%252Fsnaps-controllers%2523..%252Fsnaps%252Fpackages%252Fsnaps-controllers%253A%253Ahash%253D31a3af%2526locator%253Dmetamask-crx%252540workspace%25253A."
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
@@ -7393,13 +7393,13 @@ __metadata:
     semver: "npm:^7.5.4"
     ses: "npm:^1.13.1"
     validate-npm-package-name: "npm:^5.0.0"
-  checksum: 10/98cb1f79b889069e9f1d03b5b60d7d0e099ad160421632e96e7eeafe510a4bdfe4e48bd4f28b87f31d6c89377ebc8953fcb5a15bb0a66ac0ecb4fb3e5f876e95
+  checksum: 10/645ffe5a59afd5f7e493164f6488810adfe79102cdaedcabccc54d4055eaaa65e2c28655fc5d1fe0bb2f7f7a8a20d0b70ac49566a4cd5734c5d2575821d1d24b
   languageName: node
   linkType: hard
 
 "@metamask/snaps-utils@file:../snaps/packages/snaps-utils::locator=metamask-crx%40workspace%3A.":
   version: 11.0.0
-  resolution: "@metamask/snaps-utils@file:../snaps/packages/snaps-utils#../snaps/packages/snaps-utils::hash=06108c&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/snaps-utils@file:../snaps/packages/snaps-utils#../snaps/packages/snaps-utils::hash=6939a7&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
@@ -7425,7 +7425,7 @@ __metadata:
     semver: "npm:^7.5.4"
     ses: "npm:^1.13.1"
     validate-npm-package-name: "npm:^5.0.0"
-  checksum: 10/98cb1f79b889069e9f1d03b5b60d7d0e099ad160421632e96e7eeafe510a4bdfe4e48bd4f28b87f31d6c89377ebc8953fcb5a15bb0a66ac0ecb4fb3e5f876e95
+  checksum: 10/645ffe5a59afd5f7e493164f6488810adfe79102cdaedcabccc54d4055eaaa65e2c28655fc5d1fe0bb2f7f7a8a20d0b70ac49566a4cd5734c5d2575821d1d24b
   languageName: node
   linkType: hard
 
