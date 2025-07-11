@@ -8,7 +8,6 @@ import {
 import {
   getCrossChainTokenExchangeRates,
   getCrossChainMetaMaskCachedBalances,
-  isGlobalNetworkSelectorRemoved,
   getEnabledNetworks,
 } from '../selectors';
 import {
@@ -63,23 +62,20 @@ export const useAccountTotalCrossChainFiatBalance = (
   );
 
   const filteredBalances = useMemo(() => {
-    if (isGlobalNetworkSelectorRemoved) {
-      return formattedTokensWithBalancesPerChain
-        .map((balances) => {
-          if (
-            Object.keys(enabledNetworksByNamespace).includes(
-              balances.chainId.toString(),
-            )
-          ) {
-            return balances;
-          }
-          return null;
-        })
-        .filter(
-          (balance): balance is FormattedTokensWithBalances => balance !== null,
-        );
-    }
-    return formattedTokensWithBalancesPerChain;
+    return formattedTokensWithBalancesPerChain
+      .map((balances) => {
+        if (
+          Object.keys(enabledNetworksByNamespace).includes(
+            balances.chainId.toString(),
+          )
+        ) {
+          return balances;
+        }
+        return null;
+      })
+      .filter(
+        (balance): balance is FormattedTokensWithBalances => balance !== null,
+      );
   }, [formattedTokensWithBalancesPerChain, enabledNetworksByNamespace]);
 
   const tokenFiatBalancesCrossChains = useMemo(
