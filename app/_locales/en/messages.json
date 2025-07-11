@@ -4464,6 +4464,22 @@
     "message": "Allow $1 to see the origin (URI) of websites that suggest transactions. This can be used for anti-phishing and security solutions.",
     "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission. $1 is the snap name."
   },
+  "permission_transactionDetailsInsight": {
+    "message": "Fetch and display transaction details insights.",
+    "description": "The description for the `endowment:transaction-details-insight` permission"
+  },
+  "permission_transactionDetailsInsightDescription": {
+    "message": "Allow $1 to decode transactions and show insights within the MetaMask UI. This can be used for anti-phishing and security solutions.",
+    "description": "An extended description for the `endowment:transaction-details-insight` permission. $1 is the snap name."
+  },
+  "permission_transactionDetailsInsightOrigin": {
+    "message": "See the origins of websites that suggest transaction details",
+    "description": "The description for the `transactionDetailsOrigin` caveat, to be used with the `endowment:transaction-details-insight` permission"
+  },
+  "permission_transactionDetailsInsightOriginDescription": {
+    "message": "Allow $1 to see the origin (URI) of websites that suggest transaction details. This can be used for anti-phishing and security solutions.",
+    "description": "An extended description for the `transactionDetailsOrigin` caveat, to be used with the `endowment:transaction-details-insight` permission. $1 is the snap name."
+  },
   "permission_unknown": {
     "message": "Unknown permission: $1",
     "description": "$1 is the name of a requested permission that is not recognized."

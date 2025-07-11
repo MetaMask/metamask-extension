@@ -369,6 +369,43 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
 
     return result;
   },
+  [EndowmentPermissions['endowment:transaction-details-insight']]: ({
+    t,
+    permissionValue,
+    subjectName,
+  }) => {
+    const baseDescription = {
+      leftIcon: IconName.Speedometer,
+      weight: PermissionWeight.endowment_transactionDetailsInsight,
+    };
+
+    const result = [
+      {
+        ...baseDescription,
+        label: t('permission_transactionDetailsInsight'),
+        description: t('permission_transactionDetailsInsightDescription', [
+          getSnapNameComponent(subjectName),
+        ]),
+      },
+    ];
+
+    if (
+      isNonEmptyArray(permissionValue.caveats) &&
+      permissionValue.caveats[0].type === SnapCaveatType.TransactionDetailsOrigin &&
+      permissionValue.caveats[0].value
+    ) {
+      result.push({
+        ...baseDescription,
+        label: t('permission_transactionDetailsInsightOrigin'),
+        description: t('permission_transactionDetailsInsightOriginDescription', [
+          getSnapNameComponent(subjectName),
+        ]),
+        leftIcon: IconName.Explore,
+      });
+    }
+
+    return result;
+  },
   [EndowmentPermissions['endowment:cronjob']]: ({ t, subjectName }) => ({
     label: t('permission_cronjob'),
     description: t('permission_cronjobDescription', [
