@@ -20,7 +20,16 @@ describe('Switch network - ', function (this: Suite) {
   it('Switch networks to existing and new networks', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            preferences: { showTestNetworks: true },
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x539': true,
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           const standardMocks = [
