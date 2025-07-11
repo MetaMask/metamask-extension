@@ -243,8 +243,8 @@ export class LegacyMetaMetricsProvider extends Component {
     const trackEventWithMethods = this.context;
     return {
       trackEvent: trackEventWithMethods,
-      bufferedTrace: trackEventWithMethods.bufferedTrace,
-      bufferedEndTrace: trackEventWithMethods.bufferedEndTrace,
+      bufferedTrace: trackEventWithMethods?.bufferedTrace,
+      bufferedEndTrace: trackEventWithMethods?.bufferedEndTrace,
     };
   }
 
@@ -267,9 +267,9 @@ export function withMetaMetrics(WrappedComponent) {
       <WrappedComponent
         {...props}
         trackEvent={metaMetricsContext}
-        bufferedTrace={metaMetricsContext.bufferedTrace}
-        bufferedEndTrace={metaMetricsContext.bufferedEndTrace}
-        onboardingParentContext={metaMetricsContext.onboardingParentContext}
+        bufferedTrace={metaMetricsContext?.bufferedTrace}
+        bufferedEndTrace={metaMetricsContext?.bufferedEndTrace}
+        onboardingParentContext={metaMetricsContext?.onboardingParentContext}
       />
     );
   };

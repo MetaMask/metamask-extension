@@ -144,8 +144,8 @@ export default function CreatePassword({
 
     await importWithRecoveryPhrase(password, secretRecoveryPhrase);
 
-    bufferedEndTrace({ name: TraceName.OnboardingExistingSrpImport });
-    bufferedEndTrace({ name: TraceName.OnboardingJourneyOverall });
+    bufferedEndTrace?.({ name: TraceName.OnboardingExistingSrpImport });
+    bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
 
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -187,8 +187,8 @@ export default function CreatePassword({
     }
 
     if (isSocialLoginFlow) {
-      bufferedEndTrace({ name: TraceName.OnboardingNewSocialCreateWallet });
-      bufferedEndTrace({ name: TraceName.OnboardingJourneyOverall });
+      bufferedEndTrace?.({ name: TraceName.OnboardingNewSocialCreateWallet });
+      bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
     }
 
     trackEvent({

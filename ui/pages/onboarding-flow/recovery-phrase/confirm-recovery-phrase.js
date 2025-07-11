@@ -149,8 +149,8 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         hd_entropy_index: hdEntropyIndex,
       },
     });
-    bufferedEndTrace({ name: TraceName.OnboardingNewSrpCreateWallet });
-    bufferedEndTrace({ name: TraceName.OnboardingJourneyOverall });
+    bufferedEndTrace?.({ name: TraceName.OnboardingNewSrpCreateWallet });
+    bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
 
     const nextRoute =
       getBrowserName() === PLATFORM_FIREFOX || isFromReminder

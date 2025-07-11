@@ -193,7 +193,7 @@ export function startOAuthLogin(
       let seedlessAuthSuccess = false;
       let isNewUser = false;
       try {
-        bufferedTrace({
+        bufferedTrace?.({
           name: TraceName.OnboardingOAuthSeedlessAuthenticate,
           op: TraceOperation.OnboardingSecurityOp,
         });
@@ -205,18 +205,18 @@ export function startOAuthLogin(
         const errorMessage =
           error instanceof Error ? error.message : 'Unknown error';
 
-        bufferedTrace({
+        bufferedTrace?.({
           name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
           op: TraceOperation.OnboardingError,
           tags: { errorMessage },
         });
-        bufferedEndTrace({
+        bufferedEndTrace?.({
           name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
         });
 
         throw error;
       } finally {
-        bufferedEndTrace({
+        bufferedEndTrace?.({
           name: TraceName.OnboardingOAuthSeedlessAuthenticate,
           data: { success: seedlessAuthSuccess },
         });

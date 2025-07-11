@@ -155,7 +155,7 @@ export default class OAuthService {
     let providerLoginSuccess = false;
     let redirectUrlFromOAuth = null;
     try {
-      this.#bufferedTrace({
+      this.#bufferedTrace?.({
         name: TraceName.OnboardingOAuthProviderLogin,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -198,18 +198,18 @@ export default class OAuthService {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
-      this.#bufferedTrace({
+      this.#bufferedTrace?.({
         name: TraceName.OnboardingOAuthProviderLoginError,
         op: TraceOperation.OnboardingError,
         tags: { errorMessage },
       });
-      this.#bufferedEndTrace({
+      this.#bufferedEndTrace?.({
         name: TraceName.OnboardingOAuthProviderLoginError,
       });
 
       throw error;
     } finally {
-      this.#bufferedEndTrace({
+      this.#bufferedEndTrace?.({
         name: TraceName.OnboardingOAuthProviderLogin,
         data: { success: providerLoginSuccess },
       });
@@ -217,7 +217,7 @@ export default class OAuthService {
 
     let getAuthTokensSuccess = false;
     try {
-      this.#bufferedTrace({
+      this.#bufferedTrace?.({
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -232,18 +232,18 @@ export default class OAuthService {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
-      this.#bufferedTrace({
+      this.#bufferedTrace?.({
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
         op: TraceOperation.OnboardingError,
         tags: { errorMessage },
       });
-      this.#bufferedEndTrace({
+      this.#bufferedEndTrace?.({
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
       });
 
       throw error;
     } finally {
-      this.#bufferedEndTrace({
+      this.#bufferedEndTrace?.({
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
         data: { success: getAuthTokensSuccess },
       });

@@ -149,15 +149,15 @@ class UnlockPage extends Component {
         },
       );
       if (this.passwordLoginAttemptTraceCtx) {
-        this.context.bufferedEndTrace({
+        this.context.bufferedEndTrace?.({
           name: TraceName.OnboardingPasswordLoginAttempt,
         });
         this.passwordLoginAttemptTraceCtx = null;
       }
-      this.context.bufferedEndTrace({
+      this.context.bufferedEndTrace?.({
         name: TraceName.OnboardingExistingSocialLogin,
       });
-      this.context.bufferedEndTrace({
+      this.context.bufferedEndTrace?.({
         name: TraceName.OnboardingJourneyOverall,
       });
     } catch (error) {
