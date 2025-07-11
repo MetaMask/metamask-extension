@@ -1,4 +1,4 @@
-import { migrate, version } from './170.1.1';
+import { migrate, version } from './170.1';
 
 const oldVersion = 170;
 
