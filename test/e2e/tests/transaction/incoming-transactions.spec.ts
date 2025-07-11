@@ -95,6 +95,11 @@ describe('Incoming Transactions', function () {
         fixtures: new FixtureBuilder()
           .withUseBasicFunctionalityEnabled()
           .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockAccountsApi,
@@ -125,6 +130,11 @@ describe('Incoming Transactions', function () {
       {
         fixtures: new FixtureBuilder()
           .withUseBasicFunctionalityEnabled()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
@@ -147,6 +157,11 @@ describe('Incoming Transactions', function () {
       {
         fixtures: new FixtureBuilder()
           .withUseBasicFunctionalityEnabled()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
@@ -169,6 +184,11 @@ describe('Incoming Transactions', function () {
       {
         fixtures: new FixtureBuilder()
           .withUseBasicFunctionalityDisabled()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockAccountsApi,
@@ -193,6 +213,11 @@ describe('Incoming Transactions', function () {
               type: TransactionType.incoming,
             },
           ])
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockAccountsApi,
