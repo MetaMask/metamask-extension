@@ -7155,7 +7155,11 @@ __metadata:
 
 "@metamask/snaps-controllers@file:../snaps/packages/snaps-controllers::locator=metamask-crx%40workspace%3A.":
   version: 14.0.2
+<<<<<<< HEAD
   resolution: "@metamask/snaps-controllers@file:../snaps/packages/snaps-controllers#../snaps/packages/snaps-controllers::hash=31a3af&locator=metamask-crx%40workspace%3A."
+=======
+  resolution: "@metamask/snaps-controllers@file:../snaps/packages/snaps-controllers#../snaps/packages/snaps-controllers::hash=b4588c&locator=metamask-crx%40workspace%3A."
+>>>>>>> 7bf326587c (Commit yarn.lock)
   dependencies:
     "@metamask/approval-controller": "npm:^7.1.3"
     "@metamask/base-controller": "npm:^8.0.1"
@@ -7190,13 +7194,21 @@ __metadata:
   peerDependenciesMeta:
     "@metamask/snaps-execution-environments":
       optional: true
+<<<<<<< HEAD
   checksum: 10/42337f95ef7d79d0518210cccef20233092b602fc44b4603096bc15e881282f7c7cd04d7ee6e4574356d5aa14cf4d410c376aae8ba4eab908a24e1e55182e23f
+=======
+  checksum: 10/244dbacf941dfa4890af71636304a80c4fe5dd3be924b370d6febbe7ea0533230a2a7c9ad0f1012cb80ccae99697b41e47393e35d056cb0fbcf23d7d1b1d4b1d
+>>>>>>> 7bf326587c (Commit yarn.lock)
   languageName: node
   linkType: hard
 
 "@metamask/snaps-execution-environments@file:../snaps/packages/snaps-execution-environments::locator=metamask-crx%40workspace%3A.":
   version: 10.0.0
+<<<<<<< HEAD
   resolution: "@metamask/snaps-execution-environments@file:../snaps/packages/snaps-execution-environments#../snaps/packages/snaps-execution-environments::hash=a97004&locator=metamask-crx%40workspace%3A."
+=======
+  resolution: "@metamask/snaps-execution-environments@file:../snaps/packages/snaps-execution-environments#../snaps/packages/snaps-execution-environments::hash=a834f4&locator=metamask-crx%40workspace%3A."
+>>>>>>> 7bf326587c (Commit yarn.lock)
   dependencies:
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/object-multiplex": "npm:^2.1.0"
@@ -7208,7 +7220,11 @@ __metadata:
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.4.2"
     readable-stream: "npm:^3.6.2"
+<<<<<<< HEAD
   checksum: 10/0c2735ed628cfd4b1d0334417ce4a27ffd61399e66f0882421886d36e23d1a28dc17903af1d03e32758aebf7aa20f4da883d563ef270b08cd610d1c5560da7ec
+=======
+  checksum: 10/d9aecc4f72b1a5b27e2b68c5f3a9bbec19706f65b748e79a0a8dc6ed8148071365b5b9a212c345d48ccd0daf1c29504eb8e5746ff3114f30bfa00426d3092496
+>>>>>>> 7bf326587c (Commit yarn.lock)
   languageName: node
   linkType: hard
 
@@ -7224,9 +7240,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "@metamask/snaps-rpc-methods@file:../snaps-rpc-methods::locator=%40metamask%2Fsnaps-controllers%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-controllers%23..%2Fsnaps%2Fpackages%2Fsnaps-controllers%3A%3Ahash%3D31a3af%26locator%3Dmetamask-crx%2540workspace%253A.":
   version: 13.3.0
   resolution: "@metamask/snaps-rpc-methods@file:../snaps-rpc-methods#../snaps-rpc-methods::hash=22f083&locator=%40metamask%2Fsnaps-controllers%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-controllers%23..%2Fsnaps%2Fpackages%2Fsnaps-controllers%3A%3Ahash%3D31a3af%26locator%3Dmetamask-crx%2540workspace%253A."
+=======
+"@metamask/snaps-rpc-methods@file:../snaps-rpc-methods::locator=%40metamask%2Fsnaps-controllers%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-controllers%23..%2Fsnaps%2Fpackages%2Fsnaps-controllers%3A%3Ahash%3Db4588c%26locator%3Dmetamask-crx%2540workspace%253A.":
+  version: 13.3.0
+  resolution: "@metamask/snaps-rpc-methods@file:../snaps-rpc-methods#../snaps-rpc-methods::hash=bdc491&locator=%40metamask%2Fsnaps-controllers%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-controllers%23..%2Fsnaps%2Fpackages%2Fsnaps-controllers%3A%3Ahash%3Db4588c%26locator%3Dmetamask-crx%2540workspace%253A."
+>>>>>>> 7bf326587c (Commit yarn.lock)
   dependencies:
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/permission-controller": "npm:^11.0.6"
@@ -7236,13 +7258,21 @@ __metadata:
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.4.2"
     "@noble/hashes": "npm:^1.7.1"
+<<<<<<< HEAD
   checksum: 10/e06a2f3e1571285650e3e7433b514f1133c640d4fce0fb24d4cfeeb6b51d2ec443bea7a7365976bedbca6ed9f353d08e8af6e15f80f9c822b2408f332cea3c3a
+=======
+  checksum: 10/661c4f0f5d33cbe9dcbd5dbc488b35440c8f8bb29cc6d3c0cc76248e02c4f5c8f337c8b817ea9d2296f9016dd32e03cb0cdd9cecc0a5f806cff13d1f0e631bdd
+>>>>>>> 7bf326587c (Commit yarn.lock)
   languageName: node
   linkType: hard
 
 "@metamask/snaps-rpc-methods@file:../snaps/packages/snaps-rpc-methods::locator=metamask-crx%40workspace%3A.":
   version: 13.3.0
+<<<<<<< HEAD
   resolution: "@metamask/snaps-rpc-methods@file:../snaps/packages/snaps-rpc-methods#../snaps/packages/snaps-rpc-methods::hash=22f083&locator=metamask-crx%40workspace%3A."
+=======
+  resolution: "@metamask/snaps-rpc-methods@file:../snaps/packages/snaps-rpc-methods#../snaps/packages/snaps-rpc-methods::hash=bdc491&locator=metamask-crx%40workspace%3A."
+>>>>>>> 7bf326587c (Commit yarn.lock)
   dependencies:
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/permission-controller": "npm:^11.0.6"
@@ -7252,19 +7282,28 @@ __metadata:
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.4.2"
     "@noble/hashes": "npm:^1.7.1"
+<<<<<<< HEAD
   checksum: 10/e06a2f3e1571285650e3e7433b514f1133c640d4fce0fb24d4cfeeb6b51d2ec443bea7a7365976bedbca6ed9f353d08e8af6e15f80f9c822b2408f332cea3c3a
+=======
+  checksum: 10/661c4f0f5d33cbe9dcbd5dbc488b35440c8f8bb29cc6d3c0cc76248e02c4f5c8f337c8b817ea9d2296f9016dd32e03cb0cdd9cecc0a5f806cff13d1f0e631bdd
+>>>>>>> 7bf326587c (Commit yarn.lock)
   languageName: node
   linkType: hard
 
 "@metamask/snaps-sdk@file:../snaps/packages/snaps-sdk::locator=metamask-crx%40workspace%3A.":
   version: 9.1.0
+<<<<<<< HEAD
   resolution: "@metamask/snaps-sdk@file:../snaps/packages/snaps-sdk#../snaps/packages/snaps-sdk::hash=86e2f6&locator=metamask-crx%40workspace%3A."
+=======
+  resolution: "@metamask/snaps-sdk@file:../snaps/packages/snaps-sdk#../snaps/packages/snaps-sdk::hash=5c73f1&locator=metamask-crx%40workspace%3A."
+>>>>>>> 7bf326587c (Commit yarn.lock)
   dependencies:
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/providers": "npm:^22.1.0"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.4.2"
+<<<<<<< HEAD
   checksum: 10/afd87fddca350029fd73c97cb7f657a4d97b6c7a93b58b8ad8544a1738d527087f624a346cac6bbd4eb3eed937ffcfeeae53f28ce45b168f2fbe3c039952eb7d
   languageName: node
   linkType: hard
@@ -7272,6 +7311,15 @@ __metadata:
 "@metamask/snaps-utils@file:../snaps-utils::locator=%40metamask%2Fsnaps-controllers%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-controllers%23..%2Fsnaps%2Fpackages%2Fsnaps-controllers%3A%3Ahash%3D31a3af%26locator%3Dmetamask-crx%2540workspace%253A.":
   version: 11.0.0
   resolution: "@metamask/snaps-utils@file:../snaps-utils#../snaps-utils::hash=6939a7&locator=%40metamask%2Fsnaps-controllers%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-controllers%23..%2Fsnaps%2Fpackages%2Fsnaps-controllers%3A%3Ahash%3D31a3af%26locator%3Dmetamask-crx%2540workspace%253A."
+=======
+  checksum: 10/61d9604922a7b15ef5606e0f32498f1c4bb6e0fd6c29730c73baffb42ac2dccc6ee17e007099f9cb0232021efab7f2b8b4e802750b050925f3926f0244d23929
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-utils@file:../snaps-utils::locator=%40metamask%2Fsnaps-controllers%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-controllers%23..%2Fsnaps%2Fpackages%2Fsnaps-controllers%3A%3Ahash%3Db4588c%26locator%3Dmetamask-crx%2540workspace%253A.":
+  version: 11.0.0
+  resolution: "@metamask/snaps-utils@file:../snaps-utils#../snaps-utils::hash=6edd5d&locator=%40metamask%2Fsnaps-controllers%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-controllers%23..%2Fsnaps%2Fpackages%2Fsnaps-controllers%3A%3Ahash%3Db4588c%26locator%3Dmetamask-crx%2540workspace%253A."
+>>>>>>> 7bf326587c (Commit yarn.lock)
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
@@ -7297,6 +7345,7 @@ __metadata:
     semver: "npm:^7.5.4"
     ses: "npm:^1.13.1"
     validate-npm-package-name: "npm:^5.0.0"
+<<<<<<< HEAD
   checksum: 10/645ffe5a59afd5f7e493164f6488810adfe79102cdaedcabccc54d4055eaaa65e2c28655fc5d1fe0bb2f7f7a8a20d0b70ac49566a4cd5734c5d2575821d1d24b
   languageName: node
   linkType: hard
@@ -7304,6 +7353,15 @@ __metadata:
 "@metamask/snaps-utils@file:../snaps-utils::locator=%40metamask%2Fsnaps-execution-environments%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-execution-environments%23..%2Fsnaps%2Fpackages%2Fsnaps-execution-environments%3A%3Ahash%3Da97004%26locator%3Dmetamask-crx%2540workspace%253A.":
   version: 11.0.0
   resolution: "@metamask/snaps-utils@file:../snaps-utils#../snaps-utils::hash=6939a7&locator=%40metamask%2Fsnaps-execution-environments%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-execution-environments%23..%2Fsnaps%2Fpackages%2Fsnaps-execution-environments%3A%3Ahash%3Da97004%26locator%3Dmetamask-crx%2540workspace%253A."
+=======
+  checksum: 10/337cd46a67c2cb8ad4deca71e873d3eb266ccc67691acdaff475e97b0716db8d1ef7812bd3611f29722abdbb1fba5d669bba781b36af6f6e4291febc5285f58a
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-utils@file:../snaps-utils::locator=%40metamask%2Fsnaps-execution-environments%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-execution-environments%23..%2Fsnaps%2Fpackages%2Fsnaps-execution-environments%3A%3Ahash%3Da834f4%26locator%3Dmetamask-crx%2540workspace%253A.":
+  version: 11.0.0
+  resolution: "@metamask/snaps-utils@file:../snaps-utils#../snaps-utils::hash=6edd5d&locator=%40metamask%2Fsnaps-execution-environments%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-execution-environments%23..%2Fsnaps%2Fpackages%2Fsnaps-execution-environments%3A%3Ahash%3Da834f4%26locator%3Dmetamask-crx%2540workspace%253A."
+>>>>>>> 7bf326587c (Commit yarn.lock)
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
@@ -7329,6 +7387,7 @@ __metadata:
     semver: "npm:^7.5.4"
     ses: "npm:^1.13.1"
     validate-npm-package-name: "npm:^5.0.0"
+<<<<<<< HEAD
   checksum: 10/645ffe5a59afd5f7e493164f6488810adfe79102cdaedcabccc54d4055eaaa65e2c28655fc5d1fe0bb2f7f7a8a20d0b70ac49566a4cd5734c5d2575821d1d24b
   languageName: node
   linkType: hard
@@ -7336,6 +7395,15 @@ __metadata:
 "@metamask/snaps-utils@file:../snaps-utils::locator=%40metamask%2Fsnaps-rpc-methods%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-rpc-methods%23..%2Fsnaps%2Fpackages%2Fsnaps-rpc-methods%3A%3Ahash%3D22f083%26locator%3Dmetamask-crx%2540workspace%253A.":
   version: 11.0.0
   resolution: "@metamask/snaps-utils@file:../snaps-utils#../snaps-utils::hash=6939a7&locator=%40metamask%2Fsnaps-rpc-methods%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-rpc-methods%23..%2Fsnaps%2Fpackages%2Fsnaps-rpc-methods%3A%3Ahash%3D22f083%26locator%3Dmetamask-crx%2540workspace%253A."
+=======
+  checksum: 10/337cd46a67c2cb8ad4deca71e873d3eb266ccc67691acdaff475e97b0716db8d1ef7812bd3611f29722abdbb1fba5d669bba781b36af6f6e4291febc5285f58a
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-utils@file:../snaps-utils::locator=%40metamask%2Fsnaps-rpc-methods%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-rpc-methods%23..%2Fsnaps%2Fpackages%2Fsnaps-rpc-methods%3A%3Ahash%3Dbdc491%26locator%3Dmetamask-crx%2540workspace%253A.":
+  version: 11.0.0
+  resolution: "@metamask/snaps-utils@file:../snaps-utils#../snaps-utils::hash=6edd5d&locator=%40metamask%2Fsnaps-rpc-methods%40file%3A..%2Fsnaps%2Fpackages%2Fsnaps-rpc-methods%23..%2Fsnaps%2Fpackages%2Fsnaps-rpc-methods%3A%3Ahash%3Dbdc491%26locator%3Dmetamask-crx%2540workspace%253A."
+>>>>>>> 7bf326587c (Commit yarn.lock)
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
@@ -7361,6 +7429,7 @@ __metadata:
     semver: "npm:^7.5.4"
     ses: "npm:^1.13.1"
     validate-npm-package-name: "npm:^5.0.0"
+<<<<<<< HEAD
   checksum: 10/645ffe5a59afd5f7e493164f6488810adfe79102cdaedcabccc54d4055eaaa65e2c28655fc5d1fe0bb2f7f7a8a20d0b70ac49566a4cd5734c5d2575821d1d24b
   languageName: node
   linkType: hard
@@ -7368,6 +7437,15 @@ __metadata:
 "@metamask/snaps-utils@file:../snaps-utils::locator=%40metamask%2Fsnaps-rpc-methods%40file%3A..%2Fsnaps-rpc-methods%23..%2Fsnaps-rpc-methods%3A%3Ahash%3D22f083%26locator%3D%2540metamask%252Fsnaps-controllers%2540file%253A..%252Fsnaps%252Fpackages%252Fsnaps-controllers%2523..%252Fsnaps%252Fpackages%252Fsnaps-controllers%253A%253Ahash%253D31a3af%2526locator%253Dmetamask-crx%252540workspace%25253A.":
   version: 11.0.0
   resolution: "@metamask/snaps-utils@file:../snaps-utils#../snaps-utils::hash=6939a7&locator=%40metamask%2Fsnaps-rpc-methods%40file%3A..%2Fsnaps-rpc-methods%23..%2Fsnaps-rpc-methods%3A%3Ahash%3D22f083%26locator%3D%2540metamask%252Fsnaps-controllers%2540file%253A..%252Fsnaps%252Fpackages%252Fsnaps-controllers%2523..%252Fsnaps%252Fpackages%252Fsnaps-controllers%253A%253Ahash%253D31a3af%2526locator%253Dmetamask-crx%252540workspace%25253A."
+=======
+  checksum: 10/337cd46a67c2cb8ad4deca71e873d3eb266ccc67691acdaff475e97b0716db8d1ef7812bd3611f29722abdbb1fba5d669bba781b36af6f6e4291febc5285f58a
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-utils@file:../snaps-utils::locator=%40metamask%2Fsnaps-rpc-methods%40file%3A..%2Fsnaps-rpc-methods%23..%2Fsnaps-rpc-methods%3A%3Ahash%3Dbdc491%26locator%3D%2540metamask%252Fsnaps-controllers%2540file%253A..%252Fsnaps%252Fpackages%252Fsnaps-controllers%2523..%252Fsnaps%252Fpackages%252Fsnaps-controllers%253A%253Ahash%253Db4588c%2526locator%253Dmetamask-crx%252540workspace%25253A.":
+  version: 11.0.0
+  resolution: "@metamask/snaps-utils@file:../snaps-utils#../snaps-utils::hash=6edd5d&locator=%40metamask%2Fsnaps-rpc-methods%40file%3A..%2Fsnaps-rpc-methods%23..%2Fsnaps-rpc-methods%3A%3Ahash%3Dbdc491%26locator%3D%2540metamask%252Fsnaps-controllers%2540file%253A..%252Fsnaps%252Fpackages%252Fsnaps-controllers%2523..%252Fsnaps%252Fpackages%252Fsnaps-controllers%253A%253Ahash%253Db4588c%2526locator%253Dmetamask-crx%252540workspace%25253A."
+>>>>>>> 7bf326587c (Commit yarn.lock)
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
@@ -7393,13 +7471,21 @@ __metadata:
     semver: "npm:^7.5.4"
     ses: "npm:^1.13.1"
     validate-npm-package-name: "npm:^5.0.0"
+<<<<<<< HEAD
   checksum: 10/645ffe5a59afd5f7e493164f6488810adfe79102cdaedcabccc54d4055eaaa65e2c28655fc5d1fe0bb2f7f7a8a20d0b70ac49566a4cd5734c5d2575821d1d24b
+=======
+  checksum: 10/337cd46a67c2cb8ad4deca71e873d3eb266ccc67691acdaff475e97b0716db8d1ef7812bd3611f29722abdbb1fba5d669bba781b36af6f6e4291febc5285f58a
+>>>>>>> 7bf326587c (Commit yarn.lock)
   languageName: node
   linkType: hard
 
 "@metamask/snaps-utils@file:../snaps/packages/snaps-utils::locator=metamask-crx%40workspace%3A.":
   version: 11.0.0
+<<<<<<< HEAD
   resolution: "@metamask/snaps-utils@file:../snaps/packages/snaps-utils#../snaps/packages/snaps-utils::hash=6939a7&locator=metamask-crx%40workspace%3A."
+=======
+  resolution: "@metamask/snaps-utils@file:../snaps/packages/snaps-utils#../snaps/packages/snaps-utils::hash=6edd5d&locator=metamask-crx%40workspace%3A."
+>>>>>>> 7bf326587c (Commit yarn.lock)
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
@@ -7425,7 +7511,11 @@ __metadata:
     semver: "npm:^7.5.4"
     ses: "npm:^1.13.1"
     validate-npm-package-name: "npm:^5.0.0"
+<<<<<<< HEAD
   checksum: 10/645ffe5a59afd5f7e493164f6488810adfe79102cdaedcabccc54d4055eaaa65e2c28655fc5d1fe0bb2f7f7a8a20d0b70ac49566a4cd5734c5d2575821d1d24b
+=======
+  checksum: 10/337cd46a67c2cb8ad4deca71e873d3eb266ccc67691acdaff475e97b0716db8d1ef7812bd3611f29722abdbb1fba5d669bba781b36af6f6e4291febc5285f58a
+>>>>>>> 7bf326587c (Commit yarn.lock)
   languageName: node
   linkType: hard
 
