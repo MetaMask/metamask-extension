@@ -14,7 +14,8 @@ import {
  *
  * @property id - If an NPM package, then the name of the package; otherwise the
  * path to a file within the project.
- * @property dependents - The modules which are imported by this module.
+ * @property dependents - The modules which import this module.
+ * @property dependencies - The modules which are imported by this module.
  * @property level - How many modules it takes to import this module (from the
  * root of the dependency tree).
  * @property isExternal - Whether the module refers to a NPM package.
