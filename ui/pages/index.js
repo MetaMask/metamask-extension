@@ -12,7 +12,6 @@ import {
 import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
 import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
-import { SentryTraceProvider } from '../contexts/sentry-trace';
 import ErrorPage from './error-page/error-page.component';
 
 import Routes from './routes';
