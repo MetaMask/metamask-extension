@@ -12,9 +12,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
   ONBOARDING_WELCOME_ROUTE, // eslint-disable-line no-unused-vars
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
-  ONBOARDING_METAMETRICS, // eslint-disable-line no-unused-vars
-  ///: END:ONLY_INCLUDE_IF
+  ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -26,6 +24,7 @@ import {
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app'; // eslint-disable-line no-unused-vars
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 ///: END:ONLY_INCLUDE_IF
+import { getIsParticipateInMetaMetricsSet } from '../../../selectors';
 
 export default function OnboardingFlowSwitch() {
   /* eslint-disable prefer-const */
@@ -33,13 +32,24 @@ export default function OnboardingFlowSwitch() {
   const isInitialized = useSelector(getIsInitialized);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const isUnlocked = useSelector(getIsUnlocked);
+  const isParticipateInMetaMetricsSet = useSelector(
+    getIsParticipateInMetaMetricsSet,
+  );
 
   if (completedOnboarding) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 
   if (seedPhraseBackedUp !== null) {
-    return <Redirect to={{ pathname: ONBOARDING_COMPLETION_ROUTE }} />;
+    return (
+      <Redirect
+        to={{
+          pathname: isParticipateInMetaMetricsSet
+            ? ONBOARDING_COMPLETION_ROUTE
+            : ONBOARDING_METAMETRICS,
+        }}
+      />
+    );
   }
 
   if (isUnlocked) {
