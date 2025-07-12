@@ -240,10 +240,10 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
             message: 'Token revoked successfully',
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            new_refresh_token: 'MOCK_NEW_REFRESH_TOKEN',
+            refresh_token: 'MOCK_NEW_REFRESH_TOKEN',
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            new_revoke_token: 'MOCK_NEW_REVOKE_TOKEN',
+            revoke_token: 'MOCK_NEW_REVOKE_TOKEN',
           }),
         });
       }) as jest.Mock,
