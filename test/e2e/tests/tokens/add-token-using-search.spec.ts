@@ -3,6 +3,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
+import ImportTokensModal from '../../page-objects/pages/import-tokens-modal';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Add existing token using search', function () {
@@ -68,7 +69,9 @@ describe('Add existing token using search', function () {
         await loginWithoutBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
         await assetListPage.check_tokenAmountIsDisplayed('25 BNB');
-        await assetListPage.importTokenBySearch('BAT');
+        await assetListPage.openImportTokensModal();
+        const importTokensModal = new ImportTokensModal(driver);
+        await importTokensModal.importTokenBySearch('BAT');
         await assetListPage.check_tokenAmountInTokenDetailsModal(
           'Basic Attention Token',
           '0 BAT',
