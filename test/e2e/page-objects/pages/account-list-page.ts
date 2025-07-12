@@ -21,6 +21,9 @@ class AccountListPage {
   private readonly accountListItem =
     '.multichain-account-menu-popover__list--menu-item';
 
+  private readonly walletHeader =
+    '[data-testid="multichain-account-tree-wallet-header"]';
+
   private readonly accountMenuButton =
     '[data-testid="account-list-menu-details"]';
 
@@ -60,6 +63,11 @@ class AccountListPage {
 
   private readonly addSnapAccountButton = {
     text: 'Add account Snap',
+    tag: 'button',
+  };
+
+  private readonly walletDetailsButton = {
+    text: 'Details',
     tag: 'button',
   };
 
@@ -621,6 +629,27 @@ class AccountListPage {
       css: this.accountListItem,
       text: expectedLabel,
     });
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_walletDisplayedInAccountListMenu(
+    expectedLabel: string = 'Wallet',
+  ): Promise<void> {
+    console.log(
+      `Check that wallet label ${expectedLabel} is displayed in account list menu`,
+    );
+    await this.driver.waitForSelector({
+      css: this.walletHeader,
+      text: expectedLabel,
+    });
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_walletDetailsButtonIsDisplayed(): Promise<void> {
+    console.log('Check wallet details button is displayed');
+    await this.driver.waitForSelector(this.walletDetailsButton);
   }
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
