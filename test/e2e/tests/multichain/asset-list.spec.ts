@@ -27,6 +27,82 @@ async function mockSwapSetup(mockServer: Mockttp) {
         statusCode: 200,
         json: { ETH: { USD: 2966.53 }, POL: { USD: 0.2322 } },
       })),
+    // Mock Polygon swap API endpoints to prevent JSON parsing errors
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/137/tokens')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [],
+      })),
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/137/topAssets')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [],
+      })),
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/137/aggregatorMetadata')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {},
+      })),
+    await mockServer
+      .forGet('https://gas.api.cx.metamask.io/networks/137/suggestedGasFees')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          low: {
+            suggestedMaxFeePerGas: '30',
+            suggestedMaxPriorityFeePerGas: '30',
+          },
+          medium: {
+            suggestedMaxFeePerGas: '40',
+            suggestedMaxPriorityFeePerGas: '40',
+          },
+          high: {
+            suggestedMaxFeePerGas: '50',
+            suggestedMaxPriorityFeePerGas: '50',
+          },
+        },
+      })),
+    // Mock accounts API endpoint with wildcard matching
+    await mockServer
+      .forGet()
+      .matching(
+        (req) =>
+          req.url?.includes('accounts.api.cx.metamask.io/v1/accounts/') &&
+          req.url?.includes('/transactions'),
+      )
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [],
+      })),
+    // Mock token icon endpoints
+    await mockServer
+      .forGet(
+        'https://static.cx.metamask.io/api/v1/tokenIcons/137/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png',
+      )
+      .thenCallback(() => ({
+        statusCode: 200,
+        headers: { 'content-type': 'image/png' },
+        body: Buffer.from(''),
+      })),
+    await mockServer
+      .forGet(
+        'https://static.cx.metamask.io/api/v1/tokenIcons/137/0x0000000000000000000000000000000000000000.png',
+      )
+      .thenCallback(() => ({
+        statusCode: 200,
+        headers: { 'content-type': 'image/png' },
+        body: Buffer.from(''),
+      })),
+    // Mock sentry endpoints
+    await mockServer
+      .forPost('https://sentry.io/api/273496/envelope/')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {},
+      })),
   ];
 }
 function buildFixtures(title: string, chainId: number = 1337) {
