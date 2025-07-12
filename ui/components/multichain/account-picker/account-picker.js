@@ -68,6 +68,7 @@ export const AccountPicker = ({
         }}
         {...props}
         gap={1}
+        style={{ height: 'auto' }}
       >
         <Box
           display={Display.Flex}
@@ -78,6 +79,7 @@ export const AccountPicker = ({
           <Text
             as="span"
             ellipsis
+            variant={TextVariant.bodyMdMedium}
             {...labelProps}
             className={classnames(
               'multichain-account-picker__label',
@@ -88,7 +90,7 @@ export const AccountPicker = ({
             {showAddress ? (
               <Text
                 color={TextColor.textAlternative}
-                variant={TextVariant.bodySm}
+                variant={TextVariant.bodySmMedium}
                 ellipsis
                 {...addressProps}
               >
