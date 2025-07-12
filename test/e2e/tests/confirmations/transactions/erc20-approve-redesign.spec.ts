@@ -4,16 +4,16 @@ import { MockttpServer } from 'mockttp';
 import { Driver } from '../../../webdriver/driver';
 import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/erc20-approve-transaction-confirmation';
 import { importTestToken } from '../../../page-objects/flows/import-token.flow';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 import {
   confirmApproveTransaction,
-  createERC20ApproveTransaction,
   mocked4BytesApprove,
   openDAppWithContract,
   TestSuiteArguments,
   waitForApproveTransactionWindow,
 } from './shared';
 
-const { withFixtures } = require('../../../helpers');
+const { withFixtures, WINDOW_TITLES } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
@@ -40,7 +40,9 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
 
           await importTST(driver);
 
-          await createERC20ApproveTransaction(driver);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          const testDapp = new TestDapp(driver);
+          await testDapp.clickApproveTokens();
 
           await assertApproveDetails(driver);
 
@@ -65,7 +67,9 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
 
           await importTST(driver);
 
-          await createERC20ApproveTransaction(driver);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          const testDapp = new TestDapp(driver);
+          await testDapp.clickApproveTokens();
 
           await assertApproveDetails(driver);
 

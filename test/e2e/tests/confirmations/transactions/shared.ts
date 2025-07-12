@@ -4,7 +4,6 @@ import { Anvil } from '../../../seeder/anvil';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { Mockttp } from '../../../mock-e2e';
-import TestDapp from '../../../page-objects/pages/test-dapp';
 import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/erc20-approve-transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 
@@ -389,16 +388,6 @@ export async function confirmApproveTransaction(driver: Driver) {
   );
 }
 
-/**
- * Creates an ERC20 approve transaction by clicking the approve button on the test dapp
- *
- * @param driver - The WebDriver instance
- */
-export async function createERC20ApproveTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  const testDapp = new TestDapp(driver);
-  await testDapp.clickApproveTokens();
-}
 
 /**
  * Waits for the approve transaction confirmation window to open
