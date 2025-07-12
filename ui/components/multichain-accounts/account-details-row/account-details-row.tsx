@@ -39,6 +39,9 @@ export const AccountDetailsRow = ({
       alignItems={AlignItems.center}
       onClick={onClick}
       className="multichain-account-details__row"
+      data-testid={`account-details-row-${label
+        .toLowerCase()
+        .replace(' ', '-')}`}
     >
       <Text
         color={TextColor.textDefault}
@@ -59,6 +62,9 @@ export const AccountDetailsRow = ({
           style={{
             maxWidth: '150px',
           }}
+          data-testid={`account-details-row-value-${label
+            .toLowerCase()
+            .replace(' ', '-')}`}
         >
           {value}
         </Text>
