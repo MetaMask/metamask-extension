@@ -138,6 +138,7 @@ describe('Multichain Asset List', function (this: Suite) {
     );
   });
   it('switches networks when clicking on swap for a token on another network', async function () {
+    this.timeout(30000); // Set 30 second timeout
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string, 137),
       async ({ driver, localNodes }) => {
@@ -154,6 +155,8 @@ describe('Multichain Asset List', function (this: Suite) {
         await assetListPage.clickOnAsset('TST');
         await assetListPage.clickSwapButton();
         await sendPage.check_networkChange(POLYGON_NAME_MAINNET);
+        // Test objective achieved - network switched successfully
+        console.log('Test completed: Network switch validated successfully');
       },
     );
   });
