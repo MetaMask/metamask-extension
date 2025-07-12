@@ -1,10 +1,5 @@
-import {
-  useState,
-  useEffect,
-  DependencyList,
-  useCallback,
-  useRef,
-} from 'react';
+import { useState, useEffect, DependencyList, useRef, useMemo } from 'react';
+import { isEqual } from 'lodash';
 
 type Status = 'idle' | 'pending' | 'success' | 'error';
 
@@ -87,26 +82,34 @@ export function createErrorResult(error: Error): ResultError {
 export function useAsyncCallback<T>(
   asyncFn: () => Promise<T>,
   deps: DependencyList = [],
-): [() => Promise<void>, AsyncResult<T>] {
+): [() => Promise<void>, AsyncResult<T>, boolean] {
+  'use no memo';
+
   const [result, setResult] = useState<AsyncResult<T>>(RESULT_IDLE);
 
   // Track component mount state
   const isMounted = useRef(true);
+  const [isInit, setIsInit] = useState(true);
 
-  // Update ref when component unmounts
-  useEffect(() => {
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
+  // Use refs to internally maintain stable references for `asyncFn`, `deps`,
+  // which will otherwise be updated on every re-render even if no reactive values have changed.
+  const asyncFnRef = useRef<typeof asyncFn | null>(asyncFn);
+  const prevDepsRef = useRef<DependencyList>([]);
 
-  const execute = useCallback(async () => {
-    if (!isMounted.current) {
+  const isDepsChanged = isInit || !isEqual(deps, prevDepsRef.current);
+
+  // Use ref instead of `useCallback`, which means the function reference
+  // does not needs to be re-created on every deps change.
+  // Its only external reactive variable is `asyncFn`,
+  // which is now being supplied internally via useRef,
+  // and will be up-to-date when `executeRef.current` is called (on deps change).
+  const executeRef = useRef(async () => {
+    if (!isMounted.current || !asyncFnRef.current) {
       return;
     }
     setResult(RESULT_PENDING);
     try {
-      const value = await asyncFn();
+      const value = await asyncFnRef.current();
       if (isMounted.current) {
         setResult(createSuccessResult(value));
       }
@@ -115,9 +118,37 @@ export function useAsyncCallback<T>(
         setResult(createErrorResult(error as Error));
       }
     }
-  }, deps);
+  });
 
-  return [execute, result];
+  useEffect(() => {
+    setIsInit(false);
+    // When component unmounts, clear all refs and reset `result` to prevent memory leaks.
+    return () => {
+      setResult(RESULT_IDLE);
+      isMounted.current = false;
+      asyncFnRef.current = null;
+      prevDepsRef.current = [];
+      executeRef.current = () => Promise.resolve(undefined);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isDepsChanged) {
+      prevDepsRef.current = deps;
+      asyncFnRef.current = asyncFn;
+    }
+    // `asyncFn`, `deps` omitted because their references update on every re-render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDepsChanged]);
+
+  return useMemo(
+    () => [executeRef.current, result, isDepsChanged],
+    // Exclude `result` from dependency array.
+    // This ensures that the memoized output array is used
+    // if the `result` object reference has changed, but its contents have not.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [result.status, result.value, result.error, isDepsChanged],
+  );
 }
 
 /**
@@ -134,11 +165,17 @@ export function useAsyncResult<T>(
   asyncFn: () => Promise<T>,
   deps: DependencyList = [],
 ): AsyncResultNoIdle<T> {
-  const [execute, result] = useAsyncCallback(asyncFn, deps);
+  'use no memo';
+
+  const [execute, result, isDepsChanged] = useAsyncCallback(asyncFn, deps);
 
   useEffect(() => {
-    execute();
-  }, [execute]);
+    if (isDepsChanged) {
+      execute();
+    }
+    // The reference for `execute` stays stable until unmount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDepsChanged]);
 
   // When the result is in the idle state, return pending state instead
   // This is because we execute the asyncFn immediately on mount, so the component
@@ -160,6 +197,8 @@ export function useAsyncResultOrThrow<T>(
   asyncFn: () => Promise<T>,
   deps: DependencyList = [],
 ): AsyncResultNoError<T> {
+  'use no memo';
+
   const result = useAsyncResult(asyncFn, deps);
 
   if (result.status === 'error') {
