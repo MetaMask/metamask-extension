@@ -10,7 +10,6 @@ import {
   mocked4BytesApprove,
   openDAppWithContract,
   TestSuiteArguments,
-  waitForApproveTransactionWindow,
 } from './shared';
 
 const { withFixtures, WINDOW_TITLES } = require('../../../helpers');
@@ -94,8 +93,8 @@ async function mocks(server: MockttpServer) {
 
 
 async function assertApproveDetails(driver: Driver) {
-  // Wait for the approve transaction window and switch to it
-  await waitForApproveTransactionWindow(driver);
+  // Switch to the approve transaction dialog window
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   // Create the ERC20 approve confirmation page object
   const erc20ApproveConfirmation = new ERC20ApproveTransactionConfirmation(

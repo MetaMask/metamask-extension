@@ -4,7 +4,6 @@ import { Anvil } from '../../../seeder/anvil';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { Mockttp } from '../../../mock-e2e';
-import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/erc20-approve-transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 
 const {
@@ -389,14 +388,3 @@ export async function confirmApproveTransaction(driver: Driver) {
 }
 
 
-/**
- * Waits for the approve transaction confirmation window to open
- *
- * @param driver - The WebDriver instance
- */
-export async function waitForApproveTransactionWindow(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  // Wait for the redesigned confirmation dialog to be fully loaded
-  const confirmationPage = new ERC20ApproveTransactionConfirmation(driver);
-  await confirmationPage.check_pageIsLoaded();
-}
