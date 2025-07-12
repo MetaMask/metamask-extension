@@ -8,6 +8,7 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
+import ImportTokensModal from '../../page-objects/pages/import-tokens-modal';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   mockEmptyHistoricalPrices,
@@ -49,10 +50,11 @@ describe('Token List', function () {
         const assetListPage = new AssetListPage(driver);
 
         await homePage.check_pageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
-          chainId,
+        await assetListPage.openImportTokensModal();
+        const importTokensModal = new ImportTokensModal(driver);
+        await importTokensModal.importCustomToken(
           tokenAddress,
-          symbol,
+          chainId,
         );
 
         await assetListPage.check_tokenGeneralChangePercentageNotPresent(
@@ -106,10 +108,11 @@ describe('Token List', function () {
         const assetListPage = new AssetListPage(driver);
 
         await homePage.check_pageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
-          chainId,
+        await assetListPage.openImportTokensModal();
+        const importTokensModal = new ImportTokensModal(driver);
+        await importTokensModal.importCustomToken(
           tokenAddress,
-          symbol,
+          chainId,
         );
 
         await assetListPage.check_tokenGeneralChangePercentage(

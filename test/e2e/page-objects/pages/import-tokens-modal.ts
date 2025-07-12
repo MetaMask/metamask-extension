@@ -15,6 +15,11 @@ export class ImportTokensModal {
     contractAddressInput: '[data-testid="import-tokens-modal-custom-address"]',
     nextButton: '[data-testid="import-tokens-button-next"]',
     importButton: '[data-testid="import-tokens-modal-import-button"]',
+    tokenSearchInput: 'input[placeholder="Search tokens"]',
+    confirmImportTokenMessage: {
+      text: 'Would you like to import this token?',
+      tag: 'p',
+    },
 
     // Network selection
     networkItemPrefix: '[data-testid="select-network-item-',
@@ -100,6 +105,42 @@ export class ImportTokensModal {
     await this.fillContractAddress(contractAddress);
     await this.clickNextAndWaitForValidation();
     await this.clickImport();
+  }
+
+  /**
+   * Import token by searching for it
+   *
+   * @param tokenName - The name of the token to search for and import
+   */
+  async importTokenBySearch(tokenName: string): Promise<void> {
+    console.log(`Import token ${tokenName} by search`);
+    await this.driver.fill(ImportTokensModal.selectors.tokenSearchInput, tokenName);
+    await this.driver.clickElement({ text: tokenName, tag: 'p' });
+    await this.driver.clickElement(ImportTokensModal.selectors.nextButton);
+    await this.driver.waitForSelector(ImportTokensModal.selectors.confirmImportTokenMessage);
+    await this.driver.clickElementAndWaitToDisappear(
+      ImportTokensModal.selectors.importButton,
+    );
+  }
+
+  /**
+   * Import multiple tokens by searching for them
+   *
+   * @param tokenNames - Array of token names to search for and import
+   */
+  async importMultipleTokensBySearch(tokenNames: string[]): Promise<void> {
+    console.log(
+      `Importing tokens ${tokenNames.join(', ')} by search`,
+    );
+    for (const name of tokenNames) {
+      await this.driver.fill(ImportTokensModal.selectors.tokenSearchInput, name);
+      await this.driver.waitForElementToStopMoving({ text: name, tag: 'p' });
+      await this.driver.clickElement({ text: name, tag: 'p' });
+    }
+    await this.driver.clickElement(ImportTokensModal.selectors.nextButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      ImportTokensModal.selectors.importButton,
+    );
   }
 }
 

@@ -1,5 +1,6 @@
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
+import ImportTokensModal from '../../page-objects/pages/import-tokens-modal';
 
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
@@ -194,7 +195,9 @@ describe('Import flow', function () {
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         await homePage.check_pageIsLoaded();
-        await assetListPage.importMultipleTokensBySearch([
+        await assetListPage.openImportTokensModal();
+        const importTokensModal = new ImportTokensModal(driver);
+        await importTokensModal.importMultipleTokensBySearch([
           'CHAIN',
           'CHANGE',
           'CHAI',
@@ -273,7 +276,9 @@ describe('Import flow', function () {
 
         const assetListPage = new AssetListPage(driver);
 
-        await assetListPage.importMultipleTokensBySearch(['ERP', 'USDT']);
+        await assetListPage.openImportTokensModal();
+        const importTokensModal = new ImportTokensModal(driver);
+        await importTokensModal.importMultipleTokensBySearch(['ERP', 'USDT']);
 
         const tokenList = new AssetListPage(driver);
 
@@ -348,9 +353,11 @@ describe('Import flow', function () {
         const assetListPage = new AssetListPage(driver);
 
         // the token symbol is prefilled because of the mock
-        await assetListPage.importCustomTokenByChain(
-          '0x89',
+        await assetListPage.openImportTokensModal();
+        const importTokensModal = new ImportTokensModal(driver);
+        await importTokensModal.importCustomToken(
           '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+          '0x89',
         );
         const tokenList = new AssetListPage(driver);
 
