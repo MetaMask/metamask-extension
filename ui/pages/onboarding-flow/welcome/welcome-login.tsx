@@ -4,14 +4,13 @@ import classnames from 'classnames';
 import Mascot from '../../../components/ui/mascot';
 import {
   Box,
-  ButtonBase,
-  ButtonBaseSize,
+  Button,
+  ButtonSize,
+  ButtonVariant,
   Text,
 } from '../../../components/component-library';
 import {
   AlignItems,
-  BackgroundColor,
-  BlockSize,
   Display,
   FlexDirection,
   JustifyContent,
@@ -107,11 +106,12 @@ export default function WelcomeLogin({
       </Box>
 
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
-        <ButtonBase
+        <Button
           data-testid="onboarding-create-wallet"
-          width={BlockSize.Full}
-          size={ButtonBaseSize.Lg}
           className="welcome-login__create-button"
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          block
           onClick={async () => {
             setShowLoginOptions(true);
             setLoginOption(LOGIN_OPTION.NEW);
@@ -121,13 +121,13 @@ export default function WelcomeLogin({
           }}
         >
           {t('onboardingCreateWallet')}
-        </ButtonBase>
-        <ButtonBase
+        </Button>
+        <Button
           data-testid="onboarding-import-wallet"
-          width={BlockSize.Full}
-          size={ButtonBaseSize.Lg}
-          backgroundColor={BackgroundColor.transparent}
           className="welcome-login__import-button"
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          block
           onClick={async () => {
             setShowLoginOptions(true);
             setLoginOption(LOGIN_OPTION.EXISTING);
@@ -139,7 +139,7 @@ export default function WelcomeLogin({
           {isSeedlessOnboardingFeatureEnabled
             ? t('onboardingImportWallet')
             : t('onboardingSrpImport')}
-        </ButtonBase>
+        </Button>
       </Box>
       {isSeedlessOnboardingFeatureEnabled &&
         showLoginOptions &&
