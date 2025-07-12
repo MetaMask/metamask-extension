@@ -764,7 +764,6 @@ export enum MetaMetricsEventName {
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
   OnrampProviderSelected = 'On-ramp Provider Selected',
-  ResetWallet = 'Reset Wallet',
   PasswordChanged = 'Password Changed',
   ForgotPassword = 'Forgot Password',
   ResetWallet = 'Reset Wallet',
