@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Sentry from '@sentry/browser';
 import browser from 'webextension-polyfill';
 
@@ -38,6 +38,8 @@ import { Textarea } from '../../components/component-library/textarea/textarea';
 import { TextareaResize } from '../../components/component-library/textarea/textarea.types';
 import { ButtonSize } from '../../components/component-library/button/button.types';
 import VisitSupportDataConsentModal from '../../components/app/modals/visit-support-data-consent-modal';
+import { getShowSupportDataConsentModal } from '../../ducks/app/app';
+import { setShowSupportDataConsentModal } from '../../store/actions';
 
 type ErrorPageProps = {
   error: {
@@ -50,13 +52,15 @@ type ErrorPageProps = {
 
 const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const showSupportDataConsentModal = useSelector(
+    getShowSupportDataConsentModal,
+  );
 
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [isSuccessModalShown, setIsSuccessModalShown] = useState(false);
-  const [isSupportDataConsentModalOpen, setIsSupportDataConsentModalOpen] =
-    useState(false);
 
   const handleClickDescribeButton = (): void => {
     setIsFeedbackModalOpen(true);
@@ -112,7 +116,6 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             {t('errorPageTitle')}
           </Text>
         </Box>
-
         <div className="error-page__banner-wrapper">
           <BannerAlert
             childrenWrapperProps={{ color: TextColor.inherit }}
@@ -121,11 +124,9 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             {t('errorPageInfo')}
           </BannerAlert>
         </div>
-
         <Text color={TextColor.inherit} variant={TextVariant.bodyMd}>
           {t('errorPageMessageTitle')}
         </Text>
-
         <Box
           borderRadius={BorderRadius.LG}
           marginBottom={2}
@@ -184,7 +185,6 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             </>
           ) : null}
         </Box>
-
         {isFeedbackModalOpen && (
           <Modal
             isOpen={isFeedbackModalOpen}
@@ -263,12 +263,12 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             </ModalContent>
           </Modal>
         )}
-        {isSupportDataConsentModalOpen && (
-          <VisitSupportDataConsentModal
-            isOpen={isSupportDataConsentModalOpen}
-            onClose={() => setIsSupportDataConsentModalOpen(false)}
-          />
-        )}
+        (
+        <VisitSupportDataConsentModal
+          isOpen={showSupportDataConsentModal}
+          onClose={() => dispatch(setShowSupportDataConsentModal(false))}
+        />
+        )
         <Box
           width={BlockSize.Full}
           display={Display.Flex}
@@ -293,7 +293,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             variant={ButtonVariant.Secondary}
             block
             data-testid="error-page-contact-support-button"
-            onClick={() => setIsSupportDataConsentModalOpen(true)}
+            onClick={() => dispatch(setShowSupportDataConsentModal(true))}
           >
             {t('errorPageContactSupport')}
           </Button>
