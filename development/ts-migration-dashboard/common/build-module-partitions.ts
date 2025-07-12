@@ -14,7 +14,8 @@ import {
  *
  * @property id - If an NPM package, then the name of the package; otherwise the
  * path to a file within the project.
- * @property dependents - The modules which are imported by this module.
+ * @property dependents - The modules which import this module.
+ * @property dependencies - The modules which are imported by this module.
  * @property level - How many modules it takes to import this module (from the
  * root of the dependency tree).
  * @property isExternal - Whether the module refers to a NPM package.
@@ -275,8 +276,8 @@ function buildModulesWithLevels(
       if (existingDependencyModule === undefined) {
         existingDependencyModule = {
           id: dependencyModuleId,
-          dependents: [currentModule],
-          dependencies: [],
+          dependents: [],
+          dependencies: [currentModule],
           level: currentModule.level + 1,
           isExternal: Boolean(npmPackageMatch),
           hasBeenConverted: /\.tsx?$/u.test(dependencyModuleId),
@@ -295,19 +296,19 @@ function buildModulesWithLevels(
       }
 
       if (
-        !existingDependencyModule.dependents.some(
+        !existingDependencyModule.dependencies.some(
           (m) => m.id === currentModule.id,
         )
       ) {
-        existingDependencyModule.dependents.push(currentModule);
+        existingDependencyModule.dependencies.push(currentModule);
       }
 
       if (
-        !currentModule.dependencies.some(
+        !currentModule.dependents.some(
           (m) => m.id === existingDependencyModule.id,
         )
       ) {
-        currentModule.dependencies.push(existingDependencyModule);
+        currentModule.dependents.push(existingDependencyModule);
       }
     }
     if (dependencyModulesToFill.length > 0) {
