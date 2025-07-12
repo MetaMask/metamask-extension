@@ -5486,9 +5486,6 @@
   "standardAccountLabel": {
     "message": "スタンダードアカウント"
   },
-  "startEarning": {
-    "message": "収益化を開始"
-  },
   "stateLogError": {
     "message": "ステートログの取得中にエラーが発生しました。"
   },
