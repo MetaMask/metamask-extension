@@ -764,6 +764,8 @@ export enum MetaMetricsEventName {
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
   OnrampProviderSelected = 'On-ramp Provider Selected',
+  PasswordChanged = 'Password Changed',
+  ForgotPassword = 'Forgot Password',
   ResetWallet = 'Reset Wallet',
   PermissionsApproved = 'Permissions Approved',
   PermissionsRejected = 'Permissions Rejected',
@@ -833,6 +835,11 @@ export enum MetaMetricsEventName {
   WalletCreated = 'Wallet Created (Onboarding)',
   WalletSetupFailure = 'Wallet Setup Failure',
   WalletSetupCompleted = 'Wallet Setup Completed',
+  WalletRehydrationSelected = 'Wallet Rehydration Selected',
+  SocialLoginCompleted = 'Social Login Completed',
+  RehydrationPasswordAttempted = 'Rehydration Password Attempted',
+  RehydrationPasswordCompleted = 'Rehydration Password Completed',
+  RehydrationPasswordFailed = 'Rehydration Password Failed',
   // BEGIN:ONLY_INCLUDE_IF(build-flask)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF
