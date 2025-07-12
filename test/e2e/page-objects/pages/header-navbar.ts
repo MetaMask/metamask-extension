@@ -10,6 +10,8 @@ class HeaderNavbar {
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
 
+  private readonly appHeaderLogo = '[data-testid="app-header-logo"]';
+
   private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
 
   private readonly threeDotMenuButton =
@@ -60,6 +62,11 @@ class HeaderNavbar {
 
   async clickAddressCopyButton(): Promise<void> {
     await this.driver.clickElement(this.copyAddressButton);
+  }
+
+  async clickAppHeaderLogo(): Promise<void> {
+    console.log('Click MetaMask logo to navigate to home page');
+    await this.driver.clickElement(this.appHeaderLogo);
   }
 
   async lockMetaMask(): Promise<void> {

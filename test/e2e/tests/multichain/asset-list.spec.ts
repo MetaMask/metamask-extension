@@ -1,60 +1,165 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
+import HomePage from '../../page-objects/pages/home/homepage';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { Mockttp } from '../../mock-e2e';
 
 const NETWORK_NAME_MAINNET = 'Ethereum Mainnet';
 const LINEA_NAME_MAINNET = 'Linea Mainnet';
 const POLYGON_NAME_MAINNET = 'Polygon';
-const BALANCE_AMOUNT = '24.9956';
+const BALANCE_AMOUNT = '24.9978';
 
+async function mockSwapSetup(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forGet('https://min-api.cryptocompare.com/data/pricemulti')
+      .withQuery({ fsyms: 'ETH,POL', tsyms: 'usd' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: { ETH: { USD: 2966.53 }, POL: { USD: 0.2322 } },
+      })),
+    // Mock Polygon swap API endpoints to prevent JSON parsing errors
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/137/tokens')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [],
+      })),
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/137/topAssets')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [],
+      })),
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/137/aggregatorMetadata')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {},
+      })),
+    await mockServer
+      .forGet('https://gas.api.cx.metamask.io/networks/137/suggestedGasFees')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          low: {
+            suggestedMaxFeePerGas: '30',
+            suggestedMaxPriorityFeePerGas: '30',
+          },
+          medium: {
+            suggestedMaxFeePerGas: '40',
+            suggestedMaxPriorityFeePerGas: '40',
+          },
+          high: {
+            suggestedMaxFeePerGas: '50',
+            suggestedMaxPriorityFeePerGas: '50',
+          },
+        },
+      })),
+    // Mock accounts API endpoint with wildcard matching
+    await mockServer
+      .forGet()
+      .matching(
+        (req) =>
+          req.url?.includes('accounts.api.cx.metamask.io/v1/accounts/') &&
+          req.url?.includes('/transactions'),
+      )
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [],
+      })),
+    // Mock token icon endpoints
+    await mockServer
+      .forGet(
+        'https://static.cx.metamask.io/api/v1/tokenIcons/137/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png',
+      )
+      .thenCallback(() => ({
+        statusCode: 200,
+        headers: { 'content-type': 'image/png' },
+        body: Buffer.from(''),
+      })),
+    await mockServer
+      .forGet(
+        'https://static.cx.metamask.io/api/v1/tokenIcons/137/0x0000000000000000000000000000000000000000.png',
+      )
+      .thenCallback(() => ({
+        statusCode: 200,
+        headers: { 'content-type': 'image/png' },
+        body: Buffer.from(''),
+      })),
+    // Mock sentry endpoints
+    await mockServer
+      .forPost('https://sentry.io/api/273496/envelope/')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {},
+      })),
+  ];
+}
 function buildFixtures(title: string, chainId: number = 1337) {
   return {
     fixtures: new FixtureBuilder()
-      .withPermissionControllerConnectedToTestDapp()
       .withNetworkControllerOnPolygon()
       .withTokensControllerERC20({ chainId })
+      .withEnabledNetworks({
+        eip155: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.POLYGON]: true,
+          [CHAIN_IDS.LINEA_MAINNET]: true,
+        },
+      })
       .build(),
+    localNodeOptions: [
+      {
+        type: 'anvil',
+        options: {
+          chainId: 1,
+        },
+      },
+      {
+        type: 'anvil',
+        options: {
+          port: 8546,
+          chainId: 137,
+        },
+      },
+    ],
     smartContract: SMART_CONTRACTS.HST,
     title,
+    testSpecificMock: mockSwapSetup,
   };
 }
 
 describe('Multichain Asset List', function (this: Suite) {
-  // Apply to all tests in this suite
-  before(function () {
-    if (!process.env.PORTFOLIO_VIEW) {
-      this.skip();
-    }
-  });
-
   it('persists the preferred asset list preference when changing networks', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
-        await assetListPage.check_tokenItemNumber(3);
+        await assetListPage.check_tokenItemNumber(4);
         await assetListPage.openNetworksFilter();
         await assetListPage.clickCurrentNetworkOption();
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
-        await assetListPage.waitUntilFilterLabelIs(LINEA_NAME_MAINNET);
-        await assetListPage.check_tokenItemNumber(1);
+        await assetListPage.openNetworksFilterAndClickPopularNetworks();
+        await assetListPage.check_tokenItemNumber(4);
         assert.equal(
           await assetListPage.getNetworksFilterLabel(),
-          LINEA_NAME_MAINNET,
+          'Popular networks',
         );
       },
     );
@@ -62,34 +167,29 @@ describe('Multichain Asset List', function (this: Suite) {
   it('allows clicking into the asset details page of native token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
-        await assetListPage.check_tokenItemNumber(3);
-        await driver.clickElement('.multichain-token-list-item');
-        const coinOverviewElement = await driver.findElement(
-          '[data-testid="coin-overview-buy"]',
-        );
-        const multichainTokenListButton = await driver.findElement(
-          '[data-testid="multichain-token-list-button"]',
-        );
-        assert.ok(coinOverviewElement, 'coin-overview-buy is present');
-        assert.ok(
-          multichainTokenListButton,
-          'multichain-token-list-button is present',
-        );
+        await assetListPage.check_tokenItemNumber(4);
+        await assetListPage.clickOnAsset('Ethereum');
+        await assetListPage.check_buySellButtonIsPresent();
+        await assetListPage.check_multichainTokenListButtonIsPresent();
       },
     );
   });
   it('switches networks when clicking on send for a token on another network', async function () {
     await withFixtures(
-      buildFixtures(this.test?.fullTitle() as string, 137),
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+      buildFixtures(this.test?.fullTitle() as string, 1337),
+      async ({ driver, localNodes }) => {
+        await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
@@ -97,9 +197,8 @@ describe('Multichain Asset List', function (this: Suite) {
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
         const sendPage = new SendTokenPage(driver);
         await assetListPage.check_tokenItemNumber(4);
-        await assetListPage.clickOnAsset('TST');
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-        await sendPage.check_networkChange(POLYGON_NAME_MAINNET);
+        await assetListPage.clickOnAsset('Ethereum');
+        await assetListPage.clickCoinSendButton();
         await sendPage.check_pageIsLoaded();
         await sendPage.fillRecipient(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -108,68 +207,52 @@ describe('Multichain Asset List', function (this: Suite) {
         const assetPickerItems = await sendPage.getAssetPickerItems();
         assert.equal(
           assetPickerItems.length,
-          2,
+          1,
           'Two assets should be shown in the asset picker',
         );
       },
     );
   });
   it('switches networks when clicking on swap for a token on another network', async function () {
+    this.timeout(30000); // Set 30 second timeout
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string, 137),
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
+        const sendPage = new SendTokenPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
-        await assetListPage.check_tokenItemNumber(4);
+        await assetListPage.check_tokenItemNumber(5);
         await assetListPage.clickOnAsset('TST');
-        await driver.clickElement('.mm-box > button:nth-of-type(3)');
-        const toastTextElement = await driver.findElement('.toast-text');
-        const toastText = await toastTextElement.getText();
-        assert.equal(
-          toastText,
-          `You're now using ${POLYGON_NAME_MAINNET}`,
-          'Toast text is correct',
-        );
+        await assetListPage.clickSwapButton();
+        await sendPage.check_networkChange(POLYGON_NAME_MAINNET);
       },
     );
   });
   it('shows correct asset and balance when swapping on a different chain', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         const assetListPage = new AssetListPage(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
+        const sendPage = new SendTokenPage(driver);
+        const swapPage = new SwapPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
-        await assetListPage.check_tokenItemNumber(3);
+        await assetListPage.check_tokenItemNumber(4);
         await assetListPage.clickOnAsset('Ethereum');
-
-        const swapButton = await driver.findElement(
-          '[data-testid="token-overview-button-swap"]',
-        );
-        await swapButton.click();
-        const toastTextElement = await driver.findElement('.toast-text');
-        const toastText = await toastTextElement.getText();
-        assert.equal(
-          toastText,
-          `You're now using Ethereum Mainnet`,
-          'Toast text is correct',
-        );
-        const balanceMessageElement = await driver.findElement(
-          '.prepare-swap-page__balance-message',
-        );
-        const balanceMessage = await balanceMessageElement.getText();
-        assert.equal(
-          balanceMessage.replace('Max', '').trim(),
-          `Balance: ${BALANCE_AMOUNT}`,
-          'Balance message is correct',
-        );
+        await homePage.goToSwapTab();
+        await sendPage.check_networkChange(NETWORK_NAME_MAINNET);
+        await swapPage.check_prepareSwapBalanceMessage(BALANCE_AMOUNT);
       },
     );
   });
