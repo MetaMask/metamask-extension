@@ -38,7 +38,11 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await importTST(driver);
+          await importTestToken(
+            driver,
+            '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+            '0x539',
+          );
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           const testDapp = new TestDapp(driver);
@@ -65,7 +69,11 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await importTST(driver);
+          await importTestToken(
+            driver,
+            '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+            '0x539',
+          );
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           const testDapp = new TestDapp(driver);
@@ -84,14 +92,6 @@ async function mocks(server: MockttpServer) {
   return [await mocked4BytesApprove(server)];
 }
 
-async function importTST(driver: Driver) {
-  // Use the new token import flow
-  await importTestToken(
-    driver,
-    '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
-    '0x539',
-  );
-}
 
 async function assertApproveDetails(driver: Driver) {
   // Wait for the approve transaction window and switch to it
