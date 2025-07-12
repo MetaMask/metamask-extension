@@ -20,6 +20,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   getAllChainsToPoll,
+  getCompleteAddressBook,
   getCurrentNetwork,
   getIpfsGateway,
   getNativeCurrencyImage,
@@ -34,7 +35,9 @@ import {
 import {
   getCurrentDraftTransaction,
   getIsNativeSendPossible,
+  getRecipient,
   getSendMaxModeState,
+  updateRecipient,
   type Amount,
   type Asset,
 } from '../../../ducks/send';
@@ -109,6 +112,14 @@ export const AssetPickerAmount = ({
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
   const tokenList = useSelector(getTokenList) as TokenListMap;
+  const addressBook = useSelector(getCompleteAddressBook);
+  const contacts =
+    (addressBook?.flatMap((add) => Object.values(add)) as {
+      address: string;
+      chainId: string;
+      name: string;
+    }[]) ?? [];
+  const recipient = useSelector(getRecipient);
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
@@ -265,6 +276,14 @@ export const AssetPickerAmount = ({
                           : networkConfig.chainId,
                       ),
                     );
+
+                    const contact = contacts.find((item) => {
+                      return item.address === recipient.address;
+                    });
+
+                    if (contact && contact.chainId !== networkConfig.chainId) {
+                      dispatch(updateRecipient({ address: '', nickname: '' }));
+                    }
                   },
                   header: t('yourNetworks'),
                 }
