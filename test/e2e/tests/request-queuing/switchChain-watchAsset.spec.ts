@@ -1,15 +1,14 @@
-const FixtureBuilder = require('../../fixture-builder');
-const {
-  logInWithBalanceValidation,
-  openDapp,
-  WINDOW_TITLES,
-  withFixtures,
-  switchToNotificationWindow,
-} = require('../../helpers');
-const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
-const { DAPP_URL } = require('../../constants');
+import { Suite } from 'mocha';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { DAPP_URL } from '../../constants';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import TestDapp from '../../page-objects/pages/test-dapp';
 
-describe('Request Queue SwitchChain -> WatchAsset', function () {
+describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
   const smartContract = SMART_CONTRACTS.HST;
   it('should not clear subsequent watchAsset after switching chain', async function () {
     const port = 8546;
@@ -19,7 +18,6 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
-
           .build(),
         localNodeOptions: [
           {
@@ -34,29 +32,27 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
           },
         ],
         smartContract,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
 
       async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress =
           await contractRegistry.getContractAddress(smartContract);
-        await logInWithBalanceValidation(driver, localNodes[0]);
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
-        await openDapp(driver, contractAddress, DAPP_URL);
-
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
+        await testDapp.check_pageIsLoaded();
+        await testDapp.clickConnectAccountButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const permissionsTab = await driver.findElement(
-          '[data-testid="permissions-tab"]',
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
         );
-        await permissionsTab.click();
-
-        const editButtons = await driver.findElements('[data-testid="edit"]');
-
-        await editButtons[1].click();
+        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.goToPermissionsTab();
+        await connectAccountConfirmation.openEditNetworksModal();
 
         // Disconnect Localhost 8545. By Default, this was the globally selected network
         await driver.clickElement({
@@ -65,12 +61,10 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
         });
 
         await driver.clickElement('[data-testid="connect-more-chains-button"]');
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Connect',
-          tag: 'button',
-        });
-
+        await connectAccountConfirmation.confirmConnect();
+        
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.check_pageIsLoaded();
 
         // Switch Ethereum Chain
         const switchEthereumChainRequest = JSON.stringify({
@@ -84,23 +78,22 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.findElement({
-          text: 'Use your enabled networks',
-          tag: 'p',
-        });
+        const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
+          driver,
+        );
+        await reviewPermissionsConfirmation.check_useEnabledNetworksMessageIsDisplayed();
 
         // Switch back to test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.check_pageIsLoaded();
 
         // Watch Asset
-        await driver.clickElement({
-          text: 'Add Token(s) to Wallet',
-          tag: 'button',
-        });
-        await switchToNotificationWindow(driver);
+        await testDapp.clickAddTokenToWallet();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Confirm Switch Network
-        await driver.findClickableElement({
+
+       await driver.findClickableElement({
           text: 'Confirm',
           tag: 'button',
         });
