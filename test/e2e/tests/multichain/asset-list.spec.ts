@@ -155,8 +155,6 @@ describe('Multichain Asset List', function (this: Suite) {
         await assetListPage.clickOnAsset('TST');
         await assetListPage.clickSwapButton();
         await sendPage.check_networkChange(POLYGON_NAME_MAINNET);
-        // Test objective achieved - network switched successfully
-        console.log('Test completed: Network switch validated successfully');
       },
     );
   });
