@@ -9,7 +9,12 @@ import { cloneDeep } from 'lodash';
 import { DELEGATOR_CONTRACTS } from '@metamask/delegation-deployments';
 import { Hex, remove0x } from '@metamask/utils';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import { toHex } from '@metamask/controller-utils';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
+import {
+  AppStateControllerGetStateAction,
+  AppStateControllerState,
+} from '../../../controllers/app-state-controller';
 import { enforceSimulations } from './enforced-simulations';
 
 const TOKEN_MOCK = '0x4567890abcdef1234567890abcdef1234567890a' as Hex;
@@ -35,12 +40,20 @@ const TX_PARAMS_MOCK: TransactionParams = {
 };
 
 const TRANSACTION_META_MOCK: TransactionMeta = {
-  txParams: {},
+  chainId: CHAIN_ID_MOCK,
+  id: '123-456',
+  simulationData: SIMULATION_DATA_MOCK,
+  txParams: TX_PARAMS_MOCK,
 } as TransactionMeta;
 
 describe('Enforced Simulations Utils', () => {
   let messenger: TransactionControllerInitMessenger;
   let options: Parameters<typeof enforceSimulations>[0];
+  let simulationData: SimulationData;
+
+  const getAppStateMock: jest.MockedFn<
+    AppStateControllerGetStateAction['handler']
+  > = jest.fn();
 
   const signDelegationMock: jest.MockedFn<
     DelegationControllerSignDelegationAction['handler']
@@ -50,9 +63,15 @@ describe('Enforced Simulations Utils', () => {
     jest.resetAllMocks();
 
     const baseMessenger = new Messenger<
-      DelegationControllerSignDelegationAction,
+      | AppStateControllerGetStateAction
+      | DelegationControllerSignDelegationAction,
       never
     >();
+
+    baseMessenger.registerActionHandler(
+      'AppStateController:getState',
+      getAppStateMock,
+    );
 
     baseMessenger.registerActionHandler(
       'DelegationController:signDelegation',
@@ -61,18 +80,26 @@ describe('Enforced Simulations Utils', () => {
 
     messenger = baseMessenger.getRestricted({
       name: 'TransactionControllerInitMessenger',
-      allowedActions: ['DelegationController:signDelegation'],
+      allowedActions: [
+        'AppStateController:getState',
+        'DelegationController:signDelegation',
+      ],
       allowedEvents: [],
     });
+
+    getAppStateMock.mockReturnValue({
+      enforcedSimulationsSlippage: 10,
+      enforcedSimulationsSlippageForTransactions: {},
+    } as AppStateControllerState);
 
     signDelegationMock.mockResolvedValue(DELEGATION_SIGNATURE_MOCK);
 
     options = {
-      chainId: CHAIN_ID_MOCK,
       messenger,
-      simulationData: cloneDeep(SIMULATION_DATA_MOCK),
-      txParams: TX_PARAMS_MOCK,
+      transactionMeta: cloneDeep(TRANSACTION_META_MOCK),
     };
+
+    simulationData = options.transactionMeta.simulationData as SimulationData;
   });
 
   describe('enforceSimulations', () => {
@@ -123,7 +150,7 @@ describe('Enforced Simulations Utils', () => {
     });
 
     it('includes erc20 token balance change caveat', async () => {
-      options.simulationData.tokenBalanceChanges = [
+      simulationData.tokenBalanceChanges = [
         {
           ...BALANCE_CHANGE_MOCK,
           address: TOKEN_MOCK,
@@ -146,7 +173,7 @@ describe('Enforced Simulations Utils', () => {
     });
 
     it('includes erc721 token balance change caveat', async () => {
-      options.simulationData.tokenBalanceChanges = [
+      simulationData.tokenBalanceChanges = [
         {
           ...BALANCE_CHANGE_MOCK,
           address: TOKEN_MOCK,
@@ -169,7 +196,7 @@ describe('Enforced Simulations Utils', () => {
     });
 
     it('includes erc1155 token balance change caveat', async () => {
-      options.simulationData.tokenBalanceChanges = [
+      simulationData.tokenBalanceChanges = [
         {
           ...BALANCE_CHANGE_MOCK,
           address: TOKEN_MOCK,
@@ -209,6 +236,112 @@ describe('Enforced Simulations Utils', () => {
           remove0x(DELEGATION_SIGNATURE_MOCK).toLowerCase(),
         ),
       );
+    });
+
+    describe('applies slippage', () => {
+      it('if decrease', async () => {
+        simulationData.tokenBalanceChanges = [
+          {
+            ...BALANCE_CHANGE_MOCK,
+            difference: toHex(100000),
+            address: TOKEN_MOCK,
+            standard: SimulationTokenStandard.erc20,
+          },
+        ];
+
+        getAppStateMock.mockReturnValue({
+          enforcedSimulationsSlippage: 23,
+          enforcedSimulationsSlippageForTransactions: {},
+        } as AppStateControllerState);
+
+        const { updateTransaction } = await enforceSimulations(options);
+
+        const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+        updateTransaction?.(newTransaction);
+
+        expect(newTransaction.txParams.data).toStrictEqual(
+          expect.stringContaining(remove0x(toHex(123000)).toLowerCase()),
+        );
+      });
+
+      it('if increase', async () => {
+        simulationData.tokenBalanceChanges = [
+          {
+            ...BALANCE_CHANGE_MOCK,
+            isDecrease: false,
+            difference: toHex(100000),
+            address: TOKEN_MOCK,
+            standard: SimulationTokenStandard.erc20,
+          },
+        ];
+
+        getAppStateMock.mockReturnValue({
+          enforcedSimulationsSlippage: 23,
+          enforcedSimulationsSlippageForTransactions: {},
+        } as AppStateControllerState);
+
+        const { updateTransaction } = await enforceSimulations(options);
+
+        const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+        updateTransaction?.(newTransaction);
+
+        expect(newTransaction.txParams.data).toStrictEqual(
+          expect.stringContaining(remove0x(toHex(77000)).toLowerCase()),
+        );
+      });
+
+      it('if overridden', async () => {
+        simulationData.tokenBalanceChanges = [
+          {
+            ...BALANCE_CHANGE_MOCK,
+            isDecrease: false,
+            difference: toHex(100000),
+            address: TOKEN_MOCK,
+            standard: SimulationTokenStandard.erc20,
+          },
+        ];
+
+        getAppStateMock.mockReturnValue({
+          enforcedSimulationsSlippage: 10,
+          enforcedSimulationsSlippageForTransactions: {
+            [TRANSACTION_META_MOCK.id]: 15,
+          },
+        } as AppStateControllerState);
+
+        const { updateTransaction } = await enforceSimulations(options);
+
+        const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+        updateTransaction?.(newTransaction);
+
+        expect(newTransaction.txParams.data).toStrictEqual(
+          expect.stringContaining(remove0x(toHex(85000)).toLowerCase()),
+        );
+      });
+
+      // @ts-expect-error Wrong `it` type
+      it.each([
+        SimulationTokenStandard.erc721,
+        SimulationTokenStandard.erc1155,
+      ])('unless token is %s', async (standard: SimulationTokenStandard) => {
+        simulationData.tokenBalanceChanges = [
+          {
+            ...BALANCE_CHANGE_MOCK,
+            isDecrease: false,
+            difference: toHex(100000),
+            address: TOKEN_MOCK,
+            standard,
+          },
+        ];
+
+        const { updateTransaction } = await enforceSimulations(options);
+
+        const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+        updateTransaction?.(newTransaction);
+
+        expect(newTransaction.txParams.data).not.toStrictEqual(
+          expect.stringContaining(remove0x(toHex(90000)).toLowerCase()),
+        );
+      });
     });
   });
 });

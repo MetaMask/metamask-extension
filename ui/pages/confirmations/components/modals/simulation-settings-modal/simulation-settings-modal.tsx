@@ -24,6 +24,8 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
+  TextField,
+  TextFieldType,
 } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import ToggleButton from '../../../../../components/ui/toggle-button';
@@ -31,8 +33,12 @@ import { useConfirmContext } from '../../../context/confirm';
 import {
   applyTransactionContainersExisting,
   setEnableEnforcedSimulationsForTransaction,
+  setEnforcedSimulationsSlippageForTransaction,
 } from '../../../../../store/actions';
-import { selectEnableEnforcedSimulations } from '../../../selectors';
+import {
+  selectEnableEnforcedSimulations,
+  selectEnforcedSimulationsSlippage,
+} from '../../../selectors';
 import { ConfirmMetamaskState } from '../../../types/confirm';
 
 const Section = ({ children }: { children: React.ReactNode | string }) => {
@@ -50,12 +56,69 @@ const Section = ({ children }: { children: React.ReactNode | string }) => {
   );
 };
 
-export const SimulationSettingsModal = ({
-  onClose,
+const EnforceToggle = ({
+  enabled,
+  onChange,
 }: {
-  onClose?: () => void;
+  enabled: boolean;
+  onChange?: (value: boolean) => void;
 }) => {
   const t = useI18nContext();
+
+  return (
+    <Section>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        alignItems={AlignItems.center}
+        style={{ marginRight: '-12px' }}
+      >
+        <Text variant={TextVariant.bodyMdMedium}>
+          {t('simulationSettingsModalEnforceToggle')}
+        </Text>
+        <ToggleButton
+          dataTestId="simulation-settings-modal-enable-enforced"
+          value={enabled}
+          onToggle={() => onChange?.(!enabled)}
+        />
+      </Box>
+      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternativeSoft}>
+        {t('simulationSettingsModalEnforceToggleDescription')}
+      </Text>
+    </Section>
+  );
+};
+
+const Slippage = ({
+  onChange,
+  slippage,
+}: {
+  onChange?: (slippage: number) => void;
+  slippage: number;
+}) => {
+  const t = useI18nContext();
+
+  return (
+    <Section>
+      <Text variant={TextVariant.bodyMdMedium}>
+        {t('simulationSettingsModalEnforceSlippage')}
+      </Text>
+      <TextField
+        data-testid="simulation-settings-modal-slippage-custom-input"
+        type={TextFieldType.Number}
+        onChange={(e) => onChange?.(Number(e.target.value))}
+        value={slippage}
+        endAccessory={'%'}
+      />
+      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternativeSoft}>
+        {t('simulationSettingsModalEnforceSlippageDescription')}
+      </Text>
+    </Section>
+  );
+};
+
+function useSimulationSettings() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { containerTypes, id: transactionId } = currentConfirmation || {};
 
@@ -68,41 +131,85 @@ export const SimulationSettingsModal = ({
     TransactionContainerType.EnforcedSimulations,
   );
 
+  const savedSlippage = useSelector((state: ConfirmMetamaskState) =>
+    selectEnforcedSimulationsSlippage(state, transactionId),
+  );
+
   const [enabled, setEnabled] = useState(isEnforcedSimulationsEnabled);
+  const [slippage, setSlippage] = useState<number>(savedSlippage);
 
-  const handleUpdateClick = useCallback(async () => {
-    await setEnableEnforcedSimulationsForTransaction(transactionId, enabled);
+  const updateSettings = useCallback(async () => {
+    const slippageUpdated = slippage !== savedSlippage;
+    const isEnabled = enabled && !isEnforcedSimulationApplied;
+    const isDisabled = !enabled && isEnforcedSimulationApplied;
 
-    let newContainerTypes = containerTypes || [];
-
-    if (!enabled && isEnforcedSimulationApplied) {
-      newContainerTypes = newContainerTypes.filter(
-        (type) => type !== TransactionContainerType.EnforcedSimulations,
+    if (slippageUpdated) {
+      await setEnforcedSimulationsSlippageForTransaction(
+        transactionId,
+        slippage,
       );
     }
 
-    if (enabled && !isEnforcedSimulationApplied) {
-      newContainerTypes = [
-        ...newContainerTypes,
-        TransactionContainerType.EnforcedSimulations,
-      ];
+    const newContainerTypes = [...(containerTypes ?? [])];
+
+    if (isEnabled) {
+      newContainerTypes.push(TransactionContainerType.EnforcedSimulations);
     }
 
-    if (newContainerTypes.length !== containerTypes?.length) {
+    if (isDisabled) {
+      newContainerTypes.splice(
+        newContainerTypes.indexOf(TransactionContainerType.EnforcedSimulations),
+        1,
+      );
+
+      await setEnableEnforcedSimulationsForTransaction(transactionId, false);
+    }
+
+    if (
+      newContainerTypes.length !== containerTypes?.length ||
+      slippageUpdated
+    ) {
       await applyTransactionContainersExisting(
         transactionId,
         newContainerTypes,
       );
     }
 
-    onClose?.();
+    if (isEnabled) {
+      await setEnableEnforcedSimulationsForTransaction(transactionId, true);
+    }
   }, [
     containerTypes,
     enabled,
     isEnforcedSimulationApplied,
-    onClose,
+    savedSlippage,
+    slippage,
     transactionId,
   ]);
+
+  return {
+    enabled,
+    setEnabled,
+    slippage,
+    setSlippage,
+    updateSettings,
+  };
+}
+
+export const SimulationSettingsModal = ({
+  onClose,
+}: {
+  onClose?: () => void;
+}) => {
+  const t = useI18nContext();
+
+  const { enabled, setEnabled, slippage, setSlippage, updateSettings } =
+    useSimulationSettings();
+
+  const handleUpdateClick = useCallback(async () => {
+    await updateSettings();
+    onClose?.();
+  }, [updateSettings, onClose]);
 
   return (
     <Modal
@@ -126,30 +233,8 @@ export const SimulationSettingsModal = ({
           flexDirection={FlexDirection.Column}
           gap={3}
         >
-          <Section>
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              justifyContent={JustifyContent.spaceBetween}
-              alignItems={AlignItems.center}
-              style={{ marginRight: '-12px' }}
-            >
-              <Text variant={TextVariant.bodyMdMedium}>
-                {t('simulationSettingsModalEnforceToggle')}
-              </Text>
-              <ToggleButton
-                dataTestId="simulation-settings-modal-enable-enforced"
-                value={enabled}
-                onToggle={() => setEnabled(!enabled)}
-              />
-            </Box>
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternativeSoft}
-            >
-              {t('simulationSettingsModalEnforceToggleDescription')}
-            </Text>
-          </Section>
+          <EnforceToggle enabled={enabled} onChange={setEnabled} />
+          {enabled && <Slippage slippage={slippage} onChange={setSlippage} />}
           <ButtonPrimary
             onClick={handleUpdateClick}
             data-testid="simulation-settings-modal-update"
