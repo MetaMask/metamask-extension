@@ -28,10 +28,7 @@ describe('Ducks - Swaps', () => {
 
   describe('fetchSwapsLivenessAndFeatureFlags', () => {
     const cleanFeatureFlagApiCache = () => {
-      setStorageItem(
-        'cachedFetch:https://swap.api.cx.metamask.io/featureFlags',
-        null,
-      );
+      setStorageItem('https://swap.api.cx.metamask.io/featureFlags', null);
     };
 
     afterEach(() => {
