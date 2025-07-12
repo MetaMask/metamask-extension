@@ -4,26 +4,20 @@ import HomePage from '../pages/home/homepage';
 import { ImportTokensModal } from '../pages/import-tokens-modal';
 
 /**
- * Configuration for importing a custom token
- */
-type TokenImportConfig = {
-  contractAddress: string;
-  networkChainId: string;
-};
-
-/**
  * Import a custom token using the original simple approach
  * This matches the working behavior before verification was added
  *
  * @param driver - The WebDriver instance
- * @param tokenConfig - Configuration for the token to import
+ * @param contractAddress - The contract address of the token
+ * @param networkChainId - The chain ID of the network
  */
 export async function importTestToken(
   driver: Driver,
-  tokenConfig: TokenImportConfig,
+  contractAddress: string,
+  networkChainId: string,
 ): Promise<void> {
   console.log(
-    `Starting token import for ${tokenConfig.contractAddress} on chain ${tokenConfig.networkChainId}`,
+    `Starting token import for ${contractAddress} on chain ${networkChainId}`,
   );
 
   // Switch to MetaMask window
@@ -38,8 +32,8 @@ export async function importTestToken(
 
   // Use ImportTokensModal to handle the import process
   await importTokensModal.importCustomToken(
-    tokenConfig.contractAddress,
-    tokenConfig.networkChainId,
+    contractAddress,
+    networkChainId,
   );
 
   console.log('Custom token import completed successfully');

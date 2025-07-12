@@ -82,10 +82,11 @@ async function mocks(server: MockttpServer) {
 
 async function importTST(driver: Driver) {
   // Use the new token import flow
-  await importTestToken(driver, {
-    contractAddress: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
-    networkChainId: '0x539',
-  });
+  await importTestToken(
+    driver,
+    '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+    '0x539',
+  );
 }
 
 async function assertApproveDetails(driver: Driver) {
