@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockedEndpoint, MockttpServer } from 'mockttp';
-import { largeDelayMs, veryLargeDelayMs } from '../../../helpers';
 import { Anvil } from '../../../seeder/anvil';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { Mockttp } from '../../../mock-e2e';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/erc20-approve-transaction-confirmation';
+import HomePage from '../../../page-objects/pages/home/homepage';
 
 const {
   logInWithBalanceValidation,
@@ -52,11 +52,11 @@ export async function confirmContractDeploymentTransaction(driver: Driver) {
 
   await scrollAndConfirmAndAssertConfirm(driver);
 
-  await driver.delay(2000);
   await driver.waitUntilXWindowHandles(2);
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.clickElement({ text: 'Activity', tag: 'button' });
+  const homePage = new HomePage(driver);
+  await homePage.goToActivityList();
   await driver.waitForSelector(
     '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
   );
@@ -80,11 +80,11 @@ export async function confirmRedesignedContractDeploymentTransaction(
 
   await scrollAndConfirmAndAssertConfirm(driver);
 
-  await driver.delay(2000);
   await driver.waitUntilXWindowHandles(2);
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.clickElement({ text: 'Activity', tag: 'button' });
+  const homePage = new HomePage(driver);
+  await homePage.goToActivityList();
   await driver.waitForSelector(
     '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
   );
@@ -113,7 +113,6 @@ export async function confirmDepositTransaction(driver: Driver) {
     text: 'Nonce',
   });
 
-  await driver.delay(veryLargeDelayMs);
   await scrollAndConfirmAndAssertConfirm(driver);
 }
 
@@ -142,13 +141,13 @@ export async function confirmDepositTransactionWithCustomNonce(
     text: 'Save',
     tag: 'button',
   });
-  await driver.delay(veryLargeDelayMs);
   await scrollAndConfirmAndAssertConfirm(driver);
 
   // Confirm tx was submitted with the higher nonce
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
-  await driver.clickElement('[data-testid="account-overview__activity-tab"]');
+  const homePage = new HomePage(driver);
+  await homePage.goToActivityList();
 
   const sendTransactionListItem = await driver.findElement(
     '.transaction-list__pending-transactions .activity-list-item',
@@ -222,9 +221,6 @@ export async function toggleOnHexData(driver: Driver) {
 }
 
 export async function toggleAdvancedDetails(driver: Driver) {
-  // TODO - Scroll button not shown in Firefox if advanced details enabled too fast.
-  await driver.delay(1000);
-
   await driver.clickElement(`[data-testid="header-advanced-details-button"]`);
 }
 
@@ -251,12 +247,7 @@ export async function editSpendingCap(driver: Driver, newSpendingCap: string) {
     newSpendingCap,
   );
 
-  await driver.delay(largeDelayMs);
-
   await driver.clickElement({ text: 'Save', tag: 'button' });
-
-  // wait for the confirmation to be updated before submitting tx
-  await driver.delay(veryLargeDelayMs * 2);
 }
 
 export async function assertChangedSpendingCap(
@@ -265,9 +256,8 @@ export async function assertChangedSpendingCap(
 ) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
-  await driver.clickElement({ text: 'Activity', tag: 'button' });
-
-  await driver.delay(veryLargeDelayMs);
+  const homePage = new HomePage(driver);
+  await homePage.goToActivityList();
 
   await driver.clickElement(
     '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
@@ -389,11 +379,11 @@ export async function confirmApproveTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await scrollAndConfirmAndAssertConfirm(driver);
 
-  await driver.delay(veryLargeDelayMs);
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
-  await driver.clickElement({ text: 'Activity', tag: 'button' });
+  const homePage = new HomePage(driver);
+  await homePage.goToActivityList();
   await driver.waitForSelector(
     '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
   );

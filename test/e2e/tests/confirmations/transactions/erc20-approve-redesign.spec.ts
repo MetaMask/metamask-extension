@@ -6,7 +6,7 @@ import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/con
 import { importTestToken } from '../../../page-objects/flows/import-token.flow';
 import {
   confirmApproveTransaction,
-  createERC20ApproveTransaction as createERC20ApproveTransactionShared,
+  createERC20ApproveTransaction,
   mocked4BytesApprove,
   openDAppWithContract,
   TestSuiteArguments,
@@ -86,11 +86,6 @@ async function importTST(driver: Driver) {
     contractAddress: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
     networkChainId: '0x539',
   });
-}
-
-async function createERC20ApproveTransaction(driver: Driver) {
-  // Use the shared helper function
-  await createERC20ApproveTransactionShared(driver);
 }
 
 async function assertApproveDetails(driver: Driver) {
