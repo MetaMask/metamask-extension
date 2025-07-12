@@ -27,7 +27,7 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24');
+        await homePage.check_expectedBalanceIsDisplayed('$84,992.50', 'USD');
         await homePage.startBridgeFlow();
 
         const bridgePage = new BridgeQuotePage(driver);
@@ -57,7 +57,7 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('$85,000.00', 'USD');
         await homePage.startBridgeFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -79,7 +79,7 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('$85,000.00', 'USD');
         await homePage.startBridgeFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -101,7 +101,8 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('$85,000.00', 'USD');
+
         await homePage.startBridgeFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -128,7 +129,7 @@ describe('Bridge functionality', function (this: Suite) {
         await disableStxSetting(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24');
+        await homePage.check_expectedBalanceIsDisplayed('$84,992.50', 'USD');
         await homePage.startBridgeFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -159,7 +160,7 @@ describe('Bridge functionality', function (this: Suite) {
         await disableStxSetting(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24');
+        await homePage.check_expectedBalanceIsDisplayed('$84,992.50', 'USD');
         await homePage.startBridgeFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -191,7 +192,7 @@ describe('Bridge functionality', function (this: Suite) {
         await disableStxSetting(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24');
+        await homePage.check_expectedBalanceIsDisplayed('$84,992.50', 'USD');
         await homePage.startBridgeFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
