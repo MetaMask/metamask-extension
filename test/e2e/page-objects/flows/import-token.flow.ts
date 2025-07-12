@@ -1,6 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../helpers';
-import HomePage from '../pages/home/homepage';
+import AssetListPage from '../pages/home/asset-list';
 import { ImportTokensModal } from '../pages/import-tokens-modal';
 
 /**
@@ -24,11 +24,11 @@ export async function importTestToken(
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
   // Initialize page objects
-  const homePage = new HomePage(driver);
+  const assetListPage = new AssetListPage(driver);
   const importTokensModal = new ImportTokensModal(driver);
 
-  // Open the import tokens modal using HomePage
-  await homePage.openImportTokensModal();
+  // Open the import tokens modal using AssetListPage
+  await assetListPage.openImportTokensModal();
 
   // Use ImportTokensModal to handle the import process
   await importTokensModal.importCustomToken(

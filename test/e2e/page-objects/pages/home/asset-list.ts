@@ -335,6 +335,15 @@ class AssetListPage {
     throw new Error(`Token "${tokenSymbol}" not found in token list`);
   }
 
+  /**
+   * Opens the import tokens modal
+   */
+  async openImportTokensModal(): Promise<void> {
+    console.log(`Open import tokens modal`);
+    await this.driver.clickElement(this.tokenOptionsButton);
+    await this.driver.clickElement(this.importTokensButton);
+  }
+
   async waitUntilFilterLabelIs(label: string): Promise<void> {
     console.log(`Waiting until the filter label is ${label}`);
     await this.driver.waitUntil(
