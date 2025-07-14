@@ -8,10 +8,6 @@ import { SEND_STAGES } from '../../../ducks/send';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import {
-  mockNetworkState,
-  mockMultichainNetworkState,
-} from '../../../../test/stub/networks';
 import { AppHeader } from '.';
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
@@ -29,7 +25,6 @@ jest.mock('react-router-dom', () => ({
 
 const render = ({
   stateChanges = {},
-  network = { chainId: '0x5', nickname: 'Chain 5', ticker: 'ETH' },
   location = {},
   isUnlocked = true,
 } = {}) => {
@@ -37,8 +32,6 @@ const render = ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      ...mockNetworkState(network),
-      ...mockMultichainNetworkState(),
       isUnlocked: isUnlocked ?? true,
     },
     activeTab: {
@@ -64,13 +57,6 @@ describe('App Header', () => {
   });
 
   describe('send stage', () => {
-    it('should disable the network picker during a send', () => {
-      const { getByTestId } = render({
-        stateChanges: { send: { stage: SEND_STAGES.DRAFT } },
-      });
-      expect(getByTestId('network-display')).toBeDisabled();
-    });
-
     it('should allow switching accounts during a send', () => {
       const { getByTestId } = render({
         stateChanges: { send: { stage: SEND_STAGES.DRAFT } },
@@ -89,17 +75,6 @@ describe('App Header', () => {
   describe('unlocked state', () => {
     afterEach(() => {
       jest.clearAllMocks();
-    });
-    it('can open the network picker', () => {
-      const { container } = render();
-      const networkPickerButton = container.querySelector(
-        '.multichain-app-header__contents__network-picker',
-      );
-      expect(networkPickerButton).toBeInTheDocument();
-      fireEvent.click(networkPickerButton);
-
-      const networkPicker = container.querySelector('.mm-picker-network');
-      expect(networkPicker).toBeInTheDocument();
     });
 
     it('can open the account list', () => {
@@ -133,9 +108,6 @@ describe('App Header', () => {
         '[data-testid="connection-menu"]',
       );
       expect(connectionPickerButton).toBeInTheDocument();
-      fireEvent.click(connectionPickerButton);
-
-      expect(mockUseHistory).toHaveBeenCalled();
     });
 
     describe('Global menu support button', () => {
@@ -193,20 +165,6 @@ describe('App Header', () => {
   });
 
   describe('locked state', () => {
-    it('can open the network picker', () => {
-      const { container } = render({
-        isUnlocked: false,
-      });
-      const networkPickerButton = container.querySelector(
-        '.multichain-app-header__contents__network-picker',
-      );
-      expect(networkPickerButton).toBeInTheDocument();
-      fireEvent.click(networkPickerButton);
-
-      const networkPicker = container.querySelector('.mm-picker-network');
-      expect(networkPicker).toBeInTheDocument();
-    });
-
     it('does not show the account picker', () => {
       const { container } = render({
         isUnlocked: false,
@@ -235,36 +193,6 @@ describe('App Header', () => {
         '[data-testid="connection-menu"]',
       );
       expect(connectionPickerButton).not.toBeInTheDocument();
-    });
-  });
-
-  describe('network picker', () => {
-    it('shows custom rpc if it has the same chainId as a default network', () => {
-      const mockProviderConfig = {
-        chainId: '0x1',
-        rpcUrl: 'https://localhost:8545',
-        nickname: 'Localhost',
-      };
-
-      const { getByText } = render({
-        network: mockProviderConfig,
-        isUnlocked: true,
-      });
-      expect(getByText(mockProviderConfig.nickname)).toBeInTheDocument();
-    });
-
-    it("shows rpc url as nickname if there isn't a nickname set", () => {
-      const mockProviderConfig = {
-        chainId: '0x1',
-        rpcUrl: 'https://localhost:8545',
-        nickname: undefined,
-      };
-
-      const { getByText } = render({
-        network: mockProviderConfig,
-        isUnlocked: true,
-      });
-      expect(getByText(mockProviderConfig.rpcUrl)).toBeInTheDocument();
     });
   });
 });

@@ -478,6 +478,14 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
     : await driver.openNewPage(dappURL);
 };
+const openPopupWithActiveTabOrigin = async (driver, origin = DAPP_URL) => {
+  await driver.openNewPage(
+    `${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${origin}`,
+  );
+
+  // Resize the popup window after it's opened
+  await driver.driver.manage().window().setRect({ width: 400, height: 600 });
+};
 
 const openDappConnectionsPage = async (driver) => {
   await driver.openNewPage(
@@ -928,6 +936,7 @@ module.exports = {
   withFixtures,
   createDownloadFolder,
   openDapp,
+  openPopupWithActiveTabOrigin,
   openDappConnectionsPage,
   createDappTransaction,
   switchToOrOpenDapp,
