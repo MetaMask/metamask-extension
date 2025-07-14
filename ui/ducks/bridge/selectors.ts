@@ -74,6 +74,7 @@ import {
   tokenPriceInNativeAsset,
 } from './utils';
 import type { BridgeState } from './types';
+import { toBridgeToken } from './bridge';
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
@@ -212,8 +213,7 @@ export const getToChain = createSelector(
 );
 
 export const getFromToken = createSelector(
-  (state: BridgeAppState) => state.bridge.fromToken,
-  getFromChain,
+  [(state: BridgeAppState) => state.bridge.fromToken, getFromChain],
   (fromToken, fromChain) => {
     if (!fromChain?.chainId) {
       return null;
@@ -224,22 +224,31 @@ export const getFromToken = createSelector(
     const { iconUrl, ...nativeAsset } = getNativeAssetForChainId(
       fromChain.chainId,
     );
-    return {
-      ...nativeAsset,
-      chainId: formatChainIdToCaip(fromChain.chainId),
-      image:
-        CHAIN_ID_TOKEN_IMAGE_MAP[
-          fromChain.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-        ] ?? getImageForChainId(fromChain.chainId),
-      balance: '0',
-      string: '0',
-    };
+    return toBridgeToken(nativeAsset);
   },
 );
 
-export const getToToken = (state: BridgeAppState) => {
-  return state.bridge.toToken;
-};
+export const getToToken = createSelector(
+  [
+    getFromToken,
+    (state: BridgeAppState) => state.bridge.toChainId,
+    (state) => state.bridge.toToken,
+  ],
+  (fromToken, toChainId, toToken) => {
+    if (!toChainId) {
+      return null;
+    }
+    const destNativeAsset = getNativeAssetForChainId(
+      toChainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
+    );
+    const newToToken = toToken ?? destNativeAsset;
+    // Return null if dest token is the same as the src token
+    if (fromToken?.assetId === newToToken?.assetId) {
+      return null;
+    }
+    return toBridgeToken(newToToken);
+  },
+);
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;

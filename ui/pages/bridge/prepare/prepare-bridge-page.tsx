@@ -921,10 +921,6 @@ const PrepareBridgePage = () => {
                           value: networkConfig.chainId,
                         });
                       dispatch(setToChainId(networkConfig.chainId));
-                      const destNativeAsset = getNativeAssetForChainId(
-                        networkConfig.chainId,
-                      );
-                      dispatch(setToToken(destNativeAsset));
                     },
                     header: getToInputHeader(),
                     shouldDisableNetwork: isUnifiedUIEnabled
