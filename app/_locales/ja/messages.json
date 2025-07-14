@@ -6030,17 +6030,6 @@
   "switchToThisAccount": {
     "message": "このアカウントに切り替える"
   },
-  "switchedNetworkToastDecline": {
-    "message": "今後表示しない"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1が$2で有効になりました",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
-  "switchedNetworkToastMessageNoOrigin": {
-    "message": "$1に切り替えました",
-    "description": "$1 represents the network name"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "ネットワークを切り替えると、保留中の承認がすべてキャンセルされます"
   },

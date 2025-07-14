@@ -6030,17 +6030,6 @@
   "switchToThisAccount": {
     "message": "Переключиться на этот счет"
   },
-  "switchedNetworkToastDecline": {
-    "message": "Не показывать снова"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 теперь активен в $2",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
-  "switchedNetworkToastMessageNoOrigin": {
-    "message": "Сейчас Вы используете $1",
-    "description": "$1 represents the network name"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "В случае смены сетей все ожидающие подтверждения будут отменены"
   },

@@ -173,57 +173,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getSwitchedNetworkDetails', () => {
-    it('returns no details when switchedNetworkDetails is empty', () => {
-      expect(
-        selectors.getSwitchedNetworkDetails({
-          metamask: {
-            ...mockState.metamask,
-            switchedNetworkDetails: undefined,
-          },
-        }),
-      ).toStrictEqual(null);
-    });
-
-    it('returns network information when valid switchedNetworkDetails are present', () => {
-      const origin = 'portfolio.metamask.io';
-
-      const state = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          selectedNetworkClientId: 'testNetworkConfigurationId',
-
-          networkConfigurationsByChainId: {
-            '0x1': {
-              chainId: '0x1',
-              name: 'Custom Mainnet RPC',
-              nativeCurrency: 'ETH',
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://testrpc.com',
-                  networkClientId: 'testNetworkConfigurationId',
-                  type: 'custom',
-                },
-              ],
-            },
-          },
-          switchedNetworkDetails: {
-            networkClientId: 'testNetworkConfigurationId',
-            origin,
-          },
-        },
-      };
-
-      expect(selectors.getSwitchedNetworkDetails(state)).toStrictEqual({
-        imageUrl: './images/eth_logo.svg',
-        nickname: networkSelectors.getProviderConfig(state).nickname,
-        origin,
-      });
-    });
-  });
-
   describe('#getNumberOfAllUnapprovedTransactionsAndMessages', () => {
     it('returns no unapproved transactions and messages', () => {
       expect(

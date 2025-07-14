@@ -79,8 +79,6 @@ export type AppStateControllerState = {
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
   addressSecurityAlertResponses: Record<string, ScanAddressResponse>;
   // States used for displaying the changed network toast
-  switchedNetworkDetails: Record<string, string> | null;
-  switchedNetworkNeverShowMessage: boolean;
   currentExtensionPopupId: number;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   termsOfUseLastAgreed?: number;
@@ -164,7 +162,6 @@ type AppStateControllerInitState = Partial<
     | 'nftsDropdownState'
     | 'signatureSecurityAlertResponses'
     | 'addressSecurityAlertResponses'
-    | 'switchedNetworkDetails'
     | 'currentExtensionPopupId'
   >
 >;
@@ -222,7 +219,6 @@ function getInitialStateOverrides() {
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
     addressSecurityAlertResponses: {},
-    switchedNetworkDetails: null,
     currentExtensionPopupId: 0,
   };
 }
@@ -344,14 +340,6 @@ const controllerMetadata = {
   },
   addressSecurityAlertResponses: {
     persist: false,
-    anonymous: true,
-  },
-  switchedNetworkDetails: {
-    persist: false,
-    anonymous: true,
-  },
-  switchedNetworkNeverShowMessage: {
-    persist: true,
     anonymous: true,
   },
   currentExtensionPopupId: {
@@ -945,44 +933,6 @@ export class AppStateController extends BaseController<
   setCurrentExtensionPopupId(currentExtensionPopupId: number): void {
     this.update((state) => {
       state.currentExtensionPopupId = currentExtensionPopupId;
-    });
-  }
-
-  /**
-   * Sets an object with networkName and appName
-   * or `null` if the message is meant to be cleared
-   *
-   * @param switchedNetworkDetails - Details about the network that MetaMask just switched to.
-   */
-  setSwitchedNetworkDetails(
-    switchedNetworkDetails: { origin: string; networkClientId: string } | null,
-  ): void {
-    this.update((state) => {
-      state.switchedNetworkDetails = switchedNetworkDetails;
-    });
-  }
-
-  /**
-   * Clears the switched network details in state
-   */
-  clearSwitchedNetworkDetails(): void {
-    this.update((state) => {
-      state.switchedNetworkDetails = null;
-    });
-  }
-
-  /**
-   * Remembers if the user prefers to never see the
-   * network switched message again
-   *
-   * @param switchedNetworkNeverShowMessage
-   */
-  setSwitchedNetworkNeverShowMessage(
-    switchedNetworkNeverShowMessage: boolean,
-  ): void {
-    this.update((state) => {
-      state.switchedNetworkDetails = null;
-      state.switchedNetworkNeverShowMessage = switchedNetworkNeverShowMessage;
     });
   }
 

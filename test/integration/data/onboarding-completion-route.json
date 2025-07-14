@@ -440,7 +440,6 @@
     "swapsStxGetTransactionsRefreshTime": 10000,
     "swapsStxMaxFeeMultiplier": 2
   },
-  "switchedNetworkDetails": null,
   "switchedNetworkNeverShowMessage": false,
   "termsOfUseLastAgreed": 1715944006161,
   "theme": "os",

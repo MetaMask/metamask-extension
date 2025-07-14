@@ -17,7 +17,6 @@ import {
   getUnapprovedConfirmations,
   ///: END:ONLY_INCLUDE_IF
   getShowExtensionInFullSizeView,
-  getSwitchedNetworkDetails,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
   getCurrentNetwork,
@@ -39,7 +38,6 @@ import {
   hideDeprecatedNetworkModal,
   addPermittedAccount,
   automaticallySwitchNetwork,
-  clearSwitchedNetworkDetails,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
@@ -69,7 +67,6 @@ function mapStateToProps(state) {
 
   const networkToAutomaticallySwitchTo =
     getNetworkToAutomaticallySwitchTo(state);
-  const switchedNetworkDetails = getSwitchedNetworkDetails(state);
 
   const oldestPendingApproval = oldestPendingConfirmationSelector(state);
   const pendingApprovals = getPendingApprovals(state);
@@ -113,7 +110,6 @@ function mapStateToProps(state) {
     accountDetailsAddress: state.appState.accountDetailsAddress,
     isImportNftsModalOpen: state.appState.importNftsModal.open,
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
-    switchedNetworkDetails,
     networkToAutomaticallySwitchTo,
     currentNetwork,
     totalUnapprovedConfirmationCount:
@@ -149,9 +145,8 @@ function mapDispatchToProps(dispatch) {
     hideDeprecatedNetworkModal: () => dispatch(hideDeprecatedNetworkModal()),
     addPermittedAccount: (activeTabOrigin, address) =>
       dispatch(addPermittedAccount(activeTabOrigin, address)),
-    clearSwitchedNetworkDetails: () => dispatch(clearSwitchedNetworkDetails()),
-    automaticallySwitchNetwork: (networkId, selectedTabOrigin) =>
-      dispatch(automaticallySwitchNetwork(networkId, selectedTabOrigin)),
+    automaticallySwitchNetwork: (networkId) =>
+      dispatch(automaticallySwitchNetwork(networkId)),
     networkMenuClose: () => {
       dispatch(toggleNetworkMenu());
       dispatch(setEditedNetwork());
