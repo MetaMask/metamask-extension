@@ -24,4 +24,4 @@ const withResolversPonyfill = <ReturnType>() => {
 export const withResolvers =
   typeof Promise.withResolvers === 'undefined'
     ? withResolversPonyfill
-    : Promise.withResolvers;
+    : Promise.withResolvers.bind(Promise);
