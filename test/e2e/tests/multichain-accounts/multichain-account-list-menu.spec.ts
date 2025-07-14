@@ -107,12 +107,17 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
 
         // Ensure that wallet information is displayed
         await accountListPage.check_walletDisplayedInAccountListMenu(
+          'Wallet 1',
+        );
+        await accountListPage.check_walletDisplayedInAccountListMenu(
           'Snap: MetaMask Simple Snap Keyring',
         );
         await accountListPage.check_walletDetailsButtonIsDisplayed();
 
         // Ensure that an SSK account within the wallet is displayed
+        await accountListPage.check_accountBalanceDisplayed('$42,500.00');
         await accountListPage.check_accountBalanceDisplayed('$0.00');
+        await accountListPage.check_accountDisplayedInAccountList('Account 1');
         await accountListPage.check_accountDisplayedInAccountList(
           'SSK Account',
         );
