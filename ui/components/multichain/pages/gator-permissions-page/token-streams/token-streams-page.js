@@ -25,13 +25,16 @@ import {
   PERMISSIONS,
   REVIEW_TOKEN_STREAMS_ROUTE,
 } from '../../../../../helpers/constants/routes';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getGatorAssetListDetail } from '../../../../../selectors/gator-permissions/gator-permissions';
-import { GatorAssetItemList } from '../gator-asset-item-list';
+import { GatorAssetItemList } from '../components';
+import { extractNetworkName } from '../gator-permissions-page-helper';
 
 export const TokenStreamsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   const headerRef = useRef();
+  const networks = useSelector(getNetworkConfigurationsByChainId);
   const [totalTokenStreamsPermissions, setTotalTokenStreamsPermissions] =
     useState(0);
   const gatorAssetList = useSelector((state) =>
@@ -53,6 +56,7 @@ export const TokenStreamsPage = () => {
           data-testid="gator-asset-item-list"
           key={chainId}
           chainId={chainId}
+          networkName={extractNetworkName(networks, chainId)}
           total={assetDetails.total}
           description={assetDetails.description}
           onClick={() => handleTokenStreamsPermissionClick(chainId)}

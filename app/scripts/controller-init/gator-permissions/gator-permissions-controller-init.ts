@@ -1,6 +1,6 @@
 import { ControllerInitFunction } from '../types';
 import { type GatorPermissionsControllerMessenger } from '../messengers/gator-permissions';
-import { GatorPermissionsController } from '@metamask/gator-permissions-controller';
+import { GatorPermissionsController, type GatorPermissionsControllerConfig } from '@metamask/gator-permissions-controller';
 
 export const GatorPermissionsControllerInit: ControllerInitFunction<
   GatorPermissionsController,
@@ -9,6 +9,9 @@ export const GatorPermissionsControllerInit: ControllerInitFunction<
   const controller = new GatorPermissionsController({
     messenger: controllerMessenger,
     state: persistedState.GatorPermissionsController,
+    config: {
+      gatorPermissionsProviderSnapId: 'local:http://localhost:8082',
+    } as GatorPermissionsControllerConfig,
   });
 
   return {

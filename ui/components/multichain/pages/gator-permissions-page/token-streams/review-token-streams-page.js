@@ -24,6 +24,8 @@ import {
 import { TOKEN_STREAMS_ROUTE } from '../../../../../helpers/constants/routes';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getGatorPermissionByPermissionTypeAndChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
+import { extractNetworkName } from '../gator-permissions-page-helper';
+import { ReviewGatorAssetItem } from '../components';
 
 export const ReviewTokenStreamsPage = () => {
   const t = useI18nContext();
@@ -50,13 +52,7 @@ export const ReviewTokenStreamsPage = () => {
   );
 
   useEffect(() => {
-    const network = networks[chainId];
-    if (network?.name && network?.name !== '') {
-      setNetworkName(`networkName${network.name.split(' ')[0]}`);
-    } else {
-      setNetworkName('unknownNetworkForGatorPermissions');
-    }
-
+    setNetworkName(extractNetworkName(networks, chainId));
     setTotalTokenStreams(nativeTokenStreams.length + erc20TokenStreams.length);
   }, [chainId, nativeTokenStreams, erc20TokenStreams, networks]);
 
@@ -66,29 +62,30 @@ export const ReviewTokenStreamsPage = () => {
   };
 
   const handleErc20TokenStreamRevokeClick = (erc20TokenStream) => {
+    // TODO: Implement revoke logic
     console.log('erc20TokenStream to revoke:', erc20TokenStream);
   };
 
-  const renderTokenStreams = (nativeStreams, erc20Streams) => {
-    return (
-      <>
-        <Box>
-          <Text>{JSON.stringify(nativeStreams)}</Text>
-          <ButtonIcon
-            iconName={IconName.Trash}
-            onClick={() => handleNativeTokenStreamRevokeClick(nativeStreams)}
-          />
-        </Box>
-        <Box>
-          <Text>{JSON.stringify(erc20Streams)}</Text>
-          <ButtonIcon
-            iconName={IconName.Trash}
-            onClick={() => handleErc20TokenStreamRevokeClick(erc20Streams)}
-          />
-        </Box>
-      </>
-    );
-  };
+  const renderTokenStreams = (streams, clickHandler) =>
+    streams.map((stream) => {
+      const { permissionResponse, siteOrigin } = stream;
+      const fullNetworkName = extractNetworkName(
+        networks,
+        permissionResponse.chainId,
+        true,
+      );
+
+      return (
+        <ReviewGatorAssetItem
+          key={`${siteOrigin}-${permissionResponse.context}`}
+          chainId={permissionResponse.chainId}
+          networkName={fullNetworkName}
+          permissionType={permissionResponse.permission.type}
+          siteOrigin={siteOrigin}
+          onRevokeClick={() => clickHandler(stream)}
+        />
+      );
+    });
 
   return (
     <Page className="main-container" data-testid="review-token-streams-page">
@@ -116,7 +113,16 @@ export const ReviewTokenStreamsPage = () => {
       <Content padding={0}>
         <Box ref={headerRef}></Box>
         {totalTokenStreams > 0 ? (
-          renderTokenStreams(nativeTokenStreams, erc20TokenStreams)
+          <>
+            {renderTokenStreams(
+              nativeTokenStreams,
+              handleNativeTokenStreamRevokeClick,
+            )}
+            {renderTokenStreams(
+              erc20TokenStreams,
+              handleErc20TokenStreamRevokeClick,
+            )}
+          </>
         ) : (
           <Box
             data-testid="no-connections"

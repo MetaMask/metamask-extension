@@ -11,7 +11,8 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
+} from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -20,15 +21,17 @@ import {
   IconName,
   IconSize,
   Text,
-} from '../../../component-library';
-import { getImageForChainId } from '../../../../selectors/multichain';
+} from '../../../../component-library';
+import { getImageForChainId } from '../../../../../selectors/multichain';
 
 export const GatorAssetItemList = ({
   chainId,
+  networkName,
   total,
   description,
   onClick,
 }) => {
+  const t = useI18nContext();
   const networkImageUrl = getImageForChainId(chainId);
 
   return (
@@ -54,7 +57,7 @@ export const GatorAssetItemList = ({
           data-testid="gator-asset-item__avatar-network"
           src={networkImageUrl}
           name={chainId}
-          size={AvatarNetworkSize.Sm}
+          size={AvatarNetworkSize.Md}
         />
       </Box>
 
@@ -65,7 +68,7 @@ export const GatorAssetItemList = ({
         style={{ alignSelf: 'center', flexGrow: '1' }}
       >
         <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left} ellipsis>
-          {chainId}
+          {t(networkName)}
         </Text>
 
         <Box
@@ -109,6 +112,11 @@ GatorAssetItemList.propTypes = {
    * The chain id to display
    */
   chainId: PropTypes.string.isRequired,
+
+  /**
+   * The network name to display
+   */
+  networkName: PropTypes.string.isRequired,
 
   /**
    * The count of permissions for the chain

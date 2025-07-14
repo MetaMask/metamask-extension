@@ -1,12 +1,17 @@
+import React from 'react';
+import { Provider } from 'react-redux';
 import { renderHook, act } from '@testing-library/react-hooks';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import type { Store } from 'redux';
 import {
   enableGatorPermissions,
   fetchAndUpdateGatorPermissions,
 } from '../../store/controller-actions/gator-permissions-controller';
 import { useGatorPermissions } from './useGatorPermissions';
 import { GatorPermissionsList } from '@metamask/gator-permissions-controller';
+import { forceUpdateMetamaskState } from '../../store/actions';
 
-// Mock the controller actions
 jest.mock(
   '../../store/controller-actions/gator-permissions-controller',
   () => ({
@@ -15,14 +20,27 @@ jest.mock(
   }),
 );
 
+jest.mock('../../store/actions', () => ({
+  ...jest.requireActual('../../store/actions'),
+  forceUpdateMetamaskState: jest.fn(),
+}));
+
+const middlewares = [thunk];
+const mockStore = configureStore(middlewares);
+
 const mockEnableGatorPermissions =
   enableGatorPermissions as jest.MockedFunction<typeof enableGatorPermissions>;
 const mockFetchAndUpdateGatorPermissions =
   fetchAndUpdateGatorPermissions as jest.MockedFunction<
     typeof fetchAndUpdateGatorPermissions
   >;
+const mockForceUpdateMetamaskState = forceUpdateMetamaskState as jest.MockedFunction<
+  typeof forceUpdateMetamaskState
+>;
 
 describe('useGatorPermissions', () => {
+  let store: Store;
+
   const mockGatorPermissionsList: GatorPermissionsList = {
     'native-token-stream': {
       '0x1': [
@@ -107,15 +125,35 @@ describe('useGatorPermissions', () => {
   };
 
   beforeEach(() => {
+    store = mockStore({
+      metamask: {
+        gatorPermissionsListStringify: '',
+        isGatorPermissionsEnabled: false,
+        isFetchingGatorPermissions: false,
+      },
+    });
+
+    store.dispatch = jest.fn().mockImplementation((action) => {
+      if (typeof action === 'function') {
+        return action(store.dispatch, store.getState);
+      }
+      return Promise.resolve();
+    });
+
     jest.clearAllMocks();
     mockEnableGatorPermissions.mockResolvedValue(undefined);
     mockFetchAndUpdateGatorPermissions.mockResolvedValue(
       mockGatorPermissionsList,
     );
+    mockForceUpdateMetamaskState.mockResolvedValue(undefined);
   });
 
   it('should start with loading state and undefined data', () => {
-    const { result } = renderHook(() => useGatorPermissions());
+    const { result } = renderHook(() => useGatorPermissions(), {
+      wrapper: ({ children }) => (
+        <Provider store={store}>{children}</Provider>
+      ),
+    });
 
     expect(result.current.loading).toBe(true);
     expect(result.current.data).toBeUndefined();
@@ -124,7 +162,11 @@ describe('useGatorPermissions', () => {
 
   it('should call enableGatorPermissions and fetchAndUpdateGatorPermissions on mount', async () => {
     await act(async () => {
-      renderHook(() => useGatorPermissions());
+      renderHook(() => useGatorPermissions(), {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      });
     });
 
     expect(mockEnableGatorPermissions).toHaveBeenCalledTimes(1);
@@ -134,14 +176,19 @@ describe('useGatorPermissions', () => {
   it('should update state with data when both operations succeed', async () => {
     const { result, waitForNextUpdate } = renderHook(() =>
       useGatorPermissions(),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      },
     );
 
-    // Wait for the async operations to complete
     await waitForNextUpdate();
 
     expect(result.current.loading).toBe(false);
     expect(result.current.data).toEqual(mockGatorPermissionsList);
     expect(result.current.error).toBeUndefined();
+    expect(mockForceUpdateMetamaskState).toHaveBeenCalledWith(store.dispatch);
   });
 
   it('should handle error when enableGatorPermissions fails', async () => {
@@ -150,6 +197,11 @@ describe('useGatorPermissions', () => {
 
     const { result, waitForNextUpdate } = renderHook(() =>
       useGatorPermissions(),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      },
     );
 
     await waitForNextUpdate();
@@ -165,6 +217,11 @@ describe('useGatorPermissions', () => {
 
     const { result, waitForNextUpdate } = renderHook(() =>
       useGatorPermissions(),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      },
     );
 
     await waitForNextUpdate();
@@ -175,7 +232,6 @@ describe('useGatorPermissions', () => {
   });
 
   it('should not update state if component is unmounted during async operation', async () => {
-    // Create a promise that we can control
     let resolveEnable: () => void;
     let resolveFetch: () => void;
 
@@ -189,7 +245,11 @@ describe('useGatorPermissions', () => {
     mockEnableGatorPermissions.mockReturnValue(enablePromise);
     mockFetchAndUpdateGatorPermissions.mockReturnValue(fetchPromise);
 
-    const { result, unmount } = renderHook(() => useGatorPermissions());
+    const { result, unmount } = renderHook(() => useGatorPermissions(), {
+      wrapper: ({ children }) => (
+        <Provider store={store}>{children}</Provider>
+      ),
+    });
 
     // Unmount before the promises resolve
     unmount();
@@ -213,6 +273,11 @@ describe('useGatorPermissions', () => {
 
     const { result, waitForNextUpdate } = renderHook(() =>
       useGatorPermissions(),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      },
     );
 
     await waitForNextUpdate();
@@ -227,6 +292,11 @@ describe('useGatorPermissions', () => {
 
     const { result, waitForNextUpdate } = renderHook(() =>
       useGatorPermissions(),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      },
     );
 
     await waitForNextUpdate();
@@ -241,6 +311,11 @@ describe('useGatorPermissions', () => {
 
     const { result, waitForNextUpdate } = renderHook(() =>
       useGatorPermissions(),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      },
     );
 
     await waitForNextUpdate();
@@ -252,7 +327,11 @@ describe('useGatorPermissions', () => {
 
   it('should only run the effect once on mount', async () => {
     await act(async () => {
-      const { rerender } = renderHook(() => useGatorPermissions());
+      const { rerender } = renderHook(() => useGatorPermissions(), {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      });
 
       // Rerender multiple times
       rerender();
@@ -260,7 +339,6 @@ describe('useGatorPermissions', () => {
       rerender();
     });
 
-    // The async functions should only be called once (on mount)
     expect(mockEnableGatorPermissions).toHaveBeenCalledTimes(1);
     expect(mockFetchAndUpdateGatorPermissions).toHaveBeenCalledTimes(1);
   });
@@ -276,12 +354,42 @@ describe('useGatorPermissions', () => {
 
     const { result, waitForNextUpdate } = renderHook(() =>
       useGatorPermissions(),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      },
     );
 
     await waitForNextUpdate();
 
     expect(result.current.loading).toBe(false);
     expect(result.current.data).toEqual(emptyPermissionsList);
+    expect(result.current.error).toBeUndefined();
+  });
+
+  it('should not set error if component is unmounted during error handling', async () => {
+    const error = new Error('Test error');
+
+    let rejectEnable: (error: Error) => void;
+    const enablePromise = new Promise<void>((_, reject) => {
+      rejectEnable = reject;
+    });
+
+    mockEnableGatorPermissions.mockReturnValue(enablePromise);
+
+    const { result, unmount } = renderHook(() => useGatorPermissions(), {
+      wrapper: ({ children }) => (
+        <Provider store={store}>{children}</Provider>
+      ),
+    });
+
+    unmount();
+
+    rejectEnable!(error);
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
     expect(result.current.error).toBeUndefined();
   });
 });

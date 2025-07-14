@@ -240,7 +240,7 @@ describe('Gator Permissions Selectors', () => {
 
   describe('gatorPermissionsListStringify', () => {
     it('should select the gatorPermissionsListStringify state', () => {
-      expect(getGatorPermissionsList(mockState, false)).toEqual(
+      expect(getGatorPermissionsList(mockState)).toEqual(
         mockGatorPermissionsList,
       );
     });
@@ -253,7 +253,6 @@ describe('Gator Permissions Selectors', () => {
           mockState,
           'native-token-stream',
           MOCK_CHAIN_ID_MAINNET,
-          false,
         ),
       ).toEqual(
         mockGatorPermissionsList['native-token-stream'][MOCK_CHAIN_ID_MAINNET],
@@ -266,7 +265,6 @@ describe('Gator Permissions Selectors', () => {
           mockState,
           'native-token-stream',
           '0x1111111111111111111111111111111111111111',
-          false,
         ),
       ).toEqual([]);
     });
@@ -301,6 +299,102 @@ describe('Gator Permissions Selectors', () => {
 
     it('should return an empty object if no gator permissions are found for a given list type', () => {
       expect(getGatorAssetListDetail(mockState, 'not-a-list-type')).toEqual({});
+    });
+
+    it('should return asset list with undefined description for unknown list type with permissions', () => {
+      const customState = {
+        metamask: {
+          gatorPermissionsListStringify: JSON.stringify({
+            'custom-type': {
+              '0x1': [
+                {
+                  permissionResponse: {
+                    chainId: '0x1',
+                    address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                    expiry: 1750291200,
+                    isAdjustmentAllowed: true,
+                    signer: {
+                      type: 'account',
+                      data: { address: '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63' },
+                    },
+                    permission: {
+                      type: 'custom-type',
+                      data: {},
+                      rules: {},
+                    },
+                    context: '0x00000000',
+                    accountMeta: [],
+                    signerMeta: {},
+                  },
+                  siteOrigin: 'http://localhost:8000',
+                },
+              ],
+            },
+          }),
+          isGatorPermissionsEnabled: true,
+          isFetchingGatorPermissions: false,
+          isUpdatingGatorPermissions: false,
+        },
+      };
+      const result = getGatorAssetListDetail(customState, 'custom-type');
+      expect(result).toEqual({});
+    });
+
+    it('should handle missing description in custom descriptionLookup', () => {
+      const stateWithStreamPermissions = {
+        metamask: {
+          gatorPermissionsListStringify: JSON.stringify({
+            'native-token-stream': {
+              '0x1': [
+                {
+                  permissionResponse: {
+                    chainId: '0x1',
+                    address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                    expiry: 1750291200,
+                    isAdjustmentAllowed: true,
+                    signer: {
+                      type: 'account',
+                      data: { address: '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63' },
+                    },
+                    permission: {
+                      type: 'native-token-stream',
+                      data: {},
+                      rules: {},
+                    },
+                    context: '0x00000000',
+                    accountMeta: [],
+                    signerMeta: {},
+                  },
+                  siteOrigin: 'http://localhost:8000',
+                },
+              ],
+            },
+            'erc20-token-stream': {
+              '0x1': [],
+            },
+          }),
+          isGatorPermissionsEnabled: true,
+          isFetchingGatorPermissions: false,
+          isUpdatingGatorPermissions: false,
+        },
+      };
+
+      const customDescriptionLookup = {
+        'token-subscriptions': 'subscription permissions',
+      };
+
+      const result = getGatorAssetListDetail(
+        stateWithStreamPermissions,
+        'token-streams',
+        customDescriptionLookup,
+      );
+
+      expect(result).toEqual({
+        '0x1': {
+          total: 1,
+          description: 'No description',
+        },
+      });
     });
   });
 });

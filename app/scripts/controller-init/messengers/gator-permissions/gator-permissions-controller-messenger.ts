@@ -12,9 +12,7 @@ export function getGatorPermissionsControllerMessenger(
   return messenger.getRestricted({
     name: 'GatorPermissionsController',
     allowedActions: [
-      'AuthenticationController:isSignedIn',
-      'AuthenticationController:performSignIn',
-      'UserStorageController:performGetStorageAllFeatureEntries',
+      'SnapController:handleRequest',
     ],
     allowedEvents: [],
   });
@@ -28,9 +26,7 @@ export function getGatorPermissionsControllerInitMessenger(
     allowedEvents: [
     ],
     allowedActions: [
-      'AuthenticationController:isSignedIn',
-      'AuthenticationController:performSignIn',
-      'UserStorageController:performGetStorageAllFeatureEntries',
+      'SnapController:handleRequest',
     ],
   });
 }

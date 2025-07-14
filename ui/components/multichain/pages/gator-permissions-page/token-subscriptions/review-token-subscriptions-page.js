@@ -24,6 +24,8 @@ import {
 import { TOKEN_SUBSCRIPTIONS_ROUTE } from '../../../../../helpers/constants/routes';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getGatorPermissionByPermissionTypeAndChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
+import { extractNetworkName } from '../gator-permissions-page-helper';
+import { ReviewGatorAssetItem } from '../components';
 
 export const ReviewTokenSubscriptionsPage = () => {
   const t = useI18nContext();
@@ -43,31 +45,34 @@ export const ReviewTokenSubscriptionsPage = () => {
   );
 
   useEffect(() => {
-    const network = networks[chainId];
-    if (network?.name && network?.name !== '') {
-      setNetworkName(`networkName${network.name.split(' ')[0]}`);
-    } else {
-      setNetworkName('unknownNetworkForGatorPermissions');
-    }
+    setNetworkName(extractNetworkName(networks, chainId));
     setTotalTokenSubscriptions(nativeTokenPeriodicPermissions.length);
   }, [chainId, nativeTokenPeriodicPermissions, networks]);
 
-  const handleRevokeClick = (subscriptions) => {
+  const handleRevokeClick = (subscription) => {
     // TODO: Implement revoke logic
-    console.log('subscriptions to revoke:', subscriptions);
+    console.log('subscription to revoke:', subscription);
   };
 
-  const renderTokenSubscriptions = (subscriptions) => {
-    return (
-      <Box>
-        <Text>{JSON.stringify(subscriptions)}</Text>
-        <ButtonIcon
-          iconName={IconName.Trash}
-          onClick={() => handleRevokeClick(subscriptions)}
+  const renderTokenSubscriptions = (subscriptions) =>
+    subscriptions.map((subscription) => {
+      const { permissionResponse, siteOrigin } = subscription;
+      const fullNetworkName = extractNetworkName(
+        networks,
+        permissionResponse.chainId,
+        true,
+      );
+      return (
+        <ReviewGatorAssetItem
+          key={`${siteOrigin}-${permissionResponse.context}`}
+          chainId={permissionResponse.chainId}
+          networkName={fullNetworkName}
+          permissionType={permissionResponse.permission.type}
+          siteOrigin={siteOrigin}
+          onRevokeClick={() => handleRevokeClick(subscription)}
         />
-      </Box>
-    );
-  };
+      );
+    });
 
   return (
     <Page
