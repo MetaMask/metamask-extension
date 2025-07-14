@@ -234,8 +234,6 @@ describe('Contact Syncing - Existing User', function () {
           console.log('STEP 3: Modifying existing contact...');
 
           // Navigate back to contacts list first
-          await header.openSettingsPage();
-          await settingsPage.check_pageIsLoaded();
           await settingsPage.goToContactsSettings();
           await contactsSettings.check_pageIsLoaded();
 
@@ -256,8 +254,6 @@ describe('Contact Syncing - Existing User', function () {
 
           // STEP 4: Delete existing contact (Bob)
           console.log('STEP 4: Deleting existing contact...');
-          await header.openSettingsPage();
-          await settingsPage.check_pageIsLoaded();
           await settingsPage.goToContactsSettings();
           await contactsSettings.check_pageIsLoaded();
 
