@@ -23,6 +23,8 @@ import {
 import { shortenAddress } from '../../../helpers/utils/util';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 
+const AccountMenuStyle = { height: 'auto' };
+
 export const AccountPicker = ({
   address,
   name,
@@ -68,7 +70,7 @@ export const AccountPicker = ({
         }}
         {...props}
         gap={1}
-        style={{ height: 'auto' }}
+        style={AccountMenuStyle}
       >
         <Box
           display={Display.Flex}
