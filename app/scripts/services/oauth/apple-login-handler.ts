@@ -4,6 +4,8 @@ import { AuthTokenResponse, LoginHandlerOptions, OAuthUserInfo } from './types';
 import { decodeIdToken } from './utils';
 
 export class AppleLoginHandler extends BaseLoginHandler {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly OAUTH_SERVER_URL: string;
 
   readonly #scope = ['name', 'email'];
@@ -48,9 +50,13 @@ export class AppleLoginHandler extends BaseLoginHandler {
     authUrl.searchParams.set(
       'state',
       JSON.stringify({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         client_redirect_back_uri:
           this.options.webAuthenticator.getRedirectURL(),
         nonce,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         code_challenge: challenge,
       }),
     );
@@ -78,9 +84,17 @@ export class AppleLoginHandler extends BaseLoginHandler {
   generateAuthTokenRequestData(): string {
     const { web3AuthNetwork } = this.options;
     const requestData = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       code_verifier: this.codeVerifier,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id: this.options.oAuthClientId,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       redirect_uri: this.serverRedirectUri,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       login_provider: this.authConnection,
       network: web3AuthNetwork,
     };

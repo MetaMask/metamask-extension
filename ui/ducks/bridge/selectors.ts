@@ -15,6 +15,7 @@ import {
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
   selectMinimumBalanceForRentExemptionInSOL,
+  isValidQuoteRequest,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
@@ -250,17 +251,6 @@ export const getQuoteRequest = (state: BridgeAppState) => {
   return quoteRequest;
 };
 
-export const getShouldUseSnapConfirmation = createSelector(
-  getBridgeFeatureFlags,
-  getFromChain,
-  (extensionConfig, fromChain) =>
-    Boolean(
-      fromChain &&
-        extensionConfig.chains[formatChainIdToCaip(fromChain.chainId)]
-          ?.isSnapConfirmationEnabled,
-    ),
-);
-
 export const getQuoteRefreshRate = createSelector(
   getBridgeFeatureFlags,
   getFromChain,
@@ -304,13 +294,13 @@ export const getFromTokenConversionRate = createSelector(
         ? Number(
             conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
           )
-        : currencyRates[fromChain.nativeCurrency]?.conversionRate ?? null;
+        : (currencyRates[fromChain.nativeCurrency]?.conversionRate ?? null);
       const nativeToUsdRate = isSolanaChainId(fromChain.chainId)
         ? Number(
             rates?.[fromChain.nativeCurrency.toLowerCase()]
               ?.usdConversionRate ?? null,
           )
-        : currencyRates[fromChain.nativeCurrency]?.usdConversionRate ?? null;
+        : (currencyRates[fromChain.nativeCurrency]?.usdConversionRate ?? null);
 
       if (isNativeAddress(fromToken.address)) {
         return {
@@ -544,6 +534,8 @@ export const getValidationErrors = createDeepEqualSelector(
     quoteRequest,
     txAlert,
   ) => {
+    const { gasIncluded } = activeQuote?.quote ?? {};
+
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
     const minimumBalanceToUse =
@@ -555,13 +547,20 @@ export const getValidationErrors = createDeepEqualSelector(
       isTxAlertPresent: Boolean(txAlert),
       isNoQuotesAvailable: Boolean(
         !activeQuote &&
+          isValidQuoteRequest(quoteRequest) &&
           quotesLastFetchedMs &&
           !isLoading &&
           quotesRefreshCount > 0,
       ),
       // Shown prior to fetching quotes
       isInsufficientGasBalance: (balance?: BigNumber) => {
-        if (balance && !activeQuote && validatedSrcAmount && fromToken) {
+        if (
+          balance &&
+          !activeQuote &&
+          validatedSrcAmount &&
+          fromToken &&
+          !gasIncluded
+        ) {
           return isNativeAddress(fromToken.address)
             ? balance.sub(minimumBalanceToUse).lte(validatedSrcAmount)
             : balance.lte(0);
@@ -570,7 +569,13 @@ export const getValidationErrors = createDeepEqualSelector(
       },
       // Shown after fetching quotes
       isInsufficientGasForQuote: (balance?: BigNumber) => {
-        if (balance && activeQuote && fromToken && fromTokenInputValue) {
+        if (
+          balance &&
+          activeQuote &&
+          fromToken &&
+          fromTokenInputValue &&
+          !gasIncluded
+        ) {
           return isNativeAddress(fromToken.address)
             ? balance
                 .sub(activeQuote.totalMaxNetworkFee.amount)
@@ -702,8 +707,18 @@ export const getIsUnifiedUIEnabled = createSelector(
 
     const caipChainId = formatChainIdToCaip(chainId);
 
-    return Boolean(
-      bridgeFeatureFlags?.chains?.[caipChainId]?.isUnifiedUIEnabled,
-    );
+    // TODO remove this when bridge-controller's types are updated
+    return bridgeFeatureFlags?.chains?.[caipChainId]
+      ? Boolean(
+          'isSingleSwapBridgeButtonEnabled' in
+            bridgeFeatureFlags.chains[caipChainId]
+            ? (
+                bridgeFeatureFlags.chains[caipChainId] as unknown as {
+                  isSingleSwapBridgeButtonEnabled: boolean;
+                }
+              ).isSingleSwapBridgeButtonEnabled
+            : false,
+        )
+      : false;
   },
 );

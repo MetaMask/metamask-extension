@@ -286,9 +286,6 @@
   "address": {
     "message": "주소"
   },
-  "addressCopied": {
-    "message": "주소 복사 완료!"
-  },
   "addressMismatch": {
     "message": "사이트 주소 불일치"
   },
@@ -1801,9 +1798,6 @@
   "downloadStateLogs": {
     "message": "상태 로그 다운로드"
   },
-  "dragAndDropBanner": {
-    "message": "네트워크를 드래그하여 순서를 변경할 수 있습니다. "
-  },
   "dropped": {
     "message": "중단됨"
   },
@@ -2225,9 +2219,6 @@
   },
   "floatAmountToken": {
     "message": "토큰 금액은 정수여야 합니다"
-  },
-  "followUsOnTwitter": {
-    "message": "트위터에서 팔로우하세요"
   },
   "forbiddenIpfsGateway": {
     "message": "금지된 IPFS 게이트웨이: CID 게이트웨이를 지정하세요."
@@ -4222,9 +4213,6 @@
   "popularNetworks": {
     "message": "인기 네트워크"
   },
-  "portfolio": {
-    "message": "포트폴리오"
-  },
   "preparingSwap": {
     "message": "스왑 준비 중..."
   },
@@ -5054,9 +5042,6 @@
   "smartAccountReject": {
     "message": "스마트 계정을 사용하지 마세요"
   },
-  "smartAccountRequestFor": {
-    "message": "요청 계정:"
-  },
   "smartAccountSameAccount": {
     "message": "같은 계정, 더 스마트한 기능."
   },
@@ -5521,9 +5506,6 @@
   },
   "statusNotConnected": {
     "message": "연결되지 않음"
-  },
-  "statusNotConnectedAccount": {
-    "message": "계정 연결되지 않음"
   },
   "step1LatticeWallet": {
     "message": "Lattice1을 연결하세요."

@@ -10,6 +10,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
@@ -1574,6 +1575,7 @@ export async function withSolanaAccountSnap(
     dappPaths,
     withProtocolSnap,
     withCustomMocks,
+    withFixtureBuilder,
   }: {
     title?: string;
     showNativeTokenAsMainBalance?: boolean;
@@ -1595,6 +1597,7 @@ export async function withSolanaAccountSnap(
       | Promise<MockedEndpoint[] | MockedEndpoint>
       | MockedEndpoint[]
       | MockedEndpoint;
+    withFixtureBuilder?: (builder: FixtureBuilder) => FixtureBuilder;
   },
   test: (
     driver: Driver,
@@ -1607,6 +1610,17 @@ export async function withSolanaAccountSnap(
   if (!showNativeTokenAsMainBalance) {
     fixtures =
       fixtures.withPreferencesControllerShowNativeTokenAsMainBalanceDisabled();
+  }
+
+  if (withFixtureBuilder) {
+    fixtures = withFixtureBuilder(fixtures).withEnabledNetworks({
+      eip155: {
+        '0x539': true,
+      },
+      solana: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+      },
+    });
   }
 
   await withFixtures(
@@ -1739,7 +1753,9 @@ export async function withSolanaAccountSnap(
       extensionId: string;
     }) => {
       await loginWithBalanceValidation(driver);
+
       const headerComponent = new HeaderNavbar(driver);
+      const assetList = new AssetListPage(driver);
       const accountListPage = new AccountListPage(driver);
 
       for (let i = 1; i <= numberOfAccounts; i++) {
@@ -1750,7 +1766,7 @@ export async function withSolanaAccountSnap(
         });
         await new NonEvmHomepage(driver).check_pageIsLoaded();
         await headerComponent.check_accountLabel(`Solana ${i}`);
-        await headerComponent.check_currentSelectedNetwork('Solana');
+        await assetList.check_networkFilterText('Solana');
       }
 
       if (numberOfAccounts > 0) {

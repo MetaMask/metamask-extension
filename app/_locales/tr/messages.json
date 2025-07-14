@@ -286,9 +286,6 @@
   "address": {
     "message": "Adres"
   },
-  "addressCopied": {
-    "message": "Adres kopyalandı!"
-  },
   "addressMismatch": {
     "message": "Site adresi uyumsuzluğu"
   },
@@ -1801,9 +1798,6 @@
   "downloadStateLogs": {
     "message": "Durum Günlüklerini İndir"
   },
-  "dragAndDropBanner": {
-    "message": "Yeniden sıralamak için ağları sürükleyebilirsiniz. "
-  },
   "dropped": {
     "message": "Bırakıldı"
   },
@@ -2225,9 +2219,6 @@
   },
   "floatAmountToken": {
     "message": "Token miktarı tam sayı olmalıdır"
-  },
-  "followUsOnTwitter": {
-    "message": "Bizi Twitter'da takip edin"
   },
   "forbiddenIpfsGateway": {
     "message": "Yasaklı IPFS Ağ Geçidi: Lütfen bir CID ağ geçidi belirtin"
@@ -4222,9 +4213,6 @@
   "popularNetworks": {
     "message": "Popüler ağlar"
   },
-  "portfolio": {
-    "message": "Portföy"
-  },
   "preparingSwap": {
     "message": "Swap hazırlanıyor..."
   },
@@ -5054,9 +5042,6 @@
   "smartAccountReject": {
     "message": "Akıllı hesap kullanma"
   },
-  "smartAccountRequestFor": {
-    "message": "Talep et:"
-  },
   "smartAccountSameAccount": {
     "message": "Aynı hesap, daha akıllı özellikler."
   },
@@ -5521,9 +5506,6 @@
   },
   "statusNotConnected": {
     "message": "Bağlanmadı"
-  },
-  "statusNotConnectedAccount": {
-    "message": "Herhangi bir hesap bağlı değil"
   },
   "step1LatticeWallet": {
     "message": "Lattice1'inizi bağlayın"

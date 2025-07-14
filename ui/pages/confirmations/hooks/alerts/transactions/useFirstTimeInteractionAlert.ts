@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { NameType } from '@metamask/name-controller';
 
 import { useSelector } from 'react-redux';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
@@ -9,6 +10,10 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { useConfirmContext } from '../../../context/confirm';
 import { getInternalAccounts } from '../../../../../selectors';
 import { useTransferRecipient } from '../../../components/confirm/info/hooks/useTransferRecipient';
+import {
+  useTrustSignal,
+  TrustSignalDisplayState,
+} from '../../../../../hooks/useTrustSignals';
 
 export function useFirstTimeInteractionAlert(): Alert[] {
   const t = useI18nContext();
@@ -21,7 +26,16 @@ export function useFirstTimeInteractionAlert(): Alert[] {
     (account) => account.address?.toLowerCase() === to?.toLowerCase(),
   );
 
-  const showAlert = !isInternalAccount && isFirstTimeInteraction;
+  const { state: trustSignalDisplayState } = useTrustSignal(
+    to || '',
+    NameType.ETHEREUM_ADDRESS,
+  );
+
+  const isVerifiedAddress =
+    trustSignalDisplayState === TrustSignalDisplayState.Verified;
+
+  const showAlert =
+    !isInternalAccount && isFirstTimeInteraction && !isVerifiedAddress;
 
   return useMemo(() => {
     // If isFirstTimeInteraction is undefined that means it's either disabled or error in accounts API

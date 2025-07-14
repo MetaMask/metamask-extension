@@ -151,9 +151,8 @@ describe('Send ETH', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver, contractRegistry, localNodes }) => {
-          const contractAddress = await contractRegistry.getContractAddress(
-            smartContract,
-          );
+          const contractAddress =
+            await contractRegistry.getContractAddress(smartContract);
           await logInWithBalanceValidation(driver, localNodes[0]);
 
           await driver.clickElement('[data-testid="eth-overview-send"]');

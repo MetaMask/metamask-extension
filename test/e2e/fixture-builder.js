@@ -56,6 +56,9 @@ function onboardingFixture() {
           eip155: {
             [CHAIN_IDS.LOCALHOST]: true,
           },
+          solana: {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+          },
         },
       },
       NotificationServicesController: {},
@@ -634,6 +637,7 @@ class FixtureBuilder {
   withPermissionControllerConnectedToMultichainTestDapp({
     account = '',
     useLocalhostHostname = false,
+    value = null,
   } = {}) {
     const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
     const subjects = {
@@ -644,7 +648,7 @@ class FixtureBuilder {
             caveats: [
               {
                 type: 'authorizedScopes',
-                value: {
+                value: value ?? {
                   requiredScopes: {},
                   optionalScopes: {
                     'eip155:1337': {
@@ -673,6 +677,7 @@ class FixtureBuilder {
         },
       },
     };
+
     return this.withPermissionController({
       subjects,
     });
