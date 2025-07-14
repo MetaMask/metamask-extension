@@ -4,6 +4,7 @@ import * as actions from '../../../store/actions';
 import {
   getAllEnabledNetworks,
   getNetworkIdentifier,
+  isGlobalNetworkSelectorRemoved,
 } from '../../../selectors';
 import {
   getProviderConfig,
@@ -59,7 +60,13 @@ const mapDispatchToProps = (dispatch) => {
     rollbackToPreviousProvider: () =>
       dispatch(actions.rollbackToPreviousProvider()),
     showNetworkDropdown: () => {
+      if (isGlobalNetworkSelectorRemoved) {
+        return dispatch(actions.showModal({ name: 'NETWORK_MANAGER' }));
+      }
       return dispatch(actions.toggleNetworkMenu());
+    },
+    showNetworkManager: () => {
+      dispatch(actions.showModal({ name: 'NETWORK_MANAGER' }));
     },
   };
 };
