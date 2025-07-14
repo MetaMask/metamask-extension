@@ -11,7 +11,6 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
-  FontWeight,
   IconColor,
   JustifyContent,
   TextColor,
