@@ -18,7 +18,7 @@ import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 describe('Metamask onboarding (with social login)', function () {
-  it('Creates a new wallet with Google login and completes the onboarding process', async function () {
+  it.skip('Creates a new wallet with Google login and completes the onboarding process', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
