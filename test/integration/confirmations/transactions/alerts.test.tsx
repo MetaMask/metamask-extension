@@ -632,16 +632,32 @@ describe('Contract Interaction Confirmation Alerts', () => {
 
     // Should have multiple inline alerts
     const alerts = await screen.findAllByTestId('inline-alert');
-    expect(alerts.length).toBeGreaterThan(1);
+    expect(alerts.length).toBeGreaterThanOrEqual(2);
 
     // Click on the first alert to open modal
     fireEvent.click(alerts[0]);
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
-    // The modal should show multiple alerts including the malicious origin alerts
-    const modalAlerts = await screen.findAllByText(/malicious|low fee/iu);
-    expect(modalAlerts.length).toBeGreaterThan(0);
+    fireEvent.click(
+      await screen.findByTestId('transaction-details-origin-row'),
+    );
+
+    expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
+
+    expect(
+      await screen.findByTestId('alert-modal__selected-alert'),
+    ).toHaveTextContent(
+      'This has been identified as malicious. We recommend not interacting with this site.',
+    );
+
+    fireEvent.click(await screen.findByTestId('alert-modal-next-button'));
+
+    expect(
+      await screen.findByTestId('alert-modal__selected-alert'),
+    ).toHaveTextContent(
+      'When choosing a low fee, expect slower transactions and longer wait times. For faster transactions, choose Market or Aggressive fee options.',
+    );
   });
 
   it('does not display origin trust signal alert for verified sites', async () => {
