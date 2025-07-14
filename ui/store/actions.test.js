@@ -272,10 +272,14 @@ describe('Actions', () => {
 
       const socialSyncChangePasswordStub = sinon.stub().resolves();
       const keyringChangePasswordStub = sinon.stub().resolves();
+      const exportEncryptionKeyStub = sinon.stub().resolves('encryption-key');
+      const storeKeyringEncryptionKeyStub = sinon.stub().resolves();
 
       background.getApi.returns({
         socialSyncChangePassword: socialSyncChangePasswordStub,
         keyringChangePassword: keyringChangePasswordStub,
+        exportEncryptionKey: exportEncryptionKeyStub,
+        storeKeyringEncryptionKey: storeKeyringEncryptionKeyStub,
       });
       setBackgroundConnection(background.getApi());
 
@@ -287,6 +291,10 @@ describe('Actions', () => {
       expect(
         keyringChangePasswordStub.calledOnceWith(newPassword),
       ).toStrictEqual(true);
+      expect(exportEncryptionKeyStub.callCount).toStrictEqual(1);
+      expect(
+        storeKeyringEncryptionKeyStub.calledOnceWith('encryption-key'),
+      ).toStrictEqual(true);
     });
   });
 
@@ -295,10 +303,11 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('calls submitPassword', async () => {
+    it('calls syncPasswordAndUnlockWallet', async () => {
       const store = mockStore();
 
-      const submitPassword = background.submitPassword.resolves();
+      const syncPasswordAndUnlockWallet =
+        background.syncPasswordAndUnlockWallet.resolves();
 
       setBackgroundConnection(background);
 
@@ -311,15 +320,15 @@ describe('Actions', () => {
 
       await store.dispatch(actions.tryUnlockMetamask());
 
-      expect(submitPassword.callCount).toStrictEqual(1);
+      expect(syncPasswordAndUnlockWallet.callCount).toStrictEqual(1);
 
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('errors on submitPassword will fail', async () => {
+    it('errors on syncPasswordAndUnlockWallet will fail', async () => {
       const store = mockStore();
 
-      background.submitPassword.rejects(new Error('error'));
+      background.syncPasswordAndUnlockWallet.rejects(new Error('error'));
 
       setBackgroundConnection(background);
 

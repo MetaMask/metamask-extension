@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL } from '../../../constants';
-import {
-  unlockWallet,
-  veryLargeDelayMs,
-  WINDOW_TITLES,
-} from '../../../helpers';
+import { veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
+import { Anvil } from '../../../seeder/anvil';
 import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
@@ -43,10 +41,15 @@ describe('Confirmation Redesign ERC20 Token Send', function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await createWalletInitiatedTransactionAndAssertDetails(
             driver,
             contractRegistry,
+            localNodes?.[0],
           );
         },
         mocks,
@@ -60,10 +63,15 @@ describe('Confirmation Redesign ERC20 Token Send', function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.legacy,
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await createDAppInitiatedTransactionAndAssertDetails(
             driver,
             contractRegistry,
+            localNodes?.[0],
           );
         },
         mocks,
@@ -75,10 +83,15 @@ describe('Confirmation Redesign ERC20 Token Send', function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await createDAppInitiatedTransactionAndAssertDetails(
             driver,
             contractRegistry,
+            localNodes?.[0],
           );
         },
         mocks,
@@ -95,8 +108,9 @@ async function mocks(server: Mockttp) {
 async function createWalletInitiatedTransactionAndAssertDetails(
   driver: Driver,
   contractRegistry?: ContractAddressRegistry,
+  localNode?: Anvil,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver, localNode);
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
@@ -141,8 +155,9 @@ async function createWalletInitiatedTransactionAndAssertDetails(
 async function createDAppInitiatedTransactionAndAssertDetails(
   driver: Driver,
   contractRegistry?: ContractAddressRegistry,
+  localNode?: Anvil,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver, localNode);
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry

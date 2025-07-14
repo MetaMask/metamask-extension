@@ -51,6 +51,7 @@ type AppState = {
   };
   showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
+  showSupportDataConsentModal: boolean;
   keyringRemovalSnapModal: {
     snapName: string;
     result: 'success' | 'failure' | 'none';
@@ -226,6 +227,7 @@ const initialState: AppState = {
   errorInSettings: null,
   showNewSrpAddedToast: false,
   showPasswordChangeToast: null,
+  showSupportDataConsentModal: false,
 };
 
 export default function reduceApp(
@@ -763,6 +765,12 @@ export default function reduceApp(
         showPasswordChangeToast: action.payload,
       };
 
+    case actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL:
+      return {
+        ...appState,
+        showSupportDataConsentModal: action.payload,
+      };
+
     default:
       return appState;
   }
@@ -872,6 +880,10 @@ export function getLedgerWebHidConnectedStatus(
 
 export function getLedgerTransportStatus(state: AppSliceState): string | null {
   return state.appState.ledgerTransportStatus;
+}
+
+export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
+  return state.appState.showSupportDataConsentModal;
 }
 
 export function openDeleteMetaMetricsDataModal(): Action {

@@ -336,6 +336,7 @@ PATH_NAME_MAP.set(SWAPS_ERROR_ROUTE, 'Swaps Error Page');
 export const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
 
 export const ONBOARDING_ROUTE = '/onboarding';
+export const ONBOARDING_REVEAL_SRP_ROUTE = '/onboarding/reveal-recovery-phrase';
 export const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
 export const ONBOARDING_CONFIRM_SRP_ROUTE =
   '/onboarding/confirm-recovery-phrase';

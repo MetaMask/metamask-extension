@@ -38,11 +38,19 @@ async function doPasswordChangeAndLockWallet(
   await changePasswordPage.confirmCurrentPassword(currentPassword);
 
   await changePasswordPage.changePassword(newPassword);
+  if (isSocialLogin) {
+    await changePasswordPage.check_passwordChangedWarning();
+    await changePasswordPage.confirmChangePasswordWarning();
+  }
+
+  await privacySettings.check_passwordChangeSuccessToastIsDisplayed();
 
   if (isSocialLogin) {
     // Wait for the password change to be applied to the social login user
     await driver.delay(2_000);
   }
+
+  await settingsPage.closeSettingsPage();
 
   await headerNavbar.lockMetaMask();
 }

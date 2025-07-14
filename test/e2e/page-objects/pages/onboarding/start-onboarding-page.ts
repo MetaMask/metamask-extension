@@ -53,6 +53,8 @@ class StartOnboardingPage {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_bannerPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -71,18 +73,20 @@ class StartOnboardingPage {
 
   async agreeToTermsOfUse(): Promise<void> {
     await this.driver.clickElement(this.getStartedButton);
+    await this.driver.waitForSelector(this.termsOfUseCheckbox);
     await this.driver.waitForSelector(this.termsOfUseScrollButton);
     await this.driver.clickElementAndWaitToDisappear(
       this.termsOfUseScrollButton,
       5000,
     );
-    await this.driver.waitForSelector(this.termsOfUseCheckbox);
     await this.driver.clickElement(this.termsOfUseCheckbox);
     await this.driver.clickElementAndWaitToDisappear(
       this.termsOfUseAgreeButton,
     );
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_loginPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([

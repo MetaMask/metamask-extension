@@ -148,7 +148,7 @@ import {
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
 
-export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
+export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
 /** `appState` slice selectors */
 
@@ -1060,10 +1060,16 @@ export function getAddressBook(state) {
 
 export function getCompleteAddressBook(state) {
   const addresses = state.metamask.addressBook;
-  const addressWithChainId = Object.fromEntries(
-    Object.entries(addresses).filter(([key]) => key !== '*'),
-  );
-  return Object.values(addressWithChainId);
+  const addressWithChainId = Object.entries(addresses)
+    .filter(([chainId, _]) => chainId !== '*')
+    .map(([chainId, addresse]) =>
+      Object.values(addresse).map((address) => ({
+        ...address,
+        chainId,
+      })),
+    )
+    .flat();
+  return addressWithChainId;
 }
 
 export function getEnsResolutionByAddress(state, address) {
@@ -1082,23 +1088,7 @@ export function getEnsResolutionByAddress(state, address) {
 }
 
 export function getAddressBookEntry(state, address) {
-  if (process.env.REMOVE_GNS) {
-    const addressBook = getCompleteAddressBook(state);
-
-    for (const item of addressBook) {
-      for (const key in item) {
-        if (Object.prototype.hasOwnProperty.call(item, key)) {
-          const contact = item[key];
-          if (isEqualCaseInsensitive(contact.address, address)) {
-            return contact;
-          }
-        }
-      }
-    }
-
-    return null;
-  }
-  const addressBook = getAddressBook(state);
+  const addressBook = getCompleteAddressBook(state);
   const entry = addressBook.find((contact) =>
     isEqualCaseInsensitive(contact.address, address),
   );
@@ -1447,7 +1437,7 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const networks = isGlobalNetworkSelectorRemoved
-    ? enabledNetworks?.[namespace] ?? {}
+    ? (enabledNetworks?.[namespace] ?? {})
     : tokenNetworkFilter;
 
   if (
@@ -2367,6 +2357,21 @@ export function getOrderedNetworksList(state) {
   return state.metamask.orderedNetworkList;
 }
 
+/**
+ *
+ * @param state
+ * @returns { Record<string, Record<string, boolean>> }
+ * @example
+ * {
+ *     "eip155": {
+ *         "0x1": true,
+ *         "0xe708": true,
+ *     },
+ *     "solana": {
+ *         "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": true
+ *     }
+ * }
+ */
 export function getEnabledNetworks(state) {
   return state.metamask.enabledNetworkMap;
 }

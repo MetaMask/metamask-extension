@@ -22,6 +22,7 @@ import {
   ONBOARDING_ACCOUNT_EXIST,
   ONBOARDING_ACCOUNT_NOT_FOUND,
   SECURITY_ROUTE,
+  ONBOARDING_REVEAL_SRP_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -41,7 +42,6 @@ import {
   getShowTermsOfUse,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import RevealSRPModal from '../../components/app/reveal-SRP-modal';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   MetaMetricsEventCategory,
@@ -92,6 +92,7 @@ import OnboardingAppHeader from './onboarding-app-header/onboarding-app-header';
 import { WelcomePageState } from './welcome/types';
 import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
+import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 
 const TWITTER_URL = 'https://twitter.com/MetaMask';
 
@@ -218,15 +219,13 @@ export default function OnboardingFlow() {
     return await dispatch(createNewVaultAndRestore(password, srp));
   };
 
-  const showPasswordModalToAllowSRPReveal =
-    pathname === `${ONBOARDING_REVIEW_SRP_ROUTE}/` &&
-    completedOnboarding &&
-    !secretRecoveryPhrase &&
-    isFromReminder;
-
-  const isWelcomeAndUnlockPage =
+  let isFullPage =
     pathname === ONBOARDING_WELCOME_ROUTE ||
     pathname === ONBOARDING_UNLOCK_ROUTE;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  isFullPage = isFullPage || pathname === ONBOARDING_EXPERIMENTAL_AREA;
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Box
@@ -249,31 +248,22 @@ export default function OnboardingFlow() {
       })}
     >
       {!isPopup && <OnboardingAppHeader pageState={welcomePageState} />}
-      <RevealSRPModal
-        setSecretRecoveryPhrase={setSecretRecoveryPhrase}
-        onClose={() => history.goBack()}
-        isOpen={showPasswordModalToAllowSRPReveal}
-      />
       <Box
-        paddingInline={isWelcomeAndUnlockPage ? 0 : 6}
-        paddingTop={isWelcomeAndUnlockPage ? 0 : 8}
-        paddingBottom={isWelcomeAndUnlockPage ? 0 : 8}
+        className={classnames('onboarding-flow__container', {
+          'onboarding-flow__container--full': isFullPage,
+          'onboarding-flow__container--popup': isPopup,
+        })}
         width={BlockSize.Full}
         borderStyle={
-          isWelcomeAndUnlockPage || isPopup
-            ? BorderStyle.none
-            : BorderStyle.solid
+          isFullPage || isPopup ? BorderStyle.none : BorderStyle.solid
         }
         borderRadius={BorderRadius.LG}
         marginTop={pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? 0 : 3}
+        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+        marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
+        ///: END:ONLY_INCLUDE_IF
         marginInline="auto"
         borderColor={BorderColor.borderMuted}
-        style={{
-          maxWidth: isWelcomeAndUnlockPage ? 'none' : '446px',
-          minHeight: isWelcomeAndUnlockPage ? 'auto' : '627px',
-          height:
-            pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? '100%' : 'auto',
-        }}
       >
         <Switch>
           <Route path={ONBOARDING_ACCOUNT_EXIST} component={AccountExist} />
@@ -295,6 +285,14 @@ export default function OnboardingFlow() {
           <Route
             path={ONBOARDING_SECURE_YOUR_WALLET_ROUTE}
             component={SecureYourWallet}
+          />
+          <Route
+            path={ONBOARDING_REVEAL_SRP_ROUTE}
+            render={() => (
+              <RevealRecoveryPhrase
+                setSecretRecoveryPhrase={setSecretRecoveryPhrase}
+              />
+            )}
           />
           <Route
             path={ONBOARDING_REVIEW_SRP_ROUTE}
@@ -376,7 +374,8 @@ export default function OnboardingFlow() {
           variant={ButtonVariant.Link}
           href={TWITTER_URL}
           marginInline="auto"
-          marginTop={4}
+          marginTop={isPopup ? 0 : 4}
+          marginBottom={isPopup ? 4 : 0}
           target="_blank"
           rel="noopener noreferrer"
           textProps={{

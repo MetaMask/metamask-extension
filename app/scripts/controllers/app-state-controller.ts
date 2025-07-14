@@ -70,6 +70,8 @@ export type AppStateControllerState = {
   // This key is only used for checking if the user had set advancedGasFee
   // prior to Migration 92.3 where we split out the setting to support
   // multiple networks.
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
   qrHardware: Json;
   nftsDropdownState: Json;
@@ -88,6 +90,8 @@ export type AppStateControllerState = {
   isUpdateAvailable: boolean;
   updateModalLastDismissedAt: number | null;
   lastUpdatedAt: number | null;
+  enableEnforcedSimulations: boolean;
+  enableEnforcedSimulationsForTransactions: Record<string, boolean>;
 };
 
 const controllerName = 'AppStateController';
@@ -197,6 +201,8 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   isRampCardClosed: false,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   surveyLinkLastClickedOrClosed: null,
   switchedNetworkNeverShowMessage: false,
@@ -205,6 +211,8 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   isUpdateAvailable: false,
   updateModalLastDismissedAt: null,
   lastUpdatedAt: null,
+  enableEnforcedSimulations: true,
+  enableEnforcedSimulationsForTransactions: {},
   ...getInitialStateOverrides(),
 });
 
@@ -312,6 +320,8 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: {
     persist: true,
     anonymous: true,
@@ -378,6 +388,14 @@ const controllerMetadata = {
   },
   lastUpdatedAt: {
     persist: true,
+    anonymous: true,
+  },
+  enableEnforcedSimulations: {
+    persist: true,
+    anonymous: true,
+  },
+  enableEnforcedSimulationsForTransactions: {
+    persist: false,
     anonymous: true,
   },
 };
@@ -1113,6 +1131,21 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.throttledOrigins[origin] = throttledOriginState;
+    });
+  }
+
+  setEnableEnforcedSimulations(enabled: boolean): void {
+    this.update((state) => {
+      state.enableEnforcedSimulations = enabled;
+    });
+  }
+
+  setEnableEnforcedSimulationsForTransaction(
+    transactionId: string,
+    enabled: boolean,
+  ): void {
+    this.update((state) => {
+      state.enableEnforcedSimulationsForTransactions[transactionId] = enabled;
     });
   }
 }

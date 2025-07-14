@@ -36,6 +36,8 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
+  TransactionContainerType,
+  TransactionController,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -368,6 +370,10 @@ export function changePassword(
       if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
         try {
           await socialSyncChangePassword(newPassword, oldPassword);
+
+          // store the keyring encryption key in the seedless onboarding controller
+          const keyringEncryptionKey = await exportEncryptionKey();
+          await storeKeyringEncryptionKey(keyringEncryptionKey);
         } catch (error) {
           // revert the keyring password change
           await keyringChangePassword(oldPassword);
@@ -381,6 +387,18 @@ export function changePassword(
   };
 }
 
+export function storeKeyringEncryptionKey(
+  encryptionKey: string,
+): Promise<void> {
+  return submitRequestToBackground('storeKeyringEncryptionKey', [
+    encryptionKey,
+  ]);
+}
+
+export function exportEncryptionKey(): Promise<string> {
+  return submitRequestToBackground('exportEncryptionKey');
+}
+
 export function tryUnlockMetamask(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -389,17 +407,21 @@ export function tryUnlockMetamask(
   return (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     dispatch(unlockInProgress());
-    log.debug(`background.submitPassword`);
+    log.debug(`background.syncPasswordAndUnlockWallet`);
 
     return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod('submitPassword', [password], (error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+      callBackgroundMethod(
+        'syncPasswordAndUnlockWallet',
+        [password],
+        (error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
 
-        resolve();
-      });
+          resolve();
+        },
+      );
     })
       .then(() => {
         dispatch(unlockSucceeded());
@@ -413,6 +435,26 @@ export function tryUnlockMetamask(
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
       });
+  };
+}
+
+export function checkIsSeedlessPasswordOutdated(
+  skipCache = false,
+): ThunkAction<boolean | undefined, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      const isPasswordOutdated = await submitRequestToBackground<boolean>(
+        'checkIsSeedlessPasswordOutdated',
+        [skipCache],
+      );
+      if (isPasswordOutdated) {
+        await forceUpdateMetamaskState(dispatch);
+      }
+      return isPasswordOutdated;
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
+    }
   };
 }
 
@@ -690,7 +732,7 @@ export function keyringChangePassword(newPassword: string): Promise<void> {
   return submitRequestToBackground('keyringChangePassword', [newPassword]);
 }
 
-export async function getSeedPhrase(password: string, keyringId: string) {
+export async function getSeedPhrase(password: string, keyringId?: string) {
   const encodedSeedPhrase = await submitRequestToBackground<string>(
     'getSeedPhrase',
     [password, keyringId],
@@ -1206,8 +1248,7 @@ export function updatePreviousGasParams(
 }
 
 export function updateEditableParams(
-  txId: string,
-  editableParams: Partial<TransactionParams>,
+  ...args: Parameters<TransactionController['updateEditableParams']>
 ): ThunkAction<
   Promise<TransactionMeta>,
   MetaMaskReduxState,
@@ -1216,15 +1257,17 @@ export function updateEditableParams(
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     let updatedTransaction: TransactionMeta;
+
     try {
       updatedTransaction = await submitRequestToBackground(
         'updateEditableParams',
-        [txId, editableParams],
+        args,
       );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
     }
+
     await forceUpdateMetamaskState(dispatch);
     return updatedTransaction;
   };
@@ -1323,9 +1366,15 @@ export function removeSlide(
   };
 }
 
-export function setSmartAccountOptInForAccounts(accounts: Hex[]): void {
+export async function setEnableEnforcedSimulationsForTransaction(
+  transactionId: string,
+  enable: boolean,
+): void {
   try {
-    submitRequestToBackground('setSmartAccountOptInForAccounts', [accounts]);
+    await submitRequestToBackground(
+      'setEnableEnforcedSimulationsForTransaction',
+      [transactionId, enable],
+    );
   } catch (error) {
     logErrorWithMessage(error);
     throw error;
@@ -2142,6 +2191,14 @@ export function lockMetamask(): ThunkAction<
     dispatch(showLoadingIndication());
 
     return backgroundSetLocked()
+      .then(() => {
+        // check seedless password outdated when lock app
+        dispatch(checkIsSeedlessPasswordOutdated(true));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      })
       .then(() => forceUpdateMetamaskState(dispatch))
       .catch((error) => {
         dispatch(displayWarning(getErrorMessage(error)));
@@ -2445,6 +2502,12 @@ export function showConfTxPage({ id }: Partial<TransactionMeta> = {}) {
   };
 }
 
+export function setShowSupportDataConsentModal(show: boolean) {
+  return {
+    type: actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL,
+    payload: show,
+  };
+}
 export function addToken(
   {
     address,
@@ -2775,6 +2838,8 @@ export async function getNFTContractInfo(
 // When we upgrade to TypeScript 4.5 this is part of the language. It will get
 // the underlying type of a Promise generic type. So Awaited<Promise<void>> is
 // void.
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type Awaited<T> = T extends PromiseLike<infer U> ? U : T;
 
 export async function getTokenStandardAndDetails(
@@ -3022,6 +3087,23 @@ export function createSpeedUpTransaction(
     })
       .then(() => forceUpdateMetamaskState(dispatch))
       .then(() => newTx);
+  };
+}
+
+export function updateIncomingTransactions(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch) => {
+    log.debug(`background.updateIncomingTransactions`);
+    try {
+      await submitRequestToBackground('updateIncomingTransactions');
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning('Had a problem updating incoming transactions!'));
+    }
   };
 }
 
@@ -3521,6 +3603,8 @@ export function displayWarning(payload: unknown): PayloadAction<string> {
   }
   return {
     type: actionConstants.DISPLAY_WARNING,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     payload: `${payload}`,
   };
 }
@@ -3783,7 +3867,11 @@ export function setDismissSmartAccountSuggestionEnabled(
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         dismiss_smt_acc_suggestion_enabled: value,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         prev_dismiss_smt_acc_suggestion_enabled:
           prevDismissSmartAccountSuggestionEnabled,
       },
@@ -3806,7 +3894,11 @@ export function setSmartAccountOptIn(
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         use_smart_account: value,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         prev_use_smart_account: prevUseSmartAccount,
       },
     });
@@ -3835,7 +3927,11 @@ export function setSmartTransactionsPreferenceEnabled(
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         stx_opt_in: value,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         prev_stx_opt_in: smartTransactionsOptInStatus,
       },
     });
@@ -3931,9 +4027,8 @@ export async function forceUpdateMetamaskState(
   let pendingPatches: Patch[] | undefined;
 
   try {
-    pendingPatches = await submitRequestToBackground<Patch[]>(
-      'getStatePatches',
-    );
+    pendingPatches =
+      await submitRequestToBackground<Patch[]>('getStatePatches');
   } catch (error) {
     dispatch(displayWarning(error));
     throw error;
@@ -6977,4 +7072,14 @@ export function setSkipDeepLinkInterstitial(value: boolean) {
  */
 export async function requestSafeReload() {
   return await submitRequestToBackground('requestSafeReload');
+}
+
+export async function applyTransactionContainersExisting(
+  transactionId: string,
+  containerTypes: TransactionContainerType[],
+) {
+  return await submitRequestToBackground<void>(
+    'applyTransactionContainersExisting',
+    [transactionId, containerTypes],
+  );
 }
