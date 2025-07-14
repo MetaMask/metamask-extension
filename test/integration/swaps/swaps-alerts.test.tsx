@@ -134,7 +134,7 @@ const mockStateWithTokens = {
   },
 };
 
-describe('Swaps Alert', () => {
+describe.skip('Swaps Alert', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks();

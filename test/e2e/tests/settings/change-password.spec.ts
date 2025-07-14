@@ -50,6 +50,8 @@ async function doPasswordChangeAndLockWallet(
     await driver.delay(2_000);
   }
 
+  await settingsPage.closeSettingsPage();
+
   await headerNavbar.lockMetaMask();
 }
 
