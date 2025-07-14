@@ -13,7 +13,7 @@ import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
-import { useTrustSignalAlerts } from './useTrustSignalAlerts';
+import { useTrustSignalAlerts } from './useAddressTrustSignalAlerts';
 
 jest.mock('../../../../hooks/useTrustSignals', () => ({
   useTrustSignal: jest.fn(),

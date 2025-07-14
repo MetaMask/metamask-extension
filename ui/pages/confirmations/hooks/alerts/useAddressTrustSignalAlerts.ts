@@ -14,7 +14,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 // eslint-disable-next-line import/no-restricted-paths
 import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
 
-export function useTrustSignalAlerts(): Alert[] {
+export function useAddressTrustSignalAlerts(): Alert[] {
   const { currentConfirmation } = useConfirmContext();
   const t = useI18nContext();
 
