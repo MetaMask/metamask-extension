@@ -3,8 +3,6 @@
 import type { Json } from '@metamask/utils';
 import { Duplex, type DuplexOptions } from 'readable-stream';
 import type { Runtime } from 'webextension-polyfill';
-import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
-import { getPlatform } from './util';
 
 let _randomCounter = 0 | 0;
 /**
@@ -89,8 +87,11 @@ export type Options = {
  * Chrome limit: 64 * 1024 * 1024 - 1 (64 MB - 1 byte)
  * Firefox limit: 0 (no chunking, send as is)
  */
-export const CHUNK_SIZE =
-  getPlatform() === PLATFORM_FIREFOX ? 0 : 64 * 1024 * 1024 - 1;
+export const CHUNK_SIZE = globalThis.navigator.userAgent
+  .toLowerCase()
+  .includes('firefox')
+  ? 0
+  : 64 * 1024 * 1024 - 1;
 
 enum S {
   Id,
