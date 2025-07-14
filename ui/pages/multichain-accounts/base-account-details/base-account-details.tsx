@@ -193,10 +193,10 @@ export const BaseAccountDetails = ({
                 color={IconColor.iconAlternative}
                 size={ButtonIconSize.Md}
                 ariaLabel={t('edit')}
-                onClick={() => setIsEditingAccountName(true)}
                 marginLeft={2}
               />
             }
+            onClick={() => setIsEditingAccountName(true)}
           />
           <AccountDetailsRow
             label={t('address')}
@@ -207,10 +207,10 @@ export const BaseAccountDetails = ({
                 color={IconColor.iconAlternative}
                 size={ButtonIconSize.Md}
                 ariaLabel={t('next')}
-                onClick={handleShowAddress}
                 marginLeft={2}
               />
             }
+            onClick={handleShowAddress}
           />
           <AccountDetailsRow
             label={t('wallet')}
@@ -221,12 +221,12 @@ export const BaseAccountDetails = ({
                 color={IconColor.iconAlternative}
                 size={ButtonIconSize.Md}
                 ariaLabel={t('next')}
-                onClick={() => {
-                  history.push(walletRoute);
-                }}
                 marginLeft={2}
               />
             }
+            onClick={() => {
+              history.push(walletRoute);
+            }}
           />
         </Box>
         {children}
