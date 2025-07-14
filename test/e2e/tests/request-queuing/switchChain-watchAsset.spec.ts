@@ -55,14 +55,15 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
         await connectAccountConfirmation.openEditNetworksModal();
 
         // Disconnect Localhost 8545. By Default, this was the globally selected network
-        await driver.clickElement({
-          text: 'Localhost 8545',
-          tag: 'p',
-        });
-
-        await driver.clickElement('[data-testid="connect-more-chains-button"]');
+        const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
+          driver,
+        );
+        await reviewPermissionsConfirmation.clickDisconnectNetwork(
+          'Localhost 8545',
+        );
+        await reviewPermissionsConfirmation.clickConnectMoreChainsButton();
         await connectAccountConfirmation.confirmConnect();
-        
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.check_pageIsLoaded();
 
@@ -78,9 +79,7 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
-          driver,
-        );
+
         await reviewPermissionsConfirmation.check_useEnabledNetworksMessageIsDisplayed();
 
         // Switch back to test dapp
@@ -92,12 +91,8 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Confirm Switch Network
-
-       await driver.findClickableElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await reviewPermissionsConfirmation.check_pageIsLoaded();
+        await reviewPermissionsConfirmation.clickConfirmReviewPermissionsButton();
 
         await driver.waitUntilXWindowHandles(3);
       },
