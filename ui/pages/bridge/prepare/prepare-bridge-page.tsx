@@ -703,7 +703,6 @@ const PrepareBridgePage = () => {
                 networkConfig.chainId === toChain?.chainId
               ) {
                 dispatch(setToChainId(null));
-                dispatch(setToToken(null));
               }
               if (
                 isSolanaChainId(networkConfig.chainId) &&

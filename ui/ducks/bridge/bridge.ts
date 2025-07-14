@@ -104,6 +104,7 @@ const bridgeSlice = createSlice({
   reducers: {
     setToChainId: (state, { payload }: ChainIdPayload) => {
       state.toChainId = payload ? formatChainIdToCaip(payload) : null;
+      state.toToken = null;
     },
     setFromToken: (state, { payload }: TokenPayload) => {
       state.fromToken = toBridgeToken(payload);
