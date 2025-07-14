@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.22.2]
+
 ## [12.22.1]
 ### Fixed
 - Display sent amounts from the active swap quote when showing approval warnings to prevent parsing non-numerical inputs (#34156)
@@ -94,7 +96,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.22.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.22.2...HEAD
+[12.22.2]: https://github.com/MetaMask/metamask-extension/compare/v12.22.1...v12.22.2
 [12.22.1]: https://github.com/MetaMask/metamask-extension/compare/v12.22.0...v12.22.1
 [12.22.0]: https://github.com/MetaMask/metamask-extension/compare/v12.20.1...v12.22.0
 [12.20.1]: https://github.com/MetaMask/metamask-extension/releases/tag/v12.20.1
