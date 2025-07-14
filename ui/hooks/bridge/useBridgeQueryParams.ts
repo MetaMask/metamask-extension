@@ -8,6 +8,7 @@ import {
   isSolanaChainId,
 } from '@metamask/bridge-controller';
 import { fetchAssetMetadata, toAssetId } from '../../../shared/lib/asset-utils';
+import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { setFromToken } from '../../ducks/bridge/actions';
 import { getFromChain, getFromToken } from '../../ducks/bridge/selectors';
 import { getTokenList } from '../../selectors';
@@ -27,14 +28,14 @@ export const useBridgeQueryParams = (isFromTokensLoading: boolean) => {
     }
 
     const searchParams = new URLSearchParams(search);
-    const tokenAddressFromUrl = searchParams.get('token');
+    const tokenAddressFromUrl = searchParams.get(BridgeQueryParams.TOKEN);
     if (!tokenAddressFromUrl) {
       return;
     }
 
     const removeTokenFromUrl = () => {
       const newParams = new URLSearchParams(searchParams);
-      newParams.delete('token');
+      newParams.delete(BridgeQueryParams.TOKEN);
       history.replace({
         search: newParams.toString(),
       });

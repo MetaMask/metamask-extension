@@ -29,6 +29,7 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import { getPortfolioUrl } from '../../helpers/utils/portfolio';
+import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
@@ -116,13 +117,13 @@ const useBridging = () => {
           ),
         );
         let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
-        url += `?token=${
+        url += `?${BridgeQueryParams.TOKEN}=${
           isStrictHexString(token.address)
             ? toChecksumAddress(token.address)
             : token.address
         }`;
         if (isSwap) {
-          url += '&swaps=true';
+          url += `&${BridgeQueryParams.IS_SWAP}=true`;
         }
         history.push(url);
       } else {
