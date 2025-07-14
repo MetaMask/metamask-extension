@@ -286,9 +286,6 @@
   "address": {
     "message": "Dirección"
   },
-  "addressCopied": {
-    "message": "¡Dirección copiada!"
-  },
   "addressMismatch": {
     "message": "La dirección del sitio no coincide"
   },
@@ -1800,9 +1797,6 @@
   },
   "downloadStateLogs": {
     "message": "Descargar registros de estado"
-  },
-  "dragAndDropBanner": {
-    "message": "Puede arrastrar redes para reordenarlas. "
   },
   "dropped": {
     "message": "Abandonado"
@@ -4219,9 +4213,6 @@
   "popularNetworks": {
     "message": "Redes populares"
   },
-  "portfolio": {
-    "message": "Portafolio"
-  },
   "preparingSwap": {
     "message": "Preparando intercambio..."
   },
@@ -5045,9 +5036,6 @@
   "smartAccountReject": {
     "message": "No use una cuenta inteligente"
   },
-  "smartAccountRequestFor": {
-    "message": "Solicitud de"
-  },
   "smartAccountSameAccount": {
     "message": "La misma cuenta, funciones más inteligentes."
   },
@@ -5512,9 +5500,6 @@
   },
   "statusNotConnected": {
     "message": "No conectado"
-  },
-  "statusNotConnectedAccount": {
-    "message": "No hay cuentas conectadas"
   },
   "step1LatticeWallet": {
     "message": "Conecte su Lattice1"

@@ -28,8 +28,6 @@ export async function withBtcAccountSnap(
           },
           bip122: {
             [MultichainNetworks.BITCOIN]: true,
-            [MultichainNetworks.BITCOIN_SIGNET]: true,
-            [MultichainNetworks.BITCOIN_TESTNET]: true,
           },
         })
         .build(),

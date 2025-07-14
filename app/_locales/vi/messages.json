@@ -286,9 +286,6 @@
   "address": {
     "message": "Địa chỉ"
   },
-  "addressCopied": {
-    "message": "Đã sao chép địa chỉ!"
-  },
   "addressMismatch": {
     "message": "Địa chỉ trang web không khớp"
   },
@@ -1800,9 +1797,6 @@
   },
   "downloadStateLogs": {
     "message": "Tải nhật ký trạng thái xuống"
-  },
-  "dragAndDropBanner": {
-    "message": "Bạn có thể kéo các mạng để sắp xếp lại thứ tự. "
   },
   "dropped": {
     "message": "Đã ngừng"
@@ -4219,9 +4213,6 @@
   "popularNetworks": {
     "message": "Mạng phổ biến"
   },
-  "portfolio": {
-    "message": "Danh mục đầu tư"
-  },
   "preparingSwap": {
     "message": "Đang chuẩn bị hoán đổi..."
   },
@@ -5045,9 +5036,6 @@
   "smartAccountReject": {
     "message": "Không sử dụng tài khoản thông minh"
   },
-  "smartAccountRequestFor": {
-    "message": "Yêu cầu cho"
-  },
   "smartAccountSameAccount": {
     "message": "Tài khoản giữ nguyên, tính năng thông minh hơn."
   },
@@ -5512,9 +5500,6 @@
   },
   "statusNotConnected": {
     "message": "Chưa kết nối"
-  },
-  "statusNotConnectedAccount": {
-    "message": "Không có tài khoản nào được kết nối"
   },
   "step1LatticeWallet": {
     "message": "Kết nối với Lattice1"

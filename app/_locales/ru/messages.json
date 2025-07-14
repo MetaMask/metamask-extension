@@ -286,9 +286,6 @@
   "address": {
     "message": "Адрес"
   },
-  "addressCopied": {
-    "message": "Адрес скопирован!"
-  },
   "addressMismatch": {
     "message": "Несоответствие адреса сайта"
   },
@@ -1800,9 +1797,6 @@
   },
   "downloadStateLogs": {
     "message": "Скачать журналы состояния"
-  },
-  "dragAndDropBanner": {
-    "message": "Вы можете перетаскивать сети, чтобы изменять их порядок. "
   },
   "dropped": {
     "message": "Отменено"
@@ -4219,9 +4213,6 @@
   "popularNetworks": {
     "message": "Популярные сети"
   },
-  "portfolio": {
-    "message": "Portfolio"
-  },
   "preparingSwap": {
     "message": "Подготовка свопа..."
   },
@@ -5045,9 +5036,6 @@
   "smartAccountReject": {
     "message": "Не использовать смарт-счет"
   },
-  "smartAccountRequestFor": {
-    "message": "Запрос на"
-  },
   "smartAccountSameAccount": {
     "message": "Один и тот же счет, более умные функции."
   },
@@ -5512,9 +5500,6 @@
   },
   "statusNotConnected": {
     "message": "Не подключено"
-  },
-  "statusNotConnectedAccount": {
-    "message": "Счета не подключены"
   },
   "step1LatticeWallet": {
     "message": "Подключите Lattice1"

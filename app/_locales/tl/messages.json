@@ -286,9 +286,6 @@
   "address": {
     "message": "Address"
   },
-  "addressCopied": {
-    "message": "Nakopya ang address!"
-  },
   "addressMismatch": {
     "message": "Hindi tugma ang address ng site"
   },
@@ -1800,9 +1797,6 @@
   },
   "downloadStateLogs": {
     "message": "I-download ang mga log ng estado"
-  },
-  "dragAndDropBanner": {
-    "message": "Maaari mong i-drag ang mga network para isaayos ang mga ito. "
   },
   "dropped": {
     "message": "Binitawan"
@@ -4219,9 +4213,6 @@
   "popularNetworks": {
     "message": "Mga popular na network"
   },
-  "portfolio": {
-    "message": "Portfolio"
-  },
   "preparingSwap": {
     "message": "Inihahanda ang pag-swap..."
   },
@@ -5045,9 +5036,6 @@
   "smartAccountReject": {
     "message": "Huwag gumamit ng smart account"
   },
-  "smartAccountRequestFor": {
-    "message": "Humiling ng"
-  },
   "smartAccountSameAccount": {
     "message": "Parehong account, mas mahuhusay na feature."
   },
@@ -5512,9 +5500,6 @@
   },
   "statusNotConnected": {
     "message": "Hindi konektado"
-  },
-  "statusNotConnectedAccount": {
-    "message": "Walang mga account na konektado"
   },
   "step1LatticeWallet": {
     "message": "Ikonekta ang iyong Lattice1"

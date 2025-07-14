@@ -12,7 +12,8 @@ import {
 } from '../../../../store/actions';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { stripProtocol } from '../rpc-list-item';
-import { SelectRpcUrlModal } from './select-rpc-url-modal'; // Adjust the path as needed
+import { createMockInternalAccount } from '../../../../../test/jest/mocks';
+import { SelectRpcUrlModal } from './select-rpc-url-modal';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => ({
@@ -40,10 +41,21 @@ const networkConfiguration = {
   defaultRpcEndpointIndex: 0,
 } as unknown as NetworkConfiguration;
 
+const mockAccount = createMockInternalAccount();
+
 const store = mockStore({
   metamask: {
     networks: [networkConfiguration],
     activeNetwork: '0x1',
+    internalAccounts: {
+      accounts: {
+        [mockAccount.id]: mockAccount,
+      },
+      selectedAccount: mockAccount.id,
+    },
+    networkConfigurationsByChainId: {
+      '0x1': networkConfiguration,
+    },
   },
 });
 
