@@ -15,7 +15,6 @@ import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
-import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
 import * as networkSelectors from '../../shared/modules/selectors/networks';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 
@@ -160,16 +159,6 @@ describe('Selectors', () => {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
         ],
       );
-    });
-  });
-
-  describe('#selectSwitchedNetworkNeverShowMessage', () => {
-    it('returns the correct value', () => {
-      expect(
-        selectSwitchedNetworkNeverShowMessage({
-          metamask: { switchedNetworkNeverShowMessage: true },
-        }),
-      ).toStrictEqual(true);
     });
   });
 

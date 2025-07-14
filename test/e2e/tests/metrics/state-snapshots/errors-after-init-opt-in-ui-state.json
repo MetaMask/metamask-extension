@@ -146,7 +146,6 @@
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "surveyLinkLastClickedOrClosed": "object",
-    "switchedNetworkNeverShowMessage": "boolean",
     "slides": "object",
     "isUpdateAvailable": false,
     "updateModalLastDismissedAt": null,

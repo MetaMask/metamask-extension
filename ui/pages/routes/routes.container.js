@@ -48,7 +48,6 @@ import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import { getSendStage } from '../../ducks/send';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { selectSwitchedNetworkNeverShowMessage } from '../../components/app/toast-master/selectors';
 import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
 import Routes from './routes.component';
 
@@ -114,8 +113,6 @@ function mapStateToProps(state) {
     currentNetwork,
     totalUnapprovedConfirmationCount:
       getNumberOfAllUnapprovedTransactionsAndMessages(state),
-    switchedNetworkNeverShowMessage:
-      selectSwitchedNetworkNeverShowMessage(state),
     currentExtensionPopupId: state.metamask.currentExtensionPopupId,
     oldestPendingApproval,
     pendingApprovals,

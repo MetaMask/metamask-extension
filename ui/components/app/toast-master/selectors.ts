@@ -117,18 +117,6 @@ export function selectShowConnectAccountToast(
 }
 
 /**
- * Retrieves user preference to never see the "Switched Network" toast
- *
- * @param state - Redux state object.
- * @returns Boolean preference value
- */
-export function selectSwitchedNetworkNeverShowMessage(
-  state: Pick<State, 'metamask'>,
-): boolean {
-  return Boolean(state.metamask.switchedNetworkNeverShowMessage);
-}
-
-/**
  * Retrieves user preference to see the "New SRP Added" toast
  *
  * @param state - Redux state object.
