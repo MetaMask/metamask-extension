@@ -17,11 +17,7 @@ import {
   getIsSmartTransaction,
   isHardwareWallet,
 } from '../../../../shared/modules/selectors';
-import {
-  getFromChain,
-  getShouldUseSnapConfirmation,
-} from '../../../ducks/bridge/selectors';
-import useSnapConfirmation from './useSnapConfirmation';
+import { getFromChain } from '../../../ducks/bridge/selectors';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
 const APPROVAL_TX_ERROR = 'Approve transaction failed';
@@ -62,10 +58,6 @@ export default function useSubmitBridgeTransaction() {
   const history = useHistory();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
-  const shouldShowSnapConfirmation = useSelector(getShouldUseSnapConfirmation);
-
-  // This redirects to the confirmation page if an unapproved snap confirmation exists
-  useSnapConfirmation();
 
   const fromChain = useSelector(getFromChain);
   const smartTransactionsEnabled = useSelector((state) =>
@@ -77,19 +69,6 @@ export default function useSubmitBridgeTransaction() {
   ) => {
     if (hardwareWalletUsed) {
       history.push(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
-    }
-    if (
-      shouldShowSnapConfirmation &&
-      isSolanaChainId(quoteResponse.quote.srcChainId)
-    ) {
-      // Move to activity tab before submitting a transaction
-      // This is a temporary solution to avoid the transaction not being shown in the activity tab
-      // We should find a better solution in the future
-      await dispatch(setDefaultHomeActiveTabName('activity'));
-      await dispatch(submitBridgeTx(quoteResponse, false));
-      // The useSnapConfirmation hook redirects to the confirmation page right after
-      // submitting the tx so everything below is unnecessary and we can return early
-      return;
     }
 
     // Execute transaction(s)
