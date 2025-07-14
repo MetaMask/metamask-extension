@@ -1,3 +1,4 @@
+/* eslint-disable mocha/no-skipped-tests */
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
