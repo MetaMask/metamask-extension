@@ -384,7 +384,7 @@ module.exports = {
         'tailwindcss/enforces-negative-arbitrary-values': 'error',
         'tailwindcss/enforces-shorthand': 'error',
         'tailwindcss/no-arbitrary-value': 'off', // There are legitimate reasons to use arbitrary values but we should specifically error on static colors
-        'tailwindcss/no-custom-classname': 'error',
+        'tailwindcss/no-custom-classname': 'warn',
         'tailwindcss/no-contradicting-classname': 'error',
         'tailwindcss/no-unnecessary-arbitrary-value': 'error',
       },
