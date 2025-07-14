@@ -14,33 +14,7 @@ import NotificationsSettingsPage from '../../page-objects/pages/settings/notific
 import { Driver } from '../../webdriver/driver';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import { mockIdentityServices } from '../identity/mocks';
-import { mockNotificationServices } from './mocks';
-
-// UserStorageAccount type to match the PR structure
-type UserStorageAccount = {
-  v: string;
-  a: string;
-  i: string;
-  n: string;
-  nlu: number;
-};
-
-const notificationsMockAccounts: UserStorageAccount[] = [
-  {
-    v: '1',
-    a: '0xAa4179E7f103701e904D27DF223a39Aa9c27405a'.toLowerCase(),
-    i: '0000-1111',
-    n: 'Hello from account 1',
-    nlu: 1738590287,
-  },
-  {
-    v: '1',
-    a: '0xd2a4aFe5c2fF0a16Bf81F77ba4201A8107AA874b'.toLowerCase(),
-    i: '1111-1111',
-    n: 'Hello from account 2',
-    nlu: 1738590287,
-  },
-];
+import { mockNotificationServices, notificationsMockAccounts } from './mocks';
 
 /**
  * Generates encrypted mock response for notifications tests
