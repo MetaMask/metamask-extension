@@ -239,7 +239,7 @@ export const getToToken = createSelector(
     );
     const newToToken = toToken ?? toBridgeToken(destNativeAsset);
     // Return null if dest token is the same as the src token
-    if (fromToken?.assetId === newToToken?.assetId) {
+    if (fromToken && newToToken && fromToken.assetId === newToToken.assetId) {
       return null;
     }
     return newToToken;
