@@ -241,12 +241,12 @@ export const getToToken = createSelector(
     const destNativeAsset = getNativeAssetForChainId(
       toChainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
     );
-    const newToToken = toToken ?? destNativeAsset;
+    const newToToken = toToken ?? toBridgeToken(destNativeAsset);
     // Return null if dest token is the same as the src token
     if (fromToken?.assetId === newToToken?.assetId) {
       return null;
     }
-    return toBridgeToken(newToToken);
+    return newToToken;
   },
 );
 

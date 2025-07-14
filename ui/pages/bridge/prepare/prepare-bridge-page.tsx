@@ -10,6 +10,7 @@ import classnames from 'classnames';
 import { debounce } from 'lodash';
 import { useHistory, useLocation } from 'react-router-dom';
 import { type TokenListMap } from '@metamask/assets-controllers';
+import { ethers } from 'ethers';
 import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
 import {
   formatChainIdToCaip,
@@ -388,7 +389,10 @@ const PrepareBridgePage = () => {
   const quoteParams: Partial<GenericQuoteRequest> = useMemo(
     () => ({
       srcTokenAddress: fromToken?.address,
-      destTokenAddress: toToken?.address,
+      destTokenAddress:
+        toToken && isNativeAddress(toToken.address)
+          ? ethers.constants.AddressZero
+          : toToken?.address,
       srcTokenAmount:
         fromAmount && fromToken?.decimals
           ? calcTokenValue(
