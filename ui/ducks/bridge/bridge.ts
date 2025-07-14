@@ -3,7 +3,6 @@ import {
   SortOrder,
   BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
-  getNativeAssetForChainId,
   isSolanaChainId,
   formatChainIdToHex,
   isNativeAddress,

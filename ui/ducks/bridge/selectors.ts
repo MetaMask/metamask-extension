@@ -52,14 +52,10 @@ import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import {} from '../../pages/bridge/utils/quote';
-import {
-  CHAIN_ID_TOKEN_IMAGE_MAP,
-  FEATURED_RPCS,
-} from '../../../shared/constants/network';
+import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getMultichainCoinRates,
   getMultichainProviderConfig,
-  getImageForChainId,
 } from '../../selectors/multichain';
 import { getAssetsRates } from '../../selectors/assets';
 import {
