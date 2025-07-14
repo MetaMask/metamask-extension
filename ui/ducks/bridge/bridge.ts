@@ -13,7 +13,12 @@ import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
 import { getTokenExchangeRate } from './utils';
-import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
+import type {
+  BridgeState,
+  BridgeToken,
+  ChainIdPayload,
+  TokenPayload,
+} from './types';
 
 const initialState: BridgeState = {
   toChainId: null,
@@ -75,6 +80,24 @@ const getTokenImage = (payload: TokenPayload['payload']) => {
   return (assetIdToUse && getAssetImageUrl(assetIdToUse, caipChainId)) ?? '';
 };
 
+export const toBridgeToken = (
+  payload: TokenPayload['payload'],
+): BridgeToken | null => {
+  if (!payload) {
+    return null;
+  }
+  return {
+    ...payload,
+    balance: payload.balance ?? '0',
+    string: payload.string ?? '0',
+    chainId: payload.chainId,
+    image: getTokenImage(payload),
+    assetId:
+      payload.assetId ??
+      toAssetId(payload.address, formatChainIdToCaip(payload.chainId)),
+  };
+};
+
 const bridgeSlice = createSlice({
   name: 'bridge',
   initialState: { ...initialState },
@@ -83,33 +106,10 @@ const bridgeSlice = createSlice({
       state.toChainId = payload ? formatChainIdToCaip(payload) : null;
     },
     setFromToken: (state, { payload }: TokenPayload) => {
-      if (payload) {
-        state.fromToken = {
-          ...payload,
-          balance: payload.balance ?? '0',
-          string: payload.string ?? '0',
-          chainId: payload.chainId,
-          image: getTokenImage(payload),
-        };
-      } else {
-        state.fromToken = payload;
-      }
+      state.fromToken = toBridgeToken(payload);
     },
     setToToken: (state, { payload }: TokenPayload) => {
-      if (payload) {
-        state.toToken = {
-          ...payload,
-          balance: payload.balance ?? '0',
-          string: payload.string ?? '0',
-          chainId: payload.chainId,
-          image: getTokenImage(payload),
-          address:
-            payload.address ||
-            getNativeAssetForChainId(payload.chainId).address,
-        };
-      } else {
-        state.toToken = payload;
-      }
+      state.toToken = toBridgeToken(payload);
     },
     setFromTokenInputValue: (state, action) => {
       state.fromTokenInputValue = action.payload;

@@ -5,6 +5,7 @@ import {
 } from '@metamask/bridge-controller';
 import { MultichainNetworks } from './multichain/networks';
 import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
+import { CaipAssetTypeStruct } from '@metamask/utils';
 
 const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
@@ -90,8 +91,9 @@ export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
 
 export const SOLANA_USDC_ASSET = {
   address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-  assetId:
+  assetId: CaipAssetTypeStruct.create(
     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  ),
   symbol: 'USDC',
   decimals: 6,
   image:
