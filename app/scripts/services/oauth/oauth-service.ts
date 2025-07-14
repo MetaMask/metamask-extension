@@ -251,6 +251,8 @@ export default class OAuthService {
       socialLoginEmail: userInfo.email,
       refreshToken: authTokenData.refresh_token,
       revokeToken: authTokenData.revoke_token,
+      accessToken: authTokenData.access_token,
+      metadataAccessToken: authTokenData.metadata_access_token,
     };
   }
 
