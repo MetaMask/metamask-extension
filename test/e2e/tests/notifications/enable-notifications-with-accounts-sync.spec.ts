@@ -16,14 +16,14 @@ import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mo
 import { mockIdentityServices } from '../identity/mocks';
 import { mockNotificationServices } from './mocks';
 
-// UserStorageAccount interface to match the PR structure
-interface UserStorageAccount {
+// UserStorageAccount type to match the PR structure
+type UserStorageAccount = {
   v: string;
   a: string;
   i: string;
   n: string;
   nlu: number;
-}
+};
 
 const notificationsMockAccounts: UserStorageAccount[] = [
   {
