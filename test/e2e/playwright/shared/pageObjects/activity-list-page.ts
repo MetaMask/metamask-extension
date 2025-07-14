@@ -27,6 +27,8 @@ export class ActivityListPage {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
     // eslint-disable-next-line @typescript-eslint/await-thenable
     // Fix test pattern - remove await from expect calls. Playwright expect() can be used without await when values are already resolved
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await expect(itemStatus).toEqual('Confirmed');
   }
 }
