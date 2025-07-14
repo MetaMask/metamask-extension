@@ -7083,3 +7083,10 @@ export async function applyTransactionContainersExisting(
     [transactionId, containerTypes],
   );
 }
+
+export function setOnboardingErrorReport(error: Error | null) {
+  return {
+    type: actionConstants.SET_ONBOARDING_ERROR_REPORT,
+    payload: error,
+  };
+}

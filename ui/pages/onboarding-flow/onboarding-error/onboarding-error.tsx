@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   TextVariant,
   Display,
@@ -24,26 +24,37 @@ import {
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { getOnboardingErrorReport } from '../../../selectors';
+import { useDispatch, useSelector } from 'react-redux';
+import { ONBOARDED_IN_THIS_UI_SESSION } from '../../../store/actionConstants';
+import { useHistory } from 'react-router-dom';
+import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
+import { setOnboardingErrorReport } from '../../../store/actions';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingError() {
   const t = useI18nContext();
+  const history = useHistory();
+  const dispatch = useDispatch();
   const [copied, handleCopy] = useCopyToClipboard();
+  const onboardingErrorReport = useSelector(getOnboardingErrorReport);
 
-  const errorStack = `
-  Error: Objects are not valid as a React child (found: Error: Meow). If you meant to render a collection of children, use an array instead.
-    at throwOnInvalidObjectType (chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/js-node_modules_q.573f8b2053228107add3.js:41575:31)
-    at reconcileChildFibers (chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/js-node_modules_q.573f8b2053228107add3.js:42294:21)
-    at reconcileChildren (chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/js-node_modules_q.573f8b2053228107add3.js:44762:40)
-    at updateHostComponent (chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/js-node_modules_q.573f8b2053228107add3.js:45272:13)
-    at beginWork (chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/js-node_modules_q.573f8b2053228107add3.js:46439:28)
-    at HTMLUnknownElement.callCallback (chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/js-node_modules_q.573f8b2053228107add3.js:33733:30)
-    at Object.invokeGuardedCallbackDev (chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/js-node_modules_q.573f8b2053228107add3.js:33771:30)
-    at invokeGuardedCallback (chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/js-node_modules_q.573f8b2053228107add3.js:33822:41)
-    at beginWork$1 (chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/js-node_modules_q.573f8b2053228107add3.js:50328:21)
-    at performUnitOfWork (chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/js-node_modules_q.573f8b2053228107add3.js:49383:24)
-  `;
+  useEffect(() => {
+    if (onboardingErrorReport === null) {
+      history.push(ONBOARDED_IN_THIS_UI_SESSION);
+    }
+  }, [history, onboardingErrorReport]);
+
+  const onTryAgain = useCallback(() => {
+    dispatch(setOnboardingErrorReport(null));
+    history.push(ONBOARDING_WELCOME_ROUTE);
+  }, [dispatch, history]);
+
+  // TODO: Implement this
+  const onSendReport = useCallback(() => {
+    console.log('onSendReport');
+  }, []);
 
   return (
     <Box
@@ -82,7 +93,7 @@ export default function OnboardingError() {
         <Text>{t('sentryErrorReport')}</Text>
         <Button
           onClick={() => {
-            handleCopy(errorStack);
+            handleCopy(onboardingErrorReport?.stack || '');
           }}
           startIconName={copied ? IconName.CopySuccess : IconName.Copy}
           variant={ButtonVariant.Link}
@@ -114,16 +125,28 @@ export default function OnboardingError() {
           data-testid="error-page-error-message"
           color={TextColor.inherit}
         >
-          {t('sentryErrorError', ['Meow'])}
+          {t('sentryErrorError', [onboardingErrorReport?.message || ''])}
         </Text>
-        <pre className="onboarding-error__stack">{errorStack}</pre>
+        <pre className="onboarding-error__stack">
+          {onboardingErrorReport?.stack || ''}
+        </pre>
       </Box>
 
       <Box display={Display.Flex} width={BlockSize.Full} gap={4}>
-        <Button block size={ButtonSize.Lg} variant={ButtonVariant.Secondary}>
+        <Button
+          block
+          size={ButtonSize.Lg}
+          variant={ButtonVariant.Secondary}
+          onClick={onTryAgain}
+        >
           {t('tryAgain')}
         </Button>
-        <Button block size={ButtonSize.Lg} variant={ButtonVariant.Primary}>
+        <Button
+          block
+          size={ButtonSize.Lg}
+          variant={ButtonVariant.Primary}
+          onClick={onSendReport}
+        >
           {t('sendReport')}
         </Button>
       </Box>

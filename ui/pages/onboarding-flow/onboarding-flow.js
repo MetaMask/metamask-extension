@@ -40,6 +40,7 @@ import {
 import {
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
+  getOnboardingErrorReport,
   getShowTermsOfUse,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -120,6 +121,7 @@ export default function OnboardingFlow() {
   const isPrimarySeedPhraseBackedUp = useSelector(
     getIsPrimarySeedPhraseBackedUp,
   );
+  const onboardingErrorReport = useSelector(getOnboardingErrorReport);
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
@@ -133,6 +135,12 @@ export default function OnboardingFlow() {
   useEffect(() => {
     setOnboardingDate();
   }, []);
+
+  useEffect(() => {
+    if (onboardingErrorReport !== null) {
+      history.push(ONBOARDING_ERROR_ROUTE);
+    }
+  }, [history, onboardingErrorReport]);
 
   useEffect(() => {
     if (completedOnboarding && !isFromReminder) {
