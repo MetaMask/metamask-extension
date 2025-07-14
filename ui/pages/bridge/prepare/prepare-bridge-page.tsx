@@ -132,12 +132,10 @@ import { Toast, ToastContainer } from '../../../components/multichain';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import {
-  fetchAssetMetadata,
-  toAssetId,
-} from '../../../../shared/lib/asset-utils';
+import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -175,6 +173,8 @@ const PrepareBridgePage = () => {
     }
     return Object.keys(fromTokens).length === 0;
   }, [fromTokens, fromChain]);
+
+  useBridgeQueryParams(isFromTokensLoading);
 
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
@@ -501,90 +501,6 @@ const PrepareBridgePage = () => {
     },
     [],
   );
-
-  const { search } = useLocation();
-  const history = useHistory();
-
-  useEffect(() => {
-    if (!fromChain?.chainId || isFromTokensLoading) {
-      return;
-    }
-
-    const searchParams = new URLSearchParams(search);
-    const tokenAddressFromUrl = searchParams.get('token');
-    if (!tokenAddressFromUrl) {
-      return;
-    }
-
-    const removeTokenFromUrl = () => {
-      const newParams = new URLSearchParams(searchParams);
-      newParams.delete('token');
-      history.replace({
-        search: newParams.toString(),
-      });
-    };
-
-    const handleToken = async () => {
-      if (isSolanaChainId(fromChain.chainId)) {
-        const tokenAddress = tokenAddressFromUrl;
-        const assetId = toAssetId(
-          tokenAddress,
-          formatChainIdToCaip(fromChain.chainId),
-        );
-        if (!assetId) {
-          removeTokenFromUrl();
-          return;
-        }
-
-        const tokenMetadata = await fetchAssetMetadata(
-          tokenAddress,
-          fromChain.chainId,
-        );
-        if (!tokenMetadata) {
-          removeTokenFromUrl();
-          return;
-        }
-
-        dispatch(
-          setFromToken({
-            ...tokenMetadata,
-            chainId: fromChain.chainId,
-          }),
-        );
-        removeTokenFromUrl();
-        return;
-      }
-
-      const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
-
-      switch (tokenAddressFromUrl) {
-        case fromToken?.address:
-          // If the token is already set, remove the query param
-          removeTokenFromUrl();
-          break;
-        case matchedToken?.address:
-        case matchedToken?.address
-          ? toChecksumAddress(matchedToken.address)
-          : undefined: {
-          // If there is a match, set it as the fromToken
-          dispatch(
-            setFromToken({
-              ...matchedToken,
-              chainId: fromChain.chainId,
-            }),
-          );
-          removeTokenFromUrl();
-          break;
-        }
-        default:
-          // Otherwise remove query param
-          removeTokenFromUrl();
-          break;
-      }
-    };
-
-    handleToken();
-  }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
   // Set slippage based on swap type
   const slippageInitializedRef = useRef(false);
