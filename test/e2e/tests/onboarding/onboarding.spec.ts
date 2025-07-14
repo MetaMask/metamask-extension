@@ -18,7 +18,6 @@ import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/o
 import OnboardingSrpPage from '../../page-objects/pages/onboarding/onboarding-srp-page';
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   completeCreateNewWalletOnboardingFlow,
   completeImportSRPOnboardingFlow,
@@ -26,7 +25,7 @@ import {
   incompleteCreateNewWalletOnboardingFlow,
   onboardingMetricsFlow,
 } from '../../page-objects/flows/onboarding.flow';
-import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -242,7 +241,7 @@ describe('MetaMask onboarding', function () {
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await switchToNetworkFlow(driver, networkName);
+        await switchToNetworkFromSendFlow(driver, networkName);
         await homePage.check_addNetworkMessageIsDisplayed(networkName);
 
         // Check the correct balance for the custom network is displayed
@@ -309,7 +308,7 @@ describe('MetaMask onboarding', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await unlockWallet(driver);
         // First screen we should be on is MetaMetrics
         const onboardingMetricsPage = new OnboardingMetricsPage(driver);
         await onboardingMetricsPage.check_pageIsLoaded();

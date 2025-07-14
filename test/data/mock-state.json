@@ -61,6 +61,8 @@
   },
   "metamask": {
     "allTokens": {},
+    "enableEnforcedSimulations": true,
+    "enableEnforcedSimulationsForTransactions": {},
     "tokenBalances": {},
     "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",
@@ -70,7 +72,6 @@
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
     "showBetaHeader": false,
-    "upgradeSplashPageAcknowledgedForAccounts": [],
     "isUpdateAvailable": false,
     "updateModalLastDismissedAt": null,
     "lastUpdatedAt": null,

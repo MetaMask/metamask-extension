@@ -286,9 +286,6 @@
   "address": {
     "message": "Адрес"
   },
-  "addressCopied": {
-    "message": "Адрес скопирован!"
-  },
   "addressMismatch": {
     "message": "Несоответствие адреса сайта"
   },
@@ -910,9 +907,6 @@
   },
   "bridgeTo": {
     "message": "Мост в"
-  },
-  "bridgeToChain": {
-    "message": "Мост к $1"
   },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Если вы добавили этот токен вручную. Убедитесь, что вы осознаете риски для своих средств, прежде чем использовать мост."
@@ -1804,9 +1798,6 @@
   "downloadStateLogs": {
     "message": "Скачать журналы состояния"
   },
-  "dragAndDropBanner": {
-    "message": "Вы можете перетаскивать сети, чтобы изменять их порядок. "
-  },
   "dropped": {
     "message": "Отменено"
   },
@@ -2228,9 +2219,6 @@
   },
   "floatAmountToken": {
     "message": "Сумма токена должна быть целым числом"
-  },
-  "followUsOnTwitter": {
-    "message": "Подпишитесь на нас в Twitter"
   },
   "forbiddenIpfsGateway": {
     "message": "Запрещенный шлюз IPFS. Укажите шлюз CID"
@@ -4225,9 +4213,6 @@
   "popularNetworks": {
     "message": "Популярные сети"
   },
-  "portfolio": {
-    "message": "Portfolio"
-  },
   "preparingSwap": {
     "message": "Подготовка свопа..."
   },
@@ -4412,18 +4397,6 @@
   },
   "recoveryPhraseReminderConfirm": {
     "message": "Понятно"
-  },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Всегда храните свою секретную фразу для восстановления в надежном и потайном месте."
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Хотите снова сделать резервную копию секретной фразы для восстановления?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Никогда никому не сообщайте никому свою секретную фразу для восстановления."
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Команда MetaMask никогда неожиданно не запросит вашу секретную фразу для восстановления"
   },
   "recoveryPhraseReminderSubText": {
     "message": "Ваша секретная фраза для восстановления контролирует все ваши счета."
@@ -4795,16 +4768,8 @@
   "sendSelectSendAsset": {
     "message": "Выберите актив для отправки"
   },
-  "sendSpecifiedTokens": {
-    "message": "Отправить $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Нажатие этой кнопки немедленно инициирует транзакцию обмена. Прежде чем продолжить, проверьте детали транзакции."
-  },
-  "sendTokenAsToken": {
-    "message": "Отправить $1 как $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Идет отправка $1"
@@ -5076,9 +5041,6 @@
   },
   "smartAccountReject": {
     "message": "Не использовать смарт-счет"
-  },
-  "smartAccountRequestFor": {
-    "message": "Запрос на"
   },
   "smartAccountSameAccount": {
     "message": "Один и тот же счет, более умные функции."
@@ -5544,9 +5506,6 @@
   },
   "statusNotConnected": {
     "message": "Не подключено"
-  },
-  "statusNotConnectedAccount": {
-    "message": "Счета не подключены"
   },
   "step1LatticeWallet": {
     "message": "Подключите Lattice1"

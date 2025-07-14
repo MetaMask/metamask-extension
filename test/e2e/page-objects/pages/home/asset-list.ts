@@ -84,6 +84,14 @@ class AssetListPage {
   private readonly tokenAddressInDetails =
     '[data-testid="address-copy-button-text"]';
 
+  private readonly tokenConfirmListItem =
+    '.import-tokens-modal__confirm-token-list-item-wrapper';
+
+  private readonly tokenDecimalsTitle = {
+    css: '.mm-label',
+    text: 'Token decimal',
+  };
+
   private readonly tokenNameInDetails = '[data-testid="asset-name"]';
 
   private readonly tokenImportedMessageCloseButton =
@@ -94,6 +102,11 @@ class AssetListPage {
 
   private readonly tokenOptionsButton =
     '[data-testid="asset-list-control-bar-action-button"]';
+
+  private readonly tokenSymbolTitle = {
+    css: '.mm-label',
+    text: 'Token symbol',
+  };
 
   private tokenImportSelectNetwork(chainId: string): string {
     return `[data-testid="select-network-item-${chainId}"]`;
@@ -120,13 +133,31 @@ class AssetListPage {
     this.driver = driver;
   }
 
+  async clickNetworkSelectorDropdown(): Promise<void> {
+    console.log(`Clicking on the network selector dropdown`);
+    await this.driver.clickElement(this.sortByPopoverToggle);
+  }
+
+  async clickCurrentNetworkOptionOnActivityList(): Promise<void> {
+    console.log(`Clicking on the current network option`);
+    await this.driver.clickElement(this.currentNetworkOption);
+    await this.driver.waitUntil(
+      async () => {
+        const toggle = await this.driver.findElement(this.sortByPopoverToggle);
+        const label = await toggle.getText();
+        return label !== 'Popular networks';
+      },
+      { timeout: 5000, interval: 100 },
+    );
+  }
+
   async clickCurrentNetworkOption(): Promise<void> {
     console.log(`Clicking on the current network option`);
     await this.driver.clickElement(this.currentNetworkOption);
     await this.driver.waitUntil(
       async () => {
         const label = await this.getNetworksFilterLabel();
-        return label !== 'All networks';
+        return label !== 'Popular networks';
       },
       { timeout: 5000, interval: 100 },
     );
@@ -220,9 +251,9 @@ class AssetListPage {
   }
 
   async importCustomTokenByChain(
-    tokenAddress: string,
-    symbol: string,
     chainId: string,
+    tokenAddress: string,
+    symbol?: string,
   ): Promise<void> {
     console.log(`Creating custom token ${symbol} on homepage`);
     await this.driver.clickElement(this.tokenOptionsButton);
@@ -235,8 +266,20 @@ class AssetListPage {
       this.tokenImportSelectNetwork(chainId),
     );
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
-    await this.driver.fill(this.tokenSymbolInput, symbol);
+    await this.driver.waitForSelector(this.tokenSymbolTitle);
+
+    if (symbol) {
+      // do not fill the form until the button is disabled, because there's a form re-render which can clear the input field causing flakiness
+      await this.driver.waitForSelector(this.importTokensNextButton, {
+        state: 'disabled',
+        waitAtLeastGuard: 1000,
+      });
+      await this.driver.fill(this.tokenSymbolInput, symbol);
+    }
+
+    await this.driver.waitForSelector(this.tokenDecimalsTitle);
     await this.driver.clickElement(this.importTokensNextButton);
+    await this.driver.waitForSelector(this.tokenConfirmListItem);
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmImportTokenButton,
     );
@@ -321,6 +364,8 @@ class AssetListPage {
     );
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_networkFilterText(expectedText: string): Promise<void> {
     console.log(
       `Verify the displayed account label in header is: ${expectedText}`,
@@ -331,6 +376,8 @@ class AssetListPage {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_priceChartIsShown(): Promise<void> {
     console.log(`Verify the price chart is displayed`);
     await this.driver.waitUntil(
@@ -346,6 +393,8 @@ class AssetListPage {
    *
    * @param tokenAmount - The token amount to be checked for.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_tokenAmountIsDisplayed(tokenAmount: string): Promise<void> {
     console.log(`Waiting for token amount ${tokenAmount} to be displayed`);
     await this.driver.waitForSelector({
@@ -361,6 +410,8 @@ class AssetListPage {
    * @param tokenName - The name of the token to check for.
    * @param tokenAmount - The token amount to be checked for.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_tokenAmountInTokenDetailsModal(
     tokenName: string,
     tokenAmount: string,
@@ -378,6 +429,8 @@ class AssetListPage {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_tokenFiatAmountIsDisplayed(
     tokenFiatAmount: string,
   ): Promise<void> {
@@ -398,6 +451,8 @@ class AssetListPage {
    * @returns A promise that resolves if the token exists and the amount is displayed (if provided), otherwise it throws an error.
    * @throws Will throw an error if the token is not found in the token list.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_tokenExistsInList(
     tokenName: string,
     amount?: string,
@@ -422,6 +477,8 @@ class AssetListPage {
    * @param expectedNumber - The number of token items expected to be displayed. Defaults to 1.
    * @returns A promise that resolves if the expected number of token items is displayed.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_tokenItemNumber(expectedNumber: number = 1): Promise<void> {
     console.log(`Waiting for ${expectedNumber} token items to be displayed`);
     await this.driver.wait(async () => {
@@ -439,6 +496,8 @@ class AssetListPage {
    * @param address - The token address to check
    * @param expectedChange - The expected change percentage value (e.g. '+0.02%' or '-0.03%')
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_tokenGeneralChangePercentage(
     address: string,
     expectedChange: string,
@@ -463,6 +522,8 @@ class AssetListPage {
    *
    * @param address - The token address to check
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_tokenGeneralChangePercentageNotPresent(
     address: string,
   ): Promise<void> {
@@ -484,6 +545,8 @@ class AssetListPage {
    *
    * @param expectedChangeValue - The expected change value (e.g. '+$50.00' or '-$30.00')
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_tokenGeneralChangeValue(
     expectedChangeValue: string,
   ): Promise<void> {
@@ -510,6 +573,8 @@ class AssetListPage {
    * @param expectedMarketCap - The expected market cap (e.g. "$1.23.00")
    * @throws Error if the price or market cap don't match the expected values
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_tokenPriceAndMarketCap(
     expectedPrice: string,
     expectedMarketCap: string,
@@ -536,6 +601,8 @@ class AssetListPage {
    * @param tokenAddress - The expected token address
    * @throws Error if the token details don't match the expected values
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_tokenSymbolAndAddressDetails(
     symbol: string,
     tokenAddress: string,

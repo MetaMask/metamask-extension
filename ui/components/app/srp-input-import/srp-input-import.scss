@@ -46,12 +46,17 @@
 
   &__word-index {
     width: 20px;
+    flex-shrink: 0;
   }
 
   &__actions {
     height: 3rem;
     grid-template-columns: 1fr 1fr;
     border-top: 1px solid var(--color-primary-inverse);
+  }
+
+  &__text {
+    height: 40px;
   }
 }
 

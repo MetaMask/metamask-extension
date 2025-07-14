@@ -6,7 +6,9 @@ import {
   getAllChainsToPoll,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedInternalAccount,
+  isGlobalNetworkSelectorRemoved,
 } from '../selectors';
+import { getEnabledNetworksByNamespace } from '../selectors/multichain/networks';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { NFT } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
@@ -29,21 +31,44 @@ export function useNfts({
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   const nfts = useMemo(() => {
+    if (isGlobalNetworkSelectorRemoved) {
+      // Filter NFTs to only include those from enabled networks
+      const nftsFromEnabledNetworks: Record<string, NFT[]> = {};
+
+      if (overridePopularNetworkFilter) {
+        return allUserNfts?.[chainId] ?? [];
+      }
+
+      Object.entries(allUserNfts ?? {}).forEach(
+        ([networkChainId, networkNfts]) => {
+          if (
+            enabledNetworksByNamespace?.[networkChainId] &&
+            Array.isArray(networkNfts)
+          ) {
+            nftsFromEnabledNetworks[networkChainId] = networkNfts as NFT[];
+          }
+        },
+      );
+
+      return nftsFromEnabledNetworks;
+    }
     trace({ name: TraceName.LoadCollectibles });
     const nftList =
       isTokenNetworkFilterEqualCurrentNetwork || overridePopularNetworkFilter
-        ? allUserNfts?.[chainId] ?? []
+        ? (allUserNfts?.[chainId] ?? [])
         : allUserNfts;
 
     endTrace({ name: TraceName.LoadCollectibles });
     return nftList;
   }, [
     isTokenNetworkFilterEqualCurrentNetwork,
+    overridePopularNetworkFilter,
     allUserNfts,
     chainId,
-    overridePopularNetworkFilter,
+    enabledNetworksByNamespace,
   ]);
 
   const nftContracts = useSelector(getNftContracts);

@@ -286,9 +286,6 @@
   "address": {
     "message": "Address"
   },
-  "addressCopied": {
-    "message": "Nakopya ang address!"
-  },
   "addressMismatch": {
     "message": "Hindi tugma ang address ng site"
   },
@@ -910,9 +907,6 @@
   },
   "bridgeTo": {
     "message": "I-bridge papunta sa"
-  },
-  "bridgeToChain": {
-    "message": "I-bridge papunta sa $1"
   },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Kapag idinagdag mo ang token na ito nang mano-mano, tiyaking alam mo ang mga panganib nito sa mga pondo mo bago ka mag-bridge."
@@ -1804,9 +1798,6 @@
   "downloadStateLogs": {
     "message": "I-download ang mga log ng estado"
   },
-  "dragAndDropBanner": {
-    "message": "Maaari mong i-drag ang mga network para isaayos ang mga ito. "
-  },
   "dropped": {
     "message": "Binitawan"
   },
@@ -2228,9 +2219,6 @@
   },
   "floatAmountToken": {
     "message": "Ang halaga ng token ay dapat isang integer"
-  },
-  "followUsOnTwitter": {
-    "message": "I-follow kami sa Twitter"
   },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Tumukoy ng CID gateway"
@@ -4225,9 +4213,6 @@
   "popularNetworks": {
     "message": "Mga popular na network"
   },
-  "portfolio": {
-    "message": "Portfolio"
-  },
   "preparingSwap": {
     "message": "Inihahanda ang pag-swap..."
   },
@@ -4412,18 +4397,6 @@
   },
   "recoveryPhraseReminderConfirm": {
     "message": "Nakuha ko"
-  },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Palaging panatilihin ang iyong Lihim na Parirala sa Pagbawi sa isang ligtas at sikretong lugar"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Kailangang i-backup muli ang iyong Lihim na Parirala sa Pagbawi?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Huwag kailanman ibahagi ang iyong Lihim na Parirala sa Pagbawi sa sinuman"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Hindi kailanman hihingin ng MetaMask team ang iyong Lihim na Parirala sa Pagbawi"
   },
   "recoveryPhraseReminderSubText": {
     "message": "Kinokontrol ng iyong Lihim na Parirala sa Pagbawi ang lahat ng iyong account."
@@ -4795,16 +4768,8 @@
   "sendSelectSendAsset": {
     "message": "Piliin ang asset na ipapadala"
   },
-  "sendSpecifiedTokens": {
-    "message": "Magpadala ng $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Ang pag-click sa button na ito ay kaagad na magpapasimula sa iyong swap na transaksyon. Mangyaring suriin ang detalye ng iyong mga transaksyon bago magpatuloy."
-  },
-  "sendTokenAsToken": {
-    "message": "Ipadala ang $1 bilang $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Ipinapadala ang $1"
@@ -5076,9 +5041,6 @@
   },
   "smartAccountReject": {
     "message": "Huwag gumamit ng smart account"
-  },
-  "smartAccountRequestFor": {
-    "message": "Humiling ng"
   },
   "smartAccountSameAccount": {
     "message": "Parehong account, mas mahuhusay na feature."
@@ -5544,9 +5506,6 @@
   },
   "statusNotConnected": {
     "message": "Hindi konektado"
-  },
-  "statusNotConnectedAccount": {
-    "message": "Walang mga account na konektado"
   },
   "step1LatticeWallet": {
     "message": "Ikonekta ang iyong Lattice1"

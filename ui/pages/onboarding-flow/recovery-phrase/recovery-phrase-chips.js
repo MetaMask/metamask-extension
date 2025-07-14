@@ -25,6 +25,7 @@ import {
   JustifyContent,
   AlignItems,
   BackgroundColor,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 
 export default function RecoveryPhraseChips({
@@ -43,8 +44,9 @@ export default function RecoveryPhraseChips({
   );
   const [quizAnswers, setQuizAnswers] = useState(
     indicesToCheck.map((index) => ({
-      index,
-      word: '',
+      index, // the index in the SRP chips UI where the answer is inserted
+      word: '', // the answer value
+      actualIndexInSrp: -1, // the correct index of the answer value in the secret recovery phrase
     })),
   );
 
@@ -64,12 +66,16 @@ export default function RecoveryPhraseChips({
   );
 
   const addQuizWord = useCallback(
-    (word) => {
+    (word, actualIndexInSrp) => {
       const newQuizAnswers = [...quizAnswers];
       const targetIndex = newQuizAnswers.findIndex(
         (answer) => answer.index === indexToFocus,
       );
-      newQuizAnswers[targetIndex] = { index: indexToFocus, word };
+      newQuizAnswers[targetIndex] = {
+        index: indexToFocus,
+        word,
+        actualIndexInSrp,
+      };
       setQuizAnswers(newQuizAnswers);
       setIndexToFocus(setNextTargetIndex(newQuizAnswers));
     },
@@ -85,10 +91,11 @@ export default function RecoveryPhraseChips({
       newQuizAnswers[targetIndex] = {
         ...newQuizAnswers[targetIndex],
         word: '',
+        actualIndexInSrp: -1,
       };
 
       setQuizAnswers(newQuizAnswers);
-      setIndexToFocus(setNextTargetIndex(newQuizAnswers));
+      setIndexToFocus(newQuizAnswers[targetIndex].index);
     },
     [quizAnswers],
   );
@@ -102,6 +109,7 @@ export default function RecoveryPhraseChips({
       const newQuizAnswers = quizWords.map((word) => ({
         index: word.index,
         word: '',
+        actualIndexInSrp: -1,
       }));
       setQuizAnswers(newQuizAnswers);
       setIndexToFocus(setNextTargetIndex(newQuizAnswers));
@@ -115,7 +123,7 @@ export default function RecoveryPhraseChips({
         borderRadius={BorderRadius.LG}
         display={Display.Grid}
         width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundMuted}
+        backgroundColor={BackgroundColor.backgroundSection}
         className="recovery-phrase__secret"
       >
         <Box
@@ -135,7 +143,7 @@ export default function RecoveryPhraseChips({
             const wordToDisplay = isQuizWord
               ? quizAnswers.find((answer) => answer.index === index)?.word || ''
               : word;
-            return (
+            return confirmPhase ? (
               <TextField
                 testId={
                   confirmPhase && isQuizWord
@@ -157,8 +165,10 @@ export default function RecoveryPhraseChips({
                   </Text>
                 }
                 type={confirmPhase && !isQuizWord ? 'password' : 'text'}
-                readOnly
-                disabled={confirmPhase && !isQuizWord}
+                disabled={
+                  (confirmPhase && !isQuizWord) ||
+                  (!confirmPhase && !phraseRevealed)
+                }
                 onClick={() => {
                   if (!confirmPhase) {
                     return;
@@ -170,6 +180,28 @@ export default function RecoveryPhraseChips({
                   }
                 }}
               />
+            ) : (
+              <Box
+                data-testid={`recovery-phrase-chip-${index}`}
+                className="recovery-phrase__text"
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                backgroundColor={BackgroundColor.backgroundDefault}
+                borderColor={BorderColor.borderMuted}
+                borderRadius={BorderRadius.XL}
+                paddingInline={2}
+                paddingTop={1}
+                paddingBottom={1}
+                gap={1}
+              >
+                <Text
+                  color={TextColor.textAlternative}
+                  className="recovery-phrase__word-index"
+                >
+                  {index + 1}.
+                </Text>
+                <Text>{word}</Text>
+              </Box>
             );
           })}
         </Box>
@@ -185,7 +217,6 @@ export default function RecoveryPhraseChips({
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.center}
               borderRadius={BorderRadius.SM}
-              backgroundColor={BackgroundColor.backgroundMuted}
               width={BlockSize.Full}
               height={BlockSize.Full}
               paddingTop={2}
@@ -194,10 +225,12 @@ export default function RecoveryPhraseChips({
               className="recovery-phrase__secret-blocker"
             />
             <Box
+              as="button"
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.center}
+              backgroundColor={BackgroundColor.transparent}
               height={BlockSize.Full}
               width={BlockSize.Full}
               gap={2}
@@ -226,35 +259,42 @@ export default function RecoveryPhraseChips({
           </Box>
         )}
       </Box>
-      {quizWords.length > 0 && (
+      {quizWords.length === 3 && (
         <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
-          {quizWords.map((value) => {
-            const isAnswered = quizAnswers.some((x) => x.word === value.word);
+          {quizWords.map((quizWord) => {
+            const actualIdxInSrp = quizWord.index;
+            // check if the quiz word has been added to the quizAnswers array
+            // here we are checking the answer's actual index in the secret recovery phrase
+            // to handle the case where the quiz words has the same value but different indexes
+            // e.g. the quiz words are ["one", "two", "one"]
+            const isAnswered = quizAnswers.some(
+              (answer) => answer.actualIndexInSrp === actualIdxInSrp,
+            );
             return isAnswered ? (
               <ButtonBase
-                data-testid={`recovery-phrase-quiz-answered-${value.index}`}
-                key={value.index}
+                data-testid={`recovery-phrase-quiz-answered-${actualIdxInSrp}`}
+                key={quizWord.index}
                 color={TextColor.textAlternative}
                 borderRadius={BorderRadius.LG}
                 block
                 onClick={() => {
-                  removeQuizWord(value.word);
+                  removeQuizWord(quizWord.word);
                 }}
               >
-                {value.word}
+                {secretRecoveryPhrase[actualIdxInSrp]}
               </ButtonBase>
             ) : (
               <Button
-                data-testid={`recovery-phrase-quiz-unanswered-${value.index}`}
-                key={value.index}
+                data-testid={`recovery-phrase-quiz-unanswered-${actualIdxInSrp}`}
+                key={quizWord.index}
                 variant={ButtonVariant.Secondary}
                 borderRadius={BorderRadius.LG}
                 block
                 onClick={() => {
-                  addQuizWord(value.word);
+                  addQuizWord(quizWord.word, actualIdxInSrp);
                 }}
               >
-                {value.word}
+                {secretRecoveryPhrase[actualIdxInSrp]}
               </Button>
             );
           })}

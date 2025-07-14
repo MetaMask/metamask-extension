@@ -15,6 +15,8 @@ import {
   waitForElementByTextToNotBePresent,
 } from '../helpers';
 
+const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
+
 jest.setTimeout(20_000);
 
 jest.mock('../../../ui/store/background-connection', () => ({
@@ -62,6 +64,14 @@ describe('NFTs list', () => {
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
       selectedNetworkClientId: 'testNetworkConfigurationId',
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true,
+          '0x89': true,
+          '0x5': true,
+          '0xaa36a7': true,
+        },
+      },
       participateInMetaMetrics: true,
       dataCollectionForMarketing: false,
     };
@@ -77,7 +87,9 @@ describe('NFTs list', () => {
 
     await clickElementById('account-overview__nfts-tab');
 
-    await waitForElementById('sort-by-networks');
+    if (!isGlobalNetworkSelectorRemoved) {
+      await waitForElementById('sort-by-networks');
+    }
     await waitForElementByText('Test Dapp NFTs #1');
     await waitForElementByText('Punk #4');
     await waitForElementByText('Punk #3');
@@ -126,7 +138,9 @@ describe('NFTs list', () => {
         },
       },
       enabledNetworkMap: {
-        '0x1': true,
+        eip155: {
+          '0x1': true,
+        },
       },
     };
 
@@ -143,9 +157,11 @@ describe('NFTs list', () => {
 
     await clickElementById('account-overview__nfts-tab');
 
-    await waitForElementById('sort-by-networks');
-    await clickElementById('sort-by-networks');
-    await clickElementById('network-filter-current__button');
+    if (!isGlobalNetworkSelectorRemoved) {
+      await waitForElementById('sort-by-networks');
+      await clickElementById('sort-by-networks');
+      await clickElementById('network-filter-current__button');
+    }
 
     await waitForElementByText('MUNK #1 Mainnet');
     await waitForElementByTextToNotBePresent('MUNK #1 Chain 137');
@@ -176,8 +192,14 @@ describe('NFTs list', () => {
 
     await clickElementById('account-overview__nfts-tab');
 
-    await waitFor(() => {
-      expect(screen.getByTestId('sort-by-networks')).toBeDisabled();
-    });
+    if (isGlobalNetworkSelectorRemoved) {
+      await waitFor(() => {
+        expect(screen.getByTestId('sort-by-networks')).toBeEnabled();
+      });
+    } else {
+      await waitFor(() => {
+        expect(screen.getByTestId('sort-by-networks')).toBeDisabled();
+      });
+    }
   });
 });
