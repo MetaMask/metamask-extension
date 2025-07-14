@@ -224,9 +224,13 @@ export default function OnboardingFlow() {
     !secretRecoveryPhrase &&
     isFromReminder;
 
-  const isWelcomeAndUnlockPage =
+  let isFullPage =
     pathname === ONBOARDING_WELCOME_ROUTE ||
     pathname === ONBOARDING_UNLOCK_ROUTE;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  isFullPage = isFullPage || pathname === ONBOARDING_EXPERIMENTAL_AREA;
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Box
@@ -255,25 +259,21 @@ export default function OnboardingFlow() {
         isOpen={showPasswordModalToAllowSRPReveal}
       />
       <Box
-        paddingInline={isWelcomeAndUnlockPage ? 0 : 6}
-        paddingTop={isWelcomeAndUnlockPage ? 0 : 8}
-        paddingBottom={isWelcomeAndUnlockPage ? 0 : 8}
+        className={classnames('onboarding-flow__container', {
+          'onboarding-flow__container--full': isFullPage,
+          'onboarding-flow__container--popup': isPopup,
+        })}
         width={BlockSize.Full}
         borderStyle={
-          isWelcomeAndUnlockPage || isPopup
-            ? BorderStyle.none
-            : BorderStyle.solid
+          isFullPage || isPopup ? BorderStyle.none : BorderStyle.solid
         }
         borderRadius={BorderRadius.LG}
         marginTop={pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? 0 : 3}
+        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+        marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
+        ///: END:ONLY_INCLUDE_IF
         marginInline="auto"
         borderColor={BorderColor.borderMuted}
-        style={{
-          maxWidth: isWelcomeAndUnlockPage ? 'none' : '446px',
-          minHeight: isWelcomeAndUnlockPage ? 'auto' : '627px',
-          height:
-            pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? '100%' : 'auto',
-        }}
       >
         <Switch>
           <Route path={ONBOARDING_ACCOUNT_EXIST} component={AccountExist} />
