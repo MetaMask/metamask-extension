@@ -7,22 +7,22 @@ on:
         description: 'The base branch, tag, or SHA for git operations and the pull request. Usually `main`'
         required: true
       semver-version:
-        description: 'A semantic version. eg: x.x.x'
+        description: 'A semantic version, eg: x.x.x'
         required: true
-      previous-version-tag:
-        description: 'Previous release version tag. eg: release/7.7.0 or Version-v7.7.0'
+      previous-semver-version:
+        description: 'Previous semantic version, eg: x.x.x'
         required: true
 
 jobs:
   create-release-pr:
     name: Create Release Pull Request using Github Tools
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@<UPDATE>
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@23704a3de745867816067a8e93e298e89e4b568a
     with:
       platform: extension
       base-branch: ${{ inputs.base-branch }}
       semver-version: ${{ inputs.semver-version }}
-      previous-version-tag: ${{ inputs.previous-version-tag }}
-      github-tools-version: <UPDATE>
+      previous-version-tag: ${{ inputs.previous-semver-version }}
+      github-tools-version: 23704a3de745867816067a8e93e298e89e4b568a
     secrets:
       # This token needs write permissions to metamask-extension & read permissions to metamask-planning
       github-token: ${{ secrets.PR_TOKEN }}
