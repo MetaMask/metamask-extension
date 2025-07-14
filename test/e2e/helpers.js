@@ -271,6 +271,51 @@ async function withFixtures(options, testSuite) {
     }
     await mockServer.start(8000);
 
+    // Intercept WebSocket handshake requests
+  await mockServer.forAnyWebSocket().thenPassThrough({
+    beforeResponse: async (response, request) => {
+      console.log('websocket request', request);
+      if (request?.headers['upgrade'] === 'websocket') {
+        console.log('Intercepted WebSocket handshake:', request.url);
+
+        // Start a WebSocket server to handle the connection
+        const wsServer = new WebSocketServer({ noServer: true });
+
+        // Handle the WebSocket connection
+        wsServer.on('connection', (socket) => {
+          console.log('WebSocket connection established');
+
+          // Mock a WebSocket message
+          socket.on('message', (message) => {
+            console.log('Received WebSocket message:', message.toString());
+
+            // Respond with a mocked message
+            socket.send(
+              JSON.stringify({
+                jsonrpc: '2.0',
+                method: 'mockedResponse',
+                params: { message: 'This is a mocked response' },
+              })
+            );
+          });
+        });
+
+        // Attach the WebSocket server to the HTTP upgrade response
+        const upgradeResponse = response.rawResponse;
+        const upgradeRequest = request.rawRequest;
+
+        upgradeRequest.socket.on('upgrade', (head) => {
+          wsServer.handleUpgrade(upgradeRequest, upgradeRequest.socket, head, (ws) => {
+            wsServer.emit('connection', ws, upgradeRequest);
+          });
+        });
+      }
+      return response;
+    },
+  });
+
+  console.log(`Mockttp server running on http://localhost:${mockServer.port}`);
+
     await setManifestFlags(manifestFlags);
 
     const wd = await buildWebDriver(driverOptions);
