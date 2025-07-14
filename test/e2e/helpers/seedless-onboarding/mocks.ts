@@ -1,13 +1,21 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { sign } from 'jsonwebtoken';
 import { Mockttp } from 'mockttp';
-import { encrypt, generatePrivate, getPublic } from '@toruslabs/eccrypto';
+import { secp256k1 } from '@noble/curves/secp256k1';
+import { decrypt, encrypt } from '@toruslabs/eccrypto';
 import {
   AuthServer,
   METADATA_SET_PATH,
   SSS_BASE_URL_RGX,
-} from './mock-endpoints';
-import { ToprfCommitmentRequestParams, ToprfJsonRpcRequestBody } from './types';
+  SSS_NODE_KEYPAIRS,
+} from './constants';
+import {
+  ToprfAuthenticateResponse,
+  ToprfCommitmentRequestParams,
+  ToprfEvalRequestParams,
+  ToprfJsonRpcRequestBody,
+} from './types';
+import { MOCK_AUTH_PUB_KEY, MOCK_KEY_SHARE_DATA } from './data';
 
 const MOCK_JWT_PRIVATE_KEY = `-----BEGIN PRIVATE KEY-----\nMEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCCD7oLrcKae+jVZPGx52Cb/lKhdKxpXjl9eGNa1MlY57A==\n-----END PRIVATE KEY-----`;
 
@@ -27,6 +35,48 @@ function generateMockJwtToken(userId: string) {
     expiresIn: 120,
     algorithm: 'ES256',
   });
+}
+
+function padHex(hex: string, length: number = 64) {
+  if (hex.length < length) {
+    return hex.padStart(length, '0');
+  }
+  return hex;
+}
+
+async function generateBlindedOutput(
+  blindedInputX: string,
+  blindedInputY: string,
+  nodeIndex: number,
+  shareCoefficient: bigint = 1n,
+) {
+  const encShareString =
+    MOCK_KEY_SHARE_DATA.share_import_items[nodeIndex - 1].encrypted_share;
+  const nodePrivateKey = SSS_NODE_KEYPAIRS[nodeIndex].privKey;
+
+  const { data, metadata } = JSON.parse(encShareString);
+
+  const keyShare = await decrypt(Buffer.from(nodePrivateKey, 'hex'), {
+    ciphertext: Buffer.from(data, 'hex'),
+    iv: Buffer.from(metadata.iv, 'hex'),
+    ephemPublicKey: Buffer.from(metadata.ephemPublicKey, 'hex'),
+    mac: Buffer.from(metadata.mac, 'hex'),
+  });
+  const paddedShare = padHex(Buffer.from(keyShare).toString('hex'));
+  const keyShareBN = BigInt(`0x${paddedShare}`);
+
+  const ck = (keyShareBN * shareCoefficient) % secp256k1.CURVE.n;
+
+  const blindedInputPoint = secp256k1.Point.fromAffine({
+    x: BigInt(`0x${blindedInputX}`),
+    y: BigInt(`0x${blindedInputY}`),
+  });
+
+  const blinedOutputPoint = blindedInputPoint.multiply(ck);
+  const blindedOutputX = blinedOutputPoint.x.toString(16);
+  const blindedOutputY = blinedOutputPoint.y.toString(16);
+
+  return { blindedOutputX, blindedOutputY };
 }
 
 // Mock OAuth Service and Authentication Server
@@ -102,7 +152,9 @@ export class OAuthMockttpService {
     params: ToprfCommitmentRequestParams,
     nodeIndex: number,
   ) {
-    this.#sessionPubKey = `04${params.temp_pub_key_x}${params.temp_pub_key_y}`;
+    const paddedTempPubKeyX = padHex(params.temp_pub_key_x);
+    const paddedTempPubKeyY = padHex(params.temp_pub_key_y);
+    this.#sessionPubKey = `04${paddedTempPubKeyX}${paddedTempPubKeyY}`;
     return {
       statusCode: 200,
       json: {
@@ -119,7 +171,7 @@ export class OAuthMockttpService {
     };
   }
 
-  async onPostToprfAuthenticate(nodeIndex: number) {
+  async onPostToprfAuthenticate(nodeIndex: number, isNewUser: boolean = true) {
     const pubKeyHex = Buffer.from(this.#sessionPubKey, 'hex');
 
     const mockAuthTokenData = JSON.stringify({
@@ -141,20 +193,25 @@ export class OAuthMockttpService {
       },
     });
 
-    const mockNodePrivKey = generatePrivate();
-    const mockNodePubKeyBuf = getPublic(mockNodePrivKey);
-    const mockNodePubKey = Buffer.from(mockNodePubKeyBuf).toString('hex');
+    const mockNodePubKey = SSS_NODE_KEYPAIRS[nodeIndex].pubKey;
+
+    const authenticateResult: ToprfAuthenticateResponse = {
+      auth_token: mockAuthToken,
+      node_index: nodeIndex,
+      node_pub_key: mockNodePubKey,
+    };
+
+    if (!isNewUser) {
+      authenticateResult.key_index = 1;
+      authenticateResult.pub_key = MOCK_AUTH_PUB_KEY;
+    }
 
     return {
       statusCode: 200,
       json: {
         id: 1,
         jsonrpc: '2.0',
-        result: {
-          auth_token: mockAuthToken,
-          node_index: nodeIndex,
-          node_pub_key: mockNodePubKey,
-        },
+        result: authenticateResult,
       },
     };
   }
@@ -168,6 +225,32 @@ export class OAuthMockttpService {
         result: {
           message: 'Key share stored successfully',
         },
+      },
+    };
+  }
+
+  async onPostToprfEval(params: ToprfEvalRequestParams, nodeIndex: number) {
+    // Generate blinded output with blinded input and mock toprf key share
+    const { blindedOutputX, blindedOutputY } = await generateBlindedOutput(
+      params.blinded_input_x,
+      params.blinded_input_y,
+      nodeIndex,
+    );
+
+    const evalResult = {
+      blinded_output_x: blindedOutputX,
+      blinded_output_y: blindedOutputY,
+      key_share_index: 1,
+      node_index: nodeIndex,
+      pub_key: MOCK_AUTH_PUB_KEY,
+    };
+
+    return {
+      statusCode: 200,
+      json: {
+        id: 1,
+        jsonrpc: '2.0',
+        result: evalResult,
       },
     };
   }
@@ -215,9 +298,15 @@ export class OAuthMockttpService {
           );
         } else if (method === 'TOPRFStoreKeyShareRequest') {
           return this.onPostToprfStoreKeyShare();
+        } else if (method === 'TOPRFEvalRequest') {
+          return this.onPostToprfEval(
+            params as ToprfEvalRequestParams,
+            nodeIndex,
+          );
         }
 
-        return this.onPostToprfAuthenticate(nodeIndex);
+        const isNewUser = !options?.userEmail;
+        return this.onPostToprfAuthenticate(nodeIndex, isNewUser);
       });
 
     server.forPost(METADATA_SET_PATH).always().thenJson(200, {
