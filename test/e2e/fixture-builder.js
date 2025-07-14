@@ -56,6 +56,9 @@ function onboardingFixture() {
           eip155: {
             [CHAIN_IDS.LOCALHOST]: true,
           },
+          solana: {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+          },
         },
       },
       NotificationServicesController: {},

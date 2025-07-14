@@ -37,6 +37,14 @@ export const DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS = {
   ],
 } satisfies Parameters<typeof withSolanaAccountSnap>[0];
 
+const onboardSolanaAccount = async (driver: Driver): Promise<void> => {
+  console.log('onboarding a new solana account');
+
+  const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
+  await connectAccountConfirmation.check_isCreateSolanaAccountModalButtonVisible();
+  await connectAccountConfirmation.createCreateSolanaAccountFromModal();
+};
+
 const selectAccountsAndAuthorize = async (driver: Driver): Promise<void> => {
   console.log(
     'select all accounts without deselecting the already selected accounts',
@@ -79,11 +87,13 @@ const selectDevnet = async (driver: Driver): Promise<void> => {
  * @param options
  * @param options.selectAllAccounts
  * @param options.includeDevnet
+ * @param options.onboard
  */
 export const connectSolanaTestDapp = async (
   driver: Driver,
   testDapp: TestDappSolana,
   options: {
+    onboard?: boolean;
     selectAllAccounts?: boolean;
     includeDevnet?: boolean;
   } = {},
@@ -106,6 +116,10 @@ export const connectSolanaTestDapp = async (
   // Get to extension modal, and click on the "Connect" button
   await driver.delay(largeDelayMs);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  if (options?.onboard) {
+    await onboardSolanaAccount(driver);
+  }
 
   if (options?.selectAllAccounts) {
     await selectAccountsAndAuthorize(driver);
