@@ -8,10 +8,7 @@ import {
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_SOLANA_MAINNET,
 } from '../../../../test/data/mock-accounts';
-import {
-  ACCOUNT_DETAILS_QR_CODE_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ACCOUNT_DETAILS_QR_CODE_ROUTE } from '../../../helpers/constants/routes';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { BaseAccountDetails } from './base-account-details';
 
