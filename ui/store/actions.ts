@@ -36,6 +36,8 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
+  TransactionContainerType,
+  TransactionController,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -368,6 +370,10 @@ export function changePassword(
       if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
         try {
           await socialSyncChangePassword(newPassword, oldPassword);
+
+          // store the keyring encryption key in the seedless onboarding controller
+          const keyringEncryptionKey = await exportEncryptionKey();
+          await storeKeyringEncryptionKey(keyringEncryptionKey);
         } catch (error) {
           // revert the keyring password change
           await keyringChangePassword(oldPassword);
@@ -379,6 +385,18 @@ export function changePassword(
       throw error;
     }
   };
+}
+
+export function storeKeyringEncryptionKey(
+  encryptionKey: string,
+): Promise<void> {
+  return submitRequestToBackground('storeKeyringEncryptionKey', [
+    encryptionKey,
+  ]);
+}
+
+export function exportEncryptionKey(): Promise<string> {
+  return submitRequestToBackground('exportEncryptionKey');
 }
 
 export function tryUnlockMetamask(
@@ -1230,8 +1248,7 @@ export function updatePreviousGasParams(
 }
 
 export function updateEditableParams(
-  txId: string,
-  editableParams: Partial<TransactionParams>,
+  ...args: Parameters<TransactionController['updateEditableParams']>
 ): ThunkAction<
   Promise<TransactionMeta>,
   MetaMaskReduxState,
@@ -1240,15 +1257,17 @@ export function updateEditableParams(
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     let updatedTransaction: TransactionMeta;
+
     try {
       updatedTransaction = await submitRequestToBackground(
         'updateEditableParams',
-        [txId, editableParams],
+        args,
       );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
     }
+
     await forceUpdateMetamaskState(dispatch);
     return updatedTransaction;
   };
@@ -1347,9 +1366,15 @@ export function removeSlide(
   };
 }
 
-export function setSmartAccountOptInForAccounts(accounts: Hex[]): void {
+export async function setEnableEnforcedSimulationsForTransaction(
+  transactionId: string,
+  enable: boolean,
+): void {
   try {
-    submitRequestToBackground('setSmartAccountOptInForAccounts', [accounts]);
+    await submitRequestToBackground(
+      'setEnableEnforcedSimulationsForTransaction',
+      [transactionId, enable],
+    );
   } catch (error) {
     logErrorWithMessage(error);
     throw error;
@@ -3062,6 +3087,23 @@ export function createSpeedUpTransaction(
     })
       .then(() => forceUpdateMetamaskState(dispatch))
       .then(() => newTx);
+  };
+}
+
+export function updateIncomingTransactions(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch) => {
+    log.debug(`background.updateIncomingTransactions`);
+    try {
+      await submitRequestToBackground('updateIncomingTransactions');
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning('Had a problem updating incoming transactions!'));
+    }
   };
 }
 
@@ -7030,4 +7072,14 @@ export function setSkipDeepLinkInterstitial(value: boolean) {
  */
 export async function requestSafeReload() {
   return await submitRequestToBackground('requestSafeReload');
+}
+
+export async function applyTransactionContainersExisting(
+  transactionId: string,
+  containerTypes: TransactionContainerType[],
+) {
+  return await submitRequestToBackground<void>(
+    'applyTransactionContainersExisting',
+    [transactionId, containerTypes],
+  );
 }

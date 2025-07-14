@@ -61,6 +61,8 @@
   },
   "metamask": {
     "allTokens": {},
+    "enableEnforcedSimulations": true,
+    "enableEnforcedSimulationsForTransactions": {},
     "tokenBalances": {},
     "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",

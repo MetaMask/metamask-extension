@@ -286,9 +286,6 @@
   "address": {
     "message": "地址"
   },
-  "addressCopied": {
-    "message": "地址已复制！"
-  },
   "addressMismatch": {
     "message": "网站地址不匹配"
   },
@@ -1800,9 +1797,6 @@
   },
   "downloadStateLogs": {
     "message": "下载状态日志"
-  },
-  "dragAndDropBanner": {
-    "message": "您可以拖动网络以对其进行重新排序。 "
   },
   "dropped": {
     "message": "失败"
@@ -4219,9 +4213,6 @@
   "popularNetworks": {
     "message": "热门网络"
   },
-  "portfolio": {
-    "message": "Portfolio"
-  },
   "preparingSwap": {
     "message": "正在准备交换......"
   },
@@ -5051,9 +5042,6 @@
   "smartAccountReject": {
     "message": "不使用智能账户"
   },
-  "smartAccountRequestFor": {
-    "message": "请求"
-  },
   "smartAccountSameAccount": {
     "message": "账户相同，功能更加智能化。"
   },
@@ -5518,9 +5506,6 @@
   },
   "statusNotConnected": {
     "message": "未连接"
-  },
-  "statusNotConnectedAccount": {
-    "message": "未连接任何账户"
   },
   "step1LatticeWallet": {
     "message": "关联您的 Lattice1"
