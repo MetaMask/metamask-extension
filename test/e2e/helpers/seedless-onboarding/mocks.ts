@@ -1,5 +1,13 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { sign } from 'jsonwebtoken';
-import { CompletedRequest, Mockttp } from 'mockttp';
+import { Mockttp } from 'mockttp';
+import { encrypt, generatePrivate, getPublic } from '@toruslabs/eccrypto';
+import {
+  AuthServer,
+  METADATA_SET_PATH,
+  SSS_BASE_URL_RGX,
+} from './mock-endpoints';
+import { ToprfCommitmentRequestParams, ToprfJsonRpcRequestBody } from './types';
 
 const MOCK_JWT_PRIVATE_KEY = `-----BEGIN PRIVATE KEY-----\nMEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCCD7oLrcKae+jVZPGx52Cb/lKhdKxpXjl9eGNa1MlY57A==\n-----END PRIVATE KEY-----`;
 
@@ -23,15 +31,8 @@ function generateMockJwtToken(userId: string) {
 
 // Mock OAuth Service and Authentication Server
 export class OAuthMockttpService {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly AUTH_SERVER_TOKEN_PATH =
-    'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/token';
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly AUTH_SERVER_REVOKE_TOKEN_PATH =
-    'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/revoke';
+  // Temporary session public key for TOPRF Commitment + Authenticate session
+  #sessionPubKey: string = '';
 
   mockAuthServerToken(overrides?: {
     statusCode?: number;
@@ -62,17 +63,23 @@ export class OAuthMockttpService {
     };
   }
 
-  onPostToken(
-    _path: string,
-    _request: Pick<CompletedRequest, 'path' | 'body'>,
-    overrides?: {
-      statusCode?: number;
-      userEmail?: string;
-    },
-  ) {
+  /**
+   * Mock the Auth Server's Request Token response.
+   *
+   * @param overrides - The overrides for the mock response.
+   * @param overrides.statusCode - The status code for the mock response.
+   * @param overrides.userEmail - The email of the user to mock. If not provided, random generated email will be used.
+   * @returns The mock response for the Request Token endpoint.
+   */
+  onPostToken(overrides?: { statusCode?: number; userEmail?: string }) {
     return this.mockAuthServerToken(overrides);
   }
 
+  /**
+   * Mock the Auth Server's Revoke Token endpoint.
+   *
+   * @returns The mock response for the Revoke Token endpoint.
+   */
   mockAuthServerRevokeToken() {
     return {
       statusCode: 200,
@@ -87,11 +94,82 @@ export class OAuthMockttpService {
     };
   }
 
-  onPostRevokeToken(
-    _path: string,
-    _request: Pick<CompletedRequest, 'path' | 'body'>,
-  ) {
+  onPostRevokeToken() {
     return this.mockAuthServerRevokeToken();
+  }
+
+  async onPostToprfCommitment(
+    params: ToprfCommitmentRequestParams,
+    nodeIndex: number,
+  ) {
+    this.#sessionPubKey = `04${params.temp_pub_key_x}${params.temp_pub_key_y}`;
+    return {
+      statusCode: 200,
+      json: {
+        id: 1,
+        jsonrpc: '2.0',
+        result: {
+          signature: 'mock-signature',
+          data: 'mock-data',
+          node_pub_x: params.temp_pub_key_x,
+          node_pub_y: params.temp_pub_key_y,
+          node_index: nodeIndex,
+        },
+      },
+    };
+  }
+
+  async onPostToprfAuthenticate(nodeIndex: number) {
+    const pubKeyHex = Buffer.from(this.#sessionPubKey, 'hex');
+
+    const mockAuthTokenData = JSON.stringify({
+      data: 'mock-auth-token-data',
+      exp: Date.now(),
+    });
+
+    const { ciphertext, ephemPublicKey, mac, iv } = await encrypt(
+      pubKeyHex,
+      Buffer.from(mockAuthTokenData),
+    );
+
+    const mockAuthToken = JSON.stringify({
+      data: Buffer.from(ciphertext).toString('hex'),
+      metadata: {
+        iv: Buffer.from(iv).toString('hex'),
+        ephemPublicKey: Buffer.from(ephemPublicKey).toString('hex'),
+        mac: Buffer.from(mac).toString('hex'),
+      },
+    });
+
+    const mockNodePrivKey = generatePrivate();
+    const mockNodePubKeyBuf = getPublic(mockNodePrivKey);
+    const mockNodePubKey = Buffer.from(mockNodePubKeyBuf).toString('hex');
+
+    return {
+      statusCode: 200,
+      json: {
+        id: 1,
+        jsonrpc: '2.0',
+        result: {
+          auth_token: mockAuthToken,
+          node_index: nodeIndex,
+          node_pub_key: mockNodePubKey,
+        },
+      },
+    };
+  }
+
+  async onPostToprfStoreKeyShare() {
+    return {
+      statusCode: 200,
+      json: {
+        id: 1,
+        jsonrpc: '2.0',
+        result: {
+          message: 'Key share stored successfully',
+        },
+      },
+    };
   }
 
   /**
@@ -108,21 +186,54 @@ export class OAuthMockttpService {
     },
   ) {
     server
-      .forPost(this.AUTH_SERVER_TOKEN_PATH)
+      .forPost(AuthServer.RequestToken)
       .always()
-      .thenCallback((request) => {
-        return this.onPostToken(this.AUTH_SERVER_TOKEN_PATH, request, options);
+      .thenCallback(() => {
+        return this.onPostToken(options);
       });
 
     server
-      .forPost(this.AUTH_SERVER_REVOKE_TOKEN_PATH)
+      .forPost(AuthServer.RevokeToken)
       .always()
-      .thenCallback((request) => {
-        return this.onPostRevokeToken(
-          this.AUTH_SERVER_REVOKE_TOKEN_PATH,
-          request,
-        );
+      .thenCallback(() => {
+        return this.onPostRevokeToken();
       });
+
+    server
+      .forPost(SSS_BASE_URL_RGX)
+      .always()
+      .thenCallback(async (request) => {
+        const nodeIndex = this.#extractNodeIndexFromUrl(request.url);
+        const jsonRpcRequestBody = await request.body.getJson();
+        const { method, params } =
+          jsonRpcRequestBody as ToprfJsonRpcRequestBody<unknown>;
+
+        if (method === 'TOPRFCommitmentRequest') {
+          return this.onPostToprfCommitment(
+            params as ToprfCommitmentRequestParams,
+            nodeIndex,
+          );
+        } else if (method === 'TOPRFStoreKeyShareRequest') {
+          return this.onPostToprfStoreKeyShare();
+        }
+
+        return this.onPostToprfAuthenticate(nodeIndex);
+      });
+
+    server.forPost(METADATA_SET_PATH).always().thenJson(200, {
+      success: true,
+      message: 'Metadata set successfully',
+    });
+  }
+
+  #extractNodeIndexFromUrl(url: string): number {
+    const pattern = /node-[1-5]/u;
+    const match = url.match(pattern);
+    if (!match) {
+      throw new Error('Invalid SSS Node URL');
+    }
+    const nodeIdxStr = match[0].replace('node-', '');
+    return parseInt(nodeIdxStr, 10);
   }
 }
 

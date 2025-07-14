@@ -32010,6 +32010,7 @@ __metadata:
     "@testing-library/react": "npm:^12.1.5"
     "@testing-library/react-hooks": "npm:^8.0.1"
     "@testing-library/user-event": "npm:^14.6.1"
+    "@toruslabs/eccrypto": "npm:^6.1.0"
     "@trezor/connect-web": "npm:~9.4.7"
     "@tsconfig/node22": "npm:^22.0.0"
     "@types/babelify": "npm:^7.3.7"

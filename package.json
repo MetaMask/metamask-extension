@@ -500,6 +500,7 @@
     "@testing-library/react": "^12.1.5",
     "@testing-library/react-hooks": "^8.0.1",
     "@testing-library/user-event": "^14.6.1",
+    "@toruslabs/eccrypto": "^6.1.0",
     "@tsconfig/node22": "^22.0.0",
     "@types/babelify": "^7.3.7",
     "@types/browserify": "^12.0.37",
