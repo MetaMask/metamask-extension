@@ -4,6 +4,7 @@ import { withFixtures, unlockWallet } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import { ACCOUNT_TYPE } from '../../../constants';
+import { PAGES } from '../../../webdriver/driver';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
@@ -101,6 +102,8 @@ describe('Account syncing - Settings Toggle', function () {
         await backupAndSyncSettingsPage.toggleAccountSync();
 
         // Navigate back to wallet to create third account
+        await driver.navigate(PAGES.HOME);
+        await header.check_pageIsLoaded();
         await header.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
 
