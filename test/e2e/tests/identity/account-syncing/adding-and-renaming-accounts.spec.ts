@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { withFixtures, unlockWallet, WALLET_PASSWORD } from '../../../helpers';
+import { withFixtures, unlockWallet, WALLET_PASSWORD, getCleanAppState } from '../../../helpers';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
@@ -49,6 +49,12 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        // Wait for the initial account sync to complete before adding new accounts
+        await driver.wait(async () => {
+          const uiState = await getCleanAppState(driver);
+          return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
+        }, 30000);
 
         const header = new HeaderNavbar(driver);
         await header.check_pageIsLoaded();
@@ -104,6 +110,12 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        // Wait for the initial account sync to complete before interacting with accounts
+        await driver.wait(async () => {
+          const uiState = await getCleanAppState(driver);
+          return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
+        }, 30000);
 
         const header = new HeaderNavbar(driver);
         await header.check_pageIsLoaded();
