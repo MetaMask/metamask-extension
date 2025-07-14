@@ -3,7 +3,6 @@ import {
   SortOrder,
   BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
-  getNativeAssetForChainId,
   isSolanaChainId,
   formatChainIdToHex,
   isNativeAddress,
@@ -86,15 +85,14 @@ export const toBridgeToken = (
   if (!payload) {
     return null;
   }
+  const caipChainId = formatChainIdToCaip(payload.chainId);
   return {
     ...payload,
     balance: payload.balance ?? '0',
     string: payload.string ?? '0',
-    chainId: payload.chainId,
+    chainId: caipChainId,
     image: getTokenImage(payload),
-    assetId:
-      payload.assetId ??
-      toAssetId(payload.address, formatChainIdToCaip(payload.chainId)),
+    assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),
   };
 };
 
