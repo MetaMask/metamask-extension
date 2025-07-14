@@ -703,6 +703,7 @@ const PrepareBridgePage = () => {
                   value: networkConfig.chainId,
                 });
               if (
+                !isUnifiedUIEnabled &&
                 networkConfig?.chainId &&
                 networkConfig.chainId === toChain?.chainId
               ) {
