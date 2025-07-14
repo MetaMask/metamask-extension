@@ -242,7 +242,7 @@ export const getToToken = createSelector(
     if (
       fromToken?.assetId &&
       newToToken?.assetId &&
-      fromToken.assetId === newToToken.assetId
+      fromToken.assetId.toLowerCase() === newToToken.assetId.toLowerCase()
     ) {
       return null;
     }
