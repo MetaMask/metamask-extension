@@ -19,6 +19,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
+import { ThemeType } from '../../../../shared/constants/preferences';
 import LoginOptions from './login-options';
 import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 
@@ -105,10 +106,14 @@ export default function WelcomeLogin({
         </Text>
       </Box>
 
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
+      <Box
+        data-theme={ThemeType.light}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={4}
+      >
         <Button
           data-testid="onboarding-create-wallet"
-          className="welcome-login__create-button"
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           block
@@ -124,7 +129,6 @@ export default function WelcomeLogin({
         </Button>
         <Button
           data-testid="onboarding-import-wallet"
-          className="welcome-login__import-button"
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
           block

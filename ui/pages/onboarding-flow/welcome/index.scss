@@ -53,32 +53,6 @@
       margin-bottom: 60px;
     }
   }
-
-  // SRP_OVERRIDE: force light mode style
-  &__create-button.mm-button-primary {
-    background-color: var(--brand-colors-grey-grey900);
-    color: var(--brand-colors-white);
-    &:hover {
-      background-color: var(--brand-colors-grey-grey700);
-      color: var(--brand-colors-white);
-    }
-    &:active {
-      background-color: var(--brand-colors-grey-grey600);
-      color: var(--brand-colors-white);
-    }
-  }
-
-  // SRP_OVERRIDE: force light mode style
-  &__import-button.mm-button-secondary {
-    background-color: #3c4d9d1a;
-    color: var(--brand-colors-grey-grey900);
-    &:hover {
-      background-color: #3c4d9d26;
-    }
-    &:active {
-      background-color: #3c4d9d33;
-    }
-  }
 }
 
 .options-modal {
