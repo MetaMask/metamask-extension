@@ -117,7 +117,7 @@ const maybeParseChunkFrame = (input: unknown): ChunkFrame | false => {
     return false;
   }
   const { length } = input;
-  // shortest legal message is: "0|0|0|" (6 characters)
+  // shortest legal message is: "0|1|0|" (6 characters)
   if (length < 6) {
     return false;
   }
