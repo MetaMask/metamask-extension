@@ -1,6 +1,11 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { withFixtures, unlockWallet, WALLET_PASSWORD, getCleanAppState } from '../../../helpers';
+import {
+  withFixtures,
+  unlockWallet,
+  WALLET_PASSWORD,
+  getCleanAppState,
+} from '../../../helpers';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';

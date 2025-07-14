@@ -92,7 +92,9 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
             .withMetaMetricsController()
             // Add mock accounts to subscriptionAccountsSeen so notification toggles appear
             .withNotificationServicesController({
-              subscriptionAccountsSeen: notificationsMockAccounts.map(account => account.a),
+              subscriptionAccountsSeen: notificationsMockAccounts.map(
+                (account) => account.a,
+              ),
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -139,7 +141,9 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
           fixtures: new FixtureBuilder({ onboarding: true })
             // Add mock accounts to subscriptionAccountsSeen for second device too
             .withNotificationServicesController({
-              subscriptionAccountsSeen: notificationsMockAccounts.map(account => account.a),
+              subscriptionAccountsSeen: notificationsMockAccounts.map(
+                (account) => account.a,
+              ),
             })
             .build(),
           title: this.test?.fullTitle(),
