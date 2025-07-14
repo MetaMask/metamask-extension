@@ -20,10 +20,12 @@ const mockStore = configureMockStore(middleware);
 
 // Mock the useHistory hook
 const mockPush = jest.fn();
+const mockGoBack = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
     push: mockPush,
+    goBack: mockGoBack,
   }),
 }));
 
@@ -135,6 +137,7 @@ const createMockState = (
 describe('BaseAccountDetails', () => {
   beforeEach(() => {
     mockPush.mockClear();
+    mockGoBack.mockClear();
   });
 
   describe('Component Rendering', () => {
@@ -216,7 +219,7 @@ describe('BaseAccountDetails', () => {
   });
 
   describe('Navigation', () => {
-    it('should navigate to default route when back button is clicked', () => {
+    it('should go back when back button is clicked', () => {
       const state = createMockState(MOCK_ACCOUNT_EOA.address);
       const store = mockStore(state);
 
@@ -233,7 +236,7 @@ describe('BaseAccountDetails', () => {
       const backButton = screen.getByLabelText('Back');
       fireEvent.click(backButton);
 
-      expect(mockPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(mockGoBack).toHaveBeenCalledTimes(1);
     });
 
     it('should navigate to QR code route when address row is clicked', () => {
