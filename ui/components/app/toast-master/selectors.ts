@@ -32,7 +32,6 @@ type State = {
       | 'newPrivacyPolicyToastShownDate'
       | 'onboardingDate'
       | 'surveyLinkLastClickedOrClosed'
-      | 'switchedNetworkNeverShowMessage'
     >
   >;
 };

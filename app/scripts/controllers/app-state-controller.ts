@@ -202,7 +202,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   surveyLinkLastClickedOrClosed: null,
-  switchedNetworkNeverShowMessage: false,
   slides: [],
   throttledOrigins: {},
   isUpdateAvailable: false,
