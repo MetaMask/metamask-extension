@@ -1,11 +1,12 @@
 import { hasProperty, isObject } from '@metamask/utils';
-import log from 'loglevel';
 import {
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   METHOD_REPAIR_DATABASE,
 } from '../../../../shared/constants/state-corruption';
 import { type Backup, PersistenceManager } from '../stores/persistence-manager';
 import { ErrorLike } from '../../../../shared/constants/errors';
+import { tryPostMessage } from '../start-up-errors/start-up-errors';
+import { RELOAD_WINDOW } from '../../../../shared/constants/start-up-errors';
 
 type Message = Parameters<chrome.runtime.Port['postMessage']>[0];
 
@@ -44,28 +45,6 @@ async function requestRepair(
       return true;
     },
   );
-}
-
-/**
- * Attempts to post a `message` to the given `port` via `port.postMessage`. If
- * the postMessage call fails due to an exception it will ignore it by catching
- * and then logging it.
- *
- * @param port - The port to post the message to.
- * @param message - The message to post.
- */
-function tryPostMessage(port: chrome.runtime.Port, message: Message): boolean {
-  try {
-    port.postMessage(message);
-    return true;
-  } catch (e) {
-    // an exception can occur here if the Window has since disconnected from
-    // the background, this might be expected, for example, if the UI is closed
-    // while we are still initializing the background (like during a call to
-    // `await isInitialized;`)
-    log.error('MetaMask - Failed to message to port', e, message);
-    return false;
-  }
 }
 
 /**
@@ -179,19 +158,14 @@ export class CorruptionHandler {
     const hasBackup = Boolean(hasVault(backup));
 
     // send the `error` to the UI for this port
-    const sent = tryPostMessage(port, {
-      data: {
-        method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-        params: {
-          error: {
-            message: error.message,
-            name: error.name,
-            stack: error.stack,
-          },
-          currentLocale,
-          hasBackup,
-        },
+    const sent = tryPostMessage(port, METHOD_DISPLAY_STATE_CORRUPTION_ERROR, {
+      error: {
+        message: error.message,
+        name: error.name,
+        stack: error.stack,
       },
+      currentLocale,
+      hasBackup,
     });
     if (!sent) {
       return Promise.resolve();
@@ -242,11 +216,7 @@ export class CorruptionHandler {
                 connectedPorts.forEach((connectedPort) => {
                   // as each page reloads, it will remove itself from the
                   // `connectedPorts` on disconnection.
-                  tryPostMessage(connectedPort, {
-                    data: {
-                      method: 'RELOAD_WINDOW',
-                    },
-                  });
+                  tryPostMessage(connectedPort, RELOAD_WINDOW);
                 });
               }
             });

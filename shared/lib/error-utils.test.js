@@ -1,6 +1,6 @@
 import { fetchLocale } from '../modules/i18n';
 import { SUPPORT_LINK } from './ui-utils';
-import { getErrorHtml } from './error-utils';
+import { maybeGetLocaleContext, getErrorHtml } from './error-utils';
 
 jest.mock('../modules/i18n', () => ({
   fetchLocale: jest.fn(),
@@ -57,11 +57,14 @@ describe('Error utils Tests', function () {
       },
     };
 
+    const error = new Error('Test error');
     fetchLocale.mockReturnValue(mockStore.localeMessages.current);
-    const errorHtml = await getErrorHtml(
+    const localeContext = await maybeGetLocaleContext(mockStore.metamask);
+    const errorHtml = getErrorHtml(
       'troubleStarting',
+      error,
+      localeContext,
       SUPPORT_LINK,
-      mockStore.metamask,
     );
     const currentLocale = mockStore.localeMessages.current;
     const troubleStartingMessage = currentLocale.troubleStarting.message;
