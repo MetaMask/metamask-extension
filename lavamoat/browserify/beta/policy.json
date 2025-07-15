@@ -1116,7 +1116,7 @@
         "setTimeout": true
       },
       "packages": {
-        "viem>ox>@noble/curves": true,
+        "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils>@noble/curves": true,
         "@noble/hashes": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -1665,7 +1665,7 @@
       "packages": {
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
-        "viem>ox>@noble/curves": true,
+        "@metamask/snaps-sdk>@metamask/key-tree>@noble/curves": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true
       }
@@ -2144,7 +2144,7 @@
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": true,
         "@metamask/utils": true,
         "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-walletconnect>@walletconnect/solana-adapter>@walletconnect/utils>@noble/ciphers": true,
-        "viem>ox>@noble/curves": true,
+        "@noble/curves": true,
         "@metamask/name-controller>async-mutex": true
       }
     },
@@ -2247,7 +2247,7 @@
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "viem>ox>@noble/curves": true,
+        "@metamask/snaps-utils>@metamask/snaps-registry>@noble/curves": true,
         "@noble/hashes": true
       }
     },
@@ -2388,7 +2388,7 @@
       "packages": {
         "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@noble/ciphers": true,
-        "viem>ox>@noble/curves": true,
+        "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@noble/curves": true,
         "@noble/hashes": true,
         "@toruslabs/eccrypto": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@toruslabs/fetch-node-details": true,
@@ -2544,20 +2544,49 @@
         "crypto": true
       }
     },
+    "@noble/curves": {
+      "packages": {
+        "@noble/hashes": true
+      }
+    },
+    "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@noble/hashes": true
+      }
+    },
+    "@metamask/snaps-sdk>@metamask/key-tree>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@noble/hashes": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/snaps-registry>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@noble/hashes": true
+      }
+    },
+    "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@noble/hashes": true
+      }
+    },
     "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
       "globals": {
         "TextEncoder": true
       },
       "packages": {
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
-      }
-    },
-    "viem>ox>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@noble/hashes": true
       }
     },
     "@noble/hashes": {

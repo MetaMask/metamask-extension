@@ -7784,6 +7784,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/curves@npm:^1.9.2":
+  version: 1.9.2
+  resolution: "@noble/curves@npm:1.9.2"
+  dependencies:
+    "@noble/hashes": "npm:1.8.0"
+  checksum: 10/f60f00ad86296054566b67be08fd659999bb64b692bfbf11dbe3be1f422ad4d826bf5ebb2015ce2e246538eab2b677707e0a46ffa8323a6fae7a9a30ec1fe318
+  languageName: node
+  linkType: hard
+
 "@noble/hashes@npm:1.3.2":
   version: 1.3.2
   resolution: "@noble/hashes@npm:1.3.2"
@@ -31969,6 +31978,7 @@ __metadata:
     "@metamask/user-operation-controller": "npm:^36.0.0"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.13"
+    "@noble/curves": "npm:^1.9.2"
     "@noble/hashes": "npm:^1.3.3"
     "@octokit/core": "npm:^3.6.0"
     "@octokit/types": "npm:^14.0.0"
