@@ -93,6 +93,7 @@ export const useNetworkChangeHandlers = () => {
 
   const handleEvmNetworkChange = useCallback(
     (chainId: CaipChainId) => {
+      console.log('handleEvmNetworkChange ........................', chainId);
       const { namespace } = parseCaipChainId(chainId);
       const hexChainId = convertCaipToHexChainId(chainId);
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);

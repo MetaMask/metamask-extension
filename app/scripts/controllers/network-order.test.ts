@@ -1,11 +1,6 @@
 import { Messenger } from '@metamask/base-controller';
 import {
-  NetworkOrderController,
-  NetworkOrderControllerMessenger,
-} from './network-order';
-import {
   NetworkConfiguration,
-  NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
   NetworkControllerNetworkRemovedEvent,
   NetworkControllerSetActiveNetworkAction,
@@ -14,9 +9,13 @@ import {
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { KnownCaipNamespace } from '@metamask/utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { SolScope } from '@metamask/keyring-api';
 import { waitFor } from '@testing-library/react';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  NetworkOrderController,
+  NetworkOrderControllerMessenger,
+} from './network-order';
 
 describe('NetworkOrderController - constructor', () => {
   it('sets up initial state', () => {
@@ -156,7 +155,7 @@ describe('NetworkOrderController - constructor', () => {
     };
     mocks.mockNetworkControllerGetState.mockReturnValue(mockNetworkState);
 
-    new NetworkOrderController({
+    const controller = new NetworkOrderController({
       messenger: mocks.messenger,
       state: {
         orderedNetworkList: [],
@@ -171,6 +170,9 @@ describe('NetworkOrderController - constructor', () => {
         },
       },
     });
+
+    // Assert - network order size
+    expect(controller.state.orderedNetworkList).toHaveLength(0);
 
     // Act - publish event where base was removed
     mocks.globalMessenger.publish(
@@ -206,33 +208,34 @@ function arrangeMockMessenger() {
       ],
     });
 
-  type AnyFunc = (...args: any[]) => any;
-  const typedMockAction = <Action extends { handler: AnyFunc }>() =>
-    jest.fn<ReturnType<Action['handler']>, Parameters<Action['handler']>>();
-
-  const mockNetworkControllerGetState =
-    typedMockAction<NetworkControllerGetStateAction>().mockReturnValue({
+  const mockNetworkControllerGetState = jest
+    .fn<
+      ReturnType<NetworkControllerGetStateAction['handler']>,
+      Parameters<NetworkControllerGetStateAction['handler']>
+    >()
+    .mockReturnValue({
       networkConfigurationsByChainId: {},
       networksMetadata: {},
       selectedNetworkClientId: '111-222-333',
     });
 
-  const mockNetworkControllerSetActiveNetwork =
-    typedMockAction<NetworkControllerSetActiveNetworkAction>().mockResolvedValue(
-      undefined,
-    );
+  const mockNetworkControllerSetActiveNetwork = jest
+    .fn<
+      ReturnType<NetworkControllerSetActiveNetworkAction['handler']>,
+      Parameters<NetworkControllerSetActiveNetworkAction['handler']>
+    >()
+    .mockResolvedValue(undefined);
 
   jest.spyOn(messenger, 'call').mockImplementation((...args) => {
     const [actionType] = args;
-    // Type escape hatch as unable to assign correct type.
-    const [, ...params]: any[] = args;
+    const [, ...params]: unknown[] = args;
 
     if (actionType === 'NetworkController:getState') {
       return mockNetworkControllerGetState();
     }
 
     if (actionType === 'NetworkController:setActiveNetwork') {
-      return mockNetworkControllerSetActiveNetwork(params[0]);
+      return mockNetworkControllerSetActiveNetwork(params[0] as string);
     }
 
     throw new Error('TEST FAIL - UNMOCKED ACTION CALLED');
