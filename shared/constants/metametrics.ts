@@ -764,7 +764,7 @@ export enum MetaMetricsEventName {
   OnboardingTwitterClick = 'External Link Clicked',
   OnrampProviderSelected = 'On-ramp Provider Selected',
   PasswordChanged = 'Password Changed',
-  ForgotPassword = 'Forgot Password',
+  ForgotPasswordClicked = 'Forgot Password Clicked',
   ResetWallet = 'Reset Wallet',
   PermissionsApproved = 'Permissions Approved',
   PermissionsRejected = 'Permissions Rejected',

@@ -299,7 +299,7 @@ export default class UnlockPage extends Component {
 
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.ForgotPassword,
+      event: MetaMetricsEventName.ForgotPasswordClicked,
       properties: {
         account_type: isSocialLoginFlow ? 'social' : 'metamask',
       },
