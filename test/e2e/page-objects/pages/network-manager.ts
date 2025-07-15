@@ -47,6 +47,10 @@ class NetworkManager {
     await this.driver.delay(1000); // small delay to ensure networks are all selected
   }
 
+  async selectNetworkByChainId(chainId: string): Promise<void> {
+    await this.driver.clickElementSafe(this.networkListItem(chainId));
+  }
+
   // Method to select/click on a network item
   async selectNetwork(networkName: string): Promise<void> {
     console.log(`Selecting network: ${networkName}`);
