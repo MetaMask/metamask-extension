@@ -158,6 +158,7 @@ export default function CreatePassword({
       event: MetaMetricsEventName.WalletImported,
       properties: {
         biometrics_enabled: false,
+        password_strength: getPasswordStrengthCategory(password),
       },
     });
 
