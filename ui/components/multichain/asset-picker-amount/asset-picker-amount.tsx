@@ -273,17 +273,24 @@ export const AssetPickerAmount = ({
                       ),
                     );
 
-                    const isNotCurrentChainContact = addressBook.find(
-                      (item) => {
-                        return (
-                          item.address === recipient.address &&
-                          item.chainId !== networkConfig.chainId
-                        );
-                      },
-                    );
+                    // Only proceed if we have recipient and addressBook
+                    if (recipient?.address && addressBook) {
+                      // Check if there's a contact with the same address on the NEW network
+                      const contactExistsOnNewNetwork = addressBook.find(
+                        (item) => {
+                          return (
+                            item.address === recipient.address &&
+                            item.chainId === networkConfig.chainId
+                          );
+                        },
+                      );
 
-                    if (isNotCurrentChainContact) {
-                      dispatch(updateRecipient({ address: '', nickname: '' }));
+                      // If no contact exists on the new network, clear the recipient
+                      if (!contactExistsOnNewNetwork) {
+                        dispatch(
+                          updateRecipient({ address: '', nickname: '' }),
+                        );
+                      }
                     }
                   },
                   header: t('yourNetworks'),
