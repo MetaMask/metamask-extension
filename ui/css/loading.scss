@@ -11,3 +11,25 @@
   align-self: center;
   margin-top: 1rem;
 }
+.app-content {
+  opacity: 0;
+  animation: showTimeoutMessage 20s ease-in-out forwards;
+  align-self: center;
+  max-width: 20rem;
+}
+
+.loading-timeout-message::after {
+  content: "__MSG_loadingTimeoutMessage__";
+}
+
+@keyframes showTimeoutMessage {
+  0% {
+    opacity: 0;
+  }
+  99.9% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
