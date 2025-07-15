@@ -2,7 +2,10 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getSelectedInternalAccount } from '../../../selectors';
+import {
+  getCompleteAddressBook,
+  getSelectedInternalAccount,
+} from '../../../selectors';
 import {
   getCurrentDraftTransaction,
   getIsNativeSendPossible,
@@ -69,6 +72,15 @@ describe('AssetPickerAmount', () => {
       }
       if (selector === getSendMaxModeState) {
         return false;
+      }
+      if (selector === getCompleteAddressBook) {
+        return [
+          {
+            address: '0xAddress',
+            chainId: '1',
+            name: 'Test',
+          },
+        ];
       }
       return undefined;
     });
