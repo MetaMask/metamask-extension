@@ -88,45 +88,33 @@ const fetchTokenExchangeRates = async (
   ...tokenAddresses: string[]
 ) => {
   let exchangeRates;
-  if (isSolanaChainId(chainId)) {
-    const queryParams = new URLSearchParams({
-      assetIds: tokenAddresses
-        .map((address) => toAssetId(address, MultichainNetworks.SOLANA))
-        .join(','),
-      includeMarketData: 'true',
-      vsCurrency: currency,
-    });
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    const url = `https://price.api.cx.metamask.io/v3/spot-prices?${queryParams}`;
-    const tokenV3PriceResponse = (await handleFetch(url, {
-      method: 'GET',
-      headers: { 'X-Client-Id': BridgeClientId.EXTENSION },
-    })) as Record<string, { price: number }>;
-
-    exchangeRates = Object.entries(tokenV3PriceResponse).reduce(
-      (acc, [k, curr]) => {
-        acc[k] = curr.price;
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
-    return exchangeRates;
+  const assetIds = tokenAddresses
+    .map((address) => toAssetId(address, formatChainIdToCaip(chainId)))
+    .filter(Boolean);
+  if (assetIds.length === 0) {
+    return {};
   }
-  // EVM chains
-  exchangeRates = await fetchTokenExchangeRatesUtil(
-    currency,
-    tokenAddresses,
-    formatChainIdToHex(chainId),
-  );
+  const queryParams = new URLSearchParams({
+    assetIds: assetIds.join(','),
+    includeMarketData: 'true',
+    vsCurrency: currency,
+  });
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+  const url = `https://price.api.cx.metamask.io/v3/spot-prices?${queryParams}`;
+  const tokenV3PriceResponse = (await handleFetch(url, {
+    method: 'GET',
+    headers: { 'X-Client-Id': BridgeClientId.EXTENSION },
+  })) as Record<string, { price: number }>;
 
-  return Object.keys(exchangeRates).reduce(
-    (acc: Record<string, number | undefined>, address) => {
-      acc[address] = exchangeRates[address];
+  exchangeRates = Object.entries(tokenV3PriceResponse).reduce(
+    (acc, [k, curr]) => {
+      acc[k] = curr.price;
       return acc;
     },
-    {},
+    {} as Record<string, number>,
   );
+  return exchangeRates;
 };
 
 // This fetches the exchange rate for a token in a given currency. This is only called when the exchange
@@ -144,14 +132,7 @@ export const getTokenExchangeRate = async (request: {
     tokenAddress,
   );
   const assetId = toAssetId(tokenAddress, formatChainIdToCaip(chainId));
-  if (isSolanaChainId(chainId) && assetId) {
-    return exchangeRates?.[assetId];
-  }
-  // The exchange rate can be checksummed or not, so we need to check both
-  const exchangeRate =
-    exchangeRates?.[toChecksumAddress(tokenAddress)] ??
-    exchangeRates?.[tokenAddress.toLowerCase()];
-  return exchangeRate;
+  return assetId ? exchangeRates?.[assetId] : undefined;
 };
 
 // This extracts a token's exchange rate from the marketData state object
