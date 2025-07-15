@@ -17856,7 +17856,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 ******************************
 
 ignore
-5.3.1 <https://github.com/kaelzhang/node-ignore>
+5.3.2 <https://github.com/kaelzhang/node-ignore>
 Copyright (c) 2013 Kael Zhang <i@kael.me>, contributors
 http://kael.me/
 
@@ -23782,7 +23782,7 @@ authors: undefined
 ******************************
 
 @metamask/bridge-controller
-33.0.0 <https://github.com/MetaMask/core>
+33.0.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -23808,7 +23808,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/bridge-status-controller
-31.0.0 <https://github.com/MetaMask/core>
+32.0.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -24209,7 +24209,7 @@ SOFTWARE.
 ******************************
 
 @metamask/design-tokens
-7.1.0 <https://github.com/MetaMask/metamask-design-system>
+8.0.0 <https://github.com/MetaMask/metamask-design-system>
 MIT License
 
 Copyright (c) 2024 MetaMask
@@ -25569,7 +25569,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/multichain-api-client
-0.6.4 <https://github.com/MetaMask/multichain-api-client>
+0.6.2 <https://github.com/MetaMask/multichain-api-client>
 ISC License
 
 Copyright (c) 2021 MetaMask
@@ -26920,7 +26920,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/solana-wallet-snap
-1.34.0 <https://github.com/MetaMask/snap-solana-wallet>
+1.33.2 <https://github.com/MetaMask/snap-solana-wallet>
 license: (MIT-0 OR Apache-2.0)
 authors: undefined
 
@@ -32751,7 +32751,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 semver
-7.6.3 <https://github.com/npm/node-semver>
+7.7.2 <https://github.com/npm/node-semver>
 The ISC License
 
 Copyright (c) Isaac Z. Schlueter and Contributors
@@ -36254,7 +36254,7 @@ SOFTWARE.
 ******************************
 
 tiny-secp256k1
-1.1.7 <https://github.com/bitcoinjs/tiny-secp256k1>
+1.1.6 <https://github.com/bitcoinjs/tiny-secp256k1>
 MIT License
 
 Copyright (c) 2018 bitcoinjs contributors

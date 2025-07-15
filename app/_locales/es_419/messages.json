@@ -742,9 +742,6 @@
     "message": "Acepto los riesgos",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
   },
-  "followUsOnTwitter": {
-    "message": "Síganos en Twitter"
-  },
   "forbiddenIpfsGateway": {
     "message": "Puerta de enlace de IPFS prohibida: especifique una puerta de enlace de CID"
   },
@@ -1362,18 +1359,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Entendido"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Guarde siempre su frase secreta de recuperación en un lugar seguro y secreto"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "¿Necesita volver a crear una copia de seguridad de su frase secreta de recuperación?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "No comparta nunca su frase secreta de recuperación con nadie"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "El equipo de MetaMask nunca le pedirá su frase secreta de recuperación"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Mediante su frase secreta de recuperación, se controlan todas sus cuentas."
   },
@@ -1500,10 +1485,6 @@
   },
   "send": {
     "message": "Enviar"
-  },
-  "sendSpecifiedTokens": {
-    "message": "Enviar $1",
-    "description": "Symbol of the specified token"
   },
   "sendingDisabled": {
     "message": "Todavía no se admite el envío de activos ERC-1155 NFT."

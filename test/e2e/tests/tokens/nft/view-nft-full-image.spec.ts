@@ -5,7 +5,7 @@ import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTListPage from '../../../page-objects/pages/home/nft-list';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { setupAutoDetectMocking } from './mocks';
@@ -18,8 +18,10 @@ describe('NFT full', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnLinea()
           .withEnabledNetworks({
-            [CHAIN_IDS.LINEA_MAINNET]: true,
-            [CHAIN_IDS.MAINNET]: true,
+            eip155: {
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.MAINNET]: true,
+            },
           })
           .build(),
         driverOptions,
@@ -27,7 +29,7 @@ describe('NFT full', function () {
         testSpecificMock: setupAutoDetectMocking,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         // navigate to security & privacy settings and toggle on NFT autodetection
         await new HeaderNavbar(driver).openSettingsPage();
@@ -43,11 +45,9 @@ describe('NFT full', function () {
         // check that nft is displayed
         const homepage = new Homepage(driver);
         await homepage.check_pageIsLoaded();
-        await homepage.check_expectedBalanceIsDisplayed();
         await homepage.goToNftTab();
         const nftListPage = new NFTListPage(driver);
 
-        await nftListPage.filterNftsByNetworks('Popular networks');
         await nftListPage.check_nftNameIsDisplayed(
           'ENS: Ethereum Name Service',
         );

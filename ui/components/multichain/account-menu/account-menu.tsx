@@ -1,9 +1,9 @@
 import React, {
-  useContext,
-  useState,
-  useMemo,
   useCallback,
+  useContext,
   useEffect,
+  useMemo,
+  useState,
 } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -51,6 +51,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getManageInstitutionalWallets,
   getHDEntropyIndex,
+  getIsMultichainAccountsState1Enabled,
 } from '../../../selectors';
 import {
   MetaMetricsEventAccountType,
@@ -91,6 +92,8 @@ import { ImportAccount } from '../import-account';
 import { SrpList } from '../multi-srp/srp-list';
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
+import Spinner from '../../ui/spinner';
 
 // TODO: Should we use an enum for this instead?
 export const ACTION_MODES = {
@@ -141,11 +144,13 @@ export const SNAP_CLIENT_CONFIG_MAP: Record<
  *
  * @param t - Function to translate text.
  * @param actionMode - An action mode.
+ * @param isMultichainAccountsState1Enabled - Whether the multichain accounts state 1 is enabled.
  * @returns The title for this action mode.
  */
 export const getActionTitle = (
   t: (text: string, args?: string[]) => string,
   actionMode: ActionMode,
+  isMultichainAccountsState1Enabled: boolean,
 ) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
@@ -173,7 +178,9 @@ export const getActionTitle = (
     case ACTION_MODES.SELECT_SRP:
       return t('selectSecretRecoveryPhrase');
     default:
-      return t('selectAnAccount');
+      return isMultichainAccountsState1Enabled
+        ? t('accounts')
+        : t('selectAnAccount');
   }
 };
 
@@ -195,7 +202,11 @@ export const AccountMenu = ({
     endTrace({ name: TraceName.AccountList });
   }, []);
   const history = useHistory();
+  const isMultichainAccountsState1Enabled = useSelector(
+    getIsMultichainAccountsState1Enabled,
+  );
 
+  const { loading: syncSRPsLoading } = useSyncSRPs();
   const [actionMode, setActionMode] = useState<ActionMode>(ACTION_MODES.LIST);
   const [previousActionMode, setPreviousActionMode] = useState<ActionMode>(
     ACTION_MODES.LIST,
@@ -213,10 +224,18 @@ export const AccountMenu = ({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.AccountAddSelected,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: MetaMetricsEventAccountType.Snap,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_id: ACCOUNT_WATCHER_SNAP_ID,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_name: ACCOUNT_WATCHER_NAME,
         location: 'Main Menu',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       },
     });
@@ -250,11 +269,21 @@ export const AccountMenu = ({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.AccountAddSelected,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: MetaMetricsEventAccountType.Snap,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_id: client.getSnapId(),
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_name: client.getSnapName(),
         location: 'Main Menu',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id_caip: _options.scope,
       },
     });
@@ -272,8 +301,13 @@ export const AccountMenu = ({
   );
 
   const title = useMemo(
-    () => getActionTitle(t as (text: string) => string, actionMode),
-    [actionMode, t],
+    () =>
+      getActionTitle(
+        t as (text: string) => string,
+        actionMode,
+        Boolean(isMultichainAccountsState1Enabled),
+      ),
+    [actionMode, t, isMultichainAccountsState1Enabled],
   );
 
   // eslint-disable-next-line no-empty-function
@@ -304,6 +338,8 @@ export const AccountMenu = ({
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         button_type: 'picker',
       },
     });
@@ -396,8 +432,12 @@ export const AccountMenu = ({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
                     properties: {
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       account_type: MetaMetricsEventAccountType.Default,
                       location: 'Main Menu',
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       hd_entropy_index: hdEntropyIndex,
                     },
                   });
@@ -506,8 +546,12 @@ export const AccountMenu = ({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
                     properties: {
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       account_type: MetaMetricsEventAccountType.Imported,
                       location: 'Main Menu',
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       hd_entropy_index: hdEntropyIndex,
                     },
                   });
@@ -536,8 +580,12 @@ export const AccountMenu = ({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
                     properties: {
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       account_type: MetaMetricsEventAccountType.Hardware,
                       location: 'Main Menu',
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       hd_entropy_index: hdEntropyIndex,
                     },
                   });
@@ -567,8 +615,12 @@ export const AccountMenu = ({
                         category: MetaMetricsEventCategory.Navigation,
                         event: MetaMetricsEventName.AccountAddSelected,
                         properties: {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           account_type: MetaMetricsEventAccountType.Snap,
                           location: 'Main Menu',
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           hd_entropy_index: hdEntropyIndex,
                         },
                       });
@@ -625,29 +677,57 @@ export const AccountMenu = ({
         ) : null}
         {actionMode === ACTION_MODES.LIST ? (
           <>
-            {/* Menu content */}
-            {children}
-            {/* Add / Import / Hardware button */}
-            {showAccountCreation ? (
+            {syncSRPsLoading ? (
               <Box
-                paddingTop={2}
-                paddingBottom={4}
-                paddingLeft={4}
-                paddingRight={4}
-                alignItems={AlignItems.center}
                 display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                alignItems={AlignItems.center}
+                marginTop={12}
               >
-                <ButtonSecondary
-                  startIconName={IconName.Add}
-                  size={ButtonSecondarySize.Lg}
-                  block
-                  onClick={() => setActionMode(ACTION_MODES.MENU)}
-                  data-testid="multichain-account-menu-popover-action-button"
+                <Spinner className="change-password__spinner" />
+                <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
+                  {t('syncingSeedPhrases')}
+                </Text>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
                 >
-                  {t('addImportAccount')}
-                </ButtonSecondary>
+                  {t('syncingSeedPhrasesNote')}
+                </Text>
               </Box>
-            ) : null}
+            ) : (
+              <>
+                {/* Menu content */}
+                {children}
+                {/* Add / Import / Hardware button */}
+                {showAccountCreation ? (
+                  <Box
+                    paddingTop={2}
+                    paddingBottom={4}
+                    paddingLeft={4}
+                    paddingRight={4}
+                    alignItems={AlignItems.center}
+                    display={Display.Flex}
+                  >
+                    <ButtonSecondary
+                      startIconName={
+                        isMultichainAccountsState1Enabled
+                          ? undefined
+                          : IconName.Add
+                      }
+                      size={ButtonSecondarySize.Lg}
+                      block
+                      onClick={() => setActionMode(ACTION_MODES.MENU)}
+                      data-testid="multichain-account-menu-popover-action-button"
+                    >
+                      {isMultichainAccountsState1Enabled
+                        ? t('addAccountOrWallet')
+                        : t('addImportAccount')}
+                    </ButtonSecondary>
+                  </Box>
+                ) : null}
+              </>
+            )}
           </>
         ) : null}
       </ModalContent>

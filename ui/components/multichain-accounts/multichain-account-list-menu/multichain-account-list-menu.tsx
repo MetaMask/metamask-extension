@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useState, useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   BtcAccountType,
@@ -7,8 +7,11 @@ import {
   SolAccountType,
 } from '@metamask/keyring-api';
 
-import { Box } from '../../component-library';
+import { Box, TextFieldSearchSize } from '../../component-library';
+import { TextFieldSearch } from '../../component-library/text-field-search/text-field-search';
+import { BlockSize } from '../../../helpers/constants/design-system';
 
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getAllChainsToPoll,
@@ -59,6 +62,7 @@ export const MultichainAccountListMenu = ({
     SolAccountType.DataAccount,
   ],
 }: MultichainAccountListMenuProps) => {
+  const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   useEffect(() => {
@@ -76,6 +80,7 @@ export const MultichainAccountListMenu = ({
   const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
     getDefaultHomeActiveTabName,
   );
+  const [searchPattern, setSearchPattern] = useState<string>('');
 
   // Here we are getting the keyring of the last selected account
   // if it is not an hd keyring, we will use the primary keyring
@@ -87,6 +92,8 @@ export const MultichainAccountListMenu = ({
         event: MetaMetricsEventName.NavAccountSwitched,
         properties: {
           location: 'Main Menu',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: hdEntropyIndex,
         },
       });
@@ -113,8 +120,25 @@ export const MultichainAccountListMenu = ({
     ],
   );
 
+  const onSearchBarChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setSearchPattern(e.target.value),
+    [],
+  );
+
   return (
     <AccountMenu onClose={onClose} showAccountCreation={showAccountCreation}>
+      <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
+        <TextFieldSearch
+          size={TextFieldSearchSize.Sm}
+          width={BlockSize.Full}
+          placeholder={t('search')}
+          value={searchPattern}
+          onChange={onSearchBarChange}
+          clearButtonOnClick={() => setSearchPattern('')}
+          data-testid="multichain-account-menu-search-bar"
+        />
+      </Box>
       {/* Account tree block */}
       <Box className="multichain-account-menu-popover__list">
         <MultichainAccountsTree
@@ -124,6 +148,7 @@ export const MultichainAccountListMenu = ({
           currentTabOrigin={currentTabOrigin}
           privacyMode={privacyMode}
           accountTreeItemProps={accountListItemProps}
+          searchPattern={searchPattern}
           selectedAccount={selectedAccount}
           onClose={onClose}
           onAccountTreeItemClick={onAccountTreeItemClick}
