@@ -5503,24 +5503,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auth-network-utils@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/auth-network-utils@npm:0.3.0"
-  dependencies:
-    "@noble/curves": "npm:^1.8.1"
-    "@noble/hashes": "npm:^1.7.1"
-    "@toruslabs/bs58": "npm:^1.0.0"
-    "@toruslabs/constants": "npm:^15.0.0"
-    "@toruslabs/eccrypto": "npm:^6.1.0"
-    bn.js: "npm:^5.2.1"
-    elliptic: "npm:^6.6.1"
-    json-stable-stringify: "npm:^1.2.1"
-    loglevel: "npm:^1.9.2"
-  checksum: 10/6239dd540cd289ef3a3d8ba2456c3968a1c25bf8b6c73459221da52cf34ce6e61922ad910434de5ccd7ab99443165f2f8bc53aff337f660124c4c65c0d6d05ff
-  languageName: node
-  linkType: hard
-
-"@metamask/auth-network-utils@npm:^0.3.1":
+"@metamask/auth-network-utils@npm:^0.3.0, @metamask/auth-network-utils@npm:^0.3.1":
   version: 0.3.1
   resolution: "@metamask/auth-network-utils@npm:0.3.1"
   dependencies:
@@ -7792,16 +7775,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:^1.1.0, @noble/curves@npm:^1.2.0, @noble/curves@npm:^1.4.2, @noble/curves@npm:^1.6.0, @noble/curves@npm:^1.8.0, @noble/curves@npm:^1.8.1, @noble/curves@npm:~1.9.0":
-  version: 1.9.0
-  resolution: "@noble/curves@npm:1.9.0"
-  dependencies:
-    "@noble/hashes": "npm:1.8.0"
-  checksum: 10/f2c5946310722fee23e04ed747f21ce72e0436e38e1fa620d226a8c613262e7d0dbab5341f14caf92936089d01d9e9231964c409cd1ac2a73a075f3cdb1acc41
-  languageName: node
-  linkType: hard
-
-"@noble/curves@npm:^1.9.2":
+"@noble/curves@npm:^1.1.0, @noble/curves@npm:^1.2.0, @noble/curves@npm:^1.4.2, @noble/curves@npm:^1.6.0, @noble/curves@npm:^1.8.0, @noble/curves@npm:^1.8.1, @noble/curves@npm:^1.9.2, @noble/curves@npm:~1.9.0":
   version: 1.9.2
   resolution: "@noble/curves@npm:1.9.2"
   dependencies:
@@ -29873,7 +29847,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-stable-stringify@npm:^1.0.0, json-stable-stringify@npm:^1.1.1, json-stable-stringify@npm:^1.2.1":
+"json-stable-stringify@npm:^1.0.0, json-stable-stringify@npm:^1.1.1":
   version: 1.3.0
   resolution: "json-stable-stringify@npm:1.3.0"
   dependencies:
