@@ -139,9 +139,13 @@ jobs:
           git checkout -B "$BRANCH_NAME"
 
           git commit -am "Optimize images"
+
+          # Set up the remote with the token for pushing
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push origin "$BRANCH_NAME"
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number || github.event.pull_request.number }}
       ## Note the use of `cat -` to include the file contents and the echo in the comment
       - name: Post comment
