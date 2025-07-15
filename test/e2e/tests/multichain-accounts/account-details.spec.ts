@@ -3,7 +3,11 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain-account-details-page';
 import MultichainWalletDetailsPage from '../../page-objects/pages/multichain-wallet-details-page';
 import { Driver } from '../../webdriver/driver';
-import { withMultichainAccountsDesignEnabled } from './common';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import {
+  withImportedAccount,
+  withMultichainAccountsDesignEnabled,
+} from './common';
 
 const account1 = {
   name: 'Account 1',
@@ -57,7 +61,9 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
             !address.includes(account1.address.toLowerCase().substring(0, 6))
           ) {
             throw new Error(
-              `Expected address to contain "${account1.address.toLowerCase().substring(0, 6)}" but got "${address}"`,
+              `Expected address to contain "${account1.address
+                .toLowerCase()
+                .substring(0, 6)}" but got "${address}"`,
             );
           }
 
@@ -141,14 +147,16 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
 
   describe('Delete private key account', function () {
     it('removes imported private key account successfully', async function () {
-      await withMultichainAccountsDesignEnabled(
+      await withImportedAccount(
         {
           title: this.test?.fullTitle(),
+          privateKey: TEST_PRIVATE_KEY,
         },
         async (driver: Driver) => {
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.openAccountMenu();
+
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.addNewImportedAccount(TEST_PRIVATE_KEY);
-          await driver.clickElement('[data-testid="account-menu-icon"]');
           await accountListPage.openAccountDetailsModal(importedAccount.name);
 
           const accountDetailsPage = new MultichainAccountDetailsPage(driver);
@@ -158,7 +166,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
 
           await accountDetailsPage.clickRemoveAccountConfirmButton();
 
-          await driver.clickElement('[data-testid="account-menu-icon"]');
+          await headerNavbar.openAccountMenu();
           await accountListPage.check_accountIsNotDisplayedInAccountList(
             importedAccount.name,
           );
@@ -214,7 +222,9 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
             )
           ) {
             throw new Error(
-              `Expected address to contain "${account1.address.toLowerCase().substring(0, 6)}" but got "${modalAddress}"`,
+              `Expected address to contain "${account1.address
+                .toLowerCase()
+                .substring(0, 6)}" but got "${modalAddress}"`,
             );
           }
         },
