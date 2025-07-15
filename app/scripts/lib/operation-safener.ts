@@ -1,5 +1,6 @@
 import { type DebounceSettings, type DebouncedFunc, debounce } from 'lodash';
 import log from 'loglevel';
+import { withResolvers } from '../../../shared/lib/promise-with-resolvers';
 
 export type { DebounceSettings } from 'lodash';
 
@@ -115,9 +116,7 @@ export class OperationSafener<O extends Op = Op> {
       // rejection from running `this.#bouncer.flush()` *is* an unhandled
       // rejection; we want it to bubble up to the process/window's
       // `unhandledRejection` listener, i.e., Sentry.
-      const { promise, resolve } = Promise.withResolvers<void>();
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      const { promise, resolve } = withResolvers<void>();
       finalInvocation.finally(resolve);
       this.#evacuating = promise;
     } else {
@@ -146,8 +145,6 @@ export class OperationSafener<O extends Op = Op> {
 
     // fire and forget; the return value for a `debounce`d function is the
     // _previous_ invocation's return value, not the current one.
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.#bouncer(...params);
     return true;
   };
