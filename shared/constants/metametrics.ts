@@ -759,11 +759,12 @@ export enum MetaMetricsEventName {
   OnboardingWalletSecurityPhraseRevealed = 'SRP Revealed',
   OnboardingWalletSecurityPhraseWrittenDown = 'SRP Backup Confirm Display',
   OnboardingWalletSecurityPhraseConfirmed = 'SRP Backup Confirmed',
-  OnboardingWalletCreationComplete = 'Wallet Created',
   OnboardingWalletAdvancedSettings = 'Settings Updated',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
   OnrampProviderSelected = 'On-ramp Provider Selected',
+  PasswordChanged = 'Password Changed',
+  ForgotPassword = 'Forgot Password',
   ResetWallet = 'Reset Wallet',
   PermissionsApproved = 'Permissions Approved',
   PermissionsRejected = 'Permissions Rejected',
@@ -830,9 +831,14 @@ export enum MetaMetricsEventName {
   WalletImportAttempted = 'Wallet Import Attempted',
   WalletImported = 'Wallet Imported',
   WalletCreationAttempted = 'Wallet Creation Attempted',
-  WalletCreated = 'Wallet Created (Onboarding)',
+  WalletCreated = 'Wallet Created',
   WalletSetupFailure = 'Wallet Setup Failure',
   WalletSetupCompleted = 'Wallet Setup Completed',
+  WalletRehydrationSelected = 'Wallet Rehydration Selected',
+  SocialLoginCompleted = 'Social Login Completed',
+  RehydrationPasswordAttempted = 'Rehydration Password Attempted',
+  RehydrationPasswordCompleted = 'Rehydration Password Completed',
+  RehydrationPasswordFailed = 'Rehydration Password Failed',
   // BEGIN:ONLY_INCLUDE_IF(build-flask)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF
@@ -945,6 +951,7 @@ export enum MetaMetricsEventName {
   Wallet5792Called = 'EIP-5792 API Called',
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',
+  ExtensionPinned = 'Extension Pinned',
 }
 
 export enum MetaMetricsEventAccountType {

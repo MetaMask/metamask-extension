@@ -27,6 +27,7 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   getIsSocialLoginFlow,
+  getSocialLoginType,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -52,6 +53,7 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { resetOAuthLoginState } from '../../../store/actions';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
+import { getPasswordStrengthCategory } from '../../../helpers/utils/common.util';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
@@ -73,6 +75,7 @@ export default function CreatePassword({
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const socialLoginType = useSelector(getSocialLoginType);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const metametricsId = useSelector(getMetaMetricsId);
@@ -133,6 +136,15 @@ export default function CreatePassword({
     });
   };
 
+  // Helper function to determine account type for analytics
+  const getAccountType = (baseType, includesSocialLogin = false) => {
+    if (includesSocialLogin && socialLoginType) {
+      const socialProvider = String(socialLoginType).toLowerCase();
+      return `${baseType}_${socialProvider}`;
+    }
+    return baseType;
+  };
+
   const handleWalletImport = async () => {
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -155,7 +167,10 @@ export default function CreatePassword({
       properties: {
         wallet_setup_type: 'import',
         new_wallet: false,
-        account_type: MetaMetricsEventAccountType.Imported,
+        account_type: getAccountType(
+          MetaMetricsEventAccountType.Imported,
+          isSocialLoginFlow,
+        ),
       },
     });
 
@@ -171,7 +186,10 @@ export default function CreatePassword({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletCreationAttempted,
       properties: {
-        account_type: MetaMetricsEventAccountType.Default,
+        account_type: getAccountType(
+          MetaMetricsEventAccountType.Default,
+          isSocialLoginFlow,
+        ),
       },
     });
 
@@ -182,11 +200,23 @@ export default function CreatePassword({
 
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletCreated,
+      properties: {
+        biometrics_enabled: false,
+        password_strength: getPasswordStrengthCategory(password),
+      },
+    });
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletSetupCompleted,
       properties: {
         wallet_setup_type: 'new',
         new_wallet: true,
-        account_type: MetaMetricsEventAccountType.Default,
+        account_type: getAccountType(
+          MetaMetricsEventAccountType.Default,
+          isSocialLoginFlow,
+        ),
       },
     });
 

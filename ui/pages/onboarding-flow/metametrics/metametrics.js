@@ -48,7 +48,6 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '../../../components/component-library';
-import { submitRequestToBackground } from '../../../store/background-connection';
 
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
@@ -107,9 +106,6 @@ export default function OnboardingMetametrics() {
           location: 'onboarding_metametrics',
         },
       });
-      // Flush buffered events when user opts in
-      await submitRequestToBackground('trackEventsAfterMetricsOptIn');
-      await submitRequestToBackground('clearEventsAfterMetricsOptIn');
     } catch (error) {
       log.error('onConfirm::error', error);
     } finally {
@@ -121,7 +117,6 @@ export default function OnboardingMetametrics() {
     e.preventDefault();
     await dispatch(setParticipateInMetaMetrics(false));
     await dispatch(setDataCollectionForMarketing(false));
-    await submitRequestToBackground('clearEventsAfterMetricsOptIn');
     history.push(nextRouteByBrowser);
   };
 

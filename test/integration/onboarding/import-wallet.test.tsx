@@ -88,7 +88,7 @@ describe('Import Wallet Events', () => {
       expect.arrayContaining([
         expect.objectContaining({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.OnboardingWalletCreationComplete,
+          event: MetaMetricsEventName.ExtensionPinned,
           properties: {
             method: FirstTimeFlowType.import,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

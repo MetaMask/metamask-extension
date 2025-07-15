@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -20,13 +20,22 @@ import {
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
-
-import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
+import {
+  getFirstTimeFlowType,
+  getSocialLoginEmail,
+  getSocialLoginType,
+} from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   resetOAuthLoginState,
   setFirstTimeFlowType,
 } from '../../../store/actions';
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -36,6 +45,8 @@ export default function AccountNotFound() {
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
+  const trackEvent = useContext(MetaMetricsContext);
+  const socialLoginType = useSelector(getSocialLoginType);
 
   const onLoginWithDifferentMethod = async () => {
     // clear the social login state
@@ -45,6 +56,15 @@ export default function AccountNotFound() {
   };
 
   const onCreateNewAccount = () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletSetupStarted,
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: `${MetaMetricsEventAccountType.Default}_${socialLoginType}`,
+      },
+    });
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
     history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
   };

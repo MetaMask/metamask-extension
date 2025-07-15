@@ -116,8 +116,34 @@ export default class UnlockPage extends Component {
 
     this.setState({ error: null, isSubmitting: true });
 
+    // Track wallet rehydration attempted for social login users
+    if (this.props.isSocialLoginFlow) {
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.RehydrationPasswordAttempted,
+        properties: {
+          account_type: 'social',
+          biometrics: false,
+        },
+      });
+    }
+
     try {
       await onSubmit(password);
+
+      // Track wallet rehydration completed for social login users
+      if (this.props.isSocialLoginFlow) {
+        this.context.trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.RehydrationPasswordCompleted,
+          properties: {
+            account_type: 'social',
+            biometrics: false,
+            failed_attempts: this.failed_attempts,
+          },
+        });
+      }
+
       this.context.trackEvent(
         {
           category: MetaMetricsEventCategory.Navigation,
@@ -144,6 +170,18 @@ export default class UnlockPage extends Component {
     let finalErrorMessage = message;
     let finalUnlockDelayPeriod = 0;
     let errorReason;
+
+    // Track wallet rehydration failed for social login users
+    if (this.props.isSocialLoginFlow) {
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.RehydrationPasswordFailed,
+        properties: {
+          account_type: 'social',
+          failed_attempts: this.failed_attempts,
+        },
+      });
+    }
 
     switch (message) {
       case 'Incorrect password':
@@ -257,13 +295,28 @@ export default class UnlockPage extends Component {
   };
 
   onForgotPassword = () => {
+    const { isSocialLoginFlow } = this.props;
+
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.ForgotPassword,
+      properties: {
+        account_type: isSocialLoginFlow ? 'social' : 'metamask',
+      },
+    });
+
     this.setState({ showResetPasswordModal: true });
   };
 
   onRestoreWallet = () => {
+    const { isSocialLoginFlow } = this.props;
+
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.ResetWallet,
+      properties: {
+        account_type: isSocialLoginFlow ? 'social' : 'metamask',
+      },
     });
     this.props.onRestore();
   };
