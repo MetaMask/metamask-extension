@@ -1,11 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
-  AvatarAccount,
-  AvatarAccountVariant,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -23,9 +20,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getUseBlockie } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { trace, TraceName } from '../../../../shared/lib/trace';
+
+const AccountMenuStyle = { height: 'auto' };
 
 export const AccountPicker = ({
   address,
@@ -39,7 +37,6 @@ export const AccountPicker = ({
   className = '',
   ...props
 }) => {
-  const useBlockie = useSelector(getUseBlockie);
   const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
 
   return (
@@ -73,30 +70,18 @@ export const AccountPicker = ({
         }}
         {...props}
         gap={1}
+        style={AccountMenuStyle}
       >
         <Box
           display={Display.Flex}
-          flexDirection={
-            process.env.REMOVE_GNS ? FlexDirection.Column : FlexDirection.Row
-          }
+          flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
-          gap={process.env.REMOVE_GNS ? 0 : 2}
+          gap={0}
         >
-          {process.env.REMOVE_GNS ? null : (
-            <AvatarAccount
-              variant={
-                useBlockie
-                  ? AvatarAccountVariant.Blockies
-                  : AvatarAccountVariant.Jazzicon
-              }
-              address={address}
-              size={showAddress ? Size.MD : Size.XS}
-              borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
-            />
-          )}
           <Text
             as="span"
             ellipsis
+            variant={TextVariant.bodyMdMedium}
             {...labelProps}
             className={classnames(
               'multichain-account-picker__label',
@@ -107,7 +92,7 @@ export const AccountPicker = ({
             {showAddress ? (
               <Text
                 color={TextColor.textAlternative}
-                variant={TextVariant.bodySm}
+                variant={TextVariant.bodySmMedium}
                 ellipsis
                 {...addressProps}
               >
