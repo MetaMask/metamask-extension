@@ -11,7 +11,7 @@
   align-self: center;
   margin-top: 1rem;
 }
-.app-content {
+.loading-timeout-message {
   opacity: 0;
   animation: showTimeoutMessage 20s ease-in-out forwards;
   align-self: center;
@@ -19,7 +19,7 @@
 }
 
 .loading-timeout-message::after {
-  direction: __MSG_@@bidi_dir__;
+  direction: "__MSG_@@bidi_dir__";
   content: "__MSG_loadingTimeoutMessage__";
 }
 
