@@ -20,7 +20,8 @@ export const MetadataService = {
   // Release the lock for the metadata service
   ReleaseLock: 'https://node-1.dev-node.web3auth.io/metadata/releaseLock',
   // Batch set the encrypted account data to the metadata service
-  BatchSet: 'https://node-1.dev-node.web3auth.io/metadata/enc_account_data/batch_set',
+  BatchSet:
+    'https://node-1.dev-node.web3auth.io/metadata/enc_account_data/batch_set',
 };
 
 // mock key pairs for the SSS nodes
