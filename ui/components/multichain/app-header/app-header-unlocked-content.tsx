@@ -190,6 +190,7 @@ export const AppHeaderUnlockedContent = ({
             <AccountPicker
               address={internalAccount.address}
               name={internalAccount.metadata.name}
+              showAvatarAccount={false}
               onClick={() => {
                 dispatch(toggleAccountMenu());
 

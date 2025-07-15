@@ -1,8 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
+  AvatarAccount,
+  AvatarAccountVariant,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -22,6 +25,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { trace, TraceName } from '../../../../shared/lib/trace';
+import { getUseBlockie } from '../../../selectors';
 
 export const AccountPicker = ({
   address,
@@ -33,9 +37,16 @@ export const AccountPicker = ({
   labelProps = {},
   textProps = {},
   className = '',
+  showAvatarAccount = true,
   ...props
 }) => {
-  const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
+  AccountPicker.propTypes = {
+    showAvatarAccount: PropTypes.bool,
+  };
+  const useBlockie = useSelector(getUseBlockie);
+  const shortenedAddress = address
+    ? shortenAddress(toChecksumHexAddress(address))
+    : '';
 
   return (
     <Box
@@ -71,10 +82,24 @@ export const AccountPicker = ({
       >
         <Box
           display={Display.Flex}
-          flexDirection={FlexDirection.Column}
+          flexDirection={
+            showAvatarAccount ? FlexDirection.Row : FlexDirection.Column
+          }
           alignItems={AlignItems.center}
-          gap={0}
+          gap={showAvatarAccount ? 2 : 0}
         >
+          {showAvatarAccount ? (
+            <AvatarAccount
+              variant={
+                useBlockie
+                  ? AvatarAccountVariant.Blockies
+                  : AvatarAccountVariant.Jazzicon
+              }
+              address={address}
+              size={showAddress ? Size.MD : Size.XS}
+              borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
+            />
+          ) : null}
           <Text
             as="span"
             ellipsis
