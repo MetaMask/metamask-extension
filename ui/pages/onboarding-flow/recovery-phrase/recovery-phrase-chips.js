@@ -28,6 +28,22 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 
+// this was Truffle's original dev recovery phrase from ~2017
+const fakeSeedPhraseWords = [
+  'candy',
+  'maple',
+  'cake',
+  'sugar',
+  'pudding',
+  'cream',
+  'honey',
+  'rich',
+  'smooth',
+  'crumble',
+  'sweet',
+  'treat',
+];
+
 export default function RecoveryPhraseChips({
   secretRecoveryPhrase,
   phraseRevealed = true,
@@ -37,7 +53,6 @@ export default function RecoveryPhraseChips({
   setInputValue,
 }) {
   const t = useI18nContext();
-  const phrasesToDisplay = secretRecoveryPhrase;
   const indicesToCheck = useMemo(
     () => quizWords.map((word) => word.index),
     [quizWords],
@@ -116,6 +131,14 @@ export default function RecoveryPhraseChips({
     }
   }, [quizWords]);
 
+  // obfuscate the blurred recovery phrase to prevent blur-reversal attacks
+  // from revealing the underlying words.
+  const phrasesToDisplay = phraseRevealed
+    ? secretRecoveryPhrase
+    : secretRecoveryPhrase.map((_word, index) => {
+        return fakeSeedPhraseWords[index % fakeSeedPhraseWords.length];
+      });
+
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
       <Box
@@ -132,11 +155,14 @@ export default function RecoveryPhraseChips({
           alignItems={AlignItems.center}
           gap={2}
           data-testid="recovery-phrase-chips"
-          data-recovery-phrase={secretRecoveryPhrase.join(':')}
           data-quiz-words={JSON.stringify(quizWords)}
           className={classnames('recovery-phrase__chips', {
             'recovery-phrase__chips--hidden': !phraseRevealed,
           })}
+          // tests use this attribute to verify the recovery phrase
+          {...(process.env.IN_TEST
+            ? {}
+            : { 'data-recovery-phrase': phrasesToDisplay.join(':') })}
         >
           {phrasesToDisplay.map((word, index) => {
             const isQuizWord = indicesToCheck.includes(index);
