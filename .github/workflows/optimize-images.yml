@@ -9,11 +9,14 @@ on:
         type: string
   issue_comment:
     types: created
+  pull_request:
+    types: [opened, synchronize]
+    # This is temporary for testing - remove before merging
 
 jobs:
   is-fork-pull-request:
     name: Determine whether this issue comment was on a pull request from a fork
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot optimize-images')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' || (github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot optimize-images')) }}
     runs-on: ubuntu-latest
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
@@ -22,14 +25,14 @@ jobs:
       - name: Determine whether this PR is from a fork
         id: is-fork
         run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]] || [[ "${{ github.event_name }}" == "pull_request" ]]; then
             echo "IS_FORK=false" >> "$GITHUB_OUTPUT"
           else
             echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number }}
+          PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number || github.event.pull_request.number }}
 
   react-to-comment:
     name: React to the comment
@@ -65,10 +68,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Checkout pull request
+        if: ${{ github.event_name != 'pull_request' }}
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number }}
+          PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number || github.event.pull_request.number }}
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
@@ -88,10 +92,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Checkout pull request
+        if: ${{ github.event_name != 'pull_request' }}
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number }}
+          PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number || github.event.pull_request.number }}
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
@@ -133,7 +138,7 @@ jobs:
         env:
           HAS_CHANGES: ${{ steps.image-optimization.outputs.HAS_CHANGES }}
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number }}
+          PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number || github.event.pull_request.number }}
 
   check-status:
     name: Check whether the image optimization succeeded
@@ -166,5 +171,5 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number }}
+          PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number || github.event.pull_request.number }}
           ACTION_RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
