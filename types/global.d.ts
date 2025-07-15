@@ -328,7 +328,9 @@ export declare global {
      * const { promise, resolve, reject } = Promise.withResolvers<T>();
      * ```
      */
-    withResolvers<T>(): PromiseWithResolvers<T>;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    withResolvers?: <T>() => PromiseWithResolvers<T>;
   }
 }
 // #endregion

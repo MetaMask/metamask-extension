@@ -105,7 +105,10 @@ describe('requestEthereumAccountsHandler', () => {
     it('blocks subsequent requests if there is currently a request waiting for the wallet to be unlocked', async () => {
       const { handler, getUnlockPromise, getAccounts, end, response } =
         createMockedHandler();
-      const { promise, resolve } = Promise.withResolvers<void>();
+      // `withResolvers` is supported by Node.js LTS. It's optional in global type due to older
+      // browser support.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const { promise, resolve } = Promise.withResolvers!<void>();
       getUnlockPromise.mockReturnValue(promise);
       getAccounts.mockReturnValue(['0xdead', '0xbeef']);
 
