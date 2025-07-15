@@ -6,6 +6,7 @@ import {
   isSolanaChainId,
   formatChainIdToHex,
   isNativeAddress,
+  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
@@ -117,7 +118,15 @@ const bridgeSlice = createSlice({
       }
     },
     setToToken: (state, { payload }: TokenPayload) => {
-      state.toToken = toBridgeToken(payload);
+      const toToken = toBridgeToken(payload);
+      state.toToken = toToken
+        ? {
+            ...toToken,
+            address:
+              toToken.address ||
+              getNativeAssetForChainId(toToken.chainId)?.address,
+          }
+        : toToken;
     },
     setFromTokenInputValue: (state, action) => {
       state.fromTokenInputValue = action.payload;
