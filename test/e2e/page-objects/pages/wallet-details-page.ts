@@ -88,6 +88,18 @@ class WalletDetailsPage {
 
   async checkNumberOfAccountsDisplayed(expectedCount: number): Promise<void> {
     console.log(`Check ${expectedCount} accounts are displayed`);
+
+    await this.driver.wait(async () => {
+      const accountItemElements = await this.driver.findElements(
+        this.accountItems,
+      );
+      const isValid = accountItemElements.length === expectedCount;
+      console.log(
+        `Number of accounts: ${accountItemElements.length} is equal to ${expectedCount}? ${isValid}`,
+      );
+      return isValid;
+    }, 10000);
+
     const accountItemElements = await this.driver.findElements(
       this.accountItems,
     );
