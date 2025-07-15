@@ -41,7 +41,7 @@ export const AccountDetailsRow = ({
       className="multichain-account-details__row"
       data-testid={`account-details-row-${label
         .toLowerCase()
-        .replace(' ', '-')}`}
+        .replaceAll(' ', '-')}`}
     >
       <Text
         color={TextColor.textDefault}
@@ -64,7 +64,7 @@ export const AccountDetailsRow = ({
           }}
           data-testid={`account-details-row-value-${label
             .toLowerCase()
-            .replace(' ', '-')}`}
+            .replaceAll(' ', '-')}`}
         >
           {value}
         </Text>
