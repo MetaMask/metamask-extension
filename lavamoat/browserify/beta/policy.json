@@ -1116,21 +1116,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils>@noble/curves": true,
-        "@noble/hashes": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "@toruslabs/eccrypto>elliptic": true,
-        "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils>json-stable-stringify": true
-      }
-    },
-    "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@metamask/auth-network-utils": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@noble/curves": true,
+        "@noble/curves": true,
         "@noble/hashes": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -1679,7 +1665,7 @@
       "packages": {
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
-        "@metamask/snaps-sdk>@metamask/key-tree>@noble/curves": true,
+        "@noble/curves": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true
       }
@@ -2259,7 +2245,7 @@
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/snaps-utils>@metamask/snaps-registry>@noble/curves": true,
+        "@noble/curves": true,
         "@noble/hashes": true
       }
     },
@@ -2398,9 +2384,9 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@metamask/auth-network-utils": true,
+        "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": true,
         "@noble/ciphers": true,
-        "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@noble/curves": true,
+        "@noble/curves": true,
         "@noble/hashes": true,
         "@toruslabs/eccrypto": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@toruslabs/fetch-node-details": true,
@@ -2550,38 +2536,6 @@
       }
     },
     "@noble/curves": {
-      "packages": {
-        "@noble/hashes": true
-      }
-    },
-    "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@noble/hashes": true
-      }
-    },
-    "@metamask/snaps-sdk>@metamask/key-tree>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@noble/hashes": true
-      }
-    },
-    "@metamask/snaps-utils>@metamask/snaps-registry>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@noble/hashes": true
-      }
-    },
-    "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
       "packages": {
         "@noble/hashes": true
       }
@@ -4553,15 +4507,6 @@
     "@ngraveio/bc-ur>jsbi": {
       "globals": {
         "define": true
-      }
-    },
-    "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils>json-stable-stringify": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "browserify>util>which-typed-array>call-bound": true,
-        "@lavamoat/lavapack>json-stable-stringify>isarray": true,
-        "@lavamoat/lavapack>json-stable-stringify>jsonify": true,
-        "@lavamoat/lavapack>json-stable-stringify>object-keys": true
       }
     },
     "@metamask/message-manager>jsonschema": {
