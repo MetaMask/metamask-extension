@@ -5503,7 +5503,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auth-network-utils@npm:^0.3.0, @metamask/auth-network-utils@npm:^0.3.1":
+"@metamask/auth-network-utils@npm:^0.3.0":
   version: 0.3.1
   resolution: "@metamask/auth-network-utils@npm:0.3.1"
   dependencies:
@@ -7527,11 +7527,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/toprf-secure-backup@npm:0.5.0":
-  version: 0.5.0
-  resolution: "@metamask/toprf-secure-backup@npm:0.5.0"
+"@metamask/toprf-secure-backup@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@metamask/toprf-secure-backup@npm:0.4.0"
   dependencies:
-    "@metamask/auth-network-utils": "npm:^0.3.1"
+    "@metamask/auth-network-utils": "npm:^0.3.0"
     "@noble/ciphers": "npm:^1.2.1"
     "@noble/curves": "npm:^1.8.1"
     "@noble/hashes": "npm:^1.7.1"
@@ -7541,7 +7541,7 @@ __metadata:
     "@toruslabs/fetch-node-details": "npm:^15.0.0"
     "@toruslabs/http-helpers": "npm:^8.1.1"
     bn.js: "npm:^5.2.1"
-  checksum: 10/4ed4d25c81a5ef05f88ca3f95924af8eafd202110f950f217c871297458b399cfbedac1efbc446c111944d6177a926375227b09487ba665eea244b19ce77b893
+  checksum: 10/8aebf34e1051a2715bbbd5af576084b8c6eb4ecd1b8383e326aabf390c486d520746777d4fb0fd19078ca8f714e92b0a693795afe7acc38439d820ed22ec7a52
   languageName: node
   linkType: hard
 
