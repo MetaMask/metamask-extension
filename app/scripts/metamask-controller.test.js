@@ -1,8 +1,6 @@
 /**
  * @jest-environment node
  */
-// Import to set up global `Promise.withResolvers` polyfill
-import '../../shared/lib/promise-with-resolvers';
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
 import { obj as createThroughStream } from 'through2';
