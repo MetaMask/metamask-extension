@@ -834,7 +834,6 @@ export enum MetaMetricsEventName {
   WalletCreated = 'Wallet Created',
   WalletSetupFailure = 'Wallet Setup Failure',
   WalletSetupCompleted = 'Wallet Setup Completed',
-  WalletRehydrationSelected = 'Wallet Rehydration Selected',
   SocialLoginCompleted = 'Social Login Completed',
   RehydrationPasswordAttempted = 'Rehydration Password Attempted',
   RehydrationPasswordCompleted = 'Rehydration Password Completed',
