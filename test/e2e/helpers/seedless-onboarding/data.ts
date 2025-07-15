@@ -1,44 +1,66 @@
-export const MOCK_AUTH_PUB_KEY = '044f33908d63adb5bae1e3518edc88e7d4078452795871ea28217bab38f6098658f5418f3a0a58f8832660c28d5fb3981a578f94cce79094dbce6a2c131856fa4d'
+/* eslint-disable @typescript-eslint/naming-convention */
+// disable eslint naming convention to match the server response fields
 
-export const MOCK_KEY_SHARE_DATA = {
+export const MockJwtPrivateKey = `-----BEGIN PRIVATE KEY-----\nMEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCCD7oLrcKae+jVZPGx52Cb/lKhdKxpXjl9eGNa1MlY57A==\n-----END PRIVATE KEY-----`;
+
+export const MockAuthPubKey =
+  '04b02bd479380f5deee3963aee4af81d422b934975f1b7ec59f56c3afc97c440773b0a79edd1987f26d9a8b2f7479c095b1e6941c7bf11af70a910e0ad4295010f';
+
+// Mock data for TOPRF Key shares
+export const MockKeyShareData = {
   verifier: 'torus-test-health-aggregate',
-  verifier_id: 'e2e-user-47b4c824-6dcb-4208-8ed7-56e9957887e4',
-  pub_key: MOCK_AUTH_PUB_KEY,
+  verifier_id: 'e2e-user-mock@gmail.com',
+  pub_key: MockAuthPubKey,
   share_import_items: [
     {
-      encrypted_share: '{"data":"4d6b10cc51f711ff226d92aa14ef72c393861d268091d441e5eb3c69e24c0ac1c50c5a102f8d557dd01e07c790d1099d","metadata":{"iv":"d34ee5b93b043308cccc03e93e1365aa","ephemPublicKey":"04ebf01702c6ceb18f30d07416e33a0a58bb5db81b87f00ceeeed7937f3351a5f823e67d4f1a8d14eac74480f8dee09abf8a2b6dce05cb03c0a0f912bea7493c31","mac":"9504970e6b2b2f23e27bf5b58ea203558adb91e3233545b6140dd79f939e6ef0","mode":"AES256"}}',
-      encrypted_auth_token: '{"data":"57e223005fc5a787c281da09e940e4af74c2972a70adf6aa75596d0fb23aaf545d350f75856915160e04a740f4030d4bf30265e35a1045172e72a0da7ac2bea5","metadata":{"iv":"23c7b10f64d24a49ca6d8e3facaa1c78","ephemPublicKey":"04f6346e2a3e3c2e0df9efc524b830c3b44ff435d8550fa062fd085e9d22c7a6d9007868b64df22db0f7bcbb21148b2cc633004f77df612fc1ae38d815848724de","mac":"ae8d86c616c57617cb3dac9d10b3779ec4df20070816b99d0b668588cd9c8959","mode":"AES256"}}',
+      encrypted_share:
+        '{"data":"308c8f68069050375e440565291d083a6aeeb09eb09d44a6e06fe64752281bc096f5af27b035187f01c16774e039c6ce","metadata":{"iv":"fb685e32b136f5603908af0e31ba8f2b","ephemPublicKey":"047ea91a8294a868eb1183f44042401f728495cbe83c7e4a2a5ef47dafdeba919b6e2af74ed028ef79eb9e94f7343858f99621adfde49c383a0e663ae8ba048f02","mac":"58310ef843981af87e5b2524750456d0a579d7c35472ce1ea390f7376cf36b37","mode":"AES256"}}',
+      encrypted_auth_token:
+        '{"data":"4ac28f20c7aae9550197d01642c7f416fa58f88c0370b5231bb5eba069a6d3a7edff496f119596829965e5ac27d4125be5330ed31c8f5807e97fa94f16c72f12","metadata":{"iv":"9091535af1c48a55f39c1559eeb4fa3b","ephemPublicKey":"04ba7b3698082678abc12834e4595d8fc3c3f5cbfc64abdaff8d70e52f0491e20545dafeffffc4d80c70565a105c8849ef2145dd6fd023d5c1634b283282a16ef6","mac":"768cf14a53fd022911b0cd29dadbe9c6daca3ac21aaad333438e4c4ec7565ec3","mode":"AES256"}}',
       key_share_index: 1,
       node_index: 1,
-      sss_endpoint: 'https://node-1.dev-node.web3auth.io/sss/jrpc'
+      sss_endpoint: 'https://node-1.dev-node.web3auth.io/sss/jrpc',
     },
     {
-      encrypted_share: '{"data":"03ca6602b403df9357359d6e11189944cfe1928d6ab2af2791d8298345d89f856306868525591c40d6c2fec52080f5fc","metadata":{"iv":"97f7433b3cbe2fd722c9c0374614dc62","ephemPublicKey":"04f0321c9f3b28205d63c39c18ab9e2cc07e39afbfea5855a68f92f62369a1a3956bf7acc2389db3464da2f175b4e58f1762b645783d23e55e0c3e8b805e0aad21","mac":"91f541a86919d11d536a719f73caa35acdaca2920e7829ca475cd33ad147ac59","mode":"AES256"}}',
-      encrypted_auth_token: '{"data":"2aa3e12e1c20b5b8f83162059f08f13ce064ba95d9ba9b8260557b300f7679dbaf9c9c63550a480713a31adfa32f47c94ad0deec62e07eb9952be7efab3e6667","metadata":{"iv":"eb2d2b737ee4d35fb5f7121a872fac83","ephemPublicKey":"04576d652eaccbf6096b0cbda95991400ae7af5bc998fa8779fc57855ba617a9a293ecfbd98515fb03bf87a138e6af1efec9534d385222004c740046b6ed937b6c","mac":"681632ebd344663c4952329e09657815120262bf8e2257926370336ddc4504ed","mode":"AES256"}}',
+      encrypted_share:
+        '{"data":"582107095e96efdc55de2d723a302e9be2323dc66135584f0b87c6b21f19d7bebe15485e9b3665ff85bf2cb72b9f291e","metadata":{"iv":"d0f338d79144c1fcff805f2487241fb6","ephemPublicKey":"042d1bc11f96462f87f2e03a005a8c728b52545233535e738374d982922fb094c94ede5e837e12193b5175689cb856c6301e818eecde3d9eda6b65f468cf06c1a1","mac":"46a1a5143be3c344dd80b3e3bc75833a6f1d4606fa2a59d1a51d1e2a200f7f16","mode":"AES256"}}',
+      encrypted_auth_token:
+        '{"data":"9a8e12896efc74b3c3040a247c51d9ce55663088af2244a0c3a412f749c399de8f2c9e661ae2dddc544e2c7a815b607c0959d4bf16449d6671fd6c499314f79e","metadata":{"iv":"c6766e81c8d1d050080995ea9ab17ab8","ephemPublicKey":"0468bac1c52fb311a18d70b9cf91718dd8df4208c3f8b57fbff989aad2702d4828f70d9e316fbf5bf6da2b046e8319a0a906cfaba998ece8509f230715da7f9769","mac":"5cd6c5107e256800c194440b45e7e2ee2c7f2d8c5d6873ac59bf53a7c58a5b70","mode":"AES256"}}',
       key_share_index: 1,
       node_index: 2,
-      sss_endpoint: 'https://node-2.dev-node.web3auth.io/sss/jrpc'
+      sss_endpoint: 'https://node-2.dev-node.web3auth.io/sss/jrpc',
     },
     {
-      encrypted_share: '{"data":"218c035a69760e28b666faca04d07a5ce462197c54595b4fee3adca0986d4cfb5d75eec98c1c380f559e1cce51478c00","metadata":{"iv":"abb0ad201ced69a7cece86cb45ddd25b","ephemPublicKey":"04b935fe7f1f6cf33ca3f28f8acb883e601b6fc825ce22e1348901c3377c711af7c148a4cf7ca8e3e0b3f87d139402ee69508047fd12f72e10dfa82d9ae42185c6","mac":"023f7a5802474d1a1193aa1acdafaabdfbd9d0e6f9e632b46609466e15a9673a","mode":"AES256"}}',
-      encrypted_auth_token: '{"data":"660e23b0eaf32e3be75034e114215db04aa4cc3e08c9532c7e6e77d931eb5ca7475bb41cddaae72abdd9123b919aa5a35d96d0cd5026ef054681bead03742c1e","metadata":{"iv":"3f01658f8e5e54275dbceacc60ee30e1","ephemPublicKey":"04e021c6f8a4546e561a6308a5053826224a4debb24fe3620a03100b1d5df61a78d14f5f3147205db34f9e79e9eee752d2e36648066f5bde513f5888b1c93c6911","mac":"30136a5471075c0c6e0b8959a7b06745d25e60eb322bd61a8f369dab44240f0a","mode":"AES256"}}',
+      encrypted_share:
+        '{"data":"45fa6fb620689903a8b4ca1fcd51705dd774612ff2112c17c53b2e83195456550e0d3454eaf1b27e14c444a2a70e63db","metadata":{"iv":"c7f63079d3af524ebf28720ca15f5e65","ephemPublicKey":"04fcbea1708ff7bce488799978db6f8e8b58581c3c3acd9d03d60b87a30355ee599bd8f47e72ad13c94cb5f6d6ef3436d6be451c0d13c5ce21ac8982c699184637","mac":"c067d6fa8eb4e948b863f4ff2d7f6424ac9a84a80aee6662543b9dcc1be426f2","mode":"AES256"}}',
+      encrypted_auth_token:
+        '{"data":"7de929b97b52f1111576fa6f535eb4b06ad37707a031f24dadfb0ed53b30b358af335389d74a2e0fbd2e4c673cc44f469a8cff9132003c9331cee0c20e56ca13","metadata":{"iv":"d92727f0c6a96fce80e93f128443f391","ephemPublicKey":"0450f8f6ff9385a3e697103d9023b0d8ecfe52f96fa9d16a16d2195dfee4bc9d5e5c4261565ad175d48c6da728c94ae7e547b20eb87a5f391030a72600c73c4994","mac":"15a2340f3459baf0d18ac7aa802a6aa20faf206ec1024b25e30b15a4c2308731","mode":"AES256"}}',
       key_share_index: 1,
       node_index: 3,
-      sss_endpoint: 'https://node-3.dev-node.web3auth.io/sss/jrpc'
+      sss_endpoint: 'https://node-3.dev-node.web3auth.io/sss/jrpc',
     },
     {
-      encrypted_share: '{"data":"2d5a7f2ebee60a489ae63a5a821235500dbeb51afc70d090543274e6eb461c4ef709270c38a85504133a6394e5d5e987","metadata":{"iv":"44e3656f775379e74b74215fa2286832","ephemPublicKey":"0428ad7a835bc11c08119f03aa78949a93de1b43e1075d3e1095cd0735da0105a8103e1cdaca8dacb80b754b5526deb559f37d8375de0a4ecc925c6680911ac571","mac":"303dc98ecfd194dbf93ad1672d2c591f9bdd542b3918ebcf1aba7bd3a1afe595","mode":"AES256"}}',
-      encrypted_auth_token: '{"data":"f95280b5f247626ea1a14b97bc4587afb2cc06321f42110c36bdcc5f85cae9920b68d2b64a953281f768a4fb39c11909202adaa0e30f9c5d0444566a1cc2b514","metadata":{"iv":"ff6621a8ad8e53a6034d5af4d14bb40a","ephemPublicKey":"040b62fc833302bd5d525ec322ccad8ddd2f81f884f622ab34aee6b69ebb56edcd78911922aff4662720f9855224d8c47d11aa53e46264459dd456a9d004756d7d","mac":"109d3290a063796c288f05466700eb1abd9ca0b38e9e0f70c5f12610ac0c1906","mode":"AES256"}}',
+      encrypted_share:
+        '{"data":"655f9043f003481719ee13b46c4e04e7c62b3286067f846508652f67fff7422e99abcd633eb049511e8bda54f705ce07","metadata":{"iv":"687b2f80120eed43482c98aa24330018","ephemPublicKey":"046d92016fc849af2c320d3a8f848e72ffe725ebd3ba9028974bbd1a1c03a91cd80f5da65406e0ddd78dbb9c2090a7b35f7e53525765fca18fdb05756fa97ab892","mac":"5f274a83a48b978e2620e071daa5178ec95ff741502cf4c866b3017b315f3f94","mode":"AES256"}}',
+      encrypted_auth_token:
+        '{"data":"afaedf6d7659f5b6f69ccc092f05bc36519c7401ff6a8c9b24aad2c7679aea16b0a695d2b053aa1bfa250cb12b8bdff78631b843420ce522026f1a42cc0d0815","metadata":{"iv":"f5b9b2f0a10bcda05faf916adbda6c3e","ephemPublicKey":"04488cc464c13019a9fd35f5c8067fd4f4bd4abd16673a275634ebad5f568082e735a19865dc8c86d09cc44f97a75a08a2eb23ecc4d1865fccc3e51a35ab769f16","mac":"32947746a3b885fe0776f3211c979c682edc4597839d3cbbf8d01d6e6ddd59d3","mode":"AES256"}}',
       key_share_index: 1,
       node_index: 4,
-      sss_endpoint: 'https://node-4.dev-node.web3auth.io/sss/jrpc'
+      sss_endpoint: 'https://node-4.dev-node.web3auth.io/sss/jrpc',
     },
     {
-      encrypted_share: '{"data":"7a4bbb27c4c6d57f9b81bf39f53660b8a1c5cff2a4bf8fb5692f0e6cce418cc5adb019e5b595e24ae49c462489aa03d3","metadata":{"iv":"f2da3f32551a926f7c62c20612633442","ephemPublicKey":"0475ee4466e2a7e768fa14479120b8005960a0e274eae3dd976862b2c583d52d42b073c8c8d05aca7ec60049a71cdf19d24598b523cfb46f5e079601276c9424dd","mac":"9ae1dc315adf88a51ee2a56af44bda32d24610599e6a302124990adf8c6d9532","mode":"AES256"}}',
-      encrypted_auth_token: '{"data":"bc0a32cf32f99293cf31069a654e88e5a9ff763ecb2c14ef8619d4bc95b179b5ae6770dcf5efdb29eea6e9ec0ec115b24b87c438e1289f2efeaf409cc88ae13e","metadata":{"iv":"b5bd1d6d3d932b434a8d885322e43dd6","ephemPublicKey":"044c64987b120ce4423f8abcffb59b5226095f703c8cc2f0154c878ad5a07f08b7b98c1d71ced5978773a9a9255b126a6f7307af462e251d3bae0ce54039354ab5","mac":"49162708f64a35eaea5534ff95de1ccd2c0e924089fc8268acd3ea9973b4b997","mode":"AES256"}}',
+      encrypted_share:
+        '{"data":"5cde51b1be269fb1277edaf5fe2ff513a592ae7f573b03f6f04d37042d7a1035fb87f2393c032d275fc5c7de83917304","metadata":{"iv":"92438a912955ce1edc842e3b2f080d48","ephemPublicKey":"047a3450562425f59bb6595123a10dab307d304bfc45dbc4581c8ede5c296b69bd516dcdce813f08dbcab975738b71684732ff6476f07a9708c54bfdcd7359a0f3","mac":"642850083337bf7b9a8c1f67e918e192a58cee6866efeb15a55407a735485c2b","mode":"AES256"}}',
+      encrypted_auth_token:
+        '{"data":"13a0f9342b86059fdc37418bd2d5dedc5e95c95ee77e4e0d0d0cb76baf434684a534321e5910fe24b424068002e60a547deb1da0f05404de8caa3401d444634b","metadata":{"iv":"f0da416d5330a832cfce0ad389d331bb","ephemPublicKey":"04b0775622ff2685512b6a5a9936148484679c514f5406ddd693aab1795e1ab3eea3c6defa8fcb1af551cb74ea0096efec050fe044f089adc2886ee8a9f945988a","mac":"609b409347d3589116ef635dba59ac6ae393d4d55106bfd9fa3210511c049e7c","mode":"AES256"}}',
       key_share_index: 1,
       node_index: 5,
-      sss_endpoint: 'https://node-5.dev-node.web3auth.io/sss/jrpc'
-    }
-  ]
+      sss_endpoint: 'https://node-5.dev-node.web3auth.io/sss/jrpc',
+    },
+  ],
 };
+
+export const MockEncryptionKey = new Uint8Array([
+  178, 255, 51, 33, 212, 66, 206, 202, 159, 154, 43, 149, 176, 145, 103, 252,
+  73, 194, 181, 254, 61, 207, 217, 213, 198, 247, 182, 19, 181, 59, 196, 123,
+]);

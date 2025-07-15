@@ -1124,6 +1124,20 @@
         "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils>json-stable-stringify": true
       }
     },
+    "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@metamask/auth-network-utils": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@noble/curves": true,
+        "@noble/hashes": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "@toruslabs/eccrypto>elliptic": true,
+        "eslint>json-stable-stringify-without-jsonify": true
+      }
+    },
     "@metamask/base-controller": {
       "globals": {
         "setTimeout": true
@@ -2143,7 +2157,7 @@
         "@metamask/base-controller": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": true,
         "@metamask/utils": true,
-        "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-walletconnect>@walletconnect/solana-adapter>@walletconnect/utils>@noble/ciphers": true,
+        "@noble/ciphers": true,
         "@noble/curves": true,
         "@metamask/name-controller>async-mutex": true
       }
@@ -2383,11 +2397,12 @@
       "globals": {
         "URL": true,
         "console.error": true,
+        "console.log": true,
         "fetch": true
       },
       "packages": {
-        "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": true,
-        "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@noble/ciphers": true,
+        "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@metamask/auth-network-utils": true,
+        "@noble/ciphers": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@noble/curves": true,
         "@noble/hashes": true,
         "@toruslabs/eccrypto": true,
@@ -2523,21 +2538,14 @@
         "addons-linter>sha.js": true
       }
     },
+    "@noble/ciphers": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
     "@metamask/profile-sync-controller>@noble/ciphers": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@noble/ciphers": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-walletconnect>@walletconnect/solana-adapter>@walletconnect/utils>@noble/ciphers": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true,

@@ -1,10 +1,18 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+// disable eslint naming convention for the Network Request body fields
+
 export type JsonRpcResponse<Result> = {
   id: number;
   jsonrpc: string;
   result: Result;
 };
 
-export type ToprfJsonRpcRequestMethod = 'TOPRFCommitmentRequest' | 'TOPRFAuthenticateRequest' | 'TOPRFStoreKeyShareRequest' | 'TOPRFEvalRequest';
+export type ToprfJsonRpcRequestMethod =
+  | 'TOPRFCommitmentRequest'
+  | 'TOPRFAuthenticateRequest'
+  | 'TOPRFStoreKeyShareRequest'
+  | 'TOPRFEvalRequest'
+  | 'TOPRFResetRateLimitRequest';
 
 export type ToprfCommitmentRequestParams = {
   token_commitment: string;

@@ -292,7 +292,9 @@ export function restoreSocialBackupAndGetSeedPhrase(
         throw new Error('No seed phrase found');
       }
 
+      console.log('firstSeedPhrase', firstSeedPhrase);
       const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
+      console.log('mnemonic', mnemonic);
       const encodedSeedPhrase = Array.from(
         Buffer.from(mnemonic, 'utf8').values(),
       );

@@ -1,13 +1,18 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { sign } from 'jsonwebtoken';
-import { Mockttp } from 'mockttp';
+import { CompletedRequest, Mockttp } from 'mockttp';
+import { gcm } from '@noble/ciphers/aes';
+import { managedNonce } from '@noble/ciphers/webcrypto';
 import { secp256k1 } from '@noble/curves/secp256k1';
 import { decrypt, encrypt } from '@toruslabs/eccrypto';
+import { SecretType } from '@metamask/seedless-onboarding-controller';
+import { bytesToBase64, stringToBytes } from '@metamask/utils';
+import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
   AuthServer,
-  METADATA_SET_PATH,
-  SSS_BASE_URL_RGX,
-  SSS_NODE_KEYPAIRS,
+  MetadataService,
+  SSSBaseUrlRgx,
+  SSSNodeKeyPairs,
 } from './constants';
 import {
   ToprfAuthenticateResponse,
@@ -15,9 +20,12 @@ import {
   ToprfEvalRequestParams,
   ToprfJsonRpcRequestBody,
 } from './types';
-import { MOCK_AUTH_PUB_KEY, MOCK_KEY_SHARE_DATA } from './data';
-
-const MOCK_JWT_PRIVATE_KEY = `-----BEGIN PRIVATE KEY-----\nMEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCCD7oLrcKae+jVZPGx52Cb/lKhdKxpXjl9eGNa1MlY57A==\n-----END PRIVATE KEY-----`;
+import {
+  MockAuthPubKey,
+  MockEncryptionKey,
+  MockKeyShareData,
+  MockJwtPrivateKey,
+} from './data';
 
 function generateMockJwtToken(userId: string) {
   const iat = Math.floor(Date.now() / 1000);
@@ -31,7 +39,7 @@ function generateMockJwtToken(userId: string) {
     eat: iat + 120,
   };
 
-  return sign(payload, MOCK_JWT_PRIVATE_KEY, {
+  return sign(payload, MockJwtPrivateKey, {
     expiresIn: 120,
     algorithm: 'ES256',
   });
@@ -44,6 +52,15 @@ function padHex(hex: string, length: number = 64) {
   return hex;
 }
 
+/**
+ * Generate a mock blinded output for TOPRF Eval response.
+ *
+ * @param blindedInputX - The x coordinate of the blinded input from TOPRF Eval request.
+ * @param blindedInputY - The y coordinate of the blinded input from TOPRF Eval request.
+ * @param nodeIndex - The index of the node.
+ * @param shareCoefficient - The share coefficient from TOPRF Eval request.
+ * @returns The blinded output.
+ */
 async function generateBlindedOutput(
   blindedInputX: string,
   blindedInputY: string,
@@ -51,8 +68,8 @@ async function generateBlindedOutput(
   shareCoefficient: bigint = 1n,
 ) {
   const encShareString =
-    MOCK_KEY_SHARE_DATA.share_import_items[nodeIndex - 1].encrypted_share;
-  const nodePrivateKey = SSS_NODE_KEYPAIRS[nodeIndex].privKey;
+    MockKeyShareData.share_import_items[nodeIndex - 1].encrypted_share;
+  const nodePrivateKey = SSSNodeKeyPairs[nodeIndex].privKey;
 
   const { data, metadata } = JSON.parse(encShareString);
 
@@ -77,6 +94,31 @@ async function generateBlindedOutput(
   const blindedOutputY = blinedOutputPoint.y.toString(16);
 
   return { blindedOutputX, blindedOutputY };
+}
+
+/**
+ * Generate a mock encrypted secret data for Metadata Service.
+ *
+ * @param secretDataArr - The array of secret data.
+ * @returns The encrypted secret data.
+ */
+async function generateEncryptedSecretData(
+  secretDataArr: { data: Uint8Array; timestamp?: number; type?: SecretType }[],
+) {
+  const encData = secretDataArr.map((secretData) => {
+    const b64SecretData = Buffer.from(secretData.data).toString('base64');
+    const secretMetadata = JSON.stringify({
+      data: b64SecretData,
+      timestamp: secretData.timestamp ?? 1752564090656,
+      type: secretData.type,
+    });
+    const secretBytes = stringToBytes(secretMetadata);
+
+    const aes = managedNonce(gcm)(MockEncryptionKey);
+    const cipherText = aes.encrypt(secretBytes);
+    return bytesToBase64(cipherText);
+  });
+  return encData;
 }
 
 // Mock OAuth Service and Authentication Server
@@ -172,28 +214,8 @@ export class OAuthMockttpService {
   }
 
   async onPostToprfAuthenticate(nodeIndex: number, isNewUser: boolean = true) {
-    const pubKeyHex = Buffer.from(this.#sessionPubKey, 'hex');
-
-    const mockAuthTokenData = JSON.stringify({
-      data: 'mock-auth-token-data',
-      exp: Date.now(),
-    });
-
-    const { ciphertext, ephemPublicKey, mac, iv } = await encrypt(
-      pubKeyHex,
-      Buffer.from(mockAuthTokenData),
-    );
-
-    const mockAuthToken = JSON.stringify({
-      data: Buffer.from(ciphertext).toString('hex'),
-      metadata: {
-        iv: Buffer.from(iv).toString('hex'),
-        ephemPublicKey: Buffer.from(ephemPublicKey).toString('hex'),
-        mac: Buffer.from(mac).toString('hex'),
-      },
-    });
-
-    const mockNodePubKey = SSS_NODE_KEYPAIRS[nodeIndex].pubKey;
+    const mockNodePubKey = SSSNodeKeyPairs[nodeIndex].pubKey;
+    const mockAuthToken = await this.#generateMockAuthToken();
 
     const authenticateResult: ToprfAuthenticateResponse = {
       auth_token: mockAuthToken,
@@ -203,7 +225,7 @@ export class OAuthMockttpService {
 
     if (!isNewUser) {
       authenticateResult.key_index = 1;
-      authenticateResult.pub_key = MOCK_AUTH_PUB_KEY;
+      authenticateResult.pub_key = MockAuthPubKey;
     }
 
     return {
@@ -212,19 +234,6 @@ export class OAuthMockttpService {
         id: 1,
         jsonrpc: '2.0',
         result: authenticateResult,
-      },
-    };
-  }
-
-  async onPostToprfStoreKeyShare() {
-    return {
-      statusCode: 200,
-      json: {
-        id: 1,
-        jsonrpc: '2.0',
-        result: {
-          message: 'Key share stored successfully',
-        },
       },
     };
   }
@@ -242,7 +251,7 @@ export class OAuthMockttpService {
       blinded_output_y: blindedOutputY,
       key_share_index: 1,
       node_index: nodeIndex,
-      pub_key: MOCK_AUTH_PUB_KEY,
+      pub_key: MockAuthPubKey,
     };
 
     return {
@@ -251,6 +260,34 @@ export class OAuthMockttpService {
         id: 1,
         jsonrpc: '2.0',
         result: evalResult,
+      },
+    };
+  }
+
+  async onPostMetadataGet() {
+    const mockSeedPhrase =
+      'horse pupil style brush dust borrow simple easily bean margin actor valve';
+    const seedPhraseAsBuffer = Buffer.from(mockSeedPhrase, 'utf8');
+    const indices = seedPhraseAsBuffer
+      .toString()
+      .split(' ')
+      .map((word: string) => wordlist.indexOf(word));
+    const seedPhraseBytes = new Uint8Array(new Uint16Array(indices).buffer);
+
+    const secretData = [
+      {
+        data: seedPhraseBytes,
+        timestamp: Date.now(),
+        type: SecretType.Mnemonic,
+      },
+    ];
+    const encryptedSecretData = await generateEncryptedSecretData(secretData);
+    return {
+      statusCode: 200,
+      json: {
+        success: true,
+        data: encryptedSecretData,
+        ids: [],
       },
     };
   }
@@ -282,37 +319,111 @@ export class OAuthMockttpService {
         return this.onPostRevokeToken();
       });
 
+    // Intercept the TOPRF requests (Authentication, KeyGen, Eval, etc.) and mock the responses
     server
-      .forPost(SSS_BASE_URL_RGX)
+      .forPost(SSSBaseUrlRgx)
       .always()
       .thenCallback(async (request) => {
-        const nodeIndex = this.#extractNodeIndexFromUrl(request.url);
-        const jsonRpcRequestBody = await request.body.getJson();
-        const { method, params } =
-          jsonRpcRequestBody as ToprfJsonRpcRequestBody<unknown>;
-
-        if (method === 'TOPRFCommitmentRequest') {
-          return this.onPostToprfCommitment(
-            params as ToprfCommitmentRequestParams,
-            nodeIndex,
-          );
-        } else if (method === 'TOPRFStoreKeyShareRequest') {
-          return this.onPostToprfStoreKeyShare();
-        } else if (method === 'TOPRFEvalRequest') {
-          return this.onPostToprfEval(
-            params as ToprfEvalRequestParams,
-            nodeIndex,
-          );
-        }
-
-        const isNewUser = !options?.userEmail;
-        return this.onPostToprfAuthenticate(nodeIndex, isNewUser);
+        return this.#handleToprfMockResponses(request, options);
       });
 
-    server.forPost(METADATA_SET_PATH).always().thenJson(200, {
+    server.forPost(MetadataService.Set).always().thenJson(200, {
       success: true,
       message: 'Metadata set successfully',
     });
+
+    server
+      .forPost(MetadataService.Get)
+      .always()
+      .thenCallback(async (_request) => {
+        return this.onPostMetadataGet();
+      });
+  }
+
+  /**
+   * Handle the mock responses for the TOPRF requests.
+   *
+   * @param request - The request object.
+   * @param options - The options for the mock responses.
+   * @param options.userEmail - The email of the user to mock. If not provided, random generated email will be used.
+   */
+  async #handleToprfMockResponses(
+    request: CompletedRequest,
+    options?: {
+      userEmail?: string;
+    },
+  ) {
+    const nodeIndex = this.#extractNodeIndexFromUrl(request.url);
+    const jsonRpcRequestBody = await request.body.getJson();
+    const { method, params } =
+      jsonRpcRequestBody as ToprfJsonRpcRequestBody<unknown>;
+
+    if (method === 'TOPRFCommitmentRequest') {
+      // Mock the TOPRF Commitment request
+      return this.onPostToprfCommitment(
+        params as ToprfCommitmentRequestParams,
+        nodeIndex,
+      );
+    } else if (method === 'TOPRFStoreKeyShareRequest') {
+      // Mock the TOPRF Store Key Share request
+      return {
+        statusCode: 200,
+        json: {
+          id: 1,
+          jsonrpc: '2.0',
+          result: {
+            message: 'Key share stored successfully',
+          },
+        },
+      };
+    } else if (method === 'TOPRFEvalRequest') {
+      // Mock the TOPRF Eval request (during Social login rehydrate or import wallet)
+      return this.onPostToprfEval(params as ToprfEvalRequestParams, nodeIndex);
+    } else if (method === 'TOPRFResetRateLimitRequest') {
+      return {
+        statusCode: 200,
+        json: {
+          id: 1,
+          jsonrpc: '2.0',
+          result: {
+            message: 'Key share stored successfully',
+          },
+        },
+      };
+    }
+
+    const isNewUser = !options?.userEmail;
+    return this.onPostToprfAuthenticate(nodeIndex, isNewUser);
+  }
+
+  /**
+   * Generate a mock authentication token for TOPRF Authenticate request.
+   *
+   * @returns The mock authentication token.
+   */
+  async #generateMockAuthToken() {
+    const pubKeyHex = Buffer.from(this.#sessionPubKey, 'hex');
+
+    const mockAuthTokenData = JSON.stringify({
+      data: 'mock-auth-token-data',
+      exp: Date.now(),
+    });
+
+    const { ciphertext, ephemPublicKey, mac, iv } = await encrypt(
+      pubKeyHex,
+      Buffer.from(mockAuthTokenData),
+    );
+
+    const mockAuthToken = JSON.stringify({
+      data: Buffer.from(ciphertext).toString('hex'),
+      metadata: {
+        iv: Buffer.from(iv).toString('hex'),
+        ephemPublicKey: Buffer.from(ephemPublicKey).toString('hex'),
+        mac: Buffer.from(mac).toString('hex'),
+      },
+    });
+
+    return mockAuthToken;
   }
 
   #extractNodeIndexFromUrl(url: string): number {

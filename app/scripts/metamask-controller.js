@@ -4731,9 +4731,10 @@ export default class MetamaskController extends EventEmitter {
       const allSeedPhrases =
         await this.seedlessOnboardingController.fetchAllSecretData(password);
 
-      return allSeedPhrases.map((phrase) =>
-        this._convertEnglishWordlistIndicesToCodepoints(phrase.data),
-      );
+      return allSeedPhrases.map((phrase) => {
+        console.log('phrase', phrase.data);
+        return this._convertEnglishWordlistIndicesToCodepoints(phrase.data);
+      });
     } catch (error) {
       log.error(
         'Error while fetching and restoring seed phrase metadata.',
