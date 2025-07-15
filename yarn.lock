@@ -32183,7 +32183,6 @@ __metadata:
     mini-css-extract-plugin: "npm:^2.9.1"
     mocha: "npm:^10.2.0"
     mocha-junit-reporter: "npm:^2.2.1"
-    mock-socket: "npm:^9.3.1"
     mockttp: "npm:^3.10.1"
     nanoid: "npm:^3.3.8"
     navigator.locks: "npm:^0.8.6"
@@ -33080,13 +33079,6 @@ __metadata:
     _mocha: bin/_mocha
     mocha: bin/mocha.js
   checksum: 10/f7362898ae65e8fe716cfe62fd014b432d100c9611aaf5abe85ed14efcbfdd82f3bdf32c44bccf00c9059a264c7e8d93a69dd5b830652109052a92beffb7ea35
-  languageName: node
-  linkType: hard
-
-"mock-socket@npm:^9.3.1":
-  version: 9.3.1
-  resolution: "mock-socket@npm:9.3.1"
-  checksum: 10/c5c07568f2859db6926d79cb61580c07e67958b5cd6b52d1270fdfa17ae066d7f74a18a4208fc4386092eea4e1ee001aa23f015c88a1774265994e4fae34d18e
   languageName: node
   linkType: hard
 
