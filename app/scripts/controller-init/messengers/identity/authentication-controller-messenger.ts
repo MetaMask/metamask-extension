@@ -4,9 +4,13 @@ import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
+import { SeedlessOnboardingControllerGetStateAction } from '@metamask/seedless-onboarding-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 
-type MessengerActions = KeyringControllerGetStateAction | HandleSnapRequest;
+type MessengerActions =
+  | KeyringControllerGetStateAction
+  | HandleSnapRequest
+  | SeedlessOnboardingControllerGetStateAction;
 
 type MessengerEvents =
   | KeyringControllerLockEvent
@@ -31,6 +35,7 @@ export function getAuthenticationControllerMessenger(
     allowedActions: [
       'KeyringController:getState',
       'SnapController:handleRequest',
+      'SeedlessOnboardingController:getState',
     ],
     allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
   });

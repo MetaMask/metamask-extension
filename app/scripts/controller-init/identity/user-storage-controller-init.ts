@@ -1,9 +1,10 @@
 import {
+  Controller as UserStorageController,
   UserStorageControllerMessenger,
   UserStorageControllerState,
-  Controller as UserStorageController,
 } from '@metamask/profile-sync-controller/user-storage';
 import { captureException } from '@sentry/browser';
+import { Env } from '@metamask/profile-sync-controller/sdk';
 import { ControllerInitFunction } from '../types';
 import { isProduction } from '../../../../shared/modules/environment';
 import {
@@ -31,6 +32,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     config: {
+      env: isProduction() ? Env.PRD : Env.DEV,
       accountSyncing: {
         maxNumberOfAccountsToAdd: isProduction() ? undefined : 100,
         onAccountAdded: (profileId) => {
