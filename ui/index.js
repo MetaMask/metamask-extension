@@ -51,7 +51,14 @@ log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 /**
  * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
  */
-const reduxStore = Promise.withResolvers();
+const reduxStore = (() => {
+  let resolve, reject;
+  const promise = new Promise((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve, reject };
+})();
 
 /**
  * Method to update backgroundConnection object use by UI
