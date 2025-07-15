@@ -5,13 +5,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
-// Put the lavamoat repo next to metamask-extension
-// git clone git@github.com:LavaMoat/LavaMoat.git
-// cd LavaMoat
-// git checkout webpack-in-extension
-// When we're done, we'll switch back to @lavamoat/webpack
-// eslint-disable-next-line import/order
-import LavamoatPlugin from '../../../LavaMoat/packages/webpack';
+import LavamoatPlugin from '@lavamoat/webpack';
 
 import {
   ProvidePlugin,
@@ -186,8 +180,6 @@ const plugins: WebpackPluginInstance[] = [
 ];
 if (args.lavamoat) {
   plugins.push(
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore: webpack plugin types might differ when the plugin is loaded from a neighboring folder instead of the properly deduplicated dependencies of the project. Remove this when the plugin is properly installed.
     new LavamoatPlugin({
       rootDir: projectRoot,
       diagnosticsVerbosity: 2,
@@ -197,6 +189,7 @@ if (args.lavamoat) {
       inlineLockdown: /^runtime|contentscript\.js/u,
       unlockedChunksUnsafe: /inpage\.js/u,
       debugRuntime: false,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       __unsafeAllowContextModules: true,
       scuttleGlobalThis: {
         enabled: true,
