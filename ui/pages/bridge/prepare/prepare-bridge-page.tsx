@@ -9,7 +9,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
 import { type TokenListMap } from '@metamask/assets-controllers';
-import { ethers } from 'ethers';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   formatChainIdToCaip,
@@ -170,8 +169,6 @@ const PrepareBridgePage = () => {
     return Object.keys(fromTokens).length === 0;
   }, [fromTokens, fromChain]);
 
-  useBridgeQueryParams(isFromTokensLoading);
-
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
@@ -221,6 +218,8 @@ const PrepareBridgePage = () => {
   const selectedAccount = isEvm
     ? selectedEvmAccount
     : selectedMultichainAccount;
+
+  useBridgeQueryParams(selectedSolanaAccount, selectedEvmAccount);
 
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
