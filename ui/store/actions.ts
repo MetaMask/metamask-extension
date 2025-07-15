@@ -292,9 +292,7 @@ export function restoreSocialBackupAndGetSeedPhrase(
         throw new Error('No seed phrase found');
       }
 
-      console.log('firstSeedPhrase', firstSeedPhrase);
       const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
-      console.log('mnemonic', mnemonic);
       const encodedSeedPhrase = Array.from(
         Buffer.from(mnemonic, 'utf8').values(),
       );
@@ -885,7 +883,7 @@ export function addNewAccount(
     }
     // Fail-safe in case we could not find the associated HD keyring.
     if (!hdKeyring) {
-      console.error('Should never reach this. There is always a keyring');
+      log.error('Should never reach this. There is always a keyring');
       throw new Error('Keyring not found');
     }
     const oldAccounts = hdKeyring.accounts;
