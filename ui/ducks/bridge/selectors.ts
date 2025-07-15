@@ -220,7 +220,13 @@ export const getFromToken = createSelector(
     const { iconUrl, ...nativeAsset } = getNativeAssetForChainId(
       fromChain.chainId,
     );
-    return toBridgeToken(nativeAsset);
+    const newToToken = toBridgeToken(nativeAsset);
+    return newToToken
+      ? {
+          ...newToToken,
+          chainId: formatChainIdToCaip(fromChain.chainId),
+        }
+      : newToToken;
   },
 );
 
