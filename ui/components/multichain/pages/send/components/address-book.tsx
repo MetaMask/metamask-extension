@@ -5,9 +5,10 @@ import { Box, Text } from '../../../../component-library';
 import { I18nContext } from '../../../../../contexts/i18n';
 import ContactList from '../../../../app/contact-list';
 import {
-  getAddressBook,
+  getCompleteAddressBook,
   getCurrentNetworkTransactions,
   getInternalAccounts,
+  getNetworkConfigurationIdByChainId,
 } from '../../../../../selectors';
 import {
   addHistoryEntry,
@@ -26,6 +27,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
+import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
+import { setActiveNetworkWithError } from '../../../../../store/actions';
 import { SendPageRow } from './send-page-row';
 
 export const SendPageAddressBook = () => {
@@ -33,10 +36,16 @@ export const SendPageAddressBook = () => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const addressBook = useSelector(getAddressBook);
+  const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const contacts = addressBook.filter(({ name }) => Boolean(name));
   const currentNetworkTransactions = useSelector(getCurrentNetworkTransactions);
+
+  const currentChainId = useSelector(getCurrentChainId);
+  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
+    string,
+    string
+  >;
 
   const txList = [...currentNetworkTransactions].reverse();
   const nonContacts = addressBook
@@ -125,7 +134,11 @@ export const SendPageAddressBook = () => {
             internalAccounts={internalAccounts}
             searchForContacts={searchForContacts}
             searchForRecents={searchForRecents}
-            selectRecipient={(address = '', name = '') => {
+            selectRecipient={async (address = '', name = '', chainId = '') => {
+              if (chainId && chainId !== currentChainId) {
+                const networkConfigurationId = networks[chainId];
+                dispatch(setActiveNetworkWithError(networkConfigurationId));
+              }
               selectRecipient(
                 address,
                 name,

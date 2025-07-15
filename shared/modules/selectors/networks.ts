@@ -251,6 +251,11 @@ export const getProviderConfig = createSelector(
 export function getNetworkConfigurations(
   state: NetworkConfigurationsState,
 ): Record<string, InternalNetworkConfiguration> {
+  console.log(
+    'state.metamask.networkConfigurations',
+    state.metamask.networkConfigurations,
+  );
+
   return state.metamask.networkConfigurations;
 }
 
