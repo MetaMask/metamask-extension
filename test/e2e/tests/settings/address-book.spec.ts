@@ -9,7 +9,14 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  loginWithBalanceValidation,
+  loginWithoutBalanceValidation,
+} from '../../page-objects/flows/login.flow';
+import AssetPicker from '../../page-objects/pages/asset-picker';
+import selectNetwork from '../../page-objects/pages/dialog/select-network';
+import SelectNetwork from '../../page-objects/pages/dialog/select-network';
+import NetworkManager from '../../page-objects/pages/network-manager';
 
 describe('Address Book', function (this: Suite) {
   it('Sends to an address book entry', async function () {
@@ -49,6 +56,59 @@ describe('Address Book', function (this: Suite) {
         await activityList.check_confirmedTxNumberDisplayedInActivity(1);
         await activityList.check_txAction('Sent', 1);
         await activityList.check_txAmountInActivity(`-2 ETH`, 1);
+      },
+    );
+  });
+
+  it('Sends to an address book entry on a different network', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnMainnet()
+          .withAddressBookController({
+            addressBook: {
+              '0x1': {
+                '0x2f318C334780961FB129D2a6c30D0763d9a5C970': {
+                  address: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+                  chainId: '0x1',
+                  isEns: false,
+                  memo: '',
+                  name: 'Test Name 1',
+                },
+              },
+            },
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+              '0xe708': true,
+            },
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.startSendFlow();
+
+        const sendTokenPage = new SendTokenPage(driver);
+        await sendTokenPage.check_pageIsLoaded();
+
+        await sendTokenPage.selectContactItem('Test Name 1');
+
+        const assetPicker = new AssetPicker(driver);
+        await assetPicker.openAssetPicker('source');
+
+        await sendTokenPage.clickMultichainAssetPickerNetwork();
+
+        const networkSelector = new NetworkManager(driver);
+
+        await networkSelector.selectNetworkByChainId('0xe708');
+
+        // dest should be cleared
+        await sendTokenPage.check_pageIsLoaded();
       },
     );
   });

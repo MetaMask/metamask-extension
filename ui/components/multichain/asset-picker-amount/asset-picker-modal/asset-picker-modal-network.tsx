@@ -287,6 +287,7 @@ export const AssetPickerModalNetwork = ({
                       />
                     ) : undefined
                   }
+                  chainId={chainId}
                   showEndAccessory={isMultiselectEnabled}
                   variant={TextVariant.bodyMdMedium}
                   endAccessory={

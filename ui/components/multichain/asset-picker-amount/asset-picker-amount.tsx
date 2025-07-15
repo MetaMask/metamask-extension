@@ -115,12 +115,6 @@ export const AssetPickerAmount = ({
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
   const tokenList = useSelector(getTokenList) as TokenListMap;
   const addressBook = useSelector(getCompleteAddressBook);
-  const contacts =
-    (addressBook?.flatMap((add) => Object.values(add)) as {
-      address: string;
-      chainId: string;
-      name: string;
-    }[]) ?? [];
   const recipient = useSelector(getRecipient);
 
   const ipfsGateway = useSelector(getIpfsGateway);
@@ -279,11 +273,16 @@ export const AssetPickerAmount = ({
                       ),
                     );
 
-                    const contact = contacts.find((item) => {
-                      return item.address === recipient.address;
-                    });
+                    const isNotCurrentChainContact = addressBook.find(
+                      (item) => {
+                        return (
+                          item.address === recipient.address &&
+                          item.chainId !== networkConfig.chainId
+                        );
+                      },
+                    );
 
-                    if (contact && contact.chainId !== networkConfig.chainId) {
+                    if (isNotCurrentChainContact) {
                       dispatch(updateRecipient({ address: '', nickname: '' }));
                     }
                   },
