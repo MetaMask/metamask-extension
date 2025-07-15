@@ -4,14 +4,11 @@ import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
+import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 
-const NETWORK_NAME_MAINNET = 'Ethereum Mainnet';
-const LINEA_NAME_MAINNET = 'Linea Mainnet';
 const POLYGON_NAME_MAINNET = 'Polygon';
 const BALANCE_AMOUNT = '24.9956';
 
@@ -40,22 +37,15 @@ describe('Multichain Asset List', function (this: Suite) {
       buildFixtures(this.test?.fullTitle() as string),
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await assetListPage.check_tokenItemNumber(3);
         await assetListPage.openNetworksFilter();
         await assetListPage.clickCurrentNetworkOption();
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
-        await assetListPage.waitUntilFilterLabelIs(LINEA_NAME_MAINNET);
+        await switchToNetworkFromSendFlow(driver, 'Linea');
+        await assetListPage.waitUntilFilterLabelIs('Linea');
         await assetListPage.check_tokenItemNumber(1);
-        assert.equal(
-          await assetListPage.getNetworksFilterLabel(),
-          LINEA_NAME_MAINNET,
-        );
+        assert.equal(await assetListPage.getNetworksFilterLabel(), 'Linea');
       },
     );
   });
@@ -64,11 +54,8 @@ describe('Multichain Asset List', function (this: Suite) {
       buildFixtures(this.test?.fullTitle() as string),
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await assetListPage.check_tokenItemNumber(3);
         await driver.clickElement('.multichain-token-list-item');
         const coinOverviewElement = await driver.findElement(
@@ -90,11 +77,8 @@ describe('Multichain Asset List', function (this: Suite) {
       buildFixtures(this.test?.fullTitle() as string, 137),
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         const sendPage = new SendTokenPage(driver);
         await assetListPage.check_tokenItemNumber(4);
         await assetListPage.clickOnAsset('TST');
@@ -119,11 +103,8 @@ describe('Multichain Asset List', function (this: Suite) {
       buildFixtures(this.test?.fullTitle() as string, 137),
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await assetListPage.check_tokenItemNumber(4);
         await assetListPage.clickOnAsset('TST');
         await driver.clickElement('.mm-box > button:nth-of-type(3)');
@@ -142,11 +123,8 @@ describe('Multichain Asset List', function (this: Suite) {
       buildFixtures(this.test?.fullTitle() as string),
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
         const assetListPage = new AssetListPage(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
+        await switchToNetworkFromSendFlow(driver, 'Linea');
         await assetListPage.check_tokenItemNumber(3);
         await assetListPage.clickOnAsset('Ethereum');
 

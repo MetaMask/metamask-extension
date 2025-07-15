@@ -1,5 +1,4 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useCallback } from 'react';
 import { Hex } from '@metamask/utils';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import {
@@ -13,17 +12,32 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { AppSliceState } from '../../../ducks/app/app';
 import { useEIP7702Networks } from '../../../pages/confirmations/hooks/useEIP7702Networks';
 import { SmartContractAccountToggle } from '../smart-contract-account-toggle';
 import Preloader from '../../ui/icon/preloader';
 
-export const SmartContractAccountToggleSection = () => {
-  const address = useSelector(
-    (state: AppSliceState) => state.appState.accountDetailsAddress,
-  );
+type SmartContractAccountToggleSectionProps = {
+  address: string;
+  returnToPage?: string; // Optional page to return to after transaction
+};
+
+export const SmartContractAccountToggleSection = ({
+  address,
+  returnToPage,
+}: SmartContractAccountToggleSectionProps) => {
   const t = useI18nContext();
   const { network7702List, pending } = useEIP7702Networks(address);
+
+  // pendingToggleState per network
+  const [pendingToggleStateMap, setPendingToggleStateMap] = useState<
+    Record<string, boolean | null>
+  >({});
+  const setPendingToggleState = useCallback(
+    (chainIdHex: string, value: boolean | null) => {
+      setPendingToggleStateMap((prev) => ({ ...prev, [chainIdHex]: value }));
+    },
+    [],
+  );
 
   const NetworkList = () => {
     return (
@@ -46,6 +60,13 @@ export const SmartContractAccountToggleSection = () => {
                 key={network.chainIdHex}
                 networkConfig={network}
                 address={address as Hex}
+                pendingToggleState={
+                  pendingToggleStateMap[network.chainIdHex] ?? null
+                }
+                setPendingToggleState={(value: boolean | null) =>
+                  setPendingToggleState(network.chainIdHex, value)
+                }
+                returnToPage={returnToPage}
               />
             ))}
           </Box>

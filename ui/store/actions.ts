@@ -3094,6 +3094,23 @@ export function createSpeedUpTransaction(
   };
 }
 
+export function updateIncomingTransactions(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch) => {
+    log.debug(`background.updateIncomingTransactions`);
+    try {
+      await submitRequestToBackground('updateIncomingTransactions');
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning('Had a problem updating incoming transactions!'));
+    }
+  };
+}
+
 export function createRetryTransaction(
   txId: string,
   customGasSettings: CustomGasSettings,

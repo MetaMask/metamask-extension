@@ -385,7 +385,12 @@ export default function NameDetails({
             <div
               style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}
             >
-              <NameDisplay value={value} type={type} variation={variation} />
+              <NameDisplay
+                value={value}
+                type={type}
+                variation={variation}
+                showFullName
+              />
             </div>
             <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
               {instructions}
