@@ -302,7 +302,7 @@ export const AssetPickerModalNetwork = ({
             })}
           </Box>
         </Box>
-        {process.env.REMOVE_GNS && showTestnets && testNetworks.length > 0 ? (
+        {showTestnets && testNetworks.length > 0 ? (
           <Box
             className="multichain-asset-picker__network-list"
             display={Display.Flex}

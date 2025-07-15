@@ -278,7 +278,10 @@ const DefaultNetworks = memo(() => {
           paddingLeft={4}
         >
           {isEvmNetworkSelected ? (
-            <ButtonLink onClick={selectAllDefaultNetworks}>
+            <ButtonLink
+              onClick={selectAllDefaultNetworks}
+              data-testid="network-manager-select-all"
+            >
               {t('selectAll')}
             </ButtonLink>
           ) : null}
