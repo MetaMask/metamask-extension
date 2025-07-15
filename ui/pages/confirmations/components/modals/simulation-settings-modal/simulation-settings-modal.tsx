@@ -71,6 +71,8 @@ export const SimulationSettingsModal = ({
   const [enabled, setEnabled] = useState(isEnforcedSimulationsEnabled);
 
   const handleUpdateClick = useCallback(async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await setEnableEnforcedSimulationsForTransaction(transactionId, enabled);
 
     let newContainerTypes = containerTypes || [];
