@@ -1,13 +1,19 @@
 name: Optimize Images
 
 on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to optimize images for'
+        required: true
+        type: string
   issue_comment:
     types: created
 
 jobs:
   is-fork-pull-request:
     name: Determine whether this issue comment was on a pull request from a fork
-    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot optimize-images') }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot optimize-images')) }}
     runs-on: ubuntu-latest
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
@@ -15,10 +21,15 @@ jobs:
       - uses: actions/checkout@v4
       - name: Determine whether this PR is from a fork
         id: is-fork
-        run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "IS_FORK=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number }}
 
   react-to-comment:
     name: React to the comment
@@ -57,7 +68,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number }}
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
@@ -80,7 +91,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number }}
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
@@ -122,7 +133,7 @@ jobs:
         env:
           HAS_CHANGES: ${{ steps.image-optimization.outputs.HAS_CHANGES }}
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number }}
 
   check-status:
     name: Check whether the image optimization succeeded
@@ -155,5 +166,5 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number }}
           ACTION_RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
