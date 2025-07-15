@@ -114,20 +114,20 @@ describe('Bridge tests', function (this: Suite) {
         );
         /**
          * token_source
-         * token_destination
          * chain_source
-         * chain_destination
          * slippage
+         * token_destination
+         * chain_destination
          */
 
         assert.ok(swapBridgeInputChanged.length === 14);
 
         const inputTypes = [
           'token_source',
-          'token_destination',
           'chain_source',
-          'chain_destination',
           'slippage',
+          'token_destination',
+          'chain_destination',
         ];
         const hasAllInputs = inputTypes.every((inputType) =>
           swapBridgeInputChanged.some(
@@ -136,7 +136,7 @@ describe('Bridge tests', function (this: Suite) {
               event.properties.input === inputType,
           ),
         );
-        assert.ok(hasAllInputs, 'Should have all 5 input types');
+        assert.ok(hasAllInputs, 'Should have 5 input types');
 
         const swapBridgeQuotesRequested = findEventsByName(
           EventTypes.SwapBridgeQuotesRequested,
