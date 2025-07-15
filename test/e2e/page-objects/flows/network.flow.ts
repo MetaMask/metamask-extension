@@ -78,6 +78,8 @@ export const searchAndSwitchToNetworkFromSendFlow = async (
   console.log(
     `Search in select network dialog and switch to network ${networkName}`,
   );
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   switchToEditRPCViaGlobalMenuNetworks(driver);
   const selectNetworkDialog = new SelectNetwork(driver);
   await selectNetworkDialog.check_pageIsLoaded();
