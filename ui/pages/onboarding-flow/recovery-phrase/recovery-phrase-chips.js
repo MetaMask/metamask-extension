@@ -29,7 +29,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 // this was Truffle's original dev recovery phrase from ~2017
-const fakeSeedPhraseWords = [
+export const fakeSeedPhraseWords = [
   'candy',
   'maple',
   'cake',
@@ -150,19 +150,22 @@ export default function RecoveryPhraseChips({
         className="recovery-phrase__secret"
       >
         <Box
+          key="recovery-phrase-chips"
           display={Display.Grid}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
           gap={2}
           data-testid="recovery-phrase-chips"
-          data-quiz-words={JSON.stringify(quizWords)}
           className={classnames('recovery-phrase__chips', {
             'recovery-phrase__chips--hidden': !phraseRevealed,
           })}
-          // tests use this attribute to verify the recovery phrase
+          // tests use these attributes to verify the recovery phrase and quiz words
           {...(process.env.IN_TEST
             ? {}
-            : { 'data-recovery-phrase': phrasesToDisplay.join(':') })}
+            : {
+                'data-recovery-phrase': phrasesToDisplay.join(':'),
+                'data-quiz-words': JSON.stringify(quizWords),
+              })}
         >
           {phrasesToDisplay.map((word, index) => {
             const isQuizWord = indicesToCheck.includes(index);
@@ -238,6 +241,7 @@ export default function RecoveryPhraseChips({
 
         {!phraseRevealed && (
           <Box
+            key="recovery-phrase__secret-blocker-container"
             width={BlockSize.Full}
             height={BlockSize.Full}
             className="recovery-phrase__secret-blocker-container"
