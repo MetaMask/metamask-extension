@@ -1,0 +1,88 @@
+{
+  "resources": {
+    "node-fetch": {
+      "globals": {
+        "fetch": true,
+        "Headers": true,
+        "Request": true,
+        "Response": true
+      }
+    },
+    "lodash": {
+      "globals": {
+        "setTimeout": true,
+        "clearTimeout": true
+      }
+    },
+    "buffer": {
+      "globals": {
+        "SharedArrayBuffer": true
+      }
+    },
+    "@ethersproject/wallet>@ethersproject/random": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "string.prototype.matchall>get-intrinsic": {
+      "globals": {
+        "Atomics": true,
+        "SharedArrayBuffer": true
+      }
+    },
+    "browserify>util": {
+      "globals": {
+        "SharedArrayBuffer": true
+      }
+    },
+    "@sentry/utils": {
+      "globals": {
+        "crypto": true,
+        "performance.now": true,
+        "devicePixelRatio": true,
+        "navigator.userAgent": true,
+        "navigator.language": true,
+        "navigator.userAgentData": true
+      }
+    },
+    "^ background; v popup": {},
+    "react-dom": {
+      "globals": {
+        "HTMLIFrameElement": true
+      }
+    },
+    "react-dom>scheduler": {
+      "globals": {
+        "SharedArrayBuffer": true
+      }
+    },
+    "react-toggle-button": {
+      "globals": {
+        "requestAnimationFrame": true,
+        "cancelAnimationFrame": true
+      }
+    },
+    "@lavamoat/lavadome-react": {
+      "globals": {
+        "Number": true,
+        "String": true,
+        "Array": true,
+        "Weakmap": true,
+        "Object": true,
+        "Function": true,
+        "Document": true,
+        "Node": true,
+        "Element": true,
+        "DocumentFragment": true,
+        "DocumentFragment.prototype": true,
+        "JSON": true
+      }
+    },
+    "react-responsive-carousel": {
+      "globals": {
+        "addEventListener": true,
+        "removeEventListener": true
+      }
+    }
+  }
+}
