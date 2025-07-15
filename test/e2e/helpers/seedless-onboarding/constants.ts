@@ -8,7 +8,7 @@ export const AuthServer = {
 };
 
 export const SSSBaseUrlRgx =
-  /https:\/\/node-[1-5]\.dev-node\.web3auth\.io\/sss\/jrpc/;
+  /https:\/\/node-[1-5]\.dev-node\.web3auth\.io\/sss\/jrpc/u;
 
 export const MetadataService = {
   Get: 'https://node-1.dev-node.web3auth.io/metadata/enc_account_data/get',
