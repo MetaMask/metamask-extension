@@ -86,6 +86,8 @@
   "detectedTokens": [],
   "dismissSeedBackUpReminder": false,
   "domains": {},
+  "enableEnforcedSimulations": "boolean",
+  "enableEnforcedSimulationsForTransactions": "object",
   "enableMV3TimestampSave": true,
   "enabledNetworkMap": {
     "eip155": {

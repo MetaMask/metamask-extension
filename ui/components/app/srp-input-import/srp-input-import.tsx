@@ -79,6 +79,14 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
       active: false,
     }));
 
+    if (!SRP_LENGTHS.includes(finalSplittedSrp.length)) {
+      newDraftSrp.push({
+        word: '',
+        id: uuidv4(),
+        active: true,
+      });
+    }
+
     setDraftSrp(newDraftSrp);
   };
 

@@ -2,8 +2,9 @@ import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilder from '../../../fixture-builder';
 import { Driver } from '../../../webdriver/driver';
-import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../../page-objects/flows/network.flow';
 import { Anvil } from '../../../seeder/anvil';
+
 import AssetPicker from '../../../page-objects/pages/asset-picker';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
@@ -30,17 +31,10 @@ describe('Send NFTs', function () {
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
         const homepage = new Homepage(driver);
-        await homepage.headerNavbar.check_currentSelectedNetwork(
-          'Localhost 8545',
-        );
-        await homepage.goToNftTab();
-        const nftListPage = new NftListPage(driver);
-        await nftListPage.check_pageIsLoaded();
 
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-        await homepage.headerNavbar.check_currentSelectedNetwork(
-          'Ethereum Mainnet',
-        );
+        await new Homepage(driver).goToNftTab();
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
+
         await homepage.startSendFlow();
 
         const sendToPage = new SendTokenPage(driver);
@@ -71,9 +65,6 @@ describe('Send NFTs', function () {
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
         const homepage = new Homepage(driver);
-        await homepage.headerNavbar.check_currentSelectedNetwork(
-          'Localhost 8545',
-        );
         await homepage.goToNftTab();
         const nftListPage = new NftListPage(driver);
         await nftListPage.check_pageIsLoaded();

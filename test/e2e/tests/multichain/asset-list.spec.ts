@@ -12,9 +12,8 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Mockttp } from '../../mock-e2e';
+import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 
-const NETWORK_NAME_MAINNET = 'Ethereum Mainnet';
-const LINEA_NAME_MAINNET = 'Linea Mainnet';
 const POLYGON_NAME_MAINNET = 'Polygon';
 const BALANCE_AMOUNT = '24.9978';
 
@@ -147,20 +146,15 @@ describe('Multichain Asset List', function (this: Suite) {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
-        const headerNavbar = new HeaderNavbar(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await assetListPage.check_tokenItemNumber(4);
         await assetListPage.openNetworksFilter();
         await assetListPage.clickCurrentNetworkOption();
-        await assetListPage.openNetworksFilterAndClickPopularNetworks();
-        await assetListPage.check_tokenItemNumber(4);
-        assert.equal(
-          await assetListPage.getNetworksFilterLabel(),
-          'Popular networks',
-        );
+        await switchToNetworkFromSendFlow(driver, 'Linea');
+        await assetListPage.waitUntilFilterLabelIs('Linea');
+        await assetListPage.check_tokenItemNumber(1);
+        assert.equal(await assetListPage.getNetworksFilterLabel(), 'Linea');
       },
     );
   });
@@ -174,8 +168,7 @@ describe('Multichain Asset List', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await assetListPage.check_tokenItemNumber(4);
         await assetListPage.clickOnAsset('Ethereum');
         await assetListPage.check_buySellButtonIsPresent();
@@ -193,8 +186,7 @@ describe('Multichain Asset List', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         const sendPage = new SendTokenPage(driver);
         await assetListPage.check_tokenItemNumber(4);
         await assetListPage.clickOnAsset('Ethereum');
@@ -225,8 +217,7 @@ describe('Multichain Asset List', function (this: Suite) {
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
         const sendPage = new SendTokenPage(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await assetListPage.check_tokenItemNumber(5);
         await assetListPage.clickOnAsset('TST');
         await assetListPage.clickSwapButton();
@@ -243,11 +234,9 @@ describe('Multichain Asset List', function (this: Suite) {
         await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         const assetListPage = new AssetListPage(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
         const sendPage = new SendTokenPage(driver);
         const swapPage = new SwapPage(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
+        await switchToNetworkFromSendFlow(driver, 'Linea');
         await assetListPage.check_tokenItemNumber(4);
         await assetListPage.clickOnAsset('Ethereum');
         await homePage.goToSwapTab();

@@ -306,9 +306,6 @@
   "address": {
     "message": "Address"
   },
-  "addressCopied": {
-    "message": "Address copied!"
-  },
   "addressMismatch": {
     "message": "Site address mismatch"
   },
@@ -1949,9 +1946,6 @@
   "downloadStateLogs": {
     "message": "Download state logs"
   },
-  "dragAndDropBanner": {
-    "message": "You can drag networks to reorder them. "
-  },
   "dropped": {
     "message": "Dropped"
   },
@@ -3064,6 +3058,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Ethereum transaction's input data isn't sufficiently padded."
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "We're having trouble connecting to Ledger. Check out our "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " on how to connect a hardware wallet, then try again."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger no longer supports Firefox, so you might need to use a different browser."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "guide"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefox Not Supported"
   },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
@@ -4555,9 +4564,6 @@
   "popularNetworks": {
     "message": "Popular networks"
   },
-  "portfolio": {
-    "message": "Portfolio"
-  },
   "preparingSwap": {
     "message": "Preparing swap..."
   },
@@ -5374,6 +5380,15 @@
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
+  "simulationSettingsModalEnforceToggle": {
+    "message": "Enforce balance changes"
+  },
+  "simulationSettingsModalEnforceToggleDescription": {
+    "message": "To keep your money safe, this transaction won't go through if the balance changes or the slippage tolerance isn't met."
+  },
+  "simulationSettingsModalTitle": {
+    "message": "Transaction settings"
+  },
   "simulationsSettingDescription": {
     "message": "Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome. $1"
   },
@@ -5479,9 +5494,6 @@
   "smartAccountBetterTransactionDescription": {
     "message": "Save time and money by processing transactions together."
   },
-  "smartAccountEditAccounts": {
-    "message": "Edit accounts"
-  },
   "smartAccountFeaturesDescription": {
     "message": "Keep the same account address, and you can switch back anytime."
   },
@@ -5497,14 +5509,11 @@
   "smartAccountReject": {
     "message": "Don’t use smart account"
   },
-  "smartAccountRequestFor": {
-    "message": "Request for"
-  },
   "smartAccountSameAccount": {
     "message": "Same account, smarter features."
   },
   "smartAccountSplashInfo": {
-    "message": "Why use a smart account?"
+    "message": "Smart accounts"
   },
   "smartAccountSplashTitle": {
     "message": "Use smart account?"
@@ -6039,9 +6048,6 @@
   },
   "statusNotConnected": {
     "message": "Not connected"
-  },
-  "statusNotConnectedAccount": {
-    "message": "No accounts connected"
   },
   "step1LatticeWallet": {
     "message": "Connect your Lattice1"
