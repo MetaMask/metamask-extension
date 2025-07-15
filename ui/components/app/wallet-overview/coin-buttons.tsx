@@ -438,7 +438,7 @@ const CoinButtons = ({
         round={!displayNewIconButtons}
       />
       {/* the bridge button is redundant if unified ui is enabled */}
-      {process.env.REMOVE_GNS || isUnifiedUIEnabled ? null : (
+      {isUnifiedUIEnabled ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
           disabled={

@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   type UpdateNetworkFields,
+  NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { Hex, isStrictHexString, parseCaipChainId } from '@metamask/utils';
@@ -72,7 +73,6 @@ import {
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
 import {
   getIsRpcFailoverEnabled,
-  getNetworkConfigurationIdByChainId,
   getTokenNetworkFilter,
 } from '../../../../selectors';
 import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
@@ -100,9 +100,6 @@ export const NetworksForm = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const networkConfigurationIdsByChainId = useSelector(
-    getNetworkConfigurationIdByChainId,
-  );
   const scrollableRef = useRef<HTMLDivElement>(null);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
@@ -326,26 +323,27 @@ export const NetworksForm = ({
             );
           }
         } else {
-          // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
-          // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
-          // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
-          // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
-          // eslint-disable-next-line @typescript-eslint/await-thenable
-          await dispatch(addNetwork(networkPayload));
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          if (networkConfigurationIdsByChainId?.[chainIdHex]) {
-            const networkClientId =
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              networkConfigurationIdsByChainId?.[chainIdHex];
+          const addedNetworkConfiguration =
             // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
             // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
             // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
             // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
             // eslint-disable-next-line @typescript-eslint/await-thenable
-            await dispatch(setActiveNetwork(networkClientId));
-          }
+            (await dispatch(
+              addNetwork(networkPayload),
+            )) as unknown as NetworkConfiguration;
+
+          const networkClientId =
+            addedNetworkConfiguration?.rpcEndpoints?.[
+              addedNetworkConfiguration.defaultRpcEndpointIndex
+            ]?.networkClientId;
+
+          // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+          // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+          // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+          // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
+          // eslint-disable-next-line @typescript-eslint/await-thenable
+          await dispatch(setActiveNetwork(networkClientId));
           // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
           // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
           // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
