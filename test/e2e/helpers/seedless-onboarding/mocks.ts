@@ -19,6 +19,7 @@ import {
   ToprfCommitmentRequestParams,
   ToprfEvalRequestParams,
   ToprfJsonRpcRequestBody,
+  ToprfStoreKeyShareRequestParams,
 } from './types';
 import {
   MockAuthPubKey,
@@ -58,6 +59,7 @@ function padHex(hex: string, length: number = 64) {
  * @param blindedInputX - The x coordinate of the blinded input from TOPRF Eval request.
  * @param blindedInputY - The y coordinate of the blinded input from TOPRF Eval request.
  * @param nodeIndex - The index of the node.
+ * @param keyShareData - The key share data to use for the blinded output.
  * @param shareCoefficient - The share coefficient from TOPRF Eval request.
  * @returns The blinded output.
  */
@@ -65,10 +67,11 @@ async function generateBlindedOutput(
   blindedInputX: string,
   blindedInputY: string,
   nodeIndex: number,
+  keyShareData: ToprfStoreKeyShareRequestParams = MockKeyShareData,
   shareCoefficient: bigint = 1n,
 ) {
   const encShareString =
-    MockKeyShareData.share_import_items[nodeIndex - 1].encrypted_share;
+    keyShareData.share_import_items[nodeIndex - 1].encrypted_share;
   const nodePrivateKey = SSSNodeKeyPairs[nodeIndex].privKey;
 
   const { data, metadata } = JSON.parse(encShareString);
@@ -125,6 +128,8 @@ async function generateEncryptedSecretData(
 export class OAuthMockttpService {
   // Temporary session public key for TOPRF Commitment + Authenticate session
   #sessionPubKey: string = '';
+
+  #latestAuthPubKey: string = MockAuthPubKey;
 
   mockAuthServerToken(overrides?: {
     statusCode?: number;
@@ -327,17 +332,8 @@ export class OAuthMockttpService {
         return this.#handleToprfMockResponses(request, options);
       });
 
-    server.forPost(MetadataService.Set).always().thenJson(200, {
-      success: true,
-      message: 'Metadata set successfully',
-    });
-
-    server
-      .forPost(MetadataService.Get)
-      .always()
-      .thenCallback(async (_request) => {
-        return this.onPostMetadataGet();
-      });
+    // Intercept the Metadata requests and mock the responses
+    await this.#handleMetadataMockResponses(server);
   }
 
   /**
@@ -365,6 +361,9 @@ export class OAuthMockttpService {
         nodeIndex,
       );
     } else if (method === 'TOPRFStoreKeyShareRequest') {
+      this.#latestAuthPubKey = (
+        params as ToprfStoreKeyShareRequestParams
+      ).pub_key;
       // Mock the TOPRF Store Key Share request
       return {
         statusCode: 200,
@@ -390,10 +389,75 @@ export class OAuthMockttpService {
           },
         },
       };
+    } else if (method === 'TOPRFGetPubKeyRequest') {
+      return {
+        statusCode: 200,
+        json: {
+          id: 1,
+          jsonrpc: '2.0',
+          result: {
+            pub_key: this.#latestAuthPubKey,
+          },
+        },
+      };
     }
 
     const isNewUser = !options?.userEmail;
     return this.onPostToprfAuthenticate(nodeIndex, isNewUser);
+  }
+
+  async #handleMetadataMockResponses(server: Mockttp) {
+    server.forPost(MetadataService.Set).always().thenJson(200, {
+      success: true,
+      message: 'Metadata set successfully',
+    });
+
+    server
+      .forPost(MetadataService.Get)
+      .always()
+      .thenCallback(async (_request) => {
+        return this.onPostMetadataGet();
+      });
+
+    server
+      .forPost(MetadataService.AcquireLock)
+      .always()
+      .thenCallback(async (_request) => {
+        return {
+          statusCode: 200,
+          json: {
+            success: true,
+            status: 1,
+            id: 'MOCK_LOCK_ID',
+          },
+        };
+      });
+
+    server
+      .forPost(MetadataService.ReleaseLock)
+      .always()
+      .thenCallback(async (_request) => {
+        return {
+          statusCode: 200,
+          json: {
+            success: true,
+            status: 1,
+          },
+        };
+      });
+
+    server
+      .forPost(MetadataService.BatchSet)
+      .always()
+      .thenCallback(async (_request) => {
+        return {
+          statusCode: 200,
+          json: {
+            success: true,
+            message: 'Metadata set successfully',
+          },
+        };
+      });
   }
 
   /**

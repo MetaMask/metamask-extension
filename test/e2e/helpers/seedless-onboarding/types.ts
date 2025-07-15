@@ -12,7 +12,8 @@ export type ToprfJsonRpcRequestMethod =
   | 'TOPRFAuthenticateRequest'
   | 'TOPRFStoreKeyShareRequest'
   | 'TOPRFEvalRequest'
-  | 'TOPRFResetRateLimitRequest';
+  | 'TOPRFResetRateLimitRequest'
+  | 'TOPRFGetPubKeyRequest';
 
 export type ToprfCommitmentRequestParams = {
   token_commitment: string;
@@ -27,6 +28,19 @@ export type ToprfAuthenticateResponse = {
   node_pub_key: string;
   pub_key?: string;
   key_index?: number;
+};
+
+export type ToprfStoreKeyShareRequestParams = {
+  pub_key: string;
+  verifier: string;
+  verifier_id: string;
+  share_import_items: {
+    encrypted_share: string;
+    encrypted_auth_token: string;
+    key_share_index: number;
+    node_index: number;
+    sss_endpoint: string;
+  }[];
 };
 
 export type ToprfEvalRequestParams = {

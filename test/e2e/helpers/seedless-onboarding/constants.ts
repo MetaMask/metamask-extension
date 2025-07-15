@@ -11,8 +11,16 @@ export const SSSBaseUrlRgx =
   /https:\/\/node-[1-5]\.dev-node\.web3auth\.io\/sss\/jrpc/u;
 
 export const MetadataService = {
+  // Get the encrypted account data from the metadata service
   Get: 'https://node-1.dev-node.web3auth.io/metadata/enc_account_data/get',
+  // Set the encrypted account data to the metadata service
   Set: 'https://node-1.dev-node.web3auth.io/metadata/enc_account_data/set',
+  // Acquire the lock for the metadata service
+  AcquireLock: 'https://node-1.dev-node.web3auth.io/metadata/acquireLock',
+  // Release the lock for the metadata service
+  ReleaseLock: 'https://node-1.dev-node.web3auth.io/metadata/releaseLock',
+  // Batch set the encrypted account data to the metadata service
+  BatchSet: 'https://node-1.dev-node.web3auth.io/metadata/enc_account_data/batch_set',
 };
 
 // mock key pairs for the SSS nodes
