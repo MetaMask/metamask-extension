@@ -14,8 +14,6 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import AssetPicker from '../../page-objects/pages/asset-picker';
-import selectNetwork from '../../page-objects/pages/dialog/select-network';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import NetworkManager from '../../page-objects/pages/network-manager';
 
 describe('Address Book', function (this: Suite) {
