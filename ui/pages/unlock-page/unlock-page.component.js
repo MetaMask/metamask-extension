@@ -135,7 +135,7 @@ export default class UnlockPage extends Component {
       if (this.props.isSocialLoginFlow) {
         this.context.trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.RehydrationPasswordCompleted,
+          event: MetaMetricsEventName.RehydrationCompleted,
           properties: {
             account_type: 'social',
             biometrics: false,
