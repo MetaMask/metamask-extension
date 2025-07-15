@@ -9,9 +9,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { ACCOUNT_TYPE } from '../../constants';
-import {
-  mockMultichainAccountsFeatureFlag,
-} from './common';
+import { mockMultichainAccountsFeatureFlag } from './common';
 
 describe('Multichain Accounts - Wallet Details', function (this: Suite) {
   it('should view wallet details with one Ethereum and one Solana account and show SRP backup reminder', async function () {
@@ -65,12 +63,12 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
         await accountListPage.clickWalletDetailsButton();
 
         const walletDetailsPage = new WalletDetailsPage(driver);
-        await walletDetailsPage.check_pageIsLoaded();
+        await walletDetailsPage.checkPageIsLoaded();
 
-        await walletDetailsPage.check_walletNameIsDisplayed('Wallet 1');
-        await walletDetailsPage.check_balanceIsDisplayed('$42,500.00');
-        await walletDetailsPage.check_accountIsDisplayed('Account 1');
-        await walletDetailsPage.check_accountIsDisplayed('Solana Account 1');
+        await walletDetailsPage.checkWalletNameIsDisplayed('Wallet 1');
+        await walletDetailsPage.checkBalanceIsDisplayed('$42,500.00');
+        await walletDetailsPage.checkAccountIsDisplayed('Account 1');
+        await walletDetailsPage.checkAccountIsDisplayed('Solana Account 1');
       },
     );
   });
@@ -123,18 +121,18 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
         await accountListPage.clickWalletDetailsButton();
 
         const walletDetailsPage = new WalletDetailsPage(driver);
-        await walletDetailsPage.check_pageIsLoaded();
+        await walletDetailsPage.checkPageIsLoaded();
 
-        await walletDetailsPage.check_addAccountButtonIsDisplayed();
+        await walletDetailsPage.checkAddAccountButtonIsDisplayed();
         await walletDetailsPage.clickAddAccountButton();
 
-        await walletDetailsPage.check_accountTypeModalIsDisplayed();
-        await walletDetailsPage.check_ethereumAccountOptionIsDisplayed();
-        await walletDetailsPage.check_solanaAccountOptionIsDisplayed();
+        await walletDetailsPage.checkAccountTypeModalIsDisplayed();
+        await walletDetailsPage.checkEthereumAccountOptionIsDisplayed();
+        await walletDetailsPage.checkSolanaAccountOptionIsDisplayed();
 
         await walletDetailsPage.clickEthereumAccountOption();
 
-        await walletDetailsPage.check_numberOfAccountsDisplayed(3);
+        await walletDetailsPage.checkNumberOfAccountsDisplayed(3);
       },
     );
   });
