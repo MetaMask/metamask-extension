@@ -1,3 +1,4 @@
+import { Hex } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
 type VersionedData = {
@@ -5,10 +6,10 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 173;
+export const version = 170.1;
 
 /**
- * This migration adds the `tracesBeforeMetricsOptIn` property to the MetaMetrics Controller state.
+ * This migration deletes the preference `smartAccountOptInForAccounts`.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
  * what we persist to dist.
@@ -28,14 +29,15 @@ export async function migrate(
 }
 
 function transformState(state: Record<string, unknown>) {
-  const metaMetricsControllerState = state?.MetaMetricsController as
-    | Record<string, unknown>
+  const preferencesControllerState = state?.PreferencesController as
+    | {
+        preferences: {
+          smartAccountOptInForAccounts?: Hex[];
+        };
+      }
     | undefined;
 
-  if (
-    metaMetricsControllerState &&
-    !metaMetricsControllerState.tracesBeforeMetricsOptIn
-  ) {
-    metaMetricsControllerState.tracesBeforeMetricsOptIn = [];
+  if (preferencesControllerState?.preferences?.smartAccountOptInForAccounts) {
+    delete preferencesControllerState.preferences.smartAccountOptInForAccounts;
   }
 }
