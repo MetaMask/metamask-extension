@@ -134,7 +134,7 @@ export const MultichainAccountListMenu = ({
         <TextFieldSearch
           size={TextFieldSearchSize.Sm}
           width={BlockSize.Full}
-          placeholder={t('searchAccounts')}
+          placeholder={t('search')}
           value={searchPattern}
           onChange={onSearchBarChange}
           clearButtonOnClick={() => setSearchPattern('')}

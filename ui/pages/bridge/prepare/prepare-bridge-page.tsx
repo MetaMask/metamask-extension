@@ -701,11 +701,11 @@ const PrepareBridgePage = () => {
                   value: networkConfig.chainId,
                 });
               if (
+                !isUnifiedUIEnabled &&
                 networkConfig?.chainId &&
                 networkConfig.chainId === toChain?.chainId
               ) {
                 dispatch(setToChainId(null));
-                dispatch(setToToken(null));
               }
               if (
                 isSolanaChainId(networkConfig.chainId) &&
@@ -923,10 +923,6 @@ const PrepareBridgePage = () => {
                           value: networkConfig.chainId,
                         });
                       dispatch(setToChainId(networkConfig.chainId));
-                      const destNativeAsset = getNativeAssetForChainId(
-                        networkConfig.chainId,
-                      );
-                      dispatch(setToToken(destNativeAsset));
                     },
                     header: getToInputHeader(),
                     shouldDisableNetwork: isUnifiedUIEnabled
