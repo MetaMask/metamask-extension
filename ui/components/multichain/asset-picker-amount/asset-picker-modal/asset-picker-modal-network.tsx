@@ -41,7 +41,9 @@ import { getShowTestNetworks } from '../../../../selectors/selectors';
 
 // TODO use MultichainNetworkConfiguration type
 type NetworkOption =
-  | NetworkConfiguration
+  | (NetworkConfiguration & {
+      nickname?: string;
+    })
   | AddNetworkFields
   | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
 
@@ -285,6 +287,7 @@ export const AssetPickerModalNetwork = ({
                       />
                     ) : undefined
                   }
+                  chainId={chainId}
                   showEndAccessory={isMultiselectEnabled}
                   variant={TextVariant.bodyMdMedium}
                   endAccessory={
