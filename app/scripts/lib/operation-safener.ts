@@ -117,6 +117,8 @@ export class OperationSafener<O extends Op = Op> {
       // rejection; we want it to bubble up to the process/window's
       // `unhandledRejection` listener, i.e., Sentry.
       const { promise, resolve } = withResolvers<void>();
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       finalInvocation.finally(resolve);
       this.#evacuating = promise;
     } else {
@@ -145,6 +147,8 @@ export class OperationSafener<O extends Op = Op> {
 
     // fire and forget; the return value for a `debounce`d function is the
     // _previous_ invocation's return value, not the current one.
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.#bouncer(...params);
     return true;
   };
