@@ -276,17 +276,17 @@ export const AssetPickerAmount = ({
                     // Only proceed if we have recipient and addressBook
                     if (recipient?.address && addressBook) {
                       // Check if there's a contact with the same address on the NEW network
-                      const contactExistsOnNewNetwork = addressBook.find(
+                      const contactIsNotExistsOnNewNetwork = addressBook.find(
                         (item) => {
                           return (
                             item.address === recipient.address &&
-                            item.chainId === networkConfig.chainId
+                            item.chainId !== networkConfig.chainId
                           );
                         },
                       );
 
                       // If no contact exists on the new network, clear the recipient
-                      if (!contactExistsOnNewNetwork) {
+                      if (contactIsNotExistsOnNewNetwork) {
                         dispatch(
                           updateRecipient({ address: '', nickname: '' }),
                         );
