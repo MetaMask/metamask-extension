@@ -174,7 +174,7 @@ const DefaultNetworks = memo(() => {
             startAccessory={
               singleRemainingNetwork && isLastRemainingNetwork ? (
                 <Tooltip
-                  title={'Must have at least one network enabled'}
+                  title={t('networkManagerMustHaveAtLeastOneNetworkEnabled')}
                   position="top"
                 >
                   <Checkbox label="" isChecked={isEnabled} />

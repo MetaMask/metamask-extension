@@ -394,33 +394,35 @@ const WalletDetails = () => {
                 {...rowStylesProps}
               />
             ))}
-            <Box
-              className="wallet-details-page__row wallet-details-page__add-account-button"
-              padding={4}
-              width={BlockSize.Full}
-              textAlign={TextAlign.Left}
-              {...rowStylesProps}
-              as="button"
-              onClick={handleAddAccount}
-            >
+            {isEntropyWallet ? (
               <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={3}
+                className="wallet-details-page__row wallet-details-page__add-account-button"
+                padding={4}
+                width={BlockSize.Full}
+                textAlign={TextAlign.Left}
+                {...rowStylesProps}
+                as="button"
+                onClick={handleAddAccount}
               >
-                <Icon
-                  name={IconName.Add}
-                  size={IconSize.Md}
-                  color={IconColor.primaryDefault}
-                />
-                <Text
-                  variant={TextVariant.bodyMdMedium}
-                  color={TextColor.primaryDefault}
+                <Box
+                  display={Display.Flex}
+                  alignItems={AlignItems.center}
+                  gap={3}
                 >
-                  {t('addAccount')}
-                </Text>
+                  <Icon
+                    name={IconName.Add}
+                    size={IconSize.Md}
+                    color={IconColor.primaryDefault}
+                  />
+                  <Text
+                    variant={TextVariant.bodyMdMedium}
+                    color={TextColor.primaryDefault}
+                  >
+                    {t('addAccount')}
+                  </Text>
+                </Box>
               </Box>
-            </Box>
+            ) : null}
           </Box>
         )}
       </Content>
