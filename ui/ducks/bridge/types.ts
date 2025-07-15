@@ -14,7 +14,7 @@ export type BridgeToken = {
   symbol: string;
   image: string;
   decimals: number;
-  chainId: CaipChainId;
+  chainId: number | Hex | ChainId | CaipChainId;
   balance: string; // raw balance
   // TODO deprecate this field and use balance instead
   string: string | undefined; // normalized balance as a stringified number

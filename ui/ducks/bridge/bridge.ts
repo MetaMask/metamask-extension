@@ -90,7 +90,7 @@ export const toBridgeToken = (
     ...payload,
     balance: payload.balance ?? '0',
     string: payload.string ?? '0',
-    chainId: caipChainId,
+    chainId: payload.chainId,
     image: getTokenImage(payload),
     assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),
   };
@@ -106,6 +106,15 @@ const bridgeSlice = createSlice({
     },
     setFromToken: (state, { payload }: TokenPayload) => {
       state.fromToken = toBridgeToken(payload);
+      // Unset toToken if it's the same as the fromToken
+      if (
+        state.fromToken?.assetId &&
+        state.toToken?.assetId &&
+        state.fromToken.assetId.toLowerCase() ===
+          state.toToken.assetId.toLowerCase()
+      ) {
+        state.toToken = null;
+      }
     },
     setToToken: (state, { payload }: TokenPayload) => {
       state.toToken = toBridgeToken(payload);

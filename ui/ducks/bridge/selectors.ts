@@ -220,7 +220,13 @@ export const getFromToken = createSelector(
     const { iconUrl, ...nativeAsset } = getNativeAssetForChainId(
       fromChain.chainId,
     );
-    return toBridgeToken(nativeAsset);
+    const newToToken = toBridgeToken(nativeAsset);
+    return newToToken
+      ? {
+          ...newToToken,
+          chainId: formatChainIdToCaip(fromChain.chainId),
+        }
+      : newToToken;
   },
 );
 
@@ -242,7 +248,7 @@ export const getToToken = createSelector(
     if (
       fromToken?.assetId &&
       newToToken?.assetId &&
-      fromToken.assetId === newToToken.assetId
+      fromToken.assetId.toLowerCase() === newToToken.assetId.toLowerCase()
     ) {
       return null;
     }
