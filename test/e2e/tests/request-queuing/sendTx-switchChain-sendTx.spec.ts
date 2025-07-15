@@ -2,6 +2,7 @@ import { Suite } from 'mocha';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
+import { Anvil } from '../../seeder/anvil';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
@@ -34,7 +35,7 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Sui
         title: this.test?.fullTitle(),
       },
 
-      async ({ driver, localNodes }: { driver: Driver; localNodes: any[] }) => {
+      async ({ driver, localNodes }: { driver: Driver; localNodes: Anvil[] }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
 
         const testDapp = new TestDapp(driver);
