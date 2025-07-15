@@ -90,7 +90,10 @@ export const ImportSrp = () => {
 
   async function importWallet() {
     if (isSocialLoginEnabled) {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+      // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+      // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+      // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
       // eslint-disable-next-line @typescript-eslint/await-thenable
       const isPasswordOutdated = await dispatch(
         actions.checkIsSeedlessPasswordOutdated(true),
@@ -102,7 +105,10 @@ export const ImportSrp = () => {
 
     const joinedSrp = secretRecoveryPhrase.join(' ');
     if (joinedSrp) {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+      // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+      // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+      // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
       // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(actions.importMnemonicToVault(joinedSrp));
       // Clear the secret recovery phrase after importing
@@ -453,7 +459,10 @@ export const ImportSrp = () => {
               trace({ name: TraceName.ImportSrp });
               try {
                 setLoading(true);
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+                // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+                // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+                // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+                // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
                 // eslint-disable-next-line @typescript-eslint/await-thenable
                 await dispatch(actions.lockAccountSyncing());
                 await importWallet();
@@ -466,7 +475,10 @@ export const ImportSrp = () => {
               } finally {
                 setLoading(false);
                 endTrace({ name: TraceName.ImportSrp });
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+                // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+                // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+                // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+                // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
                 // eslint-disable-next-line @typescript-eslint/await-thenable
                 await dispatch(actions.unlockAccountSyncing());
               }

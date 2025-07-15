@@ -92,7 +92,10 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
     try {
       // FIXME: We switch the tab before starting the send flow (we
       // faced some inconsistencies when changing it after).
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+      // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+      // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+      // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
       // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(setDefaultHomeActiveTabName('activity'));
       await sendMultichainTransaction(account.metadata.snap.id, {
@@ -102,7 +105,10 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
       });
     } catch (error) {
       // Restore the previous tab in case of any error (see FIXME comment above).
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+      // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+      // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+      // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
       // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
     }

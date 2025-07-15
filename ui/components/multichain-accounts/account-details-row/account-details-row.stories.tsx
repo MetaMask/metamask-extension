@@ -11,7 +11,8 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: 'A reusable row component for displaying account details with a label, value, and optional end accessory.',
+        component:
+          'A reusable row component for displaying account details with a label, value, and optional end accessory.',
       },
     },
     controls: { sort: 'alpha' },
@@ -27,7 +28,8 @@ export default {
     },
     endAccessory: {
       control: false,
-      description: 'React node displayed after the value (typically a button or icon)',
+      description:
+        'React node displayed after the value (typically a button or icon)',
     },
     style: {
       control: 'object',

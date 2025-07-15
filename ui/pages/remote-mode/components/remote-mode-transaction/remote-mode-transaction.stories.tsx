@@ -19,6 +19,4 @@ export default {
   ],
 };
 
-export const Default = () => (
-  <RemoteModeTransaction />
-);
+export const Default = () => <RemoteModeTransaction />;

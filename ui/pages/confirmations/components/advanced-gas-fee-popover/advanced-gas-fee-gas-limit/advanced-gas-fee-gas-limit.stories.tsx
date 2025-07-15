@@ -10,7 +10,8 @@ import AdvancedGasFeeGasLimit from './advanced-gas-fee-gas-limit';
 const store = configureStore(testData);
 
 const meta: Meta<typeof AdvancedGasFeeGasLimit> = {
-  title: 'Pages/Confirmations/Components/AdvancedGasFeePopover/AdvancedGasFeeGasLimit',
+  title:
+    'Pages/Confirmations/Components/AdvancedGasFeePopover/AdvancedGasFeeGasLimit',
   component: AdvancedGasFeeGasLimit,
   decorators: [
     (Story) => (
@@ -24,7 +25,7 @@ const meta: Meta<typeof AdvancedGasFeeGasLimit> = {
           }}
         >
           <AdvancedGasFeePopoverContextProvider>
-              <Story />
+            <Story />
           </AdvancedGasFeePopoverContextProvider>
         </GasFeeContextProvider>
       </Provider>

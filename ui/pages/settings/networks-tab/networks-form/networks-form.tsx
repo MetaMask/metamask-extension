@@ -299,25 +299,37 @@ export const NetworksForm = ({
                 ? rpcUrls?.defaultRpcEndpointIndex
                 : undefined,
           };
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+          // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+          // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+          // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+          // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
           // eslint-disable-next-line @typescript-eslint/await-thenable
           await dispatch(updateNetwork(networkPayload, options));
           if (Object.keys(tokenNetworkFilter).length === 1) {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+            // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+            // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+            // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+            // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
             // eslint-disable-next-line @typescript-eslint/await-thenable
             await dispatch(
               setTokenNetworkFilter({
                 [existingNetwork.chainId]: true,
               }),
             );
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+            // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+            // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+            // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+            // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
             // eslint-disable-next-line @typescript-eslint/await-thenable
             await dispatch(
               setEnabledNetworks([existingNetwork.chainId], namespace),
             );
           }
         } else {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+          // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+          // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+          // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+          // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
           // eslint-disable-next-line @typescript-eslint/await-thenable
           await dispatch(addNetwork(networkPayload));
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -327,11 +339,17 @@ export const NetworksForm = ({
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               networkConfigurationIdsByChainId?.[chainIdHex];
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+            // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+            // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+            // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+            // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
             // eslint-disable-next-line @typescript-eslint/await-thenable
             await dispatch(setActiveNetwork(networkClientId));
           }
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+          // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+          // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+          // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+          // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
           // eslint-disable-next-line @typescript-eslint/await-thenable
           await dispatch(
             setEnabledNetworks([networkPayload.chainId], namespace),

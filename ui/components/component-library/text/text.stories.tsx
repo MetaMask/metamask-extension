@@ -145,11 +145,7 @@ export const FontStyleStory: StoryFn<typeof Text> = (args) => (
 FontStyleStory.storyName = 'Font Style';
 
 export const FontFamilyStory: StoryFn<typeof Text> = (args) => (
-  <Box
-    display={Display.Flex}
-    flexDirection={FlexDirection.Column}
-    gap={4}
-  >
+  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
     <Text {...args} fontFamily={FontFamily.Default}>
       Default Font (Geist) - The quick brown fox jumps over the lazy dog
     </Text>

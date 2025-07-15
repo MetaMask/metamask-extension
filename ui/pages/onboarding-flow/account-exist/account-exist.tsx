@@ -38,18 +38,27 @@ export default function AccountExist() {
 
   const onLoginWithDifferentMethod = async () => {
     // clear the social login state
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+    // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+    // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+    // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
     // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(resetOAuthLoginState());
     // reset the first time flow type
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+    // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+    // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+    // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
     // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(setFirstTimeFlowType(null));
     history.replace(ONBOARDING_WELCOME_ROUTE);
   };
 
   const onDone = async () => {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+    // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+    // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+    // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
     // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
     history.replace(ONBOARDING_UNLOCK_ROUTE);

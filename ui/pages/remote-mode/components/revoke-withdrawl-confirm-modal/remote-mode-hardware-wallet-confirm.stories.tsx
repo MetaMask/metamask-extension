@@ -2,7 +2,9 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import configureStore from '../../../../store/store';
-import RevokeWithdrawlConfirm, { RevokeWithdrawlConfirmModalType } from './revoke-withdrawl-confirm-modal.component';
+import RevokeWithdrawlConfirm, {
+  RevokeWithdrawlConfirmModalType,
+} from './revoke-withdrawl-confirm-modal.component';
 
 const store = configureStore({});
 
