@@ -90,10 +90,9 @@ export const ImportSrp = () => {
 
   async function importWallet() {
     if (isSocialLoginEnabled) {
-      // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
-      // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
-      // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
-      // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // Fix test infrastructure - remove await from synchronous method calls
+      // This method returns string, not Promise. The withController function should be synchronous.
       // eslint-disable-next-line @typescript-eslint/await-thenable
       const isPasswordOutdated = await dispatch(
         actions.checkIsSeedlessPasswordOutdated(true),
@@ -105,25 +104,35 @@ export const ImportSrp = () => {
 
     const joinedSrp = secretRecoveryPhrase.join(' ');
     if (joinedSrp) {
-      // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
-      // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
-      // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
-      // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
-      // eslint-disable-next-line @typescript-eslint/await-thenable
-      await dispatch(actions.importMnemonicToVault(joinedSrp));
+      const result = (await dispatch(
+        actions.importMnemonicToVault(joinedSrp),
+      )) as unknown as {
+        newAccountAddress: string;
+        discoveredAccounts: { bitcoin: number; solana: number };
+      };
+
+      const { discoveredAccounts } = result;
+
       // Clear the secret recovery phrase after importing
       setSecretRecoveryPhrase(Array(defaultNumberOfWords).fill(''));
+
+      // Track the event with the discovered accounts
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      trackEvent({
+        event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: newHdEntropyIndex,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          number_of_solana_accounts_discovered: discoveredAccounts?.solana,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          number_of_bitcoin_accounts_discovered: discoveredAccounts?.bitcoin,
+        },
+      });
     }
+
     history.push(DEFAULT_ROUTE);
     dispatch(setShowNewSrpAddedToast(true));
-    trackEvent({
-      event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: newHdEntropyIndex,
-      },
-    });
   }
 
   const isValidSrp = useMemo(() => {
@@ -459,10 +468,9 @@ export const ImportSrp = () => {
               trace({ name: TraceName.ImportSrp });
               try {
                 setLoading(true);
-                // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
-                // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
-                // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
-                // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+                // Fix test infrastructure - remove await from synchronous method calls
+                // This method returns string, not Promise. The withController function should be synchronous.
                 // eslint-disable-next-line @typescript-eslint/await-thenable
                 await dispatch(actions.lockAccountSyncing());
                 await importWallet();
@@ -475,10 +483,9 @@ export const ImportSrp = () => {
               } finally {
                 setLoading(false);
                 endTrace({ name: TraceName.ImportSrp });
-                // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
-                // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
-                // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
-                // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+                // Fix test infrastructure - remove await from synchronous method calls
+                // This method returns string, not Promise. The withController function should be synchronous.
                 // eslint-disable-next-line @typescript-eslint/await-thenable
                 await dispatch(actions.unlockAccountSyncing());
               }
