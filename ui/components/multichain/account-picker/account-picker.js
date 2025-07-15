@@ -23,6 +23,8 @@ import {
 import { shortenAddress } from '../../../helpers/utils/util';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 
+const AccountMenuStyle = { height: 'auto' };
+
 export const AccountPicker = ({
   address,
   name,
@@ -68,6 +70,7 @@ export const AccountPicker = ({
         }}
         {...props}
         gap={1}
+        style={AccountMenuStyle}
       >
         <Box
           display={Display.Flex}
@@ -78,6 +81,7 @@ export const AccountPicker = ({
           <Text
             as="span"
             ellipsis
+            variant={TextVariant.bodyMdMedium}
             {...labelProps}
             className={classnames(
               'multichain-account-picker__label',
@@ -88,7 +92,7 @@ export const AccountPicker = ({
             {showAddress ? (
               <Text
                 color={TextColor.textAlternative}
-                variant={TextVariant.bodySm}
+                variant={TextVariant.bodySmMedium}
                 ellipsis
                 {...addressProps}
               >
