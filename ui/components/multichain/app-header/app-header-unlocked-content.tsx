@@ -11,7 +11,6 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
-  FontWeight,
   IconColor,
   JustifyContent,
   TextColor,
@@ -143,8 +142,8 @@ export const AppHeaderUnlockedContent = ({
           color: IconColor.iconAlternative,
           size: IconSize.Sm,
         }}
-        paddingLeft={0}
-        paddingRight={0}
+        paddingLeft={2}
+        paddingRight={2}
         ellipsis
         textProps={{
           display: Display.Flex,
@@ -203,9 +202,8 @@ export const AppHeaderUnlockedContent = ({
                 });
               }}
               disabled={disableAccountPicker}
-              labelProps={{ fontWeight: FontWeight.Bold }}
-              paddingLeft={0}
-              paddingRight={0}
+              paddingLeft={2}
+              paddingRight={2}
             />
             <>{CopyButton}</>
           </Text>
@@ -240,7 +238,7 @@ export const AppHeaderUnlockedContent = ({
         justifyContent={JustifyContent.flexEnd}
         style={{ marginLeft: 'auto' }}
       >
-        <Box display={Display.Flex} gap={4}>
+        <Box display={Display.Flex} gap={3}>
           {showConnectedStatus && (
             <Box ref={menuRef} data-testid="connection-menu">
               <ConnectedStatusIndicator
