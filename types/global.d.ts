@@ -351,7 +351,7 @@ export declare global {
      */
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    withResolvers<T>(): PromiseWithResolvers<T>;
+    withResolvers?: <T>() => PromiseWithResolvers<T>;
   }
 }
 // #endregion
