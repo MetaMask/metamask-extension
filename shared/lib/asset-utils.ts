@@ -17,9 +17,9 @@ import {
   getNativeAssetForChainId,
   isNativeAddress,
 } from '@metamask/bridge-controller';
-import { MINUTE } from '../constants/time';
+import getFetchWithTimeout from '../modules/fetch-with-timeout';
 import { decimalToPrefixedHex } from '../modules/conversion.utils';
-import fetchWithCache from './fetch-with-cache';
+import { TEN_SECONDS_IN_MILLISECONDS } from './transactions-controller-utils';
 
 const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
 const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
@@ -71,7 +71,7 @@ export const getAssetImageUrl = (
 };
 
 type AssetMetadata = {
-  assetId: string;
+  assetId: CaipAssetType;
   symbol: string;
   name: string;
   decimals: number;
@@ -101,18 +101,18 @@ export const fetchAssetMetadata = async (
   }
 
   try {
-    const [assetMetadata]: AssetMetadata[] = await fetchWithCache({
-      url: `${TOKEN_API_V3_BASE_URL}/assets?assetIds=${assetId}`,
-      fetchOptions: {
-        method: 'GET',
-        headers: { 'X-Client-Id': 'extension' },
-        signal: abortSignal,
-      },
-      cacheOptions: {
-        cacheRefreshTime: MINUTE,
-      },
-      functionName: 'fetchAssetMetadata',
-    });
+    const fetchWithTimeout = getFetchWithTimeout(TEN_SECONDS_IN_MILLISECONDS);
+
+    const [assetMetadata]: AssetMetadata[] = await (
+      await fetchWithTimeout(
+        `${TOKEN_API_V3_BASE_URL}/assets?assetIds=${assetId}`,
+        {
+          method: 'GET',
+          headers: { 'X-Client-Id': 'extension' },
+          signal: abortSignal,
+        },
+      )
+    ).json();
 
     const commonFields = {
       symbol: assetMetadata.symbol,
