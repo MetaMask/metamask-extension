@@ -119,7 +119,7 @@ const useBridging = () => {
       );
       url += `?${BridgeQueryParams.FROM}=${assetId}`;
       if (isSwap) {
-        url += `&${BridgeQueryParams.IS_SWAP}=true`;
+        url += `&${BridgeQueryParams.SWAPS}=true`;
       }
       history.push(url);
     },

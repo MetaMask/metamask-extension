@@ -35,13 +35,13 @@ export const useIsMultichainSwap = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(search);
     const isSwapQueryParamSet =
-      searchParams.get(BridgeQueryParams.IS_SWAP) === 'true';
+      searchParams.get(BridgeQueryParams.SWAPS) === 'true';
     if (
       isQuoteRequestSwap &&
       (isSolana || isUnifiedUIEnabled) &&
       !isSwapQueryParamSet
     ) {
-      searchParams.set(BridgeQueryParams.IS_SWAP, 'true');
+      searchParams.set(BridgeQueryParams.SWAPS, 'true');
       history.replace({
         pathname,
         search: searchParams.toString(),
@@ -59,7 +59,7 @@ export const useIsMultichainSwap = () => {
   const isSolanaSwap = useMemo(() => {
     const searchParams = new URLSearchParams(search);
     const isSwapQueryParamSet =
-      searchParams.get(BridgeQueryParams.IS_SWAP) === 'true';
+      searchParams.get(BridgeQueryParams.SWAPS) === 'true';
 
     return isSwapQueryParamSet && (isSolana || isUnifiedUIEnabled);
   }, [isSolana, isUnifiedUIEnabled, search]);

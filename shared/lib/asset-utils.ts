@@ -143,12 +143,11 @@ export const fetchAssetMetadata = async (
 };
 
 /**
- * Fetches the metadata for a token
+ * Fetches the metadata for a list of token assetIds
  *
- * @param address - The address of the token
- * @param chainId - The chainId of the token
+ * @param assetIds - The assetIds of the tokens
  * @param abortSignal - The abort signal for the fetch request
- * @returns The metadata for the token by lowercased assetId
+ * @returns The metadata for the tokens by assetId
  */
 export const fetchAssetMetadataForAssetIds = async (
   assetIds: (CaipAssetType | null)[],
