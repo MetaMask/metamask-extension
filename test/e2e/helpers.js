@@ -271,10 +271,6 @@ async function withFixtures(options, testSuite) {
     }
     await mockServer.start(8000);
 
-    console.log(
-      `Mockttp server running on http://localhost:${mockServer.port}`,
-    );
-
     await setManifestFlags(manifestFlags);
 
     const wd = await buildWebDriver(driverOptions);
