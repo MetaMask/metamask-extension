@@ -1,3 +1,5 @@
+@use "design-system";
+
 .loading-logo {
   width: 10rem;
   height: 10rem;
@@ -11,23 +13,33 @@
   align-self: center;
   margin-top: 1rem;
 }
-.loading-timeout-message {
-  opacity: 0;
-  animation: showTimeoutMessage 20s ease-in-out forwards;
-  align-self: center;
-  max-width: 20rem;
-}
 
-.loading-timeout-message::after {
-  direction: "__MSG_@@bidi_dir__";
-  content: "__MSG_loadingTimeoutMessage__";
+.loading-timeout-message {
+  align-self: center;
+  animation: showTimeoutMessage 0s ease-in-out forwards;
+  color: var(--color-text-alternative);
+  margin-top: 4rem;
+  max-width: design-system.$screen-sm-max;
+  opacity: 0;
+  text-align: center;
+
+  &::before {
+    direction: "__MSG_@@bidi_dir__";
+    content: "__MSG_CSS_loadingTakingTooLongMessageText__";
+    display: block;
+  }
+  &::after {
+    direction: "__MSG_@@bidi_dir__";
+    content: "__MSG_CSS_loadingTakingTooLongActionText__";
+    display: block;
+  }
 }
 
 @keyframes showTimeoutMessage {
   0% {
     opacity: 0;
   }
-  99.9% {
+  99.999% {
     opacity: 0;
   }
   100% {
