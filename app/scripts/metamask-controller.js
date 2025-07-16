@@ -6239,15 +6239,20 @@ export default class MetamaskController extends EventEmitter {
 
     if (this.onboardingController.getIsSocialLoginFlow()) {
       // Use withKeyring to get keyring metadata for an address
-      const { id: keyringId } = await this.keyringController.withKeyring(
-        { address: importedAccountAddress },
-        async ({ metadata }) => ({ id: metadata.id }),
-      );
+      const { id: keyringId, privateKey: privateKeyFromKeyring } =
+        await this.keyringController.withKeyring(
+          { address: importedAccountAddress },
+          async ({ keyring, metadata }) => {
+            const privateKey = await keyring.exportAccount(
+              importedAccountAddress,
+            );
+            return { id: metadata.id, privateKey };
+          },
+        );
 
       // if social backup is requested, add the seed phrase backup
       await this.addNewPrivateKeyBackup(
-        strategy,
-        args,
+        privateKeyFromKeyring,
         keyringId,
         shouldCreateSocialBackup,
       );
@@ -6265,37 +6270,28 @@ export default class MetamaskController extends EventEmitter {
    * If `syncWithSocial` is false, it will only update the local state,
    * and not sync the private key to the server.
    *
-   * @param {string} strategy - The strategy to use for the backup.
-   * @param {any} args - The data required by that strategy to import an account.
+   * @param {string} privateKey - The privateKey from keyring.
    * @param {string} keyringId - The keyring id to add the private key backup to.
    * @param {boolean} syncWithSocial - whether to skip syncing with social login
    */
-  async addNewPrivateKeyBackup(
-    strategy,
-    args,
-    keyringId,
-    syncWithSocial = true,
-  ) {
-    if (strategy === 'privateKey') {
-      const [importedKey] = args;
-      const bufferedPrivateKey = hexToBytes(add0x(importedKey));
+  async addNewPrivateKeyBackup(privateKey, keyringId, syncWithSocial = true) {
+    const bufferedPrivateKey = hexToBytes(add0x(privateKey));
 
-      if (syncWithSocial) {
-        await this.seedlessOnboardingController.addNewSecretData(
-          bufferedPrivateKey,
-          SecretType.PrivateKey,
-          {
-            keyringId,
-          },
-        );
-      } else {
-        // Do not sync the seed phrase to the server, only update the local state
-        this.seedlessOnboardingController.updateBackupMetadataState({
+    if (syncWithSocial) {
+      await this.seedlessOnboardingController.addNewSecretData(
+        bufferedPrivateKey,
+        SecretType.PrivateKey,
+        {
           keyringId,
-          data: bufferedPrivateKey,
-          type: SecretType.PrivateKey,
-        });
-      }
+        },
+      );
+    } else {
+      // Do not sync the seed phrase to the server, only update the local state
+      this.seedlessOnboardingController.updateBackupMetadataState({
+        keyringId,
+        data: bufferedPrivateKey,
+        type: SecretType.PrivateKey,
+      });
     }
   }
 
