@@ -12,7 +12,6 @@ import {
 
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
-import { toHex } from '@metamask/controller-utils';
 import {
   getNativeAssetForChainId,
   isNativeAddress,
@@ -92,17 +91,16 @@ export const fetchAssetMetadata = async (
   chainId: Hex | CaipChainId,
   abortSignal?: AbortSignal,
 ) => {
-  const chainIdInCaip = isCaipChainId(chainId)
-    ? chainId
-    : toEvmCaipChainId(chainId);
-
-  const assetId = toAssetId(address, chainIdInCaip);
-
-  if (!assetId) {
-    return undefined;
-  }
-
   try {
+    const chainIdInCaip = isCaipChainId(chainId)
+      ? chainId
+      : toEvmCaipChainId(chainId);
+
+    const assetId = toAssetId(address, chainIdInCaip);
+
+    if (!assetId) {
+      return undefined;
+    }
     const fetchWithTimeout = getFetchWithTimeout(TEN_SECONDS_IN_MILLISECONDS);
 
     const [assetMetadata]: AssetMetadata[] = await (
@@ -136,7 +134,7 @@ export const fetchAssetMetadata = async (
     const { reference } = parseCaipChainId(chainIdInCaip);
     return {
       ...commonFields,
-      address: toHex(address),
+      address: address.toLowerCase(),
       chainId: decimalToPrefixedHex(reference),
     };
   } catch (error) {
