@@ -75,6 +75,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
       return {
         currentCurrencyFee,
         currentCurrencyFeeWith18SignificantDigits,
+        currentCurrencyFeeUnformatted: decimalCurrentCurrencyFee,
         hexFee,
         nativeCurrencyFee,
       };
@@ -163,7 +164,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    const gasLimitNoBuffer = transactionMeta.gasLimitNoBuffer || HEX_ZERO;
+    const gasLimitNoBuffer = transactionMeta.txParams.gas || HEX_ZERO;
     const estimatedFee = multiplyHexes(
       supportsEIP1559 ? (minimumFeePerGas as Hex) : (gasPrice as Hex),
       gasLimitNoBuffer as Hex,
@@ -187,6 +188,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     estimatedFeeFiat: estimatedFees.currentCurrencyFee,
     estimatedFeeFiatWith18SignificantDigits:
       estimatedFees.currentCurrencyFeeWith18SignificantDigits,
+    estimatedFeeFiatUnformatted: estimatedFees.currentCurrencyFeeUnformatted,
     estimatedFeeNative: estimatedFees.nativeCurrencyFee,
     estimatedFeeNativeHex: add0x(estimatedFees.hexFee),
     l1FeeFiat: feesL1.currentCurrencyFee,

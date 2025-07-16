@@ -39,6 +39,7 @@ export type ConfirmInfoRowProps = {
   copyEnabled?: boolean;
   copyText?: string;
   'data-testid'?: string;
+  icon?: IconName;
   label: string;
   labelChildren?: React.ReactNode;
   style?: React.CSSProperties;
@@ -90,6 +91,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   collapsed,
   tooltipIcon,
   tooltipIconColor,
+  icon,
 }) => {
   const [expanded, setExpanded] = useState(!collapsed);
 
@@ -107,7 +109,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         flexDirection={isCollapsible ? FlexDirection.Column : FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         flexWrap={FlexWrap.Wrap}
-        alignItems={AlignItems.flexStart}
+        alignItems={AlignItems.center}
         backgroundColor={BACKGROUND_COLORS[variant]}
         borderRadius={BorderRadius.LG}
         marginTop={2}
@@ -153,6 +155,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           paddingRight={contentPaddingRight || null}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
+            {icon && <Icon name={icon} size={IconSize.Md} marginRight={1} />}
             <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
               {label}
             </Text>
