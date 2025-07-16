@@ -4,8 +4,8 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import WalletDetailsPage from '../../page-objects/pages/wallet-details-page';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import { mockMultichainAccountsFeatureFlag } from './common';
 import { withSolanaAccountSnap } from '../solana/common-solana';
+import { mockMultichainAccountsFeatureFlag } from './common';
 
 describe('Multichain Accounts - Wallet Details', function (this: Suite) {
   it('should view wallet details with one Ethereum and one Solana account and show SRP backup reminder', async function () {
@@ -14,16 +14,14 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
         title: this.test?.fullTitle(),
         numberOfAccounts: 1,
         withFixtureBuilder: (builder) =>
-          builder
-            .withKeyringControllerMultiSRP()
-            .withPreferencesController({
-              dismissSeedBackUpReminder: false,
-            }),
+          builder.withKeyringControllerMultiSRP().withPreferencesController({
+            dismissSeedBackUpReminder: false,
+          }),
         withCustomMocks: async (mockServer: Mockttp) => {
           return mockMultichainAccountsFeatureFlag(mockServer);
         },
       },
-      async (driver: Driver, mockServer: Mockttp, extensionId: string) => {
+      async (driver: Driver) => {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -49,12 +47,13 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         numberOfAccounts: 1,
-        withFixtureBuilder: (builder) => builder.withKeyringControllerMultiSRP(),
+        withFixtureBuilder: (builder) =>
+          builder.withKeyringControllerMultiSRP(),
         withCustomMocks: async (mockServer: Mockttp) => {
           return mockMultichainAccountsFeatureFlag(mockServer);
         },
       },
-      async (driver: Driver, mockServer: Mockttp, extensionId: string) => {
+      async (driver: Driver) => {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
