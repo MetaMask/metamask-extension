@@ -13,7 +13,7 @@ import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
-import { useTrustSignalAlerts } from './useTrustSignalAlerts';
+import { useAddressTrustSignalAlerts } from './useAddressTrustSignalAlerts';
 
 jest.mock('../../../../hooks/useTrustSignals', () => ({
   useTrustSignal: jest.fn(),
@@ -81,7 +81,7 @@ describe('useTrustSignalAlerts', () => {
     (currentConfirmation as TransactionMeta).txParams.to = MALICIOUS_ADDRESS;
 
     const { result } = renderHookWithConfirmContextProvider(
-      () => useTrustSignalAlerts(),
+      () => useAddressTrustSignalAlerts(),
       getMockConfirmStateForTransaction(currentConfirmation as TransactionMeta),
     );
 
@@ -99,7 +99,7 @@ describe('useTrustSignalAlerts', () => {
       });
 
       const { result } = renderHookWithConfirmContextProvider(
-        () => useTrustSignalAlerts(),
+        () => useAddressTrustSignalAlerts(),
         getMockConfirmStateForTransaction({
           ...contractInteraction,
           txParams: {
@@ -126,7 +126,7 @@ describe('useTrustSignalAlerts', () => {
       });
 
       const { result } = renderHookWithConfirmContextProvider(
-        () => useTrustSignalAlerts(),
+        () => useAddressTrustSignalAlerts(),
         getMockConfirmStateForTransaction({
           ...contractInteraction,
           txParams: {
@@ -153,7 +153,7 @@ describe('useTrustSignalAlerts', () => {
       });
 
       const { result } = renderHookWithConfirmContextProvider(
-        () => useTrustSignalAlerts(),
+        () => useAddressTrustSignalAlerts(),
         getMockConfirmStateForTransaction({
           ...contractInteraction,
           txParams: {
@@ -186,7 +186,7 @@ describe('useTrustSignalAlerts', () => {
       } as SignatureRequestType;
 
       const { result } = renderHookWithConfirmContextProvider(
-        () => useTrustSignalAlerts(),
+        () => useAddressTrustSignalAlerts(),
         getMockPersonalSignConfirmStateForRequest(signatureRequest),
       );
 
@@ -201,7 +201,6 @@ describe('useTrustSignalAlerts', () => {
       mockUseTrustSignal.mockReturnValue({
         state: TrustSignalDisplayState.Warning,
       });
-
       const signatureRequest = {
         ...unapprovedPersonalSignMsg,
         msgParams: {
@@ -213,12 +212,10 @@ describe('useTrustSignalAlerts', () => {
           }),
         },
       } as SignatureRequestType;
-
       const { result } = renderHookWithConfirmContextProvider(
-        () => useTrustSignalAlerts(),
+        () => useAddressTrustSignalAlerts(),
         getMockPersonalSignConfirmStateForRequest(signatureRequest),
       );
-
       expect(result.current).toEqual([expectedWarningAlert]);
     });
 
@@ -226,7 +223,6 @@ describe('useTrustSignalAlerts', () => {
       mockUseTrustSignal.mockReturnValue({
         state: TrustSignalDisplayState.Unknown,
       });
-
       const signatureRequest = {
         ...unapprovedPersonalSignMsg,
         msgParams: {
@@ -236,12 +232,10 @@ describe('useTrustSignalAlerts', () => {
           }),
         },
       } as SignatureRequestType;
-
       const { result } = renderHookWithConfirmContextProvider(
-        () => useTrustSignalAlerts(),
+        () => useAddressTrustSignalAlerts(),
         getMockPersonalSignConfirmStateForRequest(signatureRequest),
       );
-
       expect(result.current).toEqual([]);
       // Since there's no verifying contract, useTrustSignal should be called with empty string
       expect(mockUseTrustSignal).toHaveBeenCalledWith(
@@ -254,7 +248,6 @@ describe('useTrustSignalAlerts', () => {
       mockUseTrustSignal.mockReturnValue({
         state: TrustSignalDisplayState.Unknown,
       });
-
       const signatureRequest = {
         ...unapprovedPersonalSignMsg,
         msgParams: {
@@ -262,12 +255,10 @@ describe('useTrustSignalAlerts', () => {
           data: 'invalid json data',
         },
       } as SignatureRequestType;
-
       const { result } = renderHookWithConfirmContextProvider(
-        () => useTrustSignalAlerts(),
+        () => useAddressTrustSignalAlerts(),
         getMockPersonalSignConfirmStateForRequest(signatureRequest),
       );
-
       expect(result.current).toEqual([]);
       // Should call with empty string when parsing fails
       expect(mockUseTrustSignal).toHaveBeenCalledWith(

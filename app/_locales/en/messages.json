@@ -175,6 +175,9 @@
     "message": "Add $1 account",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "Add account or wallet"
+  },
   "addAccountToMetaMask": {
     "message": "Add account to MetaMask"
   },
@@ -414,6 +417,12 @@
   "alertMessageNoGasPrice": {
     "message": "We can’t move forward with this transaction until you manually update the fee."
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "This has been identified as malicious. We recommend not interacting with this site."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "This has been identified as suspicious. We recommend not interacting with this site."
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
   },
@@ -455,6 +464,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "Fee estimate unavailable"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "Malicious site"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Suspicious site"
   },
   "alertReasonPendingTransactions": {
     "message": "Pending transaction"
@@ -2718,6 +2733,13 @@
   "importAccountMsg": {
     "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase. Learn more about imported accounts"
   },
+  "importAccountWithSocialMsg": {
+    "message": "Imported private keys are backed up to your account and sync automatically when you sign in with the same Google or Apple login."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "$1 about how imported keys work",
+    "description": "$1 is a link to learn more about imported keys"
+  },
   "importNFT": {
     "message": "Import NFT"
   },
@@ -3510,6 +3532,9 @@
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
+  },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "Must have at least one network enabled"
   },
   "networkMenu": {
     "message": "Network Menu"

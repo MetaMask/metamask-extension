@@ -96,6 +96,7 @@ export const AddressQRCode = () => {
         <ButtonSecondary
           onClick={handleNavigation}
           size={ButtonSecondarySize.Lg}
+          data-testid={addressLink}
           textProps={{
             variant: TextVariant.bodyMdMedium,
           }}
