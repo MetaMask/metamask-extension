@@ -48,10 +48,8 @@ async function doPasswordChangeAndLockWallet(
 
   await settingsPage.closeSettingsPage();
 
-  if (isSocialLogin) {
-    // Wait for the password change to be applied to the social login user
-    await driver.delay(2_000);
-  }
+  // Wait for the password change to be applied to the social login user
+  await driver.delay(2_000);
 
   await headerNavbar.lockMetaMask();
 }

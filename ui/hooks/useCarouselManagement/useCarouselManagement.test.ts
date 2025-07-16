@@ -9,6 +9,7 @@ import {
   getSelectedInternalAccount,
   getSlides,
   getUseExternalServices,
+  getShowDownloadMobileAppSlide,
 } from '../../selectors';
 import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import { CarouselSlide } from '../../../shared/constants/app-state';
@@ -242,6 +243,7 @@ const mockGetSelectedInternalAccount = jest
   .fn()
   .mockImplementation(() => MOCK_ACCOUNT);
 const mockGetIsRemoteModeEnabled = jest.fn();
+const mockGetShowDownloadMobileAppSlide = jest.fn().mockReturnValue(true);
 
 describe('useCarouselManagement', () => {
   let validTestDate: string;
@@ -271,6 +273,9 @@ describe('useCarouselManagement', () => {
       }
       if (selector === getUseExternalServices) {
         return mockGetUseExternalServices();
+      }
+      if (selector === getShowDownloadMobileAppSlide) {
+        return mockGetShowDownloadMobileAppSlide();
       }
       return undefined;
     });

@@ -60,6 +60,7 @@ export type AppStateControllerState = {
   showPermissionsTour: boolean;
   showNetworkBanner: boolean;
   showAccountBanner: boolean;
+  showDownloadMobileAppSlide: boolean;
   trezorModel: string | null;
   currentPopupId?: number;
   onboardingDate: number | null;
@@ -206,6 +207,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   surveyLinkLastClickedOrClosed: null,
   switchedNetworkNeverShowMessage: false,
+  showDownloadMobileAppSlide: true,
   slides: [],
   throttledOrigins: {},
   isUpdateAvailable: false,
@@ -367,6 +369,10 @@ const controllerMetadata = {
     anonymous: true,
   },
   snapsInstallPrivacyWarningShown: {
+    persist: true,
+    anonymous: true,
+  },
+  showDownloadMobileAppSlide: {
     persist: true,
     anonymous: true,
   },
@@ -632,6 +638,10 @@ export class AppStateController extends BaseController<
         }
         return slide;
       });
+
+      if (id === 'downloadMobileApp') {
+        state.showDownloadMobileAppSlide = false;
+      }
     });
   }
 

@@ -15,6 +15,7 @@ import {
   getRemoteFeatureFlags,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
+  getShowDownloadMobileAppSlide,
   getSlides,
   getUseExternalServices,
 } from '../../selectors';
@@ -75,10 +76,7 @@ export const useCarouselManagement = ({
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const useExternalServices = useSelector(getUseExternalServices);
-  // const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
-  // const isAccountSyncingEnabled = useSelector(selectIsAccountSyncingEnabled);
-  // const showDownloadMobileAppSlide =
-  //   useExternalServices && isBackupAndSyncEnabled && isAccountSyncingEnabled;
+  const showDownloadMobileAppSlide = useSelector(getShowDownloadMobileAppSlide);
   const prevSlidesRef = useRef<CarouselSlide[]>();
   const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
     ZERO_BALANCE,
@@ -148,7 +146,7 @@ export const useCarouselManagement = ({
       const contentfulEnabled =
         remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
 
-      if (useExternalServices) {
+      if (useExternalServices && showDownloadMobileAppSlide) {
         const userProfileMetaMetrics = await getUserProfileMetaMetricsAction();
         if (userProfileMetaMetrics) {
           const isUserAvailableOnMobile = userProfileMetaMetrics.lineage.some(
@@ -225,6 +223,7 @@ export const useCarouselManagement = ({
     slides,
     selectedAccount.address,
     useExternalServices,
+    showDownloadMobileAppSlide,
   ]);
 
   return { slides };
