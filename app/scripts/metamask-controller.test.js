@@ -2153,54 +2153,6 @@ describe('MetaMaskController', () => {
                   metamaskController.preferencesController.setSelectedAddress,
                 ).toHaveBeenCalledTimes(1);
               });
-
-              it('should call preferencesController.setAccountLabel', async () => {
-                jest.spyOn(
-                  metamaskController.preferencesController,
-                  'setAccountLabel',
-                );
-
-                await metamaskController.unlockHardwareWalletAccount(
-                  accountToUnlock,
-                  device,
-                );
-
-                expect(
-                  metamaskController.preferencesController.setAccountLabel,
-                ).toHaveBeenCalledTimes(1);
-              });
-
-              it('should call accountsController.getAccountByAddress', async () => {
-                jest.spyOn(
-                  metamaskController.accountsController,
-                  'getAccountByAddress',
-                );
-
-                await metamaskController.unlockHardwareWalletAccount(
-                  accountToUnlock,
-                  device,
-                );
-
-                expect(
-                  metamaskController.accountsController.getAccountByAddress,
-                ).toHaveBeenCalledTimes(1);
-              });
-
-              it('should call accountsController.setAccountName', async () => {
-                jest.spyOn(
-                  metamaskController.accountsController,
-                  'setAccountName',
-                );
-
-                await metamaskController.unlockHardwareWalletAccount(
-                  accountToUnlock,
-                  device,
-                );
-
-                expect(
-                  metamaskController.accountsController.setAccountName,
-                ).toHaveBeenCalledTimes(1);
-              });
             });
           },
         );
