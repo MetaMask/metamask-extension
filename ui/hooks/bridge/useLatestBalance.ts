@@ -20,6 +20,7 @@ import {
 } from '../../selectors/multichain';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
+import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
@@ -41,7 +42,7 @@ const useLatestBalance = (
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
   const tokenAddressFromUrl = useMemo(
-    () => searchParams.get('token'),
+    () => searchParams.get(BridgeQueryParams.FROM),
     [searchParams],
   );
 
