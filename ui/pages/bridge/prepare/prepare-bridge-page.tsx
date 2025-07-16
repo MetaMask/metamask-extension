@@ -290,6 +290,7 @@ const PrepareBridgePage = () => {
   const millisecondsUntilNextRefresh = useCountdownTimer();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
+  const [defaultsApplied, setDefaultsApplied] = useState(false);
 
   // Resets the banner visibility when the estimated return is low
   const [isLowReturnBannerOpen, setIsLowReturnBannerOpen] = useState(true);
@@ -604,18 +605,19 @@ const PrepareBridgePage = () => {
   const { defaultToChainId, defaultToToken } = useBridgeDefaultToToken();
 
   useEffect(() => {
-    // Only set default chain if user hasn't already selected one
-    if (!toChain && defaultToChainId && fromChain) {
+    // Only set default chain if user hasn't already selected one and defaults haven't been applied
+    if (!defaultsApplied && !toChain && defaultToChainId && fromChain) {
       dispatch(setToChainId(defaultToChainId));
     }
-  }, [defaultToChainId, toChain, fromChain, dispatch]);
+  }, [defaultToChainId, toChain, fromChain, dispatch, defaultsApplied]);
 
   useEffect(() => {
-    // Only set default token if user hasn't already selected one and we have a destination chain
-    if (!toToken && defaultToToken && toChain) {
+    // Only set default token if user hasn't already selected one, we have a destination chain, and defaults haven't been applied
+    if (!defaultsApplied && !toToken && defaultToToken && toChain) {
       dispatch(setToToken(defaultToToken));
+      setDefaultsApplied(true); // Mark defaults as applied after setting token
     }
-  }, [defaultToToken, toToken, toChain, dispatch]);
+  }, [defaultToToken, toToken, toChain, dispatch, defaultsApplied]);
 
   // Edge-case fix: if user lands with USDC selected for both sides on Solana,
   // switch destination to SOL (native asset).
