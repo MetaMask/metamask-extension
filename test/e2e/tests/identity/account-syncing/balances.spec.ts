@@ -14,6 +14,8 @@ import { E2E_SRP } from '../../../default-fixture';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Accounts with Balances', function () {
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
+
   // Accounts that will have balances and be discovered during onboarding
   const balancesAccounts = [
     '0x5cfe73b6021e818b776b421b1c4db2474086a7e1', // Account 1 (synced)

@@ -15,6 +15,8 @@ import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Multiple SRPs', function () {
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
+
   const DEFAULT_ACCOUNT_NAME = 'Account 1';
   const SECOND_ACCOUNT_NAME = 'Account 2';
   const SRP_2_FIRST_ACCOUNT = 'Account 3';
