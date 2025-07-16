@@ -1,3 +1,4 @@
+/* eslint-disable prefer-template */
 import {
   CaipAssetType,
   CaipAssetTypeStruct,
@@ -8,17 +9,23 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { MultichainNetworks } from '../constants/multichain/networks';
-import { getAssetImageUrl, fetchAssetMetadata, toAssetId } from './asset-utils';
+import {
+  getAssetImageUrl,
+  fetchAssetMetadata,
+  toAssetId,
+  fetchAssetMetadataForAssetIds,
+} from './asset-utils';
 
 jest.mock('@metamask/multichain-network-controller');
 jest.mock('@metamask/controller-utils');
 
 const mockFetchWithTimeout = jest.fn();
 jest.mock('../modules/fetch-with-timeout', () => ({
+  // eslint-disable-next-line  @typescript-eslint/naming-convention
   __esModule: true,
   default: jest
     .fn()
-    .mockReturnValue((...args: any[]) => mockFetchWithTimeout(...args)),
+    .mockReturnValue((...args: unknown[]) => mockFetchWithTimeout(...args)),
 }));
 
 describe('asset-utils', () => {
@@ -327,6 +334,126 @@ describe('asset-utils', () => {
       const result = await fetchAssetMetadata('abc', mockHexChainId);
       expect(mockFetchWithTimeout).not.toHaveBeenCalled();
       expect(result).toStrictEqual(undefined);
+    });
+  });
+
+  describe('fetchAssetMetadataForAssetIds', () => {
+    const mockChainId = 'eip155:1' as CaipChainId;
+    const mockAssetId = 'eip155:1/erc20:0x123' as CaipAssetType;
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      (toEvmCaipChainId as jest.Mock).mockReturnValue(mockChainId);
+    });
+
+    it('should fetch EVM token metadata successfully', async () => {
+      const mockMetadata = {
+        assetId: (mockAssetId + 'ABcDe').toLowerCase(),
+        symbol: 'TEST',
+        name: 'Test Token',
+        decimals: 18,
+      };
+
+      mockFetchWithTimeout.mockResolvedValueOnce({
+        json: async () => await Promise.resolve([mockMetadata]),
+      });
+
+      const result = await fetchAssetMetadataForAssetIds([
+        (mockAssetId + 'ABcDe') as never,
+      ]);
+
+      expect(mockFetchWithTimeout).toHaveBeenCalledWith(
+        `${TOKEN_API_V3_BASE_URL}/assets?assetIds=${mockAssetId + 'ABcDe'.toLowerCase()}`,
+        {
+          method: 'GET',
+          headers: { 'X-Client-Id': 'extension' },
+        },
+      );
+
+      expect(result).toStrictEqual({
+        [(mockAssetId + 'ABcDe').toLowerCase()]: {
+          symbol: 'TEST',
+          decimals: 18,
+          assetId: 'eip155:1/erc20:0x123abcde',
+          name: 'Test Token',
+        },
+      });
+    });
+
+    it('should fetch Solana token metadata successfully', async () => {
+      const solanaChainId = MultichainNetwork.Solana;
+      const solanaAddress = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+      const solanaAssetId = `${solanaChainId}/token:${solanaAddress}`;
+
+      const mockMetadata = {
+        assetId: solanaAssetId,
+        symbol: 'SOL',
+        name: 'Solana Token',
+        decimals: 9,
+      };
+
+      mockFetchWithTimeout.mockResolvedValueOnce({
+        json: async () =>
+          await Promise.resolve([
+            mockMetadata,
+            { ...mockMetadata, assetId: solanaAssetId + 'ABcDe' },
+          ]),
+      });
+
+      const mockSignal = new AbortController().signal;
+      const result = await fetchAssetMetadataForAssetIds(
+        [
+          solanaAssetId,
+          (solanaAssetId + 'ABcDe') as never,
+          getNativeAssetForChainId(solanaChainId).assetId,
+        ],
+        mockSignal,
+      );
+
+      expect(mockFetchWithTimeout).toHaveBeenCalledWith(
+        'https://tokens.api.cx.metamask.io/v3/assets?assetIds=solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v,solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1vABcDe,solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        {
+          headers: { 'X-Client-Id': 'extension' },
+          method: 'GET',
+          signal: mockSignal,
+        },
+      );
+      expect(result).toStrictEqual({
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+          {
+            assetId:
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            decimals: 9,
+            name: 'Solana Token',
+            symbol: 'SOL',
+          },
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1vABcDe':
+          {
+            assetId:
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1vABcDe',
+            decimals: 9,
+            name: 'Solana Token',
+            symbol: 'SOL',
+          },
+      });
+    });
+
+    it('should return null when API call fails', async () => {
+      mockFetchWithTimeout.mockRejectedValueOnce(new Error('API Error'));
+      const result = await fetchAssetMetadataForAssetIds([mockAssetId]);
+      expect(result).toBeNull();
+    });
+
+    it('should return null when metadata processing fails', async () => {
+      mockFetchWithTimeout.mockResolvedValueOnce([null]);
+      const result = await fetchAssetMetadataForAssetIds([mockAssetId]);
+      expect(result).toBeNull();
+    });
+
+    it('should return null when EVM address is not valid', async () => {
+      const result = await fetchAssetMetadataForAssetIds(['abc' as never]);
+      expect(mockFetchWithTimeout).not.toHaveBeenCalled();
+      expect(result).toStrictEqual(null);
     });
   });
 });
