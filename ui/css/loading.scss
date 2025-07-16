@@ -34,6 +34,16 @@
     display: block;
   }
 }
+@media (prefers-color-scheme: dark) {
+  .loading-timeout-message {
+    // the design system uses dark grey300 for `--color-text-alternative` in
+    // dark mode, but the design system only switches to dark mode once the
+    // `[data-theme='dark']` attribute is set... which is too late for the
+    // loading screen. So we set the color here to ensure it is correct in dark
+    // mode.
+    color: var(--brand-colors-grey-grey300);
+  }
+}
 
 @keyframes showTimeoutMessage {
   0% {
