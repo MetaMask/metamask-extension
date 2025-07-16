@@ -8,6 +8,7 @@ import {
 } from '@metamask/utils';
 import {
   formatChainIdToCaip,
+  getNativeAssetForChainId,
   isNativeAddress,
 } from '@metamask/bridge-controller';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
@@ -108,7 +109,7 @@ export const useBridgeQueryParams = (
       parsedToAssetId: parseAsset(searchParams.get(BridgeQueryParams.TO)),
       parsedFromAssetId: parseAsset(searchParams.get(BridgeQueryParams.FROM)),
     };
-  }, []);
+  }, [searchParams]);
 
   const { parsedFromAssetId, parsedToAssetId } = parsedAssetIds;
 
@@ -132,7 +133,7 @@ export const useBridgeQueryParams = (
     ).then((result) => {
       setAssetMetadataByAssetId(result);
     });
-  }, [parsedAssetIds]);
+  }, [parsedFromAssetId?.assetId, parsedToAssetId?.assetId]);
 
   // Set fromChain and fromToken
   const setFromChainAndToken = useCallback(
@@ -150,30 +151,36 @@ export const useBridgeQueryParams = (
         const { chainId, assetReference } = parseCaipAssetType(
           fromTokenMetadata.assetId,
         );
+        // TODO detect native address here for EVM to fix native spot price and balance
+        const isNativeReference =
+          getNativeAssetForChainId(chainId)?.assetId.includes(assetReference);
         const token = {
           ...fromTokenMetadata,
           chainId,
-          address: isNativeAddress(assetReference) ? '' : assetReference,
+          address:
+            isNativeReference || isNativeAddress(assetReference)
+              ? ''
+              : assetReference,
         };
         // Only update if chain is different
         if (fromChainId === formatChainIdToCaip(network.chainId)) {
           dispatch(setFromToken(token));
-          cleanupUrlParams([BridgeQueryParams.FROM]);
         } else {
           const targetChain = networks.find(
             (chain) => formatChainIdToCaip(chain.chainId) === fromChainId,
           );
 
-          if (targetChain && fromTokenMetadata) {
-            await dispatch(
-              setFromChain({
-                networkConfig: targetChain,
-                selectedSolanaAccount: solanaAccount,
-                selectedEvmAccount: evmAccount,
-                token,
-              }),
-            );
-            cleanupUrlParams([BridgeQueryParams.FROM]);
+          if (targetChain) {
+            if (fromTokenMetadata) {
+              await dispatch(
+                setFromChain({
+                  networkConfig: targetChain,
+                  selectedSolanaAccount: solanaAccount,
+                  selectedEvmAccount: evmAccount,
+                  token,
+                }),
+              );
+            }
           }
         }
       }
@@ -196,7 +203,6 @@ export const useBridgeQueryParams = (
             address: assetReference,
           }),
         );
-        cleanupUrlParams([BridgeQueryParams.TO]);
       }
     },
     [],
@@ -251,7 +257,6 @@ export const useBridgeQueryParams = (
       ];
     (async () => {
       await setToChainAndToken(toTokenMetadata);
-      // cleanupUrlParams([BridgeQueryParams.TO]);
     })();
   }, [parsedToAssetId, toToken, assetMetadataByAssetId]);
 
@@ -264,7 +269,6 @@ export const useBridgeQueryParams = (
             parsedFromAssetId.assetId.toLowerCase()
         : true
     ) {
-      // cleanupUrlParams([BridgeQueryParams.FROM]);
       if (parsedAmount && fromToken) {
         dispatch(
           setFromTokenInputValue(
@@ -273,21 +277,12 @@ export const useBridgeQueryParams = (
             ),
           ),
         );
-        cleanupUrlParams([BridgeQueryParams.AMOUNT]);
       }
+      cleanupUrlParams([
+        BridgeQueryParams.AMOUNT,
+        BridgeQueryParams.FROM,
+        BridgeQueryParams.TO,
+      ]);
     }
   }, [parsedAmount, parsedFromAssetId, fromToken]);
-
-  // TODO clean up after tokens are set
-  // useEffect(() => {
-  //   const paramsToRemove = [
-  //   ];
-  //   if (parsedFromAssetId) {
-  //   }
-  //   cleanupUrlParams([
-  //     BridgeQueryParams.AMOUNT,
-  //     BridgeQueryParams.FROM,
-  //     BridgeQueryParams.TO,
-  //   ]);
-  // }, []);
 };
