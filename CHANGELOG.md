@@ -69,6 +69,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: add 7702 toggles (#33530)
 - feat: Improve how we display detailed of approve function in nested transaction (#33609)
 - feat: add `SEI` mainnet network support (#32027)
+- feat: enable Arbitrum for smart transactions (#33864)
+- feat: add the network and token logos for Omni and XRPL networks (#34005)
+- feat:add logos for Abstract network (#33838)
+- feat: validate same origin domain for signIn for Solana (#33982)
+
+### Changed
+- Update: the button component to be monochromatic (#33847)
+- Update: design tokens v8: font family change CentraNo1 to Geist and new background colors (#33764)
 
 ### Updated
 - Update welcome screen buttons to use Button DS component (#34230)
@@ -78,6 +86,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed a bug that was causing private key import field to always be in error state (#34050)
 - fix: solve `Error: Ledger: Unknown error while signing transaction` (#33581)
 - fix: regression of lanchdarkly flag key (#34045)
+- fix: private key import field to always be in error state (#34050)
+- fix: solve `Error: Ledger: Unknown error while signing transaction` (#33581)
+- fix: cp-12.22.0 regression of lanchdarkly flag key (#34045)
 - fix: bitcoin account type (#34021)
 - fix: hides bridge button on non-native asset page if unified is enabled (#34044)
 - fix: adds label for unified swap token approvals (#34034)
@@ -118,6 +129,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: disconnect of EVM scopes when removing Solana permissions while being connected with Wallet Standard (#33821)
 - fix: resume metametrics if not set yet when closing/opening app during onboarding (#34177)
 - fix: handle if srp length pasted is not equal to defined srp lengths (#34183)
+- fix: cp-12.22.0 flaky `Token List` and `Token Details` specs (#33772)
+- fix: bridge tx detail layout fix (#33860)
+- fix: Solana single-chain swap failure event not firing on src-chain (#33811)
 
 ## [12.22.2]
 ### Fixed
@@ -208,12 +222,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.20.1]
 ### Changed
-
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.23.0...HEAD
-[12.23.0]: https://github.com/MetaMask/metamask-extension/compare/v12.22.1...v12.23.0
+[12.23.0]: https://github.com/MetaMask/metamask-extension/compare/v12.22.2...v12.23.0
+[12.22.2]: https://github.com/MetaMask/metamask-extension/compare/v12.22.1...v12.22.2
 [12.22.1]: https://github.com/MetaMask/metamask-extension/compare/v12.22.0...v12.22.1
 [12.22.0]: https://github.com/MetaMask/metamask-extension/compare/v12.20.1...v12.22.0
 [12.20.1]: https://github.com/MetaMask/metamask-extension/releases/tag/v12.20.1
