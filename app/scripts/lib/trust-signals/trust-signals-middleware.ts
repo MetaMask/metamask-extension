@@ -55,7 +55,7 @@ function scanUrl(
   req: JsonRpcRequest & { mainFrameOrigin?: string },
   phishingController: PhishingController,
 ) {
-  if (req.mainFrameOrigin && isProdEnabled()) {
+  if (req.mainFrameOrigin) {
     phishingController.scanUrl(req.mainFrameOrigin).catch((error) => {
       console.error('[createTrustSignalsMiddleware] error:', error);
     });
