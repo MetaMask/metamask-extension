@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { readPartitionsFile } from '../../common/partitions-file';
 import type { ModulePartitionChild } from '../../common/build-module-partitions';
 import Box from './Box';
@@ -6,12 +6,14 @@ import Connections from './Connections';
 import type { BoxRect, BoxModel } from './types';
 
 type Summary = {
-  numConvertedModules: number;
+  numModulesInTypeScript: number;
   numModules: number;
 };
 
 function calculatePercentageComplete(summary: Summary) {
-  return ((summary.numConvertedModules / summary.numModules) * 100).toFixed(1);
+  return ((summary.numModulesInTypeScript / summary.numModules) * 100).toFixed(
+    1,
+  );
 }
 
 const partitions = readPartitionsFile();
@@ -25,8 +27,10 @@ const modulesById = allModules.reduce<Record<string, ModulePartitionChild>>(
   {},
 );
 const overallTotal = {
-  numConvertedModules: allModules.filter((module) => module.hasBeenConverted)
-    .length,
+  numModulesInTypeScript: allModules.filter(
+    (module) =>
+      module.hasBeenConvertedToTypeScript || module.wasOriginallyInTypeScript,
+  ).length,
   numModules: allModules.length,
 };
 
@@ -35,8 +39,8 @@ export default function App() {
     string,
     BoxRect
   > | null>(null);
-  const boxesByModuleId =
-    boxRectsByModuleId === null
+  const boxesByModuleId = useMemo(() => {
+    return boxRectsByModuleId === null
       ? {}
       : Object.values(boxRectsByModuleId).reduce<Record<string, BoxModel>>(
           (obj, boxRect) => {
@@ -73,30 +77,86 @@ export default function App() {
           },
           {},
         );
+  }, [boxRectsByModuleId]);
   const [activeBoxRectId, setActiveBoxRectId] = useState<string | null>(null);
   const activeBoxRect =
     boxRectsByModuleId === null || activeBoxRectId === null
       ? null
       : boxRectsByModuleId[activeBoxRectId];
-
-  const registerBox = (id: string, boxRect: BoxRect) => {
-    setBoxRectsById((existingBoxRectsById) => {
-      if (existingBoxRectsById === undefined) {
-        return { [id]: boxRect };
-      }
-      return { ...existingBoxRectsById, [id]: boxRect };
-    });
-  };
-  const toggleConnectionsFor = (id: string) => {
-    if (activeBoxRectId !== undefined && activeBoxRectId === id) {
-      setActiveBoxRectId(null);
-    } else {
-      setActiveBoxRectId(id);
+  const [searchQuery, setSearchQuery] = useState('');
+  const modulesMatchedBySearch = useMemo(() => {
+    if (searchQuery.trim().length === 0) {
+      return new Set();
     }
-  };
+
+    const searchQueryTokens = searchQuery.trim().split(' ');
+    const modules = partitions.map((partition) => partition.children).flat();
+    return new Set([
+      ...modules.filter((module) => {
+        const moduleIdTokens = module.id.split('/');
+        return searchQueryTokens.some((searchQueryToken) => {
+          return moduleIdTokens.some((moduleIdToken) =>
+            moduleIdToken.startsWith(searchQueryToken),
+          );
+        });
+      }),
+    ]);
+  }, [searchQuery, partitions]);
+
+  const registerBox = useCallback(
+    (id: string, boxRect: BoxRect) => {
+      setBoxRectsById((existingBoxRectsById) => {
+        if (existingBoxRectsById === undefined) {
+          return { [id]: boxRect };
+        }
+        return { ...existingBoxRectsById, [id]: boxRect };
+      });
+    },
+    [setBoxRectsById],
+  );
+  const toggleConnectionsFor = useCallback(
+    (id: string) => {
+      if (activeBoxRectId !== undefined && activeBoxRectId === id) {
+        setActiveBoxRectId(null);
+      } else {
+        setActiveBoxRectId(id);
+      }
+    },
+    [activeBoxRectId, setActiveBoxRectId],
+  );
+  const onSearchInput = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(event.target.value);
+    },
+    [setSearchQuery],
+  );
+  const onClickClearSearch = useCallback(
+    (event: MouseEvent) => {
+      event.preventDefault();
+      setSearchQuery('');
+    },
+    [setSearchQuery],
+  );
 
   return (
     <>
+      <div className="search">
+        <input
+          type="text"
+          placeholder="Search..."
+          className="search__input"
+          value={searchQuery}
+          onChange={onSearchInput}
+        />
+        {searchQuery.trim().length > 0 ? (
+          <div className="search__result-count">
+            Found {modulesMatchedBySearch.size} modules.{' '}
+            <a href="#" onClick={onClickClearSearch}>
+              Clear
+            </a>
+          </div>
+        ) : null}
+      </div>
       <h1 className="page-header">
         <img src="images/metamask-fox.svg" className="page-header__icon" />
         Extension TypeScript Migration Status
@@ -107,8 +167,8 @@ export default function App() {
           '--progress': `${calculatePercentageComplete(overallTotal)}%`,
         }}
       >
-        OVERALL: {overallTotal.numConvertedModules}/{overallTotal.numModules} (
-        {calculatePercentageComplete(overallTotal)}%)
+        OVERALL: {overallTotal.numModulesInTypeScript}/{overallTotal.numModules}{' '}
+        ({calculatePercentageComplete(overallTotal)}%)
       </h2>
       <details className="help">
         <summary className="help__question">What is this?</summary>
@@ -122,19 +182,30 @@ export default function App() {
 
           <p>
             Each box on this page represents a file in the codebase. Gray boxes
-            <span className="module module--inline module--to-be-converted">
+            <span className="module module--inline module--should-be-converted-to-ts">
               &nbsp;
             </span>
-            represent files that need to be converted to TypeScript. Green boxes
-            <span className="module module--inline module--has-been-converted">
+            represent JavaScript files that need to be converted to TypeScript.
+            Green boxes are TypeScript files. Those without a border
+            <span className="module module--inline module--has-been-converted-to-ts">
               &nbsp;
             </span>
-            are files that have already been converted. Faded boxes
-            <span className="module module--inline module--to-be-converted module--test">
+            have been converted from JavaScript; those with a border
+            <span className="module module--inline module--was-originally-in-ts">
+              &nbsp;
+            </span>
+            were originally written in TypeScript. Faded boxes
+            <span className="module module--inline module--should-be-converted-to-ts module--test">
               &nbsp;
             </span>
             <span
-              className="module module--inline module--has-been-converted module--test"
+              className="module module--inline module--has-been-converted-to-ts module--test"
+              style={{ marginLeft: 0 }}
+            >
+              &nbsp;
+            </span>
+            <span
+              className="module module--inline module--was-originally-in-ts module--test"
               style={{ marginLeft: 0 }}
             >
               &nbsp;
@@ -194,6 +265,8 @@ export default function App() {
               <div className="partition__children">
                 {partition.children.map((module) => {
                   const areConnectionsVisible = activeBoxRectId === module.id;
+                  const isSearchHighlighted =
+                    modulesMatchedBySearch.has(module);
                   return (
                     <Box
                       key={module.id}
@@ -201,6 +274,7 @@ export default function App() {
                       register={registerBox}
                       toggleConnectionsFor={toggleConnectionsFor}
                       areConnectionsVisible={areConnectionsVisible}
+                      isSearchHighlighted={isSearchHighlighted}
                     />
                   );
                 })}

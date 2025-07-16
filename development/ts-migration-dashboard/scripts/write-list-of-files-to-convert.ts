@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import { uniq } from 'lodash';
 import fg from 'fast-glob';
 import madge from '@lgbot/madge';
 import {
@@ -22,6 +23,10 @@ main().catch((error) => {
  * containing all JavaScript files that need to be converted to TypeScript.
  */
 async function main(): Promise<void> {
+  const existingFilePaths = JSON.parse(
+    fs.readFileSync(FILES_TO_CONVERT_PATH, 'utf8'),
+  );
+
   const entrypoints = (
     await Promise.all(
       ENTRYPOINT_PATTERNS.map((entrypointPattern) => {
@@ -30,30 +35,42 @@ async function main(): Promise<void> {
         );
       }),
     )
-  ).flat();
+  )
+    .flat()
+    .filter((filePath) => {
+      return !/^(?:\.storybook|node_modules)\//u.test(
+        path.relative(ROOT_DIRECTORY_PATH, filePath),
+      );
+    })
+    .sort();
   console.log(
     `Traversing dependency trees for ${entrypoints.length} entrypoints, please wait...`,
   );
-  const result = await madge(entrypoints, {
-    baseDir: ROOT_DIRECTORY_PATH,
-  });
-  const dependenciesByFilePath = result.obj();
-  const sortedFilePaths = Object.keys(dependenciesByFilePath)
-    .sort()
+
+  const dependenciesByFilePath = (
+    await madge(entrypoints, {
+      baseDir: ROOT_DIRECTORY_PATH,
+    })
+  ).obj();
+  const newFilePaths = Object.keys(dependenciesByFilePath)
     .filter((filePath) => {
       return (
-        /\.(?:js|tsx?)$/u.test(filePath) &&
-        !/^(?:\.storybook|node_modules)\//u.test(filePath)
+        /\.jsx?$/u.test(filePath) &&
+        !/^\./u.test(filePath) &&
+        // Filter this out again because some imports may refer to NPM modules
+        !/^node_modules\//u.test(filePath)
       );
-    });
+    })
+    .sort();
+  const updatedFilePaths = uniq(existingFilePaths.concat(newFilePaths));
 
   fs.writeFileSync(
     FILES_TO_CONVERT_PATH,
-    JSON.stringify(sortedFilePaths, null, '  '),
+    JSON.stringify(updatedFilePaths, null, '  '),
   );
   console.log(
     `${path.relative(process.cwd(), FILES_TO_CONVERT_PATH)} written with ${
-      sortedFilePaths.length
+      updatedFilePaths.length
     } modules.`,
   );
 }

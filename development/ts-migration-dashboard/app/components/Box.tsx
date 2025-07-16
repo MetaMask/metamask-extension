@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import classnames from 'classnames';
 import { Tooltip as ReactTippy } from 'react-tippy';
 import type { ModulePartitionChild } from '../../common/build-module-partitions';
@@ -9,14 +9,16 @@ export default function Box({
   register,
   toggleConnectionsFor,
   areConnectionsVisible,
+  isSearchHighlighted,
 }: {
   module: ModulePartitionChild;
   register: (id: string, boxRect: BoxRect) => void;
   toggleConnectionsFor: (id: string) => void;
   areConnectionsVisible: boolean;
+  isSearchHighlighted: boolean;
 }) {
-  const isTest = /\.test\.(?:js|tsx?)/u.test(module.id);
-  const isStorybookModule = /\.stories\.(?:js|tsx?)/u.test(module.id);
+  const isTest = /\.test\.[jt]sx?$/u.test(module.id);
+  const isStorybookModule = /\.stories\.[jt]sx$/u.test(module.id);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -37,12 +39,15 @@ export default function Box({
         centerY,
       });
     }
-  }, [ref]);
+  }, [ref, module, register]);
 
-  const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    toggleConnectionsFor(module.id);
-  };
+  const onClick = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      toggleConnectionsFor(module.id);
+    },
+    [toggleConnectionsFor, module],
+  );
 
   return (
     <ReactTippy
@@ -57,11 +62,15 @@ export default function Box({
         ref={ref}
         onClick={onClick}
         className={classnames('module', {
-          'module--has-been-converted': module.hasBeenConverted,
-          'module--to-be-converted': !module.hasBeenConverted,
+          'module--was-originally-in-ts': module.wasOriginallyInTypeScript,
+          'module--should-be-converted-to-ts':
+            module.shouldBeConvertedToTypeScript,
+          'module--has-been-converted-to-ts':
+            module.hasBeenConvertedToTypeScript,
           'module--test': isTest,
           'module--storybook': isStorybookModule,
           'module--active': areConnectionsVisible,
+          'module--search-highlighted': isSearchHighlighted,
         })}
       />
     </ReactTippy>
