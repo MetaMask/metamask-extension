@@ -86,7 +86,7 @@ export const getTxGasEstimates = async ({
 const fetchTokenExchangeRates = async (
   chainId: Hex | CaipChainId | ChainId,
   currency: string,
-  signal: AbortSignal,
+  signal?: AbortSignal,
   ...tokenAddresses: string[]
 ) => {
   const assetIds = tokenAddresses
@@ -125,7 +125,7 @@ export const getTokenExchangeRate = async (request: {
   chainId: Hex | CaipChainId | ChainId;
   tokenAddress: string;
   currency: string;
-  signal: AbortSignal;
+  signal?: AbortSignal;
 }) => {
   const { chainId, tokenAddress, currency, signal } = request;
   const exchangeRates = await fetchTokenExchangeRates(
