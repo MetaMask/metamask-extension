@@ -174,7 +174,7 @@ describe('migration #82', () => {
           },
           previousProviderStore: {
             chainId: '0x89',
-            nickname: 'Polygon Mainnet',
+            nickname: 'Polygon',
             rpcPrefs: {},
             rpcUrl:
               'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
@@ -215,7 +215,7 @@ describe('migration #82', () => {
           },
           previousProviderStore: {
             chainId: '0x89',
-            nickname: 'Polygon Mainnet',
+            nickname: 'Polygon',
             rpcPrefs: {},
             rpcUrl:
               'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
@@ -418,7 +418,7 @@ describe('migration #82', () => {
           },
           previousProviderStore: {
             chainId: '0x89',
-            nickname: 'Polygon Mainnet',
+            nickname: 'Polygon',
             rpcPrefs: {},
             rpcUrl:
               'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
@@ -475,7 +475,7 @@ describe('migration #82', () => {
           },
           previousProviderStore: {
             chainId: '0x89',
-            nickname: 'Polygon Mainnet',
+            nickname: 'Polygon',
             rpcPrefs: {},
             rpcUrl:
               'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
@@ -525,7 +525,7 @@ describe('migration #82', () => {
           },
           previousProviderStore: {
             chainId: '0x89',
-            nickname: 'Polygon Mainnet',
+            nickname: 'Polygon',
             rpcPrefs: {},
             rpcUrl:
               'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
@@ -600,7 +600,7 @@ describe('migration #82', () => {
           },
           previousProviderStore: {
             chainId: '0x89',
-            nickname: 'Polygon Mainnet',
+            nickname: 'Polygon',
             rpcPrefs: {},
             rpcUrl:
               'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
@@ -642,7 +642,7 @@ describe('migration #82', () => {
           },
           previousProviderStore: {
             chainId: '0x89',
-            nickname: 'Polygon Mainnet',
+            nickname: 'Polygon',
             rpcPrefs: {},
             rpcUrl:
               'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
@@ -679,7 +679,7 @@ describe('migration #82', () => {
           },
           previousProviderStore: {
             chainId: '0x89',
-            nickname: 'Polygon Mainnet',
+            nickname: 'Polygon',
             rpcPrefs: {},
             rpcUrl:
               'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',

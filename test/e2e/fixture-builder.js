@@ -375,7 +375,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.POLYGON,
-          nickname: 'Polygon Mainnet',
+          nickname: 'Polygon',
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.infura.io',
           ticker: 'ETH',
@@ -1756,7 +1756,7 @@ class FixtureBuilder {
         },
         'polygon-mainnet': {
           chainId: CHAIN_IDS.POLYGON,
-          nickname: 'Polygon Mainnet',
+          nickname: 'Polygon',
           rpcPrefs: {},
           rpcUrl: 'https://polygon-rpc.com',
           ticker: 'MATIC',

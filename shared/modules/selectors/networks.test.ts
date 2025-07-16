@@ -129,7 +129,7 @@ describe('Network Selectors', () => {
           defaultBlockExplorerUrlIndex: 0,
           defaultRpcEndpointIndex: 0,
           lastUpdatedAt: 1738689655105,
-          name: 'Polygon Mainnet',
+          name: 'Polygon',
           nativeCurrency: 'POL',
           rpcEndpoints: [
             {
@@ -237,7 +237,7 @@ describe('Network Selectors', () => {
         },
         {
           chainId: '0x89',
-          name: 'Polygon Mainnet',
+          name: 'Polygon',
         },
         {
           chainId: '0xa4b1',

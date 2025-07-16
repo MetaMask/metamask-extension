@@ -311,7 +311,7 @@ describe('network utils', () => {
       },
       '0x89': {
         chainId: '0x89',
-        name: 'Polygon Mainnet',
+        name: 'Polygon',
         nativeCurrency: 'MATIC',
         rpcEndpoints: [
           {
