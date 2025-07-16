@@ -209,10 +209,10 @@ export default class OAuthService {
       groupedAuthConnectionId = MOCK_GROUPED_AUTH_CONNECTION_ID;
     } else if (loginHandler.authConnection === AuthConnection.Google) {
       authConnectionId = this.#env.googleAuthConnectionId;
-      groupedAuthConnectionId = this.#env.googleGrouppedAuthConnectionId;
+      groupedAuthConnectionId = this.#env.googleGroupedAuthConnectionId;
     } else if (loginHandler.authConnection === AuthConnection.Apple) {
       authConnectionId = this.#env.appleAuthConnectionId;
-      groupedAuthConnectionId = this.#env.appleGrouppedAuthConnectionId;
+      groupedAuthConnectionId = this.#env.appleGroupedAuthConnectionId;
     }
 
     const authTokenData = await loginHandler.getAuthIdToken(authCode);
