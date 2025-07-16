@@ -23,7 +23,6 @@ export default class OAuthService {
 
   constructor({ env, webAuthenticator }: OAuthServiceOptions) {
     const oauthConfig = loadOAuthConfig();
-    console.log('oauthConfig', oauthConfig);
     this.#env = {
       ...env,
       ...oauthConfig,
