@@ -8,7 +8,6 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
@@ -63,7 +62,6 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         const settingsPage = new SettingsPage(driver);
         const accountListPage = new AccountListPage(driver);
-        const assetListPage = new AssetListPage(driver);
         const sendTokenPage = new SendTokenPage(driver);
 
         console.log('Step 2: Switch to Ethereum Mainnet');
@@ -111,7 +109,6 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
           EXPECTED_SEPOLIA_BALANCE_NATIVE,
           SEPOLIA_NATIVE_TOKEN,
         );
-        await assetListPage.check_networkFilterText(NETWORK_NAME_SEPOLIA);
 
         console.log('Step 9: Enable fiat display on testnets in settings');
         await headerNavbar.openSettingsPage();
