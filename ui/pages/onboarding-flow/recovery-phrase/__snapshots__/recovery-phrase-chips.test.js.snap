@@ -241,6 +241,8 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             data-testid="recovery-phrase-chip-0"
             disabled=""
             focused="false"
+            readonly=""
+            tabindex="-1"
             type="password"
             value="debris"
           />
@@ -260,6 +262,8 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             data-testid="recovery-phrase-chip-1"
             disabled=""
             focused="false"
+            readonly=""
+            tabindex="-1"
             type="password"
             value="dizzy"
           />
@@ -279,6 +283,8 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             data-testid="recovery-phrase-chip-2"
             disabled=""
             focused="false"
+            readonly=""
+            tabindex="-1"
             type="password"
             value="just"
           />
@@ -298,6 +304,8 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             data-testid="recovery-phrase-chip-3"
             disabled=""
             focused="false"
+            readonly=""
+            tabindex="-1"
             type="password"
             value="program"
           />
@@ -317,6 +325,8 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             data-testid="recovery-phrase-chip-4"
             disabled=""
             focused="false"
+            readonly=""
+            tabindex="-1"
             type="password"
             value="just"
           />
@@ -336,6 +346,8 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             data-testid="recovery-phrase-chip-5"
             disabled=""
             focused="false"
+            readonly=""
+            tabindex="-1"
             type="password"
             value="float"
           />
@@ -355,6 +367,8 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             data-testid="recovery-phrase-chip-6"
             disabled=""
             focused="false"
+            readonly=""
+            tabindex="-1"
             type="password"
             value="decrease"
           />
@@ -374,6 +388,8 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             data-testid="recovery-phrase-chip-7"
             disabled=""
             focused="false"
+            readonly=""
+            tabindex="-1"
             type="password"
             value="vacant"
           />
@@ -393,6 +409,8 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             data-testid="recovery-phrase-chip-8"
             disabled=""
             focused="false"
+            readonly=""
+            tabindex="-1"
             type="password"
             value="alarm"
           />
@@ -412,6 +430,8 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             data-testid="recovery-phrase-chip-9"
             disabled=""
             focused="false"
+            readonly=""
+            tabindex="-1"
             type="password"
             value="reduce"
           />
@@ -431,6 +451,8 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             data-testid="recovery-phrase-chip-10"
             disabled=""
             focused="false"
+            readonly=""
+            tabindex="-1"
             type="password"
             value="speak"
           />
@@ -450,6 +472,8 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             data-testid="recovery-phrase-chip-11"
             disabled=""
             focused="false"
+            readonly=""
+            tabindex="-1"
             type="password"
             value="stadium"
           />

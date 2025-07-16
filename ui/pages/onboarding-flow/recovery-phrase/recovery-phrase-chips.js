@@ -169,6 +169,7 @@ export default function RecoveryPhraseChips({
                   (confirmPhase && !isQuizWord) ||
                   (!confirmPhase && !phraseRevealed)
                 }
+                readOnly={confirmPhase}
                 onClick={() => {
                   if (!confirmPhase) {
                     return;
@@ -178,6 +179,9 @@ export default function RecoveryPhraseChips({
                   } else {
                     removeQuizWord(wordToDisplay);
                   }
+                }}
+                inputProps={{
+                  tabIndex: confirmPhase ? -1 : 0,
                 }}
               />
             ) : (

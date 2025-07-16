@@ -61,8 +61,7 @@ import {
   SubjectMetadataController,
   SubjectType,
 } from '@metamask/permission-controller';
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
-import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
+
 import {
   METAMASK_DOMAIN,
   SelectedNetworkController,
@@ -195,7 +194,6 @@ import {
   UNSUPPORTED_RPC_METHODS,
   getFailoverUrlsForInfuraNetwork,
 } from '../../shared/constants/network';
-import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
 import {
   HardwareDeviceNames,
@@ -240,10 +238,7 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
-import {
-  getIsSmartTransaction,
-  getFeatureFlagsByChainId,
-} from '../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../shared/modules/selectors';
 import { BaseUrl } from '../../shared/constants/urls';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
@@ -394,6 +389,7 @@ import {
 } from './controller-init/assets';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
+import { SmartTransactionsControllerInit } from './controller-init/smart-transactions/smart-transactions-controller-init';
 import { initControllers } from './controller-init/utils';
 import {
   CronjobControllerInit,
@@ -1763,53 +1759,6 @@ export default class MetamaskController extends EventEmitter {
       traceFn: (...args) => trace(...args),
     });
 
-    const smartTransactionsControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'SmartTransactionsController',
-        allowedActions: [
-          'NetworkController:getNetworkClientById',
-          'NetworkController:getState',
-        ],
-        allowedEvents: ['NetworkController:stateChange'],
-      });
-    this.smartTransactionsController = new SmartTransactionsController({
-      supportedChainIds: getAllowedSmartTransactionsChainIds(),
-      clientId: ClientId.Extension,
-      getNonceLock: (address) =>
-        this.txController.getNonceLock(
-          address,
-          this.#getGlobalNetworkClientId(),
-        ),
-      confirmExternalTransaction: (...args) =>
-        this.txController.confirmExternalTransaction(...args),
-      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
-      state: initState.SmartTransactionsController,
-      messenger: smartTransactionsControllerMessenger,
-      getTransactions: (...args) => this.txController.getTransactions(...args),
-      updateTransaction: (...args) =>
-        this.txController.updateTransaction(...args),
-      getFeatureFlags: () => {
-        const state = this._getMetaMaskState();
-        return getFeatureFlagsByChainId(state);
-      },
-      getMetaMetricsProps: async () => {
-        const selectedAddress =
-          this.accountsController.getSelectedAccount().address;
-        const accountHardwareType =
-          await this.getHardwareTypeForMetric(selectedAddress);
-        const accountType = await this.getAccountType(selectedAddress);
-        const deviceModel = await this.getDeviceModel(selectedAddress);
-        return {
-          accountHardwareType,
-          accountType,
-          deviceModel,
-        };
-      },
-      trace,
-    });
-
     const isExternalNameSourcesEnabled = () =>
       this.preferencesController.state.useExternalNameSources;
 
@@ -1964,7 +1913,8 @@ export default class MetamaskController extends EventEmitter {
       this.gasFeeController,
       this.onboardingController,
       this.keyringController,
-      this.smartTransactionsController,
+      this.metaMetricsController,
+      this.accountsController,
     ];
 
     /** @type {import('./controller-init/utils').InitFunctions} */
@@ -1980,6 +1930,7 @@ export default class MetamaskController extends EventEmitter {
       WebSocketService: WebSocketServiceInit,
       PPOMController: PPOMControllerInit,
       TransactionController: TransactionControllerInit,
+      SmartTransactionsController: SmartTransactionsControllerInit,
       NftController: NftControllerInit,
       AssetsContractController: AssetsContractControllerInit,
       NftDetectionController: NftDetectionControllerInit,
@@ -2027,6 +1978,8 @@ export default class MetamaskController extends EventEmitter {
     this.snapsRegistry = controllersByName.SnapsRegistry;
     this.ppomController = controllersByName.PPOMController;
     this.txController = controllersByName.TransactionController;
+    this.smartTransactionsController =
+      controllersByName.SmartTransactionsController;
     this.nftController = controllersByName.NftController;
     this.nftDetectionController = controllersByName.NftDetectionController;
     this.assetsContractController = controllersByName.AssetsContractController;
@@ -3731,6 +3684,10 @@ export default class MetamaskController extends EventEmitter {
 
       isNftOwner: nftController.isNftOwner.bind(nftController),
 
+      // TransactionController
+      updateIncomingTransactions:
+        txController.updateIncomingTransactions.bind(txController),
+
       // AddressController
       setAddressBook: addressBookController.set.bind(addressBookController),
       removeFromAddressBook: addressBookController.delete.bind(
@@ -5079,9 +5036,15 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.setSelectedAccount(account.id);
       }
 
-      await this._addAccountsWithBalance(id, shouldImportSolanaAccount);
+      const discoveredAccounts = await this._addAccountsWithBalance(
+        id,
+        shouldImportSolanaAccount,
+      );
 
-      return newAccountAddress;
+      return {
+        newAccountAddress,
+        discoveredAccounts,
+      };
     } finally {
       releaseLock();
     }
@@ -5330,6 +5293,11 @@ export default class MetamaskController extends EventEmitter {
         );
       }
 
+      const discoveredAccounts = {
+        bitcoin: 0,
+        solana: 0,
+      };
+
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       const btcClient = await this._getMultichainWalletSnapClient(
         BITCOIN_WALLET_SNAP_ID,
@@ -5339,6 +5307,8 @@ export default class MetamaskController extends EventEmitter {
         entropySource,
         btcScope,
       );
+
+      discoveredAccounts.bitcoin = btcAccounts.length;
 
       // If none accounts got discovered, we still create the first (default) one.
       if (btcAccounts.length === 0) {
@@ -5360,6 +5330,8 @@ export default class MetamaskController extends EventEmitter {
           solScope,
         );
 
+        discoveredAccounts.solana = solanaAccounts.length;
+
         // If none accounts got discovered, we still create the first (default) one.
         if (solanaAccounts.length === 0) {
           await this._addSnapAccount(entropySource, solanaClient, {
@@ -5368,8 +5340,13 @@ export default class MetamaskController extends EventEmitter {
         }
       }
       ///: END:ONLY_INCLUDE_IF
+      return discoveredAccounts;
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
+      return {
+        bitcoin: 0,
+        solana: 0,
+      };
     } finally {
       await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
         true,
@@ -9133,6 +9110,7 @@ export default class MetamaskController extends EventEmitter {
     const initRequest = {
       getFlatState: this.getState.bind(this),
       getGlobalChainId: this.#getGlobalChainId.bind(this),
+      getGlobalNetworkClientId: this.#getGlobalNetworkClientId.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
       getProvider: () => this.provider,
       getStateUI: this._getMetaMaskState.bind(this),
@@ -9158,6 +9136,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       revokeAndGetNewRefreshToken:
         this.oauthService.revokeAndGetNewRefreshToken.bind(this.oauthService),
+      getAccountType: this.getAccountType.bind(this),
+      getDeviceModel: this.getDeviceModel.bind(this),
+      getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
+      trace,
     };
 
     return initControllers({

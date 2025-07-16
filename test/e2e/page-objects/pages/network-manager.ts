@@ -8,6 +8,9 @@ class NetworkManager {
   private readonly networkManagerCloseButton =
     '[data-testid="modal-header-close-button"]';
 
+  private readonly networkManagerSelectAllButton =
+    '[data-testid="network-manager-select-all"]';
+
   private readonly networkListItem = (networkName: string) =>
     `[data-testid="network-list-item-${networkName}"]`;
 
@@ -38,17 +41,29 @@ class NetworkManager {
     });
   }
 
+  async selectAllNetworks(): Promise<void> {
+    console.log('Selecting all networks');
+    await this.driver.clickElement(this.networkManagerSelectAllButton);
+    await this.driver.delay(1000); // small delay to ensure networks are all selected
+  }
+
+  async selectNetworkByChainId(chainId: string): Promise<void> {
+    await this.driver.clickElementSafe(this.networkListItem(chainId));
+  }
+
   // Method to select/click on a network item
   async selectNetwork(networkName: string): Promise<void> {
     console.log(`Selecting network: ${networkName}`);
     await this.checkNetworkIsDeselected(networkName);
     await this.driver.clickElementSafe(this.networkListItem(networkName));
+    await this.checkNetworkIsSelected(networkName);
   }
 
   async deselectNetwork(networkName: string): Promise<void> {
     console.log(`Deselecting network: ${networkName}`);
     await this.checkNetworkIsSelected(networkName);
     await this.driver.clickElementSafe(this.networkListItem(networkName));
+    await this.checkNetworkIsDeselected(networkName);
   }
 
   // Method to check if a network is currently selected/active
