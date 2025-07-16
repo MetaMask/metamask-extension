@@ -3,13 +3,14 @@
 
   &__input-wrapper {
     position: relative;
+    margin-top: 2px;
   }
 
   &__input {
     -webkit-appearance: none;
     appearance: none;
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
 
     &:hover:not(:disabled) {
       background-color: var(--color-background-default-hover);
