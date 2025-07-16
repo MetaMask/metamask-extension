@@ -85,6 +85,7 @@ export const getTxGasEstimates = async ({
 const fetchTokenExchangeRates = async (
   chainId: Hex | CaipChainId | ChainId,
   currency: string,
+  signal: AbortSignal,
   ...tokenAddresses: string[]
 ) => {
   let exchangeRates;
@@ -105,6 +106,7 @@ const fetchTokenExchangeRates = async (
   const tokenV3PriceResponse = (await handleFetch(url, {
     method: 'GET',
     headers: { 'X-Client-Id': BridgeClientId.EXTENSION },
+    signal,
   })) as Record<string, { price: number }>;
 
   exchangeRates = Object.entries(tokenV3PriceResponse).reduce(
@@ -124,11 +126,13 @@ export const getTokenExchangeRate = async (request: {
   chainId: Hex | CaipChainId | ChainId;
   tokenAddress: string;
   currency: string;
+  signal: AbortSignal;
 }) => {
-  const { chainId, tokenAddress, currency } = request;
+  const { chainId, tokenAddress, currency, signal } = request;
   const exchangeRates = await fetchTokenExchangeRates(
     chainId,
     currency,
+    signal,
     tokenAddress,
   );
   const assetId = toAssetId(tokenAddress, formatChainIdToCaip(chainId));

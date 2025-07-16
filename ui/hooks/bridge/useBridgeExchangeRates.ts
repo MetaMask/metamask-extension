@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getBridgeQuotes,
@@ -48,8 +48,11 @@ export const useBridgeExchangeRates = () => {
 
   const marketData = useSelector(getMarketData);
 
+  const abortController = useRef(new AbortController());
   // Fetch exchange rates for selected src token if not found in marketData
   useEffect(() => {
+    abortController.current.abort();
+    abortController.current = new AbortController();
     if (fromChainId && fromTokenAddress) {
       const exchangeRate = exchangeRateFromMarketData(
         fromChainId,
@@ -63,6 +66,7 @@ export const useBridgeExchangeRates = () => {
             chainId: fromChainId,
             tokenAddress: fromTokenAddress,
             currency,
+            signal: abortController.current.signal,
           }),
         );
       }
@@ -71,6 +75,8 @@ export const useBridgeExchangeRates = () => {
 
   // Fetch exchange rates for selected dest token if not found in marketData
   useEffect(() => {
+    abortController.current.abort();
+    abortController.current = new AbortController();
     if (toChainId && toTokenAddress) {
       const exchangeRate = exchangeRateFromMarketData(
         toChainId,
@@ -84,6 +90,7 @@ export const useBridgeExchangeRates = () => {
             chainId: toChainId,
             tokenAddress: toTokenAddress,
             currency,
+            signal: abortController.current.signal,
           }),
         );
         // If the selected currency is not USD, fetch the USD exchange rate for metrics
@@ -93,6 +100,7 @@ export const useBridgeExchangeRates = () => {
               chainId: toChainId,
               tokenAddress: toTokenAddress,
               currency: 'usd',
+              signal: abortController.current.signal,
             }),
           );
         }
