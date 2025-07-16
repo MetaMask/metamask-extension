@@ -1,5 +1,4 @@
 import { Web3AuthNetwork } from '@metamask/seedless-onboarding-controller';
-import { isProduction } from '../../../../shared/modules/environment';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import { OAuthConfig } from './types';
 
@@ -108,9 +107,10 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
 
 /**
  * Check if the build is a Development or Test build.
+ *
  * @returns true if the build is a Development or Test build, false otherwise
  */
-export function isDevOrTestBuild() {
+function isDevOrTestBuild() {
   return (
     process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
     process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
@@ -118,7 +118,17 @@ export function isDevOrTestBuild() {
 }
 
 /**
+ * Check if the build is a Production build.
+ *
+ * @returns true if the build is a Production build, false otherwise
+ */
+function isProductionBuild() {
+  return process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.PRODUCTION;
+}
+
+/**
  * Load the OAuth config based on the build type and environment.
+ *
  * @returns the OAuth config
  */
 export function loadOAuthConfig(): OAuthConfig {
@@ -128,7 +138,7 @@ export function loadOAuthConfig(): OAuthConfig {
   if (buildType === 'main') {
     if (isDevOrTestBuild()) {
       buildTypeEnv = BuildTypeEnv.DevMain;
-    } else if (isProduction()) {
+    } else if (isProductionBuild()) {
       buildTypeEnv = BuildTypeEnv.ProdMain;
     } else {
       buildTypeEnv = BuildTypeEnv.UatMain;
@@ -136,7 +146,7 @@ export function loadOAuthConfig(): OAuthConfig {
   } else if (buildType === 'flask') {
     if (isDevOrTestBuild()) {
       buildTypeEnv = BuildTypeEnv.DevFlask;
-    } else if (isProduction()) {
+    } else if (isProductionBuild()) {
       buildTypeEnv = BuildTypeEnv.ProdFlask;
     } else {
       buildTypeEnv = BuildTypeEnv.UatFlask;
