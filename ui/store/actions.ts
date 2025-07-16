@@ -895,7 +895,7 @@ export function addNewAccount(
     }
     // Fail-safe in case we could not find the associated HD keyring.
     if (!hdKeyring) {
-      console.error('Should never reach this. There is always a keyring');
+      log.error('Should never reach this. There is always a keyring');
       throw new Error('Keyring not found');
     }
     const oldAccounts = hdKeyring.accounts;
