@@ -290,7 +290,6 @@ const PrepareBridgePage = () => {
   const millisecondsUntilNextRefresh = useCountdownTimer();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
-  const [defaultsApplied, setDefaultsApplied] = useState(false);
 
   // Resets the banner visibility when the estimated return is low
   const [isLowReturnBannerOpen, setIsLowReturnBannerOpen] = useState(true);
@@ -354,7 +353,6 @@ const PrepareBridgePage = () => {
   const insufficientBalanceBannerRef = useRef<HTMLDivElement>(null);
   const isEstimatedReturnLowRef = useRef<HTMLDivElement>(null);
   const tokenAlertBannerRef = useRef<HTMLDivElement>(null);
-  const fromAssetsPageFixAppliedRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (isInsufficientGasForQuote(nativeAssetBalance)) {
@@ -606,52 +604,17 @@ const PrepareBridgePage = () => {
 
   useEffect(() => {
     // Only set default chain if user hasn't already selected one and defaults haven't been applied
-    if (!defaultsApplied && !toChain && defaultToChainId && fromChain) {
+    if (!toChain && defaultToChainId && fromChain) {
       dispatch(setToChainId(defaultToChainId));
     }
-  }, [defaultToChainId, toChain, fromChain, dispatch, defaultsApplied]);
+  }, [defaultToChainId, toChain, fromChain, dispatch]);
 
   useEffect(() => {
-    // Only set default token if user hasn't already selected one, we have a destination chain, and defaults haven't been applied
-    if (!defaultsApplied && !toToken && defaultToToken && toChain) {
+    // Only set default token if user hasn't already selected one, we have a destination chain
+    if (!toToken && defaultToToken && toChain) {
       dispatch(setToToken(defaultToToken));
-      setDefaultsApplied(true); // Mark defaults as applied after setting token
     }
-  }, [defaultToToken, toToken, toChain, dispatch, defaultsApplied]);
-
-  // Edge-case fix: if user lands with USDC selected for both sides on Solana,
-  // switch destination to SOL (native asset).
-  useEffect(() => {
-    if (
-      !isSwap ||
-      !fromChain ||
-      !isSolanaChainId(fromChain.chainId) ||
-      !fromToken?.address ||
-      !toToken?.address ||
-      fromAssetsPageFixAppliedRef.current || // Prevent multiple applications of the fix as it's only needed initially.
-      !defaultToToken // Add check for defaultToToken
-    ) {
-      return;
-    }
-
-    const isBothUsdc =
-      fromToken.address.toLowerCase() ===
-        defaultToToken.address.toLowerCase() &&
-      toToken.address.toLowerCase() === defaultToToken.address.toLowerCase();
-
-    if (isBothUsdc) {
-      const solNativeAsset = getNativeAssetForChainId(fromChain.chainId);
-      dispatch(setToToken(solNativeAsset));
-      fromAssetsPageFixAppliedRef.current = true;
-    }
-  }, [
-    isSwap,
-    fromChain?.chainId,
-    fromToken?.address,
-    toToken?.address,
-    defaultToToken,
-    dispatch,
-  ]);
+  }, [defaultToToken, toToken, toChain, dispatch]);
 
   const occurrences = Number(
     toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,
