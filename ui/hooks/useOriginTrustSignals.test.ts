@@ -146,7 +146,7 @@ describe('useOriginTrustSignals', () => {
       label: null,
     });
   });
-  git;
+
   it('returns unknown state when origin is invalid URL', () => {
     getUrlScanCacheResultMock.mockReturnValue(undefined);
 
