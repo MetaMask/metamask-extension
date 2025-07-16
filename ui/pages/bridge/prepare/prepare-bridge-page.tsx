@@ -699,11 +699,11 @@ const PrepareBridgePage = () => {
                   value: networkConfig.chainId,
                 });
               if (
+                !isUnifiedUIEnabled &&
                 networkConfig?.chainId &&
                 networkConfig.chainId === toChain?.chainId
               ) {
                 dispatch(setToChainId(null));
-                dispatch(setToToken(null));
               }
               if (
                 isSolanaChainId(networkConfig.chainId) &&
@@ -727,12 +727,11 @@ const PrepareBridgePage = () => {
           }}
           isMultiselectEnabled={isUnifiedUIEnabled || !isSwap}
           onMaxButtonClick={
-            (isSwap && smartTransactionsEnabled) ||
-            !isNativeAddress(fromToken?.address ?? '')
-              ? (value: string) => {
+            isNativeAddress(fromToken?.address ?? '')
+              ? undefined
+              : (value: string) => {
                   dispatch(setFromTokenInputValue(value));
                 }
-              : undefined
           }
           // Hides fiat amount string before a token quantity is entered.
           amountInFiat={
@@ -921,10 +920,6 @@ const PrepareBridgePage = () => {
                           value: networkConfig.chainId,
                         });
                       dispatch(setToChainId(networkConfig.chainId));
-                      const destNativeAsset = getNativeAssetForChainId(
-                        networkConfig.chainId,
-                      );
-                      dispatch(setToToken(destNativeAsset));
                     },
                     header: getToInputHeader(),
                     shouldDisableNetwork: isUnifiedUIEnabled
@@ -1058,7 +1053,10 @@ const PrepareBridgePage = () => {
                     !selectedDestinationAccount
                   }
                 />
-                {activeQuote?.approval && fromAmount && fromToken ? (
+                {activeQuote &&
+                activeQuote.approval &&
+                activeQuote.sentAmount &&
+                activeQuote.quote.srcAsset?.symbol ? (
                   <Row justifyContent={JustifyContent.center} gap={1}>
                     <Text
                       color={TextColor.textAlternativeSoft}
@@ -1073,38 +1071,36 @@ const PrepareBridgePage = () => {
                           return t('willApproveAmountForSwapping', [
                             formatTokenAmount(
                               locale,
-                              fromAmount,
-                              fromToken.symbol,
+                              activeQuote.sentAmount.amount,
+                              activeQuote.quote.srcAsset.symbol,
                             ),
                           ]);
                         }
                         return t('willApproveAmountForBridging', [
                           formatTokenAmount(
                             locale,
-                            fromAmount,
-                            fromToken.symbol,
+                            activeQuote.sentAmount.amount,
+                            activeQuote.quote.srcAsset.symbol,
                           ),
                         ]);
                       })()}
                     </Text>
-                    {fromAmount && (
-                      <Tooltip
-                        display={Display.InlineBlock}
-                        position={PopoverPosition.Top}
-                        offset={[-48, 8]}
-                        title={t('grantExactAccess')}
-                      >
-                        {isUsingHardwareWallet
-                          ? t('bridgeApprovalWarningForHardware', [
-                              fromAmount,
-                              fromToken.symbol,
-                            ])
-                          : t('bridgeApprovalWarning', [
-                              fromAmount,
-                              fromToken.symbol,
-                            ])}
-                      </Tooltip>
-                    )}
+                    <Tooltip
+                      display={Display.InlineBlock}
+                      position={PopoverPosition.Top}
+                      offset={[-48, 8]}
+                      title={t('grantExactAccess')}
+                    >
+                      {isUsingHardwareWallet
+                        ? t('bridgeApprovalWarningForHardware', [
+                            activeQuote.sentAmount.amount,
+                            activeQuote.quote.srcAsset.symbol,
+                          ])
+                        : t('bridgeApprovalWarning', [
+                            activeQuote.sentAmount.amount,
+                            activeQuote.quote.srcAsset.symbol,
+                          ])}
+                    </Tooltip>
                   </Row>
                 ) : null}
               </Footer>

@@ -216,7 +216,11 @@ const CoinButtons = ({
       } catch (err) {
         console.error(`Failed to switch chains.
         Target chainId: ${chainId}, Current chainId: ${currentChainId}.
-        ${err}`);
+        ${
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          err
+        }`);
         throw err;
       }
     }
@@ -419,7 +423,7 @@ const CoinButtons = ({
         round={!displayNewIconButtons}
       />
       {/* the bridge button is redundant if unified ui is enabled */}
-      {process.env.REMOVE_GNS || isUnifiedUIEnabled ? null : (
+      {isUnifiedUIEnabled ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
           disabled={

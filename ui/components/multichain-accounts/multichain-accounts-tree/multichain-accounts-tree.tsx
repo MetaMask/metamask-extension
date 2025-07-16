@@ -68,6 +68,7 @@ export const MultichainAccountsTree = ({
         const walletHeader = (
           <Box
             key={`wallet-header-${walletId}`}
+            data-testid="multichain-account-tree-wallet-header"
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.center}
@@ -148,6 +149,7 @@ export const MultichainAccountsTree = ({
             return [
               <Box
                 key={`account-group-${groupId}`}
+                marginBottom={4}
                 style={{
                   borderBottom: '1px solid var(--color-border-muted)',
                 }}

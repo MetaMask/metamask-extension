@@ -4,10 +4,10 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
 
 describe('Custom RPC history', function (this: Suite) {
   it(`creates first custom RPC entry`, async function () {
@@ -38,7 +38,7 @@ describe('Custom RPC history', function (this: Suite) {
         const rpcUrl = `http://127.0.0.1:${port}`;
         const networkName = 'Secondary Local Testnet';
 
-        await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
         await selectNetworkDialog.openAddCustomNetworkModal();
@@ -80,7 +80,7 @@ describe('Custom RPC history', function (this: Suite) {
         // Duplicate network
         const duplicateRpcUrl = 'https://mainnet.infura.io/v3/';
 
-        await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
         await selectNetworkDialog.openAddCustomNetworkModal();
@@ -116,7 +116,7 @@ describe('Custom RPC history', function (this: Suite) {
         // Duplicate network
         const duplicateChainId = '1';
 
-        await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
         await selectNetworkDialog.openAddCustomNetworkModal();
@@ -169,12 +169,11 @@ describe('Custom RPC history', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
 
         // Custom rpcs length is 1 because networks has been merged
-        await selectNetworkDialog.check_rpcIsSelected('Localhost 8545');
         await selectNetworkDialog.check_networkOptionIsDisplayed(
           'Localhost 8545',
         );
@@ -215,8 +214,7 @@ describe('Custom RPC history', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
         await selectNetworkDialog.check_networkOptionIsDisplayed(
@@ -228,14 +226,11 @@ describe('Custom RPC history', function (this: Suite) {
         const homepage = new Homepage(driver);
         await homepage.check_pageIsLoaded();
         await homepage.check_expectedBalanceIsDisplayed();
-        await homepage.headerNavbar.check_currentSelectedNetwork(
-          'Localhost 8545',
-        );
 
         // Check custom network http://127.0.0.1:8545/2 is removed from network list
         // need a hard delay to avoid the background error message "network configuration not found" for removed network
         await driver.delay(2000);
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         await selectNetworkDialog.check_pageIsLoaded();
         await selectNetworkDialog.check_networkOptionIsDisplayed(
           'http://127.0.0.1:8545/2',
