@@ -4849,19 +4849,6 @@ export default class MetamaskController extends EventEmitter {
     }
 
     for (const secret of otherSecrets) {
-      // import private key secret
-      if (secret.type === SecretType.PrivateKey) {
-        await this.importAccountWithStrategy(
-          'privateKey',
-          [bytesToHex(secret.data)],
-          {
-            shouldCreateSocialBackup: false,
-            shouldSelectAccount: false,
-          },
-        );
-        continue;
-      }
-
       // import SRP secret
       // Get the SRP hash, and find the hash in the local state
       const srpHash =
@@ -4871,6 +4858,19 @@ export default class MetamaskController extends EventEmitter {
         );
 
       if (!srpHash) {
+        // import private key secret
+        if (secret.type === SecretType.PrivateKey) {
+          await this.importAccountWithStrategy(
+            'privateKey',
+            [bytesToHex(secret.data)],
+            {
+              shouldCreateSocialBackup: false,
+              shouldSelectAccount: false,
+            },
+          );
+          continue;
+        }
+
         // If SRP is not in the local state, import it to the vault
         // convert the seed phrase to a mnemonic (string)
         const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
