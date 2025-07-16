@@ -4,12 +4,46 @@ import { ENVIRONMENT } from '../../../../development/build/constants';
 import { OAuthConfig } from './types';
 
 export enum BuildTypeEnv {
+  /**
+   * Development build for main build type.
+   * This will be used when we run the development build. (e.g. `yarn start`)
+   */
   DevMain = 'DevMain',
+
+  /**
+   * Development build for flask build type.
+   * This will be used when we run the development flask build. (e.g. `yarn start:flask`)
+   */
   DevFlask = 'DevFlask',
+
+  /**
+   * UAT (QA) build for main build type.
+   * This will be used when we run the UAT (QA or dist) build. (e.g. `yarn dist`)
+   */
   UatMain = 'UatMain',
+
+  /**
+   * UAT build for flask build type.
+   * This will be used when we run the UAT (QA or dist) flask build. (e.g. `yarn build --build-type flask dist`)
+   */
   UatFlask = 'UatFlask',
+
+  /**
+   * Production build for main build type.
+   * This will be used when we run the production build. (e.g. `yarn build prod`)
+   */
   ProdMain = 'ProdMain',
+
+  /**
+   * Production build for flask build type.
+   * This will be used when we run the production flask build. (e.g. `yarn build --build-type flask prod`)
+   */
   ProdFlask = 'ProdFlask',
+
+  /**
+   * Beta build for main build type.
+   * This will be used when we run the beta build. (e.g. `yarn build beta`)
+   */
   Beta = 'Beta',
 }
 
@@ -72,31 +106,40 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
   },
 };
 
-export function isUatBuild() {
-  // we gonna use `yarn dist` builds as uat builds
-  return process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.OTHER;
+/**
+ * Check if the build is a Development or Test build.
+ * @returns true if the build is a Development or Test build, false otherwise
+ */
+export function isDevOrTestBuild() {
+  return (
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
+  );
 }
 
+/**
+ * Load the OAuth config based on the build type and environment.
+ * @returns the OAuth config
+ */
 export function loadOAuthConfig(): OAuthConfig {
   const buildType = process.env.METAMASK_BUILD_TYPE;
-  const environment = process.env.METAMASK_ENVIRONMENT;
 
   let buildTypeEnv = BuildTypeEnv.DevMain;
   if (buildType === 'main') {
-    if (isUatBuild()) {
-      buildTypeEnv = BuildTypeEnv.UatMain;
+    if (isDevOrTestBuild()) {
+      buildTypeEnv = BuildTypeEnv.DevMain;
     } else if (isProduction()) {
       buildTypeEnv = BuildTypeEnv.ProdMain;
     } else {
-      buildTypeEnv = BuildTypeEnv.DevMain;
+      buildTypeEnv = BuildTypeEnv.UatMain;
     }
   } else if (buildType === 'flask') {
-    if (isUatBuild()) {
-      buildTypeEnv = BuildTypeEnv.UatFlask;
+    if (isDevOrTestBuild()) {
+      buildTypeEnv = BuildTypeEnv.DevFlask;
     } else if (isProduction()) {
       buildTypeEnv = BuildTypeEnv.ProdFlask;
     } else {
-      buildTypeEnv = BuildTypeEnv.DevFlask;
+      buildTypeEnv = BuildTypeEnv.UatFlask;
     }
   } else if (buildType === 'beta') {
     buildTypeEnv = BuildTypeEnv.Beta;
