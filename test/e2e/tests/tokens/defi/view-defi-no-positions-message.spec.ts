@@ -36,7 +36,6 @@ describe('Check DeFi empty state when no defi positions', function () {
 
         // Empty state
         await defiTab.check_noPositionsMessageIsDisplayed();
-        await defiTab.waitForStakeLink();
 
         // switch network
         await switchToNetworkFlow(driver, 'Ethereum Mainnet');

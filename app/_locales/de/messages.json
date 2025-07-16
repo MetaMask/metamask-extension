@@ -5495,9 +5495,6 @@
   "standardAccountLabel": {
     "message": "Standard-Konto"
   },
-  "startEarning": {
-    "message": "Mit dem Verdienen beginnen"
-  },
   "stateLogError": {
     "message": "Fehler beim Abfragen der Statusprotokolle."
   },

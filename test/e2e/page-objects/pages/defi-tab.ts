@@ -53,8 +53,6 @@ class DeFiTab {
   private readonly popularNetworks =
     '[data-testid="network-filter-all__button"]';
 
-  private readonly stakeLink = '[data-testid="defi-tab-start-earning-link"]';
-
   private readonly groupIcon = '[data-testid="avatar-group"]';
 
   private readonly errorMessage = '[data-testid="defi-tab-error-message"]';
@@ -107,11 +105,6 @@ class DeFiTab {
   async check_groupIconIsDisplayed(): Promise<void> {
     console.log('Check that group icon is displayed');
     await this.driver.waitForSelector(this.groupIcon);
-  }
-
-  async waitForStakeLink(): Promise<void> {
-    console.log('Wait for stake link to be displayed');
-    await this.driver.waitForSelector(this.stakeLink);
   }
 }
 

@@ -5495,9 +5495,6 @@
   "standardAccountLabel": {
     "message": "Compte standard"
   },
-  "startEarning": {
-    "message": "Commencer à générer des revenus"
-  },
   "stateLogError": {
     "message": "Erreur lors du chargement des journaux d’état."
   },
