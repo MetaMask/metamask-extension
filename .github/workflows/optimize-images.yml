@@ -71,7 +71,6 @@ jobs:
         with:
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
       - name: Checkout pull request
-        if: ${{ github.event_name != 'pull_request' }}
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
@@ -97,7 +96,6 @@ jobs:
         with:
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
       - name: Checkout pull request
-        if: ${{ github.event_name != 'pull_request' }}
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
@@ -129,29 +127,10 @@ jobs:
         run: |
           git config --global user.name 'MetaMask Bot'
           git config --global user.email 'metamaskbot@users.noreply.github.com'
-
-          # Get the current branch name or create one if in detached HEAD
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            # For pull_request events, we're already on the right branch
-            BRANCH_NAME="${{ github.head_ref }}"
-          else
-            # For workflow_dispatch and issue_comment, get the branch from the PR
-            BRANCH_NAME=$(gh pr view "${PR_NUMBER}" --json headRefName --jq '.headRefName')
-          fi
-
-          # Make sure we're on the right branch and it's up to date
-          git fetch origin "$BRANCH_NAME"
-          git checkout -B "$BRANCH_NAME" "origin/$BRANCH_NAME"
-
           git commit -am "Optimize images"
-
-          # Set up the remote with the token for pushing
-          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git push origin "$BRANCH_NAME"
+          git push
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.issue.number || inputs.pr_number || github.event.pull_request.number }}
       ## Note the use of `cat -` to include the file contents and the echo in the comment
       - name: Post comment
         run: |
