@@ -16,7 +16,7 @@
 
 .loading-timeout-message {
   align-self: center;
-  animation: showTimeoutMessage 0s ease-in-out forwards;
+  animation: showTimeoutMessage 20s ease-in-out forwards;
   color: var(--color-text-alternative);
   margin-top: 4rem;
   max-width: design-system.$screen-sm-max;
