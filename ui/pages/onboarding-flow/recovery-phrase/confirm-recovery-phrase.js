@@ -38,7 +38,7 @@ import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
-  ONBOARDING_REVIEW_SRP_ROUTE,
+  ONBOARDING_REVEAL_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
@@ -82,9 +82,17 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     [secretRecoveryPhrase],
   );
   const searchParams = new URLSearchParams(search);
-  const isFromReminderParam = searchParams.get('isFromReminder')
-    ? '/?isFromReminder=true'
-    : '';
+  const isFromReminder = searchParams.get('isFromReminder');
+  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
+
+  const queryParams = new URLSearchParams();
+  if (isFromReminder) {
+    queryParams.set('isFromReminder', isFromReminder);
+  }
+  if (isFromSettingsSecurity) {
+    queryParams.set('isFromSettingsSecurity', isFromSettingsSecurity);
+  }
+  const nextRouteQueryString = queryParams.toString();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [matching, setMatching] = useState(false);
@@ -95,9 +103,13 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
 
   useEffect(() => {
     if (!secretRecoveryPhrase) {
-      history.push(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
+      history.replace(
+        `${ONBOARDING_REVEAL_SRP_ROUTE}/${
+          nextRouteQueryString ? `?${nextRouteQueryString}` : ''
+        }`,
+      );
     }
-  }, [history, secretRecoveryPhrase, isFromReminderParam]);
+  }, [history, secretRecoveryPhrase, nextRouteQueryString]);
 
   const resetQuizWords = useCallback(() => {
     const newQuizWords = generateQuizWords(splitSecretRecoveryPhrase);
@@ -137,18 +149,28 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     });
 
     const nextRoute =
-      getBrowserName() === PLATFORM_FIREFOX || isFromReminderParam
+      getBrowserName() === PLATFORM_FIREFOX || isFromReminder
         ? ONBOARDING_COMPLETION_ROUTE
         : ONBOARDING_METAMETRICS;
 
-    history.push(`${nextRoute}${isFromReminderParam}`);
-  }, [dispatch, hdEntropyIndex, history, trackEvent, isFromReminderParam]);
+    history.replace(
+      `${nextRoute}${nextRouteQueryString ? `?${nextRouteQueryString}` : ''}`,
+    );
+  }, [
+    dispatch,
+    hdEntropyIndex,
+    history,
+    trackEvent,
+    isFromReminder,
+    nextRouteQueryString,
+  ]);
 
   return (
     <Box
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
+      height={BlockSize.Full}
       gap={6}
       className="recovery-phrase recovery-phrase__confirm"
       data-testid="confirm-recovery-phrase"
@@ -183,7 +205,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
           marginBottom={4}
           width={BlockSize.Full}
         >
-          {!isFromReminderParam && (
+          {!isFromReminder && (
             <Text
               variant={TextVariant.bodyMd}
               color={TextColor.textAlternative}

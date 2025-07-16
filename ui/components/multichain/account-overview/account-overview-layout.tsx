@@ -1,6 +1,8 @@
 import React, { useContext, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
+import { useHistory } from 'react-router-dom';
+
 import {
   showModal,
   removeSlide,
@@ -25,6 +27,7 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
+import { SMART_ACCOUNT_UPDATE } from '../../../helpers/constants/routes';
 import { TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../../app/modals/identity';
 import {
   useCarouselManagement,
@@ -40,6 +43,7 @@ import {
 import { CreateSolanaAccountModal } from '../create-solana-account-modal';
 import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
 ///: END:ONLY_INCLUDE_IF
+import { getUseSmartAccount } from '../../../pages/confirmations/selectors/preferences';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import DownloadMobileAppModal from '../../app/download-mobile-modal/download-mobile-modal';
 import {
@@ -59,7 +63,9 @@ export const AccountOverviewLayout = ({
   const isLoading = useSelector(getAppIsLoading);
   const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
+  const history = useHistory();
   const selectedAccount = useSelector(getSelectedAccount);
+  const smartAccountOptIn = useSelector(getUseSmartAccount);
 
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
@@ -105,7 +111,11 @@ export const AccountOverviewLayout = ({
     ///: END:ONLY_INCLUDE_IF
 
     if (id === SMART_ACCOUNT_UPGRADE_SLIDE.id) {
-      dispatch(setAccountDetailsAddress(selectedAccount.address));
+      if (smartAccountOptIn) {
+        dispatch(setAccountDetailsAddress(selectedAccount.address));
+      } else {
+        history.replace(SMART_ACCOUNT_UPDATE);
+      }
     }
 
     if (id === DOWNLOAD_MOBILE_APP_SLIDE.id) {
@@ -116,6 +126,8 @@ export const AccountOverviewLayout = ({
       event: MetaMetricsEventName.BannerSelect,
       category: MetaMetricsEventCategory.Banner,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         banner_name: id,
       },
     });
@@ -139,6 +151,8 @@ export const AccountOverviewLayout = ({
             event: MetaMetricsEventName.BannerDisplay,
             category: MetaMetricsEventCategory.Banner,
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               banner_name: slide.id,
             },
           });

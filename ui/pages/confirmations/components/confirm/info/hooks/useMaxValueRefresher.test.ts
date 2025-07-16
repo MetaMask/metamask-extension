@@ -90,6 +90,8 @@ describe('useMaxValueRefresher', () => {
       expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
         {
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             is_send_max: true,
           },
         },
@@ -105,6 +107,8 @@ describe('useMaxValueRefresher', () => {
       expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
         {
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             is_send_max: false,
           },
         },
@@ -118,6 +122,8 @@ describe('useMaxValueRefresher', () => {
       expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
         {
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             is_send_max: true,
           },
         },
@@ -130,6 +136,8 @@ describe('useMaxValueRefresher', () => {
       expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
         {
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             is_send_max: false,
           },
         },

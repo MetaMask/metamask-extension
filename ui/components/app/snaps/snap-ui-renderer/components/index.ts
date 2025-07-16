@@ -70,4 +70,6 @@ export const COMPONENT_MAPPING = {
   AccountSelector: accountSelector,
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type COMPONENT_MAPPING = typeof COMPONENT_MAPPING;

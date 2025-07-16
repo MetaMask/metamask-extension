@@ -29,6 +29,7 @@
     "isLoading": "boolean",
     "isNftStillFetchingIndication": "boolean",
     "showNftDetectionEnablementToast": "boolean",
+    "showPasswordChangeToast": null,
     "loadingMessage": "undefined",
     "warning": "string",
     "buyView": "object",
@@ -66,13 +67,17 @@
     "isMultiRpcOnboarding": "boolean",
     "isAccessedFromDappConnectedSitePopover": "boolean",
     "errorInSettings": null,
-    "showNewSrpAddedToast": "boolean"
+    "showNewSrpAddedToast": "boolean",
+    "showSupportDataConsentModal": "boolean"
   },
   "bridge": "object",
   "confirmAlerts": "object",
   "confirmTransaction": "object",
   "gas": { "customData": { "price": null, "limit": null } },
-  "history": { "mostRecentOverviewPage": "/" },
+  "history": {
+    "mostRecentOverviewPage": "/",
+    "redirectAfterDefaultPage": null
+  },
   "invalidCustomNetwork": "object",
   "localeMessages": "object",
   "metamask": {
@@ -229,7 +234,10 @@
     "subjectMetadata": "object",
     "announcements": "object",
     "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
-    "enabledNetworkMap": { "0x539": "boolean" },
+    "enabledNetworkMap": {
+      "eip155": "object",
+      "solana": "object"
+    },
     "pinnedAccountList": {},
     "hiddenAccountList": {},
     "gasFeeEstimatesByChainId": {},
@@ -366,7 +374,10 @@
     "accountTree": "object",
     "encryptionKey": "string",
     "encryptionSalt": "string",
-    "srpSessionData": "object"
+    "socialBackupsMetadata": "object",
+    "srpSessionData": "object",
+    "enableEnforcedSimulations": true,
+    "enableEnforcedSimulationsForTransactions": "object"
   },
   "ramps": "object",
   "send": "object",

@@ -28,7 +28,9 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              '0x1': true,
+              eip155: {
+                '0x1': true,
+              },
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -46,7 +48,7 @@ describe('Account-watcher snap', function (this: Suite) {
       );
     });
 
-    it("disables 'Send' 'Swap' and 'Bridge' buttons for watch accounts", async function () {
+    it("disables 'Send' and 'Bridge' buttons for watch accounts", async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -55,7 +57,9 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              '0x1': true,
+              eip155: {
+                '0x1': true,
+              },
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -72,16 +76,8 @@ describe('Account-watcher snap', function (this: Suite) {
           // 'Send' button should be disabled
           assert.equal(await homePage.check_ifSendButtonIsClickable(), false);
 
-          // 'Swap' button should be disabled
-          assert.equal(await homePage.check_ifSwapButtonIsClickable(), false);
-
           // 'Bridge' button should be disabled
           assert.equal(await homePage.check_ifBridgeButtonIsClickable(), false);
-
-          // check tooltips for disabled buttons
-          await homePage.check_disabledButtonTooltip(
-            'Not supported with this account.',
-          );
         },
       );
     });
@@ -124,7 +120,9 @@ describe('Account-watcher snap', function (this: Suite) {
               })
               .withNetworkControllerOnMainnet()
               .withEnabledNetworks({
-                '0x1': true,
+                eip155: {
+                  '0x1': true,
+                },
               })
               .build(),
             title: this.test?.fullTitle(),
@@ -160,7 +158,9 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              '0x1': true,
+              eip155: {
+                '0x1': true,
+              },
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -193,7 +193,9 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              '0x1': true,
+              eip155: {
+                '0x1': true,
+              },
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -225,7 +227,9 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              '0x1': true,
+              eip155: {
+                '0x1': true,
+              },
             })
             .build(),
           title: this.test?.fullTitle(),

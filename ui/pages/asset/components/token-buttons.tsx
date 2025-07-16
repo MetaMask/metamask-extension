@@ -64,6 +64,7 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { Asset } from '../types/asset';
+import { getIsUnifiedUIEnabled } from '../../../ducks/bridge/selectors';
 
 const TokenButtons = ({
   token,
@@ -94,8 +95,6 @@ const TokenButtons = ({
     getIsSwapsChain(state, isEvm ? currentChainId : multichainChainId),
   );
 
-  const displayNewIconButtons = process.env.REMOVE_GNS;
-
   const isBridgeChain = useSelector((state) =>
     getIsBridgeChain(state, isEvm ? currentChainId : multichainChainId),
   );
@@ -106,6 +105,10 @@ const TokenButtons = ({
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const handleSendNonEvm = useHandleSendNonEvm(token.address as CaipAssetType);
   ///: END:ONLY_INCLUDE_IF
+
+  const isUnifiedUIEnabled = useSelector((state) =>
+    getIsUnifiedUIEnabled(state, isEvm ? currentChainId : multichainChainId),
+  );
 
   useEffect(() => {
     if (token.isERC721) {
@@ -135,7 +138,11 @@ const TokenButtons = ({
       } catch (err) {
         console.error(`Failed to switch chains.
         Target chainId: ${token.chainId}, Current chainId: ${currentChainId}.
-        ${err}`);
+        ${
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          err
+        }`);
         throw err;
       }
     }
@@ -149,7 +156,11 @@ const TokenButtons = ({
       properties: {
         location: 'Token Overview',
         text: 'Buy',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: currentChainId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: token.symbol,
       },
     });
@@ -161,9 +172,13 @@ const TokenButtons = ({
         event: MetaMetricsEventName.NavSendButtonClicked,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol: token.symbol,
           location: MetaMetricsSwapsEventSource.TokenView,
           text: 'Send',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: token.chainId,
         },
       },
@@ -234,15 +249,25 @@ const TokenButtons = ({
     }
     ///: END:ONLY_INCLUDE_IF
 
+    // Check if unified UI is enabled and route to bridge page for swaps
+    if (isUnifiedUIEnabled) {
+      handleBridgeOnClick(true); // true indicates it's a swap
+      return;
+    }
+
     await setCorrectChain();
 
     trackEvent({
       event: MetaMetricsEventName.NavSwapButtonClicked,
       category: MetaMetricsEventCategory.Swaps,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: token.symbol,
         location: MetaMetricsSwapsEventSource.TokenView,
         text: 'Swap',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: currentChainId,
       },
     });
@@ -274,6 +299,7 @@ const TokenButtons = ({
     setCorrectChain,
     handleBridgeOnClick,
     multichainChainId,
+    isUnifiedUIEnabled,
   ]);
 
   return (
@@ -285,19 +311,11 @@ const TokenButtons = ({
       <IconButton
         className="token-overview__button"
         Icon={
-          displayNewIconButtons ? (
-            <Icon
-              name={IconName.Money}
-              color={IconColor.iconAlternative}
-              size={IconSize.Md}
-            />
-          ) : (
-            <Icon
-              name={IconName.PlusAndMinus}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
-          )
+          <Icon
+            name={IconName.PlusAndMinus}
+            color={IconColor.iconDefault}
+            size={IconSize.Sm}
+          />
         }
         label={t('buyAndSell')}
         data-testid="token-overview-buy"
@@ -305,78 +323,51 @@ const TokenButtons = ({
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         disabled={token.isERC721 || !isBuyableChain}
-        round={!displayNewIconButtons}
       />
 
       <IconButton
         className="token-overview__button"
         onClick={handleSendOnClick}
         Icon={
-          displayNewIconButtons ? (
-            <Icon
-              name={IconName.Send}
-              color={IconColor.iconAlternative}
-              size={IconSize.Md}
-            />
-          ) : (
-            <Icon
-              name={IconName.Arrow2UpRight}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
-          )
+          <Icon
+            name={IconName.Arrow2UpRight}
+            color={IconColor.iconDefault}
+            size={IconSize.Sm}
+          />
         }
         label={t('send')}
         data-testid="eth-overview-send"
         disabled={token.isERC721}
-        round={!displayNewIconButtons}
       />
 
       <IconButton
         className="token-overview__button"
         Icon={
-          displayNewIconButtons ? (
-            <Icon
-              name={IconName.SwapHorizontal}
-              color={IconColor.iconAlternative}
-              size={IconSize.Md}
-            />
-          ) : (
-            <Icon
-              name={IconName.SwapHorizontal}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
-          )
+          <Icon
+            name={IconName.SwapHorizontal}
+            color={IconColor.iconDefault}
+            size={IconSize.Sm}
+          />
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
         disabled={!isSwapsChain}
-        round={!displayNewIconButtons}
       />
-      {displayNewIconButtons ? null : (
+
+      {!isUnifiedUIEnabled && (
         <IconButton
           className="token-overview__button"
           data-testid="token-overview-bridge"
           Icon={
-            displayNewIconButtons ? (
-              <Icon
-                name={IconName.Bridge}
-                color={IconColor.iconAlternative}
-                size={IconSize.Md}
-              />
-            ) : (
-              <Icon
-                name={IconName.Bridge}
-                color={IconColor.iconDefault}
-                size={IconSize.Sm}
-              />
-            )
+            <Icon
+              name={IconName.Bridge}
+              color={IconColor.iconDefault}
+              size={IconSize.Sm}
+            />
           }
           label={t('bridge')}
           onClick={() => handleBridgeOnClick(false)}
           disabled={!isBridgeChain}
-          round={!displayNewIconButtons}
         />
       )}
     </Box>

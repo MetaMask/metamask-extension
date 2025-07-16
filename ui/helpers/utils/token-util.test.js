@@ -158,4 +158,18 @@ describe('getAssetDetails', () => {
     expect(result.name).toStrictEqual('myERC20Token');
     expect(result.symbol).toStrictEqual('MTK');
   });
+
+  it('throws an error with the token address if token data cannot be parsed', async () => {
+    const tokenAddress = '0xAddrEssToken';
+    const currentUserAddress = '0xAccouNtAddress';
+    const transactionData = '0xTransactionData';
+
+    parseStandardTokenTransactionData.mockReturnValue(undefined);
+
+    await expect(
+      getAssetDetails(tokenAddress, currentUserAddress, transactionData, []),
+    ).rejects.toThrow(
+      `Unable to detect valid token data for token: 0xAddrEssToken`,
+    );
+  });
 });

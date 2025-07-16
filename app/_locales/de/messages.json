@@ -286,9 +286,6 @@
   "address": {
     "message": "Adresse"
   },
-  "addressCopied": {
-    "message": "Adresse wurde kopiert!"
-  },
   "addressMismatch": {
     "message": "Nichtübereinstimmung der Website-Adresse"
   },
@@ -910,9 +907,6 @@
   },
   "bridgeTo": {
     "message": "Bridge nach"
-  },
-  "bridgeToChain": {
-    "message": "Bridge nach $1"
   },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Wenn Sie dieses Token manuell hinzugefügt haben, stellen Sie sicher, dass Sie sich der Risiken für Ihre Gelder bewusst sind, bevor Sie bridgen."
@@ -1804,9 +1798,6 @@
   "downloadStateLogs": {
     "message": "Statusprotokolle herunterladen"
   },
-  "dragAndDropBanner": {
-    "message": "Sie können Netzwerke ziehen, um sie neu anzuordnen."
-  },
   "dropped": {
     "message": "Abgebrochen"
   },
@@ -2228,9 +2219,6 @@
   },
   "floatAmountToken": {
     "message": "Token-Betrag muss eine ganze Zahl sein"
-  },
-  "followUsOnTwitter": {
-    "message": "Folgen Sie uns auf Twitter."
   },
   "forbiddenIpfsGateway": {
     "message": "Verbotene IPFS-Gateway: Bitte geben Sie ein CID-Gateway an."
@@ -4225,9 +4213,6 @@
   "popularNetworks": {
     "message": "Beliebte Netzwerke"
   },
-  "portfolio": {
-    "message": "Portfolio"
-  },
   "preparingSwap": {
     "message": "Swap wird vorbereitet ..."
   },
@@ -4412,18 +4397,6 @@
   },
   "recoveryPhraseReminderConfirm": {
     "message": "Verstanden"
-  },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Bewahren Sie Ihre geheime Wiederherstellungsphrase immer an einem sicheren und geheimen Ort auf."
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Möchten Sie erneut ein Backup Ihrer geheimen Wiederherstellungsphrase erstellen?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Teilen Sie niemals Ihre geheime Wiederherstellungsphrase mit jemandem."
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Das MetaMask-Team wird Sie niemals nach Ihrer geheimen Wiederherstellungsphrase fragen."
   },
   "recoveryPhraseReminderSubText": {
     "message": "Ihre geheime Wiederherstellungsphrase kontrolliert alle Ihre Konten."
@@ -4795,16 +4768,8 @@
   "sendSelectSendAsset": {
     "message": "Wählen Sie das zu sendende Asset"
   },
-  "sendSpecifiedTokens": {
-    "message": "$1 senden",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Wenn Sie auf diese Schaltfläche klicken, wird Ihre Swap-Transaktion sofort eingeleitet. Bevor Sie fortfahren, überprüfen Sie bitte Ihre Transaktionsdetails."
-  },
-  "sendTokenAsToken": {
-    "message": "$1 als $2 senden",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Senden von $1"
@@ -5076,9 +5041,6 @@
   },
   "smartAccountReject": {
     "message": "Smart-Konto nicht verwenden"
-  },
-  "smartAccountRequestFor": {
-    "message": "Anfrage für"
   },
   "smartAccountSameAccount": {
     "message": "Dasselbe Konto, intelligentere Funktionen."
@@ -5544,9 +5506,6 @@
   },
   "statusNotConnected": {
     "message": "Nicht verbunden"
-  },
-  "statusNotConnectedAccount": {
-    "message": "Keine verbundenen Konten"
   },
   "step1LatticeWallet": {
     "message": "Verbinden Sie Ihr Lattice1"
