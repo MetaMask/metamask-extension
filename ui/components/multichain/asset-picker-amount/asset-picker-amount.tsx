@@ -21,6 +21,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   getAllChainsToPoll,
+  getCompleteAddressBook,
   getCurrentNetwork,
   getEnabledNetworksByNamespace,
   getIpfsGateway,
@@ -36,7 +37,9 @@ import {
 import {
   getCurrentDraftTransaction,
   getIsNativeSendPossible,
+  getRecipient,
   getSendMaxModeState,
+  updateRecipient,
   type Amount,
   type Asset,
 } from '../../../ducks/send';
@@ -84,7 +87,9 @@ type AssetPickerAmountProps = OverridingUnion<
 >;
 
 type NetworkOption =
-  | NetworkConfiguration
+  | (NetworkConfiguration & {
+      nickname?: string;
+    })
   | AddNetworkFields
   | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
 
@@ -116,6 +121,8 @@ export const AssetPickerAmount = ({
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
   const tokenList = useSelector(getTokenList) as TokenListMap;
+  const addressBook = useSelector(getCompleteAddressBook);
+  const recipient = useSelector(getRecipient);
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
@@ -324,6 +331,26 @@ export const AssetPickerAmount = ({
                           : networkConfig.chainId,
                       ),
                     );
+
+                    // Only proceed if we have recipient and addressBook
+                    if (recipient?.address && addressBook) {
+                      // Check if there's a contact with the same address on the NEW network
+                      const contactIsNotExistsOnNewNetwork = addressBook.find(
+                        (item) => {
+                          return (
+                            item.address === recipient.address &&
+                            item.chainId !== networkConfig.chainId
+                          );
+                        },
+                      );
+
+                      // If no contact exists on the new network, clear the recipient
+                      if (contactIsNotExistsOnNewNetwork) {
+                        dispatch(
+                          updateRecipient({ address: '', nickname: '' }),
+                        );
+                      }
+                    }
                   },
                   header: t('yourNetworks'),
                 }
