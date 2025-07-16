@@ -32,7 +32,7 @@ export const toAssetId = (
     return address;
   }
   if (isNativeAddress(address)) {
-    return getNativeAssetForChainId(chainId)?.assetId as CaipAssetType;
+    return getNativeAssetForChainId(chainId)?.assetId;
   }
   if (chainId === MultichainNetwork.Solana) {
     return CaipAssetTypeStruct.create(`${chainId}/token:${address}`);
@@ -137,6 +137,48 @@ export const fetchAssetMetadata = async (
       address: toHex(address),
       chainId: decimalToPrefixedHex(reference),
     };
+  } catch (error) {
+    return undefined;
+  }
+};
+
+/**
+ * Fetches the metadata for a token
+ *
+ * @param address - The address of the token
+ * @param chainId - The chainId of the token
+ * @param abortSignal - The abort signal for the fetch request
+ * @returns The metadata for the token
+ */
+export const fetchAssetMetadataForAssetIds = async (
+  assetIds: (CaipAssetType | null)[],
+  abortSignal?: AbortSignal,
+) => {
+  try {
+    const fetchWithTimeout = getFetchWithTimeout(TEN_SECONDS_IN_MILLISECONDS);
+
+    const assetIdsString = assetIds.filter(Boolean).join(',');
+    if (!assetIdsString) {
+      return {};
+    }
+    const assetMetadata: AssetMetadata[] = await (
+      await fetchWithTimeout(
+        `${TOKEN_API_V3_BASE_URL}/assets?assetIds=${assetIdsString}`,
+        {
+          method: 'GET',
+          headers: { 'X-Client-Id': 'extension' },
+          signal: abortSignal,
+        },
+      )
+    ).json();
+
+    return assetMetadata.reduce(
+      (acc, asset) => {
+        acc[asset.assetId] = asset;
+        return acc;
+      },
+      {} as Record<CaipAssetType, AssetMetadata>,
+    );
   } catch (error) {
     return undefined;
   }

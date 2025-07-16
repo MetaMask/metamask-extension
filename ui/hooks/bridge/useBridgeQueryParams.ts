@@ -12,7 +12,7 @@ import {
   isNativeAddress,
 } from '@metamask/bridge-controller';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
-import { fetchMultipleAssetMetadata } from '../../../shared/lib/asset-utils';
+import { fetchAssetMetadataForAssetIds } from '../../../shared/lib/asset-utils';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
@@ -55,7 +55,7 @@ const fetchAssetMetadata = async (
   if (assetIds.length === 0) return null;
 
   try {
-    return await fetchMultipleAssetMetadata(assetIds);
+    return await fetchAssetMetadataForAssetIds(assetIds);
   } catch {
     return null;
   }
