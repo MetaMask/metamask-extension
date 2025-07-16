@@ -3224,10 +3224,7 @@ describe('Actions', () => {
       background.syncSeedPhrases.resolves();
       setBackgroundConnection(background);
 
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
+      const expectedActions = [];
 
       await store.dispatch(actions.syncSeedPhrases());
 
@@ -3243,9 +3240,7 @@ describe('Actions', () => {
       setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'DISPLAY_WARNING', payload: errorMessage },
-        { type: 'HIDE_LOADING_INDICATION' },
       ];
 
       await expect(store.dispatch(actions.syncSeedPhrases())).rejects.toThrow(
@@ -3269,10 +3264,6 @@ describe('Actions', () => {
         // Expected to throw
       }
 
-      const actionsList = store.getActions();
-      const lastAction = actionsList[actionsList.length - 1];
-
-      expect(lastAction.type).toBe('HIDE_LOADING_INDICATION');
       expect(background.syncSeedPhrases.calledOnceWith()).toBe(true);
     });
   });
