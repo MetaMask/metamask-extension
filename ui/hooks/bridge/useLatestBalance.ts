@@ -71,19 +71,19 @@ const useLatestBalance = (
       return undefined;
     }
 
-    const { chainId } = token;
+    const { chainId, address } = token;
     // No need to fetch the balance for non-EVM tokens
     if (isSolanaChainId(chainId)) {
       return undefined;
     }
 
     const caipCurrentChainId = formatChainIdToCaip(currentChainId);
-    if (token.address && caipCurrentChainId === formatChainIdToCaip(chainId)) {
+    if (caipCurrentChainId === formatChainIdToCaip(chainId)) {
       trace({
         name: TraceName.BridgeBalancesUpdated,
         data: {
           srcChainId: caipCurrentChainId,
-          isNative: isNativeAddress(token?.address),
+          isNative: isNativeAddress(address),
         },
         startTime: Date.now(),
       });
@@ -91,7 +91,7 @@ const useLatestBalance = (
         await calcLatestSrcBalance(
           global.ethereumProvider,
           selectedAddress,
-          token.address,
+          address,
           formatChainIdToHex(chainId),
         )
       )?.toString();
