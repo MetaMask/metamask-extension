@@ -18,6 +18,8 @@ class BridgeQuotePage {
   private destinationAssetPickerButton =
     '[data-testid="bridge-destination-button"]';
 
+  private mutlichainAssetPicker = '[data-testid="multichain-asset-picker__network"]';
+
   public assetPrickerSearchInput =
     '[data-testid="asset-picker-modal-search-input"]';
 
@@ -85,6 +87,8 @@ class BridgeQuotePage {
     // Destination
     await this.driver.waitForSelector(this.destinationAssetPickerButton);
     await this.driver.clickElement(this.destinationAssetPickerButton);
+    await this.driver.waitForSelector(this.mutlichainAssetPicker);
+    await this.driver.clickElement(this.mutlichainAssetPicker);
     await this.driver.clickElementAndWaitToDisappear(
       `[data-testid="${quote.toChain}"]`,
     );
