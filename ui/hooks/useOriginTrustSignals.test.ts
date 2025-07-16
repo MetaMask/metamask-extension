@@ -35,7 +35,10 @@ describe('useOriginTrustSignals', () => {
       state: TrustSignalDisplayState.Unknown,
       label: null,
     });
-    expect(getUrlScanCacheResultMock).toHaveBeenCalledWith(undefined, '');
+    expect(getUrlScanCacheResultMock).toHaveBeenCalledWith(
+      undefined,
+      undefined,
+    );
   });
 
   it('returns malicious state when recommendedAction is Block', () => {
@@ -55,7 +58,7 @@ describe('useOriginTrustSignals', () => {
     });
     expect(getUrlScanCacheResultMock).toHaveBeenCalledWith(
       undefined,
-      ORIGIN_MOCK,
+      DOMAIN_NAME_MOCK,
     );
   });
 
@@ -142,5 +145,20 @@ describe('useOriginTrustSignals', () => {
       state: TrustSignalDisplayState.Unknown,
       label: null,
     });
+  });
+  git;
+  it('returns unknown state when origin is invalid URL', () => {
+    getUrlScanCacheResultMock.mockReturnValue(undefined);
+
+    const result = useOriginTrustSignals('not-a-valid-url');
+
+    expect(result).toStrictEqual({
+      state: TrustSignalDisplayState.Unknown,
+      label: null,
+    });
+    expect(getUrlScanCacheResultMock).toHaveBeenCalledWith(
+      undefined,
+      undefined,
+    );
   });
 });

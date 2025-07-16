@@ -34,14 +34,25 @@ function getTrustState(
 }
 
 export function useOriginTrustSignals(origin: string): TrustSignalResult {
+  let hostname: string | undefined;
+
+  if (origin) {
+    try {
+      const url = new URL(origin);
+      hostname = url.hostname;
+    } catch (e) {
+      hostname = undefined;
+    }
+  }
+
   const urlScanCacheResult = useSelector((state) =>
-    getUrlScanCacheResult(state, origin),
+    getUrlScanCacheResult(state, hostname),
   );
 
   const state = getTrustState(urlScanCacheResult);
 
   return {
     state,
-    label: null, // No label for urls
+    label: null,
   };
 }

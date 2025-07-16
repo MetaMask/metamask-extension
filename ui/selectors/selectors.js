@@ -3006,25 +3006,18 @@ export function getAddressSecurityAlertResponse(state, address) {
 }
 
 /**
- * Gets the cached url scan result for a given origin
+ * Gets the cached url scan result for a given hostname
  *
  * @param {*} state
- * @param {string} origin - The origin to get the url scan result for
- * @returns the cached url scan result for the given origin
+ * @param {string | undefined} hostname - The hostname to get the url scan result for
+ * @returns the cached url scan result for the given hostname or undefined if the hostname is not provided
  */
-export function getUrlScanCacheResult(state, origin) {
-  if (!origin) {
+export function getUrlScanCacheResult(state, hostname) {
+  if (!hostname) {
     return undefined;
   }
 
-  let url;
-  try {
-    url = new URL(origin);
-  } catch (e) {
-    return undefined;
-  }
-
-  return state.metamask.urlScanCache?.[url.hostname];
+  return state.metamask.urlScanCache?.[hostname];
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

@@ -3041,12 +3041,12 @@ describe('getInternalAccountsSortedByKeyring', () => {
 });
 
 describe('getUrlScanCacheResult', () => {
-  it('returns undefined for empty origin', () => {
+  it('returns undefined for empty hostname', () => {
     const result = selectors.getUrlScanCacheResult(mockState, '');
     expect(result).toBeUndefined();
   });
 
-  it('returns undefined for invalid URL origin', () => {
+  it('returns undefined for invalid URL hostname', () => {
     const result = selectors.getUrlScanCacheResult(
       mockState,
       'not-a-valid-url',
@@ -3054,7 +3054,7 @@ describe('getUrlScanCacheResult', () => {
     expect(result).toBeUndefined();
   });
 
-  it('returns the cached url scan result for a given origin', () => {
+  it('returns the cached url scan result for a given hostname', () => {
     mockState.metamask.urlScanCache = {
       'example.com': {
         result: {
@@ -3065,10 +3065,7 @@ describe('getUrlScanCacheResult', () => {
       },
     };
 
-    const result = selectors.getUrlScanCacheResult(
-      mockState,
-      'https://example.com',
-    );
+    const result = selectors.getUrlScanCacheResult(mockState, 'example.com');
     expect(result).toStrictEqual({
       result: {
         domainName: 'example.com',
