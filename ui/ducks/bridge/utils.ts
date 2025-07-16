@@ -3,7 +3,6 @@ import {
   isStrictHexString,
   type CaipChainId,
   type Hex,
-  CaipAssetTypeStruct,
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
@@ -111,7 +110,7 @@ const fetchTokenExchangeRates = async (
 
   return Object.entries(tokenV3PriceResponse).reduce(
     (acc, [k, curr]) => {
-      acc[CaipAssetTypeStruct.create(k)] = curr.price;
+      acc[k as CaipAssetType] = curr.price;
       return acc;
     },
     {} as Record<CaipAssetType, number>,
