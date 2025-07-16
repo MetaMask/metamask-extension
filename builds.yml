@@ -321,8 +321,6 @@ env:
   - SECURITY_ALERTS_API_ENABLED: 'true'
   # URL of security alerts API used to validate dApp requests
   - SECURITY_ALERTS_API_URL: 'https://security-alerts.api.cx.metamask.io'
-  # Temporary mechanism to enable trust signals middleware in production
-  - TRUST_SIGNALS_PROD_ENABLED: 'false'
 
   # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
@@ -388,6 +386,11 @@ env:
   - SEEDLESS_ONBOARDING_ENABLED: 'false'
   - GOOGLE_CLIENT_ID: ''
   - APPLE_CLIENT_ID: ''
+  # OAuth (Social login) for UAT(QA) builds
+  - GOOGLE_CLIENT_ID_FLASK_UAT: ''
+  - APPLE_CLIENT_ID_FLASK_UAT: ''
+  - GOOGLE_CLIENT_ID_UAT: ''
+  - APPLE_CLIENT_ID_UAT: ''
 
   # Snaps
   # This should only be used for local testing, and should not be enabled in any
