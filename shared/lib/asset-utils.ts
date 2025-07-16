@@ -41,7 +41,9 @@ export const toAssetId = (
   if (!isStrictHexString(address)) {
     return undefined;
   }
-  return CaipAssetTypeStruct.create(`${chainId}/erc20:${address}`);
+  return CaipAssetTypeStruct.create(
+    `${chainId}/erc20:${address.toLowerCase()}`,
+  );
 };
 
 /**
@@ -148,7 +150,7 @@ export const fetchAssetMetadata = async (
  * @param address - The address of the token
  * @param chainId - The chainId of the token
  * @param abortSignal - The abort signal for the fetch request
- * @returns The metadata for the token
+ * @returns The metadata for the token by lowercased assetId
  */
 export const fetchAssetMetadataForAssetIds = async (
   assetIds: (CaipAssetType | null)[],
@@ -156,8 +158,19 @@ export const fetchAssetMetadataForAssetIds = async (
 ) => {
   try {
     const fetchWithTimeout = getFetchWithTimeout(TEN_SECONDS_IN_MILLISECONDS);
-
-    const assetIdsString = assetIds.filter(Boolean).join(',');
+    const assetIdsString = assetIds
+      .map((assetId) => {
+        if (!assetId) {
+          return null;
+        }
+        const { assetReference } = parseCaipAssetType(assetId);
+        if (isStrictHexString(assetReference)) {
+          return assetId.toLowerCase();
+        }
+        return assetId;
+      })
+      .filter(Boolean)
+      .join(',');
     if (!assetIdsString) {
       return {};
     }
