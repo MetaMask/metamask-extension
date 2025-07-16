@@ -42,9 +42,6 @@ export const AccountPicker = ({
   showAvatarAccount = true,
   ...props
 }) => {
-  AccountPicker.propTypes = {
-    showAvatarAccount: PropTypes.bool,
-  };
   const useBlockie = useSelector(getUseBlockie);
   const shortenedAddress = address
     ? shortenAddress(toChecksumHexAddress(address))
@@ -172,4 +169,8 @@ AccountPicker.propTypes = {
    * Additional className to be added to the AccountPicker
    */
   className: PropTypes.string,
+  /**
+   * Represents if the avatar account should display
+   */
+  showAvatarAccount: PropTypes.bool,
 };
