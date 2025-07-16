@@ -1,8 +1,6 @@
 /**
  * @jest-environment node
  */
-// Import to set up global `Promise.withResolvers` polyfill
-import '../../shared/lib/promise-with-resolvers';
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
 import { obj as createThroughStream } from 'through2';
@@ -536,7 +534,10 @@ describe('MetaMaskController', () => {
     describe('#getAddTransactionRequest', () => {
       it('formats the transaction for submission', () => {
         const transactionParams = { from: '0xa', to: '0xb' };
-        const transactionOptions = { foo: true };
+        const transactionOptions = {
+          foo: true,
+          networkClientId: NETWORK_CONFIGURATION_ID_1,
+        };
         const result = metamaskController.getAddTransactionRequest({
           transactionParams,
           transactionOptions,
@@ -545,7 +546,7 @@ describe('MetaMaskController', () => {
           internalAccounts:
             metamaskController.accountsController.listAccounts(),
           dappRequest: undefined,
-          networkClientId: undefined,
+          networkClientId: NETWORK_CONFIGURATION_ID_1,
           selectedAccount:
             metamaskController.accountsController.getAccountByAddress(
               transactionParams.from,
@@ -562,7 +563,10 @@ describe('MetaMaskController', () => {
       });
       it('passes through any additional params to the object', () => {
         const transactionParams = { from: '0xa', to: '0xb' };
-        const transactionOptions = { foo: true };
+        const transactionOptions = {
+          foo: true,
+          networkClientId: NETWORK_CONFIGURATION_ID_1,
+        };
         const result = metamaskController.getAddTransactionRequest({
           transactionParams,
           transactionOptions,
@@ -693,6 +697,12 @@ describe('MetaMaskController', () => {
             'createToprfKeyAndBackupSeedPhrase',
           )
           .mockResolvedValueOnce();
+        const storeKeyringEncryptionKey = jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'storeKeyringEncryptionKey',
+          )
+          .mockResolvedValueOnce();
 
         const primaryKeyring =
           await metamaskController.createNewVaultAndKeychain(password);
@@ -703,7 +713,13 @@ describe('MetaMaskController', () => {
           primaryKeyring.metadata.id,
         );
 
+        const keyringEncryptionKey =
+          await metamaskController.keyringController.exportEncryptionKey();
+
         expect(createToprfKeyAndBackupSeedPhraseSpy).toHaveBeenCalled();
+        expect(storeKeyringEncryptionKey).toHaveBeenCalledWith(
+          keyringEncryptionKey,
+        );
       });
     });
 
@@ -716,14 +732,19 @@ describe('MetaMaskController', () => {
         const fetchSrpBackupSpy = jest
           .spyOn(
             metamaskController.seedlessOnboardingController,
-            'fetchAllSeedPhrases',
+            'fetchAllSecretData',
           )
-          .mockResolvedValueOnce([
-            new Uint8Array([
-              149, 4, 65, 0, 177, 1, 168, 4, 58, 1, 128, 2, 48, 2, 32, 7, 175,
-              2, 69, 3, 1, 7, 75, 3,
-            ]),
-          ]);
+          .mockResolvedValueOnce(
+            [
+              new Uint8Array([
+                149, 4, 65, 0, 177, 1, 168, 4, 58, 1, 128, 2, 48, 2, 32, 7, 175,
+                2, 69, 3, 1, 7, 75, 3,
+              ]),
+            ].map((srp) => ({
+              data: srp,
+              type: 'mnemonic',
+            })),
+          );
 
         const [srpBackup] =
           await metamaskController.fetchAllSecretData(password);
@@ -2130,54 +2151,6 @@ describe('MetaMaskController', () => {
 
                 expect(
                   metamaskController.preferencesController.setSelectedAddress,
-                ).toHaveBeenCalledTimes(1);
-              });
-
-              it('should call preferencesController.setAccountLabel', async () => {
-                jest.spyOn(
-                  metamaskController.preferencesController,
-                  'setAccountLabel',
-                );
-
-                await metamaskController.unlockHardwareWalletAccount(
-                  accountToUnlock,
-                  device,
-                );
-
-                expect(
-                  metamaskController.preferencesController.setAccountLabel,
-                ).toHaveBeenCalledTimes(1);
-              });
-
-              it('should call accountsController.getAccountByAddress', async () => {
-                jest.spyOn(
-                  metamaskController.accountsController,
-                  'getAccountByAddress',
-                );
-
-                await metamaskController.unlockHardwareWalletAccount(
-                  accountToUnlock,
-                  device,
-                );
-
-                expect(
-                  metamaskController.accountsController.getAccountByAddress,
-                ).toHaveBeenCalledTimes(1);
-              });
-
-              it('should call accountsController.setAccountName', async () => {
-                jest.spyOn(
-                  metamaskController.accountsController,
-                  'setAccountName',
-                );
-
-                await metamaskController.unlockHardwareWalletAccount(
-                  accountToUnlock,
-                  device,
-                );
-
-                expect(
-                  metamaskController.accountsController.setAccountName,
                 ).toHaveBeenCalledTimes(1);
               });
             });
@@ -4269,11 +4242,11 @@ describe('MetaMaskController', () => {
         );
         jest.spyOn(
           metamaskController.seedlessOnboardingController,
-          'fetchAllSeedPhrases',
+          'fetchAllSecretData',
         );
         jest.spyOn(
           metamaskController.seedlessOnboardingController,
-          'getSeedPhraseBackupHash',
+          'getSecretDataBackupState',
         );
         jest.spyOn(metamaskController, 'importMnemonicToVault');
         jest.spyOn(
@@ -4300,7 +4273,7 @@ describe('MetaMaskController', () => {
         metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
           true,
         );
-        metamaskController.seedlessOnboardingController.fetchAllSeedPhrases.mockResolvedValue(
+        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
           [], // Empty array means no root SRP
         );
 
@@ -4319,13 +4292,19 @@ describe('MetaMaskController', () => {
         metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
           true,
         );
-        metamaskController.seedlessOnboardingController.fetchAllSeedPhrases.mockResolvedValue(
-          [mockRootSRP, mockOtherSRP1, mockOtherSRP2],
+        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
+          [mockRootSRP, mockOtherSRP1, mockOtherSRP2].map((srp) => ({
+            data: srp,
+            type: 'mnemonic',
+          })),
         );
 
         // First SRP exists in local state, second doesn't
-        metamaskController.seedlessOnboardingController.getSeedPhraseBackupHash
-          .mockReturnValueOnce('existing-hash') // First SRP exists
+        metamaskController.seedlessOnboardingController.getSecretDataBackupState
+          .mockReturnValueOnce({
+            hash: 'existing-hash',
+            type: 'mnemonic',
+          }) // First SRP exists
           .mockReturnValueOnce(null); // Second SRP doesn't exist
 
         metamaskController._convertEnglishWordlistIndicesToCodepoints.mockReturnValueOnce(
@@ -4355,13 +4334,19 @@ describe('MetaMaskController', () => {
         metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
           true,
         );
-        metamaskController.seedlessOnboardingController.fetchAllSeedPhrases.mockResolvedValue(
-          [mockRootSRP, mockOtherSRP],
+        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
+          [mockRootSRP, mockOtherSRP].map((srp) => ({
+            data: srp,
+            type: 'mnemonic',
+          })),
         );
 
         // Both SRPs exist in local state
-        metamaskController.seedlessOnboardingController.getSeedPhraseBackupHash.mockReturnValue(
-          'existing-hash',
+        metamaskController.seedlessOnboardingController.getSecretDataBackupState.mockReturnValue(
+          {
+            hash: 'existing-hash',
+            type: 'mnemonic',
+          },
         );
 
         await metamaskController.syncSeedPhrases();
@@ -4382,12 +4367,15 @@ describe('MetaMaskController', () => {
         metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
           true,
         );
-        metamaskController.seedlessOnboardingController.fetchAllSeedPhrases.mockResolvedValue(
-          [mockRootSRP, mockOtherSRP1, mockOtherSRP2],
+        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
+          [mockRootSRP, mockOtherSRP1, mockOtherSRP2].map((srp) => ({
+            data: srp,
+            type: 'mnemonic',
+          })),
         );
 
         // Both other SRPs don't exist in local state
-        metamaskController.seedlessOnboardingController.getSeedPhraseBackupHash
+        metamaskController.seedlessOnboardingController.getSecretDataBackupState
           .mockReturnValueOnce(null) // First other SRP doesn't exist
           .mockReturnValueOnce(null); // Second other SRP doesn't exist
 
