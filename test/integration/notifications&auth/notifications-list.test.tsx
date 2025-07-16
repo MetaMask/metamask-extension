@@ -172,7 +172,11 @@ describe('Notifications List', () => {
       );
 
       expect(metricsEvent.properties).toMatchObject({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         unread_count: 2,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         read_count: 0,
       });
     });

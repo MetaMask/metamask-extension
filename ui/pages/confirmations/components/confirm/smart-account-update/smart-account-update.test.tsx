@@ -2,23 +2,31 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/dom';
 
-import { flushPromises } from '../../../../../../test/lib/timer-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { upgradeAccountConfirmation } from '../../../../../../test/data/confirmations/batch-transaction';
 import { Confirmation } from '../../../types/confirm';
-import { setSmartAccountOptInForAccounts } from '../../../../../store/actions';
+import { setSmartAccountOptIn } from '../../../../../store/actions';
 import { SmartAccountUpdate } from './smart-account-update';
 
 jest.mock('../../../../../hooks/useMultiPolling', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));
 
 jest.mock('../../../../../store/actions', () => ({
   setAccountDetailsAddress: jest.fn(),
-  rejectPendingApproval: jest.fn().mockReturnValue({}),
-  setSmartAccountOptInForAccounts: jest.fn(),
+  setSmartAccountOptIn: jest.fn(),
+}));
+
+const mockReplace = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    replace: mockReplace,
+  }),
 }));
 
 const mockDispatch = jest.fn();
@@ -49,30 +57,7 @@ describe('SmartAccountUpdate', () => {
     expect(getByText('Use smart account?')).toBeInTheDocument();
   });
 
-  it('closes after acknowledgement if not wrapped', () => {
-    const mockStore = configureMockStore([])(
-      getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
-      ),
-    );
-    const { getAllByRole, container } = renderWithConfirmContextProvider(
-      <SmartAccountUpdate wrapped />,
-      mockStore,
-    );
-
-    expect(container.firstChild).not.toBeNull();
-
-    fireEvent.click(
-      getAllByRole('button', {
-        name: /Use smart account/iu,
-      })[1],
-    );
-
-    expect(container.firstChild).toBeNull();
-    expect(setSmartAccountOptInForAccounts).toHaveBeenCalledTimes(1);
-  });
-
-  it('show success after acknowledgement if wrapped', () => {
+  it('show success after acknowledgement', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
         upgradeAccountConfirmation as Confirmation,
@@ -89,46 +74,22 @@ describe('SmartAccountUpdate', () => {
       }),
     );
 
-    expect(setSmartAccountOptInForAccounts).toHaveBeenCalledTimes(1);
+    expect(setSmartAccountOptIn).toHaveBeenCalledTimes(1);
     expect(getByText('Successful!')).toBeDefined();
   });
 
-  it('call handleRejectUpgrade on rejection', async () => {
+  it('call history.replace when close button is clicked', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
         upgradeAccountConfirmation as Confirmation,
       ),
     );
-    const mockHandleRejectUpgrade = jest.fn();
-    const { getByRole } = renderWithConfirmContextProvider(
-      <SmartAccountUpdate
-        wrapped
-        handleRejectUpgrade={mockHandleRejectUpgrade}
-      />,
-      mockStore,
-    );
-
-    fireEvent.click(
-      getByRole('button', {
-        name: /Don’t use smart account/iu,
-      }),
-    );
-    await flushPromises();
-    expect(mockHandleRejectUpgrade).toHaveBeenCalledTimes(1);
-  });
-
-  it('open account selection when pencil icon is clicked', () => {
-    const mockStore = configureMockStore([])(
-      getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
-      ),
-    );
-    const { getByText, getByTestId } = renderWithConfirmContextProvider(
+    const { getByTestId } = renderWithConfirmContextProvider(
       <SmartAccountUpdate />,
       mockStore,
     );
 
-    fireEvent.click(getByTestId('smart-account-update-edit'));
-    expect(getByText('Edit accounts')).toBeInTheDocument();
+    fireEvent.click(getByTestId('smart-account-update-close'));
+    expect(mockReplace).toHaveBeenCalled();
   });
 });

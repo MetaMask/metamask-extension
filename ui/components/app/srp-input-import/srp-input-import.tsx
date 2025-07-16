@@ -46,6 +46,8 @@ type SrpInputImportProps = {
   onChange: (srp: string) => void;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function SrpInputImport({ onChange }: SrpInputImportProps) {
   const t = useI18nContext();
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
@@ -76,6 +78,14 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
       id: uuidv4(),
       active: false,
     }));
+
+    if (!SRP_LENGTHS.includes(finalSplittedSrp.length)) {
+      newDraftSrp.push({
+        word: '',
+        id: uuidv4(),
+        active: true,
+      });
+    }
 
     setDraftSrp(newDraftSrp);
   };

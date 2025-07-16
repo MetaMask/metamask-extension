@@ -60,7 +60,11 @@ export const SENTRY_BACKGROUND_STATE = {
     onboardingDate: false,
     currentExtensionPopupId: false,
     defaultHomeActiveTabName: true,
+    enableEnforcedSimulations: true,
+    enableEnforcedSimulationsForTransactions: false,
     fullScreenGasPollTokens: true,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     hadAdvancedGasFeesSetPriorToMigration92_3: true,
     isRampCardClosed: true,
     nftsDetectionNoticeDismissed: true,

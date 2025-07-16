@@ -41,6 +41,8 @@ describe('Revoke Dapp Permissions', function () {
           method: 'wallet_revokePermissions',
           params: [
             {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               eth_accounts: {},
             },
           ],
@@ -159,6 +161,8 @@ describe('Revoke Dapp Permissions', function () {
           method: 'wallet_revokePermissions',
           params: [
             {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               eth_accounts: {},
               'endowment:permitted-chains': {},
             },
@@ -206,6 +210,8 @@ describe('Revoke Dapp Permissions', function () {
             method: 'wallet_revokePermissions',
             params: [
               {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 eth_accounts: {},
               },
             ],

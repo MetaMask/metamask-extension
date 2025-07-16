@@ -11,10 +11,6 @@ export const pathRegexps = {
     `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.accounts}`,
     'u',
   ),
-  [USER_STORAGE_FEATURE_NAMES.networks]: new RegExp(
-    `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.networks}`,
-    'u',
-  ),
   [USER_STORAGE_FEATURE_NAMES.notifications]: new RegExp(
     `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.notifications}`,
     'u',
@@ -26,9 +22,15 @@ export const pathRegexps = {
 };
 
 export type UserStorageResponseData = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   HashedKey: string;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   Data: string;
   // E2E Specific identifier that is not present in the real API
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SrpIdentifier?: string;
 };
 
@@ -46,6 +48,8 @@ export const UserStorageMockttpControllerEvents = {
 } as const;
 
 // Helper type for converting const objects to enum-like types
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type AsEnum<T> = T[keyof T];
 
 const determineIfFeatureEntryFromURL = (url: string) =>
@@ -143,6 +147,8 @@ export class UserStorageMockttpController {
 
     const data = (await request.body.getJson()) as {
       data?: string | Record<string, string>;
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       batch_delete?: string[];
     };
 
@@ -220,6 +226,8 @@ export class UserStorageMockttpController {
             ...internalPathData,
             response: [
               ...(internalPathData?.response || []),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               entry as { HashedKey: string; Data: string },
             ],
           });

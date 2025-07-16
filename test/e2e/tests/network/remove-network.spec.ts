@@ -10,10 +10,11 @@ import { Driver } from '../../webdriver/driver';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 import { CaveatTypes } from '../../../../shared/constants/permissions';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
-import Homepage from '../../page-objects/pages/home/homepage';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
 
 const getPermittedChains = async (driver: Driver) => {
   const getPermissionsRequest = JSON.stringify({
@@ -97,11 +98,10 @@ describe('Remove Network:', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        const homepage = new Homepage(driver);
+        const homepage = new HomePage(driver);
         await homepage.check_pageIsLoaded();
-        await homepage.headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
-        // Delete network from network list
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
         await selectNetworkDialog.deleteNetwork('eip155:1338');
@@ -182,11 +182,8 @@ describe('Remove Network:', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        const homepage = new Homepage(driver);
-        await homepage.check_pageIsLoaded();
-        await homepage.headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
-        // Go to Edit Menu
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
         await selectNetworkDialog.openNetworkListOptions('eip155:1338');
