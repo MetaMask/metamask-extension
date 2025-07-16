@@ -70,7 +70,7 @@ export const getAssetImageUrl = (
   )}.png`;
 };
 
-type AssetMetadata = {
+export type AssetMetadata = {
   assetId: CaipAssetType;
   symbol: string;
   name: string;
@@ -180,6 +180,6 @@ export const fetchAssetMetadataForAssetIds = async (
       {} as Record<CaipAssetType, AssetMetadata>,
     );
   } catch (error) {
-    return undefined;
+    return null;
   }
 };

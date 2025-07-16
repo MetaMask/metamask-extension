@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
@@ -12,7 +12,10 @@ import {
   isNativeAddress,
 } from '@metamask/bridge-controller';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
-import { fetchAssetMetadataForAssetIds } from '../../../shared/lib/asset-utils';
+import {
+  type AssetMetadata,
+  fetchAssetMetadataForAssetIds,
+} from '../../../shared/lib/asset-utils';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
@@ -45,8 +48,9 @@ const parseAsset = (assetId: string | null) => {
 
 // Fetch all asset metadata at once
 const fetchAssetMetadata = async (
-  fromAsset: CaipAssetType | null,
-  toAsset: CaipAssetType | null,
+  signal: AbortSignal,
+  fromAsset?: CaipAssetType,
+  toAsset?: CaipAssetType,
 ) => {
   const assetIds: CaipAssetType[] = [];
   if (fromAsset) assetIds.push(fromAsset);
@@ -55,7 +59,7 @@ const fetchAssetMetadata = async (
   if (assetIds.length === 0) return null;
 
   try {
-    return await fetchAssetMetadataForAssetIds(assetIds);
+    return await fetchAssetMetadataForAssetIds(assetIds, signal);
   } catch {
     return null;
   }
@@ -89,26 +93,46 @@ export const useBridgeQueryParams = (
   );
 
   const fromAmount = useSelector(getFromTokenInputValue);
-  const parsedFromAssetId = useMemo(() => {
-    const fromAssetId = searchParams.get(BridgeQueryParams.FROM);
-
-    return parseAsset(fromAssetId);
-  }, [searchParams]);
+  const abortController = useRef(new AbortController());
 
   const toToken = useSelector(getToToken);
-  const parsedToAssetId = useMemo(() => {
-    const toAssetId = searchParams.get(BridgeQueryParams.TO);
-    return parseAsset(toAssetId);
+
+  const parsedAssetIds = useMemo(() => {
+    return {
+      parsedToAssetId: parseAsset(searchParams.get(BridgeQueryParams.TO)),
+      parsedFromAssetId: parseAsset(searchParams.get(BridgeQueryParams.FROM)),
+    };
   }, [searchParams]);
+
+  const { parsedFromAssetId, parsedToAssetId } = parsedAssetIds;
 
   const parsedAmount = useMemo(() => {
     return searchParams.get(BridgeQueryParams.AMOUNT);
   }, [searchParams]);
 
+  const [assetMetadataByAssetId, setAssetMetadataByAssetId] = useState<Awaited<
+    ReturnType<typeof fetchAssetMetadataForAssetIds>
+  > | null>(null);
+
+  useEffect(() => {
+    if (parsedFromAssetId?.assetId || parsedToAssetId?.assetId) {
+      abortController.current.abort();
+      abortController.current = new AbortController();
+    }
+    fetchAssetMetadata(
+      abortController.current.signal,
+      parsedFromAssetId?.assetId,
+      parsedToAssetId?.assetId,
+    ).then((assetMetadataByAssetId) => {
+      setAssetMetadataByAssetId(assetMetadataByAssetId);
+    });
+  }, [parsedFromAssetId?.assetId, parsedToAssetId?.assetId]);
+
   // Set fromChain and fromToken
   const setFromChainAndToken = useCallback(
     async (
-      fromAsset: NonNullable<typeof parsedFromAssetId>,
+      fromTokenMetadata,
+      fromAsset,
       fromChain: NetworkConfiguration,
       fromChains: NetworkConfiguration[],
       solanaAccount?: InternalAccount,
@@ -116,15 +140,6 @@ export const useBridgeQueryParams = (
     ) => {
       const { chainId: fromChainId } = fromAsset;
 
-      const assetMetadataByAssetId = await fetchAssetMetadata(
-        fromAsset.assetId,
-        null,
-      );
-      const fromTokenMetadata =
-        assetMetadataByAssetId?.[fromAsset.assetId] ??
-        assetMetadataByAssetId?.[
-          fromAsset.assetId.toLowerCase() as unknown as CaipAssetType
-        ];
       if (fromTokenMetadata) {
         const { chainId, assetReference } = parseCaipAssetType(
           fromTokenMetadata.assetId,
@@ -166,19 +181,8 @@ export const useBridgeQueryParams = (
     [],
   );
 
-  // Set toChain and toToken
   const setToChainAndToken = useCallback(
-    async (toAsset: NonNullable<typeof parsedToAssetId>) => {
-      const assetMetadataByAssetId = await fetchAssetMetadata(
-        null,
-        toAsset.assetId,
-      );
-      const toTokenMetadata =
-        assetMetadataByAssetId?.[toAsset.assetId] ??
-        assetMetadataByAssetId?.[
-          toAsset.assetId.toLowerCase() as unknown as CaipAssetType
-        ];
-
+    async (toTokenMetadata: AssetMetadata | undefined) => {
       if (toTokenMetadata) {
         const { chainId, assetReference } = parseCaipAssetType(
           toTokenMetadata.assetId,
@@ -199,14 +203,21 @@ export const useBridgeQueryParams = (
 
   // Main effect to orchestrate the parameter processing
   useEffect(() => {
-    if (!parsedFromAssetId) {
+    if (!parsedFromAssetId || !assetMetadataByAssetId) {
       return;
     }
     if (!fromChain || !fromChains.length) return;
 
+    const fromTokenMetadata =
+      assetMetadataByAssetId?.[parsedFromAssetId.assetId] ??
+      assetMetadataByAssetId?.[
+        parsedFromAssetId.assetId.toLowerCase() as unknown as CaipAssetType
+      ];
+
     (async () => {
       // Process from chain/token first
       await setFromChainAndToken(
+        fromTokenMetadata,
         parsedFromAssetId,
         fromChain,
         fromChains,
@@ -215,6 +226,7 @@ export const useBridgeQueryParams = (
       );
     })();
   }, [
+    assetMetadataByAssetId,
     parsedFromAssetId,
     fromChains,
     fromChain,
@@ -224,12 +236,18 @@ export const useBridgeQueryParams = (
 
   // Set toChainId and toToken
   useEffect(() => {
+    if (!parsedToAssetId) {
+      return;
+    }
+    const toTokenMetadata =
+      assetMetadataByAssetId?.[parsedToAssetId.assetId] ??
+      assetMetadataByAssetId?.[
+        parsedToAssetId.assetId.toLowerCase() as unknown as CaipAssetType
+      ];
     (async () => {
-      if (parsedToAssetId) {
-        await setToChainAndToken(parsedToAssetId);
-      }
+      await setToChainAndToken(toTokenMetadata);
     })();
-  }, [parsedToAssetId, toToken]);
+  }, [parsedToAssetId, toToken, assetMetadataByAssetId]);
 
   // Process amount after fromToken is set
   useEffect(() => {
