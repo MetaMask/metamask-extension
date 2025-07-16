@@ -85,8 +85,11 @@ export const MultichainAccountsTree = ({
             <ButtonLink
               size={ButtonLinkSize.Sm}
               color={TextColor.primaryDefault}
-              fontWeight={FontWeight.Normal}
+              fontWeight={FontWeight.Medium}
               onClick={() => handleWalletDetailsClick(walletId)}
+              style={{
+                fontSize: '0.875rem',
+              }}
             >
               Details
             </ButtonLink>

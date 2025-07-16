@@ -310,6 +310,7 @@
     "cacheTimestamp": "number",
     "allDeFiPositions": "object",
     "allDeFiPositionsCount": "object",
+    "urlScanCache": "object",
     "accounts": "object",
     "accountsByChainId": "object",
     "unapprovedDecryptMsgs": "object",

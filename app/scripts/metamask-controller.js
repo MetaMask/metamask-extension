@@ -1056,8 +1056,9 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
-    let initialNetworkOrderControllerState;
+    let initialNetworkOrderControllerState = initState.NetworkOrderController;
     if (
+      !initialNetworkOrderControllerState &&
       process.env.METAMASK_DEBUG &&
       process.env.METAMASK_ENVIRONMENT === 'development' &&
       !process.env.IN_TEST
@@ -1073,8 +1074,6 @@ export default class MetamaskController extends EventEmitter {
           },
         },
       };
-    } else {
-      initialNetworkOrderControllerState = initState.NetworkOrderController;
     }
 
     this.networkOrderController = new NetworkOrderController({
@@ -2285,6 +2284,7 @@ export default class MetamaskController extends EventEmitter {
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
+        PhishingController: this.phishingController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
@@ -5151,9 +5151,15 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.setSelectedAccount(account.id);
       }
 
-      await this._addAccountsWithBalance(id, shouldImportSolanaAccount);
+      const discoveredAccounts = await this._addAccountsWithBalance(
+        id,
+        shouldImportSolanaAccount,
+      );
 
-      return newAccountAddress;
+      return {
+        newAccountAddress,
+        discoveredAccounts,
+      };
     } finally {
       releaseLock();
     }
@@ -5402,6 +5408,11 @@ export default class MetamaskController extends EventEmitter {
         );
       }
 
+      const discoveredAccounts = {
+        bitcoin: 0,
+        solana: 0,
+      };
+
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       const btcClient = await this._getMultichainWalletSnapClient(
         BITCOIN_WALLET_SNAP_ID,
@@ -5411,6 +5422,8 @@ export default class MetamaskController extends EventEmitter {
         entropySource,
         btcScope,
       );
+
+      discoveredAccounts.bitcoin = btcAccounts.length;
 
       // If none accounts got discovered, we still create the first (default) one.
       if (btcAccounts.length === 0) {
@@ -5432,6 +5445,8 @@ export default class MetamaskController extends EventEmitter {
           solScope,
         );
 
+        discoveredAccounts.solana = solanaAccounts.length;
+
         // If none accounts got discovered, we still create the first (default) one.
         if (solanaAccounts.length === 0) {
           await this._addSnapAccount(entropySource, solanaClient, {
@@ -5440,8 +5455,13 @@ export default class MetamaskController extends EventEmitter {
         }
       }
       ///: END:ONLY_INCLUDE_IF
+      return discoveredAccounts;
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
+      return {
+        bitcoin: 0,
+        solana: 0,
+      };
     } finally {
       await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
         true,
@@ -5930,35 +5950,25 @@ export default class MetamaskController extends EventEmitter {
     hdPath,
     hdPathDescription,
   ) {
-    const { address: unlockedAccount, label } =
-      await this.#withKeyringForDevice(
-        { name: deviceName, hdPath },
-        async (keyring) => {
-          keyring.setAccountToUnlock(index);
-          const [address] = await keyring.addAccounts(1);
-          return {
-            address: normalize(address),
-            label: this.getAccountLabel(
-              deviceName === HardwareDeviceNames.qr
-                ? keyring.getName()
-                : deviceName,
-              index,
-              hdPathDescription,
-            ),
-          };
-        },
-      );
-
-    // Set the account label to Trezor 1 / Ledger 1 / QR Hardware 1, etc
-    this.preferencesController.setAccountLabel(unlockedAccount, label);
+    const { address: unlockedAccount } = await this.#withKeyringForDevice(
+      { name: deviceName, hdPath },
+      async (keyring) => {
+        keyring.setAccountToUnlock(index);
+        const [address] = await keyring.addAccounts(1);
+        return {
+          address: normalize(address),
+          label: this.getAccountLabel(
+            deviceName === HardwareDeviceNames.qr
+              ? keyring.getName()
+              : deviceName,
+            index,
+            hdPathDescription,
+          ),
+        };
+      },
+    );
     // Select the account
     this.preferencesController.setSelectedAddress(unlockedAccount);
-
-    // It is expected that the account also exist in the accounts-controller
-    // in other case, an error shall be thrown
-    const account =
-      this.accountsController.getAccountByAddress(unlockedAccount);
-    this.accountsController.setAccountName(account.id, label);
 
     const accounts = this.accountsController.listAccounts();
 
