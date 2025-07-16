@@ -50,13 +50,11 @@ describe('useBridging', () => {
         'https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=0xtestMetaMetricsId&metricsEnabled=false&marketingEnabled=null&token=0x0000000000000000000000000000000000000000',
         ETH_SWAPS_TOKEN_OBJECT,
         'Home',
-        undefined,
       ],
       [
         'https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=0xtestMetaMetricsId&metricsEnabled=false&marketingEnabled=null&token=native',
         ETH_SWAPS_TOKEN_OBJECT,
         MetaMetricsSwapsEventSource.TokenView,
-        '&token=native',
       ],
       [
         'https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=0xtestMetaMetricsId&metricsEnabled=false&marketingEnabled=null&token=0x00232f2jksdauo',
@@ -68,16 +66,10 @@ describe('useBridging', () => {
           string: '123',
         },
         MetaMetricsSwapsEventSource.TokenView,
-        undefined,
       ],
     ])(
       'should open %s with the currently selected token: %p',
-      (
-        expectedUrl: string,
-        token: string,
-        location: string,
-        urlSuffix: string,
-      ) => {
+      (expectedUrl: string, token: string, location: string) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         const { result } = renderUseBridging({
           metamask: {
