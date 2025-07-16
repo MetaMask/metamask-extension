@@ -12,6 +12,7 @@ import {
   isNativeAddress,
 } from '@metamask/bridge-controller';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
+import { type NetworkConfiguration } from '@metamask/network-controller';
 import {
   type AssetMetadata,
   fetchAssetMetadataForAssetIds,
@@ -31,11 +32,11 @@ import {
   getFromToken,
   getToToken,
 } from '../../ducks/bridge/selectors';
-import { NetworkConfiguration } from '@metamask/network-controller';
-import { getFromTokenInputValue } from '../../ducks/swaps/swaps';
 
 const parseAsset = (assetId: string | null) => {
-  if (!assetId) return null;
+  if (!assetId) {
+    return null;
+  }
 
   try {
     const caipAssetId = CaipAssetTypeStruct.create(assetId);
@@ -53,10 +54,16 @@ const fetchAssetMetadata = async (
   toAsset?: CaipAssetType,
 ) => {
   const assetIds: CaipAssetType[] = [];
-  if (fromAsset) assetIds.push(fromAsset);
-  if (toAsset) assetIds.push(toAsset);
+  if (fromAsset) {
+    assetIds.push(fromAsset);
+  }
+  if (toAsset) {
+    assetIds.push(toAsset);
+  }
 
-  if (assetIds.length === 0) return null;
+  if (assetIds.length === 0) {
+    return null;
+  }
 
   try {
     return await fetchAssetMetadataForAssetIds(assetIds, signal);
@@ -74,6 +81,9 @@ export const useBridgeQueryParams = (
   const fromChain = useSelector(getFromChain);
   const fromToken = useSelector(getFromToken);
 
+  const abortController = useRef(new AbortController());
+  const toToken = useSelector(getToToken);
+
   const { search } = useLocation();
   const history = useHistory();
 
@@ -83,19 +93,16 @@ export const useBridgeQueryParams = (
   // Clean up URL parameters
   const cleanupUrlParams = useCallback(
     (paramsToRemove: BridgeQueryParams[]) => {
-      const searchParams = new URLSearchParams(search);
+      const updatedSearchParams = new URLSearchParams(search);
       paramsToRemove.forEach((param) => {
-        if (searchParams.get(param)) searchParams.delete(param);
+        if (updatedSearchParams.get(param)) {
+          updatedSearchParams.delete(param);
+        }
       });
-      history.replace({ search: searchParams.toString() });
+      history.replace({ search: updatedSearchParams.toString() });
     },
     [],
   );
-
-  const fromAmount = useSelector(getFromTokenInputValue);
-  const abortController = useRef(new AbortController());
-
-  const toToken = useSelector(getToToken);
 
   const parsedAssetIds = useMemo(() => {
     return {
@@ -123,8 +130,8 @@ export const useBridgeQueryParams = (
       abortController.current.signal,
       parsedFromAssetId?.assetId,
       parsedToAssetId?.assetId,
-    ).then((assetMetadataByAssetId) => {
-      setAssetMetadataByAssetId(assetMetadataByAssetId);
+    ).then((result) => {
+      setAssetMetadataByAssetId(result);
     });
   }, [parsedFromAssetId?.assetId, parsedToAssetId?.assetId]);
 
@@ -133,8 +140,8 @@ export const useBridgeQueryParams = (
     async (
       fromTokenMetadata,
       fromAsset,
-      fromChain: NetworkConfiguration,
-      fromChains: NetworkConfiguration[],
+      network: NetworkConfiguration,
+      networks: NetworkConfiguration[],
       solanaAccount?: InternalAccount,
       evmAccount?: InternalAccount,
     ) => {
@@ -156,8 +163,10 @@ export const useBridgeQueryParams = (
               : assetReference,
         };
         // Only update if chain is different
-        if (fromChainId !== formatChainIdToCaip(fromChain.chainId)) {
-          const targetChain = fromChains.find(
+        if (fromChainId === formatChainIdToCaip(network.chainId)) {
+          dispatch(setFromToken(token));
+        } else {
+          const targetChain = networks.find(
             (chain) => formatChainIdToCaip(chain.chainId) === fromChainId,
           );
 
@@ -173,8 +182,6 @@ export const useBridgeQueryParams = (
               );
             }
           }
-        } else {
-          dispatch(setFromToken(token));
         }
       }
     },
@@ -203,10 +210,14 @@ export const useBridgeQueryParams = (
 
   // Main effect to orchestrate the parameter processing
   useEffect(() => {
-    if (!parsedFromAssetId || !assetMetadataByAssetId) {
+    if (
+      !parsedFromAssetId ||
+      !assetMetadataByAssetId ||
+      !fromChain ||
+      !fromChains.length
+    ) {
       return;
     }
-    if (!fromChain || !fromChains.length) return;
 
     const fromTokenMetadata =
       assetMetadataByAssetId?.[parsedFromAssetId.assetId] ??

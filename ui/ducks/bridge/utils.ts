@@ -1,16 +1,19 @@
-import { isStrictHexString, type CaipChainId, type Hex } from '@metamask/utils';
+import {
+  type CaipAssetType,
+  isStrictHexString,
+  type CaipChainId,
+  type Hex,
+  CaipAssetTypeStruct,
+} from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
-import { toChecksumAddress } from 'ethereumjs-util';
 import {
-  isSolanaChainId,
   ChainId,
   type TxData,
-  formatChainIdToHex,
   BridgeClientId,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
@@ -18,9 +21,7 @@ import { handleFetch } from '@metamask/controller-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
-import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
 import { toAssetId } from '../../../shared/lib/asset-utils';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
@@ -88,7 +89,6 @@ const fetchTokenExchangeRates = async (
   signal: AbortSignal,
   ...tokenAddresses: string[]
 ) => {
-  let exchangeRates;
   const assetIds = tokenAddresses
     .map((address) => toAssetId(address, formatChainIdToCaip(chainId)))
     .filter(Boolean);
@@ -107,16 +107,15 @@ const fetchTokenExchangeRates = async (
     method: 'GET',
     headers: { 'X-Client-Id': BridgeClientId.EXTENSION },
     signal,
-  })) as Record<string, { price: number }>;
+  })) as Record<CaipAssetType, { price: number }>;
 
-  exchangeRates = Object.entries(tokenV3PriceResponse).reduce(
+  return Object.entries(tokenV3PriceResponse).reduce(
     (acc, [k, curr]) => {
-      acc[k] = curr.price;
+      acc[CaipAssetTypeStruct.create(k)] = curr.price;
       return acc;
     },
-    {} as Record<string, number>,
+    {} as Record<CaipAssetType, number>,
   );
-  return exchangeRates;
 };
 
 // This fetches the exchange rate for a token in a given currency. This is only called when the exchange

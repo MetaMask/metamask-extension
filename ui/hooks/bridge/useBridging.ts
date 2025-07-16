@@ -7,7 +7,6 @@ import {
   formatChainIdToCaip,
   type GenericQuoteRequest,
   UnifiedSwapBridgeEventName,
-  type SwapsTokenObject,
 } from '@metamask/bridge-controller';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
 import {
@@ -15,7 +14,6 @@ import {
   getIsBridgeChain,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  type SwapsEthToken,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -53,7 +51,6 @@ const useBridging = () => {
       token: Pick<BridgeAsset, 'symbol' | 'address'> & {
         chainId: GenericQuoteRequest['srcChainId'];
       },
-      portfolioUrlSuffix?: string,
       isSwap = false,
     ) => {
       if (!isBridgeChain || !providerConfig) {
