@@ -5486,9 +5486,6 @@
   "standardAccountLabel": {
     "message": "Conta padrão"
   },
-  "startEarning": {
-    "message": "Comece a ganhar"
-  },
   "stateLogError": {
     "message": "Erro ao recuperar os logs de estado."
   },

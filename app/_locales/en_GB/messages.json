@@ -3754,7 +3754,7 @@
     "message": "No conversion rate available"
   },
   "noDeFiPositions": {
-    "message": "No positions yet"
+    "message": "Can't find what you're looking for?"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
@@ -4650,6 +4650,9 @@
   },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
+  },
+  "protocolNotSupported": {
+    "message": "We may not support your protocol yet."
   },
   "provide": {
     "message": "Provide"
@@ -6013,9 +6016,6 @@
   },
   "standardAccountLabel": {
     "message": "Standard Account"
-  },
-  "startEarning": {
-    "message": "Start earning"
   },
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
