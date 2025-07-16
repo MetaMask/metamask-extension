@@ -49,7 +49,7 @@ function getAlertNames(alerts: Alert[]): string[] {
 function getAlertName(alertKey: string): string {
   return isUuid(alertKey)
     ? ALERTS_NAME_METRICS[AlertsName.Blockaid]
-    : ALERTS_NAME_METRICS[alertKey] ?? alertKey;
+    : (ALERTS_NAME_METRICS[alertKey] ?? alertKey);
 }
 
 export function useConfirmationAlertMetrics() {

@@ -86,8 +86,8 @@ const FeeDetail = ({ label, value }: { label: string; value: string }) => (
  * @deprecated - we are planning to remove this component
  * @returns The NotificationDetailNetworkFee component.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _NotificationDetailNetworkFee: FC<NotificationDetailNetworkFeeProps> = ({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/naming-convention
+const NotificationDetailNetworkFee_: FC<NotificationDetailNetworkFeeProps> = ({
   notification,
 }) => {
   const t = useI18nContext();
