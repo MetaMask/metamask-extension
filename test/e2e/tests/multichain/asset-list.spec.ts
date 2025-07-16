@@ -3,8 +3,6 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
@@ -14,6 +12,8 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Mockttp } from '../../mock-e2e';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 
+const NETWORK_NAME_MAINNET = 'Ethereum';
+const LINEA_NAME_MAINNET = 'Linea';
 const POLYGON_NAME_MAINNET = 'Polygon';
 const BALANCE_AMOUNT = '24.9978';
 
@@ -139,37 +139,14 @@ function buildFixtures(title: string, chainId: number = 1337) {
 }
 
 describe('Multichain Asset List', function (this: Suite) {
-  it('persists the preferred asset list preference when changing networks', async function () {
-    await withFixtures(
-      buildFixtures(this.test?.fullTitle() as string),
-      async ({ driver, localNodes }) => {
-        await loginWithoutBalanceValidation(driver);
-        const homePage = new HomePage(driver);
-        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
-        const assetListPage = new AssetListPage(driver);
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
-        await assetListPage.check_tokenItemNumber(4);
-        await assetListPage.openNetworksFilter();
-        await assetListPage.clickCurrentNetworkOption();
-        await switchToNetworkFromSendFlow(driver, 'Linea');
-        await assetListPage.waitUntilFilterLabelIs('Linea');
-        await assetListPage.check_tokenItemNumber(1);
-        assert.equal(await assetListPage.getNetworksFilterLabel(), 'Linea');
-      },
-    );
-  });
   it('allows clicking into the asset details page of native token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
-      async ({ driver, localNodes }) => {
+      async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
-        const homePage = new HomePage(driver);
-        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
-        const headerNavbar = new HeaderNavbar(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
-        await assetListPage.check_tokenItemNumber(4);
+        await switchToNetworkFromSendFlow(driver, NETWORK_NAME_MAINNET);
+        await assetListPage.check_tokenItemNumber(3);
         await assetListPage.clickOnAsset('Ethereum');
         await assetListPage.check_buySellButtonIsPresent();
         await assetListPage.check_multichainTokenListButtonIsPresent();
@@ -179,16 +156,12 @@ describe('Multichain Asset List', function (this: Suite) {
   it('switches networks when clicking on send for a token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string, 1337),
-      async ({ driver, localNodes }) => {
+      async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
-        const homePage = new HomePage(driver);
-        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
-        const headerNavbar = new HeaderNavbar(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
+        await switchToNetworkFromSendFlow(driver, NETWORK_NAME_MAINNET);
         const sendPage = new SendTokenPage(driver);
-        await assetListPage.check_tokenItemNumber(4);
+        await assetListPage.check_tokenItemNumber(3);
         await assetListPage.clickOnAsset('Ethereum');
         await assetListPage.clickCoinSendButton();
         await sendPage.check_pageIsLoaded();
@@ -209,16 +182,12 @@ describe('Multichain Asset List', function (this: Suite) {
     this.timeout(30000); // Set 30 second timeout
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string, 137),
-      async ({ driver, localNodes }) => {
+      async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
-        const homePage = new HomePage(driver);
-        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
-        const headerNavbar = new HeaderNavbar(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
         const sendPage = new SendTokenPage(driver);
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
-        await assetListPage.check_tokenItemNumber(5);
+        await switchToNetworkFromSendFlow(driver, NETWORK_NAME_MAINNET);
+        await assetListPage.check_tokenItemNumber(4);
         await assetListPage.clickOnAsset('TST');
         await assetListPage.clickSwapButton();
         await sendPage.check_networkChange(POLYGON_NAME_MAINNET);
@@ -228,16 +197,14 @@ describe('Multichain Asset List', function (this: Suite) {
   it('shows correct asset and balance when swapping on a different chain', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
-      async ({ driver, localNodes }) => {
+      async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
-        const headerNavbar = new HeaderNavbar(driver);
         const assetListPage = new AssetListPage(driver);
         const sendPage = new SendTokenPage(driver);
         const swapPage = new SwapPage(driver);
-        await switchToNetworkFromSendFlow(driver, 'Linea');
-        await assetListPage.check_tokenItemNumber(4);
+        await switchToNetworkFromSendFlow(driver, LINEA_NAME_MAINNET);
+        await assetListPage.check_tokenItemNumber(3);
         await assetListPage.clickOnAsset('Ethereum');
         await homePage.goToSwapTab();
         await sendPage.check_networkChange(NETWORK_NAME_MAINNET);

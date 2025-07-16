@@ -17,7 +17,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const EXPECTED_BALANCE_USD = '$85,025.00';
 const EXPECTED_SEPOLIA_BALANCE_NATIVE = '25';
-const NETWORK_NAME_MAINNET = 'Ethereum Mainnet';
+const NETWORK_NAME_MAINNET = 'Ethereum';
 const NETWORK_NAME_SEPOLIA = 'Sepolia';
 const SEPOLIA_NATIVE_TOKEN = 'SepoliaETH';
 
