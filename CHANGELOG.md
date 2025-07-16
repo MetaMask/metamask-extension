@@ -59,8 +59,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update: the button component to be monochromatic (#33847)
 - Update: design tokens v8: font family change CentraNo1 to Geist and new background colors (#33764)
 - Update: update message when there is no DeFi positions wording (#34229)
-
-### Updated
 - Update welcome screen buttons to use Button DS component (#34230)
 - Set confirm srp quiz word to readonly (#34225)
 
