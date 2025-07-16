@@ -175,6 +175,9 @@
     "message": "Add $1 account",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "Add account or wallet"
+  },
   "addAccountToMetaMask": {
     "message": "Add account to MetaMask"
   },
@@ -306,9 +309,6 @@
   "address": {
     "message": "Address"
   },
-  "addressCopied": {
-    "message": "Address copied!"
-  },
   "addressMismatch": {
     "message": "Site address mismatch"
   },
@@ -417,6 +417,12 @@
   "alertMessageNoGasPrice": {
     "message": "We can’t move forward with this transaction until you manually update the fee."
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "This has been identified as malicious. We recommend not interacting with this site."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "This has been identified as suspicious. We recommend not interacting with this site."
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
   },
@@ -458,6 +464,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "Fee estimate unavailable"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "Malicious site"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Suspicious site"
   },
   "alertReasonPendingTransactions": {
     "message": "Pending transaction"
@@ -1949,9 +1961,6 @@
   "downloadStateLogs": {
     "message": "Download state logs"
   },
-  "dragAndDropBanner": {
-    "message": "You can drag networks to reorder them. "
-  },
   "dropped": {
     "message": "Dropped"
   },
@@ -2215,6 +2224,9 @@
   },
   "enterYourPassword": {
     "message": "Enter your password"
+  },
+  "enterYourPasswordContinue": {
+    "message": "Enter password to continue"
   },
   "enterYourPasswordSocialLoginFlow": {
     "message": "Enter Metamask Password"
@@ -2721,6 +2733,13 @@
   "importAccountMsg": {
     "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase. Learn more about imported accounts"
   },
+  "importAccountWithSocialMsg": {
+    "message": "Imported private keys are backed up to your account and sync automatically when you sign in with the same Google or Apple login."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "$1 about how imported keys work",
+    "description": "$1 is a link to learn more about imported keys"
+  },
   "importNFT": {
     "message": "Import NFT"
   },
@@ -3061,6 +3080,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Ethereum transaction's input data isn't sufficiently padded."
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "We're having trouble connecting to Ledger. Check out our "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " on how to connect a hardware wallet, then try again."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger no longer supports Firefox, so you might need to use a different browser."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "guide"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefox Not Supported"
   },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
@@ -3499,6 +3533,9 @@
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
   },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "Must have at least one network enabled"
+  },
   "networkMenu": {
     "message": "Network Menu"
   },
@@ -3717,7 +3754,7 @@
     "message": "No conversion rate available"
   },
   "noDeFiPositions": {
-    "message": "No positions yet"
+    "message": "Can't find what you're looking for?"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
@@ -4552,9 +4589,6 @@
   "popularNetworks": {
     "message": "Popular networks"
   },
-  "portfolio": {
-    "message": "Portfolio"
-  },
   "preparingSwap": {
     "message": "Preparing swap..."
   },
@@ -4583,7 +4617,7 @@
     "message": "Privacy policy"
   },
   "privateKey": {
-    "message": "Private Key",
+    "message": "Private key",
     "description": "select this type of file to use to import an account"
   },
   "privateKeyCopyWarning": {
@@ -4616,6 +4650,9 @@
   },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
+  },
+  "protocolNotSupported": {
+    "message": "We may not support your protocol yet."
   },
   "provide": {
     "message": "Provide"
@@ -5371,6 +5408,15 @@
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
+  "simulationSettingsModalEnforceToggle": {
+    "message": "Enforce balance changes"
+  },
+  "simulationSettingsModalEnforceToggleDescription": {
+    "message": "To keep your money safe, this transaction won't go through if the balance changes or the slippage tolerance isn't met."
+  },
+  "simulationSettingsModalTitle": {
+    "message": "Transaction settings"
+  },
   "simulationsSettingDescription": {
     "message": "Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome. $1"
   },
@@ -5476,9 +5522,6 @@
   "smartAccountBetterTransactionDescription": {
     "message": "Save time and money by processing transactions together."
   },
-  "smartAccountEditAccounts": {
-    "message": "Edit accounts"
-  },
   "smartAccountFeaturesDescription": {
     "message": "Keep the same account address, and you can switch back anytime."
   },
@@ -5494,14 +5537,11 @@
   "smartAccountReject": {
     "message": "Don’t use smart account"
   },
-  "smartAccountRequestFor": {
-    "message": "Request for"
-  },
   "smartAccountSameAccount": {
     "message": "Same account, smarter features."
   },
   "smartAccountSplashInfo": {
-    "message": "Why use a smart account?"
+    "message": "Smart accounts"
   },
   "smartAccountSplashTitle": {
     "message": "Use smart account?"
@@ -5977,9 +6017,6 @@
   "standardAccountLabel": {
     "message": "Standard Account"
   },
-  "startEarning": {
-    "message": "Start earning"
-  },
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
   },
@@ -6036,9 +6073,6 @@
   },
   "statusNotConnected": {
     "message": "Not connected"
-  },
-  "statusNotConnectedAccount": {
-    "message": "No accounts connected"
   },
   "step1LatticeWallet": {
     "message": "Connect your Lattice1"

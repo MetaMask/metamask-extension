@@ -15,6 +15,7 @@ import {
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
   selectMinimumBalanceForRentExemptionInSOL,
+  isValidQuoteRequest,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
@@ -51,14 +52,10 @@ import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import {} from '../../pages/bridge/utils/quote';
-import {
-  CHAIN_ID_TOKEN_IMAGE_MAP,
-  FEATURED_RPCS,
-} from '../../../shared/constants/network';
+import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getMultichainCoinRates,
   getMultichainProviderConfig,
-  getImageForChainId,
 } from '../../selectors/multichain';
 import { getAssetsRates } from '../../selectors/assets';
 import {
@@ -73,6 +70,7 @@ import {
   tokenPriceInNativeAsset,
 } from './utils';
 import type { BridgeState } from './types';
+import { toBridgeToken } from './bridge';
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
@@ -211,8 +209,7 @@ export const getToChain = createSelector(
 );
 
 export const getFromToken = createSelector(
-  (state: BridgeAppState) => state.bridge.fromToken,
-  getFromChain,
+  [(state: BridgeAppState) => state.bridge.fromToken, getFromChain],
   (fromToken, fromChain) => {
     if (!fromChain?.chainId) {
       return null;
@@ -223,22 +220,41 @@ export const getFromToken = createSelector(
     const { iconUrl, ...nativeAsset } = getNativeAssetForChainId(
       fromChain.chainId,
     );
-    return {
-      ...nativeAsset,
-      chainId: formatChainIdToCaip(fromChain.chainId),
-      image:
-        CHAIN_ID_TOKEN_IMAGE_MAP[
-          fromChain.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-        ] ?? getImageForChainId(fromChain.chainId),
-      balance: '0',
-      string: '0',
-    };
+    const newToToken = toBridgeToken(nativeAsset);
+    return newToToken
+      ? {
+          ...newToToken,
+          chainId: formatChainIdToCaip(fromChain.chainId),
+        }
+      : newToToken;
   },
 );
 
-export const getToToken = (state: BridgeAppState) => {
-  return state.bridge.toToken;
-};
+export const getToToken = createSelector(
+  [
+    getFromToken,
+    (state: BridgeAppState) => state.bridge.toChainId,
+    (state) => state.bridge.toToken,
+  ],
+  (fromToken, toChainId, toToken) => {
+    if (!toChainId) {
+      return null;
+    }
+    const destNativeAsset = getNativeAssetForChainId(
+      toChainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
+    );
+    const newToToken = toToken ?? toBridgeToken(destNativeAsset);
+    // Return null if dest token is the same as the src token
+    if (
+      fromToken?.assetId &&
+      newToToken?.assetId &&
+      fromToken.assetId.toLowerCase() === newToToken.assetId.toLowerCase()
+    ) {
+      return null;
+    }
+    return newToToken;
+  },
+);
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
@@ -249,17 +265,6 @@ export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask;
   return quoteRequest;
 };
-
-export const getShouldUseSnapConfirmation = createSelector(
-  getBridgeFeatureFlags,
-  getFromChain,
-  (extensionConfig, fromChain) =>
-    Boolean(
-      fromChain &&
-        extensionConfig.chains[formatChainIdToCaip(fromChain.chainId)]
-          ?.isSnapConfirmationEnabled,
-    ),
-);
 
 export const getQuoteRefreshRate = createSelector(
   getBridgeFeatureFlags,
@@ -544,6 +549,8 @@ export const getValidationErrors = createDeepEqualSelector(
     quoteRequest,
     txAlert,
   ) => {
+    const { gasIncluded } = activeQuote?.quote ?? {};
+
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
     const minimumBalanceToUse =
@@ -555,13 +562,20 @@ export const getValidationErrors = createDeepEqualSelector(
       isTxAlertPresent: Boolean(txAlert),
       isNoQuotesAvailable: Boolean(
         !activeQuote &&
+          isValidQuoteRequest(quoteRequest) &&
           quotesLastFetchedMs &&
           !isLoading &&
           quotesRefreshCount > 0,
       ),
       // Shown prior to fetching quotes
       isInsufficientGasBalance: (balance?: BigNumber) => {
-        if (balance && !activeQuote && validatedSrcAmount && fromToken) {
+        if (
+          balance &&
+          !activeQuote &&
+          validatedSrcAmount &&
+          fromToken &&
+          !gasIncluded
+        ) {
           return isNativeAddress(fromToken.address)
             ? balance.sub(minimumBalanceToUse).lte(validatedSrcAmount)
             : balance.lte(0);
@@ -570,7 +584,13 @@ export const getValidationErrors = createDeepEqualSelector(
       },
       // Shown after fetching quotes
       isInsufficientGasForQuote: (balance?: BigNumber) => {
-        if (balance && activeQuote && fromToken && fromTokenInputValue) {
+        if (
+          balance &&
+          activeQuote &&
+          fromToken &&
+          fromTokenInputValue &&
+          !gasIncluded
+        ) {
           return isNativeAddress(fromToken.address)
             ? balance
                 .sub(activeQuote.totalMaxNetworkFee.amount)
@@ -702,8 +722,18 @@ export const getIsUnifiedUIEnabled = createSelector(
 
     const caipChainId = formatChainIdToCaip(chainId);
 
-    return Boolean(
-      bridgeFeatureFlags?.chains?.[caipChainId]?.isUnifiedUIEnabled,
-    );
+    // TODO remove this when bridge-controller's types are updated
+    return bridgeFeatureFlags?.chains?.[caipChainId]
+      ? Boolean(
+          'isSingleSwapBridgeButtonEnabled' in
+            bridgeFeatureFlags.chains[caipChainId]
+            ? (
+                bridgeFeatureFlags.chains[caipChainId] as unknown as {
+                  isSingleSwapBridgeButtonEnabled: boolean;
+                }
+              ).isSingleSwapBridgeButtonEnabled
+            : false,
+        )
+      : false;
   },
 );

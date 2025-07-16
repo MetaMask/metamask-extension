@@ -50,7 +50,7 @@ import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
-import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const BridgeQuoteCard = () => {
@@ -74,7 +74,9 @@ export const BridgeQuoteCard = () => {
     useState(false);
 
   const dispatch = useDispatch();
-  const isStxEnabled = useSelector(getSmartTransactionsEnabled);
+  const isStxEnabled = useSelector((state) =>
+    getIsSmartTransaction(state as never, fromChain?.chainId),
+  );
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   return (

@@ -130,6 +130,11 @@ export const useNetworkItemCallbacks = () => {
               );
             }
           : undefined,
+        onRpcSelect: () => {
+          history.push('/select-rpc', {
+            chainId: hexChainId,
+          });
+        },
       };
     },
     [

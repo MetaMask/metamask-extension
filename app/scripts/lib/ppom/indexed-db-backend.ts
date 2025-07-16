@@ -16,6 +16,8 @@ const validateChecksum = async (
     .join('');
 
   if (hashString !== checksum) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`Checksum mismatch for key ${key}`);
   }
 };

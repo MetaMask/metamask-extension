@@ -53,7 +53,7 @@ import { useTradeProperties } from '../../../hooks/bridge/events/useTradePropert
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -62,10 +62,14 @@ export const BridgeQuotesModal = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const isStxEnabled = useSelector(getSmartTransactionsEnabled);
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const fromChain = useSelector(getFromChain);
+
+  const isStxEnabled = useSelector((state) =>
+    getIsSmartTransaction(state as never, fromChain?.chainId),
+  );
+
   const { sortedQuotes, activeQuote, recommendedQuote } =
     useSelector(getBridgeQuotes);
   const sortOrder = useSelector(getBridgeSortOrder);
@@ -205,7 +209,7 @@ export const BridgeQuotesModal = ({
                 toTokenAmount,
                 cost,
                 sentAmount,
-                quote: { destAsset, bridges, requestId },
+                quote: { destAsset, bridges, requestId, gasIncluded },
               } = quote;
               const isQuoteActive = requestId === activeQuote?.quote.requestId;
               const isRecommendedQuote =
@@ -294,28 +298,49 @@ export const BridgeQuotesModal = ({
                   )}
                   <Column>
                     <Text variant={TextVariant.bodyMd}>
-                      {cost.valueInCurrency &&
-                        formatCurrencyAmount(cost.valueInCurrency, currency, 2)}
+                      {gasIncluded
+                        ? formatCurrencyAmount(
+                            new BigNumber(sentAmount.valueInCurrency ?? 0)
+                              .minus(toTokenAmount.valueInCurrency ?? 0)
+                              .toString(),
+                            currency,
+                            2,
+                          )
+                        : formatCurrencyAmount(
+                            cost.valueInCurrency,
+                            currency,
+                            2,
+                          )}
                     </Text>
                     {[
-                      totalNetworkFee?.valueInCurrency &&
-                      sentAmount?.valueInCurrency
+                      gasIncluded && sentAmount?.valueInCurrency
                         ? t('quotedTotalCost', [
                             formatCurrencyAmount(
-                              new BigNumber(totalNetworkFee.valueInCurrency)
-                                .plus(sentAmount.valueInCurrency)
-                                .toString(),
+                              sentAmount.valueInCurrency,
                               currency,
                               2,
                             ),
                           ])
-                        : t('quotedTotalCost', [
-                            formatTokenAmount(
-                              locale,
-                              totalNetworkFee.amount,
-                              nativeCurrency,
-                            ),
-                          ]),
+                        : undefined,
+                      !gasIncluded &&
+                        (totalNetworkFee?.valueInCurrency &&
+                        sentAmount?.valueInCurrency
+                          ? t('quotedTotalCost', [
+                              formatCurrencyAmount(
+                                new BigNumber(totalNetworkFee.valueInCurrency)
+                                  .plus(sentAmount.valueInCurrency)
+                                  .toString(),
+                                currency,
+                                2,
+                              ),
+                            ])
+                          : t('quotedTotalCost', [
+                              formatTokenAmount(
+                                locale,
+                                totalNetworkFee.amount,
+                                nativeCurrency,
+                              ),
+                            ])),
                       t('quotedReceiveAmount', [
                         formatCurrencyAmount(
                           toTokenAmount.valueInCurrency,
@@ -328,15 +353,17 @@ export const BridgeQuotesModal = ({
                             destAsset.symbol,
                           ),
                       ]),
-                    ].map((content) => (
-                      <Text
-                        key={content}
-                        variant={TextVariant.bodyXsMedium}
-                        color={TextColor.textAlternative}
-                      >
-                        {content}
-                      </Text>
-                    ))}
+                    ]
+                      .filter(Boolean)
+                      .map((content) => (
+                        <Text
+                          key={content}
+                          variant={TextVariant.bodyXsMedium}
+                          color={TextColor.textAlternative}
+                        >
+                          {content}
+                        </Text>
+                      ))}
                   </Column>
                   <Column alignItems={AlignItems.flexEnd}>
                     <Text variant={TextVariant.bodyMd}>
