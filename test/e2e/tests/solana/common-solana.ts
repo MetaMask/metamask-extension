@@ -11,6 +11,7 @@ import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
+import WebSocketLocalServer from '../../websocket-server';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
@@ -860,7 +861,7 @@ export async function mockSendSolanaTransaction(mockServer: Mockttp) {
     statusCode: 200,
     json: {
       result:
-        '3nqGKH1ef8WkTgKXZ8q3xKsvjktWmHHhJpZMSdbB6hBqy5dA7aLVSAUjw5okezZjKMHiNg2MF5HAqtpmsesQtnpj',
+        '3AcYfpsSaFYogY4Y4YN77MkhDgVBEgUe1vuEeqKnCMm5udTrFCyw9w17mNM8DUnHnQD2VHRFeipMUb27Q3iqMQJr',
       id: '1337',
       jsonrpc: '2.0',
     },
@@ -870,7 +871,8 @@ export async function mockSendSolanaTransaction(mockServer: Mockttp) {
     .withJsonBodyIncluding({
       method: 'sendTransaction',
     })
-    .thenCallback(() => {
+    .thenCallback(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 seconds delay
       return response;
     });
 }
@@ -1559,6 +1561,53 @@ const featureFlagsWithSnapConfirmation = {
   },
 };
 
+async function startWebsocketMock(mockServer: Mockttp) {
+  const port = 8088;
+  // Start a WebSocket server to handle the connection
+  const localWebSocketServer = WebSocketLocalServer.getServerInstance(port);
+  localWebSocketServer.start();
+  const wsServer = localWebSocketServer.getServer();
+  wsServer.on('connection', (socket: WebSocket) => {
+    console.log('Client connected to the local WebSocket server');
+
+    // Handle messages from the client
+    socket.on('message', (message: MessageEvent) => {
+      console.log('Message received from client:', message.toString());
+      if (message.toString().includes('signatureSubscribe')) {
+        console.log('Signature subscribe message received from client');
+        setTimeout(() => {
+          socket.send(
+            JSON.stringify({
+              jsonrpc: '2.0',
+              result: 8648699534240963,
+              id: '1',
+            }),
+          );
+          console.log('Simulated message sent to the client');
+        }, 5000); // Delay the message by 5 second
+      }
+
+      // Respond to the client
+      socket.send(`Local WebSocket server received: ${message.toString()}`);
+    });
+
+    // Handle client disconnection
+    socket.on('close', () => {
+      console.log('Client disconnected from the local WebSocket server');
+    });
+  });
+
+  // Intercept WebSocket handshake requests
+  await mockServer
+    .forAnyWebSocket()
+    .matching(
+      (req) =>
+        req.url ===
+        'wss://solana-mainnet.infura.io/ws/v3/5b98a22672004ef1bf40a80123c5c48d',
+    )
+    .thenForwardTo(`ws://localhost:${port}`);
+}
+
 export async function withSolanaAccountSnap(
   {
     title,
@@ -1752,6 +1801,7 @@ export async function withSolanaAccountSnap(
       mockServer: Mockttp;
       extensionId: string;
     }) => {
+      await startWebsocketMock(mockServer);
       await loginWithBalanceValidation(driver);
 
       const headerComponent = new HeaderNavbar(driver);
