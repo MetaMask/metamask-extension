@@ -1,9 +1,8 @@
-import { Suite } from 'mocha';
 import { strict as assert } from 'assert';
+import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures } from '../../helpers';
+import { withFixtures, unlockWallet } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { unlockWallet } from '../../helpers';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -17,7 +16,7 @@ describe('Send Flow - Network Change', function (this: Suite) {
           .withPreferencesController({
             preferences: { showTestNetworks: true },
           })
-          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withEnabledNetworks({ eip155: {'0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -69,7 +68,7 @@ describe('Send Flow - Network Change', function (this: Suite) {
           .withPreferencesController({
             preferences: { showTestNetworks: true },
           })
-          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withEnabledNetworks({ eip155: {'0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -135,7 +134,7 @@ describe('Send Flow - Network Change', function (this: Suite) {
           .withPreferencesController({
             preferences: { showTestNetworks: true },
           })
-          .withEnabledNetworks({ eip155: { '0x1': true, '0xaa36a7': true } })
+          .withEnabledNetworks({ eip155: {'0x1': true } })
           .withAddressBookController({
             addressBook: {
               // Ethereum mainnet contacts
