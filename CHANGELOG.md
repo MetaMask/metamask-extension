@@ -63,7 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Set confirm srp quiz word to readonly (#34225)
 
 ### Fixed
-- Fixed a bug that was causing private key import field to always be in error state (#34050)
+- Fix: solve when private key import field to always be in error state (#34050)
 - fix: solve `Error: Ledger: Unknown error while signing transaction` (#33581)
 - fix: regression of lanchdarkly flag key (#34045)
 - fix: private key import field to always be in error state (#34050)
@@ -112,6 +112,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: cp-12.22.0 flaky `Token List` and `Token Details` specs (#33772)
 - fix: bridge tx detail layout fix (#33860)
 - fix: Solana single-chain swap failure event not firing on src-chain (#33811)
+- fix: max button was shown on native assets incorrectly causing invalid quotes (#34293)
 
 ## [12.22.2]
 ### Fixed
