@@ -5486,9 +5486,6 @@
   "standardAccountLabel": {
     "message": "标准账户"
   },
-  "startEarning": {
-    "message": "开始赚取"
-  },
   "stateLogError": {
     "message": "检索状态日志时出错。"
   },
