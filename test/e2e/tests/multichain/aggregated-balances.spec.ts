@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
@@ -34,7 +33,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
           .withPreferencesController({
             preferences: { showTestNetworks: true },
           })
-          .withTokensControllerERC20({ 'chainId':1337 })
+          .withTokensControllerERC20({ chainId: 1337 })
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.MAINNET]: true,
@@ -42,7 +41,6 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
               [CHAIN_IDS.LINEA_MAINNET]: true,
               [CHAIN_IDS.SEPOLIA]: true,
             },
-
           })
           .build(),
         localNodeOptions: {
@@ -69,7 +67,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         const sendTokenPage = new SendTokenPage(driver);
 
         console.log('Step 2: Switch to Ethereum Mainnet');
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
+        await switchToNetworkFromSendFlow(driver, NETWORK_NAME_MAINNET);
 
         console.log('Step 3: Enable fiat balance display in settings');
         await headerNavbar.openSettingsPage();
@@ -92,21 +90,6 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         await sendTokenPage.checkAccountValueAndSuffix(EXPECTED_BALANCE_USD);
         await sendTokenPage.clickCancelButton();
 
-        // console.log(
-        //   'Step 6: Check balance for "Current Network" in network filter',
-        // );
-        // await assetListPage.openNetworksFilter();
-        // const networkFilterTotal =
-        //   await assetListPage.getCurrentNetworksOptionTotal();
-        //   console.log(networkFilterTotal)
-        // assert.equal(networkFilterTotal, EXPECTED_BALANCE_USD);
-        // await assetListPage.clickCurrentNetworkOption();
-
-        // console.log('Step 7: Verify balance after selecting "Current Network"');
-        // await homepage.check_expectedBalanceIsDisplayed(
-        //   EXPECTED_BALANCE_USD,
-        //   'usd',
-        // );
         await headerNavbar.openAccountMenu();
         await accountListPage.check_accountValueAndSuffixDisplayed(
           EXPECTED_BALANCE_USD,
@@ -114,29 +97,29 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         await accountListPage.closeAccountModal();
 
         console.log(
-          'Step 8: Verify balance in send flow after selecting "Current Network"',
+          'Step 6: Verify balance in send flow after selecting "Current Network"',
         );
         await homepage.startSendFlow();
         await sendTokenPage.checkAccountValueAndSuffix(EXPECTED_BALANCE_USD);
         await sendTokenPage.clickCancelButton();
 
-        console.log('Step 9: Switch to Sepolia test network');
-        await switchToNetworkFromSendFlow(driver, 'Sepolia');
+        console.log('Step 7: Switch to Sepolia test network');
+        await switchToNetworkFromSendFlow(driver, NETWORK_NAME_SEPOLIA);
 
-        console.log('Step 10: Verify native balance on Sepolia network');
+        console.log('Step 8: Verify native balance on Sepolia network');
         await homepage.check_expectedBalanceIsDisplayed(
           EXPECTED_SEPOLIA_BALANCE_NATIVE,
           SEPOLIA_NATIVE_TOKEN,
         );
         await assetListPage.check_networkFilterText(NETWORK_NAME_SEPOLIA);
 
-        console.log('Step 11: Enable fiat display on testnets in settings');
+        console.log('Step 9: Enable fiat display on testnets in settings');
         await headerNavbar.openSettingsPage();
         await settingsPage.clickAdvancedTab();
         await settingsPage.toggleShowFiatOnTestnets();
         await settingsPage.closeSettingsPage();
 
-        console.log('Step 12: Verify USD balance on Sepolia network');
+        console.log('Step 10: Verify USD balance on Sepolia network');
         await homepage.check_expectedBalanceIsDisplayed(
           EXPECTED_SEPOLIA_BALANCE_NATIVE,
           SEPOLIA_NATIVE_TOKEN,
