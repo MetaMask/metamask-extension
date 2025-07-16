@@ -1571,9 +1571,9 @@ async function startWebsocketMock(mockServer: Mockttp) {
     console.log('Client connected to the local WebSocket server');
 
     // Handle messages from the client
-    socket.on('message', (message: MessageEvent) => {
-      console.log('Message received from client:', message.toString());
-      if (message.toString().includes('signatureSubscribe')) {
+    socket.addEventListener('message', (event: MessageEvent) => {
+      console.log('Message received from client:', event.data.toString());
+      if (event.data.toString().includes('signatureSubscribe')) {
         console.log('Signature subscribe message received from client');
         setTimeout(() => {
           socket.send(
@@ -1586,9 +1586,6 @@ async function startWebsocketMock(mockServer: Mockttp) {
           console.log('Simulated message sent to the client');
         }, 5000); // Delay the message by 5 second
       }
-
-      // Respond to the client
-      socket.send(`Local WebSocket server received: ${message.toString()}`);
     });
 
     // Handle client disconnection
