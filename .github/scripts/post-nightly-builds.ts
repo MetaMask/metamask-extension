@@ -33,7 +33,15 @@ async function main() {
   }
 
   // Handle successful build
-  await postSuccessNotification(env, version);
+  if (env.BUILD_STATUS === 'success') {
+    await postSuccessNotification(env, version);
+    return;
+  }
+
+  // Handle unknown or invalid status
+  console.log(`❓ Unknown build status: ${env.BUILD_STATUS}`);
+  console.log('⚠️ Skipping Slack notification due to unknown status');
+  throw new Error(`Invalid BUILD_STATUS: ${env.BUILD_STATUS}. Expected 'success' or 'failure'.`);
 }
 
 async function postFailureNotification(env: any, version: string) {
@@ -41,6 +49,9 @@ async function postFailureNotification(env: any, version: string) {
 
   const repositoryUrl = new URL('https://github.com');
   repositoryUrl.pathname = `/${env.OWNER}/${env.REPOSITORY}`;
+
+  const branchUrl = new URL(repositoryUrl);
+  branchUrl.pathname += `/tree/${env.BRANCH}`;
 
   const runUrl = new URL(repositoryUrl);
   runUrl.pathname += `/actions/runs/${env.RUN_ID}`;
@@ -82,7 +93,8 @@ async function postFailureNotification(env: any, version: string) {
               text: ' ',
             },
             {
-              type: 'text',
+              type: 'link',
+              url: branchUrl.toString(),
               text: env.BRANCH,
             },
             {
