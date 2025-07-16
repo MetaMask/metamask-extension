@@ -5486,9 +5486,6 @@
   "standardAccountLabel": {
     "message": "Τυπικός λογαριασμός"
   },
-  "startEarning": {
-    "message": "Ξεκινήστε να κερδίζετε"
-  },
   "stateLogError": {
     "message": "Σφάλμα κατά την ανάκτηση αρχείων καταγραφής κατάστασης."
   },
