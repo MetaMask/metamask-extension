@@ -136,7 +136,7 @@ export function MetaMetricsProvider({ children }) {
    * @type {UITraceMethod}
    */
   const bufferedTrace = useCallback((request, fn) => {
-    return submitRequestToBackground('bufferedTrace', [request, fn]);
+    submitRequestToBackground('bufferedTrace', [request, fn]);
   }, []);
 
   /**
