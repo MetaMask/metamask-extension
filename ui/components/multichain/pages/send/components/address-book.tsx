@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
 import { Box, Text } from '../../../../component-library';
@@ -41,11 +41,10 @@ export const SendPageAddressBook = () => {
   const contacts = addressBook.filter(({ name }) => Boolean(name));
   const currentNetworkTransactions = useSelector(getCurrentNetworkTransactions);
 
-  const currentChainId = useSelector(getCurrentChainId);
-  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
-    string,
-    string
-  >;
+  const globalChainId = useSelector(getCurrentChainId);
+  const networkClientIdsByChainId = useSelector(
+    getNetworkConfigurationIdByChainId,
+  ) as Record<string, string>;
 
   const txList = [...currentNetworkTransactions].reverse();
   const nonContacts = addressBook
@@ -100,30 +99,40 @@ export const SendPageAddressBook = () => {
     return nonContacts;
   };
 
-  const selectRecipient = (
-    address = '',
-    nickname = '',
-    type = 'user input',
-  ) => {
-    dispatch(
-      addHistoryEntry(
-        `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
-      ),
-    );
-    trackEvent(
-      {
-        event: MetaMetricsEventName.sendRecipientSelected,
-        category: MetaMetricsEventCategory.Send,
-        properties: {
-          location: 'address book',
-          inputType: type,
+  const selectRecipient = useCallback(
+    (address = '', nickname = '', type = 'user input') => {
+      dispatch(
+        addHistoryEntry(
+          `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
+        ),
+      );
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendRecipientSelected,
+          category: MetaMetricsEventCategory.Send,
+          properties: {
+            location: 'address book',
+            inputType: type,
+          },
         },
-      },
-      { excludeMetaMetricsId: false },
-    );
-    dispatch(updateRecipient({ address, nickname }));
-    dispatch(updateRecipientUserInput(address));
-  };
+        { excludeMetaMetricsId: false },
+      );
+      dispatch(updateRecipient({ address, nickname }));
+      dispatch(updateRecipientUserInput(address));
+    },
+    [dispatch, trackEvent],
+  );
+
+  const onSelectRecipient = useCallback(
+    async (address = '', name = '', chainId = '') => {
+      if (chainId && chainId !== globalChainId) {
+        const networkClientId = networkClientIdsByChainId[chainId];
+        dispatch(setActiveNetworkWithError(networkClientId));
+      }
+      selectRecipient(address, name, `${name ? 'contact' : 'recent'} list`);
+    },
+    [globalChainId, networkClientIdsByChainId, dispatch, selectRecipient],
+  );
 
   return (
     <SendPageRow>
@@ -134,17 +143,7 @@ export const SendPageAddressBook = () => {
             internalAccounts={internalAccounts}
             searchForContacts={searchForContacts}
             searchForRecents={searchForRecents}
-            selectRecipient={async (address = '', name = '', chainId = '') => {
-              if (chainId && chainId !== currentChainId) {
-                const networkConfigurationId = networks[chainId];
-                dispatch(setActiveNetworkWithError(networkConfigurationId));
-              }
-              selectRecipient(
-                address,
-                name,
-                `${name ? 'contact' : 'recent'} list`,
-              );
-            }}
+            selectRecipient={onSelectRecipient}
           />
         </>
       ) : (
