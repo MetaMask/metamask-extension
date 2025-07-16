@@ -1,13 +1,30 @@
 import React from 'react';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { Provider } from 'react-redux';
+import configureStore from '../../../../store/store';
+import testData from '../../../../../.storybook/test-data';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import SignatureRequestHeader from './signature-request-header';
+
+const CHAIN_ID_MOCK = CHAIN_IDS.MAINNET;
+
+const store = configureStore({
+  ...testData,
+  metamask: {
+    ...testData.metamask,
+    ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
+  },
+});
 
 export default {
   title: 'Confirmations/Components/SignatureRequestHeader',
+  decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   argTypes: {
     txData: { control: 'object' },
   },
   args: {
     txData: {
+      chainId: CHAIN_ID_MOCK,
       msgParams: {
         from: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
         data: JSON.stringify({

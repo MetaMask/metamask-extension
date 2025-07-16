@@ -1,5 +1,4 @@
 {
-  "cSpell.words": ["blockaid", "lavamoat"],
   "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
   "editor.tabSize": 2,
   "files.associations": {

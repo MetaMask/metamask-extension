@@ -1,4 +1,4 @@
-import { RPC_ALLOWED_ORIGINS } from '@metamask-institutional/rpc-allowlist';
+import { isAllowedRPCOrigin } from '@metamask-institutional/rpc-allowlist';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 
 const mmiPortfolio = {
@@ -22,8 +22,8 @@ export default mmiPortfolio;
  */
 
 /**
- * @param {import('json-rpc-engine').JsonRpcRequest<MmiPortfolioParam>} req - The JSON-RPC request object.
- * @param {import('json-rpc-engine').JsonRpcResponse<true>} res - The JSON-RPC response object.
+ * @param {import('@metamask/utils').JsonRpcRequest<MmiPortfolioParam>} req - The JSON-RPC request object.
+ * @param {import('@metamask/utils').JsonRpcResponse<true>} res - The JSON-RPC response object.
  * @param {Function} _next - The json-rpc-engine 'next' callback.
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param {WatchAssetOptions} options
@@ -36,13 +36,8 @@ async function mmiPortfolioHandler(
   { handleMmiDashboardData },
 ) {
   try {
-    let validUrl = false;
-    RPC_ALLOWED_ORIGINS[MESSAGE_TYPE.MMI_PORTFOLIO].forEach((regexp) => {
-      // eslint-disable-next-line require-unicode-regexp
-      if (regexp.test(req.origin)) {
-        validUrl = true;
-      }
-    });
+    const validUrl = isAllowedRPCOrigin(MESSAGE_TYPE.MMI_PORTFOLIO, req.origin);
+
     // eslint-disable-next-line no-negated-condition
     if (!validUrl) {
       throw new Error('Unauthorized');

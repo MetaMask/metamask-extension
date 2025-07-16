@@ -7,10 +7,14 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
-import { getUseCurrencyRateCheck } from '../../../../selectors';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import {
+  getSelectedAddress,
+  getUseCurrencyRateCheck,
+} from '../../../../selectors';
 import { Box, Checkbox, Text } from '../../../component-library';
+import { useTokenTracker } from '../../../../hooks/useTokenBalances';
 
 const DetectedTokenValues = ({
   token,
@@ -21,12 +25,25 @@ const DetectedTokenValues = ({
     return tokensListDetected[token.address]?.selected;
   });
 
-  const { tokensWithBalances } = useTokenTracker({ tokens: [token] });
+  const selectedAddress = useSelector(getSelectedAddress);
+  const currentChainId = useSelector(getCurrentChainId);
+  const chainId = token.chainId ?? currentChainId;
+
+  const { tokensWithBalances } = useTokenTracker({
+    chainId,
+    tokens: [token],
+    address: selectedAddress,
+    hideZeroBalanceTokens: false,
+  });
+
   const balanceString = tokensWithBalances[0]?.string;
   const formattedFiatBalance = useTokenFiatAmount(
     token.address,
     balanceString,
     token.symbol,
+    {},
+    false,
+    chainId,
   );
 
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
@@ -73,6 +90,7 @@ DetectedTokenValues.propTypes = {
     symbol: PropTypes.string,
     iconUrl: PropTypes.string,
     aggregators: PropTypes.array,
+    chainId: PropTypes.string,
   }),
   handleTokenSelection: PropTypes.func.isRequired,
   tokensListDetected: PropTypes.object,

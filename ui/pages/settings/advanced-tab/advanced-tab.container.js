@@ -5,30 +5,34 @@ import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/prefe
 import { getPreferences } from '../../../selectors';
 import {
   backupUserData,
-  displayWarning,
-  restoreUserData,
   setAutoLockTimeLimit,
-  setDisabledRpcMethodPreference,
   setDismissSeedBackUpReminder,
+  setOverrideContentSecurityPolicyHeader,
   setFeatureFlag,
   setShowExtensionInFullSizeView,
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
+  setSmartTransactionsPreferenceEnabled,
   setUseNonceField,
   showModal,
 } from '../../../store/actions';
+import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
+import {
+  displayErrorInSettings,
+  hideErrorInSettings,
+} from '../../../ducks/app/app';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
   const {
-    appState: { warning },
+    appState: { errorInSettings },
     metamask,
   } = state;
   const {
     featureFlags: { sendHexData } = {},
-    disabledRpcMethodPreferences,
     useNonceField,
     dismissSeedBackUpReminder,
+    overrideContentSecurityPolicyHeader,
   } = metamask;
   const {
     showFiatInTestnets,
@@ -38,28 +42,29 @@ export const mapStateToProps = (state) => {
   } = getPreferences(state);
 
   return {
-    warning,
+    errorInSettings,
     sendHexData,
     showFiatInTestnets,
     showTestNetworks,
     showExtensionInFullSizeView,
+    smartTransactionsEnabled: getSmartTransactionsPreferenceEnabled(state),
     autoLockTimeLimit,
     useNonceField,
     dismissSeedBackUpReminder,
-    disabledRpcMethodPreferences,
+    overrideContentSecurityPolicyHeader,
   };
 };
 
 export const mapDispatchToProps = (dispatch) => {
   return {
     backupUserData: () => backupUserData(),
-    restoreUserData: (jsonString) => restoreUserData(jsonString),
     setHexDataFeatureFlag: (shouldShow) =>
       dispatch(setFeatureFlag('sendHexData', shouldShow)),
-    displayWarning: (warning) => dispatch(displayWarning(warning)),
+    displayErrorInSettings: (errorInSettings) =>
+      dispatch(displayErrorInSettings(errorInSettings)),
+    hideErrorInSettings: () => dispatch(hideErrorInSettings()),
     showResetAccountConfirmationModal: () =>
       dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
-    showEthSignModal: () => dispatch(showModal({ name: 'ETH_SIGN' })),
     setUseNonceField: (value) => dispatch(setUseNonceField(value)),
     setShowFiatConversionOnTestnetsPreference: (value) => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value));
@@ -70,14 +75,17 @@ export const mapDispatchToProps = (dispatch) => {
     setShowExtensionInFullSizeView: (value) => {
       return dispatch(setShowExtensionInFullSizeView(value));
     },
+    setSmartTransactionsEnabled: (value) => {
+      return dispatch(setSmartTransactionsPreferenceEnabled(value));
+    },
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
     },
-    setDisabledRpcMethodPreference: (methodName, isEnabled) => {
-      return dispatch(setDisabledRpcMethodPreference(methodName, isEnabled));
+    setOverrideContentSecurityPolicyHeader: (value) => {
+      return dispatch(setOverrideContentSecurityPolicyHeader(value));
     },
   };
 };

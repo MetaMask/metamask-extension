@@ -1,18 +1,16 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
 import {
-  DecryptMessageManager,
-  DecryptMessageParams,
-  DecryptMessageParamsMetamask,
-} from '@metamask/message-manager';
-import {
   AbstractMessage,
   AbstractMessageManager,
   AbstractMessageParams,
   AbstractMessageParamsMetamask,
   MessageManagerState,
   OriginalRequest,
-} from '@metamask/message-manager/dist/AbstractMessageManager';
+  DecryptMessageManager,
+  DecryptMessageParams,
+  DecryptMessageParamsMetamask,
+} from '@metamask/message-manager';
 import {
   BaseController,
   RestrictedControllerMessenger,
@@ -117,8 +115,12 @@ export type DecryptMessageControllerMessenger = RestrictedControllerMessenger<
 >;
 
 export type DecryptMessageControllerOptions = {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getState: () => any;
   messenger: DecryptMessageControllerMessenger;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metricsEvent: (payload: any, options?: any) => void;
 };
 
@@ -132,8 +134,12 @@ export default class DecryptMessageController extends BaseController<
 > {
   hub: EventEmitter;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _getState: () => any;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _metricsEvent: (payload: any, options?: any) => void;
 
   private _decryptMessageManager: DecryptMessageManager;
@@ -363,6 +369,8 @@ export default class DecryptMessageController extends BaseController<
   ) {
     messageManager.subscribe((state: MessageManagerState<AbstractMessage>) => {
       const newMessages = this._migrateMessages(
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         state.unapprovedMessages as any,
       );
       this.update((draftState) => {

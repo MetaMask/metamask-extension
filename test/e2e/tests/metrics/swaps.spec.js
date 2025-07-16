@@ -29,7 +29,7 @@ const {
   FEATURE_FLAGS_API_MOCK_RESULT,
   TRADES_API_MOCK_RESULT,
   NETWORKS_2_API_MOCK_RESULT,
-} = require('./mock-data');
+} = require('../../../data/mock-data');
 
 const numberOfSegmentRequests = 19;
 
@@ -43,18 +43,16 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
       .times()
       .thenCallback(() => ({ statusCode: 200 })),
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/networks/1/tokens')
+      .forGet('https://swap.api.cx.metamask.io/networks/1/tokens')
       .thenCallback(() => ({ statusCode: 200, json: TOKENS_API_MOCK_RESULT })),
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/networks/1/topAssets')
+      .forGet('https://swap.api.cx.metamask.io/networks/1/topAssets')
       .thenCallback(() => ({
         statusCode: 200,
         json: TOP_ASSETS_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet(
-        'https://swap.metaswap.codefi.network/networks/1/aggregatorMetadata',
-      )
+      .forGet('https://swap.api.cx.metamask.io/networks/1/aggregatorMetadata')
       .thenCallback(() => ({
         statusCode: 200,
         json: AGGREGATOR_METADATA_API_MOCK_RESULT,
@@ -66,25 +64,25 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
         json: GAS_PRICE_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/featureFlags')
+      .forGet('https://swap.api.cx.metamask.io/featureFlags')
       .thenCallback(() => ({
         statusCode: 200,
         json: FEATURE_FLAGS_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/networks/1/trades')
+      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
       .thenCallback(() => ({
         statusCode: 200,
         json: TRADES_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/networks/1')
+      .forGet('https://swap.api.cx.metamask.io/networks/1')
       .thenCallback(() => ({
         statusCode: 200,
         json: NETWORKS_2_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://token-api.metaswap.codefi.network/token/1337')
+      .forGet('https://token.api.cx.metamask.io/token/1337')
       .thenCallback(() => ({
         statusCode: 200,
         json: {},
@@ -197,7 +195,7 @@ async function assertNavSwapButtonClickedEvent(reqs) {
 async function assertPrepareSwapPageLoadedEvents(reqs) {
   const assertionsReq1 = [
     (req) => req.event === MetaMetricsEventName.PrepareSwapPageLoaded,
-    (req) => Object.keys(req.properties).length === 7,
+    (req) => Object.keys(req.properties).length === 8,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
@@ -228,7 +226,7 @@ async function assertPrepareSwapPageLoadedEvents(reqs) {
 async function assertQuotesRequestedEvents(reqs) {
   const assertionsReq3 = [
     (req) => req.event === MetaMetricsEventName.QuotesRequested,
-    (req) => Object.keys(req.properties).length === 14,
+    (req) => Object.keys(req.properties).length === 15,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
@@ -266,7 +264,7 @@ async function assertQuotesRequestedEvents(reqs) {
 async function assertQuotesReceivedAndBestQuoteReviewedEvents(reqs) {
   const assertionsReq5 = [
     (req) => req.event === MetaMetricsEventName.QuotesReceived,
-    (req) => Object.keys(req.properties).length === 18,
+    (req) => Object.keys(req.properties).length === 19,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
@@ -301,7 +299,7 @@ async function assertQuotesReceivedAndBestQuoteReviewedEvents(reqs) {
 
   const assertionsReq7 = [
     (req) => req.event === MetaMetricsEventName.BestQuoteReviewed,
-    (req) => Object.keys(req.properties).length === 17,
+    (req) => Object.keys(req.properties).length === 18,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
@@ -348,7 +346,7 @@ async function assertQuotesReceivedAndBestQuoteReviewedEvents(reqs) {
 async function assertAllAvailableQuotesOpenedEvents(reqs) {
   const assertionsReq9 = [
     (req) => req.event === MetaMetricsEventName.AllAvailableQuotesOpened,
-    (req) => Object.keys(req.properties).length === 18,
+    (req) => Object.keys(req.properties).length === 19,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
@@ -391,7 +389,7 @@ async function assertAllAvailableQuotesOpenedEvents(reqs) {
 async function assertSwapStartedEvents(reqs) {
   const assertionsReq11 = [
     (req) => req.event === MetaMetricsEventName.SwapStarted,
-    (req) => Object.keys(req.properties).length === 24,
+    (req) => Object.keys(req.properties).length === 25,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
@@ -438,13 +436,11 @@ async function assertSwapStartedEvents(reqs) {
 async function assertSwapCompletedEvents(reqs) {
   const assertionsReq13 = [
     (req) => req.event === MetaMetricsEventName.SwapCompleted,
-    (req) => Object.keys(req.properties).length === 30,
-
+    (req) => Object.keys(req.properties).length === 31,
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
     (req) => req.properties?.environment_type === 'background',
     (req) => req.properties?.locale === 'en',
-
     (req) => req.properties?.token_from === 'TESTETH',
     (req) => req.properties?.token_from_amount === '2',
     (req) => req.properties?.token_to === 'DAI',
@@ -477,7 +473,6 @@ async function assertSwapCompletedEvents(reqs) {
   const assertionsReq14 = [
     (req) => req.event === MetaMetricsEventName.SwapCompleted,
     (req) => Object.keys(req.properties).length === 4,
-
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
     (req) => req.properties?.environment_type === 'background',
@@ -493,7 +488,7 @@ async function assertSwapCompletedEvents(reqs) {
 async function assertExitedSwapsEvents(reqs) {
   const assertionsReq15 = [
     (req) => req.event === MetaMetricsEventName.ExitedSwaps,
-    (req) => Object.keys(req.properties).length === 12,
+    (req) => Object.keys(req.properties).length === 13,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
@@ -527,7 +522,7 @@ async function assertExitedSwapsEvents(reqs) {
 
   const assertionsReq17 = [
     (req) => req.event === MetaMetricsEventName.ExitedSwaps,
-    (req) => Object.keys(req.properties).length === 9,
+    (req) => Object.keys(req.properties).length === 10,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),

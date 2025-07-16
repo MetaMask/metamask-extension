@@ -11,6 +11,7 @@ export default {
   },
   args: {
     onClose: () => ({}),
+    onAccountsUpdate: () => ({}),
     handleAccountClick: () => ({}),
     deselectAll: () => ({}),
     selectAll: () => ({}),
@@ -28,6 +29,7 @@ export default {
           },
         },
         options: {},
+        type: 'eip155:eoa',
       },
     ],
     selectedAccounts: [],

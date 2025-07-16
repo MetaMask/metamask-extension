@@ -1,12 +1,55 @@
 import React from 'react';
-import { within } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import { MOCK_ADDRESS_BOOK } from '../../../../test/data/mock-data';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import ContactList from '.';
 
 describe('Contact List', () => {
   const store = configureMockStore([])({
-    metamask: { providerConfig: { chainId: '0x0' } },
+    metamask: {},
+  });
+
+  const mockInternalAccounts = [createMockInternalAccount()];
+
+  it('displays the warning banner when multiple contacts have the same name', () => {
+    const mockAddressBook = [...MOCK_ADDRESS_BOOK, MOCK_ADDRESS_BOOK[0]]; // Adding duplicate contact
+
+    const { getByText } = renderWithProvider(
+      <ContactList
+        addressBook={mockAddressBook}
+        internalAccounts={mockInternalAccounts}
+      />,
+      store,
+    );
+
+    const duplicateContactBanner = getByText('You have duplicate contacts');
+
+    expect(duplicateContactBanner).toBeVisible();
+  });
+
+  it('displays the warning banner when contact has same name as an existing account', () => {
+    const mockContactWithAccountName = {
+      address: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+      chainId: '0x1',
+      isEns: false,
+      memo: '',
+      name: mockInternalAccounts[0].metadata.name,
+    };
+
+    const mockAddressBook = [...MOCK_ADDRESS_BOOK, mockContactWithAccountName];
+
+    const { getByText } = renderWithProvider(
+      <ContactList
+        addressBook={mockAddressBook}
+        internalAccounts={mockInternalAccounts}
+      />,
+      store,
+    );
+
+    const duplicateContactBanner = getByText('You have duplicate contacts');
+
+    expect(duplicateContactBanner).toBeVisible();
   });
 
   describe('given searchForContacts', () => {
@@ -14,47 +57,50 @@ describe('Contact List', () => {
     const selectedAddress = null;
 
     it('sorts contacts by name within each letter group', () => {
+      const contacts = [
+        {
+          name: 'Al',
+          address: '0x0000000000000000000000000000000000000000',
+        },
+        {
+          name: 'aa',
+          address: '0x0000000000000000000000000000000000000001',
+        },
+        {
+          name: 'Az',
+          address: '0x0000000000000000000000000000000000000002',
+        },
+        {
+          name: 'bbb',
+          address: '0x0000000000000000000000000000000000000003',
+        },
+      ];
+
       const { getAllByTestId } = renderWithProvider(
         <ContactList
-          searchForContacts={() => {
-            return [
-              {
-                name: 'Al',
-                address: '0x0000000000000000000000000000000000000000',
-              },
-              {
-                name: 'aa',
-                address: '0x0000000000000000000000000000000000000001',
-              },
-              {
-                name: 'Az',
-                address: '0x0000000000000000000000000000000000000002',
-              },
-              {
-                name: 'bbb',
-                address: '0x0000000000000000000000000000000000000003',
-              },
-            ];
-          }}
+          searchForContacts={() => contacts}
           selectRecipient={selectRecipient}
           selectedAddress={selectedAddress}
+          addressBook={MOCK_ADDRESS_BOOK}
+          internalAccounts={mockInternalAccounts}
         />,
         store,
       );
 
-      const recipientGroups = getAllByTestId('recipient-group');
-      expect(within(recipientGroups[0]).getByText('A')).toBeInTheDocument();
-      const recipientsInA = within(recipientGroups[0]).getAllByTestId(
-        'recipient',
-      );
-      expect(recipientsInA[0]).toHaveTextContent('aa0x0000...0001');
-      expect(recipientsInA[1]).toHaveTextContent('Al0x0000...0000');
-      expect(recipientsInA[2]).toHaveTextContent('Az0x0000...0002');
-      expect(within(recipientGroups[1]).getByText('B')).toBeInTheDocument();
-      const recipientsInB = within(recipientGroups[1]).getAllByTestId(
-        'recipient',
-      );
-      expect(recipientsInB[0]).toHaveTextContent('bbb0x0000...0003');
+      const recipientLabels = getAllByTestId('address-list-item-label');
+      const recipientAddresses = getAllByTestId('address-list-item-address');
+
+      expect(recipientAddresses[0]).toHaveTextContent('0x00000...00001');
+      expect(recipientLabels[0]).toHaveTextContent(contacts[1].name);
+
+      expect(recipientAddresses[1]).toHaveTextContent('0x00000...00000');
+      expect(recipientLabels[1]).toHaveTextContent(contacts[0].name);
+
+      expect(recipientAddresses[2]).toHaveTextContent('0x00000...00002');
+      expect(recipientLabels[2]).toHaveTextContent(contacts[2].name);
+
+      expect(recipientAddresses[3]).toHaveTextContent('0x00000...00003');
+      expect(recipientLabels[3]).toHaveTextContent(contacts[3].name);
     });
   });
 });

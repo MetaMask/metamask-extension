@@ -94,7 +94,7 @@ export default {
     hexTransactionTotal: {
       control: 'text',
     },
-    isMultiLayerFeeNetwork: {
+    hasLayer1GasFee: {
       control: 'boolean',
     },
     supportsEIP1559: {

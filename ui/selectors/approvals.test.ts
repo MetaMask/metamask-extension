@@ -77,4 +77,14 @@ describe('approval selectors', () => {
       );
     });
   });
+
+  describe('pendingApprovalsSortedSelector', () => {
+    it('should return all pending approvals', () => {
+      const result = getPendingApprovals(mockedState);
+
+      expect(result).toStrictEqual(
+        Object.values(mockedState.metamask.pendingApprovals),
+      );
+    });
+  });
 });

@@ -52,9 +52,6 @@ describe('success template', () => {
             type: ApprovalType.ResultSuccess,
           },
         },
-        providerConfig: {
-          chainId: '0x1',
-        },
         transactions: [],
       },
     };

@@ -5,6 +5,9 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { CustodyStatus } from '../../../../shared/constants/custody';
+///: END:ONLY_INCLUDE_IF
 
 const QUEUED_PSEUDO_STATUS = 'queued';
 const SIGNING_PSUEDO_STATUS = 'signing';
@@ -84,7 +87,7 @@ export default function TransactionStatusLabel({
     if (error) {
       tooltipText = error.message;
       statusText =
-        custodyStatus === 'aborted'
+        custodyStatus === CustodyStatus.ABORTED
           ? custodyStatusDisplayText
           : t('snapResultError');
     } else {

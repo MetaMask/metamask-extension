@@ -1,0 +1,17 @@
+.nfts-tab {
+  &__fetching {
+    display: flex;
+    height: 100px;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+  }
+
+  &__loading {
+    display: flex;
+    height: 200px;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+  }
+}

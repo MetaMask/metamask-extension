@@ -66,7 +66,7 @@ export const ImportTokensModalConfirm = () => {
                     marginRight={4}
                     marginTop={1}
                   >
-                    <AvatarToken name={symbol} src={tokenImage} showHalo />
+                    <AvatarToken name={symbol} src={tokenImage} />
                   </BadgeWrapper>
                   <Box>
                     <Text

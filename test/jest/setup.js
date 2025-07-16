@@ -1,7 +1,5 @@
 // This file is for Jest-specific setup only and runs before our Jest tests.
-
-import nock from 'nock';
-import '@testing-library/jest-dom';
+import '../helpers/setup-after-helper';
 
 jest.mock('webextension-polyfill', () => {
   return {
@@ -13,6 +11,11 @@ jest.mock('webextension-polyfill', () => {
 
 jest.mock('../../ui/hooks/usePetnamesEnabled', () => ({
   usePetnamesEnabled: () => false,
+}));
+
+jest.mock('../../app/scripts/snaps/preinstalled-snaps', () => ({
+  __esModule: true,
+  default: [],
 }));
 
 const UNRESOLVED = Symbol('timedOut');
@@ -37,11 +40,6 @@ function treatUnresolvedAfter(duration) {
     originalSetTimeout(resolve, duration, UNRESOLVED);
   });
 }
-
-/* eslint-disable-next-line jest/require-top-level-describe */
-beforeEach(() => {
-  nock.cleanAll();
-});
 
 expect.extend({
   /**
@@ -131,6 +129,3 @@ expect.extend({
         };
   },
 });
-
-// Setup window.prompt
-global.prompt = () => undefined;

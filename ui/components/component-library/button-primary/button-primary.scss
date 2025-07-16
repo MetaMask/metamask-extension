@@ -1,7 +1,9 @@
 .mm-button-primary {
   &:hover:not(&--disabled) {
     color: var(--color-primary-inverse);
-    box-shadow: var(--component-button-primary-shadow);
+    box-shadow:
+      var(--shadow-size-sm)
+      var(--color-shadow-primary);
   }
 
   &:active {
@@ -13,7 +15,9 @@
   &--type-danger:not(&--disabled) {
     &:hover {
       color: var(--color-error-inverse);
-      box-shadow: var(--component-button-danger-shadow);
+      box-shadow:
+        var(--shadow-size-sm)
+        var(--color-shadow-error);
     }
 
     &:active {

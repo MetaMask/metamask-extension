@@ -20,7 +20,7 @@
   &--disabled,
   &[disabled] {
     cursor: auto;
-    opacity: 0.5;
+    opacity: var(--opacity-disabled);
     pointer-events: none;
   }
 
@@ -33,7 +33,7 @@
 
 .btn-secondary {
   color: var(--color-primary-default);
-  border: 1px solid var(--color-primary-muted);
+  border: 1px solid var(--color-primary-default);
   background-color: var(--color-background-default);
 
   &:hover {
@@ -41,14 +41,9 @@
   }
 
   &:active {
-    background: var(--color-primary-muted);
+    color: var(--color-primary-inverse);
+    background: var(--color-primary-default);
     border-color: var(--color-primary-default);
-  }
-
-  &--disabled,
-  &[disabled] {
-    opacity: 1;
-    color: var(--color-primary-muted);
   }
 }
 
@@ -63,7 +58,7 @@
 
   &:active {
     background: var(--color-warning-muted);
-    border: 1px solid var(--color-warning-alternative);
+    border: 1px solid var(--color-warning-default);
   }
 
   &--disabled,
@@ -86,12 +81,6 @@
     background: var(--color-error-muted);
     border-color: var(--color-error-default);
   }
-
-  &--disabled,
-  &[disabled] {
-    opacity: 1;
-    color: var(--color-error-disabled);
-  }
 }
 
 .btn-danger-primary {
@@ -108,13 +97,6 @@
   &:active {
     background: var(--color-error-alternative0);
     border-color: var(--color-error-alternative);
-  }
-
-  &--disabled,
-  &[disabled] {
-    opacity: 1;
-    border-color: var(--color-error-disabled);
-    background-color: var(--color-error-disabled);
   }
 }
 
@@ -134,8 +116,7 @@
 
   &--disabled,
   &[disabled] {
-    opacity: 1;
-    color: var(--color-text-muted);
+    opacity: var(--opacity-disabled);
   }
 }
 
@@ -152,12 +133,6 @@
   &:active {
     background: var(--color-primary-alternative);
     border-color: var(--color-primary-alternative);
-  }
-
-  &--disabled,
-  &[disabled] {
-    border-color: var(--color-primary-disabled);
-    background-color: var(--color-primary-disabled);
   }
 }
 
@@ -179,9 +154,7 @@
   &--disabled,
   &[disabled] {
     cursor: auto;
-    opacity: 1;
     pointer-events: none;
-    color: var(--color-primary-disabled);
   }
 }
 
@@ -207,7 +180,7 @@
 button[disabled],
 input[type="submit"][disabled] {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: var(--opacity-disabled);
 }
 
 .btn--rounded {
@@ -223,13 +196,7 @@ input[type="submit"][disabled] {
     border: 1px solid var(--color-primary-default);
 
     &:hover {
-      box-shadow: var(--shadow-size-sm) var(--color-primary-shadow);
-    }
-
-    &--disabled,
-    &[disabled] {
-      border-color: var(--color-primary-disabled);
-      color: var(--color-primary-disabled);
+      box-shadow: var(--shadow-size-sm) var(--color-shadow-primary);
     }
 
     &:active {
@@ -244,12 +211,6 @@ input[type="submit"][disabled] {
       box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
     }
 
-    &--disabled,
-    &[disabled] {
-      border-color: var(--color-border-muted);
-      color: var(--color-text-muted);
-    }
-
     &:active {
       border-color: var(--color-text-alternative);
     }
@@ -259,13 +220,7 @@ input[type="submit"][disabled] {
     border: 1px solid var(--color-error-default);
 
     &:hover {
-      box-shadow: var(--shadow-size-sm) var(--color-error-shadow);
-    }
-
-    &--disabled,
-    &[disabled] {
-      border-color: var(--color-error-disabled);
-      color: var(--color-error-disabled);
+      box-shadow: var(--shadow-size-sm) var(--color-shadow-error);
     }
 
     &:active {
@@ -282,12 +237,12 @@ input[type="submit"][disabled] {
 
     &--disabled,
     &[disabled] {
-      border-color: var(--color-warning-alternative);
+      border-color: var(--color-warning-default);
       color: var(--color-text-muted);
     }
 
     &:active {
-      border-color: var(--color-warning-alternative);
+      border-color: var(--color-warning-default);
     }
   }
 
@@ -295,12 +250,7 @@ input[type="submit"][disabled] {
     background-color: var(--color-primary-default);
 
     &:hover {
-      box-shadow: var(--shadow-size-sm) var(--color-primary-shadow);
-    }
-
-    &--disabled,
-    &[disabled] {
-      background-color: var(--color-primary-disabled);
+      box-shadow: var(--shadow-size-sm) var(--color-shadow-primary);
     }
 
     &:active {
@@ -312,12 +262,7 @@ input[type="submit"][disabled] {
     background-color: var(--color-error-default);
 
     &:hover {
-      box-shadow: var(--shadow-size-sm) var(--color-error-shadow);
-    }
-
-    &--disabled,
-    &[disabled] {
-      background-color: var(--color-error-disabled);
+      box-shadow: var(--shadow-size-sm) var(--color-shadow-error);
     }
 
     &:active {
@@ -346,8 +291,6 @@ input[type="submit"][disabled] {
   &--disabled,
   &[disabled] {
     cursor: auto;
-    opacity: 1;
     pointer-events: none;
-    color: var(--color-primary-disabled);
   }
 }

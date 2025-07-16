@@ -6,7 +6,6 @@ import {
   AlignItems,
   JustifyContent,
   TextColor,
-  BorderColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
@@ -22,7 +21,7 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
       showHalo,
       color = TextColor.textDefault,
       backgroundColor = BackgroundColor.backgroundAlternative,
-      borderColor = BorderColor.transparent,
+      borderColor,
       className = '',
       ...props
     }: AvatarTokenProps<C>,

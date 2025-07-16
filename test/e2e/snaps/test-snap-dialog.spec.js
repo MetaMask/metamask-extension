@@ -8,7 +8,7 @@ const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Dialog', function () {
-  it('test all three snap_dialog types', async function () {
+  it('test all four snap_dialog types', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -27,42 +27,46 @@ describe('Test Snap Dialog', function () {
           tag: 'h2',
         });
 
+        // scroll to connect dialogs snap
         const dialogButton = await driver.findElement('#connectdialogs');
         await driver.scrollToElement(dialogButton);
-        await driver.delay(500);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectdialogs');
         await driver.clickElement('#connectdialogs');
 
-        // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
-
+        // wait for and click confirm
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
 
         // switch to test snaps tab
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
@@ -70,15 +74,12 @@ describe('Test Snap Dialog', function () {
           text: 'Reconnect to Dialogs Snap',
         });
 
+        // test 1 - alert dialog
         // click on alert dialog
         await driver.clickElement('#sendAlertButton');
 
         // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // check dialog contents
         const result = await driver.findElement('.snap-ui-renderer__panel');
@@ -88,15 +89,14 @@ describe('Test Snap Dialog', function () {
           text: 'It has a single button: "OK"',
         });
 
-        // click ok button
-        await driver.clickElement({
+        // click ok button and wait for window to close
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
 
         // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // check result is null
         await driver.waitForSelector({
@@ -104,25 +104,21 @@ describe('Test Snap Dialog', function () {
           text: 'null',
         });
 
+        // test 2 - confirmation dialog
         // click conf button
         await driver.clickElement('#sendConfirmationButton');
 
         // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // click reject
-        await driver.clickElement({
+        // click reject and wait for window to close
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Reject',
           tag: 'button',
         });
 
         // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // check for false result
         await driver.waitForSelector({
@@ -134,21 +130,16 @@ describe('Test Snap Dialog', function () {
         await driver.clickElement('#sendConfirmationButton');
 
         // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // click accept
-        await driver.clickElement({
+        // click accept and wait for window to close
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Approve',
           tag: 'button',
         });
 
         // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // check for true result
         await driver.waitForSelector({
@@ -156,25 +147,21 @@ describe('Test Snap Dialog', function () {
           text: 'true',
         });
 
+        // test 3 - prompt dialog
         // click prompt button
         await driver.clickElement('#sendPromptButton');
 
         // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // click cancel button
-        await driver.clickElement({
+        // click cancel button and wait for window to close
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Cancel',
           tag: 'button',
         });
 
         // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // check result is equal to 'null'
         await driver.waitForSelector({
@@ -186,24 +173,65 @@ describe('Test Snap Dialog', function () {
         await driver.clickElement('#sendPromptButton');
 
         // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // fill '2323' in form field
         await driver.pasteIntoField('.mm-input', '2323');
 
-        // click submit button
-        await driver.clickElement({
+        // click submit button and wait for window to close
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Submit',
           tag: 'button',
         });
 
         // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
+        // check result is equal to '2323'
+        await driver.waitForSelector({
+          css: '#dialogResult',
+          text: '"2323"',
+        });
+
+        // test 4 - custom dialog
+        // click custom button
+        await driver.clickElement('#sendCustomButton');
+
+        // switch to dialog popup
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // click cancel button and wait for window to close
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Cancel',
+          tag: 'span',
+        });
+
+        // switch back to test snaps tab
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
+        // check result is equal to 'null'
+        await driver.waitForSelector({
+          css: '#dialogResult',
+          text: 'null',
+        });
+
+        // click prompt button
+        await driver.clickElement('#sendCustomButton');
+
+        // switch to dialog popup
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // fill '2323' in form field
+        await driver.pasteIntoField('#custom-input', '2323');
+
+        // click confirm button and wait for window to close
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Confirm',
+          tag: 'span',
+        });
+
+        // switch back to test snaps tab
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // check result is equal to '2323'
         await driver.waitForSelector({

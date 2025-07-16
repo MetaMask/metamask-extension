@@ -4,11 +4,11 @@ These docs relate to how to contribute to the MetaMask project itself.
 
 You can find the latest version of MetaMask on [our official website](https://metamask.io/).
 
-For help using MetaMask, visit our [User Support Site](https://metamask.zendesk.com/hc/en-us).
+For help using MetaMask, visit our [User Support Site](https://support.metamask.io/).
 
 For up to the minute news, follow our [Twitter](https://twitter.com/metamask_io) or [Medium](https://medium.com/metamask) pages.
 
-To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://metamask.github.io/metamask-docs/).
+To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://docs.metamask.io/).
 
 - [How to add custom build to Chrome](./add-to-chrome.md)
 - [How to add custom build to Firefox](./add-to-firefox.md)

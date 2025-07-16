@@ -1,0 +1,894 @@
+[
+  {
+    "quote": {
+      "requestId": "a63df72a-75ae-4416-a8ab-aff02596c75c",
+      "srcChainId": 10,
+      "srcTokenAmount": "991250000000000000",
+      "srcAsset": {
+        "address": "0x4200000000000000000000000000000000000006",
+        "chainId": 10,
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "Wrapped ETH",
+        "coinKey": "WETH",
+        "logoURI": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png",
+        "priceUSD": "3136",
+        "icon": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png"
+      },
+      "destChainId": 42161,
+      "destTokenAmount": "991225000000000000",
+      "destAsset": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "chainId": 42161,
+        "symbol": "ETH",
+        "decimals": 18,
+        "name": "ETH",
+        "coinKey": "ETH",
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+        "priceUSD": "3135.46",
+        "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+      },
+      "feeData": {
+        "metabridge": {
+          "amount": "8750000000000000",
+          "asset": {
+            "address": "0x4200000000000000000000000000000000000006",
+            "chainId": 10,
+            "symbol": "WETH",
+            "decimals": 18,
+            "name": "Wrapped ETH",
+            "coinKey": "WETH",
+            "logoURI": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png",
+            "priceUSD": "3136",
+            "icon": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png"
+          }
+        }
+      },
+      "bridgeId": "lifi",
+      "bridges": ["stargate"],
+      "steps": [
+        {
+          "action": "bridge",
+          "srcChainId": 10,
+          "destChainId": 42161,
+          "protocol": {
+            "name": "stargate",
+            "displayName": "StargateV2 (Fast mode)",
+            "icon": "https://raw.githubusercontent.com/lifinance/types/5685c638772f533edad80fcb210b4bb89e30a50f/src/assets/icons/bridges/stargate.png"
+          },
+          "srcAsset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 10,
+            "symbol": "ETH",
+            "decimals": 18,
+            "name": "ETH",
+            "coinKey": "ETH",
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "priceUSD": "3136",
+            "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+          },
+          "destAsset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 42161,
+            "symbol": "ETH",
+            "decimals": 18,
+            "name": "ETH",
+            "coinKey": "ETH",
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "priceUSD": "3135.46",
+            "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+          },
+          "srcAmount": "991250000000000000",
+          "destAmount": "991225000000000000"
+        }
+      ]
+    },
+    "approval": {
+      "chainId": 10,
+      "to": "0x4200000000000000000000000000000000000006",
+      "from": "0x141d32a89a1e0a5ef360034a2f60a4b917c18838",
+      "value": "0x00",
+      "data": "0x095ea7b3000000000000000000000000b90357f2b86dbfd59c3502215d4060f71df8ca0e0000000000000000000000000000000000000000000000000de0b6b3a7640000",
+      "gasLimit": 29122
+    },
+    "trade": {
+      "chainId": 10,
+      "to": "0xB90357f2b86dbfD59c3502215d4060f71DF8ca0e",
+      "from": "0x141d32a89a1e0a5ef360034a2f60a4b917c18838",
+      "value": "0x1c8598b5db2e",
+      "data": "0x3ce33bff000000000000000000000000000000000000000000000000000000000000008000000000000000000000000042000000000000000000000000000000000000060000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000d6c6966694164617074657256320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006c00000000000000000000000001231deb6f5749ef6ce6943a275a1d3e7486f4eae0000000000000000000000001231deb6f5749ef6ce6943a275a1d3e7486f4eae000000000000000000000000000000000000000000000000000000000000a4b1000000000000000000000000420000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000dc1a09f859b20000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000001f161421c8e000000000000000000000000000716a8b9dd056055c84b7a2ba0a016099465a51870000000000000000000000000000000000000000000000000000000000000564a6010a660000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000022000000000000000000000000000000000000000000000000000000000000003804bdedbea3f94faf8c8fac5ec841251d96cf5e64e8706ada4688877885e5249520000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000141d32a89a1e0a5ef360034a2f60a4b917c188380000000000000000000000000000000000000000000000000dc1a09f859b2000000000000000000000000000000000000000000000000000000000000000a4b100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a7374617267617465563200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f6d6574616d61736b2d6272696467650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000005215e9fd223bc909083fbdb2860213873046e45d0000000000000000000000005215e9fd223bc909083fbdb2860213873046e45d000000000000000000000000420000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000dc1a09f859b200000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000043ccfd60b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d00000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000001c8598b5db2e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000141d32a89a1e0a5ef360034a2f60a4b917c18838000000000000000000000000000000000000000000000000000000000000759e000000000000000000000000141d32a89a1e0a5ef360034a2f60a4b917c188380000000000000000000000000000000000000000000000000dc1a09f859b2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c83dc7c11df600d7293f778cb365d3dfcc1ffa2221cf5447a8f2ea407a97792135d9f585ecb68916479dfa1f071f169cbe1cfec831b5ad01f4e4caa09204e5181c",
+      "gasLimit": 641446
+    },
+    "estimatedProcessingTimeInSeconds": 64
+  },
+  {
+    "quote": {
+      "requestId": "aad73198-a64d-4310-b12d-9dcc81c412e2",
+      "srcChainId": 10,
+      "srcTokenAmount": "991250000000000000",
+      "srcAsset": {
+        "address": "0x4200000000000000000000000000000000000006",
+        "chainId": 10,
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "Wrapped ETH",
+        "coinKey": "WETH",
+        "logoURI": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png",
+        "priceUSD": "3136",
+        "icon": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png"
+      },
+      "destChainId": 42161,
+      "destTokenAmount": "991147696728676903",
+      "destAsset": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "chainId": 42161,
+        "symbol": "ETH",
+        "decimals": 18,
+        "name": "ETH",
+        "coinKey": "ETH",
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+        "priceUSD": "3135.46",
+        "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+      },
+      "feeData": {
+        "metabridge": {
+          "amount": "8750000000000000",
+          "asset": {
+            "address": "0x4200000000000000000000000000000000000006",
+            "chainId": 10,
+            "symbol": "WETH",
+            "decimals": 18,
+            "name": "Wrapped ETH",
+            "coinKey": "WETH",
+            "logoURI": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png",
+            "priceUSD": "3136",
+            "icon": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png"
+          }
+        }
+      },
+      "bridgeId": "lifi",
+      "bridges": ["celer"],
+      "steps": [
+        {
+          "action": "bridge",
+          "srcChainId": 10,
+          "destChainId": 42161,
+          "protocol": {
+            "name": "celer",
+            "displayName": "Celer cBridge",
+            "icon": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/cbridge.svg"
+          },
+          "srcAsset": {
+            "address": "0x4200000000000000000000000000000000000006",
+            "chainId": 10,
+            "symbol": "WETH",
+            "decimals": 18,
+            "name": "Wrapped ETH",
+            "coinKey": "WETH",
+            "logoURI": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png",
+            "priceUSD": "3136",
+            "icon": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png"
+          },
+          "destAsset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 42161,
+            "symbol": "ETH",
+            "decimals": 18,
+            "name": "ETH",
+            "coinKey": "ETH",
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "priceUSD": "3135.46",
+            "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+          },
+          "srcAmount": "991250000000000000",
+          "destAmount": "991147696728676903"
+        }
+      ]
+    },
+    "approval": {
+      "chainId": 10,
+      "to": "0x4200000000000000000000000000000000000006",
+      "from": "0x141d32a89a1e0a5ef360034a2f60a4b917c18838",
+      "value": "0x00",
+      "data": "0x095ea7b3000000000000000000000000b90357f2b86dbfd59c3502215d4060f71df8ca0e0000000000000000000000000000000000000000000000000de0b6b3a7640000",
+      "gasLimit": 29122
+    },
+    "trade": {
+      "chainId": 10,
+      "to": "0xB90357f2b86dbfD59c3502215d4060f71DF8ca0e",
+      "from": "0x141d32a89a1e0a5ef360034a2f60a4b917c18838",
+      "value": "0x00",
+      "data": "0x3ce33bff000000000000000000000000000000000000000000000000000000000000008000000000000000000000000042000000000000000000000000000000000000060000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000d6c6966694164617074657256320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001a0000000000000000000000000e7bf43c55551b1036e796e7fd3b125d1f9903e2e000000000000000000000000e7bf43c55551b1036e796e7fd3b125d1f9903e2e000000000000000000000000000000000000000000000000000000000000a4b1000000000000000000000000420000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000dc1a09f859b20000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000001f161421c8e000000000000000000000000000716a8b9dd056055c84b7a2ba0a016099465a51870000000000000000000000000000000000000000000000000000000000000050f68486970f93a855b27794b8141d32a89a1e0a5ef360034a2f60a4b917c188380000a4b1420000000000000000000000000000000000000600000000000000000dc1a09f859b20002c03873900002777000000000000000000000000000000002d68122053030bf8df41a8bb8c6f0a9de411c7d94eed376b7d91234e1585fd9f77dcf974dd25160d0c2c16c8382d8aa85b0edd429edff19b4d4cdcf50d0a9d4d1c",
+      "gasLimit": 203352
+    },
+    "estimatedProcessingTimeInSeconds": 53
+  },
+  {
+    "quote": {
+      "requestId": "6cfd4952-c9b2-4aec-9349-af39c212f84b",
+      "srcChainId": 10,
+      "srcTokenAmount": "991250000000000000",
+      "srcAsset": {
+        "address": "0x4200000000000000000000000000000000000006",
+        "chainId": 10,
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "Wrapped ETH",
+        "coinKey": "WETH",
+        "logoURI": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png",
+        "priceUSD": "3136",
+        "icon": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png"
+      },
+      "destChainId": 42161,
+      "destTokenAmount": "991112862890876485",
+      "destAsset": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "chainId": 42161,
+        "symbol": "ETH",
+        "decimals": 18,
+        "name": "ETH",
+        "coinKey": "ETH",
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+        "priceUSD": "3135.46",
+        "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+      },
+      "feeData": {
+        "metabridge": {
+          "amount": "8750000000000000",
+          "asset": {
+            "address": "0x4200000000000000000000000000000000000006",
+            "chainId": 10,
+            "symbol": "WETH",
+            "decimals": 18,
+            "name": "Wrapped ETH",
+            "coinKey": "WETH",
+            "logoURI": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png",
+            "priceUSD": "3136",
+            "icon": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png"
+          }
+        }
+      },
+      "bridgeId": "lifi",
+      "bridges": ["across"],
+      "steps": [
+        {
+          "action": "bridge",
+          "srcChainId": 10,
+          "destChainId": 42161,
+          "protocol": {
+            "name": "across",
+            "displayName": "Across",
+            "icon": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/acrossv2.png"
+          },
+          "srcAsset": {
+            "address": "0x4200000000000000000000000000000000000006",
+            "chainId": 10,
+            "symbol": "WETH",
+            "decimals": 18,
+            "name": "Wrapped ETH",
+            "coinKey": "WETH",
+            "logoURI": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png",
+            "priceUSD": "3136",
+            "icon": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png"
+          },
+          "destAsset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 42161,
+            "symbol": "ETH",
+            "decimals": 18,
+            "name": "ETH",
+            "coinKey": "ETH",
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "priceUSD": "3135.46",
+            "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+          },
+          "srcAmount": "991250000000000000",
+          "destAmount": "991112862890876485"
+        }
+      ]
+    },
+    "approval": {
+      "chainId": 10,
+      "to": "0x4200000000000000000000000000000000000006",
+      "from": "0x141d32a89a1e0a5ef360034a2f60a4b917c18838",
+      "value": "0x00",
+      "data": "0x095ea7b3000000000000000000000000b90357f2b86dbfd59c3502215d4060f71df8ca0e0000000000000000000000000000000000000000000000000de0b6b3a7640000",
+      "gasLimit": 29122
+    },
+    "trade": {
+      "chainId": 10,
+      "to": "0xB90357f2b86dbfD59c3502215d4060f71DF8ca0e",
+      "from": "0x141d32a89a1e0a5ef360034a2f60a4b917c18838",
+      "value": "0x00",
+      "data": "0x3ce33bff000000000000000000000000000000000000000000000000000000000000008000000000000000000000000042000000000000000000000000000000000000060000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000d6c6966694164617074657256320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000e397c4883ec89ed4fc9d258f00c689708b2799c9000000000000000000000000e397c4883ec89ed4fc9d258f00c689708b2799c9000000000000000000000000000000000000000000000000000000000000a4b1000000000000000000000000420000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000dc1a09f859b20000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000001f161421c8e000000000000000000000000000716a8b9dd056055c84b7a2ba0a016099465a518700000000000000000000000000000000000000000000000000000000000000902340ab8f6a57ef0c43231b98141d32a89a1e0a5ef360034a2f60a4b917c18838420000000000000000000000000000000000000600000000000000000dc1a09f859b20000000a4b100007dd39298f9ad673645ebffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd00dfeeddeadbeef8932eb23bad9bddb5cf81426f78279a53c6c3b710000000000000000000000000000000088d06e7971021eee573a0ab6bc3e22039fc1c5ded5d12c4cf2b6311f47f909e06197aa8b2f647ae78ae33a6ea5d23f7c951c0e1686abecd01d7c796990d56f391c",
+      "gasLimit": 177423
+    },
+    "estimatedProcessingTimeInSeconds": 15
+  },
+  {
+    "quote": {
+      "requestId": "2c2ba7d8-3922-4081-9f27-63b7d5cc1986",
+      "srcChainId": 10,
+      "srcTokenAmount": "991250000000000000",
+      "srcAsset": {
+        "address": "0x4200000000000000000000000000000000000006",
+        "chainId": 10,
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "Wrapped ETH",
+        "coinKey": "WETH",
+        "logoURI": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png",
+        "priceUSD": "3136",
+        "icon": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png"
+      },
+      "destChainId": 42161,
+      "destTokenAmount": "990221346602370184",
+      "destAsset": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "chainId": 42161,
+        "symbol": "ETH",
+        "decimals": 18,
+        "name": "ETH",
+        "coinKey": "ETH",
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+        "priceUSD": "3135.46",
+        "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+      },
+      "feeData": {
+        "metabridge": {
+          "amount": "8750000000000000",
+          "asset": {
+            "address": "0x4200000000000000000000000000000000000006",
+            "chainId": 10,
+            "symbol": "WETH",
+            "decimals": 18,
+            "name": "Wrapped ETH",
+            "coinKey": "WETH",
+            "logoURI": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png",
+            "priceUSD": "3136",
+            "icon": "https://static.debank.com/image/op_token/logo_url/0x4200000000000000000000000000000000000006/61844453e63cf81301f845d7864236f6.png"
+          }
+        }
+      },
+      "bridgeId": "lifi",
+      "bridges": ["hop"],
+      "steps": [
+        {
+          "action": "bridge",
+          "srcChainId": 10,
+          "destChainId": 42161,
+          "protocol": {
+            "name": "hop",
+            "displayName": "Hop",
+            "icon": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/hop.png"
+          },
+          "srcAsset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 10,
+            "symbol": "ETH",
+            "decimals": 18,
+            "name": "ETH",
+            "coinKey": "ETH",
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "priceUSD": "3136",
+            "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+          },
+          "destAsset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 42161,
+            "symbol": "ETH",
+            "decimals": 18,
+            "name": "ETH",
+            "coinKey": "ETH",
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "priceUSD": "3135.46",
+            "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+          },
+          "srcAmount": "991250000000000000",
+          "destAmount": "990221346602370184"
+        }
+      ]
+    },
+    "approval": {
+      "chainId": 10,
+      "to": "0x4200000000000000000000000000000000000006",
+      "from": "0x141d32a89a1e0a5ef360034a2f60a4b917c18838",
+      "value": "0x00",
+      "data": "0x095ea7b3000000000000000000000000b90357f2b86dbfd59c3502215d4060f71df8ca0e0000000000000000000000000000000000000000000000000de0b6b3a7640000",
+      "gasLimit": 29122
+    },
+    "trade": {
+      "chainId": 10,
+      "to": "0xB90357f2b86dbfD59c3502215d4060f71DF8ca0e",
+      "from": "0x141d32a89a1e0a5ef360034a2f60a4b917c18838",
+      "value": "0x00",
+      "data": "0x3ce33bff000000000000000000000000000000000000000000000000000000000000008000000000000000000000000042000000000000000000000000000000000000060000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000d6c6966694164617074657256320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005e00000000000000000000000001231deb6f5749ef6ce6943a275a1d3e7486f4eae0000000000000000000000001231deb6f5749ef6ce6943a275a1d3e7486f4eae000000000000000000000000000000000000000000000000000000000000a4b1000000000000000000000000420000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000dc1a09f859b20000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000001f161421c8e000000000000000000000000000716a8b9dd056055c84b7a2ba0a016099465a51870000000000000000000000000000000000000000000000000000000000000484ca360ae0000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000003200000000000000000000000000000000000000000000000000001168a464edd170000000000000000000000000000000000000000000000000dac6213fc70c84400000000000000000000000000000000000000000000000000000000673a3b080000000000000000000000000000000000000000000000000dac6213fc70c84400000000000000000000000000000000000000000000000000000000673a3b0800000000000000000000000086ca30bef97fb651b8d866d45503684b90cb3312000000000000000000000000710bda329b2a6224e4b44833de30f38e7f81d5640000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000067997b63db4b9059d22e50750707b46a6d48dfbb32e50d85fc3bff1170ed9ca30000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000141d32a89a1e0a5ef360034a2f60a4b917c188380000000000000000000000000000000000000000000000000dc1a09f859b2000000000000000000000000000000000000000000000000000000000000000a4b1000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003686f700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f6d6574616d61736b2d6272696467650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000005215e9fd223bc909083fbdb2860213873046e45d0000000000000000000000005215e9fd223bc909083fbdb2860213873046e45d000000000000000000000000420000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000dc1a09f859b200000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000043ccfd60b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000099d00cde1f22e8afd37d7f103ec3c6c1eb835ace46e502ec8c5ab51413e539461b89c0e26892efd1de1cbfe4222b5589e76231080252197507cce4fb72a30b031b",
+      "gasLimit": 547501
+    },
+    "estimatedProcessingTimeInSeconds": 24.159
+  },
+  {
+    "quote": {
+      "requestId": "a77bc7b2-e8c8-4463-89db-5dd239d6aacc",
+      "srcChainId": 10,
+      "srcAsset": {
+        "chainId": 10,
+        "address": "0x4200000000000000000000000000000000000006",
+        "symbol": "WETH",
+        "name": "Wrapped Ether",
+        "decimals": 18,
+        "icon": "https://media.socket.tech/tokens/all/WETH",
+        "logoURI": "https://media.socket.tech/tokens/all/WETH",
+        "chainAgnosticId": "ETH"
+      },
+      "srcTokenAmount": "991250000000000000",
+      "destChainId": 42161,
+      "destAsset": {
+        "chainId": 42161,
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "ETH",
+        "name": "Ethereum",
+        "decimals": 18,
+        "icon": "https://media.socket.tech/tokens/all/ETH",
+        "logoURI": "https://media.socket.tech/tokens/all/ETH",
+        "chainAgnosticId": null
+      },
+      "destTokenAmount": "991147696728676903",
+      "feeData": {
+        "metabridge": {
+          "amount": "8750000000000000",
+          "asset": {
+            "chainId": 10,
+            "address": "0x4200000000000000000000000000000000000006",
+            "symbol": "WETH",
+            "name": "Wrapped Ether",
+            "decimals": 18,
+            "icon": "https://media.socket.tech/tokens/all/WETH",
+            "logoURI": "https://media.socket.tech/tokens/all/WETH",
+            "chainAgnosticId": "ETH"
+          }
+        }
+      },
+      "bridgeId": "socket",
+      "bridges": ["celer"],
+      "steps": [
+        {
+          "action": "bridge",
+          "srcChainId": 10,
+          "destChainId": 42161,
+          "protocol": {
+            "name": "celer",
+            "displayName": "Celer",
+            "icon": "https://socketicons.s3.amazonaws.com/Celer+Light.png"
+          },
+          "srcAsset": {
+            "chainId": 10,
+            "address": "0x4200000000000000000000000000000000000006",
+            "symbol": "WETH",
+            "name": "Wrapped Ether",
+            "decimals": 18,
+            "icon": "https://media.socket.tech/tokens/all/WETH",
+            "logoURI": "https://media.socket.tech/tokens/all/WETH",
+            "chainAgnosticId": "ETH"
+          },
+          "destAsset": {
+            "chainId": 42161,
+            "address": "0x0000000000000000000000000000000000000000",
+            "symbol": "ETH",
+            "name": "Ethereum",
+            "decimals": 18,
+            "icon": "https://media.socket.tech/tokens/all/ETH",
+            "logoURI": "https://media.socket.tech/tokens/all/ETH",
+            "chainAgnosticId": null
+          },
+          "srcAmount": "991250000000000000",
+          "destAmount": "991147696728676903"
+        }
+      ]
+    },
+    "approval": {
+      "chainId": 10,
+      "to": "0x4200000000000000000000000000000000000006",
+      "from": "0x141d32a89a1e0a5ef360034a2f60a4b917c18838",
+      "value": "0x00",
+      "data": "0x095ea7b3000000000000000000000000b90357f2b86dbfd59c3502215d4060f71df8ca0e0000000000000000000000000000000000000000000000000de0b6b3a7640000",
+      "gasLimit": 29122
+    },
+    "trade": {
+      "chainId": 10,
+      "to": "0xB90357f2b86dbfD59c3502215d4060f71DF8ca0e",
+      "from": "0x141d32a89a1e0a5ef360034a2f60a4b917c18838",
+      "value": "0x00",
+      "data": "0x3ce33bff000000000000000000000000000000000000000000000000000000000000008000000000000000000000000042000000000000000000000000000000000000060000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000f736f636b6574416461707465725632000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000003a23f943181408eac424116af7b7790c94cb97a50000000000000000000000003a23f943181408eac424116af7b7790c94cb97a5000000000000000000000000000000000000000000000000000000000000a4b1000000000000000000000000420000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000dc1a09f859b20000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000001f161421c8e000000000000000000000000000716a8b9dd056055c84b7a2ba0a016099465a5187000000000000000000000000000000000000000000000000000000000000004c0000001252106ce9141d32a89a1e0a5ef360034a2f60a4b917c18838420000000000000000000000000000000000000600000000000000000dc1a09f859b20000000a4b1245fa5dd00002777000000000000000000000000000000000000000022be703a074ef6089a301c364c2bbf391d51067ea5cd91515c9ec5421cdaabb23451cd2086f3ebe3e19ff138f3a9be154dcae6033838cc5fabeeb0d260b075cb1c",
+      "gasLimit": 182048
+    },
+    "estimatedProcessingTimeInSeconds": 360
+  },
+  {
+    "quote": {
+      "requestId": "4f2154d9b330221b2ad461adf63acc2c",
+      "srcChainId": 10,
+      "srcTokenAmount": "991250000000000000",
+      "srcAsset": {
+        "id": "10_0x4200000000000000000000000000000000000006",
+        "symbol": "WETH",
+        "address": "0x4200000000000000000000000000000000000006",
+        "chainId": 10,
+        "name": "Wrapped ETH",
+        "decimals": 18,
+        "usdPrice": 3135.9632118339764,
+        "coingeckoId": "weth",
+        "type": "evm",
+        "logoURI": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/weth.svg",
+        "volatility": 2,
+        "axelarNetworkSymbol": "WETH",
+        "subGraphIds": [],
+        "enabled": true,
+        "subGraphOnly": false,
+        "active": true,
+        "icon": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/weth.svg"
+      },
+      "destChainId": 42161,
+      "destTokenAmount": "989989428114299041",
+      "destAsset": {
+        "id": "42161_0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "symbol": "ETH",
+        "address": "0x0000000000000000000000000000000000000000",
+        "chainId": 42161,
+        "name": "ETH",
+        "decimals": 18,
+        "usdPrice": 3133.259355489038,
+        "coingeckoId": "ethereum",
+        "type": "evm",
+        "logoURI": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/eth.svg",
+        "volatility": 2,
+        "axelarNetworkSymbol": "ETH",
+        "subGraphIds": ["chainflip-bridge"],
+        "enabled": true,
+        "subGraphOnly": false,
+        "active": true,
+        "icon": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/eth.svg"
+      },
+      "feeData": {
+        "metabridge": {
+          "amount": "8750000000000000",
+          "asset": {
+            "id": "10_0x4200000000000000000000000000000000000006",
+            "symbol": "WETH",
+            "address": "0x4200000000000000000000000000000000000006",
+            "chainId": 10,
+            "name": "Wrapped ETH",
+            "decimals": 18,
+            "usdPrice": 3135.9632118339764,
+            "coingeckoId": "weth",
+            "type": "evm",
+            "logoURI": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/weth.svg",
+            "volatility": 2,
+            "axelarNetworkSymbol": "WETH",
+            "subGraphIds": [],
+            "enabled": true,
+            "subGraphOnly": false,
+            "active": true,
+            "icon": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/weth.svg"
+          }
+        }
+      },
+      "bridgeId": "squid",
+      "bridges": ["axelar"],
+      "steps": [
+        {
+          "action": "swap",
+          "srcChainId": 10,
+          "destChainId": 10,
+          "protocol": {
+            "name": "Uniswap V3",
+            "displayName": "Uniswap V3"
+          },
+          "srcAsset": {
+            "id": "10_0x4200000000000000000000000000000000000006",
+            "symbol": "WETH",
+            "address": "0x4200000000000000000000000000000000000006",
+            "chainId": 10,
+            "name": "Wrapped ETH",
+            "decimals": 18,
+            "usdPrice": 3135.9632118339764,
+            "coingeckoId": "weth",
+            "type": "evm",
+            "logoURI": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/weth.svg",
+            "axelarNetworkSymbol": "WETH",
+            "subGraphIds": [],
+            "enabled": true,
+            "subGraphOnly": false,
+            "active": true,
+            "icon": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/weth.svg"
+          },
+          "destAsset": {
+            "id": "10_0x0b2c639c533813f4aa9d7837caf62653d097ff85",
+            "symbol": "USDC",
+            "address": "0x0b2c639c533813f4aa9d7837caf62653d097ff85",
+            "chainId": 10,
+            "name": "USDC",
+            "decimals": 6,
+            "usdPrice": 1.0003003590332982,
+            "coingeckoId": "usd-coin",
+            "type": "evm",
+            "logoURI": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg",
+            "axelarNetworkSymbol": "USDC",
+            "subGraphOnly": false,
+            "subGraphIds": ["uusdc", "cctp-uusdc-optimism-to-noble"],
+            "enabled": true,
+            "active": true,
+            "icon": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg"
+          },
+          "srcAmount": "991250000000000000",
+          "destAmount": "3100880215"
+        },
+        {
+          "action": "swap",
+          "srcChainId": 10,
+          "destChainId": 10,
+          "protocol": {
+            "name": "Uniswap V3",
+            "displayName": "Uniswap V3"
+          },
+          "srcAsset": {
+            "id": "10_0x0b2c639c533813f4aa9d7837caf62653d097ff85",
+            "symbol": "USDC",
+            "address": "0x0b2c639c533813f4aa9d7837caf62653d097ff85",
+            "chainId": 10,
+            "name": "USDC",
+            "decimals": 6,
+            "usdPrice": 1.0003003590332982,
+            "coingeckoId": "usd-coin",
+            "type": "evm",
+            "logoURI": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg",
+            "axelarNetworkSymbol": "USDC",
+            "subGraphOnly": false,
+            "subGraphIds": ["uusdc", "cctp-uusdc-optimism-to-noble"],
+            "enabled": true,
+            "active": true,
+            "icon": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg"
+          },
+          "destAsset": {
+            "id": "10_0x7f5c764cbc14f9669b88837ca1490cca17c31607",
+            "symbol": "USDC.e",
+            "address": "0x7f5c764cbc14f9669b88837ca1490cca17c31607",
+            "chainId": 10,
+            "name": "USDC.e",
+            "decimals": 6,
+            "usdPrice": 1.0003003590332982,
+            "coingeckoId": "usd-coin",
+            "type": "evm",
+            "logoURI": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg",
+            "axelarNetworkSymbol": "USDC.e",
+            "subGraphIds": [],
+            "enabled": true,
+            "subGraphOnly": false,
+            "active": true,
+            "icon": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg"
+          },
+          "srcAmount": "3100880215",
+          "destAmount": "3101045779"
+        },
+        {
+          "action": "swap",
+          "srcChainId": 10,
+          "destChainId": 10,
+          "protocol": {
+            "name": "Uniswap V3",
+            "displayName": "Uniswap V3"
+          },
+          "srcAsset": {
+            "id": "10_0x7f5c764cbc14f9669b88837ca1490cca17c31607",
+            "symbol": "USDC.e",
+            "address": "0x7f5c764cbc14f9669b88837ca1490cca17c31607",
+            "chainId": 10,
+            "name": "USDC.e",
+            "decimals": 6,
+            "usdPrice": 1.0003003590332982,
+            "coingeckoId": "usd-coin",
+            "type": "evm",
+            "logoURI": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg",
+            "axelarNetworkSymbol": "USDC.e",
+            "subGraphIds": [],
+            "enabled": true,
+            "subGraphOnly": false,
+            "active": true,
+            "icon": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg"
+          },
+          "destAsset": {
+            "id": "10_0xeb466342c4d449bc9f53a865d5cb90586f405215",
+            "symbol": "USDC.axl",
+            "address": "0xeb466342c4d449bc9f53a865d5cb90586f405215",
+            "chainId": 10,
+            "name": " USDC (Axelar)",
+            "decimals": 6,
+            "usdPrice": 1.0003003590332982,
+            "interchainTokenId": null,
+            "coingeckoId": "usd-coin",
+            "type": "evm",
+            "logoURI": "https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/usdc.svg",
+            "axelarNetworkSymbol": "axlUSDC",
+            "subGraphOnly": false,
+            "subGraphIds": ["uusdc"],
+            "enabled": true,
+            "active": true,
+            "icon": "https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/usdc.svg"
+          },
+          "srcAmount": "3101045779",
+          "destAmount": "3101521947"
+        },
+        {
+          "action": "bridge",
+          "srcChainId": 10,
+          "destChainId": 42161,
+          "protocol": {
+            "name": "axelar",
+            "displayName": "Axelar"
+          },
+          "srcAsset": {
+            "id": "10_0xeb466342c4d449bc9f53a865d5cb90586f405215",
+            "symbol": "USDC.axl",
+            "address": "0xeb466342c4d449bc9f53a865d5cb90586f405215",
+            "chainId": 10,
+            "name": " USDC (Axelar)",
+            "decimals": 6,
+            "usdPrice": 1.0003003590332982,
+            "interchainTokenId": null,
+            "coingeckoId": "usd-coin",
+            "type": "evm",
+            "logoURI": "https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/usdc.svg",
+            "axelarNetworkSymbol": "axlUSDC",
+            "subGraphOnly": false,
+            "subGraphIds": ["uusdc"],
+            "enabled": true,
+            "active": true,
+            "icon": "https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/usdc.svg"
+          },
+          "destAsset": {
+            "id": "42161_0xeb466342c4d449bc9f53a865d5cb90586f405215",
+            "symbol": "USDC.axl",
+            "address": "0xeb466342c4d449bc9f53a865d5cb90586f405215",
+            "chainId": 42161,
+            "name": " USDC (Axelar)",
+            "decimals": 6,
+            "usdPrice": 1.0003003590332982,
+            "interchainTokenId": null,
+            "coingeckoId": "usd-coin",
+            "type": "evm",
+            "logoURI": "https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/usdc.svg",
+            "axelarNetworkSymbol": "axlUSDC",
+            "subGraphOnly": false,
+            "subGraphIds": ["uusdc"],
+            "enabled": true,
+            "active": true,
+            "icon": "https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/usdc.svg"
+          },
+          "srcAmount": "3101521947",
+          "destAmount": "3101521947"
+        },
+        {
+          "action": "swap",
+          "srcChainId": 42161,
+          "destChainId": 42161,
+          "protocol": {
+            "name": "Pancakeswap V3",
+            "displayName": "Pancakeswap V3"
+          },
+          "srcAsset": {
+            "id": "42161_0xeb466342c4d449bc9f53a865d5cb90586f405215",
+            "symbol": "USDC.axl",
+            "address": "0xeb466342c4d449bc9f53a865d5cb90586f405215",
+            "chainId": 42161,
+            "name": " USDC (Axelar)",
+            "decimals": 6,
+            "usdPrice": 1.0003003590332982,
+            "interchainTokenId": null,
+            "coingeckoId": "usd-coin",
+            "type": "evm",
+            "logoURI": "https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/usdc.svg",
+            "axelarNetworkSymbol": "axlUSDC",
+            "subGraphOnly": false,
+            "subGraphIds": ["uusdc"],
+            "enabled": true,
+            "active": true,
+            "icon": "https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/usdc.svg"
+          },
+          "destAsset": {
+            "id": "42161_0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+            "symbol": "USDC",
+            "address": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+            "chainId": 42161,
+            "name": "USDC",
+            "decimals": 6,
+            "usdPrice": 1.0003003590332982,
+            "coingeckoId": "usd-coin",
+            "type": "evm",
+            "logoURI": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg",
+            "axelarNetworkSymbol": "USDC",
+            "subGraphOnly": false,
+            "subGraphIds": [
+              "uusdc",
+              "cctp-uusdc-arbitrum-to-noble",
+              "chainflip-bridge"
+            ],
+            "enabled": true,
+            "active": true,
+            "icon": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg"
+          },
+          "srcAmount": "3101521947",
+          "destAmount": "3100543869"
+        },
+        {
+          "action": "swap",
+          "srcChainId": 42161,
+          "destChainId": 42161,
+          "protocol": {
+            "name": "Uniswap V3",
+            "displayName": "Uniswap V3"
+          },
+          "srcAsset": {
+            "id": "42161_0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+            "symbol": "USDC",
+            "address": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+            "chainId": 42161,
+            "name": "USDC",
+            "decimals": 6,
+            "usdPrice": 1.0003003590332982,
+            "coingeckoId": "usd-coin",
+            "type": "evm",
+            "logoURI": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg",
+            "axelarNetworkSymbol": "USDC",
+            "subGraphOnly": false,
+            "subGraphIds": [
+              "uusdc",
+              "cctp-uusdc-arbitrum-to-noble",
+              "chainflip-bridge"
+            ],
+            "enabled": true,
+            "active": true,
+            "icon": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg"
+          },
+          "destAsset": {
+            "id": "42161_0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+            "symbol": "WETH",
+            "address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+            "chainId": 42161,
+            "name": "Wrapped ETH",
+            "decimals": 18,
+            "usdPrice": 3135.9632118339764,
+            "interchainTokenId": null,
+            "coingeckoId": "weth",
+            "type": "evm",
+            "logoURI": "https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/weth.svg",
+            "axelarNetworkSymbol": "WETH",
+            "subGraphOnly": false,
+            "subGraphIds": ["arbitrum-weth-wei"],
+            "enabled": true,
+            "active": true,
+            "icon": "https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/weth.svg"
+          },
+          "srcAmount": "3100543869",
+          "destAmount": "989989428114299041"
+        }
+      ]
+    },
+    "approval": {
+      "chainId": 10,
+      "to": "0x4200000000000000000000000000000000000006",
+      "from": "0x141d32a89a1e0a5ef360034a2f60a4b917c18838",
+      "value": "0x00",
+      "data": "0x095ea7b3000000000000000000000000b90357f2b86dbfd59c3502215d4060f71df8ca0e0000000000000000000000000000000000000000000000000de0b6b3a7640000",
+      "gasLimit": 29122
+    },
+    "trade": {
+      "chainId": 10,
+      "to": "0xB90357f2b86dbfD59c3502215d4060f71DF8ca0e",
+      "from": "0x141d32a89a1e0a5ef360034a2f60a4b917c18838",
+      "value": "0x4653ce53e6b1",
+      "data": "0x3ce33bff000000000000000000000000000000000000000000000000000000000000008000000000000000000000000042000000000000000000000000000000000000060000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000e73717569644164617074657256320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001b60000000000000000000000000ce16f69375520ab01377ce7b88f5ba8c48f8d666000000000000000000000000ce16f69375520ab01377ce7b88f5ba8c48f8d666000000000000000000000000000000000000000000000000000000000000a4b1000000000000000000000000420000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000dc1a09f859b20000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000001f161421c8e000000000000000000000000000716a8b9dd056055c84b7a2ba0a016099465a51870000000000000000000000000000000000000000000000000000000000001a14846a1bc600000000000000000000000042000000000000000000000000000000000000060000000000000000000000000000000000000000000000000dc1a09f859b200000000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000ce00000000000000000000000000000000000000000000000000000000000000d200000000000000000000000000000000000000000000000000000000000000d600000000000000000000000000000000000000000000000000000000000000dc0000000000000000000000000141d32a89a1e0a5ef360034a2f60a4b917c188380000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000240000000000000000000000000000000000000000000000000000000000000046000000000000000000000000000000000000000000000000000000000000005e00000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000098000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004200000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000042000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000000000000000000e404e45aaf00000000000000000000000042000000000000000000000000000000000000060000000000000000000000000b2c639c533813f4aa9d7837caf62653d097ff8500000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000ea749fd6ba492dbc14c24fe8a3d08769229b896c0000000000000000000000000000000000000000000000000dc1a09f859b200000000000000000000000000000000000000000000000000000000000b8833d8e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000004200000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b2c639c533813f4aa9d7837caf62653d097ff85000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000b2c639c533813f4aa9d7837caf62653d097ff850000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000000000000000000e404e45aaf0000000000000000000000000b2c639c533813f4aa9d7837caf62653d097ff850000000000000000000000007f5c764cbc14f9669b88837ca1490cca17c316070000000000000000000000000000000000000000000000000000000000000064000000000000000000000000ea749fd6ba492dbc14c24fe8a3d08769229b896c00000000000000000000000000000000000000000000000000000000b8d3ad5700000000000000000000000000000000000000000000000000000000b8c346b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000b2c639c533813f4aa9d7837caf62653d097ff85000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000007f5c764cbc14f9669b88837ca1490cca17c31607000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000007f5c764cbc14f9669b88837ca1490cca17c316070000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000000000000000000e404e45aaf0000000000000000000000007f5c764cbc14f9669b88837ca1490cca17c31607000000000000000000000000eb466342c4d449bc9f53a865d5cb90586f4052150000000000000000000000000000000000000000000000000000000000000064000000000000000000000000ce16f69375520ab01377ce7b88f5ba8c48f8d66600000000000000000000000000000000000000000000000000000000b8d6341300000000000000000000000000000000000000000000000000000000b8ca89fa00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000007f5c764cbc14f9669b88837ca1490cca17c316070000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000761786c55534443000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008417262697472756d000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002a307863653136463639333735353230616230313337376365374238386635424138433438463844363636000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c100000000000000000000000000000000000000000000000000000000000000040000000000000000000000000141d32a89a1e0a5ef360034a2f60a4b917c18838000000000000000000000000000000000000000000000000000000000000000700000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001e000000000000000000000000000000000000000000000000000000000000003600000000000000000000000000000000000000000000000000000000000000580000000000000000000000000000000000000000000000000000000000000070000000000000000000000000000000000000000000000000000000000000009200000000000000000000000000000000000000000000000000000000000000a8000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000eb466342c4d449bc9f53a865d5cb90586f4052150000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eb466342c4d449bc9f53a865d5cb90586f405215000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000032226588378236fd0c7c4053999f88ac0e5cac77ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000eb466342c4d449bc9f53a865d5cb90586f4052150000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000032226588378236fd0c7c4053999f88ac0e5cac77000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000000000000000000e404e45aaf000000000000000000000000eb466342c4d449bc9f53a865d5cb90586f405215000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e58310000000000000000000000000000000000000000000000000000000000000064000000000000000000000000ea749fd6ba492dbc14c24fe8a3d08769229b896c00000000000000000000000000000000000000000000000000000000b8dd781b00000000000000000000000000000000000000000000000000000000b8bb9ee30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000eb466342c4d449bc9f53a865d5cb90586f40521500000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e5831000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e58310000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000000000000000000e404e45aaf000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e583100000000000000000000000082af49447d8a07e3bd95bd0d56f35241523fbab100000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000ea749fd6ba492dbc14c24fe8a3d08769229b896c00000000000000000000000000000000000000000000000000000000b8ce8b7d0000000000000000000000000000000000000000000000000db72b79f837011c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e58310000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000100000000000000000000000082af49447d8a07e3bd95bd0d56f35241523fbab1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000242e1a7d4d000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000082af49447d8a07e3bd95bd0d56f35241523fbab100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000141d32a89a1e0a5ef360034a2f60a4b917c18838000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee00000000000000000000000000000000000000000000000000000000000000004f2154d9b330221b2ad461adf63acc2c000000000000000000000000000000004f2154d9b330221b2ad461adf63acc2c0000000000000000000000003c17c95cdb5887c334bfae85750ce00e1a720a76eff35e60db6c9f3b8384a6d63db3c56f1ce6545b50ba2f250429055ca77e7e6203ddd65a7a4d89ae1af3d61b1c",
+      "gasLimit": 710342
+    },
+    "estimatedProcessingTimeInSeconds": 20
+  }
+]

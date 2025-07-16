@@ -1,15 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { omit } from 'lodash';
-import Typography from '../typography';
 import {
   Size,
-  TypographyVariant,
-  FONT_WEIGHT,
-  OVERFLOW_WRAP,
+  TextVariant,
+  OverflowWrap,
   TextColor,
   IconColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip';
 import { Icon, IconName, IconSize, Text } from '../../component-library';
@@ -34,14 +31,11 @@ export default function DefinitionList({
     <dl className="definition-list">
       {Object.entries(dictionary).map(([term, definition]) => (
         <React.Fragment key={`definition-for-${term}`}>
-          <Typography
-            variant={TypographyVariant.H6}
-            fontWeight={FONT_WEIGHT.BOLD}
+          <Text
+            variant={TextVariant.bodyMdMedium}
             {...termTypography}
-            boxProps={{
-              marginTop: 0,
-              marginBottom: 1,
-            }}
+            marginTop={0}
+            marginBottom={1}
             className="definition-list__term"
             as="dt"
           >
@@ -53,28 +47,26 @@ export default function DefinitionList({
                 containerClassName="definition-list__tooltip-wrapper"
               >
                 <Icon
-                  name={IconName.Info}
+                  name={IconName.Question}
                   size={IconSize.Sm}
                   marginLeft={1}
                   color={IconColor.iconDefault}
                 />
               </Tooltip>
             )}
-          </Typography>
-          <Typography
-            variant={TypographyVariant.H6}
+          </Text>
+          <Text
+            variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
             {...definitionTypography}
-            boxProps={{
-              marginTop: 0,
-              marginBottom: MARGIN_MAP[gapSize],
-            }}
+            marginTop={0}
+            marginBottom={MARGIN_MAP[gapSize]}
             className="definition-list__definition"
-            overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+            overflowWrap={OverflowWrap.BreakWord}
             as="dd"
           >
             {definition}
-          </Typography>
+          </Text>
           {warnings[term] && (
             <Text variant={TextVariant.bodySm} color={TextColor.warningDefault}>
               {warnings[term]}
@@ -94,9 +86,9 @@ DefinitionList.propTypes = {
   tooltips: PropTypes.objectOf(PropTypes.string),
   warnings: PropTypes.objectOf(PropTypes.string),
   termTypography: PropTypes.shape({
-    ...omit(TypographyVariant.propTypes, ['tag', 'className', 'boxProps']),
+    ...omit(TextVariant.propTypes, ['tag', 'className', 'boxProps']),
   }),
   definitionTypography: PropTypes.shape({
-    ...omit(TypographyVariant.propTypes, ['tag', 'className', 'boxProps']),
+    ...omit(TextVariant.propTypes, ['tag', 'className', 'boxProps']),
   }),
 };

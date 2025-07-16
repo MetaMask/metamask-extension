@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<DAppInitiatedHeader /> should match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--padding-3 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default"
+    style="z-index: 2; position: relative;"
+  >
+    <h3
+      class="mm-box mm-text mm-text--heading-md mm-box--color-inherit"
+    >
+      Transfer request
+    </h3>
+    <div
+      class="mm-box mm-box--padding-right-3"
+      style="margin-left: auto; position: absolute; right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--margin-right-1 mm-box--background-color-transparent mm-box--rounded-md"
+      >
+        <button
+          aria-label="Advanced tx details"
+          class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          data-testid="header-advanced-details-button"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/customize.svg');"
+          />
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

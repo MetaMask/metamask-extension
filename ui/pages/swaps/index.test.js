@@ -15,15 +15,25 @@ import Swap from '.';
 
 const middleware = [thunk];
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    replace: jest.fn(),
+  }),
+  useLocation: jest.fn(() => {
+    return {
+      pathname: '/swaps/prepare-swap-page',
+    };
+  }),
+}));
+
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
   resetSwapsState: jest.fn(),
   setSwapsLiveness: jest.fn(() => true),
   setSwapsTokens: jest.fn(),
   setSwapsTxGasPrice: jest.fn(),
-  gasFeeStartPollingByNetworkClientId: jest
-    .fn()
-    .mockResolvedValue('pollingToken'),
+  gasFeeStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   gasFeeStopPollingByPollingToken: jest.fn(),
   getNetworkConfigurationByNetworkClientId: jest
     .fn()
@@ -69,12 +79,10 @@ describe('Swap', () => {
 
   it('renders the component with initial props', async () => {
     const swapsMockStore = createSwapsMockStore();
-    swapsMockStore.metamask.swapsState.swapsFeatureFlags.swapRedesign.extensionActive = false;
     const store = configureMockStore(middleware)(swapsMockStore);
     const { container, getByText } = renderWithProvider(<Swap />, store);
     await waitFor(() => expect(featureFlagsNock.isDone()).toBe(true));
     expect(getByText('Swap')).toBeInTheDocument();
-    expect(getByText('Cancel')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });

@@ -2,12 +2,11 @@
   button {
     min-width: 50px;
     background-color: unset;
-    font-size: unset;
     color: unset;
   }
 
   &--active {
-    color: var(--color-text-default);
+    color: var(--color-primary-default);
     border-bottom: 2px solid var(--color-primary-default);
   }
 }

@@ -27,44 +27,57 @@ describe('Test Snap Get Locale', function () {
           tag: 'h2',
         });
 
+        // scroll to dialog snap
         const dialogButton = await driver.findElement('#connectgetlocale');
         await driver.scrollToElement(dialogButton);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectgetlocale');
         await driver.clickElement('#connectgetlocale');
 
-        // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        // look for the snap name
+        await driver.waitForSelector({
+          text: 'Localization Example Snap',
+          tag: 'p',
+        });
 
+        // wait for confirm
+        await driver.waitForSelector({ text: 'Confirm' });
+
+        // click and dismiss possible scroll element
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
+        // click confirm
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
 
         // switch to test snaps tab
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
@@ -84,13 +97,11 @@ describe('Test Snap Get Locale', function () {
         // try switching language to dansk
         //
         // switch to the original MM tab
-        const extensionPage = windowHandles[0];
-        await driver.switchToWindow(extensionPage);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // click on the global action menu
-        await driver.waitForSelector(
-          '[data-testid="account-options-menu-button"]',
-        );
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
@@ -115,9 +126,24 @@ describe('Test Snap Get Locale', function () {
         // try to select dansk from the list
         await driver.clickElement({ text: 'Dansk', tag: 'option' });
 
+        // there are 2 re-renders which cause flakiness (issue #25651)
+        // the delay can be removed once the issue is fixed in the app level
+        await driver.delay(1000);
+        await driver.assertElementNotPresent('.loading-overlay');
+
+        // click on the global action menu
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+
+        // try to click on snaps
+        await driver.clickElement({ text: 'Snaps', tag: 'div' });
+
+        // check for localized snap title
+        await driver.waitForSelector({ text: 'Oversættelses Eksempel Snap' });
+
         // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // click on alert dialog
         await driver.clickElement('#sendGetLocaleHelloButton');

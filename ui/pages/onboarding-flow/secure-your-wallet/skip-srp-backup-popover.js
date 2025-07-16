@@ -6,14 +6,18 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
 import Popover from '../../../components/ui/popover';
 import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
+import {
+  Text,
+  Icon,
+  IconName,
+  IconSize,
+} from '../../../components/component-library';
 import {
   AlignItems,
   IconColor,
   FLEX_DIRECTION,
-  FONT_WEIGHT,
   JustifyContent,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import Checkbox from '../../../components/ui/check-box';
@@ -23,11 +27,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  Icon,
-  IconName,
-  IconSize,
-} from '../../../components/component-library';
 
 export default function SkipSRPBackup({ handleClose }) {
   const [checked, setChecked] = useState(false);
@@ -91,12 +90,7 @@ export default function SkipSRPBackup({ handleClose }) {
           className="skip-srp-backup-popover__icon"
           color={IconColor.errorDefault}
         />
-        <Typography
-          variant={TypographyVariant.H3}
-          fontWeight={FONT_WEIGHT.BOLD}
-        >
-          {t('skipAccountSecurity')}
-        </Typography>
+        <Text variant={TextVariant.headingMd}>{t('skipAccountSecurity')}</Text>
         <Box justifyContent={JustifyContent.center} margin={3}>
           <label className="skip-srp-backup-popover__label">
             <Checkbox
@@ -105,12 +99,9 @@ export default function SkipSRPBackup({ handleClose }) {
               checked={checked}
               dataTestId="skip-srp-backup-popover-checkbox"
             />
-            <Typography
-              className="skip-srp-backup-popover__details"
-              variant={TypographyVariant.H7}
-            >
+            <Text className="skip-srp-backup-popover__details">
               {t('skipAccountSecurityDetails')}
-            </Typography>
+            </Text>
           </label>
         </Box>
       </Box>

@@ -3,58 +3,51 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
+import { CaveatFactories, PermissionNames } from './specifications';
 
 export function getPermissionBackgroundApiMethods(permissionController) {
+  const addMoreAccounts = (origin, accounts) => {
+    const caveat = CaveatFactories.restrictReturnedAccounts(accounts);
+
+    permissionController.grantPermissionsIncremental({
+      subject: { origin },
+      approvedPermissions: {
+        [RestrictedMethods.eth_accounts]: { caveats: [caveat] },
+      },
+    });
+  };
+
+  const addMoreChains = (origin, chainIds) => {
+    const caveat = CaveatFactories.restrictNetworkSwitching(chainIds);
+
+    permissionController.grantPermissionsIncremental({
+      subject: { origin },
+      approvedPermissions: {
+        [PermissionNames.permittedChains]: { caveats: [caveat] },
+      },
+    });
+  };
+
   return {
-    addPermittedAccount: (origin, account) => {
-      const existing = permissionController.getCaveat(
-        origin,
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-      );
-
-      if (existing.value.includes(account)) {
-        return;
-      }
-
-      permissionController.updateCaveat(
-        origin,
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-        [...existing.value, account],
-      );
-    },
-
-    // To add more than one accounts when already connected to the dapp
-    addMorePermittedAccounts: (origin, accounts) => {
-      const existing = permissionController.getCaveat(
-        origin,
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-      );
-      // Since this function will be called for unconnected accounts, we dodn't need an extra check
-      permissionController.updateCaveat(
-        origin,
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-        [...existing.value, ...accounts],
-      );
-    },
+    addPermittedAccount: (origin, account) =>
+      addMoreAccounts(origin, [account]),
+    addPermittedAccounts: (origin, accounts) =>
+      addMoreAccounts(origin, accounts),
 
     removePermittedAccount: (origin, account) => {
-      const existing = permissionController.getCaveat(
+      const { value: existingAccounts } = permissionController.getCaveat(
         origin,
         RestrictedMethods.eth_accounts,
         CaveatTypes.restrictReturnedAccounts,
       );
 
-      if (!existing.value.includes(account)) {
-        return;
-      }
-
-      const remainingAccounts = existing.value.filter(
+      const remainingAccounts = existingAccounts.filter(
         (existingAccount) => existingAccount !== account,
       );
+
+      if (remainingAccounts.length === existingAccounts.length) {
+        return;
+      }
 
       if (remainingAccounts.length === 0) {
         permissionController.revokePermission(
@@ -69,6 +62,52 @@ export function getPermissionBackgroundApiMethods(permissionController) {
           remainingAccounts,
         );
       }
+    },
+
+    addPermittedChain: (origin, chainId) => addMoreChains(origin, [chainId]),
+    addPermittedChains: (origin, chainIds) => addMoreChains(origin, chainIds),
+
+    removePermittedChain: (origin, chainId) => {
+      const { value: existingChains } = permissionController.getCaveat(
+        origin,
+        PermissionNames.permittedChains,
+        CaveatTypes.restrictNetworkSwitching,
+      );
+
+      const remainingChains = existingChains.filter(
+        (existingChain) => existingChain !== chainId,
+      );
+
+      if (remainingChains.length === existingChains.length) {
+        return;
+      }
+
+      if (remainingChains.length === 0) {
+        permissionController.revokePermission(
+          origin,
+          PermissionNames.permittedChains,
+        );
+      } else {
+        permissionController.updateCaveat(
+          origin,
+          PermissionNames.permittedChains,
+          CaveatTypes.restrictNetworkSwitching,
+          remainingChains,
+        );
+      }
+    },
+
+    requestAccountsAndChainPermissionsWithId: async (origin) => {
+      const id = nanoid();
+      permissionController.requestPermissions(
+        { origin },
+        {
+          [PermissionNames.eth_accounts]: {},
+          [PermissionNames.permittedChains]: {},
+        },
+        { id },
+      );
+      return id;
     },
 
     requestAccountsPermissionWithId: async (origin) => {

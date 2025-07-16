@@ -32,16 +32,15 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import SnapAvatar from '../snap-avatar';
 import { formatDate } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
-import { SnapDelineator } from '../snap-delineator';
-import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { ShowMore } from '../show-more';
 import SnapExternalPill from '../snap-version/snap-external-pill';
 import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
 import Tooltip from '../../../ui/tooltip';
+import { isSnapId } from '../../../../helpers/utils/snaps';
+import { SnapIcon } from '../snap-icon';
 
 export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
   const t = useI18nContext();
@@ -62,6 +61,7 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
     : undefined;
 
   const installOrigin = useOriginMetadata(installInfo?.origin);
+  const isSnapRequesting = isSnapId(installInfo?.origin);
 
   const snapPrefix = getSnapPrefix(snapId);
   const packageName = stripSnapPrefix(snapId);
@@ -101,7 +101,7 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
           }}
         >
           <Box>
-            <SnapAvatar snapId={snapId} />
+            <SnapIcon snapId={snapId} />
           </Box>
           <Text variant={TextVariant.bodyMdMedium} textAlign={TextAlign.Center}>
             {snapName}
@@ -163,7 +163,11 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
                   </Tooltip>
                 )}
               </Box>
-              <Text ellipsis>{installOrigin.host}</Text>
+              <Text ellipsis>
+                {isSnapRequesting
+                  ? stripSnapPrefix(installInfo.origin)
+                  : installOrigin.host}
+              </Text>
             </Box>
           )}
           <Box
@@ -222,15 +226,18 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
             </Text>
             <Text ellipsis>{subjectMetadata?.version}</Text>
           </Box>
-          <SnapDelineator
-            type={DelineatorType.Description}
-            snapName={snapName}
-            boxProps={{ marginTop: 4 }}
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            marginTop={4}
           >
+            <Text variant={TextVariant.bodyMdMedium} marginRight={4}>
+              {t('descriptionFromSnap', [snapName])}
+            </Text>
             <ShowMore>
               <Text>{description}</Text>
             </ShowMore>
-          </SnapDelineator>
+          </Box>
         </Box>
       </ModalContent>
     </Modal>

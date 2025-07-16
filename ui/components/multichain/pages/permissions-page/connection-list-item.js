@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
+import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -16,7 +17,6 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   AvatarFavicon,
-  BadgeWrapper,
   Box,
   Icon,
   IconName,
@@ -24,12 +24,15 @@ import {
   Text,
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
-import SnapAvatar from '../../../app/snaps/snap-avatar/snap-avatar';
-import { ConnectionListTooltip } from './connection-list-tooltip/connection-list-tooltip';
+import { SnapIcon } from '../../../app/snaps/snap-icon';
+import { getPermittedChainsForSelectedTab } from '../../../../selectors';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
+  const connectedNetworks = useSelector((state) =>
+    getPermittedChainsForSelectedTab(state, connection.origin),
+  );
 
   return (
     <Box
@@ -43,6 +46,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
       onClick={onClick}
       padding={4}
       gap={4}
+      className="multichain-connection-list-item"
     >
       <Box
         display={Display.Flex}
@@ -50,29 +54,16 @@ export const ConnectionListItem = ({ connection, onClick }) => {
         style={{ alignSelf: 'center' }}
       >
         {isSnap ? (
-          <SnapAvatar
+          <SnapIcon
             className="connection-list-item__snap-avatar"
             snapId={connection.id}
-            badgeSize={IconSize.Xs}
             avatarSize={IconSize.Md}
-            borderWidth={0}
           />
         ) : (
-          <BadgeWrapper
-            badge={
-              <Icon
-                name={IconName.Global}
-                color={IconColor.iconDefault}
-                size={IconSize.Xs}
-                borderColor={BackgroundColor.backgroundDefault}
-              />
-            }
-          >
-            <AvatarFavicon
-              data-testid="connection-list-item__avatar-favicon"
-              src={connection.iconUrl}
-            />
-          </BadgeWrapper>
+          <AvatarFavicon
+            data-testid="connection-list-item__avatar-favicon"
+            src={connection.iconUrl}
+          />
         )}
       </Box>
       <Box
@@ -97,12 +88,13 @@ export const ConnectionListItem = ({ connection, onClick }) => {
               color={TextColor.textAlternative}
               variant={TextVariant.bodyMd}
             >
-              {t('connectedWith')}
+              {connection.addresses.length} {t('accountsSmallCase')} •&nbsp;
+              {connectedNetworks.length} {t('networksSmallCase')}
             </Text>
-            <ConnectionListTooltip connection={connection} />
           </Box>
         )}
       </Box>
+
       <Box
         display={Display.Flex}
         justifyContent={JustifyContent.flexEnd}

@@ -8,26 +8,27 @@ import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import * as Actions from '../../../store/actions';
 import SecureYourWallet from './secure-your-wallet';
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(() => []),
+}));
+
 describe('Secure Your Wallet Onboarding View', () => {
-  const useHistoryOriginal = reactRouterDom.useHistory;
   const pushMock = jest.fn();
-  beforeAll(() => {
+  beforeEach(() => {
     jest
       .spyOn(reactRouterDom, 'useHistory')
       .mockImplementation()
       .mockReturnValue({ push: pushMock });
   });
 
-  afterAll(() => {
-    reactRouterDom.useHistory = useHistoryOriginal;
+  afterEach(() => {
+    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   const mockStore = {
-    metamask: {
-      providerConfig: {
-        type: 'test',
-      },
-    },
+    metamask: {},
     localeMessages: {
       currentLocale: 'en',
     },

@@ -4,6 +4,8 @@ import log from 'loglevel';
 import { BrowserQRCodeReader } from '@zxing/browser';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { getURL } from '../../../../helpers/utils/util';
 import WebcamUtils from '../../../../helpers/utils/webcam-utils';
@@ -12,12 +14,17 @@ import Spinner from '../../../ui/spinner';
 
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { SECOND } from '../../../../../shared/constants/time';
+import { parseScanContent } from './scan-util';
 
 const READY_STATE = {
   ACCESSING_CAMERA: 'ACCESSING_CAMERA',
   NEED_TO_ALLOW_ACCESS: 'NEED_TO_ALLOW_ACCESS',
   READY: 'READY',
 };
+
+const ethereumPrefix = 'ethereum:';
+// A 0x-prefixed Ethereum address is 42 characters (2 prefix + 40 address)
+const addressLength = 42;
 
 const parseContent = (content) => {
   let type = 'unknown';
@@ -28,12 +35,18 @@ const parseContent = (content) => {
   // For ex. EIP-681 (https://eips.ethereum.org/EIPS/eip-681)
 
   // Ethereum address links - fox ex. ethereum:0x.....1111
-  if (content.split('ethereum:').length > 1) {
+  if (
+    content.split(ethereumPrefix).length > 1 &&
+    content.length === ethereumPrefix.length + addressLength
+  ) {
     type = 'address';
-    values = { address: content.split('ethereum:')[1] };
-
+    // uses regex capture groups to match and extract address
+    values = { address: parseScanContent(content) };
     // Regular ethereum addresses - fox ex. 0x.....1111
-  } else if (content.substring(0, 2).toLowerCase() === '0x') {
+  } else if (
+    content.substring(0, 2).toLowerCase() === '0x' &&
+    content.length === addressLength
+  ) {
     type = 'address';
     values = { address: content };
   }
@@ -251,9 +264,7 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
                 display: isReady === READY_STATE.READY ? 'block' : 'none',
               }}
             />
-            {isReady !== READY_STATE.READY && (
-              <Spinner color="var(--color-warning-default)" />
-            )}
+            {isReady !== READY_STATE.READY && <Spinner />}
           </div>
         </div>
         <div className="qr-scanner__status">{getQRScanMessage(isReady)}</div>

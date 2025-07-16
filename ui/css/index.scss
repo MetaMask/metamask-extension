@@ -5,6 +5,7 @@
 @import './utilities/fonts.scss';
 @import './utilities/pending-colors.scss';
 @import './utilities/colors.scss';
+@import './utilities/opacity.scss';
 @import './base-styles.scss';
 @import '../components/component-library/component-library-components.scss';
 @import '../components/app/app-components';
@@ -32,4 +33,4 @@
   Third Party Library Styles
 */
 @import 'react-tippy/dist/tippy';
-@import '@metamask/design-tokens/src/css/design-tokens';
+@import '@metamask/design-tokens/dist/styles';

@@ -178,7 +178,6 @@
         "@typescript-eslint/eslint-plugin>tsutils": true,
         "eslint-plugin-jest>@typescript-eslint/utils": true,
         "eslint>debug": true,
-        "madge>debug": true,
         "typescript": true,
         "nock>debug": true
       }

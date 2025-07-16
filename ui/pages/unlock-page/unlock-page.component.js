@@ -1,6 +1,8 @@
 import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Text } from '../../components/component-library';
+import { TextVariant, TextColor } from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
 import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
@@ -176,7 +178,15 @@ export default class UnlockPage extends Component {
               </div>
             ) : null}
           </div>
-          <h1 className="unlock-page__title">{t('welcomeBack')}</h1>
+          <Text
+            data-testid="unlock-page-title"
+            as="h1"
+            variant={TextVariant.headingLg}
+            marginTop={1}
+            color={TextColor.textAlternative}
+          >
+            {t('welcomeBack')}
+          </Text>
           <div>{t('unlockMessage')}</div>
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <TextField

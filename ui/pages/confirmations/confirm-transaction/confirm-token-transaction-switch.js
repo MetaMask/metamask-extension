@@ -2,8 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route, useHistory } from 'react-router-dom';
+
+import { sumHexes } from '../../../../shared/modules/conversion.utils';
 import {
   CONFIRM_APPROVE_PATH,
+  CONFIRM_INCREASE_ALLOWANCE_PATH,
   CONFIRM_SAFE_TRANSFER_FROM_PATH,
   CONFIRM_SEND_TOKEN_PATH,
   CONFIRM_SET_APPROVAL_FOR_ALL_PATH,
@@ -23,8 +26,11 @@ import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/conf
 import { useAssetDetails } from '../hooks/useAssetDetails';
 
 export default function ConfirmTokenTransactionSwitch({ transaction }) {
-  const { txParams: { data, to: tokenAddress, from: userAddress } = {} } =
-    transaction;
+  const {
+    chainId,
+    txParams: { data, to: tokenAddress, from: userAddress } = {},
+    layer1GasFee,
+  } = transaction;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -39,7 +45,7 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
     tokenAmount,
     tokenId,
     toAddress,
-  } = useAssetDetails(tokenAddress, userAddress, data);
+  } = useAssetDetails(tokenAddress, userAddress, data, chainId);
 
   const {
     ethTransactionTotal,
@@ -178,7 +184,34 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
             transaction={transaction}
             ethTransactionTotal={ethTransactionTotal}
             fiatTransactionTotal={fiatTransactionTotal}
-            hexMaximumTransactionFee={hexMaximumTransactionFee}
+            hexMaximumTransactionFee={sumHexes(
+              hexMaximumTransactionFee,
+              layer1GasFee ?? 0x0,
+            )}
+          />
+        )}
+      />
+      <Route
+        exact
+        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_INCREASE_ALLOWANCE_PATH}`}
+        render={() => (
+          <ConfirmApprove
+            assetStandard={assetStandard}
+            assetName={assetName}
+            userBalance={userBalance}
+            tokenSymbol={tokenSymbol}
+            decimals={decimals}
+            tokenImage={tokenImage}
+            tokenAmount={tokenAmount}
+            tokenId={tokenId}
+            userAddress={userAddress}
+            tokenAddress={tokenAddress}
+            toAddress={toAddress}
+            transaction={transaction}
+            ethTransactionTotal={ethTransactionTotal}
+            fiatTransactionTotal={fiatTransactionTotal}
+            hexTransactionTotal={hexTransactionTotal}
+            hexMinimumTransactionFee={hexMinimumTransactionFee}
           />
         )}
       />
@@ -189,11 +222,13 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
 
 ConfirmTokenTransactionSwitch.propTypes = {
   transaction: PropTypes.shape({
+    chainId: PropTypes.string,
     origin: PropTypes.string,
     txParams: PropTypes.shape({
       data: PropTypes.string,
       to: PropTypes.string,
       from: PropTypes.string,
     }),
+    layer1GasFee: PropTypes.number,
   }),
 };

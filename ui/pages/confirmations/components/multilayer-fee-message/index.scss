@@ -1,3 +1,5 @@
 .multi-layer-fee-message {
-  padding-top: 24px;
+  &__transaction-detail-item__total-item {
+    padding-top: 8px;
+  }
 }

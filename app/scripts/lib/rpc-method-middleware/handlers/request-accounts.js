@@ -1,9 +1,10 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../../shared/constants/metametrics';
+import { shouldEmitDappViewedEvent } from '../../util';
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the
@@ -47,8 +48,8 @@ const locks = new Set();
 
 /**
  *
- * @param {import('json-rpc-engine').JsonRpcRequest<unknown>} _req - The JSON-RPC request object.
- * @param {import('json-rpc-engine').JsonRpcResponse<true>} res - The JSON-RPC response object.
+ * @param {import('@metamask/utils').JsonRpcRequest<unknown>} _req - The JSON-RPC request object.
+ * @param {import('@metamask/utils').JsonRpcResponse<true>} res - The JSON-RPC response object.
  * @param {Function} _next - The json-rpc-engine 'next' callback.
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param {RequestEthereumAccountsOptions} options - The RPC method hooks.
@@ -70,7 +71,7 @@ async function requestEthereumAccountsHandler(
   },
 ) {
   if (locks.has(origin)) {
-    res.error = ethErrors.rpc.resourceUnavailable(
+    res.error = rpcErrors.resourceUnavailable(
       `Already processing ${MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS}. Please wait.`,
     );
     return end();
@@ -108,22 +109,30 @@ async function requestEthereumAccountsHandler(
     res.result = accounts;
     const numberOfConnectedAccounts =
       getPermissionsForOrigin(origin).eth_accounts.caveats[0].value.length;
-    sendMetrics({
-      event: MetaMetricsEventName.DappViewed,
-      category: MetaMetricsEventCategory.InpageProvider,
-      referrer: {
-        url: origin,
-      },
-      properties: {
-        is_first_visit: true,
-        number_of_accounts: Object.keys(metamaskState.accounts).length,
-        number_of_accounts_connected: numberOfConnectedAccounts,
-      },
-    });
+    // first time connection to dapp will lead to no log in the permissionHistory
+    // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
+    // we will leverage that to identify `is_first_visit` for metrics
+    const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
+      origin,
+    );
+    if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
+      sendMetrics({
+        event: MetaMetricsEventName.DappViewed,
+        category: MetaMetricsEventCategory.InpageProvider,
+        referrer: {
+          url: origin,
+        },
+        properties: {
+          is_first_visit: isFirstVisit,
+          number_of_accounts: Object.keys(metamaskState.accounts).length,
+          number_of_accounts_connected: numberOfConnectedAccounts,
+        },
+      });
+    }
   } else {
     // This should never happen, because it should be caught in the
     // above catch clause
-    res.error = ethErrors.rpc.internal(
+    res.error = rpcErrors.internal(
       'Accounts unexpectedly unavailable. Please report this bug.',
     );
   }

@@ -11,6 +11,8 @@ import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
 import { LegacyMetaMetricsProvider } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
+import { setupInitialStore } from '../../ui';
+import Root from '../../ui/pages';
 
 export const I18nProvider = (props) => {
   const { currentLocale, current, en: eng } = props;
@@ -75,14 +77,48 @@ export function renderWithProvider(component, store, pathname = '/') {
   };
 }
 
-export function renderHookWithProvider(hook, state, pathname = '/') {
+export function renderHookWithProvider(hook, state, pathname = '/', Container) {
   const store = state ? configureStore(state) : undefined;
-  const { history, Wrapper } = createProviderWrapper(store, pathname);
+
+  const { history, Wrapper: ProviderWrapper } = createProviderWrapper(
+    store,
+    pathname,
+  );
+
+  const wrapper = Container
+    ? ({ children }) => (
+        <ProviderWrapper>
+          <Container>{children}</Container>
+        </ProviderWrapper>
+      )
+    : ProviderWrapper;
+
   return {
-    ...renderHook(hook, { wrapper: Wrapper }),
+    ...renderHook(hook, { wrapper }),
     history,
   };
 }
+
+/**
+ * Renders a hook with a provider and optional container.
+ *
+ * @template {(...args: any) => any} Hook
+ * @template {Parameters<Hook>} HookParams
+ * @template {ReturnType<Hook>} HookReturn
+ * @template {import('@testing-library/react-hooks').RenderHookResult<HookParams, HookReturn>} RenderHookResult
+ * @template {import('history').History} History
+ * @param {Hook} hook - The hook to be rendered.
+ * @param [state] - The initial state for the store.
+ * @param [pathname] - The initial pathname for the history.
+ * @param [Container] - An optional container component.
+ * @returns {RenderHookResult & { history: History }} The result of the rendered hook and the history object.
+ */
+export const renderHookWithProviderTyped = (
+  hook,
+  state,
+  pathname = '/',
+  Container,
+) => renderHookWithProvider(hook, state, pathname, Container);
 
 export function renderWithLocalization(component) {
   const Wrapper = ({ children }) => (
@@ -118,5 +154,38 @@ export function renderWithUserEvent(jsx) {
   return {
     user: userEvent.setup(),
     ...render(jsx),
+  };
+}
+
+/**
+ * Helper function to render the UI application for integration tests.
+ * It uses the Root component and sets up the store with the provided preloaded state.
+ *
+ * @param {*} extendedRenderOptions
+ * @param {*} extendedRenderOptions.preloadedState - The initial state used to initialised the redux store. For integration tests we rely on a real store instance following the redux recommendations - https://redux.js.org/usage/writing-tests#guiding-principles
+ * @param {*} extendedRenderOptions.backgroundConnection - The background connection rpc method. When writing integration tests, we can pass a mock background connection to simulate the background connection methods.
+ * @param {*} extendedRenderOptions.activeTab - The active tab object.
+ * @returns The rendered result from testing library.
+ */
+export async function integrationTestRender(extendedRenderOptions) {
+  const {
+    preloadedState = {},
+    backgroundConnection,
+    activeTab = {
+      id: 113,
+      title: 'E2E Test Dapp',
+      origin: 'https://metamask.github.io',
+      protocol: 'https:',
+      url: 'https://metamask.github.io/test-dapp/',
+    },
+    ...renderOptions
+  } = extendedRenderOptions;
+
+  const store = await setupInitialStore(preloadedState, backgroundConnection, {
+    activeTab,
+  });
+
+  return {
+    ...render(<Root store={store} />, { ...renderOptions }),
   };
 }

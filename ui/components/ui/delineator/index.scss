@@ -1,0 +1,14 @@
+.delineator {
+  &__header {
+    cursor: pointer;
+
+    &--loading {
+      cursor: default;
+    }
+
+    &--disabled {
+      cursor: default;
+      opacity: 0.5;
+    }
+  }
+}

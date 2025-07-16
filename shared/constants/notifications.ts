@@ -1,0 +1,2 @@
+export const NOTIFICATION_HEIGHT = 620;
+export const NOTIFICATION_WIDTH = 360;

@@ -1,9 +1,10 @@
 import React from 'react';
 import configureStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import AccountListItem from './account-list-item';
 
 describe('AccountListItem Component', () => {
@@ -12,7 +13,9 @@ describe('AccountListItem Component', () => {
   describe('render', () => {
     const props = {
       account: {
-        address: 'mockAddress',
+        // NOTE: We now uses an explicit "0x" prefix since the support of non-EVM addresses
+        // accross the extension
+        address: '0xmockAddress',
         balance: 'mockBalance',
         id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         metadata: {
@@ -22,7 +25,7 @@ describe('AccountListItem Component', () => {
           },
         },
         options: {},
-        methods: [...Object.values(EthMethod)],
+        methods: ETH_EOA_METHODS,
         type: EthAccountType.Eoa,
       },
       className: 'mockClassName',
@@ -49,7 +52,7 @@ describe('AccountListItem Component', () => {
       fireEvent.click(accountListItem);
 
       expect(props.handleClick).toHaveBeenCalledWith({
-        address: 'mockAddress',
+        address: '0xmockAddress',
         name: 'mockName',
         balance: 'mockBalance',
       });
@@ -77,7 +80,7 @@ describe('AccountListItem Component', () => {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       };

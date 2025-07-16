@@ -4,6 +4,7 @@ const {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   generateGanacheOptions,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { GAS_API_BASE_URL } = require('../../../../shared/constants/swaps');
@@ -48,9 +49,6 @@ describe('Gas API fallback', function () {
   }
 
   it('network error message is displayed if network is congested', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -61,22 +59,22 @@ describe('Gas API fallback', function () {
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
 
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         await openActionMenuAndStartSendFlow(driver);
         await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 
-        const inputAmount = await driver.findElement('.unit-input__input');
+        const inputAmount = await driver.findElement('input[placeholder="0"]');
         await inputAmount.fill('1');
 
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
-        await driver.findElement('.transaction-alerts');
-
-        const error = await driver.isElementPresent({
-          text: 'Network is busy. Gas prices are high and estimates are less accurate.',
-        });
+        const error = await driver.isElementPresent(
+          '[data-testid="network-busy-tooltip"]',
+        );
 
         assert.equal(error, true, 'Network error is present');
       },

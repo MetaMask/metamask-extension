@@ -4,12 +4,11 @@ import classnames from 'classnames';
 
 import {
   Color,
-  FontWeight,
-  AlignItems,
   TextAlign,
   TextVariant,
   Display,
   FlexWrap,
+  BlockSize,
 } from '../../../../helpers/constants/design-system';
 import { Text } from '../../../../components/component-library';
 
@@ -17,23 +16,26 @@ export default function TransactionDetailItem({
   'data-testid': dataTestId,
   detailTitle = '',
   detailText,
-  detailTitleColor = Color.textDefault,
   detailTotal = '',
+  hasDetailTextInSeparateRow = false,
   subTitle = '',
   subText = '',
-  boldHeadings = true,
   flexWidthValues = false,
+  ...props
 }) {
   return (
-    <div className="transaction-detail-item" data-testid={dataTestId}>
+    <div
+      className="transaction-detail-item"
+      data-testid={dataTestId}
+      {...props}
+    >
       <div className="transaction-detail-item__row">
         <Text
           as="h6"
-          color={detailTitleColor}
-          fontWeight={boldHeadings ? FontWeight.Bold : FontWeight.Normal}
           display={Display.Flex}
           flexWrap={FlexWrap.NoWrap}
-          alignItems={AlignItems.center}
+          paddingBottom={1}
+          variant={TextVariant.bodyMdMedium}
         >
           {detailTitle}
         </Text>
@@ -44,16 +46,20 @@ export default function TransactionDetailItem({
           })}
         >
           {detailText && (
-            <Text as="h6" color={Color.textAlternative}>
+            <Text
+              as="h6"
+              color={Color.textAlternative}
+              width={hasDetailTextInSeparateRow ? BlockSize.Full : null}
+            >
               {detailText}
             </Text>
           )}
           <Text
             as="h6"
             color={Color.textDefault}
-            fontWeight={boldHeadings ? FontWeight.Bold : FontWeight.Normal}
             marginLeft={1}
             textAlign={TextAlign.Right}
+            variant={TextVariant.bodyMd}
           >
             {detailTotal}
           </Text>
@@ -66,7 +72,8 @@ export default function TransactionDetailItem({
           <Text
             as="h6"
             variant={TextVariant.bodySm}
-            color={Color.textAlternative}
+            color={Color.textMuted}
+            style={{ flex: '1 0 auto' }}
           >
             {subTitle}
           </Text>
@@ -96,17 +103,17 @@ TransactionDetailItem.propTypes = {
    */
   detailTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
-   * The color of the detailTitle text accepts all Typography color props
-   */
-  detailTitleColor: PropTypes.string,
-  /**
    * Text to show on the left of the detailTotal. Wrapped in Typography component.
    */
   detailText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
-   * Total amount to show. Wrapped in Typography component. Will be bold if boldHeadings is true
+   * Total amount to show. Wrapped in Typography component.
    */
   detailTotal: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * If true, separates detailText and detailTotal into separate rows
+   */
+  hasDetailTextInSeparateRow: PropTypes.bool,
   /**
    * Subtitle text. Checks if React.isValidElement before displaying. Displays under detailTitle
    */
@@ -115,10 +122,6 @@ TransactionDetailItem.propTypes = {
    * Text to show under detailTotal. Wrapped in Typography component.
    */
   subText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  /**
-   * Whether detailTotal is bold or not. Defaults to true
-   */
-  boldHeadings: PropTypes.bool,
   /**
    * Changes width to auto for transaction-detail-item__detail-values
    */

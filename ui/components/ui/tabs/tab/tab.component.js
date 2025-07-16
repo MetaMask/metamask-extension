@@ -5,8 +5,11 @@ import {
   BLOCK_SIZES,
   DISPLAY,
   TextAlign,
+  TextColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../box';
+import { Text } from '../../../component-library';
 
 const Tab = (props) => {
   const {
@@ -19,6 +22,10 @@ const Tab = (props) => {
     onClick,
     tabIndex,
     tabKey,
+    // Declared, but we are not rendering it explictly (it's mainly to make JSX
+    // happy when being used in .tsx)
+    // eslint-disable-next-line no-unused-vars
+    children,
   } = props;
 
   return (
@@ -35,16 +42,18 @@ const Tab = (props) => {
       }}
       key={tabKey}
     >
-      <Box
+      <Text
         as="button"
         padding={2}
         textAlign={TextAlign.Center}
         display={DISPLAY.BLOCK}
         width={BLOCK_SIZES.FULL}
         className={buttonClassName}
+        variant={TextVariant.bodyMd}
+        color={TextColor.inherit}
       >
         {name}
-      </Box>
+      </Text>
     </Box>
   );
 };
@@ -55,10 +64,11 @@ Tab.propTypes = {
   className: PropTypes.string,
   'data-testid': PropTypes.string,
   isActive: PropTypes.bool, // required, but added using React.cloneElement
-  name: PropTypes.string.isRequired,
+  name: PropTypes.node.isRequired,
   tabKey: PropTypes.string.isRequired, // for Tabs selection purpose
   onClick: PropTypes.func,
   tabIndex: PropTypes.number, // required, but added using React.cloneElement
+  children: PropTypes.node, // required, but we are not rendering it explictly
 };
 
 Tab.defaultProps = {

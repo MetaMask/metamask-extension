@@ -10,9 +10,7 @@ describe('Import flow', function () {
   async function mockPriceFetch(mockServer) {
     return [
       await mockServer
-        .forGet(
-          'https://price-api.metafi.codefi.network/v2/chains/1/spot-prices',
-        )
+        .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
         .withQuery({
           tokenAddresses:
             '0x06af07097c9eeb7fd685c692751d5c66db49c215,0x514910771af9ca656af840dff83e8264ecf986ca,0x7d4b8cce0591c9044a22ee543533b72e976e36c3',
@@ -39,7 +37,28 @@ describe('Import flow', function () {
   it('allows importing multiple tokens from search', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnMainnet()
+          .withTokensController({
+            tokenList: [
+              {
+                name: 'Chain Games',
+                symbol: 'CHAIN',
+                address: '0xc4c2614e694cf534d407ee49f8e44d125e4681c4',
+              },
+              {
+                address: '0x7051faed0775f664a0286af4f75ef5ed74e02754',
+                symbol: 'CHANGE',
+                name: 'ChangeX',
+              },
+              {
+                name: 'Chai',
+                symbol: 'CHAI',
+                address: '0x06af07097c9eeb7fd685c692751d5c66db49c215',
+              },
+            ],
+          })
+          .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockPriceFetch,
@@ -47,23 +66,10 @@ describe('Import flow', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // Token list is only on mainnet
-        await driver.clickElement('[data-testid="network-display"]');
-        const networkSelectionModal = await driver.findVisibleElement(
-          '.mm-modal',
-        );
         await driver.assertElementNotPresent('.loading-overlay');
 
-        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
-
-        // Wait for network to change and token list to load from state
-        await networkSelectionModal.waitForElementState('hidden');
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: 'Ethereum Mainnet',
-        });
-
         await driver.clickElement('[data-testid="import-token-button"]');
+        await driver.clickElement('[data-testid="importTokens"]');
 
         await driver.fill('input[placeholder="Search tokens"]', 'cha');
 
@@ -85,8 +91,9 @@ describe('Import flow', function () {
           '[data-testid="token-list-loading-message"]',
         );
 
-        const items = await driver.findElements('.multichain-token-list-item');
-        assert.equal(items.length, 4);
+        const expectedTokenListElementsAreFound =
+          await driver.elementCountBecomesN('.multichain-token-list-item', 4);
+        assert.equal(expectedTokenListElementsAreFound, true);
       },
     );
   });

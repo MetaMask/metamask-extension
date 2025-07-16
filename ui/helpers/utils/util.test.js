@@ -1,8 +1,11 @@
 import Bowser from 'bowser';
-import { BN, toChecksumAddress } from 'ethereumjs-util';
+import BN from 'bn.js';
+import { toChecksumAddress } from 'ethereumjs-util';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
+import { MinPermissionAbstractionDisplayCount } from '../../../shared/constants/permissions';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
 import * as util from './util';
 
 describe('util', () => {
@@ -204,7 +207,7 @@ describe('util', () => {
     });
     it('should return false when given a modern chrome browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.2623.112 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.2623.112 Safari/537.36',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
@@ -218,21 +221,21 @@ describe('util', () => {
     });
     it('should return false when given a modern firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/91.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/102.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/90.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/91.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern opera browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.3578.98 Safari/537.36 OPR/76.0.3135.47',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.3578.98 Safari/537.36 OPR/95.0.3135.47',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
@@ -246,7 +249,7 @@ describe('util', () => {
     });
     it('should return false when given a modern edge browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.3578.98 Safari/537.36 Edg/90.0.416.68',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.3578.98 Safari/537.36 Edg/109.0.416.68',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
@@ -463,6 +466,14 @@ describe('util', () => {
           { name: 'wallets', type: 'address[]' },
         ],
       };
+    });
+
+    it('should not be vulnerable to ReDoS when stripping nesting', () => {
+      const startTime = Date.now();
+      util.stripOneLayerofNesting(`${'['.repeat(90000)}|[]`);
+      const endTime = Date.now();
+      const executionTime = endTime - startTime;
+      expect(executionTime).toBeLessThan(3000);
     });
 
     it('should throw an error if types is undefined', () => {
@@ -1032,6 +1043,270 @@ describe('util', () => {
         throw new Error('some error');
       });
       expect(util.hexToText(hexValue)).toBe(hexValue);
+    });
+  });
+
+  describe('formatUTCDateFromUnixTimestamp', () => {
+    it('formats passed date string', () => {
+      expect(util.formatUTCDateFromUnixTimestamp(2036528542)).toStrictEqual(
+        '14 July 2034, 22:22',
+      );
+    });
+
+    it('returns empty string if empty string is passed', () => {
+      expect(util.formatUTCDateFromUnixTimestamp('')).toStrictEqual('');
+    });
+  });
+
+  describe('shortenAddress', () => {
+    it('should return the same address if it is shorter than TRUNCATED_NAME_CHAR_LIMIT', () => {
+      expect(util.shortenAddress('0x123')).toStrictEqual('0x123');
+    });
+
+    it('should return the shortened address if it is a valid address', () => {
+      expect(
+        util.shortenAddress('0x1234567890123456789012345678901234567890'),
+      ).toStrictEqual('0x12345...67890');
+    });
+  });
+
+  describe('shortenString', () => {
+    it('should return the same string if it is shorter than TRUNCATED_NAME_CHAR_LIMIT', () => {
+      expect(util.shortenString('string')).toStrictEqual('string');
+    });
+
+    it('should return the shortened string according to the specified options', () => {
+      expect(
+        util.shortenString('0x1234567890123456789012345678901234567890', {
+          truncatedCharLimit: 10,
+          truncatedStartChars: 4,
+          truncatedEndChars: 4,
+        }),
+      ).toStrictEqual('0x12...7890');
+    });
+
+    it('should shorten the string and remove all characters from the end if skipCharacterInEnd is true', () => {
+      expect(
+        util.shortenString('0x1234567890123456789012345678901234567890', {
+          truncatedCharLimit: 10,
+          truncatedStartChars: 4,
+          truncatedEndChars: 4,
+          skipCharacterInEnd: true,
+        }),
+      ).toStrictEqual('0x12...');
+    });
+  });
+
+  describe('getFilteredSnapPermissions', () => {
+    it('should return permission filtered by weight', () => {
+      const WEIGHT_THRESHOLD = 3;
+      const mockPermissions = [
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission D',
+          weight: 5,
+        },
+        {
+          label: 'Permission E',
+          weight: 2,
+        },
+      ];
+      expect(
+        util.getFilteredSnapPermissions(mockPermissions, WEIGHT_THRESHOLD, 2),
+      ).toStrictEqual([
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission E',
+          weight: 2,
+        },
+      ]);
+    });
+
+    it('should return the first three permissions because none matches the filter criteria', () => {
+      const WEIGHT_THRESHOLD = 3;
+      const mockPermissions = [
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 5,
+        },
+        {
+          label: 'Permission D',
+          weight: 5,
+        },
+        {
+          label: 'Permission E',
+          weight: 6,
+        },
+      ];
+      expect(
+        util.getFilteredSnapPermissions(
+          mockPermissions,
+          WEIGHT_THRESHOLD,
+          MinPermissionAbstractionDisplayCount,
+        ),
+      ).toStrictEqual([
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 5,
+        },
+      ]);
+    });
+
+    it('should return permissions filtered by weight and gap filled with other permissions', () => {
+      const WEIGHT_THRESHOLD = 3;
+      const mockPermissions = [
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission D',
+          weight: 5,
+        },
+        {
+          label: 'Permission E',
+          weight: 6,
+        },
+      ];
+      expect(
+        util.getFilteredSnapPermissions(
+          mockPermissions,
+          WEIGHT_THRESHOLD,
+          MinPermissionAbstractionDisplayCount,
+        ),
+      ).toStrictEqual([
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+      ]);
+    });
+  });
+
+  describe('getCalculatedTokenAmount1dAgo', () => {
+    it('should return successfully balance of token 1dago', () => {
+      const mockTokenFiatAmount = '10';
+      const mockTokenPercent1dAgo = 1;
+      const expectedRes = 9.900990099009901;
+      const result = util.getCalculatedTokenAmount1dAgo(
+        mockTokenFiatAmount,
+        mockTokenPercent1dAgo,
+      );
+      expect(result).toBe(expectedRes);
+    });
+
+    it('should return token balance if percentage is undefined', () => {
+      const mockTokenFiatAmount = '10';
+      const mockTokenPercent1dAgo = undefined;
+      const result = util.getCalculatedTokenAmount1dAgo(
+        mockTokenFiatAmount,
+        mockTokenPercent1dAgo,
+      );
+      expect(result).toBe(mockTokenFiatAmount);
+    });
+
+    it('should return zero if token amount is undefined', () => {
+      const mockTokenFiatAmount = undefined;
+      const mockTokenPercent1dAgo = 1;
+      const result = util.getCalculatedTokenAmount1dAgo(
+        mockTokenFiatAmount,
+        mockTokenPercent1dAgo,
+      );
+      expect(result).toBe(0);
+    });
+  });
+
+  describe('sortSelectedInternalAccounts', () => {
+    const account1 = createMockInternalAccount({ lastSelected: 1 });
+    const account2 = createMockInternalAccount({ lastSelected: 2 });
+    const account3 = createMockInternalAccount({ lastSelected: 3 });
+    // We use a big "gap" here to make sure we're not only sorting with sequential indexes
+    const accountWithBigSelectedIndexGap = createMockInternalAccount({
+      lastSelected: 108912379837,
+    });
+    // We wanna make sure that negative indexes are also being considered properly
+    const accountWithNegativeSelectedIndex = createMockInternalAccount({
+      lastSelected: -1,
+    });
+
+    const orderedAccounts = [account3, account2, account1];
+
+    it.each([
+      { accounts: [account1, account2, account3] },
+      { accounts: [account2, account3, account1] },
+      { accounts: [account3, account2, account1] },
+    ])('sorts accounts by descending order: $accounts', ({ accounts }) => {
+      const sortedAccount = util.sortSelectedInternalAccounts(accounts);
+      expect(sortedAccount).toStrictEqual(orderedAccounts);
+    });
+
+    it('sorts accounts with bigger gap', () => {
+      const accounts = [account1, accountWithBigSelectedIndexGap, account3];
+      const sortedAccount = util.sortSelectedInternalAccounts(accounts);
+      expect(sortedAccount.length).toBeGreaterThan(0);
+      expect(sortedAccount).toHaveLength(accounts.length);
+      expect(sortedAccount[0]).toStrictEqual(accountWithBigSelectedIndexGap);
+    });
+
+    it('sorts accounts with negative `lastSelected` index', () => {
+      const accounts = [account1, accountWithNegativeSelectedIndex, account3];
+      const sortedAccount = util.sortSelectedInternalAccounts(accounts);
+      expect(sortedAccount.length).toBeGreaterThan(0); // Required since we using `length - 1`
+      expect(sortedAccount).toHaveLength(accounts.length);
+      expect(sortedAccount[sortedAccount.length - 1]).toStrictEqual(
+        accountWithNegativeSelectedIndex,
+      );
+    });
+
+    it('succeed with no accounts', () => {
+      const sortedAccount = util.sortSelectedInternalAccounts([]);
+      expect(sortedAccount).toStrictEqual([]);
     });
   });
 });

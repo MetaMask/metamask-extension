@@ -297,15 +297,15 @@ export const Src: StoryFn<typeof AvatarToken> = (args) => (
     <AvatarToken {...args} src="./images/bnb.png" />
     <AvatarToken
       {...args}
-      src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png"
+      src="https://static.cx.metamask.io/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png"
     />
     <AvatarToken
       {...args}
-      src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x0d8775f648430679a709e98d2b0cb6250d2887ef.png"
+      src="https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0d8775f648430679a709e98d2b0cb6250d2887ef.png"
     />
     <AvatarToken
       {...args}
-      src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png"
+      src="https://static.cx.metamask.io/api/v1/tokenIcons/1/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png"
     />
     <AvatarToken
       {...args}

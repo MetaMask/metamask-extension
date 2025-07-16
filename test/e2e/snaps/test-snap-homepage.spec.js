@@ -27,37 +27,40 @@ describe('Test Snap Homepage', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the honmepage test and connect
+        // find and scroll to the homepage snap
         const snapButton1 = await driver.findElement('#connecthomepage');
         await driver.scrollToElement(snapButton1);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connecthomepage');
         await driver.clickElement('#connecthomepage');
 
-        // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
-
+        // wait for and click confirm
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok and wait for windows to close
         await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -65,7 +68,6 @@ describe('Test Snap Homepage', function () {
         // switch to metamask page and open the three dots menu
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
-          windowHandles,
         );
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
@@ -96,10 +98,6 @@ describe('Test Snap Homepage', function () {
         });
 
         // check that the home page appears and contains the right info
-        await driver.waitForSelector({
-          text: 'Content from Home Page Example Snap',
-          tag: 'p',
-        });
         await driver.waitForSelector({
           text: 'Welcome to my Snap home page!',
           tag: 'p',

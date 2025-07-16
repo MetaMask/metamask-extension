@@ -13,6 +13,7 @@ import * as actions from '../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { KeyringType } from '../../../../../shared/constants/keyring';
 
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import UnconnectedAccountAlert from '.';
 
 describe('Unconnected Account Alert', () => {
@@ -71,7 +72,6 @@ describe('Unconnected Account Alert', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -91,7 +91,6 @@ describe('Unconnected Account Alert', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -111,9 +110,7 @@ describe('Unconnected Account Alert', () => {
       accounts,
       accountsByChainId,
       keyrings,
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       permissionHistory: {
         'https://test.dapp': {
           eth_accounts: {

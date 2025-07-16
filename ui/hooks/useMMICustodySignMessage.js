@@ -6,6 +6,7 @@ import {
   completedTx,
   showModal,
 } from '../store/actions';
+import { AccountType } from '../../shared/constants/custody';
 
 export function useMMICustodySignMessage() {
   const dispatch = useDispatch();
@@ -13,7 +14,7 @@ export function useMMICustodySignMessage() {
   const accountType = useSelector(getAccountType);
 
   const custodySignFn = async (_msgData) => {
-    if (accountType === 'custody') {
+    if (accountType === AccountType.CUSTODY) {
       try {
         await dispatch(resolvePendingApproval(_msgData.id));
         completedTx(_msgData.id);

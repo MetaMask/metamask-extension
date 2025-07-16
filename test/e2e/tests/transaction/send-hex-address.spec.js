@@ -3,6 +3,7 @@ const {
   withFixtures,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
@@ -12,9 +13,6 @@ const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);
 
 describe('Send ETH to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when pasted and should send ETH to a valid hexadecimal address', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -30,18 +28,20 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         await openActionMenuAndStartSendFlow(driver);
         // Paste address without hex prefix
         await driver.pasteIntoField(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           nonHexPrefixedAddress,
         );
         await driver.findElement({
           css: '.ens-input__selected-input__title',
-          text: hexPrefixedAddress,
+          text: '0x2f318...5C970',
         });
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // Confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         const sendTransactionListItem = await driver.findElement(
           '.transaction-list__completed-transactions .activity-list-item',
         );
@@ -58,9 +58,6 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
     );
   });
   it('should ensure the address is prefixed with 0x when typed and should send ETH to a valid hexadecimal address', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -76,18 +73,20 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         await openActionMenuAndStartSendFlow(driver);
         // Type address without hex prefix
         await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           nonHexPrefixedAddress,
         );
         await driver.findElement({
           css: '.ens-input__selected-input__title',
-          text: hexPrefixedAddress,
+          text: '0x2f318...5C970',
         });
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // Confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.clickElement(
           '.transaction-list__completed-transactions .activity-list-item',
         );
@@ -108,9 +107,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
   it('should ensure the address is prefixed with 0x when pasted and should send TST to a valid hexadecimal address', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         dapp: true,
@@ -125,37 +121,27 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
 
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         // Send TST
-        await driver.clickElement('[data-testid="home__asset-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__asset-tab"]',
+        );
         await driver.clickElement(
           '[data-testid="multichain-token-list-button"]',
         );
-
-        // TODO: Simplify once MMI has the new asset page
-        try {
-          await driver.clickElement('[data-testid="eth-overview-send"]');
-        } catch {
-          const sendButton = await driver.findElement(
-            '[data-testid="asset-send-button"]',
-          );
-          await driver.scrollToElement(sendButton);
-          sendButton.click();
-        }
-
+        await driver.clickElement('[data-testid="coin-overview-send"]');
         // Paste address without hex prefix
         await driver.pasteIntoField(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           nonHexPrefixedAddress,
         );
         await driver.findElement({
           css: '.ens-input__selected-input__title',
-          text: hexPrefixedAddress,
+          text: '0x2f318...5C970',
         });
-        await driver.findElement({
-          css: '.transaction-detail-item',
-          text: '0.000042 ETH',
-        });
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // Confirm transaction
         await driver.findElement({
@@ -163,7 +149,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           text: '0',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.findElement(
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
@@ -183,9 +171,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
     );
   });
   it('should ensure the address is prefixed with 0x when typed and should send TST to a valid hexadecimal address', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         dapp: true,
@@ -199,37 +184,29 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         // Send TST
-        await driver.clickElement('[data-testid="home__asset-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__asset-tab"]',
+        );
         await driver.clickElement(
           '[data-testid="multichain-token-list-button"]',
         );
-
-        // TODO: Simplify once MMI has the new asset page
-        try {
-          await driver.clickElement('[data-testid="eth-overview-send"]');
-        } catch {
-          const sendButton = await driver.findElement(
-            '[data-testid="asset-send-button"]',
-          );
-          await driver.scrollToElement(sendButton);
-          sendButton.click();
-        }
+        await driver.clickElement('[data-testid="coin-overview-send"]');
 
         // Type address without hex prefix
         await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           nonHexPrefixedAddress,
         );
         await driver.findElement({
           css: '.ens-input__selected-input__title',
-          text: hexPrefixedAddress,
+          text: '0x2f318...5C970',
         });
-        await driver.findElement({
-          css: '.transaction-detail-item',
-          text: '0.000042 ETH',
-        });
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // Confirm transaction
         await driver.findElement({
@@ -237,7 +214,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           text: '0',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.findElement(
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );

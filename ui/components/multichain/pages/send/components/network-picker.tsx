@@ -12,7 +12,7 @@ export const SendPageNetworkPicker = () => {
   return (
     <SendPageRow>
       <PickerNetwork
-        label={currentNetwork?.nickname}
+        label={currentNetwork?.nickname ?? ''}
         src={currentNetwork?.rpcPrefs?.imageUrl}
         onClick={() => dispatch(toggleNetworkMenu())}
         data-testid="send-page-network-picker"

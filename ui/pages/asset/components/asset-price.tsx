@@ -8,7 +8,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../../components/component-library';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { getPricePrecision, loadingOpacity, shortDateFormatter } from '../util';
+import {
+  getPricePrecision,
+  loadingOpacity,
+  getShortDateFormatter,
+} from '../util';
 
 const chartUp = (
   <svg
@@ -21,13 +25,13 @@ const chartUp = (
   >
     <path
       d="M9.75 3.8125L6.25 7.4875L4.91667 5.3875L2.25 8.1875"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M8.08398 3.8125H9.75065V5.5625"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -42,13 +46,13 @@ const chartDown = (
   >
     <path
       d="M9.75 8.1875L6.25 4.5125L4.91667 6.6125L2.25 3.8125"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M8.08398 8.1875H9.75065V6.4375"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -79,8 +83,9 @@ const AssetPrice = forwardRef(
         : undefined;
 
     return (
-      <Box>
+      <Box marginLeft={4} marginRight={4}>
         <Text
+          data-testid="asset-hovered-price"
           style={{ width: '100px' }}
           variant={TextVariant.headingLg}
           borderRadius={BorderRadius.LG}
@@ -123,7 +128,7 @@ const AssetPrice = forwardRef(
                 variant={TextVariant.bodyMdMedium}
                 color={TextColor.textAlternative}
               >
-                {shortDateFormatter.format(date)}
+                {getShortDateFormatter().format(date)}
               </Text>
             </Box>
           ) : (

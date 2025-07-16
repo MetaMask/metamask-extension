@@ -1,11 +1,14 @@
 import EthQuery from '@metamask/ethjs-query';
 import { TransactionType } from '@metamask/transaction-controller';
+
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
   determineTransactionType,
+  hasTransactionData,
   isEIP1559Transaction,
   isLegacyTransaction,
   parseStandardTokenTransactionData,
+  parseTypedDataMessage,
 } from './transaction.utils';
 
 describe('Transaction.utils', function () {
@@ -387,5 +390,48 @@ describe('Transaction.utils', function () {
         getCodeResponse: '0x0a',
       });
     });
+
+    describe('parseTypedDataMessage', () => {
+      it('parses data passed correctly', () => {
+        const result = parseTypedDataMessage('{"test": "dummy"}');
+        expect(result.test).toBe('dummy');
+      });
+
+      it('parses message.value as a string', () => {
+        const result = parseTypedDataMessage(
+          '{"test": "dummy", "message": { "value": 3000123} }',
+        );
+        expect(result.message.value).toBe('3000123');
+      });
+
+      it('parses message.value such that it does not lose precision', () => {
+        const result = parseTypedDataMessage(
+          '{"test": "dummy", "message": { "value": 30001231231212312138768} }',
+        );
+        expect(result.message.value).toBe('30001231231212312138768');
+      });
+
+      it('throw error for invalid typedDataMessage', () => {
+        expect(() => {
+          parseTypedDataMessage('');
+        }).toThrow(new Error('Unexpected end of JSON input'));
+      });
+    });
+  });
+
+  describe('hasTransactionData', () => {
+    it.each([
+      ['has prefix', '0x1234'],
+      ['has no prefix', '1234'],
+    ])('returns true if data %s', (_, data) => {
+      expect(hasTransactionData(data)).toBe(true);
+    });
+
+    it.each([undefined, null, '', '0x', '0X'])(
+      'returns false if data is %s',
+      (data) => {
+        expect(hasTransactionData(data)).toBe(false);
+      },
+    );
   });
 });

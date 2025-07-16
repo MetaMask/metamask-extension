@@ -39,6 +39,7 @@ export const ConnectedSiteMenu = ({
   status,
   text,
   onClick,
+  disabled,
 }) => {
   const t = useI18nContext();
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -50,7 +51,10 @@ export const ConnectedSiteMenu = ({
     status === STATUS_CONNECTED_TO_SNAP;
   return (
     <Box
-      className={classNames('multichain-connected-site-menu', className)}
+      className={classNames(
+        `multichain-connected-site-menu${disabled ? '--disabled' : ''}`,
+        className,
+      )}
       data-testid="connection-menu"
       as="button"
       onClick={onClick}
@@ -130,4 +134,8 @@ ConnectedSiteMenu.propTypes = {
    * onClick handler to be passed
    */
   onClick: PropTypes.func,
+  /**
+   *  Disable the connected site menu if the account is non-evm
+   */
+  disabled: PropTypes.bool,
 };

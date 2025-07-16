@@ -23,19 +23,15 @@ import TransactionDetail from '../../components/transaction-detail';
 import ActionableMessage from '../../../../components/ui/actionable-message';
 import {
   getPreferences,
-  getIsBuyableChain,
   transactionFeeSelector,
   getIsTestnet,
   getUseCurrencyRateCheck,
   getUnapprovedTransactions,
+  selectNetworkConfigurationByChainId,
 } from '../../../../selectors';
 
 import { INSUFFICIENT_TOKENS_ERROR } from '../send.constants';
 import { getCurrentDraftTransaction } from '../../../../ducks/send';
-import {
-  getNativeCurrency,
-  getProviderConfig,
-} from '../../../../ducks/metamask/metamask';
 import { showModal } from '../../../../store/actions';
 import {
   addHexes,
@@ -46,31 +42,33 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import useRamps from '../../../../hooks/experiences/useRamps';
+import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
+import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 
+// This function is no longer used in codebase, to be deleted.
 export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const { estimateUsed } = useGasFeeContext();
+  const { estimateUsed, transaction } = useGasFeeContext();
+  const { chainId } = transaction;
   const trackEvent = useContext(MetaMetricsContext);
-
   const { openBuyCryptoInPdapp } = useRamps();
 
-  const providerConfig = useSelector(getProviderConfig);
+  const { name: networkNickname, nativeCurrency } = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+
   const isTestnet = useSelector(getIsTestnet);
-  const isBuyableChain = useSelector(getIsBuyableChain);
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =
-    useSelector(getPreferences);
+  const { showFiatInTestnets } = useSelector(getPreferences);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const { chainId } = providerConfig;
   const networkName = NETWORK_TO_NAME_MAP[chainId];
   const isInsufficientTokenError =
     draftTransaction?.amount?.error === INSUFFICIENT_TOKENS_ERROR;
   const editingTransaction = unapprovedTxs[draftTransaction.id];
-  const currentNetworkName = networkName || providerConfig.nickname;
+  const currentNetworkName = networkName || networkNickname;
 
   const transactionData = {
     txParams: {
@@ -96,15 +94,15 @@ export default function GasDisplay({ gasError }) {
 
   let title;
   if (
-    draftTransaction?.asset.details?.standard === TokenStandard.ERC721 ||
-    draftTransaction?.asset.details?.standard === TokenStandard.ERC1155
+    draftTransaction?.sendAsset.details?.standard === TokenStandard.ERC721 ||
+    draftTransaction?.sendAsset.details?.standard === TokenStandard.ERC1155
   ) {
-    title = draftTransaction?.asset.details?.name;
+    title = draftTransaction?.sendAsset.details?.name;
   } else if (
-    draftTransaction?.asset.details?.standard === TokenStandard.ERC20
+    draftTransaction?.sendAsset.details?.standard === TokenStandard.ERC20
   ) {
     title = `${hexWEIToDecETH(draftTransaction.amount.value)} ${
-      draftTransaction?.asset.details?.symbol
+      draftTransaction?.sendAsset.details?.symbol
     }`;
   }
 
@@ -119,7 +117,7 @@ export default function GasDisplay({ gasError }) {
 
   let detailTotal, maxAmount;
 
-  if (draftTransaction?.asset.type === 'NATIVE') {
+  if (draftTransaction?.sendAsset.type === 'NATIVE') {
     detailTotal = (
       <Box
         height={BLOCK_SIZES.MAX}
@@ -132,7 +130,6 @@ export default function GasDisplay({ gasError }) {
           type={PRIMARY}
           key="total-detail-value"
           value={hexTransactionTotal}
-          hideLabel={!useNativeCurrencyAsPrimaryCurrency}
         />
       </Box>
     );
@@ -144,10 +141,9 @@ export default function GasDisplay({ gasError }) {
           draftTransaction.amount.value,
           hexMaximumTransactionFee,
         )}
-        hideLabel={!useNativeCurrencyAsPrimaryCurrency}
       />
     );
-  } else if (useNativeCurrencyAsPrimaryCurrency) {
+  } else {
     detailTotal = primaryTotalTextOverrideMaxAmount;
     maxAmount = primaryTotalTextOverrideMaxAmount;
   }
@@ -177,7 +173,7 @@ export default function GasDisplay({ gasError }) {
                         type={SECONDARY}
                         key="total-detail-text"
                         value={hexTransactionTotal}
-                        hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                        hideLabel
                       />
                     </Box>
                   )
@@ -221,7 +217,8 @@ export default function GasDisplay({ gasError }) {
           >
             <ActionableMessage
               message={
-                isBuyableChain && draftTransaction.asset.type === 'NATIVE' ? (
+                isBuyableChain &&
+                draftTransaction.sendAsset.type === 'NATIVE' ? (
                   <Typography variant={TypographyVariant.H7} align="left">
                     {t('insufficientCurrencyBuyOrReceive', [
                       nativeCurrency,

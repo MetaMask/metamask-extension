@@ -5,6 +5,19 @@
 
     .popover-footer {
       border-top: none;
+      width: 100%;
+      gap: 16px;
+
+      .footer__button {
+        flex: 1;
+        flex-grow: 1;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
+      a:hover > span {
+        color: var(--inherit);
+      }
     }
 
     .popover-header {
@@ -22,21 +35,20 @@
     max-width: 245px;
   }
 
-  &__bullet-paragraph {
-    border-bottom: 1px solid var(--color-border-default);
-  }
-
-  &__token-show-up {
-    display: inline;
-  }
-
   &__button {
-    display: initial;
+    display: contents;
     padding: 0;
   }
 
-  &__manually-add-tokens {
-    display: inline;
+  &__bullet-icon-container {
+    background-color: var(--color-info-muted);
+    border-radius: 50%;
+    padding: 6px;
+
+    .mm-icon {
+      display: flex;
+      color: var(--color-info-default);
+    }
   }
 }
 

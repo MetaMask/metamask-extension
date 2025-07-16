@@ -11,7 +11,6 @@ export const IN_PROGRESS_TRANSACTION_STATUSES = [
 ];
 
 export const SIGNING_METHODS = Object.freeze([
-  'eth_sign',
   'eth_signTypedData',
   'eth_signTypedData_v1',
   'eth_signTypedData_v3',
@@ -110,6 +109,15 @@ export enum TransactionGroupCategory {
    * will be shown.
    */
   swap = 'swap',
+  /**
+   * Transaction group representing a token swap through MetaMask Swaps, where the final token is sent to another address.
+   */
+  swapAndSend = 'swapAndSend',
+  /**
+   * Transaction group representing a token bridge through MetaMask Bridge,
+   * where the final token is sent to another chain.
+   */
+  bridge = 'bridge',
 }
 
 /**

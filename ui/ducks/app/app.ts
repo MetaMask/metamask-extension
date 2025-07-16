@@ -13,6 +13,8 @@ type AppState = {
     open: boolean;
     modalState: {
       name: string | null;
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       props: Record<string, any>;
     };
     previousModalState: {
@@ -32,6 +34,7 @@ type AppState = {
     tokenId?: string;
     ignoreErc20Token?: boolean;
   };
+  showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
   keyringRemovalSnapModal: {
     snapName: string;
@@ -46,9 +49,13 @@ type AppState = {
     privateKey?: string;
   };
   isLoading: boolean;
+  isNftStillFetchingIndication: boolean;
+  showNftDetectionEnablementToast: boolean;
   loadingMessage: string | null;
   scrollToBottom: boolean;
   warning: string | null | undefined;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buyView: Record<string, any>;
   defaultHdPaths: {
     trezor: string;
@@ -58,6 +65,8 @@ type AppState = {
   networksTabSelectedRpcUrl: string | null;
   requestAccountTabs: Record<string, number>; // [url.origin]: tab.id
   openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
   showWhatsNewPopup: boolean;
   showTermsOfUsePopup: boolean;
@@ -69,9 +78,19 @@ type AppState = {
   smartTransactionsErrorMessageDismissed: boolean;
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses;
   ledgerTransportStatus: HardwareTransportStates;
+  showBasicFunctionalityModal: boolean;
+  externalServicesOnboardingToggleState: boolean;
   newNftAddedMessage: string;
   removeNftMessage: string;
   newNetworkAddedName: string;
+  editedNetwork:
+    | {
+        chainId: string;
+        nickname?: string;
+        editCompleted?: boolean;
+        newNetwork?: boolean;
+      }
+    | undefined;
   newNetworkAddedConfigurationId: string;
   selectedNetworkConfigurationId: string;
   sendInputCurrencySwitched: boolean;
@@ -81,12 +100,15 @@ type AppState = {
   customTokenAmount: string;
   txId: string | null;
   accountDetailsAddress: string;
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  showDeleteMetaMetricsDataModal: boolean;
+  showDataDeletionErrorModal: boolean;
   snapsInstallPrivacyWarningShown: boolean;
-  ///: END:ONLY_INCLUDE_IF
+  isAddingNewNetwork: boolean;
+  isMultiRpcOnboarding: boolean;
+  errorInSettings: string | null;
 };
 
-type AppSliceState = {
+export type AppSliceState = {
   appState: AppState;
 };
 
@@ -109,7 +131,10 @@ const initialState: AppState = {
   qrCodeData: null,
   networkDropdownOpen: false,
   importNftsModal: { open: false },
+  showPermittedNetworkToastOpen: false,
   showIpfsModalOpen: false,
+  showBasicFunctionalityModal: false,
+  externalServicesOnboardingToggleState: true,
   keyringRemovalSnapModal: {
     snapName: '',
     result: 'none',
@@ -122,6 +147,10 @@ const initialState: AppState = {
   },
   // Used to display loading indicator
   isLoading: false,
+  // Used to show a spinner at the bottom of the page when we are still fetching nfts
+  isNftStillFetchingIndication: false,
+  // Used to display a toast after the user enables the nft auto detection from the notice banner
+  showNftDetectionEnablementToast: false,
   loadingMessage: null,
   // Used to display error text
   warning: null,
@@ -148,6 +177,7 @@ const initialState: AppState = {
   newNftAddedMessage: '',
   removeNftMessage: '',
   newNetworkAddedName: '',
+  editedNetwork: undefined,
   newNetworkAddedConfigurationId: '',
   selectedNetworkConfigurationId: '',
   sendInputCurrencySwitched: false,
@@ -158,9 +188,12 @@ const initialState: AppState = {
   scrollToBottom: true,
   txId: null,
   accountDetailsAddress: '',
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  showDeleteMetaMetricsDataModal: false,
+  showDataDeletionErrorModal: false,
   snapsInstallPrivacyWarningShown: false,
-  ///: END:ONLY_INCLUDE_IF
+  isAddingNewNetwork: false,
+  isMultiRpcOnboarding: false,
+  errorInSettings: null,
 };
 
 export default function reduceApp(
@@ -203,6 +236,29 @@ export default function reduceApp(
         },
       };
 
+    case actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN:
+      return {
+        ...appState,
+        showBasicFunctionalityModal: true,
+      };
+
+    case actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_CLOSE:
+      return {
+        ...appState,
+        showBasicFunctionalityModal: false,
+      };
+
+    case actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_ON:
+      return {
+        ...appState,
+        externalServicesOnboardingToggleState: true,
+      };
+    case actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF:
+      return {
+        ...appState,
+        externalServicesOnboardingToggleState: false,
+      };
+
     case actionConstants.SHOW_IPFS_MODAL_OPEN:
       return {
         ...appState,
@@ -213,6 +269,18 @@ export default function reduceApp(
       return {
         ...appState,
         showIpfsModalOpen: false,
+      };
+
+    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN:
+      return {
+        ...appState,
+        showPermittedNetworkToastOpen: true,
+      };
+
+    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE:
+      return {
+        ...appState,
+        showPermittedNetworkToastOpen: false,
       };
 
     case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
@@ -301,12 +369,12 @@ export default function reduceApp(
     case actionConstants.MODAL_CLOSE:
       return {
         ...appState,
-        modal: Object.assign(
-          appState.modal,
-          { open: false },
-          { modalState: { name: null, props: {} } },
-          { previousModalState: appState.modal.modalState },
-        ),
+        modal: {
+          ...appState.modal,
+          open: false,
+          modalState: { name: null, props: {} },
+          previousModalState: { ...appState.modal.modalState },
+        },
       };
 
     case actionConstants.CLEAR_ACCOUNT_DETAILS:
@@ -375,6 +443,8 @@ export default function reduceApp(
 
     case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH: {
       const { device, path } = action.payload;
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newDefaults = { ...appState.defaultHdPaths } as any;
       newDefaults[device] = path;
 
@@ -395,6 +465,23 @@ export default function reduceApp(
       return {
         ...appState,
         isLoading: false,
+      };
+
+    case actionConstants.SHOW_NFT_STILL_FETCHING_INDICATION:
+      return {
+        ...appState,
+        isNftStillFetchingIndication: true,
+      };
+    case actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST:
+      return {
+        ...appState,
+        showNftDetectionEnablementToast: action.payload,
+      };
+
+    case actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION:
+      return {
+        ...appState,
+        isNftStillFetchingIndication: false,
       };
 
     case actionConstants.DISPLAY_WARNING:
@@ -430,6 +517,12 @@ export default function reduceApp(
         ...appState,
         newNetworkAddedName: nickname,
         newNetworkAddedConfigurationId: networkConfigurationId,
+      };
+    }
+    case actionConstants.SET_EDIT_NETWORK: {
+      return {
+        ...appState,
+        editedNetwork: action.payload,
       };
     }
     case actionConstants.SET_NEW_TOKENS_IMPORTED:
@@ -515,6 +608,42 @@ export default function reduceApp(
         ...appState,
         customTokenAmount: action.payload,
       };
+    case actionConstants.TOGGLE_NETWORK_MENU:
+      return {
+        ...appState,
+        isAddingNewNetwork: Boolean(action.payload?.isAddingNewNetwork),
+        isMultiRpcOnboarding: Boolean(action.payload?.isMultiRpcOnboarding),
+      };
+    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
+      return {
+        ...appState,
+        showDeleteMetaMetricsDataModal: true,
+      };
+    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE:
+      return {
+        ...appState,
+        showDeleteMetaMetricsDataModal: false,
+      };
+    case actionConstants.DATA_DELETION_ERROR_MODAL_OPEN:
+      return {
+        ...appState,
+        showDataDeletionErrorModal: true,
+      };
+    case actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE:
+      return {
+        ...appState,
+        showDataDeletionErrorModal: false,
+      };
+    case actionConstants.SHOW_SETTINGS_PAGE_ERROR:
+      return {
+        ...appState,
+        errorInSettings: action.payload,
+      };
+    case actionConstants.HIDE_SETTINGS_PAGE_ERROR:
+      return {
+        ...appState,
+        errorInSettings: null,
+      };
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
@@ -544,6 +673,30 @@ export default function reduceApp(
 export function hideWhatsNewPopup(): Action {
   return {
     type: actionConstants.HIDE_WHATS_NEW_POPUP,
+  };
+}
+
+export function openBasicFunctionalityModal(): Action {
+  return {
+    type: actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN,
+  };
+}
+
+export function hideBasicFunctionalityModal(): Action {
+  return {
+    type: actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_CLOSE,
+  };
+}
+
+export function onboardingToggleBasicFunctionalityOn(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_ON,
+  };
+}
+
+export function onboardingToggleBasicFunctionalityOff(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF,
   };
 }
 
@@ -579,6 +732,27 @@ export function setCustomTokenAmount(payload: string): PayloadAction<string> {
   return { type: actionConstants.SET_CUSTOM_TOKEN_AMOUNT, payload };
 }
 
+/**
+ * An action creator for display a error to the user in various places in the
+ * UI. It will not be cleared until a new warning replaces it or `hideWarning`
+ * is called.
+ *
+ * @param payload - The warning to show.
+ * @returns The action to display the warning.
+ */
+export function displayErrorInSettings(payload: string): PayloadAction<string> {
+  return {
+    type: actionConstants.SHOW_SETTINGS_PAGE_ERROR,
+    payload,
+  };
+}
+
+export function hideErrorInSettings() {
+  return {
+    type: actionConstants.HIDE_SETTINGS_PAGE_ERROR,
+  };
+}
+
 // Selectors
 export function getQrCodeData(state: AppSliceState): {
   type?: string | null;
@@ -599,4 +773,28 @@ export function getLedgerWebHidConnectedStatus(
 
 export function getLedgerTransportStatus(state: AppSliceState): string | null {
   return state.appState.ledgerTransportStatus;
+}
+
+export function openDeleteMetaMetricsDataModal(): Action {
+  return {
+    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN,
+  };
+}
+
+export function hideDeleteMetaMetricsDataModal(): Action {
+  return {
+    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE,
+  };
+}
+
+export function openDataDeletionErrorModal(): Action {
+  return {
+    type: actionConstants.DATA_DELETION_ERROR_MODAL_OPEN,
+  };
+}
+
+export function hideDataDeletionErrorModal(): Action {
+  return {
+    type: actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE,
+  };
 }

@@ -20,7 +20,7 @@ DefaultStory.args = {
   icon: {
     src: 'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/usdc.svg',
     badge: {
-      src: 'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
+      src: 'https://token.api.cx.metamask.io/assets/nativeCurrencyLogos/ethereum.svg',
     },
   },
   label: 'This is the label',
@@ -34,7 +34,7 @@ NoValueStory.args = {
   icon: {
     src: 'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/usdc.svg',
     badge: {
-      src: 'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
+      src: 'https://token.api.cx.metamask.io/assets/nativeCurrencyLogos/ethereum.svg',
     },
   },
   label: 'This is the label',

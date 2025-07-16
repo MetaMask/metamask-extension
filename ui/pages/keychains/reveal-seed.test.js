@@ -22,6 +22,13 @@ jest.mock('../../store/actions.ts', () => ({
   requestRevealSeedWords: () => mockRequestRevealSeedWords,
 }));
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    push: jest.fn(),
+  }),
+}));
+
 const mockStateWithModal = {
   ...mockState,
   appState: {
@@ -42,6 +49,7 @@ describe('Reveal Seed Page', () => {
   const mockStore = configureMockStore([thunk])(mockStateWithModal);
 
   afterEach(() => {
+    jest.resetAllMocks();
     jest.clearAllMocks();
   });
 

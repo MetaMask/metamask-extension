@@ -1,29 +1,23 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
-import {
-  CHAIN_IDS,
-  GOERLI_DISPLAY_NAME,
-  NETWORK_TYPES,
-} from '../../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import CancelTransactionGasFee from './cancel-transaction-gas-fee.component';
 
 describe('CancelTransactionGasFee Component', () => {
-  const mockState = {
+  const defaultState = {
     metamask: {
-      providerConfig: {
-        chainId: CHAIN_IDS.GOERLI,
-        nickname: GOERLI_DISPLAY_NAME,
-        type: NETWORK_TYPES.GOERLI,
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       currencyRates: {},
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: false,
-      },
+      preferences: {},
+      completedOnboarding: true,
+      internalAccounts: mockState.metamask.internalAccounts,
     },
   };
 
-  const mockStore = configureMockStore()(mockState);
+  const mockStore = configureMockStore()(defaultState);
 
   it('should render', () => {
     const props = {

@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`JwtUrlForm shows JWT text area when no jwt token exists 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-8 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start"
+  >
+    <div
+      class="mm-box mm-box--margin-top-4 mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
+    >
+      <div
+        class="mm-box mm-box--width-full"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-4 mm-box--display-block mm-box--color-text-default"
+        >
+          input text
+        </p>
+        <div
+          class="mm-box mm-box--width-full"
+        >
+          <textarea
+            class="mm-box mm-text mm-textarea mm-textarea--resize-both mm-text--body-md mm-box--padding-2 mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--width-full mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
+            data-testid="jwt-input"
+            id="jwt-box"
+            resize="both"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -31,7 +31,7 @@ html {
   */
   @media (prefers-color-scheme: dark) {
     &:not([data-theme]) {
-      color: var(--brand-colors-white-white000);
+      color: var(--brand-colors-white);
       background-color: var(--brand-colors-grey-grey900);
     }
 

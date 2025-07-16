@@ -18,12 +18,12 @@ describe('PickerNetwork', () => {
       <PickerNetwork
         data-testid="picker-network"
         label="Imported"
-        src="./images/matic-token.svg"
+        src="./images/pol-token.svg"
       />,
     );
     const image = screen.getByRole('img');
     expect(image).toBeDefined();
-    expect(image).toHaveAttribute('src', './images/matic-token.svg');
+    expect(image).toHaveAttribute('src', './images/pol-token.svg');
   });
   it('should render avatar network inside the PickerNetwork with custom props', () => {
     const container = (

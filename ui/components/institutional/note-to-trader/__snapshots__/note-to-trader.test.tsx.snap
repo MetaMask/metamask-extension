@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NoteToTrader should render the Note to trader component 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-0 mm-box--background-color-background-default mm-box--rounded-md"
+  >
+    <div
+      class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column"
+    >
+      <div
+        class="mm-box note-header mm-box--display-flex mm-box--justify-content-space-between"
+      >
+        <label
+          class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+          for="transaction-note"
+        >
+          Transaction note
+        </label>
+        <p
+          class="mm-box mm-text note-header__counter mm-text--body-md mm-box--color-text-default"
+        >
+          0
+          /
+          280
+        </p>
+      </div>
+      <div
+        class="mm-box note-field mm-box--display-flex mm-box--flex-direction-column"
+      >
+        <textarea
+          class="mm-box mm-text mm-textarea mm-textarea--resize-vertical mm-text--body-md mm-box--padding-2 mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--width-full mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+          data-testid="transaction-note"
+          id="transaction-note"
+          maxlength="280"
+          placeholder="The approver will see this note when approving the transaction at the custodian."
+          resize="vertical"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;

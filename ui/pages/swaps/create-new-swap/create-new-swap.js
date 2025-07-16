@@ -9,7 +9,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import {
-  navigateBackToBuildQuote,
+  navigateBackToPrepareSwap,
   setSwapsFromToken,
 } from '../../../ducks/swaps/swaps';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
@@ -32,7 +32,7 @@ export default function CreateNewSwap({ sensitiveTrackingProperties }) {
             sensitiveProperties: sensitiveTrackingProperties,
           });
           history.push(DEFAULT_ROUTE); // It cleans up Swaps state.
-          await dispatch(navigateBackToBuildQuote(history));
+          await dispatch(navigateBackToPrepareSwap(history));
           dispatch(setSwapsFromToken(defaultSwapsToken));
         }}
       >

@@ -1,10 +1,19 @@
 .multichain-network-list-menu-content-wrapper {
   &__dialog {
+    height: 100vh;
     max-height: 100%;
   }
 }
 
 .multichain-network-list-menu {
-  max-height: 100%;
+  height: 100%;
   overflow: auto;
+}
+
+.rpc-list-item {
+  overflow: hidden;
+}
+
+.rpc-list-item button {
+  text-align: start;
 }

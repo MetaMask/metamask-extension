@@ -27,43 +27,46 @@ describe('Test Snap manageState', function () {
           tag: 'h2',
         });
 
-        // navigate to test snaps page and connect to manage-state snap
+        // scroll to manage-state snap
         const snapButton1 = await driver.findElement('#connectmanage-state');
         await driver.scrollToElement(snapButton1);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectmanage-state');
         await driver.clickElement('#connectmanage-state');
 
-        // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          2,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
-
+        // wait for and click confirm
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
 
         // fill and click send inputs on test snap page
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
@@ -71,6 +74,7 @@ describe('Test Snap manageState', function () {
           text: 'Reconnect to Manage State Snap',
         });
 
+        // enter data and click send managestate
         await driver.pasteIntoField('#dataManageState', '23');
         const snapButton2 = await driver.findElement(
           '#retrieveManageStateResult',

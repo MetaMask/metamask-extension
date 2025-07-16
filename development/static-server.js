@@ -31,7 +31,7 @@ const onRequest = (request, response) => {
 };
 
 const startServer = ({ port, rootDirectory }) => {
-  const server = createStaticServer(rootDirectory);
+  const server = createStaticServer({ public: rootDirectory });
 
   server.on('request', onRequest);
 

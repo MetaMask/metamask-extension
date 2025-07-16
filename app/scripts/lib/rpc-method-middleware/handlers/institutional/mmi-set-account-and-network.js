@@ -1,5 +1,5 @@
-import { ethErrors } from 'eth-rpc-errors';
-import { RPC_ALLOWED_ORIGINS } from '@metamask-institutional/rpc-allowlist';
+import { isAllowedRPCOrigin } from '@metamask-institutional/rpc-allowlist';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 
 const mmiSetAccountAndNetwork = {
@@ -23,8 +23,8 @@ export default mmiSetAccountAndNetwork;
  */
 
 /**
- * @param {import('json-rpc-engine').JsonRpcRequest<MmiSetAccountAndNetworkParam>} req - The JSON-RPC request object.
- * @param {import('json-rpc-engine').JsonRpcResponse<true>} res - The JSON-RPC response object.
+ * @param {import('@metamask/utils').JsonRpcRequest<MmiSetAccountAndNetworkParam>} req - The JSON-RPC request object.
+ * @param {import('@metamask/utils').JsonRpcResponse<true>} res - The JSON-RPC response object.
  * @param {Function} _next - The json-rpc-engine 'next' callback.
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param {WatchAssetOptions} options
@@ -37,13 +37,8 @@ async function mmiSetAccountAndNetworkHandler(
   { handleMmiSetAccountAndNetwork },
 ) {
   try {
-    let validUrl = false;
-    RPC_ALLOWED_ORIGINS[MESSAGE_TYPE.MMI_PORTFOLIO].forEach((regexp) => {
-      // eslint-disable-next-line require-unicode-regexp
-      if (regexp.test(req.origin)) {
-        validUrl = true;
-      }
-    });
+    const validUrl = isAllowedRPCOrigin(MESSAGE_TYPE.MMI_PORTFOLIO, req.origin);
+
     // eslint-disable-next-line no-negated-condition
     if (!validUrl) {
       throw new Error('Unauthorized');
@@ -51,7 +46,7 @@ async function mmiSetAccountAndNetworkHandler(
 
     if (!req.params?.[0] || typeof req.params[0] !== 'object') {
       return end(
-        ethErrors.rpc.invalidParams({
+        rpcErrors.invalidParams({
           message: `Expected single, object parameter. Received:\n${JSON.stringify(
             req.params,
           )}`,

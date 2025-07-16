@@ -12,6 +12,7 @@ const {
   boolean,
   coerce,
   union,
+  number,
   unknown,
   validate,
   nullable,
@@ -62,7 +63,26 @@ const EnvArrayStruct = unique(
   },
 );
 
+/**
+ * Ensures a number is within a given range
+ *
+ * @param {number} min
+ * @param {number} max
+ */
+const isInRange = (min, max) => {
+  /**
+   *
+   * @param {number} value
+   * @returns boolean
+   */
+  function check(value) {
+    return value >= min && value <= max;
+  }
+  return refine(number(), 'range', check);
+};
+
 const BuildTypeStruct = object({
+  id: isInRange(10, 64),
   features: optional(unique(array(string()))),
   env: optional(EnvArrayStruct),
   isPrerelease: optional(boolean()),

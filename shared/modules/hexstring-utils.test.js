@@ -1,7 +1,50 @@
 import { toChecksumAddress } from 'ethereumjs-util';
-import { isValidHexAddress } from './hexstring-utils';
+import { isPossibleAddress, isValidHexAddress } from './hexstring-utils';
 
 describe('hexstring utils', function () {
+  describe('isPossibleAddress', function () {
+    it('should allow 40-char non-prefixed hex', function () {
+      const address = 'fdea65c8e26263f6d9a1b5de9555d2931a33b825';
+      const result = isPossibleAddress(address);
+      expect(result).toStrictEqual(true);
+    });
+    it('should allow 42-char prefixed hex', function () {
+      const address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825';
+      const result = isPossibleAddress(address);
+      expect(result).toStrictEqual(true);
+    });
+    it('should not allow 42-char prefixed non-hex', function () {
+      const address = '0xzzzz65c8e26263f6d9a1b5de9555d2931a33b825';
+      const result = isPossibleAddress(address);
+      expect(result).toStrictEqual(false);
+    });
+    it('should not allow 40-char non-prefixed non-hex', function () {
+      const address = 'zzzz65c8e26263f6d9a1b5de9555d2931a33b825';
+      const result = isPossibleAddress(address);
+      expect(result).toStrictEqual(false);
+    });
+    it('should not allow shorter prefixed hex strings', function () {
+      const address = '0x1234';
+      const result = isPossibleAddress(address);
+      expect(result).toStrictEqual(false);
+    });
+    it('should not allow shorter non-prefixed hex strings', function () {
+      const address = '1234';
+      const result = isPossibleAddress(address);
+      expect(result).toStrictEqual(false);
+    });
+    it('should not allow longer prefixed hex strings', function () {
+      const address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825fdea65c8e262';
+      const result = isPossibleAddress(address);
+      expect(result).toStrictEqual(false);
+    });
+    it('should not allow longer non-prefixed hex strings', function () {
+      const address = 'fdea65c8e26263f6d9a1b5de9555d2931a33b825fdea65c8e262';
+      const result = isPossibleAddress(address);
+      expect(result).toStrictEqual(false);
+    });
+  });
+
   describe('isValidHexAddress', function () {
     it('should allow 40-char non-prefixed hex', function () {
       const address = 'fdea65c8e26263f6d9a1b5de9555d2931a33b825';

@@ -1,10 +1,13 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 import SnapPermissionsList from './snap-permissions-list';
 
 describe('Snap Permission List', () => {
+  const mockSnapId = 'mock-snap-id';
+  const mockSnapName = 'Snap Name';
   const mockPermissionData = {
     snap_dialog: {
       caveats: null,
@@ -41,6 +44,7 @@ describe('Snap Permission List', () => {
           },
         },
       },
+      ...mockNetworkState({}),
     },
   };
 
@@ -49,6 +53,8 @@ describe('Snap Permission List', () => {
   it('renders permissions list for snaps', () => {
     renderWithProvider(
       <SnapPermissionsList
+        snapId={mockSnapId}
+        snapName={mockSnapName}
         permissions={mockPermissionData}
         targetSubjectMetadata={mockTargetSubjectMetadata}
       />,

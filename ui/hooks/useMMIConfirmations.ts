@@ -1,48 +1,28 @@
-import { TransactionType } from '@metamask/transaction-controller';
-import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 
-import { currentConfirmationSelector } from '../pages/confirmations/selectors';
-import { getAccountType } from '../selectors';
-import { completedTx, showModal } from '../store/actions';
-import { mmiActionsFactory } from '../store/institutional/institution-background';
+import { useConfirmContext } from '../pages/confirmations/context/confirm';
+import { useMMICustodySignMessage } from './useMMICustodySignMessage';
+import { useMMICustodySendTransaction } from './useMMICustodySendTransaction';
 
-export function useMMIConfirmationInfo() {
-  const dispatch = useDispatch();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
-  const accountType = useSelector(getAccountType);
+export function useMMIConfirmations() {
+  const { custodySignFn } = useMMICustodySignMessage();
+  const { custodyTransactionFn } = useMMICustodySendTransaction();
 
-  const mmiOnSignCallback = useCallback(async () => {
-    if (
-      !currentConfirmation ||
-      currentConfirmation.type !== TransactionType.personalSign
-    ) {
-      return;
-    }
-    try {
-      dispatch(completedTx(currentConfirmation.id));
-    } catch (err: any) {
-      dispatch(
-        showModal({
-          name: 'TRANSACTION_FAILED',
-          errorMessage: err.message,
-          closeNotification: true,
-          operationFailed: true,
-        }),
-      );
-    } finally {
-      if (accountType === 'custody') {
-        const mmiActions = mmiActionsFactory();
-        dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
-      }
-    }
-  }, []);
+  const { currentConfirmation } = useConfirmContext();
 
   return {
     mmiSubmitDisabled:
       currentConfirmation &&
-      currentConfirmation.type === TransactionType.personalSign &&
+      (currentConfirmation.type === TransactionType.personalSign ||
+        currentConfirmation.type === TransactionType.signTypedData) &&
       Boolean(currentConfirmation?.custodyId),
-    mmiOnSignCallback,
+    mmiOnSignCallback: () => custodySignFn(currentConfirmation),
+    mmiOnTransactionCallback: (
+      transactionData: TransactionMeta,
+      noteToTraderMessage: string,
+    ) => custodyTransactionFn(transactionData, noteToTraderMessage),
   };
 }

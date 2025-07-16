@@ -89,4 +89,10 @@ export default class ReadOnlyNetworkStore {
     }
     this._state = { data: state, meta: this._metadata };
   }
+
+  cleanUpMostRecentRetrievedState() {
+    if (this.mostRecentRetrievedState) {
+      this.mostRecentRetrievedState = null;
+    }
+  }
 }

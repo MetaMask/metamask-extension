@@ -66,7 +66,7 @@ export const Src: StoryFn<typeof PickerNetwork> = (args) => (
     <PickerNetwork
       {...args}
       label="Polygon Mainnet"
-      src="./images/matic-token.svg"
+      src="./images/pol-token.svg"
     />
     <PickerNetwork {...args} label="Optimism" src="./images/optimism.svg" />
   </Box>

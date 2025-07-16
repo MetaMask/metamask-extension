@@ -1,18 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { RpcEndpointType } from '@metamask/network-controller';
+import { NetworkType } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import {
-  getNativeCurrency,
-  getProviderConfig,
-} from '../../../../ducks/metamask/metamask';
-import {
   accountsWithSendEtherInfoSelector,
-  conversionRateSelector,
-  getCurrentChainId,
   getCurrentCurrency,
-  getPreferences,
+  selectDefaultRpcEndpointByChainId,
+  selectNetworkConfigurationByChainId,
 } from '../../../../selectors';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import {
@@ -28,25 +25,33 @@ import NetworkAccountBalanceHeader from '../../../../components/app/network-acco
 const SignatureRequestHeader = ({ txData }) => {
   const t = useI18nContext();
   const {
+    chainId,
     msgParams: { from },
   } = txData;
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const fromAccount = getAccountByAddress(allAccounts, from);
-  const nativeCurrency = useSelector(getNativeCurrency);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const currentChainId = useSelector(getCurrentChainId);
 
-  const providerConfig = useSelector(getProviderConfig);
-  const networkName = getNetworkNameFromProviderType(providerConfig.type);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const conversionRateFromSelector = useSelector(conversionRateSelector);
-  const conversionRate = useNativeCurrencyAsPrimaryCurrency
-    ? null
-    : conversionRateFromSelector;
+  const { nativeCurrency, name: networkNickname } = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+
+  const defaultRpcEndpoint = useSelector((state) =>
+    selectDefaultRpcEndpointByChainId(state, chainId),
+  );
+
+  const networkType =
+    defaultRpcEndpoint.type === RpcEndpointType.Custom
+      ? NetworkType.rpc
+      : defaultRpcEndpoint.networkClientId;
+
+  const networkName = getNetworkNameFromProviderType(networkType);
+
+  const conversionRate = null; // setting conversion rate to null by default to display balance in native
 
   const currentNetwork =
     networkName === ''
-      ? providerConfig.nickname || t('unknownNetwork')
+      ? networkNickname || t('unknownNetwork')
       : t(networkName);
 
   const balanceInBaseAsset = conversionRate
@@ -76,7 +81,7 @@ const SignatureRequestHeader = ({ txData }) => {
         conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
       }
       accountAddress={fromAccount.address}
-      chainId={currentChainId}
+      chainId={chainId}
     />
   );
 };
