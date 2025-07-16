@@ -112,9 +112,7 @@ const useBridging = () => {
       );
       let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
       const assetId = toAssetId(
-        isStrictHexString(token.address)
-          ? token.address.toLowerCase()
-          : token.address,
+        token.address,
         formatChainIdToCaip(token.chainId ?? providerConfig.chainId),
       );
       url += `?${BridgeQueryParams.FROM}=${assetId}`;

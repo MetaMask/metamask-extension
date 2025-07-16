@@ -3,11 +3,12 @@ import {
   parseCaipChainId,
   CaipAssetTypeStruct,
   CaipChainId,
-  Hex,
+  type Hex,
   isCaipAssetType,
   isCaipChainId,
   isStrictHexString,
   parseCaipAssetType,
+  isHexString,
 } from '@metamask/utils';
 
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
@@ -37,12 +38,12 @@ export const toAssetId = (
     return CaipAssetTypeStruct.create(`${chainId}/token:${address}`);
   }
   // EVM assets
-  if (!isStrictHexString(address)) {
-    return undefined;
+  if (isHexString(address)) {
+    return CaipAssetTypeStruct.create(
+      `${chainId}/erc20:${address.toLowerCase()}`,
+    );
   }
-  return CaipAssetTypeStruct.create(
-    `${chainId}/erc20:${address.toLowerCase()}`,
-  );
+  return undefined;
 };
 
 /**
