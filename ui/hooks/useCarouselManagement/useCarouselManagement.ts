@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import log from 'loglevel';
 import { BigNumber } from 'bignumber.js';
+import { Platform } from '@metamask/profile-sync-controller/sdk';
 import { isSolanaAddress } from '../../../shared/lib/multichain/accounts';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
 import {
@@ -106,7 +107,7 @@ export const useCarouselManagement = ({
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     defaultSlides.push(SOLANA_SLIDE);
     ///: END:ONLY_INCLUDE_IF
-    defaultSlides.splice(hasZeroBalance ? 0 : 3, 0, fundSlide);
+    defaultSlides.splice(hasZeroBalance ? 0 : 2, 0, fundSlide);
 
     if (isRemoteModeEnabled) {
       defaultSlides.unshift(REMOTE_MODE_SLIDE);
@@ -146,11 +147,11 @@ export const useCarouselManagement = ({
       const userProfileMetaMetrics = await getUserProfileMetaMetricsAction();
 
       const isUserAvailableOnMobile = userProfileMetaMetrics.lineage.some(
-        (lineage) => lineage.agent === 'mobile',
+        (lineage) => lineage.agent === Platform.MOBILE,
       );
 
       if (!isUserAvailableOnMobile) {
-        defaultSlides.unshift(DOWNLOAD_MOBILE_APP_SLIDE);
+        defaultSlides.push(DOWNLOAD_MOBILE_APP_SLIDE);
       }
 
       if (contentfulEnabled) {
