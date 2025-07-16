@@ -129,14 +129,21 @@ export const SrpList = ({
                         },
                       });
                       setShowAccounts((prevState) => {
-                        const newState = prevState.map((value, i) =>
+                        const accountListLength =
+                          hdKeyringsWithSnapAccounts.length;
+                        let newState = prevState;
+                        if (accountListLength > prevState.length) {
+                          // Extend the state with `false` for new accounts
+                          newState = [
+                            ...prevState,
+                            ...Array(accountListLength - prevState.length).fill(
+                              false,
+                            ),
+                          ];
+                        }
+                        return newState.map((value, i) =>
                           i === index ? !value : value,
                         );
-                        // if the newly synced account is selected, add it to the state
-                        if (index === prevState.length) {
-                          newState.push(true);
-                        }
-                        return newState;
                       });
                     }}
                   >
