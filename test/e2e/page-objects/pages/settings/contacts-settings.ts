@@ -128,7 +128,7 @@ class ContactsSettings {
    */
   async deleteContact(contactName: string): Promise<void> {
     console.log('Deleting contact on contacts settings page');
-    await this.driver.clickElement({
+    await this.driver.findScrollToAndClickElement({
       text: contactName,
       css: this.contactListItem,
     });
@@ -143,7 +143,7 @@ class ContactsSettings {
    * @param params.existingContactName - The name of the contact to edit.
    * @param params.newContactName - The new name of the contact.
    * @param params.newContactAddress - The new address of the contact.
-   * @param params.newNetwork - The new network for the contact.
+   * @param params.newNetwork - The new network for the contact (optional).
    */
   async editContact({
     existingContactName,
@@ -154,20 +154,25 @@ class ContactsSettings {
     existingContactName: string;
     newContactName: string;
     newContactAddress: string;
-    newNetwork: string;
+    newNetwork?: string;
   }): Promise<void> {
     console.log('Editing contact on contacts settings page');
-    await this.driver.clickElement({
+    await this.driver.findScrollToAndClickElement({
       text: existingContactName,
       css: this.contactListItem,
     });
     await this.driver.clickElement(this.editContactButton);
     await this.driver.fill(this.userNameInput, newContactName);
     await this.driver.fill(this.editContactAddressInput, newContactAddress);
-    await this.driver.clickElement(this.networkSelector);
-    await this.driver.clickElement({
-      text: newNetwork,
-    });
+
+    // Only change network if newNetwork is provided
+    if (newNetwork) {
+      await this.driver.clickElement(this.networkSelector);
+      await this.driver.clickElement({
+        text: newNetwork,
+      });
+    }
+
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmAddContactButton,
     );
