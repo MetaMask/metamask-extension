@@ -139,6 +139,35 @@ describe('Address Book', function (this: Suite) {
     );
   });
 
+  it('Adds a new contact to the address book on a different chain', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+
+        await new HeaderNavbar(driver).openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.goToContactsSettings();
+
+        const contactsPage = new ContactsPage(driver);
+        await contactsPage.check_pageIsLoaded();
+        await contactsPage.addContactNewChain(
+          'Test User',
+          '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
+          'Sepolia',
+        );
+        await contactsPage.check_contactDisplayed({
+          contactName: 'Test User',
+          address: shortenAddress('0x56A355d3427bC2B1E22c78197AF091230919Cc2A'),
+        });
+      },
+    );
+  });
+
   it('Edit entry in address book', async function () {
     await withFixtures(
       {
@@ -173,6 +202,7 @@ describe('Address Book', function (this: Suite) {
           existingContactName: 'Test Name 1',
           newContactName: 'Test Name Edit',
           newContactAddress: '0x74cE91B75935D6Bedc27eE002DeFa566c5946f74',
+          newNetwork: 'Sepolia',
         });
         await contactsPage.check_contactDisplayed({
           contactName: 'Test Name Edit',
@@ -181,7 +211,6 @@ describe('Address Book', function (this: Suite) {
       },
     );
   });
-
   it('Deletes existing entry from address book', async function () {
     await withFixtures(
       {
@@ -219,6 +248,45 @@ describe('Address Book', function (this: Suite) {
           contactName: 'Test Name 1',
           address: shortenAddress('0x2f318C334780961FB129D2a6c30D0763d9a5C970'),
           shouldDisplay: false,
+        });
+      },
+    );
+  });
+
+  it('User can add same address contacts on different chains', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+
+        await new HeaderNavbar(driver).openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.goToContactsSettings();
+
+        const contactsPage = new ContactsPage(driver);
+        await contactsPage.check_pageIsLoaded();
+        await contactsPage.addContact(
+          'Test User 1',
+          '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
+        );
+        await contactsPage.check_contactDisplayed({
+          contactName: 'Test User 1',
+          address: shortenAddress('0x56A355d3427bC2B1E22c78197AF091230919Cc2A'),
+        });
+
+        await contactsPage.check_pageIsLoaded();
+        await contactsPage.addContactNewChain(
+          'Test User 2',
+          '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
+          'Sepolia',
+        );
+        await contactsPage.check_contactDisplayed({
+          contactName: 'Test User 2',
+          address: shortenAddress('0x56A355d3427bC2B1E22c78197AF091230919Cc2A'),
         });
       },
     );
