@@ -24,6 +24,7 @@ import {
   ENVIRONMENT_TYPE_BACKGROUND,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   ORIGIN_METAMASK,
+  DOWNLOAD_MOBILE_APP_SLIDE_ID,
 } from '../../../shared/constants/app';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
@@ -639,7 +640,7 @@ export class AppStateController extends BaseController<
         return slide;
       });
 
-      if (id === 'downloadMobileApp') {
+      if (id === DOWNLOAD_MOBILE_APP_SLIDE_ID) {
         state.showDownloadMobileAppSlide = false;
       }
     });

@@ -1,3 +1,5 @@
+import { DOWNLOAD_MOBILE_APP_SLIDE_ID } from '../../../shared/constants/app';
+
 export const BASIC_FUNCTIONALITY_SLIDE = {
   id: 'basic_functionality',
   title: 'basicConfigurationBannerTitle',
@@ -83,7 +85,7 @@ export const BACKUPANDSYNC_SLIDE = {
 };
 
 export const DOWNLOAD_MOBILE_APP_SLIDE = {
-  id: 'downloadMobileApp',
+  id: DOWNLOAD_MOBILE_APP_SLIDE_ID,
   title: 'slideDownloadMobileAppTitle',
   description: 'slideDownloadMobileAppDescription',
   image: './images/slide-metamask-icon.svg',
