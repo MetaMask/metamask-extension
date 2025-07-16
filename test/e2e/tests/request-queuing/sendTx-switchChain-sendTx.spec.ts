@@ -7,6 +7,8 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import AlertModal from '../../page-objects/pages/confirmations/redesign/alert-modal';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import HomePage from '../../page-objects/pages/home/homepage';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
 describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Suite) {
   it('switching network should reject pending confirmations', async function () {
@@ -43,9 +45,6 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Sui
         // Dapp Send Button
         await testDapp.clickSimpleSendButton();
 
-        // Keep notification confirmation on screen
-        await driver.waitUntilXWindowHandles(3);
-
         // Navigate back to test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
@@ -80,7 +79,15 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Sui
         await alertModal.clickConfirmButton();
 
         // No confirmations, after switching network, tx queue should be cleared
-        await driver.waitUntilXWindowHandles(2);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+
+        const activityListPage = new ActivityListPage(driver);
+        await activityListPage.check_noTxInActivity();
       },
     );
   });
