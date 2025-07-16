@@ -1362,7 +1362,20 @@ export function getIsNonStandardEthChain(state) {
 }
 
 export function getPreferences({ metamask }) {
-  return metamask.preferences ?? {};
+  const extensionPreferences = metamask.preferences ?? {};
+  const corePreferences = metamask.CorePreferencesController ?? {};
+
+  // Merge preferences, giving priority to core controller for general settings
+  return {
+    ...extensionPreferences,
+    ...(corePreferences.showNativeTokenAsMainBalance !== undefined && {
+      showNativeTokenAsMainBalance:
+        corePreferences.showNativeTokenAsMainBalance,
+    }),
+    ...(corePreferences.hideZeroBalanceTokens !== undefined && {
+      hideZeroBalanceTokens: corePreferences.hideZeroBalanceTokens,
+    }),
+  };
 }
 
 export function getShowTestNetworks(state) {
@@ -2137,7 +2150,10 @@ export function getSnaps(state) {
 }
 
 export function getLocale(state) {
-  return state.metamask.currentLocale;
+  return (
+    state.metamask.CorePreferencesController?.currentLocale ||
+    state.metamask.currentLocale
+  );
 }
 
 export const getSnap = createDeepEqualSelector(
@@ -2625,7 +2641,10 @@ export function getUseNftDetection(state) {
  * @returns Boolean
  */
 export function getUseBlockie(state) {
-  return Boolean(state.metamask.useBlockie);
+  return Boolean(
+    state.metamask.CorePreferencesController?.useBlockie ??
+      state.metamask.useBlockie,
+  );
 }
 
 /**
@@ -2645,7 +2664,9 @@ export function getOpenSeaEnabled(state) {
  * @returns Boolean
  */
 export function getTheme(state) {
-  return state.metamask.theme;
+  return (
+    state.metamask.CorePreferencesController?.theme || state.metamask.theme
+  );
 }
 
 export function doesAddressRequireLedgerHidConnection(state, address) {

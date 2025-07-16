@@ -180,6 +180,7 @@ import {
   SeedlessOnboardingControllerErrorMessage,
   SecretType,
 } from '@metamask/seedless-onboarding-controller';
+import { PreferencesController as CorePreferencesController } from '@metamask/preferences-controller';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -823,6 +824,21 @@ export default class MetamaskController extends EventEmitter {
         ...initState.PreferencesController,
       },
       messenger: preferencesMessenger,
+    });
+
+    // Core PreferencesController for general settings that sync across platforms
+    const corePreferencesMessenger = this.controllerMessenger.getRestricted({
+      name: 'CorePreferencesController',
+      allowedActions: [],
+      allowedEvents: [],
+    });
+
+    this.corePreferencesController = new CorePreferencesController({
+      messenger: corePreferencesMessenger,
+      state: {
+        currentLocale: opts.initLangCode ?? 'en',
+        ...initState.CorePreferencesController,
+      },
     });
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
@@ -2181,6 +2197,7 @@ export default class MetamaskController extends EventEmitter {
       AppMetadataController: this.appMetadataController,
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
+      CorePreferencesController: this.corePreferencesController,
       MetaMetricsController: this.metaMetricsController,
       MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
@@ -2236,6 +2253,7 @@ export default class MetamaskController extends EventEmitter {
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,
+        CorePreferencesController: this.corePreferencesController,
         MetaMetricsController: this.metaMetricsController,
         MetaMetricsDataDeletionController:
           this.metaMetricsDataDeletionController,
@@ -3403,11 +3421,12 @@ export default class MetamaskController extends EventEmitter {
     return {
       // etc
       getState: this.getState.bind(this),
-      setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
-        currencyRateController,
-      ),
-      setUseBlockie: preferencesController.setUseBlockie.bind(
-        preferencesController,
+      setCurrentCurrency:
+        this.corePreferencesController.setCurrentCurrency.bind(
+          this.corePreferencesController,
+        ),
+      setUseBlockie: this.corePreferencesController.setUseBlockie.bind(
+        this.corePreferencesController,
       ),
       setUsePhishDetect: preferencesController.setUsePhishDetect.bind(
         preferencesController,
@@ -3494,8 +3513,8 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController.setMarketingCampaignCookieId.bind(
           metaMetricsController,
         ),
-      setCurrentLocale: preferencesController.setCurrentLocale.bind(
-        preferencesController,
+      setCurrentLocale: this.corePreferencesController.setCurrentLocale.bind(
+        this.corePreferencesController,
       ),
       setServiceWorkerKeepAlivePreference:
         preferencesController.setServiceWorkerKeepAlivePreference.bind(
@@ -3606,9 +3625,18 @@ export default class MetamaskController extends EventEmitter {
       setFeatureFlag: preferencesController.setFeatureFlag.bind(
         preferencesController,
       ),
-      setPreference: preferencesController.setPreference.bind(
-        preferencesController,
-      ),
+      setPreference: (preference, value) => {
+        // Route general settings to core PreferencesController
+        if (preference === 'showNativeTokenAsMainBalance') {
+          return this.corePreferencesController.setShowNativeTokenAsMainBalance(
+            value,
+          );
+        } else if (preference === 'hideZeroBalanceTokens') {
+          return this.corePreferencesController.setHideZeroBalanceTokens(value);
+        }
+        // Route other preferences to extension PreferencesController
+        return preferencesController.setPreference(preference, value);
+      },
 
       addKnownMethodData: preferencesController.addKnownMethodData.bind(
         preferencesController,
@@ -3624,7 +3652,9 @@ export default class MetamaskController extends EventEmitter {
       setAdvancedGasFee: preferencesController.setAdvancedGasFee.bind(
         preferencesController,
       ),
-      setTheme: preferencesController.setTheme.bind(preferencesController),
+      setTheme: this.corePreferencesController.setTheme.bind(
+        this.corePreferencesController,
+      ),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       setSnapsAddSnapAccountModalDismissed:
         preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
@@ -4151,9 +4181,6 @@ export default class MetamaskController extends EventEmitter {
 
       // Notifications
       resetViewedNotifications: announcementController.resetViewed.bind(
-        announcementController,
-      ),
-      updateViewedNotifications: announcementController.updateViewed.bind(
         announcementController,
       ),
 
@@ -4902,40 +4929,6 @@ export default class MetamaskController extends EventEmitter {
           shouldImportSolanaAccount: true,
         });
       }
-    }
-  }
-
-  /**
-   * Adds a new seed phrase backup for the user.
-   *
-   * If `syncWithSocial` is false, it will only update the local state,
-   * and not sync the seed phrase to the server.
-   *
-   * @param {string} mnemonic - The mnemonic to derive the seed phrase from.
-   * @param {string} keyringId - The keyring id of the backup seed phrase.
-   * @param {boolean} syncWithSocial - whether to skip syncing with social login
-   */
-  async addNewSeedPhraseBackup(mnemonic, keyringId, syncWithSocial = true) {
-    const seedPhraseAsBuffer = Buffer.from(mnemonic, 'utf8');
-
-    const seedPhraseAsUint8Array =
-      this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
-
-    if (syncWithSocial) {
-      await this.seedlessOnboardingController.addNewSecretData(
-        seedPhraseAsUint8Array,
-        SecretType.Mnemonic,
-        {
-          keyringId,
-        },
-      );
-    } else {
-      // Do not sync the seed phrase to the server, only update the local state
-      this.seedlessOnboardingController.updateBackupMetadataState({
-        keyringId,
-        data: seedPhraseAsUint8Array,
-        type: SecretType.Mnemonic,
-      });
     }
   }
 

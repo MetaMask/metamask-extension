@@ -590,5 +590,8 @@ export function doesUserHaveALedgerAccount(state) {
 }
 
 export function getCurrentCurrency(state) {
-  return state.metamask.currentCurrency;
+  return (
+    state.metamask.CorePreferencesController?.currentCurrency ||
+    state.metamask.currentCurrency
+  );
 }

@@ -91,6 +91,8 @@ export type Preferences = {
   showTestNetworks: boolean;
   smartTransactionsOptInStatus: boolean;
   smartTransactionsMigrationApplied: boolean;
+  // TODO: Remove these properties after migration 172 has been deployed and all users have migrated
+  // These are now managed by CorePreferencesController
   showNativeTokenAsMainBalance: boolean;
   useNativeCurrencyAsPrimaryCurrency: boolean;
   hideZeroBalanceTokens: boolean;
@@ -120,6 +122,8 @@ export type PreferencesControllerState = Omit<
   | 'tokenSortConfig'
   | 'useMultiRpcMigration'
 > & {
+  // TODO: Remove these properties after migration 172 has been deployed and all users have migrated
+  // These are now managed by CorePreferencesController
   useBlockie: boolean;
   usePhishDetect: boolean;
   dismissSeedBackUpReminder: boolean;
@@ -133,6 +137,7 @@ export type PreferencesControllerState = Omit<
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
   knownMethodData: Record<string, string>;
+  // TODO: Remove after migration 172 - now managed by CorePreferencesController
   currentLocale: string;
   forgottenPassword: boolean;
   preferences: Preferences;
@@ -140,6 +145,7 @@ export type PreferencesControllerState = Omit<
   ledgerTransportType: LedgerTransportTypes;
   // TODO: Replace `Json` with correct type
   snapRegistryList: Record<string, Json>;
+  // TODO: Remove after migration 172 - now managed by CorePreferencesController
   theme: ThemeType;
   snapsAddSnapAccountModalDismissed?: boolean;
   useExternalNameSources: boolean;
@@ -147,6 +153,13 @@ export type PreferencesControllerState = Omit<
   useExternalServices: boolean;
   textDirection?: string;
   manageInstitutionalWallets: boolean;
+  // TODO: Remove after migration 172 - now managed by CorePreferencesController
+  currentCurrency: string;
+  dismissSmartAccountSuggestionEnabled: boolean;
+  smartAccountOptIn: boolean;
+  smartAccountOptInForAccounts: string[];
+  showNativeTokenAsMainBalance: boolean;
+  hideZeroBalanceTokens: boolean;
 };
 
 /**
@@ -155,6 +168,7 @@ export type PreferencesControllerState = Omit<
 export const getDefaultPreferencesControllerState =
   (): PreferencesControllerState => ({
     selectedAddress: '',
+    // TODO: Remove after migration 172 - now managed by CorePreferencesController
     useBlockie: false,
     usePhishDetect: true,
     dismissSeedBackUpReminder: false,
@@ -176,6 +190,7 @@ export const getDefaultPreferencesControllerState =
     advancedGasFee: {},
     featureFlags: {},
     knownMethodData: {},
+    // TODO: Remove after migration 172 - now managed by CorePreferencesController
     currentLocale: '',
     identities: {},
     lostIdentities: {},
@@ -187,6 +202,7 @@ export const getDefaultPreferencesControllerState =
       showTestNetworks: false,
       smartTransactionsOptInStatus: true,
       smartTransactionsMigrationApplied: false,
+      // TODO: Remove after migration 172 - now managed by CorePreferencesController
       showNativeTokenAsMainBalance: false,
       useNativeCurrencyAsPrimaryCurrency: true,
       hideZeroBalanceTokens: false,
@@ -215,6 +231,7 @@ export const getDefaultPreferencesControllerState =
       ? LedgerTransportTypes.webhid
       : LedgerTransportTypes.u2f,
     snapRegistryList: {},
+    // TODO: Remove after migration 172 - now managed by CorePreferencesController
     theme: ThemeType.os,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     snapsAddSnapAccountModalDismissed: false,
@@ -249,8 +266,16 @@ export const getDefaultPreferencesControllerState =
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM_TESTNET]: true,
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.SEI]: true,
     },
     manageInstitutionalWallets: false,
+    // TODO: Remove after migration 172 - now managed by CorePreferencesController
+    currentCurrency: 'USD',
+    dismissSmartAccountSuggestionEnabled: false,
+    smartAccountOptIn: true,
+    smartAccountOptInForAccounts: [],
+    showNativeTokenAsMainBalance: false,
+    hideZeroBalanceTokens: false,
   });
 
 /**
@@ -265,6 +290,7 @@ const controllerMetadata = {
     persist: true,
     anonymous: false,
   },
+  // TODO: Remove after migration 172 - now managed by CorePreferencesController
   useBlockie: {
     persist: true,
     anonymous: true,
@@ -333,6 +359,7 @@ const controllerMetadata = {
     persist: true,
     anonymous: false,
   },
+  // TODO: Remove after migration 172 - now managed by CorePreferencesController
   currentLocale: {
     persist: true,
     anonymous: true,
@@ -361,6 +388,15 @@ const controllerMetadata = {
         persist: true,
         anonymous: true,
       },
+      // TODO: Remove after migration 172 - now managed by CorePreferencesController
+      showNativeTokenAsMainBalance: {
+        persist: true,
+        anonymous: true,
+      },
+      hideZeroBalanceTokens: {
+        persist: true,
+        anonymous: true,
+      },
     },
   },
   ipfsGateway: {
@@ -383,6 +419,7 @@ const controllerMetadata = {
     persist: true,
     anonymous: false,
   },
+  // TODO: Remove after migration 172 - now managed by CorePreferencesController
   theme: {
     persist: true,
     anonymous: true,
@@ -414,6 +451,13 @@ const controllerMetadata = {
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
   manageInstitutionalWallets: { persist: true, anonymous: false },
+  // TODO: Remove after migration 172 - now managed by CorePreferencesController
+  currentCurrency: { persist: true, anonymous: true },
+  dismissSmartAccountSuggestionEnabled: { persist: true, anonymous: true },
+  smartAccountOptIn: { persist: true, anonymous: true },
+  smartAccountOptInForAccounts: { persist: true, anonymous: true },
+  showNativeTokenAsMainBalance: { persist: true, anonymous: true },
+  hideZeroBalanceTokens: { persist: true, anonymous: true },
 };
 
 export class PreferencesController extends BaseController<
