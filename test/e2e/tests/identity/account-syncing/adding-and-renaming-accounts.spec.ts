@@ -21,8 +21,6 @@ import { E2E_SRP } from '../../../default-fixture';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Adding and Renaming Accounts', function () {
-  this.timeout(160000); // This test is very long, so we need an unusually high timeout
-
   const DEFAULT_ACCOUNT_NAME = 'Account 1';
   const ADDED_ACCOUNT_NAME = 'Account 2';
   const NEW_ACCOUNT_NAME = 'RENAMED ACCOUNT';
