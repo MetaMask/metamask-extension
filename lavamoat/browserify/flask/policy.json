@@ -315,6 +315,11 @@
         "ethers>@ethersproject/logger": true
       }
     },
+    "@metamask/smart-transactions-controller>@ethersproject/keccak256>@ethersproject/bytes": {
+      "packages": {
+        "@metamask/smart-transactions-controller>@ethersproject/keccak256>@ethersproject/bytes>@ethersproject/logger": true
+      }
+    },
     "ethers>@ethersproject/constants": {
       "packages": {
         "@ethersproject/bignumber": true
@@ -379,10 +384,21 @@
         "ethers>@ethersproject/json-wallets>scrypt-js": true
       }
     },
+    "@metamask/smart-transactions-controller>@ethersproject/keccak256": {
+      "packages": {
+        "@metamask/smart-transactions-controller>@ethersproject/keccak256>@ethersproject/bytes": true,
+        "eth-ens-namehash>js-sha3": true
+      }
+    },
     "ethers>@ethersproject/keccak256": {
       "packages": {
         "@ethersproject/bytes": true,
         "eth-ens-namehash>js-sha3": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@ethersproject/keccak256>@ethersproject/bytes>@ethersproject/logger": {
+      "globals": {
+        "console": true
       }
     },
     "ethers>@ethersproject/logger": {
@@ -2180,15 +2196,14 @@
         "setInterval": true
       },
       "packages": {
-        "@ethereumjs/tx": true,
-        "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/bytes": true,
+        "@metamask/smart-transactions-controller>@ethersproject/keccak256": true,
+        "ethers>@ethersproject/transactions": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/smart-transactions-controller>@metamask/polling-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
-        "browserify>buffer": true,
         "fast-json-patch": true,
         "lodash": true
       }
