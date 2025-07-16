@@ -5407,7 +5407,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^72.0.0":
+"@metamask/assets-controllers@npm:72.0.0":
   version: 72.0.0
   resolution: "@metamask/assets-controllers@npm:72.0.0"
   dependencies:
@@ -5452,6 +5452,54 @@ __metadata:
     "@metamask/transaction-controller": ^58.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
   checksum: 10/781cbafc4fcd0e474eba4b8b94f07362b5ffb0452c57e56bf93b1719cb912c8a94060c52428612ae4268451b9f965e8b11430bbfa9f85462274bb492b2bbfb83
+  languageName: node
+  linkType: hard
+
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A72.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-72.0.0-781cbafc4f.patch":
+  version: 72.0.0
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A72.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-72.0.0-781cbafc4f.patch::version=72.0.0&hash=98aa24"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/address": "npm:^5.7.0"
+    "@ethersproject/bignumber": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/abi-utils": "npm:^2.0.3"
+    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/contract-metadata": "npm:^2.4.0"
+    "@metamask/controller-utils": "npm:^11.11.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/keyring-api": "npm:^18.0.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/polling-controller": "npm:^14.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/snaps-sdk": "npm:^9.0.0"
+    "@metamask/snaps-utils": "npm:^11.0.0"
+    "@metamask/utils": "npm:^11.4.2"
+    "@types/bn.js": "npm:^5.1.5"
+    "@types/uuid": "npm:^8.3.0"
+    async-mutex: "npm:^0.5.0"
+    bitcoin-address-validation: "npm:^2.2.3"
+    bn.js: "npm:^5.2.1"
+    immer: "npm:^9.0.6"
+    lodash: "npm:^4.17.21"
+    multiformats: "npm:^13.1.0"
+    single-call-balance-checker-abi: "npm:^1.0.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/accounts-controller": ^31.0.0
+    "@metamask/approval-controller": ^7.0.0
+    "@metamask/keyring-controller": ^22.0.0
+    "@metamask/network-controller": ^24.0.0
+    "@metamask/permission-controller": ^11.0.0
+    "@metamask/phishing-controller": ^13.0.0
+    "@metamask/preferences-controller": ^18.0.0
+    "@metamask/providers": ^22.0.0
+    "@metamask/snaps-controllers": ^14.0.0
+    "@metamask/transaction-controller": ^58.0.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/061593861bd62be8feed3e0d66165ffa62d1598fb8fe284d61b871fe2b2c0cd9ab81eb0a0b8c48e945ae623ab6033a9b4000b4d36eade995eaf763a90e2fb18a
   languageName: node
   linkType: hard
 
@@ -31835,7 +31883,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "npm:^72.0.0"
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A72.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-72.0.0-781cbafc4f.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.17.0"
