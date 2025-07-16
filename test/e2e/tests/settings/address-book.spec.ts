@@ -158,7 +158,7 @@ describe('Address Book', function (this: Suite) {
         await contactsPage.addContactNewChain(
           'Test User',
           '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
-          'Linea',
+          'Sepolia',
         );
         await contactsPage.check_contactDisplayed({
           contactName: 'Test User',
@@ -202,7 +202,7 @@ describe('Address Book', function (this: Suite) {
           existingContactName: 'Test Name 1',
           newContactName: 'Test Name Edit',
           newContactAddress: '0x74cE91B75935D6Bedc27eE002DeFa566c5946f74',
-          newNetwork: 'Linea',
+          newNetwork: 'Sepolia',
         });
         await contactsPage.check_contactDisplayed({
           contactName: 'Test Name Edit',
@@ -282,7 +282,7 @@ describe('Address Book', function (this: Suite) {
         await contactsPage.addContactNewChain(
           'Test User 2',
           '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
-          'Linea',
+          'Sepolia',
         );
         await contactsPage.check_contactDisplayed({
           contactName: 'Test User 2',
