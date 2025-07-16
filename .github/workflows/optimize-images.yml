@@ -68,6 +68,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
       - name: Checkout pull request
         if: ${{ github.event_name != 'pull_request' }}
         run: gh pr checkout "${PR_NUMBER}"
@@ -92,6 +94,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
       - name: Checkout pull request
         if: ${{ github.event_name != 'pull_request' }}
         run: gh pr checkout "${PR_NUMBER}"
