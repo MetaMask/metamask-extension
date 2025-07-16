@@ -82,7 +82,6 @@ export const useBridgeQueryParams = (
   const fromToken = useSelector(getFromToken);
 
   const abortController = useRef(new AbortController());
-  const toToken = useSelector(getToToken);
 
   const { search } = useLocation();
   const history = useHistory();
@@ -104,17 +103,35 @@ export const useBridgeQueryParams = (
     [],
   );
 
-  const parsedAssetIds = useMemo(() => {
-    return {
-      parsedToAssetId: parseAsset(searchParams.get(BridgeQueryParams.TO)),
-      parsedFromAssetId: parseAsset(searchParams.get(BridgeQueryParams.FROM)),
-    };
-  }, [searchParams]);
+  const [parsedAssetIds, setParsedAssetIds] = useState<{
+    parsedFromAssetId: ReturnType<typeof parseAsset>;
+    parsedToAssetId: ReturnType<typeof parseAsset>;
+  }>({
+    parsedFromAssetId: null,
+    parsedToAssetId: null,
+  });
 
   const { parsedFromAssetId, parsedToAssetId } = parsedAssetIds;
 
-  const parsedAmount = useMemo(() => {
-    return searchParams.get(BridgeQueryParams.AMOUNT);
+  const [parsedAmount, setParsedAmount] = useState<string | null>(null);
+
+  // Only update parsed values if the search params are set (once) to prevent infinite re-renders
+  useEffect(() => {
+    if (
+      parseAsset(searchParams.get(BridgeQueryParams.FROM)) ||
+      parseAsset(searchParams.get(BridgeQueryParams.TO))
+    ) {
+      setParsedAssetIds({
+        parsedFromAssetId: parseAsset(searchParams.get(BridgeQueryParams.FROM)),
+        parsedToAssetId: parseAsset(searchParams.get(BridgeQueryParams.TO)),
+      });
+      setParsedAmount(searchParams.get(BridgeQueryParams.AMOUNT));
+      cleanupUrlParams([
+        BridgeQueryParams.FROM,
+        BridgeQueryParams.TO,
+        BridgeQueryParams.AMOUNT,
+      ]);
+    }
   }, [searchParams]);
 
   const [assetMetadataByAssetId, setAssetMetadataByAssetId] = useState<Awaited<
@@ -258,7 +275,7 @@ export const useBridgeQueryParams = (
     (async () => {
       await setToChainAndToken(toTokenMetadata);
     })();
-  }, [parsedToAssetId, toToken, assetMetadataByAssetId]);
+  }, [parsedToAssetId, assetMetadataByAssetId]);
 
   // Process amount after fromToken is set
   useEffect(() => {
@@ -278,11 +295,6 @@ export const useBridgeQueryParams = (
           ),
         );
       }
-      cleanupUrlParams([
-        BridgeQueryParams.AMOUNT,
-        BridgeQueryParams.FROM,
-        BridgeQueryParams.TO,
-      ]);
     }
   }, [parsedAmount, parsedFromAssetId, fromToken]);
 };
