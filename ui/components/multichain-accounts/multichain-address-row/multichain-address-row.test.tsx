@@ -5,16 +5,13 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { MultichainNetwork } from '../../../selectors/multichain';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from './multichain-address-row';
-
-const mockHandleCopy = jest.fn();
 
 jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: jest.fn(),
 }));
-
-// Get the mocked function after the mock is set up
-const { useCopyToClipboard: mockUseCopyToClipboard } = require('../../../hooks/useCopyToClipboard');
+const mockHandleCopy = jest.fn();
 
 const mockNetwork: MultichainNetwork = {
   nickname: 'Ethereum Mainnet',
@@ -35,7 +32,11 @@ const mockAddress = '0x1234567890123456789012345678901234567890';
 const render = (props = {}) => {
   const store = configureStore(mockState);
   return renderWithProvider(
-    <MultichainAddressRow network={mockNetwork} address={mockAddress} {...props} />,
+    <MultichainAddressRow
+      network={mockNetwork}
+      address={mockAddress}
+      {...props}
+    />,
     store,
   );
 };
@@ -43,8 +44,7 @@ const render = (props = {}) => {
 describe('MultichainAddressRow', () => {
   beforeEach(() => {
     mockHandleCopy.mockClear();
-    mockUseCopyToClipboard.mockClear();
-    mockUseCopyToClipboard.mockReturnValue([false, mockHandleCopy]);
+    (useCopyToClipboard as jest.Mock).mockReturnValue([false, mockHandleCopy]);
   });
 
   it('renders correctly with all elements', () => {
@@ -104,7 +104,10 @@ describe('MultichainAddressRow', () => {
   });
 
   it('shows copy success icon when copied is true', () => {
-    mockUseCopyToClipboard.mockReturnValueOnce([true, mockHandleCopy]);
+    (useCopyToClipboard as jest.Mock).mockReturnValueOnce([
+      true,
+      mockHandleCopy,
+    ]);
 
     render();
 
