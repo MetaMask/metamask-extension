@@ -70,7 +70,7 @@ export const commonSolanaAddress =
 
 export const commonSolanaTxConfirmedDetailsFixture = {
   status: 'Confirmed',
-  amount: '0.00708 SOL',
+  amount: '-0.00708 SOL',
   networkFee: '0.000005 SOL',
   fromAddress: 'HH9ZzgQvSVmznKcRfwHuEphuxk7zU5f92CkXFDQfVJcq',
   toAddress: '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
