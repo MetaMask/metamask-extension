@@ -699,11 +699,11 @@ const PrepareBridgePage = () => {
                   value: networkConfig.chainId,
                 });
               if (
+                !isUnifiedUIEnabled &&
                 networkConfig?.chainId &&
                 networkConfig.chainId === toChain?.chainId
               ) {
                 dispatch(setToChainId(null));
-                dispatch(setToToken(null));
               }
               if (
                 isSolanaChainId(networkConfig.chainId) &&
@@ -727,12 +727,11 @@ const PrepareBridgePage = () => {
           }}
           isMultiselectEnabled={isUnifiedUIEnabled || !isSwap}
           onMaxButtonClick={
-            (isSwap && smartTransactionsEnabled) ||
-            !isNativeAddress(fromToken?.address ?? '')
-              ? (value: string) => {
+            isNativeAddress(fromToken?.address ?? '')
+              ? undefined
+              : (value: string) => {
                   dispatch(setFromTokenInputValue(value));
                 }
-              : undefined
           }
           // Hides fiat amount string before a token quantity is entered.
           amountInFiat={
@@ -921,10 +920,6 @@ const PrepareBridgePage = () => {
                           value: networkConfig.chainId,
                         });
                       dispatch(setToChainId(networkConfig.chainId));
-                      const destNativeAsset = getNativeAssetForChainId(
-                        networkConfig.chainId,
-                      );
-                      dispatch(setToToken(destNativeAsset));
                     },
                     header: getToInputHeader(),
                     shouldDisableNetwork: isUnifiedUIEnabled
