@@ -13,6 +13,7 @@ import {
 import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import { CarouselSlide } from '../../../shared/constants/app-state';
 import * as AccountUtils from '../../../shared/lib/multichain/accounts';
+import { selectIsBackupAndSyncEnabled } from '../../selectors/identity/backup-and-sync';
 import {
   getSweepstakesCampaignActive,
   useCarouselManagement,
@@ -239,6 +240,10 @@ jest.mock('../../selectors/remote-mode', () => ({
   getIsRemoteModeEnabled: jest.fn(),
 }));
 
+jest.mock('../../selectors/identity/backup-and-sync', () => ({
+  selectIsBackupAndSyncEnabled: jest.fn().mockReturnValue(true),
+}));
+
 const mockUpdateSlides = jest.mocked(updateSlides);
 const mockUseSelector = jest.mocked(useSelector);
 const mockUseDispatch = jest.mocked(useDispatch);
@@ -250,6 +255,7 @@ const mockGetSelectedInternalAccount = jest
   .fn()
   .mockImplementation(() => MOCK_ACCOUNT);
 const mockGetIsRemoteModeEnabled = jest.fn();
+const mockGetIsBackupAndSyncEnabled = jest.fn().mockReturnValue(true);
 
 describe('useCarouselManagement', () => {
   let validTestDate: string;
@@ -279,6 +285,9 @@ describe('useCarouselManagement', () => {
       }
       if (selector === getUseExternalServices) {
         return mockGetUseExternalServices();
+      }
+      if (selector === selectIsBackupAndSyncEnabled) {
+        return mockGetIsBackupAndSyncEnabled();
       }
       return undefined;
     });
