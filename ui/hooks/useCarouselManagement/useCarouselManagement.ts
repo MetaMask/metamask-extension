@@ -208,7 +208,13 @@ export const useCarouselManagement = ({
       }
     };
 
-    maybeFetchContentful();
+    (async () => {
+      try {
+        await maybeFetchContentful();
+      } catch (err) {
+        log.warn('Failed to load carousel slides:', err);
+      }
+    })();
   }, [
     dispatch,
     hasZeroBalance,
