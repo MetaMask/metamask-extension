@@ -290,11 +290,18 @@ export const AssetPickerAmount = ({
                         );
 
                         if (!isNetworkEnabled) {
+                          const filteredPopularNetworks =
+                            enabledNetworkKeys.filter((key) =>
+                              FEATURED_NETWORK_CHAIN_IDS.includes(
+                                key as `0x${string}`,
+                              ),
+                            );
+
                           dispatch(
                             setEnabledNetworks(
                               [
                                 networkConfig.chainId,
-                                ...Object.keys(enabledNetworksByNamespace),
+                                ...filteredPopularNetworks,
                               ],
                               namespace,
                             ),
