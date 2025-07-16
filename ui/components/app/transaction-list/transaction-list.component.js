@@ -385,6 +385,18 @@ export default function TransactionList({
     getSelectedMultichainNetworkChainId,
   );
 
+  const unfilteredCompletedTransactions = useMemo(() => {
+    return isTokenNetworkFilterEqualCurrentNetwork ||
+      overrideFilterForCurrentChain
+      ? unfilteredCompletedTransactionsCurrentChain
+      : unfilteredCompletedTransactionsAllChains;
+  }, [
+    isTokenNetworkFilterEqualCurrentNetwork,
+    unfilteredCompletedTransactionsAllChains,
+    unfilteredCompletedTransactionsCurrentChain,
+    overrideFilterForCurrentChain,
+  ]);
+
   const enabledNetworksFilteredCompletedTransactions = useMemo(() => {
     if (!enabledNetworksByNamespace || !currentMultichainChainId) {
       return unfilteredCompletedTransactionsAllChains;
@@ -417,6 +429,8 @@ export default function TransactionList({
   }, [
     enabledNetworksByNamespace,
     currentMultichainChainId,
+    isTokenNetworkFilterEqualCurrentNetwork,
+    unfilteredCompletedTransactionsCurrentChain,
     unfilteredCompletedTransactionsAllChains,
   ]);
 
@@ -538,7 +552,9 @@ export default function TransactionList({
       groupEvmTransactionsByDate(
         getFilteredTransactionGroupsAllChains(
           [
-            ...enabledNetworksFilteredCompletedTransactions,
+            ...(isGlobalNetworkSelectorRemoved
+              ? enabledNetworksFilteredCompletedTransactions
+              : unfilteredCompletedTransactions),
             ...unfilteredRemoteModeCompletedTransactions,
           ],
           hideTokenTransactions,
@@ -549,6 +565,7 @@ export default function TransactionList({
       hideTokenTransactions,
       tokenAddress,
       enabledNetworksFilteredCompletedTransactions,
+      unfilteredCompletedTransactions,
       unfilteredRemoteModeCompletedTransactions,
     ],
   );
@@ -768,8 +785,7 @@ export default function TransactionList({
       ) : null}
       <Box className="transaction-list" {...boxProps}>
         {renderFilterButton()}
-        {process.env.REMOVE_GNS &&
-        pendingTransactions.length === 0 &&
+        {pendingTransactions.length === 0 &&
         completedTransactions.length === 0 ? (
           <NoTransactions />
         ) : (

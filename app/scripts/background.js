@@ -14,8 +14,7 @@ import browser from 'webextension-polyfill';
 import { isObject, hasProperty } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-// Import to set up global `Promise.withResolvers` polyfill
-import '../../shared/lib/promise-with-resolvers';
+import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 
 import {
@@ -200,7 +199,7 @@ let rejectInitialization;
  * state of application initialization (or re-initialization).
  */
 function setGlobalInitializers() {
-  const deferred = Promise.withResolvers();
+  const deferred = withResolvers();
   isInitialized = deferred.promise;
   resolveInitialization = deferred.resolve;
   rejectInitialization = deferred.reject;
@@ -1478,7 +1477,11 @@ const addAppInstalledEvent = () => {
 function handleOnInstalled(details) {
   if (details.reason === 'install') {
     onInstall();
-  } else if (details.reason === 'update') {
+  } else if (
+    details.reason === 'update' &&
+    details.previousVersion &&
+    details.previousVersion !== platform.getVersion()
+  ) {
     onUpdate();
   }
 }
