@@ -40,82 +40,6 @@ describe('useBridging', () => {
     });
   });
 
-  describe('extensionConfig.support=false, chainId=1', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-    // @ts-expect-error This is missing from the Mocha type definitions
-    it.each([
-      [
-        'https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=0xtestMetaMetricsId&metricsEnabled=false&marketingEnabled=null&token=0x0000000000000000000000000000000000000000',
-        ETH_SWAPS_TOKEN_OBJECT,
-        'Home',
-        undefined,
-      ],
-      [
-        'https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=0xtestMetaMetricsId&metricsEnabled=false&marketingEnabled=null&token=native',
-        ETH_SWAPS_TOKEN_OBJECT,
-        MetaMetricsSwapsEventSource.TokenView,
-        '&token=native',
-      ],
-      [
-        'https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=0xtestMetaMetricsId&metricsEnabled=false&marketingEnabled=null&token=0x00232f2jksdauo',
-        {
-          iconUrl: 'https://icon.url',
-          symbol: 'TEST',
-          address: '0x00232f2jksdauo',
-          balance: '0x5f5e100',
-          string: '123',
-        },
-        MetaMetricsSwapsEventSource.TokenView,
-        undefined,
-      ],
-    ])(
-      'should open %s with the currently selected token: %p',
-      (
-        expectedUrl: string,
-        token: string,
-        location: string,
-        urlSuffix: string,
-      ) => {
-        const openTabSpy = jest.spyOn(global.platform, 'openTab');
-        const { result } = renderUseBridging({
-          metamask: {
-            useExternalServices: true,
-            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-            metaMetricsId: MOCK_METAMETRICS_ID,
-            remoteFeatureFlags: {
-              bridgeConfig: {
-                support: false,
-                minimumVersion: '0.0.0',
-                refreshRate: 5000,
-                maxRefreshCount: 5,
-                chains: {
-                  '1': {
-                    isActiveSrc: true,
-                    isActiveDest: false,
-                  },
-                },
-              },
-            },
-            internalAccounts: {
-              selectedAccount: '0xabc',
-              accounts: { '0xabc': { metadata: { keyring: {} } } },
-            },
-          },
-        });
-
-        expect(mockDispatch.mock.calls).toHaveLength(0);
-
-        result.current.openBridgeExperience(location, token);
-
-        expect(openTabSpy).toHaveBeenCalledWith({
-          url: expectedUrl,
-        });
-      },
-    );
-  });
-
   describe('extensionConfig.support=true, chain=1', () => {
     beforeEach(() => {
       jest.clearAllMocks();
@@ -126,13 +50,11 @@ describe('useBridging', () => {
         '/cross-chain/swaps/prepare-swap-page?token=0x0000000000000000000000000000000000000000',
         ETH_SWAPS_TOKEN_OBJECT,
         'Home',
-        undefined,
       ],
       [
         '/cross-chain/swaps/prepare-swap-page?token=0x0000000000000000000000000000000000000000',
         ETH_SWAPS_TOKEN_OBJECT,
         MetaMetricsSwapsEventSource.TokenView,
-        '&token=native',
       ],
       [
         '/cross-chain/swaps/prepare-swap-page?token=0x00232f2jksdauo',
@@ -144,16 +66,10 @@ describe('useBridging', () => {
           string: '123',
         },
         MetaMetricsSwapsEventSource.TokenView,
-        undefined,
       ],
     ])(
       'should open %s with the currently selected token: %p',
-      async (
-        expectedUrl: string,
-        token: string,
-        location: string,
-        urlSuffix: string,
-      ) => {
+      async (expectedUrl: string, token: string, location: string) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         const { result } = renderUseBridging({
           metamask: {
@@ -181,7 +97,7 @@ describe('useBridging', () => {
           },
         });
 
-        result.current.openBridgeExperience(location, token, urlSuffix);
+        result.current.openBridgeExperience(location, token);
 
         expect(mockDispatch.mock.calls).toHaveLength(1);
         expect(mockHistoryPush.mock.calls).toHaveLength(1);
