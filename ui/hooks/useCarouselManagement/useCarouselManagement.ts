@@ -20,10 +20,6 @@ import {
 } from '../../selectors';
 import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import {
-  selectIsAccountSyncingEnabled,
-  selectIsBackupAndSyncEnabled,
-} from '../../selectors/identity/backup-and-sync';
-import {
   FUND_SLIDE,
   BRIDGE_SLIDE,
   CARD_SLIDE,
@@ -79,10 +75,10 @@ export const useCarouselManagement = ({
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const useExternalServices = useSelector(getUseExternalServices);
-  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
-  const isAccountSyncingEnabled = useSelector(selectIsAccountSyncingEnabled);
-  const showDownloadMobileAppSlide =
-    useExternalServices && isBackupAndSyncEnabled && isAccountSyncingEnabled;
+  // const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
+  // const isAccountSyncingEnabled = useSelector(selectIsAccountSyncingEnabled);
+  // const showDownloadMobileAppSlide =
+  //   useExternalServices && isBackupAndSyncEnabled && isAccountSyncingEnabled;
   const prevSlidesRef = useRef<CarouselSlide[]>();
   const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
     ZERO_BALANCE,
@@ -152,7 +148,7 @@ export const useCarouselManagement = ({
       const contentfulEnabled =
         remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
 
-      if (showDownloadMobileAppSlide) {
+      if (useExternalServices) {
         const userProfileMetaMetrics = await getUserProfileMetaMetricsAction();
         if (userProfileMetaMetrics) {
           const isUserAvailableOnMobile = userProfileMetaMetrics.lineage.some(
@@ -223,9 +219,6 @@ export const useCarouselManagement = ({
     slides,
     selectedAccount.address,
     useExternalServices,
-    isBackupAndSyncEnabled,
-    isAccountSyncingEnabled,
-    showDownloadMobileAppSlide,
   ]);
 
   return { slides };
