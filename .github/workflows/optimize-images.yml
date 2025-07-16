@@ -139,8 +139,9 @@ jobs:
             BRANCH_NAME=$(gh pr view "${PR_NUMBER}" --json headRefName --jq '.headRefName')
           fi
 
-          # Make sure we're on the right branch
-          git checkout -B "$BRANCH_NAME"
+          # Make sure we're on the right branch and it's up to date
+          git fetch origin "$BRANCH_NAME"
+          git checkout -B "$BRANCH_NAME" "origin/$BRANCH_NAME"
 
           git commit -am "Optimize images"
 
