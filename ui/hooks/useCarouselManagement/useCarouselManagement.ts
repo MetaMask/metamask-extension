@@ -6,7 +6,10 @@ import log from 'loglevel';
 import { BigNumber } from 'bignumber.js';
 import { isSolanaAddress } from '../../../shared/lib/multichain/accounts';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
-import { updateSlides } from '../../store/actions';
+import {
+  getUserProfileMetaMetrics as getUserProfileMetaMetricsAction,
+  updateSlides,
+} from '../../store/actions';
 import {
   getRemoteFeatureFlags,
   getSelectedAccountCachedBalance,
@@ -89,8 +92,6 @@ export const useCarouselManagement = ({
       undismissable: hasZeroBalance,
     };
 
-    // TODO: Check when to show this slide
-    defaultSlides.push(DOWNLOAD_MOBILE_APP_SLIDE);
     if (!isSolanaAddress(selectedAccount.address)) {
       defaultSlides.push(SMART_ACCOUNT_UPGRADE_SLIDE);
     }
@@ -141,6 +142,16 @@ export const useCarouselManagement = ({
     const maybeFetchContentful = async () => {
       const contentfulEnabled =
         remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
+
+      const userProfileMetaMetrics = await getUserProfileMetaMetricsAction();
+
+      const isUserAvailableOnMobile = userProfileMetaMetrics.lineage.some(
+        (lineage) => lineage.agent === 'mobile',
+      );
+
+      if (!isUserAvailableOnMobile) {
+        defaultSlides.unshift(DOWNLOAD_MOBILE_APP_SLIDE);
+      }
 
       if (contentfulEnabled) {
         try {

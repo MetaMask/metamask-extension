@@ -50,7 +50,10 @@ import {
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import {
+  USER_STORAGE_FEATURE_NAMES,
+  UserProfileMetaMetrics,
+} from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
@@ -6461,6 +6464,18 @@ export function setIsBackupAndSyncFeatureEnabled(
       throw error;
     }
   };
+}
+
+/**
+ * Fetches the user profile meta metrics from the profile-sync.
+ *
+ * @returns A thunk action that, when dispatched, attempts to fetch the user profile meta metrics.
+ */
+export async function getUserProfileMetaMetrics(): Promise<UserProfileMetaMetrics> {
+  const userProfileMetaMetrics = await submitRequestToBackground(
+    'getUserProfileMetaMetrics',
+  );
+  return userProfileMetaMetrics;
 }
 
 /**
