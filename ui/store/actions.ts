@@ -290,6 +290,8 @@ export function restoreSocialBackupAndGetSeedPhrase(
         [password],
       );
 
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
       return mnemonic;
     } catch (error) {
       log.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
