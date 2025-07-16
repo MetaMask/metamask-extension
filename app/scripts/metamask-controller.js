@@ -1051,8 +1051,9 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
-    let initialNetworkOrderControllerState;
+    let initialNetworkOrderControllerState = initState.NetworkOrderController;
     if (
+      !initialNetworkOrderControllerState &&
       process.env.METAMASK_DEBUG &&
       process.env.METAMASK_ENVIRONMENT === 'development' &&
       !process.env.IN_TEST
@@ -1068,8 +1069,6 @@ export default class MetamaskController extends EventEmitter {
           },
         },
       };
-    } else {
-      initialNetworkOrderControllerState = initState.NetworkOrderController;
     }
 
     this.networkOrderController = new NetworkOrderController({
@@ -2274,6 +2273,7 @@ export default class MetamaskController extends EventEmitter {
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
+        PhishingController: this.phishingController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
