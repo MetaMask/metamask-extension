@@ -5495,9 +5495,6 @@
   "standardAccountLabel": {
     "message": "Стандартный счет"
   },
-  "startEarning": {
-    "message": "Начните зарабатывать"
-  },
   "stateLogError": {
     "message": "Ошибка при получении журналов состояния."
   },

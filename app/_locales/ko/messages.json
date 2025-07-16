@@ -5495,9 +5495,6 @@
   "standardAccountLabel": {
     "message": "표준 계정"
   },
-  "startEarning": {
-    "message": "수익 창출 시작"
-  },
   "stateLogError": {
     "message": "상태 로그를 가져오는 도중 오류가 발생했습니다."
   },
