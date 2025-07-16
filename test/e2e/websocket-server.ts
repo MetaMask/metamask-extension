@@ -1,4 +1,5 @@
-import { WebSocketServer } from 'ws';
+// eslint-disable-next-line @typescript-eslint/no-shadow
+import { WebSocket, WebSocketServer } from 'ws';
 
 class WebSocketLocalServer {
   private static instance: WebSocketLocalServer; // Singleton instance
@@ -48,10 +49,10 @@ class WebSocketLocalServer {
     this.server.on('connection', (socket: WebSocket) => {
       console.log('Client connected to the WebSocket server');
 
-      socket.on('message', (message: MessageEvent) => {
-        console.log('Message received from client:', message.toString());
+      socket.on('message', (data) => {
+        console.log('Message received from client:', data.toString());
         // Parse the incoming message
-        const parsedMessage = JSON.parse(message.toString());
+        const parsedMessage = JSON.parse(data.toString());
 
         // Check the content of the message and respond accordingly
         if (parsedMessage.method === 'signatureSubscribe') {
@@ -121,7 +122,12 @@ class WebSocketLocalServer {
 
   public sendMessage(message: string): void {
     if (this.server) {
-      this.server.send(message);
+      this.server.clients.forEach((client: WebSocket) => {
+        if (client.readyState === 1) {
+          // 1 === WebSocket.OPEN
+          client.send(message);
+        }
+      });
     }
   }
 }
