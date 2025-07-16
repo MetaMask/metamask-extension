@@ -174,6 +174,30 @@ async function setupMocking(
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
 
+  // User Profile Metametrics
+  await server
+    .forGet(
+      'https://authentication.api.cx.metamask.io/api/v2/profile/metametrics',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          lineage: [
+            {
+              agent: 'mobile',
+              metametrics_id: '0xdeadbeef',
+              created_at: '2021-01-01',
+              updated_at: '2021-01-01',
+              counter: 1,
+            },
+          ],
+          created_at: '2025-07-16T10:03:57Z',
+          profile_id: '0deaba86-4b9d-4137-87d7-18bc5bf7708d',
+        },
+      };
+    });
+
   // Account link
   const accountLinkRegex =
     /^https:\/\/etherscan.io\/address\/0x[a-fA-F0-9]{40}$/u;
