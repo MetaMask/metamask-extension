@@ -623,12 +623,11 @@ const PrepareBridgePage = () => {
           }}
           isMultiselectEnabled={isUnifiedUIEnabled || !isSwap}
           onMaxButtonClick={
-            (isSwap && smartTransactionsEnabled) ||
-            !isNativeAddress(fromToken?.address ?? '')
-              ? (value: string) => {
+            isNativeAddress(fromToken?.address ?? '')
+              ? undefined
+              : (value: string) => {
                   dispatch(setFromTokenInputValue(value));
                 }
-              : undefined
           }
           // Hides fiat amount string before a token quantity is entered.
           amountInFiat={

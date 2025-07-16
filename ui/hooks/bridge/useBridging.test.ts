@@ -107,7 +107,7 @@ describe('useBridging', () => {
 
         expect(mockDispatch.mock.calls).toHaveLength(0);
 
-        result.current.openBridgeExperience(location, token, urlSuffix);
+        result.current.openBridgeExperience(location, token);
 
         expect(openTabSpy).toHaveBeenCalledWith({
           url: expectedUrl,

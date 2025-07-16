@@ -230,7 +230,6 @@ const TokenButtons = ({
         {
           ...token,
         },
-        undefined,
         isSwap,
       );
     },
