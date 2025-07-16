@@ -186,7 +186,6 @@ describe('Contact Syncing - Existing User', function () {
           await contactsSettings.addContact(
             newContact.name,
             newContact.address,
-            'button',
           );
 
           // Debug: Check if contact syncing is still enabled and not in progress

@@ -234,7 +234,6 @@ const TokenButtons = ({
           string: token?.balance?.display,
           name: token.name ?? '',
         },
-        undefined,
         isSwap,
       );
     },
