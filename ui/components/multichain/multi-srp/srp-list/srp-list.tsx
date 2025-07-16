@@ -128,11 +128,16 @@ export const SrpList = ({
                           button_type: 'details',
                         },
                       });
-                      setShowAccounts((prevState) =>
-                        prevState.map((value, i) =>
+                      setShowAccounts((prevState) => {
+                        const newState = prevState.map((value, i) =>
                           i === index ? !value : value,
-                        ),
-                      );
+                        );
+                        // if the newly synced account is selected, add it to the state
+                        if (index === prevState.length) {
+                          newState.push(true);
+                        }
+                        return newState;
+                      });
                     }}
                   >
                     {showHideText(index, keyring.accounts.length)}
