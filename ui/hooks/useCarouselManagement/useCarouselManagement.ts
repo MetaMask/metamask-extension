@@ -145,13 +145,14 @@ export const useCarouselManagement = ({
         remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
 
       const userProfileMetaMetrics = await getUserProfileMetaMetricsAction();
+      if (userProfileMetaMetrics) {
+        const isUserAvailableOnMobile = userProfileMetaMetrics.lineage.some(
+          (lineage) => lineage.agent === Platform.MOBILE,
+        );
 
-      const isUserAvailableOnMobile = userProfileMetaMetrics.lineage.some(
-        (lineage) => lineage.agent === Platform.MOBILE,
-      );
-
-      if (!isUserAvailableOnMobile) {
-        defaultSlides.push(DOWNLOAD_MOBILE_APP_SLIDE);
+        if (!isUserAvailableOnMobile) {
+          defaultSlides.push(DOWNLOAD_MOBILE_APP_SLIDE);
+        }
       }
 
       if (contentfulEnabled) {

@@ -19,11 +19,7 @@ import {
   Text,
 } from '../../component-library';
 
-export default function DownloadMobileAppModal({
-  onClose,
-}: {
-  onClose: () => void;
-}) {
+const DownloadMobileAppModal = ({ onClose }: { onClose: () => void }) => {
   const t = useI18nContext();
 
   return (
@@ -84,4 +80,6 @@ export default function DownloadMobileAppModal({
       </ModalContent>
     </Modal>
   );
-}
+};
+
+export default DownloadMobileAppModal;

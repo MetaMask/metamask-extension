@@ -6471,11 +6471,18 @@ export function setIsBackupAndSyncFeatureEnabled(
  *
  * @returns A thunk action that, when dispatched, attempts to fetch the user profile meta metrics.
  */
-export async function getUserProfileMetaMetrics(): Promise<UserProfileMetaMetrics> {
-  const userProfileMetaMetrics = await submitRequestToBackground(
-    'getUserProfileMetaMetrics',
-  );
-  return userProfileMetaMetrics;
+export async function getUserProfileMetaMetrics(): Promise<
+  UserProfileMetaMetrics | undefined
+> {
+  try {
+    const userProfileMetaMetrics = await submitRequestToBackground(
+      'getUserProfileMetaMetrics',
+    );
+    return userProfileMetaMetrics;
+  } catch (error) {
+    logErrorWithMessage(error);
+    return undefined;
+  }
 }
 
 /**
