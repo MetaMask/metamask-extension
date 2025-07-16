@@ -27,7 +27,7 @@ export function NestedTransactionTag() {
   const isBatch = isBatchTransaction(nestedTransactions);
   const functionNames = useNestedTransactionLabels({ nestedTransactions });
 
-  if (!isBatch) {
+  if (!isBatch || nestedTransactions?.length === 1) {
     return null;
   }
   const tooltip = t('transactionIncludesTypes', [functionNames.join(', ')]);
