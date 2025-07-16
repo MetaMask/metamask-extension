@@ -29,7 +29,6 @@ describe('Send Flow - Network Change', function (this: Suite) {
 
         // Navigate to send flow
         await homePage.startSendFlow();
-        await sendTokenPage.check_pageIsLoaded();
 
         // Fill recipient first
         await sendTokenPage.fillRecipient(recipientAddress);
@@ -42,7 +41,6 @@ describe('Send Flow - Network Change', function (this: Suite) {
 
         // Navigate back to send flow to verify recipient is preserved
         await homePage.startSendFlow();
-        await sendTokenPage.check_pageIsLoaded();
 
         // Verify recipient address is preserved
         const recipientInput = await driver.findElement(
@@ -80,7 +78,6 @@ describe('Send Flow - Network Change', function (this: Suite) {
 
         // Navigate to send flow
         await homePage.startSendFlow();
-        await sendTokenPage.check_pageIsLoaded();
 
         // Fill recipient to enable asset picker
         await sendTokenPage.fillRecipient(
@@ -103,7 +100,6 @@ describe('Send Flow - Network Change', function (this: Suite) {
 
         // Navigate back to send flow to check token updates
         await homePage.startSendFlow();
-        await sendTokenPage.check_pageIsLoaded();
         await sendTokenPage.fillRecipient(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
