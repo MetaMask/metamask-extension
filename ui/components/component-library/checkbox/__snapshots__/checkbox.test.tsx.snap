@@ -3,7 +3,7 @@
 exports[`Checkbox should render the Checkbox without crashing 1`] = `
 <div>
   <label
-    class="mm-box mm-text mm-checkbox mm-text--body-md mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+    class="mm-box mm-text mm-checkbox mm-text--body-md mm-box--display-inline-flex mm-box--align-items-flex-start mm-box--color-text-default"
   >
     <span
       class="mm-checkbox__input-wrapper"
