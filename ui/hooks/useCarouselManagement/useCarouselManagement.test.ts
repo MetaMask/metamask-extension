@@ -13,7 +13,10 @@ import {
 import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import { CarouselSlide } from '../../../shared/constants/app-state';
 import * as AccountUtils from '../../../shared/lib/multichain/accounts';
-import { selectIsBackupAndSyncEnabled } from '../../selectors/identity/backup-and-sync';
+import {
+  selectIsAccountSyncingEnabled,
+  selectIsBackupAndSyncEnabled,
+} from '../../selectors/identity/backup-and-sync';
 import {
   getSweepstakesCampaignActive,
   useCarouselManagement,
@@ -56,7 +59,6 @@ const SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF = [
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
-  DOWNLOAD_MOBILE_APP_SLIDE,
 ];
 
 const SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF = [
@@ -73,7 +75,6 @@ const SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF = [
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
-  DOWNLOAD_MOBILE_APP_SLIDE,
 ];
 
 const SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF = [
@@ -91,7 +92,6 @@ const SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF = [
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
-  DOWNLOAD_MOBILE_APP_SLIDE,
 ];
 
 const SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF = [
@@ -109,7 +109,6 @@ const SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF = [
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
-  DOWNLOAD_MOBILE_APP_SLIDE,
 ];
 
 const SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON = [
@@ -127,7 +126,6 @@ const SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON = [
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
-  DOWNLOAD_MOBILE_APP_SLIDE,
 ];
 
 const SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON = [
@@ -145,7 +143,6 @@ const SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON = [
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
-  DOWNLOAD_MOBILE_APP_SLIDE,
 ];
 
 const SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_ON = [
@@ -164,7 +161,6 @@ const SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_ON = [
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
-  DOWNLOAD_MOBILE_APP_SLIDE,
 ];
 
 const SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_ON = [
@@ -183,7 +179,6 @@ const SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_ON = [
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
-  DOWNLOAD_MOBILE_APP_SLIDE,
 ];
 
 const MOCK_ACCOUNT = {
@@ -242,6 +237,7 @@ jest.mock('../../selectors/remote-mode', () => ({
 
 jest.mock('../../selectors/identity/backup-and-sync', () => ({
   selectIsBackupAndSyncEnabled: jest.fn().mockReturnValue(true),
+  selectIsAccountSyncingEnabled: jest.fn().mockReturnValue(true),
 }));
 
 const mockUpdateSlides = jest.mocked(updateSlides);
@@ -256,6 +252,7 @@ const mockGetSelectedInternalAccount = jest
   .mockImplementation(() => MOCK_ACCOUNT);
 const mockGetIsRemoteModeEnabled = jest.fn();
 const mockGetIsBackupAndSyncEnabled = jest.fn().mockReturnValue(true);
+const mockGetIsAccountSyncingEnabled = jest.fn().mockReturnValue(true);
 
 describe('useCarouselManagement', () => {
   let validTestDate: string;
@@ -288,6 +285,9 @@ describe('useCarouselManagement', () => {
       }
       if (selector === selectIsBackupAndSyncEnabled) {
         return mockGetIsBackupAndSyncEnabled();
+      }
+      if (selector === selectIsAccountSyncingEnabled) {
+        return mockGetIsAccountSyncingEnabled();
       }
       return undefined;
     });
@@ -594,13 +594,53 @@ describe('useCarouselManagement', () => {
         BACKUPANDSYNC_SLIDE,
         BASIC_FUNCTIONALITY_SLIDE,
         SOLANA_SLIDE,
-        DOWNLOAD_MOBILE_APP_SLIDE,
       ]);
     });
   });
 
   describe('Download mobile app slide', () => {
-    it('should not be displayed if user is available on mobile', async () => {
+    it('should display if user is not available on mobile', async () => {
+      mockGetUseExternalServices.mockReturnValue(true);
+
+      jest.mocked(getUserProfileMetaMetrics).mockResolvedValue({
+        lineage: [
+          {
+            agent: Platform.EXTENSION,
+            metametrics_id: '0xdeadbeef',
+            created_at: '2021-01-01',
+            updated_at: '2021-01-01',
+            counter: 1,
+          },
+        ],
+        created_at: '2025-07-16T10:03:57Z',
+        profile_id: '0deaba86-4b9d-4137-87d7-18bc5bf7708d',
+      });
+
+      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
+
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
+      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
+
+      expect(updatedSlides).toStrictEqual([
+        { ...FUND_SLIDE, undismissable: true },
+        SMART_ACCOUNT_UPGRADE_SLIDE,
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+        BRIDGE_SLIDE,
+        ///: END:ONLY_INCLUDE_IF
+        CARD_SLIDE,
+        CASH_SLIDE,
+        MULTI_SRP_SLIDE,
+        BACKUPANDSYNC_SLIDE,
+        ///: BEGIN:ONLY_INCLUDE_IF(solana)
+        SOLANA_SLIDE,
+        ///: END:ONLY_INCLUDE_IF
+        DOWNLOAD_MOBILE_APP_SLIDE,
+      ]);
+    });
+
+    it('should not display if user is available on mobile', async () => {
+      mockGetUseExternalServices.mockReturnValue(true);
+
       jest.mocked(getUserProfileMetaMetrics).mockResolvedValue({
         lineage: [
           {
@@ -630,7 +670,6 @@ describe('useCarouselManagement', () => {
         CASH_SLIDE,
         MULTI_SRP_SLIDE,
         BACKUPANDSYNC_SLIDE,
-        BASIC_FUNCTIONALITY_SLIDE,
         ///: BEGIN:ONLY_INCLUDE_IF(solana)
         SOLANA_SLIDE,
         ///: END:ONLY_INCLUDE_IF
