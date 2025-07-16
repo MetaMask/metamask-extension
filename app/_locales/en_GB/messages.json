@@ -175,6 +175,9 @@
     "message": "Add $1 account",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "Add account or wallet"
+  },
   "addAccountToMetaMask": {
     "message": "Add account to MetaMask"
   },
@@ -3517,6 +3520,9 @@
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
+  },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "Must have at least one network enabled"
   },
   "networkMenu": {
     "message": "Network Menu"
