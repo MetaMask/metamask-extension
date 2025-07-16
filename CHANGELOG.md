@@ -7,25 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.23.0]
-### Uncategorized
-- chore: Enable Arbitrum for smart transactions (#33864)
-- chore: Bump Snaps dependencies (#33958)
-- bump: update prettier to v3 (#28638)
-- chore: add logos for Omni and XRPL networks (#34005)
-- chore: cp-12.22.0 update solana 1.34.0 (#33982)
-- chore: adds storybook for WalletDetails page (#33956)
-- chore: add logos for Abstract network (#33838)
-- chore: make UserStorageMockttpControllerEvents object instead of enum (#33873)
-- chore: update buttons to be monochromatic (#33847)
-- chore: Add tests in preperation for `NetworkManager` (#33877)
-- chore: replacing deprecated button with component library version (#33854)
-- chore: bridge tx detail layout fix and unit tests (#33860)
-- chore: design tokens v8: font family change CentraNo1 to Geist and new background colors (#33764)
-- perf: add script to optimize images; optimize images (#23496)
-- chore: Make policy review tip visible again in identify-codeowners.ts (#33828)
-- chore: bump bridge controllers to fix swap metrics (#33811)
-- chore: removes unnecessary events (#33707)
-
 ### Added
 - feat: gasIncluded swaps cp-12-23.0 (#33988)
 - feat: unskipeed send flow Solana tests (#34036)
@@ -69,10 +50,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: add 7702 toggles (#33530)
 - feat: Improve how we display detailed of approve function in nested transaction (#33609)
 - feat: add `SEI` mainnet network support (#32027)
+- feat: enable Arbitrum for smart transactions (#33864)
+- feat: add the network and token logos for Omni and XRPL networks (#34005)
+- feat:add logos for Abstract network (#33838)
+- feat: validate same origin domain for signIn for Solana (#33982)
+
+### Changed
+- Update: the button component to be monochromatic (#33847)
+- Update: design tokens v8: font family change CentraNo1 to Geist and new background colors (#33764)
 
 ### Fixed
-- Fixed a bug that was causing private key import field to always be in error state (#34050)
-- fix: 33510 solve `Error: Ledger: Unknown error while signing transaction` (#33581)
+- fix: private key import field to always be in error state (#34050)
+- fix: solve `Error: Ledger: Unknown error while signing transaction` (#33581)
 - fix: cp-12.22.0 regression of lanchdarkly flag key (#34045)
 - fix: bitcoin account type (#34021)
 - fix: hides bridge button on non-native asset page if unified is enabled (#34044)
@@ -110,6 +99,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: flaky test `Simulation Details renders buy ERC20 transaction` (#33800)
 - fix: replace "Remind" with "remind" in deep link locale messages (#33780)
 - fix: cp-12.22.0 flaky `Token List` and `Token Details` specs (#33772)
+- fix: bridge tx detail layout fix (#33860)
+- fix: Solana single-chain swap failure event not firing on src-chain (#33811)
 
 ## [12.22.2]
 ### Fixed
