@@ -104,7 +104,10 @@ describe('Ducks - Bridge', () => {
         expect.objectContaining({
           ...actionPayload,
           balance: '0',
+          assetId: 'eip155:10/erc20:0x13341431',
           chainId: '0xa',
+          image:
+            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0x13341431.png',
           string: '0',
         }),
       );

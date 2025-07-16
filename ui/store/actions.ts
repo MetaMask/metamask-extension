@@ -895,7 +895,7 @@ export function addNewAccount(
     }
     // Fail-safe in case we could not find the associated HD keyring.
     if (!hdKeyring) {
-      console.error('Should never reach this. There is always a keyring');
+      log.error('Should never reach this. There is always a keyring');
       throw new Error('Keyring not found');
     }
     const oldAccounts = hdKeyring.accounts;
@@ -2903,11 +2903,9 @@ export function clearPendingTokens(): Action {
  * for the purpose of displaying the user a toast about the network change
  *
  * @param networkClientIdForThisDomain - Thet network client ID last used by the origin
- * @param selectedTabOrigin - Origin of the current tab
  */
 export function automaticallySwitchNetwork(
   networkClientIdForThisDomain: string,
-  selectedTabOrigin: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -2915,50 +2913,6 @@ export function automaticallySwitchNetwork(
     await dispatch(
       setActiveNetworkConfigurationId(networkClientIdForThisDomain),
     );
-    await dispatch(
-      setSwitchedNetworkDetails({
-        networkClientId: networkClientIdForThisDomain,
-        origin: selectedTabOrigin,
-      }),
-    );
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-/**
- * Action to store details about the switched-to network in the background state
- *
- * @param switchedNetworkDetails - Object containing networkClientId and origin
- * @param switchedNetworkDetails.networkClientId
- * @param switchedNetworkDetails.selectedTabOrigin
- */
-export function setSwitchedNetworkDetails(switchedNetworkDetails: {
-  networkClientId: string;
-  selectedTabOrigin?: string;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setSwitchedNetworkDetails', [
-      switchedNetworkDetails,
-    ]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-/**
- * Action to clear details about the switched-to network in the background state
- */
-export function clearSwitchedNetworkDetails(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('clearSwitchedNetworkDetails', []);
     await forceUpdateMetamaskState(dispatch);
   };
 }
