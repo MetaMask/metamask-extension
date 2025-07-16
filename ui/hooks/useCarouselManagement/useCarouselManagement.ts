@@ -154,7 +154,7 @@ export const useCarouselManagement = ({
           );
 
           if (!isUserAvailableOnMobile) {
-            defaultSlides.push(DOWNLOAD_MOBILE_APP_SLIDE);
+            defaultSlides.unshift(DOWNLOAD_MOBILE_APP_SLIDE);
           }
         }
       }

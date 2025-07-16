@@ -610,6 +610,7 @@ describe('useCarouselManagement', () => {
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
       expect(updatedSlides).toStrictEqual([
+        DOWNLOAD_MOBILE_APP_SLIDE,
         { ...FUND_SLIDE, undismissable: true },
         SMART_ACCOUNT_UPGRADE_SLIDE,
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -622,7 +623,6 @@ describe('useCarouselManagement', () => {
         ///: BEGIN:ONLY_INCLUDE_IF(solana)
         SOLANA_SLIDE,
         ///: END:ONLY_INCLUDE_IF
-        DOWNLOAD_MOBILE_APP_SLIDE,
       ]);
     });
 
