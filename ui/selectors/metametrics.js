@@ -8,6 +8,10 @@ export const getDataCollectionForMarketing = (state) =>
 export const getParticipateInMetaMetrics = (state) =>
   Boolean(state.metamask.participateInMetaMetrics);
 
+// return true if user has set their participation preference in MetaMetrics
+export const getIsParticipateInMetaMetricsSet = (state) =>
+  state.metamask.participateInMetaMetrics !== null;
+
 export const getLatestMetricsEventTimestamp = (state) =>
   state.metamask.latestNonAnonymousEventTimestamp;
 
