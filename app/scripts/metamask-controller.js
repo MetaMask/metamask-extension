@@ -2273,6 +2273,7 @@ export default class MetamaskController extends EventEmitter {
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
+        PhishingController: this.phishingController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
