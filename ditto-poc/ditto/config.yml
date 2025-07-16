@@ -1,0 +1,144 @@
+# Ditto Configuration for MetaMask POC
+# This configuration demonstrates how to set up Ditto for MetaMask's localization needs
+
+# Sources configuration
+sources:
+  # Use components approach for better organization
+  components:
+    folders:
+      - id: metamask-core
+        name: MetaMask Core Strings
+      - id: metamask-ui
+        name: MetaMask UI Components
+      - id: metamask-errors
+        name: Error Messages
+      - id: metamask-onboarding
+        name: Onboarding Flow
+      - id: metamask-settings
+        name: Settings & Preferences
+
+# Enable variants for localization
+variants: true
+
+# Output format - use flat JSON for compatibility with current system
+format: flat
+
+# Localization configuration
+# Map Ditto variant IDs to MetaMask locale codes
+localeMapping:
+  base: en
+  spanish: es
+  french: fr
+  german: de
+  italian: it
+  portuguese: pt
+  portuguese-br: pt_BR
+  russian: ru
+  japanese: ja
+  korean: ko
+  chinese-simplified: zh_CN
+  chinese-traditional: zh_TW
+  arabic: ar
+  hindi: hi
+  dutch: nl
+  swedish: sv
+  norwegian: no
+  danish: da
+  finnish: fi
+  polish: pl
+  turkish: tr
+  thai: th
+  vietnamese: vi
+  ukrainian: uk
+  hebrew: he
+  czech: cs
+  hungarian: hu
+  romanian: ro
+  bulgarian: bg
+  croatian: hr
+  slovak: sk
+  slovenian: sl
+  estonian: et
+  latvian: lv
+  lithuanian: lt
+  greek: el
+  serbian: sr
+  bengali: bn
+  gujarati: gu
+  tamil: ta
+  telugu: te
+  malayalam: ml
+  kannada: kn
+  marathi: mr
+  indonesian: id
+  malaysian: ms
+  filipino: fil
+  swahili: sw
+  amharic: am
+  farsi: fa
+  tagalog: tl
+  pilipino: ph
+  haitian-creole: ht
+  hindi-devanagari: hn
+
+# Output configuration
+output:
+  # Output directory structure
+  directory: ./ditto
+  
+  # File naming pattern
+  filePattern: '[locale]/messages.json'
+  
+  # Maintain structure compatible with Chrome extension format
+  structure:
+    type: chrome-extension
+    messageFormat: |
+      {
+        "message": "{{text}}",
+        "description": "{{description}}"
+      }
+
+# Development configuration
+development:
+  # Watch for changes during development
+  watch: true
+  
+  # Generate TypeScript definitions
+  typescript: true
+  
+  # Validate string references
+  validate: true
+  
+  # Show warnings for missing translations
+  warnings: true
+
+# Build integration
+build:
+  # Pre-build hooks
+  preBuild:
+    - 'npm run ditto:sync'
+    - 'node scripts/validate-strings.js'
+  
+  # Post-build hooks
+  postBuild:
+    - 'node scripts/generate-manifest.js'
+    - 'node scripts/verify-output.js'
+
+# Caching configuration
+cache:
+  enabled: true
+  ttl: 3600 # 1 hour
+  directory: ./.ditto-cache
+
+# Error handling
+errorHandling:
+  # Fallback to local files on API errors
+  fallback: true
+  
+  # Retry configuration
+  retry:
+    attempts: 3
+    delay: 1000
+  
+  # Fail build on missing strings
+  strict: false

@@ -1,0 +1,47 @@
+{
+  "name": "metamask-ditto-poc",
+  "version": "1.0.0",
+  "description": "POC for integrating Ditto content management with MetaMask localization",
+  "main": "index.js",
+  "scripts": {
+    "ditto:auth": "npx @dittowords/cli auth",
+    "ditto:sync": "npx @dittowords/cli pull",
+    "ditto:sync:watch": "npx @dittowords/cli pull --watch",
+    "ditto:status": "npx @dittowords/cli status",
+    "poc:demo": "node scripts/demo.js",
+    "poc:build": "node scripts/build-integration.js",
+    "poc:sync": "node scripts/ditto-sync.js",
+    "poc:verify": "node scripts/verify-integration.js",
+    "poc:test": "npm run poc:sync && npm run poc:build && npm run poc:verify",
+    "poc:clean": "rm -rf sample-implementation/ditto sample-implementation/build",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint scripts/ tests/",
+    "lint:fix": "eslint scripts/ tests/ --fix"
+  },
+  "keywords": [
+    "ditto",
+    "metamask",
+    "localization",
+    "i18n",
+    "poc"
+  ],
+  "author": "MetaMask Team",
+  "license": "MIT",
+  "dependencies": {
+    "@dittowords/cli": "^4.5.2",
+    "axios": "^1.6.0",
+    "fs-extra": "^11.1.1",
+    "glob": "^10.3.10",
+    "lodash": "^4.17.21",
+    "yaml": "^2.3.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
