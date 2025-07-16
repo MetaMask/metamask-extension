@@ -113,6 +113,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: bridge tx detail layout fix (#33860)
 - fix: Solana single-chain swap failure event not firing on src-chain (#33811)
 - fix: max button was shown on native assets incorrectly causing invalid quotes (#34293)
+- fix: migrate BSC network RPC from bsc-dataseed.binance.org to bsc infura (#33997)
 
 ## [12.22.2]
 ### Fixed
