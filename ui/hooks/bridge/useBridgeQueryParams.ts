@@ -286,21 +286,19 @@ export const useBridgeQueryParams = (
   // Process amount after fromToken is set
   useEffect(() => {
     if (
-      parsedFromAssetId
-        ? fromToken &&
-          fromToken.assetId?.toLowerCase() ===
-            parsedFromAssetId.assetId.toLowerCase()
-        : true
+      parsedAmount &&
+      parsedFromAssetId &&
+      fromToken &&
+      fromToken.assetId?.toLowerCase() ===
+        parsedFromAssetId.assetId.toLowerCase()
     ) {
-      if (parsedAmount && fromToken) {
-        dispatch(
-          setFromTokenInputValue(
-            calcTokenAmount(parsedAmount, fromToken.decimals).toFixed(
-              fromToken.decimals,
-            ),
+      dispatch(
+        setFromTokenInputValue(
+          calcTokenAmount(parsedAmount, fromToken.decimals).toFixed(
+            fromToken.decimals,
           ),
-        );
-      }
+        ),
+      );
     }
   }, [parsedAmount, parsedFromAssetId, fromToken]);
 };
