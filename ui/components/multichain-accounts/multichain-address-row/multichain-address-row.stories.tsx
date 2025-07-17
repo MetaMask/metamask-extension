@@ -17,7 +17,8 @@ const meta: Meta<typeof MultichainAddressRow> = {
   argTypes: {
     network: {
       control: 'object',
-      description: 'MultichainNetwork object containing nickname, chainId, and rpcPrefs with imageUrl',
+      description:
+        'MultichainNetwork object containing nickname, chainId, and rpcPrefs with imageUrl',
     },
     address: {
       control: 'text',
