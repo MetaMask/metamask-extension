@@ -18,10 +18,6 @@ import {
 import {
   DEFAULT_ROUTE,
   REVIEW_PERMISSIONS,
-  SEND_ROUTE,
-  SWAPS_ROUTE,
-  PREPARE_SWAP_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
   SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
@@ -32,12 +28,10 @@ import {
   getMetaMaskHdKeyrings,
   getOriginOfCurrentTab,
   getSelectedAccount,
-  getSwitchedNetworkDetails,
   getUseNftDetection,
 } from '../../../selectors';
 import {
   addPermittedAccount,
-  clearSwitchedNetworkDetails,
   hidePermittedNetworkToast,
 } from '../../../store/actions';
 import {
@@ -55,7 +49,6 @@ import {
   selectShowConnectAccountToast,
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
-  selectSwitchedNetworkNeverShowMessage,
   selectNewSrpAdded,
   selectPasswordChangeToast,
 } from './selectors';
@@ -64,7 +57,6 @@ import {
   setNewPrivacyPolicyToastShownDate,
   setShowNftDetectionEnablementToast,
   setSurveyLinkLastClickedOrClosed,
-  setSwitchedNetworkNeverShowMessage,
   setShowNewSrpAddedToast,
   setShowPasswordChangeToast,
 } from './utils';
@@ -73,12 +65,6 @@ export function ToastMaster() {
   const location = useLocation();
 
   const onHomeScreen = location.pathname === DEFAULT_ROUTE;
-  const onSendScreen = location.pathname === SEND_ROUTE;
-  const onSwapsScreen =
-    location.pathname === SWAPS_ROUTE ||
-    location.pathname === PREPARE_SWAP_ROUTE;
-  const onBridgeScreen =
-    location.pathname === `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
   const onSettingsScreen = location.pathname.startsWith(SETTINGS_ROUTE);
 
   if (onHomeScreen) {
@@ -88,18 +74,9 @@ export function ToastMaster() {
         <ConnectAccountToast />
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
-        <SwitchedNetworkToast />
         <NftEnablementToast />
         <PermittedNetworkToast />
         <NewSrpAddedToast />
-      </ToastContainer>
-    );
-  }
-
-  if (onSendScreen || onSwapsScreen || onBridgeScreen) {
-    return (
-      <ToastContainer>
-        <SwitchedNetworkToast />
       </ToastContainer>
     );
   }
@@ -227,51 +204,6 @@ function PrivacyPolicyToast() {
           setNewPrivacyPolicyToastClickedOrClosed();
         }}
         onClose={setNewPrivacyPolicyToastClickedOrClosed}
-      />
-    )
-  );
-}
-
-function SwitchedNetworkToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const switchedNetworkDetails = useSelector(getSwitchedNetworkDetails);
-  const switchedNetworkNeverShowMessage = useSelector(
-    selectSwitchedNetworkNeverShowMessage,
-  );
-
-  const isShown = switchedNetworkDetails && !switchedNetworkNeverShowMessage;
-  const hasOrigin = Boolean(switchedNetworkDetails?.origin);
-
-  function getMessage() {
-    if (hasOrigin) {
-      return t('switchedNetworkToastMessage', [
-        switchedNetworkDetails?.nickname,
-        getURLHost(switchedNetworkDetails?.origin),
-      ]);
-    }
-    return t('switchedNetworkToastMessageNoOrigin', [
-      switchedNetworkDetails?.nickname,
-    ]);
-  }
-
-  return (
-    isShown && (
-      <Toast
-        key="switched-network-toast"
-        startAdornment={
-          <AvatarNetwork
-            size={AvatarAccountSize.Md}
-            borderColor={BorderColor.transparent}
-            src={switchedNetworkDetails?.imageUrl || ''}
-            name={switchedNetworkDetails?.nickname}
-          />
-        }
-        text={getMessage()}
-        actionText={t('switchedNetworkToastDecline')}
-        onActionClick={setSwitchedNetworkNeverShowMessage}
-        onClose={() => dispatch(clearSwitchedNetworkDetails())}
       />
     )
   );
