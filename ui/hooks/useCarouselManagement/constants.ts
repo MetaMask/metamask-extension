@@ -3,7 +3,7 @@ import { DOWNLOAD_MOBILE_APP_SLIDE_ID } from '../../../shared/constants/app';
 export const BASIC_FUNCTIONALITY_SLIDE = {
   id: 'basic_functionality',
   title: 'basicConfigurationBannerTitle',
-  description: 'enableItForWallet',
+  description: 'enableIt',
   image: './images/basic-functionality.svg',
 };
 export const REMOTE_MODE_SLIDE = {
