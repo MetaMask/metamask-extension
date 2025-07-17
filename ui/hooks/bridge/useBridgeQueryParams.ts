@@ -30,7 +30,6 @@ import {
   getFromChain,
   getFromChains,
   getFromToken,
-  getToToken,
 } from '../../ducks/bridge/selectors';
 
 const parseAsset = (assetId: string | null) => {
@@ -47,7 +46,6 @@ const parseAsset = (assetId: string | null) => {
   }
 };
 
-// Fetch all asset metadata at once
 const fetchAssetMetadata = async (
   signal: AbortSignal,
   fromAsset?: CaipAssetType,
@@ -72,6 +70,13 @@ const fetchAssetMetadata = async (
   }
 };
 
+/**
+ * This hook is used to set the bridge fromChain, fromToken, fromTokenInputValue,
+ * toChainId, and toToken from the URL search params.
+ * It also clear the search params after setting the values.
+ * @param selectedSolanaAccount - The selected Solana account
+ * @param selectedEvmAccount - The selected EVM account
+ */
 export const useBridgeQueryParams = (
   selectedSolanaAccount?: InternalAccount,
   selectedEvmAccount?: InternalAccount,
@@ -138,6 +143,7 @@ export const useBridgeQueryParams = (
     ReturnType<typeof fetchAssetMetadataForAssetIds>
   > | null>(null);
 
+  // Fetch asset metadata for both tokens in 1 call
   useEffect(() => {
     if (parsedFromAssetId?.assetId || parsedToAssetId?.assetId) {
       abortController.current.abort();
@@ -154,7 +160,7 @@ export const useBridgeQueryParams = (
 
   // Set fromChain and fromToken
   const setFromChainAndToken = useCallback(
-    async (
+    (
       fromTokenMetadata,
       fromAsset,
       network: NetworkConfiguration,
@@ -168,7 +174,7 @@ export const useBridgeQueryParams = (
         const { chainId, assetReference } = parseCaipAssetType(
           fromTokenMetadata.assetId,
         );
-        // TODO detect native address here for EVM to fix native spot price and balance
+        // TODO remove this after v36.0.0 bridge-controller bump
         const isNativeReference =
           getNativeAssetForChainId(chainId)?.assetId.includes(assetReference);
         const token = {
@@ -186,18 +192,15 @@ export const useBridgeQueryParams = (
           const targetChain = networks.find(
             (chain) => formatChainIdToCaip(chain.chainId) === fromChainId,
           );
-
           if (targetChain) {
-            if (fromTokenMetadata) {
-              await dispatch(
-                setFromChain({
-                  networkConfig: targetChain,
-                  selectedSolanaAccount: solanaAccount,
-                  selectedEvmAccount: evmAccount,
-                  token,
-                }),
-              );
-            }
+            dispatch(
+              setFromChain({
+                networkConfig: targetChain,
+                selectedSolanaAccount: solanaAccount,
+                selectedEvmAccount: evmAccount,
+                token,
+              }),
+            );
           }
         }
       }
@@ -211,7 +214,6 @@ export const useBridgeQueryParams = (
         const { chainId, assetReference } = parseCaipAssetType(
           toTokenMetadata.assetId,
         );
-
         dispatch(setToChainId(chainId));
         dispatch(
           setToToken({
@@ -242,17 +244,15 @@ export const useBridgeQueryParams = (
         parsedFromAssetId.assetId.toLowerCase() as unknown as CaipAssetType
       ];
 
-    (async () => {
-      // Process from chain/token first
-      await setFromChainAndToken(
-        fromTokenMetadata,
-        parsedFromAssetId,
-        fromChain,
-        fromChains,
-        selectedSolanaAccount,
-        selectedEvmAccount,
-      );
-    })();
+    // Process from chain/token first
+    setFromChainAndToken(
+      fromTokenMetadata,
+      parsedFromAssetId,
+      fromChain,
+      fromChains,
+      selectedSolanaAccount,
+      selectedEvmAccount,
+    );
   }, [
     assetMetadataByAssetId,
     parsedFromAssetId,
@@ -272,9 +272,7 @@ export const useBridgeQueryParams = (
       assetMetadataByAssetId?.[
         parsedToAssetId.assetId.toLowerCase() as unknown as CaipAssetType
       ];
-    (async () => {
-      await setToChainAndToken(toTokenMetadata);
-    })();
+    setToChainAndToken(toTokenMetadata);
   }, [parsedToAssetId, assetMetadataByAssetId]);
 
   // Process amount after fromToken is set
