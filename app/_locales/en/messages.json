@@ -2150,6 +2150,9 @@
   "enableIt": {
     "message": " Enable it"
   },
+  "enableItForWallet": {
+    "message": "Enable it for your wallet"
+  },
   "enableSmartContractAccount": {
     "message": "Enable smart contract account"
   },
