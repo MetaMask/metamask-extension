@@ -2136,6 +2136,9 @@
       }
     },
     "@metamask/seedless-onboarding-controller": {
+      "globals": {
+        "console.log": true
+      },
       "packages": {
         "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": true,
         "@metamask/base-controller": true,
@@ -2143,7 +2146,8 @@
         "@metamask/utils": true,
         "@noble/ciphers": true,
         "@noble/curves": true,
-        "@metamask/name-controller>async-mutex": true
+        "@metamask/name-controller>async-mutex": true,
+        "browserify>buffer": true
       }
     },
     "@metamask/selected-network-controller": {
@@ -2381,6 +2385,7 @@
       "globals": {
         "URL": true,
         "console.error": true,
+        "console.log": true,
         "fetch": true
       },
       "packages": {

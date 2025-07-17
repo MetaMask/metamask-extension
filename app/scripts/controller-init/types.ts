@@ -211,6 +211,8 @@ export type ControllerInitRequest<
    */
   refreshOAuthToken: () => Promise<{
     idTokens: string[];
+    accessToken: string;
+    metadataAccessToken: string;
   }>;
 
   /**

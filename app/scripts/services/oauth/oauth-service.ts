@@ -61,7 +61,11 @@ export default class OAuthService {
   async getNewRefreshToken(options: {
     connection: AuthConnection;
     refreshToken: string;
-  }): Promise<{ idTokens: string[] }> {
+  }): Promise<{
+    idTokens: string[];
+    accessToken: string;
+    metadataAccessToken: string;
+  }> {
     const { connection, refreshToken } = options;
     const loginHandler = createLoginHandler(
       connection,
@@ -74,6 +78,8 @@ export default class OAuthService {
 
     return {
       idTokens: [idToken],
+      accessToken: refreshTokenData.access_token,
+      metadataAccessToken: refreshTokenData.metadata_access_token,
     };
   }
 
@@ -116,6 +122,7 @@ export default class OAuthService {
    */
   async #handleOAuthLogin(loginHandler: BaseLoginHandler) {
     const authUrl = await loginHandler.getAuthUrl();
+    console.log('authUrl', authUrl);
 
     // launch the web auth flow to get the Authorization Code from the social login provider
     const redirectUrlFromOAuth = await new Promise<string>(
