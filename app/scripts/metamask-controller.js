@@ -38,7 +38,6 @@ import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import { nanoid } from 'nanoid';
-import { captureException } from '@sentry/browser';
 import { AddressBookController } from '@metamask/address-book-controller';
 import {
   ApprovalController,
@@ -596,7 +595,7 @@ export default class MetamaskController extends EventEmitter {
     // eslint-disable-next-line no-new
     new ErrorReportingService({
       messenger: errorReportingServiceMessenger,
-      captureException,
+      captureException: global.sentry.captureException.bind(global.sentry),
     });
 
     const networkControllerMessenger = this.controllerMessenger.getRestricted({
@@ -684,7 +683,7 @@ export default class MetamaskController extends EventEmitter {
         )
         .includes(initialNetworkControllerState.selectedNetworkClientId)
     ) {
-      captureException(
+      global.sentry.captureException(
         new Error(
           `NetworkController state is invalid: \`selectedNetworkClientId\` '${initialNetworkControllerState.selectedNetworkClientId}' does not refer to an RPC endpoint within a network configuration`,
         ),
@@ -895,7 +894,7 @@ export default class MetamaskController extends EventEmitter {
       version: process.env.METAMASK_VERSION,
       environment: process.env.METAMASK_ENVIRONMENT,
       extension: this.extension,
-      captureException,
+      captureException: global.sentry.captureException.bind(global.sentry),
     });
 
     this.on('update', (update) => {
@@ -5648,7 +5647,7 @@ export default class MetamaskController extends EventEmitter {
     } catch (e) {
       // Do not block the onboarding flow if this fails
       log.warn(`Failed to add Snap account. Error: ${e}`);
-      captureException(e);
+      global.sentry.captureException(e);
       return null;
     }
   }
@@ -6234,7 +6233,7 @@ export default class MetamaskController extends EventEmitter {
       accountsForCurrentChain || {},
     ).length;
 
-    captureException(
+    global.sentry.captureException(
       new Error(
         `Attempt to get permission specifications failed because their were ${accounts.length} accounts, but ${internalAccountCount} identities, and the ${keyringTypesWithMissingIdentities} keyrings included accounts with missing identities. Meanwhile, there are ${accountTrackerCount} accounts in the account tracker.`,
       ),
@@ -7797,7 +7796,7 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:get',
         ),
         trackError: (error) => {
-          return captureException(error);
+          return global.sentry.captureException(error);
         },
         trackEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,

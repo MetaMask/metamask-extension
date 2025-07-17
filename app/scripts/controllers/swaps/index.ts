@@ -3,7 +3,6 @@ import { Web3Provider } from '@ethersproject/providers';
 import { BaseController, StateMetadata } from '@metamask/base-controller';
 import { GasFeeState } from '@metamask/gas-fee-controller';
 import { TransactionParams } from '@metamask/transaction-controller';
-import { captureException } from '@sentry/browser';
 import { BigNumber } from 'bignumber.js';
 import abi from 'human-standard-token-abi';
 import { cloneDeep, mapValues } from 'lodash';
@@ -1161,7 +1160,7 @@ export default class SwapsController extends BaseController<
           }
         })
         .catch((e) => {
-          captureException(e, {
+          global.sentry.captureException(e, {
             extra: {
               aggregator,
             },

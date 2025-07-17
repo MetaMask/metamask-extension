@@ -31,7 +31,6 @@ import {
   NftControllerState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
-import { captureException as sentryCaptureException } from '@sentry/browser';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -332,7 +331,7 @@ export type MetaMetricsControllerMessenger = RestrictedMessenger<
 >;
 
 type CaptureException =
-  | typeof sentryCaptureException
+  | typeof global.sentry.captureException
   | ((err: unknown) => void);
 
 export type MetaMetricsControllerOptions = {
