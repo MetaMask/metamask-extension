@@ -4994,12 +4994,6 @@
   "slideMultiSrpTitle": {
     "message": "Mehrere geheime Wiederherstellungsphrasen hinzufügen"
   },
-  "slideRemoteModeDescription": {
-    "message": "Verwenden Sie Ihr Cold Wallet kabellos"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Cold Storage, schneller Zugriff"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "Dieselbe Adresse, intelligentere Funktionen"
   },

@@ -41,7 +41,6 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
     isSubmitted: false,
     detailsTitle: 'Sent',
-    remoteSignerAddress: null,
   },
   {
     title: 'Sent',
