@@ -52,12 +52,6 @@ export function setShowNftDetectionEnablementToast(
   };
 }
 
-export function setSwitchedNetworkNeverShowMessage() {
-  submitRequestToBackgroundAndCatch('setSwitchedNetworkNeverShowMessage', [
-    true,
-  ]);
-}
-
 export function setSurveyLinkLastClickedOrClosed(time: number) {
   submitRequestToBackgroundAndCatch('setSurveyLinkLastClickedOrClosed', [time]);
 }
