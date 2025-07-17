@@ -122,7 +122,7 @@ describe('Bridge tests', function (this: Suite) {
          */
 
         // With prefilling, we have additional input events for default chain and token
-        assert.ok(swapBridgeInputChanged.length >= 10);
+        assert.ok(swapBridgeInputChanged.length === 17);
 
         const inputTypes = [
           'token_source',

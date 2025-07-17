@@ -3,7 +3,6 @@ import {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
 } from '@metamask/bridge-controller';
-import { CaipAssetTypeStruct } from '@metamask/utils';
 import { MultichainNetworks } from './multichain/networks';
 import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
 
@@ -88,21 +87,6 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
 };
 
 export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
-
-/**
- * @deprecated Use defaultToToken from useBridgeDefaultToToken hook instead
- */
-export const SOLANA_USDC_ASSET = {
-  address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-  assetId: CaipAssetTypeStruct.create(
-    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-  ),
-  symbol: 'USDC',
-  decimals: 6,
-  image:
-    'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
-  chainId: MultichainNetworks.SOLANA,
-};
 
 export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
   Record<
