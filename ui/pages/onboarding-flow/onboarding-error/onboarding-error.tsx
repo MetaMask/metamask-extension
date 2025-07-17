@@ -93,7 +93,7 @@ export default function OnboardingError() {
         <Text>{t('sentryErrorReport')}</Text>
         <Button
           onClick={() => {
-            handleCopy(onboardingErrorReport?.stack || '');
+            handleCopy(onboardingErrorReport?.error.stack || '');
           }}
           startIconName={copied ? IconName.CopySuccess : IconName.Copy}
           variant={ButtonVariant.Link}
@@ -125,10 +125,10 @@ export default function OnboardingError() {
           data-testid="error-page-error-message"
           color={TextColor.inherit}
         >
-          {t('sentryErrorError', [onboardingErrorReport?.message || ''])}
+          {t('sentryErrorError', [onboardingErrorReport?.error?.message || ''])}
         </Text>
         <pre className="onboarding-error__stack">
-          {onboardingErrorReport?.stack || ''}
+          {onboardingErrorReport?.error?.stack || ''}
         </pre>
       </Box>
 

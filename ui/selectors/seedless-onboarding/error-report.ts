@@ -14,6 +14,6 @@ type State = {
  */
 export function getOnboardingErrorReport(
   state: Pick<State, 'appState'>,
-): Error | null {
+): State['appState']['onboardingErrorReport'] {
   return state.appState.onboardingErrorReport || null;
 }

@@ -164,7 +164,7 @@ export default class UnlockPage extends Component {
         errorReason = 'outdated_password';
         break;
       default:
-        setOnboardingErrorReport(error);
+        setOnboardingErrorReport(error, 'Unlock');
         break;
     }
 

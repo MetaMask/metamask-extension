@@ -128,7 +128,10 @@ type AppState = {
   errorInSettings: string | null;
   showNewSrpAddedToast: boolean;
   showPasswordChangeToast: PasswordChangeToastType | null;
-  onboardingErrorReport: Error | null;
+  onboardingErrorReport: {
+    error: Error;
+    view: string;
+  } | null;
 };
 
 export type AppSliceState = {
