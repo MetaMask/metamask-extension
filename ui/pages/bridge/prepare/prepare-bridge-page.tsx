@@ -112,7 +112,6 @@ import {
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
-import { SOLANA_USDC_ASSET } from '../../../../shared/constants/bridge';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -137,6 +136,7 @@ import {
 } from '../../../../shared/lib/asset-utils';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import useBridgeDefaultToToken from '../../../hooks/bridge/useBridgeDefaultToToken';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -353,7 +353,6 @@ const PrepareBridgePage = () => {
   const insufficientBalanceBannerRef = useRef<HTMLDivElement>(null);
   const isEstimatedReturnLowRef = useRef<HTMLDivElement>(null);
   const tokenAlertBannerRef = useRef<HTMLDivElement>(null);
-  const fromAssetsPageFixAppliedRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (isInsufficientGasForQuote(nativeAssetBalance)) {
@@ -601,40 +600,53 @@ const PrepareBridgePage = () => {
     });
   }, []);
 
-  // Set the default destination token for swaps (only when unified UI is disabled)
+  const { defaultToChainId, defaultToToken } = useBridgeDefaultToToken();
+
+  // Track whether defaults have been applied separately for chain and token
+  const [defaultChainApplied, setDefaultChainApplied] = useState(false);
+  const [defaultTokenApplied, setDefaultTokenApplied] = useState(false);
+
   useEffect(() => {
-    // Only set default token when unified UI is disabled (preserve existing behavior)
-    if (!isUnifiedUIEnabled && isSwap && fromChain && !toToken) {
-      dispatch(setToChainId(fromChain.chainId));
-      dispatch(setToToken(SOLANA_USDC_ASSET));
+    // Only set default chain if user hasn't already selected one and default hasn't been applied
+    if (!toChain && defaultToChainId && fromChain && !defaultChainApplied) {
+      dispatch(setToChainId(defaultToChainId));
+      // Track the input change event for the prefilled chain
+      trackInputEvent({
+        input: 'chain_destination',
+        value: String(defaultToChainId),
+      });
+      setDefaultChainApplied(true);
     }
-  }, [isSwap, dispatch, fromChain, toToken, isUnifiedUIEnabled]);
+  }, [
+    defaultToChainId,
+    toChain,
+    fromChain,
+    dispatch,
+    trackInputEvent,
+    defaultChainApplied,
+  ]);
 
-  // Edge-case fix: if user lands with USDC selected for both sides on Solana,
-  // switch destination to SOL (native asset).
   useEffect(() => {
-    if (
-      !isSwap ||
-      !fromChain ||
-      !isSolanaChainId(fromChain.chainId) ||
-      !fromToken?.address ||
-      !toToken?.address ||
-      fromAssetsPageFixAppliedRef.current // Prevent multiple applications of the fix as it's only needed initially.
-    ) {
-      return;
+    // Only set default token if user hasn't already selected one and default hasn't been applied
+    if (!toToken && defaultToToken && toChain && !defaultTokenApplied) {
+      dispatch(setToToken(defaultToToken));
+      // Track the input change event for the prefilled token
+      if (defaultToToken.address) {
+        trackInputEvent({
+          input: 'token_destination',
+          value: defaultToToken.address,
+        });
+      }
+      setDefaultTokenApplied(true);
     }
-
-    const isBothUsdc =
-      fromToken.address.toLowerCase() ===
-        SOLANA_USDC_ASSET.address.toLowerCase() &&
-      toToken.address.toLowerCase() === SOLANA_USDC_ASSET.address.toLowerCase();
-
-    if (isBothUsdc) {
-      const solNativeAsset = getNativeAssetForChainId(fromChain.chainId);
-      dispatch(setToToken(solNativeAsset));
-      fromAssetsPageFixAppliedRef.current = true;
-    }
-  }, [isSwap, fromChain?.chainId, fromToken?.address, toToken?.address]);
+  }, [
+    defaultToToken,
+    toToken,
+    toChain,
+    dispatch,
+    trackInputEvent,
+    defaultTokenApplied,
+  ]);
 
   const occurrences = Number(
     toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,
@@ -1157,7 +1169,7 @@ const PrepareBridgePage = () => {
             isEvm &&
             toToken &&
             toTokenIsNotNative &&
-            toToken.address !== SOLANA_USDC_ASSET.address &&
+            (!defaultToToken || toToken.address !== defaultToToken.address) &&
             occurrences < 2 && (
               <BannerAlert
                 severity={BannerAlertSeverity.Warning}
