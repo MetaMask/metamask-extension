@@ -425,6 +425,7 @@ import {
 } from './lib/network-controller/messenger-action-handlers';
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
+import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
 import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
@@ -4398,6 +4399,7 @@ export default class MetamaskController extends EventEmitter {
       // Other
       endTrace,
       isRelaySupported,
+      openUpdateTabAndReload,
       requestSafeReload: this.requestSafeReload.bind(this),
       applyTransactionContainersExisting: (transactionId, containerTypes) =>
         applyTransactionContainersExisting({

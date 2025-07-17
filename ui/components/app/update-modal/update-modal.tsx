@@ -1,5 +1,4 @@
 import React from 'react';
-import browser from 'webextension-polyfill';
 import {
   Modal,
   ModalContent,
@@ -21,7 +20,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  requestSafeReload,
+  openUpdateTabAndReload,
   setUpdateModalLastDismissedAt,
 } from '../../../store/actions';
 
@@ -69,17 +68,7 @@ function UpdateModal() {
           </Text>
         </ModalBody>
         <ModalFooter
-          onSubmit={async () => {
-            try {
-              await browser.tabs.create({
-                url: 'https://metamask.io/updating',
-                active: true,
-              });
-            } catch (error) {
-              console.error(error);
-            }
-            await requestSafeReload();
-          }}
+          onSubmit={async () => await openUpdateTabAndReload()}
           submitButtonProps={{
             children: t('updateToTheLatestVersion'),
             block: true,

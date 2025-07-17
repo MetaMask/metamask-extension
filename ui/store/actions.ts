@@ -7043,6 +7043,10 @@ export async function requestSafeReload() {
   return await submitRequestToBackground('requestSafeReload');
 }
 
+export async function openUpdateTabAndReload() {
+  return await submitRequestToBackground('openUpdateTabAndReload');
+}
+
 export async function applyTransactionContainersExisting(
   transactionId: string,
   containerTypes: TransactionContainerType[],
