@@ -32,6 +32,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
+import { getAccountTypeCategory } from '../account-details';
 
 export const AddressQRCode = () => {
   const t = useI18nContext();
@@ -70,6 +71,17 @@ export const AddressQRCode = () => {
     openBlockExplorer(addressLink, metricsLocation, trackEvent);
   }, [chainId, trackEvent, addressLink]);
 
+  const getExplorerButtonText = (): string => {
+    switch (getAccountTypeCategory(account)) {
+      case 'evm':
+        return t('viewAddressOnEtherscan');
+      case 'solana':
+        return t('viewAddressOnSolscan');
+      default:
+        return t('viewOnExplorer');
+    }
+  };
+
   return (
     <Page className="address-qr-code-page">
       <Header
@@ -104,7 +116,7 @@ export const AddressQRCode = () => {
             width: '100%',
           }}
         >
-          {t('viewOnExplorer')}
+          {getExplorerButtonText()}
         </ButtonSecondary>
       </Footer>
     </Page>
