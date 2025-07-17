@@ -4755,10 +4755,28 @@ export default class MetamaskController extends EventEmitter {
         throw e;
       }
 
+      let maxKeyChainLengthReached = false;
       // recover the keyring encryption key
       await this.seedlessOnboardingController.submitGlobalPassword({
         globalPassword: password,
-      });
+      }).catch((err)=>{
+        if (err.message === SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded) {
+          maxKeyChainLengthReached = true;
+        } else {
+          throw err;
+        }
+      })
+      // we are unable to recover the old pwd enc key as user is on a very old device.
+      // create a new vault and encrypt the new vault with the latest global password.
+      // also show a info popup to user.
+      if (maxKeyChainLengthReached) {
+        // create a new vault and encrypt the new vault with the latest global password @tuna
+
+        // display info popup to user. @lionell
+        return;
+      }
+
+      // re-encrypt the old vault data with the latest global password
       const keyringEncryptionKey =
         await this.seedlessOnboardingController.loadKeyringEncryptionKey();
       // use encryption key to unlock the keyring vault
