@@ -108,6 +108,7 @@ export type ControllerStatePropertiesEnumerated = {
   showPermissionsTour: AppStateControllerState['showPermissionsTour'];
   showNetworkBanner: AppStateControllerState['showNetworkBanner'];
   showAccountBanner: AppStateControllerState['showAccountBanner'];
+  showDownloadMobileAppSlide: AppStateControllerState['showDownloadMobileAppSlide'];
   trezorModel: AppStateControllerState['trezorModel'];
   currentPopupId?: AppStateControllerState['currentPopupId'];
   onboardingDate: AppStateControllerState['onboardingDate'];
