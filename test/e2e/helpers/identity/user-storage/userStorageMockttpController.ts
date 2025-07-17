@@ -26,24 +26,35 @@ export const pathRegexps = {
 };
 
 export type UserStorageResponseData = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   HashedKey: string;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   Data: string;
   // E2E Specific identifier that is not present in the real API
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SrpIdentifier?: string;
 };
 
-export enum UserStorageMockttpControllerEvents {
-  GET_NOT_FOUND = 'GET_NOT_FOUND',
-  GET_SINGLE = 'GET_SINGLE',
-  GET_ALL = 'GET_ALL',
-  PUT_SINGLE = 'PUT_SINGLE',
-  PUT_BATCH = 'PUT_BATCH',
-  DELETE_NOT_FOUND = 'DELETE_NOT_FOUND',
-  DELETE_SINGLE = 'DELETE_SINGLE',
-  DELETE_ALL = 'DELETE_ALL',
-  DELETE_BATCH_NOT_FOUND = 'DELETE_BATCH_NOT_FOUND',
-  DELETE_BATCH = 'DELETE_BATCH',
-}
+export const UserStorageMockttpControllerEvents = {
+  GET_NOT_FOUND: 'GET_NOT_FOUND',
+  GET_SINGLE: 'GET_SINGLE',
+  GET_ALL: 'GET_ALL',
+  PUT_SINGLE: 'PUT_SINGLE',
+  PUT_BATCH: 'PUT_BATCH',
+  DELETE_NOT_FOUND: 'DELETE_NOT_FOUND',
+  DELETE_SINGLE: 'DELETE_SINGLE',
+  DELETE_ALL: 'DELETE_ALL',
+  DELETE_BATCH_NOT_FOUND: 'DELETE_BATCH_NOT_FOUND',
+  DELETE_BATCH: 'DELETE_BATCH',
+} as const;
+
+// Helper type for converting const objects to enum-like types
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export type AsEnum<T> = T[keyof T];
 
 const determineIfFeatureEntryFromURL = (url: string) =>
   url.substring(url.lastIndexOf('userstorage') + 12).split('/').length === 2;
@@ -140,6 +151,8 @@ export class UserStorageMockttpController {
 
     const data = (await request.body.getJson()) as {
       data?: string | Record<string, string>;
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       batch_delete?: string[];
     };
 
@@ -217,6 +230,8 @@ export class UserStorageMockttpController {
             ...internalPathData,
             response: [
               ...(internalPathData?.response || []),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               entry as { HashedKey: string; Data: string },
             ],
           });

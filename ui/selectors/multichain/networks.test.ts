@@ -24,6 +24,20 @@ import {
   getIsEvmMultichainNetworkSelected,
 } from './networks';
 
+// Mock the main selectors to avoid circular dependency
+jest.mock('../selectors', () => ({
+  getIsBitcoinSupportEnabled: jest.fn(
+    (state) => state.metamask.remoteFeatureFlags.addBitcoinAccount,
+  ),
+  getIsSolanaSupportEnabled: jest.fn(
+    (state) => state.metamask.remoteFeatureFlags.addSolanaAccount,
+  ),
+  getIsSolanaTestnetSupportEnabled: jest.fn(
+    (state) => state.metamask.remoteFeatureFlags.solanaTestnetsEnabled,
+  ),
+  getEnabledNetworks: jest.fn(() => ({ eip155: {} })),
+}));
+
 type TestState = AccountsState &
   MultichainNetworkControllerState &
   NetworkState &
