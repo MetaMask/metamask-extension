@@ -244,7 +244,7 @@ export class CorruptionHandler {
                   // `connectedPorts` on disconnection.
                   tryPostMessage(connectedPort, {
                     data: {
-                      method: 'RELOAD',
+                      method: 'RELOAD_WINDOW',
                     },
                   });
                 });

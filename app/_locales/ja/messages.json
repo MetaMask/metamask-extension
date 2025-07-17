@@ -286,9 +286,6 @@
   "address": {
     "message": "アドレス"
   },
-  "addressCopied": {
-    "message": "アドレスがコピーされました！"
-  },
   "addressMismatch": {
     "message": "サイトアドレスの不一致"
   },
@@ -1800,9 +1797,6 @@
   },
   "downloadStateLogs": {
     "message": "ステートログをダウンロード"
-  },
-  "dragAndDropBanner": {
-    "message": "ネットワークをドラッグして並び替えることができます。"
   },
   "dropped": {
     "message": "削除されました"
@@ -4219,9 +4213,6 @@
   "popularNetworks": {
     "message": "人気のネットワーク"
   },
-  "portfolio": {
-    "message": "Portfolio"
-  },
   "preparingSwap": {
     "message": "スワップを準備しています..."
   },
@@ -5051,9 +5042,6 @@
   "smartAccountReject": {
     "message": "スマートアカウントを使用しない"
   },
-  "smartAccountRequestFor": {
-    "message": "要求の対象アカウント:"
-  },
   "smartAccountSameAccount": {
     "message": "同じアカウントでよりスマートな機能。"
   },
@@ -5498,9 +5486,6 @@
   "standardAccountLabel": {
     "message": "スタンダードアカウント"
   },
-  "startEarning": {
-    "message": "収益化を開始"
-  },
   "stateLogError": {
     "message": "ステートログの取得中にエラーが発生しました。"
   },
@@ -5518,9 +5503,6 @@
   },
   "statusNotConnected": {
     "message": "未接続"
-  },
-  "statusNotConnectedAccount": {
-    "message": "アカウントが接続されていません"
   },
   "step1LatticeWallet": {
     "message": "Lattice1を接続する"
@@ -6044,17 +6026,6 @@
   },
   "switchToThisAccount": {
     "message": "このアカウントに切り替える"
-  },
-  "switchedNetworkToastDecline": {
-    "message": "今後表示しない"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1が$2で有効になりました",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
-  "switchedNetworkToastMessageNoOrigin": {
-    "message": "$1に切り替えました",
-    "description": "$1 represents the network name"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "ネットワークを切り替えると、保留中の承認がすべてキャンセルされます"

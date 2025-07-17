@@ -286,9 +286,6 @@
   "address": {
     "message": "एड्रेस"
   },
-  "addressCopied": {
-    "message": "एड्रेस कॉपी किया गया!"
-  },
   "addressMismatch": {
     "message": "साइट एड्रेस का मैच न होना"
   },
@@ -1800,9 +1797,6 @@
   },
   "downloadStateLogs": {
     "message": "स्टेट लॉग डाउनलोड करें"
-  },
-  "dragAndDropBanner": {
-    "message": "आप नेटवर्कों को फिर से व्यवस्थित करने के लिए उन्हें खींचकर इधर से उधर ले जा सकते हैं।"
   },
   "dropped": {
     "message": "ड्रॉप किया गया"
@@ -4219,9 +4213,6 @@
   "popularNetworks": {
     "message": "पॉपुलर नेटवर्क्स"
   },
-  "portfolio": {
-    "message": "पोर्टफोलियो"
-  },
   "preparingSwap": {
     "message": "स्वैप की तैयारी कर रहा है..."
   },
@@ -5051,9 +5042,6 @@
   "smartAccountReject": {
     "message": "स्मार्ट अकाउंट का उपयोग न करें"
   },
-  "smartAccountRequestFor": {
-    "message": "इसके लिए अनुरोध करें"
-  },
   "smartAccountSameAccount": {
     "message": "वही अकाउंट, और स्मार्ट फीचर्स।"
   },
@@ -5498,9 +5486,6 @@
   "standardAccountLabel": {
     "message": "मानक अकाउंट"
   },
-  "startEarning": {
-    "message": "कमाना शुरू करें"
-  },
   "stateLogError": {
     "message": "स्टेट लॉग को पुनर्प्राप्त करने में गड़बड़ी।"
   },
@@ -5518,9 +5503,6 @@
   },
   "statusNotConnected": {
     "message": "कनेक्ट नहीं है"
-  },
-  "statusNotConnectedAccount": {
-    "message": "कोई अकाउंट जुड़ा नहीं है"
   },
   "step1LatticeWallet": {
     "message": "अपना Lattice1 कनेक्ट करें"
@@ -6044,17 +6026,6 @@
   },
   "switchToThisAccount": {
     "message": "इस अकाउंट पर स्विच करें"
-  },
-  "switchedNetworkToastDecline": {
-    "message": "इसे दोबारा न दिखाएं"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 अब $2 पर एक्टिव है",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
-  "switchedNetworkToastMessageNoOrigin": {
-    "message": "आप अब $1 इस्तेमाल कर रहे हैं",
-    "description": "$1 represents the network name"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "नेटवर्क स्विच करने से सभी लंबित कन्फर्मेशन कैंसिल हो जाएंगे"

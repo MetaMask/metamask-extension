@@ -286,9 +286,6 @@
   "address": {
     "message": "Endereço"
   },
-  "addressCopied": {
-    "message": "Endereço copiado!"
-  },
   "addressMismatch": {
     "message": "Divergência no endereço do site"
   },
@@ -1800,9 +1797,6 @@
   },
   "downloadStateLogs": {
     "message": "Baixar logs de estado"
-  },
-  "dragAndDropBanner": {
-    "message": "Você pode arrastar as redes para reordená-las. "
   },
   "dropped": {
     "message": "Abandonada"
@@ -4219,9 +4213,6 @@
   "popularNetworks": {
     "message": "Redes populares"
   },
-  "portfolio": {
-    "message": "Portfólio"
-  },
   "preparingSwap": {
     "message": "Preparando troca..."
   },
@@ -5051,9 +5042,6 @@
   "smartAccountReject": {
     "message": "Não usar conta inteligente"
   },
-  "smartAccountRequestFor": {
-    "message": "Solicitação para"
-  },
   "smartAccountSameAccount": {
     "message": "Mesma conta, recursos mais inteligentes."
   },
@@ -5498,9 +5486,6 @@
   "standardAccountLabel": {
     "message": "Conta padrão"
   },
-  "startEarning": {
-    "message": "Comece a ganhar"
-  },
   "stateLogError": {
     "message": "Erro ao recuperar os logs de estado."
   },
@@ -5518,9 +5503,6 @@
   },
   "statusNotConnected": {
     "message": "Não conectado"
-  },
-  "statusNotConnectedAccount": {
-    "message": "Nenhuma conta conectada"
   },
   "step1LatticeWallet": {
     "message": "Conecte seu Lattice1"
@@ -6044,17 +6026,6 @@
   },
   "switchToThisAccount": {
     "message": "Alternar para esta conta"
-  },
-  "switchedNetworkToastDecline": {
-    "message": "Não exibir novamente"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 agora está ativa na $2",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
-  "switchedNetworkToastMessageNoOrigin": {
-    "message": "Agora você está usando $1",
-    "description": "$1 represents the network name"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "A alternância de redes cancelará todas as confirmações pendentes"
