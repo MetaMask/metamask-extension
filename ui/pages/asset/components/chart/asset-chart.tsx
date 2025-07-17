@@ -32,6 +32,7 @@ import {
   ButtonBase,
   ButtonBaseSize,
 } from '../../../../components/component-library';
+import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
 import { loadingOpacity } from '../../util';
@@ -137,11 +138,13 @@ const AssetChart = ({
   address,
   currentPrice,
   currency,
+  asset,
 }: {
   chainId: Hex;
   address: string;
   currentPrice?: number;
   currency: string;
+  asset?: TokenFiatDisplayInfo;
 }) => {
   const t = useI18nContext();
   const theme = useTheme();
@@ -206,7 +209,9 @@ const AssetChart = ({
         price={currentPrice}
         date={Date.now()}
         comparePrice={prices?.[0]?.y}
+        asset={asset}
       />
+
       <Box
         data-testid="asset-price-chart"
         marginTop={4}
