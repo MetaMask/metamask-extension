@@ -7402,7 +7402,7 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:get',
         ),
         trackError: (error) => {
-          return captureException(error);
+          return global.sentry?.captureException?.(error);
         },
         trackEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,

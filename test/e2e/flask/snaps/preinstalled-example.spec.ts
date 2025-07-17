@@ -4,7 +4,12 @@ import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { withFixtures, WINDOW_TITLES, sentryRegEx } from '../../helpers';
+import {
+  withFixtures,
+  WINDOW_TITLES,
+  sentryRegEx,
+  largeDelayMs,
+} from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
@@ -84,8 +89,7 @@ describe('Preinstalled example Snap', function () {
     );
   });
 
-  // TODO: Remove `.only`.
-  it.only('tracks an error in Sentry with `snap_trackError`', async function () {
+  it('tracks an error in Sentry with `snap_trackError`', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -113,17 +117,17 @@ describe('Preinstalled example Snap', function () {
         await driver.wait(async () => {
           const isPending = await mockedEndpoint.isPending();
           return isPending === false;
-        }, 10_000);
+        }, largeDelayMs);
 
         const requests = await mockedEndpoint.getSeenRequests();
         assert.equal(requests.length, 1, 'Expected one request to Sentry.');
 
         const request = requests[0];
-        const [event, type, data] = (await request.body.getText()).split('\n');
+        const [, , data] = (await request.body.getText()).split('\n');
+        const [error] = JSON.parse(data).exception.values;
 
-        console.log('Sentry event:', JSON.parse(event));
-        console.log('Sentry type:', JSON.parse(type));
-        console.log('Sentry data:', JSON.parse(data));
+        assert.equal(error.type, 'TestError');
+        assert.equal(error.value, 'This is a test error.');
       },
     );
   });
