@@ -1,7 +1,6 @@
 import { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { isStrictHexString } from '@metamask/utils';
 import {
   type BridgeAsset,
   formatChainIdToCaip,

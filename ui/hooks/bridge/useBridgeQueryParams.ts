@@ -74,6 +74,7 @@ const fetchAssetMetadata = async (
  * This hook is used to set the bridge fromChain, fromToken, fromTokenInputValue,
  * toChainId, and toToken from the URL search params.
  * It also clear the search params after setting the values.
+ *
  * @param selectedSolanaAccount - The selected Solana account
  * @param selectedEvmAccount - The selected EVM account
  */
