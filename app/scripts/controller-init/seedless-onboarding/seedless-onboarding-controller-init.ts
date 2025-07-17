@@ -9,12 +9,7 @@ import { encryptorFactory } from '../../lib/encryptor-factory';
 import { isDevOrTestBuild } from '../../services/oauth/config';
 
 const loadWeb3AuthNetwork = (): Web3AuthNetwork => {
-  let network = Web3AuthNetwork.Mainnet;
-  if (isDevOrTestBuild()) {
-    network = Web3AuthNetwork.Devnet;
-  }
-
-  return network;
+  return isDevOrTestBuild() ? Web3AuthNetwork.Devnet : Web3AuthNetwork.Mainnet;
 };
 
 export const SeedlessOnboardingControllerInit: ControllerInitFunction<

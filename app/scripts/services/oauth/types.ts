@@ -187,6 +187,17 @@ export type OAuthLoginResult = {
 };
 
 /**
+ * The result of the OAuth refresh token.
+ *
+ * This is the return value of the {@link OAuthService.getNewRefreshToken} method.
+ * It contains the JWT Tokens issued from the Web3Auth Authentication Server.
+ */
+export type OAuthRefreshTokenResult = Pick<
+  OAuthLoginResult,
+  'idTokens' | 'accessToken' | 'metadataAccessToken'
+>;
+
+/**
  * The user's information extracted from the JWT Token.
  */
 export type OAuthUserInfo = {
