@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Modal,
   ModalContent,
@@ -28,6 +28,7 @@ import {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function UpdateModal() {
   const t = useI18nContext();
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <Modal
@@ -68,9 +69,15 @@ function UpdateModal() {
           </Text>
         </ModalBody>
         <ModalFooter
-          onSubmit={async () => await openUpdateTabAndReload()}
+          onSubmit={async () => {
+            setIsLoading(true);
+            await openUpdateTabAndReload();
+            setIsLoading(false);
+          }}
           submitButtonProps={{
             children: t('updateToTheLatestVersion'),
+            loading: isLoading,
+            disabled: isLoading,
             block: true,
             'data-testid': 'update-modal-submit-button',
           }}
