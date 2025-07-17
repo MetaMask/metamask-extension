@@ -864,7 +864,7 @@ export function importNewAccount(
 
 export function addNewAccount(
   keyringId?: string,
-  showLoading?: boolean,
+  showLoading?: boolean = true,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
