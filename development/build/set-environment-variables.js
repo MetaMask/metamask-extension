@@ -208,7 +208,7 @@ function getGoogleClientId({
     buildType === 'flask'
       ? 'GOOGLE_CLIENT_ID_FLASK_UAT'
       : 'GOOGLE_CLIENT_ID_UAT';
-  return assertAndLoadEnvVar(envToLoad, buildType, variables);
+  return variables.get(envToLoad);
 }
 
 /**
@@ -242,7 +242,7 @@ function getAppleClientId({
 
   const envToLoad =
     buildType === 'flask' ? 'APPLE_CLIENT_ID_FLASK_UAT' : 'APPLE_CLIENT_ID_UAT';
-  return assertAndLoadEnvVar(envToLoad, buildType, variables);
+  return variables.get(envToLoad);
 }
 
 /**

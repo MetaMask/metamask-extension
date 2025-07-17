@@ -12,6 +12,7 @@ import type {
   OAuthConfig,
   OAuthLoginEnv,
   OAuthLoginResult,
+  OAuthRefreshTokenResult,
   OAuthServiceOptions,
   WebAuthenticator,
 } from './types';
@@ -73,7 +74,7 @@ export default class OAuthService {
   async getNewRefreshToken(options: {
     connection: AuthConnection;
     refreshToken: string;
-  }): Promise<{ idTokens: string[] }> {
+  }): Promise<OAuthRefreshTokenResult> {
     const { connection, refreshToken } = options;
     const loginHandler = createLoginHandler(
       connection,
@@ -86,6 +87,8 @@ export default class OAuthService {
 
     return {
       idTokens: [idToken],
+      accessToken: refreshTokenData.access_token,
+      metadataAccessToken: refreshTokenData.metadata_access_token,
     };
   }
 
@@ -293,6 +296,8 @@ export default class OAuthService {
       socialLoginEmail: userInfo.email,
       refreshToken: authTokenData.refresh_token,
       revokeToken: authTokenData.revoke_token,
+      accessToken: authTokenData.access_token,
+      metadataAccessToken: authTokenData.metadata_access_token,
     };
   }
 
