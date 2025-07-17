@@ -7111,6 +7111,12 @@
   "viewActivity": {
     "message": "View activity"
   },
+  "viewAddressOnEtherscan": {
+    "message": "View on Etherscan"
+  },
+  "viewAddressOnSolscan": {
+    "message": "View on Solscan"
+  },
   "viewAllQuotes": {
     "message": "view all quotes"
   },
