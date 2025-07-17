@@ -9,7 +9,7 @@ export default new Route({
 
     const from = params.get('from');
     const to = params.get('to');
-    const value = params.get('value');
+    const amount = params.get('amount');
     // add the params to the query if they exist
     let parsedFrom;
     if (from) {
@@ -31,8 +31,8 @@ export default new Route({
         }
       }
     }
-    if (value) {
-      query.set('value', value);
+    if (amount) {
+      query.set('amount', amount);
     }
 
     return {

@@ -62,7 +62,7 @@ export default function OnboardingPinExtension() {
 
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.WalletSetupCompleted,
+      event: MetaMetricsEventName.ExtensionPinned,
       properties: {
         wallet_setup_type:
           firstTimeFlowType === FirstTimeFlowType.import ? 'import' : 'new',
@@ -135,7 +135,6 @@ export default function OnboardingPinExtension() {
           >
             <img
               src="/images/onboarding-extension-pin.svg"
-              className="onboarding-pin-extension__image-pin"
               alt={t('onboardingPinExtensionAltPin')}
             />
           </Box>
@@ -147,7 +146,6 @@ export default function OnboardingPinExtension() {
           >
             <img
               src="/images/onboarding-extension-launch.svg"
-              className="onboarding-pin-extension__image-launch"
               alt={t('onboardingPinExtensionAltLaunch')}
             />
           </Box>

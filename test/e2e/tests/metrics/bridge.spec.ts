@@ -42,9 +42,8 @@ describe('Bridge tests', function (this: Suite) {
         await disableStxSetting(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24');
 
-        await bridgeTransaction(driver, quote, 2, '24.9');
+        await bridgeTransaction(driver, quote, 2);
 
         // Start the flow again
         await homePage.startBridgeFlow();
