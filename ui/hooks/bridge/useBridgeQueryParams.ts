@@ -156,14 +156,14 @@ export const useBridgeQueryParams = (
     if (parsedFromAssetId?.assetId || parsedToAssetId?.assetId) {
       abortController.current.abort();
       abortController.current = new AbortController();
+      fetchAssetMetadata(
+        abortController.current.signal,
+        parsedFromAssetId?.assetId,
+        parsedToAssetId?.assetId,
+      ).then((result) => {
+        setAssetMetadataByAssetId(result);
+      });
     }
-    fetchAssetMetadata(
-      abortController.current.signal,
-      parsedFromAssetId?.assetId,
-      parsedToAssetId?.assetId,
-    ).then((result) => {
-      setAssetMetadataByAssetId(result);
-    });
   }, [parsedFromAssetId?.assetId, parsedToAssetId?.assetId]);
 
   // Set fromChain and fromToken
