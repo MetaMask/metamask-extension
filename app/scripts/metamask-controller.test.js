@@ -4460,43 +4460,6 @@ describe('MetaMaskController', () => {
         expect(result).toBe(mockMnemonic);
       });
 
-      it('should throw error when no secret data is found', async () => {
-        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
-          [],
-        );
-
-        await expect(
-          metamaskController.restoreSocialBackupAndGetSeedPhrase(mockPassword),
-        ).rejects.toThrow('No seed phrase found');
-      });
-
-      it('should throw error when first secret data is not a mnemonic', async () => {
-        const mockFirstSecretData = {
-          data: mockEncodedMnemonic,
-          type: 'privateKey', // Not a mnemonic
-          timestamp: Date.now(),
-          version: 1,
-        };
-
-        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
-          [mockFirstSecretData],
-        );
-
-        await expect(
-          metamaskController.restoreSocialBackupAndGetSeedPhrase(mockPassword),
-        ).rejects.toThrow('No seed phrase found');
-      });
-
-      it('should handle case when first secret data is null', async () => {
-        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
-          [null],
-        );
-
-        await expect(
-          metamaskController.restoreSocialBackupAndGetSeedPhrase(mockPassword),
-        ).rejects.toThrow('No seed phrase found');
-      });
-
       it('should handle case when no remaining secret data exists', async () => {
         const mockFirstSecretData = {
           data: mockEncodedMnemonic,

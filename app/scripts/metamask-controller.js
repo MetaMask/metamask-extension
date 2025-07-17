@@ -5114,9 +5114,6 @@ export default class MetamaskController extends EventEmitter {
     // and we will use it to create the initial vault
     const [firstSecretData, ...remainingSecretData] =
       await this.seedlessOnboardingController.fetchAllSecretData(password);
-    if (!firstSecretData || firstSecretData.type !== SecretType.Mnemonic) {
-      throw new Error('No seed phrase found');
-    }
 
     const firstSeedPhrase = this._convertEnglishWordlistIndicesToCodepoints(
       firstSecretData.data,
