@@ -20,14 +20,23 @@ import {
   ONBOARDING_WELCOME_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
+import {
+  getFirstTimeFlowType,
+  getSocialLoginEmail,
+  getSocialLoginType,
+} from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   resetOAuthLoginState,
   setFirstTimeFlowType,
 } from '../../../store/actions';
-import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventAccountType,
+} from '../../../../shared/constants/metametrics';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -37,8 +46,10 @@ export default function AccountExist() {
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
+  const socialLoginType = useSelector(getSocialLoginType);
+  const trackEvent = useContext(MetaMetricsContext);
   const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
-    useContext(MetaMetricsContext);
+    trackEvent;
 
   const onLoginWithDifferentMethod = async () => {
     // clear the social login state
@@ -59,6 +70,15 @@ export default function AccountExist() {
   };
 
   const onDone = async () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletImportStarted,
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: `${MetaMetricsEventAccountType.Imported}_${socialLoginType}`,
+      },
+    });
     bufferedTrace?.({
       name: TraceName.OnboardingExistingSocialLogin,
       op: TraceOperation.OnboardingUserJourney,

@@ -37,6 +37,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { getPasswordStrengthCategory } from '../../../../helpers/utils/common.util';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
@@ -103,6 +104,20 @@ const ChangePassword = () => {
       // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
       // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(changePassword(newPassword, currentPassword));
+
+      // Track password changed event
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasswordChanged,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          biometrics_enabled: false,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          password_strength: getPasswordStrengthCategory(newPassword),
+        },
+      });
 
       // upon successful password change, go back to the settings page
       history.push(SECURITY_ROUTE);
@@ -239,7 +254,9 @@ const ChangePassword = () => {
                 }}
                 label={
                   <>
-                    {t('passwordTermsWarning')}
+                    {isSocialLoginFlow
+                      ? t('passwordTermsWarningSocial')
+                      : t('passwordTermsWarning')}
                     &nbsp;
                     {createPasswordLink}
                   </>

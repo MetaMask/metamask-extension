@@ -51,6 +51,7 @@ import {
   selectShowSurveyToast,
   selectNewSrpAdded,
   selectPasswordChangeToast,
+  selectShowCopyAddressToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -59,6 +60,7 @@ import {
   setSurveyLinkLastClickedOrClosed,
   setShowNewSrpAddedToast,
   setShowPasswordChangeToast,
+  setShowCopyAddressToast,
 } from './utils';
 
 export function ToastMaster() {
@@ -77,6 +79,7 @@ export function ToastMaster() {
         <NftEnablementToast />
         <PermittedNetworkToast />
         <NewSrpAddedToast />
+        <CopyAddressToast />
       </ToastContainer>
     );
   }
@@ -365,3 +368,27 @@ const PasswordChangeToast = () => {
     )
   );
 };
+
+function CopyAddressToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showCopyAddressToast = useSelector(selectShowCopyAddressToast);
+  const autoHideToastDelay = 2 * SECOND;
+
+  return (
+    showCopyAddressToast && (
+      <Toast
+        key="copy-address-toast"
+        text={t('addressCopied')}
+        startAdornment={
+          <Icon name={IconName.CopySuccess} color={IconColor.iconDefault} />
+        }
+        onClose={() => dispatch(setShowCopyAddressToast(false))}
+        autoHideTime={autoHideToastDelay}
+        onAutoHideToast={() => dispatch(setShowCopyAddressToast(false))}
+        dataTestId="copy-address-toast"
+      />
+    )
+  );
+}

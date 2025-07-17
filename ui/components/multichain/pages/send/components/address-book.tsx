@@ -1,13 +1,14 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
 import { Box, Text } from '../../../../component-library';
 import { I18nContext } from '../../../../../contexts/i18n';
 import ContactList from '../../../../app/contact-list';
 import {
-  getAddressBook,
+  getCompleteAddressBook,
   getCurrentNetworkTransactions,
   getInternalAccounts,
+  getNetworkConfigurationIdByChainId,
 } from '../../../../../selectors';
 import {
   addHistoryEntry,
@@ -26,6 +27,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
+import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
+import { setActiveNetworkWithError } from '../../../../../store/actions';
 import { SendPageRow } from './send-page-row';
 
 export const SendPageAddressBook = () => {
@@ -33,10 +36,15 @@ export const SendPageAddressBook = () => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const addressBook = useSelector(getAddressBook);
+  const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const contacts = addressBook.filter(({ name }) => Boolean(name));
   const currentNetworkTransactions = useSelector(getCurrentNetworkTransactions);
+
+  const globalChainId = useSelector(getCurrentChainId);
+  const networkClientIdsByChainId = useSelector(
+    getNetworkConfigurationIdByChainId,
+  ) as Record<string, string>;
 
   const txList = [...currentNetworkTransactions].reverse();
   const nonContacts = addressBook
@@ -91,30 +99,40 @@ export const SendPageAddressBook = () => {
     return nonContacts;
   };
 
-  const selectRecipient = (
-    address = '',
-    nickname = '',
-    type = 'user input',
-  ) => {
-    dispatch(
-      addHistoryEntry(
-        `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
-      ),
-    );
-    trackEvent(
-      {
-        event: MetaMetricsEventName.sendRecipientSelected,
-        category: MetaMetricsEventCategory.Send,
-        properties: {
-          location: 'address book',
-          inputType: type,
+  const selectRecipient = useCallback(
+    (address = '', nickname = '', type = 'user input') => {
+      dispatch(
+        addHistoryEntry(
+          `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
+        ),
+      );
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendRecipientSelected,
+          category: MetaMetricsEventCategory.Send,
+          properties: {
+            location: 'address book',
+            inputType: type,
+          },
         },
-      },
-      { excludeMetaMetricsId: false },
-    );
-    dispatch(updateRecipient({ address, nickname }));
-    dispatch(updateRecipientUserInput(address));
-  };
+        { excludeMetaMetricsId: false },
+      );
+      dispatch(updateRecipient({ address, nickname }));
+      dispatch(updateRecipientUserInput(address));
+    },
+    [dispatch, trackEvent],
+  );
+
+  const onSelectRecipient = useCallback(
+    async (address = '', name = '', chainId = '') => {
+      if (chainId && chainId !== globalChainId) {
+        const networkClientId = networkClientIdsByChainId[chainId];
+        dispatch(setActiveNetworkWithError(networkClientId));
+      }
+      selectRecipient(address, name, `${name ? 'contact' : 'recent'} list`);
+    },
+    [globalChainId, networkClientIdsByChainId, dispatch, selectRecipient],
+  );
 
   return (
     <SendPageRow>
@@ -125,13 +143,7 @@ export const SendPageAddressBook = () => {
             internalAccounts={internalAccounts}
             searchForContacts={searchForContacts}
             searchForRecents={searchForRecents}
-            selectRecipient={(address = '', name = '') => {
-              selectRecipient(
-                address,
-                name,
-                `${name ? 'contact' : 'recent'} list`,
-              );
-            }}
+            selectRecipient={onSelectRecipient}
           />
         </>
       ) : (
