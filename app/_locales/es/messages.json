@@ -5486,9 +5486,6 @@
   "standardAccountLabel": {
     "message": "Cuenta estándar"
   },
-  "startEarning": {
-    "message": "Comienza a ganar"
-  },
   "stateLogError": {
     "message": "Error al recuperar los registros de estado."
   },
@@ -6029,17 +6026,6 @@
   },
   "switchToThisAccount": {
     "message": "Cambiar a esta cuenta"
-  },
-  "switchedNetworkToastDecline": {
-    "message": "No volver a mostrar"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 ahora está activo en $2",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
-  "switchedNetworkToastMessageNoOrigin": {
-    "message": "Ahora está usando $1",
-    "description": "$1 represents the network name"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Cambiar de red cancelará todas las confirmaciones pendientes"

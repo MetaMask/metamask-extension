@@ -18,7 +18,14 @@ describe('Send NFTs', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            preferences: {
+              showTestNetworks: true,
+            },
+          })
+          .withNftControllerERC721()
+          .build(),
         smartContract,
         title: this.test?.fullTitle(),
       },
