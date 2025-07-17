@@ -43,7 +43,6 @@ class HomePage {
     testId: 'asset-list-control-bar-action-button',
   };
 
-
   private readonly loadingOverlay = {
     text: 'Connecting to Localhost 8545',
   };
@@ -164,7 +163,6 @@ class HomePage {
     await this.driver.clickElement(this.erc20TokenDropdown);
     await this.driver.clickElement(this.refreshErc20Tokens);
   }
-
 
   async startSendFlow(): Promise<void> {
     await this.driver.clickElement(this.sendButton);

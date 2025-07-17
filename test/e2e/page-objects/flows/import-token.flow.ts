@@ -31,11 +31,7 @@ export async function importTestToken(
   await assetListPage.openImportTokensModal();
 
   // Use ImportTokensModal to handle the import process
-  await importTokensModal.importCustomToken(
-    contractAddress,
-    networkChainId,
-  );
+  await importTokensModal.importCustomToken(contractAddress, networkChainId);
 
   console.log('Custom token import completed successfully');
 }
-

@@ -17,12 +17,10 @@ class AssetListPage {
   private readonly assetMarketCapInDetailsModal =
     '[data-testid="asset-market-cap"]';
 
-
   private readonly currentNetworkOption =
     '[data-testid="network-filter-current__button"]';
 
   private readonly currentNetworksTotal = `${this.currentNetworkOption} [data-testid="account-value-and-suffix"]`;
-
 
   private readonly hideTokenButton = '[data-testid="asset-options__hide"]';
 
@@ -34,9 +32,7 @@ class AssetListPage {
     css: '.hide-token-confirmation__title',
   };
 
-
   private readonly importTokensButton = '[data-testid="importTokens"]';
-
 
   private readonly networksToggle = '[data-testid="sort-by-networks"]';
 
@@ -56,7 +52,6 @@ class AssetListPage {
 
   private readonly sendButton = '[data-testid="eth-overview-send"]';
 
-
   private readonly tokenAmountValue =
     '[data-testid="multichain-token-list-item-value"]';
 
@@ -67,7 +62,6 @@ class AssetListPage {
 
   private readonly tokenAddressInDetails =
     '[data-testid="address-copy-button-text"]';
-
 
   private readonly tokenNameInDetails = '[data-testid="asset-name"]';
 
@@ -80,12 +74,9 @@ class AssetListPage {
   private readonly tokenOptionsButton =
     '[data-testid="asset-list-control-bar-action-button"]';
 
-
-
   private tokenPercentage(address: string): string {
     return `[data-testid="token-increase-decrease-percentage-${address}"]`;
   }
-
 
   private readonly tokenIncreaseDecreaseValue =
     '[data-testid="token-increase-decrease-value"]';
@@ -210,9 +201,6 @@ class AssetListPage {
       this.hideTokenConfirmationButton,
     );
   }
-
-
-
 
   async openNetworksFilter(): Promise<void> {
     console.log(`Opening the network filter`);

@@ -95,12 +95,12 @@ export class ImportTokensModal {
    *
    * @param contractAddress - The token contract address
    * @param chainId - Chain ID to select specific network
-   * @param symbol - Optional token symbol for verification (if not provided, uses auto-detected)
+   * @param _symbol - Optional token symbol for verification (if not provided, uses auto-detected)
    */
   async importCustomToken(
     contractAddress: string,
     chainId: string,
-    symbol?: string,
+    _symbol?: string,
   ): Promise<void> {
     await this.clickCustomTokenTab();
     await this.selectNetwork(chainId);
@@ -122,10 +122,15 @@ export class ImportTokensModal {
    */
   async importTokenBySearch(tokenName: string): Promise<void> {
     console.log(`Import token ${tokenName} by search`);
-    await this.driver.fill(ImportTokensModal.selectors.tokenSearchInput, tokenName);
+    await this.driver.fill(
+      ImportTokensModal.selectors.tokenSearchInput,
+      tokenName,
+    );
     await this.driver.clickElement({ text: tokenName, tag: 'p' });
     await this.driver.clickElement(ImportTokensModal.selectors.nextButton);
-    await this.driver.waitForSelector(ImportTokensModal.selectors.confirmImportTokenMessage);
+    await this.driver.waitForSelector(
+      ImportTokensModal.selectors.confirmImportTokenMessage,
+    );
     await this.driver.clickElementAndWaitToDisappear(
       ImportTokensModal.selectors.importButton,
     );
@@ -137,11 +142,12 @@ export class ImportTokensModal {
    * @param tokenNames - Array of token names to search for and import
    */
   async importMultipleTokensBySearch(tokenNames: string[]): Promise<void> {
-    console.log(
-      `Importing tokens ${tokenNames.join(', ')} by search`,
-    );
+    console.log(`Importing tokens ${tokenNames.join(', ')} by search`);
     for (const name of tokenNames) {
-      await this.driver.fill(ImportTokensModal.selectors.tokenSearchInput, name);
+      await this.driver.fill(
+        ImportTokensModal.selectors.tokenSearchInput,
+        name,
+      );
       await this.driver.waitForElementToStopMoving({ text: name, tag: 'p' });
       await this.driver.clickElement({ text: name, tag: 'p' });
     }
