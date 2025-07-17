@@ -135,7 +135,6 @@ export default function OnboardingPinExtension() {
           >
             <img
               src="/images/onboarding-extension-pin.svg"
-              className="onboarding-pin-extension__image-pin"
               alt={t('onboardingPinExtensionAltPin')}
             />
           </Box>
@@ -147,7 +146,6 @@ export default function OnboardingPinExtension() {
           >
             <img
               src="/images/onboarding-extension-launch.svg"
-              className="onboarding-pin-extension__image-launch"
               alt={t('onboardingPinExtensionAltLaunch')}
             />
           </Box>
