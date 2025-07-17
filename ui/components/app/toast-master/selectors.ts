@@ -32,7 +32,6 @@ type State = {
       | 'newPrivacyPolicyToastShownDate'
       | 'onboardingDate'
       | 'surveyLinkLastClickedOrClosed'
-      | 'switchedNetworkNeverShowMessage'
     >
   >;
 };
@@ -115,18 +114,6 @@ export function selectShowConnectAccountToast(
     !isInternalAccountInPermittedAccountIds(account, connectedAccounts);
 
   return showConnectAccountToast;
-}
-
-/**
- * Retrieves user preference to never see the "Switched Network" toast
- *
- * @param state - Redux state object.
- * @returns Boolean preference value
- */
-export function selectSwitchedNetworkNeverShowMessage(
-  state: Pick<State, 'metamask'>,
-): boolean {
-  return Boolean(state.metamask.switchedNetworkNeverShowMessage);
 }
 
 /**

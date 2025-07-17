@@ -3774,14 +3774,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowNetworkBanner.bind(appStateController),
       updateNftDropDownState:
         appStateController.updateNftDropDownState.bind(appStateController),
-      setSwitchedNetworkDetails:
-        appStateController.setSwitchedNetworkDetails.bind(appStateController),
-      clearSwitchedNetworkDetails:
-        appStateController.clearSwitchedNetworkDetails.bind(appStateController),
-      setSwitchedNetworkNeverShowMessage:
-        appStateController.setSwitchedNetworkNeverShowMessage.bind(
-          appStateController,
-        ),
       getLastInteractedConfirmationInfo:
         appStateController.getLastInteractedConfirmationInfo.bind(
           appStateController,

@@ -6027,17 +6027,6 @@
   "switchToThisAccount": {
     "message": "Αλλαγή σε αυτόν τον λογαριασμό"
   },
-  "switchedNetworkToastDecline": {
-    "message": "Να μην εμφανιστεί ξανά"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "Το $1 είναι τώρα ενεργό στο $2",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
-  "switchedNetworkToastMessageNoOrigin": {
-    "message": "Χρησιμοποιείτε τώρα το $1",
-    "description": "$1 represents the network name"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Η αλλαγή δικτύων θα ακυρώσει όλες τις εκκρεμείς επιβεβαιώσεις"
   },
