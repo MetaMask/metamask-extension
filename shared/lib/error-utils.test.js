@@ -37,9 +37,12 @@ describe('Error utils Tests', function () {
     const mockStore = {
       localeMessages: {
         current: {
-          troubleStarting: {
+          troubleStartingTitle: {
+            message: 'MetaMask had trouble starting.',
+          },
+          troubleStartingMessage: {
             message:
-              'MetaMask had trouble starting. This error could be intermittent, so try restarting the extension.',
+              'This error could be intermittent; try restarting the extension.',
           },
           restartMetamask: {
             message: 'Restart MetaMask',
@@ -67,13 +70,15 @@ describe('Error utils Tests', function () {
       SUPPORT_LINK,
     );
     const currentLocale = mockStore.localeMessages.current;
-    const troubleStartingMessage = currentLocale.troubleStarting.message;
+    const troubleStartingTitle = currentLocale.troubleStartingTitle.message;
+    const troubleStartingMessage = currentLocale.troubleStartingMessage.message;
     const restartMetamaskMessage = currentLocale.restartMetamask.message;
     const stillGettingMessageMessage =
       currentLocale.stillGettingMessage.message;
     const sendBugReportMessage = currentLocale.sendBugReport.message;
 
     expect(errorHtml).toContain(troubleStartingMessage);
+    expect(errorHtml).toContain(troubleStartingTitle);
     expect(errorHtml).toContain(restartMetamaskMessage);
     expect(errorHtml).toContain(stillGettingMessageMessage);
     expect(errorHtml).toContain(sendBugReportMessage);
