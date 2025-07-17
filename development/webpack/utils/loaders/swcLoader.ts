@@ -126,6 +126,12 @@ const schema = {
                   type: 'boolean',
                   default: false,
                 },
+                sourceType: {
+                  description: 'Specify the source type. Defaults to `module`.',
+                  type: 'string',
+                  default: 'module',
+                  enum: ['module', 'script'],
+                },
               },
               additionalProperties: false,
               required: ['syntax'],
@@ -144,6 +150,12 @@ const schema = {
                     'Enable parsing of import attributes. Defaults to `false`.',
                   type: 'boolean',
                   default: false,
+                },
+                sourceType: {
+                  description: 'Specify the source type. Defaults to `module`.',
+                  type: 'string',
+                  default: 'module',
+                  enum: ['module', 'script'],
                 },
               },
               additionalProperties: false,
@@ -192,12 +204,14 @@ export type SwcConfig = {
  *
  * @param syntax
  * @param enableJsx
+ * @param sourceType
  * @param swcConfig
  * @returns
  */
 export function getSwcLoader(
   syntax: 'typescript' | 'ecmascript',
   enableJsx: boolean,
+  sourceType: 'module' | 'script',
   swcConfig: SwcConfig,
 ) {
   return {
@@ -224,6 +238,7 @@ export function getSwcLoader(
           syntax,
           [syntax === 'typescript' ? 'tsx' : 'jsx']: enableJsx,
           importAttributes: true,
+          sourceType,
         },
       },
     } as const satisfies SwcLoaderOptions,

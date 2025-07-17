@@ -28,6 +28,7 @@ import {
   getMinimizers,
   NODE_MODULES_RE,
   __HMR_READY__,
+  SNOW_MODULE_RE,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
@@ -159,7 +160,7 @@ const plugins: WebpackPluginInstance[] = [
     // Make a global `Buffer` variable that points to the `buffer` package.
     Buffer: ['buffer', 'Buffer'],
     // Make a global `process` variable that points to the `process` package.
-    process: 'process/browser',
+    process: 'process/browser.js',
     // polyfill usages of `setImmediate`, ideally this would be automatically
     // handled by `swcLoader`'s `env.usage = 'entry'` option, but that setting
     // results in a compilation error: `Module parse failed: 'import' and
@@ -167,7 +168,7 @@ const plugins: WebpackPluginInstance[] = [
     // hours trying to figure it out but couldn't. So, this is the workaround.
     // Note: we should probably remove usages of `setImmediate` from our
     // codebase so we don't have to polyfill it.
-    setImmediate: 'core-js-pure/actual/set-immediate',
+    setImmediate: 'core-js-pure/actual/set-immediate.js',
   }),
   new CopyPlugin({
     patterns: [
@@ -190,9 +191,10 @@ if (args.progress) {
 // #endregion plugins
 
 const swcConfig = { args, safeVariables, browsersListQuery, isDevelopment };
-const tsxLoader = getSwcLoader('typescript', true, swcConfig);
-const jsxLoader = getSwcLoader('ecmascript', true, swcConfig);
-const ecmaLoader = getSwcLoader('ecmascript', false, swcConfig);
+const tsxLoader = getSwcLoader('typescript', true, 'module', swcConfig);
+const jsxLoader = getSwcLoader('ecmascript', true, 'module', swcConfig);
+const ecmaLoader = getSwcLoader('ecmascript', false, 'module', swcConfig);
+const cjsLoader = getSwcLoader('ecmascript', false, 'script', swcConfig);
 
 const config = {
   entry,
@@ -283,14 +285,20 @@ const config = {
         exclude: NODE_MODULES_RE,
         use: [jsxLoader, codeFenceLoader],
       },
-      // vendor javascript
+      // vendor commonjs javascript
       {
-        test: /\.(?:js|mjs)$/u,
+        test: /\.js$/u,
         include: NODE_MODULES_RE,
-        // never process `@lavamoat/snow/**.*`
-        exclude: /^.*\/node_modules\/@lavamoat\/snow\/.*$/u,
-        // can be removed once https://github.com/MetaMask/key-tree/issues/152 is resolved
-        resolve: { fullySpecified: false },
+        // security team requires that we never process `@lavamoat/snow/**.*`
+        exclude: SNOW_MODULE_RE,
+        use: cjsLoader,
+      },
+      // vendor module javascript
+      {
+        test: /\.mjs$/u,
+        include: NODE_MODULES_RE,
+        // security team requires that we never process `@lavamoat/snow/**.*`
+        exclude: SNOW_MODULE_RE,
         use: ecmaLoader,
       },
       // css, sass/scss
