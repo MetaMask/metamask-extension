@@ -4138,14 +4138,6 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController.addEventBeforeMetricsOptIn.bind(
           metaMetricsController,
         ),
-      trackEventsAfterMetricsOptIn:
-        metaMetricsController.trackEventsAfterMetricsOptIn.bind(
-          metaMetricsController,
-        ),
-      clearEventsAfterMetricsOptIn:
-        metaMetricsController.clearEventsAfterMetricsOptIn.bind(
-          metaMetricsController,
-        ),
 
       // Buffered Trace API that checks consent and handles buffering/immediate execution
       bufferedTrace: metaMetricsController.bufferedTrace.bind(
