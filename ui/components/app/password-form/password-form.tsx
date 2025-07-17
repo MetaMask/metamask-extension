@@ -190,7 +190,6 @@ export default function PasswordForm({
         }}
         helpText={confirmPasswordError}
         value={confirmPassword}
-        disabled={password.length < PASSWORD_MIN_LENGTH}
         inputProps={{
           'data-testid':
             confirmPwdInputTestId || 'create-password-confirm-input',

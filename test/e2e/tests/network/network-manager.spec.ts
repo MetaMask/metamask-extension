@@ -2,16 +2,13 @@ import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import NetworkManager from '../../page-objects/pages/network-manager';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import NetworkManager, {
+  NetworkId,
+} from '../../page-objects/pages/network-manager';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
-
 describe('Network Manager', function (this: Suite) {
-  if (!isGlobalNetworkSelectorRemoved) {
-    return;
-  }
   it('should reflect the enabled networks state in the network manager', async function () {
     await withFixtures(
       {
@@ -22,11 +19,11 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.checkNetworkIsSelected('eip155:1');
-        await networkManager.checkNetworkIsDeselected('eip155:59144');
+        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
+        await networkManager.checkNetworkIsDeselected(NetworkId.LINEA);
       },
     );
   });
@@ -41,11 +38,11 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.checkNetworkIsSelected('eip155:1');
-        await networkManager.checkNetworkIsSelected('eip155:59144');
+        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
+        await networkManager.checkNetworkIsSelected(NetworkId.LINEA);
       },
     );
   });
@@ -60,19 +57,23 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.checkNetworkIsSelected('eip155:1');
-        await networkManager.checkNetworkIsDeselected('eip155:59144');
-        await networkManager.selectNetwork('eip155:59144');
-        await driver.delay(12000);
-        await networkManager.checkNetworkIsSelected('eip155:59144');
-        await networkManager.checkNetworkIsSelected('eip155:1');
-        await networkManager.deselectNetwork('eip155:1');
-        await driver.delay(12000);
-        await networkManager.checkNetworkIsSelected('eip155:59144');
-        await networkManager.checkNetworkIsDeselected('eip155:1');
+
+        // Assert - initial Network Manager State (eth selected, linea deselected)
+        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
+        await networkManager.checkNetworkIsDeselected(NetworkId.LINEA);
+
+        // Act Assert - Both eth and linea selected
+        await networkManager.selectNetwork(NetworkId.LINEA);
+        await networkManager.checkNetworkIsSelected(NetworkId.LINEA);
+        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
+
+        // Act Assert - eth deselected, linea selected
+        await networkManager.deselectNetwork(NetworkId.ETHEREUM);
+        await networkManager.checkNetworkIsSelected(NetworkId.LINEA);
+        await networkManager.checkNetworkIsDeselected(NetworkId.ETHEREUM);
       },
     );
   });
@@ -84,7 +85,7 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.checkTabIsSelected('Custom');
@@ -102,7 +103,7 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.checkTabIsSelected('Default');
@@ -120,7 +121,7 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
         const networkManager = new NetworkManager(driver);
 
@@ -128,7 +129,7 @@ describe('Network Manager', function (this: Suite) {
 
         await networkManager.openNetworkManager();
         await networkManager.checkTabIsSelected('Default');
-        await networkManager.deselectNetwork('eip155:59144');
+        await networkManager.deselectNetwork(NetworkId.LINEA);
 
         await assetListPage.check_tokenItemNumber(1);
 
@@ -136,7 +137,7 @@ describe('Network Manager', function (this: Suite) {
 
         await assetListPage.check_tokenItemNumber(2);
 
-        await networkManager.selectNetwork('eip155:59144');
+        await networkManager.selectNetwork(NetworkId.LINEA);
 
         await assetListPage.check_tokenItemNumber(3);
       },
