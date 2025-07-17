@@ -257,7 +257,9 @@ const ChangePassword = () => {
                 }}
                 label={
                   <>
-                    {t('passwordTermsWarning')}
+                    {isSocialLoginFlow
+                      ? t('passwordTermsWarningSocial')
+                      : t('passwordTermsWarning')}
                     &nbsp;
                     {createPasswordLink}
                   </>
