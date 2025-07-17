@@ -2571,6 +2571,11 @@ export function getShowNetworkBanner(state) {
 export function getShowAccountBanner(state) {
   return state.metamask.showAccountBanner;
 }
+
+export function getShowDownloadMobileAppSlide(state) {
+  return state.metamask.showDownloadMobileAppSlide;
+}
+
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
  *
