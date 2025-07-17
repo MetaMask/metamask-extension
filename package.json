@@ -332,7 +332,7 @@
     "@metamask/seedless-onboarding-controller": "^2.0.1",
     "@metamask/selected-network-controller": "^22.1.0",
     "@metamask/signature-controller": "^30.0.0",
-    "@metamask/smart-transactions-controller": "^16.5.0",
+    "@metamask/smart-transactions-controller": "^17.0.0",
     "@metamask/snaps-controllers": "^14.1.0",
     "@metamask/snaps-execution-environments": "^10.1.0",
     "@metamask/snaps-rpc-methods": "^13.3.0",

@@ -15,7 +15,6 @@ import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
-import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
 import * as networkSelectors from '../../shared/modules/selectors/networks';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 
@@ -160,67 +159,6 @@ describe('Selectors', () => {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
         ],
       );
-    });
-  });
-
-  describe('#selectSwitchedNetworkNeverShowMessage', () => {
-    it('returns the correct value', () => {
-      expect(
-        selectSwitchedNetworkNeverShowMessage({
-          metamask: { switchedNetworkNeverShowMessage: true },
-        }),
-      ).toStrictEqual(true);
-    });
-  });
-
-  describe('#getSwitchedNetworkDetails', () => {
-    it('returns no details when switchedNetworkDetails is empty', () => {
-      expect(
-        selectors.getSwitchedNetworkDetails({
-          metamask: {
-            ...mockState.metamask,
-            switchedNetworkDetails: undefined,
-          },
-        }),
-      ).toStrictEqual(null);
-    });
-
-    it('returns network information when valid switchedNetworkDetails are present', () => {
-      const origin = 'portfolio.metamask.io';
-
-      const state = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          selectedNetworkClientId: 'testNetworkConfigurationId',
-
-          networkConfigurationsByChainId: {
-            '0x1': {
-              chainId: '0x1',
-              name: 'Custom Mainnet RPC',
-              nativeCurrency: 'ETH',
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://testrpc.com',
-                  networkClientId: 'testNetworkConfigurationId',
-                  type: 'custom',
-                },
-              ],
-            },
-          },
-          switchedNetworkDetails: {
-            networkClientId: 'testNetworkConfigurationId',
-            origin,
-          },
-        },
-      };
-
-      expect(selectors.getSwitchedNetworkDetails(state)).toStrictEqual({
-        imageUrl: './images/eth_logo.svg',
-        nickname: networkSelectors.getProviderConfig(state).nickname,
-        origin,
-      });
     });
   });
 
@@ -3037,5 +2975,41 @@ describe('getInternalAccountsSortedByKeyring', () => {
       hdAccountFromHdKeyring2,
       solanaAccount2,
     ]);
+  });
+});
+
+describe('getUrlScanCacheResult', () => {
+  it('returns undefined for empty hostname', () => {
+    const result = selectors.getUrlScanCacheResult(mockState, '');
+    expect(result).toBeUndefined();
+  });
+
+  it('returns undefined for invalid URL hostname', () => {
+    const result = selectors.getUrlScanCacheResult(
+      mockState,
+      'not-a-valid-url',
+    );
+    expect(result).toBeUndefined();
+  });
+
+  it('returns the cached url scan result for a given hostname', () => {
+    mockState.metamask.urlScanCache = {
+      'example.com': {
+        result: {
+          domainName: 'example.com',
+          recommendedAction: 'BLOCK',
+        },
+        timestamp: 1234567890,
+      },
+    };
+
+    const result = selectors.getUrlScanCacheResult(mockState, 'example.com');
+    expect(result).toStrictEqual({
+      result: {
+        domainName: 'example.com',
+        recommendedAction: 'BLOCK',
+      },
+      timestamp: 1234567890,
+    });
   });
 });

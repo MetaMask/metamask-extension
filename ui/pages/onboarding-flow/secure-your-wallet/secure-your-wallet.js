@@ -69,7 +69,7 @@ export default function SecureYourWallet() {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletSecurityStarted,
       properties: {
-        hd_entropy_index: hdEntropyIndex,
+        hd_entropy_index: hdEntropyIndex ?? 0,
       },
     });
     history.push(`${ONBOARDING_REVIEW_SRP_ROUTE}/${isFromReminderParam}`);
@@ -80,7 +80,7 @@ export default function SecureYourWallet() {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletSecuritySkipInitiated,
       properties: {
-        hd_entropy_index: hdEntropyIndex,
+        hd_entropy_index: hdEntropyIndex ?? 0,
       },
     });
     setShowSkipSRPBackupPopover(true);
