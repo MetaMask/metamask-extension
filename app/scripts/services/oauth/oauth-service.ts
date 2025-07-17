@@ -1,14 +1,9 @@
-import {
-  AuthConnection,
-  Web3AuthNetwork,
-} from '@metamask/seedless-onboarding-controller';
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import {
   MOCK_AUTH_CONNECTION_ID,
   MOCK_GROUPED_AUTH_CONNECTION_ID,
 } from '../../../../test/e2e/constants';
-import { isProduction } from '../../../../shared/modules/environment';
-import { ENVIRONMENT } from '../../../../development/build/constants';
 import { checkForLastError } from '../../../../shared/modules/browser-runtime.utils';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
@@ -19,7 +14,7 @@ import type {
   OAuthServiceOptions,
   WebAuthenticator,
 } from './types';
-import { OAUTH_CONFIG } from './constants';
+import { loadOAuthConfig } from './config';
 
 export default class OAuthService {
   #env: OAuthConfig & OAuthLoginEnv;
@@ -27,9 +22,10 @@ export default class OAuthService {
   #webAuthenticator: WebAuthenticator;
 
   constructor({ env, webAuthenticator }: OAuthServiceOptions) {
+    const oauthConfig = loadOAuthConfig();
     this.#env = {
       ...env,
-      ...this.#loadConfig(),
+      ...oauthConfig,
     };
     this.#webAuthenticator = webAuthenticator;
   }
@@ -104,25 +100,6 @@ export default class OAuthService {
     return {
       newRefreshToken: res.refresh_token,
       newRevokeToken: res.revoke_token,
-    };
-  }
-
-  #loadConfig(): OAuthConfig {
-    let configKey = 'development';
-    if (process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.OTHER) {
-      configKey = 'development';
-    } else if (isProduction()) {
-      configKey = process.env.METAMASK_BUILD_TYPE || 'main';
-    }
-
-    const config = OAUTH_CONFIG[configKey] || OAUTH_CONFIG.main;
-    return {
-      authServerUrl: config.AUTH_SERVER_URL,
-      web3AuthNetwork: config.WEB3AUTH_NETWORK as Web3AuthNetwork,
-      googleAuthConnectionId: config.GOOGLE_AUTH_CONNECTION_ID,
-      googleGrouppedAuthConnectionId: config.GOOGLE_GROUPED_AUTH_CONNECTION_ID,
-      appleAuthConnectionId: config.APPLE_AUTH_CONNECTION_ID,
-      appleGrouppedAuthConnectionId: config.APPLE_GROUPED_AUTH_CONNECTION_ID,
     };
   }
 
@@ -232,10 +209,10 @@ export default class OAuthService {
       groupedAuthConnectionId = MOCK_GROUPED_AUTH_CONNECTION_ID;
     } else if (loginHandler.authConnection === AuthConnection.Google) {
       authConnectionId = this.#env.googleAuthConnectionId;
-      groupedAuthConnectionId = this.#env.googleGrouppedAuthConnectionId;
+      groupedAuthConnectionId = this.#env.googleGroupedAuthConnectionId;
     } else if (loginHandler.authConnection === AuthConnection.Apple) {
       authConnectionId = this.#env.appleAuthConnectionId;
-      groupedAuthConnectionId = this.#env.appleGrouppedAuthConnectionId;
+      groupedAuthConnectionId = this.#env.appleGroupedAuthConnectionId;
     }
 
     const authTokenData = await loginHandler.getAuthIdToken(authCode);

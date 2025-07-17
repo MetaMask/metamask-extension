@@ -70,6 +70,7 @@ describe('getIsQuicknodeEndpointUrl', () => {
         process.env.QUICKNODE_POLYGON_URL =
           'https://example.quicknode.com/polygon';
         process.env.QUICKNODE_BASE_URL = 'https://example.quicknode.com/base';
+        process.env.QUICKNODE_BSC_URL = 'https://example.quicknode.com/bsc';
 
         // We can assume this is set.
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

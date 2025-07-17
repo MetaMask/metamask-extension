@@ -83,9 +83,9 @@ export type OAuthLoginEnv = {
 
 export type OAuthConfig = {
   googleAuthConnectionId: string;
-  googleGrouppedAuthConnectionId: string;
+  googleGroupedAuthConnectionId: string;
   appleAuthConnectionId: string;
-  appleGrouppedAuthConnectionId: string;
+  appleGroupedAuthConnectionId: string;
   authServerUrl: string;
   web3AuthNetwork: Web3AuthNetwork;
 };

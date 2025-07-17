@@ -5486,9 +5486,6 @@
   "standardAccountLabel": {
     "message": "标准账户"
   },
-  "startEarning": {
-    "message": "开始赚取"
-  },
   "stateLogError": {
     "message": "检索状态日志时出错。"
   },
@@ -6029,17 +6026,6 @@
   },
   "switchToThisAccount": {
     "message": "切换到该账户"
-  },
-  "switchedNetworkToastDecline": {
-    "message": "不再显示此内容"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 现已在 $2 上激活",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
-  "switchedNetworkToastMessageNoOrigin": {
-    "message": "您现在使用的是 $1",
-    "description": "$1 represents the network name"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "切换网络将取消所有待处理的确认"
