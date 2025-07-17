@@ -44,6 +44,8 @@ const SentryTest = () => {
       <div className="settings-page__content-padded">
         <GenerateUIError />
         <GenerateBackgroundError />
+        <CaptureUIError />
+        <CaptureBackgroundError />
         <GenerateTrace />
         <GeneratePageCrash currentLocale={currentLocale} />
       </div>
@@ -85,6 +87,48 @@ function GenerateBackgroundError() {
       description={
         <span>
           Generate an unhandled <b>TestError</b> in the service worker.
+        </span>
+      }
+      onClick={handleClick}
+      expectError
+    />
+  );
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function CaptureUIError() {
+  const handleClick = useCallback(async () => {
+    await window.stateHooks.captureTestError?.('Developer Options');
+  }, []);
+
+  return (
+    <TestButton
+      name="Capture UI Error"
+      description={
+        <span>
+          Capture a <b>TestError</b> in this window.
+        </span>
+      }
+      onClick={handleClick}
+      expectError
+    />
+  );
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function CaptureBackgroundError() {
+  const handleClick = useCallback(async () => {
+    await window.stateHooks.captureBackgroundError?.('Developer Options');
+  }, []);
+
+  return (
+    <TestButton
+      name="Capture Background Error"
+      description={
+        <span>
+          Capture a <b>TestError</b> in the service worker.
         </span>
       }
       onClick={handleClick}
