@@ -2022,10 +2022,6 @@ export function unlockSucceeded(message?: string) {
 export function setShowConnectionsRemovedModal(
   showConnectionsRemovedModal: boolean,
 ) {
-  console.log(
-    'check: setShowConnectionsRemovedModal',
-    showConnectionsRemovedModal,
-  );
   return {
     type: actionConstants.SET_SHOW_CONNECTIONS_REMOVED,
     value: showConnectionsRemovedModal,

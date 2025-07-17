@@ -776,7 +776,7 @@ export default function reduceApp(
     case actionConstants.SET_SHOW_CONNECTIONS_REMOVED:
       return {
         ...appState,
-        showConnectionsRemovedModal: action.payload,
+        showConnectionsRemovedModal: action.value,
       };
 
     default:
