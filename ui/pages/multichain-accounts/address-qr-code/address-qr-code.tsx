@@ -16,7 +16,6 @@ import {
   ButtonSecondarySize,
   IconName,
 } from '../../../components/component-library';
-import { ACCOUNT_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 import {
   BackgroundColor,
   TextVariant,
