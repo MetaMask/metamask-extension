@@ -2136,9 +2136,6 @@
       }
     },
     "@metamask/seedless-onboarding-controller": {
-      "globals": {
-        "console.log": true
-      },
       "packages": {
         "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": true,
         "@metamask/base-controller": true,
