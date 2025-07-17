@@ -46,9 +46,6 @@ describe('Bridge tests', function (this: Suite) {
 
         await bridgeTransaction(driver, quote, 2);
 
-        // Switch back to Ethereum before starting the next flow
-        // The first transaction leaves us on Linea, but we need to be on Ethereum
-        // to match the quote expectations (DAI from Ethereum to Linea)
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
 
         // Start the flow again
@@ -94,7 +91,6 @@ describe('Bridge tests', function (this: Suite) {
               'eip155:1/slip44:60' &&
             swapBridgeButtonClicked[0].properties.category ===
               'Unified SwapBridge',
-          // Note: With prefilling enabled, destination token properties may not be null
         );
 
         const swapBridgePageViewed = findEventsByName(
@@ -107,7 +103,6 @@ describe('Bridge tests', function (this: Suite) {
             'eip155:1/slip44:60' &&
             swapBridgePageViewed[0].properties.category ===
               'Unified SwapBridge',
-          // Note: With prefilling enabled, token_address_destination may not be null
         );
 
         const swapBridgeInputChanged = findEventsByName(
@@ -121,7 +116,6 @@ describe('Bridge tests', function (this: Suite) {
          * chain_destination
          */
 
-        // With prefilling, we have additional input events for default chain and token
         assert.ok(swapBridgeInputChanged.length === 17);
 
         const inputTypes = [
