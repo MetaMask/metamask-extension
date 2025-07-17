@@ -139,6 +139,23 @@ export type AuthTokenResponse = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   revoke_token: string;
+
+  /**
+   * The access token issued from the Web3Auth Authentication Server.
+   * This token includes the user information (email, idToken, etc.)
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  access_token: string;
+
+  /**
+   * The metadata access token issued from the Web3Auth Authentication Server.
+   * This is used to access the secret metadata store.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  metadata_access_token: string;
+
   indexes: number[];
   endpoints: Record<string, string>;
 };
@@ -165,7 +182,20 @@ export type OAuthLoginResult = {
   socialLoginEmail: string;
   refreshToken: string;
   revokeToken: string;
+  accessToken: string;
+  metadataAccessToken: string;
 };
+
+/**
+ * The result of the OAuth refresh token.
+ *
+ * This is the return value of the {@link OAuthService.getNewRefreshToken} method.
+ * It contains the JWT Tokens issued from the Web3Auth Authentication Server.
+ */
+export type OAuthRefreshTokenResult = Pick<
+  OAuthLoginResult,
+  'idTokens' | 'accessToken' | 'metadataAccessToken'
+>;
 
 /**
  * The user's information extracted from the JWT Token.
