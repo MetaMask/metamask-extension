@@ -325,9 +325,7 @@ function setupStateHooks(store) {
     window.stateHooks.captureBackgroundError = async function (
       msg = 'Test Error',
     ) {
-      const error = new Error(msg);
-      error.name = 'TestError';
-      await actions.captureTestBackgroundError(error);
+      await actions.captureTestBackgroundError(msg);
     };
   }
 
