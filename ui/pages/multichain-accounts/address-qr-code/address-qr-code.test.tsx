@@ -33,11 +33,11 @@ jest.mock('../../../hooks/useMultichainSelector', () => ({
 }));
 
 // Mock React Router
-const mockHistoryPush = jest.fn();
+const mockHistoryGoBack = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
-    push: mockHistoryPush,
+    goBack: mockHistoryGoBack,
   }),
 }));
 
@@ -168,9 +168,7 @@ describe('AddressQRCode', () => {
       const backButton = screen.getByLabelText('Back');
       fireEvent.click(backButton);
 
-      expect(mockHistoryPush).toHaveBeenCalledWith(
-        `${ACCOUNT_DETAILS_ROUTE}/${mockAccount.address}`,
-      );
+      expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
     });
   });
 
