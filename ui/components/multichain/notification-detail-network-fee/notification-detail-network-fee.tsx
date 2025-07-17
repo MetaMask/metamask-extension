@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import type { FC } from 'react';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
-import type { Hex } from '@metamask/utils';
+import type { OnChainRawNotificationsWithNetworkFields } from '@metamask/notification-services-controller/notification-services';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -36,12 +35,6 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import Preloader from '../../ui/icon/preloader/preloader-icon.component';
-
-type OnChainRawNotificationsWithNetworkFields = Omit<
-  // TODO: Fix this type to have its `chainId` property defined as `Hex`, not `number`.
-  NotificationServicesController.Types.OnChainRawNotificationsWithNetworkFields,
-  'chainId'
-> & { chainId: Hex };
 
 type NetworkFees = {
   transactionFee: {
@@ -109,7 +102,9 @@ const NotificationDetailNetworkFee_: FC<NotificationDetailNetworkFeeProps> = ({
   useEffect(() => {
     const fetchNetworkFees = async () => {
       try {
-        const networkFeesData = await getNetworkFees(notification);
+        const networkFeesData = await getNetworkFees(
+          notification as Parameters<typeof getNetworkFees>[0],
+        );
         if (networkFeesData) {
           setNetworkFees({
             transactionFee: {

@@ -1,7 +1,9 @@
 import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import type { Hex } from '@metamask/utils';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import type {
+  OnChainRawNotification,
+  OnChainRawNotificationsWithNetworkFields,
+} from '@metamask/notification-services-controller/notification-services';
 import {
   NOTIFICATION_CHAINS_ID,
   NOTIFICATION_NETWORK_CURRENCY_NAME,
@@ -30,18 +32,6 @@ import {
   hexWEIToDecETH,
   decimalToHex,
 } from '../../../shared/modules/conversion.utils';
-
-type OnChainRawNotificationsWithNetworkFields = Omit<
-  // TODO: Fix this type to have its `chainId` property defined as `Hex`, not `number`.
-  NotificationServicesController.Types.OnChainRawNotificationsWithNetworkFields,
-  'chainId'
-> & { chainId: Hex };
-
-type OnChainRawNotification = Omit<
-  // TODO: Fix this type to have its `chainId` property defined as `Hex`, not `number`.
-  NotificationServicesController.Types.OnChainRawNotification,
-  'chainId'
-> & { chainId: Hex };
 
 /**
  * Checks if 2 date objects are on the same day
