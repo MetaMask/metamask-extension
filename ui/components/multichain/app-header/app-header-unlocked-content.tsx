@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import browser from 'webextension-polyfill';
 
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
@@ -56,11 +62,13 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
-import { getShowSupportDataConsentModal } from '../../../ducks/app/app';
+import {
+  getShowSupportDataConsentModal,
+  setShowCopyAddressToast,
+} from '../../../ducks/app/app';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
@@ -94,7 +102,7 @@ export const AppHeaderUnlockedContent = ({
 
   // Passing non-evm address to checksum function will throw an error
   const normalizedCurrentAddress = normalizeSafeAddress(currentAddress);
-  const [copied, handleCopy, resetCopyState] = useCopyToClipboard(MINUTE, {
+  const [copied, handleCopy, resetCopyState] = useCopyToClipboard(2000, {
     expireClipboard: false,
   });
 
@@ -108,6 +116,14 @@ export const AppHeaderUnlockedContent = ({
       resetCopyState();
     }
   }, [normalizedCurrentAddress, resetCopyState]);
+
+  useEffect(() => {
+    if (copied) {
+      dispatch(setShowCopyAddressToast(true));
+    } else {
+      dispatch(setShowCopyAddressToast(false));
+    }
+  }, [copied, dispatch]);
 
   const showConnectedStatus =
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
@@ -131,11 +147,15 @@ export const AppHeaderUnlockedContent = ({
     history.push(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
   };
 
+  const handleCopyClick = useCallback(() => {
+    handleCopy(normalizedCurrentAddress);
+  }, [handleCopy, normalizedCurrentAddress]);
+
   const CopyButton = useMemo(
     () => (
       <ButtonBase
         className="multichain-app-header__address-copy-button"
-        onClick={() => handleCopy(normalizedCurrentAddress)}
+        onClick={handleCopyClick}
         size={ButtonBaseSize.Sm}
         backgroundColor={BackgroundColor.transparent}
         borderRadius={BorderRadius.LG}
@@ -165,7 +185,7 @@ export const AppHeaderUnlockedContent = ({
         </Text>
       </ButtonBase>
     ),
-    [copied, handleCopy, normalizedCurrentAddress, shortenedAddress],
+    [copied, handleCopyClick, shortenedAddress],
   );
 
   const AppContent = useMemo(

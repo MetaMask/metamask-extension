@@ -132,11 +132,23 @@ export const SrpList = ({
                           button_type: 'details',
                         },
                       });
-                      setShowAccounts((prevState) =>
-                        prevState.map((value, i) =>
+                      setShowAccounts((prevState) => {
+                        const accountListLength =
+                          hdKeyringsWithSnapAccounts.length;
+                        let newState = prevState;
+                        if (accountListLength > prevState.length) {
+                          // Extend the state with `false` for new accounts
+                          newState = [
+                            ...prevState,
+                            ...Array(accountListLength - prevState.length).fill(
+                              false,
+                            ),
+                          ];
+                        }
+                        return newState.map((value, i) =>
                           i === index ? !value : value,
-                        ),
-                      );
+                        );
+                      });
                     }}
                   >
                     {showHideText(index, keyring.accounts.length)}

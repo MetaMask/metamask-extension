@@ -37,6 +37,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
+  DOWNLOAD_MOBILE_APP_SLIDE,
 } from '../../../hooks/useCarouselManagement';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { CreateSolanaAccountModal } from '../create-solana-account-modal';
@@ -44,6 +45,7 @@ import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
 ///: END:ONLY_INCLUDE_IF
 import { getUseSmartAccount } from '../../../pages/confirmations/selectors/preferences';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
+import DownloadMobileAppModal from '../../app/download-mobile-modal/download-mobile-modal';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -74,17 +76,16 @@ export const AccountOverviewLayout = ({
 
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
 
+  const [showDownloadMobileAppModal, setShowDownloadMobileAppModal] =
+    useState(false);
+
   const { slides } = useCarouselManagement();
 
   const { openBridgeExperience } = useBridging();
 
   const handleCarouselClick = (id: string) => {
     if (id === 'bridge') {
-      openBridgeExperience(
-        'Carousel',
-        defaultSwapsToken,
-        location.pathname.includes('asset') ? '&token=native' : '',
-      );
+      openBridgeExperience('Carousel', defaultSwapsToken);
     }
 
     if (id === BASIC_FUNCTIONALITY_SLIDE.id) {
@@ -113,8 +114,10 @@ export const AccountOverviewLayout = ({
       }
     }
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    if (id === DOWNLOAD_MOBILE_APP_SLIDE.id) {
+      setShowDownloadMobileAppModal(true);
+    }
+
     trackEvent({
       event: MetaMetricsEventName.BannerSelect,
       category: MetaMetricsEventCategory.Banner,
@@ -128,8 +131,6 @@ export const AccountOverviewLayout = ({
 
   const handleRemoveSlide = (isLastSlide: boolean, id: string) => {
     if (isLastSlide) {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         event: MetaMetricsEventName.BannerCloseAll,
         category: MetaMetricsEventCategory.Banner,
@@ -142,8 +143,6 @@ export const AccountOverviewLayout = ({
     (renderedSlides: CarouselSlide[]) => {
       if (!hasRendered) {
         renderedSlides.forEach((slide) => {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           trackEvent({
             event: MetaMetricsEventName.BannerDisplay,
             category: MetaMetricsEventCategory.Banner,
@@ -180,6 +179,11 @@ export const AccountOverviewLayout = ({
         )
         ///: END:ONLY_INCLUDE_IF
       }
+      {showDownloadMobileAppModal && (
+        <DownloadMobileAppModal
+          onClose={() => setShowDownloadMobileAppModal(false)}
+        />
+      )}
     </>
   );
 };
