@@ -139,6 +139,8 @@ export async function confirmDepositTransactionWithCustomNonce(
     text: 'Save',
     tag: 'button',
   });
+  // Wait for the confirmation to be updated before submitting tx (prevents race conditions)
+  await driver.delay(1000);
   await scrollAndConfirmAndAssertConfirm(driver);
 
   // Confirm tx was submitted with the higher nonce
@@ -219,6 +221,7 @@ export async function toggleOnHexData(driver: Driver) {
 }
 
 export async function toggleAdvancedDetails(driver: Driver) {
+  await driver.delay(1000); // TODO: Scroll button not shown in Firefox if advanced details enabled too fast
   await driver.clickElement(`[data-testid="header-advanced-details-button"]`);
 }
 
@@ -246,6 +249,8 @@ export async function editSpendingCap(driver: Driver, newSpendingCap: string) {
   );
 
   await driver.clickElement({ text: 'Save', tag: 'button' });
+  // Wait for the confirmation to be updated before submitting tx (prevents race conditions)
+  await driver.delay(1000);
 }
 
 export async function assertChangedSpendingCap(

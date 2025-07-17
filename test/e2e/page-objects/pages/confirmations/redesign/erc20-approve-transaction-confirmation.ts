@@ -170,6 +170,7 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
 
     // Wait for the advanced details button to be ready
     await this.driver.waitForSelector(this.headerAdvancedDetailsButton);
+    await this.driver.delay(1000); // TODO: Scroll button not shown in Firefox if advanced details enabled too fast
 
     // Expand the advanced details section
     await this.driver.clickElement(this.headerAdvancedDetailsButton);
