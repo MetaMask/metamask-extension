@@ -29,22 +29,22 @@ export function useAutomaticGasFeeTokenSelect() {
     selectedGasFeeToken,
   } = transactionMeta;
 
-  let firstGasFeeTokenAddress = gasFeeTokens?.[0]?.tokenAddress;
-
-  if (!isSmartTransaction && firstGasFeeTokenAddress === NATIVE_TOKEN_ADDRESS) {
-    firstGasFeeTokenAddress = gasFeeTokens?.[1]?.tokenAddress;
-  }
+  const firstGasFeeTokenAddress = gasFeeTokens?.[0]?.tokenAddress;
+  const selectedGasFeeTokenAddress =
+    isSmartTransaction || firstGasFeeTokenAddress !== NATIVE_TOKEN_ADDRESS
+      ? firstGasFeeTokenAddress
+      : gasFeeTokens?.[1]?.tokenAddress;
 
   const selectFirstToken = useCallback(async () => {
-    await updateSelectedGasFeeToken(transactionId, firstGasFeeTokenAddress);
+    await updateSelectedGasFeeToken(transactionId, selectedGasFeeTokenAddress);
     await forceUpdateMetamaskState(dispatch);
-  }, [dispatch, transactionId, firstGasFeeTokenAddress]);
+  }, [dispatch, transactionId, selectedGasFeeTokenAddress]);
 
   const shouldSelect =
     isGaslessSupported &&
     hasInsufficientBalance &&
     !selectedGasFeeToken &&
-    Boolean(firstGasFeeTokenAddress);
+    Boolean(selectedGasFeeTokenAddress);
 
   useAsyncResult(async () => {
     if (!gasFeeTokens || !transactionId || !firstCheck) {
