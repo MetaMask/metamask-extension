@@ -418,6 +418,37 @@ module.exports = {
       },
     },
     /**
+     * Tailwind CSS for Additional Directories
+     *
+     * UNCOMMENT and modify the section below to enable Tailwind CSS linting
+     * for additional directories beyond ui/**. This is currently disabled
+     * because enabling it for the entire codebase would produce many violations
+     * due to legacy SCSS code.
+     *
+     * To enable for your workspace folder, uncomment and modify the files array:
+     * 
+     * {
+     *   files: ['your-workspace-folder/**/*.{ts,tsx}'],
+     *   plugins: ['tailwindcss'],
+     *   rules: {
+     *     'tailwindcss/classnames-order': 'error',
+     *     'tailwindcss/enforces-negative-arbitrary-values': 'error',
+     *     'tailwindcss/enforces-shorthand': 'error',
+     *     'tailwindcss/no-arbitrary-value': 'off',
+     *     'tailwindcss/no-custom-classname': 'warn',
+     *     'tailwindcss/no-contradicting-classname': 'error',
+     *     'tailwindcss/no-unnecessary-arbitrary-value': 'error',
+     *   },
+     *   settings: {
+     *     tailwindcss: {
+     *       callees: ['twMerge'],
+     *       config: 'tailwind.config.js',
+     *       classRegex: ['^(class(Name)?)$'],
+     *     },
+     *   },
+     * },
+     */
+    /**
      * Mocha tests
      *
      * These are files that make use of globals and syntax introduced by the
