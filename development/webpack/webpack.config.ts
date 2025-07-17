@@ -189,8 +189,6 @@ if (args.lavamoat) {
       inlineLockdown: /^runtime|contentscript\.js/u,
       unlockedChunksUnsafe: /inpage\.js/u,
       debugRuntime: false,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      __unsafeAllowContextModules: true,
       scuttleGlobalThis: {
         enabled: true,
         // scuttlerName: 'SCUTTLER', // TODO(weizman) SUPPORT SNOW AND SCUTTLER
