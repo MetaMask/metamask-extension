@@ -206,7 +206,7 @@ export default function OnboardingFlow() {
 
       setSecretRecoveryPhrase(newSecretRecoveryPhrase);
     } catch (error) {
-      setOnboardingErrorReport(error, 'CreatePassword');
+      dispatch(setOnboardingErrorReport(error, 'CreatePassword'));
     }
   };
 

@@ -118,7 +118,7 @@ export default function OnboardingError() {
           data-testid="error-page-error-message"
           color={TextColor.inherit}
         >
-          {t('sentryErrorView', ['Root'])}
+          {t('sentryErrorView', [onboardingErrorReport?.view || ''])}
         </Text>
         <Text
           variant={TextVariant.bodyXs}

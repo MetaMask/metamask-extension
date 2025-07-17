@@ -75,6 +75,10 @@ export default class UnlockPage extends Component {
      * isSocialLoginFlow. True if the user is on a social login flow
      */
     isSocialLoginFlow: PropTypes.bool,
+    /**
+     * setOnboardingErrorReport
+     */
+    setOnboardingErrorReport: PropTypes.func,
   };
 
   state = {
@@ -164,7 +168,7 @@ export default class UnlockPage extends Component {
         errorReason = 'outdated_password';
         break;
       default:
-        setOnboardingErrorReport(error, 'Unlock');
+        this.props.setOnboardingErrorReport(error, 'Unlock');
         break;
     }
 
