@@ -393,10 +393,13 @@ export function tryUnlockMetamask(
       callBackgroundMethod(
         'syncPasswordAndUnlockWallet',
         [password],
-        (error) => {
+        (error, maxKeyChainLengthExceeded) => {
           if (error) {
             reject(error);
             return;
+          }
+          if (maxKeyChainLengthExceeded) {
+            dispatch(setShowConnectionsRemovedModal(true));
           }
 
           resolve();
@@ -2013,6 +2016,19 @@ export function unlockSucceeded(message?: string) {
   return {
     type: actionConstants.UNLOCK_SUCCEEDED,
     value: message,
+  };
+}
+
+export function setShowConnectionsRemovedModal(
+  showConnectionsRemovedModal: boolean,
+) {
+  console.log(
+    'check: setShowConnectionsRemovedModal',
+    showConnectionsRemovedModal,
+  );
+  return {
+    type: actionConstants.SET_SHOW_CONNECTIONS_REMOVED,
+    value: showConnectionsRemovedModal,
   };
 }
 

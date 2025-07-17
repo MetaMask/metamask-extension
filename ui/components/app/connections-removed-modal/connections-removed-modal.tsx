@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -24,9 +25,15 @@ import {
   ModalBody,
   ButtonSize,
 } from '../../component-library';
+import { setShowConnectionsRemovedModal } from '../../../store/actions';
 
 export default function ConnectionsRemovedModal() {
   const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const onConfirm = useCallback(() => {
+    dispatch(setShowConnectionsRemovedModal(false));
+  }, [dispatch]);
 
   return (
     <Modal
@@ -67,7 +74,7 @@ export default function ConnectionsRemovedModal() {
           ])}
         </ModalBody>
         <ModalFooter>
-          <Button size={ButtonSize.Lg} block>
+          <Button size={ButtonSize.Lg} block onClick={onConfirm}>
             {t('gotIt')}
           </Button>
         </ModalFooter>

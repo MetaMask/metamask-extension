@@ -272,6 +272,10 @@ export function getKeyringSnapRemovalResult(state) {
 
 export const getPendingTokens = (state) => state.appState.pendingTokens;
 
+export function getShowConnectionsRemovedModal(state) {
+  return state.appState.showConnectionsRemovedModal;
+}
+
 /** `metamask` slice selectors */
 
 export function getNetworkIdentifier(state) {

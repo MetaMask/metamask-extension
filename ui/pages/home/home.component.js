@@ -168,6 +168,7 @@ export default class Home extends PureComponent {
     setAccountDetailsAddress: PropTypes.func,
     isSeedlessPasswordOutdated: PropTypes.bool,
     isPrimarySeedPhraseBackedUp: PropTypes.bool,
+    showConnectionsRemovedModal: PropTypes.bool,
   };
 
   state = {
@@ -823,6 +824,7 @@ export default class Home extends PureComponent {
       showUpdateModal,
       isSeedlessPasswordOutdated,
       isPrimarySeedPhraseBackedUp,
+      showConnectionsRemovedModal,
     } = this.props;
 
     if (forgottenPassword) {
@@ -857,9 +859,6 @@ export default class Home extends PureComponent {
 
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
-
-    // TODO: update logic on when to show this modal
-    const showConnectionsRemovedModal = true;
 
     return (
       <div className="main-container main-container--has-shadow">

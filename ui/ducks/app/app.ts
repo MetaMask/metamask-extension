@@ -128,6 +128,7 @@ type AppState = {
   errorInSettings: string | null;
   showNewSrpAddedToast: boolean;
   showPasswordChangeToast: PasswordChangeToastType | null;
+  showConnectionsRemovedModal: boolean;
 };
 
 export type AppSliceState = {
@@ -228,6 +229,7 @@ const initialState: AppState = {
   showNewSrpAddedToast: false,
   showPasswordChangeToast: null,
   showSupportDataConsentModal: false,
+  showConnectionsRemovedModal: false,
 };
 
 export default function reduceApp(
@@ -769,6 +771,12 @@ export default function reduceApp(
       return {
         ...appState,
         showSupportDataConsentModal: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_CONNECTIONS_REMOVED:
+      return {
+        ...appState,
+        showConnectionsRemovedModal: action.payload,
       };
 
     default:
