@@ -1,0 +1,16 @@
+// index.html
+<head>
+  ...
+  <script src="https://c0f4f41c-2f55-4863-921b-sdk-docs.github.io/cdn/metamask-sdk.js"></script>
+  <script>
+    const MMSDK = new MetaMaskSDK.MetaMaskSDK({
+      dappMetadata: {
+        name: "Example Pure JS Dapp",
+      },
+      infuraAPIKey: 83369b070d3b4b4ca7d0ef5df8d99091,
+      // Other options.
+    });
+    MMSDK.connect()
+  </script>
+  ...
+</head>
