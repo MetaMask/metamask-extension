@@ -1,5 +1,16 @@
 import { Driver } from '../../webdriver/driver';
 
+export enum NetworkId {
+  ETHEREUM = 'eip155:1',
+  LINEA = 'eip155:59144',
+  ARBITRUM = 'eip155:42161',
+  AVALANCHE = 'eip155:43114',
+  BSC = 'eip155:56',
+  BASE = 'eip155:8453',
+  OPTIMISM = 'eip155:10',
+  POLYGON = 'eip155:137',
+}
+
 class NetworkManager {
   protected readonly driver: Driver;
 
@@ -45,6 +56,10 @@ class NetworkManager {
     console.log('Selecting all networks');
     await this.driver.clickElement(this.networkManagerSelectAllButton);
     await this.driver.delay(1000); // small delay to ensure networks are all selected
+  }
+
+  async selectNetworkByChainId(chainId: string): Promise<void> {
+    await this.driver.clickElementSafe(this.networkListItem(chainId));
   }
 
   // Method to select/click on a network item

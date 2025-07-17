@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ConfirmInfoRowUrl renders a URL, and warning icon when the protocol is "http" 1`] = `
+exports[`ConfirmInfoRowUrl renders HTTP warning badge for HTTP URLs when trust state is unknown 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -18,20 +18,6 @@ exports[`ConfirmInfoRowUrl renders a URL, and warning icon when the protocol is 
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
     >
       www.example.com/
-    </p>
-  </div>
-</div>
-`;
-
-exports[`ConfirmInfoRowUrl should match snapshot 1`] = `
-<div>
-  <div
-    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
-  >
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-    >
-      example.com
     </p>
   </div>
 </div>

@@ -10,6 +10,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { trace } from '../../../../shared/lib/trace';
 
 /**
  * Initialize the UserStorage controller.
@@ -27,6 +28,8 @@ export const UserStorageControllerInit: ControllerInitFunction<
   const controller = new UserStorageController({
     messenger: controllerMessenger,
     state: persistedState.UserStorageController as UserStorageControllerState,
+    // @ts-expect-error Controller uses string for names rather than enum
+    trace,
     config: {
       accountSyncing: {
         maxNumberOfAccountsToAdd: isProduction() ? undefined : 100,

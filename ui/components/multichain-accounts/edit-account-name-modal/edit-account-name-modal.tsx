@@ -79,6 +79,7 @@ export const EditAccountNameModal = ({
             <ButtonPrimary
               onClick={handleSave}
               disabled={!accountName.trim()}
+              aria-label={t('save')}
               block
               marginTop={4}
             >

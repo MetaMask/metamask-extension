@@ -221,6 +221,7 @@ const AddContact = ({
             borderRadius={BorderRadius.XL}
             onClick={() => setShowModal(true)}
             className="network-selector"
+            data-testid="network-selector"
           >
             <Box display={Display.Flex} gap={2}>
               <AvatarNetwork

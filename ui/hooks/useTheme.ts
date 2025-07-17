@@ -19,7 +19,6 @@ const validThemes = Object.values(ThemeType).filter((theme) => {
 export function useTheme() {
   const settingTheme = useSelector(getTheme);
   const [theme, setTheme] = useState(settingTheme);
-
   useEffect(() => {
     const result =
       !settingTheme || settingTheme === ThemeType.os
