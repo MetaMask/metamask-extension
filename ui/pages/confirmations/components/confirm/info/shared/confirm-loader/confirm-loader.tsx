@@ -8,6 +8,7 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 
 export const ConfirmLoader = () => {
+  console.log('>>>>> ConfirmLoader - rendering loader');
   return (
     <Box
       display={Display.Flex}

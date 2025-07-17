@@ -233,6 +233,14 @@ export const getTokens = (state) => {
   const { allTokens } = state.metamask;
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { chainId } = getProviderConfig(state);
+  console.log('>>>>> getTokens - selectedAddress', chainId);
+  return allTokens?.[chainId]?.[selectedAddress] || [];
+};
+
+export const getTokensByChainId = (state, chainId) => {
+  const { allTokens } = state.metamask;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  console.log('>>>>> getTokensByChainId - selectedAddress', chainId);
   return allTokens?.[chainId]?.[selectedAddress] || [];
 };
 

@@ -1,5 +1,8 @@
 import log from 'loglevel';
-import { getTokenStandardAndDetails } from '../../store/actions';
+import {
+  getTokenStandardAndDetails,
+  getTokenStandardAndDetailsByChain,
+} from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { TokenStandard } from '../../../shared/constants/transaction';
@@ -261,6 +264,7 @@ export async function getAssetDetails(
   currentUserAddress,
   transactionData,
   existingNfts,
+  chainId,
 ) {
   const tokenData = parseStandardTokenTransactionData(transactionData);
   if (!tokenData) {
@@ -294,11 +298,20 @@ export async function getAssetDetails(
   }
 
   try {
-    tokenDetails = await getTokenStandardAndDetails(
-      tokenAddress,
-      currentUserAddress,
-      tokenId,
-    );
+    if (chainId) {
+      tokenDetails = await getTokenStandardAndDetailsByChain(
+        tokenAddress,
+        currentUserAddress,
+        tokenId,
+        chainId,
+      );
+    } else {
+      tokenDetails = await getTokenStandardAndDetails(
+        tokenAddress,
+        currentUserAddress,
+        tokenId,
+      );
+    }
   } catch (error) {
     log.warn(error);
     // if we can't determine any token standard or details return the data we can extract purely from the parsed transaction data
@@ -312,7 +325,11 @@ export async function getAssetDetails(
     tokenDecimals &&
     calcTokenAmount(tokenValue, tokenDecimals).toString(10);
 
+  console.log('>>>>> getAssetDetails - tokenDecimals', tokenDecimals);
+
   const decimals = tokenDecimals && Number(tokenDecimals?.toString(10));
+
+  console.log('>>>>> getAssetDetails - decimals', decimals);
 
   if (tokenDetails?.standard === TokenStandard.ERC20) {
     tokenId = undefined;
