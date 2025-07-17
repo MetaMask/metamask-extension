@@ -6247,6 +6247,32 @@ export async function throwTestBackgroundError(message: string): Promise<void> {
 }
 
 /**
+ * Capture an error in the background for testing purposes.
+ *
+ * @param message - The error message.
+ * @deprecated This is only meant to facilitiate E2E testing. We should not use
+ * this for handling errors.
+ */
+export async function captureGlobalTestBackgroundError(
+  message: string,
+): Promise<void> {
+  await submitRequestToBackground('captureGlobalTestError', [message]);
+}
+
+/**
+ * Capture an error in the background for testing purposes.
+ *
+ * @param message - The error message.
+ * @deprecated This is only meant to facilitiate E2E testing. We should not use
+ * this for handling errors.
+ */
+export async function captureImportedTestBackgroundError(
+  message: string,
+): Promise<void> {
+  await submitRequestToBackground('captureImportedTestError', [message]);
+}
+
+/**
  * Set status of popover warning for the first snap installation.
  *
  * @param shown - True if popover has been shown.

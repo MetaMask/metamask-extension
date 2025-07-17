@@ -44,6 +44,10 @@ const SentryTest = () => {
       <div className="settings-page__content-padded">
         <GenerateUIError />
         <GenerateBackgroundError />
+        <CaptureGlobalUIError />
+        <CaptureGlobalBackgroundError />
+        <CaptureImportedUIError />
+        <CaptureImportedBackgroundError />
         <GenerateTrace />
         <GeneratePageCrash currentLocale={currentLocale} />
       </div>
@@ -85,6 +89,95 @@ function GenerateBackgroundError() {
       description={
         <span>
           Generate an unhandled <b>TestError</b> in the service worker.
+        </span>
+      }
+      onClick={handleClick}
+      expectError
+    />
+  );
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function CaptureGlobalUIError() {
+  const handleClick = useCallback(async () => {
+    await window.stateHooks.captureGlobalTestError?.('Developer Options');
+  }, []);
+
+  return (
+    <TestButton
+      name="Capture Global UI Error"
+      description={
+        <span>
+          Capture a <b>TestError</b> in this window using the sentry global.
+        </span>
+      }
+      onClick={handleClick}
+      expectError
+    />
+  );
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function CaptureGlobalBackgroundError() {
+  const handleClick = useCallback(async () => {
+    await window.stateHooks.captureGlobalBackgroundError?.('Developer Options');
+  }, []);
+
+  return (
+    <TestButton
+      name="Capture Global Background Error"
+      description={
+        <span>
+          Capture a <b>TestError</b> in the service worker using the sentry
+          global.
+        </span>
+      }
+      onClick={handleClick}
+      expectError
+    />
+  );
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function CaptureImportedUIError() {
+  const handleClick = useCallback(async () => {
+    await window.stateHooks.captureImportedTestError?.('Developer Options');
+  }, []);
+
+  return (
+    <TestButton
+      name="Capture Imported UI Error"
+      description={
+        <span>
+          Capture a <b>TestError</b> in this window using the `captureException`
+          import.
+        </span>
+      }
+      onClick={handleClick}
+      expectError
+    />
+  );
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function CaptureImportedBackgroundError() {
+  const handleClick = useCallback(async () => {
+    await window.stateHooks.captureImportedTestBackgroundError?.(
+      'Developer Options',
+    );
+  }, []);
+
+  return (
+    <TestButton
+      name="Capture Imported Background Error"
+      description={
+        <span>
+          Capture a <b>TestError</b> in the service worker using the
+          `captureException` import.
         </span>
       }
       onClick={handleClick}
