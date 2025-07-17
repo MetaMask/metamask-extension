@@ -26,11 +26,7 @@ import {
 import useBridging from '../../../hooks/bridge/useBridging';
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
-import {
-  showModal,
-  setSwitchedNetworkDetails,
-  setActiveNetworkWithError,
-} from '../../../store/actions';
+import { showModal, setActiveNetworkWithError } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -130,11 +126,6 @@ const TokenButtons = ({
       try {
         const networkConfigurationId = networks[token.chainId];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
-        await dispatch(
-          setSwitchedNetworkDetails({
-            networkClientId: networkConfigurationId,
-          }),
-        );
       } catch (err) {
         console.error(`Failed to switch chains.
         Target chainId: ${token.chainId}, Current chainId: ${currentChainId}.
@@ -234,7 +225,6 @@ const TokenButtons = ({
           string: token?.balance?.display,
           name: token.name ?? '',
         },
-        undefined,
         isSwap,
       );
     },

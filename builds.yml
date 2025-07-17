@@ -249,6 +249,7 @@ env:
   - QUICKNODE_OPTIMISM_URL: null
   - QUICKNODE_POLYGON_URL: null
   - QUICKNODE_BASE_URL: null
+  - QUICKNODE_BSC_URL: null
 
   ###
   # API keys to 3rd party services
@@ -386,6 +387,11 @@ env:
   - SEEDLESS_ONBOARDING_ENABLED: 'false'
   - GOOGLE_CLIENT_ID: ''
   - APPLE_CLIENT_ID: ''
+  # OAuth (Social login) for UAT(QA) builds
+  - GOOGLE_CLIENT_ID_FLASK_UAT: ''
+  - APPLE_CLIENT_ID_FLASK_UAT: ''
+  - GOOGLE_CLIENT_ID_UAT: ''
+  - APPLE_CLIENT_ID_UAT: ''
 
   # Snaps
   # This should only be used for local testing, and should not be enabled in any
