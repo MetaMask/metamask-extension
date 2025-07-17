@@ -1,5 +1,4 @@
 import { hasProperty, isObject } from '@metamask/utils';
-import { captureException } from '@sentry/browser';
 import { cloneDeep } from 'lodash';
 
 type VersionedData = {
@@ -34,7 +33,7 @@ function transformState(
     !hasProperty(state, 'PreferencesController') ||
     !isObject(state.PreferencesController)
   ) {
-    captureException(
+    global.sentry.captureException(
       `Migration ${version}: Invalid PreferencesController state: ${typeof state.PreferencesController}`,
     );
 

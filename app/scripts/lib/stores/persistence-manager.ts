@@ -1,5 +1,4 @@
 import log from 'loglevel';
-import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
@@ -228,7 +227,7 @@ export class PersistenceManager {
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
-            captureException(err);
+            global.sentry.captureException(err);
           }
           log.error('error setting state in local store:', err);
         } finally {
