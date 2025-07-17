@@ -47,6 +47,8 @@ jest.mock('../../../hooks/useI18nContext', () => ({
     const translations: Record<string, string> = {
       address: '[address]',
       viewOnExplorer: 'View on explorer',
+      viewAddressOnEtherscan: 'View on Etherscan',
+      viewAddressOnSolscan: 'View on Solscan',
     };
     return translations[key] || key;
   },
@@ -151,11 +153,11 @@ describe('AddressQRCode', () => {
       expect(screen.getByLabelText('Back')).toBeInTheDocument();
     });
 
-    it('should render view on explorer button', () => {
+    it('should render view on etherscan button', () => {
       renderComponent();
 
       const explorerButton = screen.getByRole('button', {
-        name: 'View on explorer',
+        name: 'View on Etherscan',
       });
       expect(explorerButton).toBeInTheDocument();
     });
@@ -175,11 +177,11 @@ describe('AddressQRCode', () => {
   });
 
   describe('Block Explorer Integration', () => {
-    it('should open block explorer when view on explorer button is clicked', async () => {
+    it('should open block explorer when view on etherscan button is clicked', async () => {
       renderComponent();
 
       const explorerButton = screen.getByRole('button', {
-        name: 'View on explorer',
+        name: 'View on Etherscan',
       });
       fireEvent.click(explorerButton);
 
