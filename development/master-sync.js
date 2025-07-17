@@ -95,7 +95,9 @@ async function runGitCommands() {
     console.log('Executed: git commit');
 
     console.log('Your local master-sync branch is now ready to become a PR.');
-    console.log('You likely now need to do `git push --force`');
+    console.log(
+      'You likely now need to do `git push --set-upstream origin master-sync`',
+    );
   } catch (error) {
     console.error(`Error: ${error.message}`);
     process.exit(1);
