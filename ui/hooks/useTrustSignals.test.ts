@@ -1,3 +1,4 @@
+import { renderHook } from '@testing-library/react-hooks';
 import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
 // eslint-disable-next-line import/no-restricted-paths
@@ -7,6 +8,7 @@ import {
   useTrustSignals,
   TrustSignalDisplayState,
   UseTrustSignalRequest,
+  type TrustSignalResult,
 } from './useTrustSignals';
 
 jest.mock('react-redux', () => ({
@@ -43,7 +45,13 @@ describe('useTrustSignals', () => {
         label: TRUST_LABEL_MOCK,
       });
 
-      const result = useTrustSignal(VALUE_MOCK, NameType.ETHEREUM_ADDRESS);
+      const {
+        result: {
+          all: [result],
+        },
+      } = renderHook(() =>
+        useTrustSignal(VALUE_MOCK, NameType.ETHEREUM_ADDRESS),
+      );
 
       expect(result).toStrictEqual({
         state: TrustSignalDisplayState.Malicious,
@@ -69,10 +77,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        const {
+          result: {
+            all: [results],
+          },
+        } = renderHook(() => useTrustSignals(requests));
 
         expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
+        expect((results as TrustSignalResult[])[0]).toStrictEqual({
           state: TrustSignalDisplayState.Malicious,
           label: TRUST_LABEL_MOCK,
         });
@@ -98,10 +110,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        const {
+          result: {
+            all: [results],
+          },
+        } = renderHook(() => useTrustSignals(requests));
 
         expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
+        expect((results as TrustSignalResult[])[0]).toStrictEqual({
           state: TrustSignalDisplayState.Warning,
           label: WARNING_LABEL_MOCK,
         });
@@ -122,10 +138,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        const {
+          result: {
+            all: [results],
+          },
+        } = renderHook(() => useTrustSignals(requests));
 
         expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
+        expect((results as TrustSignalResult[])[0]).toStrictEqual({
           state: TrustSignalDisplayState.Verified,
           label: VERIFIED_LABEL_MOCK,
         });
@@ -146,10 +166,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        const {
+          result: {
+            all: [results],
+          },
+        } = renderHook(() => useTrustSignals(requests));
 
         expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
+        expect((results as TrustSignalResult[])[0]).toStrictEqual({
           state: TrustSignalDisplayState.Unknown,
           label: 'Benign Address',
         });
@@ -170,10 +194,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        const {
+          result: {
+            all: [results],
+          },
+        } = renderHook(() => useTrustSignals(requests));
 
         expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
+        expect((results as TrustSignalResult[])[0]).toStrictEqual({
           state: TrustSignalDisplayState.Unknown,
           label: 'Error occurred',
         });
@@ -191,10 +219,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        const {
+          result: {
+            all: [results],
+          },
+        } = renderHook(() => useTrustSignals(requests));
 
         expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
+        expect((results as TrustSignalResult[])[0]).toStrictEqual({
           state: TrustSignalDisplayState.Unknown,
           label: 'Some label',
         });
@@ -214,10 +246,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        const {
+          result: {
+            all: [results],
+          },
+        } = renderHook(() => useTrustSignals(requests));
 
         expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
+        expect((results as TrustSignalResult[])[0]).toStrictEqual({
           state: TrustSignalDisplayState.Verified,
           label: null,
         });
@@ -235,10 +271,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        const {
+          result: {
+            all: [results],
+          },
+        } = renderHook(() => useTrustSignals(requests));
 
         expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
+        expect((results as TrustSignalResult[])[0]).toStrictEqual({
           state: TrustSignalDisplayState.Unknown,
           label: null,
         });
@@ -254,10 +294,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        const {
+          result: {
+            all: [results],
+          },
+        } = renderHook(() => useTrustSignals(requests));
 
         expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
+        expect((results as TrustSignalResult[])[0]).toStrictEqual({
           state: TrustSignalDisplayState.Unknown,
           label: null,
         });
@@ -291,14 +335,18 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        const {
+          result: {
+            all: [results],
+          },
+        } = renderHook(() => useTrustSignals(requests));
 
         expect(results).toHaveLength(2);
-        expect(results[0]).toStrictEqual({
+        expect((results as TrustSignalResult[])[0]).toStrictEqual({
           state: TrustSignalDisplayState.Malicious,
           label: TRUST_LABEL_MOCK,
         });
-        expect(results[1]).toStrictEqual({
+        expect((results as TrustSignalResult[])[1]).toStrictEqual({
           state: TrustSignalDisplayState.Verified,
           label: VERIFIED_LABEL_MOCK,
         });
@@ -317,7 +365,11 @@ describe('useTrustSignals', () => {
       });
 
       it('handles empty requests array', () => {
-        const results = useTrustSignals([]);
+        const {
+          result: {
+            all: [results],
+          },
+        } = renderHook(() => useTrustSignals([]));
 
         expect(results).toHaveLength(0);
         expect(getAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
@@ -344,14 +396,18 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        const {
+          result: {
+            all: [results],
+          },
+        } = renderHook(() => useTrustSignals(requests));
 
         expect(results).toHaveLength(2);
-        expect(results[0]).toStrictEqual({
+        expect((results as TrustSignalResult[])[0]).toStrictEqual({
           state: TrustSignalDisplayState.Malicious,
           label: TRUST_LABEL_MOCK,
         });
-        expect(results[1]).toStrictEqual({
+        expect((results as TrustSignalResult[])[1]).toStrictEqual({
           state: TrustSignalDisplayState.Malicious,
           label: TRUST_LABEL_MOCK,
         });

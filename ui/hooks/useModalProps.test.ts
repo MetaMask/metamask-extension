@@ -1,3 +1,4 @@
+import { renderHook } from '@testing-library/react-hooks';
 import { useModalProps } from './useModalProps';
 
 const MOCK_PROPS = {
@@ -26,7 +27,12 @@ jest.mock('../store/actions', () => ({
 
 describe('useModalProps', () => {
   it('should return modal props and hideModal function', () => {
-    const { props, hideModal } = useModalProps();
+    const {
+      result: {
+        // @ts-expect-error TODO: supply types to `renderHook`
+        all: [{ props, hideModal }],
+      },
+    } = renderHook(() => useModalProps());
 
     expect(props).toStrictEqual(MOCK_PROPS);
     expect(hideModal).toStrictEqual(expect.any(Function));
