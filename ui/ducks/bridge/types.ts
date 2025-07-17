@@ -1,4 +1,4 @@
-import { type Hex, type CaipChainId } from '@metamask/utils';
+import type { Hex, CaipChainId, CaipAssetType } from '@metamask/utils';
 import {
   type QuoteMetadata,
   type QuoteResponse,
@@ -10,6 +10,7 @@ import { type TxAlert } from '../../../shared/types/security-alerts-api';
 
 export type BridgeToken = {
   address: string;
+  assetId?: CaipAssetType;
   symbol: string;
   image: string;
   decimals: number;
@@ -47,8 +48,10 @@ export type TokenPayload = {
     balance?: string;
     string?: string;
     image?: string;
-    iconUrl?: string;
-    icon?: string;
-    assetId?: string;
+    iconUrl?: string | null;
+    icon?: string | null;
+    assetId?: CaipAssetType;
+    aggregators?: string[];
+    occurrences?: number;
   } | null;
 };

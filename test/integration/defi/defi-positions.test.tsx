@@ -246,7 +246,7 @@ const withMetamaskConnectedToMainnet = {
   },
 };
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
+const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
 describe('Defi positions list', () => {
   beforeEach(() => {
@@ -396,7 +396,11 @@ describe('Defi positions list', () => {
       event: MetaMetricsEventName.DeFiDetailsOpened,
       properties: {
         location: 'Home',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: '0x1',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         protocol_id: 'aave-v3',
       },
       environmentType: 'background',
@@ -412,7 +416,11 @@ describe('Defi positions list', () => {
       event: MetaMetricsEventName.DeFiDetailsOpened,
       properties: {
         location: 'Home',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: '0x1',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         protocol_id: 'metamask-staking',
       },
       environmentType: 'background',
