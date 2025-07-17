@@ -75,11 +75,8 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function (this
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // Wait for token to show in list of tokens to watch
-        const addTokensModal = new AddTokensModal(driver);
-        await addTokensModal.check_pageIsLoaded();
-
         // Confirm only 2 tokens are present in suggested token list
+        const addTokensModal = new AddTokensModal(driver);
         await addTokensModal.check_SuggestedTokensCount(2);
       },
     );
