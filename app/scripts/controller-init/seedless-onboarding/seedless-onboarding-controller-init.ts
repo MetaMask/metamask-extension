@@ -6,16 +6,14 @@ import {
 import { EncryptionKey, EncryptionResult } from '@metamask/browser-passworder';
 import { ControllerInitFunction } from '../types';
 import { encryptorFactory } from '../../lib/encryptor-factory';
-import { isProduction } from '../../../../shared/modules/environment';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { isDevOrTestBuild } from '../../services/oauth/config';
 
 const loadWeb3AuthNetwork = (): Web3AuthNetwork => {
-  let network = Web3AuthNetwork.Devnet;
-  if (process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.OTHER) {
+  let network = Web3AuthNetwork.Mainnet;
+  if (isDevOrTestBuild()) {
     network = Web3AuthNetwork.Devnet;
-  } else if (isProduction()) {
-    network = Web3AuthNetwork.Mainnet;
   }
+
   return network;
 };
 
