@@ -5486,9 +5486,6 @@
   "standardAccountLabel": {
     "message": "Compte standard"
   },
-  "startEarning": {
-    "message": "Commencer à générer des revenus"
-  },
   "stateLogError": {
     "message": "Erreur lors du chargement des journaux d’état."
   },
@@ -6029,17 +6026,6 @@
   },
   "switchToThisAccount": {
     "message": "Basculer vers ce compte"
-  },
-  "switchedNetworkToastDecline": {
-    "message": "Ne plus afficher"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 est maintenant actif sur $2",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
-  "switchedNetworkToastMessageNoOrigin": {
-    "message": "Vous êtes en train d’utiliser $1",
-    "description": "$1 represents the network name"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Le changement de réseau annulera toutes les confirmations en attente"
