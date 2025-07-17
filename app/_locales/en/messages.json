@@ -1,4 +1,12 @@
 {
+  "CSS_loadingTakingTooLongActionText": {
+    "message": "Relaunch MetaMask if the problem persists.",
+    "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
+  "CSS_loadingTakingTooLongMessageText": {
+    "message": "Loading is taking longer than usual.",
+    "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
@@ -167,9 +175,6 @@
   },
   "addAUrl": {
     "message": "Add a URL"
-  },
-  "loadingTimeoutMessage": {
-    "message": "Loading seems to be taking longer than usual, try refreshing the page. If the problem persists, please contact support."
   },
   "addAccount": {
     "message": "Add account"
@@ -1546,14 +1551,6 @@
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
-  },
-  "CSS_loadingTakingTooLongMessageText": {
-    "message": "Loading is taking longer than usual.",
-    "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
-  },
-  "CSS_loadingTakingTooLongActionText": {
-    "message": "Relaunch MetaMask if the problem persists.",
-    "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
   "currencyConversion": {
     "message": "Currency"
@@ -3149,6 +3146,9 @@
   },
   "loadingScreenSnapMessage": {
     "message": "Please complete the transaction on the Snap."
+  },
+  "loadingTimeoutMessage": {
+    "message": "Loading seems to be taking longer than usual, try refreshing the page. If the problem persists, please contact support."
   },
   "loadingTokenList": {
     "message": "Loading token list"
