@@ -26,6 +26,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modu
 import { getGatorPermissionByPermissionTypeAndChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { extractNetworkName } from '../gator-permissions-page-helper';
 import { ReviewGatorAssetItem } from '../components';
+import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
 
 export const ReviewTokenSubscriptionsPage = () => {
   const t = useI18nContext();
@@ -34,6 +35,9 @@ export const ReviewTokenSubscriptionsPage = () => {
   const { chainId } = useParams();
   const [networkName, setNetworkName] = useState('');
   const [totalTokenSubscriptions, setTotalTokenSubscriptions] = useState(0);
+  const { revokeGatorPermission } = useRevokeGatorPermissions({
+    chainId,
+  });
 
   const networks = useSelector(getNetworkConfigurationsByChainId);
   const nativeTokenPeriodicPermissions = useSelector((state) =>
@@ -49,9 +53,8 @@ export const ReviewTokenSubscriptionsPage = () => {
     setTotalTokenSubscriptions(nativeTokenPeriodicPermissions.length);
   }, [chainId, nativeTokenPeriodicPermissions, networks]);
 
-  const handleRevokeClick = (subscription) => {
-    // TODO: Implement revoke logic
-    console.log('subscription to revoke:', subscription);
+  const handleRevokeClick = async (subscription) => {
+    await revokeGatorPermission(subscription);
   };
 
   const renderTokenSubscriptions = (subscriptions) =>
