@@ -4757,22 +4757,27 @@ export default class MetamaskController extends EventEmitter {
 
       let maxKeyChainLengthReached = false;
       // recover the keyring encryption key
-      await this.seedlessOnboardingController.submitGlobalPassword({
-        globalPassword: password,
-      }).catch((err)=>{
-        if (err.message === SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded) {
-          maxKeyChainLengthReached = true;
-        } else {
-          throw err;
-        }
-      })
+      await this.seedlessOnboardingController
+        .submitGlobalPassword({
+          globalPassword: password,
+        })
+        .catch((err) => {
+          if (
+            err.message ===
+            SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded
+          ) {
+            maxKeyChainLengthReached = true;
+          } else {
+            throw err;
+          }
+        });
       // we are unable to recover the old pwd enc key as user is on a very old device.
       // create a new vault and encrypt the new vault with the latest global password.
       // also show a info popup to user.
       if (maxKeyChainLengthReached) {
-        // create a new vault and encrypt the new vault with the latest global password @tuna
-
-        // display info popup to user. @lionell
+        // create a new vault and encrypt the new vault with the latest global password
+        await this.restoreSocialBackupAndGetSeedPhrase(password);
+        // display info popup to user. @lionell (can return a flag here)
         return;
       }
 
@@ -5121,7 +5126,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
    *
-   * @param password - The password.
+   * @param {string} password - The password.
    * @returns The seed phrase.
    */
   async restoreSocialBackupAndGetSeedPhrase(password) {
