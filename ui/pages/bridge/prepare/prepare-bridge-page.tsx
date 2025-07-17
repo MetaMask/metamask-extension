@@ -602,19 +602,20 @@ const PrepareBridgePage = () => {
 
   const { defaultToChainId, defaultToToken } = useBridgeDefaultToToken();
 
-  // Only apply defaults on initial page load
-  const [defaultsApplied, setDefaultsApplied] = useState(false);
+  // Track whether defaults have been applied separately for chain and token
+  const [defaultChainApplied, setDefaultChainApplied] = useState(false);
+  const [defaultTokenApplied, setDefaultTokenApplied] = useState(false);
 
   useEffect(() => {
-    // Only set default chain if user hasn't already selected one and defaults haven't been applied
-    if (!toChain && defaultToChainId && fromChain && !defaultsApplied) {
+    // Only set default chain if user hasn't already selected one and default hasn't been applied
+    if (!toChain && defaultToChainId && fromChain && !defaultChainApplied) {
       dispatch(setToChainId(defaultToChainId));
       // Track the input change event for the prefilled chain
       trackInputEvent({
         input: 'chain_destination',
         value: String(defaultToChainId),
       });
-      setDefaultsApplied(true);
+      setDefaultChainApplied(true);
     }
   }, [
     defaultToChainId,
@@ -622,12 +623,12 @@ const PrepareBridgePage = () => {
     fromChain,
     dispatch,
     trackInputEvent,
-    defaultsApplied,
+    defaultChainApplied,
   ]);
 
   useEffect(() => {
-    // Only set default token if user hasn't already selected one, we have a destination chain
-    if (!toToken && defaultToToken && toChain && !defaultsApplied) {
+    // Only set default token if user hasn't already selected one and default hasn't been applied
+    if (!toToken && defaultToToken && toChain && !defaultTokenApplied) {
       dispatch(setToToken(defaultToToken));
       // Track the input change event for the prefilled token
       if (defaultToToken.address) {
@@ -636,7 +637,7 @@ const PrepareBridgePage = () => {
           value: defaultToToken.address,
         });
       }
-      setDefaultsApplied(true);
+      setDefaultTokenApplied(true);
     }
   }, [
     defaultToToken,
@@ -644,7 +645,7 @@ const PrepareBridgePage = () => {
     toChain,
     dispatch,
     trackInputEvent,
-    defaultsApplied,
+    defaultTokenApplied,
   ]);
 
   const occurrences = Number(
