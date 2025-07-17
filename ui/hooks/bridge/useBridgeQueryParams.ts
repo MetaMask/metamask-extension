@@ -95,6 +95,10 @@ export const useBridgeQueryParams = (
   // Parse CAIP asset data
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
+  // Track if initial processing is complete to prevent re-processing
+  const [isInitialProcessingComplete, setIsInitialProcessingComplete] =
+    useState(false);
+
   // Clean up URL parameters
   const cleanupUrlParams = useCallback(
     (paramsToRemove: BridgeQueryParams[]) => {
@@ -241,7 +245,8 @@ export const useBridgeQueryParams = (
       !parsedFromAssetId ||
       !assetMetadataByAssetId ||
       !fromChain ||
-      !fromChains.length
+      !fromChains.length ||
+      isInitialProcessingComplete
     ) {
       return;
     }
@@ -261,13 +266,17 @@ export const useBridgeQueryParams = (
       selectedSolanaAccount,
       selectedEvmAccount,
     );
+
+    // Mark initial processing as complete
+    setIsInitialProcessingComplete(true);
   }, [
     assetMetadataByAssetId,
     parsedFromAssetId,
     fromChains,
-    fromChain,
     selectedSolanaAccount,
     selectedEvmAccount,
+    setFromChainAndToken,
+    isInitialProcessingComplete,
   ]);
 
   // Set toChainId and toToken
