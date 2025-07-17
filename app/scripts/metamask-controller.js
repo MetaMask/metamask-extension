@@ -7402,6 +7402,9 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:get',
         ),
         trackError: (error) => {
+          // `captureException` imported from `@sentry/browser` does not seem to
+          // work in E2E tests. This is a workaround which works in both E2E
+          // tests and production.
           return global.sentry?.captureException?.(error);
         },
         trackEvent: this.metaMetricsController.trackEvent.bind(
