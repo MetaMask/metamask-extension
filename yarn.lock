@@ -5503,24 +5503,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auth-network-utils@npm:^0.3.0":
-  version: 0.3.1
-  resolution: "@metamask/auth-network-utils@npm:0.3.1"
-  dependencies:
-    "@noble/curves": "npm:^1.8.1"
-    "@noble/hashes": "npm:^1.7.1"
-    "@toruslabs/bs58": "npm:^1.0.0"
-    "@toruslabs/constants": "npm:^15.0.0"
-    "@toruslabs/eccrypto": "npm:^6.1.0"
-    bn.js: "npm:^5.2.1"
-    elliptic: "npm:^6.6.1"
-    json-stable-stringify-without-jsonify: "npm:^1.0.1"
-    loglevel: "npm:^1.9.2"
-  checksum: 10/6b4f105b03e5231ae3ed448e8423cd6681e49db1be7ebe20232e0b5eee8bce08e3565dbe890837abc9158b417c65d06279b676f226c52ffc81ef5f50f6d87428
-  languageName: node
-  linkType: hard
-
-"@metamask/auth-network-utils@npm:^0.3.1":
+"@metamask/auth-network-utils@npm:^0.3.0, @metamask/auth-network-utils@npm:^0.3.1":
   version: 0.3.1
   resolution: "@metamask/auth-network-utils@npm:0.3.1"
   dependencies:
@@ -7157,9 +7140,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@2.0.1-preview-c10fdda1":
-  version: 2.0.1-preview-c10fdda1
-  resolution: "@metamask-previews/seedless-onboarding-controller@npm:2.0.1-preview-c10fdda1"
+"@metamask/seedless-onboarding-controller@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/seedless-onboarding-controller@npm:2.1.0"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.0"
     "@metamask/base-controller": "npm:^8.0.1"
@@ -7168,7 +7151,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
   peerDependencies:
     "@metamask/keyring-controller": ^22.0.0
-  checksum: 10/9903cdb6f36c222f5ecfcfeeef2d89d80ae1f8b2f6740fa50f0a66b4a1e98c49d5d53574b772cbd0b96d4ffd27cb238c1b2f10a0941e63eacf8072c3d2172985
+  checksum: 10/7c1221d08042c0d9a096a60e9ca8ec1660128b7c1012b793cd858b303153bac05b1157782cd2d85a457e8519534ef1446e2124da1609bb878a4031b20f016758
   languageName: node
   linkType: hard
 
@@ -31964,7 +31947,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@2.0.1-preview-c10fdda1"
+    "@metamask/seedless-onboarding-controller": "npm:^2.1.0"
     "@metamask/selected-network-controller": "npm:^22.1.0"
     "@metamask/signature-controller": "npm:^30.0.0"
     "@metamask/smart-transactions-controller": "npm:^16.5.0"
