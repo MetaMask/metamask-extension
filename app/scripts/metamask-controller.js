@@ -4252,6 +4252,10 @@ export default class MetamaskController extends EventEmitter {
       performSignOut: authenticationController.performSignOut.bind(
         authenticationController,
       ),
+      getUserProfileMetaMetrics:
+        authenticationController.getUserProfileMetaMetrics.bind(
+          authenticationController,
+        ),
 
       // UserStorageController
       setIsBackupAndSyncFeatureEnabled:

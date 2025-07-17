@@ -2478,6 +2478,20 @@ describe('Actions', () => {
     });
   });
 
+  describe('#getUserProfileMetaMetrics', () => {
+    it('calls getUserProfileMetaMetrics in the background', async () => {
+      const getUserProfileMetaMetricsStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        getUserProfileMetaMetrics: getUserProfileMetaMetricsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await actions.getUserProfileMetaMetrics();
+      expect(getUserProfileMetaMetricsStub.calledOnceWith()).toBe(true);
+    });
+  });
+
   describe('#createOnChainTriggers', () => {
     afterEach(() => {
       sinon.restore();
