@@ -34,6 +34,46 @@ async function mockSwapSetup(mockServer: Mockttp) {
         json: [],
       })),
     await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/59144/tokens')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [],
+      })),
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/59144/topAssets')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [],
+      })),
+    await mockServer
+      .forGet(
+        'https://swap.api.cx.metamask.io/networks/59144/aggregatorMetadata',
+      )
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {},
+      })),
+
+    await mockServer
+      .forGet('https://gas.api.cx.metamask.io/networks/59144/suggestedGasFees')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          low: {
+            suggestedMaxFeePerGas: '30',
+            suggestedMaxPriorityFeePerGas: '30',
+          },
+          medium: {
+            suggestedMaxFeePerGas: '40',
+            suggestedMaxPriorityFeePerGas: '40',
+          },
+          high: {
+            suggestedMaxFeePerGas: '50',
+            suggestedMaxPriorityFeePerGas: '50',
+          },
+        },
+      })),
+    await mockServer
       .forGet('https://swap.api.cx.metamask.io/networks/137/topAssets')
       .thenCallback(() => ({
         statusCode: 200,
@@ -64,7 +104,45 @@ async function mockSwapSetup(mockServer: Mockttp) {
           },
         },
       })),
-    // Mock accounts API endpoint with wildcard matching
+    // Mock Mainnet swap API endpoints to prevent JSON parsing errors
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/1/tokens')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [],
+      })),
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/1/topAssets')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [],
+      })),
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/1/aggregatorMetadata')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {},
+      })),
+    await mockServer
+      .forGet('https://gas.api.cx.metamask.io/networks/1/suggestedGasFees')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          low: {
+            suggestedMaxFeePerGas: '30',
+            suggestedMaxPriorityFeePerGas: '30',
+          },
+          medium: {
+            suggestedMaxFeePerGas: '40',
+            suggestedMaxPriorityFeePerGas: '40',
+          },
+          high: {
+            suggestedMaxFeePerGas: '50',
+            suggestedMaxPriorityFeePerGas: '50',
+          },
+        },
+      })),
+    // Mock accounts API endpoint with wildcard matching for transactions
     await mockServer
       .forGet()
       .matching(
@@ -75,6 +153,20 @@ async function mockSwapSetup(mockServer: Mockttp) {
       .thenCallback(() => ({
         statusCode: 200,
         json: [],
+      })),
+    // Mock accounts API endpoint for balances
+    await mockServer
+      .forGet()
+      .matching(
+        (req) =>
+          req.url?.includes('accounts.api.cx.metamask.io/v2/accounts/') &&
+          req.url?.includes('/balances'),
+      )
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          balances: [],
+        },
       })),
     // Mock token icon endpoints
     await mockServer
@@ -89,6 +181,29 @@ async function mockSwapSetup(mockServer: Mockttp) {
     await mockServer
       .forGet(
         'https://static.cx.metamask.io/api/v1/tokenIcons/137/0x0000000000000000000000000000000000000000.png',
+      )
+      .thenCallback(() => ({
+        statusCode: 200,
+        headers: { 'content-type': 'image/png' },
+        body: Buffer.from(''),
+      })),
+    // Mock USDC token icon endpoint (this is the failing one)
+    await mockServer
+      .forGet(
+        'https://static.cx.metamask.io/api/v1/tokenIcons/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
+      )
+      .thenCallback(() => ({
+        statusCode: 200,
+        headers: { 'content-type': 'image/png' },
+        body: Buffer.from(''),
+      })),
+    // Mock all token icon endpoints with wildcard matching
+    await mockServer
+      .forGet()
+      .matching(
+        (req) =>
+          req.url?.includes('static.cx.metamask.io/api/v1/tokenIcons/') &&
+          req.url?.endsWith('.png'),
       )
       .thenCallback(() => ({
         statusCode: 200,
