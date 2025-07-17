@@ -6,7 +6,6 @@
 import { ReactFragment } from 'react';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
@@ -5370,7 +5369,7 @@ export function captureSingleException(
         type: actionConstants.CAPTURE_SINGLE_EXCEPTION,
         value: error,
       });
-      captureException(Error(error));
+      global.sentry?.captureException?.(Error(error));
     }
   };
 }

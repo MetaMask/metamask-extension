@@ -11,7 +11,6 @@ import { useHistory } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
 import classnames from 'classnames';
-import { captureException } from '@sentry/browser';
 import PropTypes from 'prop-types';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { I18nContext } from '../../../contexts/i18n';
@@ -1030,7 +1029,7 @@ export default function ReviewQuote({
         );
         setMultiLayerL1FeeTotal(l1FeeTotal);
       } catch (e) {
-        captureException(e);
+        global.sentry?.captureException?.(e);
         setMultiLayerL1FeeTotal(null);
         setMultiLayerL1ApprovalFeeTotal(null);
       }

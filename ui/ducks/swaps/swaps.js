@@ -2,8 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
 import log from 'loglevel';
 
-import { captureMessage } from '@sentry/browser';
-
 import { TransactionType } from '@metamask/transaction-controller';
 import { createProjectLogger } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -1013,7 +1011,7 @@ export const signAndSendSwapsSmartTransaction = ({
         selectedNetwork.configuration.chainId,
       )
     ) {
-      captureMessage('Invalid contract address', {
+      global.sentry?.captureMessage?.('Invalid contract address', {
         extra: {
           token_from: swapMetaData.token_from,
           token_to: swapMetaData.token_to,
@@ -1300,7 +1298,7 @@ export const signAndSendTransactions = (
     });
 
     if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
-      captureMessage('Invalid contract address', {
+      global.sentry?.captureMessage?.('Invalid contract address', {
         extra: {
           token_from: swapMetaData.token_from,
           token_to: swapMetaData.token_to,
