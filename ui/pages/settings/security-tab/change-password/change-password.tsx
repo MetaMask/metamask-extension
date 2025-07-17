@@ -101,6 +101,8 @@ const ChangePassword = () => {
       await dispatch(changePassword(newPassword, currentPassword));
 
       // Track password changed event
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasswordChanged,
@@ -126,6 +128,8 @@ const ChangePassword = () => {
 
   const handleLearnMoreClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.stopPropagation();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.ExternalLinkClicked,
@@ -163,6 +167,8 @@ const ChangePassword = () => {
           height={BlockSize.Full}
           onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             handleSubmitCurrentPassword();
           }}
         >
@@ -214,6 +220,8 @@ const ChangePassword = () => {
             if (isSocialLoginFlow) {
               setShowChangePasswordWarning(true);
             } else {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
               onChangePassword();
             }
           }}
@@ -288,6 +296,8 @@ const ChangePassword = () => {
       {showChangePasswordWarning && (
         <ChangePasswordWarning
           onConfirm={() => {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             onChangePassword();
           }}
           onCancel={() => setShowChangePasswordWarning(false)}
