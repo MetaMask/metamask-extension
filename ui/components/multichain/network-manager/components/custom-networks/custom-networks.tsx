@@ -186,20 +186,21 @@ export const CustomNetworks = React.memo(() => {
     <>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         {renderedCustomNetworks}
-        {showTestnets && renderedTestNetworks.length > 0 && (
-          <>
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textAlternative}
-              paddingLeft={4}
-              paddingRight={4}
-              paddingTop={4}
-            >
-              {t('testnets')}
-            </Text>
-            {renderedTestNetworks}
-          </>
-        )}
+        {(showTestnets || process.env.METAMASK_DEBUG) &&
+          renderedTestNetworks.length > 0 && (
+            <>
+              <Text
+                variant={TextVariant.bodyMdMedium}
+                color={TextColor.textAlternative}
+                paddingLeft={4}
+                paddingRight={4}
+                paddingTop={4}
+              >
+                {t('testnets')}
+              </Text>
+              {renderedTestNetworks}
+            </>
+          )}
       </Box>
       <Box
         display={Display.Flex}

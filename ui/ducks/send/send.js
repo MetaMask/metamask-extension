@@ -1315,6 +1315,14 @@ const slice = createSlice({
     updateRecipient: (state, action) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
+
+      // If no transactions are found, reset to ADD_RECIPIENT state
+      if (!draftTransaction) {
+        state.stage = SEND_STAGES.ADD_RECIPIENT;
+        slice.caseReducers.validateSendState(state);
+        return;
+      }
+
       draftTransaction.recipient.error = null;
       state.recipientInput = '';
       draftTransaction.recipient.address = action.payload.address ?? '';

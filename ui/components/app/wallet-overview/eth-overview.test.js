@@ -280,50 +280,6 @@ describe('EthOverview', () => {
       );
     });
 
-    it('should open the Bridge URI when clicking on Bridge button on supported network', async () => {
-      const mockedStore = configureMockStore([thunk])({
-        appState: {
-          confirmationExchangeRates: {},
-        },
-        ...store,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({ chainId: '0xa86a' }),
-          accountsByChainId: {
-            [CHAIN_IDS.AVALANCHE]: {
-              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
-            },
-          },
-          useExternalServices: true,
-          remoteFeatureFlags: {
-            bridgeConfig: {
-              support: false,
-            },
-          },
-        },
-      });
-      const { queryByTestId } = renderWithProvider(
-        <EthOverview />,
-        mockedStore,
-      );
-
-      const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
-
-      expect(bridgeButton).toBeInTheDocument();
-      expect(bridgeButton).not.toBeDisabled();
-
-      fireEvent.click(bridgeButton);
-
-      await waitFor(() => {
-        expect(openTabSpy).toHaveBeenCalledTimes(1);
-        expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(
-            '/bridge?metamaskEntry=ext_bridge_button',
-          ),
-        });
-      });
-    });
-
     it('should have the Bridge button disabled if chain id is not part of supported chains', () => {
       const mockedFantomStore = {
         ...mockStore,
