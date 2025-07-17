@@ -1266,35 +1266,6 @@ export function getRequestingNetworkInfo(state, chainIds) {
   );
 }
 
-/**
- * Provides information about the last network change if present
- *
- * @param state - Redux state object.
- * @returns An object with information about the network with the given networkClientId
- */
-export function getSwitchedNetworkDetails(state) {
-  const { switchedNetworkDetails } = state.metamask;
-  const networkConfigurations = getNetworkConfigurationsByChainId(state);
-
-  if (switchedNetworkDetails) {
-    const switchedNetwork = Object.values(networkConfigurations).find(
-      (network) =>
-        network.rpcEndpoints.some(
-          (rpcEndpoint) =>
-            rpcEndpoint.networkClientId ===
-            switchedNetworkDetails.networkClientId,
-        ),
-    );
-    return {
-      nickname: switchedNetwork?.name,
-      imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[switchedNetwork?.chainId],
-      origin: switchedNetworkDetails?.origin,
-    };
-  }
-
-  return null;
-}
-
 export function getTotalUnapprovedCount(state) {
   return state.metamask.pendingApprovalCount ?? 0;
 }
@@ -2598,6 +2569,11 @@ export function getShowNetworkBanner(state) {
 export function getShowAccountBanner(state) {
   return state.metamask.showAccountBanner;
 }
+
+export function getShowDownloadMobileAppSlide(state) {
+  return state.metamask.showDownloadMobileAppSlide;
+}
+
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
  *

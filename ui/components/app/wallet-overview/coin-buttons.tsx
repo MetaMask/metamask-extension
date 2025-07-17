@@ -48,10 +48,7 @@ import {
   type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import { ReceiveModal } from '../../multichain/receive-modal';
-import {
-  setSwitchedNetworkDetails,
-  setActiveNetworkWithError,
-} from '../../../store/actions';
+import { setActiveNetworkWithError } from '../../../store/actions';
 import {
   getMultichainNativeCurrency,
   getMultichainNetwork,
@@ -207,22 +204,7 @@ const CoinButtons = ({
     if (currentChainId !== chainId && multichainChainId !== chainId) {
       try {
         const networkConfigurationId = networks[chainId];
-        // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
-        // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
-        // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
-        // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
-        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
-        // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
-        // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
-        // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
-        // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
-        // eslint-disable-next-line @typescript-eslint/await-thenable
-        await dispatch(
-          setSwitchedNetworkDetails({
-            networkClientId: networkConfigurationId,
-          }),
-        );
       } catch (err) {
         console.error(`Failed to switch chains.
         Target chainId: ${chainId}, Current chainId: ${currentChainId}.
@@ -269,11 +251,6 @@ const CoinButtons = ({
 
     // Native Send flow
     await setCorrectChain();
-    // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
-    // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
-    // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
-    // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
-    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(startNewDraftTransaction({ type: AssetType.native }));
     history.push(SEND_ROUTE);
   }, [
@@ -316,7 +293,6 @@ const CoinButtons = ({
       openBridgeExperience(
         MetaMetricsSwapsEventSource.MainView,
         defaultSwapsToken,
-        location.pathname.includes('asset') ? '&token=native' : '',
         isSwap,
       );
     },
