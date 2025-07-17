@@ -258,7 +258,7 @@ describe('Multiple Standard Dapp Connections', function () {
 
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
         // eslint-disable-next-line @typescript-eslint/await-thenable
-        await await connectAccountConfirmation.confirmConnect();
+        await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
