@@ -1,0 +1,28 @@
+ui/pages/asset/asset.scss
+ 78:42   ✖  Unexpected hex color "#e7f2f8"   color-no-hex
+ 78:58   ✖  Unexpected hex color "#e9f2f9"   color-no-hex
+ 78:74   ✖  Unexpected hex color "#ebf2fa"   color-no-hex
+ 78:90   ✖  Unexpected hex color "#edf2fb"   color-no-hex
+ 78:106  ✖  Unexpected hex color "#eff2fc"   color-no-hex
+--
+ui/pages/bridge/index.scss
+ 18:40  ✖  Unexpected hex color "#f9fafb"   color-no-hex
+ 19:34  ✖  Unexpected hex color "#6a737d"   color-no-hex
+ 20:34  ✖  Unexpected hex color "#6a737d"   color-no-hex
+ 25:40  ✖  Unexpected hex color "#1f2124"   color-no-hex
+ 26:34  ✖  Unexpected hex color "#848c96"   color-no-hex
+--
+ui/components/multichain/app-header/index.scss
+ 38:30  ✖  Unexpected hex color "#858b9a33"   color-no-hex
+--
+ui/pages/bridge/prepare/index.scss
+ 83:29  ✖  Unexpected hex color "#e2e4e9"   color-no-hex
+ 88:29  ✖  Unexpected hex color "#18191b"   color-no-hex
+ 88:49  ✖  Unexpected hex color "#18191b"   color-no-hex
+--
+ui/components/app/assets/nfts/nft-details/index.scss
+ 122:43  ✖  Unexpected hex color "#d6d9dc"   color-no-hex
+--
+ui/pages/confirmations/components/confirm/nav/nav.scss
+  4:12  ✖  Unexpected hex color "#d73847"   color-no-hex
+ 13:14  ✖  Unexpected hex color "#d73847"   color-no-hex

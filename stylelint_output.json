@@ -1,0 +1,10 @@
+npm error Missing script: "lint:stylelint"
+npm error
+npm error Did you mean one of these?
+npm error   npm run lint:eslint # run the "lint:eslint" package script
+npm error   npm run lint:styles # run the "lint:styles" package script
+npm error   npm run lint:styles:fix # run the "lint:styles:fix" package script
+npm error
+npm error To see a list of scripts, run:
+npm error   npm run
+npm error A complete log of this run can be found in: /home/ubuntu/.npm/_logs/2025-07-17T21_05_01_899Z-debug-0.log
