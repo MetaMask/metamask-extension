@@ -85,11 +85,7 @@ export const AccountOverviewLayout = ({
 
   const handleCarouselClick = (id: string) => {
     if (id === 'bridge') {
-      openBridgeExperience(
-        'Carousel',
-        defaultSwapsToken,
-        location.pathname.includes('asset') ? '&token=native' : '',
-      );
+      openBridgeExperience('Carousel', defaultSwapsToken);
     }
 
     if (id === BASIC_FUNCTIONALITY_SLIDE.id) {
