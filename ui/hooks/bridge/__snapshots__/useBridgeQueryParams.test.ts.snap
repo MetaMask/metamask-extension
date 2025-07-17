@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useBridgeQueryParams should set evm bridge params 1`] = `
+{
+  "fromToken": {
+    "address": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "assetId": "eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "balance": "0",
+    "chainId": "eip155:59144",
+    "decimals": 6,
+    "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d.png",
+    "name": "USDC",
+    "string": "0",
+    "symbol": "USDC",
+  },
+  "fromTokenInputValue": "0.000100",
+  "toChainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+  "toToken": {
+    "address": "501",
+    "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+    "balance": "0",
+    "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+    "decimals": 9,
+    "image": "./images/solana-logo.svg",
+    "name": "Solana",
+    "string": "0",
+    "symbol": "SOL",
+  },
+}
+`;
+
+exports[`useBridgeQueryParams should set solana swap params 1`] = `
+{
+  "fromToken": undefined,
+  "fromTokenInputValue": undefined,
+  "toChainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+  "toToken": {
+    "address": "501",
+    "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+    "balance": "0",
+    "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+    "decimals": 9,
+    "image": "./images/solana-logo.svg",
+    "name": "Solana",
+    "string": "0",
+    "symbol": "SOL",
+  },
+}
+`;
