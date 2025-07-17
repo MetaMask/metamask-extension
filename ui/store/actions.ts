@@ -50,7 +50,10 @@ import {
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import {
+  USER_STORAGE_FEATURE_NAMES,
+  UserProfileMetaMetrics,
+} from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
@@ -322,33 +325,14 @@ export function restoreSocialBackupAndGetSeedPhrase(
     dispatch(showLoadingIndication());
 
     try {
-      // get the first seed phrase from the array, this is the oldest seed phrase
-      // and we will use it to create the initial vault
-      const [firstSeedPhrase, ...remainingSeedPhrases] =
-        await fetchAllSecretData(password);
-      if (!firstSeedPhrase) {
-        throw new Error('No seed phrase found');
-      }
-
-      const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
-      const encodedSeedPhrase = Array.from(
-        Buffer.from(mnemonic, 'utf8').values(),
-      );
-
       // restore the vault using the seed phrase
-      await submitRequestToBackground('createNewVaultAndRestore', [
-        password,
-        encodedSeedPhrase,
-      ]);
-
-      // restore the remaining Mnemonics/SeedPhrases to the vault
-      if (remainingSeedPhrases.length > 0) {
-        await restoreSeedPhrasesToVault(remainingSeedPhrases);
-      }
+      const mnemonic = await submitRequestToBackground(
+        'restoreSocialBackupAndGetSeedPhrase',
+        [password],
+      );
 
       await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
-
       return mnemonic;
     } catch (error) {
       log.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
@@ -366,16 +350,12 @@ export function syncSeedPhrases(): ThunkAction<
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
     try {
       await submitRequestToBackground('syncSeedPhrases');
     } catch (error) {
       log.error('[syncSeedPhrases] error', error);
       dispatch(displayWarning(error.message));
       throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -588,22 +568,6 @@ export function importMnemonicToVault(mnemonic: string): ThunkAction<
   };
 }
 
-/**
- * Restores/syncs multiple seed phrases from the social login flow to the keyring vault.
- *
- * @param seedPhrases - The seed phrases.
- */
-export async function restoreSeedPhrasesToVault(
-  seedPhrases: Uint8Array[],
-): Promise<void> {
-  try {
-    await submitRequestToBackground('restoreSeedPhrasesToVault', [seedPhrases]);
-  } catch (error) {
-    console.error('[restoreSeedPhrasesToVault] error', error);
-    throw error;
-  }
-}
-
 export function generateNewMnemonicAndAddToVault(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -718,24 +682,6 @@ export async function createSeedPhraseBackup(
     encodedSeedPhrase,
     keyringId,
   ]);
-}
-
-/**
- * Fetches all secret data (Seed phrases - Mnemonics, Private Keys, etc.) from the metadata store.
- *
- * Secret data are sorted by creation date, the latest secret data is the first one in the array.
- *
- * @param password - The password.
- * @returns The seed phrases.
- */
-export async function fetchAllSecretData(
-  password: string,
-): Promise<Buffer[] | null> {
-  const encodedSeedPhrases = await submitRequestToBackground<Buffer[]>(
-    'fetchAllSecretData',
-    [password],
-  );
-  return encodedSeedPhrases;
 }
 
 export function createNewVault(password: string): Promise<boolean> {
@@ -6453,6 +6399,25 @@ export function setIsBackupAndSyncFeatureEnabled(
       throw error;
     }
   };
+}
+
+/**
+ * Fetches the user profile meta metrics from the profile-sync.
+ *
+ * @returns A thunk action that, when dispatched, attempts to fetch the user profile meta metrics.
+ */
+export async function getUserProfileMetaMetrics(): Promise<
+  UserProfileMetaMetrics | undefined
+> {
+  try {
+    const userProfileMetaMetrics = await submitRequestToBackground(
+      'getUserProfileMetaMetrics',
+    );
+    return userProfileMetaMetrics;
+  } catch (error) {
+    logErrorWithMessage(error);
+    return undefined;
+  }
 }
 
 /**

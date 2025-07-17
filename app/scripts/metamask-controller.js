@@ -140,6 +140,9 @@ import {
   toCaipChainId,
   parseCaipAccountId,
   KnownCaipNamespace,
+  add0x,
+  hexToBytes,
+  bytesToHex,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -176,7 +179,6 @@ import {
 
 import { ErrorReportingService } from '@metamask/error-reporting-service';
 import {
-  RecoveryError,
   SeedlessOnboardingControllerErrorMessage,
   SecretType,
 } from '@metamask/seedless-onboarding-controller';
@@ -3814,8 +3816,8 @@ export default class MetamaskController extends EventEmitter {
         this.seedlessOnboardingController.storeKeyringEncryptionKey.bind(
           this.seedlessOnboardingController,
         ),
-      fetchAllSecretData: this.fetchAllSecretData.bind(this),
-      restoreSeedPhrasesToVault: this.restoreSeedPhrasesToVault.bind(this),
+      restoreSocialBackupAndGetSeedPhrase:
+        this.restoreSocialBackupAndGetSeedPhrase.bind(this),
       syncSeedPhrases: this.syncSeedPhrases.bind(this),
       socialSyncChangePassword:
         this.seedlessOnboardingController.changePassword.bind(
@@ -4271,6 +4273,10 @@ export default class MetamaskController extends EventEmitter {
       performSignOut: authenticationController.performSignOut.bind(
         authenticationController,
       ),
+      getUserProfileMetaMetrics:
+        authenticationController.getUserProfileMetaMetrics.bind(
+          authenticationController,
+        ),
 
       // UserStorageController
       setIsBackupAndSyncFeatureEnabled:
@@ -4765,15 +4771,11 @@ export default class MetamaskController extends EventEmitter {
         name: TraceName.OnboardingFetchSrps,
         op: TraceOperation.OnboardingSecurityOp,
       });
-      // fetch all seed phrases
-      // seedPhrases are sorted by creation date, the latest seed phrase is the first one in the array
       const allSeedPhrases =
         await this.seedlessOnboardingController.fetchAllSecretData(password);
       fetchAllSeedPhrasesSuccess = true;
 
-      return allSeedPhrases.map((phrase) =>
-        this._convertEnglishWordlistIndicesToCodepoints(phrase.data),
-      );
+      return allSeedPhrases;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
@@ -4786,15 +4788,6 @@ export default class MetamaskController extends EventEmitter {
       this.metaMetricsController.bufferedEndTrace?.({
         name: TraceName.OnboardingFetchSrpsError,
       });
-
-      log.error(
-        'Error while fetching and restoring seed phrase metadata.',
-        error,
-      );
-
-      if (error instanceof RecoveryError) {
-        throw new JsonRpcError(-32603, error.message, error.data);
-      }
 
       throw error;
     } finally {
@@ -4951,23 +4944,34 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // 1. fetch all seed phrases
-    const [rootSecret, ...otherSecrets] =
-      await this.seedlessOnboardingController.fetchAllSecretData();
+    const [rootSecret, ...otherSecrets] = await this.fetchAllSecretData();
     if (!rootSecret) {
       throw new Error('No root SRP found');
     }
 
     for (const secret of otherSecrets) {
-      // TODO: skip private key secret for now, need to handle import private key later
-      if (secret.type !== SecretType.Mnemonic) {
-        continue;
-      }
-
+      // import SRP secret
       // Get the SRP hash, and find the hash in the local state
       const srpHash =
-        this.seedlessOnboardingController.getSecretDataBackupState(secret.data);
+        this.seedlessOnboardingController.getSecretDataBackupState(
+          secret.data,
+          secret.type,
+        );
 
       if (!srpHash) {
+        // import private key secret
+        if (secret.type === SecretType.PrivateKey) {
+          await this.importAccountWithStrategy(
+            'privateKey',
+            [bytesToHex(secret.data)],
+            {
+              shouldCreateSocialBackup: false,
+              shouldSelectAccount: false,
+            },
+          );
+          continue;
+        }
+
         // If SRP is not in the local state, import it to the vault
         // convert the seed phrase to a mnemonic (string)
         const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
@@ -5162,10 +5166,10 @@ export default class MetamaskController extends EventEmitter {
    *
    * This method is used to restore seed phrases from the Social Backup.
    *
-   * @param {number[][]} seedPhrases - The seed phrases to restore.
+   * @param {{data: Uint8Array, type: SecretType, timestamp: number, version: number}[]} secretDatas - The seed phrases to restore.
    * @returns {Promise<void>}
    */
-  async restoreSeedPhrasesToVault(seedPhrases) {
+  async restoreSeedPhrasesToVault(secretDatas) {
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
 
     if (!isSocialLoginFlow) {
@@ -5186,9 +5190,37 @@ export default class MetamaskController extends EventEmitter {
     // Solana accounts will be imported after the wallet onboarding is completed.
     const shouldImportSolanaAccount = false;
 
-    for (const seedPhrase of seedPhrases) {
+    for (const secret of secretDatas) {
+      // import SRP secret
+      // Get the SRP hash, and find the hash in the local state
+      const srpHash =
+        this.seedlessOnboardingController.getSecretDataBackupState(
+          secret.data,
+          secret.type,
+        );
+      if (srpHash) {
+        // If SRP is in the local state, skip it
+        continue;
+      }
+
+      if (secret.type === SecretType.PrivateKey) {
+        await this.importAccountWithStrategy(
+          'privateKey',
+          [bytesToHex(secret.data)],
+          {
+            shouldCreateSocialBackup,
+            shouldSelectAccount: shouldSetSelectedAccount,
+          },
+        );
+        continue;
+      }
+
+      // If SRP is not in the local state, import it to the vault
       // convert the seed phrase to a mnemonic (string)
-      const mnemonicToRestore = Buffer.from(seedPhrase).toString('utf8');
+      const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
+        secret.data,
+      );
+      const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
 
       // import the new mnemonic to the vault
       await this.importMnemonicToVault(mnemonicToRestore, {
@@ -5197,6 +5229,36 @@ export default class MetamaskController extends EventEmitter {
         shouldImportSolanaAccount,
       });
     }
+  }
+
+  /**
+   * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
+   *
+   * @param password - The password.
+   * @returns The seed phrase.
+   */
+  async restoreSocialBackupAndGetSeedPhrase(password) {
+    // get the first seed phrase from the array, this is the oldest seed phrase
+    // and we will use it to create the initial vault
+    const [firstSecretData, ...remainingSecretData] =
+      await this.fetchAllSecretData(password);
+
+    const firstSeedPhrase = this._convertEnglishWordlistIndicesToCodepoints(
+      firstSecretData.data,
+    );
+    const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
+    const encodedSeedPhrase = Array.from(
+      Buffer.from(mnemonic, 'utf8').values(),
+    );
+    // restore the vault using the root seed phrase
+    await this.createNewVaultAndRestore(password, encodedSeedPhrase);
+
+    // restore the remaining Mnemonics/SeedPhrases/PrivateKeys to the vault
+    if (remainingSecretData.length > 0) {
+      await this.restoreSeedPhrasesToVault(remainingSecretData);
+    }
+
+    return mnemonic;
   }
 
   /**
@@ -6283,12 +6345,79 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {'privateKey' | 'json'} strategy - A unique identifier for an account import strategy.
    * @param {any} args - The data required by that strategy to import an account.
+   * @param {object} options - The options for the import.
+   * @param {boolean} options.shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
+   * @param {boolean} options.shouldSelectAccount - whether to select the new account in the wallet
    */
-  async importAccountWithStrategy(strategy, args) {
+  async importAccountWithStrategy(
+    strategy,
+    args,
+    options = {
+      shouldCreateSocialBackup: true,
+      shouldSelectAccount: true,
+    },
+  ) {
+    const { shouldCreateSocialBackup, shouldSelectAccount } = options;
+
     const importedAccountAddress =
       await this.keyringController.importAccountWithStrategy(strategy, args);
-    // set new account as selected
-    this.preferencesController.setSelectedAddress(importedAccountAddress);
+
+    if (this.onboardingController.getIsSocialLoginFlow()) {
+      // Use withKeyring to get keyring metadata for an address
+      const { id: keyringId, privateKey: privateKeyFromKeyring } =
+        await this.keyringController.withKeyring(
+          { address: importedAccountAddress },
+          async ({ keyring, metadata }) => {
+            const privateKey = await keyring.exportAccount(
+              importedAccountAddress,
+            );
+            return { id: metadata.id, privateKey };
+          },
+        );
+
+      // if social backup is requested, add the seed phrase backup
+      await this.addNewPrivateKeyBackup(
+        privateKeyFromKeyring,
+        keyringId,
+        shouldCreateSocialBackup,
+      );
+    }
+
+    if (shouldSelectAccount) {
+      // set new account as selected
+      this.preferencesController.setSelectedAddress(importedAccountAddress);
+    }
+  }
+
+  /**
+   * Adds a new private key backup for the user
+   *
+   * If `syncWithSocial` is false, it will only update the local state,
+   * and not sync the private key to the server.
+   *
+   * @param {string} privateKey - The privateKey from keyring.
+   * @param {string} keyringId - The keyring id to add the private key backup to.
+   * @param {boolean} syncWithSocial - whether to skip syncing with social login
+   */
+  async addNewPrivateKeyBackup(privateKey, keyringId, syncWithSocial = true) {
+    const bufferedPrivateKey = hexToBytes(add0x(privateKey));
+
+    if (syncWithSocial) {
+      await this.seedlessOnboardingController.addNewSecretData(
+        bufferedPrivateKey,
+        SecretType.PrivateKey,
+        {
+          keyringId,
+        },
+      );
+    } else {
+      // Do not sync the seed phrase to the server, only update the local state
+      this.seedlessOnboardingController.updateBackupMetadataState({
+        keyringId,
+        data: bufferedPrivateKey,
+        type: SecretType.PrivateKey,
+      });
+    }
   }
 
   /**
