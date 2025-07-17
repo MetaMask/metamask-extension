@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -26,6 +26,8 @@ import {
   resetOAuthLoginState,
   setFirstTimeFlowType,
 } from '../../../store/actions';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -35,6 +37,8 @@ export default function AccountExist() {
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
+  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
+    useContext(MetaMetricsContext);
 
   const onLoginWithDifferentMethod = async () => {
     // clear the social login state
@@ -45,6 +49,12 @@ export default function AccountExist() {
   };
 
   const onDone = async () => {
+    bufferedTrace?.({
+      name: TraceName.OnboardingExistingSocialLogin,
+      op: TraceOperation.OnboardingUserJourney,
+      tags: { source: 'account_status_redirect' },
+      parentContext: onboardingParentContext?.current,
+    });
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
     history.replace(ONBOARDING_UNLOCK_ROUTE);
   };
@@ -53,7 +63,27 @@ export default function AccountExist() {
     if (firstTimeFlowType !== FirstTimeFlowType.socialCreate) {
       history.replace(ONBOARDING_WELCOME_ROUTE);
     }
-  }, [firstTimeFlowType, history]);
+    if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+      bufferedTrace?.({
+        name: TraceName.OnboardingNewSocialAccountExists,
+        op: TraceOperation.OnboardingUserJourney,
+        parentContext: onboardingParentContext?.current,
+      });
+    }
+    return () => {
+      if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        bufferedEndTrace?.({
+          name: TraceName.OnboardingNewSocialAccountExists,
+        });
+      }
+    };
+  }, [
+    firstTimeFlowType,
+    history,
+    onboardingParentContext,
+    bufferedTrace,
+    bufferedEndTrace,
+  ]);
 
   return (
     <Box
