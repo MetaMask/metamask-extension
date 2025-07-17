@@ -5503,7 +5503,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auth-network-utils@npm:^0.3.0":
+"@metamask/auth-network-utils@npm:^0.3.0, @metamask/auth-network-utils@npm:^0.3.1":
   version: 0.3.1
   resolution: "@metamask/auth-network-utils@npm:0.3.1"
   dependencies:
@@ -7140,18 +7140,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@metamask/seedless-onboarding-controller@npm:2.0.1"
+"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@2.1.0-preview-159e55f8":
+  version: 2.1.0-preview-159e55f8
+  resolution: "@metamask-previews/seedless-onboarding-controller@npm:2.1.0-preview-159e55f8"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.0"
     "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/toprf-secure-backup": "npm:^0.4.0"
+    "@metamask/toprf-secure-backup": "npm:^0.6.0"
     "@metamask/utils": "npm:^11.4.2"
     async-mutex: "npm:^0.5.0"
   peerDependencies:
     "@metamask/keyring-controller": ^22.0.0
-  checksum: 10/3a1e0dda8e323384e306ab5d72beb7af996d64a5778b49ce34bc404b492d8969490f5c70e813499736555821dcf9a6dd7bd07fcfe145bd8dafc72756f9cf5f29
+  checksum: 10/7d68a2acaa5b7b3327e6f5401c8c8e6e962f1c67943bec6fc25137959dccf52d1f7fef1240ddea31e3be554742260765cadfc6e5fab615a2f0822505a12c4e9c
   languageName: node
   linkType: hard
 
@@ -7527,11 +7527,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/toprf-secure-backup@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@metamask/toprf-secure-backup@npm:0.4.0"
+"@metamask/toprf-secure-backup@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@metamask/toprf-secure-backup@npm:0.6.0"
   dependencies:
-    "@metamask/auth-network-utils": "npm:^0.3.0"
+    "@metamask/auth-network-utils": "npm:^0.3.1"
     "@noble/ciphers": "npm:^1.2.1"
     "@noble/curves": "npm:^1.8.1"
     "@noble/hashes": "npm:^1.7.1"
@@ -7541,7 +7541,7 @@ __metadata:
     "@toruslabs/fetch-node-details": "npm:^15.0.0"
     "@toruslabs/http-helpers": "npm:^8.1.1"
     bn.js: "npm:^5.2.1"
-  checksum: 10/8aebf34e1051a2715bbbd5af576084b8c6eb4ecd1b8383e326aabf390c486d520746777d4fb0fd19078ca8f714e92b0a693795afe7acc38439d820ed22ec7a52
+  checksum: 10/2fd8a6147ed45adceb11b408478e160d01ce1e1ff841ff64dec78c4bbeed6ffe3679c1f0d5d6ef7db59abced6b42d9ef693595e0b659b869a0f94cdb41aed5bf
   languageName: node
   linkType: hard
 
@@ -31947,7 +31947,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/seedless-onboarding-controller": "npm:^2.0.1"
+    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@2.1.0-preview-159e55f8"
     "@metamask/selected-network-controller": "npm:^22.1.0"
     "@metamask/signature-controller": "npm:^30.0.0"
     "@metamask/smart-transactions-controller": "npm:^16.5.0"

@@ -329,7 +329,7 @@
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/seedless-onboarding-controller": "^2.0.1",
+    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@2.1.0-preview-159e55f8",
     "@metamask/selected-network-controller": "^22.1.0",
     "@metamask/signature-controller": "^30.0.0",
     "@metamask/smart-transactions-controller": "^16.5.0",
