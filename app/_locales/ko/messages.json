@@ -286,9 +286,6 @@
   "address": {
     "message": "주소"
   },
-  "addressCopied": {
-    "message": "주소 복사 완료!"
-  },
   "addressMismatch": {
     "message": "사이트 주소 불일치"
   },
@@ -1800,9 +1797,6 @@
   },
   "downloadStateLogs": {
     "message": "상태 로그 다운로드"
-  },
-  "dragAndDropBanner": {
-    "message": "네트워크를 드래그하여 순서를 변경할 수 있습니다. "
   },
   "dropped": {
     "message": "중단됨"
@@ -4219,9 +4213,6 @@
   "popularNetworks": {
     "message": "인기 네트워크"
   },
-  "portfolio": {
-    "message": "포트폴리오"
-  },
   "preparingSwap": {
     "message": "스왑 준비 중..."
   },
@@ -5051,9 +5042,6 @@
   "smartAccountReject": {
     "message": "스마트 계정을 사용하지 마세요"
   },
-  "smartAccountRequestFor": {
-    "message": "요청 계정:"
-  },
   "smartAccountSameAccount": {
     "message": "같은 계정, 더 스마트한 기능."
   },
@@ -5498,9 +5486,6 @@
   "standardAccountLabel": {
     "message": "표준 계정"
   },
-  "startEarning": {
-    "message": "수익 창출 시작"
-  },
   "stateLogError": {
     "message": "상태 로그를 가져오는 도중 오류가 발생했습니다."
   },
@@ -5518,9 +5503,6 @@
   },
   "statusNotConnected": {
     "message": "연결되지 않음"
-  },
-  "statusNotConnectedAccount": {
-    "message": "계정 연결되지 않음"
   },
   "step1LatticeWallet": {
     "message": "Lattice1을 연결하세요."
@@ -6044,17 +6026,6 @@
   },
   "switchToThisAccount": {
     "message": "이 계정으로 전환"
-  },
-  "switchedNetworkToastDecline": {
-    "message": "다시 표시 안 함"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 계정이 현재 $2 네트워크에서 활성화되어 있습니다",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
-  "switchedNetworkToastMessageNoOrigin": {
-    "message": "이제 $1을(를) 사용 중입니다",
-    "description": "$1 represents the network name"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "네트워크를 전환하면 대기 중인 모든 컨펌 작업이 취소됩니다."

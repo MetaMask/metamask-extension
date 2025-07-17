@@ -286,9 +286,6 @@
   "address": {
     "message": "Địa chỉ"
   },
-  "addressCopied": {
-    "message": "Đã sao chép địa chỉ!"
-  },
   "addressMismatch": {
     "message": "Địa chỉ trang web không khớp"
   },
@@ -1800,9 +1797,6 @@
   },
   "downloadStateLogs": {
     "message": "Tải nhật ký trạng thái xuống"
-  },
-  "dragAndDropBanner": {
-    "message": "Bạn có thể kéo các mạng để sắp xếp lại thứ tự. "
   },
   "dropped": {
     "message": "Đã ngừng"
@@ -4219,9 +4213,6 @@
   "popularNetworks": {
     "message": "Mạng phổ biến"
   },
-  "portfolio": {
-    "message": "Danh mục đầu tư"
-  },
   "preparingSwap": {
     "message": "Đang chuẩn bị hoán đổi..."
   },
@@ -5051,9 +5042,6 @@
   "smartAccountReject": {
     "message": "Không sử dụng tài khoản thông minh"
   },
-  "smartAccountRequestFor": {
-    "message": "Yêu cầu cho"
-  },
   "smartAccountSameAccount": {
     "message": "Tài khoản giữ nguyên, tính năng thông minh hơn."
   },
@@ -5498,9 +5486,6 @@
   "standardAccountLabel": {
     "message": "Tài khoản tiêu chuẩn"
   },
-  "startEarning": {
-    "message": "Bắt đầu kiếm tiền"
-  },
   "stateLogError": {
     "message": "Lỗi khi truy xuất nhật ký trạng thái."
   },
@@ -5518,9 +5503,6 @@
   },
   "statusNotConnected": {
     "message": "Chưa kết nối"
-  },
-  "statusNotConnectedAccount": {
-    "message": "Không có tài khoản nào được kết nối"
   },
   "step1LatticeWallet": {
     "message": "Kết nối với Lattice1"
@@ -6044,17 +6026,6 @@
   },
   "switchToThisAccount": {
     "message": "Chuyển sang tài khoản này"
-  },
-  "switchedNetworkToastDecline": {
-    "message": "Không hiển thị lại"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 hiện đang hoạt động trên $2",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
-  "switchedNetworkToastMessageNoOrigin": {
-    "message": "Bạn hiện đang sử dụng $1",
-    "description": "$1 represents the network name"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Khi bạn chuyển mạng, mọi xác nhận đang chờ xử lý sẽ bị hủy"

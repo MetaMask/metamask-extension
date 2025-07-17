@@ -1,4 +1,5 @@
 import { GroupedDeFiPositions } from '@metamask/assets-controllers';
+import { getTokenAvatarUrl } from './getTokenAvatarUrl';
 
 /**
  * Extracts unique token icons and symbols from nested protocol position data, and orders by ETH or WETH.
@@ -24,7 +25,9 @@ export const extractUniqueIconAndSymbols = (
                   (token) =>
                     token?.tokens?.map((underlying) => ({
                       symbol: underlying?.symbol || '',
-                      avatarValue: underlying?.iconUrl || '',
+                      avatarValue: underlying?.iconUrl
+                        ? getTokenAvatarUrl(underlying)
+                        : '',
                     })) || [],
                 ) || [],
             ) || [],

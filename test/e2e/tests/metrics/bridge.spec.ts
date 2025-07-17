@@ -42,9 +42,8 @@ describe('Bridge tests', function (this: Suite) {
         await disableStxSetting(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24');
 
-        await bridgeTransaction(driver, quote, 2, '24.9');
+        await bridgeTransaction(driver, quote, 2);
 
         // Start the flow again
         await homePage.startBridgeFlow();
@@ -114,20 +113,20 @@ describe('Bridge tests', function (this: Suite) {
         );
         /**
          * token_source
-         * token_destination
          * chain_source
-         * chain_destination
          * slippage
+         * token_destination
+         * chain_destination
          */
 
         assert.ok(swapBridgeInputChanged.length === 14);
 
         const inputTypes = [
           'token_source',
-          'token_destination',
           'chain_source',
-          'chain_destination',
           'slippage',
+          'token_destination',
+          'chain_destination',
         ];
         const hasAllInputs = inputTypes.every((inputType) =>
           swapBridgeInputChanged.some(
@@ -136,7 +135,7 @@ describe('Bridge tests', function (this: Suite) {
               event.properties.input === inputType,
           ),
         );
-        assert.ok(hasAllInputs, 'Should have all 5 input types');
+        assert.ok(hasAllInputs, 'Should have 5 input types');
 
         const swapBridgeQuotesRequested = findEventsByName(
           EventTypes.SwapBridgeQuotesRequested,

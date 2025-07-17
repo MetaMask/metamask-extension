@@ -613,6 +613,7 @@ export default function TransactionList({
         <AssetListControlBar
           showSortControl={false}
           showTokenFiatBalance={false}
+          showImportTokenButton={false}
         />
       );
     }
@@ -785,8 +786,7 @@ export default function TransactionList({
       ) : null}
       <Box className="transaction-list" {...boxProps}>
         {renderFilterButton()}
-        {process.env.REMOVE_GNS &&
-        pendingTransactions.length === 0 &&
+        {pendingTransactions.length === 0 &&
         completedTransactions.length === 0 ? (
           <NoTransactions />
         ) : (
