@@ -23,6 +23,7 @@ type State = {
       | 'showNftDetectionEnablementToast'
       | 'showNewSrpAddedToast'
       | 'showPasswordChangeToast'
+      | 'showCopyAddressToast'
     >
   >;
   metamask: Partial<
@@ -136,4 +137,16 @@ export function selectPasswordChangeToast(
   state: Pick<State, 'appState'>,
 ): PasswordChangeToastType | null {
   return state.appState.showPasswordChangeToast || null;
+}
+
+/**
+ * Retrieves user preference to see the "Copy Address" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowCopyAddressToast(
+  state: Pick<State, 'appState'>,
+): boolean {
+  return Boolean(state.appState.showCopyAddressToast);
 }
