@@ -26,6 +26,9 @@ describe('Bridge tests', function (this: Suite) {
           'Arbitrum One',
         );
 
+        // Switch to Linea since the next transactions expect to bridge from Linea
+        await switchToNetworkFromSendFlow(driver, 'Linea');
+
         await bridgeTransaction(
           driver,
           {

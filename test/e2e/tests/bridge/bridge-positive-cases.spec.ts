@@ -44,6 +44,10 @@ describe('Bridge tests', function (this: Suite) {
         // in the network-controller
         await switchToNetworkFromSendFlow(driver, 'Linea');
 
+        // Switch back to Ethereum before starting the next bridge transaction
+        // This ensures the prefilling logic doesn't interfere with test expectations
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
+
         await bridgeTransaction(
           driver,
           {
@@ -74,6 +78,10 @@ describe('Bridge tests', function (this: Suite) {
         await homePage.goToTokensTab();
         await searchAndSwitchToNetworkFromSendFlow(driver, 'Arbitrum One');
         await homePage.goToActivityList();
+
+        // Switch back to Ethereum before starting the next bridge transaction
+        // This ensures the prefilling logic doesn't interfere with test expectations
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
 
         await bridgeTransaction(
           driver,

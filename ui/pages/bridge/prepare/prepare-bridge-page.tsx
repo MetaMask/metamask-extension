@@ -602,19 +602,50 @@ const PrepareBridgePage = () => {
 
   const { defaultToChainId, defaultToToken } = useBridgeDefaultToToken();
 
+  // Only apply defaults on initial page load
+  const [defaultsApplied, setDefaultsApplied] = useState(false);
+
   useEffect(() => {
     // Only set default chain if user hasn't already selected one and defaults haven't been applied
-    if (!toChain && defaultToChainId && fromChain) {
+    if (!toChain && defaultToChainId && fromChain && !defaultsApplied) {
       dispatch(setToChainId(defaultToChainId));
+      // Track the input change event for the prefilled chain
+      trackInputEvent({
+        input: 'chain_destination',
+        value: String(defaultToChainId),
+      });
+      setDefaultsApplied(true);
     }
-  }, [defaultToChainId, toChain, fromChain, dispatch]);
+  }, [
+    defaultToChainId,
+    toChain,
+    fromChain,
+    dispatch,
+    trackInputEvent,
+    defaultsApplied,
+  ]);
 
   useEffect(() => {
     // Only set default token if user hasn't already selected one, we have a destination chain
-    if (!toToken && defaultToToken && toChain) {
+    if (!toToken && defaultToToken && toChain && !defaultsApplied) {
       dispatch(setToToken(defaultToToken));
+      // Track the input change event for the prefilled token
+      if (defaultToToken.address) {
+        trackInputEvent({
+          input: 'token_destination',
+          value: defaultToToken.address,
+        });
+      }
+      setDefaultsApplied(true);
     }
-  }, [defaultToToken, toToken, toChain, dispatch]);
+  }, [
+    defaultToToken,
+    toToken,
+    toChain,
+    dispatch,
+    trackInputEvent,
+    defaultsApplied,
+  ]);
 
   const occurrences = Number(
     toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,
