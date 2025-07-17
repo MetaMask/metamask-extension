@@ -140,6 +140,9 @@ import {
   toCaipChainId,
   parseCaipAccountId,
   KnownCaipNamespace,
+  add0x,
+  hexToBytes,
+  bytesToHex,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -176,7 +179,6 @@ import {
 
 import { ErrorReportingService } from '@metamask/error-reporting-service';
 import {
-  RecoveryError,
   SeedlessOnboardingControllerErrorMessage,
   SecretType,
 } from '@metamask/seedless-onboarding-controller';
@@ -1051,8 +1053,9 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
-    let initialNetworkOrderControllerState;
+    let initialNetworkOrderControllerState = initState.NetworkOrderController;
     if (
+      !initialNetworkOrderControllerState &&
       process.env.METAMASK_DEBUG &&
       process.env.METAMASK_ENVIRONMENT === 'development' &&
       !process.env.IN_TEST
@@ -1068,8 +1071,6 @@ export default class MetamaskController extends EventEmitter {
           },
         },
       };
-    } else {
-      initialNetworkOrderControllerState = initState.NetworkOrderController;
     }
 
     this.networkOrderController = new NetworkOrderController({
@@ -2274,6 +2275,7 @@ export default class MetamaskController extends EventEmitter {
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
+        PhishingController: this.phishingController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
@@ -3763,14 +3765,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowNetworkBanner.bind(appStateController),
       updateNftDropDownState:
         appStateController.updateNftDropDownState.bind(appStateController),
-      setSwitchedNetworkDetails:
-        appStateController.setSwitchedNetworkDetails.bind(appStateController),
-      clearSwitchedNetworkDetails:
-        appStateController.clearSwitchedNetworkDetails.bind(appStateController),
-      setSwitchedNetworkNeverShowMessage:
-        appStateController.setSwitchedNetworkNeverShowMessage.bind(
-          appStateController,
-        ),
       getLastInteractedConfirmationInfo:
         appStateController.getLastInteractedConfirmationInfo.bind(
           appStateController,
@@ -3811,8 +3805,8 @@ export default class MetamaskController extends EventEmitter {
         this.seedlessOnboardingController.storeKeyringEncryptionKey.bind(
           this.seedlessOnboardingController,
         ),
-      fetchAllSecretData: this.fetchAllSecretData.bind(this),
-      restoreSeedPhrasesToVault: this.restoreSeedPhrasesToVault.bind(this),
+      restoreSocialBackupAndGetSeedPhrase:
+        this.restoreSocialBackupAndGetSeedPhrase.bind(this),
       syncSeedPhrases: this.syncSeedPhrases.bind(this),
       socialSyncChangePassword:
         this.seedlessOnboardingController.changePassword.bind(
@@ -4252,6 +4246,10 @@ export default class MetamaskController extends EventEmitter {
       performSignOut: authenticationController.performSignOut.bind(
         authenticationController,
       ),
+      getUserProfileMetaMetrics:
+        authenticationController.getUserProfileMetaMetrics.bind(
+          authenticationController,
+        ),
 
       // UserStorageController
       setIsBackupAndSyncFeatureEnabled:
@@ -4711,36 +4709,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Fetches and restores all the backed-up Secret Data (SRPs and Private keys)
-   *
-   * @param {string} password - The user's password.
-   * @returns {Promise<Buffer[]>} The seed phrase.
-   */
-  async fetchAllSecretData(password) {
-    try {
-      // fetch all seed phrases
-      // seedPhrases are sorted by creation date, the latest seed phrase is the first one in the array
-      const allSeedPhrases =
-        await this.seedlessOnboardingController.fetchAllSecretData(password);
-
-      return allSeedPhrases.map((phrase) =>
-        this._convertEnglishWordlistIndicesToCodepoints(phrase.data),
-      );
-    } catch (error) {
-      log.error(
-        'Error while fetching and restoring seed phrase metadata.',
-        error,
-      );
-
-      if (error instanceof RecoveryError) {
-        throw new JsonRpcError(-32603, error.message, error.data);
-      }
-
-      throw error;
-    }
-  }
-
-  /**
    * Sync latest global seedless password and override the current device password with latest global password.
    * Unlock the vault with the latest global password.
    *
@@ -4870,16 +4838,28 @@ export default class MetamaskController extends EventEmitter {
     }
 
     for (const secret of otherSecrets) {
-      // TODO: skip private key secret for now, need to handle import private key later
-      if (secret.type !== SecretType.Mnemonic) {
-        continue;
-      }
-
+      // import SRP secret
       // Get the SRP hash, and find the hash in the local state
       const srpHash =
-        this.seedlessOnboardingController.getSecretDataBackupState(secret.data);
+        this.seedlessOnboardingController.getSecretDataBackupState(
+          secret.data,
+          secret.type,
+        );
 
       if (!srpHash) {
+        // import private key secret
+        if (secret.type === SecretType.PrivateKey) {
+          await this.importAccountWithStrategy(
+            'privateKey',
+            [bytesToHex(secret.data)],
+            {
+              shouldCreateSocialBackup: false,
+              shouldSelectAccount: false,
+            },
+          );
+          continue;
+        }
+
         // If SRP is not in the local state, import it to the vault
         // convert the seed phrase to a mnemonic (string)
         const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
@@ -5028,9 +5008,15 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.setSelectedAccount(account.id);
       }
 
-      await this._addAccountsWithBalance(id, shouldImportSolanaAccount);
+      const discoveredAccounts = await this._addAccountsWithBalance(
+        id,
+        shouldImportSolanaAccount,
+      );
 
-      return newAccountAddress;
+      return {
+        newAccountAddress,
+        discoveredAccounts,
+      };
     } finally {
       releaseLock();
     }
@@ -5041,10 +5027,10 @@ export default class MetamaskController extends EventEmitter {
    *
    * This method is used to restore seed phrases from the Social Backup.
    *
-   * @param {number[][]} seedPhrases - The seed phrases to restore.
+   * @param {{data: Uint8Array, type: SecretType, timestamp: number, version: number}[]} secretDatas - The seed phrases to restore.
    * @returns {Promise<void>}
    */
-  async restoreSeedPhrasesToVault(seedPhrases) {
+  async restoreSeedPhrasesToVault(secretDatas) {
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
 
     if (!isSocialLoginFlow) {
@@ -5065,9 +5051,37 @@ export default class MetamaskController extends EventEmitter {
     // Solana accounts will be imported after the wallet onboarding is completed.
     const shouldImportSolanaAccount = false;
 
-    for (const seedPhrase of seedPhrases) {
+    for (const secret of secretDatas) {
+      // import SRP secret
+      // Get the SRP hash, and find the hash in the local state
+      const srpHash =
+        this.seedlessOnboardingController.getSecretDataBackupState(
+          secret.data,
+          secret.type,
+        );
+      if (srpHash) {
+        // If SRP is in the local state, skip it
+        continue;
+      }
+
+      if (secret.type === SecretType.PrivateKey) {
+        await this.importAccountWithStrategy(
+          'privateKey',
+          [bytesToHex(secret.data)],
+          {
+            shouldCreateSocialBackup,
+            shouldSelectAccount: shouldSetSelectedAccount,
+          },
+        );
+        continue;
+      }
+
+      // If SRP is not in the local state, import it to the vault
       // convert the seed phrase to a mnemonic (string)
-      const mnemonicToRestore = Buffer.from(seedPhrase).toString('utf8');
+      const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
+        secret.data,
+      );
+      const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
 
       // import the new mnemonic to the vault
       await this.importMnemonicToVault(mnemonicToRestore, {
@@ -5076,6 +5090,36 @@ export default class MetamaskController extends EventEmitter {
         shouldImportSolanaAccount,
       });
     }
+  }
+
+  /**
+   * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
+   *
+   * @param password - The password.
+   * @returns The seed phrase.
+   */
+  async restoreSocialBackupAndGetSeedPhrase(password) {
+    // get the first seed phrase from the array, this is the oldest seed phrase
+    // and we will use it to create the initial vault
+    const [firstSecretData, ...remainingSecretData] =
+      await this.seedlessOnboardingController.fetchAllSecretData(password);
+
+    const firstSeedPhrase = this._convertEnglishWordlistIndicesToCodepoints(
+      firstSecretData.data,
+    );
+    const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
+    const encodedSeedPhrase = Array.from(
+      Buffer.from(mnemonic, 'utf8').values(),
+    );
+    // restore the vault using the root seed phrase
+    await this.createNewVaultAndRestore(password, encodedSeedPhrase);
+
+    // restore the remaining Mnemonics/SeedPhrases/PrivateKeys to the vault
+    if (remainingSecretData.length > 0) {
+      await this.restoreSeedPhrasesToVault(remainingSecretData);
+    }
+
+    return mnemonic;
   }
 
   /**
@@ -5279,6 +5323,11 @@ export default class MetamaskController extends EventEmitter {
         );
       }
 
+      const discoveredAccounts = {
+        bitcoin: 0,
+        solana: 0,
+      };
+
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       const btcClient = await this._getMultichainWalletSnapClient(
         BITCOIN_WALLET_SNAP_ID,
@@ -5288,6 +5337,8 @@ export default class MetamaskController extends EventEmitter {
         entropySource,
         btcScope,
       );
+
+      discoveredAccounts.bitcoin = btcAccounts.length;
 
       // If none accounts got discovered, we still create the first (default) one.
       if (btcAccounts.length === 0) {
@@ -5309,6 +5360,8 @@ export default class MetamaskController extends EventEmitter {
           solScope,
         );
 
+        discoveredAccounts.solana = solanaAccounts.length;
+
         // If none accounts got discovered, we still create the first (default) one.
         if (solanaAccounts.length === 0) {
           await this._addSnapAccount(entropySource, solanaClient, {
@@ -5317,8 +5370,13 @@ export default class MetamaskController extends EventEmitter {
         }
       }
       ///: END:ONLY_INCLUDE_IF
+      return discoveredAccounts;
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
+      return {
+        bitcoin: 0,
+        solana: 0,
+      };
     } finally {
       await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
         true,
@@ -5807,35 +5865,25 @@ export default class MetamaskController extends EventEmitter {
     hdPath,
     hdPathDescription,
   ) {
-    const { address: unlockedAccount, label } =
-      await this.#withKeyringForDevice(
-        { name: deviceName, hdPath },
-        async (keyring) => {
-          keyring.setAccountToUnlock(index);
-          const [address] = await keyring.addAccounts(1);
-          return {
-            address: normalize(address),
-            label: this.getAccountLabel(
-              deviceName === HardwareDeviceNames.qr
-                ? keyring.getName()
-                : deviceName,
-              index,
-              hdPathDescription,
-            ),
-          };
-        },
-      );
-
-    // Set the account label to Trezor 1 / Ledger 1 / QR Hardware 1, etc
-    this.preferencesController.setAccountLabel(unlockedAccount, label);
+    const { address: unlockedAccount } = await this.#withKeyringForDevice(
+      { name: deviceName, hdPath },
+      async (keyring) => {
+        keyring.setAccountToUnlock(index);
+        const [address] = await keyring.addAccounts(1);
+        return {
+          address: normalize(address),
+          label: this.getAccountLabel(
+            deviceName === HardwareDeviceNames.qr
+              ? keyring.getName()
+              : deviceName,
+            index,
+            hdPathDescription,
+          ),
+        };
+      },
+    );
     // Select the account
     this.preferencesController.setSelectedAddress(unlockedAccount);
-
-    // It is expected that the account also exist in the accounts-controller
-    // in other case, an error shall be thrown
-    const account =
-      this.accountsController.getAccountByAddress(unlockedAccount);
-    this.accountsController.setAccountName(account.id, label);
 
     const accounts = this.accountsController.listAccounts();
 
@@ -6158,12 +6206,79 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {'privateKey' | 'json'} strategy - A unique identifier for an account import strategy.
    * @param {any} args - The data required by that strategy to import an account.
+   * @param {object} options - The options for the import.
+   * @param {boolean} options.shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
+   * @param {boolean} options.shouldSelectAccount - whether to select the new account in the wallet
    */
-  async importAccountWithStrategy(strategy, args) {
+  async importAccountWithStrategy(
+    strategy,
+    args,
+    options = {
+      shouldCreateSocialBackup: true,
+      shouldSelectAccount: true,
+    },
+  ) {
+    const { shouldCreateSocialBackup, shouldSelectAccount } = options;
+
     const importedAccountAddress =
       await this.keyringController.importAccountWithStrategy(strategy, args);
-    // set new account as selected
-    this.preferencesController.setSelectedAddress(importedAccountAddress);
+
+    if (this.onboardingController.getIsSocialLoginFlow()) {
+      // Use withKeyring to get keyring metadata for an address
+      const { id: keyringId, privateKey: privateKeyFromKeyring } =
+        await this.keyringController.withKeyring(
+          { address: importedAccountAddress },
+          async ({ keyring, metadata }) => {
+            const privateKey = await keyring.exportAccount(
+              importedAccountAddress,
+            );
+            return { id: metadata.id, privateKey };
+          },
+        );
+
+      // if social backup is requested, add the seed phrase backup
+      await this.addNewPrivateKeyBackup(
+        privateKeyFromKeyring,
+        keyringId,
+        shouldCreateSocialBackup,
+      );
+    }
+
+    if (shouldSelectAccount) {
+      // set new account as selected
+      this.preferencesController.setSelectedAddress(importedAccountAddress);
+    }
+  }
+
+  /**
+   * Adds a new private key backup for the user
+   *
+   * If `syncWithSocial` is false, it will only update the local state,
+   * and not sync the private key to the server.
+   *
+   * @param {string} privateKey - The privateKey from keyring.
+   * @param {string} keyringId - The keyring id to add the private key backup to.
+   * @param {boolean} syncWithSocial - whether to skip syncing with social login
+   */
+  async addNewPrivateKeyBackup(privateKey, keyringId, syncWithSocial = true) {
+    const bufferedPrivateKey = hexToBytes(add0x(privateKey));
+
+    if (syncWithSocial) {
+      await this.seedlessOnboardingController.addNewSecretData(
+        bufferedPrivateKey,
+        SecretType.PrivateKey,
+        {
+          keyringId,
+        },
+      );
+    } else {
+      // Do not sync the seed phrase to the server, only update the local state
+      this.seedlessOnboardingController.updateBackupMetadataState({
+        keyringId,
+        data: bufferedPrivateKey,
+        type: SecretType.PrivateKey,
+      });
+    }
   }
 
   /**

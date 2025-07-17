@@ -23,11 +23,9 @@ import { getCurrentChainId } from '../shared/modules/selectors/networks';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
-  getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
-  getSwitchedNetworkDetails,
   getAllPermittedAccountsForCurrentTab,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
@@ -249,17 +247,8 @@ async function runInitialActions(store) {
 
   if (networkIdToSwitchTo) {
     await store.dispatch(
-      actions.automaticallySwitchNetwork(
-        networkIdToSwitchTo,
-        getOriginOfCurrentTab(initialState),
-      ),
+      actions.automaticallySwitchNetwork(networkIdToSwitchTo),
     );
-  } else if (getSwitchedNetworkDetails(initialState)) {
-    // It's possible that old details could exist if the user
-    // opened the toast but then didn't close it
-    // Clear out any existing switchedNetworkDetails
-    // if the user didn't just change the dapp network
-    await store.dispatch(actions.clearSwitchedNetworkDetails());
   }
 
   // Register this window as the current popup
