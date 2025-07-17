@@ -59,13 +59,11 @@ export const ConnectedSitePopover = ({
   );
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const dispatch = useDispatch();
-  console.log(currentNetwork);
 
   // Check if current network is permitted for this dapp
   // Both currentChainId and permittedChainIds are in CAIP format, so we can compare directly
   const isCurrentNetworkPermitted = permittedChainIds.includes(currentChainId);
 
-  // Helper function to convert CAIP chain ID to the format expected by getImageForChainId
   const getChainIdForImage = (chainId: `${string}:${string}`): string => {
     const { namespace, reference } = parseCaipChainId(chainId);
     return namespace === 'eip155'
