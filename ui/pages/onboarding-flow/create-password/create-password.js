@@ -324,7 +324,9 @@ export default function CreatePassword({
             }}
             label={
               <>
-                {t('passwordTermsWarning')}
+                {isSocialLoginFlow
+                  ? t('passwordTermsWarningSocial')
+                  : t('passwordTermsWarning')}
                 &nbsp;
                 {createPasswordLink}
               </>
