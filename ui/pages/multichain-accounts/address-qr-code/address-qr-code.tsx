@@ -79,7 +79,7 @@ export const AddressQRCode = () => {
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
-            onClick={() => history.push(`${ACCOUNT_DETAILS_ROUTE}/${address}`)}
+            onClick={() => history.goBack()}
           />
         }
       >
