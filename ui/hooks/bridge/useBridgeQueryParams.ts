@@ -87,7 +87,7 @@ export const useBridgeQueryParams = (
   const fromChain = useSelector(getFromChain);
   const fromToken = useSelector(getFromToken);
 
-  const abortController = useRef(new AbortController());
+  const abortController = useRef<AbortController>(new AbortController());
 
   const { search } = useLocation();
   const history = useHistory();
@@ -106,7 +106,7 @@ export const useBridgeQueryParams = (
       });
       history.replace({ search: updatedSearchParams.toString() });
     },
-    [],
+    [search, history],
   );
 
   const [parsedAssetIds, setParsedAssetIds] = useState<{
@@ -120,6 +120,13 @@ export const useBridgeQueryParams = (
   const { parsedFromAssetId, parsedToAssetId } = parsedAssetIds;
 
   const [parsedAmount, setParsedAmount] = useState<string | null>(null);
+
+  // Cleanup abort controller on unmount
+  useEffect(() => {
+    return () => {
+      abortController.current.abort();
+    };
+  }, []);
 
   // Only update parsed values if the search params are set (once) to prevent infinite re-renders
   useEffect(() => {
