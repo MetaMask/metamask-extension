@@ -35,7 +35,6 @@ import {
 } from '../../../shared/constants/metametrics';
 import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
-import { setOnboardingErrorReport } from '../../store/actions';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
