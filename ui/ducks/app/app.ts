@@ -129,6 +129,7 @@ type AppState = {
   showNewSrpAddedToast: boolean;
   showPasswordChangeToast: PasswordChangeToastType | null;
   showConnectionsRemovedModal: boolean;
+  showCopyAddressToast: boolean;
 };
 
 export type AppSliceState = {
@@ -228,6 +229,7 @@ const initialState: AppState = {
   errorInSettings: null,
   showNewSrpAddedToast: false,
   showPasswordChangeToast: null,
+  showCopyAddressToast: false,
   showSupportDataConsentModal: false,
   showConnectionsRemovedModal: false,
 };
@@ -767,6 +769,12 @@ export default function reduceApp(
         showPasswordChangeToast: action.payload,
       };
 
+    case actionConstants.SET_SHOW_COPY_ADDRESS_TOAST:
+      return {
+        ...appState,
+        showCopyAddressToast: action.payload,
+      };
+
     case actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL:
       return {
         ...appState,
@@ -843,6 +851,12 @@ export function setOnBoardedInThisUISession(
   return { type: actionConstants.ONBOARDED_IN_THIS_UI_SESSION, payload };
 }
 
+export function setShowCopyAddressToast(
+  payload: boolean,
+): PayloadAction<boolean> {
+  return { type: actionConstants.SET_SHOW_COPY_ADDRESS_TOAST, payload };
+}
+
 export function setCustomTokenAmount(payload: string): PayloadAction<string> {
   return { type: actionConstants.SET_CUSTOM_TOKEN_AMOUNT, payload };
 }
@@ -892,6 +906,10 @@ export function getLedgerTransportStatus(state: AppSliceState): string | null {
 
 export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
   return state.appState.showSupportDataConsentModal;
+}
+
+export function getShowCopyAddressToast(state: AppSliceState): boolean {
+  return state.appState.showCopyAddressToast;
 }
 
 export function openDeleteMetaMetricsDataModal(): Action {

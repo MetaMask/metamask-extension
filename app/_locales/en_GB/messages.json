@@ -309,6 +309,9 @@
   "address": {
     "message": "Address"
   },
+  "addressCopied": {
+    "message": "Address copied"
+  },
   "addressMismatch": {
     "message": "Site address mismatch"
   },
