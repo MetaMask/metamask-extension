@@ -18,17 +18,9 @@
 
       img {
         object-fit: contain;
+        width: auto;
+        height: 200px;
       }
-    }
-
-    .slide .onboarding-pin-extension__image-pin {
-      width: 243px;
-      height: auto;
-    }
-
-    .slide .onboarding-pin-extension__image-launch {
-      width: 265px;
-      height: auto;
     }
   }
 
