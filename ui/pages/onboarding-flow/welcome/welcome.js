@@ -183,6 +183,7 @@ export default function OnboardingWelcome({
     if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
       setLoginError(null);
     } else {
+      // TODO: use sentry report error instead of showing a generic error modal
       setLoginError(LOGIN_ERROR.GENERIC);
     }
   }, []);

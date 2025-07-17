@@ -36,6 +36,7 @@ import {
   createNewVaultAndRestore,
   restoreSocialBackupAndGetSeedPhrase,
   createNewVaultAndSyncWithSocial,
+  setOnboardingErrorReport,
 } from '../../store/actions';
 import {
   getFirstTimeFlowType,
@@ -188,21 +189,25 @@ export default function OnboardingFlow() {
   ]);
 
   const handleCreateNewAccount = async (password) => {
-    let newSecretRecoveryPhrase;
-    if (
-      isSeedlessOnboardingFeatureEnabled &&
-      firstTimeFlowType === FirstTimeFlowType.socialCreate
-    ) {
-      newSecretRecoveryPhrase = await dispatch(
-        createNewVaultAndSyncWithSocial(password),
-      );
-    } else if (firstTimeFlowType === FirstTimeFlowType.create) {
-      newSecretRecoveryPhrase = await dispatch(
-        createNewVaultAndGetSeedPhrase(password),
-      );
-    }
+    try {
+      let newSecretRecoveryPhrase;
+      if (
+        isSeedlessOnboardingFeatureEnabled &&
+        firstTimeFlowType === FirstTimeFlowType.socialCreate
+      ) {
+        newSecretRecoveryPhrase = await dispatch(
+          createNewVaultAndSyncWithSocial(password),
+        );
+      } else if (firstTimeFlowType === FirstTimeFlowType.create) {
+        newSecretRecoveryPhrase = await dispatch(
+          createNewVaultAndGetSeedPhrase(password),
+        );
+      }
 
-    setSecretRecoveryPhrase(newSecretRecoveryPhrase);
+      setSecretRecoveryPhrase(newSecretRecoveryPhrase);
+    } catch (error) {
+      setOnboardingErrorReport(error);
+    }
   };
 
   const handleUnlock = async (password) => {
