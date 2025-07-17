@@ -60,6 +60,8 @@ export default function AccountExist() {
   };
 
   const onDone = async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletImportStarted,
@@ -69,6 +71,8 @@ export default function AccountExist() {
         account_type: `${MetaMetricsEventAccountType.Imported}_${socialLoginType}`,
       },
     });
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     bufferedTrace?.({
       name: TraceName.OnboardingExistingSocialLogin,
       op: TraceOperation.OnboardingUserJourney,
@@ -84,6 +88,8 @@ export default function AccountExist() {
       history.replace(ONBOARDING_WELCOME_ROUTE);
     }
     if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       bufferedTrace?.({
         name: TraceName.OnboardingNewSocialAccountExists,
         op: TraceOperation.OnboardingUserJourney,

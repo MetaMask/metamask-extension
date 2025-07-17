@@ -164,6 +164,8 @@ async function verifySignedTypeV3Confirmation(driver: Driver) {
 
 async function verifySignedTypeV4Confirmation(driver: Driver) {
   const confirmation = new SignTypedData(driver);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   verifySignedTypeV3Confirmation(driver);
   await confirmation.verifyAttachment();
 }

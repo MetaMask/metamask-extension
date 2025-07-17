@@ -70,6 +70,8 @@ const CrossChainSwap = () => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       window.removeEventListener('beforeunload', resetControllerAndInputStates);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       resetControllerAndInputStates();
     };
   }, []);

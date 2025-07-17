@@ -51,6 +51,8 @@ const MetametricsToggle = ({
     console.log('handleUseParticipateInMetaMetrics', participateInMetaMetrics);
     if (participateInMetaMetrics) {
       await disableMetametrics();
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.TurnOffMetaMetrics,
@@ -60,6 +62,8 @@ const MetametricsToggle = ({
         },
       });
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
@@ -75,6 +79,8 @@ const MetametricsToggle = ({
       });
     } else {
       await enableMetametrics();
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.TurnOnMetaMetrics,

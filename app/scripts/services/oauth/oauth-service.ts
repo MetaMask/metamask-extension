@@ -142,6 +142,8 @@ export default class OAuthService {
       // launch the web auth flow to get the Authorization Code from the social login provider
       redirectUrlFromOAuth = await new Promise<string>((resolve, reject) => {
         // since promise returns aren't supported until MV3, we need to use a callback function to support MV2
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.#webAuthenticator.launchWebAuthFlow(
           {
             interactive: true,

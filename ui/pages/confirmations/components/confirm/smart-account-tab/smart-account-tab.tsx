@@ -35,6 +35,8 @@ export const SmartAccountTab = ({ address }: { address: Hex }) => {
           <Text>{t('smartAccountUpgradeBannerDescription')}</Text>
           <ButtonLink
             onClick={() => {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
               global.platform.openTab({
                 url: ZENDESK_URLS.ACCOUNT_UPGRADE,
               });

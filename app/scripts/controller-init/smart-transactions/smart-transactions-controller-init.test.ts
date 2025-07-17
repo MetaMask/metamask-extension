@@ -300,6 +300,8 @@ describe('SmartTransactionsController Init', () => {
     const args = ['arg1', 'arg2'] as unknown as Parameters<
       TransactionController['confirmExternalTransaction']
     >;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     confirmExternalTransaction(...args);
 
     expect(

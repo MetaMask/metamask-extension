@@ -297,6 +297,8 @@ export class NetworkOrderController extends BaseController<
       // Settimout delay to run this in a seperate 'tick'.
       // There were some issues related to background state being updated, but persisted state not being updated.
       setTimeout(() => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.messagingSystem.call(
           'NetworkController:setActiveNetwork',
           clientId,

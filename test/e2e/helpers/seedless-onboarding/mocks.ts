@@ -313,6 +313,8 @@ export class OAuthMockttpService {
       userEmail?: string;
     },
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     server
       .forPost(AuthServer.RequestToken)
       .always()
@@ -320,6 +322,8 @@ export class OAuthMockttpService {
         return this.onPostToken(options);
       });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     server
       .forPost(AuthServer.RevokeToken)
       .always()
@@ -328,6 +332,8 @@ export class OAuthMockttpService {
       });
 
     // Intercept the TOPRF requests (Authentication, KeyGen, Eval, etc.) and mock the responses
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     server
       .forPost(SSSBaseUrlRgx)
       .always()
@@ -410,11 +416,15 @@ export class OAuthMockttpService {
   }
 
   async #handleMetadataMockResponses(server: Mockttp) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     server.forPost(MetadataService.Set).always().thenJson(200, {
       success: true,
       message: 'Metadata set successfully',
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     server
       .forPost(MetadataService.Get)
       .always()
@@ -422,6 +432,8 @@ export class OAuthMockttpService {
         return this.onPostMetadataGet();
       });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     server
       .forPost(MetadataService.AcquireLock)
       .always()
@@ -436,6 +448,8 @@ export class OAuthMockttpService {
         };
       });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     server
       .forPost(MetadataService.ReleaseLock)
       .always()
@@ -449,6 +463,8 @@ export class OAuthMockttpService {
         };
       });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     server
       .forPost(MetadataService.BatchSet)
       .always()

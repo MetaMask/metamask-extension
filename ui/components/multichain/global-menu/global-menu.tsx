@@ -155,6 +155,8 @@ export const GlobalMenu = ({
       !hasThirdPartyNotifySnaps && !isMetamaskNotificationsEnabled;
 
     if (shouldShowEnableModal) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         category: MetaMetricsEventCategory.NotificationsActivationFlow,
         event: MetaMetricsEventName.NotificationsActivated,
@@ -174,6 +176,8 @@ export const GlobalMenu = ({
     }
 
     // Otherwise we can navigate to the notifications page
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationsMenuOpened,
@@ -254,6 +258,8 @@ export const GlobalMenu = ({
         iconName={IconName.SecurityTick}
         onClick={() => {
           history.push(PERMISSIONS);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           trackEvent({
             event: MetaMetricsEventName.NavPermissionsOpened,
             category: MetaMetricsEventCategory.Navigation,
@@ -274,6 +280,8 @@ export const GlobalMenu = ({
           iconName={IconName.Expand}
           onClick={() => {
             global?.platform?.openExtensionInBrowser?.();
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             trackEvent({
               event: MetaMetricsEventName.AppWindowExpanded,
               category: MetaMetricsEventCategory.Navigation,
@@ -312,6 +320,8 @@ export const GlobalMenu = ({
         iconName={IconName.MessageQuestion}
         onClick={() => {
           dispatch(setShowSupportDataConsentModal(true));
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           trackEvent(
             {
               category: MetaMetricsEventCategory.Home,
@@ -338,6 +348,8 @@ export const GlobalMenu = ({
         disabled={hasUnapprovedTransactions}
         onClick={() => {
           history.push(SETTINGS_ROUTE);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           trackEvent({
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.NavSettingsOpened,
@@ -357,6 +369,8 @@ export const GlobalMenu = ({
         onClick={() => {
           dispatch(lockMetamask());
           history.push(DEFAULT_ROUTE);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           trackEvent({
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.AppLocked,

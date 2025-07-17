@@ -2,44 +2,62 @@ import { describe, it, before } from 'node:test';
 import assert from 'node:assert';
 import { getExtensionVersion } from '../utils/version';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 describe('getMetaMaskVersion', () => {
   const MIN_ID = 10;
   const MAX_ID = 64;
   const MIN_RELEASE = 0;
   const MAX_RELEASE = 999;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   describe('exceptions', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it(`should throw for build with negative id (-1)`, () => {
       const test = () => getExtensionVersion('main', { id: -1 }, 0);
       assert.throws(test);
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('should throw for build with an invalid id (0)', () => {
       const test = () => getExtensionVersion('main', { id: 0 }, 0);
       assert.throws(test);
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it(`should throw for build with an invalid id (${MIN_ID - 1})`, () => {
       const test = () => getExtensionVersion('main', { id: MIN_ID - 1 }, 0);
       assert.throws(test);
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it(`should throw for build with invalid id (${MAX_ID + 1})`, () => {
       const test = () => getExtensionVersion('main', { id: MAX_ID + 1 }, 0);
       assert.throws(test);
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('should throw when computing the version for build with prerelease implicitly disallowed, release version: 1', () => {
       const test = () => getExtensionVersion('main', { id: 10 }, 1);
       assert.throws(test);
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('should throw when computing the version for build with prerelease explicitly disallowed, release version: 1', () => {
       const test = () =>
         getExtensionVersion('main', { id: 10, isPrerelease: false }, 1);
       assert.throws(test);
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it(`should throw when computing the version for build with prerelease disallowed, release version: ${
       MAX_RELEASE + 1
     }`, () => {
@@ -48,6 +66,8 @@ describe('getMetaMaskVersion', () => {
       assert.throws(test);
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it(`should throw for allowed prerelease, bad release version: ${
       MIN_RELEASE - 1
     }`, () => {
@@ -60,6 +80,8 @@ describe('getMetaMaskVersion', () => {
       assert.throws(test);
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it(`should throw when computing the version for allowed prerelease, bad release version: ${
       MAX_RELEASE + 1
     }`, () => {
@@ -73,12 +95,16 @@ describe('getMetaMaskVersion', () => {
     });
   });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   describe('success', () => {
     let pVersion: string;
     before(() => {
       pVersion = require('../../../package.json').version;
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it(`for build with prerelease disallowed, id: ${MIN_ID}, release version: ${MIN_RELEASE}`, () => {
       const mmVersion = getExtensionVersion(
         'main',
@@ -91,6 +117,8 @@ describe('getMetaMaskVersion', () => {
       });
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it(`should return the computed version for allowed prerelease, id: ${MIN_ID}, release version: ${MIN_RELEASE}`, () => {
       const mmVersion = getExtensionVersion(
         'beta',
@@ -103,6 +131,8 @@ describe('getMetaMaskVersion', () => {
       });
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it(`should return the computed version for allowed prerelease, id: ${MAX_ID}, release version: ${MAX_RELEASE}`, () => {
       const mmVersion = getExtensionVersion(
         'beta',

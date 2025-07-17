@@ -24,16 +24,26 @@ class ConfirmAlertModal {
   }
 
   async rejectFromAlertModal() {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.driver.clickElement(this.alertModalCancelButton);
   }
 
   async confirmFromAlertModal() {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.driver.clickElement(this.alertModalAcknowledgeCheckBox);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.driver.clickElement(this.alertModalSubmitButton);
   }
 
   async acknowledgeAlert() {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.driver.clickElement(this.alertModalAcknowledgeCheckBox);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.driver.clickElement(this.alertModalButton);
   }
 

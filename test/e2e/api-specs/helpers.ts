@@ -55,6 +55,8 @@ export const pollForResult = async (
 ): Promise<unknown> => {
   let result;
   await new Promise((resolve, reject) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     addToQueue({
       name: 'pollResult',
       resolve,
@@ -96,6 +98,8 @@ export const createCaip27DriverTransport = (
     params: unknown[] | Record<string, unknown>,
   ) => {
     const generatedKey = uuid();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     addToQueue({
       name: 'transport',
       resolve: () => {
@@ -109,6 +113,8 @@ export const createCaip27DriverTransport = (
         // we need this because if we wait for the promise to resolve it
         // will hang in selenium since it can only do one thing at a time.
         // the workaround is to put the response on window.asyncResult and poll for it.
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         driver.executeScript(
           ([m, p, g, s, e]: [
             string,
@@ -183,6 +189,8 @@ export const createMultichainDriverTransport = (
     params: unknown[] | Record<string, unknown>,
   ) => {
     const generatedKey = uuid();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     addToQueue({
       name: 'transport',
       resolve: () => {
@@ -196,6 +204,8 @@ export const createMultichainDriverTransport = (
         // we need this because if we wait for the promise to resolve it
         // will hang in selenium since it can only do one thing at a time.
         // the workaround is to put the response on window.asyncResult and poll for it.
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         driver.executeScript(
           ([m, p, g, e]: [
             string,
@@ -257,6 +267,8 @@ export const createDriverTransport = (driver: Driver) => {
     params: unknown[] | Record<string, unknown>,
   ) => {
     const generatedKey = uuid();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     addToQueue({
       name: 'transport',
       resolve: () => {
@@ -270,6 +282,8 @@ export const createDriverTransport = (driver: Driver) => {
         // we need this because if we wait for the promise to resolve it
         // will hang in selenium since it can only do one thing at a time.
         // the workaround is to put the response on window.asyncResult and poll for it.
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         driver.executeScript(
           ([m, p, g]: [
             string,

@@ -33,11 +33,23 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
             './test/e2e/seeder/network-states/eip7702-state/withUpgradedAccount.json',
         },
         testSpecificMock: (mockServer: MockttpServer) => {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           mockSimulationResponse(mockServer);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           mockEip7702FeatureFlag(mockServer);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           mockTransactionRelayNetworks(mockServer);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           mockTransactionRelaySubmit(mockServer);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           mockTransactionRelayStatus(mockServer);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           mockSmartTransactionFeatureFlags(mockServer);
         },
         title: this.test?.fullTitle(),
@@ -101,11 +113,23 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
             './test/e2e/seeder/network-states/eip7702-state/withUpgradedAccount.json',
         },
         testSpecificMock: (mockServer: MockttpServer) => {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           mockSimulationResponse(mockServer);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           mockEip7702FeatureFlag(mockServer);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           mockTransactionRelayNetworks(mockServer);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           mockTransactionRelaySubmit(mockServer);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           mockTransactionRelayStatus(mockServer, { success: false });
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           mockSmartTransactionFeatureFlags(mockServer);
         },
         title: this.test?.fullTitle(),

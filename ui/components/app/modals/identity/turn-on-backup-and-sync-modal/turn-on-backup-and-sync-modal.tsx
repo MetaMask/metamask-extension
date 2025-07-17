@@ -61,6 +61,8 @@ export function TurnOnBackupAndSyncModal() {
   const { setIsBackupAndSyncFeatureEnabled, error } = useBackupAndSync();
 
   const handleDismissModal = () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       event: MetaMetricsEventName.ProfileActivityUpdated,
       category: MetaMetricsEventCategory.BackupAndSync,
@@ -74,6 +76,8 @@ export function TurnOnBackupAndSyncModal() {
   };
 
   const handleTurnOnBackupAndSync = async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       event: MetaMetricsEventName.ProfileActivityUpdated,
       category: MetaMetricsEventCategory.BackupAndSync,

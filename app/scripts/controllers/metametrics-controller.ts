@@ -480,6 +480,8 @@ export default class MetaMetricsController extends BaseController<
     // tracked if the event isn't progressed within that amount of time.
     if (isManifestV3) {
       /* eslint-disable no-undef */
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.#extension.alarms.getAll().then((alarms) => {
         const hasAlarm = checkAlarmExists(
           alarms,
@@ -812,6 +814,8 @@ export default class MetaMetricsController extends BaseController<
 
     // this.extension not currently defined in tests
     if (this.#extension && this.#extension.runtime) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.#extension.runtime.setUninstallURL(
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -1601,6 +1605,8 @@ export default class MetaMetricsController extends BaseController<
 
       this.#submitSegmentAPICall('track', payload, callback);
       if (flushImmediately) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.#segment.flush();
       }
     });

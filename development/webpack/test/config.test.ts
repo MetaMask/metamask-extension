@@ -7,10 +7,14 @@ import { loadBuildTypesConfig } from '../../lib/build-type';
 import * as config from '../utils/config';
 import { parseArgv } from '../utils/cli';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 describe('./utils/config.ts', () => {
   // variables logic is complex, and is "owned" mostly by the other build
   // system, so we don't check for everything, just that the interface is
   // behaving
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   describe('variables', () => {
     const originalReadFileSync = fs.readFileSync;
     function mockRc(env: Record<string, string> = {}) {
@@ -29,6 +33,8 @@ ${Object.entries(env)
     }
     after(() => mock.restoreAll());
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('should return valid build variables for the default build', () => {
       const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv([], buildTypes);
@@ -49,6 +55,8 @@ ${Object.entries(env)
       );
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('should prefer .metamaskrc variables over others', () => {
       const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv([], buildTypes);
@@ -67,6 +75,8 @@ ${Object.entries(env)
       assert.strictEqual(overrides.variables.get('ALLOW_LOCAL_SNAPS'), true);
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('should return valid build variables for a non-default build', () => {
       mockRc({
         // required by the `beta` build type
@@ -87,6 +97,8 @@ ${Object.entries(env)
       assert.strictEqual(variables.get('NODE_ENV'), args.env);
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it("should handle true/false/null/'' in rc", () => {
       const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv([], buildTypes);
