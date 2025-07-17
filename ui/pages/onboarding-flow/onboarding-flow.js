@@ -77,6 +77,7 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
+import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -110,6 +111,7 @@ export default function OnboardingFlow() {
     'isFromSettingsSecurity',
   );
   const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedTrace, onboardingParentContext } = trackEvent;
   const isUnlocked = useSelector(getIsUnlocked);
   const showTermsOfUse = useSelector(getShowTermsOfUse);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
@@ -176,6 +178,16 @@ export default function OnboardingFlow() {
     isPrimarySeedPhraseBackedUp,
     isFromSettingsSecurity,
   ]);
+
+  useEffect(() => {
+    const trace = bufferedTrace?.({
+      name: TraceName.OnboardingJourneyOverall,
+      op: TraceOperation.OnboardingUserJourney,
+    });
+    if (onboardingParentContext) {
+      onboardingParentContext.current = trace;
+    }
+  }, [onboardingParentContext, bufferedTrace]);
 
   const handleCreateNewAccount = async (password) => {
     let newSecretRecoveryPhrase;

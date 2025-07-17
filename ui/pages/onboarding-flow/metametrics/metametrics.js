@@ -48,7 +48,6 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '../../../components/component-library';
-
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 
