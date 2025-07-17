@@ -38,6 +38,7 @@ describe('Token List Sorting', function () {
         await importTokensModal.importCustomToken(
           customTokenAddress,
           CHAIN_IDS.MAINNET,
+          customTokenSymbol,
         );
 
         await assetListPage.check_tokenExistsInList('Ethereum');

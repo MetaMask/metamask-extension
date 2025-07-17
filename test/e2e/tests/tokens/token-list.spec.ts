@@ -55,6 +55,7 @@ describe('Token List', function () {
         await importTokensModal.importCustomToken(
           tokenAddress,
           chainId,
+          symbol,
         );
 
         await assetListPage.check_tokenGeneralChangePercentageNotPresent(
@@ -113,6 +114,7 @@ describe('Token List', function () {
         await importTokensModal.importCustomToken(
           tokenAddress,
           chainId,
+          symbol,
         );
 
         await assetListPage.check_tokenGeneralChangePercentage(

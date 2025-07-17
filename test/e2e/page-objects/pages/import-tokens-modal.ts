@@ -95,16 +95,24 @@ export class ImportTokensModal {
    *
    * @param contractAddress - The token contract address
    * @param chainId - Chain ID to select specific network
+   * @param symbol - Optional token symbol for verification (if not provided, uses auto-detected)
    */
   async importCustomToken(
     contractAddress: string,
     chainId: string,
+    symbol?: string,
   ): Promise<void> {
     await this.clickCustomTokenTab();
     await this.selectNetwork(chainId);
     await this.fillContractAddress(contractAddress);
     await this.clickNextAndWaitForValidation();
     await this.clickImport();
+
+    // Wait for the "Token imported" message to appear to prevent race conditions
+    await this.driver.waitForSelector({
+      text: 'Token imported',
+      tag: 'h6',
+    });
   }
 
   /**

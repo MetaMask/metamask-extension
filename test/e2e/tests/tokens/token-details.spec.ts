@@ -49,6 +49,7 @@ describe('Token Details', function () {
         await importTokensModal.importCustomToken(
           tokenAddress,
           chainId,
+          symbol,
         );
         await assetListPage.dismissTokenImportedMessage();
         await assetListPage.openTokenDetails(symbol);
@@ -100,6 +101,7 @@ describe('Token Details', function () {
         await importTokensModal.importCustomToken(
           tokenAddress,
           chainId,
+          symbol,
         );
         await assetListPage.dismissTokenImportedMessage();
         await assetListPage.openTokenDetails(symbol);
