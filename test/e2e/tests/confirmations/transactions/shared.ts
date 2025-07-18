@@ -5,6 +5,7 @@ import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { Mockttp } from '../../../mock-e2e';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import { largeDelayMs } from '../../../helpers';
 
 const {
   logInWithBalanceValidation,
@@ -140,7 +141,7 @@ export async function confirmDepositTransactionWithCustomNonce(
     tag: 'button',
   });
   // Wait for the confirmation to be updated before submitting tx (prevents race conditions)
-  await driver.delay(1000);
+  await driver.delay(largeDelayMs);
   await scrollAndConfirmAndAssertConfirm(driver);
 
   // Confirm tx was submitted with the higher nonce
@@ -241,7 +242,7 @@ export async function assertAdvancedGasDetailsWithL2Breakdown(driver: Driver) {
 
 export async function editSpendingCap(driver: Driver, newSpendingCap: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement('[data-testid="edit-spending-cap-icon"');
+  await driver.clickElement('[data-testid="edit-spending-cap-icon"]');
 
   await driver.fill(
     '[data-testid="custom-spending-cap-input"]',
@@ -250,7 +251,7 @@ export async function editSpendingCap(driver: Driver, newSpendingCap: string) {
 
   await driver.clickElement({ text: 'Save', tag: 'button' });
   // Wait for the confirmation to be updated before submitting tx (prevents race conditions)
-  await driver.delay(1000);
+  await driver.delay(largeDelayMs);
 }
 
 export async function assertChangedSpendingCap(
@@ -391,5 +392,3 @@ export async function confirmApproveTransaction(driver: Driver) {
     '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
   );
 }
-
-
