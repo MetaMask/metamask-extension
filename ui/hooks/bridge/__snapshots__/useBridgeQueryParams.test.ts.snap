@@ -141,3 +141,12 @@ exports[`useBridgeQueryParams should set src token after navigating from native 
   "toToken": undefined,
 }
 `;
+
+exports[`useBridgeQueryParams should unset amount 1`] = `
+{
+  "fromToken": undefined,
+  "fromTokenInputValue": undefined,
+  "toChainId": null,
+  "toToken": undefined,
+}
+`;
