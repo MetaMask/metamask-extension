@@ -4832,7 +4832,7 @@ export default class MetamaskController extends EventEmitter {
         throw e;
       }
 
-      let maxKeyChainLengthReached = true;
+      let maxKeyChainLengthReached = false;
       // recover the keyring encryption key
       await this.seedlessOnboardingController
         .submitGlobalPassword({
@@ -4855,7 +4855,7 @@ export default class MetamaskController extends EventEmitter {
       if (maxKeyChainLengthReached) {
         // create a new vault and encrypt the new vault with the latest global password
         await this.restoreSocialBackupAndGetSeedPhrase(password);
-        // display info popup to user
+        // display info popup to user based on the password sync status
         return !maxKeyChainLengthReached;
       }
 
@@ -4908,7 +4908,8 @@ export default class MetamaskController extends EventEmitter {
           data: { success: changePasswordSuccess },
         });
       }
-
+      // if maxKeyChainLengthReached is true, we will return false to show the info popup to user
+      // otherwise, we will return true to indicate that the password sync was successful
       return !maxKeyChainLengthReached;
     } finally {
       releaseLock();

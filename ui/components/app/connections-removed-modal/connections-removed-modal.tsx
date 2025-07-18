@@ -27,6 +27,8 @@ import {
 } from '../../component-library';
 import { setShowConnectionsRemovedModal } from '../../../store/actions';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ConnectionsRemovedModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
