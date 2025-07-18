@@ -111,7 +111,6 @@ function CaptureUIError() {
         </span>
       }
       onClick={handleClick}
-      expectError
     />
   );
 }
@@ -132,7 +131,6 @@ function CaptureBackgroundError() {
         </span>
       }
       onClick={handleClick}
-      expectError
     />
   );
 }
