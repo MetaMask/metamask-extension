@@ -220,10 +220,6 @@ const TokenButtons = ({
         MetaMetricsSwapsEventSource.TokenView,
         {
           ...token,
-          iconUrl: token.image,
-          balance: token?.balance?.value,
-          string: token?.balance?.display,
-          name: token.name ?? '',
         },
         isSwap,
       );
