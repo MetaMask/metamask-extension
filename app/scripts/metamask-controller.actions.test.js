@@ -618,6 +618,7 @@ describe('MetaMaskController', function () {
           metamaskController.seedlessOnboardingController.submitGlobalPassword,
         ).toHaveBeenCalledWith({
           globalPassword: password,
+          maxKeyChainLength: 20,
         });
         expect(
           metamaskController.seedlessOnboardingController
