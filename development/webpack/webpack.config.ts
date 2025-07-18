@@ -287,7 +287,7 @@ const config = {
       },
       // vendor commonjs javascript
       {
-        test: /\.js$/u,
+        test: /\.c?js$/u,
         include: NODE_MODULES_RE,
         // security team requires that we never process `@lavamoat/snow/**.*`
         exclude: SNOW_MODULE_RE,
