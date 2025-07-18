@@ -431,12 +431,13 @@ export function tryUnlockMetamask(
       callBackgroundMethod(
         'syncPasswordAndUnlockWallet',
         [password],
-        (error, passwordSyncedSuccessfully) => {
+        (error, isPasswordSynced) => {
           if (error) {
             reject(error);
             return;
           }
-          if (!passwordSyncedSuccessfully) {
+          // if password is not synced show connections removal warning to user.
+          if (!isPasswordSynced) {
             dispatch(setShowConnectionsRemovedModal(true));
           }
 

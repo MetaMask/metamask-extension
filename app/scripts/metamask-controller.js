@@ -4800,6 +4800,7 @@ export default class MetamaskController extends EventEmitter {
    * and user has changed password more than 20 times since the last time they used the app on this device.
    */
   async syncPasswordAndUnlockWallet(password) {
+    let isPasswordSynced = false;
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
     // check if the password is outdated
     const isPasswordOutdated = isSocialLoginFlow
@@ -4812,7 +4813,8 @@ export default class MetamaskController extends EventEmitter {
     // we will proceed with the normal flow and use the password to unlock the vault
     if (!isSocialLoginFlow || !isPasswordOutdated) {
       await this.submitPassword(password);
-      return false;
+      isPasswordSynced = true;
+      return isPasswordSynced;
     }
 
     const releaseLock = await this.syncSeedlessGlobalPasswordMutex.acquire();
@@ -4832,19 +4834,22 @@ export default class MetamaskController extends EventEmitter {
         throw e;
       }
 
-      let maxKeyChainLengthReached = false;
       // recover the keyring encryption key
       await this.seedlessOnboardingController
         .submitGlobalPassword({
           globalPassword: password,
           maxKeyChainLength: 20,
         })
+        .then(() => {
+          isPasswordSynced = true;
+        })
         .catch((err) => {
+          log.error('error while submitting global password', err);
           if (
             err.message ===
             SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded
           ) {
-            maxKeyChainLengthReached = true;
+            isPasswordSynced = false;
           } else {
             throw err;
           }
@@ -4852,11 +4857,11 @@ export default class MetamaskController extends EventEmitter {
       // we are unable to recover the old pwd enc key as user is on a very old device.
       // create a new vault and encrypt the new vault with the latest global password.
       // also show a info popup to user.
-      if (maxKeyChainLengthReached) {
+      if (!isPasswordSynced) {
         // create a new vault and encrypt the new vault with the latest global password
         await this.restoreSocialBackupAndGetSeedPhrase(password);
         // display info popup to user based on the password sync status
-        return !maxKeyChainLengthReached;
+        return isPasswordSynced;
       }
 
       // re-encrypt the old vault data with the latest global password
@@ -4908,9 +4913,7 @@ export default class MetamaskController extends EventEmitter {
           data: { success: changePasswordSuccess },
         });
       }
-      // if maxKeyChainLengthReached is true, we will return false to show the info popup to user
-      // otherwise, we will return true to indicate that the password sync was successful
-      return !maxKeyChainLengthReached;
+      return isPasswordSynced;
     } finally {
       releaseLock();
     }
