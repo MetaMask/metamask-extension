@@ -431,12 +431,12 @@ export function tryUnlockMetamask(
       callBackgroundMethod(
         'syncPasswordAndUnlockWallet',
         [password],
-        (error, maxKeyChainLengthExceeded) => {
+        (error, passwordSyncedSuccessfully) => {
           if (error) {
             reject(error);
             return;
           }
-          if (maxKeyChainLengthExceeded) {
+          if (!passwordSyncedSuccessfully) {
             dispatch(setShowConnectionsRemovedModal(true));
           }
 

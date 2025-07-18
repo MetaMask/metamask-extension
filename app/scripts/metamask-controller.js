@@ -4795,7 +4795,8 @@ export default class MetamaskController extends EventEmitter {
    * Unlock the vault with the latest global password.
    *
    * @param {string} password - latest global seedless password
-   * @returns {boolean} true if the max key chain length is reached, false otherwise
+   * @returns {boolean} true if the sync was successful, false otherwise. Sync can fail if user is on a very old device
+   * and user has changed password more than 20 times since the last time they used the app on this device.
    */
   async syncPasswordAndUnlockWallet(password) {
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
@@ -4835,6 +4836,7 @@ export default class MetamaskController extends EventEmitter {
       await this.seedlessOnboardingController
         .submitGlobalPassword({
           globalPassword: password,
+          maxKeyChainLength: 20,
         })
         .catch((err) => {
           if (
@@ -4853,7 +4855,7 @@ export default class MetamaskController extends EventEmitter {
         // create a new vault and encrypt the new vault with the latest global password
         await this.restoreSocialBackupAndGetSeedPhrase(password);
         // display info popup to user
-        return true;
+        return !maxKeyChainLengthReached;
       }
 
       // re-encrypt the old vault data with the latest global password
@@ -4906,7 +4908,7 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
-      return false;
+      return !maxKeyChainLengthReached;
     } finally {
       releaseLock();
     }
