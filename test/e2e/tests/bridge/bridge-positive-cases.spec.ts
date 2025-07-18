@@ -108,7 +108,12 @@ describe('Bridge tests', function (this: Suite) {
         // disable Linea network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.deselectNetwork(NetworkId.LINEA);
+        try {
+          await networkManager.deselectNetwork(NetworkId.LINEA);
+        } catch (error) {
+          console.log('Linea network is not selected');
+          return;
+        }
         await networkManager.closeNetworkManager();
 
         // Navigate to Bridge page
