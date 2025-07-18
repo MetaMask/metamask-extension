@@ -28,7 +28,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getOnboardingErrorReport } from '../../../selectors';
-import { ONBOARDED_IN_THIS_UI_SESSION } from '../../../store/actionConstants';
 import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import { setOnboardingErrorReport } from '../../../store/actions';
 
@@ -43,7 +42,7 @@ export default function OnboardingError() {
 
   useEffect(() => {
     if (onboardingErrorReport === null) {
-      history.push(ONBOARDED_IN_THIS_UI_SESSION);
+      history.push(ONBOARDING_WELCOME_ROUTE);
     }
   }, [history, onboardingErrorReport]);
 
