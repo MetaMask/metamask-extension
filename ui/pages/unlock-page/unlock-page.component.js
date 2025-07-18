@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { captureException } from '@sentry/browser';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import {
   Text,
@@ -86,6 +87,10 @@ class UnlockPage extends Component {
      * Sentry trace context ref for onboarding journey tracing
      */
     onboardingParentContext: PropTypes.object,
+    /**
+     * isMetaMetricsEnabled
+     */
+    isMetaMetricsEnabled: PropTypes.bool,
   };
 
   state = {
@@ -253,7 +258,7 @@ class UnlockPage extends Component {
         errorReason = 'outdated_password';
         break;
       default:
-        this.props.setOnboardingErrorReport(error, 'Unlock');
+        finalErrorMessage = message;
         break;
     }
 
@@ -268,6 +273,25 @@ class UnlockPage extends Component {
         },
       });
     }
+
+    // If the user is on a social login flow and the error is not expected
+    if (this.props.isSocialLoginFlow && !errorReason) {
+      if (this.props.isMetaMetricsEnabled) {
+        captureException(error, {
+          tags: {
+            view: 'Unlock - Login with social account',
+            context: 'OAuth login failed - user consented to analytics',
+          },
+        });
+      } else {
+        this.props.setOnboardingErrorReport({
+          error,
+          view: 'Unlock - Login with social account',
+        });
+      }
+      return;
+    }
+
     this.setState({
       error: finalErrorMessage,
       unlockDelayPeriod: finalUnlockDelayPeriod,

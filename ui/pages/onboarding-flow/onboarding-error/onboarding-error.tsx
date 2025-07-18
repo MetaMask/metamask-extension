@@ -1,4 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { captureException } from '@sentry/browser';
 import {
   TextVariant,
   Display,
@@ -25,9 +28,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getOnboardingErrorReport } from '../../../selectors';
-import { useDispatch, useSelector } from 'react-redux';
 import { ONBOARDED_IN_THIS_UI_SESSION } from '../../../store/actionConstants';
-import { useHistory } from 'react-router-dom';
 import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import { setOnboardingErrorReport } from '../../../store/actions';
 
@@ -51,10 +52,22 @@ export default function OnboardingError() {
     history.push(ONBOARDING_WELCOME_ROUTE);
   }, [dispatch, history]);
 
-  // TODO: Implement this
   const onSendReport = useCallback(() => {
-    console.log('onSendReport');
-  }, []);
+    if (!onboardingErrorReport) {
+      return;
+    }
+    try {
+      const { error, view = 'Unknown' } = onboardingErrorReport || {};
+      captureException(error, {
+        extra: {
+          view,
+          context: 'OnboardingError forced report',
+        },
+      });
+    } catch (sentryError) {
+      console.error('Failed to force report error to Sentry:', sentryError);
+    }
+  }, [onboardingErrorReport]);
 
   return (
     <Box
