@@ -1,5 +1,10 @@
 import { Suite } from 'mocha';
-import { largeDelayMs, unlockWallet, withFixtures } from '../../helpers';
+import {
+  largeDelayMs,
+  unlockWallet,
+  veryLargeDelayMs,
+  withFixtures,
+} from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
   switchToNetworkFromSendFlow,
@@ -134,7 +139,7 @@ describe('Bridge tests', function (this: Suite) {
 
         // check if the Linea network is selected
         await networkManager.openNetworkManager();
-        await driver.delay(largeDelayMs);
+        await driver.delay(veryLargeDelayMs);
         await networkManager.checkNetworkIsSelected(NetworkId.LINEA);
       },
     );
