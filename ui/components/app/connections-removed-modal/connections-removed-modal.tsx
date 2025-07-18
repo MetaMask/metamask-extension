@@ -7,7 +7,6 @@ import {
   IconColor,
   JustifyContent,
   TextAlign,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
@@ -63,18 +62,7 @@ export default function ConnectionsRemovedModal() {
             </Text>
           </Box>
         </ModalHeader>
-        <ModalBody>
-          {t('connectionsRemovedModalDescription', [
-            <Text
-              as="a"
-              target="_blank"
-              rel="noopener noreferrer"
-              color={TextColor.infoDefault}
-            >
-              {t('learnMoreUpperCase')}
-            </Text>,
-          ])}
-        </ModalBody>
+        <ModalBody>{t('connectionsRemovedModalDescription')}</ModalBody>
         <ModalFooter>
           <Button size={ButtonSize.Lg} block onClick={onConfirm}>
             {t('gotIt')}
