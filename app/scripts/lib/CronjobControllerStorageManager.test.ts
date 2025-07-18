@@ -46,7 +46,7 @@ describe('CronjobControllerStorageManager', () => {
       const manager = new CronjobControllerStorageManager();
 
       expect(() => manager.getInitialState()).toThrow(
-        'CronjobStorageManager not yet initialized',
+        'CronjobControllerStorageManager not yet initialized',
       );
     });
 
@@ -65,7 +65,7 @@ describe('CronjobControllerStorageManager', () => {
       const manager = new CronjobControllerStorageManager();
 
       expect(() => manager.set({ foo: 'bar' })).toThrow(
-        'CronjobStorageManager not yet initialized',
+        'CronjobControllerStorageManager not yet initialized',
       );
     });
 
