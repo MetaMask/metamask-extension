@@ -1973,6 +1973,8 @@ export default class MetamaskController extends EventEmitter {
       controllersByName,
     } = this.#initControllers({
       existingControllers,
+      getCronjobControllerStorageManager: () =>
+        opts.cronjobControllerStorageManager,
       initFunctions: controllerInitFunctions,
       initState,
     });
