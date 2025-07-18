@@ -1,4 +1,5 @@
 import type { Json } from '@metamask/utils';
+import browser from 'webextension-polyfill';
 
 export const CronjobControllerStorageKey = 'temp-cronjob-storage';
 
