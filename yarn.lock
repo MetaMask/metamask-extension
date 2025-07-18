@@ -6877,7 +6877,7 @@ __metadata:
 
 "@metamask/network-controller@patch:@metamask/network-controller@npm%3A24.0.1#~/.yarn/patches/@metamask-network-controller-npm-24.0.1-d913bfdf67.patch":
   version: 24.0.1
-  resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A24.0.1#~/.yarn/patches/@metamask-network-controller-npm-24.0.1-d913bfdf67.patch::version=24.0.1&hash=b9e815"
+  resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A24.0.1#~/.yarn/patches/@metamask-network-controller-npm-24.0.1-d913bfdf67.patch::version=24.0.1&hash=b82720"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/controller-utils": "npm:^11.11.0"
@@ -6899,7 +6899,7 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/error-reporting-service": ^2.0.0
-  checksum: 10/46a2d47152fe11f21b5533dcf268a3d9f6650300f2c4e2c4a67b24e680d0ff1e8a5e2b07ba5eade8b8c1363782e91ffcd4cb3ed753ea50225d4f1a37f8c75d47
+  checksum: 10/c763b8884e7630fa3ebeebeace8b2fc1cecb8795c823a62258ed25e865c4a966f1d73e3c4ca6680134723390f0bdcff00766162799b0747c39a0cad3ad5a311a
   languageName: node
   linkType: hard
 
