@@ -284,7 +284,7 @@ function setupStateHooks(store) {
   ) {
     /**
      * The following stateHook is a method intended to throw an error, used in
-     * our E2E test to ensure that errors are attempted to be sent to sentry.
+     * manual and E2E tests to ensure that errors are attempted to be sent to sentry.
      *
      * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
      */
@@ -295,7 +295,7 @@ function setupStateHooks(store) {
     };
     /**
      * The following stateHook is a method intended to capture an error, used in
-     * our E2E test to ensure that errors are correctly sent to sentry.
+     * manual and E2E tests to ensure that errors are correctly sent to sentry.
      *
      * @param {string} [msg] - The error message to capture, defaults to 'Test Error'
      */
@@ -306,7 +306,7 @@ function setupStateHooks(store) {
     };
     /**
      * The following stateHook is a method intended to throw an error in the
-     * background, used in our E2E test to ensure that errors are attempted to be
+     * background, used in manual and E2E tests to ensure that errors are attempted to be
      * sent to sentry.
      *
      * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
@@ -318,7 +318,7 @@ function setupStateHooks(store) {
     };
     /**
      * The following stateHook is a method intended to capture an error in the background, used
-     * in our E2E test to ensure that errors are correctly sent to sentry.
+     * in manual and E2E tests to ensure that errors are correctly sent to sentry.
      *
      * @param {string} [msg] - The error message to capture, defaults to 'Test Error'
      */
