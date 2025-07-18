@@ -7,7 +7,7 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import ImportTokensModal from '../../page-objects/pages/import-tokens-modal';
+import { ImportTokensModal } from '../../page-objects/pages/import-tokens-modal';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   mockEmptyHistoricalPrices,

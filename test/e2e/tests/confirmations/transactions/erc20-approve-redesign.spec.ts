@@ -91,7 +91,6 @@ async function mocks(server: MockttpServer) {
   return [await mocked4BytesApprove(server)];
 }
 
-
 async function assertApproveDetails(driver: Driver) {
   // Switch to the approve transaction dialog window
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

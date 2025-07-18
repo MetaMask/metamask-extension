@@ -1,6 +1,6 @@
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
-import ImportTokensModal from '../../page-objects/pages/import-tokens-modal';
+import { ImportTokensModal } from '../../page-objects/pages/import-tokens-modal';
 
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';

@@ -3,7 +3,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import ImportTokensModal from '../../page-objects/pages/import-tokens-modal';
+import { ImportTokensModal } from '../../page-objects/pages/import-tokens-modal';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Add existing token using search', function () {
