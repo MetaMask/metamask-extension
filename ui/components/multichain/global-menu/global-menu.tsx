@@ -14,7 +14,12 @@ import {
   SNAPS_ROUTE,
   PERMISSIONS,
 } from '../../../helpers/constants/routes';
-import { lockMetamask, toggleNetworkMenu } from '../../../store/actions';
+import {
+  lockMetamask,
+  setShowSupportDataConsentModal,
+  showConfirmTurnOnMetamaskNotifications,
+  toggleNetworkMenu,
+} from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { selectIsMetamaskNotificationsFeatureSeen } from '../../../selectors/metamask-notifications/metamask-notifications';
 import {
@@ -249,17 +254,16 @@ export const GlobalMenu = ({
           {t('expandView')}
         </MenuItem>
       )}
-      {process.env.REMOVE_GNS && (
-        <MenuItem
-          iconName={IconName.Hierarchy}
-          onClick={() => {
-            dispatch(toggleNetworkMenu());
-            closeMenu();
-          }}
-        >
-          {t('networks')}
-        </MenuItem>
-      )}
+      <MenuItem
+        data-testid="global-menu-networks"
+        iconName={IconName.Hierarchy}
+        onClick={() => {
+          dispatch(toggleNetworkMenu());
+          closeMenu();
+        }}
+      >
+        {t('networks')}
+      </MenuItem>
       <MenuItem
         iconName={IconName.Snaps}
         onClick={() => {
@@ -273,7 +277,7 @@ export const GlobalMenu = ({
       <MenuItem
         iconName={IconName.MessageQuestion}
         onClick={() => {
-          global.platform.openTab({ url: supportLink });
+          dispatch(setShowSupportDataConsentModal(true));
           trackEvent(
             {
               category: MetaMetricsEventCategory.Home,

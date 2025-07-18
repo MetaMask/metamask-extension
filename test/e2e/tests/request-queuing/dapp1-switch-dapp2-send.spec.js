@@ -8,8 +8,6 @@ const {
   withFixtures,
 } = require('../../helpers');
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
-
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
   it('should queue send tx after switch network confirmation and transaction should target the correct network after switch is confirmed', async function () {
     const port = 8546;
@@ -81,22 +79,12 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         );
 
         // Network Selector
-        if (isGlobalNetworkSelectorRemoved) {
-          await driver.clickElement('[data-testid="sort-by-networks"]');
-          await driver.clickElement({
-            text: 'Custom',
-            tag: 'button',
-          });
-          await driver.clickElement('[data-testid="Localhost 8546"]');
-        } else {
-          await driver.clickElement('[data-testid="network-display"]');
-
-          // Switch to second network
-          await driver.clickElement({
-            text: 'Localhost 8546',
-            css: 'p',
-          });
-        }
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Custom',
+          tag: 'button',
+        });
+        await driver.clickElement('[data-testid="Localhost 8546"]');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
@@ -176,12 +164,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleNode()
           .withSelectedNetworkControllerPerDomain()
-          .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
-              '0x53a': true,
-            },
-          })
           .build(),
         dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
@@ -242,21 +224,13 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         );
 
         // Network Selector
-        if (isGlobalNetworkSelectorRemoved) {
-          await driver.clickElement('[data-testid="sort-by-networks"]');
-          await driver.clickElement({
-            text: 'Custom',
-            tag: 'button',
-          });
-          await driver.clickElement('[data-testid="Localhost 8546"]');
-        } else {
-          await driver.clickElement('[data-testid="network-display"]');
-          // Switch to second network
-          await driver.clickElement({
-            text: 'Localhost 8546',
-            css: 'p',
-          });
-        }
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Custom',
+          tag: 'button',
+        });
+        await driver.clickElement('[data-testid="Localhost 8546"]');
+        await driver.clickElement('[data-testid="modal-header-close-button"]');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
@@ -318,12 +292,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-
-        if (isGlobalNetworkSelectorRemoved) {
-          await driver.clickElement(
-            '[data-testid="modal-header-close-button"]',
-          );
-        }
 
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',

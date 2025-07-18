@@ -16,7 +16,6 @@ import {
   ButtonSecondarySize,
   IconName,
 } from '../../../components/component-library';
-import { ACCOUNT_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 import {
   BackgroundColor,
   TextVariant,
@@ -79,7 +78,7 @@ export const AddressQRCode = () => {
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
-            onClick={() => history.push(`${ACCOUNT_DETAILS_ROUTE}/${address}`)}
+            onClick={() => history.goBack()}
           />
         }
       >
@@ -96,6 +95,7 @@ export const AddressQRCode = () => {
         <ButtonSecondary
           onClick={handleNavigation}
           size={ButtonSecondarySize.Lg}
+          data-testid={addressLink}
           textProps={{
             variant: TextVariant.bodyMdMedium,
           }}

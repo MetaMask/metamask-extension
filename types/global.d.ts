@@ -39,10 +39,19 @@ declare class MessageSender {
   url?: string;
 }
 
+type SerializedLedgerError = {
+  message: string;
+  name?: string;
+  stack?: string;
+  // from TransportStatusError
+  statusCode?: number;
+  statusText?: string;
+};
+
 export type LedgerIframeMissingResponse = {
   success: false;
   payload: {
-    error: Error;
+    error: SerializedLedgerError;
   };
 };
 
@@ -155,7 +164,7 @@ type sendMessage = {
         v: number;
         s: string;
         r: string;
-        error?: Error;
+        error?: SerializedLedgerError;
       };
     }) => void,
   ): Promise<{ v: number; s: string; r: string }>;
@@ -171,7 +180,7 @@ type sendMessage = {
         publicKey: string;
         address: string;
         chainCode?: string;
-        error?: Error;
+        error?: SerializedLedgerError;
       };
     }) => void,
   ): Promise<{ publicKey: string; address: string; chainCode?: string }>;
@@ -188,7 +197,10 @@ type sendMessage = {
       target: OffscreenCommunicationTarget.ledgerOffscreen;
       action: LedgerAction.makeApp;
     },
-    callback: (response: { success: boolean; error?: Error }) => void,
+    callback: (response: {
+      success: boolean;
+      error?: SerializedLedgerError;
+    }) => void,
   ): Promise<boolean>;
   (
     message: {
@@ -339,7 +351,7 @@ export declare global {
      */
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    withResolvers<T>(): PromiseWithResolvers<T>;
+    withResolvers?: <T>() => PromiseWithResolvers<T>;
   }
 }
 // #endregion
