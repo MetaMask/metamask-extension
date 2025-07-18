@@ -134,6 +134,7 @@ describe('Bridge tests', function (this: Suite) {
 
         // check if the Linea network is selected
         await networkManager.openNetworkManager();
+        await driver.delay(largeDelayMs);
         await networkManager.checkNetworkIsSelected(NetworkId.LINEA);
       },
     );
