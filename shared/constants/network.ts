@@ -195,6 +195,7 @@ export const CHAIN_IDS = {
   ABSTRACT: '0xab5',
   OMNI: '0xa6',
   XRPLEVM: '0x15f900',
+  AREUM: '0x1cf'
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -270,6 +271,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   XRPLEVM_TESTNET: '0x161c28',
   SOPHON: '0xc3b8',
   SOPHON_TESTNET: '0x1fa72e78',
+  AREUM: '0x1cf'
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -346,6 +348,7 @@ export const APECHAIN_TESTNET_DISPLAY_NAME = 'ApeChain Testnet';
 export const ABSTRACT_DISPLAY_NAME = 'Abstract';
 export const OMNI_DISPLAY_NAME = 'Omni';
 export const XRPLEVM_DISPLAY_NAME = 'XRPL EVM';
+export const AREUM_DISPLAY_NAME = 'Areum';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -415,6 +418,7 @@ export const CURRENCY_SYMBOLS = {
   ABSTRACT: 'ETH',
   OMNI: 'OMNI',
   XRPLEVM: 'XRP',
+  AREUM: 'AREA'
 } as const;
 
 // Non-EVM currency symbols
@@ -494,6 +498,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   XRPLEVM_TESTNET: 'XRP',
   XRPLEVM: 'XRP',
   SOPHON: 'SOPH',
+  AREUM: 'AREA',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -616,6 +621,7 @@ export const OMNI_IMAGE_URL = './images/omni.png';
 export const OMNI_NATIVE_TOKEN_IMAGE_URL = './images/omni-native.png';
 export const XRPLEVM_IMAGE_URL = './images/xrplevm.svg';
 export const XRPLEVM_NATIVE_TOKEN_IMAGE_URL = './images/xrplevm-native.svg';
+export const AREUM_IMAGE_URL = './images/areum.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -652,12 +658,10 @@ export const TEST_NETWORK_TICKER_MAP: {
     'localhost' | 'mainnet' | 'rpc' | 'linea-mainnet'
   >]: string;
 } = {
-  [NETWORK_TYPES.GOERLI]: `${typedCapitalize(NETWORK_TYPES.GOERLI)}${
-    CURRENCY_SYMBOLS.ETH
-  }`,
-  [NETWORK_TYPES.SEPOLIA]: `${typedCapitalize(NETWORK_TYPES.SEPOLIA)}${
-    CURRENCY_SYMBOLS.ETH
-  }`,
+  [NETWORK_TYPES.GOERLI]: `${typedCapitalize(NETWORK_TYPES.GOERLI)}${CURRENCY_SYMBOLS.ETH
+    }`,
+  [NETWORK_TYPES.SEPOLIA]: `${typedCapitalize(NETWORK_TYPES.SEPOLIA)}${CURRENCY_SYMBOLS.ETH
+    }`,
   [NETWORK_TYPES.LINEA_GOERLI]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.LINEA_SEPOLIA]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.MEGAETH_TESTNET]: 'MegaETH',
@@ -766,6 +770,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.ABSTRACT]: ABSTRACT_DISPLAY_NAME,
   [CHAIN_IDS.OMNI]: OMNI_DISPLAY_NAME,
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_DISPLAY_NAME,
+  [CHAIN_IDS.AREUM]: AREUM_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -914,6 +919,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.ABSTRACT]: CURRENCY_SYMBOLS.ABSTRACT,
   [CHAIN_IDS.OMNI]: CURRENCY_SYMBOLS.OMNI,
   [CHAIN_IDS.XRPLEVM]: CURRENCY_SYMBOLS.XRPLEVM,
+  [CHAIN_IDS.AREUM]: CURRENCY_SYMBOLS.AREUM,
 } as const;
 
 /**
@@ -1070,6 +1076,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.ABSTRACT]: ABSTRACT_IMAGE_URL,
   [CHAIN_IDS.OMNI]: OMNI_IMAGE_URL,
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_IMAGE_URL,
+  [CHAIN_IDS.AREUM]: AREUM_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1141,6 +1148,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_NATIVE_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]:
     XRPLEVM_TESTNET_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.AREUM]: AREUM_IMAGE_URL,
 } as const;
 
 /**
@@ -1163,9 +1171,8 @@ const defaultEtherscanSubdomainPrefix = 'api';
 export const ETHERSCAN_SUPPORTED_NETWORKS = {
   [CHAIN_IDS.GOERLI]: {
     domain: defaultEtherscanDomain,
-    subdomain: `${defaultEtherscanSubdomainPrefix}-${
-      CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.GOERLI]
-    }`,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-${CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.GOERLI]
+      }`,
   },
   [CHAIN_IDS.MAINNET]: {
     domain: defaultEtherscanDomain,
@@ -1173,9 +1180,8 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
   },
   [CHAIN_IDS.SEPOLIA]: {
     domain: defaultEtherscanDomain,
-    subdomain: `${defaultEtherscanSubdomainPrefix}-${
-      CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.SEPOLIA]
-    }`,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-${CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.SEPOLIA]
+      }`,
   },
   [CHAIN_IDS.LINEA_GOERLI]: {
     domain: 'lineascan.build',
