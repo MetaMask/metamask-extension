@@ -26,7 +26,8 @@ export const CronjobControllerInit: ControllerInitFunction<
     // TODO: Look into the type mismatch.
     state: persistedState.CronjobController,
     messenger: controllerMessenger,
-    storageManager: getCronjobControllerStorageManager(),
+    // @ts-expect-error TODO: fix incompatible types
+    stateManager: getCronjobControllerStorageManager(),
   });
 
   return {
