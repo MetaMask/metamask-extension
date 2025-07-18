@@ -24,8 +24,9 @@ import {
   getSubjectMetadata,
 } from '../../../selectors';
 import { ConnectedSitePopover } from '../connected-site-popover';
+import { STATUS_CONNECTED } from '../../../helpers/constants/connected-sites';
 
-export const ConnectedSiteMenu = ({ className, disabled, onClick }) => {
+export const ConnectedSiteMenu = ({ className, disabled, onClick, status }) => {
   const [showPopover, setShowPopover] = useState(false);
 
   const referenceElement = useRef(null);
@@ -73,9 +74,10 @@ export const ConnectedSiteMenu = ({ className, disabled, onClick }) => {
         <ConnectedSitePopover
           referenceElement={referenceElement}
           isOpen={showPopover}
-          isConnected={!currentTabHasNoAccounts}
+          isConnected={status === STATUS_CONNECTED}
           onClick={onClick}
           onClose={() => setShowPopover(false)}
+          connectedOrigin={connectedOrigin}
         />
       )}
     </>
@@ -95,4 +97,8 @@ ConnectedSiteMenu.propTypes = {
    *  Disable the connected site menu if the account is non-evm
    */
   disabled: PropTypes.bool,
+  /**
+   * The status of the connected site menu
+   */
+  status: PropTypes.string,
 };
