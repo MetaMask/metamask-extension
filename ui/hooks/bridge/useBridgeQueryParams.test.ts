@@ -408,4 +408,45 @@ describe('useBridgeQueryParams', () => {
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
   });
+
+  it('should unset amount', async () => {
+    const fetchAssetMetadataForAssetIdsSpy = jest.spyOn(
+      assetUtils,
+      'fetchAssetMetadataForAssetIds',
+    );
+    const mockStoreState = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          chains: {
+            [ChainId.LINEA]: {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+          },
+        },
+      },
+    });
+
+    const searchParams = new URLSearchParams({
+      amount: '100',
+    });
+
+    const { history, store } = renderUseBridgeQueryParams(
+      mockStoreState,
+      // eslint-disable-next-line prefer-template
+      '/?' + searchParams.toString(),
+    );
+
+    expect(history.location.search).toBe('');
+    expect(store).toBeDefined();
+    const { fromToken, toToken, toChainId, fromTokenInputValue } =
+      store?.getState().bridge ?? {};
+    expect({
+      fromToken,
+      toToken,
+      toChainId,
+      fromTokenInputValue,
+    }).toMatchSnapshot();
+    expect(fetchAssetMetadataForAssetIdsSpy).not.toHaveBeenCalled();
+  });
 });
