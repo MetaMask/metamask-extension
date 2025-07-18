@@ -17,6 +17,7 @@ function getInitRequestMock(): jest.Mocked<
     ...buildControllerInitRequestMock(),
     controllerMessenger: getCronjobControllerMessenger(baseMessenger),
     initMessenger: undefined,
+    getCronjobControllerStorageManager: jest.fn(),
   };
 
   return requestMock;
