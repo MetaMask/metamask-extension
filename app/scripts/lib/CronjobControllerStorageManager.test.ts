@@ -1,8 +1,8 @@
+import browser from 'webextension-polyfill';
 import {
   CronjobControllerStorageManager,
   CronjobControllerStorageKey,
 } from './CronjobControllerStorageManager';
-import browser from 'webextension-polyfill';
 
 jest.mock('webextension-polyfill', () => {
   return {
