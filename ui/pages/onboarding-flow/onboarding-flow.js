@@ -77,6 +77,7 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
+import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -110,6 +111,7 @@ export default function OnboardingFlow() {
     'isFromSettingsSecurity',
   );
   const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedTrace, onboardingParentContext } = trackEvent;
   const isUnlocked = useSelector(getIsUnlocked);
   const showTermsOfUse = useSelector(getShowTermsOfUse);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
@@ -177,6 +179,16 @@ export default function OnboardingFlow() {
     isFromSettingsSecurity,
   ]);
 
+  useEffect(() => {
+    const trace = bufferedTrace?.({
+      name: TraceName.OnboardingJourneyOverall,
+      op: TraceOperation.OnboardingUserJourney,
+    });
+    if (onboardingParentContext) {
+      onboardingParentContext.current = trace;
+    }
+  }, [onboardingParentContext, bufferedTrace]);
+
   const handleCreateNewAccount = async (password) => {
     let newSecretRecoveryPhrase;
     if (
@@ -219,9 +231,13 @@ export default function OnboardingFlow() {
     return await dispatch(createNewVaultAndRestore(password, srp));
   };
 
-  const isWelcomeAndUnlockPage =
+  let isFullPage =
     pathname === ONBOARDING_WELCOME_ROUTE ||
     pathname === ONBOARDING_UNLOCK_ROUTE;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  isFullPage = isFullPage || pathname === ONBOARDING_EXPERIMENTAL_AREA;
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Box
@@ -246,17 +262,18 @@ export default function OnboardingFlow() {
       {!isPopup && <OnboardingAppHeader pageState={welcomePageState} />}
       <Box
         className={classnames('onboarding-flow__container', {
-          'onboarding-flow__container--welcome': isWelcomeAndUnlockPage,
+          'onboarding-flow__container--full': isFullPage,
           'onboarding-flow__container--popup': isPopup,
         })}
         width={BlockSize.Full}
         borderStyle={
-          isWelcomeAndUnlockPage || isPopup
-            ? BorderStyle.none
-            : BorderStyle.solid
+          isFullPage || isPopup ? BorderStyle.none : BorderStyle.solid
         }
         borderRadius={BorderRadius.LG}
         marginTop={pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? 0 : 3}
+        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+        marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
+        ///: END:ONLY_INCLUDE_IF
         marginInline="auto"
         borderColor={BorderColor.borderMuted}
       >
@@ -382,7 +399,7 @@ export default function OnboardingFlow() {
               event: MetaMetricsEventName.OnboardingTwitterClick,
               properties: {
                 text: t('followUsOnX', ['X']),
-                location: MetaMetricsEventName.OnboardingWalletCreationComplete,
+                location: MetaMetricsEventName.WalletCreated,
                 url: TWITTER_URL,
                 hd_entropy_index: hdEntropyIndex,
               },

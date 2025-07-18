@@ -1,9 +1,9 @@
 import React, {
-  useContext,
-  useState,
-  useMemo,
   useCallback,
+  useContext,
   useEffect,
+  useMemo,
+  useState,
 } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -51,6 +51,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getManageInstitutionalWallets,
   getHDEntropyIndex,
+  getIsMultichainAccountsState1Enabled,
 } from '../../../selectors';
 import {
   MetaMetricsEventAccountType,
@@ -92,7 +93,6 @@ import { SrpList } from '../multi-srp/srp-list';
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
-import Spinner from '../../ui/spinner';
 
 // TODO: Should we use an enum for this instead?
 export const ACTION_MODES = {
@@ -143,11 +143,13 @@ export const SNAP_CLIENT_CONFIG_MAP: Record<
  *
  * @param t - Function to translate text.
  * @param actionMode - An action mode.
+ * @param isMultichainAccountsState1Enabled - Whether the multichain accounts state 1 is enabled.
  * @returns The title for this action mode.
  */
 export const getActionTitle = (
   t: (text: string, args?: string[]) => string,
   actionMode: ActionMode,
+  isMultichainAccountsState1Enabled: boolean,
 ) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
@@ -175,7 +177,9 @@ export const getActionTitle = (
     case ACTION_MODES.SELECT_SRP:
       return t('selectSecretRecoveryPhrase');
     default:
-      return t('selectAnAccount');
+      return isMultichainAccountsState1Enabled
+        ? t('accounts')
+        : t('selectAnAccount');
   }
 };
 
@@ -197,8 +201,13 @@ export const AccountMenu = ({
     endTrace({ name: TraceName.AccountList });
   }, []);
   const history = useHistory();
+  const isMultichainAccountsState1Enabled = useSelector(
+    getIsMultichainAccountsState1Enabled,
+  );
 
-  const { loading: syncSRPsLoading } = useSyncSRPs();
+  // sync SRPs list when menu opens
+  useSyncSRPs();
+
   const [actionMode, setActionMode] = useState<ActionMode>(ACTION_MODES.LIST);
   const [previousActionMode, setPreviousActionMode] = useState<ActionMode>(
     ACTION_MODES.LIST,
@@ -293,8 +302,13 @@ export const AccountMenu = ({
   );
 
   const title = useMemo(
-    () => getActionTitle(t as (text: string) => string, actionMode),
-    [actionMode, t],
+    () =>
+      getActionTitle(
+        t as (text: string) => string,
+        actionMode,
+        Boolean(isMultichainAccountsState1Enabled),
+      ),
+    [actionMode, t, isMultichainAccountsState1Enabled],
   );
 
   // eslint-disable-next-line no-empty-function
@@ -664,51 +678,33 @@ export const AccountMenu = ({
         ) : null}
         {actionMode === ACTION_MODES.LIST ? (
           <>
-            {syncSRPsLoading ? (
+            {/* Menu content */}
+            {children}
+            {/* Add / Import / Hardware button */}
+            {showAccountCreation ? (
               <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
+                paddingTop={2}
+                paddingBottom={4}
+                paddingLeft={4}
+                paddingRight={4}
                 alignItems={AlignItems.center}
-                marginTop={12}
+                display={Display.Flex}
               >
-                <Spinner className="change-password__spinner" />
-                <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
-                  {t('syncingSeedPhrases')}
-                </Text>
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
+                <ButtonSecondary
+                  startIconName={
+                    isMultichainAccountsState1Enabled ? undefined : IconName.Add
+                  }
+                  size={ButtonSecondarySize.Lg}
+                  block
+                  onClick={() => setActionMode(ACTION_MODES.MENU)}
+                  data-testid="multichain-account-menu-popover-action-button"
                 >
-                  {t('syncingSeedPhrasesNote')}
-                </Text>
+                  {isMultichainAccountsState1Enabled
+                    ? t('addAccountOrWallet')
+                    : t('addImportAccount')}
+                </ButtonSecondary>
               </Box>
-            ) : (
-              <>
-                {/* Menu content */}
-                {children}
-                {/* Add / Import / Hardware button */}
-                {showAccountCreation ? (
-                  <Box
-                    paddingTop={2}
-                    paddingBottom={4}
-                    paddingLeft={4}
-                    paddingRight={4}
-                    alignItems={AlignItems.center}
-                    display={Display.Flex}
-                  >
-                    <ButtonSecondary
-                      startIconName={IconName.Add}
-                      size={ButtonSecondarySize.Lg}
-                      block
-                      onClick={() => setActionMode(ACTION_MODES.MENU)}
-                      data-testid="multichain-account-menu-popover-action-button"
-                    >
-                      {t('addImportAccount')}
-                    </ButtonSecondary>
-                  </Box>
-                ) : null}
-              </>
-            )}
+            ) : null}
           </>
         ) : null}
       </ModalContent>

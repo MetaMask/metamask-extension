@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -13,26 +13,30 @@ import {
   JustifyContent,
   FlexDirection,
   BlockSize,
-  IconColor,
 } from '../../../helpers/constants/design-system';
-import {
-  Box,
-  Text,
-  IconName,
-  ButtonIcon,
-  ButtonIconSize,
-} from '../../../components/component-library';
+import { Box, Text } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_WELCOME_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
+import {
+  getFirstTimeFlowType,
+  getSocialLoginEmail,
+  getSocialLoginType,
+} from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   resetOAuthLoginState,
   setFirstTimeFlowType,
 } from '../../../store/actions';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventAccountType,
+} from '../../../../shared/constants/metametrics';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -42,6 +46,10 @@ export default function AccountExist() {
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
+  const socialLoginType = useSelector(getSocialLoginType);
+  const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
+    trackEvent;
 
   const onLoginWithDifferentMethod = async () => {
     // clear the social login state
@@ -52,6 +60,21 @@ export default function AccountExist() {
   };
 
   const onDone = async () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletImportStarted,
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: `${MetaMetricsEventAccountType.Imported}_${socialLoginType}`,
+      },
+    });
+    bufferedTrace?.({
+      name: TraceName.OnboardingExistingSocialLogin,
+      op: TraceOperation.OnboardingUserJourney,
+      tags: { source: 'account_status_redirect' },
+      parentContext: onboardingParentContext?.current,
+    });
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
     history.replace(ONBOARDING_UNLOCK_ROUTE);
   };
@@ -60,7 +83,27 @@ export default function AccountExist() {
     if (firstTimeFlowType !== FirstTimeFlowType.socialCreate) {
       history.replace(ONBOARDING_WELCOME_ROUTE);
     }
-  }, [firstTimeFlowType, history]);
+    if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+      bufferedTrace?.({
+        name: TraceName.OnboardingNewSocialAccountExists,
+        op: TraceOperation.OnboardingUserJourney,
+        parentContext: onboardingParentContext?.current,
+      });
+    }
+    return () => {
+      if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        bufferedEndTrace?.({
+          name: TraceName.OnboardingNewSocialAccountExists,
+        });
+      }
+    };
+  }, [
+    firstTimeFlowType,
+    history,
+    onboardingParentContext,
+    bufferedTrace,
+    bufferedEndTrace,
+  ]);
 
   return (
     <Box
@@ -74,20 +117,6 @@ export default function AccountExist() {
       gap={6}
     >
       <Box>
-        <Box
-          justifyContent={JustifyContent.flexStart}
-          marginBottom={4}
-          width={BlockSize.Full}
-        >
-          <ButtonIcon
-            iconName={IconName.ArrowLeft}
-            color={IconColor.iconDefault}
-            size={ButtonIconSize.Md}
-            data-testid="create-password-back-button"
-            onClick={() => history.goBack()}
-            ariaLabel="back"
-          />
-        </Box>
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}

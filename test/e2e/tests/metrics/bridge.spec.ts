@@ -16,6 +16,7 @@ import {
 } from '../bridge/bridge-test-utils';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import { disableStxSetting } from '../../page-objects/flows/toggle-stx-setting.flow';
+import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 
 const quote = {
   amount: '25',
@@ -42,9 +43,10 @@ describe('Bridge tests', function (this: Suite) {
         await disableStxSetting(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24');
 
-        await bridgeTransaction(driver, quote, 2, '24.9');
+        await bridgeTransaction(driver, quote, 2);
+
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
 
         // Start the flow again
         await homePage.startBridgeFlow();
@@ -85,14 +87,10 @@ describe('Bridge tests', function (this: Suite) {
         assert.ok(swapBridgeButtonClicked.length === 2);
         assert.ok(
           swapBridgeButtonClicked[0].properties.token_symbol_source === 'ETH' &&
-            swapBridgeButtonClicked[0].properties.token_symbol_destination ===
-              null &&
             swapBridgeButtonClicked[0].properties.token_address_source ===
               'eip155:1/slip44:60' &&
             swapBridgeButtonClicked[0].properties.category ===
-              'Unified SwapBridge' &&
-            swapBridgeButtonClicked[0].properties.token_address_destination ===
-              null,
+              'Unified SwapBridge',
         );
 
         const swapBridgePageViewed = findEventsByName(
@@ -104,9 +102,7 @@ describe('Bridge tests', function (this: Suite) {
           swapBridgePageViewed[0].properties.token_address_source ===
             'eip155:1/slip44:60' &&
             swapBridgePageViewed[0].properties.category ===
-              'Unified SwapBridge' &&
-            swapBridgePageViewed[0].properties.token_address_destination ===
-              null,
+              'Unified SwapBridge',
         );
 
         const swapBridgeInputChanged = findEventsByName(
@@ -114,20 +110,20 @@ describe('Bridge tests', function (this: Suite) {
         );
         /**
          * token_source
-         * token_destination
          * chain_source
-         * chain_destination
          * slippage
+         * token_destination
+         * chain_destination
          */
 
-        assert.ok(swapBridgeInputChanged.length === 14);
+        assert.ok(swapBridgeInputChanged.length === 17);
 
         const inputTypes = [
           'token_source',
-          'token_destination',
           'chain_source',
-          'chain_destination',
           'slippage',
+          'token_destination',
+          'chain_destination',
         ];
         const hasAllInputs = inputTypes.every((inputType) =>
           swapBridgeInputChanged.some(
@@ -136,7 +132,7 @@ describe('Bridge tests', function (this: Suite) {
               event.properties.input === inputType,
           ),
         );
-        assert.ok(hasAllInputs, 'Should have all 5 input types');
+        assert.ok(hasAllInputs, 'Should have 5 input types');
 
         const swapBridgeQuotesRequested = findEventsByName(
           EventTypes.SwapBridgeQuotesRequested,

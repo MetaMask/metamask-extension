@@ -48,10 +48,7 @@ import {
   type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import { ReceiveModal } from '../../multichain/receive-modal';
-import {
-  setSwitchedNetworkDetails,
-  setActiveNetworkWithError,
-} from '../../../store/actions';
+import { setActiveNetworkWithError } from '../../../store/actions';
 import {
   getMultichainNativeCurrency,
   getMultichainNetwork,
@@ -208,11 +205,6 @@ const CoinButtons = ({
       try {
         const networkConfigurationId = networks[chainId];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
-        await dispatch(
-          setSwitchedNetworkDetails({
-            networkClientId: networkConfigurationId,
-          }),
-        );
       } catch (err) {
         console.error(`Failed to switch chains.
         Target chainId: ${chainId}, Current chainId: ${currentChainId}.
@@ -301,7 +293,6 @@ const CoinButtons = ({
       openBridgeExperience(
         MetaMetricsSwapsEventSource.MainView,
         defaultSwapsToken,
-        location.pathname.includes('asset') ? '&token=native' : '',
         isSwap,
       );
     },
@@ -423,7 +414,7 @@ const CoinButtons = ({
         round={!displayNewIconButtons}
       />
       {/* the bridge button is redundant if unified ui is enabled */}
-      {process.env.REMOVE_GNS || isUnifiedUIEnabled ? null : (
+      {isUnifiedUIEnabled ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
           disabled={
