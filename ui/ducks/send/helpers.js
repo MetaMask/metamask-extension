@@ -60,7 +60,7 @@ export async function estimateGasLimitForSend({
   let blockGasLimit = MIN_GAS_LIMIT_HEX;
   if (
     options.blockGasLimit &&
-    new Numeric(options.blockGasLimit, 16) <= TEN_MILLION
+    new Numeric(options.blockGasLimit, 16).toNumber() <= TEN_MILLION
   ) {
     blockGasLimit = options.blockGasLimit;
   } else if (sendToken) {
