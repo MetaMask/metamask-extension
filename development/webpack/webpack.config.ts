@@ -28,7 +28,6 @@ import {
   getMinimizers,
   NODE_MODULES_RE,
   __HMR_READY__,
-  SNOW_MODULE_RE,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
@@ -191,10 +190,8 @@ if (args.progress) {
 // #endregion plugins
 
 const swcConfig = { args, safeVariables, browsersListQuery, isDevelopment };
-const tsxLoader = getSwcLoader('typescript', true, 'module', swcConfig);
-const jsxLoader = getSwcLoader('ecmascript', true, 'module', swcConfig);
-const ecmaLoader = getSwcLoader('ecmascript', false, 'module', swcConfig);
-const scriptLoader = getSwcLoader('ecmascript', false, 'script', swcConfig);
+const tsxLoader = getSwcLoader('typescript', true, swcConfig);
+const jsxLoader = getSwcLoader('ecmascript', true, swcConfig);
 
 const config = {
   entry,
@@ -284,22 +281,6 @@ const config = {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
         use: [jsxLoader, codeFenceLoader],
-      },
-      // vendor module javascript
-      {
-        test: /\.mjs$/u,
-        include: NODE_MODULES_RE,
-        // security team requires that we never process `@lavamoat/snow/**.*`
-        exclude: SNOW_MODULE_RE,
-        use: ecmaLoader,
-      },
-      // vendor javascript
-      {
-        test: /\.js$/u,
-        include: NODE_MODULES_RE,
-        // security team requires that we never process `@lavamoat/snow/**.*`
-        exclude: SNOW_MODULE_RE,
-        use: scriptLoader,
       },
       // css, sass/scss
       {

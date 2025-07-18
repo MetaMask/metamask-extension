@@ -113,7 +113,7 @@ describe('swcLoader', () => {
           isDevelopment,
         };
 
-        const loader = getSwcLoader(syntax, enableJsx, 'module', swcConfig);
+        const loader = getSwcLoader(syntax, enableJsx, swcConfig);
         assert.strictEqual(
           loader.loader,
           require.resolve('../utils/loaders/swcLoader'),
@@ -122,7 +122,6 @@ describe('swcLoader', () => {
           syntax,
           [syntax === 'typescript' ? 'tsx' : 'jsx']: enableJsx,
           importAttributes: true,
-          sourceType: 'module',
         });
         assert.deepStrictEqual(loader.options.jsc.transform.react, {
           development: isDevelopment,
