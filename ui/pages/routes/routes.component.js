@@ -168,7 +168,6 @@ const WalletDetails = mmLazy(
 export default class Routes extends Component {
   static propTypes = {
     currentCurrency: PropTypes.string,
-    activeTabOrigin: PropTypes.string,
     setCurrentCurrencyToUSD: PropTypes.func,
     isLoading: PropTypes.bool,
     loadingMessage: PropTypes.string,
@@ -204,15 +203,6 @@ export default class Routes extends Component {
     hideImportTokensModal: PropTypes.func.isRequired,
     isDeprecatedNetworkModalOpen: PropTypes.bool.isRequired,
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
-    clearSwitchedNetworkDetails: PropTypes.func.isRequired,
-    switchedNetworkDetails: PropTypes.oneOf([
-      null,
-      PropTypes.shape({
-        origin: PropTypes.string.isRequired,
-        networkClientId: PropTypes.string.isRequired,
-      }),
-    ]),
-    switchedNetworkNeverShowMessage: PropTypes.bool,
     networkToAutomaticallySwitchTo: PropTypes.object,
     automaticallySwitchNetwork: PropTypes.func.isRequired,
     totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
@@ -237,7 +227,6 @@ export default class Routes extends Component {
     const {
       theme,
       networkToAutomaticallySwitchTo,
-      activeTabOrigin,
       totalUnapprovedConfirmationCount,
       isUnlocked,
       currentExtensionPopupId,
@@ -256,10 +245,7 @@ export default class Routes extends Component {
       (prevProps.totalUnapprovedConfirmationCount > 0 ||
         (prevProps.isUnlocked === false && isUnlocked))
     ) {
-      this.props.automaticallySwitchNetwork(
-        networkToAutomaticallySwitchTo,
-        activeTabOrigin,
-      );
+      this.props.automaticallySwitchNetwork(networkToAutomaticallySwitchTo);
     }
 
     // Terminate the popup when another popup is opened
@@ -486,14 +472,11 @@ export default class Routes extends Component {
       hideIpfsModal,
       hideImportTokensModal,
       hideDeprecatedNetworkModal,
-      clearSwitchedNetworkDetails,
       networkMenuClose,
       privacyMode,
       oldestPendingApproval,
       pendingApprovals,
       transactionsMetadata,
-      switchedNetworkDetails,
-      switchedNetworkNeverShowMessage,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -574,11 +557,6 @@ export default class Routes extends Component {
           [`browser-${browser}`]: browser,
         })}
         dir={textDirection}
-        onMouseUp={
-          switchedNetworkDetails && !switchedNetworkNeverShowMessage
-            ? clearSwitchedNetworkDetails
-            : undefined
-        }
       >
         {shouldShowNetworkDeprecationWarning ? <DeprecatedNetworks /> : null}
         <QRHardwarePopover />
