@@ -26,6 +26,7 @@ export class CronjobStorageManager {
     this.#initialStorage = await browser.storage.local.get(
       CronjobControllerStorageKey,
     );
+    this.#initialized = true;
   }
 
   /**
@@ -34,6 +35,9 @@ export class CronjobStorageManager {
    * @returns The initial CronjobController state.
    */
   getInitialState() {
+    if (this.#initialized) {
+      throw new Error('CronjobStorageManager not yet initialized');
+    }
     return this.#initialStorage;
   }
 
@@ -43,6 +47,9 @@ export class CronjobStorageManager {
    * @param data - The CronjobController state to set.
    */
   set(data: Json) {
+    if (this.#initialized) {
+      throw new Error('CronjobStorageManager not yet initialized');
+    }
     browser.storage.local
       .set({ [CronjobControllerStorageKey]: data })
       .catch(console.error);
