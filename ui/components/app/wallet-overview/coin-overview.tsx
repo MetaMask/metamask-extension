@@ -39,7 +39,6 @@ import {
   getDataCollectionForMarketing,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  SwapsEthToken,
   getEnabledNetworksByNamespace,
   isGlobalNetworkSelectorRemoved,
 } from '../../../selectors';
