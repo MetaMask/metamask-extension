@@ -3774,6 +3774,9 @@
   "noNFTs": {
     "message": "No NFTs yet"
   },
+  "noNetworksAvailable": {
+    "message": "No networks available"
+  },
   "noNetworksFound": {
     "message": "No networks found for the given search query"
   },
@@ -5041,6 +5044,9 @@
   },
   "searchAccounts": {
     "message": "Search accounts"
+  },
+  "searchNetworks": {
+    "message": "Search networks"
   },
   "searchNfts": {
     "message": "Search NFTs"
