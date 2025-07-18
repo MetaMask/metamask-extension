@@ -23,6 +23,8 @@ const UTM_PARAMETERS = new Set([
 export type Properties = {
   route: string;
   signature: SignatureStatus;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   attribution_id?: string;
 } & { [key in UTMParameter]?: string };
 

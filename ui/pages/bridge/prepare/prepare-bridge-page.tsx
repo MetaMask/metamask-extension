@@ -8,9 +8,8 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
-import { useHistory, useLocation } from 'react-router-dom';
 import { type TokenListMap } from '@metamask/assets-controllers';
-import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
+import { zeroAddress } from 'ethereumjs-util';
 import {
   formatChainIdToCaip,
   isSolanaChainId,
@@ -20,6 +19,7 @@ import {
   isNativeAddress,
   UnifiedSwapBridgeEventName,
   BRIDGE_DEFAULT_SLIPPAGE,
+  GenericQuoteRequest,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -31,6 +31,7 @@ import {
   resetBridgeState,
   setSlippage,
   trackUnifiedSwapBridgeEvent,
+  setFromChain,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -55,6 +56,7 @@ import {
   getIsSwap,
   BridgeAppState,
   isBridgeSolanaEnabled,
+  getTxAlerts,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -80,10 +82,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
-import {
-  setActiveNetworkWithError,
-  setSelectedAccount,
-} from '../../../store/actions';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
   formatTokenAmount,
@@ -110,7 +108,6 @@ import {
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
-import { SOLANA_USDC_ASSET } from '../../../../shared/constants/bridge';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -126,15 +123,13 @@ import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import {
-  fetchAssetMetadata,
-  toAssetId,
-} from '../../../../shared/lib/asset-utils';
-import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
+import { toAssetId } from '../../../../shared/lib/asset-utils';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
+import useBridgeDefaultToToken from '../../../hooks/bridge/useBridgeDefaultToToken';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -176,7 +171,9 @@ const PrepareBridgePage = () => {
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
-  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const smartTransactionsEnabled = useSelector((state) =>
+    getIsSmartTransaction(state as never, fromChain?.chainId),
+  );
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
@@ -184,6 +181,8 @@ const PrepareBridgePage = () => {
   const quoteRequest = useSelector(getQuoteRequest);
   const {
     isLoading,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     activeQuote: activeQuote_,
     isQuoteGoingToRefresh,
     quotesRefreshCount,
@@ -219,6 +218,8 @@ const PrepareBridgePage = () => {
     ? selectedEvmAccount
     : selectedMultichainAccount;
 
+  useBridgeQueryParams(selectedSolanaAccount, selectedEvmAccount);
+
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
   const hardwareWalletName = useSelector(getHardwareWalletName);
@@ -232,6 +233,7 @@ const PrepareBridgePage = () => {
     isInsufficientGasForQuote,
     isInsufficientBalance,
   } = useSelector(getValidationErrors);
+  const txAlert = useSelector(getTxAlerts);
   const { openBuyCryptoInPdapp } = useRamps();
 
   const nativeAsset = useMemo(
@@ -346,7 +348,6 @@ const PrepareBridgePage = () => {
   const insufficientBalanceBannerRef = useRef<HTMLDivElement>(null);
   const isEstimatedReturnLowRef = useRef<HTMLDivElement>(null);
   const tokenAlertBannerRef = useRef<HTMLDivElement>(null);
-  const fromAssetsPageFixAppliedRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (isInsufficientGasForQuote(nativeAssetBalance)) {
@@ -378,7 +379,7 @@ const PrepareBridgePage = () => {
     return isSolanaChainId(toChain.chainId);
   }, [toChain?.chainId]);
 
-  const quoteParams = useMemo(
+  const quoteParams: Partial<GenericQuoteRequest> = useMemo(
     () => ({
       srcTokenAddress: fromToken?.address,
       destTokenAddress: toToken?.address,
@@ -404,6 +405,7 @@ const PrepareBridgePage = () => {
       slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
+      gasIncluded: smartTransactionsEnabled && isSwap,
     }),
     [
       fromToken?.address,
@@ -416,6 +418,8 @@ const PrepareBridgePage = () => {
       selectedAccount?.address,
       selectedDestinationAccount?.address,
       providerConfig?.rpcUrl,
+      smartTransactionsEnabled,
+      isSwap,
     ],
   );
 
@@ -431,11 +435,23 @@ const PrepareBridgePage = () => {
     trackCrossChainSwapsEvent({
       event: MetaMetricsEventName.ActionPageViewed,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id_source: formatChainIdToCaip(fromChain?.chainId ?? ''),
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol_source: fromToken?.symbol ?? '',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_address_source: fromToken?.address ?? '',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id_destination: formatChainIdToCaip(toChain?.chainId ?? ''),
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol_destination: toToken?.symbol ?? '',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_address_destination: toToken?.address ?? '',
       },
     });
@@ -448,9 +464,17 @@ const PrepareBridgePage = () => {
   useEffect(() => {
     dispatch(setSelectedQuote(null));
     debouncedUpdateQuoteRequestInController(quoteParams, {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       stx_enabled: smartTransactionsEnabled,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_symbol_source: fromToken?.symbol ?? '',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_symbol_destination: toToken?.symbol ?? '',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       security_warnings: [],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -467,90 +491,6 @@ const PrepareBridgePage = () => {
     },
     [],
   );
-
-  const { search } = useLocation();
-  const history = useHistory();
-
-  useEffect(() => {
-    if (!fromChain?.chainId || isFromTokensLoading) {
-      return;
-    }
-
-    const searchParams = new URLSearchParams(search);
-    const tokenAddressFromUrl = searchParams.get('token');
-    if (!tokenAddressFromUrl) {
-      return;
-    }
-
-    const removeTokenFromUrl = () => {
-      const newParams = new URLSearchParams(searchParams);
-      newParams.delete('token');
-      history.replace({
-        search: newParams.toString(),
-      });
-    };
-
-    const handleToken = async () => {
-      if (isSolanaChainId(fromChain.chainId)) {
-        const tokenAddress = tokenAddressFromUrl;
-        const assetId = toAssetId(
-          tokenAddress,
-          formatChainIdToCaip(fromChain.chainId),
-        );
-        if (!assetId) {
-          removeTokenFromUrl();
-          return;
-        }
-
-        const tokenMetadata = await fetchAssetMetadata(
-          tokenAddress,
-          fromChain.chainId,
-        );
-        if (!tokenMetadata) {
-          removeTokenFromUrl();
-          return;
-        }
-
-        dispatch(
-          setFromToken({
-            ...tokenMetadata,
-            chainId: fromChain.chainId,
-          }),
-        );
-        removeTokenFromUrl();
-        return;
-      }
-
-      const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
-
-      switch (tokenAddressFromUrl) {
-        case fromToken?.address:
-          // If the token is already set, remove the query param
-          removeTokenFromUrl();
-          break;
-        case matchedToken?.address:
-        case matchedToken?.address
-          ? toChecksumAddress(matchedToken.address)
-          : undefined: {
-          // If there is a match, set it as the fromToken
-          dispatch(
-            setFromToken({
-              ...matchedToken,
-              chainId: fromChain.chainId,
-            }),
-          );
-          removeTokenFromUrl();
-          break;
-        }
-        default:
-          // Otherwise remove query param
-          removeTokenFromUrl();
-          break;
-      }
-    };
-
-    handleToken();
-  }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
   // Set slippage based on swap type
   const slippageInitializedRef = useRef(false);
@@ -571,40 +511,53 @@ const PrepareBridgePage = () => {
     });
   }, []);
 
-  // Set the default destination token for swaps (only when unified UI is disabled)
+  const { defaultToChainId, defaultToToken } = useBridgeDefaultToToken();
+
+  // Track whether defaults have been applied separately for chain and token
+  const [defaultChainApplied, setDefaultChainApplied] = useState(false);
+  const [defaultTokenApplied, setDefaultTokenApplied] = useState(false);
+
   useEffect(() => {
-    // Only set default token when unified UI is disabled (preserve existing behavior)
-    if (!isUnifiedUIEnabled && isSwap && fromChain && !toToken) {
-      dispatch(setToChainId(fromChain.chainId));
-      dispatch(setToToken(SOLANA_USDC_ASSET));
+    // Only set default chain if user hasn't already selected one and default hasn't been applied
+    if (!toChain && defaultToChainId && fromChain && !defaultChainApplied) {
+      dispatch(setToChainId(defaultToChainId));
+      // Track the input change event for the prefilled chain
+      trackInputEvent({
+        input: 'chain_destination',
+        value: String(defaultToChainId),
+      });
+      setDefaultChainApplied(true);
     }
-  }, [isSwap, dispatch, fromChain, toToken, isUnifiedUIEnabled]);
+  }, [
+    defaultToChainId,
+    toChain,
+    fromChain,
+    dispatch,
+    trackInputEvent,
+    defaultChainApplied,
+  ]);
 
-  // Edge-case fix: if user lands with USDC selected for both sides on Solana,
-  // switch destination to SOL (native asset).
   useEffect(() => {
-    if (
-      !isSwap ||
-      !fromChain ||
-      !isSolanaChainId(fromChain.chainId) ||
-      !fromToken?.address ||
-      !toToken?.address ||
-      fromAssetsPageFixAppliedRef.current // Prevent multiple applications of the fix as it's only needed initially.
-    ) {
-      return;
+    // Only set default token if user hasn't already selected one and default hasn't been applied
+    if (!toToken && defaultToToken && toChain && !defaultTokenApplied) {
+      dispatch(setToToken(defaultToToken));
+      // Track the input change event for the prefilled token
+      if (defaultToToken.address) {
+        trackInputEvent({
+          input: 'token_destination',
+          value: defaultToToken.address,
+        });
+      }
+      setDefaultTokenApplied(true);
     }
-
-    const isBothUsdc =
-      fromToken.address.toLowerCase() ===
-        SOLANA_USDC_ASSET.address.toLowerCase() &&
-      toToken.address.toLowerCase() === SOLANA_USDC_ASSET.address.toLowerCase();
-
-    if (isBothUsdc) {
-      const solNativeAsset = getNativeAssetForChainId(fromChain.chainId);
-      dispatch(setToToken(solNativeAsset));
-      fromAssetsPageFixAppliedRef.current = true;
-    }
-  }, [isSwap, fromChain?.chainId, fromToken?.address, toToken?.address]);
+  }, [
+    defaultToToken,
+    toToken,
+    toChain,
+    dispatch,
+    trackInputEvent,
+    defaultTokenApplied,
+  ]);
 
   const occurrences = Number(
     toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,
@@ -621,7 +574,7 @@ const PrepareBridgePage = () => {
 
   const getFromInputHeader = () => {
     if (isUnifiedUIEnabled) {
-      return t('yourNetworks');
+      return t('swapSelectToken');
     }
     return isSwap ? t('swapSwapFrom') : t('bridgeFrom');
   };
@@ -662,43 +615,31 @@ const PrepareBridgePage = () => {
             network: fromChain,
             networks: isSwap && !isUnifiedUIEnabled ? undefined : fromChains,
             onNetworkChange: (networkConfig) => {
-              networkConfig?.chainId &&
-                networkConfig.chainId !== fromChain?.chainId &&
-                trackInputEvent({
-                  input: 'chain_source',
-                  value: networkConfig.chainId,
-                });
               if (
+                !isUnifiedUIEnabled &&
                 networkConfig?.chainId &&
                 networkConfig.chainId === toChain?.chainId
               ) {
                 dispatch(setToChainId(null));
-                dispatch(setToToken(null));
               }
-              if (
-                isSolanaChainId(networkConfig.chainId) &&
-                selectedSolanaAccount
-              ) {
-                dispatch(setSelectedAccount(selectedSolanaAccount.address));
-              } else if (isNetworkAdded(networkConfig)) {
-                dispatch(setSelectedAccount(selectedEvmAccount.address));
-                dispatch(
-                  setActiveNetworkWithError(
-                    networkConfig.rpcEndpoints[
-                      networkConfig.defaultRpcEndpointIndex
-                    ].networkClientId || networkConfig.chainId,
-                  ),
-                );
-              }
-              dispatch(setFromToken(null));
-              dispatch(setFromTokenInputValue(null));
+              dispatch(
+                setFromChain({
+                  networkConfig,
+                  selectedSolanaAccount,
+                  selectedEvmAccount,
+                }),
+              );
             },
             header: t('yourNetworks'),
           }}
           isMultiselectEnabled={isUnifiedUIEnabled || !isSwap}
-          onMaxButtonClick={(value: string) => {
-            dispatch(setFromTokenInputValue(value));
-          }}
+          onMaxButtonClick={
+            isNativeAddress(fromToken?.address ?? '')
+              ? undefined
+              : (value: string) => {
+                  dispatch(setFromTokenInputValue(value));
+                }
+          }
           // Hides fiat amount string before a token quantity is entered.
           amountInFiat={
             fromAmountInCurrency.valueInCurrency.gt(0)
@@ -776,23 +717,37 @@ const PrepareBridgePage = () => {
                     trackUnifiedSwapBridgeEvent(
                       UnifiedSwapBridgeEventName.InputSourceDestinationFlipped,
                       {
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_symbol_source: toToken?.symbol ?? null,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_symbol_destination: fromToken?.symbol ?? null,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_address_source:
                           toAssetId(
                             toToken.address ?? '',
                             formatChainIdToCaip(toToken.chainId ?? ''),
                           ) ??
                           getNativeAssetForChainId(toChain.chainId)?.assetId,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_address_destination:
                           toAssetId(
                             fromToken.address ?? '',
                             formatChainIdToCaip(fromToken.chainId ?? ''),
                           ) ?? null,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         chain_id_source: formatChainIdToCaip(toChain.chainId),
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         chain_id_destination: fromChain?.chainId
                           ? formatChainIdToCaip(fromChain?.chainId)
                           : null,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         security_warnings: [],
                       },
                     ),
@@ -809,36 +764,18 @@ const PrepareBridgePage = () => {
                 const shouldFlipNetworks = isUnifiedUIEnabled || !isSwap;
                 if (shouldFlipNetworks) {
                   // Handle account switching for Solana
-                  if (
-                    toChain?.chainId &&
-                    formatChainIdToCaip(toChain.chainId) ===
-                      MultichainNetworks.SOLANA &&
-                    selectedSolanaAccount
-                  ) {
-                    dispatch(setSelectedAccount(selectedSolanaAccount.address));
-                  } else {
-                    dispatch(setSelectedAccount(selectedEvmAccount.address));
-                  }
-
-                  // Get the network client ID for switching
-                  const toChainClientId =
-                    toChain?.defaultRpcEndpointIndex !== undefined &&
-                    toChain?.rpcEndpoints
-                      ? toChain.rpcEndpoints[toChain.defaultRpcEndpointIndex]
-                      : undefined;
-                  const networkClientId =
-                    toChainClientId && 'networkClientId' in toChainClientId
-                      ? toChainClientId.networkClientId
-                      : toChain?.chainId;
-
-                  if (networkClientId) {
-                    dispatch(setActiveNetworkWithError(networkClientId));
-                  }
+                  dispatch(
+                    setFromChain({
+                      networkConfig: toChain,
+                      token: toToken,
+                      selectedSolanaAccount,
+                      selectedEvmAccount,
+                    }),
+                  );
                   if (fromChain?.chainId) {
                     dispatch(setToChainId(fromChain.chainId));
                   }
                 }
-                dispatch(setFromToken(toToken));
                 dispatch(setToToken(fromToken));
               }}
             />
@@ -872,12 +809,8 @@ const PrepareBridgePage = () => {
                           value: networkConfig.chainId,
                         });
                       dispatch(setToChainId(networkConfig.chainId));
-                      const destNativeAsset = getNativeAssetForChainId(
-                        networkConfig.chainId,
-                      );
-                      dispatch(setToToken(destNativeAsset));
                     },
-                    header: getToInputHeader(),
+                    header: t('yourNetworks'),
                     shouldDisableNetwork: isUnifiedUIEnabled
                       ? undefined
                       : ({ chainId }) => chainId === fromChain?.chainId,
@@ -989,9 +922,17 @@ const PrepareBridgePage = () => {
                   srcTokenBalance={srcTokenBalance}
                   onFetchNewQuotes={() => {
                     debouncedUpdateQuoteRequestInController(quoteParams, {
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       stx_enabled: smartTransactionsEnabled,
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       token_symbol_source: fromToken?.symbol ?? '',
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       token_symbol_destination: toToken?.symbol ?? '',
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       security_warnings: [], // TODO populate security warnings
                     });
                   }}
@@ -1011,15 +952,27 @@ const PrepareBridgePage = () => {
                       variant={TextVariant.bodyXs}
                       textAlign={TextAlign.Center}
                     >
-                      {isUsingHardwareWallet
-                        ? t('willApproveAmountForBridgingHardware')
-                        : t('willApproveAmountForBridging', [
+                      {(() => {
+                        if (isUsingHardwareWallet) {
+                          return t('willApproveAmountForBridgingHardware');
+                        }
+                        if (isSwap) {
+                          return t('willApproveAmountForSwapping', [
                             formatTokenAmount(
                               locale,
                               activeQuote.sentAmount.amount,
                               activeQuote.quote.srcAsset.symbol,
                             ),
-                          ])}
+                          ]);
+                        }
+                        return t('willApproveAmountForBridging', [
+                          formatTokenAmount(
+                            locale,
+                            activeQuote.sentAmount.amount,
+                            activeQuote.quote.srcAsset.symbol,
+                          ),
+                        ]);
+                      })()}
                     </Text>
                     <Tooltip
                       display={Display.InlineBlock}
@@ -1070,6 +1023,16 @@ const PrepareBridgePage = () => {
                 </ul>
               </BannerAlert>
             )}
+          {txAlert && activeQuote && (
+            <BannerAlert
+              marginInline={4}
+              marginBottom={10}
+              severity={BannerAlertSeverity.Danger}
+              title={t(txAlert.titleId)}
+              description={`${txAlert.description} ${t(txAlert.descriptionId)}`}
+              textAlign={TextAlign.Left}
+            />
+          )}
           {isNoQuotesAvailable && !isQuoteExpired && (
             <BannerAlert
               marginInline={4}
@@ -1083,7 +1046,7 @@ const PrepareBridgePage = () => {
             isEvm &&
             toToken &&
             toTokenIsNotNative &&
-            toToken.address !== SOLANA_USDC_ASSET.address &&
+            (!defaultToToken || toToken.address !== defaultToToken.address) &&
             occurrences < 2 && (
               <BannerAlert
                 severity={BannerAlertSeverity.Warning}

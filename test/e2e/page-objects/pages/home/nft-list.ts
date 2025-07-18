@@ -25,6 +25,11 @@ class NftListPage {
 
   private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  private readonly LineaMainnet =
+    '[data-testid="network-list-item-eip155:59144"]';
+
   private readonly noNftInfo = {
     text: 'No NFTs yet',
     tag: 'p',
@@ -40,6 +45,9 @@ class NftListPage {
     tag: 'h6',
   };
 
+  private readonly modalCloseButton =
+    '[data-testid="modal-header-close-button"]';
+
   private readonly nftFilterByNetworks = '[data-testid="sort-by-networks"]';
 
   private readonly nftFilterByPopularNetworks =
@@ -48,10 +56,14 @@ class NftListPage {
   private readonly nftFilterByCurrentNetwork =
     '[data-testid="network-filter-current"]';
 
+  private readonly nftListItem = '[data-testid="nft-wrapper"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.clickElement(this.actionBarButton);
@@ -99,6 +111,8 @@ class NftListPage {
     }
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_nftImageIsDisplayed(): Promise<void> {
     console.log('Check that NFT image is displayed in NFT tab on homepage');
     await this.driver.waitForSelector(this.nftIconOnActivityList);
@@ -109,6 +123,8 @@ class NftListPage {
    *
    * @param nftName - The name of the NFT to check for.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_nftNameIsDisplayed(nftName: string): Promise<void> {
     console.log(
       `Check that NFT item ${nftName} is displayed in NFT tab on homepage`,
@@ -119,11 +135,15 @@ class NftListPage {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_noNftInfoIsDisplayed(): Promise<void> {
     console.log('Check that no NFT info is displayed on nft tab');
     await this.driver.waitForSelector(this.noNftInfo);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_successImportNftMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check that success imported NFT message is displayed on homepage',
@@ -131,6 +151,8 @@ class NftListPage {
     await this.driver.waitForSelector(this.successImportNftMessage);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_successRemoveNftMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check that success removed NFT message is displayed on homepage',
@@ -138,6 +160,8 @@ class NftListPage {
     await this.driver.waitForSelector(this.successRemoveNftMessage);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_numberOfNftsDisplayed(
     expectedNumberOfNfts: number,
   ): Promise<void> {
@@ -167,6 +191,26 @@ class NftListPage {
         `Invalid network name selected for filtering NFTs: ${networkName}`,
       );
     }
+  }
+
+  async toggleLineaEnablement(): Promise<void> {
+    await this.driver.clickElement(this.nftFilterByNetworks);
+    await this.driver.clickElementSafe(this.LineaMainnet);
+    await this.driver.clickElementSafe(this.modalCloseButton);
+  }
+
+  async clickNFTFromList(index = 0, timeout = 10000): Promise<void> {
+    console.log(`Clicking NFT at index ${index}`);
+    const nfts = await this.driver.findElements(this.nftListItem);
+    if (nfts.length === 0) {
+      throw new Error('No NFTs found to select');
+    }
+
+    const element = nfts[index];
+    await element.click();
+    // @ts-expect-error - The waitForElementState method is not typed correctly in the driver.
+    await element.waitForElementState('hidden', timeout);
+    console.log(`NFT at index ${index} selected successfully`);
   }
 }
 

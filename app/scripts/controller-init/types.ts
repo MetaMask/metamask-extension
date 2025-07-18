@@ -16,6 +16,7 @@ import {
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
 } from '../../../shared/constants/metametrics';
+import { OAuthRefreshTokenResult } from '../services/oauth/types';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -205,6 +206,19 @@ export type ControllerInitRequest<
    * Generated using the callback specified in `getInitMessengerCallback`.
    */
   initMessenger: InitMessengerType;
+
+  /**
+   * Refresh the OAuth token.
+   */
+  refreshOAuthToken: () => Promise<OAuthRefreshTokenResult>;
+
+  /**
+   * Revoke the current OAuth refresh token and get a new one.
+   */
+  revokeAndGetNewRefreshToken: () => Promise<{
+    newRefreshToken: string;
+    newRevokeToken: string;
+  }>;
 };
 
 /**

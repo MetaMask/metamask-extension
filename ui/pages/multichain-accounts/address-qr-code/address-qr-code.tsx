@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import { parseCaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import {
   Page,
   Header,
@@ -16,13 +16,11 @@ import {
   ButtonSecondarySize,
   IconName,
 } from '../../../components/component-library';
-import { ACCOUNT_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 import {
   BackgroundColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import QrCodeView from '../../../components/ui/qr-code-view';
-import { AppSliceState } from '../../../ducks/app/app';
 import { getInternalAccountByAddress } from '../../../selectors';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -37,10 +35,8 @@ import {
 export const AddressQRCode = () => {
   const t = useI18nContext();
   const history = useHistory();
+  const { address } = useParams();
   const trackEvent = useContext(MetaMetricsContext);
-  const address = useSelector(
-    (state: AppSliceState) => state.appState.accountDetailsAddress,
-  );
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
   );
@@ -65,6 +61,8 @@ export const AddressQRCode = () => {
       category: MetaMetricsEventCategory.Accounts,
       properties: {
         location: metricsLocation,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
       },
     });
@@ -72,7 +70,7 @@ export const AddressQRCode = () => {
   }, [chainId, trackEvent, addressLink]);
 
   return (
-    <Page>
+    <Page className="address-qr-code-page">
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={
@@ -80,19 +78,24 @@ export const AddressQRCode = () => {
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
-            onClick={() => history.push(ACCOUNT_DETAILS_ROUTE)}
+            onClick={() => history.goBack()}
           />
         }
       >
         {t('address')}
       </Header>
       <Content paddingTop={0}>
-        <QrCodeView Qr={{ data: address }} location="Account Details Page" />
+        <QrCodeView
+          Qr={{ data: address as string }}
+          location="Account Details Page"
+          accountName={account.metadata.name}
+        />
       </Content>
       <Footer>
         <ButtonSecondary
           onClick={handleNavigation}
           size={ButtonSecondarySize.Lg}
+          data-testid={addressLink}
           textProps={{
             variant: TextVariant.bodyMdMedium,
           }}

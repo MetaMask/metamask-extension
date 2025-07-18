@@ -31,6 +31,10 @@ class TransactionConfirmation extends Confirmation {
 
   private gasFeeTokenPill: RawLocator;
 
+  private senderAccount: RawLocator;
+
+  private transactionDetails: RawLocator;
+
   constructor(driver: Driver) {
     super(driver);
 
@@ -62,16 +66,25 @@ class TransactionConfirmation extends Confirmation {
     this.gasFeeTokenArrow = '[data-testid="selected-gas-fee-token-arrow"]';
     this.gasFeeTokenFeeText = '[data-testid="gas-fee-token-fee"]';
     this.gasFeeTokenPill = '[data-testid="selected-gas-fee-token"]';
+    this.senderAccount = '[data-testid="sender-address"]';
+    this.transactionDetails =
+      '[data-testid="confirmation__token-details-section"]';
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_walletInitiatedHeadingTitle() {
     await this.driver.waitForSelector(this.walletInitiatedHeadingTitle);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_dappInitiatedHeadingTitle() {
     await this.driver.waitForSelector(this.dappInitiatedHeadingTitle);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_gasFee(amountToken: string) {
     await this.driver.findElement({
       css: this.gasFeeText,
@@ -79,6 +92,8 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_gasFeeFiat(amountFiat: string) {
     await this.driver.findElement({
       css: this.gasFeeFiatText,
@@ -86,6 +101,8 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_gasFeeSymbol(symbol: string) {
     await this.driver.waitForSelector({
       css: this.gasFeeTokenPill,
@@ -93,10 +110,44 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_gasFeeTokenFee(amountFiat: string) {
     await this.driver.findElement({
       css: this.gasFeeTokenFeeText,
       text: amountFiat,
+    });
+  }
+
+  /**
+   * Checks if the sender account is displayed in the transaction confirmation page.
+   *
+   * @param account - The sender account to check.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_isSenderAccountDisplayed(account: string): Promise<boolean> {
+    console.log(
+      `Checking sender account ${account} on transaction confirmation page.`,
+    );
+    return await this.driver.isElementPresentAndVisible(
+      {
+        css: this.senderAccount,
+        text: account,
+      },
+      2000,
+    );
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_networkIsDisplayed(network: string): Promise<void> {
+    console.log(
+      `Checking network ${network} is displayed on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector({
+      css: this.transactionDetails,
+      text: network,
     });
   }
 
@@ -256,6 +307,18 @@ class TransactionConfirmation extends Confirmation {
         }
       }),
     );
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_sendAmount(amount: string) {
+    console.log(
+      `Checking send amount ${amount} on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector({
+      text: amount,
+      tag: 'h2',
+    });
   }
 }
 

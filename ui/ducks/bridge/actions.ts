@@ -2,10 +2,21 @@ import {
   BridgeBackgroundAction,
   type BridgeController,
   BridgeUserAction,
+  isSolanaChainId,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
-import { forceUpdateMetamaskState } from '../../store/actions';
+import { type InternalAccount } from '@metamask/keyring-internal-api';
+import { type CaipChainId } from '@metamask/utils';
+import type {
+  AddNetworkFields,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
+import {
+  forceUpdateMetamaskState,
+  setActiveNetworkWithError,
+  setSelectedAccount,
+} from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import {
@@ -13,7 +24,10 @@ import {
   setDestTokenExchangeRates,
   setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
+  setTxAlerts,
 } from './bridge';
+import { isNetworkAdded } from './utils';
+import type { TokenPayload } from './types';
 
 const {
   setToChainId,
@@ -40,6 +54,7 @@ export {
   setSelectedQuote,
   setWasTxDeclined,
   setSlippage,
+  setTxAlerts,
 };
 
 const callBridgeControllerMethod = (
@@ -61,7 +76,10 @@ export const resetBridgeState = () => {
 };
 
 export const trackUnifiedSwapBridgeEvent = <
-  T extends (typeof UnifiedSwapBridgeEventName)[keyof typeof UnifiedSwapBridgeEventName],
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  T extends
+    (typeof UnifiedSwapBridgeEventName)[keyof typeof UnifiedSwapBridgeEventName],
 >(
   eventName: T,
   propertiesFromClient: Pick<RequiredEventContextFromClient, T>[T],
@@ -91,5 +109,41 @@ export const updateQuoteRequestParams = (
         context,
       ),
     );
+  };
+};
+
+export const setFromChain = ({
+  networkConfig,
+  selectedSolanaAccount,
+  selectedEvmAccount,
+  token = null,
+}: {
+  networkConfig?:
+    | NetworkConfiguration
+    | AddNetworkFields
+    | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
+  selectedSolanaAccount?: InternalAccount;
+  selectedEvmAccount?: InternalAccount;
+  token?: TokenPayload['payload'];
+}) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    if (
+      networkConfig &&
+      isSolanaChainId(networkConfig.chainId) &&
+      selectedSolanaAccount
+    ) {
+      await dispatch(setSelectedAccount(selectedSolanaAccount.address));
+    } else if (isNetworkAdded(networkConfig) && selectedEvmAccount) {
+      await dispatch(setSelectedAccount(selectedEvmAccount.address));
+      await dispatch(
+        setActiveNetworkWithError(
+          networkConfig.rpcEndpoints[networkConfig.defaultRpcEndpointIndex]
+            .networkClientId || networkConfig.chainId,
+        ),
+      );
+    }
+    if (token) {
+      await dispatch(setFromToken(token));
+    }
   };
 };
