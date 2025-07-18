@@ -1585,7 +1585,7 @@ async function startWebsocketMock(mockServer: Mockttp) {
             }),
           );
           console.log('Simulated message sent to the client');
-        }, 5000); // Delay the message by 5 second
+        }, 2000); // Delay the message by 5 second
       }
     });
 
@@ -1598,12 +1598,8 @@ async function startWebsocketMock(mockServer: Mockttp) {
   // Intercept WebSocket handshake requests
   await mockServer
     .forAnyWebSocket()
-    .matching(
-      (req) =>
-        req.url ===
-          'wss://solana-mainnet.infura.io/ws/v3/5b98a22672004ef1bf40a80123c5c48d' ||
-        req.url ===
-          'wss://solana-devnet.infura.io/ws/v3/5b98a22672004ef1bf40a80123c5c48d',
+    .matching(req =>
+      /^wss:\/\/solana-(mainnet|devnet)\.infura\.io\//.test(req.url)
     )
     .thenForwardTo(`ws://localhost:${port}`);
 }
