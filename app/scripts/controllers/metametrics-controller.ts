@@ -84,10 +84,10 @@ import { ENVIRONMENT } from '../../../development/build/constants';
 
 import { KeyringType } from '../../../shared/constants/keyring';
 import type {
-  PreferencesControllerState,
+  PreferencesState as PreferencesControllerState,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
-} from './preferences-controller';
+} from '@metamask/preferences-controller';
 
 // Unique name for the controller
 const controllerName = 'MetaMetricsController';
@@ -182,7 +182,7 @@ export type MetaMaskState = {
   openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
   securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
-  tokenSortConfig: PreferencesControllerState['preferences']['tokenSortConfig'];
+  tokenSortConfig: PreferencesControllerState['tokenSortConfig'];
   names: NameControllerState['names'];
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -190,8 +190,8 @@ export type MetaMaskState = {
   addressBook: AddressBookControllerState['addressBook'];
   currentCurrency: string;
   preferences: {
-    privacyMode: PreferencesControllerState['preferences']['privacyMode'];
-    tokenNetworkFilter: string[];
+    privacyMode: PreferencesControllerState['privacyMode'];
+    tokenNetworkFilter: PreferencesControllerState['tokenNetworkFilter'];
   };
   srpSessionData: AuthenticationControllerState['srpSessionData'];
   keyrings: { type: string; accounts: string[] }[];

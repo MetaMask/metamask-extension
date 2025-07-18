@@ -188,7 +188,7 @@ const mapStateToProps = (state) => {
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
     hasAllowedPopupRedirectApprovals,
-    showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
+    showMultiRpcModal: state.metamask.PreferencesController?.showMultiRpcModal,
     showUpdateModal: getShowUpdateModal(state),
     redirectAfterDefaultPage,
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),

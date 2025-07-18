@@ -39,7 +39,7 @@ import {
 } from '@metamask/keyring-controller';
 import { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from '@metamask/selected-network-controller';
 import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
-import { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
+import { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
 
 type Actions =
   | GetEndowments

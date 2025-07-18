@@ -59,7 +59,7 @@ import type { SmartTransactionsControllerState } from '@metamask/smart-transacti
 import type { AccountTrackerControllerState } from '../../app/scripts/controllers/account-tracker-controller';
 import type { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
 import type { AccountOrderControllerState } from '../../app/scripts/controllers/account-order';
-import type { PreferencesControllerState } from '../../app/scripts/controllers/preferences-controller';
+import type { PreferencesState as PreferencesControllerState } from '@metamask/preferences-controller';
 import type { AppStateControllerState } from '../../app/scripts/controllers/app-state-controller';
 import type { AlertControllerState } from '../../app/scripts/controllers/alert-controller';
 import type { MetaMetricsDataDeletionState } from '../../app/scripts/controllers/metametrics-data-deletion/metametrics-data-deletion';

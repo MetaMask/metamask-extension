@@ -36,7 +36,7 @@ import { parse, v4 } from 'uuid';
 import { EIP5792ErrorCode } from '../../../../shared/constants/transaction';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
-import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
 import { generateSecurityAlertId } from '../ppom/ppom-util';
 
 type Actions =

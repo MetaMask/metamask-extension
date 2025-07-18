@@ -39,10 +39,13 @@ import type {
 } from '../../../shared/types/origin-throttling';
 import { ScanAddressResponse } from '../lib/trust-signals/types';
 import type {
-  Preferences,
+  PreferencesState as PreferencesControllerState,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
-} from './preferences-controller';
+} from '@metamask/preferences-controller';
+
+// After migration 173, all nested preferences are at the top level
+type Preferences = Partial<PreferencesControllerState>;
 
 export type AppStateControllerState = {
   timeoutMinutes: number;
@@ -442,7 +445,7 @@ export class AppStateController extends BaseController<
 
     messenger.subscribe(
       'PreferencesController:stateChange',
-      ({ preferences }: { preferences: Partial<Preferences> }) => {
+      (preferences: PreferencesControllerState) => {
         const currentState = this.state;
         if (
           typeof preferences?.autoLockTimeLimit === 'number' &&
@@ -457,12 +460,11 @@ export class AppStateController extends BaseController<
       'KeyringController:qrKeyringStateChange',
       (qrHardware: Json) =>
         this.update((currentState) => {
-          // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
           currentState.qrHardware = qrHardware;
         }),
     );
 
-    const { preferences } = messenger.call('PreferencesController:getState');
+    const preferences = messenger.call('PreferencesController:getState');
     if (typeof preferences.autoLockTimeLimit === 'number') {
       this.#setInactiveTimeout(preferences.autoLockTimeLimit);
     }

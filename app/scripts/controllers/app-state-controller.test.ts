@@ -20,10 +20,10 @@ import type {
   AppStateControllerState,
 } from './app-state-controller';
 import type {
-  PreferencesControllerState,
+  PreferencesState as PreferencesControllerState,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
-} from './preferences-controller';
+} from '@metamask/preferences-controller';
 
 jest.mock('webextension-polyfill');
 

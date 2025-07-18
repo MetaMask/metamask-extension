@@ -2,6 +2,7 @@ import { errorCodes } from '@metamask/rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
 import { Messenger } from '@metamask/base-controller';
 
+import { getDefaultPreferencesState } from '@metamask/preferences-controller';
 import MetaMetricsController from '../controllers/metametrics-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
@@ -19,7 +20,6 @@ import {
   permitSignatureMsg,
   orderSignatureMsg,
 } from '../../../test/data/confirmations/typed_sign';
-import { getDefaultPreferencesControllerState } from '../controllers/preferences-controller';
 import { createSegmentMock } from './segment';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 
@@ -53,7 +53,7 @@ const appStateController = {
 const messenger = new Messenger();
 
 messenger.registerActionHandler('PreferencesController:getState', () => ({
-  ...getDefaultPreferencesControllerState(),
+  ...getDefaultPreferencesState(),
   currentLocale: 'en_US',
 }));
 

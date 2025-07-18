@@ -1333,7 +1333,9 @@ export function getIsNonStandardEthChain(state) {
 }
 
 export function getPreferences({ metamask }) {
-  return metamask.preferences ?? {};
+  // After migration 173, preferences are no longer nested
+  // Return the entire PreferencesController state which now has all preferences at the top level
+  return metamask.PreferencesController ?? {};
 }
 
 export function getShowTestNetworks(state) {

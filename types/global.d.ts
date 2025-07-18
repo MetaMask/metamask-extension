@@ -22,7 +22,7 @@ import {
   OffscreenCommunicationTarget,
   TrezorAction,
 } from '../shared/constants/offscreen-communication';
-import type { Preferences } from '../app/scripts/controllers/preferences-controller';
+import type { PreferencesState as Preferences } from '@metamask/preferences-controller';
 import type ExtensionPlatform from '../app/scripts/platforms/extension';
 
 declare class MessageSender {

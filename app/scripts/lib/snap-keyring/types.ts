@@ -19,7 +19,7 @@ import type {
 } from '@metamask/approval-controller';
 import { GetSnap, HandleSnapRequest } from '@metamask/snaps-controllers';
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
-import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
 
 export type SnapKeyringBuilderAllowActions =
   | StartFlow
