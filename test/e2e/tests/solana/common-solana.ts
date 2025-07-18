@@ -1598,8 +1598,8 @@ async function startWebsocketMock(mockServer: Mockttp) {
   // Intercept WebSocket handshake requests
   await mockServer
     .forAnyWebSocket()
-    .matching(req =>
-      /^wss:\/\/solana-(mainnet|devnet)\.infura\.io\//.test(req.url)
+    .matching((req) =>
+      /^wss:\/\/solana-(mainnet|devnet)\.infura\.io\//u.test(req.url),
     )
     .thenForwardTo(`ws://localhost:${port}`);
 }
