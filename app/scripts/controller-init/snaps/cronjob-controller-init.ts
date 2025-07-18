@@ -32,5 +32,6 @@ export const CronjobControllerInit: ControllerInitFunction<
 
   return {
     controller,
+    persistedStateKey: null,
   };
 };
