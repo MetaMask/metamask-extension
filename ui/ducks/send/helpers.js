@@ -34,6 +34,8 @@ import { EtherDenomination } from '../../../shared/constants/common';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 
+const TEN_MILLION_HEX = '0x989680';
+
 export async function estimateGasLimitForSend({
   selectedAddress,
   value,
@@ -121,7 +123,9 @@ export async function estimateGasLimitForSend({
   if (!isSimpleSendOnNonStandardNetwork) {
     // If we do not yet have a gasLimit, we must call into our background
     // process to get an estimate for gasLimit based on known parameters.
-    paramsForGasEstimate.gas = new Numeric(blockGasLimit, 16)
+    const gasLimit =
+      blockGasLimit > TEN_MILLION_HEX ? blockGasLimit : TEN_MILLION_HEX;
+    paramsForGasEstimate.gas = new Numeric(gasLimit, 16)
       .times(new Numeric(0.95, 10))
       .round(0, BigNumber.ROUND_DOWN)
       .toPrefixedHexString();
