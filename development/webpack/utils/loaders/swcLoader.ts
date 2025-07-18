@@ -1,10 +1,9 @@
 import type { LoaderContext } from 'webpack';
 import type { JSONSchema7 } from 'schema-utils/declarations/validate';
 import type { FromSchema } from 'json-schema-to-ts';
-import { validate } from 'schema-utils';
 import { transform, type Options } from '@swc/core';
 import { type Args } from '../cli';
-import { __HMR_READY__ } from '../helpers';
+import { __HMR_READY__, validate } from '../helpers';
 
 // the schema here is limited to only the options we actually use
 // there are loads more options available to SWC we could add.
@@ -154,6 +153,16 @@ const schema = {
       },
       additionalProperties: false,
     },
+    module: {
+      type: 'object',
+      properties: {
+        type: {
+          type: 'string',
+          enum: ['es6', 'commonjs'],
+        },
+      },
+      required: ['type'],
+    },
   },
   additionalProperties: false,
 } as const satisfies JSONSchema7;
@@ -182,7 +191,6 @@ export default function swcLoader(this: Context, src: string, srcMap?: string) {
 
 export type SwcConfig = {
   args: Pick<Args, 'watch'>;
-  safeVariables: Record<string, string>;
   browsersListQuery: string;
   isDevelopment: boolean;
 };
@@ -199,24 +207,19 @@ export type SwcOptions = {
 /**
  * Gets the Speedy Web Compiler (SWC) loader for the given syntax.
  *
- * @param syntax
- * @param enableJsx
- * @param swcConfig
- * @param options Additional options for fine-tuning transformations
- * @returns
+ * @param syntax - The syntax to use, either 'typescript' or 'ecmascript'.
+ * @param enableJsx - Whether to enable JSX support.
+ * @param envs - Environment variables to inject into the code.
+ * @param swcConfig - The SWC configuration object containing browsers list and development mode.
+ * @param type - The module type to use, either 'es6' or 'commonjs'. Defaults to 'es6'.
  */
 export function getSwcLoader(
   syntax: 'typescript' | 'ecmascript',
   enableJsx: boolean,
+  envs: Record<string, string>,
   swcConfig: SwcConfig,
-  options: SwcOptions = {},
+  type: 'es6' | 'commonjs' = 'es6',
 ) {
-  const {
-    externalHelpers = true,
-    enableOptimizer = true,
-    injectEnvVars = true,
-  } = options;
-
   return {
     loader: __filename,
     options: {
@@ -224,26 +227,27 @@ export function getSwcLoader(
         targets: swcConfig.browsersListQuery,
       },
       jsc: {
-        externalHelpers,
+        externalHelpers: true,
         transform: {
           react: {
             development: swcConfig.isDevelopment,
             refresh:
               __HMR_READY__ && swcConfig.isDevelopment && swcConfig.args.watch,
           },
-          ...(enableOptimizer && {
-            optimizer: {
-              globals: {
-                envs: injectEnvVars ? swcConfig.safeVariables : {},
-              },
+          optimizer: {
+            globals: {
+              envs,
             },
-          }),
+          },
         },
         parser: {
           syntax,
           [syntax === 'typescript' ? 'tsx' : 'jsx']: enableJsx,
           importAttributes: true,
         },
+      },
+      module: {
+        type,
       },
     } as const satisfies SwcLoaderOptions,
   };

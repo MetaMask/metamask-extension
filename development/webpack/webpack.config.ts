@@ -190,22 +190,11 @@ if (args.progress) {
 }
 // #endregion plugins
 
-const swcConfig = { args, safeVariables, browsersListQuery, isDevelopment };
-const tsxLoader = getSwcLoader('typescript', true, swcConfig);
-const jsxLoader = getSwcLoader('ecmascript', true, swcConfig);
-
-// Create minimal vendor loaders that only transform syntax for browser compatibility
-// These avoid aggressive optimizations that might break vendor packages
-const vendorEcmaLoader = getSwcLoader('ecmascript', false, swcConfig, {
-  enableOptimizer: true, // Disable optimizer to avoid breaking vendor code
-  injectEnvVars: false, // Don't inject environment variables into vendor code
-  externalHelpers: true, // Self-contained to avoid dependency issues
-});
-const vendorMjsLoader = getSwcLoader('ecmascript', false, swcConfig, {
-  enableOptimizer: true, // Disable optimizer to avoid breaking vendor code
-  injectEnvVars: false, // Don't inject environment variables into vendor code
-  externalHelpers: true, // Self-contained to avoid dependency issues
-});
+const swcConfig = { args, browsersListQuery, isDevelopment };
+const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
+const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
+const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
+const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 
 const config = {
   entry,
@@ -273,8 +262,13 @@ const config = {
   // note: loaders in a `use` array are applied in *reverse* order, i.e., bottom
   // to top, (or right to left depending on the current formatting of the file)
   module: {
-    // don't parse lodash, as it's large and already minified
-    noParse: /^lodash$/u,
+    noParse: [
+      // security team requires that we never process `@lavamoat/snow/**.*`
+      SNOW_MODULE_RE,
+      // don't parse lodash, as it's large, already minified, and doesn't need
+      // to be transformed
+      /^lodash$/u,
+    ],
     rules: [
       // json
       { test: /\.json$/u, type: 'json' },
@@ -296,26 +290,17 @@ const config = {
         exclude: NODE_MODULES_RE,
         use: [jsxLoader, codeFenceLoader],
       },
-      // vendor module javascript - minimal transformation for syntax compatibility
+      // vendor javascript. We must transform all npm modules to ensure browser
+      // compatibility.
       {
-        test: /\.mjs$/u,
+        test: /\.m?js$/u,
         include: NODE_MODULES_RE,
-        // security team requires that we never process `@lavamoat/snow/**.*`
-        exclude: [SNOW_MODULE_RE],
-        use: vendorMjsLoader,
+        use: npmLoader,
       },
-      // vendor javascript - minimal transformation for syntax compatibility
       {
-        test: /\.js$/u,
+        test: /\.cjs$/u,
         include: NODE_MODULES_RE,
-        // security team requires that we never process `@lavamoat/snow/**.*`
-        // Only exclude packages that are known to have compatibility issues
-        exclude: [
-          SNOW_MODULE_RE,
-          // Add specific packages here if they cause issues, rather than broad exclusions
-          // /node_modules\/@trezor/ - removed this broad exclusion
-        ],
-        use: vendorEcmaLoader,
+        use: cjsLoader,
       },
       // css, sass/scss
       {

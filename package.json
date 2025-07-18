@@ -696,7 +696,7 @@
     "wait-on": "^7.0.1",
     "watchify": "^4.0.0",
     "webextension-polyfill": "^0.8.0",
-    "webpack": "^5.96.1",
+    "webpack": "^5.100.2",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.3",
     "ws": "^8.17.1",
