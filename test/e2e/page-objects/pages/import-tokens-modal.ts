@@ -95,12 +95,12 @@ export class ImportTokensModal {
    *
    * @param contractAddress - The token contract address
    * @param chainId - Chain ID to select specific network
-   * @param _symbol - Optional token symbol for verification (if not provided, uses auto-detected)
+   * @param symbol - Optional token symbol for verification (if not provided, uses auto-detected)
    */
   async importCustomToken(
     contractAddress: string,
     chainId: string,
-    _symbol?: string,
+    symbol?: string,
   ): Promise<void> {
     await this.clickCustomTokenTab();
     await this.selectNetwork(chainId);
@@ -113,6 +113,30 @@ export class ImportTokensModal {
       text: 'Token imported',
       tag: 'h6',
     });
+
+    // If a symbol was provided, verify that the imported token has the expected symbol
+    if (symbol) {
+      await this.verifyImportedTokenSymbol(symbol);
+    }
+  }
+
+  /**
+   * Verifies that the imported token has the expected symbol
+   *
+   * @param expectedSymbol - The expected token symbol
+   */
+  private async verifyImportedTokenSymbol(
+    expectedSymbol: string,
+  ): Promise<void> {
+    console.log(`Verifying imported token symbol: ${expectedSymbol}`);
+
+    // Wait for the token to appear in the asset list
+    await this.driver.waitForSelector({
+      css: '[data-testid="multichain-token-list-button"]',
+      text: expectedSymbol,
+    });
+
+    console.log(`Token symbol verification successful: ${expectedSymbol}`);
   }
 
   /**
