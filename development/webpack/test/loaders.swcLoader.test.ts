@@ -113,7 +113,7 @@ describe('swcLoader', () => {
           isDevelopment,
         };
 
-        const loader = getSwcLoader(syntax, enableJsx, swcConfig);
+        const loader = getSwcLoader(syntax, enableJsx, 'module', swcConfig);
         assert.strictEqual(
           loader.loader,
           require.resolve('../utils/loaders/swcLoader'),
