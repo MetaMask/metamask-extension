@@ -22,7 +22,7 @@ function getInitRequestMock(): jest.Mocked<
         getInitialState: jest.fn(),
         init: jest.fn(),
         set: jest.fn(),
-      }
+      };
     }),
   };
 
