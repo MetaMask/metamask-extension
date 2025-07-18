@@ -7073,9 +7073,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@21.0.0-preview-91d59c3":
-  version: 21.0.0-preview-91d59c3
-  resolution: "@metamask-previews/profile-sync-controller@npm:21.0.0-preview-91d59c3"
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@21.0.0-preview-849f6838":
+  version: 21.0.0-preview-849f6838
+  resolution: "@metamask-previews/profile-sync-controller@npm:21.0.0-preview-849f6838"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/snaps-sdk": "npm:^9.0.0"
@@ -7089,10 +7089,10 @@ __metadata:
     "@metamask/accounts-controller": ^31.0.0
     "@metamask/keyring-controller": ^22.0.0
     "@metamask/providers": ^22.0.0
-    "@metamask/seedless-onboarding-controller": ^2.1.0
+    "@metamask/seedless-onboarding-controller": ^2.3.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/4fb18215ad06ef6a2676835ee4c8ad2093e176c4ec674f7e5f8f16a5423225df827c291c260df92d3a0090363885142650c9b934b45a657727a104d9c2e632fe
+  checksum: 10/50ca9948cbde593121316e051fb58d99d556bdfd877bb576677c4f97407339a85b9c2f86d86b28f1cccca87d73dc6a0a848de630c1094bf6262f48a952b43ea5
   languageName: node
   linkType: hard
 

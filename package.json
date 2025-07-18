@@ -129,7 +129,7 @@
     "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
-    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@21.0.0-preview-91d59c3",
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@21.0.0-preview-849f6838",
     "http-cache-semantics": "^4.1.1",
     "semver-regex": "^3.1.4",
     "base-x@^3.0.x": "^3.0.11",
