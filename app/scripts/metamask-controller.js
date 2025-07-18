@@ -4349,7 +4349,7 @@ export default class MetamaskController extends EventEmitter {
           notificationServicesController,
         ),
 
-      // E2E testing
+      // Testing
       throwTestError: this.throwTestError.bind(this),
       captureTestError: this.captureTestError.bind(this),
 
@@ -8377,7 +8377,7 @@ export default class MetamaskController extends EventEmitter {
    * Throw an artificial error in a timeout handler for testing purposes.
    *
    * @param message - The error message.
-   * @deprecated This is only mean to facilitiate E2E testing. We should not
+   * @deprecated This is only mean to facilitiate manual and E2E testing. We should not
    * use this for handling errors.
    */
   throwTestError(message) {
@@ -8392,7 +8392,7 @@ export default class MetamaskController extends EventEmitter {
    * Capture an artificial error in a timeout handler for testing purposes.
    *
    * @param message - The error message.
-   * @deprecated This is only mean to facilitiate E2E testing. We should not
+   * @deprecated This is only mean to facilitiate manual and E2E tests testing. We should not
    * use this for handling errors.
    */
   captureTestError(message) {
