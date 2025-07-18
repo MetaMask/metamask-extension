@@ -16,6 +16,7 @@ import { AccountsControllerGetNextAvailableAccountNameAction } from '@metamask/a
 import { MultichainNetworks } from '../../constants/multichain/networks';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
+import { captureException } from '../sentry';
 
 /**
  * Supported non-EVM Snaps.
@@ -236,7 +237,7 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
             error,
           );
           // Still logging this one to sentry as this is a fairly new process for account discovery.
-          global.sentry?.captureException?.(error);
+          captureException(error);
         }
       }
     }
