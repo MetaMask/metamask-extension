@@ -32,7 +32,8 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: 'A component that displays a Private Key row with export functionality.',
+        component:
+          'A component that displays a Private Key row with export functionality.',
       },
     },
     controls: { sort: 'alpha' },

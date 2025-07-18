@@ -256,7 +256,9 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
 
-        await await connectAccountConfirmation.confirmConnect();
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
+        await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 

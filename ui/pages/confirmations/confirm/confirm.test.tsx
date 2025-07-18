@@ -100,6 +100,8 @@ describe('Confirm', () => {
     let container;
     await act(async () => {
       const { container: renderContainer } =
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await renderWithConfirmContextProvider(<Confirm />, mockStore);
 
       container = renderContainer;
@@ -144,6 +146,8 @@ describe('Confirm', () => {
     let container;
     await act(async () => {
       const { container: renderContainer } =
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await renderWithConfirmContextProvider(<Confirm />, mockStore);
 
       container = renderContainer;
@@ -167,6 +171,8 @@ describe('Confirm', () => {
     });
 
     await act(async () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       const { container } = await renderWithConfirmContextProvider(
         <Confirm />,
         mockStore,
@@ -191,6 +197,8 @@ describe('Confirm', () => {
     });
 
     await act(async () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       const { container } = await renderWithConfirmContextProvider(
         <Confirm />,
         mockStore,

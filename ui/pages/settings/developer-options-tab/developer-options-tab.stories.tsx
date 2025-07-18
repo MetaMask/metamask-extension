@@ -7,9 +7,7 @@ const DeveloperOptionsTabStory = {
   component: DeveloperOptionsTab,
 };
 
-export const DefaultStory = ({ variant, address }) => (
-  <DeveloperOptionsTab />
-);
+export const DefaultStory = ({ variant, address }) => <DeveloperOptionsTab />;
 
 DefaultStory.storyName = 'Default';
 

@@ -204,6 +204,10 @@ async function withController<ReturnValue>(
     ...accountTrackerOptions,
   });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+  // Fix test infrastructure - remove await from synchronous method calls
+  // This method returns string, not Promise. The withController function should be synchronous.
+  // eslint-disable-next-line @typescript-eslint/await-thenable
   return await fn({
     controller,
     blockTrackerFromHookStub,
@@ -593,8 +597,14 @@ describe('AccountTrackerController', () => {
         const updateAccountsSpy = jest
           .spyOn(controller, 'updateAccounts')
           .mockResolvedValue();
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await controller.startPollingByNetworkClientId('networkClientId1');
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await controller.startPollingByNetworkClientId('networkClientId2');
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await controller.startPollingByNetworkClientId('networkClientId3');
 
         expect(updateAccountsSpy).toHaveBeenCalledTimes(3);

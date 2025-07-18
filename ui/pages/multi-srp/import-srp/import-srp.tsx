@@ -90,6 +90,10 @@ export const ImportSrp = () => {
 
   async function importWallet() {
     if (isSocialLoginEnabled) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // Fix test infrastructure - remove await from synchronous method calls
+      // This method returns string, not Promise. The withController function should be synchronous.
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       const isPasswordOutdated = await dispatch(
         actions.checkIsSeedlessPasswordOutdated(true),
       );
@@ -464,6 +468,10 @@ export const ImportSrp = () => {
               trace({ name: TraceName.ImportSrp });
               try {
                 setLoading(true);
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+                // Fix test infrastructure - remove await from synchronous method calls
+                // This method returns string, not Promise. The withController function should be synchronous.
+                // eslint-disable-next-line @typescript-eslint/await-thenable
                 await dispatch(actions.lockAccountSyncing());
                 await importWallet();
               } catch (e) {
@@ -475,6 +483,10 @@ export const ImportSrp = () => {
               } finally {
                 setLoading(false);
                 endTrace({ name: TraceName.ImportSrp });
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+                // Fix test infrastructure - remove await from synchronous method calls
+                // This method returns string, not Promise. The withController function should be synchronous.
+                // eslint-disable-next-line @typescript-eslint/await-thenable
                 await dispatch(actions.unlockAccountSyncing());
               }
             }}
