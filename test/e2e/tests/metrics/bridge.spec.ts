@@ -28,6 +28,7 @@ const quote = {
 
 describe('Bridge tests', function (this: Suite) {
   this.timeout(160000);
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('Execute multiple bridge transactions', async function () {
     await withFixtures(
       getBridgeFixtures(
