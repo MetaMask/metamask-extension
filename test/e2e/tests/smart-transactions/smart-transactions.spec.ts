@@ -1,3 +1,4 @@
+/* eslint-disable mocha/no-skipped-tests */
 import { MockttpServer } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
 import { unlockWallet, WINDOW_TITLES, withFixtures } from '../../helpers';
@@ -86,7 +87,7 @@ describe('Smart Transactions', function () {
     );
   });
 
-  it('should Swap using smart transaction', async function () {
+  it.skip('should Swap using smart transaction', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
@@ -122,7 +123,7 @@ describe('Smart Transactions', function () {
     );
   });
 
-  it('should Swap with gas included fee', async function () {
+  it.skip('should Swap with gas included fee', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),

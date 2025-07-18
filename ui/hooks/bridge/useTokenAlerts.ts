@@ -43,7 +43,7 @@ export const useTokenAlerts = () => {
         }
       }
       return null;
-    }, [toToken, toChain]);
+    }, [toToken?.address, toChain?.chainId]);
 
   return { tokenAlert };
 };

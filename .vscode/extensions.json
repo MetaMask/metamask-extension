@@ -3,6 +3,7 @@
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
     "streetsidesoftware.code-spell-checker",
-    "DigitalBrainstem.javascript-ejs-support"
+    "DigitalBrainstem.javascript-ejs-support",
+    "bradlc.vscode-tailwindcss"
   ]
 }

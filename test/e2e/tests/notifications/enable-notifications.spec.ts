@@ -1,7 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { accountsToMockForAccountsSync as unencryptedMockAccounts } from '../identity/account-syncing/mock-data';
 import { Driver } from '../../webdriver/driver';
 import {
   enableNotificationsThroughGlobalMenu,
@@ -13,7 +12,7 @@ import { completeOnboardFlowIdentity } from '../identity/flows';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { ACCOUNT_TYPE } from '../../constants';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
-import { mockNotificationServices } from './mocks';
+import { mockNotificationServices, notificationsMockAccounts } from './mocks';
 
 describe('Enable Notifications - Without Accounts Syncing', function () {
   describe('from inside MetaMask', function () {
@@ -64,7 +63,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
 
           // Switch off address 2 and product notifications toggle
           await notificationsSettingsPage.clickNotificationToggle({
-            address: unencryptedMockAccounts[1].a,
+            address: notificationsMockAccounts[1].a,
             toggleType: 'address',
           });
 
@@ -94,7 +93,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
 
           // Assert Notification Account Settings have persisted
           // The second account was switched off from the initial run
-          const [{ a: account1 }, { a: account2 }] = unencryptedMockAccounts;
+          const [{ a: account1 }, { a: account2 }] = notificationsMockAccounts;
           await notificationsSettingsPage.check_notificationState({
             address: account1,
             toggleType: 'address',

@@ -81,4 +81,11 @@ describe('NestedTransactionTag', () => {
     const { container } = render({});
     expect(container).toBeEmptyDOMElement();
   });
+
+  it('does not render if only one nested transaction is present', () => {
+    const { container } = render({
+      nestedTransactions: [BATCH_TRANSACTION_PARAMS_MOCK],
+    });
+    expect(container).toBeEmptyDOMElement();
+  });
 });

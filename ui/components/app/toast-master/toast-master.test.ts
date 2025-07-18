@@ -4,6 +4,7 @@ import {
   selectNewSrpAdded,
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
+  selectShowCopyAddressToast,
 } from './selectors';
 
 describe('#getShowSurveyToast', () => {
@@ -202,5 +203,32 @@ describe('#getShowNewSrpAddedToast', () => {
       },
     });
     expect(result).toBe(true);
+  });
+});
+
+describe('#selectShowCopyAddressToast', () => {
+  it('returns true when showCopyAddressToast is true', () => {
+    const result = selectShowCopyAddressToast({
+      appState: {
+        showCopyAddressToast: true,
+      },
+    });
+    expect(result).toBe(true);
+  });
+
+  it('returns false when showCopyAddressToast is false', () => {
+    const result = selectShowCopyAddressToast({
+      appState: {
+        showCopyAddressToast: false,
+      },
+    });
+    expect(result).toBe(false);
+  });
+
+  it('returns false when showCopyAddressToast is undefined', () => {
+    const result = selectShowCopyAddressToast({
+      appState: {},
+    });
+    expect(result).toBe(false);
   });
 });

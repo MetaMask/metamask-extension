@@ -71,70 +71,48 @@ describe('Wallet Created Events', () => {
     });
 
     await waitForElementByText('Your wallet is ready!');
+    await clickElementById('onboarding-complete-done');
 
-    const completeOnboardingBtnId = 'onboarding-complete-done';
-    const pinExtensionNextBtnId = 'pin-extension-next';
-    const pinExtensionDoneBtnId = 'pin-extension-done';
+    await waitForElementById('pin-extension-next');
+    await clickElementById('pin-extension-next');
 
-    await waitForElementById(completeOnboardingBtnId);
-    await clickElementById(completeOnboardingBtnId);
+    await waitForElementById('pin-extension-done');
+    await clickElementById('pin-extension-done');
 
-    let confirmAccountDetailsModalMetricsEvent;
-
-    await waitFor(() => {
-      confirmAccountDetailsModalMetricsEvent =
-        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'trackMetaMetricsEvent',
-        );
-
-      expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
-        'trackMetaMetricsEvent',
-      );
-    });
-
-    expect(confirmAccountDetailsModalMetricsEvent?.[1]).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.OnboardingWalletCreationComplete,
-          properties: {
-            method: mockMetaMaskState.firstTimeFlowType,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: 0,
-          },
-        }),
-      ]),
-    );
-
-    await waitForElementById(pinExtensionNextBtnId);
-    await clickElementById(pinExtensionNextBtnId);
-
-    let onboardingPinExtensionMetricsEvent;
+    // Verify both completeOnboarding and ExtensionPinned event are called
+    let completeOnboardingCall;
+    let extensionPinnedEvent;
 
     await waitFor(() => {
-      onboardingPinExtensionMetricsEvent =
-        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'trackMetaMetricsEvent',
-        );
-      expect(onboardingPinExtensionMetricsEvent?.[0]).toBe(
-        'trackMetaMetricsEvent',
-      );
-    });
-
-    await waitForElementByText(
-      `Access your MetaMask wallet with 1 click by clicking on the extension.`,
-    );
-
-    await waitForElementById(pinExtensionDoneBtnId);
-    await clickElementById(pinExtensionDoneBtnId);
-    await waitFor(() => {
-      const completeOnboardingBackgroundRequest =
+      completeOnboardingCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) => call[0] === 'completeOnboarding',
         );
 
-      expect(completeOnboardingBackgroundRequest).toBeTruthy();
+      extensionPinnedEvent =
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) => call[0] === 'trackMetaMetricsEvent',
+        );
+
+      expect(completeOnboardingCall?.[0]).toBe('completeOnboarding');
+      expect(extensionPinnedEvent?.[0]).toBe('trackMetaMetricsEvent');
     });
+
+    expect(extensionPinnedEvent?.[1]).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.ExtensionPinned,
+          properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            wallet_setup_type: 'new',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            new_wallet: true,
+          },
+        }),
+      ]),
+    );
   });
 });

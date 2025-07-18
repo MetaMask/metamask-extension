@@ -1,6 +1,5 @@
 import {
   Encryption,
-  UserStoragePathWithFeatureAndKey,
   createSHA256Hash,
   getFeatureAndKeyFromPath,
 } from '@metamask/profile-sync-controller/sdk';
@@ -29,7 +28,7 @@ const encryptData = async (
  * @returns The generated SHA-256 hash as a string.
  */
 const generateEncryptedHash = (
-  path: UserStoragePathWithFeatureAndKey,
+  path: `${string}.${string}`,
   storageKey: string,
 ): string => {
   const { key: featureKey } = getFeatureAndKeyFromPath(path);
@@ -50,7 +49,7 @@ const generateEncryptedHash = (
 export const createEncryptedResponse = async (options: {
   data: object;
   storageKey: string;
-  path: UserStoragePathWithFeatureAndKey;
+  path: `${string}.${string}`;
   srpIdentifierNumber?: number;
 }): Promise<UserStorageResponseData> => {
   const { data, storageKey: key, path, srpIdentifierNumber = 1 } = options;

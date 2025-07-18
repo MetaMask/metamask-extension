@@ -13,6 +13,7 @@ import TokenCell from '../../../components/app/assets/token-cell';
 import { getPreferences } from '../../../selectors';
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
+import { getTokenAvatarUrl } from '../../../components/app/assets/util/getTokenAvatarUrl';
 
 export const PositionTypeLabels = {
   supply: 'supplied',
@@ -78,7 +79,7 @@ const DefiDetailsList = React.memo(
         title: token.symbol,
         symbol: token.name,
         tokenFiatAmount: token.marketValue,
-        image: token.iconUrl,
+        image: getTokenAvatarUrl(token),
         primary: token.marketValue?.toString() || '0',
         secondary: token.balance,
         string: token.balance.toString(),

@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { DEFAULT_BTC_BALANCE, DEFAULT_BTC_FEE_RATE } from '../../constants';
 import BitcoinSendPage from '../../page-objects/pages/send/bitcoin-send-page';
@@ -7,6 +8,47 @@ import { withBtcAccountSnap } from './common-btc';
 
 describe('BTC Account - Send', function (this: Suite) {
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
+  it('fields validation', async function () {
+    await withBtcAccountSnap(async (driver) => {
+      const homePage = new BitcoinHomepage(driver);
+      await homePage.check_pageIsLoaded();
+      await homePage.check_isExpectedBitcoinBalanceDisplayed(
+        DEFAULT_BTC_BALANCE,
+      );
+      await homePage.startSendFlow();
+
+      const bitcoinSendPage = new BitcoinSendPage(driver);
+      await bitcoinSendPage.check_pageIsLoaded();
+      assert.equal(await bitcoinSendPage.checkAssetPickerIsDisplayed(), false);
+      assert.equal(await bitcoinSendPage.checkAmountFieldIsDisplayed(), false);
+      await bitcoinSendPage.fillRecipientAddress('invalidBTCAddress');
+      await bitcoinSendPage.checkAddressFieldValidationError(
+        'Invalid Bitcoin address',
+      );
+      assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
+      await bitcoinSendPage.fillRecipientAddress(recipientAddress);
+      assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
+      await bitcoinSendPage.fillAmount('50');
+      await bitcoinSendPage.checkAmountValidationError(
+        'Funds are insufficient to cover amount plus fee',
+      );
+      assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
+      await bitcoinSendPage.fillAmount('0');
+      await bitcoinSendPage.checkAmountValidationError(
+        'Amount below dust limit',
+      );
+      assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
+      await bitcoinSendPage.fillAmount('0.1');
+      await driver.delay(1000);
+      assert.equal(
+        await bitcoinSendPage.checkContinueButtonIsDisabled(),
+        false,
+      );
+      await bitcoinSendPage.clearRecipientAddress();
+      await driver.delay(1000);
+      assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
+    }, this.test?.fullTitle());
+  });
 
   it('can complete the send flow', async function () {
     const sendAmount = '0.5';

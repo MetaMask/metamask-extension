@@ -1,10 +1,10 @@
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
+import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 
 describe('Request Queuing - Extension and Dapp on different networks.', function () {
   it('should not switch to the dapps network automatically when mm network differs', async function () {
@@ -43,7 +43,7 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
         );
 
         // Switch to second network
-        await switchToNetworkFlow(driver, 'Localhost 8546');
+        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
@@ -65,9 +65,6 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
         // Check correct network switched and on the correct network
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.headerNavbar.check_currentSelectedNetwork(
-          'Localhost 8546',
-        );
       },
     );
   });

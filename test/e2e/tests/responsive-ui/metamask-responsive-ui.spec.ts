@@ -12,7 +12,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
+const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
 describe('MetaMask Responsive UI', function (this: Suite) {
   const driverOptions = { constrainWindowSize: true };
@@ -69,7 +69,6 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withEnabledNetworks({
             eip155: {
-              [CHAIN_IDS.MAINNET]: true,
               [CHAIN_IDS.LOCALHOST]: true,
             },
           })

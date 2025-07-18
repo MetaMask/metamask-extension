@@ -116,6 +116,8 @@ function transformState(state: Record<string, unknown>): void {
     ) {
       console.error(
         new Error(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `Migration ${version}: Invalid networkConfigurationId found in SelectedNetworkController state: '${configurationId}'`,
         ),
       );

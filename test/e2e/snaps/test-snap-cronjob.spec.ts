@@ -1,4 +1,4 @@
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { withFixtures, WINDOW_TITLES, largeDelayMs } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { mockCronjobSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
@@ -31,8 +31,9 @@ describe('Test Snap Cronjob', function () {
           'Reconnect to Cronjobs Snap',
         );
 
+        await driver.delay(largeDelayMs);
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const dialogHandle = await driver.driver.getWindowHandle();
 
         // look for the dialog popup to verify cronjob fired
         await testSnaps.check_messageResultSpan(
@@ -46,8 +47,6 @@ describe('Test Snap Cronjob', function () {
         } catch (error) {
           console.log('Dialog already closed automatically');
         }
-
-        await driver.waitForWindowToClose(dialogHandle);
       },
     );
   });

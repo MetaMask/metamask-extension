@@ -37,18 +37,16 @@ on:
           ./test-artifacts
           ./test/test-results/e2e
         description: The path to the test artifacts
-    secrets:
-      DOCKER_HUB_USERNAME:
-        required: true
-      DOCKER_HUB_TOKEN:
-        required: true
 
 jobs:
   run-e2e:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     runs-on: ubuntu-latest
     container:
-      image: public.ecr.aws/a6f6j9d3/metamask-core/metamask-extension-e2e:v22.15.0
+      image: ghcr.io/consensys-vertical-apps/metamask-extension-e2e-image:v1.0.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # For a `pull_request` event, the branch is `github.head_ref``.

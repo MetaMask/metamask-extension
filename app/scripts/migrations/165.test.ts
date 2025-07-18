@@ -13,14 +13,6 @@ jest.useFakeTimers();
 jest.setSystemTime(new Date('2023-10-01T00:00:00Z').getTime());
 
 describe(`migration #${version}`, () => {
-  beforeEach(() => {
-    global.sentry = { captureException: jest.fn() };
-  });
-
-  afterEach(() => {
-    global.sentry = undefined;
-  });
-
   it('updates the version metadata', async () => {
     const oldStorage = {
       meta: { version: oldVersion },

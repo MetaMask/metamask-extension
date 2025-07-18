@@ -22,18 +22,6 @@ lavamoat/                            @MetaMask/extension-devs @MetaMask/policy-r
 offscreen/scripts/offscreen.ts       @MetaMask/snaps-devs
 
 
-# The .circleci/ folder instructs Circle CI on the process by which it
-# should test, build and publish releases of our application. Due to the
-# impact that changes to the files contained within this folder may have
-# on our releases, only those with the knowledge and responsibility to
-# publish libraries under the MetaMask name may approve those changes.
-# Note to reviewers: We employ the use of CircleCI "Orbs", which are
-# remotely hosted sections of CircleCI configuration and scripts, to
-# empower our CI steps. ANY addition of orbs to our CircleCI config
-# should be brought to the attention of engineering leadership for
-# discussion
-.circleci/                           @MetaMask/extension-security-team
-
 # The privacy-snapshot.json file includes a list of all hosts that the
 # extension communicates with during the E2E test suite runs. It is not a
 # complete list of all hosts that the extension communicates with until the E2E
@@ -63,6 +51,7 @@ development/circular-deps.jsonc      @MetaMask/extension-security-team @HowardBr
 # Design System to own code for the component-library folder
 # Slack handle: @metamask-design-system-team | Slack channel: #metamask-design-system
 ui/components/component-library      @MetaMask/design-system-engineers
+tailwind.config.js                   @MetaMask/design-system-engineers
 
 # The Notifications team is responsible for code related to notifications
 
@@ -148,3 +137,7 @@ ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
 # Extension Platform
 .yarnrc.yml                                           @MetaMask/extension-platform
 test/e2e/mock-e2e-allowlist.js                        @MetaMask/extension-platform
+
+# Smart Transactions
+app/scripts/controller-init/smart-transactions    @MetaMask/transactions
+app/scripts/lib/smart-transaction                 @MetaMask/transactions

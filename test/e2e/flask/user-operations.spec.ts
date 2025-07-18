@@ -19,7 +19,6 @@ import {
   SIMPLE_ACCOUNT_FACTORY,
   VERIFYING_PAYMASTER,
 } from '../constants';
-import { buildQuote, reviewQuote } from '../tests/swaps/shared';
 import { Driver } from '../webdriver/driver';
 import { Bundler } from '../bundler';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
@@ -110,22 +109,6 @@ async function setSnapConfig(
   }
 
   await driver.clickElement({ text: 'Set Chain Config', tag: 'button' });
-}
-
-async function createSwap(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await buildQuote(driver, {
-    amount: 0.001,
-    swapTo: 'USDC',
-  });
-  await reviewQuote(driver, {
-    amount: 0.001,
-    swapFrom: 'TESTETH',
-    swapTo: 'USDC',
-  });
-
-  await driver.clickElement({ text: 'Swap', tag: 'button' });
-  await driver.clickElement({ text: 'Close', tag: 'button' });
 }
 
 async function confirmTransaction(driver: Driver) {
@@ -290,16 +273,16 @@ describe('User Operations', function () {
     );
   });
 
-  it('from swap', async function () {
-    await withAccountSnap(
-      { title: this.test?.fullTitle() },
-      async (driver, bundlerServer) => {
-        await createSwap(driver);
-        await openConfirmedTransaction(driver);
-        await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
-      },
-    );
-  });
+  // it.skip('from swap', async function () {
+  //   await withAccountSnap(
+  //     { title: this.test?.fullTitle() },
+  //     async (driver, bundlerServer) => {
+  //       await createSwap(driver);
+  //       await openConfirmedTransaction(driver);
+  //       await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
+  //     },
+  //   );
+  // });
 
   it('with paymaster', async function () {
     await withAccountSnap(

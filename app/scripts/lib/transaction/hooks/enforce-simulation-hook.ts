@@ -42,14 +42,23 @@ export class EnforceSimulationHook {
     const {
       containerTypes,
       delegationAddress,
+      id: transactionId,
       origin,
       simulationData,
       txParamsOriginal,
     } = transactionMeta;
 
-    if (!process.env.ENABLE_ENFORCED_SIMULATIONS) {
+    const appState = this.#messenger.call('AppStateController:getState');
+
+    const isUserEnabled =
+      appState?.enableEnforcedSimulationsForTransactions[transactionId] ??
+      appState?.enableEnforcedSimulations;
+
+    if (!process.env.ENABLE_ENFORCED_SIMULATIONS || !isUserEnabled) {
       log('Skipping as enforced simulations are disabled');
-      return {};
+      return {
+        skipSimulation: false,
+      };
     }
 
     if (
@@ -62,12 +71,16 @@ export class EnforceSimulationHook {
 
     if (!origin || origin === ORIGIN_METAMASK) {
       log('Skipping as internal transaction');
-      return {};
+      return {
+        skipSimulation: false,
+      };
     }
 
     if (!delegationAddress) {
       log('Skipping as not upgraded account');
-      return {};
+      return {
+        skipSimulation: false,
+      };
     }
 
     if (
@@ -75,7 +88,9 @@ export class EnforceSimulationHook {
       !simulationData?.tokenBalanceChanges?.length
     ) {
       log('Skipping as no simulation changes');
-      return {};
+      return {
+        skipSimulation: false,
+      };
     }
 
     if (isFinal && !txParamsOriginal) {

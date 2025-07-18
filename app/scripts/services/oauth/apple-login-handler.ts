@@ -97,6 +97,9 @@ export class AppleLoginHandler extends BaseLoginHandler {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       login_provider: this.authConnection,
       network: web3AuthNetwork,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      access_type: 'offline',
     };
 
     return JSON.stringify(requestData);
