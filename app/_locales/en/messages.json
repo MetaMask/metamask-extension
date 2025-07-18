@@ -309,6 +309,9 @@
   "address": {
     "message": "Address"
   },
+  "addressCopied": {
+    "message": "Address copied"
+  },
   "addressMismatch": {
     "message": "Site address mismatch"
   },
@@ -1955,6 +1958,15 @@
   "downloadGoogleChrome": {
     "message": "Download Google Chrome"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "Face ID on our app lets you in even if you forget your password. Take MetaMask everywhere you go!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "Scan this QR code to get started."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "Get our mobile app"
+  },
   "downloadNow": {
     "message": "Download Now"
   },
@@ -2732,6 +2744,13 @@
   },
   "importAccountMsg": {
     "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase. Learn more about imported accounts"
+  },
+  "importAccountWithSocialMsg": {
+    "message": "Imported private keys are backed up to your account and sync automatically when you sign in with the same Google or Apple login."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "$1 about how imported keys work",
+    "description": "$1 is a link to learn more about imported keys"
   },
   "importNFT": {
     "message": "Import NFT"
@@ -3747,7 +3766,7 @@
     "message": "No conversion rate available"
   },
   "noDeFiPositions": {
-    "message": "No positions yet"
+    "message": "Can't find what you're looking for?"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
@@ -4234,6 +4253,9 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
+    "message": "If I forget this password, MetaMask can’t reset it for me."
+  },
+  "passwordTermsWarningSocial": {
     "message": "If I forget this password, I’ll lose access to my wallet permanently. MetaMask can’t reset it for me."
   },
   "passwordToggleHide": {
@@ -4644,6 +4666,9 @@
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
   },
+  "protocolNotSupported": {
+    "message": "We may not support your protocol yet."
+  },
   "provide": {
     "message": "Provide"
   },
@@ -4739,6 +4764,9 @@
   },
   "rateIncludesMMFee": {
     "message": "Rate includes $1% fee"
+  },
+  "rateIncludesMMFeeAndGas": {
+    "message": "Rate includes $1% fee and gas"
   },
   "reAddAccounts": {
     "message": "re-add any other accounts"
@@ -5467,6 +5495,12 @@
   "slideDebitCardTitle": {
     "message": "MetaMask debit card"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "Take your wallet everywhere you go"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "Download MetaMask mobile"
+  },
   "slideFundWalletDescription": {
     "message": "Add or transfer tokens to get started"
   },
@@ -6006,9 +6040,6 @@
   },
   "standardAccountLabel": {
     "message": "Standard Account"
-  },
-  "startEarning": {
-    "message": "Start earning"
   },
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
@@ -6603,17 +6634,6 @@
   },
   "switchToThisAccount": {
     "message": "Switch to this account"
-  },
-  "switchedNetworkToastDecline": {
-    "message": "Don't show again"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 is now active on $2",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
-  "switchedNetworkToastMessageNoOrigin": {
-    "message": "You're now using $1",
-    "description": "$1 represents the network name"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"

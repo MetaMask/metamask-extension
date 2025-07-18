@@ -1,16 +1,18 @@
-import { isStrictHexString, type CaipChainId, type Hex } from '@metamask/utils';
+import {
+  type CaipAssetType,
+  isStrictHexString,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
-import { toChecksumAddress } from 'ethereumjs-util';
 import {
-  isSolanaChainId,
   ChainId,
   type TxData,
-  formatChainIdToHex,
   BridgeClientId,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
@@ -18,9 +20,7 @@ import { handleFetch } from '@metamask/controller-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
-import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
 import { toAssetId } from '../../../shared/lib/asset-utils';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
@@ -85,47 +85,35 @@ export const getTxGasEstimates = async ({
 const fetchTokenExchangeRates = async (
   chainId: Hex | CaipChainId | ChainId,
   currency: string,
+  signal?: AbortSignal,
   ...tokenAddresses: string[]
 ) => {
-  let exchangeRates;
-  if (isSolanaChainId(chainId)) {
-    const queryParams = new URLSearchParams({
-      assetIds: tokenAddresses
-        .map((address) => toAssetId(address, MultichainNetworks.SOLANA))
-        .join(','),
-      includeMarketData: 'true',
-      vsCurrency: currency,
-    });
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    const url = `https://price.api.cx.metamask.io/v3/spot-prices?${queryParams}`;
-    const tokenV3PriceResponse = (await handleFetch(url, {
-      method: 'GET',
-      headers: { 'X-Client-Id': BridgeClientId.EXTENSION },
-    })) as Record<string, { price: number }>;
-
-    exchangeRates = Object.entries(tokenV3PriceResponse).reduce(
-      (acc, [k, curr]) => {
-        acc[k] = curr.price;
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
-    return exchangeRates;
+  const assetIds = tokenAddresses
+    .map((address) => toAssetId(address, formatChainIdToCaip(chainId)))
+    .filter(Boolean);
+  if (assetIds.length === 0) {
+    return {};
   }
-  // EVM chains
-  exchangeRates = await fetchTokenExchangeRatesUtil(
-    currency,
-    tokenAddresses,
-    formatChainIdToHex(chainId),
-  );
+  const queryParams = new URLSearchParams({
+    assetIds: assetIds.join(','),
+    includeMarketData: 'true',
+    vsCurrency: currency,
+  });
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+  const url = `https://price.api.cx.metamask.io/v3/spot-prices?${queryParams}`;
+  const tokenV3PriceResponse = (await handleFetch(url, {
+    method: 'GET',
+    headers: { 'X-Client-Id': BridgeClientId.EXTENSION },
+    signal,
+  })) as Record<CaipAssetType, { price: number }>;
 
-  return Object.keys(exchangeRates).reduce(
-    (acc: Record<string, number | undefined>, address) => {
-      acc[address] = exchangeRates[address];
+  return Object.entries(tokenV3PriceResponse).reduce(
+    (acc, [k, curr]) => {
+      acc[k as CaipAssetType] = curr.price;
       return acc;
     },
-    {},
+    {} as Record<CaipAssetType, number>,
   );
 };
 
@@ -136,22 +124,17 @@ export const getTokenExchangeRate = async (request: {
   chainId: Hex | CaipChainId | ChainId;
   tokenAddress: string;
   currency: string;
+  signal?: AbortSignal;
 }) => {
-  const { chainId, tokenAddress, currency } = request;
+  const { chainId, tokenAddress, currency, signal } = request;
   const exchangeRates = await fetchTokenExchangeRates(
     chainId,
     currency,
+    signal,
     tokenAddress,
   );
   const assetId = toAssetId(tokenAddress, formatChainIdToCaip(chainId));
-  if (isSolanaChainId(chainId) && assetId) {
-    return exchangeRates?.[assetId];
-  }
-  // The exchange rate can be checksummed or not, so we need to check both
-  const exchangeRate =
-    exchangeRates?.[toChecksumAddress(tokenAddress)] ??
-    exchangeRates?.[tokenAddress.toLowerCase()];
-  return exchangeRate;
+  return assetId ? exchangeRates?.[assetId] : undefined;
 };
 
 // This extracts a token's exchange rate from the marketData state object
