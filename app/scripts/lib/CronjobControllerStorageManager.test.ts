@@ -21,7 +21,9 @@ describe('CronjobControllerStorageManager', () => {
     jest.resetAllMocks();
     mockedBrowser.storage.local.get.mockImplementation(async () => {
       return {
-        mockKey: 'mockData',
+        [CronjobControllerStorageKey]: {
+          mockKey: 'mockData',
+        },
       };
     });
     mockedBrowser.storage.local.set.mockImplementation(() => Promise.resolve());
