@@ -663,7 +663,7 @@ const PrepareBridgePage = () => {
 
   const getFromInputHeader = () => {
     if (isUnifiedUIEnabled) {
-      return t('yourNetworks');
+      return t('swapSelectToken');
     }
     return isSwap ? t('swapSwapFrom') : t('bridgeFrom');
   };
@@ -933,7 +933,7 @@ const PrepareBridgePage = () => {
                         });
                       dispatch(setToChainId(networkConfig.chainId));
                     },
-                    header: getToInputHeader(),
+                    header: t('yourNetworks'),
                     shouldDisableNetwork: isUnifiedUIEnabled
                       ? undefined
                       : ({ chainId }) => chainId === fromChain?.chainId,
