@@ -8,7 +8,7 @@ export const CronjobControllerStorageKey = 'temp-cronjob-storage';
  * @deprecated This is a temporary fix, please do not use this class (or any
  * similar patterns) elsewhere.
  */
-export class CronjobStorageManager {
+export class CronjobControllerStorageManager {
   /**
    * The initial CronjobController data.
    */
