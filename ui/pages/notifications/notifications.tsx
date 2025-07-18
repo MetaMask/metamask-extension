@@ -178,12 +178,16 @@ export default function Notifications() {
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
   // Check if the turn on notifications modal is currently open
-  const currentModalName = useSelector((state: any) => state.appState.modal.modalState?.name);
-  const isModalAlreadyOpen = currentModalName === 'TURN_ON_METAMASK_NOTIFICATIONS';
+  const currentModalName = useSelector(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (state: any) => state.appState.modal.modalState?.name,
+  );
+  const isModalAlreadyOpen =
+    currentModalName === 'TURN_ON_METAMASK_NOTIFICATIONS';
 
   let hasThirdPartyNotifySnaps = false;
   hasThirdPartyNotifySnaps = useSelector(getThirdPartyNotifySnaps).length > 0;
-console.log(useSelector(getThirdPartyNotifySnaps));
+  console.log(useSelector(getThirdPartyNotifySnaps));
   useEffect(() => {
     const shouldShowEnableModal =
       !hasThirdPartyNotifySnaps &&
@@ -221,7 +225,10 @@ console.log(useSelector(getThirdPartyNotifySnaps));
 
   // Track when modal is dismissed
   useEffect(() => {
-    if (currentModalName !== 'TURN_ON_METAMASK_NOTIFICATIONS' && modalDismissedRef.current === false) {
+    if (
+      currentModalName !== 'TURN_ON_METAMASK_NOTIFICATIONS' &&
+      modalDismissedRef.current === false
+    ) {
       // Modal was closed, mark as dismissed for this session
       modalDismissedRef.current = true;
     }
