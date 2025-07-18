@@ -194,7 +194,7 @@ const swcConfig = { args, safeVariables, browsersListQuery, isDevelopment };
 const tsxLoader = getSwcLoader('typescript', true, 'module', swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, 'module', swcConfig);
 const ecmaLoader = getSwcLoader('ecmascript', false, 'module', swcConfig);
-const cjsLoader = getSwcLoader('ecmascript', false, 'script', swcConfig);
+const scriptLoader = getSwcLoader('ecmascript', false, 'script', swcConfig);
 
 const config = {
   entry,
@@ -299,7 +299,7 @@ const config = {
         include: NODE_MODULES_RE,
         // security team requires that we never process `@lavamoat/snow/**.*`
         exclude: SNOW_MODULE_RE,
-        use: cjsLoader,
+        use: scriptLoader,
       },
       // css, sass/scss
       {
