@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: add support to access the private key from account details (#34030)
 - feat: enable apple login (#34072)
 - feat: add support for show srp from accounts details (#34026)
+- feat: pre-fills Swap amount, src token and dest tokens based on deep-link query parameters (#34259)
 
 ### Changed
 - chore: new crowdin translations by github action (#33344)
@@ -114,6 +115,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: add scenario for send flow fields validation for btc (#34113)
 - fix: replace reveal srp modal with reveal srp page cp-12.23.0 (#34013)
 - fix: bitcoin account synchronization when no history (#34053)
+- fix: change the copy in the unified swaps flow asset picker to be more intuitive (#34365)
+- fix: reset parsed search params after setting quote request inputs (#34389)
+- fix: allow users to login with apple accounts (#34391)
+- fix: use button for quiz words instead of text-field (#34280)
+- fix: handle recovery ratelimit error (#34397)
+- fix: show solana connection status in dapp view (#34375)
 
 ## [12.23.0]
 ### Added
