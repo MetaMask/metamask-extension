@@ -7111,11 +7111,9 @@
   "viewActivity": {
     "message": "View activity"
   },
-  "viewAddressOnEtherscan": {
-    "message": "View on Etherscan"
-  },
-  "viewAddressOnSolscan": {
-    "message": "View on Solscan"
+  "viewAddressOnExplorer": {
+    "message": "View on $1",
+    "description": "$1 is the block explorer name"
   },
   "viewAllQuotes": {
     "message": "view all quotes"

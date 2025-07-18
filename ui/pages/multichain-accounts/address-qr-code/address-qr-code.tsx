@@ -73,9 +73,9 @@ export const AddressQRCode = () => {
   const getExplorerButtonText = (): string => {
     switch (getAccountTypeCategory(account)) {
       case 'evm':
-        return t('viewAddressOnEtherscan');
+        return t('viewAddressOnExplorer', ['Etherscan']);
       case 'solana':
-        return t('viewAddressOnSolscan');
+        return t('viewAddressOnExplorer', ['Solscan']);
       default:
         return t('viewOnExplorer');
     }
