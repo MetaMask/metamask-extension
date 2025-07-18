@@ -285,14 +285,6 @@ const config = {
         exclude: NODE_MODULES_RE,
         use: [jsxLoader, codeFenceLoader],
       },
-      // vendor commonjs javascript
-      {
-        test: /\.c?js$/u,
-        include: NODE_MODULES_RE,
-        // security team requires that we never process `@lavamoat/snow/**.*`
-        exclude: SNOW_MODULE_RE,
-        use: cjsLoader,
-      },
       // vendor module javascript
       {
         test: /\.mjs$/u,
@@ -300,6 +292,14 @@ const config = {
         // security team requires that we never process `@lavamoat/snow/**.*`
         exclude: SNOW_MODULE_RE,
         use: ecmaLoader,
+      },
+      // vendor javascript
+      {
+        test: /\.js$/u,
+        include: NODE_MODULES_RE,
+        // security team requires that we never process `@lavamoat/snow/**.*`
+        exclude: SNOW_MODULE_RE,
+        use: cjsLoader,
       },
       // css, sass/scss
       {
