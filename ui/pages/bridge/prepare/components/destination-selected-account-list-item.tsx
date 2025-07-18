@@ -62,7 +62,10 @@ const DestinationSelectedAccountListItem: React.FC<
         marginInlineEnd={2}
       />
 
-      <Box display={Display.Flex} style={{ flexDirection: 'column' }}>
+      <Box
+        display={Display.Flex}
+        style={{ flexDirection: 'column', maxWidth: 'calc(100% - 60px)' }}
+      >
         <Text
           variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}
@@ -72,7 +75,7 @@ const DestinationSelectedAccountListItem: React.FC<
           {t('destinationAccountPickerReceiveAt')}
         </Text>
 
-        <Text variant={TextVariant.bodyMdMedium} marginBottom={1}>
+        <Text variant={TextVariant.bodyMdMedium} marginBottom={1} ellipsis>
           {(() => {
             if (isExternalAccount) {
               if (account.metadata.name.endsWith('.eth')) {
