@@ -31,6 +31,12 @@ const slash = `(?:\\${sep})?`;
 export const NODE_MODULES_RE = new RegExp(`${slash}node_modules${slash}`, 'u');
 
 /**
+ * Regular expression to match files in the `@lavamoat/snow` node_modules
+ * directory.
+ */
+export const SNOW_MODULE_RE = /^.*\/node_modules\/@lavamoat\/snow\/.*$/u;
+
+/**
  * No Operation. A function that does nothing and returns nothing.
  *
  * @returns `undefined`

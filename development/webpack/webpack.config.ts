@@ -28,6 +28,7 @@ import {
   getMinimizers,
   NODE_MODULES_RE,
   __HMR_READY__,
+  SNOW_MODULE_RE,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
@@ -193,6 +194,19 @@ const swcConfig = { args, safeVariables, browsersListQuery, isDevelopment };
 const tsxLoader = getSwcLoader('typescript', true, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, swcConfig);
 
+// Create minimal vendor loaders that only transform syntax for browser compatibility
+// These avoid aggressive optimizations that might break vendor packages
+const vendorEcmaLoader = getSwcLoader('ecmascript', false, swcConfig, {
+  enableOptimizer: true, // Disable optimizer to avoid breaking vendor code
+  injectEnvVars: false, // Don't inject environment variables into vendor code
+  externalHelpers: true, // Self-contained to avoid dependency issues
+});
+const vendorMjsLoader = getSwcLoader('ecmascript', false, swcConfig, {
+  enableOptimizer: true, // Disable optimizer to avoid breaking vendor code
+  injectEnvVars: false, // Don't inject environment variables into vendor code
+  externalHelpers: true, // Self-contained to avoid dependency issues
+});
+
 const config = {
   entry,
   cache,
@@ -281,6 +295,27 @@ const config = {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
         use: [jsxLoader, codeFenceLoader],
+      },
+      // vendor module javascript - minimal transformation for syntax compatibility
+      {
+        test: /\.mjs$/u,
+        include: NODE_MODULES_RE,
+        // security team requires that we never process `@lavamoat/snow/**.*`
+        exclude: [SNOW_MODULE_RE],
+        use: vendorMjsLoader,
+      },
+      // vendor javascript - minimal transformation for syntax compatibility
+      {
+        test: /\.js$/u,
+        include: NODE_MODULES_RE,
+        // security team requires that we never process `@lavamoat/snow/**.*`
+        // Only exclude packages that are known to have compatibility issues
+        exclude: [
+          SNOW_MODULE_RE,
+          // Add specific packages here if they cause issues, rather than broad exclusions
+          // /node_modules\/@trezor/ - removed this broad exclusion
+        ],
+        use: vendorEcmaLoader,
       },
       // css, sass/scss
       {

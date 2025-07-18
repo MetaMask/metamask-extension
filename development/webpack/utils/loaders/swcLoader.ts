@@ -187,19 +187,36 @@ export type SwcConfig = {
   isDevelopment: boolean;
 };
 
+export type SwcOptions = {
+  /** Whether to enable external helpers (default: true) */
+  externalHelpers?: boolean;
+  /** Whether to apply optimizer transformations (default: true) */
+  enableOptimizer?: boolean;
+  /** Whether to inject environment variables (default: true) */
+  injectEnvVars?: boolean;
+};
+
 /**
  * Gets the Speedy Web Compiler (SWC) loader for the given syntax.
  *
  * @param syntax
  * @param enableJsx
  * @param swcConfig
+ * @param options Additional options for fine-tuning transformations
  * @returns
  */
 export function getSwcLoader(
   syntax: 'typescript' | 'ecmascript',
   enableJsx: boolean,
   swcConfig: SwcConfig,
+  options: SwcOptions = {},
 ) {
+  const {
+    externalHelpers = true,
+    enableOptimizer = true,
+    injectEnvVars = true,
+  } = options;
+
   return {
     loader: __filename,
     options: {
@@ -207,18 +224,20 @@ export function getSwcLoader(
         targets: swcConfig.browsersListQuery,
       },
       jsc: {
-        externalHelpers: true,
+        externalHelpers,
         transform: {
           react: {
             development: swcConfig.isDevelopment,
             refresh:
               __HMR_READY__ && swcConfig.isDevelopment && swcConfig.args.watch,
           },
-          optimizer: {
-            globals: {
-              envs: swcConfig.safeVariables,
+          ...(enableOptimizer && {
+            optimizer: {
+              globals: {
+                envs: injectEnvVars ? swcConfig.safeVariables : {},
+              },
             },
-          },
+          }),
         },
         parser: {
           syntax,
