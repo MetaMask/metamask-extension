@@ -181,6 +181,7 @@ import { ErrorReportingService } from '@metamask/error-reporting-service';
 import {
   SeedlessOnboardingControllerErrorMessage,
   SecretType,
+  RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
@@ -5230,27 +5231,35 @@ export default class MetamaskController extends EventEmitter {
    * @returns The seed phrase.
    */
   async restoreSocialBackupAndGetSeedPhrase(password) {
-    // get the first seed phrase from the array, this is the oldest seed phrase
-    // and we will use it to create the initial vault
-    const [firstSecretData, ...remainingSecretData] =
-      await this.fetchAllSecretData(password);
+    try {
+      // get the first seed phrase from the array, this is the oldest seed phrase
+      // and we will use it to create the initial vault
+      const [firstSecretData, ...remainingSecretData] =
+        await this.fetchAllSecretData(password);
 
-    const firstSeedPhrase = this._convertEnglishWordlistIndicesToCodepoints(
-      firstSecretData.data,
-    );
-    const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
-    const encodedSeedPhrase = Array.from(
-      Buffer.from(mnemonic, 'utf8').values(),
-    );
-    // restore the vault using the root seed phrase
-    await this.createNewVaultAndRestore(password, encodedSeedPhrase);
+      const firstSeedPhrase = this._convertEnglishWordlistIndicesToCodepoints(
+        firstSecretData.data,
+      );
+      const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
+      const encodedSeedPhrase = Array.from(
+        Buffer.from(mnemonic, 'utf8').values(),
+      );
+      // restore the vault using the root seed phrase
+      await this.createNewVaultAndRestore(password, encodedSeedPhrase);
 
-    // restore the remaining Mnemonics/SeedPhrases/PrivateKeys to the vault
-    if (remainingSecretData.length > 0) {
-      await this.restoreSeedPhrasesToVault(remainingSecretData);
+      // restore the remaining Mnemonics/SeedPhrases/PrivateKeys to the vault
+      if (remainingSecretData.length > 0) {
+        await this.restoreSeedPhrasesToVault(remainingSecretData);
+      }
+
+      return mnemonic;
+    } catch (error) {
+      log.error('Error restoring social backup and getting seed phrase', error);
+      if (error instanceof RecoveryError) {
+        throw new JsonRpcError(-32603, error.message, error.data);
+      }
+      throw error;
     }
-
-    return mnemonic;
   }
 
   /**

@@ -48,7 +48,7 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
-import { KeyringTypes } from '@metamask/keyring-controller';
+import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import {
   USER_STORAGE_FEATURE_NAMES,
@@ -684,7 +684,7 @@ export async function createSeedPhraseBackup(
   ]);
 }
 
-export function createNewVault(password: string): Promise<boolean> {
+export function createNewVault(password: string): Promise<KeyringObject> {
   return new Promise((resolve, reject) => {
     callBackgroundMethod(
       'createNewVaultAndKeychain',
