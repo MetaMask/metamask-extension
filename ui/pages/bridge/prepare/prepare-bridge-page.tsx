@@ -8,9 +8,8 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
-import { useHistory, useLocation } from 'react-router-dom';
 import { type TokenListMap } from '@metamask/assets-controllers';
-import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
+import { zeroAddress } from 'ethereumjs-util';
 import {
   formatChainIdToCaip,
   isSolanaChainId,
@@ -32,6 +31,7 @@ import {
   resetBridgeState,
   setSlippage,
   trackUnifiedSwapBridgeEvent,
+  setFromChain,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -82,10 +82,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
-import {
-  setActiveNetworkWithError,
-  setSelectedAccount,
-} from '../../../store/actions';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
   formatTokenAmount,
@@ -127,15 +123,12 @@ import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import {
-  fetchAssetMetadata,
-  toAssetId,
-} from '../../../../shared/lib/asset-utils';
+import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import useBridgeDefaultToToken from '../../../hooks/bridge/useBridgeDefaultToToken';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
@@ -224,6 +217,8 @@ const PrepareBridgePage = () => {
   const selectedAccount = isEvm
     ? selectedEvmAccount
     : selectedMultichainAccount;
+
+  useBridgeQueryParams(selectedSolanaAccount, selectedEvmAccount);
 
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
@@ -497,90 +492,6 @@ const PrepareBridgePage = () => {
     [],
   );
 
-  const { search } = useLocation();
-  const history = useHistory();
-
-  useEffect(() => {
-    if (!fromChain?.chainId || isFromTokensLoading) {
-      return;
-    }
-
-    const searchParams = new URLSearchParams(search);
-    const tokenAddressFromUrl = searchParams.get('token');
-    if (!tokenAddressFromUrl) {
-      return;
-    }
-
-    const removeTokenFromUrl = () => {
-      const newParams = new URLSearchParams(searchParams);
-      newParams.delete('token');
-      history.replace({
-        search: newParams.toString(),
-      });
-    };
-
-    const handleToken = async () => {
-      if (isSolanaChainId(fromChain.chainId)) {
-        const tokenAddress = tokenAddressFromUrl;
-        const assetId = toAssetId(
-          tokenAddress,
-          formatChainIdToCaip(fromChain.chainId),
-        );
-        if (!assetId) {
-          removeTokenFromUrl();
-          return;
-        }
-
-        const tokenMetadata = await fetchAssetMetadata(
-          tokenAddress,
-          fromChain.chainId,
-        );
-        if (!tokenMetadata) {
-          removeTokenFromUrl();
-          return;
-        }
-
-        dispatch(
-          setFromToken({
-            ...tokenMetadata,
-            chainId: fromChain.chainId,
-          }),
-        );
-        removeTokenFromUrl();
-        return;
-      }
-
-      const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
-
-      switch (tokenAddressFromUrl) {
-        case fromToken?.address:
-          // If the token is already set, remove the query param
-          removeTokenFromUrl();
-          break;
-        case matchedToken?.address:
-        case matchedToken?.address
-          ? toChecksumAddress(matchedToken.address)
-          : undefined: {
-          // If there is a match, set it as the fromToken
-          dispatch(
-            setFromToken({
-              ...matchedToken,
-              chainId: fromChain.chainId,
-            }),
-          );
-          removeTokenFromUrl();
-          break;
-        }
-        default:
-          // Otherwise remove query param
-          removeTokenFromUrl();
-          break;
-      }
-    };
-
-    handleToken();
-  }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
-
   // Set slippage based on swap type
   const slippageInitializedRef = useRef(false);
   useEffect(() => {
@@ -663,7 +574,7 @@ const PrepareBridgePage = () => {
 
   const getFromInputHeader = () => {
     if (isUnifiedUIEnabled) {
-      return t('yourNetworks');
+      return t('swapSelectToken');
     }
     return isSwap ? t('swapSwapFrom') : t('bridgeFrom');
   };
@@ -704,12 +615,6 @@ const PrepareBridgePage = () => {
             network: fromChain,
             networks: isSwap && !isUnifiedUIEnabled ? undefined : fromChains,
             onNetworkChange: (networkConfig) => {
-              networkConfig?.chainId &&
-                networkConfig.chainId !== fromChain?.chainId &&
-                trackInputEvent({
-                  input: 'chain_source',
-                  value: networkConfig.chainId,
-                });
               if (
                 !isUnifiedUIEnabled &&
                 networkConfig?.chainId &&
@@ -717,23 +622,13 @@ const PrepareBridgePage = () => {
               ) {
                 dispatch(setToChainId(null));
               }
-              if (
-                isSolanaChainId(networkConfig.chainId) &&
-                selectedSolanaAccount
-              ) {
-                dispatch(setSelectedAccount(selectedSolanaAccount.address));
-              } else if (isNetworkAdded(networkConfig)) {
-                dispatch(setSelectedAccount(selectedEvmAccount.address));
-                dispatch(
-                  setActiveNetworkWithError(
-                    networkConfig.rpcEndpoints[
-                      networkConfig.defaultRpcEndpointIndex
-                    ].networkClientId || networkConfig.chainId,
-                  ),
-                );
-              }
-              dispatch(setFromToken(null));
-              dispatch(setFromTokenInputValue(null));
+              dispatch(
+                setFromChain({
+                  networkConfig,
+                  selectedSolanaAccount,
+                  selectedEvmAccount,
+                }),
+              );
             },
             header: t('yourNetworks'),
           }}
@@ -869,36 +764,18 @@ const PrepareBridgePage = () => {
                 const shouldFlipNetworks = isUnifiedUIEnabled || !isSwap;
                 if (shouldFlipNetworks) {
                   // Handle account switching for Solana
-                  if (
-                    toChain?.chainId &&
-                    formatChainIdToCaip(toChain.chainId) ===
-                      MultichainNetworks.SOLANA &&
-                    selectedSolanaAccount
-                  ) {
-                    dispatch(setSelectedAccount(selectedSolanaAccount.address));
-                  } else {
-                    dispatch(setSelectedAccount(selectedEvmAccount.address));
-                  }
-
-                  // Get the network client ID for switching
-                  const toChainClientId =
-                    toChain?.defaultRpcEndpointIndex !== undefined &&
-                    toChain?.rpcEndpoints
-                      ? toChain.rpcEndpoints[toChain.defaultRpcEndpointIndex]
-                      : undefined;
-                  const networkClientId =
-                    toChainClientId && 'networkClientId' in toChainClientId
-                      ? toChainClientId.networkClientId
-                      : toChain?.chainId;
-
-                  if (networkClientId) {
-                    dispatch(setActiveNetworkWithError(networkClientId));
-                  }
+                  dispatch(
+                    setFromChain({
+                      networkConfig: toChain,
+                      token: toToken,
+                      selectedSolanaAccount,
+                      selectedEvmAccount,
+                    }),
+                  );
                   if (fromChain?.chainId) {
                     dispatch(setToChainId(fromChain.chainId));
                   }
                 }
-                dispatch(setFromToken(toToken));
                 dispatch(setToToken(fromToken));
               }}
             />
@@ -933,7 +810,7 @@ const PrepareBridgePage = () => {
                         });
                       dispatch(setToChainId(networkConfig.chainId));
                     },
-                    header: getToInputHeader(),
+                    header: t('yourNetworks'),
                     shouldDisableNetwork: isUnifiedUIEnabled
                       ? undefined
                       : ({ chainId }) => chainId === fromChain?.chainId,
