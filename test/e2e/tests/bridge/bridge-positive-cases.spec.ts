@@ -6,12 +6,12 @@ import {
   searchAndSwitchToNetworkFromSendFlow,
 } from '../../page-objects/flows/network.flow';
 import { disableStxSetting } from '../../page-objects/flows/toggle-stx-setting.flow';
-import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
-import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import NetworkManager, {
   NetworkId,
 } from '../../page-objects/pages/network-manager';
+import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
+import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
 
 describe('Bridge tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
