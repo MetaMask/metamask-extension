@@ -1601,7 +1601,9 @@ async function startWebsocketMock(mockServer: Mockttp) {
     .matching(
       (req) =>
         req.url ===
-        'wss://solana-mainnet.infura.io/ws/v3/5b98a22672004ef1bf40a80123c5c48d',
+          'wss://solana-mainnet.infura.io/ws/v3/5b98a22672004ef1bf40a80123c5c48d' ||
+        req.url ===
+          'wss://solana-devnet.infura.io/ws/v3/5b98a22672004ef1bf40a80123c5c48d',
     )
     .thenForwardTo(`ws://localhost:${port}`);
 }
