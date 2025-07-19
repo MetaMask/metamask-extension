@@ -391,6 +391,33 @@ module.exports = {
       },
     },
     /**
+     * Tailwind CSS Specifc Rules
+     *
+     * Similar to above, but marks a majority of errors to warnings.
+     * TODO - combine rulesets and resolve errors
+     */
+    {
+      files: ['ui/**/*.ts', 'ui/**/*.tsx'],
+      plugins: ['tailwindcss'],
+      rules: {
+        // Tailwind CSS rules - same as design system
+        'tailwindcss/classnames-order': 'error',
+        'tailwindcss/enforces-negative-arbitrary-values': 'error',
+        'tailwindcss/enforces-shorthand': 'error',
+        'tailwindcss/no-arbitrary-value': 'off', // There are legitimate reasons to use arbitrary values but we should specifically error on static colors
+        'tailwindcss/no-custom-classname': 'warn',
+        'tailwindcss/no-contradicting-classname': 'error',
+        'tailwindcss/no-unnecessary-arbitrary-value': 'error',
+      },
+      settings: {
+        tailwindcss: {
+          callees: ['twMerge'],
+          config: 'tailwind.config.js',
+          classRegex: ['^(class(Name)?)$'],
+        },
+      },
+    },
+    /**
      * Mocha tests
      *
      * These are files that make use of globals and syntax introduced by the
