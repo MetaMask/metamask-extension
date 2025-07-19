@@ -1,7 +1,6 @@
 // PersistenceManager.test.ts
 // node is missing the navigator.locks API so we polyfill it for the tests
 import 'navigator.locks';
-import { captureException } from '@sentry/browser';
 import log from 'loglevel';
 
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
@@ -20,12 +19,12 @@ jest.mock('./extension-store', () => {
   });
 });
 jest.mock('./read-only-network-store');
-jest.mock('@sentry/browser', () => ({
-  captureException: jest.fn(),
-}));
 jest.mock('loglevel', () => ({
   error: jest.fn(),
 }));
+jest.replaceProperty(global, 'sentry', {
+  captureException: jest.fn(),
+});
 
 describe('PersistenceManager', () => {
   let manager: PersistenceManager;
@@ -67,7 +66,7 @@ describe('PersistenceManager', () => {
       mockStoreSet.mockRejectedValueOnce(error);
 
       await manager.set({ appState: { broken: true } });
-      expect(captureException).toHaveBeenCalledWith(error);
+      expect(global.sentry.captureException).toHaveBeenCalledWith(error);
       expect(log.error).toHaveBeenCalledWith(
         'error setting state in local store:',
         error,
@@ -83,7 +82,7 @@ describe('PersistenceManager', () => {
       await manager.set({ appState: { broken: true } });
       await manager.set({ appState: { broken: true } });
 
-      expect(captureException).toHaveBeenCalledTimes(1);
+      expect(global.sentry.captureException).toHaveBeenCalledTimes(1);
     });
 
     it('captures exception twice if store.set fails, then succeeds and then fails again', async () => {
@@ -103,7 +102,7 @@ describe('PersistenceManager', () => {
 
       await manager.set({ appState: { broken: true } });
 
-      expect(captureException).toHaveBeenCalledTimes(2);
+      expect(global.sentry.captureException).toHaveBeenCalledTimes(2);
     });
   });
 

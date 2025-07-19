@@ -3,7 +3,6 @@ import {
   UserStorageControllerState,
   Controller as UserStorageController,
 } from '@metamask/profile-sync-controller/user-storage';
-import { captureException } from '@sentry/browser';
 import { ControllerInitFunction } from '../types';
 import { isProduction } from '../../../../shared/modules/environment';
 import {
@@ -60,7 +59,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
           situationMessage,
           sentryContext,
         ) => {
-          captureException(
+          global.sentry.captureException(
             new Error(`Account sync - ${situationMessage}`),
             sentryContext,
           );
@@ -114,7 +113,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
           situationMessage,
           sentryContext,
         ) => {
-          captureException(
+          global.sentry.captureException(
             new Error(`Contact sync - ${situationMessage}`),
             sentryContext,
           );

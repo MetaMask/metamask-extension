@@ -1,6 +1,5 @@
 import { cloneDeep, isObject } from 'lodash';
 import { hasProperty } from '@metamask/utils';
-import { captureException } from '@sentry/browser';
 
 type VersionedData = {
   meta: { version: number };
@@ -39,7 +38,7 @@ function transformState(
     !isObject(state.UserStorageController) ||
     !hasProperty(state.UserStorageController, 'isProfileSyncingEnabled')
   ) {
-    captureException(
+    global.sentry.captureException(
       `Migration ${version}: Invalid UserStorageController state: ${typeof state.UserStorageController}`,
     );
     return state;
