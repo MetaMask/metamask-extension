@@ -1,1 +1,1 @@
-export { default } from './info-tab.component';
+export { default } from './info-tab.container';
