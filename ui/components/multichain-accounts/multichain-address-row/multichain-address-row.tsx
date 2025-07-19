@@ -20,13 +20,17 @@ import {
 } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { MultichainNetwork } from '../../../selectors/multichain';
+import { getImageForChainId } from '../../../selectors/multichain';
 
 type MultichainAddressRowProps = {
   /**
-   * Network object containing nickname, chainId, and rpcPrefs with imageUrl
+   * Chain ID to identify the network
    */
-  network: MultichainNetwork;
+  chainId: string;
+  /**
+   * Network name to display
+   */
+  networkName: string;
   /**
    * Address string to display (will be truncated)
    */
@@ -38,13 +42,14 @@ type MultichainAddressRowProps = {
 };
 
 export const MultichainAddressRow = ({
-  network,
+  chainId,
+  networkName,
   address,
   className = '',
 }: MultichainAddressRowProps) => {
   const [copied, handleCopy] = useCopyToClipboard();
 
-  const networkImageSrc = network.network.rpcPrefs?.imageUrl;
+  const networkImageSrc = getImageForChainId(chainId);
   const truncatedAddress = shortenAddress(address);
 
   const handleCopyClick = () => {
@@ -67,7 +72,7 @@ export const MultichainAddressRow = ({
     >
       <AvatarNetwork
         size={AvatarNetworkSize.Md}
-        name={network.nickname}
+        name={networkName}
         src={networkImageSrc}
         borderRadius={BorderRadius.LG}
         data-testid="multichain-address-row-network-icon"
@@ -84,7 +89,7 @@ export const MultichainAddressRow = ({
           color={TextColor.textDefault}
           data-testid="multichain-address-row-network-name"
         >
-          {network.nickname}
+          {networkName}
         </Text>
         <Text
           variant={TextVariant.bodySm}
