@@ -55,7 +55,6 @@ import {
   getSelectedAccountNativeTokenCachedBalanceByChainId,
   getSelectedInternalAccount,
   getShowFiatInTestnets,
-  getSwapsDefaultToken,
 } from '../../../selectors';
 import {
   getImageForChainId,
@@ -101,11 +100,6 @@ const AssetPage = ({
 
   const isNative = type === AssetType.native;
 
-  // These need to be specific to the asset and not the current chain
-  const defaultSwapsToken = useSelector(
-    (state) => getSwapsDefaultToken(state, chainId),
-    isEqual,
-  );
   const isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
   const isBridgeChain = useSelector((state) =>
     getIsBridgeChain(state, chainId),
@@ -315,7 +309,6 @@ const AssetPage = ({
               isSwapsChain,
               isBridgeChain,
               chainId,
-              defaultSwapsToken,
             }}
           />
         ) : (

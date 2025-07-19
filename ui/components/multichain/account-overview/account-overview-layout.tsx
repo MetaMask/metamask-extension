@@ -1,6 +1,5 @@
 import React, { useContext, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
 
 import {
@@ -15,7 +14,6 @@ import { Carousel } from '..';
 import {
   getAppIsLoading,
   getSelectedAccount,
-  getSwapsDefaultToken,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   hasCreatedSolanaAccount,
   ///: END:ONLY_INCLUDE_IF
@@ -74,8 +72,6 @@ export const AccountOverviewLayout = ({
   const selectedSolanaAccount = useSelector(getLastSelectedSolanaAccount);
   ///: END:ONLY_INCLUDE_IF
 
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
-
   const [showDownloadMobileAppModal, setShowDownloadMobileAppModal] =
     useState(false);
 
@@ -85,7 +81,8 @@ export const AccountOverviewLayout = ({
 
   const handleCarouselClick = (id: string) => {
     if (id === 'bridge') {
-      openBridgeExperience('Carousel', defaultSwapsToken);
+      // Handle clicking from the wallet overview page carousel
+      openBridgeExperience('Carousel');
     }
 
     if (id === BASIC_FUNCTIONALITY_SLIDE.id) {
