@@ -1,4 +1,5 @@
 /* eslint-disable require-unicode-regexp */
+import { escapeRegExp } from 'lodash';
 import SETTINGS_CONSTANTS from '../constants/settings';
 
 let settingsRoutes;
@@ -85,16 +86,7 @@ export function colorText(menuElement, regex) {
   }
 }
 
-/**
- * Replaces any special characters in the input string that have a meaning in regular expressions
- * (such as \, *, +, ?, etc.) with their escaped versions (e.g., \ becomes \\).
- *
- * @param input - The input string to be escaped for use in a regular expression.
- * @returns The escaped string safe for use in a regular expression.
- */
-export const escapeRegExp = (input) => {
-  return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escapes special characters
-};
+// Удаляем собственную реализацию escapeRegExp, так как теперь используем версию из lodash
 
 export function highlightSearchedText() {
   const searchElem = document.getElementById('search-settings');
