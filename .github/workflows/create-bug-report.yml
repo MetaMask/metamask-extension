@@ -9,8 +9,8 @@ jobs:
       - name: Extract version from branch name if release branch
         id: extract_version
         run: |
-          if [[ "$GITHUB_REF" =~ ^refs/heads/Version-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            version="${GITHUB_REF#refs/heads/Version-v}"
+          if [[ "$GITHUB_REF" =~ ^refs/heads/(Version-v|release/)[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            version=$(echo "$GITHUB_REF" | sed -E 's#^refs/heads/(Version-v|release/)##')
             echo "New release branch($version), continue next steps"
             echo "version=$version" >> "$GITHUB_OUTPUT"
           else
