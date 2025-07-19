@@ -1,3 +1,7 @@
+export const MockSeedPhrase =
+  'horse pupil style brush dust borrow simple easily bean margin actor valve';
+export const PasswordChangeItemId = 'PW_BACKUP';
+
 export const AuthServer = {
   // Request JWT Token from Auth Server in exchange for OAuth2 Authorization Code
   RequestToken:
