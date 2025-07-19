@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+
 import { Driver } from '../../../webdriver/driver';
+import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/erc20-approve-transaction-confirmation';
+import { importTestToken } from '../../../page-objects/flows/import-token.flow';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 import {
   confirmApproveTransaction,
   mocked4BytesApprove,
   openDAppWithContract,
   TestSuiteArguments,
-  toggleAdvancedDetails,
 } from './shared';
 
-const { withFixtures } = require('../../../helpers');
+const { withFixtures, WINDOW_TITLES } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
@@ -35,9 +37,15 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await importTST(driver);
+          await importTestToken(
+            driver,
+            '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+            '0x539',
+          );
 
-          await createERC20ApproveTransaction(driver);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          const testDapp = new TestDapp(driver);
+          await testDapp.clickApproveTokens();
 
           await assertApproveDetails(driver);
 
@@ -60,9 +68,15 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await importTST(driver);
+          await importTestToken(
+            driver,
+            '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+            '0x539',
+          );
 
-          await createERC20ApproveTransaction(driver);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          const testDapp = new TestDapp(driver);
+          await testDapp.clickApproveTokens();
 
           await assertApproveDetails(driver);
 
@@ -77,101 +91,21 @@ async function mocks(server: MockttpServer) {
   return [await mocked4BytesApprove(server)];
 }
 
-async function importTST(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.clickElement(
-    '[data-testid="asset-list-control-bar-action-button"]',
-  );
-  await driver.clickElement('[data-testid="importTokens"]');
-
-  await driver.waitForSelector({
-    css: '.import-tokens-modal__button-tab',
-    text: 'Custom token',
-  });
-  await driver.clickElement({
-    css: '.import-tokens-modal__button-tab',
-    text: 'Custom token',
-  });
-
-  await driver.clickElement(
-    '[data-testid="test-import-tokens-drop-down-custom-import"]',
-  );
-
-  await driver.clickElement('[data-testid="select-network-item-0x539"]');
-
-  await driver.fill(
-    '[data-testid="import-tokens-modal-custom-address"]',
-    '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
-  );
-  await driver.clickElementAndWaitToDisappear({
-    css: '[data-testid="import-tokens-button-next"]',
-    text: 'Next',
-  });
-
-  await driver.clickElement({
-    css: '[data-testid="import-tokens-modal-import-button"]',
-    text: 'Import',
-  });
-}
-
-async function createERC20ApproveTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#approveTokens');
-}
-
 async function assertApproveDetails(driver: Driver) {
-  await driver.waitUntilXWindowHandles(3);
+  // Switch to the approve transaction dialog window
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await driver.waitForSelector({
-    css: 'h2',
-    text: 'Spending cap request',
-  });
+  // Create the ERC20 approve confirmation page object
+  const erc20ApproveConfirmation = new ERC20ApproveTransactionConfirmation(
+    driver,
+  );
 
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'This site wants permission to withdraw your tokens',
-  });
+  // Verify the page is loaded
+  await erc20ApproveConfirmation.check_pageIsLoaded();
 
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Estimated changes',
-  });
+  // Verify all basic approve transaction details
+  await erc20ApproveConfirmation.check_approveTransactionDetails();
 
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Spending cap',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: '7',
-  });
-
-  await toggleAdvancedDetails(driver);
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Spender',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Request from',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Interacting with',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Method',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Spending cap',
-  });
+  // Expand advanced details and verify all sections
+  await erc20ApproveConfirmation.expandAndVerifyAdvancedDetails();
 }
