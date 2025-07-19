@@ -13,8 +13,12 @@ import {
   tryUnlockMetamask,
   markPasswordForgotten,
   forceUpdateMetamaskState,
+  setOnboardingErrorReport,
 } from '../../store/actions';
-import { getIsSocialLoginFlow } from '../../selectors';
+import {
+  getIsSocialLoginFlow,
+  getParticipateInMetaMetrics,
+} from '../../selectors';
 import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
@@ -24,6 +28,7 @@ const mapStateToProps = (state) => {
   return {
     isUnlocked,
     isSocialLoginFlow: getIsSocialLoginFlow(state),
+    isMetaMetricsEnabled: getParticipateInMetaMetrics(state),
   };
 };
 
@@ -32,6 +37,8 @@ const mapDispatchToProps = (dispatch) => {
     tryUnlockMetamask: (password) => dispatch(tryUnlockMetamask(password)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
+    setOnboardingErrorReport: (error, view) =>
+      dispatch(setOnboardingErrorReport(error, view)),
   };
 };
 

@@ -23,6 +23,7 @@ import {
   ONBOARDING_ACCOUNT_NOT_FOUND,
   SECURITY_ROUTE,
   ONBOARDING_REVEAL_SRP_ROUTE,
+  ONBOARDING_ERROR_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -35,10 +36,12 @@ import {
   createNewVaultAndRestore,
   restoreSocialBackupAndGetSeedPhrase,
   createNewVaultAndSyncWithSocial,
+  setOnboardingErrorReport,
 } from '../../store/actions';
 import {
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
+  getOnboardingErrorReport,
   getShowTermsOfUse,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -94,6 +97,7 @@ import { WelcomePageState } from './welcome/types';
 import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
+import OnboardingError from './onboarding-error/onboarding-error';
 
 const TWITTER_URL = 'https://twitter.com/MetaMask';
 
@@ -120,6 +124,7 @@ export default function OnboardingFlow() {
   const isPrimarySeedPhraseBackedUp = useSelector(
     getIsPrimarySeedPhraseBackedUp,
   );
+  const onboardingErrorReport = useSelector(getOnboardingErrorReport);
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
@@ -133,6 +138,12 @@ export default function OnboardingFlow() {
   useEffect(() => {
     setOnboardingDate();
   }, []);
+
+  useEffect(() => {
+    if (onboardingErrorReport !== null) {
+      history.push(ONBOARDING_ERROR_ROUTE);
+    }
+  }, [history, onboardingErrorReport]);
 
   useEffect(() => {
     if (completedOnboarding && !isFromReminder) {
@@ -190,21 +201,25 @@ export default function OnboardingFlow() {
   }, [onboardingParentContext, bufferedTrace]);
 
   const handleCreateNewAccount = async (password) => {
-    let newSecretRecoveryPhrase;
-    if (
-      isSeedlessOnboardingFeatureEnabled &&
-      firstTimeFlowType === FirstTimeFlowType.socialCreate
-    ) {
-      newSecretRecoveryPhrase = await dispatch(
-        createNewVaultAndSyncWithSocial(password),
-      );
-    } else if (firstTimeFlowType === FirstTimeFlowType.create) {
-      newSecretRecoveryPhrase = await dispatch(
-        createNewVaultAndGetSeedPhrase(password),
-      );
-    }
+    try {
+      let newSecretRecoveryPhrase;
+      if (
+        isSeedlessOnboardingFeatureEnabled &&
+        firstTimeFlowType === FirstTimeFlowType.socialCreate
+      ) {
+        newSecretRecoveryPhrase = await dispatch(
+          createNewVaultAndSyncWithSocial(password),
+        );
+      } else if (firstTimeFlowType === FirstTimeFlowType.create) {
+        newSecretRecoveryPhrase = await dispatch(
+          createNewVaultAndGetSeedPhrase(password),
+        );
+      }
 
-    setSecretRecoveryPhrase(newSecretRecoveryPhrase);
+      setSecretRecoveryPhrase(newSecretRecoveryPhrase);
+    } catch (error) {
+      dispatch(setOnboardingErrorReport(error, 'CreatePassword'));
+    }
   };
 
   const handleUnlock = async (password) => {
@@ -233,7 +248,8 @@ export default function OnboardingFlow() {
 
   let isFullPage =
     pathname === ONBOARDING_WELCOME_ROUTE ||
-    pathname === ONBOARDING_UNLOCK_ROUTE;
+    pathname === ONBOARDING_UNLOCK_ROUTE ||
+    pathname === ONBOARDING_ERROR_ROUTE;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   isFullPage = isFullPage || pathname === ONBOARDING_EXPERIMENTAL_AREA;
@@ -278,6 +294,7 @@ export default function OnboardingFlow() {
         borderColor={BorderColor.borderMuted}
       >
         <Switch>
+          <Route path={ONBOARDING_ERROR_ROUTE} component={OnboardingError} />
           <Route path={ONBOARDING_ACCOUNT_EXIST} component={AccountExist} />
           <Route
             path={ONBOARDING_ACCOUNT_NOT_FOUND}

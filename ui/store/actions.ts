@@ -7057,3 +7057,10 @@ export async function applyTransactionContainersExisting(
     [transactionId, containerTypes],
   );
 }
+
+export function setOnboardingErrorReport(error: Error | null, view?: string) {
+  return {
+    type: actionConstants.SET_ONBOARDING_ERROR_REPORT,
+    payload: error ? { error, view } : null,
+  };
+}

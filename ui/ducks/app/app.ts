@@ -128,6 +128,10 @@ type AppState = {
   errorInSettings: string | null;
   showNewSrpAddedToast: boolean;
   showPasswordChangeToast: PasswordChangeToastType | null;
+  onboardingErrorReport: {
+    error: Error;
+    view: string;
+  } | null;
   showCopyAddressToast: boolean;
 };
 
@@ -230,6 +234,7 @@ const initialState: AppState = {
   showPasswordChangeToast: null,
   showCopyAddressToast: false,
   showSupportDataConsentModal: false,
+  onboardingErrorReport: null,
 };
 
 export default function reduceApp(
@@ -777,6 +782,12 @@ export default function reduceApp(
       return {
         ...appState,
         showSupportDataConsentModal: action.payload,
+      };
+
+    case actionConstants.SET_ONBOARDING_ERROR_REPORT:
+      return {
+        ...appState,
+        onboardingErrorReport: action.payload,
       };
 
     default:
