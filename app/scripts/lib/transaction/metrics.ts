@@ -6,7 +6,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Json, add0x } from '@metamask/utils';
+import { Json, add0x, createProjectLogger } from '@metamask/utils';
 import { Hex } from 'viem';
 import {
   MESSAGE_TYPE,
@@ -62,6 +62,8 @@ import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirm
 import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { extractRpcDomain } from '../util';
+
+const log = createProjectLogger('transaction-metrics');
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
@@ -1004,6 +1006,16 @@ async function buildEventFragmentProperties({
     hd_entropy_index: transactionMetricsRequest.getHDEntropyIndex(),
   };
 
+  let accountType;
+  try {
+    accountType = await transactionMetricsRequest.getAccountType(
+      transactionMetricsRequest.getSelectedAddress(),
+    );
+  } catch (error) {
+    accountType = 'error';
+    log('Error getting account type for transaction metrics:', error);
+  }
+
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -1027,9 +1039,7 @@ async function buildEventFragmentProperties({
     gas_estimation_failed: Boolean(simulationFails),
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    account_type: await transactionMetricsRequest.getAccountType(
-      transactionMetricsRequest.getSelectedAddress(),
-    ),
+    account_type: accountType,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     device_model: await transactionMetricsRequest.getDeviceModel(
