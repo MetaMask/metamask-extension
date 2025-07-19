@@ -136,7 +136,7 @@ const jsonData = JSON.stringify({
       {
         id: 'network-configuration-id-4',
         chainId: '0x89',
-        nickname: 'Polygon Mainnet',
+        nickname: 'Polygon',
         rpcPrefs: {
           blockExplorerUrl: 'https://polygonscan.com',
         },
