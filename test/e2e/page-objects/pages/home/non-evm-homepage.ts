@@ -19,7 +19,7 @@ class NonEvmHomepage extends HomePage {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(amount: string = ''): Promise<void> {
     await super.check_pageIsLoaded();
-    await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
+    await this.driver.delay(10000); // workaround to avoid flakiness
     if (amount) {
       await this.driver.wait(async () => {
         await this.driver.waitForSelector({
