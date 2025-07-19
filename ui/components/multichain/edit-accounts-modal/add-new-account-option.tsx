@@ -20,15 +20,10 @@ import {
   Text,
   Box,
 } from '../../component-library';
-import {
-  WalletClientType,
-  EVM_WALLET_TYPE,
-} from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
 
 type EditAccountModalAddNewAccountOptionProps = {
-  setAccountTypeToAdd: (
-    accountTypeToAdd: WalletClientType | typeof EVM_WALLET_TYPE,
-  ) => void;
+  setAccountTypeToAdd: (accountTypeToAdd: WalletClientType | 'EVM') => void;
 };
 
 export const EditAccountModalAddNewAccountOption: React.FC<
@@ -42,7 +37,7 @@ export const EditAccountModalAddNewAccountOption: React.FC<
         endAccessory={
           <ButtonIcon
             iconName={IconName.Close}
-            onClick={() => setAccountTypeToAdd(EVM_WALLET_TYPE)}
+            onClick={() => setAccountTypeToAdd('EVM')}
             ariaLabel={t('close')}
           />
         }
@@ -71,7 +66,7 @@ export const EditAccountModalAddNewAccountOption: React.FC<
             size={ButtonLinkSize.Sm}
             startIconName={IconName.Add}
             startIconProps={{ size: IconSize.Md }}
-            onClick={() => setAccountTypeToAdd(EVM_WALLET_TYPE)}
+            onClick={() => setAccountTypeToAdd('EVM')}
             data-testid="multichain-account-menu-popover-add-account"
           >
             {t('addNewEthereumAccountLabel')}

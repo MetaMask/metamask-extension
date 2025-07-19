@@ -14,7 +14,6 @@ import {
   markPasswordForgotten,
   forceUpdateMetamaskState,
 } from '../../store/actions';
-import { getIsSocialLoginFlow } from '../../selectors';
 import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
@@ -23,7 +22,6 @@ const mapStateToProps = (state) => {
   } = state;
   return {
     isUnlocked,
-    isSocialLoginFlow: getIsSocialLoginFlow(state),
   };
 };
 
@@ -37,8 +35,10 @@ const mapDispatchToProps = (dispatch) => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
-    markPasswordForgotten: propsMarkPasswordForgotten,
-    tryUnlockMetamask: propsTryUnlockMetamask,
+    // eslint-disable-next-line no-shadow
+    markPasswordForgotten,
+    // eslint-disable-next-line no-shadow
+    tryUnlockMetamask,
     ...restDispatchProps
   } = dispatchProps;
   const {
@@ -49,16 +49,16 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   } = ownProps;
 
   const onImport = async () => {
-    await propsMarkPasswordForgotten();
+    await markPasswordForgotten();
     history.push(RESTORE_VAULT_ROUTE);
 
     if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-      global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
+      global.platform.openExtensionInBrowser(RESTORE_VAULT_ROUTE);
     }
   };
 
   const onSubmit = async (password) => {
-    await propsTryUnlockMetamask(password);
+    await tryUnlockMetamask(password);
     // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
     let redirectTo = DEFAULT_ROUTE;
     if (location.state?.from?.pathname) {

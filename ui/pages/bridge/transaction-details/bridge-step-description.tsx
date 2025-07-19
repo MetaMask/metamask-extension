@@ -4,12 +4,11 @@ import {
   type TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import {
-  StatusTypes,
-  type Step,
+  type BridgeHistoryItem,
   ActionTypes,
-} from '@metamask/bridge-controller';
+} from '@metamask/bridge-status-controller';
+import { StatusTypes, type Step } from '@metamask/bridge-controller';
 import { Box, Text } from '../../../components/component-library';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import {
@@ -152,8 +151,6 @@ type BridgeStepProps = {
 // 1. Bridge: usually for cases like Optimism ETH to Arbitrum ETH
 // 2. Swap > Bridge
 // 3. Swap > Bridge > Swap: e.g. Optimism ETH to Avalanche USDC
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function BridgeStepDescription({
   step,
   time,

@@ -83,10 +83,6 @@ ignores:
   - 'core-js-pure' # polyfills
   # babel
   - '@babel/plugin-transform-logical-assignment-operators'
-  # used in image optimization script
-  - 'sharp'
-  - 'imagemin'
-  - 'imagemin-gifsicle'
   # trezor
   - 'ts-mixer'
   - '@testing-library/dom'

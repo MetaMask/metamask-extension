@@ -91,9 +91,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           },
         ],
         enabledNetworkMap: {
-          eip155: {
-            [inputChainId]: true,
-          },
+          [inputChainId]: true,
         },
       },
       AccountOrderController: {

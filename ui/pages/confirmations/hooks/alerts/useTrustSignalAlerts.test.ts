@@ -113,6 +113,7 @@ describe('useTrustSignalAlerts', () => {
       expect(mockUseTrustSignal).toHaveBeenCalledWith(
         MALICIOUS_ADDRESS,
         NameType.ETHEREUM_ADDRESS,
+        CHAIN_IDS.GOERLI,
       );
     });
 
@@ -140,6 +141,7 @@ describe('useTrustSignalAlerts', () => {
       expect(mockUseTrustSignal).toHaveBeenCalledWith(
         WARNING_ADDRESS,
         NameType.ETHEREUM_ADDRESS,
+        CHAIN_IDS.GOERLI,
       );
     });
 
@@ -194,6 +196,7 @@ describe('useTrustSignalAlerts', () => {
       expect(mockUseTrustSignal).toHaveBeenCalledWith(
         MALICIOUS_ADDRESS,
         NameType.ETHEREUM_ADDRESS,
+        unapprovedPersonalSignMsg.chainId,
       );
     });
 
@@ -247,6 +250,7 @@ describe('useTrustSignalAlerts', () => {
       expect(mockUseTrustSignal).toHaveBeenCalledWith(
         '',
         NameType.ETHEREUM_ADDRESS,
+        unapprovedPersonalSignMsg.chainId,
       );
     });
 
@@ -273,6 +277,7 @@ describe('useTrustSignalAlerts', () => {
       expect(mockUseTrustSignal).toHaveBeenCalledWith(
         '',
         NameType.ETHEREUM_ADDRESS,
+        unapprovedPersonalSignMsg.chainId,
       );
     });
   });

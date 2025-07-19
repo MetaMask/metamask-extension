@@ -1,7 +1,6 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
-import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import configureStore from '../../../../../store/store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../../../store/background-connection';
@@ -170,9 +169,7 @@ const render = ({
         [CHAIN_IDS.GOERLI]: {},
       },
       enabledNetworkMap: {
-        eip155: {
-          [chainId]: true,
-        },
+        [chainId]: true,
       },
       ...mockNetworkState({ chainId }),
       currencyRates: {},
@@ -204,10 +201,6 @@ const render = ({
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
-      multichainNetworkConfigurationsByChainId:
-        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-      selectedMultichainNetworkChainId: 'eip155:1',
-      isEvmSelected: true,
       currentCurrency: 'usd',
       tokenList: {},
       useNftDetection,

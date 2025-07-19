@@ -9,7 +9,6 @@ import {
   WebHIDConnectedStatuses,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
-import { PasswordChangeToastType } from '../../../shared/constants/app-state';
 
 type AppState = {
   customNonceValue: string;
@@ -126,7 +125,6 @@ type AppState = {
   isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
   showNewSrpAddedToast: boolean;
-  showPasswordChangeToast: PasswordChangeToastType | null;
 };
 
 export type AppSliceState = {
@@ -225,7 +223,6 @@ const initialState: AppState = {
   isAccessedFromDappConnectedSitePopover: false,
   errorInSettings: null,
   showNewSrpAddedToast: false,
-  showPasswordChangeToast: null,
 };
 
 export default function reduceApp(
@@ -755,12 +752,6 @@ export default function reduceApp(
       return {
         ...appState,
         showNewSrpAddedToast: action.payload,
-      };
-
-    case actionConstants.SET_SHOW_PASSWORD_CHANGE_TOAST:
-      return {
-        ...appState,
-        showPasswordChangeToast: action.payload,
       };
 
     default:

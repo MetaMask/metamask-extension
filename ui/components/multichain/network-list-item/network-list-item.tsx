@@ -134,7 +134,6 @@ export const NetworkListItem = ({
 
   return (
     <Box
-      data-testid={`network-list-item-${chainId}`}
       paddingLeft={4}
       paddingRight={4}
       paddingTop={rpcEndpoint ? 2 : 4}
@@ -235,7 +234,7 @@ export const NetworkListItem = ({
 
       {renderButton()}
       {showEndAccessory
-        ? (endAccessory ?? (
+        ? endAccessory ?? (
             <NetworkListItemMenu
               anchorElement={networkListItemMenuElement}
               isOpen={networkOptionsMenuOpen}
@@ -244,7 +243,7 @@ export const NetworkListItem = ({
               onDiscoverClick={onDiscoverClick}
               onClose={() => setNetworkOptionsMenuOpen(false)}
             />
-          ))
+          )
         : null}
     </Box>
   );

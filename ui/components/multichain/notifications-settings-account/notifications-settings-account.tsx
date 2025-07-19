@@ -18,8 +18,6 @@ export type NotificationsSettingsAccountProps = {
   name?: string;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NotificationsSettingsAccount({
   address,
   name,

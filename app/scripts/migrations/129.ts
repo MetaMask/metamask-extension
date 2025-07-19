@@ -38,7 +38,8 @@ function transformState(
       state.PreferencesController.preferences
         .shouldShowAggregatedBalancePopover === undefined
     ) {
-      state.PreferencesController.preferences.shouldShowAggregatedBalancePopover = true;
+      state.PreferencesController.preferences.shouldShowAggregatedBalancePopover =
+        true;
     }
   }
 

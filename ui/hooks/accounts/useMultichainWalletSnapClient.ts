@@ -31,8 +31,6 @@ export enum WalletClientType {
   Solana = 'solana-wallet-snap',
 }
 
-export const EVM_WALLET_TYPE = 'evm' as const;
-
 const WALLET_SNAP_MAP: Record<WalletClientType, { id: SnapId; name: string }> =
   {
     [WalletClientType.Bitcoin]: {

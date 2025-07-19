@@ -18,8 +18,6 @@ import {
  * @param props.onClose - Callback function triggered when modal is closed
  * @returns A modal with hardware wallet confirmation instructions
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeHardwareWalletConfirm({
   visible,
   onConfirm,

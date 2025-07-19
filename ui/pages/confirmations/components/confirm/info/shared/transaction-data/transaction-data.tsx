@@ -1,12 +1,8 @@
 import React from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 import _ from 'lodash';
 import { Hex } from '@metamask/utils';
-
-import { APPROVAL_METHOD_NAMES } from '../../../../../../../../shared/constants/transaction';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import {
@@ -35,19 +31,12 @@ import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transac
 import { useConfirmContext } from '../../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';
-import { BatchedApprovalFunction } from '../batched-approval-function/batched-approval-function';
 
 export const TransactionData = ({
   data,
   noPadding,
   to,
-  nestedTransactionIndex,
-}: {
-  data?: Hex;
-  noPadding?: boolean;
-  to?: Hex;
-  nestedTransactionIndex?: number;
-} = {}) => {
+}: { data?: Hex; noPadding?: boolean; to?: Hex } = {}) => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { nestedTransactions, txParams } = currentConfirmation ?? {};
   const { data: currentData, to: currentTo } = txParams ?? {};
@@ -89,41 +78,22 @@ export const TransactionData = ({
   return (
     <Container transactionData={transactionData} noPadding={noPadding}>
       <>
-        {decodeData.map((method, index) => {
-          const isBatchedApproval =
-            nestedTransactionIndex !== undefined &&
-            nestedTransactionIndex >= 0 &&
-            APPROVAL_METHOD_NAMES.includes(method.name);
-          if (isBatchedApproval) {
-            return (
-              <React.Fragment key={index}>
-                <BatchedApprovalFunction
-                  method={method}
-                  nestedTransactionIndex={nestedTransactionIndex}
-                />
-                {index < decodeData.length - 1 && <ConfirmInfoRowDivider />}
-              </React.Fragment>
-            );
-          }
-          return (
-            <React.Fragment key={index}>
-              <FunctionContainer
-                method={method}
-                source={source}
-                isExpandable={isExpandable}
-                chainId={chainId}
-              />
-              {index < decodeData.length - 1 && <ConfirmInfoRowDivider />}
-            </React.Fragment>
-          );
-        })}
+        {decodeData.map((method, index) => (
+          <React.Fragment key={index}>
+            <FunctionContainer
+              method={method}
+              source={source}
+              isExpandable={isExpandable}
+              chainId={chainId}
+            />
+            {index < decodeData.length - 1 && <ConfirmInfoRowDivider />}
+          </React.Fragment>
+        ))}
       </>
     </Container>
   );
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function Container({
   children,
   isLoading,
@@ -158,8 +128,6 @@ export function Container({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function RawDataRow({ transactionData }: { transactionData: string }) {
   const t = useI18nContext();
   return (
@@ -172,8 +140,6 @@ function RawDataRow({ transactionData }: { transactionData: string }) {
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function FunctionContainer({
   method,
   source,
@@ -231,8 +197,6 @@ function FunctionContainer({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function ParamValue({
   param,
   source,
@@ -252,7 +216,6 @@ function ParamValue({
     return <UniswapPath pathPools={value} chainId={chainId} />;
   }
   // if its a long string value truncate it
-
   let valueString = value.toString();
   if (valueString.length > 15 && !valueString.startsWith('0x')) {
     valueString = renderShortTokenId(valueString, 5);
@@ -265,8 +228,6 @@ function ParamValue({
   return <ConfirmInfoRowText text={valueString} />;
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function ParamRow({
   param,
   index,
@@ -305,8 +266,6 @@ function ParamRow({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function UniswapPath({
   pathPools,
   chainId,

@@ -18,17 +18,9 @@ import {
 
 type PasswordFormProps = {
   onChange: (password: string) => void;
-  pwdInputTestId?: string;
-  confirmPwdInputTestId?: string;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export default function PasswordForm({
-  onChange,
-  pwdInputTestId,
-  confirmPwdInputTestId,
-}: PasswordFormProps) {
+export default function PasswordForm({ onChange }: PasswordFormProps) {
   const t = useI18nContext();
 
   const [password, setPassword] = useState('');
@@ -152,7 +144,7 @@ export default function PasswordForm({
         size={FormTextFieldSize.Lg}
         value={password}
         inputProps={{
-          'data-testid': pwdInputTestId || 'create-password-new-input',
+          'data-testid': 'create-password-new-input',
           type: showPassword ? InputType.Text : InputType.Password,
         }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -192,8 +184,7 @@ export default function PasswordForm({
         value={confirmPassword}
         disabled={password.length < PASSWORD_MIN_LENGTH}
         inputProps={{
-          'data-testid':
-            confirmPwdInputTestId || 'create-password-confirm-input',
+          'data-testid': 'create-password-confirm-input',
           type: showConfirmPassword ? InputType.Text : InputType.Password,
         }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

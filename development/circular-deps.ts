@@ -76,12 +76,11 @@ async function update(): Promise<void> {
     console.log('Generating dependency graph...');
     const tree = await madge(ENTRYPOINTS, MADGE_CONFIG);
     const circularDeps = normalizeJson(tree.circular());
-    const prettierOptions = await prettier.resolveConfig(TARGET_FILE);
-    const formatted = await prettier.format(
+    const formatted = prettier.format(
       FILE_HEADER + JSON.stringify(circularDeps, null, 2),
       {
         // get options from .prettierrc
-        ...prettierOptions,
+        ...prettier.resolveConfig.sync(TARGET_FILE),
         filepath: TARGET_FILE,
       },
     );

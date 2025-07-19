@@ -390,19 +390,9 @@ export const BackgroundColorStory = () => {
           BackgroundColor.backgroundAlternative
         </Text>
       </Box>
-      <Box padding={3} backgroundColor={BackgroundColor.backgroundSection}>
-        <Text color={TextColor.textDefault}>
-          BackgroundColor.backgroundSection
-        </Text>
-      </Box>
-      <Box padding={3} backgroundColor={BackgroundColor.backgroundSubsection}>
-        <Text color={TextColor.textDefault}>
-          BackgroundColor.backgroundSubsection
-        </Text>
-      </Box>
       <Box padding={3} backgroundColor={BackgroundColor.backgroundMuted}>
         <Text color={TextColor.textDefault}>
-          BackgroundColor.backgroundMuted (transparent)
+          BackgroundColor.backgroundMuted
         </Text>
       </Box>
       <Box padding={3} backgroundColor={BackgroundColor.overlayDefault}>

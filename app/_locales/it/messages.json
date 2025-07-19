@@ -1099,6 +1099,10 @@
   "send": {
     "message": "Invia"
   },
+  "sendSpecifiedTokens": {
+    "message": "Invia $1",
+    "description": "Symbol of the specified token"
+  },
   "settings": {
     "message": "Impostazioni"
   },

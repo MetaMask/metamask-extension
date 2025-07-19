@@ -15,8 +15,6 @@ import {
 } from './button-primary.types';
 
 export const ButtonPrimary: ButtonPrimaryComponent = React.forwardRef(
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'button' | 'a'>(
     {
       className = '',
@@ -30,18 +28,19 @@ export const ButtonPrimary: ButtonPrimaryComponent = React.forwardRef(
     return (
       <ButtonBase
         backgroundColor={
-          danger ? BackgroundColor.errorDefault : BackgroundColor.iconDefault
+          danger ? BackgroundColor.errorDefault : BackgroundColor.primaryDefault
         }
-        color={danger ? TextColor.errorInverse : TextColor.iconInverse}
+        color={danger ? TextColor.errorInverse : TextColor.primaryInverse}
         className={classnames(className, 'mm-button-primary', {
           'mm-button-primary--type-danger': danger,
           'mm-button-primary--disabled': disabled,
         })}
         iconLoadingProps={{
-          color: danger ? IconColor.errorInverse : IconColor.iconInverse,
+          color: danger ? IconColor.errorInverse : IconColor.primaryInverse,
         }}
         size={size}
         ref={ref}
+        data-theme="light"
         {...{ disabled, ...(props as ButtonBaseProps<C>) }}
       />
     );

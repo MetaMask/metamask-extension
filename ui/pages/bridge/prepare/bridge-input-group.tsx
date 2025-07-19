@@ -266,75 +266,73 @@ export const BridgeInputGroup = ({
         </AssetPicker>
       </Row>
 
-      <Row justifyContent={JustifyContent.spaceBetween} style={{ height: 24 }}>
-        <Text
-          variant={TextVariant.bodyMd}
-          fontWeight={FontWeight.Normal}
-          color={
-            isAmountReadOnly && isEstimatedReturnLow
-              ? TextColor.warningDefault
-              : TextColor.textAlternativeSoft
-          }
-          textAlign={TextAlign.End}
-          ellipsis
-        >
-          {isAmountReadOnly && isLoading && amountFieldProps.value === '0'
-            ? t('bridgeCalculatingAmount')
-            : undefined}
-          {amountInFiat && formatCurrencyAmount(amountInFiat, currency, 2)}
-        </Text>
-        {!isAmountReadOnly && balanceAmount && token && (
+      <Row justifyContent={JustifyContent.spaceBetween}>
+        <Row>
           <Text
-            display={Display.Flex}
-            gap={1}
             variant={TextVariant.bodyMd}
+            fontWeight={FontWeight.Normal}
             color={
-              isInsufficientBalance(balanceAmount)
-                ? TextColor.errorDefault
+              isAmountReadOnly && isEstimatedReturnLow
+                ? TextColor.warningDefault
                 : TextColor.textAlternativeSoft
             }
-            style={{
-              cursor: 'default',
-              textDecoration: 'none',
-            }}
+            textAlign={TextAlign.End}
+            ellipsis
           >
-            {formatTokenAmount(locale, balanceAmount.toString(), token.symbol)}
-            {onMaxButtonClick && (
+            {isAmountReadOnly && isLoading && amountFieldProps.value === '0'
+              ? t('bridgeCalculatingAmount')
+              : undefined}
+            {amountInFiat && formatCurrencyAmount(amountInFiat, currency, 2)}
+          </Text>
+        </Row>
+        <Text
+          display={Display.Flex}
+          gap={1}
+          variant={TextVariant.bodyMd}
+          color={
+            !isAmountReadOnly && isInsufficientBalance(balanceAmount)
+              ? TextColor.errorDefault
+              : TextColor.textAlternativeSoft
+          }
+          onClick={() => {
+            if (isAmountReadOnly && token && selectedChainId) {
+              handleAddressClick();
+            } else if (token && selectedChainId) {
+              handleCopy(token.address);
+            }
+          }}
+          as={isAmountReadOnly ? 'a' : 'p'}
+          style={{
+            cursor: isAmountReadOnly ? 'pointer' : 'default',
+            textDecoration: isAmountReadOnly ? 'underline' : 'none',
+          }}
+        >
+          {isAmountReadOnly &&
+            token &&
+            selectedChainId &&
+            (isNativeAddress(token.address)
+              ? undefined
+              : shortenString(token.address, {
+                  truncatedCharLimit: 11,
+                  truncatedStartChars: 4,
+                  truncatedEndChars: 4,
+                  skipCharacterInEnd: false,
+                }))}
+          {!isAmountReadOnly && balanceAmount
+            ? formatTokenAmount(locale, balanceAmount.toString(), token?.symbol)
+            : undefined}
+          {onMaxButtonClick &&
+            token &&
+            !isNativeAddress(token.address) &&
+            balanceAmount && (
               <ButtonLink
                 variant={TextVariant.bodyMd}
-                onClick={() => onMaxButtonClick(balanceAmount.toFixed())}
+                onClick={() => onMaxButtonClick(balanceAmount?.toFixed())}
               >
                 {t('max')}
               </ButtonLink>
             )}
-          </Text>
-        )}
-        {isAmountReadOnly &&
-          token &&
-          selectedChainId &&
-          !isNativeAddress(token.address) && (
-            <Text
-              display={Display.Flex}
-              gap={1}
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternativeSoft}
-              onClick={() => {
-                handleAddressClick();
-              }}
-              as={'a'}
-              style={{
-                cursor: isAmountReadOnly ? 'pointer' : 'default',
-                textDecoration: isAmountReadOnly ? 'underline' : 'none',
-              }}
-            >
-              {shortenString(token.address, {
-                truncatedCharLimit: 11,
-                truncatedStartChars: 4,
-                truncatedEndChars: 4,
-                skipCharacterInEnd: false,
-              })}
-            </Text>
-          )}
+        </Text>
       </Row>
     </Column>
   );

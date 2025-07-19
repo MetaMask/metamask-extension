@@ -38,8 +38,6 @@ import {
   REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
 } from '../../../helpers/constants/routes';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModePermissions({
   setStartEnableRemoteSwap,
   setStartEnableDailyAllowance,
@@ -99,11 +97,10 @@ export default function RemoteModePermissions({
   return (
     <Box>
       <Text variant={TextVariant.bodyMd} color={TextColor.textAlternativeSoft}>
-        Remote Mode lets you use your hardware wallet without plugging it
-        in.{' '}
+        Remote Mode lets you use your hardware wallet without plugging it in.{' '}
       </Text>
       <Box paddingTop={2} paddingBottom={2}>
-        <Card backgroundColor={BackgroundColor.backgroundSection}>
+        <Card backgroundColor={BackgroundColor.backgroundMuted}>
           <Box
             display={Display.Flex}
             gap={2}
@@ -236,7 +233,7 @@ export default function RemoteModePermissions({
         </Card>
       </Box>
       <Box paddingTop={2} paddingBottom={2}>
-        <Card backgroundColor={BackgroundColor.backgroundSection}>
+        <Card backgroundColor={BackgroundColor.backgroundMuted}>
           <Box
             display={Display.Flex}
             gap={2}

@@ -44,35 +44,10 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const [phraseRevealed, setPhraseRevealed] = useState(false);
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
   const searchParams = new URLSearchParams(search);
-  const isFromReminder = searchParams.get('isFromReminder');
-  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
-
-  const queryParams = new URLSearchParams();
-  if (isFromReminder) {
-    queryParams.set('isFromReminder', isFromReminder);
-  }
-  if (isFromSettingsSecurity) {
-    queryParams.set('isFromSettingsSecurity', isFromSettingsSecurity);
-  }
-  const nextRouteQueryString = queryParams.toString();
-
+  const isFromReminderParam = searchParams.get('isFromReminder')
+    ? '/?isFromReminder=true'
+    : '';
   const trackEvent = useContext(MetaMetricsContext);
-
-  const handleContinue = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletSecurityPhraseWrittenDown,
-      properties: {
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
-
-    history.push(
-      `${ONBOARDING_CONFIRM_SRP_ROUTE}${
-        nextRouteQueryString ? `?${nextRouteQueryString}` : ''
-      }`,
-    );
-  }, [hdEntropyIndex, history, trackEvent, nextRouteQueryString]);
 
   const handleOnShowSrpDetailsModal = useCallback(() => {
     trackEvent({
@@ -119,7 +94,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
           marginBottom={4}
           width={BlockSize.Full}
         >
-          {!isFromReminder && (
+          {!isFromReminderParam && (
             <Text
               variant={TextVariant.bodyMd}
               color={TextColor.textAlternative}
@@ -179,7 +154,19 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
           data-testid="recovery-phrase-continue"
           className="recovery-phrase__footer--button"
           disabled={!phraseRevealed}
-          onClick={handleContinue}
+          onClick={() => {
+            trackEvent({
+              category: MetaMetricsEventCategory.Onboarding,
+              event:
+                MetaMetricsEventName.OnboardingWalletSecurityPhraseWrittenDown,
+              properties: {
+                hd_entropy_index: hdEntropyIndex,
+              },
+            });
+            history.push(
+              `${ONBOARDING_CONFIRM_SRP_ROUTE}${isFromReminderParam}`,
+            );
+          }}
         >
           {t('continue')}
         </Button>

@@ -50,8 +50,6 @@ export type ScanAddressRequest = {
 };
 
 export type ScanAddressResponse = {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: ResultType;
   label: string;
 };

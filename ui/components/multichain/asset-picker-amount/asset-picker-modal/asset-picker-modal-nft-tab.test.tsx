@@ -9,8 +9,6 @@ import { mockNetworkState } from '../../../../../test/stub/networks';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 
 jest.mock('../../../../hooks/useGetAssetImageUrl', () => ({
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => 'mock-image-url.png',
 }));
@@ -90,11 +88,6 @@ describe('AssetPickerModalNftTab', () => {
         ...mockState.metamask,
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         allNfts: mockNfts,
-        enabledNetworkMap: {
-          eip155: {
-            [CHAIN_IDS.MAINNET]: true,
-          },
-        },
       },
     });
     const { getByText, getAllByTestId } = renderWithProvider(
@@ -117,11 +110,6 @@ describe('AssetPickerModalNftTab', () => {
         ...mockState.metamask,
         ...mockNetworkState({ chainId: CHAIN_IDS.LINEA_MAINNET }),
         allNfts: mockNfts,
-        enabledNetworkMap: {
-          eip155: {
-            [CHAIN_IDS.LINEA_MAINNET]: true,
-          },
-        },
       },
     });
 

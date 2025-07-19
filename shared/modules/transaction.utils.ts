@@ -16,11 +16,7 @@ import type { Provider } from '@metamask/network-controller';
 
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import {
-  APPROVAL_METHOD_NAMES,
-  AssetType,
-  TokenStandard,
-} from '../constants/transaction';
+import { AssetType, TokenStandard } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
 
@@ -351,13 +347,17 @@ export function parseApprovalTransactionData(data: Hex):
       isRevokeAll?: boolean;
       name: string;
       tokenAddress?: Hex;
-      spender?: Hex;
     }
   | undefined {
   const transactionDescription = parseStandardTokenTransactionData(data);
   const { args, name } = transactionDescription ?? {};
 
-  if (!APPROVAL_METHOD_NAMES.includes(name ?? '') || !name) {
+  if (
+    !['approve', 'increaseAllowance', 'setApprovalForAll'].includes(
+      name ?? '',
+    ) ||
+    !name
+  ) {
     return undefined;
   }
 
@@ -370,8 +370,6 @@ export function parseApprovalTransactionData(data: Hex):
     ? new BigNumber(rawAmountOrTokenId?.toString())
     : undefined;
 
-  const spender = args?.spender ?? args?._spender ?? args?.[0];
-
   const isApproveAll = name === 'setApprovalForAll' && args?._approved === true;
   const isRevokeAll = name === 'setApprovalForAll' && args?._approved === false;
   const tokenAddress = name === 'approve' ? args?.token : undefined;
@@ -382,6 +380,5 @@ export function parseApprovalTransactionData(data: Hex):
     isRevokeAll,
     name,
     tokenAddress,
-    spender,
   };
 }

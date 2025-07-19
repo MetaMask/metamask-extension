@@ -484,7 +484,6 @@ describe('Transaction.utils', function () {
         isApproveAll: false,
         isRevokeAll: false,
         name: 'approve',
-        spender: '0x1234567890123456789012345678901234567890',
         tokenAddress: undefined,
       });
     });
@@ -499,7 +498,6 @@ describe('Transaction.utils', function () {
         isApproveAll: false,
         isRevokeAll: false,
         name: 'increaseAllowance',
-        spender: ADDRESS_MOCK,
         tokenAddress: undefined,
       });
     });
@@ -514,7 +512,6 @@ describe('Transaction.utils', function () {
         isApproveAll: true,
         isRevokeAll: false,
         name: 'setApprovalForAll',
-        spender: ADDRESS_MOCK,
         tokenAddress: undefined,
       });
     });
@@ -529,7 +526,6 @@ describe('Transaction.utils', function () {
         isApproveAll: false,
         isRevokeAll: true,
         name: 'setApprovalForAll',
-        spender: ADDRESS_MOCK,
         tokenAddress: undefined,
       });
     });
@@ -549,7 +545,6 @@ describe('Transaction.utils', function () {
         isApproveAll: false,
         isRevokeAll: false,
         name: 'approve',
-        spender: ADDRESS_2_MOCK,
         tokenAddress: ADDRESS_MOCK,
       });
     });

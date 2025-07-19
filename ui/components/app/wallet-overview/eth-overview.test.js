@@ -114,10 +114,8 @@ describe('EthOverview', () => {
         tokenNetworkFilter: {},
       },
       enabledNetworkMap: {
-        eip155: {
-          [CHAIN_IDS.MAINNET]: true,
-          [CHAIN_IDS.SEPOLIA]: true,
-        },
+        [CHAIN_IDS.MAINNET]: true,
+        [CHAIN_IDS.SEPOLIA]: true,
       },
       useExternalServices: true,
       useCurrencyRateCheck: true,

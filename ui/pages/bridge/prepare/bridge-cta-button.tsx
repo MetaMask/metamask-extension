@@ -61,16 +61,9 @@ export const BridgeCTAButton = ({
 
   const {
     isNoQuotesAvailable,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     isInsufficientBalance: isInsufficientBalance_,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     isInsufficientGasBalance: isInsufficientGasBalance_,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     isInsufficientGasForQuote: isInsufficientGasForQuote_,
-    isTxAlertPresent,
   } = useSelector(getValidationErrors);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
@@ -96,7 +89,7 @@ export const BridgeCTAButton = ({
       return 'youDeclinedTheTransaction';
     }
 
-    if (isQuoteExpired && !isLoading) {
+    if (isQuoteExpired) {
       return 'bridgeQuoteExpired';
     }
 
@@ -127,14 +120,13 @@ export const BridgeCTAButton = ({
       return 'bridgeSelectDestinationAccount';
     }
 
-    if (isTxSubmittable || isTxAlertPresent) {
+    if (isTxSubmittable) {
       return 'submit';
     }
 
     return 'swapSelectToken';
   }, [
     isLoading,
-    isTxAlertPresent,
     fromAmount,
     toToken,
     isTxSubmittable,
@@ -192,7 +184,6 @@ export const BridgeCTAButton = ({
       loading={isSubmitting}
       disabled={
         !isTxSubmittable ||
-        isTxAlertPresent ||
         isQuoteExpired ||
         isSubmitting ||
         needsDestinationAddress

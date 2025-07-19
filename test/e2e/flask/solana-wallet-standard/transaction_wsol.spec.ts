@@ -21,7 +21,6 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
-          await testDapp.check_pageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp, {
             includeDevnet: true,
           });

@@ -10,8 +10,6 @@ const TEST_ADDRESS = '0x1234567890123456789012345678901234567890';
 const TEST_CHAIN = SupportedEVMChain.Ethereum;
 
 const RESPONSE_MOCK = {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: ResultType.Benign,
   label: 'Safe address',
 };
@@ -45,8 +43,6 @@ describe('Security Alerts API', () => {
 
     it('returns malicious result when address is flagged', async () => {
       const maliciousResponse = {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         result_type: ResultType.Malicious,
         label: 'Known scammer',
       };
@@ -131,8 +127,6 @@ describe('Security Alerts API', () => {
 
     it('should return cached response when available', async () => {
       const cachedResponse = {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         result_type: ResultType.Benign,
         label: 'Cached safe address',
       };

@@ -9,29 +9,29 @@ import browser from 'webextension-polyfill';
  */
 export type ManifestFlags = {
   /**
-   * CI metadata for the current run
+   * CircleCI metadata for the current run
    */
-  ci?: {
+  circleci?: {
     /**
-     * Whether CI manifest flags are enabled.
+     * Whether CircleCI manifest flags are enabled.
      */
     enabled: boolean;
     /**
-     * The name of the branch that triggered the current run on CI
+     * The name of the branch that triggered the current run on CircleCI
      */
     branch?: string;
     /**
-     * The current CI commit hash
+     * The current CircleCI build number
      */
-    commitHash?: string;
+    buildNum?: number;
     /**
-     * The name of the CI job currently running
+     * The name of the CircleCI job currently running
      */
     job?: string;
     /**
-     * For jobs with CI parallelism enabled, this is the index of the current machine.
+     * For jobs with CircleCI parallelism enabled, this is the index of the current machine.
      */
-    matrixIndex?: number;
+    nodeIndex?: number;
     /**
      * The number of the pull request that triggered the current run
      */

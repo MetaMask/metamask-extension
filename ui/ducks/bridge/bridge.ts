@@ -3,22 +3,16 @@ import {
   SortOrder,
   BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
+  getNativeAssetForChainId,
   isSolanaChainId,
   formatChainIdToHex,
   isNativeAddress,
-  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
-import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
 import { getTokenExchangeRate } from './utils';
-import type {
-  BridgeState,
-  BridgeToken,
-  ChainIdPayload,
-  TokenPayload,
-} from './types';
+import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
 
 const initialState: BridgeState = {
   toChainId: null,
@@ -32,7 +26,6 @@ const initialState: BridgeState = {
   selectedQuote: null,
   wasTxDeclined: false,
   slippage: BRIDGE_DEFAULT_SLIPPAGE,
-  txAlert: null,
 };
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
@@ -48,11 +41,6 @@ export const setDestTokenExchangeRates = createAsyncThunk(
 export const setDestTokenUsdExchangeRates = createAsyncThunk(
   'bridge/setDestTokenUsdExchangeRates',
   getTokenExchangeRate,
-);
-
-export const setTxAlerts = createAsyncThunk(
-  'bridge/setTxAlerts',
-  fetchTxAlerts,
 );
 
 const getTokenImage = (payload: TokenPayload['payload']) => {
@@ -80,53 +68,41 @@ const getTokenImage = (payload: TokenPayload['payload']) => {
   return (assetIdToUse && getAssetImageUrl(assetIdToUse, caipChainId)) ?? '';
 };
 
-export const toBridgeToken = (
-  payload: TokenPayload['payload'],
-): BridgeToken | null => {
-  if (!payload) {
-    return null;
-  }
-  const caipChainId = formatChainIdToCaip(payload.chainId);
-  return {
-    ...payload,
-    balance: payload.balance ?? '0',
-    string: payload.string ?? '0',
-    chainId: payload.chainId,
-    image: getTokenImage(payload),
-    assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),
-  };
-};
-
 const bridgeSlice = createSlice({
   name: 'bridge',
   initialState: { ...initialState },
   reducers: {
     setToChainId: (state, { payload }: ChainIdPayload) => {
       state.toChainId = payload ? formatChainIdToCaip(payload) : null;
-      state.toToken = null;
     },
     setFromToken: (state, { payload }: TokenPayload) => {
-      state.fromToken = toBridgeToken(payload);
-      // Unset toToken if it's the same as the fromToken
-      if (
-        state.fromToken?.assetId &&
-        state.toToken?.assetId &&
-        state.fromToken.assetId.toLowerCase() ===
-          state.toToken.assetId.toLowerCase()
-      ) {
-        state.toToken = null;
+      if (payload) {
+        state.fromToken = {
+          ...payload,
+          balance: payload.balance ?? '0',
+          string: payload.string ?? '0',
+          chainId: payload.chainId,
+          image: getTokenImage(payload),
+        };
+      } else {
+        state.fromToken = payload;
       }
     },
     setToToken: (state, { payload }: TokenPayload) => {
-      const toToken = toBridgeToken(payload);
-      state.toToken = toToken
-        ? {
-            ...toToken,
-            address:
-              toToken.address ||
-              getNativeAssetForChainId(toToken.chainId)?.address,
-          }
-        : toToken;
+      if (payload) {
+        state.toToken = {
+          ...payload,
+          balance: payload.balance ?? '0',
+          string: payload.string ?? '0',
+          chainId: payload.chainId,
+          image: getTokenImage(payload),
+          address:
+            payload.address ||
+            getNativeAssetForChainId(payload.chainId).address,
+        };
+      } else {
+        state.toToken = payload;
+      }
     },
     setFromTokenInputValue: (state, action) => {
       state.fromTokenInputValue = action.payload;
@@ -165,15 +141,6 @@ const bridgeSlice = createSlice({
     });
     builder.addCase(setSrcTokenExchangeRates.fulfilled, (state, action) => {
       state.fromTokenExchangeRate = action.payload ?? null;
-    });
-    builder.addCase(setTxAlerts.pending, (state) => {
-      state.txAlert = null;
-    });
-    builder.addCase(setTxAlerts.fulfilled, (state, action) => {
-      state.txAlert = action.payload;
-    });
-    builder.addCase(setTxAlerts.rejected, (state) => {
-      state.txAlert = null;
     });
   },
 });

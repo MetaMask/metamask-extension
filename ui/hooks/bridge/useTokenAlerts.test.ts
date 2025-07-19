@@ -9,8 +9,6 @@ const renderUseSolanaAlerts = (mockStoreState: object) =>
 
 const mockResponse = {
   type: 'warning',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   feature_id: 'UNSTABLE_TOKEN_PRICE',
   description:
     'The price of this token in USD is highly volatile, indicating a high risk of losing significant value by interacting with it.',
@@ -47,7 +45,9 @@ describe('useTokenAlerts', () => {
         toToken: {
           address: '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
         },
-        toChainId: MultichainNetworks.SOLANA,
+        toChain: {
+          chainId: MultichainNetworks.SOLANA,
+        },
       },
     });
 

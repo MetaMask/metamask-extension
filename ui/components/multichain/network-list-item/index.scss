@@ -3,7 +3,8 @@
   cursor: pointer;
 
   &:not(.multichain-network-list-item--selected, .multichain-network-list-item--disabled, .multichain-network-list-item--not-selectable) {
-    &:hover {
+    &:hover,
+    &:focus-within {
       background: var(--color-background-default-hover);
     }
   }
@@ -51,9 +52,5 @@
 
   &__rpc-endpoint {
     max-width: 100%;
-  }
-
-  .mm-button-icon {
-    --button-icon-size: 20px;
   }
 }

@@ -140,9 +140,7 @@ describe('Simple Send Security Alert - Blockaid', function () {
             securityAlertsEnabled: true,
           })
           .withEnabledNetworks({
-            eip155: {
-              '0x1': true,
-            },
+            '0x1': true,
           })
           .build(),
         testSpecificMock: mockInfuraWithBenignResponses,
@@ -185,9 +183,7 @@ describe('Simple Send Security Alert - Blockaid', function () {
             securityAlertsEnabled: true,
           })
           .withEnabledNetworks({
-            eip155: {
-              '0x1': true,
-            },
+            '0x1': true,
           })
           .build(),
         testSpecificMock: mockInfuraWithMaliciousResponses,
@@ -230,9 +226,7 @@ describe('Simple Send Security Alert - Blockaid', function () {
             securityAlertsEnabled: true,
           })
           .withEnabledNetworks({
-            eip155: {
-              '0x1': true,
-            },
+            '0x1': true,
           })
           .build(),
         testSpecificMock: mockInfuraWithFailedResponses,

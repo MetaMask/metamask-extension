@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import { EditGasModes } from '../../../../../shared/constants/gas';
 
+import Button from '../../../../components/ui/button';
+
 import {
   TextAlign,
   FontWeight,
@@ -11,11 +13,7 @@ import {
   TextVariant,
   Severity,
 } from '../../../../helpers/constants/design-system';
-import {
-  BannerAlert,
-  Text,
-  ButtonBase,
-} from '../../../../components/component-library';
+import { BannerAlert, Text } from '../../../../components/component-library';
 import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../../../helpers/utils/confirm-tx.util';
 
 import InfoTooltip from '../../../../components/ui/info-tooltip';
@@ -113,12 +111,12 @@ export default function EditGasDisplay({
           {estimatedMinimumNative}
         </Text>
         {requireDappAcknowledgement && (
-          <ButtonBase
+          <Button
             className="edit-gas-display__dapp-acknowledgement-button"
             onClick={() => setDappSuggestedGasFeeAcknowledged(true)}
           >
             {t('gasDisplayAcknowledgeDappButtonText')}
-          </ButtonBase>
+          </Button>
         )}
         {!requireDappAcknowledgement && (
           <AdvancedGasControls

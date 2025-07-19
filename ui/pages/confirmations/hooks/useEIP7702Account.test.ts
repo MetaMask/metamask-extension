@@ -71,9 +71,7 @@ describe('useEIP7702Account', () => {
 
     addTransactionAndRouteToConfirmationPageMock.mockReturnValue({
       type: 'MockAction',
-    } as unknown as ReturnType<
-      typeof addTransactionAndRouteToConfirmationPageMock
-    >);
+    } as unknown as ReturnType<typeof addTransactionAndRouteToConfirmationPageMock>);
 
     useConfirmationNavigationMock.mockReturnValue({
       confirmations: [],

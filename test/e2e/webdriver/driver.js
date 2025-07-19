@@ -564,12 +564,11 @@ class Driver {
    * Finds a visible element on the page using the given locator.
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} timeout - Timeout in milliseconds
    * @returns {Promise<WebElement>} A promise that resolves to the found visible element.
    */
-  async findVisibleElement(rawLocator, timeout = this.timeout) {
-    const element = await this.findElement(rawLocator, timeout);
-    await this.driver.wait(until.elementIsVisible(element), timeout);
+  async findVisibleElement(rawLocator) {
+    const element = await this.findElement(rawLocator);
+    await this.driver.wait(until.elementIsVisible(element), this.timeout);
     return wrapElementWithAPI(element, this);
   }
 
@@ -922,12 +921,11 @@ class Driver {
    * Checks if an element that matches the given locator is present and visible on the page.
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} timeout - Timeout in milliseconds
    * @returns {Promise<boolean>} promise that resolves to a boolean indicating whether the element is present and visible.
    */
-  async isElementPresentAndVisible(rawLocator, timeout = this.timeout) {
+  async isElementPresentAndVisible(rawLocator) {
     try {
-      await this.findVisibleElement(rawLocator, timeout);
+      await this.findVisibleElement(rawLocator);
       return true;
     } catch (err) {
       return false;

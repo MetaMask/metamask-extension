@@ -1,6 +1,4 @@
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
-import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
-import { SolScope } from '@metamask/keyring-api';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
@@ -64,10 +62,6 @@ describe('useTokensWithFiltering', () => {
             },
           },
         },
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: 'eip155:1',
-        isEvmSelected: true,
       },
     });
 
@@ -111,10 +105,6 @@ describe('useTokensWithFiltering', () => {
             },
           },
         },
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: 'eip155:1',
-        isEvmSelected: true,
       },
     });
 
@@ -159,10 +149,6 @@ describe('useTokensWithFiltering', () => {
             },
           },
         },
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: SolScope.Mainnet,
-        isEvmSelected: false,
       },
     });
 
@@ -203,10 +189,6 @@ describe('useTokensWithFiltering', () => {
           },
         },
         tokensChainsCache: {},
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: 'eip155:1',
-        isEvmSelected: true,
       },
     });
 

@@ -1,13 +1,10 @@
 const { strict: assert } = require('assert');
 const {
-  loginWithBalanceValidation,
-} = require('../../page-objects/flows/login.flow');
-const {
   createInternalTransaction,
   createDappTransaction,
 } = require('../../page-objects/flows/transaction');
 
-const { withFixtures, WINDOW_TITLES } = require('../../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 const PREFERENCES_STATE_MOCK = {
@@ -27,7 +24,7 @@ describe('Editing Confirm Transaction', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await unlockWallet(driver);
 
         await createInternalTransaction(driver);
 
@@ -103,7 +100,8 @@ describe('Editing Confirm Transaction', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await unlockWallet(driver);
+
         await createInternalTransaction(driver);
 
         await driver.findElement({
@@ -181,7 +179,7 @@ describe('Editing Confirm Transaction', function () {
       },
       async ({ driver }) => {
         // login to extension
-        await loginWithBalanceValidation(driver);
+        await unlockWallet(driver);
 
         await createDappTransaction(driver, {
           maxFeePerGas: '0x2000000000',

@@ -211,8 +211,6 @@ function useProposedNames(value: string, type: NameType, variation: string) {
   return { proposedNames, initialSources };
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NameDetails({
   onClose,
   type,
@@ -257,7 +255,7 @@ export default function NameDetails({
     setName(savedPetname ?? '');
     setSelectedSourceId(savedSourceId ?? undefined);
     setSelectedSourceName(
-      savedSourceId ? (savedPetname ?? undefined) : undefined,
+      savedSourceId ? savedPetname ?? undefined : undefined,
     );
   }, [savedPetname, savedSourceId, setName, setSelectedSourceId]);
 

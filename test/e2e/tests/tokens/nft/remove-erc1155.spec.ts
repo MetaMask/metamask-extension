@@ -9,10 +9,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { setupAutoDetectMocking } from './mocks';
-
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
 
 async function mockIPFSRequest(mockServer: MockttpServer) {
   return [
@@ -34,11 +31,8 @@ describe('Remove ERC1155 NFT', function () {
         fixtures: new FixtureBuilder()
           .withNftControllerERC1155()
           .withEnabledNetworks({
-            eip155: {
-              [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.LINEA_MAINNET]: true,
-              [CHAIN_IDS.LOCALHOST]: true,
-            },
+            '0x1': true,
+            '0xe708': true,
           })
           .build(),
         smartContract,
@@ -71,11 +65,8 @@ describe('Remove ERC1155 NFT', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnLinea()
           .withEnabledNetworks({
-            eip155: {
-              [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.LINEA_MAINNET]: true,
-              [CHAIN_IDS.LOCALHOST]: true,
-            },
+            '0x1': true,
+            '0xe708': true,
           })
           .build(),
         driverOptions,
@@ -102,14 +93,7 @@ describe('Remove ERC1155 NFT', function () {
         await homepage.check_expectedBalanceIsDisplayed();
         await homepage.goToNftTab();
         const nftListPage = new NftListPage(driver);
-        if (isGlobalNetworkSelectorRemoved) {
-          await driver.clickElement('[data-testid="sort-by-networks"]');
-          await driver.clickElement(
-            '[data-testid="modal-header-close-button"]',
-          );
-        } else {
-          await nftListPage.filterNftsByNetworks('Popular networks');
-        }
+        await nftListPage.filterNftsByNetworks('Popular networks');
         await nftListPage.check_nftNameIsDisplayed(
           'ENS: Ethereum Name Service',
         );

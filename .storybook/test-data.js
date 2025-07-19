@@ -46,11 +46,9 @@ const state = {
     },
     orderedNetworkList: [],
     enabledNetworkMap: {
-      eip155: {
-        '0x1': true,
-        '0xe708': true,
-        '0x539': true,
-      },
+      '0x1': true,
+      '0xe708': true,
+      '0x539': true,
     },
     pinnedAccountList: [],
     hiddenAccountList: [],

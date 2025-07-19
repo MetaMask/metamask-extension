@@ -3,13 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../../../store/actions';
 import Identicon from '../../../ui/identicon';
-import { Button, ButtonVariant, Box } from '../../../component-library';
-import {
-  Display,
-  JustifyContent,
-  AlignItems,
-  BlockSize,
-} from '../../../../helpers/constants/design-system';
+import Button from '../../../ui/button';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import {
   MetaMetricsEventCategory,
@@ -98,25 +92,18 @@ class HideTokenConfirmationModal extends Component {
         <div className="hide-token-confirmation__copy">
           {this.context.t('readdToken')}
         </div>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.Center}
-          alignItems={AlignItems.Center}
-          gap={4}
-          marginTop={4}
-          width={BlockSize.Full}
-        >
+        <div className="hide-token-confirmation__buttons">
           <Button
-            variant={ButtonVariant.Secondary}
-            block
+            type="secondary"
+            className="hide-token-confirmation__button"
             data-testid="hide-token-confirmation__cancel"
             onClick={() => hideModal()}
           >
             {this.context.t('cancel')}
           </Button>
           <Button
-            variant={ButtonVariant.Primary}
-            block
+            type="primary"
+            className="hide-token-confirmation__button"
             data-testid="hide-token-confirmation__hide"
             onClick={() => {
               this.context.trackEvent({
@@ -134,7 +121,7 @@ class HideTokenConfirmationModal extends Component {
           >
             {this.context.t('hide')}
           </Button>
-        </Box>
+        </div>
       </div>
     );
   }

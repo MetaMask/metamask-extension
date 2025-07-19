@@ -16,8 +16,6 @@ class NetworkSwitchModalConfirmation {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -39,8 +37,6 @@ class NetworkSwitchModalConfirmation {
     await this.driver.clickElementAndWaitToDisappear(this.submitButton);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_networkInformationIsDisplayed({
     currencySymbol,
     networkURL,

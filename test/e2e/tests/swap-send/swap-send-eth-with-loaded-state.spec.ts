@@ -209,9 +209,7 @@ describe('Swap-Send ETH', function () {
           fixtures: new FixtureBuilder()
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              eip155: {
-                '0x1': true, // Ethereum Mainnet
-              },
+              '0x1': true, // Ethereum Mainnet
             })
             .withTokensController({
               allTokens: {
@@ -312,7 +310,7 @@ describe('Swap-Send ETH', function () {
 
           await swapSendPage.submitSwap();
           await swapSendPage.verifyHistoryEntry(
-            'Sent ETH as WETH',
+            'Send ETH as WETH',
             'Confirmed',
             '-10 ETH',
             '',

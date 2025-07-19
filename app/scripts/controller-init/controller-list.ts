@@ -43,8 +43,6 @@ import { DelegationController } from '@metamask/delegation-controller';
 
 import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-controller';
 import { AccountTreeController } from '@metamask/account-tree-controller';
-import { SeedlessOnboardingController } from '@metamask/seedless-onboarding-controller';
-import { EncryptionKey } from '@metamask/browser-passworder';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -78,7 +76,6 @@ export type Controller =
   | PPOMController
   | PreferencesController
   | RateLimitController<RateLimitedApiMap>
-  | SeedlessOnboardingController<EncryptionKey>
   | SmartTransactionsController
   | SnapController
   | SnapInterfaceController
@@ -119,7 +116,6 @@ export type ControllerFlatState = AccountsController['state'] &
   >['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
-  SeedlessOnboardingController<EncryptionKey>['state'] &
   SmartTransactionsController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &

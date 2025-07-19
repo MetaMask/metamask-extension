@@ -47,8 +47,6 @@ const createMockPort = () => {
     onDisconnect: {
       addListener: (fn: () => void) => listeners.push(fn),
       // helper used by tests
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       _trigger: () => listeners.forEach((fn) => fn()),
     },
   };

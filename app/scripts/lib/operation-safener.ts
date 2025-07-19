@@ -15,8 +15,6 @@ export type Op = (...params: AnyParams) => unknown | Promise<unknown>;
 /**
  * Options for the lock used in the OperationSafener.
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 type Config<O extends Op> = {
   /**
    * The operation to be debounced and executed safely.
@@ -34,8 +32,6 @@ type Config<O extends Op> = {
   options?: DebounceSettings;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export class OperationSafener<O extends Op = Op> {
   /**
    * A debounced function that wraps the operation to be executed.

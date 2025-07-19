@@ -40,13 +40,9 @@ export interface PickerNetworkStyleUtilityProps extends StyleUtilityProps {
   labelProps?: TextProps<'span'>;
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export type PickerNetworkProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, PickerNetworkStyleUtilityProps>;
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export type PickerNetworkComponent = <C extends React.ElementType = 'button'>(
   props: PickerNetworkProps<C>,
 ) => React.ReactElement | null;

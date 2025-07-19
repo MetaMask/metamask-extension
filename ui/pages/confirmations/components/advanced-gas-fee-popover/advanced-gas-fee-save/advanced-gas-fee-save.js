@@ -1,14 +1,12 @@
 import React from 'react';
+
 import { PriorityLevels } from '../../../../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../../../../shared/modules/conversion.utils';
 import { useTransactionModalContext } from '../../../../../contexts/transaction-modal';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  Button,
-  ButtonVariant,
-} from '../../../../../components/component-library';
+import Button from '../../../../../components/ui/button';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
 
@@ -36,12 +34,7 @@ const AdvancedGasFeeSaveButton = () => {
   };
 
   return (
-    <Button
-      variant={ButtonVariant.Primary}
-      disabled={hasErrors}
-      onClick={onSave}
-      block
-    >
+    <Button type="primary" disabled={hasErrors} onClick={onSave}>
       {t('save')}
     </Button>
   );

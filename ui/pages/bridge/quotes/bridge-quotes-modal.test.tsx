@@ -36,13 +36,13 @@ describe('BridgeQuotesModal', () => {
         marketData: {
           '0xa': {
             '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
-              currency: 'ETH',
+              currency: 'usd',
               price: 1,
             },
           },
           '0x89': {
             '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
-              currency: 'POL',
+              currency: 'usd',
               price: 0.99,
             },
           },

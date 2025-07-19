@@ -117,10 +117,8 @@ describe('Account Tracker API Usage', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
-            eip155: {
-              [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.LINEA_MAINNET]: true,
-            },
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.LINEA_MAINNET]: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -128,8 +126,9 @@ describe('Account Tracker API Usage', function () {
       },
       async ({ driver, mockedEndpoint }) => {
         await driver.delay(veryLargeDelayMs);
-        let allInfuraJsonRpcRequests =
-          await getAllInfuraJsonRpcRequests(mockedEndpoint);
+        let allInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
+          mockedEndpoint,
+        );
         let rpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
           allInfuraJsonRpcRequests,
           RPC_METHODS_TO_TEST,
@@ -147,8 +146,9 @@ describe('Account Tracker API Usage', function () {
         await homepage.check_pageIsLoaded();
         await driver.delay(veryLargeDelayMs);
 
-        allInfuraJsonRpcRequests =
-          await getAllInfuraJsonRpcRequests(mockedEndpoint);
+        allInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
+          mockedEndpoint,
+        );
         rpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
           allInfuraJsonRpcRequests,
           RPC_METHODS_TO_TEST,
@@ -182,16 +182,18 @@ describe('Account Tracker API Usage', function () {
         const homepage = new HomePage(driver);
         await homepage.check_pageIsLoaded();
         await driver.delay(veryLargeDelayMs);
-        const initialInfuraJsonRpcRequests =
-          await getAllInfuraJsonRpcRequests(mockedEndpoint);
+        const initialInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
+          mockedEndpoint,
+        );
 
         await driver.openNewURL('about:blank');
         // The delay is intentionally 20000, to ensure we cover at least 1 polling
         // loop of time for the block tracker.
         await driver.delay(20000);
 
-        const currentInfuraJsonRpcRequests =
-          await getAllInfuraJsonRpcRequests(mockedEndpoint);
+        const currentInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
+          mockedEndpoint,
+        );
 
         const initialRpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
           initialInfuraJsonRpcRequests,

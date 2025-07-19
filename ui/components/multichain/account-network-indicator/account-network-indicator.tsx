@@ -41,7 +41,7 @@ export const AccountNetworkIndicator = ({ scopes }: { scopes: string[] }) => {
   return (
     <Box data-testid="account-network-indicator">
       <Tooltip
-        position="left"
+        position="bottom"
         html={
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
             <Box display={Display.Flex} flexDirection={FlexDirection.Column}>

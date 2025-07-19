@@ -53,8 +53,9 @@ describe('Remove NFT', function () {
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
 
-        const contractAddress =
-          await contractRegistry.getContractAddress(smartContract);
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
 
         // Open the NFT details page and click to remove NFT
         await new Homepage(driver).goToNftTab();

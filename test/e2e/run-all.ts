@@ -214,8 +214,9 @@ async function main(): Promise<void> {
   let myTestList: string[];
   let changedOrNewTests: string[] = [];
   if (process.env.GITHUB_ACTION) {
-    ({ myTestList, changedOrNewTests } =
-      await runningOnGitHubActions(testPaths));
+    ({ myTestList, changedOrNewTests } = await runningOnGitHubActions(
+      testPaths,
+    ));
   } else {
     myTestList = testPaths;
   }

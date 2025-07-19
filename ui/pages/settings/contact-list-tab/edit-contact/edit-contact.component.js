@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, useHistory } from 'react-router-dom';
+import Button from '../../../../components/ui/button/button.component';
 import TextField from '../../../../components/ui/text-field';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
 import {
@@ -8,8 +9,6 @@ import {
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
 import {
-  Button,
-  ButtonVariant,
   AvatarAccount,
   AvatarAccountSize,
   AvatarNetwork,
@@ -108,8 +107,7 @@ const EditContact = ({
         </Box>
         <Box className="settings-page__address-book-button">
           <Button
-            variant={ButtonVariant.Link}
-            danger
+            type="link"
             style={{ display: 'contents' }}
             onClick={async () => {
               await removeFromAddressBook(contactChainId, address);

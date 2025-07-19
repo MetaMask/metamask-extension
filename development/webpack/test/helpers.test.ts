@@ -35,36 +35,22 @@ describe('./utils/helpers.ts', () => {
     });
 
     const manifest = {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       manifest_version: 2,
       background: {
         scripts: ['background.js'],
         page: 'background.html',
       },
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       browser_action: {
         // use one from `otherHtmlEntries`, to ensure we don't duplicate things
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         default_popup: otherHtmlEntries[0],
       },
       // images/test.ing.png will be omitted from entry points
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       web_accessible_resources: ['images/test.ing.png', 'testing.js'],
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       content_scripts: [
         {
           matches: ['file://*/*', 'http://*/*', 'https://*/*'],
           js: ['scripts/contentscript.js', 'scripts/inpage.js'],
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           run_at: 'document_start',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           all_frames: true,
         },
         {
@@ -136,16 +122,10 @@ describe('./utils/helpers.ts', () => {
     const manifest = {
       name: 'MetaMask',
       version: '1.0.0',
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       manifest_version: 3,
       background: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         service_worker: 'background.js',
       },
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       web_accessible_resources: [
         {
           matches: ['<all_urls>'],
@@ -153,25 +133,15 @@ describe('./utils/helpers.ts', () => {
           resources: ['images/test.ing.png', 'testing.js'],
         },
       ],
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       browser_action: {
         // use one from `otherHtmlEntries`, to ensure we don't duplicate things
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         default_popup: otherHtmlEntries[0],
       },
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       content_scripts: [
         {
           matches: ['file://*/*', 'http://*/*', 'https://*/*'],
           js: ['scripts/contentscript.js'],
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           run_at: 'document_start',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           all_frames: true,
         },
         {
@@ -238,8 +208,6 @@ describe('./utils/helpers.ts', () => {
     });
 
     const manifestv2 = {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       manifest_version: 2,
       background: {},
     } as helpers.ManifestV2;
@@ -249,8 +217,6 @@ describe('./utils/helpers.ts', () => {
     const manifestv3 = {
       name: 'MetaMask',
       version: '1.0.0',
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       manifest_version: 3,
       background: {},
     } as helpers.ManifestV3;
@@ -260,8 +226,6 @@ describe('./utils/helpers.ts', () => {
 
   it('should throw if an entry file starts with an underscore', () => {
     const manifest = {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       manifest_version: 2,
       background: {
         page: '_badfile.html',
