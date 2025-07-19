@@ -5272,6 +5272,14 @@
   "sent": {
     "message": "Sent"
   },
+  "sentSpecifiedTokens": {
+    "message": "Sent $1",
+    "description": "Symbol of the specified token"
+  },
+  "sentTokenAsToken": {
+    "message": "Sent $1 as $2",
+    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
+  },
   "sentryErrorError": {
     "message": "Error: $1",
     "description": "The $1 error message"
@@ -5288,14 +5296,6 @@
   "sentryErrorView": {
     "message": "View: $1",
     "description": "The $1 view type"
-  },
-  "sentSpecifiedTokens": {
-    "message": "Sent $1",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "Sent $1 as $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sepolia": {
     "message": "Sepolia test network"
