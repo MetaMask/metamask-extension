@@ -87,7 +87,7 @@ export const FIXTURES_NETWORKS = {
       rpcUrl: 'https://avalanche-mainnet.infura.io/v3/',
       chainId: '0xa86a',
       ticker: 'AVAX',
-      nickname: 'Avalanche Network C-Chain',
+      nickname: 'Avalanche',
       rpcPrefs: {
         blockExplorerUrl: 'https://snowtrace.io/',
         imageUrl: './images/avax-token.svg',
