@@ -20,6 +20,7 @@
     "showPermittedNetworkToastOpen": "boolean",
     "showIpfsModalOpen": "boolean",
     "showBasicFunctionalityModal": "boolean",
+    "showConnectionsRemovedModal": "boolean",
     "showCopyAddressToast": "boolean",
     "externalServicesOnboardingToggleState": "boolean",
     "keyringRemovalSnapModal": "object",
