@@ -477,7 +477,6 @@ const PrepareBridgePage = () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       security_warnings: [],
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quoteParams]);
 
   const trackInputEvent = useCallback(

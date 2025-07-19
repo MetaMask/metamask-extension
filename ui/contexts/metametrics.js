@@ -205,10 +205,12 @@ export function MetaMetricsProvider({ children }) {
   }, [location, context]);
 
   // For backwards compatibility, attach the new methods as properties to trackEvent
-  const trackEventWithMethods = trackEvent;
-  trackEventWithMethods.bufferedTrace = bufferedTrace;
-  trackEventWithMethods.bufferedEndTrace = bufferedEndTrace;
-  trackEventWithMethods.onboardingParentContext = onboardingParentContext;
+  const trackEventWithMethods = {
+    ...trackEvent,
+    bufferedTrace,
+    bufferedEndTrace,
+    onboardingParentContext,
+  };
 
   return (
     <MetaMetricsContext.Provider value={trackEventWithMethods}>
