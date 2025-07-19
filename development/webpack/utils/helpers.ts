@@ -1,7 +1,9 @@
 import { readdirSync } from 'node:fs';
 import { parse, join, relative, sep } from 'node:path';
+import { validate as schemaValidate } from 'schema-utils';
 import type { Chunk, EntryObject, Stats } from 'webpack';
 import type TerserPluginType from 'terser-webpack-plugin';
+import { memoize } from 'lodash';
 
 export type Manifest = chrome.runtime.Manifest;
 export type ManifestV2 = chrome.runtime.ManifestV2;
@@ -29,6 +31,12 @@ const slash = `(?:\\${sep})?`;
  * Windows.
  */
 export const NODE_MODULES_RE = new RegExp(`${slash}node_modules${slash}`, 'u');
+
+/**
+ * Regular expression to match files in the `@lavamoat/snow` node_modules
+ * directory.
+ */
+export const SNOW_MODULE_RE = /^.*\/node_modules\/@lavamoat\/snow\/.*$/u;
 
 /**
  * No Operation. A function that does nothing and returns nothing.
@@ -234,3 +242,5 @@ export function logStats(err?: Error | null, stats?: Stats) {
  * @returns a new array with duplicate values removed and sorted
  */
 export const uniqueSort = (array: string[]) => [...new Set(array)].sort();
+
+export const validate = memoize(schemaValidate);
