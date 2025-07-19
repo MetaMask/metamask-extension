@@ -34,6 +34,8 @@ import { EtherDenomination } from '../../../shared/constants/common';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 
+const TEN_MILLION = 10000000;
+
 export async function estimateGasLimitForSend({
   selectedAddress,
   value,
@@ -56,7 +58,10 @@ export async function estimateGasLimitForSend({
   // on a BLOCK is 15,000,000 and will be 30,000,000 on mainnet after London.
   // Meanwhile, MIN_GAS_LIMIT_HEX is 0x5208.
   let blockGasLimit = MIN_GAS_LIMIT_HEX;
-  if (options.blockGasLimit) {
+  if (
+    options.blockGasLimit &&
+    new Numeric(options.blockGasLimit, 16).toNumber() <= TEN_MILLION
+  ) {
     blockGasLimit = options.blockGasLimit;
   } else if (sendToken) {
     blockGasLimit = GAS_LIMITS.BASE_TOKEN_ESTIMATE;
