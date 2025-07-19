@@ -1,5 +1,4 @@
-import React from 'react';
-import browser from 'webextension-polyfill';
+import React, { useState } from 'react';
 import {
   Modal,
   ModalContent,
@@ -21,7 +20,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  requestSafeReload,
+  openUpdateTabAndReload,
   setUpdateModalLastDismissedAt,
 } from '../../../store/actions';
 
@@ -29,6 +28,7 @@ import {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function UpdateModal() {
   const t = useI18nContext();
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <Modal
@@ -70,18 +70,14 @@ function UpdateModal() {
         </ModalBody>
         <ModalFooter
           onSubmit={async () => {
-            try {
-              await browser.tabs.create({
-                url: 'https://metamask.io/updating',
-                active: true,
-              });
-            } catch (error) {
-              console.error(error);
-            }
-            await requestSafeReload();
+            setIsLoading(true);
+            await openUpdateTabAndReload();
+            setIsLoading(false);
           }}
           submitButtonProps={{
             children: t('updateToTheLatestVersion'),
+            loading: isLoading,
+            disabled: isLoading,
             block: true,
             'data-testid': 'update-modal-submit-button',
           }}
