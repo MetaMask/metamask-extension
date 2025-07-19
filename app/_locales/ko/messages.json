@@ -175,6 +175,9 @@
     "message": "$1 계정 추가",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "계정 또는 지갑 추가"
+  },
   "addAccountToMetaMask": {
     "message": "MetaMask에 계정 추가"
   },
@@ -306,6 +309,9 @@
   "address": {
     "message": "주소"
   },
+  "addressCopied": {
+    "message": "주소가 복사되었습니다"
+  },
   "addressMismatch": {
     "message": "사이트 주소 불일치"
   },
@@ -414,6 +420,12 @@
   "alertMessageNoGasPrice": {
     "message": "수수료를 직접 업데이트할 때까지는 이 트랜잭션을 진행할 수 없습니다."
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "이 사이트는 악성으로 식별되었습니다. 이 사이트와의 상호작용은 권장하지 않습니다."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "이 사이트는 의심스러운 사이트로 식별되었습니다. 이 사이트와의 상호작용은 권장하지 않습니다."
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "요청을 보낸 사이트에 로그인되어 있지 않습니다. 이는 로그인 정보를 도용하려는 시도일 수 있습니다."
   },
@@ -455,6 +467,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "수수료 견적 제공 불가"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "악성 사이트"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "의심스러운 사이트"
   },
   "alertReasonPendingTransactions": {
     "message": "보류 중인 트랜잭션"
@@ -1940,6 +1958,15 @@
   "downloadGoogleChrome": {
     "message": "Google Chrome 다운로드"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "비밀번호를 잊어버려도 앱의 Face ID로 로그인할 수 있습니다. MetaMask를 어디서든 사용하세요!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "이 QR 코드를 스캔하여 시작하세요."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "모바일 앱 받기"
+  },
   "downloadNow": {
     "message": "지금 다운로드"
   },
@@ -2718,6 +2745,13 @@
   "importAccountMsg": {
     "message": "가져온 계정은 MetaMask 계정 비밀복구구문과 연결하지 못합니다. 가져온 계정에 대해 자세히 알아보기"
   },
+  "importAccountWithSocialMsg": {
+    "message": "가져온 개인 키는 계정에 백업되며 동일한 Google 또는 Apple 로그인으로 로그인할 때 자동으로 동기화됩니다."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "가져온 키의 작동 방식에 대한 $1",
+    "description": "$1 is a link to learn more about imported keys"
+  },
   "importNFT": {
     "message": "NFT 가져오기"
   },
@@ -3058,6 +3092,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "이더리움 트랜잭션의 입력 데이터가 충분히 패딩되지 않았습니다."
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "Ledger 연결에 문제가 있습니다. 하드웨어 지갑 "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " 연결 방법을 확인한 후 다시 시도하세요."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger는 더 이상 Firefox를 지원하지 않으므로 다른 브라우저를 사용해야 할 수 있습니다."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "가이드"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefox 지원되지 않음"
   },
   "ledgerLiveApp": {
     "message": "Ledger Live 앱"
@@ -3496,6 +3545,9 @@
   "networkIsBusy": {
     "message": "네트워크 사용량이 많습니다. 가스비가 높고 견적의 정확도도 떨어집니다."
   },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "한 개 이상의 네트워크가 활성화되어야 합니다"
+  },
   "networkMenu": {
     "message": "네트워크 메뉴"
   },
@@ -3712,6 +3764,9 @@
   },
   "noConversionRateAvailable": {
     "message": "사용 가능한 환율 없음"
+  },
+  "noDeFiPositions": {
+    "message": "원하는 것을 찾을 수 없나요?"
   },
   "noDomainResolution": {
     "message": "도메인에 대한 해결 방법이 제공되지 않았습니다."
@@ -4198,7 +4253,10 @@
     "message": "장치가 도난되거나 해킹되는 경우에 대비해 강력한 암호를 설정하면 지갑의 보안을 향상시킬 수 있습니다."
   },
   "passwordTermsWarning": {
-    "message": "이 비밀번호를 잊어버리면 지갑을 영구적으로 이용할 수 없습니다. MetaMask는 비밀번호를 초기화할 수 없습니다."
+    "message": "이 비밀번호를 잊은 경우, MetaMask는 회원님을 대신하여 비밀번호를 초기화해드릴 수 없습니다."
+  },
+  "passwordTermsWarningSocial": {
+    "message": "이 비밀번호를 잊으면 지갑에 영구적으로 접근할 수 없게 됩니다. MetaMask는 회원님을 대신하여 비밀번호를 초기화할 수 없습니다."
   },
   "passwordToggleHide": {
     "message": "비밀번호 숨기기"
@@ -4608,6 +4666,9 @@
   "proposedApprovalLimit": {
     "message": "제안된 승인 한도"
   },
+  "protocolNotSupported": {
+    "message": "회원님의 프로토콜은 아직 지원되지 않을 수 있습니다."
+  },
   "provide": {
     "message": "제공"
   },
@@ -4703,6 +4764,9 @@
   },
   "rateIncludesMMFee": {
     "message": "요율에 $1% 수수료 포함"
+  },
+  "rateIncludesMMFeeAndGas": {
+    "message": "요금에는 $1% 수수료 및 가스가 포함됩니다"
   },
   "reAddAccounts": {
     "message": "다른 계정을 다시 추가"
@@ -5431,6 +5495,12 @@
   "slideDebitCardTitle": {
     "message": "MetaMask 직불카드"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "어디에서든 지갑을 사용하세요"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "MetaMask 모바일 다운로드"
+  },
   "slideFundWalletDescription": {
     "message": "시작하려면 토큰을 추가하거나 전송하세요"
   },
@@ -5493,6 +5563,9 @@
   },
   "smartAccountSameAccount": {
     "message": "같은 계정, 더 스마트한 기능."
+  },
+  "smartAccountSplashInfo": {
+    "message": "스마트 계정"
   },
   "smartAccountSplashTitle": {
     "message": "스마트 계정을 사용하시겠어요?"

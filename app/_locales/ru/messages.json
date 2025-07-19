@@ -175,6 +175,9 @@
     "message": "Добавить счет $1",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "Добавить счет или кошелек"
+  },
   "addAccountToMetaMask": {
     "message": "Добавить счет в MetaMask"
   },
@@ -306,6 +309,9 @@
   "address": {
     "message": "Адрес"
   },
+  "addressCopied": {
+    "message": "Адрес скопирован"
+  },
   "addressMismatch": {
     "message": "Несоответствие адреса сайта"
   },
@@ -414,6 +420,12 @@
   "alertMessageNoGasPrice": {
     "message": "Мы не сможем продолжить эту транзакцию, пока вы не обновите комиссию вручную."
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "Идентифицирован как вредоносный. Рекомендуем не взаимодействовать с этим сайтом."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "Идентифицирован как подозрительный. Рекомендуем не взаимодействовать с этим сайтом."
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "Сайт, отправляющий запрос, не является сайтом, на который вы входите. Это может быть попыткой украсть ваши учетные данные."
   },
@@ -455,6 +467,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "Оценка комиссии недоступна"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "Вредоносный сайт"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Подозрительный сайт"
   },
   "alertReasonPendingTransactions": {
     "message": "Ожидается транзакция"
@@ -1940,6 +1958,15 @@
   "downloadGoogleChrome": {
     "message": "Скачать Google Chrome"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "Face ID в нашем приложении позволяет войти, даже если вы забыли пароль. Берите MetaMask с собой куда угодно!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "Отсканируйте этот QR-код, чтобы начать."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "Скачайте наше мобильное приложение"
+  },
   "downloadNow": {
     "message": "Скачать сейчас"
   },
@@ -2718,6 +2745,13 @@
   "importAccountMsg": {
     "message": "Импортированные счета не будут связаны с вашей секретной фразой для восстановления MetaMask. Узнайте больше об импортированных счетах"
   },
+  "importAccountWithSocialMsg": {
+    "message": "Импортированные закрыте ключи сохраняются в вашем счете и автоматически синхронизируются при входе с помощью того же аккаунта Google или Apple."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "$1 о том, как работают импортированные ключи",
+    "description": "$1 is a link to learn more about imported keys"
+  },
   "importNFT": {
     "message": "Импорт NFT"
   },
@@ -3058,6 +3092,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Входные данные транзакции Ethereum недостаточно подробно заполнены."
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "У нас возникли проблемы с подключением к Ledger. Ознакомьтесь с нашим "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " о том, как подключить аппаратный кошелек, а затем попробуйте снова."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger больше не поддерживает Firefox, поэтому вам, возможно, придется использовать другой браузер."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "руководством"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefox не поддерживается"
   },
   "ledgerLiveApp": {
     "message": "приложение Ledger Live"
@@ -3496,6 +3545,9 @@
   "networkIsBusy": {
     "message": "Сеть занята. Цены газа высоки, а оценки менее точны."
   },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "Должна быть включена хотя бы одна сеть"
+  },
   "networkMenu": {
     "message": "Сетевое меню"
   },
@@ -3712,6 +3764,9 @@
   },
   "noConversionRateAvailable": {
     "message": "Нет доступного обменного курса"
+  },
+  "noDeFiPositions": {
+    "message": "Не можете найти то, что ищете?"
   },
   "noDomainResolution": {
     "message": "Разрешение для домена не предоставлено."
@@ -4198,6 +4253,9 @@
     "message": "Надежный пароль может повысить безопасность вашего кошелька в случае кражи или взлома вашего устройства."
   },
   "passwordTermsWarning": {
+    "message": "Если я забуду этот пароль, MetaMask не сможет восстановить его для меня."
+  },
+  "passwordTermsWarningSocial": {
     "message": "Если я забуду этот пароль, я навсегда потеряю доступ к своему кошельку. MetaMask не сможет его восстановить."
   },
   "passwordToggleHide": {
@@ -4608,6 +4666,9 @@
   "proposedApprovalLimit": {
     "message": "Предлагаемый лимит одобрения"
   },
+  "protocolNotSupported": {
+    "message": "Возможно, мы ещё не поддерживаем ваш протокол."
+  },
   "provide": {
     "message": "Предоставить"
   },
@@ -4703,6 +4764,9 @@
   },
   "rateIncludesMMFee": {
     "message": "В курс включена комиссия в размере $1%"
+  },
+  "rateIncludesMMFeeAndGas": {
+    "message": "В курс включена комиссия в размере $1% и газ"
   },
   "reAddAccounts": {
     "message": "повторно добавить любые другие счета"
@@ -5431,6 +5495,12 @@
   "slideDebitCardTitle": {
     "message": "Дебетовая карта MetaMask"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "Берите кошелек с собой везде"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "Скачать MetaMask mobile"
+  },
   "slideFundWalletDescription": {
     "message": "Добавьте или переведите токены, чтобы начать"
   },
@@ -5493,6 +5563,9 @@
   },
   "smartAccountSameAccount": {
     "message": "Один и тот же счет, более умные функции."
+  },
+  "smartAccountSplashInfo": {
+    "message": "Смарт-счета"
   },
   "smartAccountSplashTitle": {
     "message": "Использовать смарт-счет?"

@@ -175,6 +175,9 @@
     "message": "Tambahkan akun $1",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "Tambahkan akun atau dompet"
+  },
   "addAccountToMetaMask": {
     "message": "Tambahkan akun ke MetaMask"
   },
@@ -306,6 +309,9 @@
   "address": {
     "message": "Alamat"
   },
+  "addressCopied": {
+    "message": "Alamat disalin"
+  },
   "addressMismatch": {
     "message": "Ketidakcocokan alamat situs"
   },
@@ -414,6 +420,12 @@
   "alertMessageNoGasPrice": {
     "message": "Kami tidak dapat melanjutkan transaksi ini hingga Anda memperbarui biayanya secara manual."
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "Ini telah diidentifikasi sebagai berbahaya. Kami sarankan untuk tidak berinteraksi dengan situs ini."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "Ini telah diidentifikasi sebagai mencurigakan. Kami sarankan untuk tidak berinteraksi dengan situs ini."
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "Situs yang membuat permintaan bukanlah situs yang Anda masuki. Ini dapat merupakan upaya untuk mencuri kredensial login Anda."
   },
@@ -455,6 +467,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "Estimasi biaya tidak tersedia"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "Situs berbahaya"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Situs mencurigakan"
   },
   "alertReasonPendingTransactions": {
     "message": "Transaksi menunggu"
@@ -1940,6 +1958,15 @@
   "downloadGoogleChrome": {
     "message": "Unduh Google Chrome"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "ID Wajah di aplikasi kami memungkinkan Anda untuk masuk meskipun lupa kata sandi. Bawa MetaMask ke mana pun Anda pergi!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "Pindai kode QR ini untuk mulai."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "Dapatkan aplikasi seluler kami"
+  },
   "downloadNow": {
     "message": "Unduh Sekarang"
   },
@@ -2718,6 +2745,13 @@
   "importAccountMsg": {
     "message": "Akun yang diimpor tidak akan ditautkan dengan Frasa Pemulihan Rahasia MetaMask Anda. Pelajari selengkapnya tentang akun yang diimpor"
   },
+  "importAccountWithSocialMsg": {
+    "message": "Kunci pribadi yang diimpor dicadangkan ke akun dan disinkronkan secara otomatis saat Anda masuk dengan login Google atau Apple yang sama."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "$1 seputar cara kerja kunci yang diimpor",
+    "description": "$1 is a link to learn more about imported keys"
+  },
   "importNFT": {
     "message": "Impor NFT"
   },
@@ -3058,6 +3092,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Data input transaksi Ethereum tidak cukup lengkap."
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "Terjadi masalah saat menghubungkan ke Ledger. Lihat "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " cara menghubungkan dompet perangkat keras, lalu coba lagi."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger tidak lagi mendukung Firefox, jadi Anda mungkin perlu menggunakan browser lain."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "panduan"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefox Tidak Didukung"
   },
   "ledgerLiveApp": {
     "message": "Aplikasi Ledger Live"
@@ -3496,6 +3545,9 @@
   "networkIsBusy": {
     "message": "Jaringan sibuk. Harga gas tinggi dan estimasinya kurang akurat."
   },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "Harus memiliki minimal satu jaringan aktif"
+  },
   "networkMenu": {
     "message": "Menu Jaringan"
   },
@@ -3712,6 +3764,9 @@
   },
   "noConversionRateAvailable": {
     "message": "Nilai konversi tidak tersedia"
+  },
+  "noDeFiPositions": {
+    "message": "Tidak dapat menemukan yang Anda cari?"
   },
   "noDomainResolution": {
     "message": "Tidak ada resolusi untuk domain yang tersedia."
@@ -4198,6 +4253,9 @@
     "message": "Kata sandi yang kuat dapat meningkatkan keamanan dompet jika perangkat Anda dicuri atau disusupi."
   },
   "passwordTermsWarning": {
+    "message": "Jika saya lupa kata sandi ini, MetaMask tidak dapat meresetnya untuk saya."
+  },
+  "passwordTermsWarningSocial": {
     "message": "Jika lupa kata sandi ini, saya akan kehilangan akses ke dompet secara permanen. MetaMask tidak dapat mereset kata sandi ini untuk saya."
   },
   "passwordToggleHide": {
@@ -4608,6 +4666,9 @@
   "proposedApprovalLimit": {
     "message": "Batas persetujuan yang diajukan"
   },
+  "protocolNotSupported": {
+    "message": "Kami mungkin belum mendukung protokol Anda."
+  },
   "provide": {
     "message": "Berikan"
   },
@@ -4703,6 +4764,9 @@
   },
   "rateIncludesMMFee": {
     "message": "Tarif sudah termasuk biaya sebesar $1%"
+  },
+  "rateIncludesMMFeeAndGas": {
+    "message": "Tarif sudah termasuk biaya $1% dan gas"
   },
   "reAddAccounts": {
     "message": "tambahkan kembali akun lain"
@@ -5431,6 +5495,12 @@
   "slideDebitCardTitle": {
     "message": "Kartu debit MetaMask"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "Bawa dompet ke mana pun Anda pergi"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "Unduh MetaMask seluler"
+  },
   "slideFundWalletDescription": {
     "message": "Tambah atau transfer token untuk memulai"
   },
@@ -5493,6 +5563,9 @@
   },
   "smartAccountSameAccount": {
     "message": "Akun sama, fitur lebih cerdas."
+  },
+  "smartAccountSplashInfo": {
+    "message": "Akun cerdas"
   },
   "smartAccountSplashTitle": {
     "message": "Gunakan akun cerdas?"

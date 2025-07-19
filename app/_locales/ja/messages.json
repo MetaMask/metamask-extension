@@ -4197,9 +4197,6 @@
   "passwordStrengthDescription": {
     "message": "強力なパスワードは、デバイスが盗まれたり侵入されたりした場合に、ウォレットのセキュリティを高めます。"
   },
-  "passwordTermsWarning": {
-    "message": "このパスワードを忘れると、ウォレットに永久にアクセスできなくなります。MetaMask側ではパスワードをリセットできません。"
-  },
   "passwordToggleHide": {
     "message": "パスワードを非表示"
   },
