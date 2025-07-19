@@ -21,6 +21,7 @@ import {
   BRIDGE_DEFAULT_SLIPPAGE,
   GenericQuoteRequest,
 } from '@metamask/bridge-controller';
+import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -82,6 +83,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
+import { setEnabledNetworks } from '../../../store/actions';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
   formatTokenAmount,
@@ -102,6 +104,7 @@ import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
   getCurrentKeyring,
+  getEnabledNetworksByNamespace,
   getSelectedEvmInternalAccount,
   getSelectedInternalAccount,
   getTokenList,
@@ -128,14 +131,58 @@ import type { BridgeToken } from '../../../ducks/bridge/types';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import useBridgeDefaultToToken from '../../../hooks/bridge/useBridgeDefaultToToken';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
 
+/**
+ * Ensures that any missing network gets added to the NetworkEnabledMap (which handles network polling)
+ *
+ * @returns callback to enable a network config.
+ */
+export const useEnableMissingNetwork = () => {
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const dispatch = useDispatch();
+
+  const enableMissingNetwork = useCallback(
+    (chainId: Hex) => {
+      const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
+
+      const caipChainId = formatChainIdToCaip(chainId);
+      const { namespace } = parseCaipChainId(caipChainId);
+
+      if (namespace) {
+        const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(chainId);
+
+        if (isPopularNetwork) {
+          const isNetworkEnabled = enabledNetworkKeys.includes(chainId);
+          if (!isNetworkEnabled) {
+            const enabledEvmNetworks = enabledNetworkKeys.filter((key) =>
+              FEATURED_NETWORK_CHAIN_IDS.includes(key as Hex),
+            );
+            const newNetworkEnabledEvmNetworks = [
+              chainId,
+              ...enabledEvmNetworks,
+            ];
+            dispatch(
+              setEnabledNetworks(newNetworkEnabledEvmNetworks, namespace),
+            );
+          }
+        }
+      }
+    },
+    [dispatch, enabledNetworksByNamespace],
+  );
+
+  return enableMissingNetwork;
+};
+
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
+  const enableMissingNetwork = useEnableMissingNetwork();
 
   const t = useI18nContext();
 
@@ -622,6 +669,9 @@ const PrepareBridgePage = () => {
               ) {
                 dispatch(setToChainId(null));
               }
+              if (isNetworkAdded(networkConfig)) {
+                enableMissingNetwork(networkConfig.chainId);
+              }
               dispatch(
                 setFromChain({
                   networkConfig,
@@ -803,6 +853,9 @@ const PrepareBridgePage = () => {
                     network: toChain,
                     networks: toChains,
                     onNetworkChange: (networkConfig) => {
+                      if (isNetworkAdded(networkConfig)) {
+                        enableMissingNetwork(networkConfig.chainId);
+                      }
                       networkConfig.chainId !== toChain?.chainId &&
                         trackInputEvent({
                           input: 'chain_destination',
