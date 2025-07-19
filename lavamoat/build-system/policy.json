@@ -3089,7 +3089,6 @@
         "os.cpus": true,
         "os.platform": true,
         "path.basename": true,
-        "path.isAbsolute": true,
         "path.resolve": true,
         "stream.PassThrough": true,
         "stream.Readable": true
