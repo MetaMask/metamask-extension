@@ -4197,9 +4197,6 @@
   "passwordStrengthDescription": {
     "message": "Un mot de passe robuste peut améliorer la sécurité de votre portefeuille en cas de vol ou de compromission de votre appareil."
   },
-  "passwordTermsWarning": {
-    "message": "Si j’oublie ce mot de passe, je perdrai définitivement l’accès à mon portefeuille. MetaMask ne peut pas le réinitialiser pour moi."
-  },
   "passwordToggleHide": {
     "message": "Masquer le mot de passe"
   },

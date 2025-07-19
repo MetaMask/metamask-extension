@@ -175,6 +175,9 @@
     "message": "$1 hesabı ekle",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "Hesap veya cüzdan ekle"
+  },
   "addAccountToMetaMask": {
     "message": "MetaMask'e hesap ekle"
   },
@@ -306,6 +309,9 @@
   "address": {
     "message": "Adres"
   },
+  "addressCopied": {
+    "message": "Adres kopyalandı"
+  },
   "addressMismatch": {
     "message": "Site adresi uyumsuzluğu"
   },
@@ -414,6 +420,12 @@
   "alertMessageNoGasPrice": {
     "message": "Siz ücreti manuel olarak güncelleyene dek bu işleme devam edemiyoruz."
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "Bu, kötü amaçlı olarak tanımlanmış. Bu siteyle etkileşimde bulunulmamasını öneriyoruz."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "Bu, şüpheli olarak tanımlanmış. Bu siteyle etkileşimde bulunulmamasını öneriyoruz."
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "Talepte bulunan site giriş yaptığınız site değil. Bu durum oturum açma bilgilerinizi çalma teşebbüsü olabilir."
   },
@@ -455,6 +467,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "Ücret tahmini mevcut değil"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "Kötü amaçlı site"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Şüpheli site"
   },
   "alertReasonPendingTransactions": {
     "message": "İşlem beklemede"
@@ -1940,6 +1958,15 @@
   "downloadGoogleChrome": {
     "message": "Google Chrome'u indir"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "Face ID ile şifrenizi unutsanız bile uygulamamıza giriş yapabilirsiniz. MetaMask'i gittiğiniz her yere yanınızda götürün!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "Başlamak için bu QR kodunu tarayın."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "Mobil uygulamamızı edinin"
+  },
   "downloadNow": {
     "message": "Şimdi İndir"
   },
@@ -2718,6 +2745,13 @@
   "importAccountMsg": {
     "message": "İçe aktarılan hesaplar ilk olarak oluşturduğunuz MetaMask hesabı Gizli Kurtarma ifadenizle ilişkilendirilmez. İçe aktarılan hesaplar hakkında daha fazla bilgi edinin"
   },
+  "importAccountWithSocialMsg": {
+    "message": "İçe aktarılan özel anahtarlar hesabınıza yedeklenir ve aynı Google veya Apple oturumu ile giriş yaptığınızda otomatik olarak senkronize olur."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "İçe aktarılan anahtarların nasıl çalıştığı hakkında $1",
+    "description": "$1 is a link to learn more about imported keys"
+  },
   "importNFT": {
     "message": "NFT'yi İçe Aktar"
   },
@@ -3058,6 +3092,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Ethereum işleminin giriş verileri yeterli şekilde doldurulmamış."
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "Ledger'ınıza bağlanırken sorun yaşıyoruz. "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " bölümümüzde donanım cüzdanı nasıl bağlanır kısmını inceledikten sonra tekrar deneyin."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger artık Firefox'u desteklemiyor, bu nedenle farklı bir tarayıcı kullanmanız gerekir."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "kılavuz"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefox Desteklenmiyor"
   },
   "ledgerLiveApp": {
     "message": "Ledger Live Uygulaması"
@@ -3496,6 +3545,9 @@
   "networkIsBusy": {
     "message": "Ağ meşgul. Gaz fiyatları yüksektir ve tahminler daha az doğrudur."
   },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "En az bir ağ etkinleştirilmiş olmalıdır"
+  },
   "networkMenu": {
     "message": "Ağ Menüsü"
   },
@@ -3712,6 +3764,9 @@
   },
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
+  },
+  "noDeFiPositions": {
+    "message": "Aradığınızı bulamıyor musunuz?"
   },
   "noDomainResolution": {
     "message": "Alan adı için çözümleme sunulmamış."
@@ -4198,6 +4253,9 @@
     "message": "Güçlü bir şifre, cihazının çalınması veya güvenliğinin ihlal edilmesi durumunda cüzdanının güvenliğini artırabilir."
   },
   "passwordTermsWarning": {
+    "message": "Bu şifreyi unutursam MetaMask bunu benim için sıfırlayamaz."
+  },
+  "passwordTermsWarningSocial": {
     "message": "Bu şifreyi unutursam cüzdanıma erişimi kalıcı olarak kaybedeceğim. MetaMask bunu benim için sıfırlayamaz."
   },
   "passwordToggleHide": {
@@ -4608,6 +4666,9 @@
   "proposedApprovalLimit": {
     "message": "Önerilen onay limiti"
   },
+  "protocolNotSupported": {
+    "message": "Henüz protokolünüzü desteklemiyor olabiliriz."
+  },
   "provide": {
     "message": "Sun"
   },
@@ -4703,6 +4764,9 @@
   },
   "rateIncludesMMFee": {
     "message": "Orana %$1 ücret dahildir"
+  },
+  "rateIncludesMMFeeAndGas": {
+    "message": "Orana %$1 ücret ve gaz dahildir"
   },
   "reAddAccounts": {
     "message": "diğer hesapları yeniden ekle"
@@ -5431,6 +5495,12 @@
   "slideDebitCardTitle": {
     "message": "MetaMask banka kartı"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "Cüzdanınızı gittiğiniz her yere götürün"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "MetaMask mobili indirin"
+  },
   "slideFundWalletDescription": {
     "message": "Başlamak için token ekleyin veya transfer edin"
   },
@@ -5493,6 +5563,9 @@
   },
   "smartAccountSameAccount": {
     "message": "Aynı hesap, daha akıllı özellikler."
+  },
+  "smartAccountSplashInfo": {
+    "message": "Akıllı hesaplar"
   },
   "smartAccountSplashTitle": {
     "message": "Akıllı hesap kullanılsın mı?"

@@ -175,6 +175,9 @@
     "message": "Adicionar conta $1",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "Adicionar conta ou carteira"
+  },
   "addAccountToMetaMask": {
     "message": "Adicionar conta à MetaMask"
   },
@@ -306,6 +309,9 @@
   "address": {
     "message": "Endereço"
   },
+  "addressCopied": {
+    "message": "Endereço copiado"
+  },
   "addressMismatch": {
     "message": "Divergência no endereço do site"
   },
@@ -414,6 +420,12 @@
   "alertMessageNoGasPrice": {
     "message": "Não podemos prosseguir com essa transação até você atualizar manualmente a taxa."
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "Este site foi identificado como mal-intencionado. É recomendável não interagir com ele."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "Este site foi identificado como suspeito. É recomendável não interagir com ele."
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "O site solicitante não é o mesmo em que você está entrando. Isso pode se tratar de uma tentativa de roubar suas credenciais de login."
   },
@@ -455,6 +467,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "Estimativa de taxa indisponível"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "Site mal-intencionado"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Site suspeito"
   },
   "alertReasonPendingTransactions": {
     "message": "Transação pendente"
@@ -1940,6 +1958,15 @@
   "downloadGoogleChrome": {
     "message": "Baixar o Google Chrome"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "O Face ID permite que você acesse nossos apps mesmo se esquecer a senha. Leve a MetaMask aonde você for!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "Leia este QR code para começar."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "Baixe nosso app para celular"
+  },
   "downloadNow": {
     "message": "Baixar agora"
   },
@@ -2718,6 +2745,13 @@
   "importAccountMsg": {
     "message": "Contas importadas não serão associadas à sua Frase de Recuperação Secreta na MetaMask. Saiba mais sobre contas importadas"
   },
+  "importAccountWithSocialMsg": {
+    "message": "As chaves privadas importadas são armazenadas em backup em sua conta e são automaticamente sincronizadas quando você entra com o mesmo login do Google ou Apple."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "$1 sobre como funcionam as chaves importadas",
+    "description": "$1 is a link to learn more about imported keys"
+  },
   "importNFT": {
     "message": "Importar NFT"
   },
@@ -3058,6 +3092,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Os dados de entrada da transação Ethereum não têm padding suficiente."
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "Estamos com problemas para conectar o seu Ledger. Confira nosso "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " sobre como conectar uma carteira de hardware, depois tente novamente."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " A Ledger não é mais compatível com o Firefox, por isso talvez você precise usar um navegador diferente."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "guia"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Sem suporte ao Firefox"
   },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
@@ -3496,6 +3545,9 @@
   "networkIsBusy": {
     "message": "A rede está ocupada. Os preços de gás estão altos e as estimativas estão menos exatas."
   },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "Deve ter pelo menos uma rede ativada"
+  },
   "networkMenu": {
     "message": "Menu da rede"
   },
@@ -3712,6 +3764,9 @@
   },
   "noConversionRateAvailable": {
     "message": "Não há uma taxa de conversão disponível"
+  },
+  "noDeFiPositions": {
+    "message": "Não consegue encontrar o que procura?"
   },
   "noDomainResolution": {
     "message": "Nenhuma resolução fornecida para o domínio."
@@ -4198,6 +4253,9 @@
     "message": "Uma senha forte pode aumentar a segurança da sua carteira caso seu dispositivo seja roubado ou comprometido."
   },
   "passwordTermsWarning": {
+    "message": "Se eu esquecer essa senha, a MetaMask não conseguirá redefini-la para mim."
+  },
+  "passwordTermsWarningSocial": {
     "message": "Se eu esquecer essa senha, perderei o acesso à minha carteira permanentemente. A MetaMask não consegue redefini-la para mim."
   },
   "passwordToggleHide": {
@@ -4608,6 +4666,9 @@
   "proposedApprovalLimit": {
     "message": "Limite de aprovação proposto"
   },
+  "protocolNotSupported": {
+    "message": "Talvez ainda não tenhamos suporte ao seu protocolo."
+  },
   "provide": {
     "message": "Fornecer"
   },
@@ -4703,6 +4764,9 @@
   },
   "rateIncludesMMFee": {
     "message": "A cotação inclui taxa de $1%"
+  },
+  "rateIncludesMMFeeAndGas": {
+    "message": "A cotação inclui $1% de taxa e gás"
   },
   "reAddAccounts": {
     "message": "readicione outras contas"
@@ -5431,6 +5495,12 @@
   "slideDebitCardTitle": {
     "message": "Cartão de débito MetaMask"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "Leve sua carteira aonde você for"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "Baixe a MetaMask para celular"
+  },
   "slideFundWalletDescription": {
     "message": "Adicione ou transfira tokens para começar"
   },
@@ -5493,6 +5563,9 @@
   },
   "smartAccountSameAccount": {
     "message": "Mesma conta, recursos mais inteligentes."
+  },
+  "smartAccountSplashInfo": {
+    "message": "Contas inteligentes"
   },
   "smartAccountSplashTitle": {
     "message": "Usar conta inteligente?"
