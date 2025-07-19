@@ -195,15 +195,6 @@ export type SwcConfig = {
   isDevelopment: boolean;
 };
 
-export type SwcOptions = {
-  /** Whether to enable external helpers (default: true) */
-  externalHelpers?: boolean;
-  /** Whether to apply optimizer transformations (default: true) */
-  enableOptimizer?: boolean;
-  /** Whether to inject environment variables (default: true) */
-  injectEnvVars?: boolean;
-};
-
 /**
  * Gets the Speedy Web Compiler (SWC) loader for the given syntax.
  *

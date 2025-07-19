@@ -293,14 +293,18 @@ const config = {
       // vendor javascript. We must transform all npm modules to ensure browser
       // compatibility.
       {
-        test: /\.m?js$/u,
-        include: NODE_MODULES_RE,
-        use: npmLoader,
-      },
-      {
-        test: /\.cjs$/u,
-        include: NODE_MODULES_RE,
-        use: cjsLoader,
+        oneOf: [
+          {
+            test: /\.m?js$/u,
+            include: NODE_MODULES_RE,
+            use: npmLoader,
+          },
+          {
+            test: /\.c?js$/u,
+            include: NODE_MODULES_RE,
+            use: cjsLoader,
+          },
+        ],
       },
       // css, sass/scss
       {
