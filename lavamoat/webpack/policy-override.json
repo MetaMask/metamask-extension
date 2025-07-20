@@ -1,38 +1,29 @@
 {
   "resources": {
-    "node-fetch": {
-      "globals": {
-        "fetch": true,
-        "Headers": true,
-        "Request": true,
-        "Response": true
-      }
-    },
-    "lodash": {
-      "globals": {
-        "setTimeout": true,
-        "clearTimeout": true
-      }
-    },
-    "buffer": {
-      "globals": {
-        "SharedArrayBuffer": true
-      }
-    },
     "@ethersproject/wallet>@ethersproject/random": {
       "globals": {
         "crypto": true
       }
     },
-    "string.prototype.matchall>get-intrinsic": {
+    "@lavamoat/lavadome-react": {
       "globals": {
-        "Atomics": true,
-        "SharedArrayBuffer": true
-      }
-    },
-    "browserify>util": {
-      "globals": {
-        "SharedArrayBuffer": true
+        "Array": true,
+        "Clipboard": true,
+        "Document": true,
+        "DocumentFragment": true,
+        "DocumentFragment.prototype": true,
+        "Element": true,
+        "Event": true,
+        "EventTarget": true,
+        "Function": true,
+        "JSON": true,
+        "NavigateEvent": true,
+        "NavigationDestination": true,
+        "Node": true,
+        "Number": true,
+        "Object": true,
+        "String": true,
+        "Weakmap": true
       }
     },
     "@sentry/utils": {
@@ -46,14 +37,50 @@
       }
     },
     "^ background; v popup": {},
+    "browserify>util": {
+      "globals": {
+        "SharedArrayBuffer": true
+      }
+    },
+    "buffer": {
+      "globals": {
+        "SharedArrayBuffer": true
+      }
+    },
+    "lodash": {
+      "globals": {
+        "setTimeout": true,
+        "clearTimeout": true
+      }
+    },
+    "node-fetch": {
+      "globals": {
+        "fetch": true,
+        "Headers": true,
+        "Request": true,
+        "Response": true
+      }
+    },
+    "react": {
+      "globals": {
+        "console.info": "write"
+      }
+    },
     "react-dom": {
       "globals": {
-        "HTMLIFrameElement": true
+        "HTMLIFrameElement": true,
+        "console.info": "write"
       }
     },
     "react-dom>scheduler": {
       "globals": {
         "SharedArrayBuffer": true
+      }
+    },
+    "react-responsive-carousel": {
+      "globals": {
+        "addEventListener": true,
+        "removeEventListener": true
       }
     },
     "react-toggle-button": {
@@ -62,26 +89,10 @@
         "cancelAnimationFrame": true
       }
     },
-    "@lavamoat/lavadome-react": {
+    "string.prototype.matchall>get-intrinsic": {
       "globals": {
-        "Number": true,
-        "String": true,
-        "Array": true,
-        "Weakmap": true,
-        "Object": true,
-        "Function": true,
-        "Document": true,
-        "Node": true,
-        "Element": true,
-        "DocumentFragment": true,
-        "DocumentFragment.prototype": true,
-        "JSON": true
-      }
-    },
-    "react-responsive-carousel": {
-      "globals": {
-        "addEventListener": true,
-        "removeEventListener": true
+        "Atomics": true,
+        "SharedArrayBuffer": true
       }
     }
   }
