@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers';
-import { getTokenList } from '../../../../../../selectors';
+import { getTokenList, getCurrentChainId } from '../../../../../../selectors';
 import { useTokenDetails } from './useTokenDetails';
 
 jest.mock('react-redux', () => ({
@@ -28,9 +28,16 @@ const MOCK_TOKEN_LIST = (transactionMeta: TransactionMeta) => ({
 
 describe('useTokenDetails', () => {
   const useSelectorMock = useSelector as jest.Mock;
+  const MOCK_CHAIN_ID = '0x1';
 
   beforeEach(() => {
     jest.resetAllMocks();
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getCurrentChainId) {
+        return MOCK_CHAIN_ID;
+      }
+      return undefined;
+    });
   });
 
   it('returns token details from selected token if it exists', () => {
@@ -157,6 +164,86 @@ describe('useTokenDetails', () => {
     expect(result.current).toEqual({
       tokenImage: ICON_URL,
       tokenSymbol: 'symbol',
+    });
+  });
+
+  it('filters out tokens from different chains', () => {
+    const transactionMeta = genUnapprovedTokenTransferConfirmation(
+      {},
+    ) as TransactionMeta;
+
+    const tokenListWithDifferentChain = {
+      [transactionMeta.txParams.to as string]: {
+        ...MOCK_TOKEN_LIST(transactionMeta)[transactionMeta.txParams.to as string],
+        chainId: '0x2', // Different chain ID
+      },
+    };
+
+    const TEST_SELECTED_TOKEN = {
+      address: 'address',
+      decimals: 18,
+    };
+
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getTokenList) {
+        return tokenListWithDifferentChain;
+      } else if (selector?.toString().includes('getWatchedToken')) {
+        return TEST_SELECTED_TOKEN;
+      } else if (selector === getCurrentChainId) {
+        return MOCK_CHAIN_ID; // Current chain is 0x1
+      }
+      return undefined;
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useTokenDetails(transactionMeta),
+      mockState,
+    );
+
+    // Should not return token from different chain
+    expect(result.current).toEqual({
+      tokenImage: undefined,
+      tokenSymbol: 'unknown',
+    });
+  });
+
+  it('includes tokens from the same chain', () => {
+    const transactionMeta = genUnapprovedTokenTransferConfirmation(
+      {},
+    ) as TransactionMeta;
+
+    const tokenListWithSameChain = {
+      [transactionMeta.txParams.to as string]: {
+        ...MOCK_TOKEN_LIST(transactionMeta)[transactionMeta.txParams.to as string],
+        chainId: MOCK_CHAIN_ID, // Same chain ID
+      },
+    };
+
+    const TEST_SELECTED_TOKEN = {
+      address: 'address',
+      decimals: 18,
+    };
+
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getTokenList) {
+        return tokenListWithSameChain;
+      } else if (selector?.toString().includes('getWatchedToken')) {
+        return TEST_SELECTED_TOKEN;
+      } else if (selector === getCurrentChainId) {
+        return MOCK_CHAIN_ID;
+      }
+      return undefined;
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useTokenDetails(transactionMeta),
+      mockState,
+    );
+
+    // Should include token from same chain
+    expect(result.current).toEqual({
+      tokenImage: ICON_URL,
+      tokenSymbol: ICON_SYMBOL,
     });
   });
 
