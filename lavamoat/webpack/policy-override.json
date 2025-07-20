@@ -61,15 +61,9 @@
         "Response": true
       }
     },
-    "react": {
-      "globals": {
-        "console.info": "write"
-      }
-    },
     "react-dom": {
       "globals": {
-        "HTMLIFrameElement": true,
-        "console.info": "write"
+        "HTMLIFrameElement": true
       }
     },
     "react-dom>scheduler": {
