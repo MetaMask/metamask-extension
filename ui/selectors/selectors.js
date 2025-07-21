@@ -1863,7 +1863,7 @@ export function getIsSwapsChain(state, overrideChainId) {
   const chainId = overrideChainId ?? currentChainId;
   const isDevelopment =
     process.env.METAMASK_ENVIRONMENT === 'development' ||
-    process.env.METAMASK_ENVIRONMENT === 'test';
+    process.env.METAMASK_ENVIRONMENT === 'testing';
   return isDevelopment
     ? ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId)
     : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);

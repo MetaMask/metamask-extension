@@ -22,7 +22,7 @@ const ENVIRONMENT = {
   PULL_REQUEST: 'pull-request',
   RELEASE_CANDIDATE: 'release-candidate',
   STAGING: 'staging',
-  TESTING: 'test',
+  TESTING: 'testing',
 };
 
 const TASKS = {
