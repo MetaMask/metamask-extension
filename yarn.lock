@@ -5831,10 +5831,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/design-tokens@npm:8.0.0"
-  checksum: 10/a541efb23d7c39ca2bcf25ffa7317968556af067336dc8bf9b04c2e004cc50e7590dec9273c576a2e3be12165913ae6c1134f2ba7291edb67790559e9a5b5205
+"@metamask/design-tokens@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "@metamask/design-tokens@npm:8.1.0"
+  checksum: 10/bb025b6056d01a1b6a59bef9cc36b9604084a65b974509a42f9d3368c4ab841f4f72c8f1d4f3f06f9defec78ec3aba13fb4e6946d907a87e865934cba2427def
   languageName: node
   linkType: hard
 
@@ -31911,7 +31911,7 @@ __metadata:
     "@metamask/delegation-deployments": "npm:^0.11.0"
     "@metamask/design-system-react": "npm:^0.1.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.5.0"
-    "@metamask/design-tokens": "npm:^8.0.0"
+    "@metamask/design-tokens": "npm:^8.1.0"
     "@metamask/ens-controller": "npm:^15.0.2"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
     "@metamask/error-reporting-service": "npm:^2.0.0"
