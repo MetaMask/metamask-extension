@@ -48,7 +48,7 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
-import { KeyringTypes } from '@metamask/keyring-controller';
+import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import {
   USER_STORAGE_FEATURE_NAMES,
@@ -457,9 +457,11 @@ export function tryUnlockMetamask(
 }
 
 export function checkIsSeedlessPasswordOutdated(
-  skipCache = false,
+  skipCache = true,
 ): ThunkAction<boolean | undefined, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
     try {
       const isPasswordOutdated = await submitRequestToBackground<boolean>(
         'checkIsSeedlessPasswordOutdated',
@@ -472,6 +474,8 @@ export function checkIsSeedlessPasswordOutdated(
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -684,7 +688,7 @@ export async function createSeedPhraseBackup(
   ]);
 }
 
-export function createNewVault(password: string): Promise<boolean> {
+export function createNewVault(password: string): Promise<KeyringObject> {
   return new Promise((resolve, reject) => {
     callBackgroundMethod(
       'createNewVaultAndKeychain',
@@ -864,6 +868,7 @@ export function importNewAccount(
 
 export function addNewAccount(
   keyringId?: string,
+  showLoading: boolean = true,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
@@ -884,7 +889,9 @@ export function addNewAccount(
     }
     const oldAccounts = hdKeyring.accounts;
 
-    dispatch(showLoadingIndication());
+    if (showLoading) {
+      dispatch(showLoadingIndication());
+    }
 
     let newAccount;
     try {
@@ -899,7 +906,9 @@ export function addNewAccount(
       dispatch(displayWarning(error));
       throw error;
     } finally {
-      dispatch(hideLoadingIndication());
+      if (showLoading) {
+        dispatch(hideLoadingIndication());
+      }
     }
 
     return newAccount;
@@ -2187,14 +2196,6 @@ export function lockMetamask(): ThunkAction<
     dispatch(showLoadingIndication());
 
     return backgroundSetLocked()
-      .then(() => {
-        // check seedless password outdated when lock app
-        dispatch(checkIsSeedlessPasswordOutdated(true));
-        return Promise.resolve();
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      })
       .then(() => forceUpdateMetamaskState(dispatch))
       .catch((error) => {
         dispatch(displayWarning(getErrorMessage(error)));

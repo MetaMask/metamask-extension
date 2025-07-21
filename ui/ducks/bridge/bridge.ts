@@ -128,8 +128,11 @@ const bridgeSlice = createSlice({
           }
         : toToken;
     },
-    setFromTokenInputValue: (state, action) => {
-      state.fromTokenInputValue = action.payload;
+    setFromTokenInputValue: (
+      state,
+      { payload }: { payload: string | null },
+    ) => {
+      state.fromTokenInputValue = payload;
     },
     resetInputFields: () => ({
       ...initialState,
