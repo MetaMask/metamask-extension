@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
+  convertCaipToHexChainId,
   getNetworkIcon,
   getRpcDataByChainId,
   sortNetworks,
@@ -31,9 +32,10 @@ import { useNetworkItemCallbacks } from '../../hooks/useNetworkItemCallbacks';
 import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import {
+  getEnabledNetworksByNamespace,
   getMultichainNetworkConfigurationsByChainId,
   getOrderedNetworksList,
-  getSelectedMultichainNetworkChainId,
+  getShowTestNetworks,
 } from '../../../../../selectors';
 
 export const CustomNetworks = React.memo(() => {
@@ -43,7 +45,8 @@ export const CustomNetworks = React.memo(() => {
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
+  const showTestnets = useSelector(getShowTestNetworks);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   const { nonTestNetworks, testNetworks } = useNetworkManagerState();
 
@@ -76,8 +79,12 @@ export const CustomNetworks = React.memo(() => {
   // Renders a network in the network list
   const generateMultichainNetworkListItem = useCallback(
     (network: MultichainNetworkConfiguration) => {
-      const isCurrentNetwork = network.chainId === currentChainId;
-      const { onDelete, onEdit, onRpcConfigEdit } = getItemCallbacks(network);
+      const hexChainId = convertCaipToHexChainId(network.chainId);
+      const isEnabled = Object.keys(enabledNetworksByNamespace).includes(
+        hexChainId,
+      );
+
+      const { onDelete, onEdit, onRpcSelect } = getItemCallbacks(network);
 
       return (
         <NetworkListItem
@@ -95,18 +102,18 @@ export const CustomNetworks = React.memo(() => {
           onClick={() => handleNetworkClick(network.chainId)}
           onDeleteClick={onDelete}
           onEditClick={onEdit}
-          selected={isCurrentNetwork}
-          onRpcEndpointClick={onRpcConfigEdit}
+          selected={isEnabled}
+          onRpcEndpointClick={onRpcSelect}
           disabled={!isNetworkEnabled(network)}
         />
       );
     },
     [
-      currentChainId,
+      enabledNetworksByNamespace,
       getItemCallbacks,
       hasMultiRpcOptions,
-      isNetworkEnabled,
       evmNetworks,
+      isNetworkEnabled,
       handleNetworkClick,
     ],
   );
@@ -179,20 +186,21 @@ export const CustomNetworks = React.memo(() => {
     <>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         {renderedCustomNetworks}
-        {renderedTestNetworks.length > 0 && (
-          <>
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textAlternative}
-              paddingLeft={4}
-              paddingRight={4}
-              paddingTop={4}
-            >
-              {t('testnets')}
-            </Text>
-            {renderedTestNetworks}
-          </>
-        )}
+        {(showTestnets || process.env.METAMASK_DEBUG) &&
+          renderedTestNetworks.length > 0 && (
+            <>
+              <Text
+                variant={TextVariant.bodyMdMedium}
+                color={TextColor.textAlternative}
+                paddingLeft={4}
+                paddingRight={4}
+                paddingTop={4}
+              >
+                {t('testnets')}
+              </Text>
+              {renderedTestNetworks}
+            </>
+          )}
       </Box>
       <Box
         display={Display.Flex}

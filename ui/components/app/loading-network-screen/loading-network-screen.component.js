@@ -22,6 +22,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
+import { isGlobalNetworkSelectorRemoved } from '../../../selectors';
 
 export default class LoadingNetworkScreen extends PureComponent {
   state = {
@@ -38,6 +39,7 @@ export default class LoadingNetworkScreen extends PureComponent {
     providerConfig: PropTypes.object,
     providerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     showNetworkDropdown: PropTypes.func,
+    showNetworkManager: PropTypes.func,
     setProviderArgs: PropTypes.array,
     setActiveNetwork: PropTypes.func,
     rollbackToPreviousProvider: PropTypes.func,
@@ -87,8 +89,12 @@ export default class LoadingNetworkScreen extends PureComponent {
   };
 
   renderConnectionFailureNotification = (message, showTryAgain = false) => {
-    const { showNetworkDropdown, setProviderArgs, setActiveNetwork } =
-      this.props;
+    const {
+      showNetworkDropdown,
+      setProviderArgs,
+      setActiveNetwork,
+      showNetworkManager,
+    } = this.props;
 
     return (
       <Popover
@@ -117,7 +123,11 @@ export default class LoadingNetworkScreen extends PureComponent {
             onClick={() => {
               window.clearTimeout(this.cancelCallTimeout);
               this.setState({ showErrorScreen: false });
-              showNetworkDropdown();
+              if (isGlobalNetworkSelectorRemoved) {
+                showNetworkManager();
+              } else {
+                showNetworkDropdown();
+              }
             }}
             variant={TextVariant.bodySm}
             block

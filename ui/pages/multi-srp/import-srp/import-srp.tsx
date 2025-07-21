@@ -100,20 +100,35 @@ export const ImportSrp = () => {
 
     const joinedSrp = secretRecoveryPhrase.join(' ');
     if (joinedSrp) {
-      await dispatch(actions.importMnemonicToVault(joinedSrp));
+      const result = (await dispatch(
+        actions.importMnemonicToVault(joinedSrp),
+      )) as unknown as {
+        newAccountAddress: string;
+        discoveredAccounts: { bitcoin: number; solana: number };
+      };
+
+      const { discoveredAccounts } = result;
+
       // Clear the secret recovery phrase after importing
       setSecretRecoveryPhrase(Array(defaultNumberOfWords).fill(''));
+
+      // Track the event with the discovered accounts
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      trackEvent({
+        event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: newHdEntropyIndex,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          number_of_solana_accounts_discovered: discoveredAccounts?.solana,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          number_of_bitcoin_accounts_discovered: discoveredAccounts?.bitcoin,
+        },
+      });
     }
+
     history.push(DEFAULT_ROUTE);
     dispatch(setShowNewSrpAddedToast(true));
-    trackEvent({
-      event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: newHdEntropyIndex,
-      },
-    });
   }
 
   const isValidSrp = useMemo(() => {

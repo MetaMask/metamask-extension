@@ -56,6 +56,9 @@ function onboardingFixture() {
           eip155: {
             [CHAIN_IDS.LOCALHOST]: true,
           },
+          solana: {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+          },
         },
       },
       NotificationServicesController: {},
@@ -1878,6 +1881,25 @@ class FixtureBuilder {
         },
       },
     });
+  }
+
+  withBackupAndSyncSettings(options = {}) {
+    const {
+      isProfileSyncingEnabled = true,
+      isAccountSyncingEnabled = true,
+      isProfileSyncingUpdateLoading = false,
+      isAccountSyncingUpdateLoading = false,
+      hasAccountSyncingSyncedAtLeastOnce = false,
+    } = options;
+
+    merge(this.fixture.data.UserStorageController, {
+      isProfileSyncingEnabled,
+      isAccountSyncingEnabled,
+      isProfileSyncingUpdateLoading,
+      isAccountSyncingUpdateLoading,
+      hasAccountSyncingSyncedAtLeastOnce,
+    });
+    return this;
   }
 
   build() {

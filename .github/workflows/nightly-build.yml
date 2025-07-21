@@ -50,6 +50,7 @@ jobs:
       - build-experimental-browserify
       - build-experimental-mv2-browserify
     runs-on: ubuntu-latest
+    if: ${{ always() }}
     env:
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
@@ -58,6 +59,7 @@ jobs:
       BRANCH: ${{ github.ref_name || 'main' }}
       HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
       SLACK_NIGHTLY_BUILDS_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_BUILDS_WEBHOOK_URL }}
+      BUILD_STATUS: ${{ needs.build-dist-browserify.result == 'success' && needs.build-dist-mv2-browserify.result == 'success' && needs.build-experimental-browserify.result == 'success' && needs.build-experimental-mv2-browserify.result == 'success' && 'success' || 'failure' }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -66,5 +68,5 @@ jobs:
           skip-allow-scripts: true
           yarn-custom-url: ${{ vars.YARN_URL }}
 
-      - name: Post nightly builds
+      - name: Post nightly builds notification
         run: yarn tsx .github/scripts/post-nightly-builds.ts

@@ -11,7 +11,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip/tooltip';
-import IconButtonRound from './icon-button-round';
 
 export type IconButtonProps = ButtonBaseProps<'button'> & {
   onClick: () => void;
@@ -33,30 +32,15 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       label,
       className = '',
       tooltipRender,
-      round = true,
       ...props
     },
     ref,
   ) => {
-    if (round) {
-      return (
-        <IconButtonRound
-          onClick={onClick}
-          Icon={Icon as object}
-          disabled={disabled}
-          label={label}
-          tooltipRender={tooltipRender}
-          ref={ref}
-          {...props}
-        />
-      );
-    }
-
     const buttonContent = (
       <ButtonBase
         className={classNames('icon-button', className)}
         onClick={onClick}
-        backgroundColor={BackgroundColor.backgroundMuted}
+        backgroundColor={BackgroundColor.backgroundSection}
         disabled={disabled}
         ref={ref}
         display={Display.InlineFlex}

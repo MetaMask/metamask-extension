@@ -30,6 +30,8 @@ export const multiTokenPeriodBuilder = (
 
   configs.forEach((config) => {
     if (!isAddress(config.token)) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw new Error(`Invalid token address: ${config.token}`);
     }
 

@@ -91,6 +91,7 @@ export const DestinationAccountPicker = ({
         <Box
           className="destination-account-picker__selected"
           width={BlockSize.Full}
+          style={{ flex: 1, minWidth: 0 }}
         >
           <DestinationSelectedAccountListItem
             account={selectedSwapToAccount}

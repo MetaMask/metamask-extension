@@ -9,8 +9,8 @@ describe('Wallet Created Events - Imported Account', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
     const eventsToMock = [
       'Wallet Import Started',
+      'Wallet Imported',
       'Wallet Setup Completed',
-      'Wallet Created',
     ];
     await withFixtures(
       {
@@ -50,17 +50,17 @@ describe('Wallet Created Events - Imported Account', function () {
 
         assert.equal(uniqueEvents.length, eventsToMock.length);
 
-        const walletImportStarted = uniqueEvents.find(
-          (e) => e.event === 'Wallet Import Started',
+        const firstEvent = uniqueEvents.find(
+          (e) => e.event === eventsToMock[0],
         );
-        const walletSetupCompleted = uniqueEvents.find(
-          (e) => e.event === 'Wallet Setup Completed',
+        const secondEvent = uniqueEvents.find(
+          (e) => e.event === eventsToMock[1],
         );
-        const walletCreated = uniqueEvents.find(
-          (e) => e.event === 'Wallet Created',
+        const thirdEvent = uniqueEvents.find(
+          (e) => e.event === eventsToMock[2],
         );
 
-        assert.deepStrictEqual(walletImportStarted.properties, {
+        assert.deepStrictEqual(firstEvent.properties, {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'imported',
@@ -74,7 +74,24 @@ describe('Wallet Created Events - Imported Account', function () {
           environment_type: 'fullscreen',
         });
 
-        assert.deepStrictEqual(walletSetupCompleted.properties, {
+        assert.deepStrictEqual(secondEvent.properties, {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          biometrics_enabled: false,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          password_strength: 'strong',
+          category: 'Onboarding',
+          locale: 'en',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: '0x539',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: 'fullscreen',
+        });
+
+        assert.deepStrictEqual(thirdEvent.properties, {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           wallet_setup_type: 'import',
@@ -92,24 +109,6 @@ describe('Wallet Created Events - Imported Account', function () {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
-        });
-
-        assert.deepStrictEqual(walletCreated.properties, {
-          method: 'import',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_profile_syncing_enabled: true,
-          category: 'Onboarding',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x539',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'fullscreen',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: 0,
         });
       },
     );

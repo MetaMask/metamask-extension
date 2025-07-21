@@ -12,7 +12,7 @@ export const WIDTH_VALUES = {
 };
 
 export const BANNER_STYLES = {
-  HEIGHT: '64px',
+  HEIGHT: '68px',
 };
 
-export const MAX_SLIDES = 7;
+export const MAX_SLIDES = 8;

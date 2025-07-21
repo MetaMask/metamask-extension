@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { ButtonIcon, ButtonIconSize } from '../../component-library';
 import { IconName } from '../../component-library/icon';
 import { IconColor } from '../../../helpers/constants/design-system';
@@ -51,6 +51,39 @@ describe('AccountDetailsRow', () => {
     });
   });
 
+  describe('Click Functionality', () => {
+    it('should call onClick when provided and row is clicked', () => {
+      const mockOnClick = jest.fn();
+      render(<AccountDetailsRow {...defaultProps} onClick={mockOnClick} />);
+
+      const row = screen.getByText('Test Label').closest('div');
+      if (row) {
+        fireEvent.click(row);
+      }
+
+      expect(mockOnClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not call onClick when not provided', () => {
+      render(<AccountDetailsRow {...defaultProps} />);
+
+      const row = screen.getByText('Test Label').closest('div');
+      if (row) {
+        fireEvent.click(row);
+      }
+
+      // Should not throw any errors
+      expect(true).toBe(true);
+    });
+
+    it('should apply pointer cursor when onClick is provided', () => {
+      render(<AccountDetailsRow {...defaultProps} onClick={() => undefined} />);
+
+      const row = screen.getByText('Test Label').closest('div');
+      expect(row).toHaveStyle({ cursor: 'pointer' });
+    });
+  });
+
   describe('End Accessory Variations', () => {
     it('should render with edit button accessory', () => {
       const editButton = (
@@ -96,6 +129,29 @@ describe('AccountDetailsRow', () => {
 
       expect(screen.getByTestId('arrow-button')).toBeInTheDocument();
       expect(screen.getByLabelText('View details')).toBeInTheDocument();
+    });
+
+    it('should handle click events on endAccessory buttons', () => {
+      const mockButtonClick = jest.fn();
+      const endAccessory = (
+        <ButtonIcon
+          iconName={IconName.Edit}
+          color={IconColor.iconAlternative}
+          size={ButtonIconSize.Md}
+          ariaLabel="Edit"
+          data-testid="end-accessory-button"
+          onClick={mockButtonClick}
+        />
+      );
+
+      render(
+        <AccountDetailsRow {...defaultProps} endAccessory={endAccessory} />,
+      );
+
+      const button = screen.getByTestId('end-accessory-button');
+      fireEvent.click(button);
+
+      expect(mockButtonClick).toHaveBeenCalledTimes(1);
     });
   });
 });

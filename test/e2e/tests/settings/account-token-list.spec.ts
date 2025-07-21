@@ -6,7 +6,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
@@ -62,13 +62,16 @@ describe('Settings', function () {
         fixtures: new FixtureBuilder()
           .withConversionRateEnabled()
           .withShowFiatTestnetEnabled()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .withPreferencesController({
+            preferences: { showTestNetworks: true },
+          })
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.SEPOLIA]: true,
               [CHAIN_IDS.LOCALHOST]: true,
             },
           })
+          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfuraResponses,
@@ -92,7 +95,7 @@ describe('Settings', function () {
         // it will show the total that the test is expecting.
 
         // I think we can slightly modify this test to switch to Sepolia network before checking the account List item value
-        await switchToNetworkFlow(driver, 'Sepolia');
+        await switchToNetworkFromSendFlow(driver, 'Sepolia');
 
         await new HeaderNavbar(driver).openAccountMenu();
         await new AccountListPage(driver).check_accountValueAndSuffixDisplayed(

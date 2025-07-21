@@ -181,7 +181,6 @@ describe('Vault Decryptor Page', function () {
           driver,
           password: WALLET_PASSWORD,
           needNavigateToNewPage: false,
-          socialLoginEnabled: false,
         });
         // close popover if any (Announcements etc..)
         await closePopoverIfPresent(driver);
@@ -242,7 +241,6 @@ describe('Vault Decryptor Page', function () {
           driver,
           password: WALLET_PASSWORD,
           needNavigateToNewPage: false,
-          socialLoginEnabled: false,
         });
         // close popover if any (Announcements etc..)
         await closePopoverIfPresent(driver);

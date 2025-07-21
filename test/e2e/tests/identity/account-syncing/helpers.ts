@@ -6,22 +6,6 @@ import {
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { Driver } from '../../../webdriver/driver';
 
-export type UserStorageAccount = {
-  /**
-   * The Version 'v' of the User Storage.
-   * NOTE - will allow us to support upgrade/downgrades in the future
-   */
-  v: string;
-  /** the id 'i' of the account */
-  i: string;
-  /** the address 'a' of the account */
-  a: string;
-  /** the name 'n' of the account */
-  n: string;
-  /** the nameLastUpdatedAt timestamp 'nlu' of the account */
-  nlu?: number;
-};
-
 export const arrangeTestUtils = (
   driver: Driver,
   userStorageMockttpController: UserStorageMockttpController,

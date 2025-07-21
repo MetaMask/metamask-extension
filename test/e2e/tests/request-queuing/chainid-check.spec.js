@@ -1,4 +1,7 @@
 const { strict: assert } = require('assert');
+const {
+  switchToNetworkFromSendFlow,
+} = require('../../page-objects/flows/network.flow');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -61,14 +64,7 @@ describe('Request Queueing chainId proxy sync', function () {
         );
 
         // Network Selector
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Switch to second network
-        await driver.clickElement({
-          text: 'Ethereum Mainnet',
-          css: 'p',
-        });
-
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const chainIdBeforeConnectAfterManualSwitch =
@@ -128,13 +124,7 @@ describe('Request Queueing chainId proxy sync', function () {
         );
 
         // Network Selector
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Switch network
-        await driver.clickElement({
-          text: 'Localhost 8546',
-          css: 'p',
-        });
+        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 

@@ -1,4 +1,4 @@
-import { RowElement } from '@metamask/snaps-sdk/jsx';
+import type { JSXElement, RowElement } from '@metamask/snaps-sdk/jsx';
 
 import { mapToTemplate } from '../utils';
 import { UIComponentFactory } from './types';
@@ -8,7 +8,9 @@ export const row: UIComponentFactory<RowElement> = ({
   ...params
 }) => ({
   element: 'ConfirmInfoRow',
-  children: [mapToTemplate({ ...params, element: element.props.children })],
+  children: [
+    mapToTemplate({ ...params, element: element.props.children as JSXElement }),
+  ],
   props: {
     label: element.props.label,
     variant: element.props.variant,

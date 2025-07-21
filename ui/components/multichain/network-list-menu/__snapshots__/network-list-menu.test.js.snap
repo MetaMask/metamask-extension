@@ -38,7 +38,7 @@ exports[`NetworkListMenu renders properly 1`] = `
               <h4
                 class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--color-text-default"
               >
-                Select a network
+                Manage networks
               </h4>
             </div>
             <div
@@ -63,7 +63,7 @@ exports[`NetworkListMenu renders properly 1`] = `
               class="mm-box mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4"
             >
               <div
-                class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-text-field-search mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-md mm-box--border-width-1 box--border-style-solid"
+                class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-text-field-search mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-md mm-box--border-width-1 box--border-style-solid"
                 data-testid="search-list"
               >
                 <span
@@ -74,7 +74,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                   autocomplete="off"
                   class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--margin-right-6 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                   data-testid="network-redesign-modal-search-input"
-                  focused="false"
+                  focused="true"
                   placeholder="Search"
                   type="search"
                   value=""
@@ -110,12 +110,9 @@ exports[`NetworkListMenu renders properly 1`] = `
                   tabindex="0"
                 >
                   <div
-                    class="mm-box multichain-network-list-item multichain-network-list-item--selected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-primary-muted"
+                    class="mm-box multichain-network-list-item multichain-network-list-item--not-selectable mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
                     data-testid="network-list-item-eip155:1"
                   >
-                    <div
-                      class="mm-box multichain-network-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
-                    />
                     <div
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
@@ -176,7 +173,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                   tabindex="0"
                 >
                   <div
-                    class="mm-box multichain-network-list-item mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+                    class="mm-box multichain-network-list-item multichain-network-list-item--not-selectable mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
                     data-testid="network-list-item-eip155:59144"
                   >
                     <div
@@ -239,7 +236,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                   tabindex="0"
                 >
                   <div
-                    class="mm-box multichain-network-list-item mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+                    class="mm-box multichain-network-list-item multichain-network-list-item--not-selectable mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
                     data-testid="network-list-item-eip155:56"
                   >
                     <div
@@ -302,7 +299,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                   tabindex="0"
                 >
                   <div
-                    class="mm-box multichain-network-list-item mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+                    class="mm-box multichain-network-list-item multichain-network-list-item--not-selectable mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
                     data-testid="network-list-item-eip155:5"
                   >
                     <div
@@ -1048,7 +1045,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
               <h4
                 class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--color-text-default"
               >
-                Select a network
+                Manage networks
               </h4>
             </div>
             <div
@@ -1073,7 +1070,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
               class="mm-box mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4"
             >
               <div
-                class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-text-field-search mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-md mm-box--border-width-1 box--border-style-solid"
+                class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-text-field-search mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-md mm-box--border-width-1 box--border-style-solid"
                 data-testid="search-list"
               >
                 <span
@@ -1084,7 +1081,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   autocomplete="off"
                   class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--margin-right-6 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                   data-testid="network-redesign-modal-search-input"
-                  focused="false"
+                  focused="true"
                   placeholder="Search"
                   type="search"
                   value=""
@@ -1120,12 +1117,9 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   tabindex="0"
                 >
                   <div
-                    class="mm-box multichain-network-list-item multichain-network-list-item--selected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-primary-muted"
+                    class="mm-box multichain-network-list-item multichain-network-list-item--not-selectable mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
                     data-testid="network-list-item-eip155:1"
                   >
-                    <div
-                      class="mm-box multichain-network-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
-                    />
                     <div
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
@@ -1186,7 +1180,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   tabindex="0"
                 >
                   <div
-                    class="mm-box multichain-network-list-item mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+                    class="mm-box multichain-network-list-item multichain-network-list-item--not-selectable mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
                     data-testid="network-list-item-eip155:59144"
                   >
                     <div
@@ -1249,7 +1243,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   tabindex="0"
                 >
                   <div
-                    class="mm-box multichain-network-list-item mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+                    class="mm-box multichain-network-list-item multichain-network-list-item--not-selectable mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
                     data-testid="network-list-item-eip155:56"
                   >
                     <div
@@ -1312,7 +1306,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   tabindex="0"
                 >
                   <div
-                    class="mm-box multichain-network-list-item mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+                    class="mm-box multichain-network-list-item multichain-network-list-item--not-selectable mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
                     data-testid="network-list-item-eip155:5"
                   >
                     <div

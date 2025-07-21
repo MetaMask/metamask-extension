@@ -1,5 +1,9 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // Used for tailwind intellisense
+  "editor.quickSuggestions": {
+    "strings": true
+  },
   "editor.tabSize": 2,
   "files.associations": {
     "app/*.html": "ejs"
@@ -20,5 +24,8 @@
       "url": "./.vscode/package.json-schema.json"
     }
   ],
+  "tailwindCSS.classFunctions": ["classnames", "classNames"],
+  "tailwindCSS.lint.cssConflict": "error",
+  "tailwindCSS.validate": true,
   "typescript.tsdk": "node_modules/typescript/lib"
 }

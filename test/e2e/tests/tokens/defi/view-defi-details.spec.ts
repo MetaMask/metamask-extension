@@ -4,14 +4,12 @@ import FixtureBuilder from '../../../fixture-builder';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import DeFiDetailsPage from '../../../page-objects/pages/defi-details-page';
 import DeFiTab from '../../../page-objects/pages/defi-tab';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
 import { mockDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
-import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../../page-objects/flows/network.flow';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
 
 describe('View DeFi details', function () {
   it('user should be able to view Aave Positions details', async function () {
@@ -31,43 +29,24 @@ describe('View DeFi details', function () {
         testSpecificMock: mockDeFiPositionFeatureFlag,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         await new Homepage(driver).goToDeFiTab();
 
         const defiTab = new DeFiTab(driver);
 
-        // check ethereum positions present)
-        if (!isGlobalNetworkSelectorRemoved) {
-          await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-        }
-
+        // check ethereum positions present
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await defiTab.check_groupIconIsDisplayed();
         await defiTab.defiTabCells.check_tokenName('Aave V3');
         await defiTab.defiTabCells.check_tokenMarketValue('$14.74');
         await defiTab.defiTabCells.check_tokenName('Aave V2');
         await defiTab.defiTabCells.check_tokenMarketValue('$0.33');
-
-        if (!isGlobalNetworkSelectorRemoved) {
-          await defiTab.openNetworksFilterAndClickPopularNetworks();
-        }
         await defiTab.defiTabCells.check_tokenName('UniswapV3');
         await defiTab.defiTabCells.check_tokenMarketValue('$8.48');
         await defiTab.defiTabCells.check_tokenName('UniswapV2');
         await defiTab.defiTabCells.check_tokenMarketValue('$4.24');
 
-        // deselect linea
-        // this feels wrong, there might be a potential bug here with defi
-        if (isGlobalNetworkSelectorRemoved) {
-          await driver.clickElement('[data-testid="sort-by-networks"]');
-          await driver.clickElement({
-            text: 'Linea Mainnet',
-            css: 'p',
-          });
-          await driver.clickElement(
-            '[data-testid="modal-header-close-button"]',
-          );
-        }
         // click detils page for AaveV3
         await defiTab.clickIntoAaveV3DetailsPage();
         const defiDetailsTab = new DeFiDetailsPage(driver);
