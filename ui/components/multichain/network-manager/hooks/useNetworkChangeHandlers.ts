@@ -88,9 +88,12 @@ export const useNetworkChangeHandlers = () => {
   const [actionMode, setActionMode] = useState(ACTION_MODE.LIST);
 
   useEffect(() => {
-    // Fire and forget - push all operations to next event loop
+    // Fire and forget async operations for better performance
+    // setTimeout with 0 delay pushes these operations to the next event loop tick,
+    // preventing them from blocking the current execution stack and improving UI responsiveness.
+    // This technique is called "yielding to the event loop" - it allows higher priority
+    // tasks (like UI updates) to execute first before these background operations run.
     setTimeout(() => {
-      // These operations run asynchronously without blocking
       dispatch(updateCustomNonce(''));
       dispatch(setNextNonce(''));
       dispatch(detectNfts(allChainIds));
