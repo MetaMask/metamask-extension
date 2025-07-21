@@ -7166,9 +7166,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:2.2.0":
-  version: 2.2.0
-  resolution: "@metamask/seedless-onboarding-controller@npm:2.2.0"
+"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@2.3.0-preview-feec3582":
+  version: 2.3.0-preview-feec3582
+  resolution: "@metamask-previews/seedless-onboarding-controller@npm:2.3.0-preview-feec3582"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.0"
     "@metamask/base-controller": "npm:^8.0.1"
@@ -7177,7 +7177,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
   peerDependencies:
     "@metamask/keyring-controller": ^22.0.0
-  checksum: 10/97378d1437b9ac2470d2adc67f35da739a0c2a14dbe021e80bfc6dd92339aa8a93aa5bf883749215f9ac86331fe42c0e675bf30e26cc14bda4d1d70affa4a586
+  checksum: 10/82c2e06c52d41a0db1ebff3bfb1fd9a3ba3bf7e7f30a4202f1abcf83e03724e4f6269ef500f4754e3ca6fef60708f6b3dfb5c773b679008014d94e7e9288425d
   languageName: node
   linkType: hard
 
@@ -31975,7 +31975,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/seedless-onboarding-controller": "npm:2.2.0"
+    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@2.3.0-preview-feec3582"
     "@metamask/selected-network-controller": "npm:^22.1.0"
     "@metamask/signature-controller": "npm:^30.0.0"
     "@metamask/smart-transactions-controller": "npm:^17.0.0"
