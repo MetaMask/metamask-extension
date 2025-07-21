@@ -71,6 +71,10 @@ class UnlockPage extends Component {
      */
     onSubmit: PropTypes.func,
     /**
+     * check password is outdated for social login flow
+     */
+    checkIsSeedlessPasswordOutdated: PropTypes.func,
+    /**
      * Force update metamask data state
      */
     forceUpdateMetamaskState: PropTypes.func,
@@ -113,12 +117,14 @@ class UnlockPage extends Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.passwordLoginAttemptTraceCtx = this.context.bufferedTrace?.({
       name: TraceName.OnboardingPasswordLoginAttempt,
       op: TraceOperation.OnboardingUserJourney,
       parentContext: this.props.onboardingParentContext?.current,
     });
+
+    await this.props.checkIsSeedlessPasswordOutdated();
   }
 
   handleSubmit = async (event) => {
