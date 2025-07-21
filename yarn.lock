@@ -7166,18 +7166,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "@metamask/seedless-onboarding-controller@npm:2.3.0"
+"@metamask/seedless-onboarding-controller@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "@metamask/seedless-onboarding-controller@npm:2.4.0"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.0"
     "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/toprf-secure-backup": "npm:^0.6.0"
+    "@metamask/toprf-secure-backup": "npm:^0.7.0"
     "@metamask/utils": "npm:^11.4.2"
     async-mutex: "npm:^0.5.0"
   peerDependencies:
     "@metamask/keyring-controller": ^22.0.0
-  checksum: 10/1b4270b1190a02cdf0fd5c20491d5df0c4095141a8ce167dd382a89c766c9de913acd0a58e05ddbe8c0de6eebd864e37eac44fee6e5dffe1a75509ecd9f2519f
+  checksum: 10/0ede730fd8d1a75175483574a4a57585f2923e78945726d26e4bffc240e4f34dddb8139b6fdb3632b326aab13fc5256acc8835b742e8bf5654a3b4ebce8c88d8
   languageName: node
   linkType: hard
 
@@ -7555,9 +7555,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/toprf-secure-backup@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@metamask/toprf-secure-backup@npm:0.6.0"
+"@metamask/toprf-secure-backup@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@metamask/toprf-secure-backup@npm:0.7.0"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.1"
     "@noble/ciphers": "npm:^1.2.1"
@@ -7569,7 +7569,7 @@ __metadata:
     "@toruslabs/fetch-node-details": "npm:^15.0.0"
     "@toruslabs/http-helpers": "npm:^8.1.1"
     bn.js: "npm:^5.2.1"
-  checksum: 10/2fd8a6147ed45adceb11b408478e160d01ce1e1ff841ff64dec78c4bbeed6ffe3679c1f0d5d6ef7db59abced6b42d9ef693595e0b659b869a0f94cdb41aed5bf
+  checksum: 10/d4be27f808e00be2879f563b0a6c7a15798cae1e9b1eab15a2b46fa83b42bb5b23b28e76508530246daad8e7c00c72db0c6af4dcc65be516a079f8ce70cd0d97
   languageName: node
   linkType: hard
 
@@ -31975,7 +31975,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/seedless-onboarding-controller": "npm:^2.3.0"
+    "@metamask/seedless-onboarding-controller": "npm:^2.4.0"
     "@metamask/selected-network-controller": "npm:^22.1.0"
     "@metamask/signature-controller": "npm:^30.0.0"
     "@metamask/smart-transactions-controller": "npm:^17.0.0"
