@@ -4822,7 +4822,13 @@ export default class MetamaskController extends EventEmitter {
       const isKeyringPasswordValid = await this.keyringController
         .verifyPassword(password)
         .then(() => true)
-        .catch(() => false);
+        .catch((err) => {
+          if (err.message.includes('Incorrect password')) {
+            return false;
+          }
+          log.error('error while verifying keyring password', err.message);
+          throw err;
+        });
 
       // here e could be invalid password or outdated password error, which can result in following cases:
       // 1. Seedless controller password verification succeeded.
