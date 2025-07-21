@@ -1,5 +1,6 @@
 import { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
 import { Messenger } from '@metamask/base-controller';
+import { Env } from '@metamask/profile-sync-controller/sdk';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
@@ -51,6 +52,7 @@ describe('UserStorageControllerInit', () => {
       state: requestMock.persistedState.UserStorageController,
       trace: expect.any(Function),
       config: {
+        env: Env.DEV,
         accountSyncing: {
           maxNumberOfAccountsToAdd: 100,
           onAccountAdded: expect.any(Function),

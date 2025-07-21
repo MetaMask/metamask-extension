@@ -6,7 +6,8 @@ import { UserStorageMockttpController } from './userStorageMockttpController';
 describe('UserStorageMockttpController', () => {
   let mockServer: mockttp.Mockttp;
 
-  const baseUrl = 'https://user-storage.api.cx.metamask.io/api/v1/userstorage';
+  const baseUrl =
+    'https://user-storage.dev-api.cx.metamask.io/api/v1/userstorage';
 
   describe('mimics user storage behaviour', () => {
     mockServer = mockttp.getLocal({ cors: true });

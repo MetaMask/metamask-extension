@@ -9,7 +9,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 
 async function seeAuthenticationRequest(mockServer: Mockttp) {
   return await mockServer
-    .forPost('https://authentication.api.cx.metamask.io/api/v2/srp/login')
+    .forPost('https://authentication.dev-api.cx.metamask.io/api/v2/srp/login')
     // the goal is to know when this request happens, not to mock any specific response
     .thenCallback(() => {
       return {

@@ -177,7 +177,7 @@ async function setupMocking(
   // User Profile Metametrics
   await server
     .forGet(
-      'https://authentication.api.cx.metamask.io/api/v2/profile/metametrics',
+      'https://authentication.dev-api.cx.metamask.io/api/v2/profile/metametrics',
     )
     .thenCallback(() => {
       return {
