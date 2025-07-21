@@ -309,6 +309,9 @@
   "address": {
     "message": "Address"
   },
+  "addressCopied": {
+    "message": "Address copied"
+  },
   "addressMismatch": {
     "message": "Site address mismatch"
   },
@@ -4250,6 +4253,9 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
+    "message": "If I forget this password, MetaMask can’t reset it for me."
+  },
+  "passwordTermsWarningSocial": {
     "message": "If I forget this password, I’ll lose access to my wallet permanently. MetaMask can’t reset it for me."
   },
   "passwordToggleHide": {
@@ -7104,6 +7110,10 @@
   },
   "viewActivity": {
     "message": "View activity"
+  },
+  "viewAddressOnExplorer": {
+    "message": "View on $1",
+    "description": "$1 is the block explorer name"
   },
   "viewAllQuotes": {
     "message": "view all quotes"

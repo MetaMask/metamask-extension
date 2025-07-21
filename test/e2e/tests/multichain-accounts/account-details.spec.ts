@@ -282,7 +282,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
 
           const viewOnExplorerButton = await driver.findElement({
             css: 'button',
-            text: 'View on explorer',
+            text: 'View on Etherscan',
           });
 
           const explorerLink =

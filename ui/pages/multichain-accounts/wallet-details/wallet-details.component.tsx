@@ -170,7 +170,7 @@ const WalletDetails = () => {
   const handleCreateEthereumAccount = async (): Promise<boolean> => {
     trace({ name: TraceName.AddAccount });
     try {
-      await dispatch(addNewAccount(keyringId));
+      await dispatch(addNewAccount(keyringId, false));
       return true;
     } catch (error) {
       console.error('Error creating Ethereum account:', error);

@@ -94,8 +94,15 @@ async function runGitCommands() {
     await exec('git commit -m "Merge origin/main into master-sync"');
     console.log('Executed: git commit');
 
+    // Force push since master-sync is a temporary branch that gets hard reset
+    await exec(
+      'git push --force-if-includes --set-upstream origin master-sync',
+    );
+    console.log(
+      'Executed: git push --force-if-includes --set-upstream origin master-sync',
+    );
+
     console.log('Your local master-sync branch is now ready to become a PR.');
-    console.log('You likely now need to do `git push --force`');
   } catch (error) {
     console.error(`Error: ${error.message}`);
     process.exit(1);
