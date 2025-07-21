@@ -34,7 +34,7 @@ export type CodeFenceLoaderOptions = { features: FeatureLabels };
 type Context = LoaderContext<CodeFenceLoaderOptions>;
 function codeFenceLoader(this: Context, content: string, map?: string) {
   const options = this.getOptions();
-  validate(schema, options, { name: 'codeFenceLoader' });
+  validate('codeFenceLoader', schema, options);
   try {
     const result = removeFencedCode(
       this.resourcePath,

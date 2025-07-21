@@ -173,7 +173,7 @@ export type SwcLoaderOptions = FromSchema<typeof schema, SchemaOptions>;
 type Context = LoaderContext<SwcLoaderOptions>;
 export default function swcLoader(this: Context, src: string, srcMap?: string) {
   const pluginOptions = this.getOptions();
-  validate(schema, pluginOptions, { name: 'swcLoader' });
+  validate('swcLoader', schema, pluginOptions);
 
   const options: Options = {
     ...pluginOptions,

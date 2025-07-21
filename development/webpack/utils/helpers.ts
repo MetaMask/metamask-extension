@@ -3,7 +3,7 @@ import { parse, join, relative, sep } from 'node:path';
 import { validate as schemaValidate } from 'schema-utils';
 import type { Chunk, EntryObject, Stats } from 'webpack';
 import type TerserPluginType from 'terser-webpack-plugin';
-import { memoize } from 'lodash';
+import { Schema } from 'schema-utils/declarations/ValidationError';
 
 export type Manifest = chrome.runtime.Manifest;
 export type ManifestV2 = chrome.runtime.ManifestV2;
@@ -243,4 +243,28 @@ export function logStats(err?: Error | null, stats?: Stats) {
  */
 export const uniqueSort = (array: string[]) => [...new Set(array)].sort();
 
-export const validate = memoize(schemaValidate);
+const validationCache: Map<string, boolean> = new Map();
+/**
+ * Validates the given schema and options, caching the result.
+ *
+ * @param cacheKey - A unique key to cache the validation result.
+ * @param schema - The JSON schema to validate against.
+ * @param options - The options to validate.
+ * @throws Throws an error if validation fails.
+ */
+export const validate = (
+  cacheKey: string,
+  schema: Schema,
+  options: object[] | object,
+) => {
+  const result = validationCache.get(cacheKey);
+  if (result === undefined) {
+    try {
+      schemaValidate(schema, options, { name: cacheKey });
+      validationCache.set(cacheKey, true);
+    } catch (error: unknown) {
+      validationCache.set(cacheKey, false);
+      throw error;
+    }
+  }
+};
