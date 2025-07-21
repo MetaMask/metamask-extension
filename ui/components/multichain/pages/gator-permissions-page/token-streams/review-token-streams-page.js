@@ -60,8 +60,8 @@ export const ReviewTokenStreamsPage = () => {
     setTotalTokenStreams(nativeTokenStreams.length + erc20TokenStreams.length);
   }, [chainId, nativeTokenStreams, erc20TokenStreams, networks]);
 
-  const handleRevokeClick = async (stream) => {
-    await revokeGatorPermission(stream);
+  const handleRevokeClick = async (permissionContext, delegationManager) => {
+    await revokeGatorPermission(permissionContext, delegationManager);
   };
 
   const renderTokenStreams = (streams) =>
@@ -80,7 +80,12 @@ export const ReviewTokenStreamsPage = () => {
           networkName={fullNetworkName}
           permissionType={permissionResponse.permission.type}
           siteOrigin={siteOrigin}
-          onRevokeClick={() => handleRevokeClick(stream)}
+          onRevokeClick={() =>
+            handleRevokeClick(
+              permissionResponse.context,
+              permissionResponse.signerMeta.delegationManager,
+            )
+          }
         />
       );
     });

@@ -53,8 +53,8 @@ export const ReviewTokenSubscriptionsPage = () => {
     setTotalTokenSubscriptions(nativeTokenPeriodicPermissions.length);
   }, [chainId, nativeTokenPeriodicPermissions, networks]);
 
-  const handleRevokeClick = async (subscription) => {
-    await revokeGatorPermission(subscription);
+  const handleRevokeClick = async (permissionContext, delegationManager) => {
+    await revokeGatorPermission(permissionContext, delegationManager);
   };
 
   const renderTokenSubscriptions = (subscriptions) =>
@@ -72,7 +72,12 @@ export const ReviewTokenSubscriptionsPage = () => {
           networkName={fullNetworkName}
           permissionType={permissionResponse.permission.type}
           siteOrigin={siteOrigin}
-          onRevokeClick={() => handleRevokeClick(subscription)}
+          onRevokeClick={() =>
+            handleRevokeClick(
+              permissionResponse.context,
+              permissionResponse.signerMeta.delegationManager,
+            )
+          }
         />
       );
     });
