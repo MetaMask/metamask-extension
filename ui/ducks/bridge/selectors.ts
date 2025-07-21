@@ -196,16 +196,23 @@ export const getTopAssetsFromFeatureFlags = (
   return bridgeFeatureFlags?.chains[formatChainIdToCaip(chainId)]?.topAssets;
 };
 
+/**
+ * If the user has selected a destination chain, use the destination chain as the destination chain
+ * If the user has not selected a destination chain, use the source chain as the destination chain
+ */
 export const getToChain = createSelector(
-  getToChains,
-  (state: BridgeAppState) => state.bridge?.toChainId,
-  (toChains, toChainId) =>
+  [
+    getFromChain,
+    getToChains,
+    (state: BridgeAppState) => state.bridge?.toChainId,
+  ],
+  (fromChain, toChains, toChainId) =>
     toChainId
       ? toChains.find(
           ({ chainId }) =>
             chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
         )
-      : undefined,
+      : fromChain,
 );
 
 export const getFromToken = createSelector(

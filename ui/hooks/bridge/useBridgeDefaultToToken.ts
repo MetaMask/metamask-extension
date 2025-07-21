@@ -8,15 +8,10 @@ import {
 } from '@metamask/bridge-controller';
 import type { Hex } from '@metamask/utils';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
-import {
-  getFromChain,
-  getToChain,
-  getFromToken,
-} from '../../ducks/bridge/selectors';
+import { getToChain, getFromToken } from '../../ducks/bridge/selectors';
 import type { TokenPayload } from '../../ducks/bridge/types';
 
 type UseBridgeDefaultToTokenReturnType = {
-  defaultToChainId: ChainId | Hex | null;
   defaultToToken: TokenPayload['payload'] | null;
 };
 
@@ -39,23 +34,12 @@ const createBridgeTokenPayload = (
 };
 
 function useBridgeDefaultToToken(): UseBridgeDefaultToTokenReturnType {
-  const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
   const fromToken = useSelector(getFromToken, isEqual);
 
-  const defaultToChainId = useMemo(() => {
-    // If destination chain already selected, or no source chain, return null
-    if (toChain?.chainId || !fromChain?.chainId) {
-      return null;
-    }
-
-    // Default to same chain as source (swap, not bridge)
-    return fromChain.chainId;
-  }, [fromChain?.chainId, toChain?.chainId]);
-
   const defaultToToken = useMemo(() => {
     // Use the explicitly selected chain, or the default (which is same as source)
-    const targetChainId = toChain?.chainId || defaultToChainId;
+    const targetChainId = toChain?.chainId;
 
     if (!fromToken || !targetChainId) {
       return null;
@@ -101,9 +85,9 @@ function useBridgeDefaultToToken(): UseBridgeDefaultToTokenReturnType {
     }
 
     return null;
-  }, [fromToken, toChain?.chainId, defaultToChainId]);
+  }, [fromToken, toChain?.chainId]);
 
-  return { defaultToChainId, defaultToToken };
+  return { defaultToToken };
 }
 
 export default useBridgeDefaultToToken;

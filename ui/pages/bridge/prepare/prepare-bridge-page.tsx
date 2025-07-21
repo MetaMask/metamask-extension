@@ -556,30 +556,13 @@ const PrepareBridgePage = () => {
       name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
       timestamp: Date.now(),
     });
-    setDefaultChainApplied(false);
     setDefaultTokenApplied(false);
   }, []);
 
-  const { defaultToChainId, defaultToToken } = useBridgeDefaultToToken();
+  const { defaultToToken } = useBridgeDefaultToToken();
 
-  // Track whether defaults have been applied separately for chain and token
-  const [defaultChainApplied, setDefaultChainApplied] = useState(false);
+  // Track whether defaults have been applied separately for token
   const [defaultTokenApplied, setDefaultTokenApplied] = useState(false);
-
-  useEffect(() => {
-    // Only set default chain if user hasn't already selected one and default hasn't been applied
-    if (!toChain && defaultToChainId && fromChain && !defaultChainApplied) {
-      dispatch(setToChainId(defaultToChainId));
-      setDefaultChainApplied(true);
-    }
-  }, [
-    defaultToChainId,
-    toChain,
-    fromChain,
-    dispatch,
-    trackInputEvent,
-    defaultChainApplied,
-  ]);
 
   useEffect(() => {
     // Only set default token if user hasn't already selected one and default hasn't been applied
