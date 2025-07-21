@@ -263,8 +263,6 @@ const config = {
   // to top, (or right to left depending on the current formatting of the file)
   module: {
     noParse: [
-      // security team requires that we never process `@lavamoat/snow/**.*`
-      SNOW_MODULE_RE,
       // don't parse lodash, as it's large, already minified, and doesn't need
       // to be transformed
       /^lodash$/u,
@@ -298,6 +296,9 @@ const config = {
             test: /\.m?js$/u,
             include: NODE_MODULES_RE,
             exclude: [
+              // security team requires that we never process `@lavamoat/snow/**.*`
+              SNOW_MODULE_RE,
+
               // these trezor libraries are .js files with CJS exports, they
               // must be processed with the CJS loader
               /^.*\/node_modules\/@trezor\/connect\/.*$/u,
@@ -312,6 +313,10 @@ const config = {
           {
             test: /\.c?js$/u,
             include: NODE_MODULES_RE,
+            exclude: [
+              // security team requires that we never process `@lavamoat/snow/**.*`
+              SNOW_MODULE_RE,
+            ],
             use: cjsLoader,
           },
         ],
