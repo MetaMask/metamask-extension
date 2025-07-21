@@ -1,0 +1,28 @@
+.multichain-account-cell {
+  &__account-avatar {
+    width: 40px;
+    height: 40px;
+    border-width: 2.2px;
+  }
+
+  &__account-name {
+    font-weight: 600;
+    max-width: 200px;
+  }
+
+  &__account-balance {
+    font-weight: 600;
+  }
+
+  &:hover {
+    background: var(--color-background-default-hover);
+
+    .multichain-account-cell__account-avatar {
+      border-color: var(--color-primary-default);
+    }
+
+    .multichain-account-cell__account-name {
+      color: var(--color-primary-default);
+    }
+  }
+}
