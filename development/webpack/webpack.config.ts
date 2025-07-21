@@ -297,6 +297,16 @@ const config = {
           {
             test: /\.m?js$/u,
             include: NODE_MODULES_RE,
+            exclude: [
+              // these trezor libraries are .js files with CJS exports, they
+              // must be processed with the CJS loader
+              /^.*\/node_modules\/@trezor\/connect\/.*$/u,
+              /^.*\/node_modules\/@trezor\/connect-web\/.*$/u,
+              /^.*\/node_modules\/@trezor\/connect-common\/.*$/u,
+              /^.*\/node_modules\/@trezor\/utils\/.*$/u,
+              /^.*\/node_modules\/@trezor\/websocket-client\/.*$/u,
+              /^.*\/node_modules\/@trezor\/schema-utils\/.*$/u,
+            ],
             use: npmLoader,
           },
           {

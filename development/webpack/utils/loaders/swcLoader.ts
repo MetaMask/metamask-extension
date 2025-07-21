@@ -179,7 +179,15 @@ export default function swcLoader(this: Context, src: string, srcMap?: string) {
     ...pluginOptions,
     envName: this.mode,
     filename: this.resourcePath,
-    inputSourceMap: srcMap,
+    inputSourceMap:
+      // some files in node_modules claim to have sourcemaps when they do
+      // not[0], and SWC has a bug where logs to stderror if it tries to use a
+      // sourcemap that does not exist[1]. So we disable sourcemaps for
+      // node_modules. Ideally, we would not disable them, as they *are* useful
+      // for debugging.
+      // [0]: https://github.com/trezor/trezor-suite/issues/20298
+      // [1]: https://github.com/swc-project/swc/issues/9416
+      this.resourcePath.includes('/node_modules/') ? false : srcMap,
     sourceFileName: this.resourcePath,
     sourceMaps: this.sourceMap,
     swcrc: false,
