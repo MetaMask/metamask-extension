@@ -13,6 +13,7 @@ import {
   tryUnlockMetamask,
   markPasswordForgotten,
   forceUpdateMetamaskState,
+  checkIsSeedlessPasswordOutdated,
 } from '../../store/actions';
 import { getIsSocialLoginFlow } from '../../selectors';
 import UnlockPage from './unlock-page.component';
@@ -32,6 +33,8 @@ const mapDispatchToProps = (dispatch) => {
     tryUnlockMetamask: (password) => dispatch(tryUnlockMetamask(password)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
+    checkIsSeedlessPasswordOutdated: () =>
+      dispatch(checkIsSeedlessPasswordOutdated()),
   };
 };
 
