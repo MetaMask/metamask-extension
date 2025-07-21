@@ -16,11 +16,7 @@ import {
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
 } from '../../../shared/constants/metametrics';
-<<<<<<< HEAD
-=======
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
-import { OAuthRefreshTokenResult } from '../services/oauth/types';
->>>>>>> f2104e923f (fix: cp-12.22.3 Fix frequent writes from CronjobController (#34413))
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
