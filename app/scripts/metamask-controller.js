@@ -3170,7 +3170,8 @@ export default class MetamaskController extends EventEmitter {
     if (
       !isEvmAccountType(
         this.accountsController.getSelectedMultichainAccount().type,
-      )
+      ) &&
+      this._isClientOpen
     ) {
       this.multichainRatesController.start();
     }
@@ -3178,7 +3179,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'AccountsController:selectedAccountChange',
       (selectedAccount) => {
-        if (isEvmAccountType(selectedAccount.type)) {
+        if (!this._isClientOpen || isEvmAccountType(selectedAccount.type)) {
           this.multichainRatesController.stop();
           return;
         }
@@ -8607,6 +8608,27 @@ export default class MetamaskController extends EventEmitter {
       this.appStateController.clearPollingTokens();
       this.accountTrackerController.stopAllPolling();
       this.deFiPositionsController.stopAllPolling();
+      this.multichainRatesController.stop();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  /**
+   * A method that is called the first time the UI is opened after the client is closed.
+   *
+   * Currently used to start polling on older controllers. Newer controllers activate polling in
+   * the UI.
+   */
+  onClientOpened() {
+    try {
+      if (
+        !isEvmAccountType(
+          this.accountsController.getSelectedMultichainAccount().type,
+        )
+      ) {
+        this.multichainRatesController.start();
+      }
     } catch (error) {
       console.error(error);
     }

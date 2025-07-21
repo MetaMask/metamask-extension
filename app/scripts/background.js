@@ -1075,6 +1075,10 @@ export function setupController(
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
       // communication with popup
+      if (!controller.isClientOpen) {
+        controller.onClientOpened();
+      }
+
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
       trackAppOpened(processName);
