@@ -1816,8 +1816,6 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
  */
 
 /**
- * @deprecated Use getNativeAssetForChainId instead because this only supports EVM chains
- *
  * Swaps related code uses token objects for various purposes. These objects
  * always have the following properties: `symbol`, `name`, `address`, and
  * `decimals`.
@@ -1834,6 +1832,7 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
  * `balance` and `string` values of the same type as in regular ERC-20 token
  * objects, per the above description.
  *
+ * @deprecated Use getNativeAssetForChainId instead because this only supports EVM chains
  * @param {object} state - the redux state object
  * @param {string} overrideChainId - the chainId to override the current chainId
  * @returns {SwapsEthToken} The token object representation of the currently
