@@ -4802,7 +4802,7 @@ export default class MetamaskController extends EventEmitter {
     // check if the password is outdated
     const isPasswordOutdated = isSocialLoginFlow
       ? await this.seedlessOnboardingController.checkIsPasswordOutdated({
-          skipCache: true,
+          skipCache: false,
         })
       : false;
 
@@ -4909,10 +4909,11 @@ export default class MetamaskController extends EventEmitter {
    */
   async checkIsSeedlessPasswordOutdated(skipCache = false) {
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+    const { completedOnboarding } = this.onboardingController.state;
 
-    if (!isSocialLoginFlow) {
-      // this is only available for seedless onboarding flow
-      return undefined;
+    if (!isSocialLoginFlow || !completedOnboarding) {
+      // this is only available for seedless onboarding flow and completed onboarding
+      return false;
     }
 
     const isPasswordOutdated =
