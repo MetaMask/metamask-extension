@@ -22,7 +22,7 @@ describe('isProduction', () => {
     expect(isProduction()).toBe(false);
   });
 
-  it('should return false when ENVIRONMENT is "testing"', () => {
+  it('should return false when ENVIRONMENT is "test"', () => {
     process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
     expect(isProduction()).toBe(false);
   });

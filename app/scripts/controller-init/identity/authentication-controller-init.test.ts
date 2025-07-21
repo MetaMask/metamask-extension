@@ -1,5 +1,6 @@
 import { Controller as AuthenticationController } from '@metamask/profile-sync-controller/auth';
 import { Messenger } from '@metamask/base-controller';
+import { Env } from '@metamask/profile-sync-controller/sdk';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
@@ -50,6 +51,9 @@ describe('AuthenticationControllerInit', () => {
       metametrics: {
         getMetaMetricsId: requestMock.getMetaMetricsId,
         agent: 'extension',
+      },
+      config: {
+        env: Env.DEV,
       },
     });
   });
