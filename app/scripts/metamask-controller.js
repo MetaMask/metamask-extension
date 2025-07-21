@@ -181,6 +181,7 @@ import { ErrorReportingService } from '@metamask/error-reporting-service';
 import {
   SeedlessOnboardingControllerErrorMessage,
   SecretType,
+  RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
@@ -4801,7 +4802,7 @@ export default class MetamaskController extends EventEmitter {
     // check if the password is outdated
     const isPasswordOutdated = isSocialLoginFlow
       ? await this.seedlessOnboardingController.checkIsPasswordOutdated({
-          skipCache: true,
+          skipCache: false,
         })
       : false;
 
@@ -4908,10 +4909,11 @@ export default class MetamaskController extends EventEmitter {
    */
   async checkIsSeedlessPasswordOutdated(skipCache = false) {
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+    const { completedOnboarding } = this.onboardingController.state;
 
-    if (!isSocialLoginFlow) {
-      // this is only available for seedless onboarding flow
-      return undefined;
+    if (!isSocialLoginFlow || !completedOnboarding) {
+      // this is only available for seedless onboarding flow and completed onboarding
+      return false;
     }
 
     const isPasswordOutdated =
@@ -5120,19 +5122,27 @@ export default class MetamaskController extends EventEmitter {
         },
       );
 
-      if (this.onboardingController.getIsSocialLoginFlow()) {
-        // if social backup is requested, add the seed phrase backup
-        await this.addNewSeedPhraseBackup(
-          mnemonic,
-          id,
-          shouldCreateSocialBackup,
-        );
-      }
-
       const [newAccountAddress] = await this.keyringController.withKeyring(
         { id },
         async ({ keyring }) => keyring.getAccounts(),
       );
+
+      if (this.onboardingController.getIsSocialLoginFlow()) {
+        try {
+          // if social backup is requested, add the seed phrase backup
+          await this.addNewSeedPhraseBackup(
+            mnemonic,
+            id,
+            shouldCreateSocialBackup,
+          );
+        } catch (err) {
+          // handle seedless controller import error by reverting keyring controller mnemonic import
+          // KeyringController.removeAccount will remove keyring when it's emptied, currently there are no other method in keyring controller to remove keyring
+          await this.keyringController.removeAccount(newAccountAddress);
+          throw err;
+        }
+      }
+
       if (shouldSelectAccount) {
         const account =
           this.accountsController.getAccountByAddress(newAccountAddress);
@@ -5230,27 +5240,35 @@ export default class MetamaskController extends EventEmitter {
    * @returns The seed phrase.
    */
   async restoreSocialBackupAndGetSeedPhrase(password) {
-    // get the first seed phrase from the array, this is the oldest seed phrase
-    // and we will use it to create the initial vault
-    const [firstSecretData, ...remainingSecretData] =
-      await this.fetchAllSecretData(password);
+    try {
+      // get the first seed phrase from the array, this is the oldest seed phrase
+      // and we will use it to create the initial vault
+      const [firstSecretData, ...remainingSecretData] =
+        await this.fetchAllSecretData(password);
 
-    const firstSeedPhrase = this._convertEnglishWordlistIndicesToCodepoints(
-      firstSecretData.data,
-    );
-    const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
-    const encodedSeedPhrase = Array.from(
-      Buffer.from(mnemonic, 'utf8').values(),
-    );
-    // restore the vault using the root seed phrase
-    await this.createNewVaultAndRestore(password, encodedSeedPhrase);
+      const firstSeedPhrase = this._convertEnglishWordlistIndicesToCodepoints(
+        firstSecretData.data,
+      );
+      const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
+      const encodedSeedPhrase = Array.from(
+        Buffer.from(mnemonic, 'utf8').values(),
+      );
+      // restore the vault using the root seed phrase
+      await this.createNewVaultAndRestore(password, encodedSeedPhrase);
 
-    // restore the remaining Mnemonics/SeedPhrases/PrivateKeys to the vault
-    if (remainingSecretData.length > 0) {
-      await this.restoreSeedPhrasesToVault(remainingSecretData);
+      // restore the remaining Mnemonics/SeedPhrases/PrivateKeys to the vault
+      if (remainingSecretData.length > 0) {
+        await this.restoreSeedPhrasesToVault(remainingSecretData);
+      }
+
+      return mnemonic;
+    } catch (error) {
+      log.error('Error restoring social backup and getting seed phrase', error);
+      if (error instanceof RecoveryError) {
+        throw new JsonRpcError(-32603, error.message, error.data);
+      }
+      throw error;
     }
-
-    return mnemonic;
   }
 
   /**
@@ -6367,12 +6385,19 @@ export default class MetamaskController extends EventEmitter {
           },
         );
 
-      // if social backup is requested, add the seed phrase backup
-      await this.addNewPrivateKeyBackup(
-        privateKeyFromKeyring,
-        keyringId,
-        shouldCreateSocialBackup,
-      );
+      try {
+        // if social backup is requested, add the seed phrase backup
+        await this.addNewPrivateKeyBackup(
+          privateKeyFromKeyring,
+          keyringId,
+          shouldCreateSocialBackup,
+        );
+      } catch (err) {
+        // handle seedless controller import error by reverting keyring controller mnemonic import
+        // KeyringController.removeAccount will remove keyring when it's emptied, currently there are no other method in keyring controller to remove keyring
+        await this.keyringController.removeAccount(importedAccountAddress);
+        throw err;
+      }
     }
 
     if (shouldSelectAccount) {

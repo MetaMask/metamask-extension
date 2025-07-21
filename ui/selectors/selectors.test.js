@@ -1950,6 +1950,7 @@ describe('#getConnectedSitesList', () => {
         balance: '966987986469506564059',
         string: '966.988',
         iconUrl: './images/black-eth-logo.svg',
+        chainId: '0x5',
       };
 
       const result = selectors.getSwapsDefaultToken(mockState);
@@ -1970,6 +1971,7 @@ describe('#getConnectedSitesList', () => {
         balance: '966987986469506564059',
         string: '966.988',
         iconUrl: './images/pol-token.svg',
+        chainId: '0x89',
       };
 
       const result = selectors.getSwapsDefaultToken(

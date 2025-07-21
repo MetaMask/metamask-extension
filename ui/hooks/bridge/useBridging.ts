@@ -1,12 +1,11 @@
 import { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { toChecksumAddress } from 'ethereumjs-util';
-import { isStrictHexString } from '@metamask/utils';
 import {
+  type BridgeAsset,
   formatChainIdToCaip,
+  type GenericQuoteRequest,
   UnifiedSwapBridgeEventName,
-  type SwapsTokenObject,
 } from '@metamask/bridge-controller';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
 import {
@@ -14,7 +13,6 @@ import {
   getIsBridgeChain,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  type SwapsEthToken,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -27,8 +25,10 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
+import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { trace, TraceName } from '../../../shared/lib/trace';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 
 const useBridging = () => {
@@ -47,7 +47,9 @@ const useBridging = () => {
   const openBridgeExperience = useCallback(
     (
       location: string,
-      token: SwapsTokenObject | SwapsEthToken,
+      token: Pick<BridgeAsset, 'symbol' | 'address'> & {
+        chainId: GenericQuoteRequest['srcChainId'];
+      },
       isSwap = false,
     ) => {
       if (!isBridgeChain || !providerConfig) {
@@ -108,13 +110,13 @@ const useBridging = () => {
         }),
       );
       let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
-      url += `?token=${
-        isStrictHexString(token.address)
-          ? toChecksumAddress(token.address)
-          : token.address
-      }`;
+      const assetId = toAssetId(
+        token.address,
+        formatChainIdToCaip(token.chainId ?? providerConfig.chainId),
+      );
+      url += `?${BridgeQueryParams.FROM}=${assetId}`;
       if (isSwap) {
-        url += '&swaps=true';
+        url += `&${BridgeQueryParams.SWAPS}=true`;
       }
       history.push(url);
     },

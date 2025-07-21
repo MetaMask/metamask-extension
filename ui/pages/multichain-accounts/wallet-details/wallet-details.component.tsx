@@ -175,7 +175,7 @@ const WalletDetails = () => {
       // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
       // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
       // eslint-disable-next-line @typescript-eslint/await-thenable
-      await dispatch(addNewAccount(keyringId));
+      await dispatch(addNewAccount(keyringId, false));
       return true;
     } catch (error) {
       console.error('Error creating Ethereum account:', error);

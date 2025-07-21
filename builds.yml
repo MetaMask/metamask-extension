@@ -384,7 +384,7 @@ env:
   # OAuth (Social login)
   - GOOGLE_CLIENT_ID_REF
   - APPLE_CLIENT_ID_REF
-  - SEEDLESS_ONBOARDING_ENABLED: 'false'
+  - SEEDLESS_ONBOARDING_ENABLED: 'true'
   - GOOGLE_CLIENT_ID: ''
   - APPLE_CLIENT_ID: ''
   # OAuth (Social login) for UAT(QA) builds
