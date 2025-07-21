@@ -4845,8 +4845,9 @@ export default class MetamaskController extends EventEmitter {
           ) {
             isPasswordSynced = false;
           } else if (
-            err.message ===
-            SeedlessOnboardingControllerErrorMessage.IncorrectPassword
+            err.message.includes(
+              SeedlessOnboardingControllerErrorMessage.CouldNotRecoverPassword,
+            )
           ) {
             // Case 2: Keyring controller password verification succeeds and seedless controller failed.
             if (isKeyringPasswordValid) {
