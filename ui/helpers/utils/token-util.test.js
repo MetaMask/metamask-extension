@@ -110,9 +110,7 @@ describe('getAssetDetails', () => {
 
     await expect(
       getAssetDetails(tokenAddress, currentUserAddress, transactionData, []),
-    ).rejects.toThrow(
-      `Unable to detect valid token data for token: 0xAddrEssToken`,
-    );
+    ).rejects.toThrow('Unable to detect valid token data');
   });
 
   it('returns asset details for an erc721 token transaction', async () => {
