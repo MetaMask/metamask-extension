@@ -569,7 +569,7 @@ describe('MetaMaskController', function () {
           )
           .mockRejectedValue(
             new Error(
-              SeedlessOnboardingControllerErrorMessage.CouldNotRecoverPassword,
+              SeedlessOnboardingControllerErrorMessage.IncorrectPassword,
             ),
           );
         await expect(

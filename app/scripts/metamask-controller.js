@@ -4844,7 +4844,9 @@ export default class MetamaskController extends EventEmitter {
           isPasswordSynced = true;
         })
         .catch((err) => {
-          log.error('error while submitting global password', err);
+          log.error(
+            `error while submitting global password: ${err.message} , isKeyringPasswordValid: ${isKeyringPasswordValid}`,
+          );
           if (
             err.message ===
             SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded
@@ -4852,7 +4854,7 @@ export default class MetamaskController extends EventEmitter {
             isPasswordSynced = false;
           } else if (
             err.message.includes(
-              SeedlessOnboardingControllerErrorMessage.CouldNotRecoverPassword,
+              SeedlessOnboardingControllerErrorMessage.IncorrectPassword,
             )
           ) {
             // Case 2: Keyring controller password verification succeeds and seedless controller failed.
