@@ -60,7 +60,7 @@ export type BridgeOriginatedItem = {
   id: string; // Source Tx Hash
   account: string;
   timestamp: number;
-  type: 'send'; // Base type for potential filtering
+  type: 'swap'; // Base type for potential filtering
   from: {
     address: string;
     asset: {
@@ -165,7 +165,7 @@ export default function useSolanaBridgeTransactionMapping(
     ? {
         ...initialNonEvmTransactions,
         transactions: (initialNonEvmTransactions.transactions || []).map(
-          (tx) => ({ ...tx, isBridgeOriginated: false }) as ExtendedTransaction,
+          (tx) => ({ ...tx, isBridgeOriginated: false } as ExtendedTransaction),
         ),
       }
     : { transactions: [], next: null, lastUpdated: Date.now() };
@@ -189,7 +189,7 @@ export default function useSolanaBridgeTransactionMapping(
         if (!existsInOriginalTxList && srcTxHash) {
           const timestampSeconds =
             ((bridgeTx.status?.status === 'COMPLETE'
-              ? (bridgeTx.completionTime ?? bridgeTx.startTime)
+              ? bridgeTx.completionTime ?? bridgeTx.startTime
               : bridgeTx.startTime) ?? Date.now()) / 1000;
 
           const rawChainId = bridgeTx.quote?.srcChainId;
@@ -205,7 +205,7 @@ export default function useSolanaBridgeTransactionMapping(
             id: srcTxHash,
             account: bridgeTx.account,
             timestamp: timestampSeconds,
-            type: 'send',
+            type: 'swap',
             to: [],
             from: [
               {
