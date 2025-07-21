@@ -58,11 +58,15 @@ export async function estimateGasLimitForSend({
   // on a BLOCK is 15,000,000 and will be 30,000,000 on mainnet after London.
   // Meanwhile, MIN_GAS_LIMIT_HEX is 0x5208.
   let blockGasLimit = MIN_GAS_LIMIT_HEX;
-  if (
-    options.blockGasLimit &&
-    new Numeric(options.blockGasLimit, 16).toNumber() <= TEN_MILLION
-  ) {
-    blockGasLimit = options.blockGasLimit;
+  if (options.blockGasLimit) {
+    if (
+      sendToken &&
+      new Numeric(options.blockGasLimit, 16).toNumber() > TEN_MILLION
+    ) {
+      blockGasLimit = GAS_LIMITS.BASE_TOKEN_ESTIMATE;
+    } else {
+      blockGasLimit = options.blockGasLimit;
+    }
   } else if (sendToken) {
     blockGasLimit = GAS_LIMITS.BASE_TOKEN_ESTIMATE;
   }
