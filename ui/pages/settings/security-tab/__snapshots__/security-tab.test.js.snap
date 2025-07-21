@@ -126,7 +126,7 @@ exports[`Security Tab should match snapshot 1`] = `
           >
             <span>
                
-              This feature alerts you to malicious activity by actively reviewing transaction and signature requests. 
+              This feature alerts you to malicious or unusual activity by actively reviewing transaction and signature requests. 
               <a
                 href="https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/"
                 rel="noreferrer"
@@ -740,7 +740,7 @@ exports[`Security Tab should match snapshot 1`] = `
           >
             <span>
                
-              Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. 
+              Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome. 
               <a
                 href="https://support.metamask.io/transactions-and-gas/transactions/simulations/"
                 rel="noreferrer"

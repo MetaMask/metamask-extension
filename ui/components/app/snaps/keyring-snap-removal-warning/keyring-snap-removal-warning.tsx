@@ -25,7 +25,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import InfoTooltip from '../../../ui/info-tooltip';
-import { getCurrentChainId } from '../../../../selectors';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import { KeyringAccountListItem } from './keyring-account-list-item';
 
 export default function KeyringRemovalSnapWarning({

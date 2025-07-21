@@ -8,7 +8,7 @@ import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
   mockSignatureRejected,
-  withRedesignConfirmationFixtures,
+  withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import {
@@ -25,7 +25,7 @@ import {
 
 describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite) {
   it('initiates and confirms', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({
@@ -43,17 +43,18 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
-        await assertAccountDetailsMetrics(
-          driver,
-          mockedEndpoints as MockedEndpoint[],
-          'personal_sign',
-        );
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await assertInfoValues(driver);
 
         await driver.clickElement('[data-testid="confirm-footer-button"]');
 
         await assertVerifiedPersonalMessage(driver, publicAddress);
+
+        await assertAccountDetailsMetrics(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+          'personal_sign',
+        );
         await assertSignatureConfirmedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
@@ -65,7 +66,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
   });
 
   it('initiates and rejects', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({

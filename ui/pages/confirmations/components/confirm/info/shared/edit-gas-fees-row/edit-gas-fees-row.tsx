@@ -5,6 +5,7 @@ import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Box, Text } from '../../../../../../../components/component-library';
+import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   AlignItems,
   Display,
@@ -20,11 +21,13 @@ import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 
 export const EditGasFeesRow = ({
   fiatFee,
+  fiatFeeWith18SignificantDigits,
   nativeFee,
   supportsEIP1559,
   setShowCustomizeGasPopover,
 }: {
   fiatFee: string;
+  fiatFeeWith18SignificantDigits: string | null;
   nativeFee: string;
   supportsEIP1559: boolean;
   setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
@@ -62,7 +65,18 @@ export const EditGasFeesRow = ({
         >
           {nativeFee}
         </Text>
-        {(!isTestnet || showFiatInTestnets) && (
+        {(!isTestnet || showFiatInTestnets) &&
+        fiatFeeWith18SignificantDigits ? (
+          <Tooltip title={fiatFeeWith18SignificantDigits}>
+            <Text
+              marginRight={2}
+              color={TextColor.textAlternative}
+              data-testid="native-currency"
+            >
+              {fiatFee}
+            </Text>
+          </Tooltip>
+        ) : (
           <Text
             marginRight={2}
             color={TextColor.textAlternative}

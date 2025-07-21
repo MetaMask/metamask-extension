@@ -1,6 +1,12 @@
-import { CaipNamespace, KnownCaipNamespace } from '@metamask/utils';
+import {
+  CaipNamespace,
+  isCaipChainId,
+  KnownCaipNamespace,
+  parseCaipChainId,
+} from '@metamask/utils';
 import { validate, Network } from 'bitcoin-address-validation';
 import { isAddress } from '@solana/addresses';
+import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 
 /**
  * Returns whether an address is on the Bitcoin mainnet.
@@ -58,4 +64,22 @@ export function getCaipNamespaceFromAddress(address: string): CaipNamespace {
 
   // Defaults to "Ethereum" for all other cases for now.
   return KnownCaipNamespace.Eip155;
+}
+
+export function isCurrentChainCompatibleWithAccount(
+  chainId: string,
+  account: InternalAccount,
+): boolean {
+  if (!chainId) {
+    return false;
+  }
+
+  if (isCaipChainId(chainId)) {
+    const { namespace } = parseCaipChainId(chainId);
+    return namespace === getCaipNamespaceFromAddress(account.address);
+  }
+
+  // For EVM accounts, we do not check the chain ID format, but we just expect it
+  // to be defined.
+  return isEvmAccountType(account.type);
 }

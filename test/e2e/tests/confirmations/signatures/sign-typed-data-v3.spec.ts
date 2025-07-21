@@ -9,7 +9,7 @@ import {
   mockSignatureApproved,
   mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
-  withRedesignConfirmationFixtures,
+  withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import {
@@ -26,7 +26,7 @@ import {
 
 describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: Suite) {
   it('initiates and confirms', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({
@@ -47,15 +47,17 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.delay(1000);
+
+        await assertInfoValues(driver);
+        await scrollAndConfirmAndAssertConfirm(driver);
+
         await assertAccountDetailsMetrics(
           driver,
           mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData_v3',
         );
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await assertInfoValues(driver);
-        await scrollAndConfirmAndAssertConfirm(driver);
         await assertSignatureConfirmedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
@@ -68,7 +70,7 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
   });
 
   it('initiates and rejects', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({

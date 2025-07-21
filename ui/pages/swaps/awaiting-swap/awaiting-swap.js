@@ -12,9 +12,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
   getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
   getUSDConversionRate,

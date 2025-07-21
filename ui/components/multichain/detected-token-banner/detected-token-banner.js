@@ -6,7 +6,12 @@ import classNames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../shared/modules/selectors/networks';
+import {
   getDetectedTokensInCurrentNetwork,
+  getAllDetectedTokensForSelectedAddress,
+  getPreferences,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -23,13 +28,39 @@ export const DetectedTokensBanner = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+
+  const allOpts = {};
+  Object.keys(allNetworks || {}).forEach((chainId) => {
+    allOpts[chainId] = true;
+  });
+
+  const allNetworksFilterShown =
+    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(allOpts || {}).length;
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
-  const detectedTokensDetails = detectedTokens.map(
-    ({ address, symbol }) => `${symbol} - ${address}`,
-  );
 
+  const detectedTokensMultichain = useSelector(
+    getAllDetectedTokensForSelectedAddress,
+  );
   const chainId = useSelector(getCurrentChainId);
+
+  const detectedTokensDetails =
+    process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
+      ? Object.values(detectedTokensMultichain)
+          .flat()
+          .map(({ address, symbol }) => `${symbol} - ${address}`)
+      : detectedTokens.map(({ address, symbol }) => `${symbol} - ${address}`);
+
+  const totalTokens =
+    process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
+      ? Object.values(detectedTokensMultichain).reduce(
+          (count, tokenArray) => count + tokenArray.length,
+          0,
+        )
+      : detectedTokens.length;
 
   const handleOnClick = () => {
     actionButtonOnClick();
@@ -51,9 +82,9 @@ export const DetectedTokensBanner = ({
       data-testid="detected-token-banner"
       {...props}
     >
-      {detectedTokens.length === 1
+      {totalTokens === 1
         ? t('numberOfNewTokensDetectedSingular')
-        : t('numberOfNewTokensDetectedPlural', [detectedTokens.length])}
+        : t('numberOfNewTokensDetectedPlural', [totalTokens])}
     </BannerAlert>
   );
 };

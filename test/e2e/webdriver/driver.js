@@ -768,6 +768,29 @@ class Driver {
   }
 
   /**
+   * Waits for a condition to be met within a given timeout period.
+   *
+   * @param {Function} condition - The condition to wait for. This function should return a boolean indicating whether the condition is met.
+   * @param {object} options - Options for the wait.
+   * @param {number} options.timeout - The maximum amount of time (in milliseconds) to wait for the condition to be met.
+   * @param {number} options.interval - The interval (in milliseconds) between checks for the condition.
+   * @returns {Promise<void>} A promise that resolves when the condition is met or the timeout is reached.
+   * @throws {Error} Throws an error if the condition is not met within the timeout period.
+   */
+  async waitUntil(condition, options) {
+    const { timeout, interval } = options;
+    const endTime = Date.now() + timeout;
+
+    while (Date.now() < endTime) {
+      if (await condition()) {
+        return true;
+      }
+      await new Promise((resolve) => setTimeout(resolve, interval));
+    }
+    throw new Error('Condition not met within timeout');
+  }
+
+  /**
    * Checks if an element that matches the given locator is present on the page.
    *
    * @param {string | object} rawLocator - Element locator
@@ -1311,7 +1334,23 @@ class Driver {
 
   #getErrorFromEvent(event) {
     // Extract the values from the array
-    const values = event.args.map((a) => a.value);
+    const values = event.args.map((a) => {
+      // Handle snaps error type
+      if (a && a.preview && Array.isArray(a.preview.properties)) {
+        return a.preview.properties
+          .filter((prop) => prop.value !== 'Object')
+          .map((prop) => prop.value)
+          .join(', ');
+      } else if (a.description) {
+        // Handle RPC error type
+        return a.description;
+      } else if (a.value) {
+        // Handle generic error types
+        return a.value;
+      }
+      // Fallback for other error structures
+      return JSON.stringify(a, null, 2);
+    });
 
     if (values[0]?.includes('%s')) {
       // The values are in the "printf" form of [message, ...substitutions]

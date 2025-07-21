@@ -18,7 +18,7 @@ const render = (props: AccountOverviewUnknownProps) => {
 describe('AccountOverviewUnknown', () => {
   it('shows only the activity tab', () => {
     const { queryByTestId } = render({
-      defaultHomeActiveTabName: '',
+      defaultHomeActiveTabName: null,
       onTabClick: jest.fn(),
       setBasicFunctionalityModalOpen: jest.fn(),
       onSupportLinkClick: jest.fn(),

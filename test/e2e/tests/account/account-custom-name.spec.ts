@@ -32,7 +32,7 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         // Add new account with custom label and verify new added account label
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.addNewAccountWithCustomLabel(anotherAccountLabel);
+        await accountListPage.addNewAccount(anotherAccountLabel);
         await headerNavbar.check_accountLabel(anotherAccountLabel);
 
         // Switch back to the first account and verify first custom account persists

@@ -6,6 +6,7 @@ const {
   unlockWallet,
   withFixtures,
   WINDOW_TITLES,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
@@ -26,6 +27,8 @@ describe('4byte setting', function () {
           smartContract,
         );
         await logInWithBalanceValidation(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // deploy contract
         await openDapp(driver, contractAddress);
@@ -62,6 +65,8 @@ describe('4byte setting', function () {
           smartContract,
         );
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // goes to the settings screen
         await openMenuSafe(driver);

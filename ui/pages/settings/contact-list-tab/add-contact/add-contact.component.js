@@ -12,6 +12,7 @@ import {
 } from '../../../../../shared/modules/hexstring-utils';
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../confirmations/send/send.constants';
 import { DomainInputResolutionCell } from '../../../../components/multichain/pages/send/components';
+import { isDuplicateContact } from '../../../../components/app/contact-list/utils';
 
 export default class AddContact extends PureComponent {
   static contextTypes = {
@@ -19,6 +20,8 @@ export default class AddContact extends PureComponent {
   };
 
   static propTypes = {
+    addressBook: PropTypes.array,
+    internalAccounts: PropTypes.array,
     addToAddressBook: PropTypes.func,
     history: PropTypes.object,
     scanQrCode: PropTypes.func,
@@ -33,7 +36,8 @@ export default class AddContact extends PureComponent {
   state = {
     newName: '',
     selectedAddress: '',
-    error: '',
+    addressInputError: '',
+    nameInputError: '',
     input: '',
   };
 
@@ -69,9 +73,9 @@ export default class AddContact extends PureComponent {
     const validEnsAddress = isValidDomainName(input);
 
     if (!validEnsAddress && !valid) {
-      this.setState({ error: INVALID_RECIPIENT_ADDRESS_ERROR });
+      this.setState({ addressInputError: INVALID_RECIPIENT_ADDRESS_ERROR });
     } else {
-      this.setState({ error: null });
+      this.setState({ addressInputError: null });
     }
   };
 
@@ -100,12 +104,27 @@ export default class AddContact extends PureComponent {
     );
   }
 
+  validateName = (newName) => {
+    const { addressBook, internalAccounts } = this.props;
+    return !isDuplicateContact(addressBook, internalAccounts, newName);
+  };
+
+  handleNameChange = (newName) => {
+    const isValidName = this.validateName(newName);
+
+    this.setState({
+      nameInputError: isValidName ? null : this.context.t('nameAlreadyInUse'),
+    });
+
+    this.setState({ newName });
+  };
+
   render() {
     const { t } = this.context;
     const { history, addToAddressBook, domainError, domainResolutions } =
       this.props;
 
-    const errorToRender = domainError || this.state.error;
+    const addressError = domainError || this.state.addressInputError;
     const newAddress = this.state.selectedAddress || this.state.input;
     const validAddress =
       !isBurnAddress(newAddress) &&
@@ -121,10 +140,12 @@ export default class AddContact extends PureComponent {
             <TextField
               type="text"
               id="nickname"
+              placeholder={this.context.t('addAlias')}
               value={this.state.newName}
-              onChange={(e) => this.setState({ newName: e.target.value })}
+              onChange={(e) => this.handleNameChange(e.target.value)}
               fullWidth
               margin="dense"
+              error={this.state.nameInputError}
             />
           </div>
 
@@ -152,9 +173,9 @@ export default class AddContact extends PureComponent {
                     address={resolvedAddress}
                     domainName={addressBookEntryName ?? domainName}
                     onClick={() => {
+                      this.handleNameChange(domainName);
                       this.setState({
                         input: resolvedAddress,
-                        newName: this.state.newName || domainName,
                       });
                       this.props.resetDomainResolution();
                     }}
@@ -164,9 +185,9 @@ export default class AddContact extends PureComponent {
                 );
               })}
             </div>
-            {errorToRender && (
+            {addressError && (
               <div className="address-book__add-contact__error">
-                {t(errorToRender)}
+                {t(addressError)}
               </div>
             )}
           </div>
@@ -174,7 +195,10 @@ export default class AddContact extends PureComponent {
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
           disabled={Boolean(
-            this.state.error || !validAddress || !this.state.newName.trim(),
+            this.state.addressInputError ||
+              this.state.nameInputError ||
+              !validAddress ||
+              !this.state.newName.trim(),
           )}
           onSubmit={async () => {
             await addToAddressBook(newAddress, this.state.newName);

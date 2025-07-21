@@ -8,6 +8,8 @@ const {
   editGasFeeForm,
   WINDOW_TITLES,
   clickNestedButton,
+  tempToggleSettingRedesignedTransactionConfirmations,
+  veryLargeDelayMs,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
@@ -27,6 +29,8 @@ describe('Transfer custom tokens @no-mmi', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // go to custom tokens view on extension, perform send tokens
         await driver.clickElement({
@@ -115,10 +119,15 @@ describe('Transfer custom tokens @no-mmi', function () {
         );
         await unlockWallet(driver);
 
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         // transfer token from dapp
         await openDapp(driver, contractAddress);
+        await driver.delay(veryLargeDelayMs);
+
         await driver.clickElement({ text: 'Transfer Tokens', tag: 'button' });
-        await switchToNotificationWindow(driver);
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({ text: '1.5 TST', tag: 'h1' });
 
         // edit gas fee
@@ -174,8 +183,11 @@ describe('Transfer custom tokens @no-mmi', function () {
         );
         await unlockWallet(driver);
 
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         // transfer token from dapp
         await openDapp(driver, contractAddress);
+        await driver.delay(veryLargeDelayMs);
         await driver.clickElement({
           text: 'Transfer Tokens Without Gas',
           tag: 'button',

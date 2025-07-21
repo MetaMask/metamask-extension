@@ -1,8 +1,8 @@
 import { shallowEqual, useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import {
   getAllTokens,
-  getCurrentChainId,
   getCurrentCurrency,
   getMetaMaskCachedBalances,
   getTokenExchangeRates,
@@ -22,7 +22,7 @@ import {
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../helpers/utils/util';
-import { useTokenTracker } from './useTokenTracker';
+import { useTokenTracker } from './useTokenBalances';
 
 export const useAccountTotalFiatBalance = (
   account,
@@ -54,10 +54,11 @@ export const useAccountTotalFiatBalance = (
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
 
-  const { loading, tokensWithBalances } = useTokenTracker({
+  const loading = false;
+  const { tokensWithBalances } = useTokenTracker({
+    chainId: currentChainId,
     tokens,
     address: account?.address,
-    includeFailedTokens: true,
     hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
   });
 

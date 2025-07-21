@@ -12,7 +12,6 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-send-state.json';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
-  getCurrentChainId,
   getCurrentCurrency,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
@@ -30,6 +29,7 @@ import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import * as actions from '../../../../store/actions';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import { AssetPickerModal } from './asset-picker-modal';
 import AssetList from './AssetList';
 import { ERC20Asset } from './types';

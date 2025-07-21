@@ -9,7 +9,6 @@ import {
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { SPENDING_CAP_UNLIMITED_MSG } from '../../../../../constants';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { Container } from '../../shared/transaction-data/transaction-data';
@@ -19,30 +18,25 @@ const SpendingCapGroup = ({
   tokenSymbol,
   decimals,
   setIsOpenEditSpendingCapModal,
-  customSpendingCap,
 }: {
   tokenSymbol: string;
   decimals: string;
   setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
-  customSpendingCap: string;
 }) => {
   const t = useI18nContext();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { spendingCap, formattedSpendingCap, value } =
+  const { spendingCap, isUnlimitedSpendingCap, formattedSpendingCap, value } =
     useApproveTokenSimulation(transactionMeta, decimals);
-
-  const spendingCapValue =
-    customSpendingCap === '' ? formattedSpendingCap : customSpendingCap;
 
   const SpendingCapElement = (
     <ConfirmInfoRowText
       text={
-        spendingCap === SPENDING_CAP_UNLIMITED_MSG
+        isUnlimitedSpendingCap
           ? `${t('unlimited')} ${tokenSymbol}`
-          : `${spendingCapValue} ${tokenSymbol}`
+          : `${formattedSpendingCap} ${tokenSymbol}`
       }
       onEditClick={() => setIsOpenEditSpendingCapModal(true)}
       editIconClassName="edit-spending-cap-btn"
@@ -63,8 +57,9 @@ const SpendingCapGroup = ({
         tooltip={t('spendingCapTooltipDesc')}
         data-testid="confirmation__approve-spending-cap-group"
       >
-        {spendingCap === SPENDING_CAP_UNLIMITED_MSG ? (
-          <Tooltip title={formattedSpendingCap}>{SpendingCapElement}</Tooltip>
+        {Boolean(isUnlimitedSpendingCap) ||
+        spendingCap !== formattedSpendingCap ? (
+          <Tooltip title={spendingCap}>{SpendingCapElement}</Tooltip>
         ) : (
           SpendingCapElement
         )}
@@ -95,7 +90,7 @@ export const SpendingCap = ({
     Number(decimals ?? '0'),
   ).toFixed();
 
-  const { pending, spendingCap } = useApproveTokenSimulation(
+  const { pending } = useApproveTokenSimulation(
     transactionMeta,
     decimals || '0',
   );
@@ -114,7 +109,6 @@ export const SpendingCap = ({
         tokenSymbol={tokenSymbol || ''}
         decimals={decimals || '0'}
         setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
-        customSpendingCap={spendingCap}
       />
     </ConfirmInfoSection>
   );

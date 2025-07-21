@@ -17,6 +17,7 @@ describe('<GasFeesRow />', () => {
         label="Some kind of fee"
         tooltipText="Tooltip text"
         fiatFee="$1"
+        fiatFeeWith18SignificantDigits="0.001234"
         nativeFee="0.0001 ETH"
       />,
       mockStore,

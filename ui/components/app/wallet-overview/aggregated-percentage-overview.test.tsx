@@ -9,6 +9,7 @@ import {
   getTokensMarketData,
   getPreferences,
 } from '../../../selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
 
@@ -28,18 +29,23 @@ jest.mock('../../../selectors', () => ({
   getTokensMarketData: jest.fn(),
 }));
 
+jest.mock('../../../../shared/modules/selectors/networks', () => ({
+  getCurrentChainId: jest.fn(),
+}));
+
 jest.mock('../../../hooks/useAccountTotalFiatBalance', () => ({
   useAccountTotalFiatBalance: jest.fn(),
 }));
 
-const mockGetIntlLocale = getIntlLocale as unknown as jest.Mock;
-const mockGetCurrentCurrency = getCurrentCurrency as jest.Mock;
-const mockGetPreferences = getPreferences as jest.Mock;
-const mockGetSelectedAccount = getSelectedAccount as unknown as jest.Mock;
-const mockGetShouldHideZeroBalanceTokens =
-  getShouldHideZeroBalanceTokens as jest.Mock;
-
+const mockGetIntlLocale = jest.mocked(getIntlLocale);
+const mockGetCurrentCurrency = jest.mocked(getCurrentCurrency);
+const mockGetPreferences = jest.mocked(getPreferences);
+const mockGetSelectedAccount = jest.mocked(getSelectedAccount);
+const mockGetShouldHideZeroBalanceTokens = jest.mocked(
+  getShouldHideZeroBalanceTokens,
+);
 const mockGetTokensMarketData = getTokensMarketData as jest.Mock;
+const mockGetCurrentChainId = jest.mocked(getCurrentChainId);
 
 const selectedAccountMock = {
   id: 'd51c0116-de36-4e77-b35b-408d4ea82d01',
@@ -166,7 +172,7 @@ describe('AggregatedPercentageOverview', () => {
     mockGetSelectedAccount.mockReturnValue(selectedAccountMock);
     mockGetShouldHideZeroBalanceTokens.mockReturnValue(false);
     mockGetTokensMarketData.mockReturnValue(marketDataMock);
-
+    mockGetCurrentChainId.mockReturnValue('0x1');
     jest.clearAllMocks();
   });
 

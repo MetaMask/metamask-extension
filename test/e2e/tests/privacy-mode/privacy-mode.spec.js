@@ -18,7 +18,7 @@ describe('Privacy Mode', function () {
       async ({ driver }) => {
         async function checkForHeaderValue(value) {
           const balanceElement = await driver.findElement(
-            '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
+            '[data-testid="account-value-and-suffix"]',
           );
           const surveyText = await balanceElement.getText();
           assert.equal(
@@ -30,7 +30,7 @@ describe('Privacy Mode', function () {
 
         async function checkForTokenValue(value) {
           const balanceElement = await driver.findElement(
-            '[data-testid="multichain-token-list-item-secondary-value"]',
+            '[data-testid="multichain-token-list-item-value"]',
           );
           const surveyText = await balanceElement.getText();
           assert.equal(surveyText, value, `Token balance should be "${value}"`);
@@ -38,7 +38,7 @@ describe('Privacy Mode', function () {
 
         async function checkForPrivacy() {
           await checkForHeaderValue('••••••');
-          await checkForTokenValue('•••••••••');
+          await checkForTokenValue('••••••');
         }
 
         async function checkForNoPrivacy() {
@@ -48,7 +48,7 @@ describe('Privacy Mode', function () {
 
         async function togglePrivacy() {
           const balanceElement = await driver.findElement(
-            '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
+            '[data-testid="account-value-and-suffix"]',
           );
           const initialText = await balanceElement.getText();
 
@@ -81,7 +81,7 @@ describe('Privacy Mode', function () {
 
         async function togglePrivacy() {
           const balanceElement = await driver.findElement(
-            '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
+            '[data-testid="account-value-and-suffix"]',
           );
           const initialText = await balanceElement.getText();
 

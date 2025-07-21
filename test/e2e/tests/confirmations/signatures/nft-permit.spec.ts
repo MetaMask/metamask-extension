@@ -9,7 +9,7 @@ import {
   mockSignatureApproved,
   mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
-  withRedesignConfirmationFixtures,
+  withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import {
@@ -26,7 +26,7 @@ import {
 
 describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({
@@ -77,7 +77,7 @@ describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
   });
 
   it('initiates and rejects and emits the correct events', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({

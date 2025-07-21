@@ -34,6 +34,7 @@ import { useSimulationMetrics } from './useSimulationMetrics';
 export type SimulationDetailsProps = {
   enableMetrics?: boolean;
   isTransactionsRedesign?: boolean;
+  metricsOnly?: boolean;
   transaction: TransactionMeta;
 };
 
@@ -109,10 +110,7 @@ const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
         paddingLeft: 0,
         paddingRight: 0,
       }}
-    >
-      {/* Intentional fragment */}
-      <></>
-    </ConfirmInfoAlertRow>
+    />
   );
 };
 
@@ -225,11 +223,13 @@ const SimulationDetailsLayout: React.FC<{
  * @param props.enableMetrics - Whether to enable simulation metrics.
  * @param props.isTransactionsRedesign - Whether or not the component is being
  * used inside the transaction redesign flow.
+ * @param props.metricsOnly - Whether to only track metrics and not render the UI.
  */
 export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   transaction,
   enableMetrics = false,
   isTransactionsRedesign = false,
+  metricsOnly = false,
 }: SimulationDetailsProps) => {
   const t = useI18nContext();
   const { chainId, id: transactionId, simulationData } = transaction;
@@ -243,6 +243,10 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     simulationData,
     transactionId,
   });
+
+  if (metricsOnly) {
+    return null;
+  }
 
   if (loading) {
     return (

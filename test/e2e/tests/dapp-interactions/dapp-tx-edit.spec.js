@@ -4,6 +4,7 @@ const {
   openDapp,
   WINDOW_TITLES,
   withFixtures,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
@@ -26,6 +27,8 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
           smartContract,
         );
         await logInWithBalanceValidation(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // deploy contract
         await openDapp(driver, contractAddress);
@@ -58,6 +61,8 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
       },
       async ({ driver }) => {
         await logInWithBalanceValidation(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         await openDapp(driver);
         await driver.clickElement('#sendButton');

@@ -19,8 +19,8 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
+import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
   getIpfsGateway,
   getSelectedInternalAccount,
   getCurrentNetwork,
@@ -279,7 +279,9 @@ export default function NftsItems({
                 if (isModal) {
                   return onSendNft(nft);
                 }
-                return history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
+                return history.push(
+                  `${ASSET_ROUTE}/${currentChain.chainId}/${address}/${tokenId}`,
+                );
               };
               return (
                 <Box

@@ -4,8 +4,8 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { CaveatTypes } from '../../shared/constants/permissions';
 // eslint-disable-next-line import/no-restricted-paths
 import { PermissionNames } from '../../app/scripts/controllers/permissions';
+import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { getApprovalRequestsByType } from './approvals';
-import { createDeepEqualSelector } from './util';
 import {
   getInternalAccount,
   getMetaMaskAccountsOrdered,

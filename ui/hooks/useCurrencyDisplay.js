@@ -62,7 +62,8 @@ function formatEthCurrencyDisplay({
   return null;
 }
 
-function formatBtcCurrencyDisplay({
+function formatNonEvmAssetCurrencyDisplay({
+  tokenSymbol,
   isNativeCurrency,
   isUserPreferredCurrency,
   currency,
@@ -77,7 +78,7 @@ function formatBtcCurrencyDisplay({
     // We use `Numeric` here, so we handle those amount the same way than for EVMs (it's worth
     // noting that if `inputValue` is not properly defined, the amount will be set to '0', see
     // `Numeric` constructor for that)
-    return new Numeric(inputValue, 10).toString(); // BTC usually uses 10 digits
+    return new Numeric(inputValue, 10).toString();
   } else if (isUserPreferredCurrency && conversionRate) {
     const amount =
       getTokenFiatAmount(
@@ -85,7 +86,7 @@ function formatBtcCurrencyDisplay({
         Number(conversionRate), // native to fiat conversion rate
         currentCurrency,
         inputValue,
-        'BTC',
+        tokenSymbol,
         false,
         false,
       ) ?? '0'; // if the conversion fails, return 0
@@ -162,8 +163,8 @@ export function useCurrencyDisplay(
     }
 
     if (!isEvm) {
-      // TODO: We would need to update this for other non-EVM coins
-      return formatBtcCurrencyDisplay({
+      return formatNonEvmAssetCurrencyDisplay({
+        tokenSymbol: nativeCurrency,
         isNativeCurrency,
         isUserPreferredCurrency,
         currency,

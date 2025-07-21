@@ -11,6 +11,17 @@ jest.mock('../hooks/useDecodedTransactionData', () => ({
   useDecodedTransactionData: jest.fn(),
 }));
 
+jest.mock(
+  '../../../../../../components/app/alert-system/contexts/alertMetricsContext.tsx',
+  () => ({
+    useAlertMetrics: jest.fn(() => ({
+      trackInlineAlertClicked: jest.fn(),
+      trackAlertRender: jest.fn(),
+      trackAlertActionClicked: jest.fn(),
+    })),
+  }),
+);
+
 describe('<TransactionFlowSection />', () => {
   const useDecodedTransactionDataMock = jest.fn().mockImplementation(() => ({
     pending: false,

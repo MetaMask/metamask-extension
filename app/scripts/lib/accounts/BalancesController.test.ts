@@ -6,6 +6,7 @@ import {
   InternalAccount,
 } from '@metamask/keyring-api';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   BalancesController,
   AllowedActions,
@@ -24,6 +25,9 @@ const mockBtcAccount = createMockInternalAccount({
     id: 'mock-btc-snap',
     name: 'mock-btc-snap',
     enabled: true,
+  },
+  options: {
+    scope: MultichainNetworks.BITCOIN_TESTNET,
   },
 });
 

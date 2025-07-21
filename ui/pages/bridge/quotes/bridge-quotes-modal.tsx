@@ -1,11 +1,9 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { IconName } from '@metamask/snaps-sdk/jsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { startCase } from 'lodash';
 import {
-  Box,
-  Button,
-  ButtonVariant,
-  Icon,
+  ButtonLink,
   IconSize,
   Modal,
   ModalContent,
@@ -14,51 +12,198 @@ import {
   Text,
 } from '../../../components/component-library';
 import {
+  AlignItems,
+  BackgroundColor,
   TextAlign,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
-import { getQuoteDisplayData } from '../utils/quote';
+import {
+  formatEtaInMinutes,
+  formatFiatAmount,
+  formatTokenAmount,
+} from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentCurrency } from '../../../selectors';
+import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
+import { SortOrder } from '../types';
+import {
+  getBridgeQuotes,
+  getBridgeSortOrder,
+} from '../../../ducks/bridge/selectors';
+import { Column, Row } from '../layout';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 
 export const BridgeQuotesModal = ({
   onClose,
   ...modalProps
 }: Omit<React.ComponentProps<typeof Modal>, 'children'>) => {
-  const { quotes } = useSelector(getBridgeQuotes);
   const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const { sortedQuotes, activeQuote } = useSelector(getBridgeQuotes);
+  const sortOrder = useSelector(getBridgeSortOrder);
+  const currency = useSelector(getCurrentCurrency);
+  const nativeCurrency = useSelector(getNativeCurrency);
 
   return (
     <Modal className="quotes-modal" onClose={onClose} {...modalProps}>
       <ModalOverlay />
-      <ModalContent modalDialogProps={{ padding: 0 }}>
-        <ModalHeader onClose={onClose}>
+
+      <ModalContent
+        modalDialogProps={{
+          padding: 0,
+        }}
+      >
+        <ModalHeader onBack={onClose}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
             {t('swapSelectAQuote')}
           </Text>
         </ModalHeader>
 
-        <Box className="quotes-modal__column-header">
-          {[t('bridgeOverallCost'), t('time')].map((label) => {
+        {/* HEADERS */}
+        <Row padding={[4, 3]} paddingBottom={1}>
+          {[
+            [SortOrder.COST_ASC, t('bridgeNetCost'), IconName.Arrow2Up],
+            [SortOrder.ETA_ASC, t('time'), IconName.Arrow2Down],
+          ].map(([sortOrderOption, label, icon]) => (
+            <ButtonLink
+              key={label}
+              onClick={() => dispatch(setSortOrder(sortOrderOption))}
+              startIconName={
+                sortOrder === sortOrderOption && sortOrder === SortOrder.ETA_ASC
+                  ? icon
+                  : undefined
+              }
+              startIconProps={{
+                size: IconSize.Xs,
+              }}
+              endIconName={
+                sortOrder === sortOrderOption &&
+                sortOrder === SortOrder.COST_ASC
+                  ? icon
+                  : undefined
+              }
+              endIconProps={{
+                size: IconSize.Xs,
+              }}
+              color={
+                sortOrder === sortOrderOption
+                  ? TextColor.primaryDefault
+                  : TextColor.textAlternative
+              }
+            >
+              <Text
+                variant={TextVariant.bodySm}
+                color={
+                  sortOrder === sortOrderOption
+                    ? TextColor.primaryDefault
+                    : TextColor.textAlternative
+                }
+              >
+                {label}
+              </Text>
+            </ButtonLink>
+          ))}
+        </Row>
+        {/* QUOTE LIST */}
+        <Column style={{ overflow: 'scroll' }}>
+          {sortedQuotes.map((quote, index) => {
+            const {
+              totalNetworkFee,
+              estimatedProcessingTimeInSeconds,
+              toTokenAmount,
+              cost,
+              quote: { destAsset, bridges, requestId },
+            } = quote;
+            const isQuoteActive = requestId === activeQuote?.quote.requestId;
+
             return (
-              <Button key={label} variant={ButtonVariant.Link}>
-                <Icon name={IconName.Arrow2Down} size={IconSize.Sm} />
-                <Text>{label}</Text>
-              </Button>
+              <Row
+                alignItems={AlignItems.flexStart}
+                key={index}
+                backgroundColor={
+                  isQuoteActive ? BackgroundColor.primaryMuted : undefined
+                }
+                onClick={() => {
+                  dispatch(setSelectedQuote(quote));
+                  onClose();
+                }}
+                paddingInline={4}
+                paddingTop={3}
+                paddingBottom={3}
+                style={{ position: 'relative', height: 78 }}
+              >
+                {isQuoteActive && (
+                  <Column
+                    style={{
+                      position: 'absolute',
+                      left: 4,
+                      top: 4,
+                      height: 70,
+                      width: 4,
+                      borderRadius: 8,
+                    }}
+                    backgroundColor={BackgroundColor.primaryDefault}
+                  />
+                )}
+                <Column>
+                  <Text variant={TextVariant.bodyMd}>
+                    {cost.fiat && formatFiatAmount(cost.fiat, currency, 0)}
+                  </Text>
+                  {[
+                    totalNetworkFee?.fiat
+                      ? t('quotedNetworkFee', [
+                          formatFiatAmount(totalNetworkFee.fiat, currency, 0),
+                        ])
+                      : t('quotedNetworkFee', [
+                          formatTokenAmount(
+                            totalNetworkFee.amount,
+                            nativeCurrency,
+                          ),
+                        ]),
+                    t(
+                      sortOrder === SortOrder.ETA_ASC
+                        ? 'quotedReceivingAmount'
+                        : 'quotedReceiveAmount',
+                      [
+                        formatFiatAmount(toTokenAmount.fiat, currency, 0) ??
+                          formatTokenAmount(
+                            toTokenAmount.amount,
+                            destAsset.symbol,
+                            0,
+                          ),
+                      ],
+                    ),
+                  ]
+                    [sortOrder === SortOrder.ETA_ASC ? 'reverse' : 'slice']()
+                    .map((content) => (
+                      <Text
+                        key={content}
+                        variant={TextVariant.bodyXsMedium}
+                        color={TextColor.textAlternative}
+                      >
+                        {content}
+                      </Text>
+                    ))}
+                </Column>
+                <Column alignItems={AlignItems.flexEnd}>
+                  <Text variant={TextVariant.bodyMd}>
+                    {t('bridgeTimingMinutes', [
+                      formatEtaInMinutes(estimatedProcessingTimeInSeconds),
+                    ])}
+                  </Text>
+                  <Text
+                    variant={TextVariant.bodyXsMedium}
+                    color={TextColor.textAlternative}
+                  >
+                    {startCase(bridges[0])}
+                  </Text>
+                </Column>
+              </Row>
             );
           })}
-        </Box>
-        <Box className="quotes-modal__quotes">
-          {quotes.map((quote, index) => {
-            const { totalFees, etaInMinutes } = getQuoteDisplayData(quote);
-            return (
-              <Box key={index} className="quotes-modal__quotes__row">
-                <Text>{totalFees?.fiat}</Text>
-                <Text>{t('bridgeTimingMinutes', [etaInMinutes])}</Text>
-              </Box>
-            );
-          })}
-        </Box>
+        </Column>
       </ModalContent>
     </Modal>
   );

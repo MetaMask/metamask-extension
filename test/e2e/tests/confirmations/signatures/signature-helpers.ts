@@ -37,6 +37,8 @@ type AssertSignatureMetricsOptions = {
   withAnonEvents?: boolean;
   securityAlertReason?: string;
   securityAlertResponse?: string;
+  decodingChangeTypes?: string[];
+  decodingResponse?: string;
 };
 
 type SignatureEventProperty = {
@@ -49,6 +51,8 @@ type SignatureEventProperty = {
   security_alert_response: string;
   signature_type: string;
   eip712_primary_type?: string;
+  decoding_change_types?: string[];
+  decoding_response?: string;
   ui_customizations?: string[];
   location?: string;
 };
@@ -67,6 +71,8 @@ const signatureAnonProperties = {
  * @param uiCustomizations
  * @param securityAlertReason
  * @param securityAlertResponse
+ * @param decodingChangeTypes
+ * @param decodingResponse
  */
 function getSignatureEventProperty(
   signatureType: string,
@@ -74,6 +80,8 @@ function getSignatureEventProperty(
   uiCustomizations: string[],
   securityAlertReason: string = BlockaidReason.checkingChain,
   securityAlertResponse: string = BlockaidResultType.Loading,
+  decodingChangeTypes?: string[],
+  decodingResponse?: string,
 ): SignatureEventProperty {
   const signatureEventProperty: SignatureEventProperty = {
     account_type: 'MetaMask',
@@ -91,6 +99,10 @@ function getSignatureEventProperty(
     signatureEventProperty.eip712_primary_type = primaryType;
   }
 
+  if (decodingResponse) {
+    signatureEventProperty.decoding_change_types = decodingChangeTypes;
+    signatureEventProperty.decoding_response = decodingResponse;
+  }
   return signatureEventProperty;
 }
 
@@ -123,6 +135,8 @@ export async function assertSignatureConfirmedMetrics({
   withAnonEvents = false,
   securityAlertReason,
   securityAlertResponse,
+  decodingChangeTypes,
+  decodingResponse,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
@@ -131,6 +145,8 @@ export async function assertSignatureConfirmedMetrics({
     uiCustomizations,
     securityAlertReason,
     securityAlertResponse,
+    decodingChangeTypes,
+    decodingResponse,
   );
 
   assertSignatureRequestedMetrics(
@@ -164,6 +180,8 @@ export async function assertSignatureRejectedMetrics({
   withAnonEvents = false,
   securityAlertReason,
   securityAlertResponse,
+  decodingChangeTypes,
+  decodingResponse,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
@@ -172,6 +190,8 @@ export async function assertSignatureRejectedMetrics({
     uiCustomizations,
     securityAlertReason,
     securityAlertResponse,
+    decodingChangeTypes,
+    decodingResponse,
   );
 
   assertSignatureRequestedMetrics(

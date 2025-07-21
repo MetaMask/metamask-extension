@@ -6,8 +6,8 @@ import { mmiActionsFactory } from '../../../store/institutional/institution-back
 ///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
   getHardwareWalletType,
   getAccountTypeForKeyring,
   getPinnedAccountsList,

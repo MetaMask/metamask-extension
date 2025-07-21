@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 import {
   Display,
   FlexDirection,
@@ -13,7 +13,7 @@ import { SnapUIImage } from '../snap-ui-image';
 
 export type SnapUICardProps = {
   image?: string | undefined;
-  title: string;
+  title: string | ReactNode;
   description?: string | undefined;
   value: string;
   extra?: string | undefined;

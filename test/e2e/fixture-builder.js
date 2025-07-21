@@ -89,6 +89,7 @@ function onboardingFixture() {
             order: 'dsc',
             sortCallback: 'stringNumeric',
           },
+          tokenNetworkFilter: {},
           shouldShowAggregatedBalancePopover: true,
         },
         useExternalServices: true,
@@ -126,6 +127,7 @@ function onboardingFixture() {
         },
         showTestNetworks: false,
         smartTransactionsOptInStatus: true,
+        tokenNetworkFilter: {},
       },
       QueuedRequestController: {
         queuedRequestCount: 0,
@@ -664,6 +666,7 @@ class FixtureBuilder {
     return this.withPreferencesController({
       preferences: {
         smartTransactionsOptInStatus: true,
+        tokenNetworkFilter: {},
       },
     });
   }

@@ -7,8 +7,8 @@ import UrlIcon from '../../../../components/ui/url-icon';
 import Button from '../../../../components/ui/button';
 import ActionableMessage from '../../../../components/ui/actionable-message/actionable-message';
 import { I18nContext } from '../../../../contexts/i18n';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
   getRpcPrefsForCurrentProvider,
   getUseCurrencyRateCheck,
 } from '../../../../selectors';

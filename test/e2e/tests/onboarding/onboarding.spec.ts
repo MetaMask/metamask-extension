@@ -41,7 +41,9 @@ describe('MetaMask onboarding @no-mmi', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await completeCreateNewWalletOnboardingFlow(driver);
+        await completeCreateNewWalletOnboardingFlow({
+          driver,
+        });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.check_expectedBalanceIsDisplayed();
@@ -196,7 +198,7 @@ describe('MetaMask onboarding @no-mmi', function () {
 
         // Check the correct balance for the custom network is displayed
         if (secondaryGanacheServer && Array.isArray(secondaryGanacheServer)) {
-          await homePage.check_ganacheBalanceIsDisplayed(
+          await homePage.check_localBlockchainBalanceIsDisplayed(
             secondaryGanacheServer[0],
           );
         } else {

@@ -1,5 +1,5 @@
 import { hasProperty, Hex, isObject, isStrictHexString } from '@metamask/utils';
-import { BN } from 'ethereumjs-util';
+import BN from 'bn.js';
 import { cloneDeep, mapKeys } from 'lodash';
 import log from 'loglevel';
 
@@ -302,6 +302,6 @@ function toHex(value: number | string | BN): Hex {
   }
   const hexString = BN.isBN(value)
     ? value.toString(16)
-    : new BN(value.toString(), 10).toString(16);
+    : new BN(value.toString(10), 10).toString(16);
   return `0x${hexString}`;
 }

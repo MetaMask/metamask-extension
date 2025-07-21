@@ -6,6 +6,7 @@ const {
   unlockWallet,
   generateGanacheOptions,
   WINDOW_TITLES,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -22,6 +23,8 @@ describe('Multiple transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // initiates a transaction from the dapp
         await openDapp(driver);
@@ -84,6 +87,8 @@ describe('Multiple transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // initiates a transaction from the dapp
         await openDapp(driver);

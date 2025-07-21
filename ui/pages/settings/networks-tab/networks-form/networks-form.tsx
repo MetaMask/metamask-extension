@@ -28,7 +28,7 @@ import {
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getNetworkConfigurationsByChainId } from '../../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   addNetwork,
   setEditedNetwork,

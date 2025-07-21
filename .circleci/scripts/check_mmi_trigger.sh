@@ -9,6 +9,12 @@ if [ -z "$CIRCLE_PULL_REQUEST" ] || [ -z "$GITHUB_TOKEN" ]; then
   exit 0
 fi
 
+if [[ $CIRCLE_BRANCH = 'develop' || $CIRCLE_BRANCH = 'master' || $CIRCLE_BRANCH =~ ^Version-v[0-9.]* ]]; then
+  echo "Long-running branch detected, running MMI tests."
+  echo "run_mmi_tests=true" > mmi_trigger.env
+  exit 0
+fi
+
 # Extract PR number from the pull request URL
 PR_NUMBER=$(echo "$CIRCLE_PULL_REQUEST" | awk -F'/' '{print $NF}')
 

@@ -9,7 +9,7 @@ import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
-import { shortenAddress } from '../../../helpers/utils/util';
+import { shortenAddress, shortenString } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -103,6 +103,13 @@ const Name = memo(
     }, [setModalOpen]);
 
     const formattedValue = formatValue(value, type);
+    const MAX_PET_NAME_LENGTH = 12;
+    const formattedName = shortenString(name || undefined, {
+      truncatedCharLimit: MAX_PET_NAME_LENGTH,
+      truncatedStartChars: MAX_PET_NAME_LENGTH,
+      truncatedEndChars: 0,
+      skipCharacterInEnd: true,
+    });
     const hasDisplayName = Boolean(name);
 
     return (
@@ -135,7 +142,7 @@ const Name = memo(
           )}
           {hasDisplayName ? (
             <Text className="name__name" variant={TextVariant.bodyMd}>
-              {name}
+              {formattedName}
             </Text>
           ) : (
             <Text className="name__value" variant={TextVariant.bodyMd}>
