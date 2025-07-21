@@ -1,5 +1,8 @@
 import log from 'loglevel';
-import { getTokenStandardAndDetails } from '../../store/actions';
+import {
+  getTokenStandardAndDetails,
+  getTokenStandardAndDetailsByChain,
+} from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { TokenStandard } from '../../../shared/constants/transaction';
@@ -261,6 +264,7 @@ export async function getAssetDetails(
   currentUserAddress,
   transactionData,
   existingNfts,
+  chainId,
 ) {
   const tokenData = parseStandardTokenTransactionData(transactionData);
   if (!tokenData) {
@@ -296,11 +300,18 @@ export async function getAssetDetails(
   }
 
   try {
-    tokenDetails = await getTokenStandardAndDetails(
-      tokenAddress,
-      currentUserAddress,
-      tokenId,
-    );
+    tokenDetails = chainId
+      ? await getTokenStandardAndDetailsByChain(
+          tokenAddress,
+          currentUserAddress,
+          tokenId,
+          chainId,
+        )
+      : await getTokenStandardAndDetails(
+          tokenAddress,
+          currentUserAddress,
+          tokenId,
+        );
   } catch (error) {
     log.warn(error);
     // if we can't determine any token standard or details return the data we can extract purely from the parsed transaction data
