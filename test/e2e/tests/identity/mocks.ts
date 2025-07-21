@@ -1,6 +1,9 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import {
+  Env,
+  USER_STORAGE_FEATURE_NAMES,
+} from '@metamask/profile-sync-controller/sdk';
 import {
   UserStorageMockttpController,
   UserStorageResponseData,
@@ -12,6 +15,7 @@ type MockResponse = {
   url: string | RegExp;
   requestMethod: 'GET' | 'POST' | 'PUT' | 'DELETE';
   response: unknown;
+  statusCode?: number;
 };
 
 /**
@@ -19,15 +23,18 @@ type MockResponse = {
  *
  * @param server - server obj used to mock our endpoints
  * @param userStorageMockttpControllerInstance - optional instance of UserStorageMockttpController, useful if you need persisted user storage between tests
+ * @param env - optional environment (defaults to Env.DEV)
  */
 export async function mockIdentityServices(
   server: Mockttp,
   userStorageMockttpControllerInstance: UserStorageMockttpController = new UserStorageMockttpController(),
+  env: Env = Env.DEV,
 ) {
   // Auth
-  mockAPICall(server, AuthMocks.getMockAuthNonceResponse());
-  mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
-  mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
+  mockAPICall(server, AuthMocks.getMockAuthNonceResponse(env));
+  mockAPICall(server, AuthMocks.getMockAuthLoginResponse(env));
+  mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse(env));
+  mockAPICall(server, AuthMocks.getMockPairSocialTokenResponse(env));
 
   // Storage
   if (
@@ -114,7 +121,7 @@ function mockAPICall(server: Mockttp, response: MockResponse) {
     )(requestBody, path, getE2ESrpIdentifierForPublicKey);
 
     return {
-      statusCode: 200,
+      statusCode: response.statusCode ?? 200,
       json,
     };
   });
@@ -123,6 +130,7 @@ function mockAPICall(server: Mockttp, response: MockResponse) {
 type MockInfuraAndAccountSyncOptions = {
   accountsToMockBalances?: string[];
   accountsSyncResponse?: UserStorageResponseData[];
+  env?: Env;
 };
 
 const MOCK_ETH_BALANCE = '0xde0b6b3a7640000';
@@ -177,7 +185,11 @@ export async function mockInfuraAndAccountSync(
     });
   }
 
-  mockIdentityServices(mockServer, userStorageMockttpController);
+  await mockIdentityServices(
+    mockServer,
+    userStorageMockttpController,
+    options.env ?? Env.DEV,
+  );
 }
 
 /**
