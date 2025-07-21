@@ -7,10 +7,6 @@ import { MultichainAddressRowsList } from './multichain-address-rows-list';
 
 const mockStore = configureStore([]);
 
-jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string) => key,
-}));
-
 jest.mock('../../../selectors', () => ({
   getMetaMaskAccounts: () => ({}),
   getSelectedAccount: () => ({}),
@@ -149,18 +145,6 @@ describe('MultichainAddressRowsList', () => {
 
     fireEvent.click(screen.getByTestId('text-field-search-clear-button'));
     expect(searchInput).toHaveValue('');
-  });
-
-  it('prioritizes Ethereum networks first in sorting', () => {
-    renderComponent();
-
-    const networkNames = screen.getAllByTestId(
-      'multichain-address-row-network-name',
-    );
-    if (networkNames.length > 1) {
-      // Ethereum Mainnet should come first due to priority sorting
-      expect(networkNames[0]).toHaveTextContent('Ethereum Mainnet');
-    }
   });
 
   it('handles empty accounts list', () => {

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { MultichainAddressRow } from './multichain-address-row';
 
 const meta: Meta<typeof MultichainAddressRow> = {
-  title: 'Components/Multichain/MultichainAddressRow',
+  title: 'Components/MultichainAccounts/MultichainAddressRow',
   component: MultichainAddressRow,
   parameters: {
     docs: {
