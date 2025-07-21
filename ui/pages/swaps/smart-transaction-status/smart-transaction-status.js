@@ -13,6 +13,7 @@ import {
   cancelSwapsSmartTransaction,
   getUsedQuote,
 } from '../../../ducks/swaps/swaps';
+import { formatSwapsValueForDisplay } from '../swaps.util';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   isHardwareWallet,
@@ -132,11 +133,12 @@ export default function SmartTransactionStatusPage() {
 
   let destinationValue;
   if (usedQuote?.destinationAmount) {
-    destinationValue = calcTokenAmount(
+    const rawValue = calcTokenAmount(
       usedQuote?.destinationAmount,
       fetchParamsDestinationTokenInfo.decimals ??
         latestSmartTransaction?.destinationTokenDecimals,
-    ).toPrecision(8);
+    );
+    destinationValue = formatSwapsValueForDisplay(rawValue);
   }
   const trackEvent = useContext(MetaMetricsContext);
 

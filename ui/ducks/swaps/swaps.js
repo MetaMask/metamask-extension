@@ -964,10 +964,13 @@ export const signAndSendSwapsSmartTransaction = ({
     const usedTradeTxParams = usedQuote.trade;
 
     // update stx with data
-    const destinationValue = calcTokenAmount(
+    const rawDestinationValue = calcTokenAmount(
       usedQuote.destinationAmount,
       destinationTokenInfo.decimals || 18,
-    ).toPrecision(8);
+    );
+    const destinationValue = rawDestinationValue.toString().includes('e')
+      ? rawDestinationValue.toFixed()
+      : rawDestinationValue.toPrecision(8);
     const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
     const currentSmartTransactionsEnabled =
       getCurrentSmartTransactionsEnabled(state);
@@ -1213,10 +1216,13 @@ export const signAndSendTransactions = (
 
     const usdConversionRate = getUSDConversionRate(state);
 
-    const destinationValue = calcTokenAmount(
+    const rawDestinationValue = calcTokenAmount(
       usedQuote.destinationAmount,
       destinationTokenInfo.decimals || 18,
-    ).toPrecision(8);
+    );
+    const destinationValue = rawDestinationValue.toString().includes('e')
+      ? rawDestinationValue.toFixed()
+      : rawDestinationValue.toPrecision(8);
 
     const usedGasLimitEstimate =
       usedQuote?.gasEstimateWithRefund ||

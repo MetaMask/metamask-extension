@@ -537,10 +537,12 @@ export function quotesToRenderableData({
       sourceAmount,
       sourceTokenInfo.decimals,
     ).toString(10);
-    const destinationValue = calcTokenAmount(
-      destinationAmount,
-      destinationTokenInfo.decimals,
-    ).toPrecision(8);
+    const destinationValue = formatSwapsValueForDisplay(
+      calcTokenAmount(
+        destinationAmount,
+        destinationTokenInfo.decimals,
+      ),
+    );
 
     let feeInFiat = null;
     let feeInEth = null;
