@@ -1,14 +1,18 @@
-name: "Check PR has required labels"
+name: Check PR has required labels
 on:
   pull_request:
     branches:
-      - develop
+      - main
     types:
       - opened
       - reopened
       - synchronize
       - labeled
       - unlabeled
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/master')) }}
 
 jobs:
   check-pr-labels:
@@ -17,22 +21,14 @@ jobs:
       pull-requests: read
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-            fetch-depth: 1 # This retrieves only the latest commit.
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-
-      - name: Install dependencies
-        run: yarn --immutable
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Check PR has required labels
-        id: check-pr-has-required-labels
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn run check-pr-has-required-labels

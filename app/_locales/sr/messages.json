@@ -75,9 +75,6 @@
   "asset": {
     "message": "Sredstva"
   },
-  "attemptingConnect": {
-    "message": "Pokušava da se poveže na lanac blokova"
-  },
   "attributions": {
     "message": "Atribucije"
   },
@@ -205,9 +202,6 @@
   "delete": {
     "message": "Избриши"
   },
-  "deleteNetwork": {
-    "message": "Da li želite da obrišete mrežu?"
-  },
   "details": {
     "message": "Детаљи"
   },
@@ -229,9 +223,6 @@
   "editContact": {
     "message": "Izmeni kontakt"
   },
-  "ensRegistrationError": {
-    "message": "Greška u registraciji ENS imena."
-  },
   "enterPasswordContinue": {
     "message": "Unesite lozinku kako biste nastavili"
   },
@@ -250,10 +241,6 @@
   "fast": {
     "message": "Брзо"
   },
-  "fiat": {
-    "message": "Dekret",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Uvoz datoteke ne radi? Kliknite ovde!",
     "description": "Helps user import their account from a JSON file"
@@ -264,26 +251,11 @@
   "from": {
     "message": "Od"
   },
-  "functionType": {
-    "message": "Tip funkcije"
-  },
   "gasLimit": {
     "message": "Limit gasa"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Granica gasa je maksimalni iznos jedinica gasa koje ste voljni da potrošite."
-  },
   "gasLimitTooLow": {
     "message": "Limit za gas mora da bude najmanje 21 000"
-  },
-  "gasPrice": {
-    "message": "Cena gasa (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Cena gasa izuzetno niska"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Cena gasa određuje količinu Ethera koju ste spremni da platite za svaku jedinicu gasa."
   },
   "gasUsed": {
     "message": "Korišćen gas"
@@ -326,9 +298,6 @@
     "message": "Uvoz",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Uvezite nalog"
-  },
   "importAccountMsg": {
     "message": "Uvezeni nalozi neće biti povezani sa početnom frazom koju ste prvobitno kreirali za MetaMask nalog. Saznajte više o uvezenim nalozima."
   },
@@ -353,12 +322,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Adresa primaoca nije važeća"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Nije ETH mreža, podešeno na mala slova"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Nevažeći Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Nevažeći RPC URL"
@@ -396,9 +359,6 @@
   },
   "loading": {
     "message": "Учитава се..."
-  },
-  "loadingTokens": {
-    "message": "Učitavanje tokena..."
   },
   "lock": {
     "message": "Odjavi se"
@@ -453,14 +413,8 @@
   "next": {
     "message": "Даље"
   },
-  "noAddressForName": {
-    "message": "Za ovo ime nije podešena adresa."
-  },
   "noConversionRateAvailable": {
     "message": "Nije dostupan kurs za konverziju"
-  },
-  "noTransactions": {
-    "message": "Nemate transakcije"
   },
   "noWebcamFound": {
     "message": "Nije pronađena veb kamera na vašem kompjuteru. Molimo vas pokušajte ponovo."
@@ -485,9 +439,6 @@
   },
   "origin": {
     "message": "Извор"
-  },
-  "parameters": {
-    "message": "Parametri"
   },
   "participateInMetaMetrics": {
     "message": "Učestvujte u MetaMetrics"
@@ -517,12 +468,6 @@
   "prev": {
     "message": "Prethodno"
   },
-  "primaryCurrencySetting": {
-    "message": "Primarna valuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Izaberite primarnu da biste postavili prioritete u prikazivanju vrednosti u primarnoj valuti lanca (npr. ETH). Izaberite Fiat da biste postavili prioritete u prikazivanju vrednosti u vašoj izabranoj fiat valuti."
-  },
   "privacyMsg": {
     "message": "Smernice za privatnost"
   },
@@ -538,9 +483,6 @@
   },
   "readdToken": {
     "message": "U budućnosti možete vratiti ovaj token tako što ćete otvoriti „Dodaj token“ u meniju opcija vašeg naloga."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Pretraga, javna adresa (0x) ili ENS"
   },
   "reject": {
     "message": "Одбиј"
@@ -565,9 +507,6 @@
   },
   "removeAccountDescription": {
     "message": "Uklonićemo ovaj nalog iz vašeg novčanika. Pre nego što nastavite, proverite da li za ovaj uvezeni nalog imate originalnu početnu frazu ili privatni ključ. Ponovo možete da uvezete ili kreirate naloge izborom iz padajućeg menija na nalogu."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "zahtevi koji čekaju da budu potvrđeni"
   },
   "required": {
     "message": "Obavezno"
@@ -621,9 +560,6 @@
   "send": {
     "message": "Пошаљи"
   },
-  "sendTokens": {
-    "message": "Pošalji tokene"
-  },
   "settings": {
     "message": "Podešavanja"
   },
@@ -638,9 +574,6 @@
   },
   "showHexDataDescription": {
     "message": "Izaberite ovo da bi se pokazalo polje sa hex podacima na „Pošalji” ekranu "
-  },
-  "sigRequest": {
-    "message": "Zahtev za potpisom"
   },
   "sign": {
     "message": "Potpišite"
@@ -690,9 +623,6 @@
   "terms": {
     "message": "Uslovi korišćenja"
   },
-  "tips": {
-    "message": "Donacije"
-  },
   "to": {
     "message": "Za"
   },
@@ -735,9 +665,6 @@
   "transactionErrored": {
     "message": "Transakcija je naišla na grešku"
   },
-  "transactionFee": {
-    "message": "Provizija"
-  },
   "transactionResubmitted": {
     "message": "Transakcija je ponovo prosleđena sa naknadom za gas povećanom sa $1 na $2"
   },
@@ -765,20 +692,11 @@
   "unknown": {
     "message": "Непознато"
   },
-  "unknownNetwork": {
-    "message": "Nepoznata privatna mreža"
-  },
   "unknownQrCode": {
     "message": "Greška: nismo uspeli da identifikujemo taj QR kod"
   },
   "unlock": {
     "message": "Откључај"
-  },
-  "unlockMessage": {
-    "message": "Decentralizovani veb čeka"
-  },
-  "updatedWithDate": {
-    "message": "Ažuriran $1"
   },
   "urlErrorMsg": {
     "message": "URI-ovi zahtevaju odgovarajući prefiks HTTP / HTTPS."
@@ -801,13 +719,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Za upotrebu ove funkcije morate omogućiti pristup kameri."
   },
-  "youSign": {
-    "message": "Vi potpisujete"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Vaša privatna šifra za oporavak naloga (seed phrase)"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nulta cena gasa ubrzava"
   }
 }

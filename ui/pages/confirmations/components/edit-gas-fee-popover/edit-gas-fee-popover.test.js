@@ -1,6 +1,6 @@
 import React from 'react';
 import { act, screen } from '@testing-library/react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 
 import {
   TransactionStatus,
@@ -11,11 +11,9 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 
-import {
-  NETWORK_TYPES,
-  CHAIN_IDS,
-  GOERLI_DISPLAY_NAME,
-} from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import EditGasFeePopover from './edit-gas-fee-popover';
 
 jest.mock('../../../../store/actions', () => ({
@@ -66,20 +64,7 @@ const render = async ({ txProps, contextProps } = {}) => {
   const store = configureStore({
     metamask: {
       currencyRates: {},
-      providerConfig: {
-        chainId: CHAIN_IDS.GOERLI,
-        nickname: GOERLI_DISPLAY_NAME,
-        type: NETWORK_TYPES.GOERLI,
-      },
-      selectedNetworkClientId: 'goerli',
-      networksMetadata: {
-        goerli: {
-          EIPS: {
-            1559: true,
-          },
-          status: 'available',
-        },
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI, ticker: 'ETH' }),
       accountsByChainId: {
         [CHAIN_IDS.GOERLI]: {
           '0xAddress': { address: '0xAddress', balance: '0x1F4' },
@@ -90,9 +75,6 @@ const render = async ({ txProps, contextProps } = {}) => {
           address: '0xAddress',
           balance: '0x1F4',
         },
-      },
-      identities: {
-        '0xAddress': {},
       },
       internalAccounts: {
         accounts: {
@@ -106,13 +88,12 @@ const render = async ({ txProps, contextProps } = {}) => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
-      selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
       gasFeeEstimatesByChainId: {

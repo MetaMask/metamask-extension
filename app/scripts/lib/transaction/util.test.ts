@@ -1,4 +1,4 @@
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { TransactionParams } from '@metamask/eth-json-rpc-middleware';
 import {
   TransactionController,
@@ -7,8 +7,16 @@ import {
 } from '@metamask/transaction-controller';
 import { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep } from 'lodash';
-import { PPOMController } from '@metamask/ppom-validator';
-import { normalizePPOMRequest } from '../ppom/ppom-util';
+import {
+  generateSecurityAlertId,
+  validateRequestWithPPOM,
+} from '../ppom/ppom-util';
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../shared/constants/security-provider';
+import { flushPromises } from '../../../../test/lib/timer-helpers';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
@@ -28,12 +36,20 @@ jest.mock('uuid', () => {
   };
 });
 
+const SECURITY_ALERT_ID_MOCK = '123';
+
+const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
+const INTERNAL_ACCOUNT = createMockInternalAccount({
+  address: INTERNAL_ACCOUNT_ADDRESS,
+});
+
 const TRANSACTION_PARAMS_MOCK: TransactionParams = {
   from: '0x1',
 };
 
 const TRANSACTION_OPTIONS_MOCK: AddTransactionOptions = {
   actionId: 'mockActionId',
+  networkClientId: 'mockNetworkClientId',
   origin: 'mockOrigin',
   requireApproval: false,
   type: TransactionType.simpleSend,
@@ -59,7 +75,8 @@ const TRANSACTION_REQUEST_MOCK: AddTransactionRequest = {
   transactionParams: TRANSACTION_PARAMS_MOCK,
   transactionOptions: TRANSACTION_OPTIONS_MOCK,
   waitForSubmit: false,
-} as AddTransactionRequest;
+  internalAccounts: [],
+} as unknown as AddTransactionRequest;
 
 function createTransactionControllerMock() {
   return {
@@ -75,30 +92,13 @@ function createUserOperationControllerMock() {
   } as unknown as jest.Mocked<UserOperationController>;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-function createPPOMControllerMock() {
-  return {
-    usePPOM: jest.fn().mockResolvedValue({
-      reason: 'testReason',
-      result_type: 'testResultType',
-    }),
-  } as unknown as jest.Mocked<PPOMController>;
-}
-///: END:ONLY_INCLUDE_IF
-
-async function flushPromises() {
-  return new Promise((resolve) => setImmediate(resolve));
-}
-
 describe('Transaction Utils', () => {
-  const normalizePPOMRequestMock = jest.mocked(normalizePPOMRequest);
   let request: AddTransactionRequest;
   let dappRequest: AddDappTransactionRequest;
   let transactionController: jest.Mocked<TransactionController>;
   let userOperationController: jest.Mocked<UserOperationController>;
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  let ppomController: jest.Mocked<PPOMController>;
-  ///: END:ONLY_INCLUDE_IF
+  const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
+  const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -106,10 +106,10 @@ describe('Transaction Utils', () => {
     request = cloneDeep(TRANSACTION_REQUEST_MOCK);
     transactionController = createTransactionControllerMock();
     userOperationController = createUserOperationControllerMock();
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    ppomController = createPPOMControllerMock();
-    request.ppomController = ppomController;
-    ///: END:ONLY_INCLUDE_IF
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    request.ppomController = {} as any;
 
     transactionController.addTransaction.mockResolvedValue({
       result: Promise.resolve('testHash'),
@@ -124,8 +124,11 @@ describe('Transaction Utils', () => {
       transactionHash: jest.fn().mockResolvedValue(TRANSACTION_META_MOCK.hash),
     });
 
+    generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
+
     request.transactionController = transactionController;
     request.userOperationController = userOperationController;
+    request.updateSecurityAlertResponse = jest.fn();
 
     dappRequest = {
       ...request,
@@ -146,23 +149,6 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
         });
-      });
-
-      it('adds transaction with networkClientId if process.env.TRANSACTION_MULTICHAIN is set', async () => {
-        process.env.TRANSACTION_MULTICHAIN = '1';
-
-        await addTransaction(request);
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-          networkClientId: 'mockNetworkClientId',
-        });
-        process.env.TRANSACTION_MULTICHAIN = '';
       });
 
       it('returns transaction meta', async () => {
@@ -395,8 +381,8 @@ describe('Transaction Utils', () => {
       });
     });
 
-    describe('when blockaid is enabled', () => {
-      it('validates if blockaid is enabled and chain id is supported', async () => {
+    describe('validates using security provider', () => {
+      it('adds loading response to request options', async () => {
         await addTransaction({
           ...request,
           securityAlertsEnabled: true,
@@ -406,50 +392,75 @@ describe('Transaction Utils', () => {
         expect(
           request.transactionController.addTransaction,
         ).toHaveBeenCalledTimes(1);
+
         expect(
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
           securityAlertResponse: {
-            reason: 'loading',
-            result_type: 'validation_in_progress',
+            reason: BlockaidReason.inProgress,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            result_type: BlockaidResultType.Loading,
+            securityAlertId: SECURITY_ALERT_ID_MOCK,
           },
         });
-
-        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(1);
-        expect(request.ppomController.usePPOM).toHaveBeenCalledWith(
-          expect.any(Function),
-        );
-        expect(request.ppomController.usePPOM).toHaveReturnedWith(
-          Promise.resolve({
-            reason: 'testReason',
-            result_type: 'testResultType',
-          }),
-        );
       });
 
-      it('does not validate if blockaid is enabled and chain id is not supported', async () => {
+      it('unless blockaid is disabled', async () => {
         await addTransaction({
           ...request,
-          securityAlertsEnabled: true,
-          chainId: '0xF',
+          securityAlertsEnabled: false,
+          chainId: '0x1',
         });
 
         expect(
           request.transactionController.addTransaction,
         ).toHaveBeenCalledTimes(1);
+
         expect(
           request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-        });
+        ).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          TRANSACTION_OPTIONS_MOCK,
+        );
 
-        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
 
-      it('does not validate if blockaid is enabled and chain id is supported, but transaction type is swap', async () => {
+      it('send to users own account', async () => {
+        const sendRequest = {
+          ...request,
+          transactionParams: {
+            ...request.transactionParams,
+            to: INTERNAL_ACCOUNT_ADDRESS,
+          },
+        };
+        await addTransaction({
+          ...sendRequest,
+          securityAlertsEnabled: false,
+          chainId: '0x1',
+          internalAccounts: [INTERNAL_ACCOUNT],
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(
+          sendRequest.transactionParams,
+          TRANSACTION_OPTIONS_MOCK,
+        );
+
+        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
+      });
+
+      it('unless transaction type is swap', async () => {
         const swapRequest = { ...request };
         swapRequest.transactionOptions.type = TransactionType.swap;
+
         await addTransaction({
           ...swapRequest,
           securityAlertsEnabled: true,
@@ -459,6 +470,7 @@ describe('Transaction Utils', () => {
         expect(
           request.transactionController.addTransaction,
         ).toHaveBeenCalledTimes(1);
+
         expect(
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
@@ -466,12 +478,13 @@ describe('Transaction Utils', () => {
           type: TransactionType.swap,
         });
 
-        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
 
-      it('does not validate if blockaid is enabled and chain id is supported, but transaction type is swapApproval', async () => {
+      it('unless transaction type is swapApproval', async () => {
         const swapRequest = { ...request };
         swapRequest.transactionOptions.type = TransactionType.swapApproval;
+
         await addTransaction({
           ...swapRequest,
           securityAlertsEnabled: true,
@@ -481,6 +494,7 @@ describe('Transaction Utils', () => {
         expect(
           request.transactionController.addTransaction,
         ).toHaveBeenCalledTimes(1);
+
         expect(
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
@@ -488,82 +502,7 @@ describe('Transaction Utils', () => {
           type: TransactionType.swapApproval,
         });
 
-        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
-      });
-
-      it('normalizes transaction requests before validation', async () => {
-        const ppomRequestMock = {
-          method: 'eth_sendTransaction',
-          id: 'mockActionId',
-          origin: 'mockOrigin',
-          params: [TRANSACTION_PARAMS_MOCK],
-        };
-
-        const ppomRequestNormalizedMock = {
-          ...ppomRequestMock,
-          id: 'mockActionId2',
-          origin: 'mockOrigin2',
-        };
-
-        const validateMock = jest.fn();
-
-        const ppomMock = {
-          validateJsonRpc: validateMock,
-        };
-
-        normalizePPOMRequestMock.mockReturnValue(ppomRequestNormalizedMock);
-
-        request.securityAlertsEnabled = true;
-        request.chainId = '0x1';
-        request.ppomController.usePPOM = (callback: any) => callback(ppomMock);
-
-        await addTransaction(request);
-
-        expect(validateMock).toHaveBeenCalledTimes(1);
-        expect(validateMock).toHaveBeenCalledWith(ppomRequestNormalizedMock);
-
-        expect(normalizePPOMRequest).toHaveBeenCalledTimes(1);
-        expect(normalizePPOMRequest).toHaveBeenCalledWith(ppomRequestMock);
-      });
-    });
-
-    describe('when blockaid is disabled', () => {
-      it('does not validate if blockaid is disabled and chain id is supported', async () => {
-        await addTransaction({
-          ...request,
-          securityAlertsEnabled: false,
-          chainId: '0x1',
-        });
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-        });
-
-        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
-      });
-
-      it('does not validate if blockaid is disabled and chain id is not supported', async () => {
-        await addTransaction({
-          ...request,
-          securityAlertsEnabled: false,
-          chainId: '0xF',
-        });
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-        });
-
-        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
     });
   });
@@ -585,27 +524,6 @@ describe('Transaction Utils', () => {
           securityAlertResponse: DAPP_REQUEST_MOCK.securityAlertResponse,
           type: undefined,
         });
-      });
-
-      it('adds transaction with networkClientId if process.env.TRANSACTION_MULTICHAIN is set', async () => {
-        process.env.TRANSACTION_MULTICHAIN = '1';
-
-        await addDappTransaction(dappRequest);
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-          networkClientId: 'mockNetworkClientId',
-          method: DAPP_REQUEST_MOCK.method,
-          requireApproval: true,
-          securityAlertResponse: DAPP_REQUEST_MOCK.securityAlertResponse,
-          type: undefined,
-        });
-        process.env.TRANSACTION_MULTICHAIN = '';
       });
 
       it('returns transaction hash', async () => {

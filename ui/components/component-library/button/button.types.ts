@@ -38,9 +38,13 @@ type ButtonPropsMap = {
   [variant in ButtonVariant]: ButtonPropsByVariant[variant];
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ButtonProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, ButtonPropsMap[ButtonVariant]>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ButtonComponent = <C extends React.ElementType = 'button' | 'a'>(
   props: ButtonProps<C>,
 ) => React.ReactElement | null;

@@ -6,8 +6,6 @@
 
     <% if (it.isTest) { %>
     <title>MetaMask Dialog</title>
-    <% } else if (it.isMMI) { %>
-    <title>MetaMask Institutional</title>
     <% } else { %>
     <title>MetaMask</title>
     <% } %>
@@ -32,7 +30,8 @@
         margin-top: 1rem;
       }
     </style>
-    <link rel="stylesheet" type="text/css" href="./index.css" />
+    <link rel="preload" href="/_locales/en/messages.json" as="fetch" crossorigin="anonymous" />
+    <link rel="stylesheet" href="../ui/css/index.scss" />
   </head>
   <body class="notification">
     <div id="app-content">
@@ -50,11 +49,6 @@
       />
     </div>
     <div id="popover-content"></div>
-    <script
-      src="./load-app.js"
-      type="text/javascript"
-      charset="utf-8"
-      async
-    ></script>
+    <script src="./scripts/load/ui.ts" defer></script>
   </body>
 </html>

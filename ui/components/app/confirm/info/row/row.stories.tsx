@@ -28,4 +28,15 @@ DefaultStory.args = {
   children: 'Value',
 };
 
+export const CopyEnabledStory = (args) => <ConfirmInfoRow {...args} />;
+
+CopyEnabledStory.storyName = 'CopyEnabled';
+
+CopyEnabledStory.args = {
+  label: 'Key',
+  children: 'Value',
+  copyEnabled: true,
+  copyText: 'Some copy text'
+};
+
 export default ConfirmInfoRowStory;

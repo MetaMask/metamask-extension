@@ -10,12 +10,17 @@ exports[`UserPreferencedCurrencyInput Component rendering should match snapshot 
     >
       <div
         class="unit-input__input-container"
+        style="display: inherit;"
+        title="0"
       >
         <input
           class="unit-input__input"
           data-testid="currency-input"
           dir="ltr"
+          disabled=""
+          min="0"
           placeholder="0"
+          step="any"
           style="width: 1.5ch;"
           type="number"
           value="0"
@@ -26,20 +31,7 @@ exports[`UserPreferencedCurrencyInput Component rendering should match snapshot 
           ETH
         </div>
       </div>
-      <div
-        class="currency-input__conversion-component"
-      >
-        No conversion rate available
-      </div>
     </div>
-    <button
-      class="currency-input__swap-component"
-      data-testid="currency-swap"
-    >
-      <i
-        class="fa fa-retweet fa-lg"
-      />
-    </button>
   </div>
 </div>
 `;

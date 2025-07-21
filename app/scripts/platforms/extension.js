@@ -5,14 +5,17 @@ import { startCase, toLower } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getURLHostName } from '../../../ui/helpers/utils/util';
-import { t } from '../translate';
+import { t } from '../../../shared/lib/translate';
 
 export default class ExtensionPlatform {
   //
   // Public
   //
   reload() {
+    // TODO: should this be a safe reload via the `WriteManager`?
     browser.runtime.reload();
   }
 
@@ -44,40 +47,25 @@ export default class ExtensionPlatform {
     browser.windows.remove(windowDetails.id);
   }
 
+  /**
+   * Returns the version of the extension by reading the manifest.
+   */
   getVersion() {
-    const { version, version_name: versionName } =
-      browser.runtime.getManifest();
-
-    const versionParts = version.split('.');
-    if (versionName) {
-      if (versionParts.length < 4) {
-        throw new Error(`Version missing build number: '${version}'`);
-      }
-      // On Chrome, a more descriptive representation of the version is stored in the
-      // `version_name` field for display purposes. We use this field instead of the `version`
-      // field on Chrome for non-main builds (i.e. Flask, Beta) because we want to show the
-      // version in the SemVer-compliant format "v[major].[minor].[patch]-[build-type].[build-number]",
-      // yet Chrome does not allow letters in the `version` field.
-      return versionName;
-      // A fourth version part is sometimes present for "rollback" Chrome builds
-    } else if (![3, 4].includes(versionParts.length)) {
-      throw new Error(`Invalid version: ${version}`);
-    } else if (versionParts[2].match(/[^\d]/u)) {
-      // On Firefox, the build type and build version are in the third part of the version.
-      const [major, minor, patchAndPrerelease] = versionParts;
-      const matches = patchAndPrerelease.match(/^(\d+)([A-Za-z]+)(\d)+$/u);
-      if (matches === null) {
-        throw new Error(`Version contains invalid prerelease: ${version}`);
-      }
-      const [, patch, buildType, buildVersion] = matches;
-      return `${major}.${minor}.${patch}-${buildType}.${buildVersion}`;
-    }
-
-    // If there is no `version_name` and there are only 3 or 4 version parts, then this is not a
-    // prerelease and the version requires no modification.
-    return version;
+    // return the "live" version of the extension, as the bundle of code running
+    // might be from a different version of the application than the manifest.
+    // This isn't supposed to happen, but we've seen it before in Sentry.
+    // This should *not* be updated to the static `process.env.METAMASK_VERSION`
+    return browser.runtime.getManifest().version;
   }
 
+  /**
+   * Returns the absolute URL of the extension's home.html page, optionally with
+   * a route and query string.
+   *
+   * @param {string | null} route
+   * @param {string | null} queryString
+   * @returns { string }
+   */
   getExtensionURL(route = null, queryString = null) {
     let extensionURL = browser.runtime.getURL('home.html');
 
@@ -92,6 +80,12 @@ export default class ExtensionPlatform {
     return extensionURL;
   }
 
+  /**
+   *
+   * @param {string | null} route
+   * @param {string | null} queryString
+   * @param {boolean} [keepWindowOpen] - defaults to false
+   */
   openExtensionInBrowser(
     route = null,
     queryString = null,
@@ -196,19 +190,11 @@ export default class ExtensionPlatform {
   async _showFailedTransaction(txMeta, errorMessage) {
     const nonce = parseInt(txMeta.txParams.nonce, 16);
     const title = t('notificationTransactionFailedTitle');
-    let message = t(
+    const message = t(
       'notificationTransactionFailedMessage',
       nonce,
       errorMessage || txMeta.error.message,
     );
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    if (isNaN(nonce)) {
-      message = t(
-        'notificationTransactionFailedMessageMMI',
-        errorMessage || txMeta.error.message,
-      );
-    }
-    ///: END:ONLY_INCLUDE_IF
     await this._showNotification(title, message);
   }
 

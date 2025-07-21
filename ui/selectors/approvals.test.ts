@@ -1,6 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import {
   getApprovalFlows,
+  getApprovalsByOrigin,
   getPendingApprovals,
   hasPendingApprovals,
 } from './approvals';
@@ -71,6 +72,46 @@ describe('approval selectors', () => {
   describe('getPendingApprovals', () => {
     it('should return all pending approvals', () => {
       const result = getPendingApprovals(mockedState);
+
+      expect(result).toStrictEqual(
+        Object.values(mockedState.metamask.pendingApprovals),
+      );
+    });
+  });
+
+  describe('pendingApprovalsSortedSelector', () => {
+    it('should return all pending approvals', () => {
+      const result = getPendingApprovals(mockedState);
+
+      expect(result).toStrictEqual(
+        Object.values(mockedState.metamask.pendingApprovals),
+      );
+    });
+  });
+
+  describe('getApprovalsByOrigin', () => {
+    it('should return approval from specified origin', () => {
+      const result = getApprovalsByOrigin(
+        {
+          ...mockedState,
+          metamask: {
+            ...mockedState.metamask,
+            pendingApprovals: {
+              ...mockedState.metamask.pendingApprovals,
+              '3': {
+                id: '3',
+                origin: 'test',
+                time: Date.now(),
+                type: ApprovalType.Transaction,
+                requestData: {},
+                requestState: null,
+                expectsResult: false,
+              },
+            },
+          },
+        },
+        'origin',
+      );
 
       expect(result).toStrictEqual(
         Object.values(mockedState.metamask.pendingApprovals),

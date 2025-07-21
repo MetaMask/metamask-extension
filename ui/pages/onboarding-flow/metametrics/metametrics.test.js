@@ -3,12 +3,17 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import {
   onboardingMetametricsAgree,
-  onboardingMetametricsDisagree,
+  noThanks,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/_locales/en/messages.json';
-import { setParticipateInMetaMetrics } from '../../../store/actions';
+import {
+  setParticipateInMetaMetrics,
+  setDataCollectionForMarketing,
+} from '../../../store/actions';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import OnboardingMetametrics from './metametrics';
 
@@ -29,6 +34,9 @@ jest.mock('../../../store/actions.ts', () => ({
   setParticipateInMetaMetrics: jest
     .fn()
     .mockReturnValue(jest.fn((val) => Promise.resolve([val]))),
+  setDataCollectionForMarketing: jest
+    .fn()
+    .mockReturnValue(jest.fn((val) => Promise.resolve([val]))),
 }));
 
 describe('Onboarding Metametrics Component', () => {
@@ -38,6 +46,10 @@ describe('Onboarding Metametrics Component', () => {
     metamask: {
       firstTimeFlowType: FirstTimeFlowType.create,
       participateInMetaMetrics: '',
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
     },
   };
 
@@ -58,6 +70,20 @@ describe('Onboarding Metametrics Component', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should match snapshot after new policy date', () => {
+    // TODO: merge this with the previous test once this date is reached
+    jest.useFakeTimers().setSystemTime(new Date('2024-06-05'));
+
+    const { container } = renderWithProvider(
+      <OnboardingMetametrics />,
+      mockStore,
+    );
+
+    expect(container).toMatchSnapshot();
+
+    jest.useRealTimers();
+  });
+
   it('should set setParticipateInMetaMetrics to true when clicking agree', async () => {
     const { queryByText } = renderWithProvider(
       <OnboardingMetametrics />,
@@ -70,9 +96,7 @@ describe('Onboarding Metametrics Component', () => {
 
     await waitFor(() => {
       expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(true);
-      expect(mockPushHistory).toHaveBeenCalledWith(
-        ONBOARDING_CREATE_PASSWORD_ROUTE,
-      );
+      expect(mockPushHistory).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
     });
   });
 
@@ -82,15 +106,38 @@ describe('Onboarding Metametrics Component', () => {
       mockStore,
     );
 
-    const confirmCancel = queryByText(onboardingMetametricsDisagree.message);
+    const confirmCancel = queryByText(noThanks.message);
 
     fireEvent.click(confirmCancel);
 
     await waitFor(() => {
       expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
-      expect(mockPushHistory).toHaveBeenCalledWith(
-        ONBOARDING_CREATE_PASSWORD_ROUTE,
-      );
+      expect(mockPushHistory).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
     });
+  });
+
+  it('should set setDataCollectionForMarketing to false when clicking cancel', async () => {
+    const { queryByText } = renderWithProvider(
+      <OnboardingMetametrics />,
+      mockStore,
+    );
+
+    const confirmCancel = queryByText(noThanks.message);
+
+    fireEvent.click(confirmCancel);
+
+    await waitFor(() => {
+      expect(setDataCollectionForMarketing).toHaveBeenCalledWith(false);
+      expect(mockPushHistory).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
+    });
+  });
+
+  it('should render the Onboarding component when the current date is after the new privacy policy date', () => {
+    jest.useFakeTimers().setSystemTime(new Date('2099-11-11'));
+    const { queryByTestId } = renderWithProvider(
+      <OnboardingMetametrics />,
+      mockStore,
+    );
+    expect(queryByTestId('onboarding-metametrics')).toBeInTheDocument();
   });
 });

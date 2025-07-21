@@ -1,6 +1,7 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { AvatarGroup } from '.';
+import { AvatarType } from './avatar-group.types';
 
 export default {
   title: 'Components/Multichain/AvatarGroup',
@@ -16,7 +17,7 @@ export default {
   args: {
     members: [
       { symbol: 'ETH', avatarValue: './images/eth_logo.svg' },
-      { symbol: 'MATIC', avatarValue: './images/matic-token.svg' },
+      { symbol: 'MATIC', avatarValue: './images/pol-token.svg' },
       { symbol: 'OP', avatarValue: './images/optimism.svg' },
       { symbol: 'AVAX', avatarValue: './images/avax-token.svg' },
     ],
@@ -35,7 +36,7 @@ export const WithTag: StoryFn<typeof AvatarGroup> = (args) => (
 WithTag.args = {
   members: [
     { symbol: 'ETH', avatarValue: './images/eth_logo.svg' },
-    { symbol: 'MATIC', avatarValue: './images/matic-token.svg' },
+    { symbol: 'MATIC', avatarValue: './images/pol-token.svg' },
     { symbol: 'OP', avatarValue: './images/optimism.svg' },
     { symbol: 'AVAX', avatarValue: './images/avax-token.svg' },
     { symbol: 'PALM', avatarValue: './images/palm.svg' },
@@ -55,3 +56,28 @@ TokenWithOutSrc.args = {
   ],
   limit: 2,
 };
+
+export const NetworksWithTag: StoryFn<typeof AvatarGroup> = () => (
+  <AvatarGroup
+    avatarType={AvatarType.NETWORK}
+    limit={2}
+    members={[
+      { avatarValue: './images/eth_logo.svg', symbol: 'Ethereum' },
+      { avatarValue: './images/arbitrum.svg', symbol: 'Arbitrum' },
+      { avatarValue: './images/bnb.svg', symbol: 'Binance' },
+    ]}
+  />
+);
+
+export const NetworksWithOverlayTag: StoryFn<typeof AvatarGroup> = () => (
+  <AvatarGroup
+    avatarType={AvatarType.NETWORK}
+    limit={2}
+    members={[
+      { avatarValue: './images/eth_logo.svg', symbol: 'Ethereum' },
+      { avatarValue: './images/arbitrum.svg', symbol: 'Arbitrum' },
+      { avatarValue: './images/bnb.svg', symbol: 'Binance' },
+    ]}
+    isTagOverlay={true}
+  />
+);

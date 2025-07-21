@@ -1,4 +1,5 @@
 import nock from 'nock';
+import { ChainId } from '@metamask/bridge-controller';
 import { MOCKS } from '../../../test/jest';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
@@ -16,13 +17,9 @@ import {
   ARBITRUM,
   ZKSYNC_ERA,
   LINEA,
+  BASE,
 } from '../../../shared/constants/swaps';
-import {
-  TOKENS,
-  EXPECTED_TOKENS_RESULT,
-  AGGREGATOR_METADATA,
-  TOP_ASSETS,
-} from './swaps-util-test-constants';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   fetchTokens,
   fetchAggregatorMetadata,
@@ -34,21 +31,47 @@ import {
   showRemainingTimeInMinAndSec,
   getFeeForSmartTransaction,
   formatSwapsValueForDisplay,
+  fetchTopAssetsList,
+  getSwap1559GasFeeEstimates,
 } from './swaps.util';
+import { estimateGasFee } from './swaps.util.gas';
+import {
+  TOKENS,
+  EXPECTED_TOKENS_RESULT,
+  AGGREGATOR_METADATA,
+  TOP_ASSETS,
+} from './swaps-util-test-constants';
 
 jest.mock('../../../shared/lib/storage-helpers', () => ({
   getStorageItem: jest.fn(),
   setStorageItem: jest.fn(),
 }));
 
+jest.mock('./swaps.util.gas', () => ({
+  estimateGasFee: jest.fn(),
+}));
+
+const ESTIMATED_BASE_FEE_GWEI_MOCK = '1';
+const TRADE_TX_PARAMS_MOCK = { data: '0x123' };
+const APPROVE_TX_PARAMS_MOCK = { data: '0x456' };
+const CHAIN_ID_MOCK = '0x1';
+const MAX_FEE_PER_GAS_MOCK = '0x1';
+const MAX_PRIORITY_FEE_PER_GAS_MOCK = '0x2';
+
 describe('Swaps Util', () => {
+  const estimateGasFeeMock = jest.mocked(estimateGasFee);
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
   afterEach(() => {
     nock.cleanAll();
   });
 
   describe('fetchTokens', () => {
     beforeEach(() => {
-      nock('https://swap.metaswap.codefi.network')
+      nock('https://swap.api.cx.metamask.io')
         .persist()
         .get('/networks/1/tokens?includeBlockedTokens=true')
         .reply(200, TOKENS);
@@ -67,7 +90,7 @@ describe('Swaps Util', () => {
 
   describe('fetchAggregatorMetadata', () => {
     beforeEach(() => {
-      nock('https://swap.metaswap.codefi.network')
+      nock('https://swap.api.cx.metamask.io')
         .persist()
         .get('/networks/1/aggregatorMetadata')
         .reply(200, AGGREGATOR_METADATA);
@@ -84,9 +107,36 @@ describe('Swaps Util', () => {
     });
   });
 
+  describe('fetchTopAssetsList', () => {
+    beforeEach(() => {
+      nock('https://swap.api.cx.metamask.io')
+        .persist()
+        .get('/networks/1/topAssets')
+        .reply(200, TOP_ASSETS);
+    });
+
+    it('should fetch top assets', async () => {
+      const result = await fetchTopAssetsList(CHAIN_IDS.MAINNET);
+      expect(result).toStrictEqual(TOP_ASSETS);
+    });
+
+    it('should fetch top assets on prod', async () => {
+      const result = await fetchTopAssetsList(CHAIN_IDS.MAINNET);
+      expect(result).toStrictEqual(TOP_ASSETS);
+    });
+
+    it('should not fetch top assets for solana', async () => {
+      expect(await fetchTopAssetsList(MultichainNetworks.SOLANA)).toStrictEqual(
+        [],
+      );
+      expect(await fetchTopAssetsList(ChainId.SOLANA)).toStrictEqual([]);
+      expect(await fetchTopAssetsList('0x416EDEF1601BE')).toStrictEqual([]);
+    });
+  });
+
   describe('fetchTopAssets', () => {
     beforeEach(() => {
-      nock('https://swap.metaswap.codefi.network')
+      nock('https://swap.api.cx.metamask.io')
         .persist()
         .get('/networks/1/topAssets')
         .reply(200, TOP_ASSETS);
@@ -267,6 +317,10 @@ describe('Swaps Util', () => {
 
     it('returns "linea" for Linea chain ID', () => {
       expect(getNetworkNameByChainId(CHAIN_IDS.LINEA_MAINNET)).toBe(LINEA);
+    });
+
+    it('returns "base" for Base chain ID', () => {
+      expect(getNetworkNameByChainId(CHAIN_IDS.BASE)).toBe(BASE);
     });
   });
 
@@ -518,6 +572,110 @@ describe('Swaps Util', () => {
           props.chainId,
         ),
       ).toBeNull();
+    });
+  });
+
+  describe('getSwap1559GasFeeEstimates', () => {
+    it('returns estimated base fee in WEI as hex', async () => {
+      estimateGasFeeMock.mockResolvedValueOnce({});
+
+      const { estimatedBaseFee } = await getSwap1559GasFeeEstimates(
+        {},
+        undefined,
+        ESTIMATED_BASE_FEE_GWEI_MOCK,
+        CHAIN_ID_MOCK,
+      );
+
+      expect(estimatedBaseFee).toBe('3b9aca00');
+    });
+
+    it('returns trade gas fee estimates', async () => {
+      estimateGasFeeMock.mockResolvedValueOnce({
+        estimates: {
+          high: {
+            maxFeePerGas: MAX_FEE_PER_GAS_MOCK,
+            maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS_MOCK,
+          },
+        },
+      });
+
+      const { tradeGasFeeEstimates } = await getSwap1559GasFeeEstimates(
+        TRADE_TX_PARAMS_MOCK,
+        undefined,
+        ESTIMATED_BASE_FEE_GWEI_MOCK,
+        CHAIN_ID_MOCK,
+      );
+
+      expect(tradeGasFeeEstimates).toStrictEqual({
+        maxFeePerGas: MAX_FEE_PER_GAS_MOCK,
+        maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS_MOCK,
+        baseAndPriorityFeePerGas: '3b9aca02',
+      });
+
+      expect(estimateGasFeeMock).toHaveBeenCalledTimes(1);
+      expect(estimateGasFeeMock).toHaveBeenCalledWith({
+        transactionParams: TRADE_TX_PARAMS_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        networkClientId: undefined,
+      });
+    });
+
+    it('returns approve gas fee estimates if approve params', async () => {
+      estimateGasFeeMock.mockResolvedValueOnce({});
+      estimateGasFeeMock.mockResolvedValueOnce({
+        estimates: {
+          high: {
+            maxFeePerGas: MAX_FEE_PER_GAS_MOCK,
+            maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS_MOCK,
+          },
+        },
+      });
+
+      const { approveGasFeeEstimates } = await getSwap1559GasFeeEstimates(
+        TRADE_TX_PARAMS_MOCK,
+        APPROVE_TX_PARAMS_MOCK,
+        ESTIMATED_BASE_FEE_GWEI_MOCK,
+        CHAIN_ID_MOCK,
+      );
+
+      expect(approveGasFeeEstimates).toStrictEqual({
+        maxFeePerGas: MAX_FEE_PER_GAS_MOCK,
+        maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS_MOCK,
+        baseAndPriorityFeePerGas: '3b9aca02',
+      });
+
+      expect(estimateGasFeeMock).toHaveBeenCalledTimes(2);
+      expect(estimateGasFeeMock).toHaveBeenCalledWith({
+        transactionParams: TRADE_TX_PARAMS_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        networkClientId: undefined,
+      });
+      expect(estimateGasFeeMock).toHaveBeenCalledWith({
+        transactionParams: APPROVE_TX_PARAMS_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        networkClientId: undefined,
+      });
+    });
+
+    it('returns no approve gas fee estimates if no approve params', async () => {
+      estimateGasFeeMock.mockResolvedValueOnce({});
+      estimateGasFeeMock.mockResolvedValueOnce({
+        estimates: {
+          high: {
+            maxFeePerGas: MAX_FEE_PER_GAS_MOCK,
+            maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS_MOCK,
+          },
+        },
+      });
+
+      const { approveGasFeeEstimates } = await getSwap1559GasFeeEstimates(
+        TRADE_TX_PARAMS_MOCK,
+        undefined,
+        ESTIMATED_BASE_FEE_GWEI_MOCK,
+        CHAIN_ID_MOCK,
+      );
+
+      expect(approveGasFeeEstimates).toBeUndefined();
     });
   });
 });

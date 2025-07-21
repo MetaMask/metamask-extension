@@ -1,7 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { GasRecommendations } from '../../../../shared/constants/gas';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
@@ -9,12 +8,6 @@ describe('View Price Quote Difference', () => {
   const mockState = {
     metamask: {
       tokens: [],
-      providerConfig: {
-        type: NETWORK_TYPES.RPC,
-        nickname: '',
-        rpcUrl: '',
-        ticker: 'ETH',
-      },
       preferences: { showFiatInTestnets: true },
       currentCurrency: 'usd',
       currencyRates: {
@@ -64,7 +57,7 @@ describe('View Price Quote Difference', () => {
         name: 'Ether',
         address: '0x0000000000000000000000000000000000000000',
         decimals: 18,
-        iconUrl: 'images/black-eth-logo.svg',
+        iconUrl: 'images/black-eth-logo.png',
       },
       destinationTokenInfo: {
         address: '0x514910771af9ca656af840dff83e8264ecf986ca',

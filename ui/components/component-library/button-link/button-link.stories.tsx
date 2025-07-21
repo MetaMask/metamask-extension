@@ -8,9 +8,11 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '..';
+import { Box } from '../box';
+import { Text } from '../text';
 import README from './README.mdx';
-import { ButtonLink, ButtonLinkSize } from '.';
+import { ButtonLink } from './button-link';
+import { ButtonLinkSize } from './button-link.types';
 
 export default {
   title: 'Components/ComponentLibrary/ButtonLink',

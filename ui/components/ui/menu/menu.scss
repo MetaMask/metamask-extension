@@ -33,13 +33,18 @@
   text-align: start;
   align-items: center;
   width: 100%;
-  padding: 14px 16px;
+  padding: 16px;
   cursor: pointer;
   color: inherit;
 
   &:hover,
   &:active {
     background: var(--color-background-default-hover);
+  }
+
+  &:focus {
+    outline: 2px solid var(--color-primary-default);
+    outline-offset: -2px;
   }
 
   &__icon {

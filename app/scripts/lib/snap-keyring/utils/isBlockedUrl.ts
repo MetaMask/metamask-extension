@@ -1,5 +1,5 @@
 import { PhishingController } from '@metamask/phishing-controller';
-import { isProtocolAllowed } from '../../keyring-snaps-permissions';
+import { isProtocolAllowed } from '../keyring-snaps-permissions';
 
 /**
  * Checks whether a given URL is blocked due to not using HTTPS or being

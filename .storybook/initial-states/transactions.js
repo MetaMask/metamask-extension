@@ -7,7 +7,6 @@ const MOCK_TX_TYPE = {
   INCOMING: 'incoming',
   PERSONAL_SIGN: 'personal_sign',
   RETRY: 'retry',
-  SIGN: 'eth_sign',
   SIGN_TYPED_DATA: 'eth_signTypedData',
   SIMPLE_SEND: 'simpleSend',
   SMART: 'smart',
@@ -17,6 +16,7 @@ const MOCK_TX_TYPE = {
   TOKEN_METHOD_SAFE_TRANSFER_FROM: 'safetransferfrom',
   TOKEN_METHOD_TRANSFER: 'transfer',
   TOKEN_METHOD_TRANSFER_FROM: 'transferfrom',
+  BRIDGE: 'bridge',
 };
 
 export const MOCK_TRANSACTION_BY_TYPE = {
@@ -420,27 +420,6 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         'Error: [ethjs-query] while formatting outputs from RPC \'{"value":{"code":-32000,"message":"replacement transaction underpriced"}}\'\n  at chrome-extension://hbljfohiafgaaaabejngpgolnboohpaf/common-5.js:14346:29',
     },
   },
-  [MOCK_TX_TYPE.SIGN]: {
-    id: 5177046356058675,
-    msgParams: {
-      from: '0xabce7847fd3661a9b7c86aaf1daea08d9da5750e',
-      data:
-        '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0',
-      origin: 'https://metamask.github.io',
-    },
-    txParams: {
-      from: '0xabc14609ef9e09776ac5fe00bdbfef57bcdefebb',
-      gas: '0x5208',
-      gasPrice: '0x77359400',
-      nonce: '0x3',
-      value: '0x00',
-      data:
-        '0x608060405234801561001057600080fd5b5033600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506000808190555061023b806100686000396000f300608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632e1a7d4d1461005c5780638da5cb5b1461009d578063d0e30db0146100f4575b600080fd5b34801561006857600080fd5b5061008760048036038101908080359060200190929190505050610112565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b26101d0565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6100fc6101f6565b6040518082815260200191505060405180910390f35b6000600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561017057600080fd5b8160008082825403925050819055503373ffffffffffffffffffffffffffffffffffffffff166108fc839081150290604051600060405180830381858888f193505050501580156101c5573d6000803e3d6000fd5b506000549050919050565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60003460008082825401925050819055506000549050905600a165627a7a72305820f237db3ec816a52589d82512117bc85bc08d3537683ffeff9059108caf3e5d400029',
-    },
-    time: 1653451051909,
-    status: 'unapproved',
-    type: 'eth_sign',
-  },
   [MOCK_TX_TYPE.SIGN_TYPED_DATA]: {
     id: 5177046356058598,
     msgParams: {
@@ -528,6 +507,25 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     destinationTokenSymbol: 'ABC',
     sourceTokenSymbol: 'ETH',
     type: 'swap',
+  },
+  [MOCK_TX_TYPE.BRIDGE]: {
+    blockNumber: '6195527',
+    id: 4243712234858467,
+    chainId: '0x1',
+    status: 'confirmed',
+    time: 1585088013000,
+    txParams: {
+      from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      gas: '0x5208',
+      gasPrice: '0x77359400',
+      nonce: '0x3',
+      to: '0xefga64466f257793eaa52fcfff5066894b76a149',
+      value: '0xde0b6b3a7640000',
+    },
+    hash: '0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a',
+    destinationTokenSymbol: 'ABC',
+    sourceTokenSymbol: 'ETH',
+    type: 'bridge',
   },
   [MOCK_TX_TYPE.SWAP_APPROVAL]: {
     blockNumber: '6195527',

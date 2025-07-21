@@ -4,10 +4,13 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import BigNumber from 'bignumber.js';
 import {
-  getDetectedTokensInCurrentNetwork,
+  getAllDetectedTokens,
+  getAllTokens,
   getKnownMethodData,
-  getTokenList,
+  getSelectedAddress,
+  selectERC20TokensByChain,
 } from '../selectors/selectors';
 import {
   getStatusKey,
@@ -30,11 +33,17 @@ import {
   PENDING_STATUS_HASH,
   TOKEN_CATEGORY_HASH,
 } from '../helpers/constants/transactions';
-import { getNfts, getTokens } from '../ducks/metamask/metamask';
+import { getNfts } from '../ducks/metamask/metamask';
 import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
+import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors';
+import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
+import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
+import { getIntlLocale } from '../ducks/locale/locale';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
+import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -43,6 +52,8 @@ import { useTokenDisplayValue } from './useTokenDisplayValue';
 import { useTokenData } from './useTokenData';
 import { useSwappedTokenValue } from './useSwappedTokenValue';
 import { useCurrentAsset } from './useCurrentAsset';
+import useBridgeChainInfo from './bridge/useBridgeChainInfo';
+import { useRemoteModeTransaction } from './useRemoteModeTransaction';
 
 /**
  *  There are seven types of transaction entries that are currently differentiated in the design:
@@ -79,6 +90,10 @@ const signatureTypes = [
  * @property {boolean} subtitleContainsOrigin - true if the subtitle includes the origin of the tx
  * @property {string} title - the primary title of the tx that will be displayed in the activity list
  * @property {string} [secondaryCurrency] - the currency string to display in the secondary position
+ * @property {string} date - the formatted date of the transaction
+ * @property {string} displayedStatusKey - the key representing the displayed status of the transaction
+ * @property {boolean} isPending - indicates if the transaction is pending
+ * @property {boolean} isSubmitted - indicates if the transaction has been submitted
  */
 
 /**
@@ -96,17 +111,37 @@ export function useTransactionDisplayData(transactionGroup) {
   // To determine which primary currency to display for swaps transactions we need to be aware
   // of which asset, if any, we are viewing at present
   const dispatch = useDispatch();
+  const locale = useSelector(getIntlLocale);
   const currentAsset = useCurrentAsset();
-  const knownTokens = useSelector(getTokens);
+  const knownTokens = useSelector(getAllTokens);
+  const selectedAddress = useSelector(getSelectedAddress);
   const knownNfts = useSelector(getNfts);
-  const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
-  const tokenList = useSelector(getTokenList);
+  const allDetectedTokens = useSelector(getAllDetectedTokens);
+  const tokenListAllChains = useSelector(selectERC20TokensByChain);
+
   const t = useI18nContext();
+
+  // Bridge data
+  const srcTxMetaId = transactionGroup.initialTransaction.id;
+  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
+  const bridgeHistoryItem = srcTxMetaId
+    ? bridgeHistory[srcTxMetaId]
+    : undefined;
+  const { destNetwork } = useBridgeChainInfo({
+    bridgeHistoryItem,
+    srcTxMeta: transactionGroup.initialTransaction,
+  });
+
+  const destChainName = NETWORK_TO_SHORT_NETWORK_NAME_MAP[destNetwork?.chainId];
 
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
-  const { type } = initialTransaction;
-  const { from: senderAddress, to } = initialTransaction.txParams || {};
+  const { transferInformation, type, txParamsOriginal } = initialTransaction;
+  const { from, to } = initialTransaction.txParams || {};
+
+  const isUnifiedSwapTx =
+    [TransactionType.swap, TransactionType.bridge].includes(type) &&
+    Boolean(bridgeHistoryItem);
 
   // for smart contract interactions, methodData can be used to derive the name of the action being taken
   const methodData =
@@ -122,10 +157,24 @@ export function useTransactionDisplayData(transactionGroup) {
   const primaryValue = primaryTransaction.txParams?.value;
   const date = formatDateWithYearContext(initialTransaction.time);
 
+  const { isRemoteModeActivity } = useRemoteModeTransaction({
+    transaction: initialTransaction,
+  });
+
   let prefix = '-';
   let subtitle;
   let subtitleContainsOrigin = false;
   let recipientAddress = to;
+  let senderAddress = from;
+  let transactionData = initialTransaction?.txParams?.data;
+  let remoteSignerAddress = null;
+
+  if (isRemoteModeActivity) {
+    recipientAddress = txParamsOriginal?.to;
+    senderAddress = txParamsOriginal?.from;
+    remoteSignerAddress = initialTransaction?.txParams?.from;
+    transactionData = txParamsOriginal?.data;
+  }
 
   // This value is used to determine whether we should look inside txParams.data
   // to pull out and render token related information
@@ -141,13 +190,18 @@ export function useTransactionDisplayData(transactionGroup) {
 
   if (isTokenCategory) {
     token =
-      knownTokens.find(({ address }) =>
+      knownTokens?.[transactionGroup?.initialTransaction?.chainId]?.[
+        selectedAddress
+      ]?.find(({ address }) =>
         isEqualCaseInsensitive(address, recipientAddress),
       ) ||
-      detectedTokens.find(({ address }) =>
+      allDetectedTokens?.[transactionGroup?.initialTransaction?.chainId]?.[
+        selectedAddress
+      ]?.find(({ address }) =>
         isEqualCaseInsensitive(address, recipientAddress),
       ) ||
-      tokenList[recipientAddress.toLowerCase()];
+      tokenListAllChains?.[transactionGroup?.initialTransaction?.chainId]
+        ?.data?.[recipientAddress.toLowerCase()];
   }
   useEffect(() => {
     return () => {
@@ -158,9 +212,9 @@ export function useTransactionDisplayData(transactionGroup) {
     async function getAndSetAssetDetails() {
       if (isTokenCategory && !token) {
         const assetDetails = await getAssetDetails(
-          to,
+          recipientAddress,
           senderAddress,
-          initialTransaction?.txParams?.data,
+          transactionData,
           knownNfts,
         );
         if (mounted.current === true) {
@@ -174,11 +228,11 @@ export function useTransactionDisplayData(transactionGroup) {
     token,
     recipientAddress,
     senderAddress,
-    initialTransaction?.txParams?.data,
     knownNfts,
-    to,
     mounted,
+    transactionData,
   ]);
+
   if (currentAssetDetails) {
     token = {
       address: currentAssetDetails.toAddress,
@@ -187,10 +241,7 @@ export function useTransactionDisplayData(transactionGroup) {
     };
   }
 
-  const tokenData = useTokenData(
-    initialTransaction?.txParams?.data,
-    isTokenCategory,
-  );
+  const tokenData = useTokenData(transactionData, isTokenCategory);
 
   // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
   // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
@@ -206,11 +257,19 @@ export function useTransactionDisplayData(transactionGroup) {
         tokenId === transactionDataTokenId,
     );
 
-  const tokenDisplayValue = useTokenDisplayValue(
-    primaryTransaction?.txParams?.data,
+  let tokenDisplayValue = useTokenDisplayValue(
+    transactionData,
     token,
     isTokenCategory,
   );
+
+  if (transferInformation?.decimals) {
+    tokenDisplayValue = calcTokenAmount(
+      transferInformation.amount,
+      transferInformation.decimals,
+    ).toString(10);
+  }
+
   const tokenFiatAmount = useTokenFiatAmount(
     token?.address,
     tokenDisplayValue,
@@ -241,6 +300,8 @@ export function useTransactionDisplayData(transactionGroup) {
     isViewingReceivedTokenFromSwap,
   } = useSwappedTokenValue(transactionGroup, currentAsset);
 
+  const bridgeTokenDisplayData = useBridgeTokenDisplayData(transactionGroup);
+
   if (signatureTypes.includes(type)) {
     category = TransactionGroupCategory.signatureRequest;
     title = t('signatureRequest');
@@ -249,16 +310,26 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.swap) {
     category = TransactionGroupCategory.swap;
     title = t('swapTokenToToken', [
-      initialTransaction.sourceTokenSymbol,
-      initialTransaction.destinationTokenSymbol,
+      bridgeTokenDisplayData.sourceTokenSymbol ??
+        initialTransaction.sourceTokenSymbol,
+      bridgeTokenDisplayData.destinationTokenSymbol ??
+        initialTransaction.destinationTokenSymbol,
     ]);
     subtitle = origin;
     subtitleContainsOrigin = true;
+    const symbolFromTx =
+      bridgeTokenDisplayData.sourceTokenSymbol ??
+      initialTransaction.sourceTokenSymbol;
     primarySuffix = isViewingReceivedTokenFromSwap
       ? currentAsset.symbol
-      : initialTransaction.sourceTokenSymbol;
-    primaryDisplayValue = swapTokenValue;
-    secondaryDisplayValue = swapTokenFiatAmount;
+      : symbolFromTx;
+    const value =
+      bridgeTokenDisplayData.sourceTokenAmountSent ?? swapTokenValue;
+    primaryDisplayValue = value
+      ? formatAmount(locale, new BigNumber(value))
+      : undefined;
+    secondaryDisplayValue =
+      bridgeTokenDisplayData.displayCurrencyAmount ?? swapTokenFiatAmount;
     if (isNegative) {
       prefix = '';
     } else if (isViewingReceivedTokenFromSwap) {
@@ -266,12 +337,44 @@ export function useTransactionDisplayData(transactionGroup) {
     } else {
       prefix = '-';
     }
-  } else if (type === TransactionType.swapApproval) {
-    category = TransactionGroupCategory.approval;
-    title = t('swapApproval', [primaryTransaction.sourceTokenSymbol]);
+  } else if (type === TransactionType.swapAndSend) {
+    const isSenderTokenRecipient =
+      initialTransaction.swapAndSendRecipient === senderAddress;
+
+    recipientAddress = initialTransaction.swapAndSendRecipient;
+
+    category = TransactionGroupCategory.swapAndSend;
+    title = t('sentTokenAsToken', [
+      initialTransaction.sourceTokenSymbol,
+      initialTransaction.destinationTokenSymbol,
+    ]);
     subtitle = origin;
     subtitleContainsOrigin = true;
-    primarySuffix = primaryTransaction.sourceTokenSymbol;
+    primarySuffix =
+      isViewingReceivedTokenFromSwap && isSenderTokenRecipient
+        ? currentAsset.symbol
+        : initialTransaction.sourceTokenSymbol;
+    primaryDisplayValue = swapTokenValue;
+    secondaryDisplayValue = swapTokenFiatAmount;
+
+    if (isNegative) {
+      prefix = '';
+    } else if (isViewingReceivedTokenFromSwap && isSenderTokenRecipient) {
+      prefix = '+';
+    } else {
+      prefix = '-';
+    }
+  } else if (type === TransactionType.swapApproval) {
+    category = TransactionGroupCategory.approval;
+    title = t('swapApproval', [
+      bridgeTokenDisplayData.sourceTokenSymbol ??
+        primaryTransaction.sourceTokenSymbol,
+    ]);
+    subtitle = origin;
+    subtitleContainsOrigin = true;
+    primarySuffix =
+      bridgeTokenDisplayData.sourceTokenSymbol ??
+      primaryTransaction.sourceTokenSymbol;
   } else if (type === TransactionType.tokenMethodApprove) {
     category = TransactionGroupCategory.approval;
     prefix = '';
@@ -281,12 +384,26 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.tokenMethodSetApprovalForAll) {
+    const isRevoke = !tokenData?.args?.[1];
+
     category = TransactionGroupCategory.approval;
     prefix = '';
-    title = t('setApprovalForAllTitle', [token?.symbol || t('token')]);
+    title = isRevoke
+      ? t('revokePermissionTitle', [token?.symbol || nft?.name || t('token')])
+      : t('setApprovalForAllTitle', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
-  } else if (type === TransactionType.contractInteraction) {
+  } else if (type === TransactionType.tokenMethodIncreaseAllowance) {
+    category = TransactionGroupCategory.approval;
+    prefix = '';
+    title = t('approveIncreaseAllowance', [token?.symbol || t('token')]);
+    subtitle = origin;
+    subtitleContainsOrigin = true;
+  } else if (
+    type === TransactionType.contractInteraction ||
+    type === TransactionType.batch ||
+    type === TransactionType.revokeDelegation
+  ) {
     category = TransactionGroupCategory.interaction;
     const transactionTypeTitle = getTransactionTypeTitle(t, type);
     title =
@@ -302,7 +419,7 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.incoming) {
     category = TransactionGroupCategory.receive;
-    title = t('receive');
+    title = t('received');
     prefix = '';
     subtitle = t('fromAddress', [shortenAddress(senderAddress)]);
   } else if (
@@ -310,7 +427,7 @@ export function useTransactionDisplayData(transactionGroup) {
     type === TransactionType.tokenMethodTransfer
   ) {
     category = TransactionGroupCategory.send;
-    title = t('sendSpecifiedTokens', [
+    title = t('sentSpecifiedTokens', [
       token?.symbol || nft?.name || t('token'),
     ]);
     recipientAddress = getTokenAddressParam(tokenData);
@@ -322,8 +439,24 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TransactionType.simpleSend) {
     category = TransactionGroupCategory.send;
-    title = t('send');
+    title = t('sent');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
+  } else if (type === TransactionType.bridgeApproval) {
+    title = t('bridgeApproval');
+    category = TransactionGroupCategory.approval;
+    title = t('bridgeApproval', [bridgeTokenDisplayData.sourceTokenSymbol]);
+    subtitle = origin;
+    subtitleContainsOrigin = true;
+    primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
+  } else if (type === TransactionType.bridge) {
+    title = destChainName ? t('bridgedToChain', [destChainName]) : t('bridged');
+    category = bridgeTokenDisplayData.category;
+    primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
+    primaryDisplayValue = formatAmount(
+      locale,
+      new BigNumber(bridgeTokenDisplayData.sourceTokenAmountSent ?? 0),
+    );
+    secondaryDisplayValue = bridgeTokenDisplayData.displayCurrencyAmount;
   } else {
     dispatch(
       captureSingleException(
@@ -332,22 +465,42 @@ export function useTransactionDisplayData(transactionGroup) {
     );
   }
 
-  const primaryCurrencyPreferences = useUserPreferencedCurrency(PRIMARY);
+  const detailsTitle = isRemoteModeActivity ? `Remote ${title}` : title;
+
+  const primaryCurrencyPreferences = useUserPreferencedCurrency(
+    PRIMARY,
+    {},
+    transactionGroup?.initialTransaction?.chainId,
+  );
   const secondaryCurrencyPreferences = useUserPreferencedCurrency(SECONDARY);
 
-  const [primaryCurrency] = useCurrencyDisplay(primaryValue, {
-    prefix,
-    displayValue: primaryDisplayValue,
-    suffix: primarySuffix,
-    ...primaryCurrencyPreferences,
-  });
+  const [primaryCurrency] = useCurrencyDisplay(
+    primaryValue,
+    {
+      prefix,
+      displayValue: primaryDisplayValue,
+      suffix: primarySuffix,
+      ...primaryCurrencyPreferences,
+    },
+    transactionGroup?.initialTransaction?.chainId,
+  );
 
-  const [secondaryCurrency] = useCurrencyDisplay(primaryValue, {
-    prefix,
-    displayValue: secondaryDisplayValue,
-    hideLabel: isTokenCategory || Boolean(swapTokenValue),
-    ...secondaryCurrencyPreferences,
-  });
+  const [secondaryCurrency] = useCurrencyDisplay(
+    primaryValue,
+    {
+      prefix,
+      displayValue: isUnifiedSwapTx
+        ? bridgeTokenDisplayData.displayCurrencyAmount
+        : secondaryDisplayValue,
+      hideLabel: isTokenCategory || Boolean(swapTokenValue),
+      ...secondaryCurrencyPreferences,
+    },
+    transactionGroup?.initialTransaction?.chainId,
+  );
+
+  if (!recipientAddress && transferInformation) {
+    recipientAddress = to;
+  }
 
   return {
     title,
@@ -361,11 +514,16 @@ export function useTransactionDisplayData(transactionGroup) {
     recipientAddress,
     secondaryCurrency:
       (isTokenCategory && !tokenFiatAmount) ||
-      (type === TransactionType.swap && !swapTokenFiatAmount)
+      (!isUnifiedSwapTx &&
+        [TransactionType.swap, TransactionType.swapAndSend].includes(type) &&
+        !swapTokenFiatAmount) ||
+      (isUnifiedSwapTx && !secondaryCurrency)
         ? undefined
         : secondaryCurrency,
     displayedStatusKey,
     isPending,
     isSubmitted,
+    detailsTitle,
+    remoteSignerAddress,
   };
 }

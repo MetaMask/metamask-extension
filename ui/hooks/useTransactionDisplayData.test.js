@@ -1,5 +1,6 @@
 import React from 'react';
 import * as reactRedux from 'react-redux';
+import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
 import { MemoryRouter } from 'react-router-dom';
@@ -7,31 +8,27 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import mockState from '../../test/data/mock-state.json';
+import configureStore from '../store/store';
 import transactions from '../../test/data/transaction-data.json';
-import {
-  getPreferences,
-  getShouldShowFiat,
-  getCurrentCurrency,
-  getCurrentChainId,
-} from '../selectors';
-import {
-  getTokens,
-  getNativeCurrency,
-  getNfts,
-} from '../ducks/metamask/metamask';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
-import { CHAIN_IDS } from '../../shared/constants/network';
 import { TransactionGroupCategory } from '../../shared/constants/transaction';
+import { KeyringType } from '../../shared/constants/keyring';
+import { createMockInternalAccount } from '../../test/jest/mocks';
 import { formatDateWithYearContext } from '../helpers/utils/util';
 import { getMessage } from '../helpers/utils/i18n-helper';
+import { mockNetworkState } from '../../test/stub/networks';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import * as i18nhooks from './useI18nContext';
 import * as useTokenFiatAmountHooks from './useTokenFiatAmount';
 import { useTransactionDisplayData } from './useTransactionDisplayData';
 
 const expectedResults = [
   {
-    title: 'Send',
+    title: 'Sent',
     category: TransactionGroupCategory.send,
     subtitle: 'To: 0xffe5b...91a97',
     subtitleContainsOrigin: false,
@@ -43,9 +40,11 @@ const expectedResults = [
     isPending: false,
     displayedStatusKey: TransactionStatus.confirmed,
     isSubmitted: false,
+    detailsTitle: 'Sent',
+    remoteSignerAddress: null,
   },
   {
-    title: 'Send',
+    title: 'Sent',
     category: TransactionGroupCategory.send,
     subtitle: 'To: 0x0ccc8...f8848',
     subtitleContainsOrigin: false,
@@ -58,7 +57,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Send',
+    title: 'Sent',
     category: TransactionGroupCategory.send,
     subtitle: 'To: 0xffe5b...91a97',
     subtitleContainsOrigin: false,
@@ -71,7 +70,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Receive',
+    title: 'Received',
     category: TransactionGroupCategory.receive,
     subtitle: 'From: 0x31b98...84523',
     subtitleContainsOrigin: false,
@@ -84,7 +83,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Receive',
+    title: 'Received',
     category: TransactionGroupCategory.receive,
     subtitle: 'From: 0x9eca6...6a149',
     subtitleContainsOrigin: false,
@@ -97,7 +96,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Receive',
+    title: 'Received',
     category: TransactionGroupCategory.receive,
     subtitle: 'From: 0xee014...efebb',
     subtitleContainsOrigin: false,
@@ -118,7 +117,6 @@ const expectedResults = [
     primaryCurrency: '+1 ABC',
     senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
     recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
-    secondaryCurrency: undefined,
     isPending: false,
     displayedStatusKey: TransactionStatus.confirmed,
   },
@@ -159,16 +157,134 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
     isPending: false,
   },
+  {
+    title: 'Sent BAT as ETH',
+    category: TransactionType.swapAndSend,
+    subtitle: 'metamask',
+    subtitleContainsOrigin: true,
+    date: formatDateWithYearContext(1585088013000),
+    primaryCurrency: '-33.425656732428330864 BAT',
+    senderAddress: '0x0a985a957b490f4d05bef05bc7ec556dd8535946',
+    recipientAddress: '0xc6f6ca03d790168758285264bcbf7fb30d27322b',
+    secondaryCurrency: undefined,
+    isPending: false,
+    displayedStatusKey: TransactionStatus.confirmed,
+  },
+  {
+    title: 'Sent USDC as DAI',
+    category: TransactionType.swapAndSend,
+    subtitle: 'metamask',
+    subtitleContainsOrigin: true,
+    date: formatDateWithYearContext(1585088013000),
+    primaryCurrency: '-5 USDC',
+    senderAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
+    recipientAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
+    secondaryCurrency: undefined,
+    isPending: false,
+    displayedStatusKey: TransactionStatus.confirmed,
+  },
+  {
+    title: 'Sent BNB as USDC',
+    category: TransactionType.swapAndSend,
+    subtitle: 'metamask',
+    subtitleContainsOrigin: true,
+    date: formatDateWithYearContext(1585088013000),
+    primaryCurrency: '-0.05 BNB',
+    senderAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
+    recipientAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
+    secondaryCurrency: undefined,
+    isPending: false,
+    displayedStatusKey: TransactionStatus.confirmed,
+  },
+  {
+    title: 'Sent ABC',
+    category: TransactionGroupCategory.send,
+    subtitle: 'To: ',
+    subtitleContainsOrigin: true,
+    date: formatDateWithYearContext(1585088013000),
+    primaryCurrency: '-1.234 ABC',
+    senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+    recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
+    secondaryCurrency: undefined,
+    isPending: false,
+    displayedStatusKey: TransactionStatus.confirmed,
+  },
 ];
 
-let useSelector, useI18nContext, useTokenFiatAmount;
+let useI18nContext, useTokenFiatAmount;
+const ADDRESS_MOCK = '0xabc';
+const NAME_MOCK = 'Account 1';
+
+const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
+  address: ADDRESS_MOCK,
+  name: NAME_MOCK,
+  keyringType: KeyringType.hd,
+  snapOptions: undefined,
+});
 
 const renderHookWithRouter = (cb, tokenAddress) => {
   const initialEntries = [
     tokenAddress ? `${ASSET_ROUTE}/${tokenAddress}` : DEFAULT_ROUTE,
   ];
+
+  const defaultState = {
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      completeOnboarding: true,
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      currentCurrency: 'ETH',
+      useCurrencyRateCheck: false, // to force getShouldShowFiat to return false
+      preferences: {
+        getShowFiatInTestnets: false,
+      },
+      allNfts: [],
+      internalAccounts: {
+        accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
+        selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
+      },
+      allTokens: {
+        [CHAIN_IDS.MAINNET]: {
+          [ADDRESS_MOCK]: [
+            {
+              address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+              symbol: 'ABC',
+              decimals: 18,
+            },
+          ],
+        },
+      },
+      allDetectedTokens: {
+        [CHAIN_IDS.MAINNET]: [
+          {
+            [ADDRESS_MOCK]: [
+              {
+                address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+                symbol: 'ABC',
+                decimals: 18,
+              },
+            ],
+          },
+        ],
+      },
+      tokensChainsCache: {
+        '0x4': {
+          data: {
+            '0xabca64466f257793eaa52fcfff5066894b76a149': {
+              address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+              symbol: 'ABC',
+              decimals: 18,
+            },
+          },
+        },
+      },
+    },
+  };
+
   const wrapper = ({ children }) => (
-    <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
+    <MemoryRouter initialEntries={initialEntries}>
+      <Provider store={configureStore(defaultState)}>{children}</Provider>
+    </MemoryRouter>
   );
   return renderHook(cb, { wrapper });
 };
@@ -177,7 +293,6 @@ describe('useTransactionDisplayData', () => {
   const dispatch = sinon.spy();
 
   beforeAll(() => {
-    useSelector = sinon.stub(reactRedux, 'useSelector');
     useTokenFiatAmount = sinon.stub(
       useTokenFiatAmountHooks,
       'useTokenFiatAmount',
@@ -187,32 +302,6 @@ describe('useTransactionDisplayData', () => {
     useI18nContext.returns((key, variables) =>
       getMessage('en', messages, key, variables),
     );
-    useSelector.callsFake((selector) => {
-      if (selector === getTokens) {
-        return [
-          {
-            address: '0xabca64466f257793eaa52fcfff5066894b76a149',
-            symbol: 'ABC',
-            decimals: 18,
-          },
-        ];
-      } else if (selector === getPreferences) {
-        return {
-          useNativeCurrencyAsPrimaryCurrency: true,
-        };
-      } else if (selector === getShouldShowFiat) {
-        return false;
-      } else if (selector === getNativeCurrency) {
-        return 'ETH';
-      } else if (selector === getCurrentCurrency) {
-        return 'ETH';
-      } else if (selector === getCurrentChainId) {
-        return CHAIN_IDS.MAINNET;
-      } else if (selector === getNfts) {
-        return [];
-      }
-      return null;
-    });
     sinon.stub(reactRedux, 'useDispatch').returns(dispatch);
   });
 
@@ -225,6 +314,7 @@ describe('useTransactionDisplayData', () => {
       const expected = expectedResults[idx];
       const tokenAddress =
         transactionGroup.primaryTransaction?.destinationTokenAddress;
+
       it(`should return a title of ${expected.title}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
@@ -232,6 +322,7 @@ describe('useTransactionDisplayData', () => {
         );
         expect(result.current.title).toStrictEqual(expected.title);
       });
+
       it(`should return a subtitle of ${expected.subtitle}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
@@ -239,6 +330,7 @@ describe('useTransactionDisplayData', () => {
         );
         expect(result.current.subtitle).toStrictEqual(expected.subtitle);
       });
+
       it(`should return a category of ${expected.category}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
@@ -246,6 +338,7 @@ describe('useTransactionDisplayData', () => {
         );
         expect(result.current.category).toStrictEqual(expected.category);
       });
+
       it(`should return a primaryCurrency of ${expected.primaryCurrency}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
@@ -255,7 +348,8 @@ describe('useTransactionDisplayData', () => {
           expected.primaryCurrency,
         );
       });
-      it(`should return a secondaryCurrency of ${expected.secondaryCurrency}`, () => {
+
+      it(`should return a secondaryCurrency of ${expected.secondaryCurrency} for ${transactionGroup.primaryTransaction.type}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
@@ -264,6 +358,7 @@ describe('useTransactionDisplayData', () => {
           expected.secondaryCurrency,
         );
       });
+
       it(`should return a displayedStatusKey of ${expected.displayedStatusKey}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
@@ -273,6 +368,7 @@ describe('useTransactionDisplayData', () => {
           expected.displayedStatusKey,
         );
       });
+
       it(`should return a recipientAddress of ${expected.recipientAddress}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
@@ -282,6 +378,7 @@ describe('useTransactionDisplayData', () => {
           expected.recipientAddress,
         );
       });
+
       it(`should return a senderAddress of ${expected.senderAddress}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
@@ -293,6 +390,7 @@ describe('useTransactionDisplayData', () => {
       });
     });
   });
+
   it('should return an appropriate object', () => {
     const { result } = renderHookWithRouter(() =>
       useTransactionDisplayData(transactions[0]),

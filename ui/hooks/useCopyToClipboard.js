@@ -12,12 +12,25 @@ import { useTimeout } from './useTimeout';
  */
 const DEFAULT_DELAY = MINUTE;
 
-export function useCopyToClipboard(delay = DEFAULT_DELAY) {
+/**
+ * @param delay - delay in ms
+ * @param opts - clipboard options
+ * @param opts.expireClipboard - expires clipboard after delay
+ * @returns {[boolean, (text: string) => void, () => void]}
+ */
+export function useCopyToClipboard(
+  delay = DEFAULT_DELAY,
+  opts = { expireClipboard: true },
+) {
   const [copied, setCopied] = useState(false);
   const startTimeout = useTimeout(
     () => {
-      copyToClipboard(' ', COPY_OPTIONS);
-      setCopied(false);
+      if (copied === true) {
+        if (opts.expireClipboard) {
+          copyToClipboard(' ', COPY_OPTIONS);
+        }
+        setCopied(false);
+      }
     },
     delay,
     false,
@@ -32,5 +45,9 @@ export function useCopyToClipboard(delay = DEFAULT_DELAY) {
     [startTimeout],
   );
 
-  return [copied, handleCopy];
+  const resetState = useCallback(() => {
+    setCopied(false);
+  }, []);
+
+  return [copied, handleCopy, resetState];
 }

@@ -1,280 +1,343 @@
-import EventEmitter from 'events';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { Carousel } from 'react-responsive-carousel';
-///: END:ONLY_INCLUDE_IF
-import Mascot from '../../../components/ui/mascot';
-import Button from '../../../components/ui/button';
-import { Text } from '../../../components/component-library';
-import CheckBox from '../../../components/ui/check-box';
-import Box from '../../../components/ui/box';
+import log from 'loglevel';
 import {
-  TextVariant,
-  AlignItems,
-  TextAlign,
-  FontWeight,
-} from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
+  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ONBOARDING_ACCOUNT_EXIST,
+  ONBOARDING_ACCOUNT_NOT_FOUND,
+  ONBOARDING_UNLOCK_ROUTE,
+  ONBOARDING_METAMETRICS,
+} from '../../../helpers/constants/routes';
+import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { setFirstTimeFlowType, startOAuthLogin } from '../../../store/actions';
+import LoadingScreen from '../../../components/ui/loading-screen';
 import {
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import WelcomeLogin from './welcome-login';
+import WelcomeBanner from './welcome-banner';
 import {
-  setFirstTimeFlowType,
-  setTermsOfUseLastAgreed,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  setParticipateInMetaMetrics,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../store/actions';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  ONBOARDING_METAMETRICS,
-  ///: END:ONLY_INCLUDE_IF
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-  ONBOARDING_COMPLETION_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  ONBOARDING_CREATE_PASSWORD_ROUTE,
-  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../helpers/constants/routes';
-import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+  LOGIN_ERROR,
+  LOGIN_OPTION,
+  LOGIN_TYPE,
+  WelcomePageState,
+} from './types';
+import LoginErrorModal from './login-error-modal';
 
-export default function OnboardingWelcome() {
-  const t = useI18nContext();
+export default function OnboardingWelcome({
+  pageState = WelcomePageState.Banner,
+  setPageState,
+}) {
   const dispatch = useDispatch();
   const history = useHistory();
-  const [eventEmitter] = useState(new EventEmitter());
   const currentKeyring = useSelector(getCurrentKeyring);
+  const isSeedlessOnboardingFeatureEnabled =
+    getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const [termsChecked, setTermsChecked] = useState(false);
+  const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
+    useState(false);
 
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [loginError, setLoginError] = useState(null);
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
   useEffect(() => {
-    if (currentKeyring) {
-      if (firstTimeFlowType === FirstTimeFlowType.import) {
+    if (currentKeyring && !newAccountCreationInProgress) {
+      if (
+        firstTimeFlowType === FirstTimeFlowType.import ||
+        firstTimeFlowType === FirstTimeFlowType.socialImport
+      ) {
         history.replace(ONBOARDING_COMPLETION_ROUTE);
+      } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
+        history.replace(ONBOARDING_COMPLETION_ROUTE);
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        if (getBrowserName() === PLATFORM_FIREFOX) {
+          history.replace(ONBOARDING_COMPLETION_ROUTE);
+        } else {
+          history.replace(ONBOARDING_METAMETRICS);
+        }
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
     }
-  }, [currentKeyring, history, firstTimeFlowType]);
-  const trackEvent = useContext(MetaMetricsContext);
-
-  const onCreateClick = async () => {
-    dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletCreationStarted,
-      properties: {
-        account_type: 'metamask',
-      },
-    });
-    dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    history.push(ONBOARDING_METAMETRICS);
-    ///: END:ONLY_INCLUDE_IF
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    await dispatch(setParticipateInMetaMetrics(false));
-    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
-    ///: END:ONLY_INCLUDE_IF
-  };
-  const toggleTermsCheck = () => {
-    setTermsChecked((currentTermsChecked) => !currentTermsChecked);
-  };
-  const termsOfUse = t('agreeTermsOfUse', [
-    <a
-      className="create-new-vault__terms-link"
-      key="create-new-vault__link-text"
-      href="https://metamask.io/terms.html"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      {t('terms')}
-    </a>,
+  }, [
+    currentKeyring,
+    history,
+    firstTimeFlowType,
+    newAccountCreationInProgress,
   ]);
+  const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
+    trackEvent;
 
-  const onImportClick = async () => {
-    dispatch(setFirstTimeFlowType('import'));
+  const onCreateClick = useCallback(async () => {
+    setIsLoggingIn(true);
+    setNewAccountCreationInProgress(true);
+    await dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletImportStarted,
+      event: MetaMetricsEventName.WalletSetupStarted,
       properties: {
-        account_type: 'imported',
+        account_type: MetaMetricsEventAccountType.Default,
       },
     });
-    dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
+    bufferedTrace?.({
+      name: TraceName.OnboardingNewSrpCreateWallet,
+      op: TraceOperation.OnboardingUserJourney,
+      parentContext: onboardingParentContext?.current,
+    });
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    history.push(ONBOARDING_METAMETRICS);
-    ///: END:ONLY_INCLUDE_IF
+    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+  }, [dispatch, history, trackEvent, onboardingParentContext, bufferedTrace]);
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    await dispatch(setParticipateInMetaMetrics(false));
+  const onImportClick = useCallback(async () => {
+    setIsLoggingIn(true);
+    await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletImportStarted,
+      properties: {
+        account_type: MetaMetricsEventAccountType.Imported,
+      },
+    });
+    bufferedTrace?.({
+      name: TraceName.OnboardingExistingSrpImport,
+      op: TraceOperation.OnboardingUserJourney,
+      parentContext: onboardingParentContext?.current,
+    });
+
     history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
-    ///: END:ONLY_INCLUDE_IF
-  };
+  }, [dispatch, history, trackEvent, onboardingParentContext, bufferedTrace]);
+
+  const handleSocialLogin = useCallback(
+    async (socialConnectionType) => {
+      if (isSeedlessOnboardingFeatureEnabled) {
+        bufferedTrace?.({
+          name: TraceName.OnboardingSocialLoginAttempt,
+          op: TraceOperation.OnboardingUserJourney,
+          tags: { provider: socialConnectionType },
+          parentContext: onboardingParentContext?.current,
+        });
+        const isNewUser = await dispatch(
+          startOAuthLogin(
+            socialConnectionType,
+            bufferedTrace,
+            bufferedEndTrace,
+          ),
+        );
+        bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginAttempt });
+        return isNewUser;
+      }
+      return true;
+    },
+    [
+      dispatch,
+      isSeedlessOnboardingFeatureEnabled,
+      onboardingParentContext,
+      bufferedTrace,
+      bufferedEndTrace,
+    ],
+  );
+
+  const handleSocialLoginError = useCallback(
+    (error, socialConnectionType) => {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+
+      bufferedTrace?.({
+        name: TraceName.OnboardingSocialLoginError,
+        op: TraceOperation.OnboardingError,
+        tags: { provider: socialConnectionType, errorMessage },
+        parentContext: onboardingParentContext.current,
+      });
+      bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginError });
+      bufferedEndTrace?.({
+        name: TraceName.OnboardingSocialLoginAttempt,
+        data: { success: false },
+      });
+    },
+    [onboardingParentContext, bufferedTrace, bufferedEndTrace],
+  );
+
+  const onSocialLoginCreateClick = useCallback(
+    async (socialConnectionType) => {
+      setIsLoggingIn(true);
+      setNewAccountCreationInProgress(true);
+      await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.WalletSetupStarted,
+        properties: {
+          account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
+        },
+      });
+
+      try {
+        const isNewUser = await handleSocialLogin(socialConnectionType);
+
+        // Track wallet setup completed for social login users
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.SocialLoginCompleted,
+          properties: {
+            account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
+          },
+        });
+        if (isNewUser) {
+          bufferedTrace?.({
+            name: TraceName.OnboardingNewSocialCreateWallet,
+            op: TraceOperation.OnboardingUserJourney,
+            parentContext: onboardingParentContext.current,
+          });
+          history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
+        } else {
+          history.replace(ONBOARDING_ACCOUNT_EXIST);
+        }
+      } catch (error) {
+        handleSocialLoginError(error, socialConnectionType);
+      } finally {
+        setIsLoggingIn(false);
+      }
+    },
+    [
+      dispatch,
+      handleSocialLogin,
+      trackEvent,
+      history,
+      onboardingParentContext,
+      handleSocialLoginError,
+      bufferedTrace,
+    ],
+  );
+
+  const onSocialLoginImportClick = useCallback(
+    async (socialConnectionType) => {
+      setIsLoggingIn(true);
+      dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.WalletImportStarted,
+        properties: {
+          account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
+        },
+      });
+
+      try {
+        const isNewUser = await handleSocialLogin(socialConnectionType);
+
+        // Track wallet login completed for existing social login users
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.SocialLoginCompleted,
+          properties: {
+            account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
+          },
+        });
+
+        if (isNewUser) {
+          history.push(ONBOARDING_ACCOUNT_NOT_FOUND);
+        } else {
+          bufferedTrace?.({
+            name: TraceName.OnboardingExistingSocialLogin,
+            op: TraceOperation.OnboardingUserJourney,
+            parentContext: onboardingParentContext.current,
+          });
+          history.push(ONBOARDING_UNLOCK_ROUTE);
+        }
+      } catch (error) {
+        handleSocialLoginError(error, socialConnectionType);
+      } finally {
+        setIsLoggingIn(false);
+      }
+    },
+    [
+      dispatch,
+      handleSocialLogin,
+      trackEvent,
+      history,
+      onboardingParentContext,
+      handleSocialLoginError,
+      bufferedTrace,
+    ],
+  );
+
+  const handleLoginError = useCallback((error) => {
+    log.error('handleLoginError::error', error);
+    const errorMessage = error.message;
+    if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
+      setLoginError(null);
+    } else {
+      setLoginError(LOGIN_ERROR.GENERIC);
+    }
+  }, []);
+
+  const handleLogin = useCallback(
+    async (loginType, loginOption) => {
+      try {
+        if (loginOption === LOGIN_OPTION.NEW && loginType === LOGIN_TYPE.SRP) {
+          await onCreateClick();
+        } else if (
+          loginOption === LOGIN_OPTION.EXISTING &&
+          loginType === LOGIN_TYPE.SRP
+        ) {
+          await onImportClick();
+        } else if (isSeedlessOnboardingFeatureEnabled) {
+          if (loginOption === LOGIN_OPTION.NEW) {
+            await onSocialLoginCreateClick(loginType);
+          } else if (loginOption === LOGIN_OPTION.EXISTING) {
+            await onSocialLoginImportClick(loginType);
+          }
+        }
+      } catch (error) {
+        handleLoginError(error);
+      }
+    },
+    [
+      onCreateClick,
+      onImportClick,
+      onSocialLoginCreateClick,
+      onSocialLoginImportClick,
+      isSeedlessOnboardingFeatureEnabled,
+      handleLoginError,
+    ],
+  );
 
   return (
-    <div className="onboarding-welcome" data-testid="onboarding-welcome">
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        <Carousel showThumbs={false} showStatus={false} showArrows>
-          <div>
-            <Text
-              variant={TextVariant.headingLg}
-              as="h2"
-              textAlign={TextAlign.Center}
-              fontWeight={FontWeight.Bold}
-            >
-              {t('welcomeToMetaMask')}
-            </Text>
-            <Text textAlign={TextAlign.Center} marginLeft={6} marginRight={6}>
-              {t('welcomeToMetaMaskIntro')}
-            </Text>
-            <div className="onboarding-welcome__mascot">
-              <Mascot
-                animationEventEmitter={eventEmitter}
-                width="250"
-                height="250"
-              />
-            </div>
-          </div>
-          <div>
-            <Text
-              variant={TextVariant.headingLg}
-              as="h2"
-              textAlign={TextAlign.Center}
-              fontWeight={FontWeight.Bold}
-            >
-              {t('welcomeExploreTitle')}
-            </Text>
-            <Text textAlign={TextAlign.Center}>
-              {t('welcomeExploreDescription')}
-            </Text>
-            <div className="onboarding-welcome__image">
-              <img
-                src="/images/onboarding-welcome-say-hello.svg"
-                width="169"
-                height="237"
-                alt=""
-              />
-            </div>
-          </div>
-          <div>
-            <Text
-              variant={TextVariant.headingLg}
-              as="h2"
-              textAlign={TextAlign.Center}
-              fontWeight={FontWeight.Bold}
-            >
-              {t('welcomeLoginTitle')}
-            </Text>
-            <Text textAlign={TextAlign.Center}>
-              {t('welcomeLoginDescription')}
-            </Text>
-            <div className="onboarding-welcome__image">
-              <img
-                src="/images/onboarding-welcome-decentralised-apps.svg"
-                width="327"
-                height="256"
-                alt=""
-              />
-            </div>
-          </div>
-        </Carousel>
-        ///: END:ONLY_INCLUDE_IF
-      }
-
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        <div>
-          <Text
-            variant={TextVariant.headingLg}
-            textAlign={TextAlign.Center}
-            fontWeight={FontWeight.Bold}
-          >
-            {t('installExtension')}
-          </Text>
-          <Text
-            textAlign={TextAlign.Center}
-            marginTop={2}
-            marginLeft={6}
-            marginRight={6}
-          >
-            {t('installExtensionDescription')}
-          </Text>
-          <div className="onboarding-welcome__mascot">
-            <Mascot
-              animationEventEmitter={eventEmitter}
-              width="250"
-              height="250"
-            />
-          </div>
-        </div>
-        ///: END:ONLY_INCLUDE_IF
-      }
-
-      <ul className="onboarding-welcome__buttons">
-        <li>
-          <Box
-            alignItems={AlignItems.center}
-            className="onboarding__terms-of-use"
-          >
-            <CheckBox
-              id="onboarding__terms-checkbox"
-              className="onboarding__terms-checkbox"
-              dataTestId="onboarding-terms-checkbox"
-              checked={termsChecked}
-              onClick={toggleTermsCheck}
-            />
-            <label
-              className="onboarding__terms-label"
-              htmlFor="onboarding__terms-checkbox"
-            >
-              <Text variant={TextVariant.bodyMd} marginLeft={2} as="span">
-                {termsOfUse}
-              </Text>
-            </label>
-          </Box>
-        </li>
-
-        <li>
-          <Button
-            data-testid="onboarding-create-wallet"
-            type="primary"
-            onClick={onCreateClick}
-            disabled={!termsChecked}
-          >
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-              t('onboardingCreateWallet')
-              ///: END:ONLY_INCLUDE_IF
-            }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-              t('continue')
-              ///: END:ONLY_INCLUDE_IF
-            }
-          </Button>
-        </li>
-        <li>
-          <Button
-            data-testid="onboarding-import-wallet"
-            type="secondary"
-            onClick={onImportClick}
-            disabled={!termsChecked}
-          >
-            {t('onboardingImportWallet')}
-          </Button>
-        </li>
-      </ul>
-    </div>
+    <>
+      {pageState === WelcomePageState.Banner && (
+        <WelcomeBanner onAccept={() => setPageState(WelcomePageState.Login)} />
+      )}
+      {pageState === WelcomePageState.Login && (
+        <WelcomeLogin onLogin={handleLogin} />
+      )}
+      {isLoggingIn && <LoadingScreen />}
+      {loginError !== null && (
+        <LoginErrorModal
+          onClose={() => setLoginError(null)}
+          loginError={loginError}
+        />
+      )}
+    </>
   );
 }
+
+OnboardingWelcome.propTypes = {
+  pageState: PropTypes.oneOf(Object.values(WelcomePageState)),
+  setPageState: PropTypes.func.isRequired,
+};

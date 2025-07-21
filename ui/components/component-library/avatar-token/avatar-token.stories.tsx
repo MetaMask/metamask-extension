@@ -7,17 +7,14 @@ import {
   BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  BadgeWrapper,
-  Box,
-  ButtonLink,
-  ButtonLinkSize,
-  Text,
-} from '..';
 import README from './README.mdx';
-import { AvatarToken, AvatarTokenSize } from '.';
+import { AvatarToken } from './avatar-token';
+import { Box } from '../box';
+import { AvatarTokenSize } from './avatar-token.types';
+import { ButtonLink, ButtonLinkSize } from '../button-link';
+import { BadgeWrapper } from '../badge-wrapper';
+import { AvatarNetwork, AvatarNetworkSize } from '../avatar-network';
+import { Text } from '../text';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarToken',
@@ -297,15 +294,15 @@ export const Src: StoryFn<typeof AvatarToken> = (args) => (
     <AvatarToken {...args} src="./images/bnb.png" />
     <AvatarToken
       {...args}
-      src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png"
+      src="https://static.cx.metamask.io/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png"
     />
     <AvatarToken
       {...args}
-      src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x0d8775f648430679a709e98d2b0cb6250d2887ef.png"
+      src="https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0d8775f648430679a709e98d2b0cb6250d2887ef.png"
     />
     <AvatarToken
       {...args}
-      src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png"
+      src="https://static.cx.metamask.io/api/v1/tokenIcons/1/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png"
     />
     <AvatarToken
       {...args}

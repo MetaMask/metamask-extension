@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getErrorMessage } from '../../../../shared/modules/error';
 import {
   MetaMetricsEventAccountImportType,
   MetaMetricsEventAccountType,
@@ -20,6 +21,8 @@ import {
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { getIsSocialLoginFlow } from '../../../selectors';
 
 // Subviews
 import JsonImportView from './json';
@@ -29,6 +32,8 @@ export const ImportAccount = ({ onActionComplete }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
   const menuItems = [t('privateKey'), t('jsonFile')];
 
@@ -38,6 +43,15 @@ export const ImportAccount = ({ onActionComplete }) => {
     const loadingMessage = getLoadingMessage(strategy);
 
     try {
+      if (isSocialLoginFlow) {
+        const isPasswordOutdated = await dispatch(
+          actions.checkIsSeedlessPasswordOutdated(true),
+        );
+        if (isPasswordOutdated) {
+          return false;
+        }
+      }
+
       const { selectedAddress } = await dispatch(
         actions.importNewAccount(strategy, importArgs, loadingMessage),
       );
@@ -50,8 +64,9 @@ export const ImportAccount = ({ onActionComplete }) => {
         return false;
       }
     } catch (error) {
-      trackImportEvent(strategy, error.message);
-      translateWarning(error.message);
+      const message = getErrorMessage(error);
+      trackImportEvent(strategy, message);
+      translateWarning(message);
       return false;
     }
 
@@ -74,6 +89,8 @@ export const ImportAccount = ({ onActionComplete }) => {
       properties: {
         account_type: MetaMetricsEventAccountType.Imported,
         account_import_type: accountImportType,
+        hd_entropy_index: hdEntropyIndex,
+        is_suggested_name: true,
       },
     });
   }
@@ -117,17 +134,38 @@ export const ImportAccount = ({ onActionComplete }) => {
 
   return (
     <>
-      <Text variant={TextVariant.bodySm} marginTop={2}>
-        {t('importAccountMsg')}{' '}
-        <ButtonLink
-          size={Size.inherit}
-          href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t('here')}
-        </ButtonLink>
-      </Text>
+      {isSocialLoginFlow ? (
+        <>
+          <Text variant={TextVariant.bodySm}>
+            {t('importAccountWithSocialMsg')}
+          </Text>
+          <Text variant={TextVariant.bodySm}>
+            {t('importAccountWithSocialMsgLearnMore', [
+              <ButtonLink
+                size={Size.inherit}
+                href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
+                target="_blank"
+                rel="noopener noreferrer"
+                key="importAccountWithSocialMsgLearnMore"
+              >
+                {t('learnMoreUpperCase')}
+              </ButtonLink>,
+            ])}
+          </Text>
+        </>
+      ) : (
+        <Text variant={TextVariant.bodySm} marginTop={2}>
+          {t('importAccountMsg')}{' '}
+          <ButtonLink
+            size={Size.inherit}
+            href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('here')}
+          </ButtonLink>
+        </Text>
+      )}
       <Box paddingTop={4} paddingBottom={8}>
         <Label
           width={BlockSize.Full}

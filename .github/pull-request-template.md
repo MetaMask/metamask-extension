@@ -1,3 +1,8 @@
+<!--
+Please submit this PR as a draft initially.
+Do not mark it as "Ready for review" until the template has been completely filled out, and PR status checks have passed at least once.
+-->
+
 ## **Description**
 
 <!--
@@ -7,6 +12,22 @@ Write a short description of the changes included in this pull request, also inc
 -->
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/MetaMask/metamask-extension/pull/PR?quickstart=1)
+
+## **Changelog**
+
+<!--
+If this PR is not End-User-Facing and should not show up in the CHANGELOG, you can choose to either:
+1. Write `CHANGELOG entry: null`
+2. Label with `no-changelog`
+
+If this PR is End-User-Facing, please write a short User-Facing description in the past tense like:
+`CHANGELOG entry: Added a new tab for users to see their NFTs`
+`CHANGELOG entry: Fixed a bug that was causing some NFTs to flicker`
+
+(This helps the Release Engineer do their job more quickly and accurately)
+-->
+
+CHANGELOG entry:
 
 ## **Related issues**
 
@@ -32,17 +53,11 @@ Fixes:
 
 ## **Pre-merge author checklist**
 
-- [ ] I’ve followed [MetaMask Coding Standards](https://github.com/MetaMask/metamask-extension/blob/develop/.github/guidelines/CODING_GUIDELINES.md).
-- [ ] I've clearly explained what problem this PR is solving and how it is solved.
-- [ ] I've linked related issues
-- [ ] I've included manual testing steps
-- [ ] I've included screenshots/recordings if applicable
+- [ ] I've followed [MetaMask Contributor Docs](https://github.com/MetaMask/contributor-docs) and [MetaMask Extension Coding Standards](https://github.com/MetaMask/metamask-extension/blob/main/.github/guidelines/CODING_GUIDELINES.md).
+- [ ] I've completed the PR template to the best of my ability
 - [ ] I’ve included tests if applicable
 - [ ] I’ve documented my code using [JSDoc](https://jsdoc.app/) format if applicable
-- [ ] I’ve applied the right labels on the PR (see [labeling guidelines](https://github.com/MetaMask/metamask-extension/blob/develop/.github/guidelines/LABELING_GUIDELINES.md)). Not required for external contributors.
-- [ ] I’ve properly set the pull request status:
-  - [ ] In case it's not yet "ready for review", I've set it to "draft".
-  - [ ] In case it's "ready for review", I've changed it from "draft" to "non-draft".
+- [ ] I’ve applied the right labels on the PR (see [labeling guidelines](https://github.com/MetaMask/metamask-extension/blob/main/.github/guidelines/LABELING_GUIDELINES.md)). Not required for external contributors.
 
 ## **Pre-merge reviewer checklist**
 

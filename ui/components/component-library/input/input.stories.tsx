@@ -8,12 +8,12 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-import { Button, Box, ButtonVariant } from '..';
-
 import { InputType } from './input.types';
 import { Input } from './input';
 
 import README from './README.mdx';
+import { Box } from '../box';
+import { Button, ButtonVariant } from '../button';
 
 const marginSizeControlOptions = [
   undefined,

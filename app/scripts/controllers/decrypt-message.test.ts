@@ -2,6 +2,7 @@ import {
   DecryptMessageManager,
   DecryptMessageParams,
 } from '@metamask/message-manager';
+import type { DecryptMessageManagerMessenger } from '@metamask/message-manager';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import DecryptMessageController, {
   DecryptMessageControllerMessenger,
@@ -36,10 +37,18 @@ const createMessengerMock = () =>
   ({
     registerActionHandler: jest.fn(),
     registerInitialEventPayload: jest.fn(),
+    subscribe: jest.fn(),
     publish: jest.fn(),
     call: jest.fn(),
-  } as any as jest.Mocked<DecryptMessageControllerMessenger>);
+  }) as unknown as jest.Mocked<DecryptMessageControllerMessenger>;
 
+const createManagerMessengerMock = () =>
+  ({
+    subscribe: jest.fn(),
+  }) as unknown as jest.Mocked<DecryptMessageManagerMessenger>;
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const createDecryptMessageManagerMock = <T>() =>
   ({
     getUnapprovedMessages: jest.fn(),
@@ -57,23 +66,20 @@ const createDecryptMessageManagerMock = <T>() =>
     hub: {
       on: jest.fn(),
     },
-  } as any as jest.Mocked<T>);
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }) as any as jest.Mocked<T>;
 
 describe('DecryptMessageController', () => {
-  class MockDecryptMessageController extends DecryptMessageController {
-    // update is protected, so we expose it for typechecking here
-    public update(callback: Parameters<DecryptMessageController['update']>[0]) {
-      return super.update(callback);
-    }
-  }
-
-  let decryptMessageController: MockDecryptMessageController;
+  let decryptMessageController: DecryptMessageController;
 
   const decryptMessageManagerConstructorMock =
     DecryptMessageManager as jest.MockedClass<typeof DecryptMessageManager>;
   const getStateMock = jest.fn();
   const keyringControllerMock = createKeyringControllerMock();
   const messengerMock = createMessengerMock();
+  const managerMessengerMock = createManagerMessengerMock();
   const metricsEventMock = jest.fn();
 
   const decryptMessageManagerMock =
@@ -81,6 +87,9 @@ describe('DecryptMessageController', () => {
 
   const mockMessengerAction = (
     action: string,
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     callback: (actionName: string, ...args: any[]) => any,
   ) => {
     messengerMock.call.mockImplementation((actionName, ...rest) => {
@@ -99,11 +108,23 @@ describe('DecryptMessageController', () => {
       decryptMessageManagerMock,
     );
 
-    decryptMessageController = new MockDecryptMessageController({
+    decryptMessageController = new DecryptMessageController({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getState: getStateMock as any,
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       keyringController: keyringControllerMock as any,
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       messenger: messengerMock as any,
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       metricsEvent: metricsEventMock as any,
+      managerMessenger: managerMessengerMock,
     } as DecryptMessageControllerOptions);
   });
 
@@ -113,24 +134,16 @@ describe('DecryptMessageController', () => {
   });
 
   it('should reset state', () => {
-    decryptMessageController.update(() => ({
-      unapprovedDecryptMsgs: {
-        [messageIdMock]: messageMock,
-      } as any,
-      unapprovedDecryptMsgCount: 1,
-    }));
     decryptMessageController.resetState();
     expect(decryptMessageController.state).toStrictEqual(getDefaultState());
   });
 
-  it('should clear unapproved messages', () => {
-    decryptMessageController.clearUnapproved();
-    expect(decryptMessageController.state).toStrictEqual(getDefaultState());
-    expect(decryptMessageManagerMock.update).toBeCalledTimes(1);
-  });
   it('should add unapproved messages', async () => {
     await decryptMessageController.newRequestDecryptMessage(
       messageMock,
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       undefined as any,
     );
 
@@ -160,9 +173,8 @@ describe('DecryptMessageController', () => {
     );
     getStateMock.mockReturnValue(mockExtState);
 
-    const result = await decryptMessageController.decryptMessage(
-      messageToDecrypt,
-    );
+    const result =
+      await decryptMessageController.decryptMessage(messageToDecrypt);
 
     expect(decryptMessageManagerMock.approveMessage).toBeCalledTimes(1);
     expect(decryptMessageManagerMock.approveMessage).toBeCalledWith(
@@ -220,6 +232,9 @@ describe('DecryptMessageController', () => {
     const messageToDecrypt = {
       ...messageMock,
       data: messageDataMock,
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
     decryptMessageManagerMock.getMessage.mockReturnValue(messageToDecrypt);
     mockMessengerAction(
@@ -228,9 +243,8 @@ describe('DecryptMessageController', () => {
     );
     getStateMock.mockReturnValue(mockExtState);
 
-    const result = await decryptMessageController.decryptMessageInline(
-      messageToDecrypt,
-    );
+    const result =
+      await decryptMessageController.decryptMessageInline(messageToDecrypt);
 
     expect(decryptMessageManagerMock.setResult).toBeCalledTimes(1);
     expect(decryptMessageManagerMock.setResult).toBeCalledWith(
@@ -257,9 +271,8 @@ describe('DecryptMessageController', () => {
     );
     getStateMock.mockReturnValue(mockExtState);
 
-    const result = await decryptMessageController.cancelDecryptMessage(
-      messageIdMock,
-    );
+    const result =
+      await decryptMessageController.cancelDecryptMessage(messageIdMock);
 
     expect(decryptMessageManagerMock.rejectMessage).toBeCalledTimes(1);
     expect(decryptMessageManagerMock.rejectMessage).toBeCalledWith(
@@ -271,6 +284,9 @@ describe('DecryptMessageController', () => {
   it('should be able to reject all unapproved messages', async () => {
     decryptMessageManagerMock.getUnapprovedMessages.mockReturnValue({
       [messageIdMock]: messageMock,
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     await decryptMessageController.rejectUnapproved('reason to cancel');

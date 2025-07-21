@@ -5,6 +5,8 @@ import UnitInput from '../unit-input';
 import CurrencyDisplay from '../currency-display';
 import { getWeiHexFromDecimalValue } from '../../../../shared/modules/conversion.utils';
 
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { Numeric } from '../../../../shared/modules/Numeric';

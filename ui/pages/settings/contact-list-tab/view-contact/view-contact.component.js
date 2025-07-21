@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 
-import Button from '../../../../components/ui/button/button.component';
-
 import {
+  Button,
+  ButtonVariant,
   AvatarAccount,
   AvatarAccountSize,
   Box,
@@ -51,19 +51,22 @@ function ViewContact({
         <Box
           className="settings-page__header address-book__header"
           paddingLeft={6}
+          paddingRight={6}
         >
           <AvatarAccount size={AvatarAccountSize.Lg} address={address} />
           <Text
             className="address-book__header__name"
             variant={TextVariant.bodyLgMedium}
             marginInlineStart={4}
+            style={{ overflow: 'hidden' }}
+            ellipsis
           >
             {name || address}
           </Text>
         </Box>
         <div className="address-book__view-contact__group">
           <Button
-            type="secondary"
+            variant={ButtonVariant.Secondary}
             onClick={() => {
               history.push(`${editRoute}/${address}`);
             }}

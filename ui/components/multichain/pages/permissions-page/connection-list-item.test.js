@@ -35,6 +35,12 @@ describe('ConnectionListItem', () => {
       origin: 'https://metamask.github.io',
       subjectType: 'website',
       iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
+      networkIconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
+      networkName: 'Test Dapp Network',
+      addresses: [
+        '0xaaaF07C80ce267F3132cE7e6048B66E6E669365B',
+        '0xbbbD671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1',
+      ],
     };
 
     const { getByText, getByTestId } = renderWithProvider(

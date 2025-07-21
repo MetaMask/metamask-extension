@@ -1,20 +1,13 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { TransactionType } from '@metamask/transaction-controller';
+
 import { ConfirmMetamaskState } from '../types/confirm';
 import {
-  currentConfirmationSelector,
-  latestPendingConfirmationSelector,
+  oldestPendingConfirmationSelector,
   pendingConfirmationsSelector,
 } from './confirm';
 
 describe('confirm selectors', () => {
   const mockedState: ConfirmMetamaskState = {
-    confirm: {
-      currentConfirmation: {
-        id: '1',
-        type: TransactionType.contractInteraction,
-      },
-    },
     metamask: {
       pendingApprovals: {
         '1': {
@@ -39,13 +32,15 @@ describe('confirm selectors', () => {
           id: '3',
           origin: 'origin',
           time: Date.now() - 20,
-          type: ApprovalType.EthSign,
+          type: ApprovalType.PersonalSign,
           requestData: {},
           requestState: null,
           expectsResult: false,
         },
       },
       approvalFlows: [],
+      enableEnforcedSimulations: false,
+      enableEnforcedSimulationsForTransactions: {},
     },
   };
 
@@ -60,19 +55,11 @@ describe('confirm selectors', () => {
     });
   });
 
-  describe('latestPendingConfirmationSelector', () => {
-    it('should return latest pending confirmation from state', () => {
-      const result = latestPendingConfirmationSelector(mockedState);
+  describe('oldestPendingConfirmationSelector', () => {
+    it('should return oldest pending confirmation from state', () => {
+      const result = oldestPendingConfirmationSelector(mockedState);
 
-      expect(result).toStrictEqual(mockedState.metamask.pendingApprovals[2]);
-    });
-  });
-
-  describe('currentConfirmationSelector', () => {
-    it('should return curently active confirmation from state', () => {
-      const result = currentConfirmationSelector(mockedState);
-
-      expect(result).toStrictEqual(mockedState.confirm.currentConfirmation);
+      expect(result).toStrictEqual(mockedState.metamask.pendingApprovals[3]);
     });
   });
 });

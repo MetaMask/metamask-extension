@@ -7,7 +7,7 @@ import {
 import {
   ActionConstraint,
   EventConstraint,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 
 // Use the same type for both the source entries and the argument to NameController::setName.
@@ -25,7 +25,11 @@ export enum ChangeType {
 }
 
 enum SyncDirection {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SOURCE_TO_PETNAMES = 'Source->Petnames',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   PETNAMES_TO_SOURCE = 'Petnames->Source',
 }
 
@@ -37,7 +41,7 @@ type PetnamesBridgeAllowedEvents = NameStateChange;
 export type PetnamesBridgeMessenger<
   Event extends EventConstraint = never,
   Action extends ActionConstraint = never,
-> = RestrictedControllerMessenger<
+> = RestrictedMessenger<
   'PetnamesBridge',
   Action,
   PetnamesBridgeAllowedEvents | Event,

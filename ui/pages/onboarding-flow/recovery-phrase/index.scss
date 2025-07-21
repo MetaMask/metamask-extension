@@ -1,191 +1,81 @@
 @use "design-system";
 
 .recovery-phrase {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
   &__header {
-    max-width: 420px;
-  }
-
-  &__tips {
-    flex-direction: column;
-    max-width: 420px;
-    margin: 0 auto;
-
-    ul {
-      list-style: disc;
-      margin-left: 20px;
-      margin-bottom: 24px;
-    }
+    grid-template-columns: 0.25fr 3.5fr 0.25fr;
   }
 
   &__chips {
-    display: grid;
-    justify-items: center;
-    align-items: center;
-    row-gap: 16px;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-
-    @include design-system.screen-sm-min {
-      grid-template-columns: 1fr 1fr 1fr;
-    }
+    grid-template-columns: 1fr 1fr 1fr;
 
     &--hidden {
-      filter: blur(5px);
+      filter: blur(8px);
     }
+
+    // SRP_OVERRIDE: START: custom text field style
+    .mm-text-field {
+      padding-left: 8px;
+      border-radius: 8px;
+    }
+
+    .mm-text-field:not(.mm-text-field--quiz-word) {
+      border-color: var(--color-border-muted);
+    }
+
+    .mm-text-field.mm-text-field--quiz-word {
+      cursor: pointer;
+
+      .mm-input {
+        cursor: pointer;
+      }
+    }
+
+    .mm-text-field.mm-text-field--target-index {
+      outline: 5px auto var(--color-primary-default);
+    }
+
+    .mm-text-field.mm-text-field--focused {
+      outline: 5px auto var(--color-primary-default);
+    }
+
+    .mm-input {
+      padding-right: 8px;
+      padding-left: 4px;
+    }
+    // SRP_OVERRIDE: END
+  }
+
+  &__text {
+    height: 40px;
+  }
+
+  &__word-index {
+    width: 20px;
   }
 
   &__secret {
     position: relative;
-    width: 100%;
+    min-height: 216px;
+  }
+
+  &__secret-blocker-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
   }
 
   &__secret-blocker {
     position: absolute;
     top: 0;
     bottom: 0;
-    height: 100%;
-    width: 100%;
-    background-color: var(--color-overlay-alternative);
-    display: flex;
     flex-flow: column nowrap;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 0 18px;
-    border-radius: 4px;
-    color: var(--color-overlay-inverse);
-
-    &--text {
-      margin-top: 32px;
-    }
+    opacity: 0;
   }
 
-  &__chip-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    text-align: center;
-
-    &__number {
-      font-size: design-system.$font-size-h5;
-    }
-  }
-
-  &__footer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-
-    @include design-system.screen-sm-max {
-      margin-inline-start: 40px;
-      margin-inline-end: 40px;
-      margin-bottom: 40px;
-    }
-
-    &__confirm {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-
-      @include design-system.screen-md-min {
-        margin-top: 20px;
-      }
-
-      &--button {
-        align-self: center;
-        width: 100%;
-        max-width: 300px;
-      }
-    }
-
-    &--button {
-      align-self: center;
-
-      @include design-system.screen-sm-min {
-        max-width: 300px;
-      }
-    }
-
-    &__copy-and-hide {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-
-      &__area {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-
-        @include design-system.screen-sm-min {
-          justify-content: space-around;
-        }
-      }
-
-      &__button {
-        @include design-system.H6;
-
-        background-color: transparent;
-        border: none;
-        width: 32%;
-        color: var(--color-primary-default);
-        cursor: pointer;
-        margin-bottom: 24px;
-        padding-left: 0;
-        padding-right: 0;
-
-        &__hide-seed {
-          justify-content: flex-start;
-        }
-
-        &__copy-to-clipboard {
-          justify-content: flex-end;
-        }
-
-        @include design-system.screen-sm-max {
-          justify-content: center;
-          width: 100%;
-        }
-
-        svg {
-          width: 15px;
-        }
-
-        &:active {
-          color: var(--color-text-default);
-          background-color: transparent;
-          border: none;
-          transform: scale(0.97);
-        }
-      }
-    }
-  }
-
-  &__chip {
-    justify-content: center;
-    border-radius: 13px;
-    height: 32px;
-    width: 120px;
-
-    &--with-input {
-      width: 120px;
-      box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
-      border-width: 2px;
-      border-radius: 13px;
-      height: 32px;
-    }
-  }
-
-  &__confirm {
-    @include design-system.screen-sm-min {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  &__secret-blocker-text {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    cursor: pointer;
   }
 }

@@ -1,4 +1,4 @@
-import { type InternalAccount } from '@metamask/keyring-api';
+import { type InternalAccount } from '@metamask/keyring-internal-api';
 
 export enum ConnectAccountsType {
   Account = 'disconnectAllAccountsText',
@@ -23,8 +23,10 @@ export type ConnectAccountsListProps = {
   deselectAll: () => void;
   selectAll: () => void;
   handleAccountClick: (address: string) => void;
+  onAccountsUpdate: () => void;
   selectedAccounts: string[];
   accounts: AccountType[];
   checked: boolean;
   isIndeterminate: boolean;
+  activeTabOrigin: string;
 };

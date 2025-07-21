@@ -1,0 +1,863 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DataTree correctly renders reverse strings 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--width-full"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-Sign into ‮ EVIL-index-0"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Sign into \\u202E EVIL:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          Sign into \\u202E EVIL
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-A number-index-1"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            A number:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          1337
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DataTree should match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--width-full"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-contents-index-0"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Contents:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          Hello, Bob!
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-from-index-1"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            From:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--width-full"
+      >
+        <div
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+          data-testid="confirmation_data-name-index-0"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Name:
+              </p>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+              style="white-space: pre-wrap;"
+            >
+              Cow
+            </p>
+          </div>
+        </div>
+        <div
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+          data-testid="confirmation_data-wallets-index-1"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Wallets:
+              </p>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--width-full"
+          >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="confirmation_data-0-index-0"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    0:
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--display-flex"
+                >
+                  <div
+                    class="name name__clickable name__missing"
+                  >
+                    <span
+                      class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                    <p
+                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                    >
+                      0xCD2a3...DD826
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="confirmation_data-1-index-1"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    1:
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--display-flex"
+                >
+                  <div
+                    class="name name__clickable name__missing"
+                  >
+                    <span
+                      class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                    <p
+                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                    >
+                      0xDeaDb...DbeeF
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-to-index-2"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            To:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--width-full"
+      >
+        <div
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+          data-testid="confirmation_data-0-index-0"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                0:
+              </p>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--width-full"
+          >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="confirmation_data-name-index-0"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Name:
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  Bob
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="confirmation_data-wallets-index-1"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Wallets:
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--width-full"
+              >
+                <div
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  data-testid="confirmation_data-0-index-0"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        0:
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex"
+                    >
+                      <div
+                        class="name name__clickable name__missing"
+                      >
+                        <span
+                          class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                          style="mask-image: url('./images/icons/question.svg');"
+                        />
+                        <p
+                          class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                        >
+                          0xbBbBB...bBBbB
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  data-testid="confirmation_data-1-index-1"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        1:
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex"
+                    >
+                      <div
+                        class="name name__clickable name__missing"
+                      >
+                        <span
+                          class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                          style="mask-image: url('./images/icons/question.svg');"
+                        />
+                        <p
+                          class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                        >
+                          0xB0Bda...bEa57
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  data-testid="confirmation_data-2-index-2"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        2:
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex"
+                    >
+                      <div
+                        class="name name__clickable name__missing"
+                      >
+                        <span
+                          class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                          style="mask-image: url('./images/icons/question.svg');"
+                        />
+                        <p
+                          class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                        >
+                          0xB0B0b...00000
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-attachment-index-3"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Attachment:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          0x
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DataTree should match snapshot for order signature type 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--width-full"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-types-index-0"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Types:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        />
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-domain-index-1"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Domain:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        />
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-primaryType-index-2"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            PrimaryType:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        />
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-message-index-3"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Message:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DataTree should match snapshot for permit signature type 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--width-full"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-types-index-0"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Types:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        />
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-primaryType-index-1"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            PrimaryType:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        />
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-domain-index-2"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Domain:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        />
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-message-index-3"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Message:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          3000
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DataTree should match snapshot for permit signature type and deadline is -1 (None) 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--width-full"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-types-index-0"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Types:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        />
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-primaryType-index-1"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            PrimaryType:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        />
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-domain-index-2"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Domain:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        />
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation_data-message-index-3"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Message:
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          3000
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;

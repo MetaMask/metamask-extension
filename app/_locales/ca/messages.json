@@ -75,9 +75,6 @@
   "asset": {
     "message": "Actius"
   },
-  "attemptingConnect": {
-    "message": "Intentant conectar a blockchain."
-  },
   "attributions": {
     "message": "Atribucions"
   },
@@ -205,9 +202,6 @@
   "delete": {
     "message": "Suprimeix"
   },
-  "deleteNetwork": {
-    "message": "Esborrar Xarxa?"
-  },
   "details": {
     "message": "Detalls"
   },
@@ -228,9 +222,6 @@
   },
   "editContact": {
     "message": "Editar Contacte"
-  },
-  "ensRegistrationError": {
-    "message": "Error al registre de nom ENS"
   },
   "enterPasswordContinue": {
     "message": "Introdueix la contrasenya per continuar"
@@ -260,26 +251,11 @@
   "from": {
     "message": "Des de"
   },
-  "functionType": {
-    "message": "Tipus de Funció"
-  },
   "gasLimit": {
     "message": "Límit de gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "El límit de gas és la màxima quantitat d'unitats de gas que estàs disposat a gastar."
-  },
   "gasLimitTooLow": {
     "message": "El límit de gas ha de ser al menys 21000"
-  },
-  "gasPrice": {
-    "message": "Preu del Gas (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Preu del Gas Extremadament Baix"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "El preu del gas especifica la quantitat d'Ether que estàs disposat a pagar per cada unitat de gas."
   },
   "gasUsed": {
     "message": "Gas utilitzat"
@@ -316,9 +292,6 @@
     "message": "Importa",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importa compte"
-  },
   "importAccountMsg": {
     "message": "Els comptes importats no s'associaran amb la teva frase de recuperació creada originalment a MetaMask. Aprèn més sobre els comptes importats"
   },
@@ -343,12 +316,6 @@
   },
   "invalidAddressRecipient": {
     "message": "L'adreça del recipient no és vàlida"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "No hi ha xarxa ETH, posar en minúscules"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "URL de Block Explorer"
   },
   "invalidRPC": {
     "message": "URL de RPC"
@@ -386,9 +353,6 @@
   },
   "loading": {
     "message": "S'està carregant..."
-  },
-  "loadingTokens": {
-    "message": "Carregant els tokens..."
   },
   "localhost": {
     "message": "Host local 8545"
@@ -446,14 +410,8 @@
   "next": {
     "message": "Següent"
   },
-  "noAddressForName": {
-    "message": "No existeix cap adreça amb aquest nom."
-  },
   "noConversionRateAvailable": {
     "message": "No hi ha cap tarifa de conversió disponible"
-  },
-  "noTransactions": {
-    "message": "No tens transaccions"
   },
   "noWebcamFound": {
     "message": "No s'ha trovat la webcam del teu ordinador. Si us plau prova de nou."
@@ -478,9 +436,6 @@
   },
   "origin": {
     "message": "Origen"
-  },
-  "parameters": {
-    "message": "Paràmetres"
   },
   "participateInMetaMetrics": {
     "message": "Participar a MetaMetrics"
@@ -507,12 +462,6 @@
   "personalAddressDetected": {
     "message": "Adreça personal detectada. Introduir l'adreça del contracte de fitxa."
   },
-  "primaryCurrencySetting": {
-    "message": "Divisa principal"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Selecciona Natiu per a prioritzar la mostra de valors en la divisa nadiua de la cadena (p. ex. ETH). Selecciona Fiat per prioritzar la mostra de valors en la divisa fiduciària seleccionada."
-  },
   "privacyMsg": {
     "message": "Política de privadesa"
   },
@@ -528,9 +477,6 @@
   },
   "readdToken": {
     "message": "Pots tornar a afegir aquesta fitxa en el futur anant a \"Afegir fitxa\" al menu d'opcions dels teus comptes."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Cerca, adreça pública (0x), o ENS"
   },
   "reject": {
     "message": "Rebutja"
@@ -555,9 +501,6 @@
   },
   "removeAccountDescription": {
     "message": "Aquest compte serà retirat del teu moneder. Si us plau, assegura't que tens la frase de recuperació original o la clau privada per a aquest compte importat abans de continuar. Pots importar o crear comptes novament des del desplegable de comptes."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "peticions esperant ser reconegudes"
   },
   "required": {
     "message": "Obligatori"
@@ -611,9 +554,6 @@
   "send": {
     "message": "Envia"
   },
-  "sendTokens": {
-    "message": "Enviar Fitxes"
-  },
   "settings": {
     "message": "Configuració"
   },
@@ -628,9 +568,6 @@
   },
   "showHexDataDescription": {
     "message": "Selecciona això per a mostrar el camp de dades Hex a la pantalla d'enviament"
-  },
-  "sigRequest": {
-    "message": "Sol·licitud de Signatura"
   },
   "sign": {
     "message": "Signar"
@@ -680,9 +617,6 @@
   "terms": {
     "message": "Condicions d'ús"
   },
-  "tips": {
-    "message": "Propines"
-  },
   "to": {
     "message": "A"
   },
@@ -722,9 +656,6 @@
   "transactionErrored": {
     "message": "La transacció ha tingut un error."
   },
-  "transactionFee": {
-    "message": "Preu de la transacció"
-  },
   "transactionResubmitted": {
     "message": "Transacció reenviada amb tarifa del gas incrementada d'$1 a $2"
   },
@@ -752,20 +683,11 @@
   "unknown": {
     "message": "Desconegut"
   },
-  "unknownNetwork": {
-    "message": "Xarxa privada desconeguda"
-  },
   "unknownQrCode": {
     "message": "Error: No hem pogut identificar aquest codi QR"
   },
   "unlock": {
     "message": "Desbloqueja"
-  },
-  "unlockMessage": {
-    "message": "La web descentralitzada està esperant"
-  },
-  "updatedWithDate": {
-    "message": "Actualitzat $1"
   },
   "urlErrorMsg": {
     "message": "Els URIs requereixen el prefix HTTP/HTTPS  apropiat."
@@ -788,13 +710,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Has de permetre l'accés a la càmera per fer servir aquesta característica."
   },
-  "youSign": {
-    "message": "Estàs signant"
-  },
   "yourPrivateSeedPhrase": {
     "message": "La teva frase privada de seeds"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Gas a cost zero accelerant-se"
   }
 }

@@ -4,9 +4,12 @@ import * as actions from '../../../store/actions';
 import {
   getAllEnabledNetworks,
   getNetworkIdentifier,
-  isNetworkLoading,
+  isGlobalNetworkSelectorRemoved,
 } from '../../../selectors';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import {
+  getProviderConfig,
+  isNetworkLoading,
+} from '../../../../shared/modules/selectors/networks';
 import LoadingNetworkScreen from './loading-network-screen.component';
 
 const DEPRECATED_TEST_NET_CHAINIDS = ['0x3', '0x2a', '0x4'];
@@ -30,11 +33,9 @@ const mapStateToProps = (state) => {
   let networkName = nickname;
   if (networkName === undefined) {
     const networks = getAllEnabledNetworks(state);
-    const desiredNetwork = networks.find(
-      (network) => network.chainId === chainId,
-    );
+    const desiredNetwork = networks[chainId];
     if (desiredNetwork) {
-      networkName = desiredNetwork.nickname;
+      networkName = desiredNetwork.name;
     }
   }
 
@@ -53,13 +54,19 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setProviderType: (type) => {
-      dispatch(actions.setProviderType(type));
+    setActiveNetwork: (type) => {
+      dispatch(actions.setActiveNetwork(type));
     },
     rollbackToPreviousProvider: () =>
       dispatch(actions.rollbackToPreviousProvider()),
     showNetworkDropdown: () => {
+      if (isGlobalNetworkSelectorRemoved) {
+        return dispatch(actions.showModal({ name: 'NETWORK_MANAGER' }));
+      }
       return dispatch(actions.toggleNetworkMenu());
+    },
+    showNetworkManager: () => {
+      dispatch(actions.showModal({ name: 'NETWORK_MANAGER' }));
     },
   };
 };

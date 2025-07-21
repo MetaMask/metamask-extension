@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    // permit using ES6 imports for `*.ts` files via tsx/bun
+    "allowImportingTsExtensions": true,
     "allowJs": true,
     // ensures single-file compilers, like babel, webpack+swc, etc work
     "isolatedModules": true,
@@ -11,7 +13,7 @@
     // directories that make sense for their environment.
     // I think this would eliminate a lot of eslint overrides complexity
     // In the meantime, we need DOM libs and should target the ES version in
-    // "@tsconfig/node20/tsconfig.json" (`libs` here overwrites extends's `libs`)
+    // "@tsconfig/node22/tsconfig.json" (`libs` here overwrites extends's `libs`)
     "lib": ["DOM", "es2023"],
     // we only use tsc for type checking (yarn lint:tsc)
     "noEmit": true,
@@ -28,6 +30,15 @@
     "**/*.stories.ts"
   ],
   // this should match our node version in .nvmrc
-  "extends": "@tsconfig/node20/tsconfig.json",
-  "include": ["app", "development", "shared", "types", "ui", "offscreen"]
+  "extends": "@tsconfig/node22/tsconfig.json",
+  "include": [
+    "app",
+    "development",
+    "offscreen",
+    "shared",
+    "test",
+    "types",
+    "ui",
+    "*.ts"
+  ]
 }

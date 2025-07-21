@@ -1,5 +1,6 @@
 /* eslint-disable-next-line */
-import { TextEncoder, TextDecoder } from 'util';
+import { TextEncoder, TextDecoder } from 'node:util';
+import 'fake-indexeddb/auto';
 import nock from 'nock';
 import log from 'loglevel';
 import { JSDOM } from 'jsdom';
@@ -33,13 +34,21 @@ if (typeof beforeEach === 'function') {
 
 // catch rejections that are still unhandled when tests exit
 const unhandledRejections = new Map();
+let ignoreUnhandled = false;
 process.on('unhandledRejection', (reason, promise) => {
-  console.log('Unhandled rejection:', reason);
-  unhandledRejections.set(promise, reason);
+  if (!ignoreUnhandled) {
+    console.log(
+      `Unhandled rejection: ..${process.env.IGNORE_UNHANDLED}`,
+      reason,
+    );
+    unhandledRejections.set(promise, reason);
+  }
 });
 process.on('rejectionHandled', (promise) => {
-  console.log(`handled: ${unhandledRejections.get(promise)}`);
-  unhandledRejections.delete(promise);
+  if (!ignoreUnhandled) {
+    console.log(`handled: ${unhandledRejections.get(promise)}`);
+    unhandledRejections.delete(promise);
+  }
 });
 
 process.on('exit', () => {
@@ -51,6 +60,15 @@ process.on('exit', () => {
     process.exit(1);
   }
 });
+// #region Helpers that allow tests to ignore unhandled rejections that might be intentional.
+process.resetIgnoreUnhandled = () => {
+  // default is false
+  ignoreUnhandled = false;
+};
+process.setIgnoreUnhandled = (ignore) => {
+  ignoreUnhandled = ignore;
+};
+// #endregion
 
 log.setDefaultLevel(5);
 global.log = log;
@@ -111,7 +129,7 @@ if (!window.crypto) {
 }
 if (!window.crypto.getRandomValues) {
   // eslint-disable-next-line node/global-require
-  window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues');
+  window.crypto.getRandomValues = require('crypto').webcrypto.getRandomValues;
 }
 
 // TextEncoder/TextDecoder
@@ -125,3 +143,8 @@ if (!window.navigator.clipboard) {
 if (!window.navigator.clipboard.writeText) {
   window.navigator.clipboard.writeText = () => undefined;
 }
+
+window.SVGPathElement = window.SVGPathElement || { prototype: {} };
+
+// scrollIntoView is not available in JSDOM
+window.HTMLElement.prototype.scrollIntoView = () => undefined;

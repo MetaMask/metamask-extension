@@ -1,10 +1,11 @@
 import { ApprovalType } from '@metamask/controller-utils';
 
+import { createSelector } from 'reselect';
 import { getPendingApprovals } from '../../../selectors/approvals';
+import { createDeepEqualSelector } from '../../../../shared/modules/selectors/util';
 import { ConfirmMetamaskState } from '../types/confirm';
 
 const ConfirmationApprovalTypes = [
-  ApprovalType.EthSign,
   ApprovalType.PersonalSign,
   ApprovalType.EthSignTypedData,
   ApprovalType.Transaction,
@@ -26,10 +27,22 @@ export function pendingConfirmationsSortedSelector(
     .sort((a1, a2) => a1.time - a2.time);
 }
 
-export function latestPendingConfirmationSelector(state: ConfirmMetamaskState) {
-  const pendingConfirmations = pendingConfirmationsSelector(state);
-  return pendingConfirmations.sort((a1, a2) => a2.time - a1.time)[0];
-}
+const firstPendingConfirmationSelector = createSelector(
+  pendingConfirmationsSortedSelector,
+  (pendingConfirmations) => pendingConfirmations[0],
+);
 
-export const currentConfirmationSelector = (state: ConfirmMetamaskState) =>
-  state.confirm.currentConfirmation;
+export const oldestPendingConfirmationSelector = createDeepEqualSelector(
+  firstPendingConfirmationSelector,
+  (firstPendingConfirmation) => firstPendingConfirmation,
+);
+
+export function selectEnableEnforcedSimulations(
+  state: ConfirmMetamaskState,
+  transactionId: string,
+): boolean {
+  return (
+    state.metamask.enableEnforcedSimulationsForTransactions[transactionId] ??
+    state.metamask.enableEnforcedSimulations
+  );
+}

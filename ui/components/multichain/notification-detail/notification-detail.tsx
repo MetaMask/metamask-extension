@@ -43,7 +43,6 @@ export const NotificationDetail: FC<NotificationDetailProps> = ({
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.flexStart}
-      as="button"
       width={BlockSize.Full}
       paddingBottom={2}
       paddingRight={4}

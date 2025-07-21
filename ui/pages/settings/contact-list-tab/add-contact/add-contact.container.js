@@ -9,23 +9,26 @@ import {
 import { getQrCodeData } from '../../../../ducks/app/app';
 import {
   getDomainError,
-  getDomainResolution,
+  getDomainResolutions,
   resetDomainResolution,
 } from '../../../../ducks/domains';
+import { getAddressBook, getInternalAccounts } from '../../../../selectors';
 import AddContact from './add-contact.component';
 
 const mapStateToProps = (state) => {
   return {
+    addressBook: getAddressBook(state),
+    internalAccounts: getInternalAccounts(state),
     qrCodeData: getQrCodeData(state),
     domainError: getDomainError(state),
-    domainResolution: getDomainResolution(state),
+    domainResolutions: getDomainResolutions(state),
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addToAddressBook: (recipient, nickname) =>
-      dispatch(addToAddressBook(recipient, nickname)),
+    addToAddressBook: (recipient, nickname, memo, customChainId) =>
+      dispatch(addToAddressBook(recipient, nickname, memo, customChainId)),
     scanQrCode: () => dispatch(showQrScanner()),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
     resetDomainResolution: () => dispatch(resetDomainResolution()),

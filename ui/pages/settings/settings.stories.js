@@ -5,7 +5,6 @@ import { MemoryRouter, withRouter } from 'react-router-dom';
 import {
   ABOUT_US_ROUTE,
   ADVANCED_ROUTE,
-  ALERTS_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_LIST_ROUTE,
@@ -14,6 +13,7 @@ import {
   NETWORKS_FORM_ROUTE,
   NETWORKS_ROUTE,
   SECURITY_ROUTE,
+  SECURITY_PASSWORD_CHANGE_ROUTE,
   SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
 import SettingsPage from './settings.component';
@@ -33,7 +33,6 @@ export default {
 const ROUTES_TO_I18N_KEYS = {
   [ABOUT_US_ROUTE]: 'about',
   [ADVANCED_ROUTE]: 'advanced',
-  [ALERTS_ROUTE]: 'alerts',
   [CONTACT_ADD_ROUTE]: 'newContact',
   [CONTACT_EDIT_ROUTE]: 'editContact',
   [CONTACT_LIST_ROUTE]: 'contacts',
@@ -41,6 +40,7 @@ const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',
   [NETWORKS_FORM_ROUTE]: 'networks',
   [NETWORKS_ROUTE]: 'networks',
+  [SECURITY_PASSWORD_CHANGE_ROUTE]: 'securityChangePassword',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
 };
 
@@ -63,6 +63,7 @@ const Settings = ({ history }) => {
         history={history}
         pathnameI18nKey={pathnameI18nKey}
         backRoute={SETTINGS_ROUTE}
+        settingsPageSnaps={[]}
       />
     </div>
   );

@@ -10,6 +10,10 @@ jest.mock('../../../selectors', () => ({
   getTokenList: jest.fn(),
 }));
 
+jest.mock('../../../selectors/multi-srp/multi-srp', () => ({
+  getShouldShowSeedPhraseReminder: () => false,
+}));
+
 jest.mock('../../../selectors/nft', () => ({
   ...jest.requireActual('../../../selectors/nft'),
   getNftContractsByAddressOnCurrentChain: jest.fn(),
@@ -19,9 +23,6 @@ const ADDRESS_MOCK = '0x0000000000000000000000000000000000000000';
 
 const mockState = {
   metamask: {
-    providerConfig: {
-      chainId: '0x99',
-    },
     useBlockie: false,
   },
 };

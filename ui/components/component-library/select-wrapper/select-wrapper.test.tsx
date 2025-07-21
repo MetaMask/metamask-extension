@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
-import { Button, type ButtonProps } from '..';
+import { Button, type ButtonProps } from '../button';
 import { SelectButton } from '../select-button';
 import { SelectOption } from '../select-option';
-import { SelectWrapper, useSelectContext } from '.';
+import { SelectWrapper } from './select-wrapper';
+import { useSelectContext } from './select-wrapper.context';
 
 describe('SelectWrapper', () => {
   it('should render the SelectWrapper without crashing', () => {

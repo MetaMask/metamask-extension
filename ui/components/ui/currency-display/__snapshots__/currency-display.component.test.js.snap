@@ -4,11 +4,14 @@ exports[`CurrencyDisplay Component should match default snapshot 1`] = `
 <div>
   <div
     class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-    title="null"
+    title="0"
   >
     <span
       class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-    />
+      data-testid="account-value-and-suffix"
+    >
+      0
+    </span>
   </div>
 </div>
 `;
@@ -21,6 +24,7 @@ exports[`CurrencyDisplay Component should render text with a className 1`] = `
   >
     <span
       class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+      data-testid="account-value-and-suffix"
     >
       $123.45
     </span>
@@ -36,9 +40,41 @@ exports[`CurrencyDisplay Component should render text with a prefix 1`] = `
   >
     <span
       class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+      data-testid="account-value-and-suffix"
     >
       -
       $123.45
+    </span>
+  </div>
+</div>
+`;
+
+exports[`CurrencyDisplay Component should render with title (tooltip) 1`] = `
+<div>
+  <div
+    class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+    title="$123.45"
+  >
+    <span
+      class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+      data-testid="account-value-and-suffix"
+    >
+      $123.45
+    </span>
+  </div>
+</div>
+`;
+
+exports[`CurrencyDisplay Component should render without title (tooltip) 1`] = `
+<div>
+  <div
+    class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+  >
+    <span
+      class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+      data-testid="account-value-and-suffix"
+    >
+      ••••••
     </span>
   </div>
 </div>

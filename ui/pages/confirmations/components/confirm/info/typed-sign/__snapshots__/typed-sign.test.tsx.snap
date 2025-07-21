@@ -1,0 +1,2280 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TypedSignInfo correctly renders permit sign type 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__simulation_section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Estimated changes
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-11"
+              class=""
+              data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          You're giving the spender permission to spend this many tokens from your account.
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Spending cap
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box"
+        style="margin-left: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--margin-left-auto"
+          style="max-width: 100%;"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+          >
+            <div
+              class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline mm-box--min-width-0"
+            >
+              <div
+                style="min-width: 0;"
+              >
+                <div
+                  aria-describedby="tippy-tooltip-12"
+                  class=""
+                  data-original-title="3,000"
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+                    data-testid="simulation-token-value"
+                    style="padding-top: 1px; padding-bottom: 1px;"
+                  >
+                    3,000
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex"
+            >
+              <div
+                class="name name__clickable name__missing"
+              >
+                <span
+                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+                <p
+                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                >
+                  0xCcCCc...ccccC
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation_request-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Spender
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0x5B38D...eddC4
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-13"
+              class=""
+              data-original-title="This is the site asking for your signature."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+        >
+          metamask.github.io
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Interacting with
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-14"
+              class=""
+              data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xCcCCc...ccccC
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation_message-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <button
+        aria-label="copy-button"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/copy.svg');"
+        />
+      </button>
+      <button
+        aria-label="collapse-button"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        data-testid="sectionCollapseButton"
+        style="cursor: pointer; position: absolute; right: 8px;"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/expand.svg');"
+        />
+      </button>
+      <div
+        class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Message
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__simulation_section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Estimated changes
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-15"
+              class=""
+              data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          You're giving the spender permission to spend this many tokens from your account.
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Spending cap
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box"
+        style="margin-left: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--margin-left-auto"
+          style="max-width: 100%;"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+          >
+            <div
+              class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline mm-box--min-width-0"
+            >
+              <div
+                style="min-width: 0;"
+              >
+                <div
+                  aria-describedby="tippy-tooltip-16"
+                  class=""
+                  data-original-title="3,000"
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+                    data-testid="simulation-token-value"
+                    style="padding-top: 1px; padding-bottom: 1px;"
+                  >
+                    3,000
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex"
+            >
+              <div
+                class="name name__clickable name__missing"
+              >
+                <span
+                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+                <p
+                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                >
+                  0xCcCCc...ccccC
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation_request-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Spender
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0x5B38D...eddC4
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-17"
+              class=""
+              data-original-title="This is the site asking for your signature."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+        >
+          metamask.github.io
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Interacting with
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-18"
+              class=""
+              data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xCcCCc...ccccC
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation_message-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <button
+        aria-label="copy-button"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/copy.svg');"
+        />
+      </button>
+      <button
+        aria-label="collapse-button"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        data-testid="sectionCollapseButton"
+        style="cursor: pointer; position: absolute; right: 8px;"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/expand.svg');"
+        />
+      </button>
+      <div
+        class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Message
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TypedSignInfo does not render if required data is not present in the transaction 1`] = `<div />`;
+
+exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation_request-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-1"
+              class=""
+              data-original-title="This is the site asking for your signature."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+        >
+          metamask.github.io
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Interacting with
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-2"
+              class=""
+              data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xCcCCc...ccccC
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation_message-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <button
+        aria-label="copy-button"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/copy.svg');"
+        />
+      </button>
+      <div
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Message
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--width-full"
+      >
+        <div
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Primary type:
+              </p>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+              style="white-space: pre-wrap;"
+            >
+              Mail
+            </p>
+          </div>
+        </div>
+        <div
+          class="mm-box"
+          style="margin-left: -8px;"
+        >
+          <div
+            class="mm-box mm-box--width-full"
+          >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="confirmation_data-contents-index-0"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Contents:
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  Hello, Bob!
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="confirmation_data-from-index-1"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    From:
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--width-full"
+              >
+                <div
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  data-testid="confirmation_data-name-index-0"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Name:
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                  >
+                    <p
+                      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                      style="white-space: pre-wrap;"
+                    >
+                      Cow
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  data-testid="confirmation_data-wallets-index-1"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Wallets:
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--width-full"
+                  >
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-0-index-0"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
+                        >
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            0:
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex"
+                        >
+                          <div
+                            class="name name__clickable name__missing"
+                          >
+                            <span
+                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              style="mask-image: url('./images/icons/question.svg');"
+                            />
+                            <p
+                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                            >
+                              0xCD2a3...DD826
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-1-index-1"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
+                        >
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            1:
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex"
+                        >
+                          <div
+                            class="name name__clickable name__missing"
+                          >
+                            <span
+                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              style="mask-image: url('./images/icons/question.svg');"
+                            />
+                            <p
+                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                            >
+                              0xDeaDb...DbeeF
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-2-index-2"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
+                        >
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            2:
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex"
+                        >
+                          <div
+                            class="name name__clickable name__missing"
+                          >
+                            <span
+                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              style="mask-image: url('./images/icons/question.svg');"
+                            />
+                            <p
+                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                            >
+                              0x06195...43896
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="confirmation_data-to-index-2"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    To:
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--width-full"
+              >
+                <div
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  data-testid="confirmation_data-0-index-0"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        0:
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--width-full"
+                  >
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-name-index-0"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
+                        >
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Name:
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                          style="white-space: pre-wrap;"
+                        >
+                          Bob
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-wallets-index-1"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
+                        >
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Wallets:
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="mm-box mm-box--width-full"
+                      >
+                        <div
+                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                          data-testid="confirmation_data-0-index-0"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                        >
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                          >
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
+                            >
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                0:
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                          >
+                            <div
+                              class="mm-box mm-box--display-flex"
+                            >
+                              <div
+                                class="name name__clickable name__missing"
+                              >
+                                <span
+                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  style="mask-image: url('./images/icons/question.svg');"
+                                />
+                                <p
+                                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                                >
+                                  0xbBbBB...bBBbB
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                          data-testid="confirmation_data-1-index-1"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                        >
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                          >
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
+                            >
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                1:
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                          >
+                            <div
+                              class="mm-box mm-box--display-flex"
+                            >
+                              <div
+                                class="name name__clickable name__missing"
+                              >
+                                <span
+                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  style="mask-image: url('./images/icons/question.svg');"
+                                />
+                                <p
+                                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                                >
+                                  0xB0Bda...bEa57
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                          data-testid="confirmation_data-2-index-2"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                        >
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                          >
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
+                            >
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                2:
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                          >
+                            <div
+                              class="mm-box mm-box--display-flex"
+                            >
+                              <div
+                                class="name name__clickable name__missing"
+                              >
+                                <span
+                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  style="mask-image: url('./images/icons/question.svg');"
+                                />
+                                <p
+                                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                                >
+                                  0xB0B0b...00000
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation_request-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-3"
+              class=""
+              data-original-title="This is the site asking for your signature."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+        >
+          metamask.github.io
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Interacting with
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-4"
+              class=""
+              data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xCcCCc...ccccC
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation_message-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <button
+        aria-label="copy-button"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/copy.svg');"
+        />
+      </button>
+      <div
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Message
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--width-full"
+      >
+        <div
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Primary type:
+              </p>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+              style="white-space: pre-wrap;"
+            >
+              Mail
+            </p>
+          </div>
+        </div>
+        <div
+          class="mm-box"
+          style="margin-left: -8px;"
+        >
+          <div
+            class="mm-box mm-box--width-full"
+          >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="confirmation_data-from-index-0"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    From:
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--width-full"
+              >
+                <div
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  data-testid="confirmation_data-name-index-0"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Name:
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                  >
+                    <p
+                      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                      style="white-space: pre-wrap;"
+                    >
+                      Cow
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  data-testid="confirmation_data-wallet-index-1"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Wallet:
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex"
+                    >
+                      <div
+                        class="name name__clickable name__missing"
+                      >
+                        <span
+                          class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                          style="mask-image: url('./images/icons/question.svg');"
+                        />
+                        <p
+                          class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                        >
+                          0xCD2a3...DD826
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="confirmation_data-to-index-1"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    To:
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--width-full"
+              >
+                <div
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  data-testid="confirmation_data-name-index-0"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Name:
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                  >
+                    <p
+                      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                      style="white-space: pre-wrap;"
+                    >
+                      Bob
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  data-testid="confirmation_data-wallet-index-1"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Wallet:
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex"
+                    >
+                      <div
+                        class="name name__clickable name__missing"
+                      >
+                        <span
+                          class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                          style="mask-image: url('./images/icons/question.svg');"
+                        />
+                        <p
+                          class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                        >
+                          0xbBbBB...bBBbB
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="confirmation_data-contents-index-2"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Contents:
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  Hello, Bob!
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation_request-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-5"
+              class=""
+              data-original-title="This is the site asking for your signature."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+        >
+          metamask.github.io
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Interacting with
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-6"
+              class=""
+              data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xCcCCc...ccccC
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation_message-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <button
+        aria-label="copy-button"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/copy.svg');"
+        />
+      </button>
+      <div
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Message
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--width-full"
+      >
+        <div
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Primary type:
+              </p>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+              style="white-space: pre-wrap;"
+            >
+              Mail
+            </p>
+          </div>
+        </div>
+        <div
+          class="mm-box"
+          style="margin-left: -8px;"
+        >
+          <div
+            class="mm-box mm-box--width-full"
+          >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="confirmation_data-contents-index-0"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Contents:
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  Hello, Bob!
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="confirmation_data-from-index-1"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    From:
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--width-full"
+              >
+                <div
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  data-testid="confirmation_data-name-index-0"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Name:
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                  >
+                    <p
+                      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                      style="white-space: pre-wrap;"
+                    >
+                      Cow
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  data-testid="confirmation_data-wallets-index-1"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Wallets:
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--width-full"
+                  >
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-0-index-0"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
+                        >
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            0:
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex"
+                        >
+                          <div
+                            class="name name__clickable name__missing"
+                          >
+                            <span
+                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              style="mask-image: url('./images/icons/question.svg');"
+                            />
+                            <p
+                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                            >
+                              0xCD2a3...DD826
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-1-index-1"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
+                        >
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            1:
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex"
+                        >
+                          <div
+                            class="name name__clickable name__missing"
+                          >
+                            <span
+                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              style="mask-image: url('./images/icons/question.svg');"
+                            />
+                            <p
+                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                            >
+                              0xDeaDb...DbeeF
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-2-index-2"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
+                        >
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            2:
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex"
+                        >
+                          <div
+                            class="name name__clickable name__missing"
+                          >
+                            <span
+                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              style="mask-image: url('./images/icons/question.svg');"
+                            />
+                            <p
+                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                            >
+                              0x06195...43896
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="confirmation_data-to-index-2"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    To:
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--width-full"
+              >
+                <div
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  data-testid="confirmation_data-0-index-0"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        0:
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--width-full"
+                  >
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-name-index-0"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
+                        >
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Name:
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                          style="white-space: pre-wrap;"
+                        >
+                          Bob
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-wallets-index-1"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
+                        >
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Wallets:
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="mm-box mm-box--width-full"
+                      >
+                        <div
+                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                          data-testid="confirmation_data-0-index-0"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                        >
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                          >
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
+                            >
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                0:
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                          >
+                            <div
+                              class="mm-box mm-box--display-flex"
+                            >
+                              <div
+                                class="name name__clickable name__missing"
+                              >
+                                <span
+                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  style="mask-image: url('./images/icons/question.svg');"
+                                />
+                                <p
+                                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                                >
+                                  0xbBbBB...bBBbB
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                          data-testid="confirmation_data-1-index-1"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                        >
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                          >
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
+                            >
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                1:
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                          >
+                            <div
+                              class="mm-box mm-box--display-flex"
+                            >
+                              <div
+                                class="name name__clickable name__missing"
+                              >
+                                <span
+                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  style="mask-image: url('./images/icons/question.svg');"
+                                />
+                                <p
+                                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                                >
+                                  0xB0Bda...bEa57
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                          data-testid="confirmation_data-2-index-2"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                        >
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                          >
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
+                            >
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                2:
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                          >
+                            <div
+                              class="mm-box mm-box--display-flex"
+                            >
+                              <div
+                                class="name name__clickable name__missing"
+                              >
+                                <span
+                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  style="mask-image: url('./images/icons/question.svg');"
+                                />
+                                <p
+                                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                                >
+                                  0xB0B0b...00000
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

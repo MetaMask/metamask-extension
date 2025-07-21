@@ -14,17 +14,23 @@ export function getHexGasTotal({ gasLimit = '0x0', gasPrice = '0x0' }): string {
 
 export function addEth(firstValue: string, ...otherValues: string[]): string {
   return otherValues
-    .reduce((numericAcc, ethAmount) => {
-      return numericAcc.add(new Numeric(ethAmount, 10)).round(6);
-    }, new Numeric(firstValue, 10))
+    .reduce(
+      (numericAcc, ethAmount) => {
+        return numericAcc.add(new Numeric(ethAmount, 10)).round(6);
+      },
+      new Numeric(firstValue, 10),
+    )
     .toString();
 }
 
 export function addFiat(firstValue: string, ...otherValues: string[]): string {
   return otherValues
-    .reduce((numericAcc, fiatAmount) => {
-      return numericAcc.add(new Numeric(fiatAmount, 10)).round(2);
-    }, new Numeric(firstValue, 10))
+    .reduce(
+      (numericAcc, fiatAmount) => {
+        return numericAcc.add(new Numeric(fiatAmount, 10)).round(2);
+      },
+      new Numeric(firstValue, 10),
+    )
     .toString();
 }
 
@@ -120,6 +126,8 @@ export function areDappSuggestedAndTxParamGasFeesTheSame(
     gasPrice: dappGasPrice,
     maxFeePerGas: dappMaxFeePerGas,
     maxPriorityFeePerGas: dappMaxPriorityFeePerGas,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   } = dappSuggestedGasFees || {};
 
   const txParamsDoesNotHaveFeeProperties =
@@ -142,6 +150,8 @@ export function areDappSuggestedAndTxParamGasFeesTheSame(
     txParamsMaxPriorityFeePerGas === dappMaxPriorityFeePerGas;
 
   return Boolean(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     txParamsGasPriceMatchesDappSuggestedGasPrice ||
       txParamsEIP1559FeesMatchDappSuggestedGasPrice ||
       txParamsEIP1559FeesMatchDappSuggestedEIP1559Fees,
