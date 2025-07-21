@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
+import log from 'loglevel';
 import {
   Text,
   FormTextField,
@@ -124,7 +125,11 @@ class UnlockPage extends Component {
       parentContext: this.props.onboardingParentContext?.current,
     });
 
-    await this.props.checkIsSeedlessPasswordOutdated();
+    try {
+      await this.props.checkIsSeedlessPasswordOutdated();
+    } catch (error) {
+      log.error('unlock page - checkIsSeedlessPasswordOutdated error', error);
+    }
   }
 
   handleSubmit = async (event) => {
