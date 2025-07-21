@@ -5335,21 +5335,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:^0.1.0":
+"@metamask/account-api@npm:^0.1.0":
   version: 0.1.0
-  resolution: "@metamask/account-tree-controller@npm:0.1.0"
+  resolution: "@metamask/account-api@npm:0.1.0"
+  dependencies:
+    "@metamask/keyring-api": "npm:^18.0.0"
+    "@metamask/keyring-utils": "npm:^3.0.0"
+  checksum: 10/6c7338c8551d39b96e3d04ed3a944ebb7ca48d7f9cb0fdf27c878e12311372d03a61123dc5e7ea21135c095920db7c52a79be4c81afd04a6d62e5c5306dd12cb
+  languageName: node
+  linkType: hard
+
+"@metamask/account-tree-controller@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@metamask/account-tree-controller@npm:0.5.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/snaps-sdk": "npm:^7.1.0"
-    "@metamask/snaps-utils": "npm:^9.4.0"
+    "@metamask/snaps-sdk": "npm:^9.0.0"
+    "@metamask/snaps-utils": "npm:^11.0.0"
     lodash: "npm:^4.17.21"
   peerDependencies:
-    "@metamask/accounts-controller": ^30.0.0
+    "@metamask/account-api": ^0.2.0
+    "@metamask/accounts-controller": ^31.0.0
     "@metamask/keyring-controller": ^22.0.0
     "@metamask/providers": ^22.0.0
-    "@metamask/snaps-controllers": ^12.0.0
+    "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/d5e952d9439743335232a010f8e7eda1d54555d91148149cc0cd6ac5559b9b7a6639969580c103a8f27c2012a309cb15c31c48caaf46fa370b0a0bc2a011e491
+  checksum: 10/c0383b2c531c605e66fbe58583f8e614d5ea3cc9dd69ece08ca8eec492151ba9efd6108fa383249c8c9bc8c7afb6bda6e2bd1ec03755295cbe168535bbfdc672
   languageName: node
   linkType: hard
 
@@ -31856,7 +31867,8 @@ __metadata:
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
     "@metamask/abi-utils": "npm:^2.0.2"
-    "@metamask/account-tree-controller": "npm:^0.1.0"
+    "@metamask/account-api": "npm:^0.1.0"
+    "@metamask/account-tree-controller": "npm:^0.5.0"
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^30.0.0"
     "@metamask/address-book-controller": "npm:^6.1.0"

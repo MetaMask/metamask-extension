@@ -1082,9 +1082,10 @@
         "console.warn": true
       },
       "packages": {
+        "@metamask/account-api": true,
         "@metamask/base-controller": true,
         "@metamask/keyring-controller": true,
-        "@metamask/account-tree-controller>@metamask/snaps-utils": true
+        "@metamask/snaps-utils": true
       }
     },
     "@metamask/accounts-controller": {
@@ -1093,7 +1094,7 @@
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/account-api>@metamask/keyring-utils": true,
         "@metamask/utils": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "uuid": true
@@ -1572,7 +1573,7 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-internal-api": true,
         "@metamask/keyring-internal-snap-client": true,
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/account-api>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "webpack>events": true,
@@ -1723,7 +1724,7 @@
     },
     "@metamask/keyring-api": {
       "packages": {
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/account-api>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "bitcoin-address-validation": true
@@ -1731,7 +1732,7 @@
     },
     "@metamask/multichain-transactions-controller>@metamask/keyring-api": {
       "packages": {
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/account-api>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "bitcoin-address-validation": true
@@ -1758,7 +1759,7 @@
     "@metamask/keyring-internal-api": {
       "packages": {
         "@metamask/keyring-api": true,
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/account-api>@metamask/keyring-utils": true,
         "@metamask/superstruct": true
       }
     },
@@ -1767,13 +1768,13 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-internal-api": true,
         "@metamask/keyring-snap-client": true,
-        "@metamask/keyring-api>@metamask/keyring-utils": true
+        "@metamask/account-api>@metamask/keyring-utils": true
       }
     },
     "@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/account-api>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
       }
@@ -1781,12 +1782,12 @@
     "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/multichain-transactions-controller>@metamask/keyring-api": true,
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/account-api>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client>uuid": true
       }
     },
-    "@metamask/keyring-api>@metamask/keyring-utils": {
+    "@metamask/account-api>@metamask/keyring-utils": {
       "globals": {
         "URL": true
       },
@@ -2308,41 +2309,6 @@
       }
     },
     "@metamask/snaps-utils": {
-      "globals": {
-        "File": true,
-        "FileReader": true,
-        "TextDecoder": true,
-        "URL": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "crypto": true,
-        "document.body.appendChild": true,
-        "document.createElement": true,
-        "fetch": true
-      },
-      "packages": {
-        "@metamask/snaps-sdk>@metamask/key-tree": true,
-        "@metamask/permission-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/snaps-utils>@metamask/slip44": true,
-        "@metamask/snaps-sdk": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "chalk": true,
-        "cron-parser": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "@metamask/snaps-utils>fast-xml-parser": true,
-        "luxon": true,
-        "@metamask/snaps-utils>marked": true,
-        "@metamask/snaps-utils>rfdc": true,
-        "semver": true,
-        "@metamask/snaps-utils>validate-npm-package-name": true
-      }
-    },
-    "@metamask/account-tree-controller>@metamask/snaps-utils": {
       "globals": {
         "File": true,
         "FileReader": true,
