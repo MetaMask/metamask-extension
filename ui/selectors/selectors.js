@@ -1817,6 +1817,7 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
 
 /**
  * @deprecated Use getNativeAssetForChainId instead because this only supports EVM chains
+ *
  * Swaps related code uses token objects for various purposes. These objects
  * always have the following properties: `symbol`, `name`, `address`, and
  * `decimals`.
