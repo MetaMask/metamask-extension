@@ -2,8 +2,8 @@ import { createModuleLogger, createProjectLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
-import { isManifestV3 } from '../../../shared/modules/mv3.utils';
-import { getManifestFlags } from '../../../shared/lib/manifestFlags';
+import { isManifestV3 } from '../modules/mv3.utils';
+import { getManifestFlags } from './manifestFlags';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
 
@@ -38,7 +38,7 @@ export const ERROR_URL_ALLOWLIST = {
   SEGMENT: 'segment.io',
 };
 
-export default function setupSentry() {
+export default function setupSentry(forceEnable = false) {
   if (!RELEASE) {
     throw new Error('Missing release');
   }
@@ -63,7 +63,7 @@ export default function setupSentry() {
       log('Error getting extension installType', error);
     });
   integrateLogging();
-  setSentryClient();
+  setSentryClient(forceEnable);
 
   return {
     ...Sentry,
@@ -71,7 +71,7 @@ export default function setupSentry() {
   };
 }
 
-function getClientOptions() {
+function getClientOptions(forceEnable = false) {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
 
@@ -91,7 +91,7 @@ function getClientOptions() {
           return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
         },
       }),
-      filterEvents({ getMetaMetricsEnabled, log }),
+      filterEvents({ getMetaMetricsEnabled, log, isForceEnable: forceEnable }),
     ],
     release: RELEASE,
     // Client reports are automatically sent when a page's visibility changes to
@@ -256,8 +256,8 @@ async function getMetaMetricsEnabled() {
   }
 }
 
-function setSentryClient() {
-  const clientOptions = getClientOptions();
+function setSentryClient(forceEnable = false) {
+  const clientOptions = getClientOptions(forceEnable);
   const { dsn, environment, release, tracesSampleRate } = clientOptions;
 
   /**

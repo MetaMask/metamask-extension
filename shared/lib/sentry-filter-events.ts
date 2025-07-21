@@ -8,17 +8,25 @@ const NAME = 'FilterEvents';
  * @param options - Options bag.
  * @param options.getMetaMetricsEnabled - Function that returns whether MetaMetrics is enabled.
  * @param options.log - Function to log messages.
+ * @param options.isForceEnable - Whether to force enable the filter events.
  */
 export function filterEvents({
   getMetaMetricsEnabled,
   log,
+  isForceEnable,
 }: {
   getMetaMetricsEnabled: () => Promise<boolean>;
   log: (message: string) => void;
+  isForceEnable: boolean;
 }): Integration {
   return {
     name: NAME,
     processEvent: async (event: SentryEvent) => {
+      // If force enable is true, we don't want to filter events.
+      if (isForceEnable) {
+        return event;
+      }
+
       // This integration is required in addition to the custom transport as it provides an
       // asynchronous context which we may need in order to read the persisted state from the
       // store, so it can later be added to the event via the `beforeSend` overload.
