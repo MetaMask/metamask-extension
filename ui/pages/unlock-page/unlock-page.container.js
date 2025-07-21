@@ -37,8 +37,8 @@ const mapDispatchToProps = (dispatch) => {
     tryUnlockMetamask: (password) => dispatch(tryUnlockMetamask(password)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
-    setOnboardingErrorReport: (error, view) =>
-      dispatch(setOnboardingErrorReport(error, view)),
+    setOnboardingErrorReport: (error) =>
+      dispatch(setOnboardingErrorReport(error)),
   };
 };
 

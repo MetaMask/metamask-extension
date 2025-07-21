@@ -30,6 +30,7 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getOnboardingErrorReport } from '../../../selectors';
 import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import { setOnboardingErrorReport } from '../../../store/actions';
+import setupSentry from '../../../../shared/lib/setupSentry';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -56,6 +57,7 @@ export default function OnboardingError() {
       return;
     }
     try {
+      setupSentry(true);
       const { error, view = 'Unknown' } = onboardingErrorReport || {};
       captureException(error, {
         extra: {

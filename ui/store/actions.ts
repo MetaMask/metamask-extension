@@ -7058,9 +7058,11 @@ export async function applyTransactionContainersExisting(
   );
 }
 
-export function setOnboardingErrorReport(error: Error | null, view?: string) {
+export function setOnboardingErrorReport(
+  errorData: { error: Error; view: string } | null,
+) {
   return {
     type: actionConstants.SET_ONBOARDING_ERROR_REPORT,
-    payload: error ? { error, view } : null,
+    payload: errorData,
   };
 }
