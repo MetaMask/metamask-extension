@@ -119,13 +119,11 @@ export function getSwapsTokensReceivedFromTxMeta(
       const isTokenTransfer =
         txReceiptLog.topics &&
         txReceiptLog.topics[0] === TOKEN_TRANSFER_LOG_TOPIC_HASH;
-      const isTransferFromGivenToken =
-        txReceiptLog.address?.toLowerCase() === tokenAddress?.toLowerCase();
+      const isTransferFromGivenToken = txReceiptLog.address === tokenAddress;
       const isTransferFromGivenAddress =
         txReceiptLog.topics &&
         txReceiptLog.topics[2] &&
-        (txReceiptLog.topics[2] === accountAddress ||
-          txReceiptLog.topics[2].match(accountAddress?.slice(2)));
+        txReceiptLog.topics[2].match(accountAddress?.slice(2));
       return (
         isTokenTransfer &&
         isTransferFromGivenToken &&

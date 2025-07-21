@@ -36,10 +36,12 @@ export default async function resolveEnsToIpfsContentId({ provider, name }) {
     web3Provider,
   );
 
-  const isEIP1577Compliant =
-    await resolverContract.supportsInterface('0xbc1c58d1');
-  const isLegacyResolver =
-    await resolverContract.supportsInterface('0xd8389dc5');
+  const isEIP1577Compliant = await resolverContract.supportsInterface(
+    '0xbc1c58d1',
+  );
+  const isLegacyResolver = await resolverContract.supportsInterface(
+    '0xd8389dc5',
+  );
   if (isEIP1577Compliant) {
     const contentLookupResult = await resolverContract.contenthash(hash);
     const rawContentHash = contentLookupResult[0];

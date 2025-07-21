@@ -123,7 +123,7 @@ export default function RecoveryPhraseChips({
         borderRadius={BorderRadius.LG}
         display={Display.Grid}
         width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundSection}
+        backgroundColor={BackgroundColor.backgroundMuted}
         className="recovery-phrase__secret"
       >
         <Box
@@ -169,7 +169,6 @@ export default function RecoveryPhraseChips({
                   (confirmPhase && !isQuizWord) ||
                   (!confirmPhase && !phraseRevealed)
                 }
-                readOnly={confirmPhase}
                 onClick={() => {
                   if (!confirmPhase) {
                     return;
@@ -179,9 +178,6 @@ export default function RecoveryPhraseChips({
                   } else {
                     removeQuizWord(wordToDisplay);
                   }
-                }}
-                inputProps={{
-                  tabIndex: confirmPhase ? -1 : 0,
                 }}
               />
             ) : (

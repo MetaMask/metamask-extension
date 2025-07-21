@@ -2,11 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 
-import {
-  Button,
-  ButtonVariant,
-  ButtonSize,
-} from '../../../components/component-library';
+import Button from '../../../components/ui/button';
 import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
 
@@ -209,17 +205,16 @@ class AccountList extends Component {
     return (
       <div className="new-external-account-form__buttons">
         <Button
-          variant={ButtonVariant.Secondary}
-          size={ButtonSize.Lg}
-          block
+          type="secondary"
+          large
+          className="new-external-account-form__button"
           onClick={this.props.onCancel.bind(this)}
         >
           {this.context.t('cancel')}
         </Button>
         <Button
-          variant={ButtonVariant.Primary}
-          size={ButtonSize.Lg}
-          block
+          type="primary"
+          large
           className="new-external-account-form__button unlock"
           disabled={disabled}
           onClick={this.props.onUnlockAccounts.bind(

@@ -17,12 +17,6 @@
   width: 100%;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 
-  &:focus-visible {
-    outline: 2px solid var(--color-primary-default);
-    outline-offset: 2px;
-    box-shadow: none;
-  }
-
   &--disabled,
   &[disabled] {
     cursor: auto;
@@ -99,18 +93,18 @@
 
 .btn-default,
 .btn-primary {
-  color: var(--color-icon-inverse);
+  color: var(--color-primary-inverse);
   background-color: var(--color-icon-default);
 
   &:hover {
-    color: var(--color-icon-inverse);
+    color: var(--color-primary-inverse);
     background-color: var(--color-icon-default);
     opacity: 0.8;
     transition: background-color 200ms ease;
   }
 
   &:active {
-    color: var(--color-icon-inverse);
+    color: var(--color-primary-inverse);
     background-color: var(--color-icon-default);
     transform: scale(0.98);
   }
@@ -171,6 +165,10 @@ input[type="submit"][disabled] {
 .btn--rounded {
   border-radius: 100px;
 
+  &:hover {
+    box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+  }
+
   &.btn-secondary {
     background-color: var(--color-background-muted);
 
@@ -184,6 +182,10 @@ input[type="submit"][disabled] {
   }
 
   &.btn-default {
+    &:hover {
+      box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+    }
+
     &:active {
       border-color: var(--color-text-alternative);
     }
@@ -201,6 +203,10 @@ input[type="submit"][disabled] {
   }
 
   &.btn-warning {
+    &:hover {
+      box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+    }
+
     &--disabled,
     &[disabled] {
       border-color: var(--color-warning-default);

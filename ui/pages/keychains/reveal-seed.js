@@ -40,6 +40,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { requestRevealSeedWords } from '../../store/actions';
 import { getHDEntropyIndex } from '../../selectors/selectors';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
+import { SECURITY_ROUTE } from '../../helpers/constants/routes';
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
@@ -273,7 +274,7 @@ export default function RevealSeedPage() {
                 hd_entropy_index: hdEntropyIndex,
               },
             });
-            history.goBack();
+            history.push(SECURITY_ROUTE);
           }}
         >
           {t('cancel')}
@@ -322,7 +323,7 @@ export default function RevealSeedPage() {
                 key_type: MetaMetricsEventKeyType.Srp,
               },
             });
-            history.goBack();
+            history.push(SECURITY_ROUTE);
           }}
         >
           {t('close')}

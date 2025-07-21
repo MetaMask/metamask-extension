@@ -46,9 +46,7 @@ const STORE_MOCK = {
       },
     },
     enabledNetworkMap: {
-      eip155: {
-        '0x1': true,
-      },
+      '0x1': true,
     },
     selectedNetworkClientId: 'testNetworkClientId',
     subjectMetadata: {

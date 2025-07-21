@@ -6,8 +6,6 @@ export type VersionedData = {
     version: number;
   };
   data: {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     PreferencesController?: {
       // These properties are not in the PreferencesControllerState type anymore
       bitcoinSupportEnabled?: boolean;

@@ -1,10 +1,6 @@
+import { NetworkConfiguration } from '@metamask/network-controller';
 import React, { useContext } from 'react';
-import type { CaipChainId } from '@metamask/utils';
-import {
-  formatChainIdToHex,
-  isSolanaChainId,
-} from '@metamask/bridge-controller';
-import { CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP } from '../../../../shared/constants/common';
+import type { Hex } from '@metamask/utils';
 import {
   Box,
   IconName,
@@ -17,17 +13,14 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP } from '../../../../shared/constants/common';
 
 const getBlockExplorerName = (
-  chainId: CaipChainId | undefined,
+  chainId: Hex | undefined,
   blockExplorerUrl: string | undefined,
 ) => {
-  const hexChainId =
-    chainId && !isSolanaChainId(chainId)
-      ? formatChainIdToHex(chainId)
-      : undefined;
-  const humanReadableUrl = hexChainId
-    ? CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[hexChainId]
+  const humanReadableUrl = chainId
+    ? CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId]
     : undefined;
   if (humanReadableUrl) {
     return humanReadableUrl;
@@ -39,17 +32,34 @@ const getBlockExplorerName = (
   return blockExplorerUrl.split('/')[2];
 };
 
+export const getBlockExplorerUrl = (
+  networkConfiguration: NetworkConfiguration | undefined,
+  txHash: string | undefined,
+) => {
+  if (!networkConfiguration || !txHash) {
+    return undefined;
+  }
+  const index = networkConfiguration.defaultBlockExplorerUrlIndex;
+  if (index === undefined) {
+    return undefined;
+  }
+
+  const rootUrl = networkConfiguration.blockExplorerUrls[index]?.replace(
+    /\/$/u,
+    '',
+  );
+  return `${rootUrl}/tx/${txHash}`;
+};
+
 const METRICS_LOCATION = 'Activity Tab';
 
 type ExplorerLinksProps = {
-  srcChainId?: CaipChainId;
-  destChainId?: CaipChainId;
+  srcChainId?: Hex;
+  destChainId?: Hex;
   srcBlockExplorerUrl?: string;
   destBlockExplorerUrl?: string;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function BridgeExplorerLinks({
   srcChainId,
   destChainId,

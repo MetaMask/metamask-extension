@@ -21,6 +21,7 @@ jest.mock('../selectors', () => ({
 
 const VALUE_MOCK = '0x1234567890123456789012345678901234567890';
 const VALUE_MOCK_2 = '0x9876543210987654321098765432109876543210';
+const VARIATION_MOCK = '0x1';
 const TRUST_LABEL_MOCK = 'Malicious Address';
 const VERIFIED_LABEL_MOCK = 'Verified Contract';
 const WARNING_LABEL_MOCK = 'Suspicious Activity';
@@ -37,13 +38,15 @@ describe('useTrustSignals', () => {
   describe('useTrustSignal', () => {
     it('returns the first result from useTrustSignals', () => {
       getAddressSecurityAlertResponseMock.mockReturnValue({
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         result_type: ResultType.Malicious,
         label: TRUST_LABEL_MOCK,
       });
 
-      const result = useTrustSignal(VALUE_MOCK, NameType.ETHEREUM_ADDRESS);
+      const result = useTrustSignal(
+        VALUE_MOCK,
+        NameType.ETHEREUM_ADDRESS,
+        VARIATION_MOCK,
+      );
 
       expect(result).toStrictEqual({
         state: TrustSignalDisplayState.Malicious,
@@ -56,8 +59,6 @@ describe('useTrustSignals', () => {
     describe('Ethereum addresses with security alert responses', () => {
       it('returns malicious state for malicious addresses', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.Malicious,
           label: TRUST_LABEL_MOCK,
         });
@@ -66,6 +67,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
           },
         ];
 
@@ -85,8 +87,6 @@ describe('useTrustSignals', () => {
 
       it('returns warning state for warning addresses', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.Warning,
           label: WARNING_LABEL_MOCK,
         });
@@ -95,6 +95,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
           },
         ];
 
@@ -109,8 +110,6 @@ describe('useTrustSignals', () => {
 
       it('returns verified state for trusted addresses', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.Trusted,
           label: VERIFIED_LABEL_MOCK,
         });
@@ -119,6 +118,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
           },
         ];
 
@@ -133,8 +133,6 @@ describe('useTrustSignals', () => {
 
       it('returns unknown state for benign addresses', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.Benign,
           label: 'Benign Address',
         });
@@ -143,6 +141,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
           },
         ];
 
@@ -157,8 +156,6 @@ describe('useTrustSignals', () => {
 
       it('returns unknown state for error result type', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.ErrorResult,
           label: 'Error occurred',
         });
@@ -167,6 +164,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
           },
         ];
 
@@ -188,6 +186,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
           },
         ];
 
@@ -202,8 +201,6 @@ describe('useTrustSignals', () => {
 
       it('handles missing label gracefully', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.Trusted,
         });
 
@@ -211,6 +208,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
           },
         ];
 
@@ -232,6 +230,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
           },
         ];
 
@@ -251,6 +250,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
           },
         ];
 
@@ -268,14 +268,10 @@ describe('useTrustSignals', () => {
       it('handles multiple requests correctly', () => {
         getAddressSecurityAlertResponseMock
           .mockReturnValueOnce({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: ResultType.Malicious,
             label: TRUST_LABEL_MOCK,
           })
           .mockReturnValueOnce({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: ResultType.Trusted,
             label: VERIFIED_LABEL_MOCK,
           });
@@ -284,10 +280,12 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
           },
           {
             value: VALUE_MOCK_2,
             type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
           },
         ];
 
@@ -327,8 +325,6 @@ describe('useTrustSignals', () => {
     describe('Edge cases', () => {
       it('handles mixed address types in multiple requests', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.Malicious,
           label: TRUST_LABEL_MOCK,
         });
@@ -337,10 +333,12 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
           },
           {
             value: 'test.eth',
             type: NameType.ETHEREUM_ADDRESS, // Using ETHEREUM_ADDRESS as it's the only supported type
+            variation: VARIATION_MOCK,
           },
         ];
 

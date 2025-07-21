@@ -181,7 +181,6 @@ describe('Vault Decryptor Page', function () {
           driver,
           password: WALLET_PASSWORD,
           needNavigateToNewPage: false,
-          socialLoginEnabled: false,
         });
         // close popover if any (Announcements etc..)
         await closePopoverIfPresent(driver);
@@ -242,7 +241,6 @@ describe('Vault Decryptor Page', function () {
           driver,
           password: WALLET_PASSWORD,
           needNavigateToNewPage: false,
-          socialLoginEnabled: false,
         });
         // close popover if any (Announcements etc..)
         await closePopoverIfPresent(driver);
@@ -271,8 +269,6 @@ describe('Vault Decryptor Page', function () {
 
         // copy log file to a temp location, to avoid reading it while the browser is writting it
         type VaultData = {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           KeyringController: {
             vault: string;
           };

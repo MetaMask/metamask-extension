@@ -82,17 +82,9 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     [secretRecoveryPhrase],
   );
   const searchParams = new URLSearchParams(search);
-  const isFromReminder = searchParams.get('isFromReminder');
-  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
-
-  const queryParams = new URLSearchParams();
-  if (isFromReminder) {
-    queryParams.set('isFromReminder', isFromReminder);
-  }
-  if (isFromSettingsSecurity) {
-    queryParams.set('isFromSettingsSecurity', isFromSettingsSecurity);
-  }
-  const nextRouteQueryString = queryParams.toString();
+  const isFromReminderParam = searchParams.get('isFromReminder')
+    ? '/?isFromReminder=true'
+    : '';
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [matching, setMatching] = useState(false);
@@ -103,13 +95,9 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
 
   useEffect(() => {
     if (!secretRecoveryPhrase) {
-      history.replace(
-        `${ONBOARDING_REVIEW_SRP_ROUTE}${
-          nextRouteQueryString ? `?${nextRouteQueryString}` : ''
-        }`,
-      );
+      history.replace(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
     }
-  }, [history, secretRecoveryPhrase, nextRouteQueryString]);
+  }, [history, secretRecoveryPhrase, isFromReminderParam]);
 
   const resetQuizWords = useCallback(() => {
     const newQuizWords = generateQuizWords(splitSecretRecoveryPhrase);
@@ -149,21 +137,12 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     });
 
     const nextRoute =
-      getBrowserName() === PLATFORM_FIREFOX || isFromReminder
+      getBrowserName() === PLATFORM_FIREFOX || isFromReminderParam
         ? ONBOARDING_COMPLETION_ROUTE
         : ONBOARDING_METAMETRICS;
 
-    history.replace(
-      `${nextRoute}${nextRouteQueryString ? `?${nextRouteQueryString}` : ''}`,
-    );
-  }, [
-    dispatch,
-    hdEntropyIndex,
-    history,
-    trackEvent,
-    isFromReminder,
-    nextRouteQueryString,
-  ]);
+    history.replace(`${nextRoute}${isFromReminderParam}`);
+  }, [dispatch, hdEntropyIndex, history, trackEvent, isFromReminderParam]);
 
   return (
     <Box
@@ -204,7 +183,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
           marginBottom={4}
           width={BlockSize.Full}
         >
-          {!isFromReminder && (
+          {!isFromReminderParam && (
             <Text
               variant={TextVariant.bodyMd}
               color={TextColor.textAlternative}

@@ -9,7 +9,7 @@ import {
 import type { Provider } from '@metamask/network-controller';
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
-import { AssetConversion, FungibleAssetMarketData } from '@metamask/snaps-sdk';
+import { AssetConversion } from '@metamask/snaps-sdk';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -96,8 +96,6 @@ function hexToBn(inputHex: string) {
  * @param denominator - The denominator of the fraction multiplier
  * @returns The product of the multiplication
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function BnMultiplyByFraction(
   targetBN: BN,
   numerator: number,
@@ -188,8 +186,6 @@ export const isValidDate = (d: Date | number) => {
  * @param [initialValue] - The initial value to supply to prevValue
  * on first call of the method.
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function previousValueComparator<A>(
   comparator: (previous: A, next: A) => boolean,
   initialValue: A,
@@ -429,7 +425,7 @@ export function getConversionRatesForNativeAsset({
 }: {
   conversionRates: AssetsRatesState['metamask']['conversionRates'];
   chainId: string;
-}): (AssetConversion & { marketData?: FungibleAssetMarketData }) | null {
+}): AssetConversion | null {
   // Return early if conversionRates is falsy
   if (!conversionRates) {
     return null;

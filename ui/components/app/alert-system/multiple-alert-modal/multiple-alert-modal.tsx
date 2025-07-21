@@ -38,8 +38,6 @@ export type MultipleAlertModalProps = {
   skipAlertNavigation?: boolean;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function PreviousButton({
   selectedIndex,
   onBackButtonClick,
@@ -68,8 +66,6 @@ function PreviousButton({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function NextButton({
   selectedIndex,
   alertsLength,
@@ -100,8 +96,6 @@ function NextButton({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function PageNumber({
   selectedIndex,
   alertsLength,
@@ -122,8 +116,6 @@ function PageNumber({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function PageNavigation({
   alerts,
   onBackButtonClick,
@@ -154,8 +146,6 @@ function PageNavigation({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function MultipleAlertModal({
   alertKey,
   displayAllAlerts = false,

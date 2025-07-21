@@ -34,12 +34,8 @@ export const useQuoteFetchEvents = () => {
 
   const { quoteRequestProperties } = useRequestProperties();
   const requestMetadataProperties = useRequestMetadataProperties();
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   const { usd_amount_source } = useConvertedUsdAmounts();
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   const has_sufficient_funds = !insufficientBal;
 
   const quoteListProperties = useQuoteProperties();
@@ -97,11 +93,7 @@ export const useQuoteFetchEvents = () => {
         properties: {
           ...quoteRequestProperties,
           ...requestMetadataProperties,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           has_sufficient_funds,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           usd_amount_source,
         },
       });
@@ -121,14 +113,8 @@ export const useQuoteFetchEvents = () => {
         properties: {
           ...quoteRequestProperties,
           ...requestMetadataProperties,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           has_sufficient_funds,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           usd_amount_source,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           error_message: quoteFetchError,
         },
       });
@@ -154,8 +140,6 @@ export const useQuoteFetchEvents = () => {
           ...requestMetadataProperties,
           ...quoteListProperties,
           ...tradeProperties,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           refresh_count: quotesRefreshCount - 1,
           warnings,
         },

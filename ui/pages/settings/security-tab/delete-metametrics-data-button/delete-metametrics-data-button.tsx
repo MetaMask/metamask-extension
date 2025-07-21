@@ -32,14 +32,10 @@ import DataDeletionErrorModal from '../../../../components/app/data-deletion-err
 import { formatDate } from '../../../../helpers/utils/util';
 import { DeleteRegulationStatus } from '../../../../../shared/constants/metametrics';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 type DeleteMetaMetricsDataButtonProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C>;
 
 type DeleteMetaMetricsDataButtonComponent = <
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   C extends React.ElementType = 'div',
 >(
   props: DeleteMetaMetricsDataButtonProps<C>,
@@ -47,8 +43,6 @@ type DeleteMetaMetricsDataButtonComponent = <
 
 const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
   React.forwardRef(
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     <C extends React.ElementType = 'div'>(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       { ...props }: DeleteMetaMetricsDataButtonProps<C>,

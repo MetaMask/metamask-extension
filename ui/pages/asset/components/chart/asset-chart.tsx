@@ -208,7 +208,7 @@ const AssetChart = ({
         marginTop={4}
         backgroundColor={
           loading && !prices
-            ? BackgroundColor.backgroundSection
+            ? BackgroundColor.backgroundMuted
             : BackgroundColor.transparent
         }
         borderRadius={BorderRadius.LG}

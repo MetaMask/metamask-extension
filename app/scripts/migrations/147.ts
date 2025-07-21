@@ -1,8 +1,6 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 type previousSessionDataShape = {
   profile: {
     identifierId: string;
@@ -17,8 +15,6 @@ export type VersionedData = {
     version: number;
   };
   data: {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     AuthenticationController?: {
       isSignedIn: boolean;
       sessionData?: previousSessionDataShape;

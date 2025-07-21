@@ -57,8 +57,6 @@ const RESPONSE_OUTGOING_MOCK = {
   ...RESPONSE_STANDARD_MOCK,
   from: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
   to: '0x2',
-  methodId: '0x12345678',
-  value: '4560000000000000000',
 };
 
 async function mockAccountsApi(
@@ -101,10 +99,10 @@ describe('Incoming Transactions', function () {
         const activityList = await changeNetworkAndGoToActivity(driver);
         await activityList.check_confirmedTxNumberDisplayedInActivity(2);
 
-        await activityList.check_txAction('Received', 1);
+        await activityList.check_txAction('Receive', 1);
         await activityList.check_txAmountInActivity('1.23 ETH', 1);
 
-        await activityList.check_txAction('Received', 2);
+        await activityList.check_txAction('Receive', 2);
         await activityList.check_txAmountInActivity('2.34 ETH', 2);
       },
     );
@@ -132,7 +130,7 @@ describe('Incoming Transactions', function () {
     );
   });
 
-  it('adds outgoing transactions', async function () {
+  it('ignores outgoing transactions', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -146,10 +144,7 @@ describe('Incoming Transactions', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         const activityList = await changeNetworkAndGoToActivity(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(2);
-
-        await activityList.check_txAction('Contract interaction', 2);
-        await activityList.check_txAmountInActivity('-4.56 ETH', 2);
+        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
       },
     );
   });

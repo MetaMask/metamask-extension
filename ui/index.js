@@ -1,3 +1,4 @@
+import { promisify } from 'util';
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import { clone } from 'lodash';
@@ -32,7 +33,6 @@ import {
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
-  getIsUnlocked,
   getUnconnectedAccountAlertEnabledness,
   getUnconnectedAccountAlertShown,
 } from './ducks/metamask/metamask';
@@ -40,7 +40,6 @@ import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
-import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 
 export { displayStateCorruptionError } from './helpers/utils/state-corruption-html';
 
@@ -73,12 +72,14 @@ export default async function launchMetamaskUi(opts) {
 
   const metamaskState = await trace(
     { name: TraceName.GetState, parentContext: traceContext },
-    backgroundConnection.getState.bind(backgroundConnection),
+    () => promisify(backgroundConnection.getState.bind(backgroundConnection))(),
   );
 
   const store = await startApp(metamaskState, backgroundConnection, opts);
 
-  await backgroundConnection.startPatches();
+  await promisify(
+    backgroundConnection.startPatches.bind(backgroundConnection),
+  )();
 
   setupStateHooks(store);
 
@@ -227,22 +228,22 @@ async function startApp(metamaskState, backgroundConnection, opts) {
 }
 
 async function runInitialActions(store) {
-  const initialState = store.getState();
+  const state = store.getState();
 
   // This block autoswitches chains based on the last chain used
   // for a given dapp, when there are no pending confimrations
   // This allows the user to be connected on one chain
   // for one dapp, and automatically change for another
-  const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(initialState);
+  const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(state);
 
   if (networkIdToSwitchTo) {
     await store.dispatch(
       actions.automaticallySwitchNetwork(
         networkIdToSwitchTo,
-        getOriginOfCurrentTab(initialState),
+        getOriginOfCurrentTab(state),
       ),
     );
-  } else if (getSwitchedNetworkDetails(initialState)) {
+  } else if (getSwitchedNetworkDetails(state)) {
     // It's possible that old details could exist if the user
     // opened the toast but then didn't close it
     // Clear out any existing switchedNetworkDetails
@@ -256,23 +257,6 @@ async function runInitialActions(store) {
     const thisPopupId = Date.now();
     global.metamask.id = thisPopupId;
     await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));
-  }
-
-  try {
-    const validateSeedlessPasswordOutdated = async (state) => {
-      const isUnlocked = getIsUnlocked(state);
-      if (isUnlocked) {
-        await store.dispatch(actions.checkIsSeedlessPasswordOutdated());
-      }
-    };
-    await validateSeedlessPasswordOutdated(initialState);
-    // periodically check seedless password outdated when app UI is open
-    setInterval(async () => {
-      const state = store.getState();
-      await validateSeedlessPasswordOutdated(state);
-    }, SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS);
-  } catch (e) {
-    log.error('[Metamask] checkIsSeedlessPasswordOutdated error', e);
   }
 }
 

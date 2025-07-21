@@ -11,7 +11,7 @@ import {
   getAllChainsToPoll,
   getTokenNetworkFilter,
   getIsTokenNetworkFilterEqualCurrentNetwork,
-  getEnabledNetworksByNamespace,
+  getEnabledNetworks,
 } from '../../../../../selectors';
 import {
   getCurrentChainId,
@@ -64,7 +64,7 @@ const NetworkFilter = ({
   const selectedAccount = useSelector(getSelectedAccount);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
-  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const enabledNetworks = useSelector(getEnabledNetworks);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
@@ -103,7 +103,7 @@ const NetworkFilter = ({
       handleFilterNetwork(chainFilters);
     } else {
       isGlobalNetworkSelectorRemoved
-        ? dispatch(setEnabledNetworks(Object.keys(chainFilters), chainId))
+        ? dispatch(setEnabledNetworks(Object.keys(chainFilters)))
         : dispatch(setTokenNetworkFilter(chainFilters));
     }
 
@@ -120,7 +120,7 @@ const NetworkFilter = ({
   });
 
   const networks = isGlobalNetworkSelectorRemoved
-    ? enabledNetworksByNamespace
+    ? enabledNetworks
     : tokenNetworkFilter;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing

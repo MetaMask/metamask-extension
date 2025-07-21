@@ -5,7 +5,6 @@ import {
   EthMethod,
   SolAccountType,
 } from '@metamask/keyring-api';
-import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { deepClone } from '@metamask/snaps-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -41,22 +40,6 @@ jest.mock('../../shared/modules/network.utils', () => {
     shouldShowLineaMainnet: jest.fn().mockResolvedValue(true),
   };
 });
-
-jest.mock('./multichain/networks', () => ({
-  ...jest.requireActual('./multichain/networks'),
-  getIsEvmMultichainNetworkSelected: jest.fn(
-    (state) => state.metamask.isEvmSelected,
-  ),
-  getSelectedMultichainNetworkChainId: jest.fn((state) => {
-    if (state.metamask.isEvmSelected) {
-      const chainId = state.metamask.networkConfigurationsByChainId
-        ? Object.keys(state.metamask.networkConfigurationsByChainId)[0]
-        : '0x1';
-      return `eip155:${parseInt(chainId, 16)}`;
-    }
-    return state.metamask.selectedMultichainNetworkChainId;
-  }),
-}));
 
 const modifyStateWithHWKeyring = (keyring) => {
   const modifiedState = deepClone(mockState);
@@ -848,18 +831,9 @@ describe('Selectors', () => {
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getChainIdsToPoll({
         metamask: {
-          enabledNetworkMap: {
-            eip155: {
-              [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.LINEA_MAINNET]: true,
-            },
-          },
+          enabledNetworkMap: {},
           networkConfigurationsByChainId,
           selectedNetworkClientId: 'mainnet',
-          multichainNetworkConfigurationsByChainId:
-            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-          selectedMultichainNetworkChainId: 'eip155:1',
-          isEvmSelected: true,
         },
       });
       expect(Object.values(chainIds)).toHaveLength(2);
@@ -905,18 +879,9 @@ describe('Selectors', () => {
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getNetworkClientIdsToPoll({
         metamask: {
-          enabledNetworkMap: {
-            eip155: {
-              [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.LINEA_MAINNET]: true,
-            },
-          },
+          enabledNetworkMap: {},
           networkConfigurationsByChainId,
           selectedNetworkClientId: 'mainnet',
-          multichainNetworkConfigurationsByChainId:
-            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-          selectedMultichainNetworkChainId: 'eip155:1',
-          isEvmSelected: true,
         },
       });
       expect(Object.values(chainIds)).toHaveLength(2);
@@ -2223,9 +2188,7 @@ describe('#getConnectedSitesList', () => {
       const state = {
         metamask: {
           enabledNetworkMap: {
-            eip155: {
-              '0x1': true,
-            },
+            '0x1': true,
           },
           preferences: {
             tokenNetworkFilter: {
@@ -2241,10 +2204,6 @@ describe('#getConnectedSitesList', () => {
               ],
             },
           },
-          multichainNetworkConfigurationsByChainId:
-            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-          selectedMultichainNetworkChainId: 'eip155:1',
-          isEvmSelected: true,
         },
       };
       expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
@@ -2256,10 +2215,8 @@ describe('#getConnectedSitesList', () => {
       const state = {
         metamask: {
           enabledNetworkMap: {
-            eip155: {
-              '0x1': true,
-              '0x89': true,
-            },
+            '0x1': true,
+            '0x89': true,
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
           networkConfigurationsByChainId: {
@@ -2270,10 +2227,6 @@ describe('#getConnectedSitesList', () => {
               ],
             },
           },
-          multichainNetworkConfigurationsByChainId:
-            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-          selectedMultichainNetworkChainId: 'eip155:1',
-          isEvmSelected: true,
         },
       };
       expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
@@ -2297,9 +2250,7 @@ describe('#getConnectedSitesList', () => {
       const state = {
         metamask: {
           enabledNetworkMap: {
-            eip155: {
-              '0x1': true,
-            },
+            '0x1': true,
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
           networkConfigurationsByChainId: {
@@ -2310,17 +2261,11 @@ describe('#getConnectedSitesList', () => {
               ],
             },
           },
-          multichainNetworkConfigurationsByChainId:
-            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-          selectedMultichainNetworkChainId: 'eip155:1',
-          isEvmSelected: true,
         },
       };
 
       expect(selectors.getEnabledNetworks(state)).toStrictEqual({
-        eip155: {
-          [CHAIN_IDS.MAINNET]: true,
-        },
+        [CHAIN_IDS.MAINNET]: true,
       });
     });
 
@@ -2328,9 +2273,7 @@ describe('#getConnectedSitesList', () => {
       const state = {
         metamask: {
           enabledNetworkMap: {
-            eip155: {
-              '0xNotPopularNetwork': true,
-            },
+            '0xNotPopularNetwork': true,
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
           networkConfigurationsByChainId: {
@@ -2341,17 +2284,11 @@ describe('#getConnectedSitesList', () => {
               ],
             },
           },
-          multichainNetworkConfigurationsByChainId:
-            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-          selectedMultichainNetworkChainId: 'eip155:1',
-          isEvmSelected: true,
         },
       };
 
       expect(selectors.getEnabledNetworks(state)).toStrictEqual({
-        eip155: {
-          '0xNotPopularNetwork': true,
-        },
+        '0xNotPopularNetwork': true,
       });
     });
 
@@ -2359,17 +2296,15 @@ describe('#getConnectedSitesList', () => {
       const state = {
         metamask: {
           enabledNetworkMap: {
-            eip155: {
-              [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.LINEA_MAINNET]: true,
-              [CHAIN_IDS.ARBITRUM]: true,
-              [CHAIN_IDS.AVALANCHE]: true,
-              [CHAIN_IDS.BSC]: true,
-              [CHAIN_IDS.OPTIMISM]: true,
-              [CHAIN_IDS.POLYGON]: true,
-              [CHAIN_IDS.ZKSYNC_ERA]: true,
-              [CHAIN_IDS.BASE]: true,
-            },
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.LINEA_MAINNET]: true,
+            [CHAIN_IDS.ARBITRUM]: true,
+            [CHAIN_IDS.AVALANCHE]: true,
+            [CHAIN_IDS.BSC]: true,
+            [CHAIN_IDS.OPTIMISM]: true,
+            [CHAIN_IDS.POLYGON]: true,
+            [CHAIN_IDS.ZKSYNC_ERA]: true,
+            [CHAIN_IDS.BASE]: true,
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
           networkConfigurationsByChainId: {
@@ -2380,38 +2315,19 @@ describe('#getConnectedSitesList', () => {
               ],
             },
           },
-          preferences: {
-            tokenNetworkFilter: {
-              [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.LINEA_MAINNET]: true,
-              [CHAIN_IDS.ARBITRUM]: true,
-              [CHAIN_IDS.AVALANCHE]: true,
-              [CHAIN_IDS.BSC]: true,
-              [CHAIN_IDS.OPTIMISM]: true,
-              [CHAIN_IDS.POLYGON]: true,
-              [CHAIN_IDS.ZKSYNC_ERA]: true,
-              [CHAIN_IDS.BASE]: true,
-            },
-          },
-          multichainNetworkConfigurationsByChainId:
-            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-          selectedMultichainNetworkChainId: 'eip155:1',
-          isEvmSelected: true,
         },
       };
 
       expect(selectors.getEnabledNetworks(state)).toStrictEqual({
-        eip155: {
-          [CHAIN_IDS.MAINNET]: true,
-          [CHAIN_IDS.LINEA_MAINNET]: true,
-          [CHAIN_IDS.ARBITRUM]: true,
-          [CHAIN_IDS.AVALANCHE]: true,
-          [CHAIN_IDS.BSC]: true,
-          [CHAIN_IDS.OPTIMISM]: true,
-          [CHAIN_IDS.POLYGON]: true,
-          [CHAIN_IDS.ZKSYNC_ERA]: true,
-          [CHAIN_IDS.BASE]: true,
-        },
+        [CHAIN_IDS.MAINNET]: true,
+        [CHAIN_IDS.LINEA_MAINNET]: true,
+        [CHAIN_IDS.ARBITRUM]: true,
+        [CHAIN_IDS.AVALANCHE]: true,
+        [CHAIN_IDS.BSC]: true,
+        [CHAIN_IDS.OPTIMISM]: true,
+        [CHAIN_IDS.POLYGON]: true,
+        [CHAIN_IDS.ZKSYNC_ERA]: true,
+        [CHAIN_IDS.BASE]: true,
       });
     });
 
@@ -2419,17 +2335,15 @@ describe('#getConnectedSitesList', () => {
       const state = {
         metamask: {
           enabledNetworkMap: {
-            eip155: {
-              [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.LINEA_MAINNET]: true,
-              [CHAIN_IDS.ARBITRUM]: true,
-              [CHAIN_IDS.AVALANCHE]: true,
-              [CHAIN_IDS.BSC]: true,
-              [CHAIN_IDS.OPTIMISM]: true,
-              [CHAIN_IDS.POLYGON]: true,
-              [CHAIN_IDS.ZKSYNC_ERA]: true,
-              [CHAIN_IDS.BASE]: true,
-            },
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.LINEA_MAINNET]: true,
+            [CHAIN_IDS.ARBITRUM]: true,
+            [CHAIN_IDS.AVALANCHE]: true,
+            [CHAIN_IDS.BSC]: true,
+            [CHAIN_IDS.OPTIMISM]: true,
+            [CHAIN_IDS.POLYGON]: true,
+            [CHAIN_IDS.ZKSYNC_ERA]: true,
+            [CHAIN_IDS.BASE]: true,
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
           networkConfigurationsByChainId: {
@@ -2440,23 +2354,6 @@ describe('#getConnectedSitesList', () => {
               ],
             },
           },
-          preferences: {
-            tokenNetworkFilter: {
-              [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.LINEA_MAINNET]: true,
-              [CHAIN_IDS.ARBITRUM]: true,
-              [CHAIN_IDS.AVALANCHE]: true,
-              [CHAIN_IDS.BSC]: true,
-              [CHAIN_IDS.OPTIMISM]: true,
-              [CHAIN_IDS.POLYGON]: true,
-              [CHAIN_IDS.ZKSYNC_ERA]: true,
-              [CHAIN_IDS.BASE]: true,
-            },
-          },
-          multichainNetworkConfigurationsByChainId:
-            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-          selectedMultichainNetworkChainId: 'eip155:1',
-          isEvmSelected: true,
         },
       };
 

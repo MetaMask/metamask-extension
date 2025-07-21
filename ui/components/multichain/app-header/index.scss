@@ -9,7 +9,7 @@
   // prevent overflow-x
   max-width: 100%;
   flex-flow: column nowrap;
-  z-index: design-system.$header-z-index;
+  z-index: 55;
   min-height: 68px;
 
   &__contents {

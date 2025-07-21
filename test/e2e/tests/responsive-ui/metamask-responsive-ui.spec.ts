@@ -10,9 +10,6 @@ import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
 
 describe('MetaMask Responsive UI', function (this: Suite) {
   const driverOptions = { constrainWindowSize: true };
@@ -66,14 +63,7 @@ describe('MetaMask Responsive UI', function (this: Suite) {
   it('Send Transaction from responsive window', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withEnabledNetworks({
-            eip155: {
-              [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.LOCALHOST]: true,
-            },
-          })
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         driverOptions,
         title: this.test?.fullTitle(),
       },
@@ -87,19 +77,6 @@ describe('MetaMask Responsive UI', function (this: Suite) {
           amount: '1',
         });
         await new HomePage(driver).check_pageIsLoaded();
-
-        // Network Selector
-        if (isGlobalNetworkSelectorRemoved) {
-          await driver.clickElement('[data-testid="sort-by-networks"]');
-          await driver.clickElement({
-            text: 'Custom',
-            tag: 'button',
-          });
-          await driver.clickElement('[data-testid="Localhost 8545"]');
-          await driver.clickElement(
-            '[data-testid="modal-header-close-button"]',
-          );
-        }
 
         // check confirmed transaction is displayed in activity list
         const activityList = new ActivityListPage(driver);

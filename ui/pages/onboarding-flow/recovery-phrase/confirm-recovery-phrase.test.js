@@ -213,6 +213,8 @@ describe('Confirm Recovery Phrase Component', () => {
     // click and answer the srp quiz
     clickAndAnswerSrpQuiz(quizUnansweredChips);
 
+    console.log('quizUnansweredChips', quizUnansweredChips);
+
     const quizAnsweredChips = queryAllByTestId(
       /recovery-phrase-quiz-answered-/u,
     );

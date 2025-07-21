@@ -32,15 +32,13 @@ import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
-  restoreSocialBackupAndGetSeedPhrase,
-  createNewVaultAndSyncWithSocial,
 } from '../../store/actions';
 import {
-  getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
   getShowTermsOfUse,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import Button from '../../components/ui/button';
 import RevealSRPModal from '../../components/app/reveal-SRP-modal';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -52,14 +50,7 @@ import ExperimentalArea from '../../components/app/flask/experimental-area';
 ///: END:ONLY_INCLUDE_IF
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
 import { getHDEntropyIndex } from '../../selectors/selectors';
-import {
-  Box,
-  Button,
-  ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../components/component-library';
+import { Box } from '../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -70,13 +61,10 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  TextVariant,
 } from '../../helpers/constants/design-system';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
-import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -111,9 +99,6 @@ export default function OnboardingFlow() {
   const trackEvent = useContext(MetaMetricsContext);
   const isUnlocked = useSelector(getIsUnlocked);
   const showTermsOfUse = useSelector(getShowTermsOfUse);
-  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const isSeedlessOnboardingFeatureEnabled =
-    getIsSeedlessOnboardingFeatureEnabled();
   const isPrimarySeedPhraseBackedUp = useSelector(
     getIsPrimarySeedPhraseBackedUp,
   );
@@ -177,39 +162,16 @@ export default function OnboardingFlow() {
   ]);
 
   const handleCreateNewAccount = async (password) => {
-    let newSecretRecoveryPhrase;
-    if (
-      isSeedlessOnboardingFeatureEnabled &&
-      firstTimeFlowType === FirstTimeFlowType.socialCreate
-    ) {
-      newSecretRecoveryPhrase = await dispatch(
-        createNewVaultAndSyncWithSocial(password),
-      );
-    } else if (firstTimeFlowType === FirstTimeFlowType.create) {
-      newSecretRecoveryPhrase = await dispatch(
-        createNewVaultAndGetSeedPhrase(password),
-      );
-    }
-
+    const newSecretRecoveryPhrase = await dispatch(
+      createNewVaultAndGetSeedPhrase(password),
+    );
     setSecretRecoveryPhrase(newSecretRecoveryPhrase);
   };
 
   const handleUnlock = async (password) => {
-    let retrievedSecretRecoveryPhrase;
-
-    if (
-      isSeedlessOnboardingFeatureEnabled &&
-      firstTimeFlowType === FirstTimeFlowType.socialImport
-    ) {
-      retrievedSecretRecoveryPhrase = await dispatch(
-        restoreSocialBackupAndGetSeedPhrase(password),
-      );
-    } else {
-      retrievedSecretRecoveryPhrase = await dispatch(
-        unlockAndGetSeedPhrase(password),
-      );
-    }
-
+    const retrievedSecretRecoveryPhrase = await dispatch(
+      unlockAndGetSeedPhrase(password),
+    );
     setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
     history.push(nextRoute);
   };
@@ -224,13 +186,9 @@ export default function OnboardingFlow() {
     !secretRecoveryPhrase &&
     isFromReminder;
 
-  let isFullPage =
+  const isWelcomeAndUnlockPage =
     pathname === ONBOARDING_WELCOME_ROUTE ||
     pathname === ONBOARDING_UNLOCK_ROUTE;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  isFullPage = isFullPage || pathname === ONBOARDING_EXPERIMENTAL_AREA;
-  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Box
@@ -259,21 +217,25 @@ export default function OnboardingFlow() {
         isOpen={showPasswordModalToAllowSRPReveal}
       />
       <Box
-        className={classnames('onboarding-flow__container', {
-          'onboarding-flow__container--full': isFullPage,
-          'onboarding-flow__container--popup': isPopup,
-        })}
+        paddingInline={isWelcomeAndUnlockPage ? 0 : 6}
+        paddingTop={isWelcomeAndUnlockPage ? 0 : 8}
+        paddingBottom={isWelcomeAndUnlockPage ? 0 : 8}
         width={BlockSize.Full}
         borderStyle={
-          isFullPage || isPopup ? BorderStyle.none : BorderStyle.solid
+          isWelcomeAndUnlockPage || isPopup
+            ? BorderStyle.none
+            : BorderStyle.solid
         }
         borderRadius={BorderRadius.LG}
         marginTop={pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? 0 : 3}
-        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-        marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
-        ///: END:ONLY_INCLUDE_IF
         marginInline="auto"
         borderColor={BorderColor.borderMuted}
+        style={{
+          maxWidth: isWelcomeAndUnlockPage ? 'none' : '446px',
+          minHeight: isWelcomeAndUnlockPage ? 'auto' : '627px',
+          height:
+            pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? '100%' : 'auto',
+        }}
       >
         <Switch>
           <Route path={ONBOARDING_ACCOUNT_EXIST} component={AccountExist} />
@@ -373,36 +335,25 @@ export default function OnboardingFlow() {
       </Box>
       {pathname === ONBOARDING_COMPLETION_ROUTE && (
         <Button
-          variant={ButtonVariant.Link}
+          className="onboarding-flow__twitter-button"
+          type="link"
           href={TWITTER_URL}
-          marginInline="auto"
-          marginTop={4}
-          target="_blank"
-          rel="noopener noreferrer"
-          textProps={{
-            variant: TextVariant.bodyLgMedium,
-          }}
           onClick={() => {
             trackEvent({
               category: MetaMetricsEventCategory.Onboarding,
               event: MetaMetricsEventName.OnboardingTwitterClick,
               properties: {
-                text: t('followUsOnX', ['X']),
+                text: t('followUsOnTwitter'),
                 location: MetaMetricsEventName.OnboardingWalletCreationComplete,
                 url: TWITTER_URL,
                 hd_entropy_index: hdEntropyIndex,
               },
             });
           }}
+          target="_blank"
         >
-          {t('followUsOnX', [
-            <Icon
-              key="x-icon"
-              className="onboarding-flow__x-button__icon"
-              name={IconName.X}
-              size={IconSize.Lg}
-            />,
-          ])}
+          <span>{t('followUsOnTwitter')}</span>
+          <i className="fab fa-twitter onboarding-flow__twitter-button__icon" />
         </Button>
       )}
     </Box>

@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getChainIdsToPoll,
+  getEnabledChainIds,
   getUseCurrencyRateCheck,
   useSafeChainsListValidationSelector,
 } from '../selectors';
-import { getEnabledChainIds } from '../selectors/multichain/networks';
+import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import { getOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
 import {
   currencyRateStartPolling,
   currencyRateStopPollingByPollingToken,
@@ -15,8 +17,6 @@ import {
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
 import { isGlobalNetworkSelectorRemoved } from '../selectors/selectors';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
-import { getOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
 import usePolling from './usePolling';
 
 const usePollingEnabled = () => {

@@ -268,11 +268,7 @@ async function defineAndRunBuildTasks() {
     composeSeries(
       clean,
       styleTasks.prod,
-      composeParallel(
-        scriptTasks.dist,
-        staticTasks.prod,
-        manifestTasks.scriptDist,
-      ),
+      composeParallel(scriptTasks.dist, staticTasks.prod, manifestTasks.prod),
       zip,
     ),
   );

@@ -1,4 +1,4 @@
-import type { Hex, CaipChainId, CaipAssetType } from '@metamask/utils';
+import { type Hex, type CaipChainId } from '@metamask/utils';
 import {
   type QuoteMetadata,
   type QuoteResponse,
@@ -6,11 +6,9 @@ import {
   type ChainId,
   type GenericQuoteRequest,
 } from '@metamask/bridge-controller';
-import { type TxAlert } from '../../../shared/types/security-alerts-api';
 
 export type BridgeToken = {
   address: string;
-  assetId?: CaipAssetType;
   symbol: string;
   image: string;
   decimals: number;
@@ -35,7 +33,6 @@ export type BridgeState = {
   selectedQuote: (QuoteResponse & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
   wasTxDeclined: boolean; // Whether the user declined the transaction. Relevant for hardware wallets.
   slippage?: number;
-  txAlert: TxAlert | null;
 };
 
 export type ChainIdPayload = { payload: ChainId | Hex | CaipChainId | null };
@@ -48,10 +45,8 @@ export type TokenPayload = {
     balance?: string;
     string?: string;
     image?: string;
-    iconUrl?: string | null;
-    icon?: string | null;
-    assetId?: CaipAssetType;
-    aggregators?: string[];
-    occurrences?: number;
+    iconUrl?: string;
+    icon?: string;
+    assetId?: string;
   } | null;
 };

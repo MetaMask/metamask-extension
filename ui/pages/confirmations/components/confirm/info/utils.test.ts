@@ -22,8 +22,6 @@ describe('getIsRevokeSetApprovalForAll', () => {
     const testValue = {
       name: 'setApprovalForAll',
       args: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         _approved: false,
       },
     } as unknown as TransactionDescription;

@@ -19,7 +19,9 @@ const inputLabelBase = {
   color: 'var(--color-text-default)',
 };
 
-const fontFamily = ['"Geist"', 'Helvetica', 'Arial', 'sans-serif'].join(', ');
+const fontFamily = ['"CentraNo1"', 'Helvetica', 'Arial', 'sans-serif'].join(
+  ', ',
+);
 
 const styles = {
   materialLabel: {

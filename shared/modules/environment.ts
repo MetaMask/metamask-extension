@@ -6,7 +6,3 @@ export const isProduction = (): boolean => {
     process.env.METAMASK_ENVIRONMENT !== ENVIRONMENT.TESTING
   );
 };
-
-export const getIsSeedlessOnboardingFeatureEnabled = (): boolean => {
-  return process.env.SEEDLESS_ONBOARDING_ENABLED?.toString() === 'true';
-};

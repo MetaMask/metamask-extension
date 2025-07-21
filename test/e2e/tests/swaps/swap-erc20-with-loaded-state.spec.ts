@@ -230,9 +230,7 @@ describe('Swap', function () {
           fixtures: new FixtureBuilder()
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              eip155: {
-                '0x1': true,
-              },
+              '0x1': true,
             })
             .withTokensController({
               allTokens: {
@@ -301,7 +299,6 @@ describe('Swap', function () {
           await swapPage.dismissManualTokenWarning();
           await driver.delay(1500);
           await swapPage.submitSwap();
-          await swapPage.waitForTransactionToComplete();
 
           await homePage.check_expectedTokenBalanceIsDisplayed(
             testCase.expectedWethBalance,

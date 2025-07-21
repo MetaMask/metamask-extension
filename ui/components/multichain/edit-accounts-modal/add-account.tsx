@@ -9,10 +9,7 @@ import {
   ModalContent,
   ModalHeader,
 } from '../../component-library';
-import {
-  WalletClientType,
-  EVM_WALLET_TYPE,
-} from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import { CreateSnapAccount } from '../create-snap-account/create-snap-account';
 import { CreateEthAccount } from '../create-eth-account';
 import { getHdKeyringOfSelectedAccountOrPrimaryKeyring } from '../../../selectors';
@@ -25,7 +22,7 @@ import {
 import { SrpList } from '../multi-srp/srp-list';
 
 type EditAccountAddAccountFormProps = {
-  accountType: WalletClientType | typeof EVM_WALLET_TYPE; // undefined is default evm.
+  accountType: WalletClientType | 'EVM'; // undefined is default evm.
   onActionComplete: (completed: boolean) => Promise<void>;
   onBack: () => void;
   onClose: () => void;
@@ -50,8 +47,6 @@ export const EditAccountAddAccountForm: React.FC<
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
       properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         button_type: 'picker',
       },
     });

@@ -68,7 +68,6 @@ import {
 import { AccountOverview } from '../../components/multichain/account-overview';
 import { setEditedNetwork } from '../../store/actions';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
-import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -106,6 +105,16 @@ export default class Home extends PureComponent {
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     showTermsOfUsePopup: PropTypes.bool.isRequired,
+    seedPhraseBackedUp: (props) => {
+      if (
+        props.seedPhraseBackedUp !== null &&
+        typeof props.seedPhraseBackedUp !== 'boolean'
+      ) {
+        throw new Error(
+          `seedPhraseBackedUp is required to be null or boolean. Received ${props.seedPhraseBackedUp}`,
+        );
+      }
+    },
     firstTimeFlowType: PropTypes.string,
     completedOnboarding: PropTypes.bool,
     showWhatsNewPopup: PropTypes.bool.isRequired,
@@ -162,7 +171,6 @@ export default class Home extends PureComponent {
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
     fetchBuyableChains: PropTypes.func.isRequired,
-    isSeedlessPasswordOutdated: PropTypes.bool,
   };
 
   state = {
@@ -776,6 +784,7 @@ export default class Home extends PureComponent {
       dataCollectionForMarketing,
       connectedStatusPopoverHasBeenShown,
       isPopup,
+      seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       showTermsOfUsePopup,
       showWhatsNewPopup,
@@ -787,7 +796,6 @@ export default class Home extends PureComponent {
       newNetworkAddedConfigurationId,
       showMultiRpcModal,
       showUpdateModal,
-      isSeedlessPasswordOutdated,
     } = this.props;
 
     if (forgottenPassword) {
@@ -836,12 +844,12 @@ export default class Home extends PureComponent {
           participateInMetaMetrics === true
             ? this.renderOnboardingPopover()
             : null}
-          {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
           {showMultiRpcEditModal && <MultiRpcEditModal />}
           {displayUpdateModal && <UpdateModal />}
           {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
+              hasBackedUp={seedPhraseBackedUp}
               onConfirm={this.onRecoveryPhraseReminderClose}
             />
           ) : null}

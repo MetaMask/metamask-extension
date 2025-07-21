@@ -10,8 +10,6 @@ import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { setupAutoDetectMocking } from './mocks';
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
-
 describe('NFT full', function () {
   it('displays NFT full image when NFT is on a network different from the current network', async function () {
     const driverOptions = { mock: true };
@@ -20,10 +18,8 @@ describe('NFT full', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnLinea()
           .withEnabledNetworks({
-            eip155: {
-              [CHAIN_IDS.LINEA_MAINNET]: true,
-              [CHAIN_IDS.MAINNET]: true,
-            },
+            [CHAIN_IDS.LINEA_MAINNET]: true,
+            [CHAIN_IDS.MAINNET]: true,
           })
           .build(),
         driverOptions,
@@ -51,9 +47,7 @@ describe('NFT full', function () {
         await homepage.goToNftTab();
         const nftListPage = new NFTListPage(driver);
 
-        if (!isGlobalNetworkSelectorRemoved) {
-          await nftListPage.filterNftsByNetworks('Popular networks');
-        }
+        await nftListPage.filterNftsByNetworks('Popular networks');
         await nftListPage.check_nftNameIsDisplayed(
           'ENS: Ethereum Name Service',
         );

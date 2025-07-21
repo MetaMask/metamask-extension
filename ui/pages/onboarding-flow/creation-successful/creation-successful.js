@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { capitalize } from 'lodash';
 import {
   Button,
   ButtonSize,
@@ -34,20 +33,16 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   DEFAULT_ROUTE,
-  SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  getFirstTimeFlowType,
-  getHDEntropyIndex,
-  getSocialLoginType,
-} from '../../../selectors';
+import { getFirstTimeFlowType, getHDEntropyIndex } from '../../../selectors';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
-import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 
@@ -58,47 +53,40 @@ export default function CreationSuccessful() {
   const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const isWalletReady = useSelector(getIsPrimarySeedPhraseBackedUp);
-  const userSocialLoginType = useSelector(getSocialLoginType);
+  const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
+  const isWalletReady =
+    firstTimeFlowType === FirstTimeFlowType.import || seedPhraseBackedUp;
+
   const searchParams = new URLSearchParams(search);
-  const isFromReminder = searchParams.get('isFromReminder');
-  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
+  const isFromReminderParam = searchParams.get('isFromReminder');
 
   const renderTitle = useMemo(() => {
     if (isWalletReady) {
-      return isFromReminder
+      return isFromReminderParam
         ? t('yourWalletIsReadyFromReminder')
         : t('yourWalletIsReady');
     }
 
     return t('yourWalletIsReadyRemind');
-  }, [isFromReminder, isWalletReady, t]);
+  }, [isFromReminderParam, isWalletReady, t]);
 
   const renderDetails1 = useMemo(() => {
-    if (userSocialLoginType) {
-      return t('walletReadySocialDetails1', [capitalize(userSocialLoginType)]);
-    }
-
     if (isWalletReady) {
-      return isFromReminder
+      return isFromReminderParam
         ? t('walletReadyLoseSrpFromReminder')
         : t('walletReadyLoseSrp');
     }
 
     return t('walletReadyLoseSrpRemind');
-  }, [userSocialLoginType, isWalletReady, t, isFromReminder]);
+  }, [isWalletReady, isFromReminderParam, t]);
 
   const renderDetails2 = useMemo(() => {
-    if (userSocialLoginType) {
-      return t('walletReadySocialDetails2');
-    }
-
-    if (isWalletReady || isFromReminder) {
+    if (isWalletReady || isFromReminderParam) {
       return t('walletReadyLearn', [
         <ButtonLink
           key="walletReadyLearn"
@@ -118,10 +106,10 @@ export default function CreationSuccessful() {
     }
 
     return t('walletReadyLearnRemind');
-  }, [userSocialLoginType, isWalletReady, isFromReminder, t]);
+  }, [isWalletReady, isFromReminderParam, t]);
 
   const renderFox = useMemo(() => {
-    if (isWalletReady || isFromReminder) {
+    if (isWalletReady) {
       return (
         <LottieAnimation
           path="images/animations/fox/celebrating.lottie.json"
@@ -138,11 +126,11 @@ export default function CreationSuccessful() {
         autoplay
       />
     );
-  }, [isWalletReady, isFromReminder]);
+  }, [isWalletReady]);
 
   const onDone = useCallback(() => {
-    if (isFromReminder) {
-      history.push(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
+    if (isFromReminderParam) {
+      history.push(DEFAULT_ROUTE);
       return;
     }
 
@@ -162,8 +150,7 @@ export default function CreationSuccessful() {
     hdEntropyIndex,
     trackEvent,
     history,
-    isFromReminder,
-    isFromSettingsSecurity,
+    isFromReminderParam,
   ]);
 
   return (
@@ -223,7 +210,7 @@ export default function CreationSuccessful() {
             {renderDetails2}
           </Text>
         </Box>
-        {!isFromReminder && (
+        {!isFromReminderParam && (
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}

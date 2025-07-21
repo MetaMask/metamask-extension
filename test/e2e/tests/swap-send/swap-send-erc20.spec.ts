@@ -107,7 +107,7 @@ describe('Swap-Send ERC20', function () {
           //   '-$0.00',
           // );
           await swapSendPage.verifyHistoryEntry(
-            'Sent TST as ETH',
+            'Send TST as ETH',
             'Confirmed',
             '-10 TST',
             '',

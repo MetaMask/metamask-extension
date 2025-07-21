@@ -12,11 +12,7 @@ import type {
 } from './base-store';
 
 export type Backup = {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   KeyringController?: unknown;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   AppMetadataController?: unknown;
   meta?: MetaData;
 };
@@ -69,8 +65,6 @@ function makeBackup(state: MetaMaskStateType, meta: MetaData): Backup {
  */
 function hasVault(
   state?: MetaMaskStateType,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
 ): state is { KeyringController: RuntimeObject & Record<'vault', unknown> } {
   const keyringController = state?.KeyringController;
   return (

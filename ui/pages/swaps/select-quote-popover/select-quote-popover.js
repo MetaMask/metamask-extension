@@ -2,7 +2,7 @@ import React, { useState, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import Popover from '../../../components/ui/popover';
-import { Button, ButtonVariant } from '../../../components/component-library';
+import Button from '../../../components/ui/button';
 import QuoteDetails from './quote-details';
 import SortList from './sort-list';
 import { QUOTE_DATA_ROWS_PROPTYPES_SHAPE } from './select-quote-popover-constants';
@@ -59,7 +59,7 @@ const SelectQuotePopover = ({
   const footer = (
     <>
       <Button
-        variant={ButtonVariant.Secondary}
+        type="secondary"
         className="page-container__footer-button select-quote-popover__button"
         onClick={onClose}
       >
@@ -67,7 +67,7 @@ const SelectQuotePopover = ({
       </Button>
 
       <Button
-        variant={ButtonVariant.Primary}
+        type="primary"
         className="page-container__footer-button select-quote-popover__button"
         onClick={onSubmitClick}
       >

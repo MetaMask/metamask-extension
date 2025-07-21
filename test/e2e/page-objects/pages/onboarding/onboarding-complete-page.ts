@@ -41,8 +41,6 @@ class OnboardingCompletePage {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -59,8 +57,6 @@ class OnboardingCompletePage {
     console.log('Onboarding wallet creation complete page is loaded');
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded_backup(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -83,11 +79,9 @@ class OnboardingCompletePage {
     );
   }
 
-  async completeOnboarding(isSocialImportFlow: boolean = false): Promise<void> {
+  async completeOnboarding(): Promise<void> {
     console.log('Complete onboarding');
-    if (!isSocialImportFlow) {
-      await this.clickCreateWalletDoneButton();
-    }
+    await this.clickCreateWalletDoneButton();
     await this.driver.waitForSelector(this.installCompleteMessage);
     await this.driver.waitForSelector(this.pinExtensionMessage);
     await this.driver.clickElementAndWaitToDisappear(
@@ -106,20 +100,14 @@ class OnboardingCompletePage {
     );
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_walletReadyMessageIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.walletReadyMessage);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_keepSrpSafeMessageIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.keepSrpSafeMessage);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_remindMeLaterButtonIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.remindMeLaterButton);
   }

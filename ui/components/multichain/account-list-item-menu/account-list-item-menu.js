@@ -11,7 +11,6 @@ import {
   getAccountTypeForKeyring,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  getIsMultichainAccountsState1Enabled,
 } from '../../../selectors';
 
 import { MenuItem } from '../../ui/menu';
@@ -57,10 +56,6 @@ export const AccountListItemMenu = ({
   const chainId = useSelector(getCurrentChainId);
 
   const deviceName = useSelector(getHardwareWalletType);
-
-  const isMultichainAccountsState1Enabled = useSelector(
-    getIsMultichainAccountsState1Enabled,
-  );
 
   const { keyring } = account.metadata;
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
@@ -136,12 +131,6 @@ export const AccountListItemMenu = ({
   };
 
   const handleHidding = (address) => {
-    // If the account is already hidden, we do not add it again
-    // TODO: The controller should handle this logic
-    if (hiddenAccountList.includes(address)) {
-      return;
-    }
-
     const updatedHiddenAccountList = [...hiddenAccountList, address];
     if (pinnedAccountList.includes(address)) {
       handleUnpinning(address);
@@ -213,7 +202,7 @@ export const AccountListItemMenu = ({
               {isHidden ? t('showAccount') : t('hideAccount')}
             </Text>
           </MenuItem>
-          {isRemovable && !isMultichainAccountsState1Enabled ? (
+          {isRemovable ? (
             <MenuItem
               ref={removeAccountItemRef}
               data-testid="account-list-menu-remove"

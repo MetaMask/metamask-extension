@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { BigNumber } from 'bignumber.js';
 import {
   TextAlign,
   TextColor,
@@ -54,13 +53,7 @@ export const IndividualFiatDisplay: React.FC<{
     return null;
   }
   const absFiat = Math.abs(fiatAmount);
-  const isNonZeroSmallValue =
-    absFiat &&
-    new BigNumber(String(absFiat)).lt(new BigNumber(0.01)) &&
-    new BigNumber(String(absFiat)).greaterThan(new BigNumber(0));
-  const fiatDisplayValue = isNonZeroSmallValue
-    ? `< ${fiatFormatter(0.01, { shorten })}`
-    : fiatFormatter(absFiat, { shorten });
+  const fiatDisplayValue = fiatFormatter(absFiat, { shorten });
 
   return shorten ? (
     <Tooltip position="bottom" title={fiatDisplayValue} interactive>

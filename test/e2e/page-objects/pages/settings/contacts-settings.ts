@@ -41,8 +41,6 @@ class ContactsSettings {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.contactsSettingsPageTitle);
@@ -136,8 +134,6 @@ class ContactsSettings {
    * @param params.address - The address of the contact.
    * @param params.shouldDisplay - Whether the contact should be displayed. Defaults to true.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_contactDisplayed({
     contactName,
     address,

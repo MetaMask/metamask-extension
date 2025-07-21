@@ -85,8 +85,6 @@ const DAILY_ETH_LIMIT = 10;
  *
  * @returns The rendered component
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeSetupDailyAllowance() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -277,7 +275,7 @@ export default function RemoteModeSetupDailyAllowance() {
               />
             )}
             <Card
-              backgroundColor={BackgroundColor.backgroundSection}
+              backgroundColor={BackgroundColor.backgroundMuted}
               marginBottom={4}
             >
               <Box>
@@ -314,7 +312,7 @@ export default function RemoteModeSetupDailyAllowance() {
               </Box>
             </Card>
             <Card
-              backgroundColor={BackgroundColor.backgroundSection}
+              backgroundColor={BackgroundColor.backgroundMuted}
               marginBottom={2}
             >
               <Box marginBottom={2}>
@@ -391,7 +389,7 @@ export default function RemoteModeSetupDailyAllowance() {
                   Add
                 </Button>
               </Box>
-              <Box backgroundColor={BackgroundColor.backgroundSection}>
+              <Box backgroundColor={BackgroundColor.backgroundMuted}>
                 <Box marginTop={2}>
                   {dailyAllowance.map((allowance) => (
                     <RemoteModeDailyAllowanceCard
@@ -408,7 +406,7 @@ export default function RemoteModeSetupDailyAllowance() {
       case 2:
         return (
           <>
-            <Card backgroundColor={BackgroundColor.backgroundSection}>
+            <Card backgroundColor={BackgroundColor.backgroundMuted}>
               <Box
                 display={Display.Flex}
                 gap={2}

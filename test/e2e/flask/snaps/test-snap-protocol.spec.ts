@@ -1,9 +1,9 @@
+import { strict as assert } from 'assert';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
-import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../multichain-api/testHelpers';
-import { WINDOW_TITLES } from '../../helpers';
-import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import { largeDelayMs } from '../../helpers';
 import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
+import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../multichain-api/testHelpers';
+import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
 
 describe('Test Protocol Snaps', function () {
   it('can call getBlockHeight exposed by Snap', async function () {
@@ -31,23 +31,22 @@ describe('Test Protocol Snaps', function () {
 
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
         await testDapp.connectExternallyConnectable(extensionId);
         await testDapp.initCreateSessionScopes([devnetScope]);
 
-        const connectAccountConfirmation = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation.check_pageIsLoaded();
-        await connectAccountConfirmation.confirmConnect();
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
-        await testDapp.check_pageIsLoaded();
-        await testDapp.invokeMethodAndCheckResult({
-          scope: devnetScope,
-          method: 'getBlockHeight',
-          expectedResult: mockBlockHeight.toString(),
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
+          tag: 'button',
         });
+
+        await driver.delay(largeDelayMs);
+
+        const blockHeight = await testDapp.invokeMethod(
+          devnetScope,
+          'getBlockHeight',
+          [],
+        );
+        assert.strictEqual(blockHeight, mockBlockHeight);
       },
     );
   });

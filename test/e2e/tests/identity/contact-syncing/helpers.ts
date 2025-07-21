@@ -3,7 +3,6 @@ import { getCleanAppState } from '../../../helpers';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
-  AsEnum,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 
 export type UserStorageContact = {
@@ -142,7 +141,7 @@ export function arrangeContactSyncingTestUtils(
   const BASE_INTERVAL = 1000;
 
   const prepareEventsEmittedCounter = (
-    event: AsEnum<typeof UserStorageMockttpControllerEvents>,
+    event: UserStorageMockttpControllerEvents,
   ) => {
     let counter = 0;
     userStorageMockttpController.eventEmitter.on(event, () => {

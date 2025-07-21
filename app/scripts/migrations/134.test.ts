@@ -32,8 +32,6 @@ describe(`migration #${version}`, () => {
 
   it('Removes `usedNetworks` from the `AppStateController` state', async () => {
     const oldState: {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       AppStateController: {
         timeoutMinutes: number;
         usedNetworks?: Record<string, boolean>;

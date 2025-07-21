@@ -131,8 +131,6 @@ export function parseArgv(
  * @param options
  * @param name
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
   const cli = yargs()
     // Ensure unrecognized commands/options are reported as errors.
@@ -271,8 +269,6 @@ function getOptions(
       group: toOrange('Build options:'),
       type: 'string',
     },
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     manifest_version: {
       alias: 'v',
       array: false,

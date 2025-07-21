@@ -97,8 +97,6 @@ class SnapListPage {
     await this.driver.clickElementAndWaitToDisappear(this.closeModalButton);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_noSnapInstalledMessageIsDisplayed(): Promise<void> {
     console.log('Verifying no snaps is installed for current account');
     await this.driver.waitForSelector(this.noSnapInstalledMessage);
@@ -110,8 +108,6 @@ class SnapListPage {
     await this.driver.clickElement(this.homePageSnap);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_homePageTitle(): Promise<void> {
     console.log('Checking title of snap list page');
     await this.driver.waitForSelector(this.homePageTitle);
@@ -127,8 +123,6 @@ class SnapListPage {
     await this.driver.clickElement(this.updateSnapButton);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_updateLinkIsNotDisplayed(): Promise<void> {
     await this.driver.assertElementNotPresent(this.updateSnapButton, {
       // make sure the Snap page has loaded

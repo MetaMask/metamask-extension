@@ -30,8 +30,6 @@ class OnboardingPasswordPage {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -78,8 +76,6 @@ class OnboardingPasswordPage {
     await this.driver.clickElement(this.passwordTerms);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_confirmPasswordButtonIsDisabled(): Promise<void> {
     console.log('Check the confirm password button is disabled');
     const confirmPasswordButton = await this.driver.findElement(
@@ -88,8 +84,6 @@ class OnboardingPasswordPage {
     assert.equal(await confirmPasswordButton.isEnabled(), false);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_incorrectPasswordWarningMessageIsDisplayed(): Promise<void> {
     console.log('Check the incorrect password warning message is displayed');
     await this.driver.waitForSelector(this.incorrectPasswordWarningMessage);

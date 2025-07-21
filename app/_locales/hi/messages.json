@@ -911,6 +911,9 @@
   "bridgeTo": {
     "message": "इसपर ब्रिज करें"
   },
+  "bridgeToChain": {
+    "message": "$1 पर ब्रिज करें"
+  },
   "bridgeTokenCannotVerifyDescription": {
     "message": "यदि आपने यह टोकन मैन्युअल रूप से जोड़ा है, तो सुनिश्चित करें कि आप ब्रिजिंग से पहले अपने फंड के जोखिमों से अवगत हैं।"
   },
@@ -2225,6 +2228,9 @@
   },
   "floatAmountToken": {
     "message": "टोकन अमाउंट एक पूर्णांक होना चाहिए"
+  },
+  "followUsOnTwitter": {
+    "message": "हमें Twitter पर फॉलो करें"
   },
   "forbiddenIpfsGateway": {
     "message": "निषिद्ध IPFS गेटवे: कृपया एक CID गेटवे बताएं"
@@ -4407,6 +4413,18 @@
   "recoveryPhraseReminderConfirm": {
     "message": "समझ गया"
   },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "अपने सीक्रेट रिकवरी फ्रेज को हमेशा सुरक्षित और गुप्त स्थान पर रखें।"
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "अपने सीक्रेट रिकवरी फ्रेज को फिर से बैकअप करने की आवश्यकता है?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "कभी भी अपना सीक्रेट रिकवरी फ्रेज किसी के साथ शेयर न करें"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "MetaMask टीम कभी भी आपके सीक्रेट रिकवरी फ्रेज के बारे में नहीं पूछेगी"
+  },
   "recoveryPhraseReminderSubText": {
     "message": "आपका सीक्रेट रिकवरी फ्रेज आपके सभी एकाउंट्स को नियंत्रित करता है।"
   },
@@ -4777,8 +4795,16 @@
   "sendSelectSendAsset": {
     "message": "भेजने के लिए एसेट को चुनें"
   },
+  "sendSpecifiedTokens": {
+    "message": "$1 भेजें",
+    "description": "Symbol of the specified token"
+  },
   "sendSwapSubmissionWarning": {
     "message": "इस बटन पर क्लिक करने से आपका स्वैप ट्रांसेक्शन तुरंत शुरू हो जाएगा। कृपया आगे बढ़ने से पहले अपने ट्रांसेक्शन विवरण की समीक्षा करें।"
+  },
+  "sendTokenAsToken": {
+    "message": "$1 को $2 के रूप में भेजें",
+    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "$1 भेजा जा रहा है"
@@ -5050,6 +5076,9 @@
   },
   "smartAccountReject": {
     "message": "स्मार्ट अकाउंट का उपयोग न करें"
+  },
+  "smartAccountRequestFor": {
+    "message": "इसके लिए अनुरोध करें"
   },
   "smartAccountSameAccount": {
     "message": "वही अकाउंट, और स्मार्ट फीचर्स।"
@@ -5494,6 +5523,9 @@
   },
   "standardAccountLabel": {
     "message": "मानक अकाउंट"
+  },
+  "startEarning": {
+    "message": "कमाना शुरू करें"
   },
   "stateLogError": {
     "message": "स्टेट लॉग को पुनर्प्राप्त करने में गड़बड़ी।"

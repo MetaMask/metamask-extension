@@ -8,8 +8,6 @@ import {
 
 type Status = 'idle' | 'pending' | 'success' | 'error';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 type ResultBase<S extends Status, T = undefined> = {
   status: S;
   pending: S extends 'pending' ? true : false;
@@ -20,28 +18,20 @@ type ResultBase<S extends Status, T = undefined> = {
 
 type ResultIdle = ResultBase<'idle'>;
 type ResultPending = ResultBase<'pending'>;
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 type ResultSuccess<T> = ResultBase<'success', T>;
 type ResultError = ResultBase<'error'>;
 
 /**
  * Composed types for different use cases
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export type AsyncResult<T> =
   | ResultIdle
   | ResultPending
   | ResultSuccess<T>
   | ResultError;
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export type AsyncResultNoIdle<T> = Exclude<AsyncResult<T>, ResultIdle>;
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export type AsyncResultNoError<T> = ResultPending | ResultSuccess<T>;
 
 // Base object with common properties for all states
@@ -65,8 +55,6 @@ export const RESULT_PENDING: ResultPending = {
   pending: true,
 };
 // Helper functions to create state objects
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function createSuccessResult<T>(value: T): ResultSuccess<T> {
   return { ...RESULT_BASE, status: 'success', value };
 }
@@ -82,8 +70,6 @@ export function createErrorResult(error: Error): ResultError {
  * @param asyncFn - The async function to execute
  * @param deps - Dependencies that trigger recreation of the callback
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function useAsyncCallback<T>(
   asyncFn: () => Promise<T>,
   deps: DependencyList = [],
@@ -128,8 +114,6 @@ export function useAsyncCallback<T>(
  * @param asyncFn - The async function to execute
  * @param deps - Dependencies that trigger re-execution
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function useAsyncResult<T>(
   asyncFn: () => Promise<T>,
   deps: DependencyList = [],
@@ -154,8 +138,6 @@ export function useAsyncResult<T>(
  * @param deps - Dependencies that trigger re-execution of the async function
  * @returns The result of the async function if successful, or throws the error
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function useAsyncResultOrThrow<T>(
   asyncFn: () => Promise<T>,
   deps: DependencyList = [],

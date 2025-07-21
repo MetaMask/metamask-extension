@@ -1,9 +1,7 @@
 import React from 'react';
 import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
-import { SmartAccountUpdateSplash } from './smart-account-update-splash';
+import { SmartAccountUpdate } from './smart-account-update';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function Splash() {
   const { isUpgrade } = useIsUpgradeTransaction();
 
@@ -11,5 +9,5 @@ export function Splash() {
     return null;
   }
 
-  return <SmartAccountUpdateSplash />;
+  return <SmartAccountUpdate />;
 }

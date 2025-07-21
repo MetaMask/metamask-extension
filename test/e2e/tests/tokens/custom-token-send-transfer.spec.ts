@@ -59,7 +59,7 @@ describe('Transfer custom tokens', function () {
 
           // check transaction details
           const expectedNetworkFee = '0.0001';
-          await tokenTransferRedesignedConfirmPage.check_tokenTransferPageIsLoaded(
+          await tokenTransferRedesignedConfirmPage.check_pageIsLoaded(
             '1',
             symbol,
             expectedNetworkFee,
@@ -73,7 +73,7 @@ describe('Transfer custom tokens', function () {
           await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
           // check that transaction has completed correctly and is displayed in the activity list
-          await activityListPage.check_txAction(`Sent ${symbol}`);
+          await activityListPage.check_txAction(`Send ${symbol}`);
           await activityListPage.check_txAmountInActivity(
             valueWithSymbol('-1'),
           );
@@ -95,8 +95,9 @@ describe('Transfer custom tokens', function () {
           testSpecificMock: mocks,
         },
         async ({ driver, contractRegistry }) => {
-          const contractAddress =
-            await contractRegistry.getContractAddress(smartContract);
+          const contractAddress = await contractRegistry.getContractAddress(
+            smartContract,
+          );
           await unlockWallet(driver);
 
           const testDapp = new TestDapp(driver);
@@ -115,7 +116,7 @@ describe('Transfer custom tokens', function () {
 
           // check transaction details
           const expectedNetworkFee = '0.0001';
-          await tokenTransferRedesignedConfirmPage.check_tokenTransferPageIsLoaded(
+          await tokenTransferRedesignedConfirmPage.check_pageIsLoaded(
             '1.5',
             symbol,
             expectedNetworkFee,
@@ -134,7 +135,7 @@ describe('Transfer custom tokens', function () {
           );
 
           await homePage.goToActivityList();
-          await activityListPage.check_txAction(`Sent ${symbol}`);
+          await activityListPage.check_txAction(`Send ${symbol}`);
           await activityListPage.check_txAmountInActivity(
             valueWithSymbol('-1.5'),
           );
@@ -162,8 +163,9 @@ describe('Transfer custom tokens', function () {
           testSpecificMock: mocks,
         },
         async ({ driver, contractRegistry }) => {
-          const contractAddress =
-            await contractRegistry.getContractAddress(smartContract);
+          const contractAddress = await contractRegistry.getContractAddress(
+            smartContract,
+          );
           await unlockWallet(driver);
 
           const testDapp = new TestDapp(driver);
@@ -182,7 +184,7 @@ describe('Transfer custom tokens', function () {
 
           // check transaction details and confirm
           const expectedNetworkFee = '0.001';
-          await tokenTransferRedesignedConfirmPage.check_tokenTransferPageIsLoaded(
+          await tokenTransferRedesignedConfirmPage.check_pageIsLoaded(
             '1.5',
             symbol,
             expectedNetworkFee,
@@ -195,7 +197,7 @@ describe('Transfer custom tokens', function () {
           );
 
           await homePage.goToActivityList();
-          await activityListPage.check_txAction(`Sent ${symbol}`);
+          await activityListPage.check_txAction(`Send ${symbol}`);
           await activityListPage.check_txAmountInActivity(
             valueWithSymbol('-1.5'),
           );

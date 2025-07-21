@@ -8,9 +8,6 @@ import TokenList from '../../page-objects/pages/token-list';
 import ConfirmAlertModal from '../../page-objects/pages/dialog/confirm-alert';
 import { WALLET_ADDRESS } from '../confirmations/signatures/signature-helpers';
 import { Driver } from '../../webdriver/driver';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
 
 // Network configuration type
 type NetworkConfig = {
@@ -58,12 +55,6 @@ networkConfigs.forEach((config) => {
           fixtures: config
             .fixtureMethod(new FixtureBuilder())
             .withPermissionControllerConnectedToTestDapp()
-            .withEnabledNetworks({
-              eip155: {
-                [CHAIN_IDS.MONAD_TESTNET]: true,
-                [CHAIN_IDS.MEGAETH_TESTNET]: true,
-              },
-            })
             .build(),
           title: this.test?.fullTitle(),
         },
@@ -76,10 +67,8 @@ networkConfigs.forEach((config) => {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
 
-          if (!isGlobalNetworkSelectorRemoved) {
-            // Verify network is selected
-            await headerNavbar.check_currentSelectedNetwork(config.name);
-          }
+          // Verify network is selected
+          await headerNavbar.check_currentSelectedNetwork(config.name);
 
           // Verify token is displayed
           await tokenList.check_tokenName(config.tokenSymbol);

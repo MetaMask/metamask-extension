@@ -31,8 +31,6 @@ export type GeneralAlertProps = {
   children?: React.ReactNode;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function ReportLink({
   reportUrl,
   provider,
@@ -61,8 +59,6 @@ function ReportLink({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function AlertDetails({
   details,
   reportUrl,
@@ -108,8 +104,6 @@ function AlertDetails({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function GeneralAlert({
   description,
   details,

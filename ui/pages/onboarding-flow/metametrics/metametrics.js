@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import log from 'loglevel';
 
 import {
   Display,
@@ -20,7 +19,6 @@ import {
   setDataCollectionForMarketing,
 } from '../../../store/actions';
 import {
-  getCurrentKeyring,
   getDataCollectionForMarketing,
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
@@ -31,10 +29,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import {
-  ONBOARDING_COMPLETION_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -64,41 +59,27 @@ export default function OnboardingMetametrics() {
 
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
 
-  const currentKeyring = useSelector(getCurrentKeyring);
-
   const trackEvent = useContext(MetaMetricsContext);
 
   let nextRouteByBrowser = useSelector(
     getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
   );
-  if (
-    isFirefox &&
-    firstTimeFlowType !== FirstTimeFlowType.restore &&
-    firstTimeFlowType !== FirstTimeFlowType.socialImport
-  ) {
-    if (
-      currentKeyring &&
-      firstTimeFlowType === FirstTimeFlowType.socialCreate
-    ) {
-      nextRouteByBrowser = ONBOARDING_COMPLETION_ROUTE;
-    } else {
-      nextRouteByBrowser = ONBOARDING_WELCOME_ROUTE;
-    }
+  if (isFirefox && firstTimeFlowType !== FirstTimeFlowType.restore) {
+    nextRouteByBrowser = ONBOARDING_WELCOME_ROUTE;
   }
 
-  const onConfirm = async (e) => {
-    e.preventDefault();
+  const onConfirm = async () => {
     if (dataCollectionForMarketing === null) {
       await dispatch(setDataCollectionForMarketing(false));
     }
     await dispatch(setParticipateInMetaMetrics(true));
     try {
-      await trackEvent({
+      trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.AppInstalled,
       });
 
-      await trackEvent({
+      trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
@@ -110,15 +91,12 @@ export default function OnboardingMetametrics() {
       // Flush buffered events when user opts in
       await submitRequestToBackground('trackEventsAfterMetricsOptIn');
       await submitRequestToBackground('clearEventsAfterMetricsOptIn');
-    } catch (error) {
-      log.error('onConfirm::error', error);
     } finally {
       history.push(nextRouteByBrowser);
     }
   };
 
-  const onCancel = async (e) => {
-    e.preventDefault();
+  const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
     await dispatch(setDataCollectionForMarketing(false));
     await submitRequestToBackground('clearEventsAfterMetricsOptIn');

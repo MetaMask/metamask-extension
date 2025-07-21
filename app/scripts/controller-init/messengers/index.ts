@@ -51,7 +51,6 @@ import {
   getAccountTreeControllerMessenger,
   getAccountTreeControllerInitMessenger,
 } from './accounts';
-import { getSeedlessOnboardingControllerMessenger } from './seedless-onboarding';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -109,10 +108,6 @@ export const CONTROLLER_MESSENGERS = {
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,
     getInitMessenger: getRateLimitControllerInitMessenger,
-  },
-  SeedlessOnboardingController: {
-    getMessenger: getSeedlessOnboardingControllerMessenger,
-    getInitMessenger: noop,
   },
   SnapsRegistry: {
     getMessenger: getSnapsRegistryMessenger,

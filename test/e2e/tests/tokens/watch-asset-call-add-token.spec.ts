@@ -20,8 +20,9 @@ describe('Add token using wallet_watchAsset', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes, contractRegistry }) => {
-        const contractAddress =
-          await contractRegistry.getContractAddress(smartContract);
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await loginWithBalanceValidation(driver, localNodes[0]);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -65,8 +66,9 @@ describe('Add token using wallet_watchAsset', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes, contractRegistry }) => {
-        const contractAddress =
-          await contractRegistry.getContractAddress(smartContract);
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await loginWithBalanceValidation(driver, localNodes[0]);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();

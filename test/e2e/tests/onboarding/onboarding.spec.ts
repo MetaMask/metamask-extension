@@ -18,6 +18,7 @@ import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/o
 import OnboardingSrpPage from '../../page-objects/pages/onboarding/onboarding-srp-page';
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   completeCreateNewWalletOnboardingFlow,
   completeImportSRPOnboardingFlow,
@@ -308,7 +309,7 @@ describe('MetaMask onboarding', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithoutBalanceValidation(driver);
         // First screen we should be on is MetaMetrics
         const onboardingMetricsPage = new OnboardingMetricsPage(driver);
         await onboardingMetricsPage.check_pageIsLoaded();

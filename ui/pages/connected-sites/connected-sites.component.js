@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ConnectedSitesList from '../../components/app/connected-sites-list';
 import Popover from '../../components/ui/popover/popover.component';
-import { Button, ButtonVariant } from '../../components/component-library';
+import Button from '../../components/ui/button';
 
 export default class ConnectedSites extends Component {
   static contextTypes = {
@@ -130,18 +130,10 @@ export default class ConnectedSites extends Component {
         footer={
           <>
             <div className="connected-sites__footer-row">
-              <Button
-                variant={ButtonVariant.Secondary}
-                onClick={this.clearPendingDisconnect}
-                block
-              >
+              <Button type="secondary" onClick={this.clearPendingDisconnect}>
                 {t('cancel')}
               </Button>
-              <Button
-                variant={ButtonVariant.Primary}
-                onClick={this.disconnectAccount}
-                block
-              >
+              <Button type="primary" onClick={this.disconnectAccount}>
                 {t('disconnect')}
               </Button>
             </div>

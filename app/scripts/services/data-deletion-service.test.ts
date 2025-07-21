@@ -575,8 +575,9 @@ describe('DataDeletionService', () => {
       mockDataDeletionStatusInterceptor(mockTaskId).reply(200, mockResponse);
       const dataDeletionService = new DataDeletionService(getDefaultOptions());
 
-      const response =
-        await dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
+      const response = await dataDeletionService.fetchDeletionRegulationStatus(
+        mockTaskId,
+      );
 
       expect(response).toStrictEqual(mockOverAllStatus);
     });
@@ -622,8 +623,9 @@ describe('DataDeletionService', () => {
       mockDataDeletionStatusInterceptor(mockTaskId).reply(200, mockResponse);
       const dataDeletionService = new DataDeletionService(getDefaultOptions());
 
-      const response =
-        await dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
+      const response = await dataDeletionService.fetchDeletionRegulationStatus(
+        mockTaskId,
+      );
 
       expect(response).toStrictEqual(mockOverAllStatus);
     });

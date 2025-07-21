@@ -8,6 +8,7 @@ import { SecurityAlertResponse } from '../pages/confirmations/types/confirm';
 export type UseTrustSignalRequest = {
   value: string;
   type: NameType;
+  variation: string;
 };
 
 export enum TrustSignalDisplayState {
@@ -27,8 +28,9 @@ export type TrustSignalResult = {
 export function useTrustSignal(
   value: string,
   type: NameType,
+  variation: string,
 ): TrustSignalResult {
-  return useTrustSignals([{ value, type }])[0];
+  return useTrustSignals([{ value, type, variation }])[0];
 }
 
 export function useTrustSignals(

@@ -23,15 +23,11 @@ class DeFiDetailsPage extends TokenList {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async click_backButton() {
     console.log('Click back button');
     await this.driver.clickElement(this.backButton);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_deFiProtocolNameIsDisplayed(description: string) {
     console.log('Check if defi protocol name is displayed', description);
     await this.driver.waitForSelector({
@@ -40,8 +36,6 @@ class DeFiDetailsPage extends TokenList {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_suppliedHeadingIsDisplayed(): Promise<void> {
     console.log('Check that supplied heading is displayed');
     await this.driver.waitForSelector({
@@ -50,8 +44,6 @@ class DeFiDetailsPage extends TokenList {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_defiDetailsNameIsDisplayed(name: string) {
     console.log('Check if DeFi name is displayed on details page', name);
     await this.driver.waitForSelector({
@@ -60,8 +52,6 @@ class DeFiDetailsPage extends TokenList {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_defiDetailsTotalValueIsDisplayed(defiProtocolTotalVlaue: string) {
     console.log('Check if DeFi total value is displayed on DeFi details page');
     await this.driver.waitForSelector({

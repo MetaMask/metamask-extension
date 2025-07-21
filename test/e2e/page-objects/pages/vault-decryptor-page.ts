@@ -23,8 +23,6 @@ class VaultDecryptorPage {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -86,8 +84,6 @@ class VaultDecryptorPage {
    *
    * @param seedPhrase - The expected seed phrase.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_vaultIsDecrypted(seedPhrase: string) {
     console.log('check vault is decrypted on vault decryptor page');
     await this.driver.waitForSelector({

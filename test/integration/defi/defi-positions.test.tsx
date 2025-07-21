@@ -63,13 +63,11 @@ const withMetamaskConnectedToMainnet = {
     },
   },
   enabledNetworkMap: {
-    eip155: {
-      '0x1': true,
-      '0x89': true,
-      '0xaa36a7': true,
-      '0xe705': true,
-      '0xe708': true,
-    },
+    '0x1': true,
+    '0x89': true,
+    '0xaa36a7': true,
+    '0xe705': true,
+    '0xe708': true,
   },
   remoteFeatureFlags: {
     assetsDefiPositionsEnabled: true,
@@ -246,8 +244,6 @@ const withMetamaskConnectedToMainnet = {
   },
 };
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
-
 describe('Defi positions list', () => {
   beforeEach(() => {
     process.env.PORTFOLIO_VIEW = 'true';
@@ -285,9 +281,7 @@ describe('Defi positions list', () => {
         },
       },
       enabledNetworkMap: {
-        eip155: {
-          '0x1': true,
-        },
+        '0x1': true,
       },
     };
     await act(async () => {
@@ -300,10 +294,8 @@ describe('Defi positions list', () => {
     await screen.findByText(accountName);
 
     await clickElementById('account-overview__defi-tab');
-    if (!isGlobalNetworkSelectorRemoved) {
-      await clickElementById('sort-by-networks');
-      await clickElementById('network-filter-current__button');
-    }
+    await clickElementById('sort-by-networks');
+    await clickElementById('network-filter-current__button');
     await waitForElementByText('AaveV3 Mainnet');
     await waitForElementByText('MetaMask Staking');
     await waitForElementByTextToNotBePresent('AaveV3 Polygon');
@@ -396,11 +388,7 @@ describe('Defi positions list', () => {
       event: MetaMetricsEventName.DeFiDetailsOpened,
       properties: {
         location: 'Home',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: '0x1',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         protocol_id: 'aave-v3',
       },
       environmentType: 'background',
@@ -416,11 +404,7 @@ describe('Defi positions list', () => {
       event: MetaMetricsEventName.DeFiDetailsOpened,
       properties: {
         location: 'Home',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: '0x1',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         protocol_id: 'metamask-staking',
       },
       environmentType: 'background',

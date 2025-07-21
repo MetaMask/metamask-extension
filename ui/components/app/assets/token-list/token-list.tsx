@@ -4,11 +4,12 @@ import { type Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
-  getEnabledNetworksByNamespace,
+  getEnabledNetworks,
   getNewTokensImported,
   getPreferences,
   getSelectedAccount,
   getTokenSortConfig,
+  isGlobalNetworkSelectorRemoved,
 } from '../../../../selectors';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
@@ -28,15 +29,12 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import { isGlobalNetworkSelectorRemoved } from '../../../../selectors/selectors';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
   safeChains?: SafeChain[];
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
@@ -59,13 +57,11 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   // network filter to determine which tokens to show in list
   // on EVM we want to filter based on network filter controls, on non-evm we only want tokens from that chain identifier
   const { networkFilter } = useNetworkFilter();
-  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const enabledNetworks = useSelector(getEnabledNetworks);
 
   const networksToShow = useMemo(() => {
-    return isGlobalNetworkSelectorRemoved
-      ? enabledNetworksByNamespace
-      : networkFilter;
-  }, [enabledNetworksByNamespace, networkFilter]);
+    return isGlobalNetworkSelectorRemoved ? enabledNetworks : networkFilter;
+  }, [networkFilter, enabledNetworks]);
 
   const sortedFilteredTokens = useMemo(() => {
     const balances = isEvm ? evmBalances : multichainAssets;
@@ -111,11 +107,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       event: MetaMetricsEventName.TokenDetailsOpened,
       properties: {
         location: 'Home',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: token.symbol ?? 'unknown',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: token.chainId,
       },
     });

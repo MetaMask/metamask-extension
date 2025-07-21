@@ -5,7 +5,6 @@ import {
   getAllNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
-  isCaipAccountIdInPermittedAccountIds,
 } from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
@@ -16,10 +15,7 @@ import {
 } from '@metamask/utils';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getPermissions,
-  getUpdatedAndSortedAccountsWithCaipAccountId,
-} from '../../../selectors';
+import { getUpdatedAndSortedAccountsWithCaipAccountId } from '../../../selectors';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
 import {
   AvatarBase,
@@ -73,19 +69,19 @@ import {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
 } from '../../../selectors/selectors.types';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { CreateSolanaAccountModal } from '../../../components/multichain/create-solana-account-modal/create-solana-account-modal';
-import { mergeCaip25CaveatValues } from '../../../../shared/lib/caip25-caveat-merger';
 import {
   PermissionsRequest,
-  getCaip25CaveatValueFromPermissions,
+  getRequestedCaip25CaveatValue,
   getDefaultAccounts,
 } from './utils';
 
 export type ConnectPageRequest = {
+  id: string;
+  origin: string;
   permissions?: PermissionsRequest;
   metadata?: {
-    id: string;
-    origin: string;
     isEip1193Request?: boolean;
     promptToCreateSolanaAccount?: boolean;
   };
@@ -116,36 +112,15 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const existingPermissions = useSelector((state) =>
-    getPermissions(state, request.metadata?.origin),
-  );
-
-  const existingCaip25CaveatValue = useMemo(
-    () =>
-      existingPermissions
-        ? getCaip25CaveatValueFromPermissions(existingPermissions)
-        : null,
-    [existingPermissions],
-  );
-
-  const requestedCaip25CaveatValue = getCaip25CaveatValueFromPermissions(
+  const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
     request.permissions,
   );
 
-  const requestedCaip25CaveatValueWithExistingPermissions =
-    existingCaip25CaveatValue
-      ? mergeCaip25CaveatValues(
-          requestedCaip25CaveatValue,
-          existingCaip25CaveatValue,
-        )
-      : requestedCaip25CaveatValue;
-
   const requestedCaipAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
-    requestedCaip25CaveatValueWithExistingPermissions,
+    requestedCaip25CaveatValue,
   );
-
   const requestedCaipChainIds = getAllScopesFromCaip25CaveatValue(
-    requestedCaip25CaveatValueWithExistingPermissions,
+    requestedCaip25CaveatValue,
   );
 
   const { promptToCreateSolanaAccount, isEip1193Request } =
@@ -184,6 +159,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     [nonTestNetworkConfigurations, testNetworkConfigurations],
   );
 
+  const supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
+    (caipChainId) => allNetworksList.includes(caipChainId as CaipChainId),
+  );
+
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
     useState(false);
@@ -203,10 +182,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       )
     : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
 
-  let supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
-    (caipChainId) => allNetworksList.includes(caipChainId as CaipChainId),
-  );
-
   // Only EVM networks should be selected if this request comes from the EIP-1193 API
   if (isEip1193Request) {
     defaultSelectedNetworkList = defaultSelectedNetworkList.filter(
@@ -215,24 +190,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         return namespace === KnownCaipNamespace.Eip155;
       },
     );
-
-    const isRequestingSpecificEvmChains = supportedRequestedCaipChainIds.some(
-      (caipChainId) => {
-        const { namespace } = parseCaipChainId(caipChainId);
-        return namespace === KnownCaipNamespace.Eip155;
-      },
-    );
-
-    // If the request is for EVM and no specific chains are requested,
-    // we merge the default chains with existing permitted chains
-    if (!isRequestingSpecificEvmChains && existingCaip25CaveatValue) {
-      supportedRequestedCaipChainIds = Array.from(
-        new Set([
-          ...defaultSelectedNetworkList,
-          ...supportedRequestedCaipChainIds,
-        ]),
-      );
-    }
   }
 
   const defaultSelectedChainIds =
@@ -249,9 +206,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   ) as MergedInternalAccountWithCaipAccountId[];
 
   const requestedNamespaces = getAllNamespacesFromCaip25CaveatValue(
-    requestedCaip25CaveatValueWithExistingPermissions,
+    requestedCaip25CaveatValue,
   );
-
   const requestedNamespacesWithoutWallet = requestedNamespaces.filter(
     (namespace) => namespace !== KnownCaipNamespace.Wallet,
   );
@@ -266,14 +222,27 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     },
   );
 
-  // All requested accounts that are found in the wallet
-  const supportedRequestedAccounts =
-    supportedAccountsForRequestedNamespaces.filter((account) =>
-      isCaipAccountIdInPermittedAccountIds(
-        account.caipAccountId,
-        requestedCaipAccountIds,
-      ),
-    );
+  // all requested accounts that are found in the wallet
+  const supportedRequestedAccounts = requestedCaipAccountIds.reduce(
+    (acc, account) => {
+      const supportedRequestedAccount =
+        supportedAccountsForRequestedNamespaces.find(({ caipAccountId }) => {
+          const {
+            chain: { namespace },
+          } = parseCaipAccountId(caipAccountId);
+          // EIP155 (EVM) addresses are not case sensitive
+          if (namespace === KnownCaipNamespace.Eip155) {
+            return isEqualCaseInsensitive(caipAccountId, account);
+          }
+          return caipAccountId === account;
+        });
+      if (supportedRequestedAccount) {
+        acc.push(supportedRequestedAccount);
+      }
+      return acc;
+    },
+    [] as MergedInternalAccountWithCaipAccountId[],
+  );
 
   const defaultAccounts = getDefaultAccounts(
     requestedNamespacesWithoutWallet,
@@ -320,9 +289,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             }
           });
 
-          updatedSelectedChains = Array.from(
-            new Set([...updatedSelectedChains, ...chainIdsForNamespace]),
-          );
+          updatedSelectedChains = [
+            ...updatedSelectedChains,
+            ...chainIdsForNamespace,
+          ];
         }
       });
 
@@ -384,7 +354,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       permissions: {
         ...request.permissions,
         ...generateCaip25Caveat(
-          requestedCaip25CaveatValueWithExistingPermissions,
+          requestedCaip25CaveatValue,
           selectedCaipAccountAddresses,
           selectedChainIds,
         ),
@@ -393,7 +363,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     approveConnection(_request);
   }, [
     request,
-    requestedCaip25CaveatValueWithExistingPermissions,
+    requestedCaip25CaveatValue,
     selectedCaipAccountAddresses,
     selectedChainIds,
     approveConnection,

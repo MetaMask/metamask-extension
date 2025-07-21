@@ -89,9 +89,7 @@ const render = (
       ...mockState.metamask,
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       enabledNetworkMap: {
-        eip155: {
-          '0x1': true,
-        },
+        '0x1': true,
       },
       allDeFiPositions: selectedDeFiPositions,
       currencyRates: {
@@ -175,12 +173,8 @@ describe('DefiList', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.queryByText("Can't find what you're looking for?"),
-      ).toBeInTheDocument();
-      expect(
-        screen.queryByText('We may not support your protocol yet.'),
-      ).toBeInTheDocument();
+      expect(screen.queryByText('No positions yet')).toBeInTheDocument();
+      expect(screen.queryByText('Start earning')).toBeInTheDocument();
       expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
       expect(screen.getByTestId('sort-by-networks')).toBeInTheDocument();
 

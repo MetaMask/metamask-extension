@@ -1,7 +1,6 @@
 {
   "recommendations": [
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
+    "rvest.vs-code-prettier-eslint",
     "streetsidesoftware.code-spell-checker",
     "DigitalBrainstem.javascript-ejs-support"
   ]

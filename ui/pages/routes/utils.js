@@ -23,9 +23,6 @@ import {
   SEND_ROUTE,
   SNAPS_VIEW_ROUTE,
   DEEP_LINK_ROUTE,
-  WALLET_DETAILS_ROUTE,
-  ACCOUNT_DETAILS_ROUTE,
-  ACCOUNT_DETAILS_QR_CODE_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -185,16 +182,6 @@ export function hideAppHeader(props) {
     return true;
   }
 
-  const isWalletDetailsPage = Boolean(
-    matchPath(location.pathname, {
-      path: WALLET_DETAILS_ROUTE,
-      exact: false,
-    }),
-  );
-  if (isWalletDetailsPage) {
-    return true;
-  }
-
   const isSnapsHome = Boolean(
     matchPath(location.pathname, {
       path: SNAPS_VIEW_ROUTE,
@@ -223,28 +210,6 @@ export function hideAppHeader(props) {
   );
 
   if (isAssetsPage) {
-    return true;
-  }
-
-  const isMultichainAccountDetailsPage = Boolean(
-    matchPath(location.pathname, {
-      path: ACCOUNT_DETAILS_ROUTE,
-      exact: false,
-    }),
-  );
-
-  if (isMultichainAccountDetailsPage) {
-    return true;
-  }
-
-  const isMultichainAccountDetailsQRCodePage = Boolean(
-    matchPath(location.pathname, {
-      path: ACCOUNT_DETAILS_QR_CODE_ROUTE,
-      exact: false,
-    }),
-  );
-
-  if (isMultichainAccountDetailsQRCodePage) {
     return true;
   }
 

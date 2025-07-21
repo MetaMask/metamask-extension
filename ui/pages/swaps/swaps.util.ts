@@ -17,7 +17,6 @@ import {
   OPTIMISM,
   POLYGON,
   ZKSYNC_ERA,
-  SEI,
   SWAPS_API_V2_BASE_URL,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CLIENT_ID,
@@ -332,8 +331,6 @@ export const getFeeForSmartTransaction = ({
   chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP;
   currentCurrency: string;
   conversionRate: number;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   USDConversionRate?: number;
   nativeCurrencySymbol: string;
   feeInWeiDec: number;
@@ -394,8 +391,6 @@ export function getRenderableNetworkFeesForQuote({
   gasPriceApprove: string;
   currentCurrency: string;
   conversionRate: number;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   USDConversionRate?: number;
   tradeValue: number;
   sourceSymbol: string;
@@ -717,8 +712,6 @@ export const getNetworkNameByChainId = (chainId: string): string => {
       return LINEA;
     case CHAIN_IDS.BASE:
       return BASE;
-    case CHAIN_IDS.SEI:
-      return SEI;
     default:
       return '';
   }
@@ -793,14 +786,8 @@ export const showRemainingTimeInMinAndSec = (
 };
 
 export enum StxErrorTypes {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   unavailable = 'unavailable',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   notEnoughFunds = 'not_enough_funds',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   regularTxPending = 'regular_tx_pending',
 }
 

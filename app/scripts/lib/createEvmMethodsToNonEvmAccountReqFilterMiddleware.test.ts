@@ -241,32 +241,24 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'wallet_requestPermissions',
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       params: [{ eth_accounts: {} }],
       calledNext: false,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'wallet_requestPermissions',
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       params: [{ snap_getClientStatus: {} }],
       calledNext: true,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'wallet_requestPermissions',
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       params: [{ eth_accounts: {}, snap_getClientStatus: {} }],
       calledNext: false,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'wallet_requestPermissions',
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       params: [{ eth_accounts: {} }],
       calledNext: true,
     },
@@ -274,16 +266,12 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     {
       accountType: EthAccountType.Eoa,
       method: 'wallet_requestPermissions',
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       params: [{ snap_getClientStatus: {} }],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'wallet_requestPermissions',
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       params: [{ eth_accounts: {}, snap_getClientStatus: {} }],
       calledNext: true,
     },
