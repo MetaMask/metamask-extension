@@ -461,9 +461,11 @@ export function tryUnlockMetamask(
 }
 
 export function checkIsSeedlessPasswordOutdated(
-  skipCache = false,
+  skipCache = true,
 ): ThunkAction<boolean | undefined, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
     try {
       const isPasswordOutdated = await submitRequestToBackground<boolean>(
         'checkIsSeedlessPasswordOutdated',
@@ -476,6 +478,8 @@ export function checkIsSeedlessPasswordOutdated(
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -2205,14 +2209,6 @@ export function lockMetamask(): ThunkAction<
     dispatch(showLoadingIndication());
 
     return backgroundSetLocked()
-      .then(() => {
-        // check seedless password outdated when lock app
-        dispatch(checkIsSeedlessPasswordOutdated(true));
-        return Promise.resolve();
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      })
       .then(() => forceUpdateMetamaskState(dispatch))
       .catch((error) => {
         dispatch(displayWarning(getErrorMessage(error)));

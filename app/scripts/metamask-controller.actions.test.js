@@ -130,6 +130,11 @@ describe('MetaMaskController', function () {
       },
       browser: browserPolyfillMock,
       infuraProjectId: 'foo',
+      cronjobControllerStorageManager: {
+        init: noop,
+        getInitialState: noop,
+        set: noop,
+      },
     });
     initializeMockMiddlewareLog();
 
@@ -443,13 +448,14 @@ describe('MetaMaskController', function () {
         FirstTimeFlowType.create,
       );
       const result = await metamaskController.checkIsSeedlessPasswordOutdated();
-      expect(result).toBeUndefined();
+      expect(result).toBeFalsy();
     });
 
     it('should return false if firstTimeFlowType is seedless and password is not outdated', async function () {
       metamaskController.onboardingController.setFirstTimeFlowType(
         FirstTimeFlowType.socialCreate,
       );
+      metamaskController.onboardingController.completeOnboarding();
       jest
         .spyOn(
           metamaskController.seedlessOnboardingController,
@@ -467,6 +473,7 @@ describe('MetaMaskController', function () {
       metamaskController.onboardingController.setFirstTimeFlowType(
         FirstTimeFlowType.socialCreate,
       );
+      metamaskController.onboardingController.completeOnboarding();
       jest
         .spyOn(
           metamaskController.seedlessOnboardingController,
