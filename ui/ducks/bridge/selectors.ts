@@ -238,17 +238,13 @@ export const getFromToken = createSelector(
 );
 
 export const getToToken = createSelector(
-  [
-    getFromToken,
-    (state: BridgeAppState) => state.bridge.toChainId,
-    (state) => state.bridge.toToken,
-  ],
-  (fromToken, toChainId, toToken) => {
-    if (!toChainId) {
+  [getFromToken, getToChain, (state) => state.bridge.toToken],
+  (fromToken, toChain, toToken) => {
+    if (!toChain) {
       return null;
     }
     const destNativeAsset = getNativeAssetForChainId(
-      toChainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
+      toChain.chainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
     );
     const newToToken = toToken ?? toBridgeToken(destNativeAsset);
     // Return null if dest token is the same as the src token
