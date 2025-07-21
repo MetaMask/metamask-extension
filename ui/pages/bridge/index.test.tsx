@@ -2,10 +2,15 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import nock from 'nock';
+import { MemoryRouter } from 'react-router-dom';
 
 import { setBackgroundConnection } from '../../store/background-connection';
 import { renderWithProvider, MOCKS, CONSTANTS } from '../../../test/jest';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
+import {
+  CROSS_CHAIN_SWAP_ROUTE,
+  PREPARE_SWAP_ROUTE,
+} from '../../helpers/constants/routes';
 import CrossChainSwap from '.';
 
 const mockResetBridgeState = jest.fn();
@@ -21,9 +26,12 @@ setBackgroundConnection({
   getNetworkConfigurationByNetworkClientId: jest
     .fn()
     .mockResolvedValue({ chainId: '0x1' }),
-  setBridgeFeatureFlags: jest.fn(),
+  trackUnifiedSwapBridgeEvent: jest.fn(),
   selectSrcNetwork: jest.fn(),
   resetState: () => mockResetBridgeState(),
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any);
 
@@ -63,11 +71,32 @@ describe('Bridge', () => {
   });
 
   it('renders the component with initial props', async () => {
-    const swapsMockStore = createBridgeMockStore({ extensionSupport: true });
-    const store = configureMockStore(middleware)(swapsMockStore);
+    const bridgeMockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        extensionConfig: {
+          support: true,
+          refreshRate: 5000,
+          maxRefreshCount: 5,
+          chains: {
+            '1': {
+              isActiveSrc: true,
+              isActiveDest: false,
+            },
+          },
+        },
+      },
+      metamaskStateOverrides: {
+        useExternalServices: true,
+      },
+    });
+    const store = configureMockStore(middleware)(bridgeMockStore);
 
     const { container, getByText } = renderWithProvider(
-      <CrossChainSwap />,
+      <MemoryRouter
+        initialEntries={[CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE]}
+      >
+        <CrossChainSwap />
+      </MemoryRouter>,
       store,
     );
 

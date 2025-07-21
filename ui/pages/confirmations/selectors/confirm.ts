@@ -2,7 +2,6 @@ import { ApprovalType } from '@metamask/controller-utils';
 
 import { createSelector } from 'reselect';
 import { getPendingApprovals } from '../../../selectors/approvals';
-import { getPreferences } from '../../../selectors/selectors';
 import { createDeepEqualSelector } from '../../../../shared/modules/selectors/util';
 import { ConfirmMetamaskState } from '../types/confirm';
 
@@ -38,7 +37,12 @@ export const oldestPendingConfirmationSelector = createDeepEqualSelector(
   (firstPendingConfirmation) => firstPendingConfirmation,
 );
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getIsRedesignedConfirmationsDeveloperEnabled(state: any) {
-  return getPreferences(state).isRedesignedConfirmationsDeveloperEnabled;
+export function selectEnableEnforcedSimulations(
+  state: ConfirmMetamaskState,
+  transactionId: string,
+): boolean {
+  return (
+    state.metamask.enableEnforcedSimulationsForTransactions[transactionId] ??
+    state.metamask.enableEnforcedSimulations
+  );
 }

@@ -6,7 +6,6 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import {
   getCurrencyRates,
   getNetworkConfigurationIdByChainId,
@@ -39,27 +38,12 @@ const state = {
   },
 };
 
-const safeChainDetails = {
-  chainId: '1',
-  nativeCurrency: {
-    symbol: 'ETH',
-  },
-};
-
 let openTabSpy: jest.SpyInstance<void, [opts: { url: string }], unknown>;
 
 jest.mock('../../../ducks/locale/locale', () => ({
   getIntlLocale: jest.fn(),
 }));
 
-jest.mock(
-  '../../../pages/settings/networks-tab/networks-form/use-safe-chains',
-  () => ({
-    useSafeChains: jest.fn().mockReturnValue({
-      safeChains: [safeChainDetails],
-    }),
-  }),
-);
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
   return {
@@ -69,11 +53,12 @@ jest.mock('react-redux', () => {
 });
 
 const mockGetIntlLocale = getIntlLocale;
-const mockGetSafeChains = useSafeChains;
 
 describe('TokenListItem', () => {
   beforeAll(() => {
+    // @ts-expect-error mocking platform
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
+    // @ts-expect-error mocking platform
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     (mockGetIntlLocale as unknown as jest.Mock).mockReturnValue('en-US');
   });
@@ -124,11 +109,12 @@ describe('TokenListItem', () => {
       title: '',
       chainId: '0x1',
     };
-    const { getByText } = renderWithProvider(
+    const { getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
     expect(getByText('11.9751 ETH')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 
   it('should display warning scam modal', () => {
@@ -151,11 +137,13 @@ describe('TokenListItem', () => {
       title: '',
       tokenSymbol: 'SCAM_TOKEN',
       chainId: '0x1',
+      nativeCurrencySymbol: 'ETH',
     };
-    const { getByTestId, getByText } = renderWithProvider(
+    const { getByTestId, getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
+    expect(container).toMatchSnapshot();
 
     const warningScamModal = getByTestId('scam-warning');
     fireEvent.click(warningScamModal);
@@ -168,7 +156,6 @@ describe('TokenListItem', () => {
   });
 
   it('should display warning scam modal fallback when safechains fails to resolve correctly', () => {
-    (mockGetSafeChains as unknown as jest.Mock).mockReturnValue([]);
     const store = configureMockStore()(state);
     const propsToUse = {
       primary: '11.9751 ETH',
@@ -179,12 +166,14 @@ describe('TokenListItem', () => {
       title: '',
       tokenSymbol: 'SCAM_TOKEN',
       chainId: '0x1',
+      nativeCurrencySymbol: undefined,
     };
-    const { getByTestId, getByText } = renderWithProvider(
+    const { getByTestId, getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
 
+    expect(container).toMatchSnapshot();
     const warningScamModal = getByTestId('scam-warning');
     fireEvent.click(warningScamModal);
 
@@ -209,11 +198,12 @@ describe('TokenListItem', () => {
       chainId: '0x1',
     };
 
-    const { getByText } = renderWithProvider(
+    const { getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
     expect(getByText('11.9751 ETH')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 
   it('handles click action and fires onClick', () => {
@@ -232,7 +222,7 @@ describe('TokenListItem', () => {
 
   it('handles clicking staking opens tab', async () => {
     const store = configureMockStore()(state);
-    const { queryByTestId } = renderWithProvider(
+    const { queryByTestId, container } = renderWithProvider(
       <TokenListItem isStakeable {...props} />,
       store,
     );
@@ -243,6 +233,7 @@ describe('TokenListItem', () => {
 
     expect(stakeButton).toBeInTheDocument();
     expect(stakeButton).not.toBeDisabled();
+    expect(container).toMatchSnapshot();
 
     stakeButton && fireEvent.click(stakeButton);
     expect(openTabSpy).toHaveBeenCalledTimes(1);

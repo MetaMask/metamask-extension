@@ -44,7 +44,12 @@ const notificationMocks = {
   RocketPoolStakeCompleted: createMockNotificationRocketPoolStakeCompleted,
   RocketPoolUnStakeCompleted: createMockNotificationRocketPoolUnStakeCompleted,
   FeatureAnnouncement: createMockFeatureAnnouncementRaw,
-  Snap: createMockSnapNotification,
+  Snap: () => {
+    const mock = createMockSnapNotification();
+    // TODO(hmalik88): the mock's origin should be fixed upstream
+    mock.data.origin = 'npm:@metamask/example-snap'
+    return mock;
+  },
 } as const;
 
 const notifications: Notification[] = Object.values(notificationMocks).map(

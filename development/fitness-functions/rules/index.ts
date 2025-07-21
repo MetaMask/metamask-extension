@@ -6,7 +6,7 @@ const RULES: IRule[] = [
     name: "Don't use `sinon` or `assert` in unit tests",
     fn: preventSinonAssertSyntax,
     errorMessage:
-      '`sinon` or `assert` was detected in the diff. Please use Jest instead. For more info: https://github.com/MetaMask/metamask-extension/blob/develop/docs/testing.md#favor-jest-instead-of-mocha',
+      '`sinon` or `assert` was detected in the diff. Please use Jest instead. For more info: https://github.com/MetaMask/metamask-extension/blob/main/docs/testing.md#favor-jest-instead-of-mocha',
   },
   {
     name: "Don't add JS or JSX files",

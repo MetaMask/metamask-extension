@@ -22,6 +22,7 @@ import {
   getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
   getMetaMetricsId,
+  getParticipateInMetaMetrics,
   getShowDataDeletionErrorModal,
   getShowDeleteMetaMetricsDataModal,
   getLatestMetricsEventTimestamp,
@@ -31,10 +32,14 @@ import DataDeletionErrorModal from '../../../../components/app/data-deletion-err
 import { formatDate } from '../../../../helpers/utils/util';
 import { DeleteRegulationStatus } from '../../../../../shared/constants/metametrics';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type DeleteMetaMetricsDataButtonProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C>;
 
 type DeleteMetaMetricsDataButtonComponent = <
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   C extends React.ElementType = 'div',
 >(
   props: DeleteMetaMetricsDataButtonProps<C>,
@@ -42,6 +47,8 @@ type DeleteMetaMetricsDataButtonComponent = <
 
 const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
   React.forwardRef(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     <C extends React.ElementType = 'div'>(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       { ...props }: DeleteMetaMetricsDataButtonProps<C>,
@@ -71,8 +78,8 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
       const latestMetricsEventTimestamp = useSelector(
         getLatestMetricsEventTimestamp,
       );
-
-      let dataDeletionButtonDisabled = Boolean(!metaMetricsId);
+      const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+      let dataDeletionButtonDisabled = !isMetaMetricsEnabled;
       if (!dataDeletionButtonDisabled && metaMetricsDataDeletionStatus) {
         dataDeletionButtonDisabled =
           [
@@ -97,7 +104,6 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
           <Box
             ref={ref}
             className="settings-page__content-row"
-            data-testid="delete-metametrics-data-button"
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
             gap={4}
@@ -127,6 +133,7 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
                 </Box>
               )}
               <ButtonPrimary
+                data-testid="delete-metametrics-data-button"
                 className="settings-page__button"
                 onClick={() => {
                   dispatch(openDeleteMetaMetricsDataModal());

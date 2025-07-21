@@ -7,34 +7,47 @@
 @import 'create-password/index';
 @import 'creation-successful/index';
 @import 'welcome/index';
-@import 'import-srp/index';
 @import 'pin-extension/index';
 @import 'metametrics/index';
 
 .onboarding-flow {
-  background-color: var(--color-background-default);
-  padding: 0 16px;
-  width: 100%;
+  &--welcome-banner {
+    background: url('/images/welcome-banner.png') no-repeat calc(50% + 500px) 160px;
+    background-color: var(--color-accent03-light);
+  }
 
-  &__wrapper {
-    margin: 24px auto;
-    padding: 32px 16px;
-    max-width: 600px;
-    border: 1px solid var(--color-border-muted);
-    border-radius: 24px;
+  &--welcome-login {
+    background: url('/images/welcome-page.png') no-repeat center top;
+    background-color: var(--color-accent02-dark);
+  }
 
-    @include design-system.screen-sm-min {
-      margin: 64px auto 40px;
-      padding: 32px;
+  &__container {
+    padding-inline: 24px;
+    padding-top: 32px;
+    padding-bottom: 32px;
+    max-width: 446px;
+    min-height: 627px;
+    height: auto;
+
+    &--full {
+      padding-inline: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      max-width: none;
+      min-height: auto;
+      height: 100%;
+    }
+
+    &--popup {
+      padding-inline: 16px;
+      padding-top: 16px;
+      padding-bottom: 24px;
+      min-height: auto;
+      height: 100%;
     }
   }
 
-  &__twitter-button {
-    margin-bottom: 40px;
-    vertical-align: middle;
-
-    &__icon {
-      margin-left: 4px;
-    }
+  &__x-button__icon {
+    margin-bottom: -6px;
   }
 }

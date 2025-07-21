@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import { WINDOW_TITLES } from '../../helpers';
+import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
 
 class SnapSimpleKeyringPage {
   private readonly driver: Driver;
@@ -141,6 +141,8 @@ class SnapSimpleKeyringPage {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -170,6 +172,9 @@ class SnapSimpleKeyringPage {
     console.log(
       'Approve/Reject snap account transaction on Snap Simple Keyring page',
     );
+
+    await this.driver.delay(regularDelayMs);
+
     if (isSignatureRequest) {
       await this.driver.clickElementAndWaitForWindowToClose(
         this.confirmationSubmitButton,
@@ -306,7 +311,10 @@ class SnapSimpleKeyringPage {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.clickElement(this.confirmConnectionButton);
 
-    await this.driver.waitForSelector(this.addtoMetamaskMessage);
+    // set a bigger timeout to wait for element as a temporary fix to reduce flakiness
+    await this.driver.waitForSelector(this.addtoMetamaskMessage, {
+      timeout: 15000,
+    });
     await this.driver.clickElementSafe(this.snapInstallScrollButton, 200);
     await this.driver.waitForSelector(this.confirmAddtoMetamask);
     await this.driver.clickElement(this.confirmAddtoMetamask);
@@ -346,6 +354,8 @@ class SnapSimpleKeyringPage {
     await this.driver.clickElement(this.useSyncApprovalToggle);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_errorRequestMessageDisplayed(): Promise<void> {
     console.log(
       'Check error request message is displayed on snap simple keyring page',
@@ -353,6 +363,8 @@ class SnapSimpleKeyringPage {
     await this.driver.waitForSelector(this.errorRequestMessage);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_simpleKeyringSnapConnected(): Promise<void> {
     console.log('Check simple keyring snap is connected');
     await this.driver.waitForSelector(this.snapConnectedMessage);

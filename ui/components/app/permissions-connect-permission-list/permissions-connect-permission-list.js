@@ -11,12 +11,19 @@ import { Box } from '../../component-library';
 /**
  * Get one or more permission descriptions for a permission name.
  *
- * @param permission - The permission to render.
- * @param index - The index of the permission.
- * @param accounts - An array representing list of accounts for which permission is used.
+ * @param options - The options object.
+ * @param options.permission - The permission to render.
+ * @param options.index - The index of the permission.
+ * @param options.accounts - An array representing list of accounts for which permission is used.
+ * @param options.requestedChainIds - An array representing list of chain ids for which permission is used.
  * @returns {JSX.Element} A permission description node.
  */
-function getDescriptionNode(permission, index, accounts) {
+function getDescriptionNode({
+  permission,
+  index,
+  accounts,
+  requestedChainIds,
+}) {
   return (
     <PermissionCell
       permissionName={permission.name}
@@ -26,15 +33,17 @@ function getDescriptionNode(permission, index, accounts) {
       avatarIcon={permission.leftIcon}
       key={`${permission.permissionName}-${index}`}
       accounts={accounts}
-      permissionValue={permission.permissionValue.restrictNetworkSwitching}
+      chainIds={requestedChainIds}
     />
   );
 }
 
 export default function PermissionsConnectPermissionList({
+  isRequestApprovalPermittedChains,
   permissions,
   subjectName,
   accounts,
+  requestedChainIds,
 }) {
   const t = useI18nContext();
   const snapsMetadata = useSelector(getSnapsMetadata);
@@ -43,11 +52,17 @@ export default function PermissionsConnectPermissionList({
     <Box as="span">
       {getWeightedPermissions({
         t,
+        isRequestApprovalPermittedChains,
         permissions,
         getSubjectName: getSnapName(snapsMetadata),
         subjectName,
       }).map((permission, index) => {
-        return getDescriptionNode(permission, index, accounts);
+        return getDescriptionNode({
+          permission,
+          index,
+          accounts,
+          requestedChainIds,
+        });
       })}
     </Box>
   );
@@ -56,5 +71,7 @@ export default function PermissionsConnectPermissionList({
 PermissionsConnectPermissionList.propTypes = {
   permissions: PropTypes.object.isRequired,
   subjectName: PropTypes.string.isRequired,
+  requestedChainIds: PropTypes.array,
   accounts: PropTypes.arrayOf(PropTypes.object),
+  isRequestApprovalPermittedChains: PropTypes.boolean,
 };

@@ -5,7 +5,7 @@ import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import {
-  MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP,
+  MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
   MultichainNetworks,
 } from '../../../../../shared/constants/multichain/networks';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
@@ -13,6 +13,7 @@ import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import { formatBlockExplorerAddressUrl } from '../../../../../shared/lib/multichain/networks';
 import NicknamePopover from './nickname-popovers.component';
 
 const mockAccount = createMockInternalAccount({
@@ -26,7 +27,10 @@ const mockNonEvmAccount = createMockInternalAccount({
   type: BtcAccountType.P2wpkh,
 });
 
-const mockEvmExplorer = 'http://mock-explorer.com';
+const mockEvmExplorer = (address: string) =>
+  `https://etherscan.io/address/${normalizeSafeAddress(
+    address,
+  )}#asset-multichain`;
 
 const render = (
   {
@@ -55,7 +59,7 @@ const render = (
       },
       ...mockNetworkState({
         chainId: '0x5',
-        blockExplorerUrl: mockEvmExplorer,
+        blockExplorerUrl: mockEvmExplorer(mockAccount.address),
       }),
       completedOnboarding: true,
     },
@@ -71,12 +75,11 @@ describe('NicknamePopover', () => {
   });
 
   it('opens EVM block explorer', () => {
+    // @ts-expect-error mocking platform
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
     // Accounts controlelr addresses are lower cased but it gets converted to checksummed in this util
-    const expectedExplorerUrl = `${mockEvmExplorer}/address/${normalizeSafeAddress(
-      mockAccount.address,
-    )}`;
+    const expectedExplorerUrl = mockEvmExplorer(mockAccount.address);
     const { getByText } = render({ props: { address: mockAccount.address } });
 
     const viewExplorerButton = getByText('View on block explorer');
@@ -87,10 +90,14 @@ describe('NicknamePopover', () => {
   });
 
   it('opens non-EVM block explorer', () => {
+    // @ts-expect-error mocking platform
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
-    const expectedExplorerUrl = `${
-      MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[MultichainNetworks.BITCOIN]
-    }/${normalizeSafeAddress(mockNonEvmAccount.address)}`;
+    const expectedExplorerUrl = formatBlockExplorerAddressUrl(
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.BITCOIN
+      ],
+      mockNonEvmAccount.address,
+    );
 
     const { getByText } = render({
       props: { address: mockNonEvmAccount.address },

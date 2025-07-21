@@ -46,8 +46,12 @@ const TEST_AGG_ID_APPROVAL = 'TEST_AGG_APPROVAL';
 
 const MOCK_PROVIDER_RESULT_STUB = {
   // 1 gwei
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   eth_gasPrice: '0x0de0b6b3a7640000',
   // by default, all accounts are external accounts (not contracts)
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   eth_getCode: '0x',
 };
 
@@ -748,8 +752,12 @@ describe('SwapsController', function () {
         const { provider } = createTestProviderTools({
           scaffold: {
             // 1 gwei
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_gasPrice: '0x0de0b6b3a7640000',
             // by default, all accounts are external accounts (not contracts)
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_getCode: '0x',
           },
           networkId: 1,
@@ -765,12 +773,16 @@ describe('SwapsController', function () {
 
         // Make it so approval is not required
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
@@ -828,9 +840,15 @@ describe('SwapsController', function () {
         const { provider } = createTestProviderTools({
           scaffold: {
             // 1 gwei
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_gasPrice: '0x0de0b6b3a7640000',
             // by default, all accounts are external accounts (not contracts)
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_getCode: '0x',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_call:
               '0x000000000000000000000000000000000000000000000000000103c18816d4e8',
           },
@@ -847,12 +865,16 @@ describe('SwapsController', function () {
 
         // Make it so approval is not required
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
@@ -911,9 +933,15 @@ describe('SwapsController', function () {
         const { provider } = createTestProviderTools({
           scaffold: {
             // 1 gwei
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_gasPrice: '0x0de0b6b3a7640000',
             // by default, all accounts are external accounts (not contracts)
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_getCode: '0x',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_call:
               '0x000000000000000000000000000000000000000000000000000103c18816d4e8',
           },
@@ -930,12 +958,16 @@ describe('SwapsController', function () {
 
         // Make it so approval is not required
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
@@ -993,8 +1025,12 @@ describe('SwapsController', function () {
         const { provider } = createTestProviderTools({
           scaffold: {
             // 1 gwei
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_gasPrice: '0x0de0b6b3a7640000',
             // by default, all accounts are external accounts (not contracts)
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_getCode: '0x',
           },
           networkId: 100,
@@ -1069,18 +1105,24 @@ describe('SwapsController', function () {
           });
 
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_fetchTradesInfo')
           .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
         const getERC20AllowanceSpy = jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
@@ -1105,24 +1147,32 @@ describe('SwapsController', function () {
 
       it('gets the gas limit if approval is required', async function () {
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_fetchTradesInfo')
           .mockReturnValue(MOCK_QUOTES_APPROVAL_REQUIRED);
 
         // Ensure approval is required
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(0));
 
         // Make the network fetch error message disappear
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
 
         const timedoutGasReturnResult = { gasLimit: 1000000 };
         const timedoutGasReturnSpy = jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_timedoutGasReturn')
           .mockReturnValue(timedoutGasReturnResult);
@@ -1142,18 +1192,24 @@ describe('SwapsController', function () {
 
       it('marks the best quote', async function () {
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_fetchTradesInfo')
           .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
@@ -1190,18 +1246,24 @@ describe('SwapsController', function () {
         const quotes = { ...getMockQuotes(), [bestAggId]: bestQuote };
 
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_fetchTradesInfo')
           .mockReturnValue(quotes);
 
         // Make it so approval is not required
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
@@ -1223,22 +1285,29 @@ describe('SwapsController', function () {
 
       it('does not mark as best quote if no conversion rate exists for destination token', async function () {
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_fetchTradesInfo')
           .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
         jest
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (swapsController as any)._getTokenRatesState = () => ({
           marketData: {

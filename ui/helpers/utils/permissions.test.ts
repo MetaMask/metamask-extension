@@ -1,8 +1,5 @@
-import {
-  BtcAccountType,
-  BtcMethod,
-  InternalAccount,
-} from '@metamask/keyring-api';
+import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { containsEthPermissionsAndNonEvmAccount } from './permissions';
 
@@ -18,6 +15,8 @@ const mockNonEvmAccount = {
 describe('containsEthPermissionsAndNonEvmAccount', () => {
   it('return false if accounts array is empty', () => {
     const accounts: InternalAccount[] = [];
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const permissions = { eth_accounts: '' };
 
     const result = containsEthPermissionsAndNonEvmAccount(
@@ -30,6 +29,8 @@ describe('containsEthPermissionsAndNonEvmAccount', () => {
 
   it('return false if accounts array contains only EVM accounts', () => {
     const accounts: InternalAccount[] = [mockAccount, mockAccount];
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const permissions = { eth_accounts: '' };
 
     const result = containsEthPermissionsAndNonEvmAccount(
@@ -42,6 +43,8 @@ describe('containsEthPermissionsAndNonEvmAccount', () => {
 
   it('return false if permissions object does not contain eth_accounts permission', () => {
     const accounts: InternalAccount[] = [mockAccount, mockNonEvmAccount];
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const permissions = { some_other_permission: '' };
 
     const result = containsEthPermissionsAndNonEvmAccount(
@@ -54,6 +57,8 @@ describe('containsEthPermissionsAndNonEvmAccount', () => {
 
   it('return true if accounts array contains non-EVM account and permissions object contains eth_accounts permission', () => {
     const accounts: InternalAccount[] = [mockAccount, mockNonEvmAccount];
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const permissions = { eth_accounts: '' };
 
     const result = containsEthPermissionsAndNonEvmAccount(

@@ -13,6 +13,7 @@ import ConfigureSnapPopup, {
 const mockOnClose = jest.fn();
 const mockStore = configureMockStore([])(mockState);
 describe('ConfigureSnapPopup', () => {
+  // @ts-expect-error mocking platform
   global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
   it('should show configure popup title and description', async () => {

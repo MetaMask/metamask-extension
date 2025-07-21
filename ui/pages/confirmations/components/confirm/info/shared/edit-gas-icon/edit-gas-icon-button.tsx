@@ -23,6 +23,8 @@ export const EditGasIconButton = ({
 
   const openEditEIP1559TxGasFeeModal = () => {
     updateTransactionEventFragment({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_edit_attempted: 'basic',
     });
     openModal('editGasFee');
@@ -40,7 +42,7 @@ export const EditGasIconButton = ({
   return (
     <Button
       style={{ textDecoration: 'none' }}
-      size={ButtonSize.Sm}
+      size={ButtonSize.Auto}
       variant={ButtonVariant.Link}
       startIconName={IconName.Edit}
       color={IconColor.primaryDefault}

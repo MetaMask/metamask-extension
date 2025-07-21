@@ -2,7 +2,7 @@ import React from 'react';
 import { screen, act, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { MetaMaskReduxState } from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
@@ -72,10 +72,24 @@ jest.mock('../../../../store/actions', () => {
     })),
     tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
     tokenBalancesStopPollingByPollingToken: jest.fn(),
+    addImportedTokens: jest.fn(),
+  };
+});
+
+// Mock the dispatch function
+const mockDispatch = jest.fn();
+
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual('react-redux');
+  return {
+    ...actual,
+    useDispatch: () => mockDispatch,
   };
 });
 
 jest.mock('../../../../hooks/useMultiPolling', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));
@@ -160,7 +174,9 @@ describe('AssetList', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
-      expect(screen.getByTestId('import-token-button')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('asset-list-control-bar-action-button'),
+      ).toBeInTheDocument();
     });
   });
 });

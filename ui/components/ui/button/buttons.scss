@@ -13,9 +13,15 @@
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  border-radius: 6px;
+  border-radius: 12px;
   width: 100%;
-  transition: border-color 0.3s ease, background-color 0.3s ease;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-default);
+    outline-offset: 2px;
+    box-shadow: none;
+  }
 
   &--disabled,
   &[disabled] {
@@ -32,24 +38,20 @@
 }
 
 .btn-secondary {
-  color: var(--color-primary-default);
-  border: 1px solid var(--color-primary-default);
-  background-color: var(--color-background-default);
+  color: var(--color-text-default);
+  background-color: var(--color-background-muted);
 
   &:hover {
-    border-color: var(--color-primary-default);
+    background-color: var(--color-background-muted-hover);
   }
 
   &:active {
-    color: var(--color-primary-inverse);
-    background: var(--color-primary-default);
-    border-color: var(--color-primary-default);
+    background-color: var(--color-background-muted-pressed);
   }
 }
 
 .btn-warning {
   color: var(--color-text-default);
-  border: 1px solid var(--color-warning-default);
   background-color: var(--color-background-default);
 
   &:hover {
@@ -70,69 +72,52 @@
 
 .btn-danger {
   color: var(--color-error-default);
-  border: 1px solid var(--color-error-muted);
-  background-color: var(--color-background-default);
+  background-color: var(--color-background-muted);
 
   &:hover {
-    border-color: var(--color-error-default);
+    background-color: var(--color-background-muted-hover);
   }
 
   &:active {
-    background: var(--color-error-muted);
-    border-color: var(--color-error-default);
+    background-color: var(--color-background-muted-pressed);
   }
 }
 
 .btn-danger-primary {
   color: var(--color-error-inverse);
-  border: 1px solid;
-  border-color: var(--color-error-default);
   background-color: var(--color-error-default);
 
   &:hover {
-    border-color: var(--color-error-alternative);
-    background-color: var(--color-error-alternative);
+    background-color: var(--color-error-default);
+    opacity: 0.8;
   }
 
   &:active {
-    background: var(--color-error-alternative0);
-    border-color: var(--color-error-alternative);
+    color: var(--color-error-inverse);
   }
 }
 
-.btn-default {
-  color: var(--color-text-alternative);
-  border: 1px solid var(--color-border-default);
-  background: var(--color-background-default);
+.btn-default,
+.btn-primary {
+  color: var(--color-icon-inverse);
+  background-color: var(--color-icon-default);
 
   &:hover {
-    border-color: var(--color-border-default);
+    color: var(--color-icon-inverse);
+    background-color: var(--color-icon-default);
+    opacity: 0.8;
+    transition: background-color 200ms ease;
   }
 
   &:active {
-    background: var(--color-background-alternative);
-    border-color: var(--color-border-default);
+    color: var(--color-icon-inverse);
+    background-color: var(--color-icon-default);
+    transform: scale(0.98);
   }
 
   &--disabled,
   &[disabled] {
     opacity: var(--opacity-disabled);
-  }
-}
-
-.btn-primary {
-  color: var(--color-primary-inverse);
-  border: 1px solid var(--color-primary-default);
-  background-color: var(--color-primary-default);
-
-  &:hover {
-    border-color: var(--color-primary-alternative);
-    background-color: var(--color-primary-alternative);
-  }
-
-  &:active {
-    background: var(--color-primary-alternative);
-    border-color: var(--color-primary-alternative);
   }
 }
 
@@ -185,56 +170,37 @@ input[type="submit"][disabled] {
 
 .btn--rounded {
   border-radius: 100px;
-  will-change: box-shadow;
-  transition: box-shadow cubic-bezier(0.6, -0.28, 0.735, 0.045) 200ms;
-
-  &:hover {
-    box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
-  }
 
   &.btn-secondary {
-    border: 1px solid var(--color-primary-default);
+    background-color: var(--color-background-muted);
 
     &:hover {
-      box-shadow: var(--shadow-size-sm) var(--color-shadow-primary);
+      background-color: var(--color-background-muted-hover);
     }
 
     &:active {
-      border-color: var(--color-primary-alternative);
+      background-color: var(--color-background-muted-pressed);
     }
   }
 
   &.btn-default {
-    border: 1px solid var(--color-icon-default);
-
-    &:hover {
-      box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
-    }
-
     &:active {
       border-color: var(--color-text-alternative);
     }
   }
 
   &.btn-danger {
-    border: 1px solid var(--color-error-default);
-
     &:hover {
-      box-shadow: var(--shadow-size-sm) var(--color-shadow-error);
+      background-color: var(--color-error-default);
+      opacity: 0.8;
     }
 
     &:active {
-      border-color: var(--color-error-alternative);
+      background-color: var(--color-error-default);
     }
   }
 
   &.btn-warning {
-    border: 1px solid var(--color-warning-default);
-
-    &:hover {
-      box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
-    }
-
     &--disabled,
     &[disabled] {
       border-color: var(--color-warning-default);
@@ -247,14 +213,16 @@ input[type="submit"][disabled] {
   }
 
   &.btn-primary {
-    background-color: var(--color-primary-default);
+    background-color: var(--color-icon-default);
+    color: var(--color-primary-inverse);
 
     &:hover {
-      box-shadow: var(--shadow-size-sm) var(--color-shadow-primary);
+      background-color: var(--color-icon-default);
+      opacity: 0.8;
     }
 
     &:active {
-      background-color: var(--color-primary-alternative);
+      background-color: var(--color-icon-default);
     }
   }
 
@@ -262,11 +230,12 @@ input[type="submit"][disabled] {
     background-color: var(--color-error-default);
 
     &:hover {
-      box-shadow: var(--shadow-size-sm) var(--color-shadow-error);
+      background-color: var(--color-error-default);
+      opacity: 0.8;
     }
 
     &:active {
-      background-color: var(--color-error-alternative);
+      background-color: var(--color-error-default);
     }
   }
 }

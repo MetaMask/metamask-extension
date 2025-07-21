@@ -1,9 +1,8 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-///: END:ONLY_INCLUDE_IF
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
+
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
@@ -12,13 +11,9 @@ import {
   getAccountTypeForKeyring,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getMetaMaskAccountsOrdered,
-  ///: END:ONLY_INCLUDE_IF
+  getIsMultichainAccountsState1Enabled,
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-///: END:ONLY_INCLUDE_IF
+
 import { MenuItem } from '../../ui/menu';
 import {
   IconName,
@@ -39,7 +34,8 @@ import {
 } from '../../../store/actions';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
-import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
+import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 const METRICS_LOCATION = 'Account Options';
 
@@ -55,24 +51,22 @@ export const AccountListItemMenu = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const dispatch = useDispatch();
 
   const chainId = useSelector(getCurrentChainId);
 
   const deviceName = useSelector(getHardwareWalletType);
 
+  const isMultichainAccountsState1Enabled = useSelector(
+    getIsMultichainAccountsState1Enabled,
+  );
+
   const { keyring } = account.metadata;
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
 
   const pinnedAccountList = useSelector(getPinnedAccountsList);
   const hiddenAccountList = useSelector(getHiddenAccountsList);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const isCustodial = keyring?.type ? /Custody/u.test(keyring.type) : false;
-  const accounts = useSelector(getMetaMaskAccountsOrdered);
-
-  const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IF
 
   // Handle Tab key press for accessibility inside the popover and will close the popover on the last MenuItem
   const lastItemRef = useRef(null);
@@ -142,6 +136,12 @@ export const AccountListItemMenu = ({
   };
 
   const handleHidding = (address) => {
+    // If the account is already hidden, we do not add it again
+    // TODO: The controller should handle this logic
+    if (hiddenAccountList.includes(address)) {
+      return;
+    }
+
     const updatedHiddenAccountList = [...hiddenAccountList, address];
     if (pinnedAccountList.includes(address)) {
       handleUnpinning(address);
@@ -213,7 +213,7 @@ export const AccountListItemMenu = ({
               {isHidden ? t('showAccount') : t('hideAccount')}
             </Text>
           </MenuItem>
-          {isRemovable ? (
+          {isRemovable && !isMultichainAccountsState1Enabled ? (
             <MenuItem
               ref={removeAccountItemRef}
               data-testid="account-list-menu-remove"
@@ -231,6 +231,8 @@ export const AccountListItemMenu = ({
                     account_hardware_type: deviceName,
                     chain_id: chainId,
                     account_type: accountType,
+                    hd_entropy_index: hdEntropyIndex,
+                    caip_chain_id: formatChainIdToCaip(chainId),
                   },
                 });
                 onClose();
@@ -241,43 +243,6 @@ export const AccountListItemMenu = ({
               <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
             </MenuItem>
           ) : null}
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            isCustodial ? (
-              <MenuItem
-                ref={removeJWTItemRef}
-                data-testid="account-options-menu__remove-jwt"
-                onClick={async () => {
-                  const token = await dispatch(
-                    mmiActions.getCustodianToken(account.address),
-                  );
-
-                  const custodyAccountDetails = await dispatch(
-                    mmiActions.getAllCustodianAccountsWithToken(
-                      keyring.type.split(' - ')[1],
-                      token,
-                    ),
-                  );
-
-                  dispatch(
-                    showModal({
-                      name: 'CONFIRM_REMOVE_JWT',
-                      token,
-                      custodyAccountDetails,
-                      accounts,
-                      selectedAddress: toChecksumHexAddress(account.address),
-                    }),
-                  );
-                  onClose();
-                  closeMenu?.();
-                }}
-                iconName={IconName.Trash}
-              >
-                <Text variant={TextVariant.bodySm}>{t('removeJWT')}</Text>
-              </MenuItem>
-            ) : null
-            ///: END:ONLY_INCLUDE_IF
-          }
         </div>
       </ModalFocus>
     </Popover>

@@ -9,12 +9,16 @@ import {
 import mockState from '../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import { getDomainResolutions } from '../ducks/domains';
+import { IconName } from '../components/component-library';
+import { IconColor } from '../helpers/constants/design-system';
 import { useDisplayName } from './useDisplayName';
 import { useNames } from './useName';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
+import { useTrustSignals, TrustSignalDisplayState } from './useTrustSignals';
 
 jest.mock('./useName');
 jest.mock('./useNftCollectionsMetadata');
+jest.mock('./useTrustSignals');
 jest.mock('../ducks/domains', () => ({
   getDomainResolutions: jest.fn(),
 }));
@@ -35,8 +39,10 @@ const OTHER_NAME_TYPE = 'test' as NameType;
 describe('useDisplayName', () => {
   const useNamesMock = jest.mocked(useNames);
   const useNftCollectionsMetadataMock = jest.mocked(useNftCollectionsMetadata);
+  const useTrustSignalsMock = jest.mocked(useTrustSignals);
   const domainResolutionsMock = jest.mocked(getDomainResolutions);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let state: any;
 
@@ -129,6 +135,13 @@ describe('useDisplayName', () => {
       },
     ]);
 
+    useTrustSignalsMock.mockReturnValue([
+      {
+        state: TrustSignalDisplayState.Unknown,
+        label: null,
+      },
+    ]);
+
     state = cloneDeep(mockState);
 
     delete FIRST_PARTY_CONTRACT_NAMES[
@@ -152,6 +165,11 @@ describe('useDisplayName', () => {
       hasPetname: false,
       image: undefined,
       name: null,
+      displayState: TrustSignalDisplayState.Unknown,
+      icon: {
+        name: IconName.Question,
+        color: undefined,
+      },
     });
   });
 
@@ -174,6 +192,8 @@ describe('useDisplayName', () => {
         hasPetname: true,
         image: undefined,
         name: PETNAME_MOCK,
+        displayState: TrustSignalDisplayState.Petname,
+        icon: null,
       });
     });
   });
@@ -203,6 +223,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: ERC20_IMAGE_MOCK,
         name: ERC20_TOKEN_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
 
@@ -231,6 +253,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: ERC20_IMAGE_MOCK,
         name: SYMBOL_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
 
@@ -259,6 +283,11 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: null,
+        displayState: TrustSignalDisplayState.Unknown,
+        icon: {
+          name: IconName.Question,
+          color: undefined,
+        },
       });
     });
   });
@@ -286,6 +315,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: FIRST_PARTY_CONTRACT_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
 
@@ -308,6 +339,11 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: null,
+        displayState: TrustSignalDisplayState.Unknown,
+        icon: {
+          name: IconName.Question,
+          color: undefined,
+        },
       });
     });
   });
@@ -331,6 +367,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: WATCHED_NFT_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
 
@@ -352,6 +390,11 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: null,
+        displayState: TrustSignalDisplayState.Unknown,
+        icon: {
+          name: IconName.Question,
+          color: undefined,
+        },
       });
     });
   });
@@ -375,6 +418,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: NFT_IMAGE_MOCK,
         name: NFT_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
 
@@ -396,6 +441,11 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: null,
+        displayState: TrustSignalDisplayState.Unknown,
+        icon: {
+          name: IconName.Question,
+          color: undefined,
+        },
       });
     });
 
@@ -417,6 +467,11 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: null,
+        displayState: TrustSignalDisplayState.Unknown,
+        icon: {
+          name: IconName.Question,
+          color: undefined,
+        },
       });
     });
   });
@@ -440,6 +495,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: ENS_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
 
@@ -461,6 +518,11 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: null,
+        displayState: TrustSignalDisplayState.Unknown,
+        icon: {
+          name: IconName.Question,
+          color: undefined,
+        },
       });
     });
   });
@@ -498,6 +560,8 @@ describe('useDisplayName', () => {
         hasPetname: true,
         image: NFT_IMAGE_MOCK,
         name: PETNAME_MOCK,
+        displayState: TrustSignalDisplayState.Petname,
+        icon: null,
       });
     });
 
@@ -532,6 +596,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: NFT_IMAGE_MOCK,
         name: FIRST_PARTY_CONTRACT_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
 
@@ -561,6 +627,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: NFT_IMAGE_MOCK,
         name: NFT_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
 
@@ -589,6 +657,145 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: ERC20_IMAGE_MOCK,
         name: ERC20_TOKEN_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
+      });
+    });
+  });
+
+  describe('Trust Signal Priority', () => {
+    it('malicious state takes precedence over petname', () => {
+      mockPetname(PETNAME_MOCK);
+      mockERC20Token(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
+      );
+
+      useTrustSignalsMock.mockReturnValue([
+        {
+          state: TrustSignalDisplayState.Malicious,
+          label: 'Malicious',
+        },
+      ]);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: ERC20_TOKEN_NAME_MOCK,
+        hasPetname: true,
+        image: ERC20_IMAGE_MOCK,
+        name: PETNAME_MOCK,
+        displayState: TrustSignalDisplayState.Malicious,
+        icon: {
+          name: IconName.Danger,
+          color: IconColor.errorDefault,
+        },
+      });
+    });
+
+    it('verified state shows when no display name exists', () => {
+      useTrustSignalsMock.mockReturnValue([
+        {
+          state: TrustSignalDisplayState.Verified,
+          label: 'Verified',
+        },
+      ]);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: 'Verified',
+        displayState: TrustSignalDisplayState.Verified,
+        icon: {
+          name: IconName.VerifiedFilled,
+          color: IconColor.infoDefault,
+        },
+      });
+    });
+
+    it('warning state shows when no display name exists', () => {
+      useTrustSignalsMock.mockReturnValue([
+        {
+          state: TrustSignalDisplayState.Warning,
+          label: 'Warning',
+        },
+      ]);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: 'Warning',
+        displayState: TrustSignalDisplayState.Warning,
+        icon: null,
+      });
+    });
+
+    it('recognized name takes precedence over verified trust signal', () => {
+      mockERC20Token(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
+      );
+
+      useTrustSignalsMock.mockReturnValue([
+        {
+          state: TrustSignalDisplayState.Verified,
+          label: 'Verified',
+        },
+      ]);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: ERC20_TOKEN_NAME_MOCK,
+        hasPetname: false,
+        image: ERC20_IMAGE_MOCK,
+        name: ERC20_TOKEN_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
   });

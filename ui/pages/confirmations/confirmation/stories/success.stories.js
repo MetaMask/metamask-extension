@@ -108,6 +108,7 @@ export const TemplateStory = () => {
                 borderRadius: '10px',
                 boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
               },
+              key: 'snapAccountSuccessMessage',
             },
             children: [
               {
@@ -167,7 +168,7 @@ export const TemplateStory = () => {
         header: [
           {
             name: 'SnapAuthorshipHeader',
-            key: 'snapHeader',
+            key: 'snapAccountSuccessMessage',
             properties: { snapId: 'npm:@test/test-snap' },
           },
         ],
@@ -206,6 +207,7 @@ export const TemplateOnlyStory = () => {
                 'eth_signTypedData_v3',
                 'eth_signTypedData_v4',
               ],
+              scopes: ['eip155:0'],
               type: 'eip155:eoa',
               keyring: 'HD Key Tree',
               label: null,

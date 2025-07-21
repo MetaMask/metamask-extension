@@ -10,6 +10,7 @@ import {
   Button,
   BUTTON_SIZES,
   BUTTON_VARIANT,
+  BannerAlert,
 } from '../../../components/component-library';
 import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
@@ -25,6 +26,7 @@ import {
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { openWindow } from '../../../helpers/utils/window';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import {
   AlignItems,
   Display,
@@ -35,6 +37,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 
 // Not all browsers have usb support. In particular, Firefox does
 // not support usb. More information on that can be found here:
@@ -46,6 +49,11 @@ import {
 // to the browser will be handled by the Trezor connect screen. In
 // the case of Firefox, this will depend on the Trezor bridge software
 const isUSBSupported = !process.env.IN_TEST && window.navigator.usb;
+
+const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
+
+const LEDGER_FIREFOX_NOT_SUPPORTED_URL =
+  'https://support.metamask.io/more-web3/wallets/how-to-connect-a-trezor-or-ledger-hardware-wallet/';
 
 export default class SelectHardware extends Component {
   static contextTypes = {
@@ -66,9 +74,12 @@ export default class SelectHardware extends Component {
   };
 
   connect = async () => {
-    if (this.state.selectedDevice) {
-      if (this.state.selectedDevice === 'trezor' && isUSBSupported) {
-        this.setState({ trezorRequestDevicePending: true });
+    const { selectedDevice } = this.state;
+    if (selectedDevice) {
+      if (selectedDevice === HardwareDeviceNames.trezor && isUSBSupported) {
+        this.setState({
+          trezorRequestDevicePending: true,
+        });
         try {
           await window.navigator.usb.requestDevice({
             filters: [
@@ -86,7 +97,7 @@ export default class SelectHardware extends Component {
         }
       }
 
-      this.props.connectToHardwareWallet(this.state.selectedDevice);
+      this.props.connectToHardwareWallet(selectedDevice);
     }
     return null;
   };
@@ -181,7 +192,10 @@ export default class SelectHardware extends Component {
         className="hw-connect__connect-btn"
         onClick={this.connect}
         disabled={
-          !this.state.selectedDevice || this.state.trezorRequestDevicePending
+          !this.state.selectedDevice ||
+          this.state.trezorRequestDevicePending ||
+          (this.state.selectedDevice === HardwareDeviceNames.ledger &&
+            isFirefox)
         }
       >
         {this.context.t('continue')}
@@ -262,6 +276,45 @@ export default class SelectHardware extends Component {
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
       >
+        {this.state.selectedDevice === HardwareDeviceNames.ledger &&
+          !isFirefox && (
+            <Box>
+              <BannerAlert
+                marginTop={6}
+                title={this.context.t(
+                  'ledgerMultipleDevicesUnsupportedInfoTitle',
+                )}
+              >
+                {this.context.t(
+                  'ledgerMultipleDevicesUnsupportedInfoDescription',
+                )}
+              </BannerAlert>
+            </Box>
+          )}
+        {this.state.selectedDevice === HardwareDeviceNames.ledger &&
+          isFirefox && (
+            <Box>
+              <BannerAlert
+                marginTop={6}
+                severity="warning"
+                title={this.context.t('ledgerFirefoxNotSupportedTitle')}
+              >
+                {this.context.t('ledgerFirefoxNotSupportedDescription1')}
+                <a
+                  className="hw-connect__href-link"
+                  href={LEDGER_FIREFOX_NOT_SUPPORTED_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {this.context.t('ledgerFirefoxNotSupportedLink')}
+                </a>
+                {this.context.t('ledgerFirefoxNotSupportedDescription2')}
+                <br />
+                {this.context.t('ledgerFirefoxNotSupportedDescription3')}
+              </BannerAlert>
+            </Box>
+          )}
+
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Row}

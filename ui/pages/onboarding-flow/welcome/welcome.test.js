@@ -1,126 +1,88 @@
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import initializedMockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import {
-  setFirstTimeFlowType,
-  setTermsOfUseLastAgreed,
-} from '../../../store/actions';
-import {
-  ONBOARDING_METAMETRICS,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-  ONBOARDING_COMPLETION_ROUTE,
-} from '../../../helpers/constants/routes';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import OnboardingWelcome from './welcome';
+import { waitFor } from '@testing-library/dom';
+import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import * as Actions from '../../../store/actions';
+import Welcome from './welcome';
+import { WelcomePageState } from './types';
 
-const mockHistoryReplace = jest.fn();
 const mockHistoryPush = jest.fn();
-
-jest.mock('../../../store/actions.ts', () => ({
-  setFirstTimeFlowType: jest.fn().mockReturnValue(
-    jest.fn((type) => {
-      return type;
-    }),
-  ),
-  setTermsOfUseLastAgreed: jest.fn().mockReturnValue(
-    jest.fn((type) => {
-      return type;
-    }),
-  ),
-  setParticipateInMetaMetrics: jest.fn().mockReturnValue(
-    jest.fn((type) => {
-      return type;
-    }),
-  ),
-}));
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
     push: mockHistoryPush,
-    replace: mockHistoryReplace,
   }),
 }));
 
-describe('Onboarding Welcome Component', () => {
+const mockIntersectionObserver = jest.fn();
+mockIntersectionObserver.mockReturnValue({
+  observe: () => null,
+  unobserve: () => null,
+  disconnect: () => null,
+});
+window.IntersectionObserver = mockIntersectionObserver;
+
+describe('Welcome Page', () => {
   const mockState = {
     metamask: {
       internalAccounts: {
         accounts: {},
         selectedAccount: '',
       },
+      metaMetricsId: '0x00000000',
     },
   };
+  const mockStore = configureMockStore()(mockState);
 
-  afterEach(() => {
-    jest.clearAllMocks();
+  it('should render', () => {
+    const { getByText } = renderWithProvider(
+      <Welcome pageState={WelcomePageState.Banner} setPageState={jest.fn()} />,
+      mockStore,
+    );
+
+    expect(getByText('Welcome to MetaMask')).toBeInTheDocument();
+
+    expect(getByText('Get started')).toBeInTheDocument();
   });
 
-  describe('Initialized State Conditionals with keyrings and firstTimeFlowType', () => {
-    it('should route to secure your wallet when keyring is present but not imported first time flow type', () => {
-      const mockStore = configureMockStore([thunk])(initializedMockState);
+  it('should show the terms of use popup when the user clicks the "Get started" button', () => {
+    const { getByText, getByTestId } = renderWithProvider(
+      <Welcome pageState={WelcomePageState.Banner} setPageState={jest.fn()} />,
+      mockStore,
+    );
 
-      renderWithProvider(<OnboardingWelcome />, mockStore);
-      expect(mockHistoryReplace).toHaveBeenCalledWith(
-        ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-      );
-    });
+    const getStartedButton = getByText('Get started');
+    fireEvent.click(getStartedButton);
 
-    it('should route to completion when keyring is present and imported first time flow type', () => {
-      const importFirstTimeFlowState = {
-        ...initializedMockState,
-        metamask: {
-          ...initializedMockState.metamask,
-          firstTimeFlowType: FirstTimeFlowType.import,
-        },
-      };
-      const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
+    expect(getByText('Review our Terms of Use')).toBeInTheDocument();
 
-      renderWithProvider(<OnboardingWelcome />, mockStore);
-      expect(mockHistoryReplace).toHaveBeenCalledWith(
-        ONBOARDING_COMPLETION_ROUTE,
-      );
-    });
+    const agreeButton = getByTestId('terms-of-use-agree-button');
+    expect(agreeButton).toBeInTheDocument();
+    expect(agreeButton).toBeDisabled();
   });
 
-  describe('Welcome Component', () => {
-    const mockStore = configureMockStore([thunk])(mockState);
+  it('should show the error modal when the error thrown in login', async () => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
 
-    it('should render', () => {
-      renderWithProvider(<OnboardingWelcome />, mockStore);
-      const onboardingWelcome = screen.queryByTestId('onboarding-welcome');
-      expect(onboardingWelcome).toBeInTheDocument();
-    });
+    jest
+      .spyOn(Actions, 'startOAuthLogin')
+      .mockRejectedValue(new Error('login error'));
 
-    it('should set first time flow to create and route to metametrics', () => {
-      renderWithProvider(<OnboardingWelcome />, mockStore);
-      const termsCheckbox = screen.getByTestId('onboarding-terms-checkbox');
-      fireEvent.click(termsCheckbox);
-      const createWallet = screen.getByTestId('onboarding-create-wallet');
-      fireEvent.click(createWallet);
+    const { getByText, getByTestId } = renderWithProvider(
+      <Welcome pageState={WelcomePageState.Login} setPageState={jest.fn()} />,
+      mockStore,
+    );
 
-      expect(setTermsOfUseLastAgreed).toHaveBeenCalled();
-      expect(setFirstTimeFlowType).toHaveBeenCalledWith(
-        FirstTimeFlowType.create,
-      );
-    });
+    const createButton = getByText('Create a new wallet');
+    fireEvent.click(createButton);
 
-    it('should set first time flow to import and route to metametrics', async () => {
-      renderWithProvider(<OnboardingWelcome />, mockStore);
-      const termsCheckbox = screen.getByTestId('onboarding-terms-checkbox');
-      fireEvent.click(termsCheckbox);
+    const createWithGoogleButton = getByTestId(
+      'onboarding-create-with-google-button',
+    );
+    fireEvent.click(createWithGoogleButton);
 
-      const createWallet = screen.getByTestId('onboarding-import-wallet');
-      fireEvent.click(createWallet);
-
-      await waitFor(() => {
-        expect(setTermsOfUseLastAgreed).toHaveBeenCalled();
-        expect(setFirstTimeFlowType).toHaveBeenCalledWith('import');
-        expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
-      });
+    await waitFor(() => {
+      expect(getByTestId('login-error-modal')).toBeInTheDocument();
     });
   });
 });

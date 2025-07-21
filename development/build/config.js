@@ -3,21 +3,97 @@ const { readFile } = require('fs/promises');
 const assert = require('assert');
 const { AssertionError } = require('assert');
 const ini = require('ini');
+const union = require('lodash/union');
+const difference = require('lodash/difference');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { Variables } = require('../lib/variables');
 const { ENVIRONMENT } = require('./constants');
 
 const VARIABLES_REQUIRED_IN_PRODUCTION = {
-  main: ['INFURA_PROD_PROJECT_ID', 'SEGMENT_PROD_WRITE_KEY', 'SENTRY_DSN'],
-  beta: ['INFURA_BETA_PROJECT_ID', 'SEGMENT_BETA_WRITE_KEY', 'SENTRY_DSN'],
-  flask: ['INFURA_FLASK_PROJECT_ID', 'SEGMENT_FLASK_WRITE_KEY', 'SENTRY_DSN'],
-  mmi: [
-    'INFURA_MMI_PROJECT_ID',
-    'MMI_CONFIGURATION_SERVICE_URL',
-    'SEGMENT_MMI_WRITE_KEY',
-    'SENTRY_MMI_DSN',
+  main: [
+    'INFURA_PROD_PROJECT_ID',
+    'SEGMENT_PROD_WRITE_KEY',
+    'SENTRY_DSN',
+    'QUICKNODE_MAINNET_URL',
+    'QUICKNODE_LINEA_MAINNET_URL',
+    'QUICKNODE_ARBITRUM_URL',
+    'QUICKNODE_AVALANCHE_URL',
+    'QUICKNODE_OPTIMISM_URL',
+    'QUICKNODE_POLYGON_URL',
+    'QUICKNODE_BASE_URL',
+    'QUICKNODE_BSC_URL',
+    'APPLE_PROD_CLIENT_ID',
+    'GOOGLE_PROD_CLIENT_ID',
+  ],
+  beta: [
+    'INFURA_BETA_PROJECT_ID',
+    'SEGMENT_BETA_WRITE_KEY',
+    'SENTRY_DSN',
+    'APPLE_BETA_CLIENT_ID',
+    'GOOGLE_BETA_CLIENT_ID',
+  ],
+  flask: [
+    'INFURA_FLASK_PROJECT_ID',
+    'SEGMENT_FLASK_WRITE_KEY',
+    'SENTRY_DSN',
+    'APPLE_FLASK_CLIENT_ID',
+    'GOOGLE_FLASK_CLIENT_ID',
   ],
 };
+
+/** @type {readonly string[] | undefined} */
+let cachedActiveFeatures;
+
+/**
+ * Set the active features for the current build. Should be called once per build, after
+ * parsing the command line arguments. Always use {@link getActiveFeatures} to retrieve
+ * the active features for the current build.
+ *
+ * @param {string} buildType - The current build type. The features of this build type will
+ *  be included in the build.
+ * @param {string[]} additionalFeatures - The additional features to include in the build.
+ * @throws {Error} If any additional features are not defined in builds.yml.
+ * @throws {Error} If active features have already been set.
+ * @returns {string[]} The active features for the current build.
+ */
+function setActiveFeatures(buildType, additionalFeatures) {
+  if (cachedActiveFeatures !== undefined) {
+    throw new Error('Active features have already been set');
+  }
+
+  const config = loadBuildTypesConfig();
+
+  const unknownFeatures = difference(
+    additionalFeatures,
+    Object.keys(config.features),
+  );
+  if (unknownFeatures.length > 0) {
+    throw new Error(
+      `The following features are not defined in builds.yml: ${unknownFeatures.join(
+        ', ',
+      )}`,
+    );
+  }
+
+  cachedActiveFeatures = Object.freeze(
+    union(additionalFeatures, config.buildTypes[buildType].features ?? []),
+  );
+  return [...cachedActiveFeatures];
+}
+
+/**
+ * Get the active features for the current build. This should *always* be used to
+ * retrieve the active features for the current build.
+ *
+ * @returns {string[]} The active features for the current build.
+ * @throws {Error} If active features have not been set by {@link setActiveFeatures}.
+ */
+function getActiveFeatures() {
+  if (cachedActiveFeatures === undefined) {
+    throw new Error('Active features are not set');
+  }
+  return [...cachedActiveFeatures];
+}
 
 async function fromIniFile(filepath) {
   let configContents = '';
@@ -61,19 +137,17 @@ function fromEnv(declarations) {
 }
 
 function fromBuildsYML(buildType, config) {
-  const extractDeclarations = (envArray) =>
-    envArray === undefined
+  const extractDeclarations = (envObject) =>
+    envObject === undefined ? [] : Object.keys(envObject);
+  const extractDefinitions = (envObject) =>
+    envObject === undefined
       ? []
-      : envArray.map((env) => (typeof env === 'string' ? env : env.key));
-  const extractDefinitions = (envArray) =>
-    envArray === undefined
-      ? []
-      : envArray.filter((env) => typeof env !== 'string');
+      : Object.entries(envObject).filter(([, value]) => value !== undefined);
 
   // eslint-disable-next-line no-param-reassign
   buildType = buildType ?? config.default;
   const activeBuild = config.buildTypes[buildType];
-  const activeFeatures = activeBuild.features ?? [];
+  const activeFeatures = getActiveFeatures();
 
   let declarations = [...extractDeclarations(config.env)];
 
@@ -88,7 +162,7 @@ function fromBuildsYML(buildType, config) {
   const definitions = new Map();
 
   // 1. root env
-  extractDefinitions(config.env).forEach(({ key, value }) =>
+  extractDefinitions(config.env).forEach(([key, value]) =>
     definitions.set(key, value),
   );
   // 2. features env
@@ -97,19 +171,18 @@ function fromBuildsYML(buildType, config) {
     .map((key) => config.features[key].env)
     .map(extractDefinitions)
     .flat()
-    .forEach(({ key, value }) => definitions.set(key, value));
+    .forEach(([key, value]) => definitions.set(key, value));
   // 3. build type env
-  extractDefinitions(activeBuild.env).forEach(({ key, value }) =>
+  extractDefinitions(activeBuild.env).forEach(([key, value]) =>
     definitions.set(key, value),
   );
 
-  return { declarations, definitions, activeFeatures, activeBuild };
+  return { declarations, definitions, activeBuild };
 }
 
 /**
- *
- * @param {string?} buildType - The chosen build type to build
- * @param environment
+ * @param {string} buildType - The chosen build type to build
+ * @param {string} environment - The environment to build for
  * @returns Parsed configuration of the build pipeline
  */
 async function getConfig(buildType, environment) {
@@ -118,8 +191,7 @@ async function getConfig(buildType, environment) {
     declarations: ymlDeclarations,
     definitions: ymlDefinitions,
     activeBuild,
-    activeFeatures,
-  } = await fromBuildsYML(buildType, config);
+  } = fromBuildsYML(buildType, config);
 
   const variables = new Variables(ymlDeclarations);
 
@@ -153,11 +225,13 @@ async function getConfig(buildType, environment) {
   return {
     variables,
     activeBuild,
-    activeFeatures,
     buildsYml: config,
   };
 }
 
 module.exports = {
+  fromIniFile,
   getConfig,
+  getActiveFeatures,
+  setActiveFeatures,
 };

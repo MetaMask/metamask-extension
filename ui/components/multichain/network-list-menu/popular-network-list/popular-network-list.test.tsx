@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { RpcEndpointType } from '@metamask/network-controller';

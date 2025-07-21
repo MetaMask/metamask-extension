@@ -35,7 +35,11 @@ const Dropdown = ({
       >
         {options.map((option) => {
           return (
-            <option key={option.value} value={option.value}>
+            <option
+              key={option.value}
+              value={option.value}
+              disabled={option.disabled}
+            >
               {option.name || option.value}
             </option>
           );

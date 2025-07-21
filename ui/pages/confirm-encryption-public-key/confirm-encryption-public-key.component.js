@@ -10,6 +10,7 @@ import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics'
 import SiteOrigin from '../../components/ui/site-origin';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
+import { Nav } from '../confirmations/components/confirm/nav';
 
 export default class ConfirmEncryptionPublicKey extends Component {
   static contextTypes = {
@@ -35,18 +36,23 @@ export default class ConfirmEncryptionPublicKey extends Component {
   };
 
   renderHeader = () => {
+    const approvalId = this.props.txData?.id;
+
     return (
-      <div className="request-encryption-public-key__header">
-        <div className="request-encryption-public-key__header-background" />
+      <>
+        <Nav confirmationId={approvalId} />
+        <div className="request-encryption-public-key__header">
+          <div className="request-encryption-public-key__header-background" />
 
-        <div className="request-encryption-public-key__header__text">
-          {this.context.t('encryptionPublicKeyRequest')}
-        </div>
+          <div className="request-encryption-public-key__header__text">
+            {this.context.t('encryptionPublicKeyRequest')}
+          </div>
 
-        <div className="request-encryption-public-key__header__tip-container">
-          <div className="request-encryption-public-key__header__tip" />
+          <div className="request-encryption-public-key__header__tip-container">
+            <div className="request-encryption-public-key__header__tip" />
+          </div>
         </div>
-      </div>
+      </>
     );
   };
 

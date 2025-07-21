@@ -6,26 +6,10 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { shortenAddress } from '../../../helpers/utils/util';
-import {
-  getIsCustodianSupportedChain,
-  getCustodianIconForAddress,
-} from '../../../selectors/institutional/selectors';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { AddressCopyButton } from '.';
 
 jest.mock('copy-to-clipboard');
-
-jest.mock('../../../selectors/institutional/selectors', () => {
-  const mockGetCustodyAccountDetails = jest.fn(() => undefined);
-  const mockGetisCustodianSupportedChain = jest.fn(() => true);
-  const mockedGetCustodianIconForAddress = jest.fn();
-
-  return {
-    getCustodyAccountDetails: mockGetCustodyAccountDetails,
-    getIsCustodianSupportedChain: mockGetisCustodianSupportedChain,
-    getCustodianIconForAddress: mockedGetCustodianIconForAddress,
-  };
-});
 
 const SAMPLE_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
@@ -104,51 +88,5 @@ describe('AccountListItem', () => {
       '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
       COPY_OPTIONS,
     );
-  });
-
-  it('should render correctly if isCustodianSupportedChain to false', () => {
-    getIsCustodianSupportedChain.mockReturnValue(false);
-
-    const { container, queryByTestId } = renderWithProvider(
-      <AddressCopyButton address={SAMPLE_ADDRESS} />,
-      mockStore,
-    );
-
-    const tooltipTitle = container.querySelector(
-      '[data-original-title="This account is not set up for use with Goerli"]',
-    );
-
-    const button = queryByTestId('address-copy-button-text');
-
-    expect(button).toBeDisabled();
-    expect(tooltipTitle).toBeInTheDocument();
-  });
-
-  it('should render the Custody logo', () => {
-    getCustodianIconForAddress.mockReturnValue(
-      'https://saturn-custody-ui.metamask-institutional.io/saturn.svg',
-    );
-
-    const { queryByTestId } = renderWithProvider(
-      <AddressCopyButton address={SAMPLE_ADDRESS} />,
-      mockStore,
-    );
-
-    const logo = queryByTestId('custody-logo');
-
-    expect(logo).toBeInTheDocument();
-  });
-
-  it('should not render the Custody logo if no icon exists', () => {
-    getCustodianIconForAddress.mockReturnValue(undefined);
-
-    const { queryByTestId } = renderWithProvider(
-      <AddressCopyButton address={SAMPLE_ADDRESS} />,
-      mockStore,
-    );
-
-    const logo = queryByTestId('custody-logo');
-
-    expect(logo).not.toBeInTheDocument();
   });
 });

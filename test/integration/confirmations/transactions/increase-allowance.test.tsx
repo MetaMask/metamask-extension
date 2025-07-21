@@ -1,8 +1,9 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { act, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import nock from 'nock';
 import { TokenStandard } from '../../../../shared/constants/transaction';
+import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
@@ -17,7 +18,17 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   callBackgroundMethod: jest.fn(),
 }));
 
+jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
+  ...jest.requireActual(
+    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
+  ),
+  useAssetDetails: jest.fn().mockResolvedValue({
+    decimals: '4',
+  }),
+}));
+
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
+const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -38,7 +49,6 @@ const getMetaMaskStateWithUnapprovedIncreaseAllowanceTransaction = (opts?: {
     ...mockMetaMaskState,
     preferences: {
       ...mockMetaMaskState.preferences,
-      redesignedConfirmationsEnabled: true,
       showConfirmationAdvancedDetails: opts?.showAdvanceDetails ?? false,
     },
     pendingApprovals: {
@@ -115,6 +125,8 @@ const setupSubmitRequestToBackgroundMocks = (
   );
 
   mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     createMockImplementation({ addKnownMethodData: {} }),
   );
 };
@@ -126,6 +138,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
       chainId: '0xaa36a7',
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     global.ethereumProvider = provider as any;
   });
@@ -133,7 +146,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks({
-      getTokenStandardAndDetails: {
+      getTokenStandardAndDetailsByChain: {
         standard: TokenStandard.ERC20,
       },
     });
@@ -144,6 +157,11 @@ describe('ERC20 increaseAllowance Confirmation', () => {
       INCREASE_ALLOWANCE_ERC20_HEX_SIG,
       INCREASE_ALLOWANCE_ERC20_TEXT_SIG,
     );
+    mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
   });
 
   afterEach(() => {
@@ -151,6 +169,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
   });
 
   afterAll(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     delete (global as any).ethereumProvider;
   });
@@ -198,7 +217,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
       'simulation-token-value',
     );
     expect(simulationSection).toContainElement(spendingCapValue);
-    expect(spendingCapValue).toHaveTextContent('1');
+    expect(spendingCapValue).toHaveTextContent('3');
     expect(simulationSection).toHaveTextContent('0x07614...3ad68');
   });
 
@@ -225,7 +244,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
 
     expect(approveDetails).toContainElement(approveDetailsSpender);
     expect(approveDetailsSpender).toHaveTextContent(tEn('spender') as string);
-    expect(approveDetailsSpender).toHaveTextContent('0x2e0D7...5d09B');
+    expect(approveDetailsSpender).toHaveTextContent('0x9bc5b...AfEF4');
     const spenderTooltip = await screen.findByTestId(
       'confirmation__approve-spender-tooltip',
     );
@@ -255,46 +274,6 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     await testUser.hover(approveDetailsRequestFromTooltip);
     const requestFromTooltipContent = await screen.findByText(
       tEn('requestFromTransactionDescription') as string,
-    );
-    expect(requestFromTooltipContent).toBeInTheDocument();
-  });
-
-  it('displays spending cap section with correct data', async () => {
-    const testUser = userEvent.setup();
-
-    const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedIncreaseAllowanceTransaction();
-
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: mockedMetaMaskState,
-        backgroundConnection: backgroundConnectionMocked,
-      });
-    });
-
-    const spendingCapSection = await screen.findByTestId(
-      'confirmation__approve-spending-cap-section',
-    );
-    expect(spendingCapSection).toBeInTheDocument();
-
-    expect(spendingCapSection).toHaveTextContent(
-      tEn('accountBalance') as string,
-    );
-    expect(spendingCapSection).toHaveTextContent('0');
-    const spendingCapGroup = await screen.findByTestId(
-      'confirmation__approve-spending-cap-group',
-    );
-    expect(spendingCapSection).toContainElement(spendingCapGroup);
-    expect(spendingCapGroup).toHaveTextContent(tEn('spendingCap') as string);
-    expect(spendingCapGroup).toHaveTextContent('1');
-
-    const spendingCapGroupTooltip = await screen.findByTestId(
-      'confirmation__approve-spending-cap-group-tooltip',
-    );
-    expect(spendingCapGroup).toContainElement(spendingCapGroupTooltip);
-    await testUser.hover(spendingCapGroupTooltip);
-    const requestFromTooltipContent = await screen.findByText(
-      tEn('spendingCapTooltipDesc') as string,
     );
     expect(requestFromTooltipContent).toBeInTheDocument();
   });

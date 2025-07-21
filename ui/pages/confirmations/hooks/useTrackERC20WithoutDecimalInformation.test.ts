@@ -22,7 +22,7 @@ describe('useTrackERC20WithoutDecimalInformation', () => {
 
   const trackEventMock = jest.fn();
 
-  it('should invoke trackEvent method', () => {
+  it('should invoke trackEvent method only once per instance of the hook', () => {
     useContextMock.mockImplementation((context) => {
       if (context === MetaMetricsContext) {
         return trackEventMock;
@@ -36,6 +36,6 @@ describe('useTrackERC20WithoutDecimalInformation', () => {
       } as TokenDetailsERC20),
     );
 
-    expect(trackEventMock).toHaveBeenCalled();
+    expect(trackEventMock).toHaveBeenCalledTimes(1);
   });
 });

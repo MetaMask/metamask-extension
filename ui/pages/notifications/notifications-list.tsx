@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -12,14 +11,11 @@ import {
 import Preloader from '../../components/ui/icon/preloader/preloader-icon.component';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { SnapComponent } from './notification-components/snap/snap';
 import { NotificationsPlaceholder } from './notifications-list-placeholder';
 import { NotificationsListTurnOnNotifications } from './notifications-list-turn-on-notifications';
 import { NotificationsListItem } from './notifications-list-item';
-import { type Notification, TAB_KEYS } from './notifications';
+import type { Notification } from './notifications';
 import { NotificationsListReadAllButton } from './notifications-list-read-all-button';
-
-const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 export type NotificationsListProps = {
   activeTab: TAB_KEYS;
@@ -29,6 +25,22 @@ export type NotificationsListProps = {
   notificationsCount: number;
 };
 
+// NOTE - Tab filters could change once we support more notifications.
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const enum TAB_KEYS {
+  // Shows all notifications
+  ALL = 'notifications-all-tab',
+
+  // These are only on-chain notifications (no snaps or feature announcements)
+  WALLET = 'notifications-wallet-tab',
+
+  // These are 3rd party notifications (snaps, feature announcements, web3 alerts)
+  WEB3 = 'notifications-other-tab',
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function LoadingContent() {
   return (
     <Box
@@ -45,6 +57,8 @@ function LoadingContent() {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function EmptyContent() {
   const t = useI18nContext();
   return (
@@ -55,6 +69,8 @@ function EmptyContent() {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function ErrorContent() {
   const t = useI18nContext();
   return (
@@ -65,15 +81,15 @@ function ErrorContent() {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function NotificationItem(props: { notification: Notification }) {
   const { notification } = props;
-  if (notification.type === TRIGGER_TYPES.SNAP) {
-    return <SnapComponent snapNotification={notification} />;
-  }
-
   return <NotificationsListItem notification={notification} />;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function NotificationsListStates({
   activeTab,
   notifications,
@@ -112,6 +128,8 @@ function NotificationsListStates({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NotificationsList(props: NotificationsListProps) {
   return (
     <Box

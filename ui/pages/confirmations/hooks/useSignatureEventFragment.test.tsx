@@ -25,7 +25,11 @@ describe('useSignatureEventFragment', () => {
   describe('updateSignatureEventFragment', () => {
     it('should call updateEventFragment to update the signature event fragment', () => {
       const mockUpdateProps = {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         event_name1: 'test_event 1',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         event_name2: 'test_event 2',
       };
       const expectedFragmentId = generateSignatureUniqueId(

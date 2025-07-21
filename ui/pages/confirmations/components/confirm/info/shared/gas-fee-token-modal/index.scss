@@ -1,0 +1,31 @@
+.gas-fee-token-list-item {
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+
+  &:not(.gas-fee-token-list-item--selected) {
+    &:hover,
+    &:focus-within {
+      background: var(--color-background-default-hover);
+    }
+  }
+
+  &__selected-indicator {
+    width: 4px;
+    height: calc(100% - 8px);
+    position: absolute;
+    top: 4px;
+    left: 4px;
+  }
+}
+
+.gas-fee-token-native-toggle-option {
+  cursor: pointer;
+
+  &:not(.gas-fee-token-native-toggle-option--selected) {
+    &:hover,
+    &:focus-within {
+      background: var(--color-background-default-hover);
+    }
+  }
+}

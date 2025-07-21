@@ -11,10 +11,10 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 
-import { Box, ModalFocus, useModalContext } from '..';
-
-import { BoxProps } from '../box';
+import { Box, BoxProps } from '../box';
 import type { PolymorphicRef } from '../box';
+import { useModalContext } from '../modal/modal.context';
+import { ModalFocus } from '../modal-focus';
 import {
   ModalContentProps,
   ModalContentSize,
@@ -22,6 +22,8 @@ import {
 } from './modal-content.types';
 
 export const ModalContent: ModalContentComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       className = '',

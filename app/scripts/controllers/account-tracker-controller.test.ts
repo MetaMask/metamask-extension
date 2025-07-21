@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
-import { ControllerMessenger } from '@metamask/base-controller';
-import { InternalAccount } from '@metamask/keyring-api';
+import { Messenger } from '@metamask/base-controller';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { BlockTracker, Provider } from '@metamask/network-controller';
 
 import { flushPromises } from '../../../test/lib/timer-helpers';
@@ -98,8 +98,14 @@ async function withController<ReturnValue>(
   } = rest;
   const { provider } = createTestProviderTools({
     scaffold: {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_getBalance: UPDATE_BALANCE,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_call: ETHERS_CONTRACT_BALANCES_ETH_CALL_RETURN,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_getBlockByNumber: { gasLimit: GAS_LIMIT },
     },
     networkId: currentNetworkId,
@@ -107,24 +113,29 @@ async function withController<ReturnValue>(
   });
   const blockTrackerStub = buildMockBlockTracker();
 
-  const controllerMessenger = new ControllerMessenger<
-    AllowedActions,
-    AllowedEvents
-  >();
+  const messenger = new Messenger<AllowedActions, AllowedEvents>();
   const getSelectedAccountStub = () =>
     ({
       id: 'accountId',
       address: SELECTED_ADDRESS,
-    } as InternalAccount);
-  controllerMessenger.registerActionHandler(
+    }) as InternalAccount;
+  messenger.registerActionHandler(
     'AccountsController:getSelectedAccount',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     getSelectedAccount || getSelectedAccountStub,
   );
 
   const { provider: providerFromHook } = createTestProviderTools({
     scaffold: {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_getBalance: UPDATE_BALANCE_HOOK,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_call: ETHERS_CONTRACT_BALANCES_ETH_CALL_RETURN,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_getBlockByNumber: { gasLimit: GAS_LIMIT_HOOK },
     },
     networkId: 'selectedNetworkId',
@@ -134,7 +145,7 @@ async function withController<ReturnValue>(
   const getNetworkStateStub = jest.fn().mockReturnValue({
     selectedNetworkClientId: 'selectedNetworkClientId',
   });
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'NetworkController:getState',
     getNetworkStateStub,
   );
@@ -147,15 +158,17 @@ async function withController<ReturnValue>(
     blockTracker: blockTrackerFromHookStub,
     provider: providerFromHook,
   });
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'NetworkController:getNetworkClientById',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     getNetworkClientById || getNetworkClientByIdStub,
   );
 
   const getOnboardingControllerState = jest.fn().mockReturnValue({
     completedOnboarding,
   });
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'OnboardingController:getState',
     getOnboardingControllerState,
   );
@@ -163,7 +176,7 @@ async function withController<ReturnValue>(
   const getPreferencesControllerState = jest.fn().mockReturnValue({
     useMultiAccountBalanceChecker,
   });
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'PreferencesController:getState',
     getPreferencesControllerState,
   );
@@ -173,7 +186,7 @@ async function withController<ReturnValue>(
     provider: provider as Provider,
     blockTracker: blockTrackerStub as unknown as BlockTracker,
     getNetworkIdentifier: jest.fn(),
-    messenger: controllerMessenger.getRestricted({
+    messenger: messenger.getRestricted({
       name: 'AccountTrackerController',
       allowedActions: [
         'AccountsController:getSelectedAccount',
@@ -196,7 +209,7 @@ async function withController<ReturnValue>(
     blockTrackerFromHookStub,
     blockTrackerStub,
     triggerAccountRemoved: (address: string) => {
-      controllerMessenger.publish('KeyringController:accountRemoved', address);
+      messenger.publish('KeyringController:accountRemoved', address);
     },
   });
 }
@@ -368,6 +381,23 @@ describe('AccountTrackerController', () => {
       });
     });
 
+    it('should gracefully handle unknown polling tokens', async () => {
+      await withController(({ controller, blockTrackerFromHookStub }) => {
+        jest.spyOn(controller, 'updateAccounts').mockResolvedValue();
+
+        const pollingToken =
+          controller.startPollingByNetworkClientId('mainnet');
+
+        controller.stopPollingByPollingToken('unknown-token');
+        controller.stopPollingByPollingToken(pollingToken);
+
+        expect(blockTrackerFromHookStub.removeListener).toHaveBeenCalledWith(
+          'latest',
+          expect.any(Function),
+        );
+      });
+    });
+
     it('should not unsubscribe from the block tracker if called with one of multiple active polling tokens for a given networkClient', async () => {
       await withController(({ controller, blockTrackerFromHookStub }) => {
         jest.spyOn(controller, 'updateAccounts').mockResolvedValue();
@@ -389,14 +419,6 @@ describe('AccountTrackerController', () => {
         expect(() => {
           controller.stopPollingByPollingToken(undefined);
         }).toThrow('pollingToken required');
-      });
-    });
-
-    it('should error if no matching pollingToken is found', async () => {
-      await withController(({ controller }) => {
-        expect(() => {
-          controller.stopPollingByPollingToken('potato');
-        }).toThrow('pollingToken not found');
       });
     });
   });
@@ -498,8 +520,14 @@ describe('AccountTrackerController', () => {
       });
       const providerFromHook = createTestProviderTools({
         scaffold: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_getBalance: UPDATE_BALANCE_HOOK,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_call: ETHERS_CONTRACT_BALANCES_ETH_CALL_RETURN,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_getBlockByNumber: { gasLimit: GAS_LIMIT_HOOK },
         },
         networkId: '0x1',
@@ -758,6 +786,114 @@ describe('AccountTrackerController', () => {
           );
         });
       });
+    });
+  });
+
+  describe('updateAccountByAddress', () => {
+    it('does not update account by address if completedOnboarding is false', async () => {
+      await withController(
+        {
+          completedOnboarding: false,
+        },
+        async ({ controller }) => {
+          const VALID_ADDRESS_TO_UPDATE = '0x1234';
+          await controller.updateAccountByAddress({
+            address: VALID_ADDRESS_TO_UPDATE,
+          });
+
+          expect(controller.state).toStrictEqual({
+            accounts: {},
+            currentBlockGasLimit: '',
+            accountsByChainId: {},
+            currentBlockGasLimitByChainId: {},
+          });
+        },
+      );
+    });
+
+    it('updates an account by address if completedOnboarding is true', async () => {
+      const VALID_ADDRESS_TO_UPDATE = '0x1234';
+      await withController(
+        {
+          completedOnboarding: true,
+          state: {
+            accounts: {
+              [VALID_ADDRESS_TO_UPDATE]: {
+                address: VALID_ADDRESS_TO_UPDATE,
+                balance: null,
+              },
+            },
+          },
+        },
+        async ({ controller }) => {
+          await controller.updateAccountByAddress({
+            address: VALID_ADDRESS_TO_UPDATE,
+          });
+
+          expect(controller.state).toStrictEqual({
+            accounts: {
+              [VALID_ADDRESS_TO_UPDATE]: {
+                address: VALID_ADDRESS_TO_UPDATE,
+                balance: '0xabc',
+              },
+            },
+            currentBlockGasLimit: '',
+            accountsByChainId: {
+              [currentChainId]: {
+                [VALID_ADDRESS_TO_UPDATE]: {
+                  address: VALID_ADDRESS_TO_UPDATE,
+                  balance: '0xabc',
+                },
+              },
+            },
+            currentBlockGasLimitByChainId: {},
+          });
+        },
+      );
+    });
+
+    it('updates an account for selected address if no address is provided', async () => {
+      await withController(
+        {
+          completedOnboarding: true,
+          state: {
+            accounts: {
+              [VALID_ADDRESS]: {
+                address: VALID_ADDRESS,
+                balance: null,
+              },
+            },
+            accountsByChainId: {
+              [currentChainId]: {
+                [VALID_ADDRESS]: {
+                  address: VALID_ADDRESS,
+                  balance: null,
+                },
+              },
+            },
+          },
+        },
+        async ({ controller }) => {
+          expect(controller.state).toStrictEqual({
+            accounts: {
+              [VALID_ADDRESS]: {
+                address: VALID_ADDRESS,
+                balance: null,
+              },
+            },
+            accountsByChainId: {
+              [currentChainId]: {
+                [VALID_ADDRESS]: {
+                  address: VALID_ADDRESS,
+                  balance: null,
+                },
+              },
+            },
+            currentBlockGasLimit: '',
+            currentBlockGasLimitByChainId: {},
+          });
+        },
+      );
     });
   });
 

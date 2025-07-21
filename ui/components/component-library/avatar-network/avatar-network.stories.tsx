@@ -7,11 +7,11 @@ import {
   BorderColor,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { Box } from '..';
 import { AvatarNetworkSize } from './avatar-network.types';
 import README from './README.mdx';
 
 import { AvatarNetwork } from './avatar-network';
+import { Box } from '../box';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarNetwork',

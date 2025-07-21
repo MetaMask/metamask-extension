@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
-import { SensitiveText } from '.';
+import { SensitiveText } from './sensitive-text';
 import { SensitiveTextLength } from './sensitive-text.types';
 import README from './README.mdx';
 import { Box } from '../box';
@@ -34,18 +34,14 @@ export const Children: Story = {
   args: {
     children: 'Sensitive information',
   },
-  render: (args) => (
-    <SensitiveText {...args} />
-  ),
+  render: (args) => <SensitiveText {...args} />,
 };
 
 export const IsHidden: Story = {
   args: {
     isHidden: true,
   },
-  render: (args) => (
-    <SensitiveText {...args} />
-  ),
+  render: (args) => <SensitiveText {...args} />,
 };
 
 export const Length: Story = {

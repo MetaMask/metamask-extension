@@ -2,7 +2,10 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getSelectedInternalAccount } from '../../../selectors';
+import {
+  getCompleteAddressBook,
+  getSelectedInternalAccount,
+} from '../../../selectors';
 import {
   getCurrentDraftTransaction,
   getIsNativeSendPossible,
@@ -10,6 +13,7 @@ import {
 } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { AssetPickerAmount } from './asset-picker-amount';
+import { AssetPicker } from './asset-picker/asset-picker';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -68,6 +72,15 @@ describe('AssetPickerAmount', () => {
       }
       if (selector === getSendMaxModeState) {
         return false;
+      }
+      if (selector === getCompleteAddressBook) {
+        return [
+          {
+            address: '0xAddress',
+            chainId: '1',
+            name: 'Test',
+          },
+        ];
       }
       return undefined;
     });
@@ -221,5 +234,109 @@ describe('AssetPickerAmount', () => {
     render(<AssetPickerAmount {...propsWithoutOnAmountChange} />);
 
     expect(screen.queryByText('MaxClearButton')).not.toBeInTheDocument();
+  });
+
+  it('renders NFT name when symbol is not available', () => {
+    const propsWithoutOnAmountChange = {
+      ...defaultProps,
+      asset: {
+        type: AssetType.NFT,
+        details: {
+          address: '0xToken',
+          name: 'APE', // pass the name instead of symbol
+          tokenId: 1,
+          image: 'image',
+        },
+        balance: '0',
+      },
+      onAmountChange: undefined,
+    };
+
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getSelectedInternalAccount) {
+        return { address: '0xAddress' };
+      }
+      if (selector === getCurrentDraftTransaction) {
+        return {
+          swapQuotesError: null,
+          sendAsset: { type: AssetType.native },
+          receiveAsset: { type: AssetType.token },
+        };
+      }
+      if (selector === getIsNativeSendPossible) {
+        return true;
+      }
+      if (selector === getSendMaxModeState) {
+        return false;
+      }
+      return undefined;
+    });
+
+    render(<AssetPickerAmount {...propsWithoutOnAmountChange} />);
+
+    expect(AssetPicker).toHaveBeenCalledWith(
+      expect.objectContaining({
+        asset: {
+          type: AssetType.NFT,
+          address: '0xToken',
+          symbol: 'APE',
+          tokenId: 1,
+          image: 'image',
+        },
+      }),
+      expect.any(Object),
+    );
+  });
+
+  it('renders NFT symbol when available', () => {
+    const propsWithoutOnAmountChange = {
+      ...defaultProps,
+      asset: {
+        type: AssetType.NFT,
+        details: {
+          address: '0xToken',
+          symbol: 'NftSymbol', // pass the symbol instead of name
+          tokenId: 1,
+          image: 'image',
+        },
+        balance: '0',
+      },
+      onAmountChange: undefined,
+    };
+
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getSelectedInternalAccount) {
+        return { address: '0xAddress' };
+      }
+      if (selector === getCurrentDraftTransaction) {
+        return {
+          swapQuotesError: null,
+          sendAsset: { type: AssetType.native },
+          receiveAsset: { type: AssetType.token },
+        };
+      }
+      if (selector === getIsNativeSendPossible) {
+        return true;
+      }
+      if (selector === getSendMaxModeState) {
+        return false;
+      }
+      return undefined;
+    });
+
+    render(<AssetPickerAmount {...propsWithoutOnAmountChange} />);
+
+    expect(AssetPicker).toHaveBeenCalledWith(
+      expect.objectContaining({
+        asset: {
+          type: AssetType.NFT,
+          address: '0xToken',
+          symbol: 'NftSymbol',
+          tokenId: 1,
+          image: 'image',
+        },
+      }),
+      expect.any(Object),
+    );
   });
 });

@@ -1,14 +1,31 @@
 @use "design-system";
 
 .page-container {
-  width: 408px;
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
+
+  // prevent overflow-x
+  max-width: 100%;
   background-color: var(--color-background-default);
-  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+  box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
   z-index: 25;
   display: flex;
   flex-flow: column;
   border-radius: 8px;
   overflow-y: auto;
+
+  @include design-system.screen-sm-min {
+    width: $width-screen-sm-min;
+  }
+
+  @include design-system.screen-md-min {
+    width: $width-screen-md-min;
+  }
+
+  @include design-system.screen-lg-min {
+    width: $width-screen-lg-min;
+  }
 
   &__header {
     display: flex;
@@ -92,11 +109,6 @@
 
     &:last-of-type {
       margin-right: 0;
-    }
-
-    &__cancel {
-      border-color: var(--color-primary-alternative) !important;
-      color: var(--color-primary-alternative);
     }
   }
 

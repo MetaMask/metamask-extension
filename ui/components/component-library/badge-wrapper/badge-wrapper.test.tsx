@@ -42,6 +42,7 @@ describe('BadgeWrapper', () => {
           badge={<div>badge</div>}
           badgeContainerProps={{ 'data-testid': 'badge-top-right' }}
           position={BadgeWrapperPosition.topRight}
+          anchorElementShape={BadgeWrapperAnchorElementShape.circular}
         >
           content top-right
         </BadgeWrapper>
@@ -49,6 +50,7 @@ describe('BadgeWrapper', () => {
           badge={<div>badge</div>}
           badgeContainerProps={{ 'data-testid': 'badge-top-left' }}
           position={BadgeWrapperPosition.topLeft}
+          anchorElementShape={BadgeWrapperAnchorElementShape.circular}
         >
           content top-left
         </BadgeWrapper>
@@ -56,6 +58,7 @@ describe('BadgeWrapper', () => {
           badge={<div>badge</div>}
           badgeContainerProps={{ 'data-testid': 'badge-bottom-right' }}
           position={BadgeWrapperPosition.bottomRight}
+          anchorElementShape={BadgeWrapperAnchorElementShape.circular}
         >
           content bottom-right
         </BadgeWrapper>
@@ -63,6 +66,7 @@ describe('BadgeWrapper', () => {
           badge={<div>badge</div>}
           badgeContainerProps={{ 'data-testid': 'badge-bottom-left' }}
           position={BadgeWrapperPosition.bottomLeft}
+          anchorElementShape={BadgeWrapperAnchorElementShape.circular}
         >
           content bottom-left
         </BadgeWrapper>
@@ -70,7 +74,7 @@ describe('BadgeWrapper', () => {
     );
     expect(getByText('content default')).toBeDefined();
     expect(getByTestId('badge-default')).toHaveClass(
-      'mm-badge-wrapper__badge-container--circular-top-right',
+      'mm-badge-wrapper__badge-container--rectangular-bottom-right',
     );
     expect(getByText('content top-right')).toBeDefined();
     expect(getByTestId('badge-top-right')).toHaveClass(
@@ -119,6 +123,8 @@ describe('BadgeWrapper', () => {
         <BadgeWrapper
           badge={<div>badge</div>}
           badgeContainerProps={{ 'data-testid': 'badge-circular' }}
+          anchorElementShape={BadgeWrapperAnchorElementShape.circular}
+          position={BadgeWrapperPosition.topRight}
         >
           content circular
         </BadgeWrapper>
@@ -126,6 +132,7 @@ describe('BadgeWrapper', () => {
           badge={<div>badge</div>}
           badgeContainerProps={{ 'data-testid': 'badge-rectangular' }}
           anchorElementShape={BadgeWrapperAnchorElementShape.rectangular}
+          position={BadgeWrapperPosition.topRight}
         >
           content rectangular
         </BadgeWrapper>

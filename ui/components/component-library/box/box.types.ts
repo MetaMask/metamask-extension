@@ -84,7 +84,7 @@ export type StylePropValueType =
   | undefined;
 
 export type ClassNamesObject = {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 };
@@ -186,6 +186,8 @@ export type IconColorArray = [IconColor, IconColor?, IconColor?, IconColor?];
 /**
  * Uses generic type C to create polymorphic ref type
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type PolymorphicRef<C extends React.ElementType> =
   React.ComponentPropsWithRef<C>['ref'];
 
@@ -193,6 +195,8 @@ export type PolymorphicRef<C extends React.ElementType> =
  * Uses generic type C to define the type for the polymorphic "as" prop
  * "as" can be used to override the default HTML element
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type AsProp<C extends React.ElementType> = {
   /**
    * An override of the default HTML tag.
@@ -204,12 +208,16 @@ type AsProp<C extends React.ElementType> = {
 /**
  * Omits the as prop and props from component definition
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type PropsToOmit<C extends React.ElementType, P> = keyof (AsProp<C> & P);
 
 /**
  * Accepts 2 generic types: C which represents the as prop and the component props - Props
  */
 type PolymorphicComponentProp<
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   C extends React.ElementType,
   // eslint-disable-next-line @typescript-eslint/ban-types
   Props = {},
@@ -217,6 +225,8 @@ type PolymorphicComponentProp<
   Omit<React.ComponentPropsWithoutRef<C>, PropsToOmit<C, Props>>;
 
 export type PolymorphicComponentPropWithRef<
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   C extends React.ElementType,
   // eslint-disable-next-line @typescript-eslint/ban-types
   Props = {},
@@ -441,9 +451,13 @@ interface Props extends StyleUtilityProps {
   className?: string;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type BoxProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, Props>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type BoxComponent = <C extends React.ElementType = 'span'>(
   props: BoxProps<C>,
 ) => React.ReactElement | null;

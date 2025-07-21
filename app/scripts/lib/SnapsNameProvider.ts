@@ -19,7 +19,7 @@ import {
   GetSnap,
   HandleSnapRequest,
 } from '@metamask/snaps-controllers';
-import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { RestrictedMessenger } from '@metamask/base-controller';
 
 type AllowedActions =
   | GetAllSnaps
@@ -27,7 +27,7 @@ type AllowedActions =
   | HandleSnapRequest
   | GetPermissionControllerState;
 
-export type SnapsNameProviderMessenger = RestrictedControllerMessenger<
+export type SnapsNameProviderMessenger = RestrictedMessenger<
   'SnapsNameProvider',
   AllowedActions,
   never,
@@ -56,6 +56,8 @@ export class SnapsNameProvider implements NameProvider {
 
         return {
           ...acc,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           [snap.id]: snapName || snap.id,
         };
       },
@@ -124,7 +126,7 @@ export class SnapsNameProvider implements NameProvider {
         'SnapController:handleRequest',
         {
           snapId: snap.id,
-          origin: '',
+          origin: 'metamask',
           handler: HandlerType.OnNameLookup,
           request: {
             jsonrpc: '2.0',

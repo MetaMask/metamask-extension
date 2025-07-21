@@ -1,8 +1,9 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { act, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import nock from 'nock';
 import { TokenStandard } from '../../../../shared/constants/transaction';
+import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
@@ -17,7 +18,17 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   callBackgroundMethod: jest.fn(),
 }));
 
+jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
+  ...jest.requireActual(
+    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
+  ),
+  useAssetDetails: jest.fn().mockResolvedValue({
+    decimals: '4',
+  }),
+}));
+
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
+const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -38,7 +49,6 @@ const getMetaMaskStateWithUnapprovedSetApprovalForAllTransaction = (opts?: {
     ...mockMetaMaskState,
     preferences: {
       ...mockMetaMaskState.preferences,
-      redesignedConfirmationsEnabled: true,
       showConfirmationAdvancedDetails: opts?.showAdvanceDetails ?? false,
     },
     pendingApprovals: {
@@ -115,6 +125,8 @@ const setupSubmitRequestToBackgroundMocks = (
   );
 
   mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     createMockImplementation({ addKnownMethodData: {} }),
   );
 };
@@ -126,6 +138,7 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
       chainId: '0xaa36a7',
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     global.ethereumProvider = provider as any;
   });
@@ -144,6 +157,11 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
       INCREASE_SET_APPROVAL_FOR_ALL_HEX_SIG,
       INCREASE_SET_APPROVAL_FOR_ALL_TEXT_SIG,
     );
+    mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
   });
 
   afterEach(() => {
@@ -151,6 +169,7 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
   });
 
   afterAll(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     delete (global as any).ethereumProvider;
   });
@@ -231,7 +250,7 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
     expect(approveDetailsSpender).toHaveTextContent(
       tEn('permissionFor') as string,
     );
-    expect(approveDetailsSpender).toHaveTextContent('0x2e0D7...5d09B');
+    expect(approveDetailsSpender).toHaveTextContent('0x9bc5b...AfEF4');
     const spenderTooltip = await screen.findByTestId(
       'confirmation__approve-spender-tooltip',
     );

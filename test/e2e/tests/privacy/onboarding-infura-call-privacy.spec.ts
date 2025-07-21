@@ -2,7 +2,7 @@ import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures, regularDelayMs } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import {
   importSRPOnboardingFlow,
@@ -79,7 +79,7 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   ];
 }
 
-describe('MetaMask onboarding @no-mmi', function () {
+describe('MetaMask onboarding', function () {
   it("doesn't make any network requests to infura before create new wallet onboarding is completed", async function () {
     await withFixtures(
       {
@@ -116,7 +116,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         await onboardingCompletePage.completeOnboarding();
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
 
         // network requests happen here
         for (const mockedEndpoint of mockedEndpoints) {
@@ -166,7 +166,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         await onboardingCompletePage.completeOnboarding();
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
 
         // requests happen here
         for (const mockedEndpoint of mockedEndpoints) {

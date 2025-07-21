@@ -24,6 +24,8 @@ import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 export type MultipleAlertModalProps = {
   /** The key of the initial alert to display. */
   alertKey?: string;
+  /** If true the modal will display non-field alerts also. */
+  displayAllAlerts?: boolean;
   /** The function to be executed when the button in the alert modal is clicked. */
   onFinalAcknowledgeClick: () => void;
   /** The function to be executed when the modal needs to be closed. */
@@ -36,6 +38,8 @@ export type MultipleAlertModalProps = {
   skipAlertNavigation?: boolean;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function PreviousButton({
   selectedIndex,
   onBackButtonClick,
@@ -64,6 +68,8 @@ function PreviousButton({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function NextButton({
   selectedIndex,
   alertsLength,
@@ -94,6 +100,8 @@ function NextButton({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function PageNumber({
   selectedIndex,
   alertsLength,
@@ -114,6 +122,8 @@ function PageNumber({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function PageNavigation({
   alerts,
   onBackButtonClick,
@@ -144,17 +154,21 @@ function PageNavigation({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function MultipleAlertModal({
   alertKey,
+  displayAllAlerts = false,
   onClose,
   onFinalAcknowledgeClick,
   ownerId,
   showCloseIcon = true,
   skipAlertNavigation = false,
 }: MultipleAlertModalProps) {
-  const { isAlertConfirmed, fieldAlerts: alerts } = useAlerts(ownerId);
+  const { isAlertConfirmed, fieldAlerts, alerts } = useAlerts(ownerId);
+  const alertsToDisplay = displayAllAlerts ? alerts : fieldAlerts;
 
-  const initialAlertIndex = alerts.findIndex(
+  const initialAlertIndex = alertsToDisplay.findIndex(
     (alert: Alert) => alert.key === alertKey,
   );
 
@@ -163,7 +177,7 @@ export function MultipleAlertModal({
   );
 
   // If the selected alert is not found, default to the first alert
-  const selectedAlert = alerts[selectedIndex] ?? alerts[0];
+  const selectedAlert = alertsToDisplay[selectedIndex] ?? alertsToDisplay[0];
 
   const hasUnconfirmedAlerts = alerts.some(
     (alert: Alert) =>
@@ -186,7 +200,7 @@ export function MultipleAlertModal({
       return;
     }
 
-    if (selectedIndex + 1 === alerts.length) {
+    if (selectedIndex + 1 === alertsToDisplay.length) {
       if (!hasUnconfirmedAlerts) {
         onFinalAcknowledgeClick();
         return;
@@ -200,7 +214,7 @@ export function MultipleAlertModal({
     onFinalAcknowledgeClick,
     handleNextButtonClick,
     selectedIndex,
-    alerts.length,
+    alertsToDisplay.length,
     hasUnconfirmedAlerts,
     skipAlertNavigation,
   ]);
@@ -213,7 +227,7 @@ export function MultipleAlertModal({
       onClose={onClose}
       headerStartAccessory={
         <PageNavigation
-          alerts={alerts}
+          alerts={alertsToDisplay}
           onBackButtonClick={handleBackButtonClick}
           onNextButtonClick={handleNextButtonClick}
           selectedIndex={selectedIndex}

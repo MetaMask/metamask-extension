@@ -269,6 +269,14 @@ function getValues(pendingApproval, t, actions, history, data) {
         },
       },
       {
+        element: 'OriginPill',
+        key: 'origin-pill',
+        props: {
+          origin: pendingApproval.origin,
+          dataTestId: 'signature-origin-pill',
+        },
+      },
+      {
         element: 'TruncatedDefinitionList',
         key: 'network-details',
         props: {
@@ -281,9 +289,10 @@ function getValues(pendingApproval, t, actions, history, data) {
             [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
           },
           warnings: {
-            [t('networkURL')]: isValidASCIIURL(customRpcUrl)
-              ? undefined
-              : t('networkUrlErrorWarning', [toPunycodeURL(customRpcUrl)]),
+            [t('networkURL')]:
+              !customRpcUrl || isValidASCIIURL(customRpcUrl)
+                ? undefined
+                : t('networkUrlErrorWarning', [toPunycodeURL(customRpcUrl)]),
             [t('currencySymbol')]: data.currencySymbolWarning,
           },
           dictionary: {
@@ -374,6 +383,7 @@ function getValues(pendingApproval, t, actions, history, data) {
           rpcEndpoints: [
             {
               url: pendingApproval.requestData.rpcUrl,
+              failoverUrls: pendingApproval.requestData.failoverRpcUrls,
               type: RpcEndpointType.Custom,
             },
           ],

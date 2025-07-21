@@ -40,7 +40,6 @@ export const SnapIcon: FunctionComponent<SnapIconProps> = ({
   );
 
   const { name: snapName } = useSelector((state) =>
-    /* @ts-expect-error wrong type on selector. */
     getSnapMetadata(state, snapId),
   );
 

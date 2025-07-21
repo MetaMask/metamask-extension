@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component, Suspense } from 'react';
-import { matchPath, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
 import Authenticated from '../../helpers/higher-order-components/authenticated';
@@ -20,14 +20,6 @@ import {
   ImportTokensModal,
 } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
-import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
-import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
-import ConfirmAddCustodianToken from '../institutional/confirm-add-custodian-token';
-import InteractiveReplacementTokenPage from '../institutional/interactive-replacement-token-page';
-import CustodyPage from '../institutional/custody';
-///: END:ONLY_INCLUDE_IF
 
 import {
   ASSET_ROUTE,
@@ -49,18 +41,22 @@ import {
   CONNECTIONS,
   PERMISSIONS,
   REVIEW_PERMISSIONS,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  INSTITUTIONAL_FEATURES_DONE_ROUTE,
-  CUSTODY_ACCOUNT_DONE_ROUTE,
-  CONFIRM_ADD_CUSTODIAN_TOKEN,
-  INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
-  CUSTODY_ACCOUNT_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
+  REMOTE_ROUTE,
+  REMOTE_ROUTE_SETUP_SWAPS,
+  REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
+  IMPORT_SRP_ROUTE,
+  DEFI_ROUTE,
+  DEEP_LINK_ROUTE,
+  SMART_ACCOUNT_UPDATE,
+  WALLET_DETAILS_ROUTE,
+  ACCOUNT_DETAILS_ROUTE,
+  ACCOUNT_DETAILS_QR_CODE_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -75,7 +71,6 @@ import {
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import DeprecatedNetworks from '../../components/ui/deprecated-networks/deprecated-networks';
-import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { Box } from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
@@ -88,27 +83,30 @@ import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/mu
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
-import { InternalAccountPropType } from '../../selectors/multichain';
-import { isCurrentChainCompatibleWithAccount } from '../../../shared/lib/multichain';
+import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
 } from '../../../shared/lib/confirmation.utils';
+import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
+import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
+import { MultichainAccountDetails } from '../multichain-accounts/account-details';
+import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import {
   getConnectingLabel,
-  hideAppHeader,
   isConfirmTransactionRoute,
   setTheme,
-  showOnboardingHeader,
+  showAppHeader,
 } from './utils';
 
 // Begin Lazy Routes
-const OnboardingFlow = mmLazy(() =>
-  import('../onboarding-flow/onboarding-flow'),
+const OnboardingFlow = mmLazy(
+  () => import('../onboarding-flow/onboarding-flow'),
 );
 const Lock = mmLazy(() => import('../lock'));
 const UnlockPage = mmLazy(() => import('../unlock-page'));
 const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault'));
+const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp'));
 const RevealSeedConfirmation = mmLazy(() => import('../keychains/reveal-seed'));
 const Settings = mmLazy(() => import('../settings'));
 const NotificationsSettings = mmLazy(() => import('../notifications-settings'));
@@ -116,45 +114,60 @@ const NotificationDetails = mmLazy(() => import('../notification-details'));
 const Notifications = mmLazy(() => import('../notifications'));
 const SnapList = mmLazy(() => import('../snaps/snaps-list'));
 const SnapView = mmLazy(() => import('../snaps/snap-view'));
-const ConfirmTransaction = mmLazy(() =>
-  import('../confirmations/confirm-transaction'),
+const ConfirmTransaction = mmLazy(
+  () => import('../confirmations/confirm-transaction'),
 );
 const SendPage = mmLazy(() => import('../../components/multichain/pages/send'));
 const Swaps = mmLazy(() => import('../swaps'));
 const CrossChainSwap = mmLazy(() => import('../bridge'));
-const ConfirmAddSuggestedTokenPage = mmLazy(() =>
-  import('../confirm-add-suggested-token'),
+const ConfirmAddSuggestedTokenPage = mmLazy(
+  () => import('../confirm-add-suggested-token'),
 );
-const ConfirmAddSuggestedNftPage = mmLazy(() =>
-  import('../confirm-add-suggested-nft'),
+const ConfirmAddSuggestedNftPage = mmLazy(
+  () => import('../confirm-add-suggested-nft'),
 );
 const ConfirmationPage = mmLazy(() => import('../confirmations/confirmation'));
-const CreateAccountPage = mmLazy(() =>
-  import('../create-account/create-account.component'),
+const CreateAccountPage = mmLazy(
+  () => import('../create-account/create-account.component'),
 );
-const NftFullImage = mmLazy(() =>
-  import('../../components/app/assets/nfts/nft-details/nft-full-image'),
+const NftFullImage = mmLazy(
+  () => import('../../components/app/assets/nfts/nft-details/nft-full-image'),
 );
 const Asset = mmLazy(() => import('../asset'));
-const PermissionsPage = mmLazy(() =>
-  import('../../components/multichain/pages/permissions-page/permissions-page'),
+const DeFiPage = mmLazy(() => import('../defi'));
+const PermissionsPage = mmLazy(
+  () =>
+    import(
+      '../../components/multichain/pages/permissions-page/permissions-page'
+    ),
 );
-const Connections = mmLazy(() =>
-  import('../../components/multichain/pages/connections'),
+const Connections = mmLazy(
+  () => import('../../components/multichain/pages/connections'),
 );
-const ReviewPermissions = mmLazy(() =>
-  import(
-    '../../components/multichain/pages/review-permissions-page/review-permissions-page'
-  ),
+const ReviewPermissions = mmLazy(
+  () =>
+    import(
+      '../../components/multichain/pages/review-permissions-page/review-permissions-page'
+    ),
 );
 const Home = mmLazy(() => import('../home'));
+
+const RemoteModeOverview = mmLazy(() => import('../remote-mode/overview'));
+const RemoteModeSetupSwaps = mmLazy(
+  () => import('../remote-mode/setup/setup-swaps'),
+);
+const RemoteModeSetupDailyAllowance = mmLazy(
+  () => import('../remote-mode/setup/setup-daily-allowance'),
+);
+const DeepLink = mmLazy(() => import('../deep-link/deep-link'));
+const WalletDetails = mmLazy(
+  () => import('../multichain-accounts/wallet-details'),
+);
 // End Lazy Routes
 
 export default class Routes extends Component {
   static propTypes = {
     currentCurrency: PropTypes.string,
-    activeTabOrigin: PropTypes.string,
-    account: InternalAccountPropType,
     setCurrentCurrencyToUSD: PropTypes.func,
     isLoading: PropTypes.bool,
     loadingMessage: PropTypes.string,
@@ -172,19 +185,14 @@ export default class Routes extends Component {
     browserEnvironmentOs: PropTypes.string,
     browserEnvironmentBrowser: PropTypes.string,
     theme: PropTypes.string,
-    isNetworkUsed: PropTypes.bool,
-    allAccountsOnNetworkAreEmpty: PropTypes.bool,
-    isTestNet: PropTypes.bool,
     showExtensionInFullSizeView: PropTypes.bool,
-    currentChainId: PropTypes.string,
     shouldShowSeedPhraseReminder: PropTypes.bool,
     forgottenPassword: PropTypes.bool,
-    isCurrentProviderCustom: PropTypes.bool,
     completedOnboarding: PropTypes.bool,
     isAccountMenuOpen: PropTypes.bool,
     toggleAccountMenu: PropTypes.func,
     isNetworkMenuOpen: PropTypes.bool,
-    toggleNetworkMenu: PropTypes.func,
+    networkMenuClose: PropTypes.func,
     accountDetailsAddress: PropTypes.string,
     isImportNftsModalOpen: PropTypes.bool.isRequired,
     hideImportNftsModal: PropTypes.func.isRequired,
@@ -195,17 +203,14 @@ export default class Routes extends Component {
     hideImportTokensModal: PropTypes.func.isRequired,
     isDeprecatedNetworkModalOpen: PropTypes.bool.isRequired,
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
-    switchedNetworkDetails: PropTypes.object,
-    clearSwitchedNetworkDetails: PropTypes.func.isRequired,
     networkToAutomaticallySwitchTo: PropTypes.object,
     automaticallySwitchNetwork: PropTypes.func.isRequired,
     totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
-    useRequestQueue: PropTypes.bool,
-    clearEditedNetwork: PropTypes.func.isRequired,
-    oldestPendingApproval: PropTypes.object.isRequired,
+    oldestPendingApproval: PropTypes.object,
     pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
-    transactionsMetadata: PropTypes.arrayOf(PropTypes.object).isRequired,
+    transactionsMetadata: PropTypes.object.isRequired,
+    isMultichainAccountsState1Enabled: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -222,10 +227,8 @@ export default class Routes extends Component {
     const {
       theme,
       networkToAutomaticallySwitchTo,
-      activeTabOrigin,
       totalUnapprovedConfirmationCount,
       isUnlocked,
-      useRequestQueue,
       currentExtensionPopupId,
     } = this.props;
     if (theme !== prevProps.theme) {
@@ -242,16 +245,12 @@ export default class Routes extends Component {
       (prevProps.totalUnapprovedConfirmationCount > 0 ||
         (prevProps.isUnlocked === false && isUnlocked))
     ) {
-      this.props.automaticallySwitchNetwork(
-        networkToAutomaticallySwitchTo,
-        activeTabOrigin,
-      );
+      this.props.automaticallySwitchNetwork(networkToAutomaticallySwitchTo);
     }
 
     // Terminate the popup when another popup is opened
     // if the user is using RPC queueing
     if (
-      useRequestQueue &&
       currentExtensionPopupId !== undefined &&
       global.metamask.id !== undefined &&
       currentExtensionPopupId !== global.metamask.id
@@ -299,16 +298,23 @@ export default class Routes extends Component {
           <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
           <Route path={LOCK_ROUTE} component={Lock} exact />
           <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
+          <Route path={DEEP_LINK_ROUTE} component={DeepLink} />
           <RestoreVaultComponent
             path={RESTORE_VAULT_ROUTE}
             component={RestoreVaultPage}
             exact
           />
           <Authenticated
-            path={REVEAL_SEED_ROUTE}
-            component={RevealSeedConfirmation}
-            exact
+            path={SMART_ACCOUNT_UPDATE}
+            component={SmartAccountUpdate}
           />
+          <Authenticated
+            // `:keyringId` is optional here, if not provided, this will fallback
+            // to the main seed phrase.
+            path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
+            component={RevealSeedConfirmation}
+          />
+          <Authenticated path={IMPORT_SRP_ROUTE} component={ImportSrpPage} />
           <Authenticated path={SETTINGS_ROUTE} component={Settings} />
           <Authenticated
             path={NOTIFICATIONS_SETTINGS_ROUTE}
@@ -328,6 +334,11 @@ export default class Routes extends Component {
           <Authenticated path={SEND_ROUTE} component={SendPage} exact />
           <Authenticated path={SWAPS_ROUTE} component={Swaps} />
           <Authenticated
+            path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
+            component={CrossChainSwapTxDetails}
+            exact
+          />
+          <Authenticated
             path={CROSS_CHAIN_SWAP_ROUTE}
             component={CrossChainSwap}
           />
@@ -345,41 +356,6 @@ export default class Routes extends Component {
             path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
             component={ConfirmationPage}
           />
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          }
-          <Authenticated
-            path={CUSTODY_ACCOUNT_DONE_ROUTE}
-            component={InstitutionalEntityDonePage}
-            exact
-          />
-          <Authenticated
-            path={INSTITUTIONAL_FEATURES_DONE_ROUTE}
-            component={InstitutionalEntityDonePage}
-            exact
-          />
-          <Authenticated
-            path={CONFIRM_ADD_CUSTODIAN_TOKEN}
-            component={ConfirmAddCustodianToken}
-            exact
-          />
-          <Authenticated
-            path={INTERACTIVE_REPLACEMENT_TOKEN_PAGE}
-            component={InteractiveReplacementTokenPage}
-            exact
-          />
-          <Authenticated
-            path={CONFIRM_ADD_CUSTODIAN_TOKEN}
-            component={ConfirmAddCustodianToken}
-          />
-          <Authenticated
-            path={CUSTODY_ACCOUNT_ROUTE}
-            component={CustodyPage}
-            exact
-          />
-          {
-            ///: END:ONLY_INCLUDE_IF
-          }
           <Authenticated
             path={NEW_ACCOUNT_ROUTE}
             component={CreateAccountPage}
@@ -402,6 +378,10 @@ export default class Routes extends Component {
           />
           <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
           <Authenticated
+            path={`${DEFI_ROUTE}/:chainId/:protocolId`}
+            component={DeFiPage}
+          />
+          <Authenticated
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
@@ -411,6 +391,37 @@ export default class Routes extends Component {
             component={ReviewPermissions}
             exact
           />
+          <Authenticated
+            path={REMOTE_ROUTE}
+            component={RemoteModeOverview}
+            exact
+          />
+          <Authenticated
+            path={REMOTE_ROUTE_SETUP_SWAPS}
+            component={RemoteModeSetupSwaps}
+            exact
+          />
+          <Authenticated
+            path={REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE}
+            component={RemoteModeSetupDailyAllowance}
+            exact
+          />
+          <Authenticated
+            path={WALLET_DETAILS_ROUTE}
+            component={WalletDetails}
+            exact
+          />
+          <Authenticated
+            path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
+            component={MultichainAccountDetails}
+            exact
+          />
+          <Authenticated
+            path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
+            component={AddressQRCode}
+            exact
+          />
+
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>
@@ -427,6 +438,15 @@ export default class Routes extends Component {
     return routes;
   }
 
+  renderAccountDetails() {
+    const { accountDetailsAddress, isMultichainAccountsState1Enabled } =
+      this.props;
+    if (!accountDetailsAddress || isMultichainAccountsState1Enabled) {
+      return null;
+    }
+    return <AccountDetails address={accountDetailsAddress} />;
+  }
+
   render() {
     const {
       isLoading,
@@ -437,19 +457,11 @@ export default class Routes extends Component {
       isNetworkLoading,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
-      isNetworkUsed,
-      allAccountsOnNetworkAreEmpty,
-      isTestNet,
-      account,
-      currentChainId,
       shouldShowSeedPhraseReminder,
-      isCurrentProviderCustom,
       completedOnboarding,
       isAccountMenuOpen,
       toggleAccountMenu,
       isNetworkMenuOpen,
-      toggleNetworkMenu,
-      accountDetailsAddress,
       isImportTokensModalOpen,
       isDeprecatedNetworkModalOpen,
       location,
@@ -460,9 +472,7 @@ export default class Routes extends Component {
       hideIpfsModal,
       hideImportTokensModal,
       hideDeprecatedNetworkModal,
-      switchedNetworkDetails,
-      clearSwitchedNetworkDetails,
-      clearEditedNetwork,
+      networkMenuClose,
       privacyMode,
       oldestPendingApproval,
       pendingApprovals,
@@ -478,23 +488,6 @@ export default class Routes extends Component {
       loadingMessage || isNetworkLoading
         ? getConnectingLabel(loadingMessage, this.props, this.context)
         : null;
-
-    // Conditions for displaying the Send route
-    const isSendRoute = matchPath(location.pathname, {
-      path: SEND_ROUTE,
-      exact: false,
-    });
-    const shouldShowNetworkInfo =
-      isUnlocked &&
-      account &&
-      isCurrentChainCompatibleWithAccount(currentChainId, account) &&
-      !isTestNet &&
-      !isSendRoute &&
-      !isNetworkUsed &&
-      !isCurrentProviderCustom &&
-      completedOnboarding &&
-      allAccountsOnNetworkAreEmpty &&
-      switchedNetworkDetails === null;
 
     const windowType = getEnvironmentType();
 
@@ -517,13 +510,18 @@ export default class Routes extends Component {
       transactionsMetadata[confirmationId]?.type,
     );
 
+    const isShowingDeepLinkRoute = location.pathname === DEEP_LINK_ROUTE;
+
     let isLoadingShown =
       isLoading &&
       completedOnboarding &&
       // In the redesigned screens, we hide the general loading spinner and the
       // loading states are on a component by component basis.
       !isCorrectApprovalType &&
-      !isCorrectTransactionType;
+      !isCorrectTransactionType &&
+      // We don't want to show the loading screen on the deep link route, as it
+      // is already a fullscreen interface.
+      !isShowingDeepLinkRoute;
 
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isLoadingShown =
@@ -537,8 +535,20 @@ export default class Routes extends Component {
       // In the redesigned screens, we hide the general loading spinner and the
       // loading states are on a component by component basis.
       !isCorrectApprovalType &&
-      !isCorrectTransactionType;
+      !isCorrectTransactionType &&
+      // We don't want to show the loading spinner on the deep link route, as it
+      // is already a fullscreen interface.
+      !isShowingDeepLinkRoute;
     ///: END:ONLY_INCLUDE_IF
+
+    const accountListMenu = this.props.isMultichainAccountsState1Enabled ? (
+      <MultichainAccountListMenu
+        onClose={toggleAccountMenu}
+        privacyMode={privacyMode}
+      />
+    ) : (
+      <AccountListMenu onClose={toggleAccountMenu} privacyMode={privacyMode} />
+    );
 
     return (
       <div
@@ -547,74 +557,48 @@ export default class Routes extends Component {
           [`browser-${browser}`]: browser,
         })}
         dir={textDirection}
-        onMouseUp={
-          getShowAutoNetworkSwitchTest(this.props)
-            ? () => clearSwitchedNetworkDetails()
-            : undefined
-        }
       >
         {shouldShowNetworkDeprecationWarning ? <DeprecatedNetworks /> : null}
-        {location.pathname === DEFAULT_ROUTE && shouldShowNetworkInfo ? (
-          <NewNetworkInfo />
-        ) : null}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
-        {!hideAppHeader(this.props) && <AppHeader location={location} />}
+        {showAppHeader(this.props) && <AppHeader location={location} />}
         {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
-        {showOnboardingHeader(location) && <OnboardingAppHeader />}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          isUnlocked ? <InteractiveReplacementTokenNotification /> : null
-          ///: END:ONLY_INCLUDE_IF
-        }
-        {isAccountMenuOpen ? (
-          <AccountListMenu
-            onClose={() => toggleAccountMenu()}
-            privacyMode={privacyMode}
-          />
-        ) : null}
+        {isAccountMenuOpen ? accountListMenu : null}
         {isNetworkMenuOpen ? (
-          <NetworkListMenu
-            onClose={() => {
-              toggleNetworkMenu();
-              clearEditedNetwork();
-            }}
-          />
+          <NetworkListMenu onClose={networkMenuClose} />
         ) : null}
         <NetworkConfirmationPopover />
-        {accountDetailsAddress ? (
-          <AccountDetails address={accountDetailsAddress} />
-        ) : null}
+        {this.renderAccountDetails()}
         {isImportNftsModalOpen ? (
-          <ImportNftsModal onClose={() => hideImportNftsModal()} />
+          <ImportNftsModal onClose={hideImportNftsModal} />
         ) : null}
 
-        {isIpfsModalOpen ? (
-          <ToggleIpfsModal onClose={() => hideIpfsModal()} />
-        ) : null}
+        {isIpfsModalOpen ? <ToggleIpfsModal onClose={hideIpfsModal} /> : null}
         {isBasicConfigurationModalOpen ? <BasicConfigurationModal /> : null}
         {isImportTokensModalOpen ? (
-          <ImportTokensModal onClose={() => hideImportTokensModal()} />
+          <ImportTokensModal onClose={hideImportTokensModal} />
         ) : null}
         {isDeprecatedNetworkModalOpen ? (
-          <DeprecatedNetworkModal
-            onClose={() => hideDeprecatedNetworkModal()}
-          />
+          <DeprecatedNetworkModal onClose={hideDeprecatedNetworkModal} />
         ) : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           isShowKeyringSnapRemovalResultModal && (
             <KeyringSnapRemovalResult
               isOpen={isShowKeyringSnapRemovalResultModal}
-              onClose={() => hideShowKeyringSnapRemovalResultModal()}
+              onClose={hideShowKeyringSnapRemovalResultModal}
             />
           )
           ///: END:ONLY_INCLUDE_IF
         }
         <Box className="main-container-wrapper">
           {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-          {!isLoading && isNetworkLoading && completedOnboarding ? (
+          {!isLoading &&
+          isUnlocked &&
+          isNetworkLoading &&
+          completedOnboarding &&
+          !isShowingDeepLinkRoute ? (
             <LoadingNetwork />
           ) : null}
           {this.renderRoutes()}
@@ -624,9 +608,4 @@ export default class Routes extends Component {
       </div>
     );
   }
-}
-
-// Will eventually delete this function
-function getShowAutoNetworkSwitchTest(props) {
-  return props.switchedNetworkDetails && !props.switchedNetworkNeverShowMessage;
 }

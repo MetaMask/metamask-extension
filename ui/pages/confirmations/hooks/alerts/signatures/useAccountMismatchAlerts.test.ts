@@ -10,14 +10,6 @@ const mockExpectedState =
   getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
 
 describe('useAccountMismatchAlerts', () => {
-  beforeAll(() => {
-    process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';
-  });
-
-  afterAll(() => {
-    process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
-  });
-
   describe('returns an empty array', () => {
     it('when there is no current confirmation', () => {
       const { result } = renderHookWithConfirmContextProvider(

@@ -20,11 +20,13 @@ export type I18NMessageDict = {
   [translationKey: string]: I18NMessage;
 };
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type I18NSubstitution = string | (() => any) | object;
 
 // A parameterized type (or generic type) of maps that use the same structure (translationKey) key
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type I18NMessageDictMap<R> = {
   [translationKey: string]: R;
 };
@@ -52,6 +54,8 @@ const relativeTimeFormatLocaleData = new Set();
  * @param join - An optional callback to join the substituted parts using custom logic
  * @returns The localized message
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const getMessage = <T>(
   localeCode: string,
   localeMessages: I18NMessageDict,
@@ -95,6 +99,8 @@ export async function fetchLocale(
     );
     return await response.json();
   } catch (error) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     log.error(`failed to fetch ${localeCode} locale because of ${error}`);
     return {};
   }
@@ -106,13 +112,14 @@ export async function loadRelativeTimeFormatLocaleData(
   const languageTag = localeCode.split('_')[0];
   if (
     Intl.RelativeTimeFormat &&
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     typeof (Intl.RelativeTimeFormat as any).__addLocaleData === 'function' &&
     !relativeTimeFormatLocaleData.has(languageTag)
   ) {
     const localeData = await fetchRelativeTimeFormatData(languageTag);
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (Intl.RelativeTimeFormat as any).__addLocaleData(localeData);
     relativeTimeFormatLocaleData.add(languageTag);
@@ -177,6 +184,8 @@ function missingKeyError(
     onError?.(error);
     log.error(error);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     if (process.env.IN_TEST || process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS) {
       throw error;
     }

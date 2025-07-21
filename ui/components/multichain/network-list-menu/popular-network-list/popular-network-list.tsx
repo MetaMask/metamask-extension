@@ -63,6 +63,7 @@ const PopularNetworkList = ({
 
   const [referenceElement, setReferenceElement] = useState();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setBoxRef = (ref: any) => {
     setReferenceElement(ref);
@@ -96,29 +97,35 @@ const PopularNetworkList = ({
             />
             <Popover
               referenceElement={referenceElement}
-              position={PopoverPosition.Top}
+              position={PopoverPosition.TopStart}
+              paddingTop={3}
+              paddingBottom={3}
+              offset={[16, 12]}
               isOpen={isOpen}
-              matchWidth
               flip
-              hasArrow
-              backgroundColor={BackgroundColor.backgroundAlternative}
+              backgroundColor={BackgroundColor.backgroundSection}
               onMouseLeave={handleMouseLeave}
+              style={{
+                width: '326px',
+              }}
             >
-              {t('popularNetworkAddToolTip', [
-                <Box key="learn-more-link">
-                  <ButtonLink
-                    size={ButtonLinkSize.Inherit}
-                    externalLink
-                    onClick={() => {
-                      global.platform.openTab({
-                        url: ZENDESK_URLS.UNKNOWN_NETWORK,
-                      });
-                    }}
-                  >
-                    {t('learnMoreUpperCase')}
-                  </ButtonLink>
-                </Box>,
-              ])}
+              <Text variant={TextVariant.bodyMd}>
+                {' '}
+                {t('popularNetworkAddToolTip')}{' '}
+              </Text>
+              <Box key="learn-more-link">
+                <ButtonLink
+                  size={ButtonLinkSize.Auto}
+                  externalLink
+                  onClick={() => {
+                    global.platform.openTab({
+                      url: ZENDESK_URLS.UNKNOWN_NETWORK,
+                    });
+                  }}
+                >
+                  {t('learnMoreUpperCase')}
+                </ButtonLink>
+              </Box>
             </Popover>
           </Box>
         </Box>
@@ -179,6 +186,8 @@ const PopularNetworkList = ({
                 className="add-network__add-button"
                 variant={ButtonVariant.Link}
                 data-testid="test-add-button"
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={async () => {
                   dispatch(toggleNetworkMenu());
                   await dispatch(
@@ -190,6 +199,9 @@ const PopularNetworkList = ({
                         rpcUrl:
                           network.rpcEndpoints[network.defaultRpcEndpointIndex]
                             .url,
+                        failoverRpcUrls:
+                          network.rpcEndpoints[network.defaultRpcEndpointIndex]
+                            .failoverUrls,
                         ticker: network.nativeCurrency,
                         rpcPrefs: {
                           blockExplorerUrl:

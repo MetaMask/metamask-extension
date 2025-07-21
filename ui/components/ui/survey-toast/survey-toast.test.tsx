@@ -13,6 +13,8 @@ import {
 import { SurveyToast } from './survey-toast';
 
 jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));
@@ -64,6 +66,7 @@ describe('SurveyToast', () => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
 
+    // @ts-expect-error mocking platform
     global.platform = {
       openTab: jest.fn(),
       closeCurrentWindow: jest.fn(),

@@ -1,7 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Button from '../../../../../components/ui/button';
+import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  IconName,
+} from '../../../../../components/component-library';
+import { useTemplateAlertContext } from '../../alerts/TemplateAlertContext';
 
 export default function ConfirmationFooter({
   onSubmit,
@@ -15,6 +21,7 @@ export default function ConfirmationFooter({
   actionsStyle,
   style,
 }) {
+  const { hasAlerts, showAlertsModal } = useTemplateAlertContext();
   const showActions = Boolean(onCancel || onSubmit);
   return (
     <div className="confirmation-footer" style={style}>
@@ -24,22 +31,26 @@ export default function ConfirmationFooter({
         <div className="confirmation-footer__actions" style={actionsStyle}>
           {onCancel ? (
             <Button
+              block
               data-testid="confirmation-cancel-button"
-              type="secondary"
+              variant={ButtonVariant.Secondary}
               onClick={onCancel}
+              size={ButtonSize.Lg}
             >
               {cancelText}
             </Button>
           ) : null}
           {onSubmit && submitText ? (
             <Button
+              block
               data-testid="confirmation-submit-button"
               disabled={Boolean(loading)}
-              type="primary"
-              onClick={onSubmit}
+              onClick={hasAlerts ? showAlertsModal : onSubmit}
               className={classnames({
                 centered: !onCancel,
               })}
+              startIconName={hasAlerts ? IconName.Info : undefined}
+              size={ButtonSize.Lg}
             >
               {loading ? loadingText : submitText}
             </Button>

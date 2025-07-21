@@ -2,7 +2,6 @@ const FixtureBuilder = require('../../fixture-builder');
 
 const {
   WINDOW_TITLES,
-  defaultGanacheOptions,
   openDapp,
   unlockWallet,
   withFixtures,
@@ -182,7 +181,7 @@ async function mockInfura(mockServer) {
     }));
 }
 
-describe('PPOM Blockaid Alert - Malicious Contract interaction @no-mmi', function () {
+describe('PPOM Blockaid Alert - Malicious Contract interaction', function () {
   it('should show banner alert', async function () {
     await withFixtures(
       {
@@ -194,14 +193,8 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction @no-mmi', functio
           })
           .withPreferencesController({
             securityAlertsEnabled: true,
-            preferences: {
-              redesignedTransactionsEnabled: true,
-              redesignedConfirmationsEnabled: true,
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfura,
         title: this.test.fullTitle(),
       },

@@ -14,10 +14,15 @@ import { SignatureRequestType } from '../../../../../../types/confirm';
 import StaticSimulation from '../../../shared/static-simulation/static-simulation';
 import PermitSimulationValueDisplay from '../value-display/value-display';
 
+type TokenDetail = {
+  token: string;
+  amount: string;
+};
+
 function extractTokenDetailsByPrimaryType(
   message: Record<string, unknown>,
   primaryType: PrimaryType,
-): object[] | unknown {
+): TokenDetail[] | unknown {
   let tokenDetails;
 
   switch (primaryType) {
@@ -56,25 +61,34 @@ const PermitSimulation: React.FC<object> = () => {
   const TokenDetail = ({
     token,
     amount,
-    i,
   }: {
     token: Hex | string;
     amount: number | string;
-    i: number;
   }) => (
     <PermitSimulationValueDisplay
-      key={`${token}-${i}`}
       primaryType={primaryType}
       tokenContract={token}
       value={amount}
       chainId={chainId}
+      message={message}
+      canDisplayValueAsUnlimited
     />
   );
 
+  const isRevoke = message.allowed === false;
+  let infoRowLabelKey = 'spendingCap';
+  let descriptionKey = 'permitSimulationDetailInfo';
+
+  if (isRevoke) {
+    descriptionKey = 'revokeSimulationDetailsDesc';
+    infoRowLabelKey = 'permitSimulationChange_revoke2';
+  } else if (isNFT) {
+    descriptionKey = 'simulationDetailsApproveDesc';
+    infoRowLabelKey = 'simulationApproveHeading';
+  }
+
   const SpendingCapRow = (
-    <ConfirmInfoRow
-      label={t(isNFT ? 'simulationApproveHeading' : 'spendingCap')}
-    >
+    <ConfirmInfoRow label={t(infoRowLabelKey)}>
       <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
         {Array.isArray(tokenDetails) ? (
           <Box
@@ -82,14 +96,13 @@ const PermitSimulation: React.FC<object> = () => {
             flexDirection={FlexDirection.Column}
             gap={2}
           >
-            {tokenDetails.map(
-              (
-                { token, amount }: { token: string; amount: string },
-                i: number,
-              ) => (
-                <TokenDetail token={token} amount={amount} i={i} />
-              ),
-            )}
+            {tokenDetails.map(({ token, amount }, i: number) => (
+              <TokenDetail
+                token={token}
+                amount={amount}
+                key={`${token}-${i}`}
+              />
+            ))}
           </Box>
         ) : (
           <PermitSimulationValueDisplay
@@ -97,6 +110,8 @@ const PermitSimulation: React.FC<object> = () => {
             value={message.value}
             tokenId={message.tokenId}
             chainId={chainId}
+            message={message}
+            canDisplayValueAsUnlimited
           />
         )}
       </Box>
@@ -107,9 +122,7 @@ const PermitSimulation: React.FC<object> = () => {
     <StaticSimulation
       title={t('simulationDetailsTitle')}
       titleTooltip={t('simulationDetailsTitleTooltip')}
-      description={t(
-        isNFT ? 'simulationDetailsApproveDesc' : 'permitSimulationDetailInfo',
-      )}
+      description={t(descriptionKey)}
       simulationElements={SpendingCapRow}
     />
   );

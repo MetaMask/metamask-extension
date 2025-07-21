@@ -6,10 +6,12 @@ import {
   FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, IconName } from '..';
 import { Text } from '../text';
 import README from './README.mdx';
-import { Button, ButtonSize, ButtonVariant } from '.';
+import { Button } from './button';
+import { IconName } from '../icon';
+import { ButtonSize, ButtonVariant } from './button.types';
+import { Box } from '../box';
 
 export default {
   title: 'Components/ComponentLibrary/Button',
@@ -120,10 +122,14 @@ export const SizeStory: StoryFn<typeof Button> = (args) => (
 SizeStory.storyName = 'Size';
 
 export const Danger: StoryFn<typeof Button> = (args) => (
-  <Box display={Display.Flex} gap={1}>
-    <Button {...args}>Normal</Button>
-    {/* Test Anchor tag to match exactly as button */}
-    <Button as="a" {...args} href="#" danger>
+  <Box display={Display.Flex} gap={4}>
+    <Button danger>
+      Danger
+    </Button>
+    <Button variant={ButtonVariant.Secondary} danger>
+      Danger
+    </Button>
+    <Button {...args} variant={ButtonVariant.Link} danger>
       Danger
     </Button>
   </Box>

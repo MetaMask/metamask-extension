@@ -2,22 +2,34 @@ import * as React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
 import { getUseBlockie } from '../../../selectors';
-import {
-  Text,
-  Box,
-  AvatarToken,
-  AvatarTokenSize,
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-} from '../../component-library';
+import { Text } from '../../component-library/text';
 import {
   AlignItems,
+  BackgroundColor,
+  BorderColor,
   BorderRadius,
   Display,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import {
+  AvatarTokenSize,
+  AvatarToken,
+} from '../../component-library/avatar-token';
+import { Box } from '../../component-library/box';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+} from '../../component-library/avatar-account';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+} from '../../component-library/avatar-network';
+import {
+  AvatarBase,
+  AvatarBaseSize,
+} from '../../component-library/avatar-base';
 import { AvatarGroupProps, AvatarType } from './avatar-group.types';
 
 export const AvatarGroup: React.FC<AvatarGroupProps> = ({
@@ -27,6 +39,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   size = AvatarTokenSize.Xs,
   avatarType = AvatarType.TOKEN,
   borderColor,
+  isTagOverlay = false,
 }): JSX.Element => {
   const membersCount = members.length;
   const visibleMembers = members.slice(0, limit).reverse();
@@ -50,7 +63,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
       data-testid="avatar-group"
       gap={1}
     >
-      <Box display={Display.Flex}>
+      <Box display={Display.Flex} alignItems={AlignItems.center}>
         {visibleMembers.map((member, i) => {
           return (
             <Box
@@ -58,14 +71,15 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
               key={i}
               style={{ marginLeft: i === 0 ? '0' : marginLeftValue }}
             >
-              {avatarType === AvatarType.TOKEN ? (
+              {avatarType === AvatarType.TOKEN && (
                 <AvatarToken
                   src={member.avatarValue}
                   name={member.symbol}
                   size={size}
                   borderColor={borderColor}
                 />
-              ) : (
+              )}
+              {avatarType === AvatarType.ACCOUNT && (
                 <AvatarAccount
                   size={AvatarAccountSize.Xs}
                   address={member.avatarValue}
@@ -77,11 +91,30 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
                   borderColor={borderColor}
                 />
               )}
+              {avatarType === AvatarType.NETWORK && (
+                <AvatarNetwork
+                  src={member.avatarValue}
+                  name={member.symbol ?? ''}
+                  size={AvatarNetworkSize.Xs}
+                />
+              )}
             </Box>
           );
         })}
+        {showTag && isTagOverlay && (
+          <AvatarBase
+            backgroundColor={BackgroundColor.overlayAlternative}
+            style={{ marginLeft: marginLeftValue, fontSize: 8 }}
+            size={AvatarBaseSize.Xs}
+            borderColor={BorderColor.backgroundDefault}
+            borderRadius={BorderRadius.MD}
+            color={TextColor.overlayInverse}
+          >
+            {tagValue}
+          </AvatarBase>
+        )}
       </Box>
-      {showTag ? (
+      {showTag && !isTagOverlay ? (
         <Box>
           <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
             {tagValue}

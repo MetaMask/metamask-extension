@@ -12,13 +12,18 @@ class ExperimentalSettings {
     tag: 'h4',
   };
 
-  private readonly redesignedSignatureToggle =
-    '[data-testid="toggle-redesigned-confirmations-container"]';
+  private readonly watchAccountToggleState =
+    '[data-testid="watch-account-toggle"]';
+
+  private readonly watchAccountToggle =
+    '[data-testid="watch-account-toggle-div"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.experimentalPageTitle);
@@ -32,14 +37,23 @@ class ExperimentalSettings {
     console.log('Experimental Settings page is loaded');
   }
 
+  // Get the state of the Watch Account Toggle, returns true if the toggle is selected
+  async getWatchAccountToggleState(): Promise<boolean> {
+    console.log('Get Watch Account Toggle State');
+    const toggleInput = await this.driver.findElement(
+      this.watchAccountToggleState,
+    );
+    return toggleInput.isSelected();
+  }
+
   async toggleAddAccountSnap(): Promise<void> {
     console.log('Toggle Add Account Snap on experimental setting page');
     await this.driver.clickElement(this.addAccountSnapToggle);
   }
 
-  async toggleRedesignedSignature(): Promise<void> {
-    console.log('Toggle Redesigned Signature on experimental setting page');
-    await this.driver.clickElement(this.redesignedSignatureToggle);
+  async toggleWatchAccount(): Promise<void> {
+    console.log('Toggle Watch Account on experimental setting page');
+    await this.driver.clickElement(this.watchAccountToggle);
   }
 }
 

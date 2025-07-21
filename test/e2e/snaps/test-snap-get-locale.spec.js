@@ -1,10 +1,9 @@
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-  WINDOW_TITLES,
-} = require('../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  mockLocalizationSnap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
+
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Get Locale', function () {
@@ -12,7 +11,7 @@ describe('Test Snap Get Locale', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        testSpecificMock: mockLocalizationSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -130,7 +129,9 @@ describe('Test Snap Get Locale', function () {
         // the delay can be removed once the issue is fixed in the app level
         await driver.delay(1000);
         await driver.assertElementNotPresent('.loading-overlay');
-
+        await driver.clickElement(
+          '.settings-page__header__title-container__close-button',
+        );
         // click on the global action menu
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',

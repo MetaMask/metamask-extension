@@ -31,7 +31,6 @@ module.exports = {
   staticDirs: ['../app', './images'],
   env: (config) => ({
     ...config,
-    ENABLE_CONFIRMATION_REDESIGN: true,
     INFURA_PROJECT_ID: process.env.INFURA_STORYBOOK_PROJECT_ID || '',
   }),
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
@@ -88,6 +87,14 @@ module.exports = {
             esModule: false,
             import: false,
             url: false,
+          },
+        },
+        {
+          loader: 'postcss-loader',
+          options: {
+            postcssOptions: {
+              plugins: ['tailwindcss', 'autoprefixer'],
+            },
           },
         },
         {

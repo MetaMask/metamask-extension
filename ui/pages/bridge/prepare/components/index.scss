@@ -1,0 +1,9 @@
+[data-theme='light'],
+.light {
+  --shadow-bridge-picker: 0 0 2px 0 var(--color-border-muted), 0 0 16px 0 rgba(226, 228, 233, 0.16);
+}
+
+[data-theme='dark'],
+.dark {
+  --shadow-bridge-picker: 0 0 2px 0 var(--color-border-muted), 0 0 16px 0 rgba(226, 228, 233, 0.16);
+}

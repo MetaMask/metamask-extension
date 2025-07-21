@@ -7,12 +7,12 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 
-import { Box, Icon, IconName, IconSize } from '..';
-
 import { HelpText } from './help-text';
 import { HelpTextSeverity } from './help-text.types';
 
 import README from './README.mdx';
+import { Box } from '../box';
+import { Icon, IconName, IconSize } from '../icon';
 
 export default {
   title: 'Components/ComponentLibrary/HelpText',

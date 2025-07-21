@@ -3,12 +3,11 @@ const {
   withFixtures,
   unlockWallet,
   openDapp,
-  defaultGanacheOptions,
   getWindowHandles,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
-describe('PPOM Settings @no-mmi', function () {
+describe('PPOM Settings', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should not show the PPOM warning when toggle is off', async function () {
     await withFixtures(
@@ -18,7 +17,6 @@ describe('PPOM Settings @no-mmi', function () {
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -57,7 +55,6 @@ describe('PPOM Settings @no-mmi', function () {
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

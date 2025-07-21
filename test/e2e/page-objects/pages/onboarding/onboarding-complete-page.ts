@@ -3,18 +3,8 @@ import { Driver } from '../../../webdriver/driver';
 class OnboardingCompletePage {
   private driver: Driver;
 
-  private readonly congratulationsMessage = {
-    text: 'Congratulations!',
-    tag: 'h2',
-  };
-
-  private readonly defaultPrivacySettingsButton = {
-    text: 'Manage default privacy settings',
-    tag: 'button',
-  };
-
   private readonly installCompleteMessage = {
-    text: 'Your MetaMask install is complete!',
+    text: 'Installation is complete!',
     tag: 'h2',
   };
 
@@ -25,26 +15,38 @@ class OnboardingCompletePage {
     '[data-testid="pin-extension-done"]';
 
   private readonly pinExtensionMessage = {
-    text: 'Click browser extension icon to access it instantly',
+    text: 'Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations.',
     tag: 'p',
   };
 
-  private readonly pinExtensionNextButton =
-    '[data-testid="pin-extension-next"]';
-
   private readonly walletReadyMessage = {
-    text: 'Your wallet is ready',
+    text: 'Your wallet is ready!',
     tag: 'h2',
   };
+
+  private readonly keepSrpSafeMessage = {
+    text: 'Keep your Secret Recovery Phrase safe!',
+    tag: 'h2',
+  };
+
+  private readonly remindMeLaterButton = {
+    text: 'We’ll remind you later',
+    tag: 'h2',
+  };
+
+  private readonly manageDefaultSettingsButton =
+    '[data-testid="manage-default-settings"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.defaultPrivacySettingsButton,
+        this.manageDefaultSettingsButton,
         this.onboardingCompleteDoneButton,
       ]);
     } catch (e) {
@@ -57,38 +59,69 @@ class OnboardingCompletePage {
     console.log('Onboarding wallet creation complete page is loaded');
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_pageIsLoaded_backup(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.keepSrpSafeMessage,
+        this.onboardingCompleteDoneButton,
+      ]);
+    } catch (e) {
+      console.error(
+        'Timeout while waiting for srp backup complete page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('SRP backup complete page is loaded');
+  }
+
   async clickCreateWalletDoneButton(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(
       this.onboardingCompleteDoneButton,
     );
   }
 
-  async completeOnboarding(): Promise<void> {
+  async completeOnboarding(isSocialImportFlow: boolean = false): Promise<void> {
     console.log('Complete onboarding');
-    await this.clickCreateWalletDoneButton();
+    if (!isSocialImportFlow) {
+      await this.clickCreateWalletDoneButton();
+    }
     await this.driver.waitForSelector(this.installCompleteMessage);
-    await this.driver.clickElement(this.pinExtensionNextButton);
-
-    // Wait until the onboarding carousel has stopped moving otherwise the click has no effect.
     await this.driver.waitForSelector(this.pinExtensionMessage);
-    await this.driver.waitForElementToStopMoving(this.pinExtensionDoneButton);
     await this.driver.clickElementAndWaitToDisappear(
       this.pinExtensionDoneButton,
     );
   }
 
+  async completeBackup(): Promise<void> {
+    console.log('Complete backup');
+    await this.clickCreateWalletDoneButton();
+  }
+
   async navigateToDefaultPrivacySettings(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(
-      this.defaultPrivacySettingsButton,
+      this.manageDefaultSettingsButton,
     );
   }
 
-  async check_congratulationsMessageIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.congratulationsMessage);
-  }
-
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_walletReadyMessageIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.walletReadyMessage);
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_keepSrpSafeMessageIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.keepSrpSafeMessage);
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_remindMeLaterButtonIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.remindMeLaterButton);
   }
 }
 

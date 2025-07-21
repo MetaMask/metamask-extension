@@ -1,0 +1,43 @@
+name: Build storybook
+
+on:
+  workflow_call:
+    secrets:
+      STORYBOOK_TOKEN:
+        required: true
+
+jobs:
+  build-storybook:
+    name: Build storybook
+    runs-on: ubuntu-latest
+    env:
+      # For a `pull_request` event, the branch is `github.head_ref``.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+    steps:
+      - name: Checkout and setup high risk environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: true
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
+
+      - name: Build storybook
+        run: yarn storybook:build
+
+      - name: Upload 'storybook-build' to S3
+        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/storybook-build
+          path: storybook-build
+
+      - name: Deploy storybook
+        if: ${{ env.BRANCH == 'main' && env.STORYBOOK_TOKEN }}
+        env:
+          STORYBOOK_TOKEN: ${{ secrets.STORYBOOK_TOKEN }}
+        run: |
+          git remote add storybook "https://${STORYBOOK_TOKEN}@github.com/MetaMask/metamask-storybook.git"
+          yarn storybook:deploy

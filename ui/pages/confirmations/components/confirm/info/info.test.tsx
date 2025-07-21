@@ -9,6 +9,7 @@ import {
   getMockTypedSignConfirmState,
 } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { useAssetDetails } from '../../../hooks/useAssetDetails';
 import Info from './info';
 
 jest.mock(
@@ -28,7 +29,28 @@ jest.mock('../../../../../store/actions', () => ({
   }),
 }));
 
+jest.mock('../../../hooks/useAssetDetails', () => ({
+  ...jest.requireActual('../../../hooks/useAssetDetails'),
+  useAssetDetails: jest.fn().mockResolvedValue({
+    decimals: '4',
+  }),
+}));
+
+jest.mock('../../../hooks/useTransactionFocusEffect', () => ({
+  useTransactionFocusEffect: jest.fn(),
+}));
+
 describe('Info', () => {
+  const mockedAssetDetails = jest.mocked(useAssetDetails);
+
+  beforeEach(() => {
+    mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
+  });
+
   it('renders info section for personal sign request', () => {
     const state = getMockPersonalSignConfirmState();
     const mockStore = configureMockStore([])(state);

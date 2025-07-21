@@ -39,8 +39,6 @@ export class SignUpPage {
 
   readonly gotItBtn: Locator;
 
-  readonly nextBtn: Locator;
-
   readonly enableBtn: Locator;
 
   readonly secureWalletBtn: Locator;
@@ -48,6 +46,8 @@ export class SignUpPage {
   readonly skipBackupBtn: Locator;
 
   readonly skipSrpBackupBtn: Locator;
+
+  readonly popOverBtn: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -69,14 +69,14 @@ export class SignUpPage {
     this.agreeTandCCheck = page.getByTestId('onboarding-terms-checkbox');
     this.agreePasswordTermsCheck = page.getByTestId('create-password-terms');
     this.secureWalletBtn = page.getByTestId('secure-wallet-later');
-    this.skipBackupBtn = page.getByTestId('skip-srp-backup-popover-checkbox');
+    this.skipBackupBtn = page.getByTestId('skip-srp-backup-checkbox');
     this.skipSrpBackupBtn = page.getByTestId('skip-srp-backup');
     this.importBtn = page.getByTestId('create-password-import');
     this.doneBtn = page.getByTestId('pin-extension-done');
     this.gotItBtn = page.getByTestId('onboarding-complete-done');
-    this.nextBtn = page.getByTestId('pin-extension-next');
     this.agreeBtn = page.locator('button:has-text("I agree")');
     this.enableBtn = page.locator('button:has-text("Enable")');
+    this.popOverBtn = page.getByTestId('popover-close');
   }
 
   async importWallet() {
@@ -96,7 +96,6 @@ export class SignUpPage {
     await this.agreePasswordTermsCheck.click();
     await this.importBtn.click();
     await this.gotItBtn.click();
-    await this.nextBtn.click();
     await this.doneBtn.click();
   }
 
@@ -112,7 +111,7 @@ export class SignUpPage {
     await this.skipBackupBtn.click();
     await this.skipSrpBackupBtn.click();
     await this.gotItBtn.click();
-    await this.nextBtn.click();
     await this.doneBtn.click();
+    await this.popOverBtn.click();
   }
 }

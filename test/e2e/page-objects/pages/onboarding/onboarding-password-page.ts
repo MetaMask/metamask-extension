@@ -5,33 +5,33 @@ import { WALLET_PASSWORD } from '../../../helpers';
 class OnboardingPasswordPage {
   private driver: Driver;
 
+  private readonly newPasswordInput =
+    '[data-testid="create-password-new-input"]';
+
   private readonly confirmPasswordInput =
-    '[data-testid="create-password-confirm"]';
+    '[data-testid="create-password-confirm-input"]';
+
+  private readonly passwordTerms = '[data-testid="create-password-terms"]';
 
   private readonly createPasswordMessage = {
-    text: 'Create password',
+    text: 'MetaMask password',
     tag: 'h2',
   };
 
-  private readonly createWalletButton =
-    '[data-testid="create-password-wallet"]';
-
-  private readonly importWalletButton =
-    '[data-testid="create-password-import"]';
+  private readonly createPasswordButton =
+    '[data-testid="create-password-submit"]';
 
   private readonly incorrectPasswordWarningMessage = {
     text: "Passwords don't match",
-    tag: 'h6',
+    testId: 'confirm-password-error',
   };
-
-  private readonly newPasswordInput = '[data-testid="create-password-new"]';
-
-  private readonly passwordTerms = '[data-testid="create-password-terms"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -50,29 +50,16 @@ class OnboardingPasswordPage {
   }
 
   /**
-   * Create a password for new imported wallet
-   *
-   * @param password - The password to create. Defaults to WALLET_PASSWORD.
-   */
-  async createImportedWalletPassword(
-    password: string = WALLET_PASSWORD,
-  ): Promise<void> {
-    console.log('Create password for new imported wallet');
-    await this.fillWalletPassword(password, password);
-    await this.driver.clickElementAndWaitToDisappear(this.importWalletButton);
-  }
-
-  /**
-   * Create a password for new created wallet
+   * Create a password for wallet
    *
    * @param password - The new password to create. Defaults to WALLET_PASSWORD.
    */
   async createWalletPassword(
     password: string = WALLET_PASSWORD,
   ): Promise<void> {
-    console.log('Create password for new created wallet');
+    console.log('Create password for wallet');
     await this.fillWalletPassword(password, password);
-    await this.driver.clickElementAndWaitToDisappear(this.createWalletButton);
+    await this.driver.clickElementAndWaitToDisappear(this.createPasswordButton);
   }
 
   /**
@@ -91,14 +78,18 @@ class OnboardingPasswordPage {
     await this.driver.clickElement(this.passwordTerms);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_confirmPasswordButtonIsDisabled(): Promise<void> {
     console.log('Check the confirm password button is disabled');
     const confirmPasswordButton = await this.driver.findElement(
-      this.createWalletButton,
+      this.createPasswordButton,
     );
     assert.equal(await confirmPasswordButton.isEnabled(), false);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_incorrectPasswordWarningMessageIsDisplayed(): Promise<void> {
     console.log('Check the incorrect password warning message is displayed');
     await this.driver.waitForSelector(this.incorrectPasswordWarningMessage);

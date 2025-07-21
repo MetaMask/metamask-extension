@@ -1,16 +1,15 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixture-builder';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
 import {
   expectMockRequest,
   expectNoMockRequest,
 } from '../../helpers/mock-server';
-import EditNetworkModal from '../../page-objects/pages/dialog/edit-network';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/homepage';
+import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
+import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
@@ -22,9 +21,10 @@ import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
+import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
 
 describe('MultiRpc:', function (this: Suite) {
-  it('should migrate to multi rpc @no-mmi', async function () {
+  it('should migrate to multi rpc', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
@@ -74,23 +74,22 @@ describe('MultiRpc:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
 
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed();
 
-        await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
 
         // check rpc number
-        await selectNetworkDialog.openNetworkRPC('0xa4b1');
+        await selectNetworkDialog.openNetworkRPC('eip155:42161');
         await selectNetworkDialog.check_networkRPCNumber(2);
       },
     );
@@ -156,7 +155,6 @@ describe('MultiRpc:', function (this: Suite) {
             selectedNetworkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
@@ -180,17 +178,16 @@ describe('MultiRpc:', function (this: Suite) {
         // check that requests are sent on the background for the rpc https://responsive-rpc.test/
         await expectNoMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
 
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.openNetworkRPC('0xa4b1');
+        await selectNetworkDialog.openNetworkRPC('eip155:42161');
         await selectNetworkDialog.check_networkRPCNumber(2);
 
         // select second rpc for Arbitrum network in the network dialog
         await selectNetworkDialog.selectRPC('Arbitrum mainnet 2');
         await homePage.check_pageIsLoaded();
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
         // check that the second rpc is selected in the network dialog
         await selectNetworkDialog.check_pageIsLoaded();
@@ -256,23 +253,21 @@ describe('MultiRpc:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
 
-      async ({ driver, ganacheServer }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
 
         // go to Edit Menu for Arbitrum network and select the second rpc
-        await selectNetworkDialog.openNetworkListOptions('0xa4b1');
+        await selectNetworkDialog.openNetworkListOptions('eip155:42161');
         await selectNetworkDialog.openEditNetworkModal();
 
-        const editNetworkModal = new EditNetworkModal(driver);
+        const editNetworkModal = new AddEditNetworkModal(driver);
         await editNetworkModal.check_pageIsLoaded();
         await editNetworkModal.selectRPCInEditNetworkModal(
           'Arbitrum mainnet 2',
@@ -285,14 +280,14 @@ describe('MultiRpc:', function (this: Suite) {
         await homePage.closeUseNetworkNotificationModal();
 
         // check that the second rpc is selected in the network dialog
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         await selectNetworkDialog.check_pageIsLoaded();
         await selectNetworkDialog.check_rpcIsSelected('Arbitrum mainnet 2');
       },
     );
   });
 
-  it('should select rpc from settings @no-mmi', async function () {
+  it('should select rpc from settings', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
@@ -342,7 +337,6 @@ describe('MultiRpc:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
@@ -362,7 +356,7 @@ describe('MultiRpc:', function (this: Suite) {
         await onboardingPrivacySettingsPage.openEditNetworkModal(
           'Arbitrum One',
         );
-        const editNetworkModal = new EditNetworkModal(driver);
+        const editNetworkModal = new AddEditNetworkModal(driver);
         await editNetworkModal.check_pageIsLoaded();
         await editNetworkModal.selectRPCInEditNetworkModal(
           'Arbitrum mainnet 2',
@@ -379,7 +373,7 @@ describe('MultiRpc:', function (this: Suite) {
         await homePage.closeUseNetworkNotificationModal();
 
         // check that the second rpc is selected in the network dialog
-        await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
         await selectNetworkDialog.check_rpcIsSelected('Arbitrum mainnet 2');

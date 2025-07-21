@@ -53,6 +53,21 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
       gap={2}
       minWidth={BlockSize.Zero}
     >
+      {isEditable ? (
+        <ButtonIcon
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          className={editIconClassName || undefined}
+          color={IconColor.primaryDefault}
+          ariaLabel={t('edit')}
+          iconName={IconName.Edit}
+          onClick={onEditClick}
+          size={ButtonIconSize.Sm}
+          // to reset the button padding
+          style={{ marginRight: '-4px' }}
+          data-testid={editIconDataTestId}
+        />
+      ) : null}
       {tooltip ? (
         <Tooltip
           position="bottom"
@@ -65,19 +80,6 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
       ) : (
         <InfoText text={text} />
       )}
-      {isEditable ? (
-        <ButtonIcon
-          className={editIconClassName || undefined}
-          color={IconColor.primaryDefault}
-          ariaLabel={t('edit')}
-          iconName={IconName.Edit}
-          onClick={onEditClick}
-          size={ButtonIconSize.Sm}
-          // to reset the button padding
-          style={{ marginLeft: '-4px' }}
-          data-testid={editIconDataTestId}
-        />
-      ) : null}
     </Box>
   );
 };

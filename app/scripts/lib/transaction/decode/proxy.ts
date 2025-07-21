@@ -1,6 +1,5 @@
-import { query } from '@metamask/controller-utils';
-import EthQuery from '@metamask/eth-query';
-import { Hex } from '@metamask/utils';
+import type { Provider } from '@metamask/network-controller';
+import type { Hex, JsonRpcParams } from '@metamask/utils';
 import { addHexPrefix, stripHexPrefix } from 'ethereumjs-util';
 
 const IMPLEMENTATION_STORAGE_SLOTS = [
@@ -15,16 +14,14 @@ const EMPTY_RESULT = '0'.padEnd(64, '0');
 
 export async function getContractProxyAddress(
   contractAddress: Hex,
-  ethQuery: EthQuery,
+  provider: Provider,
 ): Promise<Hex | undefined> {
   const responses = await Promise.all(
-    IMPLEMENTATION_STORAGE_SLOTS.map(
-      (storageSlot) =>
-        query(ethQuery, 'eth_getStorageAt', [
-          contractAddress,
-          storageSlot,
-          'latest',
-        ]) as Promise<Hex>,
+    IMPLEMENTATION_STORAGE_SLOTS.map((storageSlot) =>
+      provider.request<JsonRpcParams, Hex>({
+        method: 'eth_getStorageAt',
+        params: [contractAddress, storageSlot, 'latest'],
+      }),
     ),
   );
 

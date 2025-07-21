@@ -3,17 +3,24 @@ import { useEffect } from 'react';
 
 import { SignatureRequestType } from '../types/confirm';
 import { useConfirmContext } from '../context/confirm';
+import { useLoadingTime } from '../components/simulation-details/useLoadingTime';
 import { useSignatureEventFragment } from './useSignatureEventFragment';
 
 enum DecodingResponseType {
   Change = 'CHANGE',
   NoChange = 'NO_CHANGE',
+  InProgress = 'decoding_in_progress',
 }
 
-export function useDecodedSignatureMetrics() {
+export function useDecodedSignatureMetrics(supportedByDecodingAPI: boolean) {
   const { updateSignatureEventFragment } = useSignatureEventFragment();
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  const { loadingTime, setLoadingComplete } = useLoadingTime();
   const { decodingLoading, decodingData } = currentConfirmation;
+
+  if (decodingLoading === false) {
+    setLoadingComplete();
+  }
 
   const decodingChangeTypes = (decodingData?.stateChanges ?? []).map(
     (change: DecodingDataStateChange) => change.changeType,
@@ -26,20 +33,43 @@ export function useDecodedSignatureMetrics() {
       : DecodingResponseType.NoChange);
 
   useEffect(() => {
-    if (decodingLoading || !process.env.ENABLE_SIGNATURE_DECODING) {
+    if (!supportedByDecodingAPI) {
+      return;
+    }
+
+    if (decodingLoading) {
+      updateSignatureEventFragment({
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          decoding_response: DecodingResponseType.InProgress,
+        },
+      });
+
       return;
     }
 
     updateSignatureEventFragment({
       properties: {
-        decoding_response: decodingResponse,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_change_types: decodingChangeTypes,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        decoding_description: decodingData?.error?.message ?? null,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        decoding_latency: loadingTime ?? null,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        decoding_response: decodingResponse,
       },
     });
   }, [
     decodingResponse,
     decodingLoading,
     decodingChangeTypes,
+    loadingTime,
     updateSignatureEventFragment,
   ]);
 }
