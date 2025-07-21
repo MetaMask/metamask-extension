@@ -654,6 +654,13 @@ class AccountListPage {
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  async clickWalletDetailsButton(): Promise<void> {
+    console.log('Click wallet details button');
+    await this.driver.clickElement(this.walletDetailsButton);
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_accountNotDisplayedInAccountList(
     expectedLabel: string = 'Account',
   ): Promise<void> {
