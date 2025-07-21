@@ -220,9 +220,9 @@ export default function App() {
             represents. You can also click on a box to see connections between
             other files;{' '}
             <strong className="module-connection__dependency">red</strong> lines
-            lead to dependencies (other files that import the file);{' '}
+            lead to dependencies (other files that are imported by the file);{' '}
             <strong className="module-connection__dependent">blue</strong> lines
-            lead to dependents (other files that are imported by the file).
+            lead to dependents (other files that import the file).
           </p>
 
           <p>
