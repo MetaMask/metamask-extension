@@ -1,9 +1,10 @@
 import type { LoaderContext } from 'webpack';
-import type { JSONSchema7 } from 'schema-utils/declarations/validate';
+import { type JSONSchema7 } from 'schema-utils/declarations/validate';
+import { validate } from 'schema-utils';
 import type { FromSchema } from 'json-schema-to-ts';
 import { transform, type Options } from '@swc/core';
 import { type Args } from '../cli';
-import { __HMR_READY__, validate } from '../helpers';
+import { __HMR_READY__ } from '../helpers';
 
 // the schema here is limited to only the options we actually use
 // there are loads more options available to SWC we could add.
@@ -173,7 +174,7 @@ export type SwcLoaderOptions = FromSchema<typeof schema, SchemaOptions>;
 type Context = LoaderContext<SwcLoaderOptions>;
 export default function swcLoader(this: Context, src: string, srcMap?: string) {
   const pluginOptions = this.getOptions();
-  validate('swcLoader', schema, pluginOptions);
+  validate(schema, pluginOptions, { name: 'swcLoader' });
 
   const options: Options = {
     ...pluginOptions,

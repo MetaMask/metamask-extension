@@ -109,12 +109,12 @@ ${Object.entries(env)
     assert(typeof runtimeChunk.name, 'function');
     assert.strictEqual(
       runtimeChunk.name({ name: 'snow.prod' }),
-      false,
+      '',
       'snow.prod should not be chunked',
     );
     assert.strictEqual(
       runtimeChunk.name({ name: 'use-snow' }),
-      false,
+      '',
       'use-snow should not be chunked',
     );
     assert.strictEqual(
