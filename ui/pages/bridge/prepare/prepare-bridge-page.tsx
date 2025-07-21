@@ -556,6 +556,8 @@ const PrepareBridgePage = () => {
       name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
       timestamp: Date.now(),
     });
+    setDefaultChainApplied(false);
+    setDefaultTokenApplied(false);
   }, []);
 
   const { defaultToChainId, defaultToToken } = useBridgeDefaultToToken();
@@ -568,11 +570,6 @@ const PrepareBridgePage = () => {
     // Only set default chain if user hasn't already selected one and default hasn't been applied
     if (!toChain && defaultToChainId && fromChain && !defaultChainApplied) {
       dispatch(setToChainId(defaultToChainId));
-      // Track the input change event for the prefilled chain
-      trackInputEvent({
-        input: 'chain_destination',
-        value: String(defaultToChainId),
-      });
       setDefaultChainApplied(true);
     }
   }, [
@@ -588,13 +585,6 @@ const PrepareBridgePage = () => {
     // Only set default token if user hasn't already selected one and default hasn't been applied
     if (!toToken && defaultToToken && toChain && !defaultTokenApplied) {
       dispatch(setToToken(defaultToToken));
-      // Track the input change event for the prefilled token
-      if (defaultToToken.address) {
-        trackInputEvent({
-          input: 'token_destination',
-          value: defaultToToken.address,
-        });
-      }
       setDefaultTokenApplied(true);
     }
   }, [
