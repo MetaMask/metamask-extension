@@ -1,7 +1,7 @@
 import { readdirSync } from 'node:fs';
 import { parse, join, relative, sep } from 'node:path';
 import { validate as schemaValidate } from 'schema-utils';
-import type { Chunk, EntryObject, Stats } from 'webpack';
+import type { EntryObject, Stats } from 'webpack';
 import type TerserPluginType from 'terser-webpack-plugin';
 import { Schema } from 'schema-utils/declarations/ValidationError';
 
@@ -115,11 +115,11 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
    * Ignore scripts that were found in the manifest, as these are only loaded by
    * the browser extension platform itself.
    *
-   * @param chunk
-   * @param chunk.name
+   * @param entrypoint - The entrypoint to check.
+   * @param entrypoint.name - The name of the entrypoint.
    * @returns
    */
-  function canBeChunked({ name }: Chunk): boolean {
+  function canBeChunked({ name }: { name?: string | null }): boolean {
     return !name || !selfContainedScripts.has(name);
   }
   return { entry, canBeChunked };

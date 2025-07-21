@@ -9,7 +9,6 @@ import {
   ProvidePlugin,
   type Configuration,
   type WebpackPluginInstance,
-  type Chunk,
   type MemoryCacheOptions,
   type FileCacheOptions,
 } from 'webpack';
@@ -416,7 +415,7 @@ const config = {
     // platform is responsible for loading them and splitting these files
     // would require updating the manifest to include the other chunks.
     runtimeChunk: {
-      name: (chunk: Chunk) => (canBeChunked(chunk) ? 'runtime' : false),
+      name: (chunk) => (canBeChunked(chunk) ? 'runtime' : ''),
     },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations
