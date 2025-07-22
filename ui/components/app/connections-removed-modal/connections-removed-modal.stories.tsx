@@ -7,11 +7,7 @@ export default {
 };
 
 export const DefaultStory = () => {
-  return (
-    <>
-      <ConnectionsRemovedModal />
-    </>
-  );
+  return <ConnectionsRemovedModal />;
 };
 
 DefaultStory.storyName = 'Default';

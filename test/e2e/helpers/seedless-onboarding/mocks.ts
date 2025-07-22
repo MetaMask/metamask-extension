@@ -9,10 +9,10 @@ import { SecretType } from '@metamask/seedless-onboarding-controller';
 import { bytesToBase64, stringToBytes } from '@metamask/utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils';
+import { E2E_SRP } from '../../default-fixture';
 import {
   AuthServer,
   MetadataService,
-  MockSeedPhrase,
   PasswordChangeItemId,
   SSSBaseUrlRgx,
   SSSNodeKeyPairs,
@@ -305,7 +305,7 @@ export class OAuthMockttpService {
   }
 
   async onPostMetadataGet() {
-    const seedPhraseAsBuffer = Buffer.from(MockSeedPhrase, 'utf8');
+    const seedPhraseAsBuffer = Buffer.from(E2E_SRP, 'utf8');
     const indices = seedPhraseAsBuffer
       .toString()
       .split(' ')
