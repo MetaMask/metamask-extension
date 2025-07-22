@@ -415,9 +415,9 @@ const config = {
     // platform is responsible for loading them and splitting these files
     // would require updating the manifest to include the other chunks.
     runtimeChunk: {
-      // @ts-expect-error webpack types are wrong, `name` may return `false`
-      // OR a string. In fact, the _default_ value is `false`!
-      name: (chunk) => (canBeChunked(chunk) ? 'runtime' : false),
+      // casting to string as webpack's types are wrong, `false` is allowed, and
+      // is actually the default value.
+      name: (chunk) => (canBeChunked(chunk) ? 'runtime' : false) as string,
     },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations
