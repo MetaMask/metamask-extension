@@ -1,0 +1,44 @@
+diff --git a/_PATCH.txt b/_PATCH.txt
+new file mode 100644
+index 0000000000000000000000000000000000000000..94d9729bdc09c57a213683e048f1edb9b0d8fe42
+--- /dev/null
++++ b/_PATCH.txt
+@@ -0,0 +1,2 @@
++This patch fixes a bug in Lodash when it's run in a contentscript on Firefox.
++See here for details: https://github.com/lodash/lodash/issues/5934
+diff --git a/_freeGlobal.js b/_freeGlobal.js
+index bbec998fc8cbaaeec1f848017aa8e232d4d419eb..37addf20c9846f1729b83c67746714e6bcc6565d 100644
+--- a/_freeGlobal.js
++++ b/_freeGlobal.js
+@@ -1,4 +1,4 @@
+ /** Detect free variable `global` from Node.js. */
+-var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
++var freeGlobal = typeof globalThis == 'object' && globalThis && globalThis.Object === Object && globalThis;
+ 
+ module.exports = freeGlobal;
+diff --git a/core.js b/core.js
+index be1d567d629fdfda05efcaa6adfb480d93702889..c74af2204241654129a4b8d9bc8e1ad235c464f1 100644
+--- a/core.js
++++ b/core.js
+@@ -62,7 +62,7 @@
+   };
+ 
+   /** Detect free variable `global` from Node.js. */
+-  var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
++  var freeGlobal = typeof globalThis == 'object' && globalThis && globalThis.Object === Object && globalThis;
+ 
+   /** Detect free variable `self`. */
+   var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+diff --git a/lodash.js b/lodash.js
+index 4131e936cd1e0521ac7be3a9d4bfb9f1fdb35462..5febc1c8b908871a65db4ffcc8ed4a42f9c648be 100644
+--- a/lodash.js
++++ b/lodash.js
+@@ -427,7 +427,7 @@
+       freeParseInt = parseInt;
+ 
+   /** Detect free variable `global` from Node.js. */
+-  var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
++  var freeGlobal = typeof globalThis == 'object' && globalThis && globalThis.Object === Object && globalThis;
+ 
+   /** Detect free variable `self`. */
+   var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
