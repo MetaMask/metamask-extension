@@ -7404,6 +7404,11 @@ export default class MetamaskController extends EventEmitter {
       setEnabledNetworks: (chainIds, namespace) => {
         this.networkOrderController.setEnabledNetworks(chainIds, namespace);
       },
+      getEnabledNetworks: (namespace) => {
+        return (
+          this.networkOrderController.state.enabledNetworkMap[namespace] || {}
+        );
+      },
       getCurrentChainIdForDomain: (domain) => {
         const networkClientId =
           this.selectedNetworkController.getNetworkClientIdForDomain(domain);
