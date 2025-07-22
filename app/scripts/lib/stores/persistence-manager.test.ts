@@ -3,6 +3,7 @@
 import 'navigator.locks';
 import log from 'loglevel';
 
+import { captureException } from '../../../../shared/lib/sentry';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { PersistenceManager } from './persistence-manager';
 import ExtensionStore from './extension-store';
@@ -22,9 +23,10 @@ jest.mock('./read-only-network-store');
 jest.mock('loglevel', () => ({
   error: jest.fn(),
 }));
-jest.replaceProperty(global, 'sentry', {
+jest.mock('../../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
-});
+}));
+const mockedCaptureException = jest.mocked(captureException);
 
 describe('PersistenceManager', () => {
   let manager: PersistenceManager;
@@ -66,7 +68,7 @@ describe('PersistenceManager', () => {
       mockStoreSet.mockRejectedValueOnce(error);
 
       await manager.set({ appState: { broken: true } });
-      expect(global.sentry.captureException).toHaveBeenCalledWith(error);
+      expect(mockedCaptureException).toHaveBeenCalledWith(error);
       expect(log.error).toHaveBeenCalledWith(
         'error setting state in local store:',
         error,
@@ -82,7 +84,7 @@ describe('PersistenceManager', () => {
       await manager.set({ appState: { broken: true } });
       await manager.set({ appState: { broken: true } });
 
-      expect(global.sentry.captureException).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureException).toHaveBeenCalledTimes(1);
     });
 
     it('captures exception twice if store.set fails, then succeeds and then fails again', async () => {
@@ -102,7 +104,7 @@ describe('PersistenceManager', () => {
 
       await manager.set({ appState: { broken: true } });
 
-      expect(global.sentry.captureException).toHaveBeenCalledTimes(2);
+      expect(mockedCaptureException).toHaveBeenCalledTimes(2);
     });
   });
 

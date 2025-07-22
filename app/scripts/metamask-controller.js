@@ -182,6 +182,7 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
+import { captureException } from '../../shared/lib/sentry';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -595,7 +596,7 @@ export default class MetamaskController extends EventEmitter {
     // eslint-disable-next-line no-new
     new ErrorReportingService({
       messenger: errorReportingServiceMessenger,
-      captureException: global.sentry.captureException.bind(global.sentry),
+      captureException,
     });
 
     const networkControllerMessenger = this.controllerMessenger.getRestricted({
@@ -683,7 +684,7 @@ export default class MetamaskController extends EventEmitter {
         )
         .includes(initialNetworkControllerState.selectedNetworkClientId)
     ) {
-      global.sentry.captureException(
+      captureException(
         new Error(
           `NetworkController state is invalid: \`selectedNetworkClientId\` '${initialNetworkControllerState.selectedNetworkClientId}' does not refer to an RPC endpoint within a network configuration`,
         ),
@@ -894,7 +895,7 @@ export default class MetamaskController extends EventEmitter {
       version: process.env.METAMASK_VERSION,
       environment: process.env.METAMASK_ENVIRONMENT,
       extension: this.extension,
-      captureException: global.sentry.captureException.bind(global.sentry),
+      captureException,
     });
 
     this.on('update', (update) => {
@@ -5647,7 +5648,7 @@ export default class MetamaskController extends EventEmitter {
     } catch (e) {
       // Do not block the onboarding flow if this fails
       log.warn(`Failed to add Snap account. Error: ${e}`);
-      global.sentry.captureException(e);
+      captureException(e);
       return null;
     }
   }
@@ -6233,7 +6234,7 @@ export default class MetamaskController extends EventEmitter {
       accountsForCurrentChain || {},
     ).length;
 
-    global.sentry.captureException(
+    captureException(
       new Error(
         `Attempt to get permission specifications failed because their were ${accounts.length} accounts, but ${internalAccountCount} identities, and the ${keyringTypesWithMissingIdentities} keyrings included accounts with missing identities. Meanwhile, there are ${accountTrackerCount} accounts in the account tracker.`,
       ),
@@ -7796,7 +7797,7 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:get',
         ),
         trackError: (error) => {
-          return global.sentry.captureException(error);
+          return captureException(error);
         },
         trackEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
@@ -8467,7 +8468,7 @@ export default class MetamaskController extends EventEmitter {
     setTimeout(() => {
       const error = new Error(message);
       error.name = 'TestError';
-      global.sentry.captureException(error);
+      captureException(error);
     });
   }
 

@@ -1,3 +1,4 @@
+import { captureException } from '../../shared/lib/sentry';
 import {
   OFFSCREEN_LOAD_TIMEOUT,
   OffscreenCommunicationTarget,
@@ -82,7 +83,7 @@ export async function createOffscreen() {
     // Report unrecongized errors without halting wallet initialization
     // Failures to create the offscreen document does not compromise wallet data integrity or
     // core functionality, it's just needed for specific features.
-    global.sentry.captureException(error);
+    captureException(error);
     return;
   }
 

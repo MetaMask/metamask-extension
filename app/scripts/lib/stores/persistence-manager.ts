@@ -1,6 +1,7 @@
 import log from 'loglevel';
 import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
+import { captureException } from '../../../../shared/lib/sentry';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
@@ -227,7 +228,7 @@ export class PersistenceManager {
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
-            global.sentry.captureException(err);
+            captureException(err);
           }
           log.error('error setting state in local store:', err);
         } finally {

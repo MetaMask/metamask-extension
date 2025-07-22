@@ -1,5 +1,6 @@
 import { hasProperty } from '@metamask/utils';
 import { cloneDeep, isObject, pick } from 'lodash';
+import { captureException } from '../../../shared/lib/sentry';
 
 type MetaMaskState = Record<string, unknown>;
 type VersionedState = {
@@ -52,7 +53,7 @@ function filterOutObsoleteNetworkControllerStateProperties(
     !hasProperty(state, 'NetworkController') ||
     !isObject(state.NetworkController)
   ) {
-    global.sentry.captureException(
+    captureException(
       `Migration ${version}: Invalid NetworkController state: ${typeof state.NetworkController}`,
     );
 

@@ -10,6 +10,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { trace } from '../../../../shared/lib/trace';
+import { captureException } from '../../../../shared/lib/sentry';
 
 /**
  * Initialize the UserStorage controller.
@@ -59,7 +60,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
           situationMessage,
           sentryContext,
         ) => {
-          global.sentry.captureException(
+          captureException(
             new Error(`Account sync - ${situationMessage}`),
             sentryContext,
           );
@@ -113,7 +114,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
           situationMessage,
           sentryContext,
         ) => {
-          global.sentry.captureException(
+          captureException(
             new Error(`Contact sync - ${situationMessage}`),
             sentryContext,
           );
