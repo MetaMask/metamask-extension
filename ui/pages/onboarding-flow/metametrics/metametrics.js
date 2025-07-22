@@ -69,11 +69,7 @@ export default function OnboardingMetametrics() {
   let nextRouteByBrowser = useSelector(
     getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
   );
-  if (
-    isFirefox &&
-    firstTimeFlowType !== FirstTimeFlowType.restore &&
-    firstTimeFlowType !== FirstTimeFlowType.socialImport
-  ) {
+  if (isFirefox && firstTimeFlowType !== FirstTimeFlowType.restore) {
     if (
       currentKeyring &&
       firstTimeFlowType === FirstTimeFlowType.socialCreate
