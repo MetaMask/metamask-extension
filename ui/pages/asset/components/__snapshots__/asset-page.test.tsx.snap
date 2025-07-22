@@ -578,8 +578,8 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/plus-and-minus.svg');"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
+              style="mask-image: url('./images/icons/money.svg');"
             />
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
@@ -597,8 +597,8 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
+              style="mask-image: url('./images/icons/send.svg');"
             />
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
@@ -615,7 +615,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/swap-horizontal.svg');"
             />
             <span
@@ -634,7 +634,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/bridge.svg');"
             />
             <span
@@ -1058,8 +1058,8 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/plus-and-minus.svg');"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
+              style="mask-image: url('./images/icons/money.svg');"
             />
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
@@ -1077,8 +1077,8 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
+              style="mask-image: url('./images/icons/send.svg');"
             />
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
@@ -1095,7 +1095,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/swap-horizontal.svg');"
             />
             <span
@@ -1114,7 +1114,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/bridge.svg');"
             />
             <span

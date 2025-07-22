@@ -24,6 +24,7 @@ import {
   ENVIRONMENT_TYPE_BACKGROUND,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   ORIGIN_METAMASK,
+  DOWNLOAD_MOBILE_APP_SLIDE_ID,
 } from '../../../shared/constants/app';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
@@ -60,6 +61,7 @@ export type AppStateControllerState = {
   showPermissionsTour: boolean;
   showNetworkBanner: boolean;
   showAccountBanner: boolean;
+  showDownloadMobileAppSlide: boolean;
   trezorModel: string | null;
   currentPopupId?: number;
   onboardingDate: number | null;
@@ -202,6 +204,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   surveyLinkLastClickedOrClosed: null,
+  showDownloadMobileAppSlide: true,
   slides: [],
   throttledOrigins: {},
   isUpdateAvailable: false,
@@ -354,6 +357,10 @@ const controllerMetadata = {
     anonymous: true,
   },
   snapsInstallPrivacyWarningShown: {
+    persist: true,
+    anonymous: true,
+  },
+  showDownloadMobileAppSlide: {
     persist: true,
     anonymous: true,
   },
@@ -619,6 +626,10 @@ export class AppStateController extends BaseController<
         }
         return slide;
       });
+
+      if (id === DOWNLOAD_MOBILE_APP_SLIDE_ID) {
+        state.showDownloadMobileAppSlide = false;
+      }
     });
   }
 

@@ -143,7 +143,7 @@ export class OAuthMockttpService {
       json: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        access_token: 'mock-access-token',
+        access_token: idToken,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         id_token: idToken,
@@ -156,6 +156,9 @@ export class OAuthMockttpService {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         revoke_token: 'mock-revoke-token',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        metadata_access_token: idToken,
       },
     };
   }

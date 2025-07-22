@@ -13,7 +13,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
         data-testid="recovery-phrase-chips"
       >
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-0"
         >
           <p
@@ -29,7 +29,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-1"
         >
           <p
@@ -45,7 +45,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-2"
         >
           <p
@@ -61,7 +61,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-3"
         >
           <p
@@ -77,7 +77,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-4"
         >
           <p
@@ -93,7 +93,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-5"
         >
           <p
@@ -109,7 +109,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-6"
         >
           <p
@@ -125,7 +125,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-7"
         >
           <p
@@ -141,7 +141,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-8"
         >
           <p
@@ -157,7 +157,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-9"
         >
           <p
@@ -173,7 +173,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-10"
         >
           <p
@@ -189,7 +189,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-11"
         >
           <p
@@ -238,7 +238,6 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             disabled=""
             focused="false"
             readonly=""
-            tabindex="-1"
             type="password"
             value="debris"
           />
@@ -259,7 +258,6 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             disabled=""
             focused="false"
             readonly=""
-            tabindex="-1"
             type="password"
             value="dizzy"
           />
@@ -280,7 +278,6 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             disabled=""
             focused="false"
             readonly=""
-            tabindex="-1"
             type="password"
             value="just"
           />
@@ -301,7 +298,6 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             disabled=""
             focused="false"
             readonly=""
-            tabindex="-1"
             type="password"
             value="program"
           />
@@ -322,7 +318,6 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             disabled=""
             focused="false"
             readonly=""
-            tabindex="-1"
             type="password"
             value="just"
           />
@@ -343,7 +338,6 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             disabled=""
             focused="false"
             readonly=""
-            tabindex="-1"
             type="password"
             value="float"
           />
@@ -364,7 +358,6 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             disabled=""
             focused="false"
             readonly=""
-            tabindex="-1"
             type="password"
             value="decrease"
           />
@@ -385,7 +378,6 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             disabled=""
             focused="false"
             readonly=""
-            tabindex="-1"
             type="password"
             value="vacant"
           />
@@ -406,7 +398,6 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             disabled=""
             focused="false"
             readonly=""
-            tabindex="-1"
             type="password"
             value="alarm"
           />
@@ -427,7 +418,6 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             disabled=""
             focused="false"
             readonly=""
-            tabindex="-1"
             type="password"
             value="reduce"
           />
@@ -448,7 +438,6 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             disabled=""
             focused="false"
             readonly=""
-            tabindex="-1"
             type="password"
             value="speak"
           />
@@ -469,7 +458,6 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
             disabled=""
             focused="false"
             readonly=""
-            tabindex="-1"
             type="password"
             value="stadium"
           />
