@@ -10,6 +10,8 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
     >
       <div
         class="mm-box recovery-phrase__chips mm-box--display-grid mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
+        data-quiz-words="[]"
+        data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
         data-testid="recovery-phrase-chips"
       >
         <div
@@ -220,6 +222,8 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
     >
       <div
         class="mm-box recovery-phrase__chips mm-box--display-grid mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
+        data-quiz-words="[]"
+        data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
         data-testid="recovery-phrase-chips"
       >
         <div
