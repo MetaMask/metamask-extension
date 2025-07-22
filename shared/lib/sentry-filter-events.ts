@@ -22,7 +22,7 @@ export function filterEvents({
   return {
     name: NAME,
     processEvent: async (event: SentryEvent) => {
-      // If force enable is true, we don't want to filter events.
+      // If skip consent filter is true, we don't want to filter events.
       if (skipConsentFilter) {
         return event;
       }

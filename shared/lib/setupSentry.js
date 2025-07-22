@@ -106,7 +106,7 @@ function getClientOptions(skipConsentFilter = false) {
     // `false`.
     sendClientReports: false,
     tracesSampleRate: getTracesSampleRate(sentryTarget),
-    transport: makeTransport,
+    transport: (option) => makeTransport(option, skipConsentFilter),
   };
 }
 
@@ -548,11 +548,11 @@ function addDebugListeners() {
   log('Added debug listeners');
 }
 
-function makeTransport(options) {
+function makeTransport(options, skipConsentFilter = false) {
   return Sentry.makeFetchTransport(options, async (...args) => {
     const metricsEnabled = await getMetaMetricsEnabled();
 
-    if (!metricsEnabled) {
+    if (!metricsEnabled && !skipConsentFilter) {
       throw new Error('Network request skipped as metrics disabled');
     }
 
