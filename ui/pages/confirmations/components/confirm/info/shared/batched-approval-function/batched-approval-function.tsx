@@ -51,10 +51,6 @@ const getBatchedApprovalDisplayValue = async (
     return undefined;
   }
 
-  if (tokenData?.standard !== TokenStandard.ERC20 || !amountOrTokenId) {
-    return undefined;
-  }
-
   const isUnlimited = isSpendingCapUnlimited(
     amountOrTokenId?.toNumber() ?? 0,
     Number(tokenData?.decimals ?? 0),
@@ -64,20 +60,37 @@ const getBatchedApprovalDisplayValue = async (
     return { spender, amount: t('unlimited') };
   }
 
-  const tokenAmount = new BigNumber(amountOrTokenId, 10)
-    .shift(
-      tokenData.decimals
-        ? parseInt(tokenData.decimals, 10) * -1
-        : ERC20_DEFAULT_DECIMALS,
-    )
-    .toString();
+  if (!amountOrTokenId) {
+    return undefined;
+  }
 
-  return {
-    spender,
-    amount: `${tokenAmount} ${tokenData.symbol}`,
-  };
+  if (tokenData?.standard === TokenStandard.ERC20) {
+    const tokenAmount = new BigNumber(amountOrTokenId, 10)
+      .shift(
+        tokenData.decimals
+          ? parseInt(tokenData.decimals, 10) * -1
+          : ERC20_DEFAULT_DECIMALS,
+      )
+      .toString();
+
+    return {
+      spender,
+      amount: `${tokenAmount} ${tokenData.symbol}`,
+    };
+  }
+
+  if (tokenData?.standard === TokenStandard.ERC721) {
+    return {
+      spender,
+      tokenId: amountOrTokenId.toString(),
+    };
+  }
+
+  return undefined;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function BatchedApprovalFunction({
   method,
   nestedTransactionIndex,
@@ -119,9 +132,16 @@ export function BatchedApprovalFunction({
             chainId={chainId}
           />
         </ConfirmInfoRow>
-        <ConfirmInfoRow label={t('amount')}>
-          <ConfirmInfoRowText text={value.amount} />
-        </ConfirmInfoRow>
+        {value.amount && (
+          <ConfirmInfoRow label={t('amount')}>
+            <ConfirmInfoRowText text={value.amount} />
+          </ConfirmInfoRow>
+        )}
+        {value.tokenId && (
+          <ConfirmInfoRow label={t('tokenId')}>
+            <ConfirmInfoRowText text={value.tokenId} />
+          </ConfirmInfoRow>
+        )}
       </Box>
     </>
   );

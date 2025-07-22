@@ -5,6 +5,7 @@ import {
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -247,9 +248,20 @@ export async function switchChain(
     rejectApprovalRequestsForOrigin?.();
 
     await setActiveNetwork(networkClientId);
+
+    // keeping this for backward compatibility in case we need to rollback REMOVE_GNS feature flag
+    // this will keep tokenNetworkFilter in sync with enabledNetworkMap while we roll this feature out
     setTokenNetworkFilter(chainId);
-    setEnabledNetworks(chainId);
+
+    if (isPrefixedFormattedHexString(chainId)) {
+      setEnabledNetworks(chainId, KnownCaipNamespace.Eip155);
+    } else {
+      const { namespace } = parseCaipChainId(chainId);
+      setEnabledNetworks(chainId, namespace);
+    }
+
     notifyChainChanged();
+
     response.result = null;
     return end();
   } catch (error) {

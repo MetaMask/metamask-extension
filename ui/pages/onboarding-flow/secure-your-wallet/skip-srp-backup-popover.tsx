@@ -39,12 +39,15 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { TraceName } from '../../../../shared/lib/trace';
 
 type SkipSRPBackupProps = {
   onClose: () => void;
   secureYourWallet: () => void;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function SkipSRPBackup({
   onClose,
   secureYourWallet,
@@ -55,6 +58,7 @@ export default function SkipSRPBackup({
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedEndTrace } = trackEvent;
   const history = useHistory();
 
   const onSkipSrpBackup = useCallback(async () => {
@@ -63,9 +67,13 @@ export default function SkipSRPBackup({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletSecuritySkipConfirmed,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       },
     });
+    bufferedEndTrace?.({ name: TraceName.OnboardingNewSrpCreateWallet });
+    bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
 
     if (
       getBrowserName() === PLATFORM_FIREFOX ||
@@ -75,7 +83,14 @@ export default function SkipSRPBackup({
     } else {
       history.push(ONBOARDING_METAMETRICS);
     }
-  }, [dispatch, firstTimeFlowType, hdEntropyIndex, history, trackEvent]);
+  }, [
+    dispatch,
+    firstTimeFlowType,
+    hdEntropyIndex,
+    history,
+    trackEvent,
+    bufferedEndTrace,
+  ]);
 
   return (
     <Modal
@@ -126,6 +141,8 @@ export default function SkipSRPBackup({
                   event:
                     MetaMetricsEventName.OnboardingWalletSecuritySkipCanceled,
                   properties: {
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     hd_entropy_index: hdEntropyIndex,
                   },
                 });
