@@ -340,8 +340,8 @@ export default function useSolanaBridgeTransactionMapping(
             asset: {
               type: matchingBridgeTx.quote?.srcAsset?.assetId,
               amount: (
-                Number(matchingBridgeTx.quote?.srcTokenAmount) /
-                10 ** matchingBridgeTx.quote?.srcAsset?.decimals
+                Number(matchingBridgeTx.quote?.srcTokenAmount ?? 0) /
+                10 ** (matchingBridgeTx.quote?.srcAsset?.decimals ?? 9)
               ).toString(),
               unit: matchingBridgeTx.quote?.srcAsset?.symbol ?? '',
               fungible: true,
