@@ -14,6 +14,7 @@ import {
   markPasswordForgotten,
   forceUpdateMetamaskState,
   setOnboardingErrorReport,
+  checkIsSeedlessPasswordOutdated,
 } from '../../store/actions';
 import {
   getIsSocialLoginFlow,
@@ -39,6 +40,8 @@ const mapDispatchToProps = (dispatch) => {
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     setOnboardingErrorReport: (error) =>
       dispatch(setOnboardingErrorReport(error)),
+    checkIsSeedlessPasswordOutdated: () =>
+      dispatch(checkIsSeedlessPasswordOutdated()),
   };
 };
 

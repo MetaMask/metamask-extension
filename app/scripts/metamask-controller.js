@@ -4351,6 +4351,7 @@ export default class MetamaskController extends EventEmitter {
 
       // E2E testing
       throwTestError: this.throwTestError.bind(this),
+      captureTestError: this.captureTestError.bind(this),
 
       // NameController
       updateProposedNames: this.nameController.updateProposedNames.bind(
@@ -4802,7 +4803,7 @@ export default class MetamaskController extends EventEmitter {
     // check if the password is outdated
     const isPasswordOutdated = isSocialLoginFlow
       ? await this.seedlessOnboardingController.checkIsPasswordOutdated({
-          skipCache: true,
+          skipCache: false,
         })
       : false;
 
@@ -4909,10 +4910,11 @@ export default class MetamaskController extends EventEmitter {
    */
   async checkIsSeedlessPasswordOutdated(skipCache = false) {
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+    const { completedOnboarding } = this.onboardingController.state;
 
-    if (!isSocialLoginFlow) {
-      // this is only available for seedless onboarding flow
-      return undefined;
+    if (!isSocialLoginFlow || !completedOnboarding) {
+      // this is only available for seedless onboarding flow and completed onboarding
+      return false;
     }
 
     const isPasswordOutdated =
@@ -8402,6 +8404,21 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  /**
+   * Capture an artificial error in a timeout handler for testing purposes.
+   *
+   * @param message - The error message.
+   * @deprecated This is only mean to facilitiate E2E testing. We should not
+   * use this for handling errors.
+   */
+  captureTestError(message) {
+    setTimeout(() => {
+      const error = new Error(message);
+      error.name = 'TestError';
+      global.sentry.captureException(error);
+    });
+  }
+
   getTransactionMetricsRequest() {
     const controllerActions = {
       // Metametrics Actions
@@ -9350,6 +9367,8 @@ export default class MetamaskController extends EventEmitter {
 
   #initControllers({ existingControllers, initFunctions, initState }) {
     const initRequest = {
+      getCronjobControllerStorageManager: () =>
+        this.opts.cronjobControllerStorageManager,
       getFlatState: this.getState.bind(this),
       getGlobalChainId: this.#getGlobalChainId.bind(this),
       getGlobalNetworkClientId: this.#getGlobalNetworkClientId.bind(this),

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
+import log from 'loglevel';
 import {
   Text,
   FormTextField,
@@ -72,6 +73,10 @@ class UnlockPage extends Component {
      */
     onSubmit: PropTypes.func,
     /**
+     * check password is outdated for social login flow
+     */
+    checkIsSeedlessPasswordOutdated: PropTypes.func,
+    /**
      * Force update metamask data state
      */
     forceUpdateMetamaskState: PropTypes.func,
@@ -122,12 +127,18 @@ class UnlockPage extends Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.passwordLoginAttemptTraceCtx = this.context.bufferedTrace?.({
       name: TraceName.OnboardingPasswordLoginAttempt,
       op: TraceOperation.OnboardingUserJourney,
       parentContext: this.props.onboardingParentContext?.current,
     });
+
+    try {
+      await this.props.checkIsSeedlessPasswordOutdated();
+    } catch (error) {
+      log.error('unlock page - checkIsSeedlessPasswordOutdated error', error);
+    }
   }
 
   handleSubmit = async (event) => {
