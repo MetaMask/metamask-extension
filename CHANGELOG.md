@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.22.3]
+### Fixed
+- fix: resolve infinite loading on spending cap when selected chain differs from dapp (#34355)
+- fix: prevent frequent writes while the wallet UI is closed (#34413, #34465, #34506, #34473, #34474)
 
 ## [12.22.2]
 ### Fixed
