@@ -179,13 +179,23 @@ export default function OnboardingWelcome({
       setNewAccountCreationInProgress(true);
       await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
 
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.WalletSetupStarted,
+        properties: {
+          account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
+        },
+      });
+
       try {
         const isNewUser = await handleSocialLogin(socialConnectionType);
+
+        // Track wallet setup completed for social login users
         trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.WalletSetupStarted,
+          event: MetaMetricsEventName.SocialLoginCompleted,
           properties: {
-            account_type: MetaMetricsEventAccountType.Social,
+            account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
           },
         });
         if (isNewUser) {
@@ -220,14 +230,23 @@ export default function OnboardingWelcome({
       setIsLoggingIn(true);
       dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
 
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.WalletImportStarted,
+        properties: {
+          account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
+        },
+      });
+
       try {
         const isNewUser = await handleSocialLogin(socialConnectionType);
 
+        // Track wallet login completed for existing social login users
         trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.WalletImportStarted,
+          event: MetaMetricsEventName.SocialLoginCompleted,
           properties: {
-            account_type: MetaMetricsEventAccountType.Social,
+            account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
           },
         });
 
