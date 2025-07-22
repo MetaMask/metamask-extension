@@ -429,7 +429,7 @@ describe('WalletDetails', () => {
       fireEvent.click(getByTestId('select-ethereum-account'));
 
       await waitFor(() => {
-        expect(mockAddNewAccount).toHaveBeenCalledWith('test-wallet');
+        expect(mockAddNewAccount).toHaveBeenCalledWith('test-wallet', false);
         expect(
           queryByTestId('mock-account-type-selection'),
         ).not.toBeInTheDocument();
@@ -446,7 +446,7 @@ describe('WalletDetails', () => {
       fireEvent.click(getByTestId('select-ethereum-account'));
 
       await waitFor(() => {
-        expect(mockAddNewAccount).toHaveBeenCalledWith('test-wallet');
+        expect(mockAddNewAccount).toHaveBeenCalledWith('test-wallet', false);
         expect(mockSetAccountLabel).not.toHaveBeenCalled();
       });
     });
@@ -461,7 +461,10 @@ describe('WalletDetails', () => {
       fireEvent.click(getByTestId('select-ethereum-account'));
 
       await waitFor(() => {
-        expect(mockAddNewAccount).toHaveBeenCalledWith('test-entropy-wallet');
+        expect(mockAddNewAccount).toHaveBeenCalledWith(
+          'test-entropy-wallet',
+          false,
+        );
       });
     });
 

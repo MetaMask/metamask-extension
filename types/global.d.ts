@@ -276,6 +276,8 @@ type StateHooks = {
   metamaskGetState?: () => Promise<any>;
   throwTestBackgroundError?: (msg?: string) => Promise<void>;
   throwTestError?: (msg?: string) => void;
+  captureTestError?: (msg?: string) => Promise<void>;
+  captureBackgroundError?: (msg?: string) => Promise<void>;
   /**
    * This is set in `app-init.js` to communicate why MetaMask installed or
    * updated. It is handled in `background.js`.
@@ -351,7 +353,7 @@ export declare global {
      */
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    withResolvers<T>(): PromiseWithResolvers<T>;
+    withResolvers?: <T>() => PromiseWithResolvers<T>;
   }
 }
 // #endregion

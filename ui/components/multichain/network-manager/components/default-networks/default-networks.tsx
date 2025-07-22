@@ -158,7 +158,7 @@ const DefaultNetworks = memo(() => {
           return null;
         }
 
-        const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
+        const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
           getItemCallbacks(network);
         const iconSrc = getNetworkIcon(network);
         const isEnabled = Object.keys(enabledNetworksByNamespace).includes(
@@ -174,7 +174,7 @@ const DefaultNetworks = memo(() => {
             startAccessory={
               singleRemainingNetwork && isLastRemainingNetwork ? (
                 <Tooltip
-                  title={'Must have at least one network enabled'}
+                  title={t('networkManagerMustHaveAtLeastOneNetworkEnabled')}
                   position="top"
                 >
                   <Checkbox label="" isChecked={isEnabled} />
@@ -203,7 +203,7 @@ const DefaultNetworks = memo(() => {
             onDeleteClick={onDelete}
             onEditClick={onEdit}
             onDiscoverClick={onDiscoverClick}
-            onRpcEndpointClick={onRpcConfigEdit}
+            onRpcEndpointClick={onRpcSelect}
           />
         );
       });
@@ -277,9 +277,14 @@ const DefaultNetworks = memo(() => {
           paddingTop={4}
           paddingLeft={4}
         >
-          <ButtonLink onClick={selectAllDefaultNetworks}>
-            {t('selectAll')}
-          </ButtonLink>
+          {isEvmNetworkSelected ? (
+            <ButtonLink
+              onClick={selectAllDefaultNetworks}
+              data-testid="network-manager-select-all"
+            >
+              {t('selectAll')}
+            </ButtonLink>
+          ) : null}
         </Box>
         {networkListItems}
         {isEvmNetworkSelected && (

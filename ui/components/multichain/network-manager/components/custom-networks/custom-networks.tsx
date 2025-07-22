@@ -35,6 +35,7 @@ import {
   getEnabledNetworksByNamespace,
   getMultichainNetworkConfigurationsByChainId,
   getOrderedNetworksList,
+  getShowTestNetworks,
 } from '../../../../../selectors';
 
 export const CustomNetworks = React.memo(() => {
@@ -44,6 +45,7 @@ export const CustomNetworks = React.memo(() => {
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
+  const showTestnets = useSelector(getShowTestNetworks);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   const { nonTestNetworks, testNetworks } = useNetworkManagerState();
@@ -82,7 +84,7 @@ export const CustomNetworks = React.memo(() => {
         hexChainId,
       );
 
-      const { onDelete, onEdit, onRpcConfigEdit } = getItemCallbacks(network);
+      const { onDelete, onEdit, onRpcSelect } = getItemCallbacks(network);
 
       return (
         <NetworkListItem
@@ -101,7 +103,7 @@ export const CustomNetworks = React.memo(() => {
           onDeleteClick={onDelete}
           onEditClick={onEdit}
           selected={isEnabled}
-          onRpcEndpointClick={onRpcConfigEdit}
+          onRpcEndpointClick={onRpcSelect}
           disabled={!isNetworkEnabled(network)}
         />
       );
@@ -184,20 +186,21 @@ export const CustomNetworks = React.memo(() => {
     <>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         {renderedCustomNetworks}
-        {renderedTestNetworks.length > 0 && (
-          <>
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textAlternative}
-              paddingLeft={4}
-              paddingRight={4}
-              paddingTop={4}
-            >
-              {t('testnets')}
-            </Text>
-            {renderedTestNetworks}
-          </>
-        )}
+        {(showTestnets || process.env.METAMASK_DEBUG) &&
+          renderedTestNetworks.length > 0 && (
+            <>
+              <Text
+                variant={TextVariant.bodyMdMedium}
+                color={TextColor.textAlternative}
+                paddingLeft={4}
+                paddingRight={4}
+                paddingTop={4}
+              >
+                {t('testnets')}
+              </Text>
+              {renderedTestNetworks}
+            </>
+          )}
       </Box>
       <Box
         display={Display.Flex}
