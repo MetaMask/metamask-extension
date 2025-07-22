@@ -4,6 +4,7 @@ import log from 'loglevel';
 
 import { TransactionType } from '@metamask/transaction-controller';
 import { createProjectLogger } from '@metamask/utils';
+import { captureMessage } from '../../../shared/lib/sentry';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   addToken,
@@ -1011,7 +1012,7 @@ export const signAndSendSwapsSmartTransaction = ({
         selectedNetwork.configuration.chainId,
       )
     ) {
-      global.sentry?.captureMessage?.('Invalid contract address', {
+      captureMessage('Invalid contract address', {
         extra: {
           token_from: swapMetaData.token_from,
           token_to: swapMetaData.token_to,
@@ -1298,7 +1299,7 @@ export const signAndSendTransactions = (
     });
 
     if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
-      global.sentry?.captureMessage?.('Invalid contract address', {
+      captureMessage('Invalid contract address', {
         extra: {
           token_from: swapMetaData.token_from,
           token_to: swapMetaData.token_to,

@@ -16,6 +16,7 @@ import { matchPath, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { omit } from 'lodash';
+import { captureException, captureMessage } from '../../shared/lib/sentry';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../app/scripts/lib/util';
@@ -72,7 +73,7 @@ import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
  * @type {React.Context<MetaMetricsContextValue>}
  */
 export const MetaMetricsContext = createContext(() => {
-  global.sentry?.captureException?.(
+  captureException(
     Error(
       `MetaMetrics context function was called from a react node that is not a descendant of a MetaMetrics context provider`,
     ),
@@ -164,15 +165,12 @@ export function MetaMetricsProvider({ children }) {
     // Start by checking for a missing match route. If this falls through to
     // the else if, then we know we have a matched route for tracking.
     if (!match) {
-      global.sentry?.captureMessage?.(
-        `Segment page tracking found unmatched route`,
-        {
-          extra: {
-            previousMatch,
-            currentPath: location.pathname,
-          },
+      captureMessage(`Segment page tracking found unmatched route`, {
+        extra: {
+          previousMatch,
+          currentPath: location.pathname,
         },
-      );
+      });
     } else if (
       previousMatch.current !== match.path &&
       !(

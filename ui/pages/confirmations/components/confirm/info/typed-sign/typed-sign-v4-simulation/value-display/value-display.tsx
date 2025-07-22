@@ -1,6 +1,7 @@
 import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
 import React, { useMemo } from 'react';
+import { captureException } from '../../../../../../../../../shared/lib/sentry';
 import { MetaMetricsEventLocation } from '../../../../../../../../../shared/constants/metametrics';
 import { calcTokenAmount } from '../../../../../../../../../shared/lib/transactions-controller-utils';
 import useTokenExchangeRate from '../../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
@@ -138,7 +139,7 @@ const PermitSimulationValueDisplay: React.FC<
 
   /** Temporary error capturing as we are building out Permit Simulations */
   if (!tokenContract) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `PermitSimulationValueDisplay: Token contract address is missing where primaryType === ${primaryType}`,
       ),

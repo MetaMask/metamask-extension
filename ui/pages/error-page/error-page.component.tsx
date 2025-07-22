@@ -67,9 +67,9 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
 
   const handleSubmitFeedback = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    const eventId = global.sentry.lastEventId();
+    const eventId = globalThis?.sentry?.lastEventId?.();
 
-    global.sentry.captureFeedback({
+    globalThis?.sentry?.captureFeedback?.({
       message: feedbackMessage,
       associatedEventId: eventId,
     });

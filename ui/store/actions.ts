@@ -60,6 +60,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -5369,7 +5370,7 @@ export function captureSingleException(
         type: actionConstants.CAPTURE_SINGLE_EXCEPTION,
         value: error,
       });
-      global.sentry?.captureException?.(Error(error));
+      captureException(Error(error));
     }
   };
 }

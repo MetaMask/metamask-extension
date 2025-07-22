@@ -17,6 +17,7 @@ import {
   isHardwareWallet,
 } from '../../../../shared/modules/selectors';
 import { getFromChain } from '../../../ducks/bridge/selectors';
+import { captureException } from '../../../../shared/lib/sentry';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
 const APPROVAL_TX_ERROR = 'Approve transaction failed';
@@ -91,7 +92,7 @@ export default function useSubmitBridgeTransaction() {
       );
     } catch (e) {
       debugLog('Bridge transaction failed', e);
-      global.sentry?.captureException?.(e);
+      captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
         history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);

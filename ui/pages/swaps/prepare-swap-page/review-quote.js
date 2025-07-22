@@ -12,6 +12,7 @@ import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import { captureException } from '../../../../shared/lib/sentry';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { I18nContext } from '../../../contexts/i18n';
 import SelectQuotePopover from '../select-quote-popover';
@@ -1029,7 +1030,7 @@ export default function ReviewQuote({
         );
         setMultiLayerL1FeeTotal(l1FeeTotal);
       } catch (e) {
-        global.sentry?.captureException?.(e);
+        captureException(e);
         setMultiLayerL1FeeTotal(null);
         setMultiLayerL1ApprovalFeeTotal(null);
       }
