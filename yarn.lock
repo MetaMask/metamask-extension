@@ -6574,14 +6574,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-log-controller@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "@metamask/permission-log-controller@npm:3.0.3"
+"@metamask/permission-log-controller@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/permission-log-controller@npm:4.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/json-rpc-engine": "npm:^10.0.3"
-    "@metamask/utils": "npm:^11.1.0"
-  checksum: 10/bc59c20c37631260c5f8d101be074eb429955ee283f45a685cdd403e3963078269b2f1d707e301f8939921d49942359d22b98ecc566a825a9f34c25e95f3919b
+    "@metamask/utils": "npm:^11.4.2"
+  checksum: 10/aa30d84c27a742cf410d28d5a8c8d7d1c52d4ae6430cd89808386c78bc80ffce51870d3ea0222c40acff9a1b6ad747cb297b2a00dde57a512bfea68e3b536051
   languageName: node
   linkType: hard
 
@@ -30588,7 +30588,7 @@ __metadata:
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^11.0.6"
-    "@metamask/permission-log-controller": "npm:^3.0.3"
+    "@metamask/permission-log-controller": "npm:^4.0.0"
     "@metamask/phishing-controller": "npm:^12.6.0"
     "@metamask/phishing-warning": "npm:^5.0.0"
     "@metamask/post-message-stream": "npm:^10.0.0"
