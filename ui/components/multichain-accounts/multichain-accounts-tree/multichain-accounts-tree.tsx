@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useHistory } from 'react-router-dom';
+import classnames from 'classnames';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import {
   AlignItems,
@@ -127,7 +128,10 @@ export const MultichainAccountsTree = ({
 
                 return (
                   <Box
-                    className="multichain-account-menu-popover__list--menu-item"
+                    className={classnames(
+                      'multichain-account-tree',
+                      'multichain-account-menu-popover__list--menu-item',
+                    )}
                     key={`box-${account.id}`}
                   >
                     <AccountListItem
