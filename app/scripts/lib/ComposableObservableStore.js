@@ -134,7 +134,7 @@ export default class ComposableObservableStore extends ObservableStore {
   #changedPersistedProperty(metadata, patches) {
     return patches.some((patch) => {
       // Complete state replacement
-      if (patch.path.lenght === 0) {
+      if (patch.path.length === 0) {
         return true;
       }
       const topLevelProperty = patch.path[0];
