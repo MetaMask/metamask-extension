@@ -71,6 +71,7 @@ describe('Onboarding Flow', () => {
     },
     appState: {
       externalServicesOnboardingToggleState: true,
+      onboardingErrorReport: null,
     },
   };
 
@@ -103,6 +104,9 @@ describe('Onboarding Flow', () => {
       },
       localeMessages: {
         currentLocale: 'en',
+      },
+      appState: {
+        onboardingErrorReport: null,
       },
     };
 

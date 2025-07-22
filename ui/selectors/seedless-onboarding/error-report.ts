@@ -1,4 +1,4 @@
-import { MetaMaskReduxState } from '../../../app/scripts/metamask-controller';
+import { MetaMaskReduxState } from '../../store/store';
 
 type State = {
   appState: Partial<
