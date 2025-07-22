@@ -13,7 +13,7 @@ This guide will help you get started with Tailwind CSS in the MetaMask extension
 
 ## VSCode Setup
 
-### 1. Install Tailwind CSS IntelliSense Extension
+### Install Tailwind CSS IntelliSense Extension
 
 The project recommends the [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss) extension for better development experience. It provides:
 
@@ -31,7 +31,7 @@ The project recommends the [Tailwind CSS IntelliSense](https://marketplace.visua
 
 The extension is already configured in `.vscode/extensions.json` and will be recommended when you open the project.
 
-### 2. Verify Extension is Working
+### Verify Extension is Working
 
 1. Open a TypeScript/TSX file in the `ui/` directory
 2. Try typing `className="text-`
