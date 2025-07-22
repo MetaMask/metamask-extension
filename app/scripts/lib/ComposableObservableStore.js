@@ -129,6 +129,7 @@ export default class ComposableObservableStore extends ObservableStore {
    *
    * @param {StateMetadataConstraint} metadata - Controller metadata.
    * @param {Patch[]} patches - A list of patches, corresponding to a single state update.
+   * @returns True if the patches contain a change to persisted state, false otherwise.
    */
   #changedPersistedProperty(metadata, patches) {
     return patches.some((patch) => {
