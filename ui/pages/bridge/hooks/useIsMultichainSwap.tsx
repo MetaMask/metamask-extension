@@ -8,6 +8,7 @@ import {
 } from '../../../ducks/bridge/selectors';
 import { getMultichainIsSolana } from '../../../selectors/multichain';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { BridgeQueryParams } from '../../../../shared/lib/deep-links/routes/swap';
 
 /*
  * This returns true if the url contains swaps=true and the current chain is solana
@@ -33,13 +34,14 @@ export const useIsMultichainSwap = () => {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(search);
-    const isSwapQueryParamSet = searchParams.get('swaps') === 'true';
+    const isSwapQueryParamSet =
+      searchParams.get(BridgeQueryParams.SWAPS) === 'true';
     if (
       isQuoteRequestSwap &&
       (isSolana || isUnifiedUIEnabled) &&
       !isSwapQueryParamSet
     ) {
-      searchParams.set('swaps', 'true');
+      searchParams.set(BridgeQueryParams.SWAPS, 'true');
       history.replace({
         pathname,
         search: searchParams.toString(),
@@ -56,7 +58,8 @@ export const useIsMultichainSwap = () => {
 
   const isSolanaSwap = useMemo(() => {
     const searchParams = new URLSearchParams(search);
-    const isSwapQueryParamSet = searchParams.get('swaps') === 'true';
+    const isSwapQueryParamSet =
+      searchParams.get(BridgeQueryParams.SWAPS) === 'true';
 
     return isSwapQueryParamSet && (isSolana || isUnifiedUIEnabled);
   }, [isSolana, isUnifiedUIEnabled, search]);

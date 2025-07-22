@@ -5,12 +5,14 @@ import {
   MOCK_GROUPED_AUTH_CONNECTION_ID,
 } from '../../../../test/e2e/constants';
 import { checkForLastError } from '../../../../shared/modules/browser-runtime.utils';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import type {
   OAuthConfig,
   OAuthLoginEnv,
   OAuthLoginResult,
+  OAuthRefreshTokenResult,
   OAuthServiceOptions,
   WebAuthenticator,
 } from './types';
@@ -21,13 +23,24 @@ export default class OAuthService {
 
   #webAuthenticator: WebAuthenticator;
 
-  constructor({ env, webAuthenticator }: OAuthServiceOptions) {
+  #bufferedTrace: OAuthServiceOptions['bufferedTrace'];
+
+  #bufferedEndTrace: OAuthServiceOptions['bufferedEndTrace'];
+
+  constructor({
+    env,
+    webAuthenticator,
+    bufferedTrace,
+    bufferedEndTrace,
+  }: OAuthServiceOptions) {
     const oauthConfig = loadOAuthConfig();
     this.#env = {
       ...env,
       ...oauthConfig,
     };
     this.#webAuthenticator = webAuthenticator;
+    this.#bufferedTrace = bufferedTrace;
+    this.#bufferedEndTrace = bufferedEndTrace;
   }
 
   /**
@@ -61,7 +74,7 @@ export default class OAuthService {
   async getNewRefreshToken(options: {
     connection: AuthConnection;
     refreshToken: string;
-  }): Promise<{ idTokens: string[] }> {
+  }): Promise<OAuthRefreshTokenResult> {
     const { connection, refreshToken } = options;
     const loginHandler = createLoginHandler(
       connection,
@@ -74,6 +87,8 @@ export default class OAuthService {
 
     return {
       idTokens: [idToken],
+      accessToken: refreshTokenData.access_token,
+      metadataAccessToken: refreshTokenData.metadata_access_token,
     };
   }
 
@@ -117,9 +132,15 @@ export default class OAuthService {
   async #handleOAuthLogin(loginHandler: BaseLoginHandler) {
     const authUrl = await loginHandler.getAuthUrl();
 
-    // launch the web auth flow to get the Authorization Code from the social login provider
-    const redirectUrlFromOAuth = await new Promise<string>(
-      (resolve, reject) => {
+    let providerLoginSuccess = false;
+    let redirectUrlFromOAuth = null;
+    try {
+      this.#bufferedTrace?.({
+        name: TraceName.OnboardingOAuthProviderLogin,
+        op: TraceOperation.OnboardingSecurityOp,
+      });
+      // launch the web auth flow to get the Authorization Code from the social login provider
+      redirectUrlFromOAuth = await new Promise<string>((resolve, reject) => {
         // since promise returns aren't supported until MV3, we need to use a callback function to support MV2
         this.#webAuthenticator.launchWebAuthFlow(
           {
@@ -151,15 +172,62 @@ export default class OAuthService {
             }
           },
         );
-      },
-    );
+      });
+      providerLoginSuccess = true;
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
 
-    // handle the OAuth response from the social login provider and get the Jwt Token in exchange
-    const loginResult = await this.#handleOAuthResponse(
-      loginHandler,
-      redirectUrlFromOAuth,
-    );
-    return loginResult;
+      this.#bufferedTrace?.({
+        name: TraceName.OnboardingOAuthProviderLoginError,
+        op: TraceOperation.OnboardingError,
+        tags: { errorMessage },
+      });
+      this.#bufferedEndTrace?.({
+        name: TraceName.OnboardingOAuthProviderLoginError,
+      });
+
+      throw error;
+    } finally {
+      this.#bufferedEndTrace?.({
+        name: TraceName.OnboardingOAuthProviderLogin,
+        data: { success: providerLoginSuccess },
+      });
+    }
+
+    let getAuthTokensSuccess = false;
+    try {
+      this.#bufferedTrace?.({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+        op: TraceOperation.OnboardingSecurityOp,
+      });
+      // handle the OAuth response from the social login provider and get the Jwt Token in exchange
+      const loginResult = await this.#handleOAuthResponse(
+        loginHandler,
+        redirectUrlFromOAuth,
+      );
+      getAuthTokensSuccess = true;
+      return loginResult;
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+
+      this.#bufferedTrace?.({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
+        op: TraceOperation.OnboardingError,
+        tags: { errorMessage },
+      });
+      this.#bufferedEndTrace?.({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
+      });
+
+      throw error;
+    } finally {
+      this.#bufferedEndTrace?.({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+        data: { success: getAuthTokensSuccess },
+      });
+    }
   }
 
   /**
@@ -228,6 +296,8 @@ export default class OAuthService {
       socialLoginEmail: userInfo.email,
       refreshToken: authTokenData.refresh_token,
       revokeToken: authTokenData.revoke_token,
+      accessToken: authTokenData.access_token,
+      metadataAccessToken: authTokenData.metadata_access_token,
     };
   }
 
