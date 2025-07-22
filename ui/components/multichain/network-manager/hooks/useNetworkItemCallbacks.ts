@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { EthScope } from '@metamask/keyring-api';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-import { type Hex } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP } from '../../../../../shared/constants/network';
@@ -9,6 +8,7 @@ import {
   convertCaipToHexChainId,
   getRpcDataByChainId,
 } from '../../../../../shared/modules/network.utils';
+import { isDiscoverButtonEnabled } from '../../../../../shared/modules/network-discover-utils';
 import { openWindow } from '../../../../helpers/utils/window';
 import { setEditedNetwork, showModal } from '../../../../store/actions';
 import {
@@ -38,13 +38,10 @@ export const useNetworkItemCallbacks = () => {
   const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   const isDiscoverBtnEnabled = useCallback(
-    (hexChainId: Hex): boolean => {
-      // The "Discover" button should be enabled when the mapping for the chainId is enabled in the feature flag json
-      // and in the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
-      return (
-        (isNetworkDiscoverButtonEnabled as Record<Hex, boolean>)?.[
-          hexChainId
-        ] && CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
+    (network: MultichainNetworkConfiguration): boolean => {
+      return isDiscoverButtonEnabled(
+        network,
+        isNetworkDiscoverButtonEnabled as Record<string, boolean>,
       );
     },
     [isNetworkDiscoverButtonEnabled],
@@ -75,11 +72,18 @@ export const useNetworkItemCallbacks = () => {
       const { chainId, isEvm } = network;
 
       if (!isEvm) {
-        return {};
+        // For non-EVM networks, only provide discover functionality if available
+        return {
+          onDiscoverClick: isDiscoverBtnEnabled(network)
+            ? () => {
+                openWindow(
+                  CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[chainId],
+                  '_blank',
+                );
+              }
+            : undefined,
+        };
       }
-
-      // Non-EVM networks cannot be deleted, edited or have
-      // RPC endpoints so it's safe to call this conversion function here.
       const hexChainId = convertCaipToHexChainId(chainId);
       const isDeletable =
         isUnlocked &&
@@ -112,7 +116,7 @@ export const useNetworkItemCallbacks = () => {
           );
           history.push('/edit');
         },
-        onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
+        onDiscoverClick: isDiscoverBtnEnabled(network)
           ? () => {
               openWindow(
                 CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
@@ -149,7 +153,6 @@ export const useNetworkItemCallbacks = () => {
 
   return {
     getItemCallbacks,
-    isDiscoverBtnEnabled,
     hasMultiRpcOptions,
     isNetworkEnabled,
   };
