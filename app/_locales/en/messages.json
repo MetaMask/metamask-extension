@@ -317,6 +317,9 @@
   "address": {
     "message": "Address"
   },
+  "addressCopied": {
+    "message": "Address copied"
+  },
   "addressMismatch": {
     "message": "Site address mismatch"
   },
@@ -425,6 +428,12 @@
   "alertMessageNoGasPrice": {
     "message": "We can’t move forward with this transaction until you manually update the fee."
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "This has been identified as malicious. We recommend not interacting with this site."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "This has been identified as suspicious. We recommend not interacting with this site."
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
   },
@@ -466,6 +475,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "Fee estimate unavailable"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "Malicious site"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Suspicious site"
   },
   "alertReasonPendingTransactions": {
     "message": "Pending transaction"
@@ -1951,6 +1966,15 @@
   "downloadGoogleChrome": {
     "message": "Download Google Chrome"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "Face ID on our app lets you in even if you forget your password. Take MetaMask everywhere you go!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "Scan this QR code to get started."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "Get our mobile app"
+  },
   "downloadNow": {
     "message": "Download Now"
   },
@@ -2732,6 +2756,13 @@
   },
   "importAccountMsg": {
     "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase. Learn more about imported accounts"
+  },
+  "importAccountWithSocialMsg": {
+    "message": "Imported private keys are backed up to your account and sync automatically when you sign in with the same Google or Apple login."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "$1 about how imported keys work",
+    "description": "$1 is a link to learn more about imported keys"
   },
   "importNFT": {
     "message": "Import NFT"
@@ -3529,6 +3560,9 @@
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
   },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "Must have at least one network enabled"
+  },
   "networkMenu": {
     "message": "Network Menu"
   },
@@ -3747,7 +3781,7 @@
     "message": "No conversion rate available"
   },
   "noDeFiPositions": {
-    "message": "No positions yet"
+    "message": "Can't find what you're looking for?"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
@@ -4234,6 +4268,9 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
+    "message": "If I forget this password, MetaMask can’t reset it for me."
+  },
+  "passwordTermsWarningSocial": {
     "message": "If I forget this password, I’ll lose access to my wallet permanently. MetaMask can’t reset it for me."
   },
   "passwordToggleHide": {
@@ -4644,6 +4681,9 @@
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
   },
+  "protocolNotSupported": {
+    "message": "We may not support your protocol yet."
+  },
   "provide": {
     "message": "Provide"
   },
@@ -4739,6 +4779,9 @@
   },
   "rateIncludesMMFee": {
     "message": "Rate includes $1% fee"
+  },
+  "rateIncludesMMFeeAndGas": {
+    "message": "Rate includes $1% fee and gas"
   },
   "reAddAccounts": {
     "message": "re-add any other accounts"
@@ -4887,16 +4930,34 @@
     "message": "Reset"
   },
   "resetWallet": {
-    "message": "Reset wallet"
+    "message": "Reset your wallet"
   },
   "resetWalletSubHeader": {
     "message": "MetaMask does not keep a copy of your password. If you’re having trouble unlocking your account, you will need to reset your wallet. You can do this by providing the Secret Recovery Phrase you used when you set up your wallet."
   },
+  "resetWalletSubHeaderSocial": {
+    "message": "MetaMask doesn’t keep a copy of your password. If you’re having trouble unlocking your account, you’ll need to reset your wallet. If you have a Secret Recovery Phrase, you can use it to erase your current wallet from this device, along with the list of your accounts."
+  },
   "resetWalletUsingSRP": {
     "message": "This action will delete your current wallet and Secret Recovery Phrase from this device, along with the list of accounts you’ve curated. After resetting with a Secret Recovery Phrase, you’ll see a list of accounts based on the Secret Recovery Phrase you use to reset. This new list will automatically include accounts that have a balance. You’ll also be able to $1 created previously. Custom accounts that you’ve imported will need to be $2, and any custom tokens you’ve added to an account will need to be $3 as well."
   },
+  "resetWalletUsingSRPSocial": {
+    "message": "After resetting with a Secret Recovery Phrase, you’ll see a new list of accounts. This list will include accounts that have a balance. You can $1 you made before. But you’ll need to add back any $2 and $3 you imported. "
+  },
+  "resetWalletUsingSRPSocialAccounts": {
+    "message": "add back any other accounts"
+  },
+  "resetWalletUsingSRPSocialCustomAccounts": {
+    "message": "custom accounts"
+  },
+  "resetWalletUsingSRPSocialCustomTokens": {
+    "message": "custom tokens"
+  },
   "resetWalletWarning": {
     "message": "Make sure you’re using the correct Secret Recovery Phrase before proceeding. You will not be able to undo this."
+  },
+  "resetWalletWarningSocial": {
+    "message": "Make sure you use the right Secret Recovery Phrase before you reset. This can’t be undone."
   },
   "restartMetamask": {
     "message": "Restart MetaMask"
@@ -5467,6 +5528,12 @@
   "slideDebitCardTitle": {
     "message": "MetaMask debit card"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "Take your wallet everywhere you go"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "Download MetaMask mobile"
+  },
   "slideFundWalletDescription": {
     "message": "Add or transfer tokens to get started"
   },
@@ -5923,7 +5990,7 @@
     "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
-    "message": "You can paste your entire secret recovery phrase into any field",
+    "message": "You can paste your entire Secret Recovery Phrase into any field.",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpSecurityQuizGetStarted": {
@@ -6006,9 +6073,6 @@
   },
   "standardAccountLabel": {
     "message": "Standard Account"
-  },
-  "startEarning": {
-    "message": "Start earning"
   },
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
@@ -6604,17 +6668,6 @@
   "switchToThisAccount": {
     "message": "Switch to this account"
   },
-  "switchedNetworkToastDecline": {
-    "message": "Don't show again"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 is now active on $2",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
-  "switchedNetworkToastMessageNoOrigin": {
-    "message": "You're now using $1",
-    "description": "$1 represents the network name"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
   },
@@ -7093,6 +7146,10 @@
   },
   "viewActivity": {
     "message": "View activity"
+  },
+  "viewAddressOnExplorer": {
+    "message": "View on $1",
+    "description": "$1 is the block explorer name"
   },
   "viewAllQuotes": {
     "message": "view all quotes"

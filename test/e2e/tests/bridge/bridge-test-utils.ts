@@ -80,19 +80,6 @@ export class BridgePage {
       url: 'asset',
     });
   };
-
-  verifyPortfolioTab = async () => {
-    await this.driver.switchToWindowWithTitle('E2E Test Page');
-    await this.driver.waitForUrlContaining({
-      url: 'portfolio.metamask.io/bridge',
-    });
-  };
-
-  verifySwapPage = async () => {
-    await this.driver.waitForUrlContaining({
-      url: 'cross-chain/swaps',
-    });
-  };
 }
 
 export async function bridgeTransaction(
