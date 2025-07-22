@@ -1,7 +1,4 @@
-import {
-  CronjobController,
-  CronjobControllerState,
-} from '@metamask/snaps-controllers';
+import { CronjobController } from '@metamask/snaps-controllers';
 import { ControllerInitFunction } from '../types';
 import { CronjobControllerMessenger } from '../messengers/snaps';
 
@@ -24,10 +21,12 @@ export const CronjobControllerInit: ControllerInitFunction<
   getCronjobControllerStorageManager,
 }) => {
   const controller = new CronjobController({
-    state: persistedState.CronjobController as CronjobControllerState,
+    // @ts-expect-error: `persistedState.CronjobController` is not compatible
+    // with the expected type.
+    // TODO: Look into the type mismatch.
+    state: persistedState.CronjobController,
     messenger: controllerMessenger,
-    // @ts-expect-error: `persistedState.CronjobController` is not compatible with the expected type.
-    // TODO: fix incompatible types and look into the type mismatch.
+    // @ts-expect-error TODO: fix incompatible types
     stateManager: getCronjobControllerStorageManager(),
   });
 
