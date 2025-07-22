@@ -4816,44 +4816,60 @@ export default class MetamaskController extends EventEmitter {
       isPasswordSynced = true;
       return isPasswordSynced;
     }
-
     const releaseLock = await this.syncSeedlessGlobalPasswordMutex.acquire();
-    try {
-      // verify the password validity first, to check if user is using the correct password
-      await this.keyringController.verifyPassword(password);
-      // if user is able to unlock the vault with the old password,
-      // throw an OutdatedPassword error to let the user to enter the updated password.
-      throw new Error(
-        SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
-      );
-    } catch (e) {
-      if (
-        e.message === SeedlessOnboardingControllerErrorMessage.OutdatedPassword
-      ) {
-        // if the password is outdated, we should throw an error and let the user to enter the updated password.
-        throw e;
-      }
 
-      // recover the keyring encryption key
+    try {
+      const isKeyringPasswordValid = await this.keyringController
+        .verifyPassword(password)
+        .then(() => true)
+        .catch((err) => {
+          if (err.message.includes('Incorrect password')) {
+            return false;
+          }
+          log.error('error while verifying keyring password', err.message);
+          throw err;
+        });
+
+      // here e could be invalid password or outdated password error, which can result in following cases:
+      // 1. Seedless controller password verification succeeded.
+      // 2. Seedless controller failed but Keyring controller password verification succeeded.
+      // 3. Both keyring and seedless controller password verification failed.
       await this.seedlessOnboardingController
         .submitGlobalPassword({
           globalPassword: password,
           maxKeyChainLength: 20,
         })
         .then(() => {
+          // Case 1.
           isPasswordSynced = true;
         })
         .catch((err) => {
-          log.error('error while submitting global password', err);
+          log.error(
+            `error while submitting global password: ${err.message} , isKeyringPasswordValid: ${isKeyringPasswordValid}`,
+          );
           if (
             err.message ===
             SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded
           ) {
             isPasswordSynced = false;
+          } else if (
+            err.message.includes(
+              SeedlessOnboardingControllerErrorMessage.IncorrectPassword,
+            )
+          ) {
+            // Case 2: Keyring controller password verification succeeds and seedless controller failed.
+            if (isKeyringPasswordValid) {
+              throw new Error(
+                SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
+              );
+            }
+            // Case 3: Both keyring and seedless controller password verification failed.
+            throw err;
           } else {
             throw err;
           }
         });
+
       // we are unable to recover the old pwd enc key as user is on a very old device.
       // create a new vault and encrypt the new vault with the latest global password.
       // also show a info popup to user.
