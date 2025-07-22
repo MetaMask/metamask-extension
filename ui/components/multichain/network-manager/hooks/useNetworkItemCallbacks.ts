@@ -8,7 +8,6 @@ import {
   convertCaipToHexChainId,
   getRpcDataByChainId,
 } from '../../../../../shared/modules/network.utils';
-import { isDiscoverButtonEnabled } from '../../../../../shared/modules/network-discover-utils';
 import { openWindow } from '../../../../helpers/utils/window';
 import { setEditedNetwork, showModal } from '../../../../store/actions';
 import {
@@ -38,10 +37,13 @@ export const useNetworkItemCallbacks = () => {
   const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   const isDiscoverBtnEnabled = useCallback(
-    (network: MultichainNetworkConfiguration): boolean => {
-      return isDiscoverButtonEnabled(
-        network,
-        isNetworkDiscoverButtonEnabled as Record<string, boolean>,
+    (chainId: string): boolean => {
+      // The "Discover" button should be enabled when the mapping for the chainId is enabled in the feature flag json
+      // and in the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
+      return (
+        (isNetworkDiscoverButtonEnabled as Record<string, boolean>)?.[
+          chainId
+        ] && CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[chainId] !== undefined
       );
     },
     [isNetworkDiscoverButtonEnabled],
@@ -72,9 +74,8 @@ export const useNetworkItemCallbacks = () => {
       const { chainId, isEvm } = network;
 
       if (!isEvm) {
-        // For non-EVM networks, only provide discover functionality if available
         return {
-          onDiscoverClick: isDiscoverBtnEnabled(network)
+          onDiscoverClick: isDiscoverBtnEnabled(chainId)
             ? () => {
                 openWindow(
                   CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[chainId],
@@ -116,7 +117,7 @@ export const useNetworkItemCallbacks = () => {
           );
           history.push('/edit');
         },
-        onDiscoverClick: isDiscoverBtnEnabled(network)
+        onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
           ? () => {
               openWindow(
                 CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
