@@ -68,7 +68,8 @@
   },
   "AuthenticationController": {
     "isSignedIn": "boolean",
-    "srpSessionData": "object"
+    "srpSessionData": "object",
+    "socialPairingDone": "boolean"
   },
   "BridgeController": {
     "quoteRequest": {
