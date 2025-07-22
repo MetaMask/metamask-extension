@@ -358,8 +358,9 @@ class UnlockPage extends Component {
 
   onForgotPasswordOrLoginWithDiffMethods = () => {
     const { isSocialLoginFlow, isUnlocked, history } = this.props;
-
+    console.log('isUnlocked', isUnlocked);
     if (!isUnlocked) {
+      console.log('redirecting to onboarding welcome route');
       history.replace(ONBOARDING_WELCOME_ROUTE);
       return;
     }
