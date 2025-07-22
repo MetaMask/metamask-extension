@@ -79,7 +79,7 @@ const createMockState = () => ({
     multichainNetworkConfigurationsByChainId: {
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
         chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        name: 'Solana',
+        name: 'Solana with a really long name',
         nativeCurrency: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
         isEvm: false,
       },

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BackgroundColor,
@@ -31,15 +32,10 @@ export type MultichainAddressRowsListProps = {
    * Array of InternalAccount objects to determine compatible networks for
    */
   accounts?: InternalAccount[];
-  /**
-   * Optional className for additional styling
-   */
-  className?: string;
 };
 
 export const MultichainAddressRowsList = ({
   accounts = [],
-  className = '',
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [searchPattern, setSearchPattern] = React.useState<string>('');
@@ -49,7 +45,7 @@ export const MultichainAddressRowsList = ({
   );
 
   const allNetworks = useMemo(() => {
-    const networks: Record<string, { name: string; chainId: string }> = {};
+    const networks: Record<string, { name: string; chainId: CaipChainId }> = {};
 
     if (!multichainNetworks) {
       return networks;
@@ -59,7 +55,7 @@ export const MultichainAddressRowsList = ({
       if (networkConfig && networkConfig.name) {
         networks[chainId] = {
           name: networkConfig.name,
-          chainId,
+          chainId: chainId as CaipChainId,
         };
       }
     });
@@ -108,7 +104,6 @@ export const MultichainAddressRowsList = ({
 
   return (
     <Box
-      className={`${className}`}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       data-testid="multichain-address-rows-list"

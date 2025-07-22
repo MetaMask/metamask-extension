@@ -7,53 +7,6 @@ import { MultichainAddressRowsList } from './multichain-address-rows-list';
 
 const mockStore = configureStore([]);
 
-jest.mock('../../../selectors', () => ({
-  getMetaMaskAccounts: () => ({}),
-  getSelectedAccount: () => ({}),
-  getMultichainIsEvm: () => true,
-  getNetworkConfigurationsByChainId: () => ({}),
-  getCurrentChainId: () => '0x1',
-}));
-
-jest.mock('../../../selectors/multichain', () => ({
-  getImageForChainId: () => './images/eth_logo.svg',
-}));
-
-jest.mock('../../../selectors/multichain/networks', () => ({
-  getMultichainNetworkConfigurationsByChainId: () => [
-    {
-      'eip155:1': {
-        chainId: 'eip155:1',
-        name: 'Ethereum Mainnet',
-        isEvm: true,
-      },
-      'eip155:137': {
-        chainId: 'eip155:137',
-        name: 'Polygon Mainnet',
-        isEvm: true,
-      },
-      'eip155:42161': {
-        chainId: 'eip155:42161',
-        name: 'Arbitrum One',
-        isEvm: true,
-      },
-      'eip155:11155111': {
-        chainId: 'eip155:11155111',
-        name: 'Sepolia',
-        isEvm: true,
-      },
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        name: 'Solana',
-        isEvm: false,
-      },
-    },
-    {},
-  ],
-  getSelectedMultichainNetworkChainId: () => 'eip155:1',
-  getMultichainIsEvm: () => true,
-}));
-
 const accounts: InternalAccount[] = [
   {
     id: '1',
@@ -83,8 +36,116 @@ const accounts: InternalAccount[] = [
   },
 ];
 
+const createMockState = () => ({
+  metamask: {
+    completedOnboarding: true,
+    internalAccounts: {
+      accounts: {
+        '1': accounts[0],
+        '2': accounts[1],
+      },
+      selectedAccount: '1',
+    },
+    // EVM network configurations
+    networkConfigurationsByChainId: {
+      '0x1': {
+        chainId: '0x1',
+        name: 'Ethereum Mainnet',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            networkClientId: 'mainnet',
+            url: 'https://mainnet.infura.io/v3/',
+            type: 'custom',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: ['https://etherscan.io'],
+      },
+      '0x89': {
+        chainId: '0x89',
+        name: 'Polygon Mainnet',
+        nativeCurrency: 'MATIC',
+        rpcEndpoints: [
+          {
+            networkClientId: 'polygon-mainnet',
+            url: 'https://polygon-mainnet.infura.io/v3/',
+            type: 'custom',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: ['https://polygonscan.com'],
+      },
+      '0xa4b1': {
+        chainId: '0xa4b1',
+        name: 'Arbitrum One',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            networkClientId: 'arbitrum-mainnet',
+            url: 'https://arbitrum-mainnet.infura.io/v3/',
+            type: 'custom',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: ['https://arbiscan.io'],
+      },
+      '0xaa36a7': {
+        chainId: '0xaa36a7',
+        name: 'Sepolia',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            networkClientId: 'sepolia',
+            url: 'https://sepolia.infura.io/v3/',
+            type: 'custom',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: ['https://sepolia.etherscan.io'],
+      },
+    },
+    // Multichain network configurations (includes non-EVM)
+    multichainNetworkConfigurationsByChainId: {
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        name: 'Solana',
+        isEvm: false,
+        nativeCurrency: 'SOL',
+      },
+    },
+    // Current provider config for EVM
+    providerConfig: {
+      chainId: '0x1',
+      type: 'mainnet',
+      nickname: 'Ethereum Mainnet',
+    },
+    // Multichain controller state
+    isEvmSelected: true,
+    selectedMultichainNetworkChainId: 'eip155:1',
+    networksWithTransactionActivity: {},
+    // Feature flags for multichain support
+    featureFlags: {
+      bitcoinSupportEnabled: false,
+      solanaSupportEnabled: true,
+      solanaTestnetSupportEnabled: false,
+    },
+    enabledNetworks: {
+      eip155: {
+        '0x1': true,
+        '0x89': true,
+        '0xa4b1': true,
+        '0xaa36a7': true,
+      },
+      solana: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+      },
+    },
+  },
+});
+
 const renderComponent = (accountsList = accounts) => {
-  const store = mockStore({ metamask: { completedOnboarding: true } });
+  const store = mockStore(createMockState());
   return render(
     <Provider store={store}>
       <MultichainAddressRowsList accounts={accountsList} />

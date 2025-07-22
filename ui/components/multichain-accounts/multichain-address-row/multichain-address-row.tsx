@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   AlignItems,
+  BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
@@ -82,12 +83,17 @@ export const MultichainAddressRow = ({
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.flexStart}
-        style={{ flex: 1 }}
+        // Parent Box with flex: 1 needs minWidth: 0 to allow it to shrink below its content size.
+        // Without that, the flex item would expand the entire row to fit the text content
+        // instead of being constrained by the grid cell.
+        style={{ flex: 1, minWidth: 0 }}
       >
         <Text
           variant={TextVariant.bodyMdMedium}
           color={TextColor.textDefault}
           data-testid="multichain-address-row-network-name"
+          ellipsis={true}
+          width={BlockSize.Full}
         >
           {networkName}
         </Text>
