@@ -1,3 +1,4 @@
+import { regularDelayMs } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
 export enum NetworkId {
@@ -29,6 +30,11 @@ class NetworkManager {
     `[data-testid="network-list-item-${networkName}"] input[type="checkbox"]`;
 
   private readonly tabList = '.tabs__list.network-manager__tab-list';
+
+  private readonly addNetworkButton = '[data-testid="additional-network-item"]';
+
+  private readonly approveAddNetworkButton =
+    '[data-testid="confirmation-submit-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -65,16 +71,29 @@ class NetworkManager {
   // Method to select/click on a network item
   async selectNetwork(networkName: string): Promise<void> {
     console.log(`Selecting network: ${networkName}`);
+    await this.driver.delay(regularDelayMs);
     await this.checkNetworkIsDeselected(networkName);
+    await this.driver.delay(regularDelayMs);
     await this.driver.clickElementSafe(this.networkListItem(networkName));
+    await this.driver.delay(regularDelayMs);
     await this.checkNetworkIsSelected(networkName);
   }
 
   async deselectNetwork(networkName: string): Promise<void> {
     console.log(`Deselecting network: ${networkName}`);
+    await this.driver.delay(regularDelayMs);
     await this.checkNetworkIsSelected(networkName);
+    await this.driver.delay(regularDelayMs);
     await this.driver.clickElementSafe(this.networkListItem(networkName));
+    await this.driver.delay(regularDelayMs);
     await this.checkNetworkIsDeselected(networkName);
+  }
+
+  async deselectNetworkWithoutChecking(networkName: string): Promise<void> {
+    console.log(`Deselecting network: ${networkName}`);
+    await this.driver.delay(regularDelayMs);
+    await this.driver.clickElementSafe(this.networkListItem(networkName));
+    await this.driver.delay(regularDelayMs);
   }
 
   // Method to check if a network is currently selected/active
@@ -127,6 +146,16 @@ class NetworkManager {
       text: tabName,
     });
     console.log(`${tabName} tab is properly selected`);
+  }
+
+  async addNetwork(): Promise<void> {
+    console.log(`Adding network`);
+    await this.driver.clickElement(this.addNetworkButton);
+  }
+
+  async approveAddNetwork(): Promise<void> {
+    console.log(`Approving add network`);
+    await this.driver.clickElement(this.approveAddNetworkButton);
   }
 }
 
