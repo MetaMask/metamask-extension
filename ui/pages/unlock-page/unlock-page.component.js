@@ -28,7 +28,10 @@ import {
   FontWeight,
 } from '../../helpers/constants/design-system';
 import Mascot from '../../components/ui/mascot';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -353,8 +356,13 @@ class UnlockPage extends Component {
     );
   };
 
-  onForgotPassword = () => {
-    const { isSocialLoginFlow } = this.props;
+  onForgotPasswordOrLoginWithDiffMethods = () => {
+    const { isSocialLoginFlow, isUnlocked, history } = this.props;
+
+    if (!isUnlocked) {
+      history.replace(ONBOARDING_WELCOME_ROUTE);
+      return;
+    }
 
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -382,6 +390,7 @@ class UnlockPage extends Component {
 
   render() {
     const { password, error, isLocked, showResetPasswordModal } = this.state;
+    const { isUnlocked } = this.props;
     const { t } = this.context;
 
     const needHelpText = t('needHelpLinkText');
@@ -490,10 +499,10 @@ class UnlockPage extends Component {
               data-testid="unlock-forgot-password-button"
               key="import-account"
               type="button"
-              onClick={() => this.onForgotPassword()}
+              onClick={() => this.onForgotPasswordOrLoginWithDiffMethods()}
               marginBottom={6}
             >
-              {t('forgotPassword')}
+              {isUnlocked ? t('forgotPassword') : t('useDifferentLoginMethod')}
             </Button>
 
             <Text>
